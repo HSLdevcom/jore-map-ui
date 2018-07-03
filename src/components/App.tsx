@@ -1,4 +1,3 @@
-import {inject} from 'mobx-react'
 import DevTools from 'mobx-react-devtools'
 import * as React from 'react'
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom'
@@ -8,14 +7,13 @@ import Map from './Map'
 
 const rootPath: string = '/'
 
-@inject('mapStore')
+
 class App extends React.Component<any, any> {
 
   public render(): any {
     return (
       <Router>
         <div>
-
           <DevTools />
           <Map />
           <nav>
