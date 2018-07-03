@@ -1,4 +1,3 @@
-import * as classNames from 'classnames'
 import * as L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import {inject, observer} from 'mobx-react'
@@ -69,15 +68,22 @@ class Map extends React.Component<IMapProps> {
       tileSize: 512,
       zoomOffset: -1,
     }).addTo(this.map)
-    addControlButton(this.map, () => {this.props.mapStore!.toggleFullscreen()})
+    addControlButton(this.map, () => {
+      this.props.mapStore!.toggleFullscreen()
+    })
   }
 
   public render() {
-    global.console.log(this.props.mapStore!.isFullscreen)
+    global.console.log(this.map !== undefined ? this.map.getContainer().classList : [])
+    const classes = this.map !== undefined ? this.map.getContainer().classList : null
+    if (classes !== null) {
+      classes.remove('root')
+      classes.remove('fullscreen')
+    }
     return (
       <div
         id='map-leaflet'
-        className={classNames('root', {fullscreen: this.props.mapStore!.isFullscreen})}
+        className={`${classes !== null ? classes.toString() : ''} root ${this.props.mapStore!.isFullscreen ? 'fullscreen' : ''}`}
       >
         Leaflet
       </div>

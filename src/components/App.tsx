@@ -14,8 +14,8 @@ class App extends React.Component<any, any> {
     return (
       <Router>
         <div>
-          <DevTools />
-          <Map />
+          <DevTools/>
+          <Map/>
           <nav>
             <Link to={'/'}>/</Link>&nbsp;
             <Link to={'/login'}>Login</Link>
