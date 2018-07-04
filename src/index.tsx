@@ -6,8 +6,8 @@ import './index.css'
 import observableMapStore from './stores/mapStore'
 
 ReactDOM.render(
-  <Provider mapStore={observableMapStore}>
-    <App/>
-  </Provider>,
-  document.getElementById('root') as HTMLElement
+    <Provider mapStore={observableMapStore}>
+        <App/>
+    </Provider>,
+    document.getElementById('root') as HTMLElement
 )
