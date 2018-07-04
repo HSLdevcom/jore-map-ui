@@ -8,9 +8,11 @@ import Map from './Map'
 
 const rootPath: string = '/'
 
+interface IAppState {
+  showLogin: boolean
+}
 
-
-class App extends React.Component<any, any> {
+class App extends React.Component<any, IAppState> {
   constructor(props: any) {
     super(props)
     this.state = {
