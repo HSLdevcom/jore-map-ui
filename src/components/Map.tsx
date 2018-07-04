@@ -41,9 +41,7 @@ class Map extends React.Component<IMapProps> {
             <div
                 id='map-leaflet'
                 className={`${classes !== null ? classes.toString() : ''} root ${this.props.mapStore!.isMapFullscreen ? 'fullscreen' : ''}`}
-            >
-                Leaflet
-            </div>
+            />
         )
     }
 
@@ -61,17 +59,10 @@ class Map extends React.Component<IMapProps> {
             tileSize: 512,
             zoomOffset: -1,
         }).addTo(this.map)
-        this.map.addControl(this.fullscreenControlButton(this.props.mapStore!.toggleMapFullscreen))
+        this.map.addControl(this.fullscreenControlButton())
     }
 
-    private updateMap = () => {
-        if (!this.lastCenter.equals(this.props.mapStore!.coordinates)) {
-            this.map.flyTo(this.props.mapStore!.coordinates)
-            this.lastCenter = new LatLng(this.props.mapStore!.coordinates.lat, this.props.mapStore!.coordinates.lng)
-        }
-    }
-
-    private fullscreenControlButton = (toggleFullscreen: () => void) => {
+    private fullscreenControlButton = () => {
         const fullscreenControl = new L.Control()
         fullscreenControl.onAdd = () => {
             const icon = L.DomUtil.create('img')
@@ -81,12 +72,20 @@ class Map extends React.Component<IMapProps> {
             container.className = 'fullscreenButton'
             container.appendChild(icon)
             container.onclick = () => {
-                icon.setAttribute('src', toggleFullscreen() ? fullScreenExitIcon : fullScreenEnterIcon)
+                this.props.mapStore!.toggleMapFullscreen()
+                icon.setAttribute('src', this.props.mapStore!.isMapFullscreen ? fullScreenExitIcon : fullScreenEnterIcon)
             }
             return container
         }
         fullscreenControl.options = {position: 'topleft'}
         return fullscreenControl
+    }
+
+    private updateMap = () => {
+        if (!this.lastCenter.equals(this.props.mapStore!.coordinates)) {
+            this.map.flyTo(this.props.mapStore!.coordinates)
+            this.lastCenter = new LatLng(this.props.mapStore!.coordinates.lat, this.props.mapStore!.coordinates.lng)
+        }
     }
 }
 
