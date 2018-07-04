@@ -30,6 +30,8 @@
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
 }
 
-.fullScreenButton img {
+.fullscreenButton img {
     padding-top: 4px;
+    height: 11px;
+    width: 11px;
 }

@@ -3,7 +3,7 @@ import {action, computed, observable} from 'mobx'
 
 export class MapStore {
   @observable private _coordinates: LatLng
-  @observable private _isFullscreen: boolean
+  @observable private _isMapFullscreen: boolean
   @observable private _routes: MapRoute[]
 
   constructor(
@@ -11,12 +11,12 @@ export class MapStore {
     isFullscreen = false
   ) {
     this._coordinates = coordinate
-    this._isFullscreen = isFullscreen
+    this._isMapFullscreen = isFullscreen
     this._routes = []
   }
 
-  @computed get isFullscreen(): boolean {
-    return this._isFullscreen
+  @computed get isMapFullscreen(): boolean {
+    return this._isMapFullscreen
   }
 
   @computed get routes(): MapRoute[] {
@@ -33,9 +33,8 @@ export class MapStore {
   }
 
   @action
-  public toggleFullscreen() {
-    global.console.log(this._isFullscreen)
-    this._isFullscreen = !this._isFullscreen
+  public toggleMapFullscreen = () => {
+    this._isMapFullscreen = !this._isMapFullscreen
   }
 }
 
