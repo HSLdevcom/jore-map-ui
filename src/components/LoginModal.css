@@ -36,8 +36,6 @@
 }
 
 .modal-login-button {
-  bottom: 15px;
-  right: 15px;
   cursor: pointer;
   font-weight: 400;
   line-height: normal;
@@ -56,8 +54,6 @@
 }
 
 .modal-cancel-button {
-  bottom: 15px;
-  right: 45px;
   cursor: pointer;
   font-weight: 400;
   line-height: normal;
