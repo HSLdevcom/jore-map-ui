@@ -7,9 +7,15 @@
     ]
   },
   "rules": {
-    "indent": [true, "spaces", 2],
+    "indent": [true, "spaces", 4],
     "no-trailing-whitespace": true,
     "quotemark": [true, "single", "avoid-escape"],
-    "semicolon": [true, "never"]
+    "semicolon": [true, "never"],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore"
+    ]
   }
 }

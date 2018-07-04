@@ -1,19 +1,43 @@
 import {LatLng} from 'leaflet'
-import {action, observable} from 'mobx'
+import {action, computed, observable} from 'mobx'
 
 export class MapStore {
-  @observable private coordinate: LatLng
+    @observable private _coordinates: LatLng
+    @observable private _isMapFullscreen: boolean
+    @observable private _routes: MapRoute[]
 
-  @action public setCoordinate(lat: number, lon: number) {
-    this.coordinate = new LatLng(lat, lon)
-  }
+    constructor(
+        coordinate = new LatLng(60.24, 24.9),
+        isFullscreen = false
+    ) {
+        this._coordinates = coordinate
+        this._isMapFullscreen = isFullscreen
+        this._routes = []
+    }
 
-  public getCoordinate(): LatLng {
-    return this.coordinate
-  }
+    @computed get isMapFullscreen(): boolean {
+        return this._isMapFullscreen
+    }
+
+    @computed get routes(): MapRoute[] {
+        return this._routes
+    }
+
+    @computed get coordinates(): LatLng {
+        return this._coordinates
+    }
+
+    @action
+    public setCoordinates(lat: number, lon: number) {
+        this._coordinates = new LatLng(lat, lon)
+    }
+
+    @action
+    public toggleMapFullscreen = () => {
+        this._isMapFullscreen = !this._isMapFullscreen
+    }
 }
 
 const observableMapStore = new MapStore()
-observableMapStore.setCoordinate(60.24, 24.9)
 
 export default observableMapStore
