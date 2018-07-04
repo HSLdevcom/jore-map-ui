@@ -5,23 +5,27 @@ import * as React from 'react'
 import './LeafletMap.css'
 
 interface ILeafletMapProps {
-  center: LatLng
+  center?: LatLng
 }
 
 class LeafletMap extends React.Component<ILeafletMapProps> {
   private map: L.Map
   constructor(props: ILeafletMapProps) {
-
     super(props)
+    this.initializeMap = this.initializeMap.bind(this)
   }
 
   public componentDidMount() {
     this.initializeMap()
   }
 
+  public componentDidUpdate() {
+    this.map.flyTo(this.props.center!)
+  }
+
   public initializeMap() {
     this.map = L.map('map-leaflet')
-    this.map.setView(this.props.center, 15)
+    this.map.setView(this.props.center!, 15)
     L.tileLayer('https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}{retina}.png', {
       attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
       '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +

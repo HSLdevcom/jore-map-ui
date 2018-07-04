@@ -1,22 +1,26 @@
 import {LatLng} from 'leaflet'
+import {inject, observer} from 'mobx-react'
 import * as React from 'react'
+import {MapStore} from '../stores/mapStore'
 import LeafletMap from './LeafletMap'
 
 
 interface IMapState {
-  center: LatLng
+  center?: LatLng
   isFullScreen: boolean
   selectedRoutes: any[]
 }
-//
-// interface IMapProps {
-// }
 
-class Map extends React.Component<{}, IMapState> {
+interface IMapProps {
+  mapStore?: MapStore
+}
+
+@inject('mapStore')
+@observer
+class Map extends React.Component<IMapProps, IMapState> {
   constructor(props: any) {
     super(props)
     this.state = {
-      center: new LatLng(60.23, 24.9),
       isFullScreen: false,
       selectedRoutes: []
     }
@@ -26,7 +30,7 @@ class Map extends React.Component<{}, IMapState> {
     return (
       <div>
         <LeafletMap
-          center={this.state.center}
+          center={this.props.mapStore!.getCoordinate()}
         />
       </div>)
   }

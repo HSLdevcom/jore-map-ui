@@ -1,3 +1,4 @@
+import DevTools from 'mobx-react-devtools'
 import * as React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import './App.css'
@@ -32,6 +33,7 @@ class App extends React.Component<any, any> {
     return (
       <Router>
         <div className={'app-container'}>
+          <DevTools />
           <Map/>
           {this.state.showLogin && <LoginModal handleModalLoginButton={this.handleModalLoginButton}/>}
           <LoginButton handleLoginModal={this.handleLoginModal}/>
