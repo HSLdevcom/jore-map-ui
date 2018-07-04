@@ -1,24 +1,41 @@
 import * as React from 'react'
-import {BrowserRouter as Router, Link, Route} from 'react-router-dom'
+import {BrowserRouter as Router, Route} from 'react-router-dom'
 import './App.css'
-import Login from './Login'
+import LoginButton from './LoginButton'
+import LoginModal from './LoginModal'
 import Map from './Map'
 
 const rootPath: string = '/'
 
-class App extends React.Component {
+
+
+class App extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props)
+    this.state = {
+      showLogin: false
+    }
+  }
+
+  public handleLoginModal = () => {
+    const show = !this.state.showLogin
+    this.setState({
+      showLogin: show
+    })
+  }
+
+  public handleModalLoginButton = () => {
+    this.handleLoginModal()
+  }
 
   public render(): any {
     return (
       <Router>
-        <div>
+        <div className={'app-container'}>
           <Map/>
-          <nav>
-            <Link to={'/'}>/</Link>&nbsp;
-            <Link to={'/login'}>Login</Link>
-          </nav>
+          {this.state.showLogin && <LoginModal handleModalLoginButton={this.handleModalLoginButton}/>}
+          <LoginButton handleLoginModal={this.handleLoginModal}/>
           <Route exact={true} path='/' rootPath={rootPath}/>
-          <Route path='/login/' component={Login} rootPath={rootPath}/>
         </div>
       </Router>
     )

@@ -1,0 +1,22 @@
+.login-button {
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  cursor: pointer;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  font-size: 1rem;
+  border: 0 solid #0062a1;
+  color: #fff;
+  letter-spacing: -.025em;
+  font-size: .92rem;
+  height: auto;
+  margin: 0;
+  background-color: #007ac9;
+  color: #fff;
+  border-radius: 3px;
+  padding: .7em;
+  z-index: 10;
+  font-family: Gotham Rounded SSm A,Gotham Rounded SSm B,Arial,Georgia,Serif;
+}
