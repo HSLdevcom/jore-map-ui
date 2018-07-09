@@ -2,10 +2,9 @@ import DevTools from 'mobx-react-devtools'
 import * as React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import './App.css'
-import LoginButton from './LoginButton'
 import LoginModal from './LoginModal'
 import Map from './Map'
-
+import Sidebar from './Sidebar'
 const rootPath: string = '/'
 
 interface IAppState {
@@ -20,15 +19,12 @@ class App extends React.Component<any, IAppState> {
     }
   }
 
-  public handleLoginModal = () => {
+
+  public handleModalLoginButton = () => {
     const show = !this.state.showLogin
     this.setState({
       showLogin: show
     })
-  }
-
-  public handleModalLoginButton = () => {
-    this.handleLoginModal()
   }
 
   public render(): any {
@@ -38,7 +34,7 @@ class App extends React.Component<any, IAppState> {
           <DevTools />
           <Map/>
           {this.state.showLogin && <LoginModal handleModalLoginButton={this.handleModalLoginButton}/>}
-          <LoginButton handleLoginModal={this.handleLoginModal}/>
+          <Sidebar showLogin={this.state.showLogin} handleModalLoginButton={this.handleModalLoginButton}/>
           <Route exact={true} path='/' rootPath={rootPath}/>
         </div>
       </Router>

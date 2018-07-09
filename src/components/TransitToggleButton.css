@@ -1,0 +1,26 @@
+.transit-toggle-container > .transit-toggle {
+  flex: 1;
+  height: 40px;
+  border: hidden;
+}
+
+#ferry {
+  background-color: rgb(0,185,228);
+}
+
+#bus {
+  background-color: rgb(0, 122, 201);
+}
+#tram {
+  background-color: rgb(0, 152, 95);
+}
+#train {
+  background-color: rgb(140, 71, 153);
+}
+#underground {
+  background-color: rgb(255,99,25);
+}
+
+#untoggled {
+  background-color: rgb(87,87,87);
+}
