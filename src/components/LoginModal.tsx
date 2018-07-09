@@ -15,10 +15,12 @@ class LoginModal extends React.Component<ILoginModalProps, ILoginModalState> {
     super(props)
   }
 
+  // TODO Login logic here
   public handleUserNameOnChange = (event: any) => {
     global.console.log(event.target.value)
   }
 
+  // TODO Login logic here
   public handlePasswordOnChange = (event: any) => {
     global.console.log(event.target.value)
   }

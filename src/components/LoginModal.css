@@ -15,11 +15,14 @@
   position:relative;
   background-color: #fefefe;
   margin: auto;
+  top: 20%;
   padding: 20px;
   border-radius: 8px;
   width: 40Vh;
   height: 45Vh;
   box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 3px 14px rgba(0,0,0,.4);
+  max-width: 300px;
+  max-height: 350px;
 }
 
 .modal-button-bar {
@@ -67,7 +70,7 @@
   margin: 0;
   background-color: #fff;
   border-radius: 5px;
-  padding: .7em;
+  padding: .6em;
   font-family: Gotham Rounded SSm A,Gotham Rounded SSm B,Arial,Georgia,Serif;
 }
 

@@ -1,7 +1,0 @@
-#map-leaflet {
-    width: 100%;
-    min-height: 400px;
-    height: 100vh;
-    overflow: hidden;
-    z-index: 1;
-}
