@@ -1,79 +1,59 @@
+import {inject, observer} from 'mobx-react'
 import * as React from 'react'
+import {SidebarStore} from '../stores/sidebarStore'
+import EditableLines from './EditableLines'
+import LineSearch from './LineSearch'
 import LoginButton from './LoginButton'
 import './Sidebar.css'
-import TransitToggleButton from './TransitToggleButton'
 
 interface ISidebarProps {
+  sidebarStore?: SidebarStore
   showLogin: boolean
   handleModalLoginButton(event: any): void
 }
 
-interface ISidebarState {
-  routeSearchInput: string
-  toggles: any
+interface ILinelistState {
+  searchInput: string
 }
 
-class Sidebar extends React.Component<ISidebarProps, ISidebarState> {
+@inject('sidebarStore')
+@observer
+class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
   constructor(props: ISidebarProps) {
     super(props)
-    this.state = {
-      routeSearchInput: '',
-      toggles: {
-        bus: true,
-        ferry: true,
-        train: true,
-        tram: true,
-        underground: true
-      }
-    }
   }
 
-  public handleSearchInputChange = (event: any) => {
-    this.setState({
-      routeSearchInput: event.target.value
-    })
-  }
-
-  public handleToggle = (type: string) => {
-    const value: boolean = !this.state.toggles[type]
-    const toggleState: object = this.state.toggles
-    toggleState[type] = value
-    this.setState({
-      toggles: toggleState
-    })
+  public handleHeaderClick = () => {
+    this.props.sidebarStore!.removeSelectedLines()
   }
 
   public render(): any {
     return (
       <div className='sidebar-container'>
         <div className='sidebar-header'>
-          <div className='sidebar-header-container'>
-            <img className='sidebar-logo' src='hsl-logo.png' alt='HSL / HSRT'/>
+          <div onClick={this.handleHeaderClick} className='sidebar-header-container'>
+            <img className='sidebar-logo' src='hsl-logo.png' />
             <h2 className='sidebar-title'>
               Joukkoliikennerekisteri
             </h2>
           </div>
         </div>
         <div className='sidebar-content'>
-          <label className='routes-label'>
-            Reitit<br/>
-          </label>
-          <div className='routes-input-container'>
-            <input placeholder='Hae reitti' className='routes-input' type='text' value={this.state.routeSearchInput} onChange={this.handleSearchInputChange}/>
-          </div>
-          <div className='transit-toggle-container'>
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.bus} type='bus' />
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.tram} type='tram' />
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.train} type='train' />
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.underground} type='underground' />
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.ferry} type='ferry' />
-          </div>
           <LoginButton className='login-button-sidebar' show={this.props.showLogin} handleLoginModal={this.props.handleModalLoginButton}/>
+          {this.props.sidebarStore!.selectedLines.length < 1 &&
+            <LineSearch
+            showLogin={this.props.showLogin}
+            handleModalLoginButton={this.props.handleModalLoginButton}
+            />
+          }
+          {this.props.sidebarStore!.selectedLines.length > 0 &&
+            <EditableLines nodes={this.props.sidebarStore!.selectedLines} />
+          }
+
         </div>
       </div>
     )
   }
 }
-
 
 export default Sidebar

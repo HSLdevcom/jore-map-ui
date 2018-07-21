@@ -1,25 +1,31 @@
 import {action, computed, observable} from 'mobx'
 
 export class SidebarStore {
-    @observable private routes: number[]
-    @observable private showRouteSearch: boolean
+    @observable private _filters: string[]
+    @observable private _selectedLines: [{lintunnus: string, linverkko: string, reitunnus: string}]
 
-    constructor() {
-        this.routes = []
-        this.showRouteSearch = true
+
+    @computed get selectedLines(): [{lintunnus: string, linverkko: string, reitunnus: string}] {
+        return this._selectedLines
     }
 
-    @computed get getShowRouteSearch(): boolean {
-        return this.showRouteSearch
-    }
-
-    @computed get getRoutes(): number[] {
-        return this.routes
+    @computed get filters(): string[] {
+        return this._filters
     }
 
     @action
-    public setRoutes(routes: number[]) {
-        this.routes = routes
+    public setSelectedLine(node: {lintunnus: string, linverkko: string, reitunnus: string}) {
+        this._selectedLines.push(node)
+    }
+
+    @action
+    public removeSelectedLines() {
+        this._selectedLines = new Array() as [{lintunnus: string, linverkko: string, reitunnus: string}]
+    }
+
+    @action
+    public setFilters(filters: string[]) {
+        this._filters = filters
     }
 
 }

@@ -1,18 +1,19 @@
 import * as React from 'react'
+import lineHelper from '../util/lineHelper'
 import './TransitToggleButton.css'
 
-interface IToggleButtonProps {
+interface ITransitToggleButtonProps {
   type: string
   toggled: boolean
   handleToggle(event: any): void
 }
 
-interface IToggleButtonState {
+interface ITransitToggleButtonState {
   type: string
 }
 
-class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonState> {
-  constructor(props: IToggleButtonProps) {
+class TransitToggleButton extends React.Component<ITransitToggleButtonProps, ITransitToggleButtonState> {
+  constructor(props: ITransitToggleButtonProps) {
     super(props)
     this.state = {
       type: this.props.type
@@ -25,21 +26,22 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
 
   public toggleClass = () => {
     if (this.props.toggled) {
-      return this.state.type
+      return 'transit-toggle ' + this.state.type
     } else {
-      return 'untoggled'
+      return 'transit-toggle toggled'
     }
   }
 
   public render(): any {
     return (
       <button
-        id={this.toggleClass()}
-        className={'transit-toggle'}
+        className={this.toggleClass()}
         onClick={this.handleClick}
-      />
+      >
+        {lineHelper.getTransitIcon(this.state.type, true)}
+      </button>
     )
   }
 }
 
-export default ToggleButton
+export default TransitToggleButton

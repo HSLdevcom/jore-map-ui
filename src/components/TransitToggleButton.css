@@ -1,26 +1,39 @@
+@value busBlue, ferryBlue, tramGreen, trainPurple, subwayOrange from './common.css';
+
 .transit-toggle-container > .transit-toggle {
   flex: 1;
   height: 40px;
   border: hidden;
+  cursor: pointer;
+  transition: .5s;
 }
 
-#ferry {
-  background-color: rgb(0,185,228);
+.transit-toggle-container > .transit-toggle.ferry {
+  background-color: ferryBlue;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
-#bus {
-  background-color: rgb(0, 122, 201);
-}
-#tram {
-  background-color: rgb(0, 152, 95);
-}
-#train {
-  background-color: rgb(140, 71, 153);
-}
-#underground {
-  background-color: rgb(255,99,25);
+.transit-toggle-container > .transit-toggle.bus {
+  background-color: busBlue;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+
 }
 
-#untoggled {
+.transit-toggle-container > .transit-toggle.tram {
+  background-color: tramGreen;
+}
+
+.transit-toggle-container > .transit-toggle.train {
+  background-color: trainPurple;
+}
+
+.transit-toggle-container > .transit-toggle.subway {
+  background-color: subwayOrange;
+}
+
+.transit-toggle-container > .transit-toggle.toggled {
   background-color: rgb(87,87,87);
+  transition: .5s;
 }

@@ -1,7 +1,7 @@
 .login-button-sidebar {
   position: absolute;
-  bottom: 5px;
-  left: 5px;
+  display: inline-block;
+  right: 5px;
   cursor: pointer;
   font-weight: 400;
   line-height: normal;
@@ -10,12 +10,9 @@
   color: rgb(0, 122, 201);
   letter-spacing: -.025em;
   font-size: .92rem;
-  height: 2.3rem;
   margin: 0;
+  padding-right: 5px;
   background-color: #eef1f3;
-  padding: .7em;
   font-family: Gotham Rounded SSm A,Gotham Rounded SSm B,Arial,Georgia,Serif;
-  border: hidden;
-  border-radius: 5px;
   z-index:10;
 }

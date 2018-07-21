@@ -12,15 +12,14 @@ class LoginButton extends React.Component<ILoginButtonProps, {}> {
     super(props)
   }
 
-
   public render(): any {
     return (
-      <button
+      <span
         className={this.props.className}
         hidden={this.props.show}
         onClick={this.props.handleLoginModal}>
         Kirjaudu
-      </button>
+      </span>
     )
   }
 }
