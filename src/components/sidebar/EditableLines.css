@@ -1,4 +1,4 @@
-@value hslFont from './common.css';
+@value hslFont from '../common.css';
 
 .editable-line-wrapper {
   padding:10px;

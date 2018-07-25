@@ -1,9 +1,9 @@
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
-import {SidebarStore} from '../stores/sidebarStore'
+import {SidebarStore} from '../../stores/sidebarStore'
+import LoginButton from '../controls/LoginButton'
 import EditableLines from './EditableLines'
 import LineSearch from './LineSearch'
-import LoginButton from './LoginButton'
 import './Sidebar.css'
 
 interface ISidebarProps {

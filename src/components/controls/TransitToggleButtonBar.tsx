@@ -1,6 +1,6 @@
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
-import {SidebarStore} from '../stores/sidebarStore'
+import {SidebarStore} from '../../stores/sidebarStore'
 import TransitToggleButton from './TransitToggleButton'
 
 interface ITransitToggleButtonBarState {

@@ -1,10 +1,10 @@
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
-import {SidebarStore} from '../stores/sidebarStore'
-import lineHelper from '../util/lineHelper'
+import {SidebarStore} from '../../stores/sidebarStore'
+import lineHelper from '../../util/lineHelper'
+import ToggleButton from '../controls/ToggleButton'
+import TransitToggleButtonBar from '../controls/TransitToggleButtonBar'
 import './EditableLines.css'
-import ToggleButton from './ToggleButton'
-import TransitToggleButtonBar from './TransitToggleButtonBar'
 
 interface IEditableLinesState {
   type: string

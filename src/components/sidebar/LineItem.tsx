@@ -1,7 +1,7 @@
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
-import {SidebarStore} from '../stores/sidebarStore'
-import lineHelper from '../util/lineHelper'
+import {SidebarStore} from '../../stores/sidebarStore'
+import lineHelper from '../../util/lineHelper'
 
 interface ILineItemState {
   type: string

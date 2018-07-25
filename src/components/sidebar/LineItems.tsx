@@ -2,8 +2,8 @@ import gql from 'graphql-tag'
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
 import { Query } from 'react-apollo'
-import {SidebarStore} from '../stores/sidebarStore'
-import lineHelper from '../util/lineHelper'
+import {SidebarStore} from '../../stores/sidebarStore'
+import lineHelper from '../../util/lineHelper'
 import LineItem from './LineItem'
 
 interface ILineItemsProps {

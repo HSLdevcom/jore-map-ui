@@ -1,8 +1,8 @@
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
-import {SidebarStore} from '../stores/sidebarStore'
+import {SidebarStore} from '../../stores/sidebarStore'
+import TransitToggleButtonBar from '../controls/TransitToggleButtonBar'
 import LineItems from './LineItems'
-import TransitToggleButtonBar from './TransitToggleButtonBar'
 
 interface ILineSearchProps {
   sidebarStore?: SidebarStore

@@ -1,4 +1,4 @@
-@value busBlue, ferryBlue, tramGreen, trainPurple, subwayOrange from './common.css';
+@value busBlue, ferryBlue, tramGreen, trainPurple, subwayOrange from '../common.css';
 
 
 .switch {

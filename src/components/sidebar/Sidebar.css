@@ -1,4 +1,4 @@
-@value backgroundLightGray, busBlue, tramGreen, subwayOrange, ferryBlue, trainPurple, hslFont from './common.css';
+@value backgroundLightGray, busBlue, tramGreen, subwayOrange, ferryBlue, trainPurple, hslFont from '../common.css';
 
 
 .sidebar-container {

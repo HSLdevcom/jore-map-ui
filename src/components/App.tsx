@@ -4,9 +4,9 @@ import * as React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import {SidebarStore} from '../stores/sidebarStore'
 import './App.css'
-import LoginModal from './LoginModal'
-import Map from './Map'
-import Sidebar from './Sidebar'
+import LoginModal from './login/LoginModal'
+import Map from './map/Map'
+import Sidebar from './sidebar/Sidebar'
 const rootPath: string = '/'
 
 
