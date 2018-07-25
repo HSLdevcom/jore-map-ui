@@ -2,6 +2,8 @@ import * as React from 'react'
 import './LoginButton.css'
 
 interface ILoginButtonProps {
+  className: string
+  show: boolean
   handleLoginModal(event: any): void
 }
 
@@ -10,14 +12,14 @@ class LoginButton extends React.Component<ILoginButtonProps, {}> {
     super(props)
   }
 
-
   public render(): any {
     return (
-      <button
-        onClick={this.props.handleLoginModal}
-        className='login-button'>
+      <span
+        className={this.props.className}
+        hidden={this.props.show}
+        onClick={this.props.handleLoginModal}>
         Kirjaudu
-      </button>
+      </span>
     )
   }
 }

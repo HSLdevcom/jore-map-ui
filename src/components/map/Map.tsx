@@ -3,9 +3,9 @@ import {LatLng} from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
-import fullScreenEnterIcon from '../icons/icon-fullscreen-enter.svg'
-import fullScreenExitIcon from '../icons/icon-fullscreen-exit.svg'
-import {MapStore} from '../stores/mapStore'
+import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg'
+import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg'
+import {MapStore} from '../../stores/mapStore'
 import './Map.css'
 
 
