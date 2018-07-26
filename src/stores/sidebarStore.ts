@@ -7,7 +7,7 @@ export class SidebarStore {
   @observable private _selectedLines: ISelectedLine[]
 
   constructor() {
-    this._selectedLines = new Array<ISelectedLine>()
+    this._selectedLines = []
   }
 
   @computed get selectedLines(): ISelectedLine[] {
@@ -25,7 +25,7 @@ export class SidebarStore {
 
   @action
   public removeSelectedLines() {
-    this._selectedLines = new Array<ISelectedLine>()
+    this._selectedLines = []
   }
 
   @action

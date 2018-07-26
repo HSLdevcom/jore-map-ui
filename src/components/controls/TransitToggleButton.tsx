@@ -27,9 +27,8 @@ class TransitToggleButton extends React.Component<ITransitToggleButtonProps, ITr
   public toggleClass = () => {
     if (this.props.toggled) {
       return 'transit-toggle ' + this.state.type
-    } else {
-      return 'transit-toggle toggled'
     }
+    return 'transit-toggle toggled'
   }
 
   public render(): any {
