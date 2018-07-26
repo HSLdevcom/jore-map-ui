@@ -56,7 +56,7 @@ class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarPro
           filters.push(key)
         }
       }
-      this.props.sidebarStore!.setFilters(filters)
+      this.props.sidebarStore!.filters = filters
     }
 
 

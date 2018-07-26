@@ -18,6 +18,10 @@ export class SidebarStore {
     return this._filters
   }
 
+  set filters(filters: string[]) {
+    this._filters = filters
+  }
+
   @action
   public addSelectedLine(node: ISelectedLine) {
     this._selectedLines.push(node)
@@ -28,10 +32,6 @@ export class SidebarStore {
     this._selectedLines = []
   }
 
-  @action
-  public setFilters(filters: string[]) {
-    this._filters = filters
-  }
 }
 
 const observableSidebarStore = new SidebarStore()
