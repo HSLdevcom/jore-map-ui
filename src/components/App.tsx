@@ -1,5 +1,4 @@
 import {inject, observer} from 'mobx-react'
-import DevTools from 'mobx-react-devtools'
 import * as React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import {LoginStore} from '../stores/loginStore'
@@ -24,7 +23,6 @@ class App extends React.Component<IAppProps> {
     return (
       <Router>
         <div className={'app-container'}>
-          <DevTools />
           <Map/>
           <OpenLoginFormButton/>
           { this.props.loginStore!.showLogin &&
