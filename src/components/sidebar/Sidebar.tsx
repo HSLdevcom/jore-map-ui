@@ -1,7 +1,7 @@
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
 import {SidebarStore} from '../../stores/sidebarStore'
-import EditableLines from './EditableLines'
+import LineEditView from './LineEditView'
 import LineSearch from './LineSearch'
 import './Sidebar.css'
 
@@ -40,7 +40,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             <LineSearch />
           }
           {this.props.sidebarStore!.selectedLines.length > 0 &&
-            <EditableLines nodes={this.props.sidebarStore!.selectedLines} />
+            <LineEditView nodes={this.props.sidebarStore!.selectedLines} />
           }
 
         </div>

@@ -4,20 +4,20 @@ import {SidebarStore} from '../../stores/sidebarStore'
 import lineHelper from '../../util/lineHelper'
 import ToggleButton from '../controls/ToggleButton'
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar'
-import './EditableLines.css'
+import './LineEditView.css'
 
-interface IEditableLinesState {
+interface ILineEditViewState {
   type: string
 }
 
-interface IEditableLinesProps {
+interface ILineEditViewProps {
   sidebarStore?: SidebarStore
   nodes: any[]
 }
 
 @inject('sidebarStore')
 @observer
-class EditableLines extends React.Component<IEditableLinesProps, IEditableLinesState> {
+class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewState> {
 
     public render(): any {
       return (
@@ -90,4 +90,4 @@ class EditableLines extends React.Component<IEditableLinesProps, IEditableLinesS
     }
 }
 
-export default EditableLines
+export default LineEditView
