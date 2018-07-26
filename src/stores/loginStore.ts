@@ -1,4 +1,4 @@
-import { observable } from 'mobx'
+import { computed, observable } from 'mobx'
 
 export class LoginStore {
     @observable private _showLogin: boolean
@@ -7,6 +7,7 @@ export class LoginStore {
       this._showLogin = false
     }
 
+    @computed
     get showLogin(): boolean {
         return this._showLogin
     }
