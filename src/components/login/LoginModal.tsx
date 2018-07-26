@@ -1,7 +1,12 @@
 import * as React from 'react'
+import {LoginStore} from '../../stores/loginStore'
 import './LoginModal.css'
 
-class LoginModal extends React.Component {
+interface ILoginModalProps {
+  loginStore?: LoginStore
+}
+
+class LoginModal extends React.Component<ILoginModalProps> {
 
   // TODO Login logic here
   public handleUserNameOnChange = (event: any) => {
@@ -11,6 +16,10 @@ class LoginModal extends React.Component {
   // TODO Login logic here
   public handlePasswordOnChange = (event: any) => {
     global.console.log(event.target.value)
+  }
+
+  public closeLoginModal = () => {
+    this.props.loginStore!.showLogin = false
   }
 
   public render(): any {
@@ -30,7 +39,8 @@ class LoginModal extends React.Component {
               </form>
             <div className='modal-button-bar'>
               <button
-                className='modal-cancel-button'>
+                className='modal-cancel-button'
+                onClick={this.closeLoginModal}>
                 Peruuta
               </button>
               <div className='button-divider'/>
