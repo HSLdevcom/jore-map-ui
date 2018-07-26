@@ -1,4 +1,4 @@
-import {inject, observer} from 'mobx-react'
+import {inject} from 'mobx-react'
 import * as React from 'react'
 import {SidebarStore} from '../../stores/sidebarStore'
 import lineHelper from '../../util/lineHelper'
@@ -15,7 +15,6 @@ interface ILineItemProps {
 }
 
 @inject('sidebarStore')
-@observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     public handleLineSelected = () => {
