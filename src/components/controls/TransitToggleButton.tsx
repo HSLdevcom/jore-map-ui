@@ -24,17 +24,10 @@ class TransitToggleButton extends React.Component<ITransitToggleButtonProps, ITr
     this.props.toggleActivity(this.state.type)
   }
 
-  public toggleClass = () => {
-    if (this.props.toggled) {
-      return 'transit-toggle ' + this.state.type
-    }
-    return 'transit-toggle toggled'
-  }
-
   public render(): any {
     return (
       <button
-        className={this.toggleClass()}
+        className={`transit-toggle ${this.props.toggled ? this.state.type : 'toggled'}`}
         onClick={this.toggleActivity}
       >
         {lineHelper.getTransitIcon(this.state.type, true)}
