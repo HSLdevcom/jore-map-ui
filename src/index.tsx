@@ -1,6 +1,7 @@
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
+import {configure} from 'mobx'
 import {Provider} from 'mobx-react'
 import * as React from 'react'
 import { ApolloProvider } from 'react-apollo'
@@ -10,6 +11,8 @@ import './index.css'
 import observableLoginStore from './stores/loginStore'
 import observableMapStore from './stores/mapStore'
 import observableSidebarStore from './stores/sidebarStore'
+
+configure({enforceActions: 'strict'})
 
 const cache = new InMemoryCache()
 
