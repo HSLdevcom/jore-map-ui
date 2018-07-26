@@ -24,9 +24,9 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
     }
   }
 
-  public handleSearchInputChange = (event: any) => {
+  public handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
     this.setState({
-      searchInput: event.target.value
+      searchInput: event.currentTarget.value
     })
   }
 

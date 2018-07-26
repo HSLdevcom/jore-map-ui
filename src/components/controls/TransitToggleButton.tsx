@@ -5,7 +5,7 @@ import './TransitToggleButton.css'
 interface ITransitToggleButtonProps {
   type: string
   toggled: boolean
-  toggleActivity(event: any): void
+  toggleActivity(event: string): void
 }
 
 interface ITransitToggleButtonState {

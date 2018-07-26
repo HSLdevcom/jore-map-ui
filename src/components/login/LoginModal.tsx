@@ -12,13 +12,13 @@ interface ILoginModalProps {
 class LoginModal extends React.Component<ILoginModalProps> {
 
   // TODO Login logic here
-  public handleUserNameOnChange = (event: any) => {
-    global.console.log(event.target.value)
+  public handleUserNameOnChange = (event: React.FormEvent<HTMLInputElement>) => {
+    global.console.log(event.currentTarget.value)
   }
 
   // TODO Login logic here
-  public handlePasswordOnChange = (event: any) => {
-    global.console.log(event.target.value)
+  public handlePasswordOnChange = (event: React.FormEvent<HTMLInputElement>) => {
+    global.console.log(event.currentTarget.value)
   }
 
   public closeLoginModal = () => {
