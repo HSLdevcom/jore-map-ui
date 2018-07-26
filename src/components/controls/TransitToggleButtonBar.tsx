@@ -63,11 +63,11 @@ class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarPro
     public render(): any {
         return (
           <div className='transit-toggle-container'>
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.bus} type='bus' />
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.tram} type='tram' />
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.train} type='train' />
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.subway} type='subway' />
-            <TransitToggleButton handleToggle={this.handleToggle} toggled={this.state.toggles.ferry} type='ferry' />
+            <TransitToggleButton toggleActivity={this.handleToggle} toggled={this.state.toggles.bus} type='bus' />
+            <TransitToggleButton toggleActivity={this.handleToggle} toggled={this.state.toggles.tram} type='tram' />
+            <TransitToggleButton toggleActivity={this.handleToggle} toggled={this.state.toggles.train} type='train' />
+            <TransitToggleButton toggleActivity={this.handleToggle} toggled={this.state.toggles.subway} type='subway' />
+            <TransitToggleButton toggleActivity={this.handleToggle} toggled={this.state.toggles.ferry} type='ferry' />
           </div>
         )
     }
