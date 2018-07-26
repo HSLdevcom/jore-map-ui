@@ -19,7 +19,7 @@ interface ILineItemProps {
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     public selectLine = () => {
-      this.props.sidebarStore!.setSelectedLine({
+      this.props.sidebarStore!.addSelectedLine({
         lintunnus: this.props.lineNumber,
         linverkko: this.props.transitCode,
         reitunnus: this.props.description

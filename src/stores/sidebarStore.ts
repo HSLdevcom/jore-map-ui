@@ -19,7 +19,7 @@ export class SidebarStore {
   }
 
   @action
-  public setSelectedLine(node: ISelectedLine) {
+  public addSelectedLine(node: ISelectedLine) {
     this._selectedLines.push(node)
   }
 
