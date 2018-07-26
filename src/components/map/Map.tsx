@@ -1,5 +1,4 @@
 import * as L from 'leaflet'
-import {LatLng} from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import {inject, observer} from 'mobx-react'
 import * as React from 'react'
@@ -17,7 +16,7 @@ interface IMapProps {
 @observer
 class Map extends React.Component<IMapProps> {
     private map: L.Map
-    private lastCenter: LatLng
+    private lastCenter: L.LatLng
 
     constructor(props: any) {
         super(props)
@@ -84,7 +83,7 @@ class Map extends React.Component<IMapProps> {
     private updateMap = () => {
         if (!this.lastCenter.equals(this.props.mapStore!.coordinates)) {
             this.map.flyTo(this.props.mapStore!.coordinates)
-            this.lastCenter = new LatLng(this.props.mapStore!.coordinates.lat, this.props.mapStore!.coordinates.lng)
+            this.lastCenter = new L.LatLng(this.props.mapStore!.coordinates.lat, this.props.mapStore!.coordinates.lng)
         }
     }
 }

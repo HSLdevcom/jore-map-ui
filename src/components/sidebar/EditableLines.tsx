@@ -23,7 +23,6 @@ class EditableLines extends React.Component<IEditableLinesProps, IEditableLinesS
       return (
         <span className='editable-line-wrapper'>
           {this.props.nodes.map((node: any) => {
-            global.console.log(node.lintunnus)
               const transitType = lineHelper.convertTransitTypeCodeToTransitType(node.linverkko)
               return (
                 <div className='editable-line' key={node.lintunnus}>
