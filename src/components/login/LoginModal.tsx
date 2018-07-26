@@ -1,19 +1,7 @@
 import * as React from 'react'
 import './LoginModal.css'
 
-interface ILoginModalProps {
-  handleModalLoginButton(event: any): void
-}
-
-interface ILoginModalState {
-  username: string,
-  password: string
-}
-
-class LoginModal extends React.Component<ILoginModalProps, ILoginModalState> {
-  constructor(props: ILoginModalProps) {
-    super(props)
-  }
+class LoginModal extends React.Component {
 
   // TODO Login logic here
   public handleUserNameOnChange = (event: any) => {
@@ -42,13 +30,11 @@ class LoginModal extends React.Component<ILoginModalProps, ILoginModalState> {
               </form>
             <div className='modal-button-bar'>
               <button
-                onClick={this.props.handleModalLoginButton}
                 className='modal-cancel-button'>
                 Peruuta
               </button>
               <div className='button-divider'/>
               <button
-                onClick={this.props.handleModalLoginButton}
                 className='modal-login-button'>
                 Kirjaudu
               </button>

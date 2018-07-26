@@ -2,47 +2,35 @@ import {inject, observer} from 'mobx-react'
 import DevTools from 'mobx-react-devtools'
 import * as React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
+import {LoginStore} from '../stores/loginStore'
 import {SidebarStore} from '../stores/sidebarStore'
 import './App.css'
+import OpenLoginFormButton from './controls/OpenLoginFormButton'
 import LoginModal from './login/LoginModal'
 import Map from './map/Map'
 import Sidebar from './sidebar/Sidebar'
 const rootPath: string = '/'
 
-
-interface IAppState {
-  showLogin: boolean
-}
-
 interface IAppProps {
-  sidebarStore?: SidebarStore
+  sidebarStore?: SidebarStore,
+  loginStore?: LoginStore
 }
 
+@inject('loginStore')
 @inject('sidebarStore')
 @observer
-class App extends React.Component<IAppProps, IAppState> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      showLogin: false
-    }
-  }
-
-  public handleModalLoginButton = () => {
-    const show = !this.state.showLogin
-    this.setState({
-      showLogin: show
-    })
-  }
-
+class App extends React.Component<IAppProps> {
   public render(): any {
     return (
       <Router>
         <div className={'app-container'}>
           <DevTools />
           <Map/>
-          {this.state.showLogin && <LoginModal handleModalLoginButton={this.handleModalLoginButton}/>}
-          <Sidebar showLogin={this.state.showLogin} handleModalLoginButton={this.handleModalLoginButton}/>
+          <OpenLoginFormButton/>
+          { this.props.loginStore!.showLogin &&
+              <LoginModal />
+          }
+          <Sidebar />
           <Route exact={true} path='/' rootPath={rootPath}/>
         </div>
       </Router>

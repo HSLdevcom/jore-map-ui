@@ -6,8 +6,6 @@ import LineItems from './LineItems'
 
 interface ILineSearchProps {
   sidebarStore?: SidebarStore
-  showLogin: boolean
-  handleModalLoginButton(event: any): void
 }
 
 interface ILineSearchState {
