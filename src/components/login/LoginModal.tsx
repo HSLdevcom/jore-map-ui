@@ -5,12 +5,7 @@ interface ILoginModalProps {
   handleModalLoginButton(event: any): void
 }
 
-interface ILoginModalState {
-  username: string,
-  password: string
-}
-
-class LoginModal extends React.Component<ILoginModalProps, ILoginModalState> {
+class LoginModal extends React.Component<ILoginModalProps> {
   constructor(props: ILoginModalProps) {
     super(props)
   }
