@@ -1,3 +1,4 @@
+import { inject, observer } from 'mobx-react'
 import * as React from 'react'
 import {LoginStore} from '../../stores/loginStore'
 import './LoginModal.css'
@@ -6,6 +7,8 @@ interface ILoginModalProps {
   loginStore?: LoginStore
 }
 
+@inject('loginStore')
+@observer
 class LoginModal extends React.Component<ILoginModalProps> {
 
   // TODO Login logic here
