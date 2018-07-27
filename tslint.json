@@ -9,6 +9,7 @@
   "rules": {
     "ter-indent": [true, 4],
     "no-trailing-whitespace": true,
+    "jsx-no-multiline-js": false,
     "no-console": {
       "severity": "warning"
     },
