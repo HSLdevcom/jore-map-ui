@@ -1,7 +1,7 @@
-import ICoordinate from './ICoordinate'
-import ISelectedLine from './ISelectedLine'
+import ICoordinate from './ICoordinate';
+import ISelectedLine from './ISelectedLine';
 
 export {
     ICoordinate,
-    ISelectedLine
-}
+    ISelectedLine,
+};

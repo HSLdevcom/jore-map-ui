@@ -1,39 +1,40 @@
-import * as React from 'react'
-import lineHelper from '../../util/lineHelper'
-import './TransitToggleButton.css'
+import * as React from 'react';
+import lineHelper from '../../util/lineHelper';
+import './TransitToggleButton.css';
 
 interface ITransitToggleButtonProps {
-  type: string
-  toggled: boolean
-  toggleActivity(event: string): void
+    type: string;
+    toggled: boolean;
+    toggleActivity(event: string): void;
 }
 
 interface ITransitToggleButtonState {
-  type: string
+    type: string;
 }
 
-class TransitToggleButton extends React.Component<ITransitToggleButtonProps, ITransitToggleButtonState> {
-  constructor(props: ITransitToggleButtonProps) {
-    super(props)
-    this.state = {
-      type: this.props.type
+class TransitToggleButton extends React.Component
+  <ITransitToggleButtonProps, ITransitToggleButtonState> {
+    constructor(props: ITransitToggleButtonProps) {
+        super(props);
+        this.state = {
+            type: this.props.type,
+        };
     }
-  }
 
-  public toggleActivity = () => {
-    this.props.toggleActivity(this.state.type)
-  }
+    public toggleActivity = () => {
+        this.props.toggleActivity(this.state.type);
+    }
 
-  public render(): any {
-    return (
+    public render(): any {
+        return (
       <button
         className={`transit-toggle ${this.props.toggled ? this.state.type : 'toggled'}`}
         onClick={this.toggleActivity}
       >
         {lineHelper.getTransitIcon(this.state.type, true)}
       </button>
-    )
-  }
+        );
+    }
 }
 
-export default TransitToggleButton
+export default TransitToggleButton;
