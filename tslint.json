@@ -1,5 +1,5 @@
 {
-  "extends": ["tslint-react", "tslint-config-airbnb", "tslint-config-prettier"],
+  "extends": ["tslint-react", "tslint-eslint-rules", "tslint-config-airbnb"],
   "linterOptions": {
     "exclude": [
       "config/**/*.js",
@@ -7,13 +7,12 @@
     ]
   },
   "rules": {
-    "indent": [true, "spaces", 4],
+    "ter-indent": [true, 4],
     "no-trailing-whitespace": true,
     "no-console": {
       "severity": "warning"
     },
     "quotemark": [true, "single", "avoid-escape"],
-    "semicolon": [true, "never"],
     "import-name": false,
     "variable-name": [
       true,
