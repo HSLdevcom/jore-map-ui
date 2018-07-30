@@ -5,7 +5,7 @@ import './TransitToggleButton.css';
 interface ITransitToggleButtonProps {
     type: string;
     toggled: boolean;
-    handleToggle(event: any): void;
+    toggleActivity(event: string): void;
 }
 
 interface ITransitToggleButtonState {
@@ -21,22 +21,15 @@ class TransitToggleButton extends React.Component
         };
     }
 
-    public handleClick = () => {
-        this.props.handleToggle(this.state.type);
-    }
-
-    public toggleClass = () => {
-        if (this.props.toggled) {
-            return 'transit-toggle ' + this.state.type;
-        }
-        return 'transit-toggle toggled';
+    public toggleActivity = () => {
+        this.props.toggleActivity(this.state.type);
     }
 
     public render(): any {
         return (
       <button
-        className={this.toggleClass()}
-        onClick={this.handleClick}
+        className={`transit-toggle ${this.props.toggled ? this.state.type : 'toggled'}`}
+        onClick={this.toggleActivity}
       >
         {lineHelper.getTransitIcon(this.state.type, true)}
       </button>

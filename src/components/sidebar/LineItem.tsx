@@ -17,9 +17,8 @@ interface ILineItemProps {
 @inject('sidebarStore')
 @observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
-
-    public handleLineSelected = () => {
-        this.props.sidebarStore!.setSelectedLine({
+    public selectLine = () => {
+        this.props.sidebarStore!.addSelectedLine({
             lintunnus: this.props.lineNumber,
             linverkko: this.props.transitCode,
             reitunnus: this.props.description,
@@ -28,13 +27,13 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     public render(): any {
         return (
-            <span onClick={this.handleLineSelected} className={'line-wrapper'}>
-                {lineHelper.getTransitIcon(
-                    lineHelper.convertTransitTypeCodeToTransitType(this.props.transitCode), false)}
-                <span className={'line-number-' + this.props.transitCode}>
-                    {lineHelper.parseLineNumber(this.props.lineNumber)}
-                </span>
-                {this.props.description}
+            <span onClick={this.selectLine} className={'line-wrapper'}>
+              {lineHelper.getTransitIcon(
+                  lineHelper.convertTransitTypeCodeToTransitType(this.props.transitCode), false)}
+              <span className={'line-number-' + this.props.transitCode}>
+                  {lineHelper.parseLineNumber(this.props.lineNumber)}
+              </span>
+              {this.props.description}
             </span>
         );
     }

@@ -57,34 +57,34 @@ class TransitToggleButtonBar extends React.Component
                 filters.push(key);
             }
         }
-        this.props.sidebarStore!.setFilters(filters);
+        this.props.sidebarStore!.filters = filters;
     }
 
     public render(): any {
         return (
           <div className='transit-toggle-container'>
             <TransitToggleButton
-              handleToggle={this.handleToggle}
+              toggleActivity={this.handleToggle}
               toggled={this.state.toggles.bus}
               type='bus'
             />
             <TransitToggleButton
-              handleToggle={this.handleToggle}
+              toggleActivity={this.handleToggle}
               toggled={this.state.toggles.tram}
               type='tram'
             />
             <TransitToggleButton
-              handleToggle={this.handleToggle}
+              toggleActivity={this.handleToggle}
               toggled={this.state.toggles.train}
               type='train'
             />
             <TransitToggleButton
-              handleToggle={this.handleToggle}
+              toggleActivity={this.handleToggle}
               toggled={this.state.toggles.subway}
               type='subway'
             />
             <TransitToggleButton
-              handleToggle={this.handleToggle}
+              toggleActivity={this.handleToggle}
               toggled={this.state.toggles.ferry}
               type='ferry'
             />

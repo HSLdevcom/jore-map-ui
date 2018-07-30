@@ -1,15 +1,12 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { SidebarStore } from '../../stores/sidebarStore';
-import LoginButton from '../controls/LoginButton';
-import EditableLines from './EditableLines';
+import LineEditView from './LineEditView';
 import LineSearch from './LineSearch';
 import './Sidebar.css';
 
 interface ISidebarProps {
     sidebarStore?: SidebarStore;
-    showLogin: boolean;
-    handleModalLoginButton(event: any): void;
 }
 
 interface ILinelistState {
@@ -39,19 +36,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
               </div>
             </div>
             <div className='sidebar-content'>
-              <LoginButton
-                  className='login-button-sidebar'
-                  show={this.props.showLogin}
-                  handleLoginModal={this.props.handleModalLoginButton}
-              />
               { this.props.sidebarStore!.selectedLines.length < 1 &&
-                <LineSearch
-                  showLogin={this.props.showLogin}
-                  handleModalLoginButton={this.props.handleModalLoginButton}
-                />
+                <LineSearch />
               }
               {this.props.sidebarStore!.selectedLines.length > 0 &&
-                <EditableLines nodes={this.props.sidebarStore!.selectedLines} />
+                <LineEditView nodes={this.props.sidebarStore!.selectedLines} />
               }
             </div>
           </div>

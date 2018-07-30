@@ -1,23 +1,27 @@
+import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { LoginStore } from '../../stores/loginStore';
 import './LoginModal.css';
 
 interface ILoginModalProps {
-    handleModalLoginButton(event: any): void;
+    loginStore?: LoginStore;
 }
 
+@inject('loginStore')
+@observer
 class LoginModal extends React.Component<ILoginModalProps> {
-    constructor(props: ILoginModalProps) {
-        super(props);
+    // TODO Login logic here
+    public handleUserNameOnChange = (event: React.FormEvent<HTMLInputElement>) => {
+        global.console.log(event.currentTarget.value);
     }
 
-  // TODO Login logic here
-    public handleUserNameOnChange = (event: any) => {
-        global.console.log(event.target.value);
+    // TODO Login logic here
+    public handlePasswordOnChange = (event: React.FormEvent<HTMLInputElement>) => {
+        global.console.log(event.currentTarget.value);
     }
 
-  // TODO Login logic here
-    public handlePasswordOnChange = (event: any) => {
-        global.console.log(event.target.value);
+    public closeLoginModal = () => {
+        this.props.loginStore!.showLogin = false;
     }
 
     public render(): any {
@@ -45,14 +49,13 @@ class LoginModal extends React.Component<ILoginModalProps> {
               </form>
             <div className='modal-button-bar'>
               <button
-                onClick={this.props.handleModalLoginButton}
                 className='modal-cancel-button'
+                onClick={this.closeLoginModal}
               >
                 Peruuta
               </button>
               <div className='button-divider'/>
               <button
-                onClick={this.props.handleModalLoginButton}
                 className='modal-login-button'
               >
                 Kirjaudu

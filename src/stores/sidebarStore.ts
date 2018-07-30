@@ -18,20 +18,20 @@ export class SidebarStore {
         return this._filters;
     }
 
+    set filters(filters: string[]) {
+        this._filters = filters;
+    }
+
     @action
-  public setSelectedLine(node: ISelectedLine) {
+    public addSelectedLine(node: ISelectedLine) {
         this._selectedLines.push(node);
     }
 
     @action
-  public removeSelectedLines() {
+    public removeSelectedLines() {
         this._selectedLines = [];
     }
 
-    @action
-  public setFilters(filters: string[]) {
-        this._filters = filters;
-    }
 }
 
 const observableSidebarStore = new SidebarStore();

@@ -6,8 +6,6 @@ import LineItems from './LineItems';
 
 interface ILineSearchProps {
     sidebarStore?: SidebarStore;
-    showLogin: boolean;
-    handleModalLoginButton(event: any): void;
 }
 
 interface ILineSearchState {
@@ -26,9 +24,9 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
         };
     }
 
-    public handleSearchInputChange = (event: any) => {
+    public handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         this.setState({
-            searchInput: event.target.value,
+            searchInput: event.currentTarget.value,
         });
     }
 
