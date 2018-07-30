@@ -7,7 +7,7 @@ RUN yarn install
 RUN yarn build
 RUN yarn add serve
 
-EXPOSE 8080
+EXPOSE 5000
 
 ENTRYPOINT ["yarn", "run"]
 CMD ["serve", "-s", "build"]

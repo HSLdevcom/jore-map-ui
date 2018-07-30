@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+/* tslint:disable */
 
 import * as React from 'react'
 

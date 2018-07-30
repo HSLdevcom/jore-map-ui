@@ -1,9 +1,9 @@
-import * as React from 'react'
+import * as React from 'react';
 
-import './ToggleButton.css'
+import './ToggleButton.css';
 
 interface IToggleButtonProps {
-  type: string
+    type: string;
 }
 
 class ToggleButton extends React.Component<IToggleButtonProps, {}> {
@@ -17,8 +17,8 @@ class ToggleButton extends React.Component<IToggleButtonProps, {}> {
                   />
               </label>
             </div>
-        )
+        );
     }
 }
 
-export default ToggleButton
+export default ToggleButton;

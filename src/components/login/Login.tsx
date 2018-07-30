@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 
 // import './Login.css';
 
@@ -8,8 +8,8 @@ class Login extends React.Component {
             <div>
                 Login!
             </div>
-        )
+        );
     }
 }
 
-export default Login
+export default Login;

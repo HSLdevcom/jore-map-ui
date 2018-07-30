@@ -1,39 +1,39 @@
-import {action, computed, observable} from 'mobx'
+import { action, computed, observable } from 'mobx';
 
-import {ISelectedLine} from '../models'
+import { ISelectedLine } from '../models';
 
 export class SidebarStore {
-  @observable private _filters: string[]
-  @observable private _selectedLines: ISelectedLine[]
+    @observable private _filters: string[];
+    @observable private _selectedLines: ISelectedLine[];
 
-  constructor() {
-    this._selectedLines = new Array<ISelectedLine>()
-  }
+    constructor() {
+        this._selectedLines = [];
+    }
 
-  @computed get selectedLines(): ISelectedLine[] {
-    return this._selectedLines
-  }
+    @computed get selectedLines(): ISelectedLine[] {
+        return this._selectedLines;
+    }
 
-  @computed get filters(): string[] {
-    return this._filters
-  }
+    @computed get filters(): string[] {
+        return this._filters;
+    }
 
-  @action
+    @action
   public setSelectedLine(node: ISelectedLine) {
-    this._selectedLines.push(node)
-  }
+        this._selectedLines.push(node);
+    }
 
-  @action
+    @action
   public removeSelectedLines() {
-    this._selectedLines = new Array<ISelectedLine>()
-  }
+        this._selectedLines = [];
+    }
 
-  @action
+    @action
   public setFilters(filters: string[]) {
-    this._filters = filters
-  }
+        this._filters = filters;
+    }
 }
 
-const observableSidebarStore = new SidebarStore()
+const observableSidebarStore = new SidebarStore();
 
-export default observableSidebarStore
+export default observableSidebarStore;
