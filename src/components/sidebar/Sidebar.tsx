@@ -4,7 +4,6 @@ import {SidebarStore} from '../../stores/sidebarStore'
 import LoginButton from '../controls/LoginButton'
 import EditableLines from './EditableLines'
 import LineSearch from './LineSearch'
-import './Sidebar.css'
 
 interface ISidebarProps {
   sidebarStore?: SidebarStore

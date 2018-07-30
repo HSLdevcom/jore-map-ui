@@ -8,6 +8,8 @@
 
 # development
 src/**/*.css
+/.sass-cache
+src/styles/css
 
 # production
 /build

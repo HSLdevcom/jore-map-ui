@@ -6,9 +6,9 @@ import * as React from 'react'
 import { ApolloProvider } from 'react-apollo'
 import * as ReactDOM from 'react-dom'
 import App from './components/App'
-import './index.css'
 import observableMapStore from './stores/mapStore'
 import observableSidebarStore from './stores/sidebarStore'
+import './styles/css/index.css'
 
 const cache = new InMemoryCache()
 

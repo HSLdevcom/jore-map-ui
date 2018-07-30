@@ -1,5 +1,4 @@
 import * as React from 'react'
-import './LoginModal.css'
 
 interface ILoginModalProps {
   handleModalLoginButton(event: any): void

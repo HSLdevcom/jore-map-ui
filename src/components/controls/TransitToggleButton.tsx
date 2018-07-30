@@ -1,6 +1,5 @@
 import * as React from 'react'
 import lineHelper from '../../util/lineHelper'
-import './TransitToggleButton.css'
 
 interface ITransitToggleButtonProps {
   type: string

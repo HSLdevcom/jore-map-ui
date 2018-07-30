@@ -1,7 +1,5 @@
 import * as React from 'react'
 
-import './ToggleButton.css'
-
 interface IToggleButtonProps {
   type: string
 }
