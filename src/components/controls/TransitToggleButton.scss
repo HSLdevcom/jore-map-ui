@@ -1,29 +1,39 @@
+@import '../common.scss';
+
 .transit-toggle-container > .transit-toggle {
   flex: 1;
   height: 40px;
   border: hidden;
   cursor: pointer;
-  transition: .5s; }
+  transition: .5s;
+}
 
 .transit-toggle-container > .transit-toggle.ferry {
-  background-color: #00b9e4;
+  background-color: $ferryBlue;
   border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px; }
+  border-bottom-right-radius: 5px;
+}
 
 .transit-toggle-container > .transit-toggle.bus {
-  background-color: #007ac9;
+  background-color: $busBlue;
   border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px; }
+  border-bottom-left-radius: 5px;
+
+}
 
 .transit-toggle-container > .transit-toggle.tram {
-  background-color: #00985f; }
+  background-color: $tramGreen;
+}
 
 .transit-toggle-container > .transit-toggle.train {
-  background-color: #8c4799; }
+  background-color: $trainPurple;
+}
 
 .transit-toggle-container > .transit-toggle.subway {
-  background-color: #ff6319; }
+  background-color: $subwayOrange;
+}
 
 .transit-toggle-container > .transit-toggle.toggled {
-  background-color: #575757;
-  transition: .5s; }
+  background-color: $darkGrey;
+  transition: .5s;
+}

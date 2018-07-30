@@ -1,52 +1,66 @@
+@import '../common.scss';
+
 .editable-line-wrapper {
-  padding: 10px; }
+  padding:10px;
+}
 
 .editable-line {
-  border-bottom: 1px solid #dedede;
-  padding-bottom: 20px; }
+  border-bottom: 1px solid $lightGrey;
+  padding-bottom: 20px;
+}
 
 .checkbox-container {
-  padding-top: 10px;
-  display: flex; }
+  padding-top:10px;
+  display:flex;
+
+}
 
 .editableLine-input-container {
   text-align: center;
-  border-top: 1px solid #dedede;
+  border-top:1px solid $lightGrey;
   padding-bottom: 20px;
-  padding-top: 20px; }
+  padding-top: 20px;
+}
 
 .editableLine-input-container-title {
-  font-size: 0.8rem;
+  font-size: $smallFontSize;
   font-weight: 900;
-  color: #898989;
+  color: $mediumGrey;
   letter-spacing: 0em;
   padding-bottom: 3px;
-  display: block; }
+  display:block;
+}
 
 .editableLine-input {
   width: 75%;
   height: 30px;
   padding: 3px;
-  border-radius: 5px; }
+  border-radius: 5px;
+}
 
 .direction-toggle-title {
-  display: inline-block;
-  padding-right: 5Vh; }
+  display:inline-block;
+  padding-right: 5Vh;
+}
+
 
 .direction-toggle {
   display: flex;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  padding-top: 20px; }
+  padding-top: 20px;
+}
 
 .editableLine-graph {
-  border-top: 1px solid #dedede;
+  border-top:1px solid $lightGrey;
   padding-bottom: 20px;
   padding-top: 20px;
-  text-align: center; }
+  text-align: center;
+}
 
 .container {
   display: list-item;
   padding-right: 11%;
-  padding-left: 11%; }
+  padding-left: 11%;
+}
