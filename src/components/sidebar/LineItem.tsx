@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { SidebarStore } from '../../stores/sidebarStore';
 import lineHelper from '../../util/lineHelper';
+import { ILine } from '../../models';
 
 interface ILineItemState {
     type: string;
@@ -9,31 +10,25 @@ interface ILineItemState {
 
 interface ILineItemProps {
     sidebarStore?: SidebarStore;
-    description: string;
-    lineNumber: string;
-    transitCode: string;
+    line: ILine;
 }
 
 @inject('sidebarStore')
 @observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     public selectLine = () => {
-        this.props.sidebarStore!.addSelectedLine({
-            lintunnus: this.props.lineNumber,
-            linverkko: this.props.transitCode,
-            reitunnus: this.props.description,
-        });
+        this.props.sidebarStore!.addSelectedLine(this.props.line);
     }
 
     public render(): any {
         return (
             <span onClick={this.selectLine} className={'line-wrapper'}>
               {lineHelper.getTransitIcon(
-                  lineHelper.convertTransitTypeCodeToTransitType(this.props.transitCode), false)}
-              <span className={'line-number-' + this.props.transitCode}>
-                  {lineHelper.parseLineNumber(this.props.lineNumber)}
+                  lineHelper.convertTransitTypeCodeToTransitType(this.props.line.lineLayer), false)}
+              <span className={'line-number-' + this.props.line.lineLayer}>
+                  {lineHelper.parseLineNumber(this.props.line.lineId)}
               </span>
-              {this.props.description}
+              {this.props.line.routeNumber}
             </span>
         );
     }

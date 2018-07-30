@@ -40,7 +40,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 <LineSearch />
               }
               {this.props.sidebarStore!.selectedLines.length > 0 &&
-                <LineEditView nodes={this.props.sidebarStore!.selectedLines} />
+                <LineEditView lines={this.props.sidebarStore!.selectedLines} />
               }
             </div>
           </div>

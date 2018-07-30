@@ -5,6 +5,7 @@ import lineHelper from '../../util/lineHelper';
 import ToggleButton from '../controls/ToggleButton';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import './LineEditView.css';
+import { ILine } from '../../models';
 
 interface ILineEditViewState {
     type: string;
@@ -12,7 +13,7 @@ interface ILineEditViewState {
 
 interface ILineEditViewProps {
     sidebarStore?: SidebarStore;
-    nodes: any[];
+    lines: ILine[];
 }
 
 @inject('sidebarStore')
@@ -22,16 +23,16 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
     public render(): any {
         return (
         <span className='editable-line-wrapper'>
-          {this.props.nodes.map((node: any) => {
-              const transitType = lineHelper.convertTransitTypeCodeToTransitType(node.linverkko);
+          {this.props.lines.map((node: ILine) => {
+              const transitType = lineHelper.convertTransitTypeCodeToTransitType(node.lineLayer);
               return (
-                <div className='editable-line' key={node.lintunnus}>
+                <div className='editable-line' key={node.lineId}>
                   <span className='line-wrapper'>
                     {lineHelper.getTransitIcon(transitType, false)}
-                    <span className={'line-number-' + node.linverkko}>
-                        {lineHelper.parseLineNumber(node.lintunnus)}
+                    <span className={'line-number-' + node.lineLayer}>
+                        {lineHelper.parseLineNumber(node.lineId)}
                     </span>
-                    {node.reitunnus}
+                    {node.routeNumber}
                   </span>
                   <div className='direction-toggle'>
                     <span className='direction-toggle-title'>suunta 1 </span>
