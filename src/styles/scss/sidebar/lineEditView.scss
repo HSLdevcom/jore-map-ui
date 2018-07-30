@@ -5,7 +5,7 @@
 }
 
 .editable-line {
-  border-bottom: 1px solid $lightGrey;
+  border-bottom:1px solid rgb(222,222,222);
   padding-bottom: 20px;
 }
 
@@ -17,15 +17,15 @@
 
 .editableLine-input-container {
   text-align: center;
-  border-top:1px solid $lightGrey;
+  border-top:1px solid rgb(222,222,222);
   padding-bottom: 20px;
   padding-top: 20px;
 }
 
 .editableLine-input-container-title {
-  font-size: $smallFontSize;
+  font-size: 0.8rem;
   font-weight: 900;
-  color: $mediumGrey;
+  color: rgb(137, 137, 137);
   letter-spacing: 0em;
   padding-bottom: 3px;
   display:block;
@@ -34,8 +34,10 @@
 .editableLine-input {
   width: 75%;
   height: 30px;
+  font-family: hslFont;
   padding: 3px;
   border-radius: 5px;
+  border: 1.5px solid rgb(189, 190, 191);
 }
 
 .direction-toggle-title {
@@ -53,7 +55,7 @@
 }
 
 .editableLine-graph {
-  border-top:1px solid $lightGrey;
+  border-top:1px solid rgb(222,222,222);
   padding-bottom: 20px;
   padding-top: 20px;
   text-align: center;

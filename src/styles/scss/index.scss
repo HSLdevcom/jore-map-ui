@@ -1,6 +1,7 @@
 @import './app.scss';
 @import './common.scss';
 
+@import './controls/openLoginFormButton.scss';
 @import './controls/loginButton.scss';
 @import './controls/toggleButton.scss';
 @import './controls/transitToggleButton.scss';
@@ -9,7 +10,7 @@
 
 @import './map/map.scss';
 
-@import './sidebar/editableLines.scss';
+@import './sidebar/lineEditView.scss';
 @import './sidebar/sidebar.scss';
 
 body {

@@ -1,0 +1,19 @@
+@import '../common.scss';
+
+.login-button {
+    bottom: 20px;
+    right: 20px;
+    position: fixed;
+    z-index: 10;
+    background-color: white;
+    padding: 5px;
+    border-color: #999;
+    border-style: solid;
+    border-radius: 4px;
+    border-width: 1px;
+    cursor: pointer;
+  }
+  
+  .login-button:hover {
+    background-color: #ececec;
+  }

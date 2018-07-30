@@ -3,11 +3,12 @@
 .sidebar-container {
   position: absolute;
   display:block;
+  top: 0px;
   bottom: 0px;
   left: 0px;
   font-size: $mediumFontSize;
   height: 100Vh;
-  margin: auto;
+  margin: 0;
   background-color: $backgroundlightGrey;
   z-index:9;
   overflow-y: auto;

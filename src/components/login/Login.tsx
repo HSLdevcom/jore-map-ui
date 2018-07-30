@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 
 class Login extends React.Component {
     public render(): any {
@@ -6,8 +6,8 @@ class Login extends React.Component {
             <div>
                 Login!
             </div>
-        )
+        );
     }
 }
 
-export default Login
+export default Login;

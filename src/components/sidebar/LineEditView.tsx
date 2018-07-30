@@ -1,34 +1,35 @@
-import {inject, observer} from 'mobx-react'
-import * as React from 'react'
-import {SidebarStore} from '../../stores/sidebarStore'
-import lineHelper from '../../util/lineHelper'
-import ToggleButton from '../controls/ToggleButton'
-import TransitToggleButtonBar from '../controls/TransitToggleButtonBar'
+import { inject, observer } from 'mobx-react';
+import * as React from 'react';
+import { SidebarStore } from '../../stores/sidebarStore';
+import lineHelper from '../../util/lineHelper';
+import ToggleButton from '../controls/ToggleButton';
+import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 
-interface IEditableLinesState {
-  type: string
+interface ILineEditViewState {
+    type: string;
 }
 
-interface IEditableLinesProps {
-  sidebarStore?: SidebarStore
-  nodes: any[]
+interface ILineEditViewProps {
+    sidebarStore?: SidebarStore;
+    nodes: any[];
 }
 
 @inject('sidebarStore')
 @observer
-class EditableLines extends React.Component<IEditableLinesProps, IEditableLinesState> {
+class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewState> {
 
     public render(): any {
-      return (
+        return (
         <span className='editable-line-wrapper'>
           {this.props.nodes.map((node: any) => {
-            global.console.log(node.lintunnus)
-              const transitType = lineHelper.convertTransitTypeCodeToTransitType(node.linverkko)
+              const transitType = lineHelper.convertTransitTypeCodeToTransitType(node.linverkko);
               return (
                 <div className='editable-line' key={node.lintunnus}>
                   <span className='line-wrapper'>
                     {lineHelper.getTransitIcon(transitType, false)}
-                    <span className={'line-number-'+node.linverkko}>{lineHelper.parseLineNumber(node.lintunnus)}</span>
+                    <span className={'line-number-' + node.linverkko}>
+                        {lineHelper.parseLineNumber(node.lintunnus)}
+                    </span>
                     {node.reitunnus}
                   </span>
                   <div className='direction-toggle'>
@@ -44,11 +45,13 @@ class EditableLines extends React.Component<IEditableLinesProps, IEditableLinesS
                     Kopioi reitti toiseen suuntaan
                   </div>
                 </div>
-              )
-            })
+              );
+          })
           }
           <div className='editableLine-input-container'>
-            <label className='editableLine-input-container-title'>HAE TOINEN LINJA TARKASTELUUN</label>
+            <label className='editableLine-input-container-title'>
+                HAE TOINEN LINJA TARKASTELUUN
+            </label>
             <input
               placeholder='Hae reitti'
               className='editableLine-input'
@@ -86,8 +89,8 @@ class EditableLines extends React.Component<IEditableLinesProps, IEditableLinesS
             </div>
           </div>
         </span>
-      )
+        );
     }
 }
 
-export default EditableLines
+export default LineEditView;
