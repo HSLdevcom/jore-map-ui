@@ -1,137 +1,135 @@
 @import '../common.scss';
-
 .sidebar-container {
-  position: absolute;
-  display:block;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  font-size: $mediumFontSize;
-  height: 100Vh;
-  margin: 0;
-  background-color: $backgroundlightGrey;
-  z-index:9;
-  overflow-y: auto;
-  min-width: 400px;
-  max-width: 400px;
+    position: absolute;
+    display: block;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    font-size: $mediumFontSize;
+    height: 100Vh;
+    margin: 0;
+    background-color: $backgroundlightGrey;
+    z-index: 9;
+    overflow-y: auto;
+    min-width: 400px;
+    max-width: 400px;
 }
 
 .sidebar-header {
-  display:block;
-  height: auto;
-  padding: 20px 20px 20px 20px;
-  background-color: $busBlue;
-  cursor: pointer;
+    display: block;
+    height: auto;
+    padding: 20px 20px 20px 20px;
+    background-color: $busBlue;
+    cursor: pointer;
 }
 
 .sidebar-header-container {
-  text-align: center;
-  display:table-cell;
-  vertical-align:middle;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .sidebar-title {
-  display:inline-block;
-  font-size: $largeFontSize;
-  -webkit-margin-before: 0.83em;
-  -webkit-margin-after: 0.83em;
-  -webkit-margin-start: 0px;
-  -webkit-margin-end: 0px;
-  color: #fff;
-  font-weight: normal;
-  vertical-align:middle;
-  padding-left: 10px;
+    display: inline-block;
+    font-size: $largeFontSize;
+    -webkit-margin-before: 0.83em;
+    -webkit-margin-after: 0.83em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    color: #fff;
+    font-weight: normal;
+    vertical-align: middle;
+    padding-left: 10px;
 }
 
 .sidebar-logo {
-  display:inline-block;
-  height: 40px;
-  text-align: center;
-  vertical-align:middle;
+    display: inline-block;
+    height: 40px;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .sidebar-content {
-  padding:10px;
+    padding: 10px;
 }
 
 .routes-label {
-  font-weight: 500;
+    font-weight: 500;
 }
 
 .input-container {
-  padding-top: 10px;
-  padding-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .input {
-  width:100%;
-  height: 28px;
-  text-indent: 4px;
-  border-radius: 5px;
+    width: 100%;
+    height: 28px;
+    text-indent: 4px;
+    border-radius: 5px;
 }
 
 .transit-toggle-container {
-  display: flex;
+    display: flex;
 }
 
 .routes-search-header {
-  width:75%;
+    width: 75%;
 }
 
 .line-wrapper {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-top: 5px;
-  cursor: pointer;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 5px;
+    cursor: pointer;
 }
 
 .line-number-1 {
-  color: $busBlue;
-  font-size: $largeFontSize;
-  font-weight: 600;
-  margin-right: 12px;
-  margin-left: 8px;
+    color: $busBlue;
+    font-size: $largeFontSize;
+    font-weight: 600;
+    margin-right: 12px;
+    margin-left: 8px;
 }
 
 .line-number-2 {
-  color: $subwayOrange;
-  font-size: $largeFontSize;
-  font-weight: 600;
-  margin-right: 12px;
-  margin-left: 8px;
+    color: $subwayOrange;
+    font-size: $largeFontSize;
+    font-weight: 600;
+    margin-right: 12px;
+    margin-left: 8px;
 }
 
 .line-number-3 {
-  color: $tramGreen;
-  font-size: $largeFontSize;
-  font-weight: 600;
-  margin-right: 12px;
-  margin-left: 8px;
+    color: $tramGreen;
+    font-size: $largeFontSize;
+    font-weight: 600;
+    margin-right: 12px;
+    margin-left: 8px;
 }
 
 .line-number-4 {
-  color: $trainPurple;
-  font-size: $largeFontSize;
-  font-weight: 600;
-  margin-right: 12px;
-  margin-left: 8px;
+    color: $trainPurple;
+    font-size: $largeFontSize;
+    font-weight: 600;
+    margin-right: 12px;
+    margin-left: 8px;
 }
 
 .line-number-7 {
-  color: $ferryBlue;
-  font-size: $largeFontSize;
-  font-weight: 600;
-  margin-right: 12px;
-  margin-left: 8px;
+    color: $ferryBlue;
+    font-size: $largeFontSize;
+    font-weight: 600;
+    margin-right: 12px;
+    margin-left: 8px;
 }
 
-
 .line-icon {
-  flex-shrink: 0;
+    flex-shrink: 0;
 }

@@ -1,5 +1,4 @@
 @import '../common.scss';
-
 .switch {
     position: relative;
     display: inline-block;
@@ -8,7 +7,7 @@
 }
 
 .switch input {
-	display: none;
+    display: none;
 }
 
 .slider {
@@ -35,25 +34,26 @@
     border-radius: 50%;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     transform: translateX(26px);
 }
 
-input:checked + .bus {
+input:checked+.bus {
     background-color: $busBlue;
 }
 
-input:checked + .tram {
+input:checked+.tram {
     background-color: $tramGreen;
 }
 
-input:checked + .train {
+input:checked+.train {
     background-color: $trainPurple;
 }
 
-input:checked + .ferry {
+input:checked+.ferry {
     background-color: $ferryBlue;
 }
-input:checked + .subway {
+
+input:checked+.subway {
     background-color: $subwayOrange;
 }

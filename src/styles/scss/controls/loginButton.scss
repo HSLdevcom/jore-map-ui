@@ -1,18 +1,17 @@
 @import '../common.scss';
-
 .login-button-sidebar {
-  position: absolute;
-  display: inline-block;
-  right: 5px;
-  cursor: pointer;
-  font-weight: 400;
-  line-height: normal;
-  text-align: center;
-  font-size: $mediumFontSize;
-  color: $busBlue;
-  letter-spacing: -.025em;
-  margin: 0;
-  padding-right: 5px;
-  background-color: $backgroundlightGrey;
-  z-index:10;
+    position: absolute;
+    display: inline-block;
+    right: 5px;
+    cursor: pointer;
+    font-weight: 400;
+    line-height: normal;
+    text-align: center;
+    font-size: $mediumFontSize;
+    color: $busBlue;
+    letter-spacing: -.025em;
+    margin: 0;
+    padding-right: 5px;
+    background-color: $backgroundlightGrey;
+    z-index: 10;
 }
