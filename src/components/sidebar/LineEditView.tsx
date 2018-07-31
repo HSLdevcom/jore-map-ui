@@ -23,20 +23,19 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
     public render(): any {
         return (
         <span className='editable-line-wrapper'>
-          {this.props.lines.map((node: ILine) => {
-              const transitType = lineHelper.convertTransitTypeCodeToTransitType(node.lineLayer);
+          {this.props.lines.map((line: ILine) => {
               return (
-                <div className='editable-line' key={node.lineId}>
+                <div className='editable-line' key={line.lineId}>
                   <span className='line-wrapper'>
-                    {lineHelper.getTransitIcon(transitType, false)}
-                    <span className={'line-number-' + node.lineLayer}>
-                        {lineHelper.parseLineNumber(node.lineId)}
+                    {lineHelper.getTransitIcon(line.transitType, false)}
+                    <span className={'line-number-' + line.transitType}>
+                        {lineHelper.parseLineNumber(line.lineId)}
                     </span>
-                    {node.routeNumber}
+                    {line.routeNumber}
                   </span>
                   <div className='direction-toggle'>
                     <span className='direction-toggle-title'>suunta 1 </span>
-                    <ToggleButton type={transitType}/>
+                    <ToggleButton type={line.transitType}/>
                   </div>
                   <div className='checkbox-container'>
                     <input

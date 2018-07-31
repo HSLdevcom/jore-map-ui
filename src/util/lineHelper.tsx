@@ -4,6 +4,7 @@ import FerryIcon from '../icons/icon-ferry';
 import SubwayIcon from '../icons/icon-subway';
 import TrainIcon from '../icons/icon-train';
 import TramIcon from '../icons/icon-tram';
+import TransitType from '../enums/transitType';
 
 class LineHelper {
 
@@ -11,17 +12,17 @@ class LineHelper {
         return lineId.substring(1).replace(/^0+/, '');
     }
 
-    public static getTransitIcon = (linjoukkollaji: string, withoutBox: boolean) => {
+    public static getTransitIcon = (linjoukkollaji: TransitType, withoutBox: boolean) => {
         switch (linjoukkollaji) {
-        case 'bus':
+        case TransitType.BUS:
             return <BusIcon height={'24'} withoutBox={withoutBox}/>;
-        case 'subway':
+        case TransitType.SUBWAY:
             return <SubwayIcon height={'24'} withoutBox={withoutBox}/>;
-        case 'tram':
+        case TransitType.TRAM:
             return <TramIcon height={'24'} withoutBox={withoutBox}/>;
-        case 'train':
+        case TransitType.TRAIN:
             return <TrainIcon height={'24'} withoutBox={withoutBox}/>;
-        case 'ferry':
+        case TransitType.FERRY:
             return <FerryIcon height={'24'} withoutBox={withoutBox}/>;
         default:
             return <div>puuttuu</div>;
@@ -38,17 +39,17 @@ class LineHelper {
     public static convertTransitTypeCodeToTransitType = (type: string) => {
         switch (type) {
         case '1':
-            return 'bus';
+            return TransitType.BUS;
         case '2':
-            return 'subway';
+            return TransitType.SUBWAY;
         case '3':
-            return 'tram';
+            return TransitType.TRAM;
         case '4':
-            return 'train';
+            return TransitType.TRAIN;
         case '7':
-            return 'ferry';
+            return TransitType.FERRY;
         default:
-            return '-1';
+            return TransitType.NOT_FOUND;
         }
     }
 

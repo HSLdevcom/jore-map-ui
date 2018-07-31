@@ -1,10 +1,10 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { SidebarStore } from '../../stores/sidebarStore';
-import lineHelper from '../../util/lineHelper';
 import LineService from '../../services/lineService';
 import LineItem from './LineItem';
 import { ILine } from '../../models';
+import TransitType from '../../enums/transitType';
 
 interface ILineItemsProps {
     sidebarStore?: SidebarStore;
@@ -25,8 +25,7 @@ class LineItems extends React.Component<ILineItemsProps> {
             });
     }
 
-    public checkFilters = (description: string, lineNumber: string, transitTypeCode: string) => {
-        const transitType = lineHelper.convertTransitTypeCodeToTransitType(transitTypeCode);
+    public checkFilters = (description: string, lineNumber: string, transitType: TransitType) => {
         const searchTargetAttributes = description.toLowerCase() + lineNumber;
 
         if (this.props.filters.indexOf(transitType) !== -1) {
@@ -50,7 +49,7 @@ class LineItems extends React.Component<ILineItemsProps> {
                     allLines
                         .filter(line =>
                             this.checkFilters(
-                                line.routeNumber, line.lineNumber, line.lineLayer))
+                                line.routeNumber, line.lineNumber, line.transitType))
                         .map((line: ILine) => {
                             return (
                                 <LineItem

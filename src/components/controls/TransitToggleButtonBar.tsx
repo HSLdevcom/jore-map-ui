@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { SidebarStore } from '../../stores/sidebarStore';
 import TransitToggleButton from './TransitToggleButton';
+import TransitType from '../../enums/transitType';
 
 interface ITransitToggleButtonBarState {
     toggles: any;
@@ -42,7 +43,7 @@ class TransitToggleButtonBar extends React.Component
         });
     }
 
-    public handleToggle = (type: string) => {
+    public handleToggle = (type: TransitType) => {
         const value: boolean = !this.state.toggles[type];
         const toggleState: object = this.state.toggles;
         toggleState[type] = value;
@@ -66,27 +67,27 @@ class TransitToggleButtonBar extends React.Component
             <TransitToggleButton
               toggleActivity={this.handleToggle}
               toggled={this.state.toggles.bus}
-              type='bus'
+              type={TransitType.BUS}
             />
             <TransitToggleButton
               toggleActivity={this.handleToggle}
               toggled={this.state.toggles.tram}
-              type='tram'
+              type={TransitType.TRAM}
             />
             <TransitToggleButton
               toggleActivity={this.handleToggle}
               toggled={this.state.toggles.train}
-              type='train'
+              type={TransitType.TRAIN}
             />
             <TransitToggleButton
               toggleActivity={this.handleToggle}
               toggled={this.state.toggles.subway}
-              type='subway'
+              type={TransitType.SUBWAY}
             />
             <TransitToggleButton
               toggleActivity={this.handleToggle}
               toggled={this.state.toggles.ferry}
-              type='ferry'
+              type={TransitType.FERRY}
             />
           </div>
         );

@@ -1,15 +1,16 @@
 import * as React from 'react';
 import lineHelper from '../../util/lineHelper';
 import './TransitToggleButton.css';
+import TransitType from '../../enums/transitType';
 
 interface ITransitToggleButtonProps {
-    type: string;
+    type: TransitType;
     toggled: boolean;
-    toggleActivity(event: string): void;
+    toggleActivity(event: TransitType): void;
 }
 
 interface ITransitToggleButtonState {
-    type: string;
+    type: TransitType;
 }
 
 class TransitToggleButton extends React.Component

@@ -1,5 +1,7 @@
+import TransitType from '../enums/transitType';
+
 export default interface ILine {
-    lineLayer: string;
+    transitType: TransitType;
     description: string;
     lineNumber: string;
     lineId: string;
