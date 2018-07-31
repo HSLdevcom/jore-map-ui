@@ -25,7 +25,7 @@ class LineItems extends React.Component<ILineItemsProps> {
             });
     }
 
-    public checkFilters = (routeName: string, lineNumber: string, transitType: TransitType) => {
+    public filterLines = (routeName: string, lineNumber: string, transitType: TransitType) => {
         const searchTargetAttributes = routeName.toLowerCase() + lineNumber;
 
         if (this.props.filters.indexOf(transitType) !== -1) {
@@ -48,7 +48,7 @@ class LineItems extends React.Component<ILineItemsProps> {
                 {
                     allLines
                         .filter(line =>
-                            this.checkFilters(
+                            this.filterLines(
                                 line.routeName, line.lineNumber, line.transitType))
                         .map((line: ILine) => {
                             return (
