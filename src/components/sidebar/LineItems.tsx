@@ -21,6 +21,7 @@ class LineItems extends React.Component<ILineItemsProps> {
                 this.props.lineStore!.setAllLines(lines);
             })
             .catch((err: any) => {
+                // tslint:disable-next-line:no-console
                 console.log(err);
             });
     }
