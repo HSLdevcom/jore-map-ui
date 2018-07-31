@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { SidebarStore } from '../../stores/sidebarStore';
+import { LineStore } from '../../stores/lineStore';
 import lineHelper from '../../util/lineHelper';
 import ToggleButton from '../controls/ToggleButton';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
@@ -12,11 +12,11 @@ interface ILineEditViewState {
 }
 
 interface ILineEditViewProps {
-    sidebarStore?: SidebarStore;
+    lineStore?: LineStore;
     lines: ILine[];
 }
 
-@inject('sidebarStore')
+@inject('lineStore')
 @observer
 class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewState> {
 
@@ -31,7 +31,7 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
                     <span className={'line-number-' + line.transitType}>
                         {line.lineNumber}
                     </span>
-                    {line.routeNumber}
+                    {line.routeName}
                   </span>
                   <div className='direction-toggle'>
                     <span className='direction-toggle-title'>suunta 1 </span>
@@ -70,7 +70,7 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
           <div className='editableLine-graph'>
             <div className='container'>
             <label className='editableLine-input-container-title'>VERKKO</label>
-            <TransitToggleButtonBar filters={this.props.sidebarStore!.filters || []} />
+            <TransitToggleButtonBar filters={this.props.lineStore!.filters || []} />
             <div className='checkbox-container'>
               <input
                 type='checkbox'

@@ -32,11 +32,11 @@ export default class LineFactory {
 
     public static linjaToILine = (linja: any) => {
         const transitType = LineFactory.convertTransitTypeCodeToTransitType(linja.linverkko);
-        const routeNumber = LineFactory.getReiTunnus(linja.reittisByLintunnus.edges[0]);
+        const routeName = LineFactory.getReiTunnus(linja.reittisByLintunnus.edges[0]);
         const lineNumber = LineFactory.parseLineNumber(linja.lintunnus);
 
         return <ILine>{
-            routeNumber,
+            routeName,
             lineNumber,
             transitType,
             lineId: linja.lintunnus,

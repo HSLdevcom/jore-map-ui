@@ -1,19 +1,19 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { SidebarStore } from '../../stores/sidebarStore';
+import { LineStore } from '../../stores/lineStore';
 import LineEditView from './LineEditView';
 import LineSearch from './LineSearch';
 import './Sidebar.css';
 
 interface ISidebarProps {
-    sidebarStore?: SidebarStore;
+    lineStore?: LineStore;
 }
 
 interface ILinelistState {
     searchInput: string;
 }
 
-@inject('sidebarStore')
+@inject('lineStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     constructor(props: ISidebarProps) {
@@ -21,7 +21,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     }
 
     public handleHeaderClick = () => {
-        this.props.sidebarStore!.removeSelectedLines();
+        this.props.lineStore!.removeSelectedLines();
     }
 
     public render(): any {
@@ -36,11 +36,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
               </div>
             </div>
             <div className='sidebar-content'>
-              { this.props.sidebarStore!.selectedLines.length < 1 &&
+              { this.props.lineStore!.selectedLines.length < 1 &&
                 <LineSearch />
               }
-              {this.props.sidebarStore!.selectedLines.length > 0 &&
-                <LineEditView lines={this.props.sidebarStore!.selectedLines} />
+              {this.props.lineStore!.selectedLines.length > 0 &&
+                <LineEditView lines={this.props.lineStore!.selectedLines} />
               }
             </div>
           </div>

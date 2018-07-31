@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { SidebarStore } from '../../stores/sidebarStore';
+import { LineStore } from '../../stores/lineStore';
 import lineHelper from '../../util/lineHelper';
 import { ILine } from '../../models';
 
@@ -9,15 +9,15 @@ interface ILineItemState {
 }
 
 interface ILineItemProps {
-    sidebarStore?: SidebarStore;
+    lineStore?: LineStore;
     line: ILine;
 }
 
-@inject('sidebarStore')
+@inject('lineStore')
 @observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     public selectLine = () => {
-        this.props.sidebarStore!.addSelectedLine(this.props.line);
+        this.props.lineStore!.addSelectedLine(this.props.line);
     }
 
     public render(): any {
@@ -27,7 +27,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
               <span className={'line-number-' + this.props.line.transitType}>
                   {this.props.line.lineNumber}
               </span>
-              {this.props.line.routeNumber}
+              {this.props.line.routeName}
             </span>
         );
     }

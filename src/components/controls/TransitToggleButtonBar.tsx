@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { SidebarStore } from '../../stores/sidebarStore';
+import { LineStore } from '../../stores/lineStore';
 import TransitToggleButton from './TransitToggleButton';
 import TransitType from '../../enums/transitType';
 
@@ -9,11 +9,11 @@ interface ITransitToggleButtonBarState {
 }
 
 interface ITtransitToggleButtonBarProps {
-    sidebarStore?: SidebarStore;
+    lineStore?: LineStore;
     filters: string[];
 }
 
-@inject('sidebarStore')
+@inject('lineStore')
 @observer
 class TransitToggleButtonBar extends React.Component
   <ITtransitToggleButtonBarProps, ITransitToggleButtonBarState> {
@@ -58,7 +58,7 @@ class TransitToggleButtonBar extends React.Component
                 filters.push(key);
             }
         }
-        this.props.sidebarStore!.filters = filters;
+        this.props.lineStore!.filters = filters;
     }
 
     public render(): any {

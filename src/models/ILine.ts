@@ -5,5 +5,5 @@ export default interface ILine {
     description: string;
     lineNumber: string;
     lineId: string;
-    routeNumber: string;
+    routeName: string;
 }

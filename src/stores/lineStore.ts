@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { ILine } from '../models';
 
-export class SidebarStore {
+export class LineStore {
     @observable private _filters: string[];
     @observable private _selectedLines: ILine[];
     @observable private _allLines: ILine[];
@@ -43,6 +43,6 @@ export class SidebarStore {
     }
 }
 
-const observableSidebarStore = new SidebarStore();
+const observableLineStore = new LineStore();
 
-export default observableSidebarStore;
+export default observableLineStore;
