@@ -16,7 +16,7 @@ class Modal extends React.Component<IModalProps> {
     }
 
     public render(): any {
-        if (!this.props.isVisible) return '';
+        if (!this.props.isVisible) return (null);
 
         return (
         <div
