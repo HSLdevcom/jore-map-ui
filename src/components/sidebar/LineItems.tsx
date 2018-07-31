@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { SidebarStore } from '../../stores/sidebarStore';
 import lineHelper from '../../util/lineHelper';
+import LineService from '../../services/lineService';
 import LineItem from './LineItem';
 import { ILine } from '../../models';
 
@@ -15,7 +16,13 @@ interface ILineItemsProps {
 @observer
 class LineItems extends React.Component<ILineItemsProps> {
     componentDidMount() {
-        this.props.sidebarStore!.fetchAllLines();
+        LineService.getAllLines()
+            .then((lines: ILine[]) => {
+                this.props.sidebarStore!.setAllLines(lines);
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
     }
 
     public checkFilters = (description: string, lineNumber: string, transitTypeCode: string) => {
