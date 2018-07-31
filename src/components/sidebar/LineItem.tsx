@@ -25,7 +25,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
             <span onClick={this.selectLine} className={'line-wrapper'}>
               {lineHelper.getTransitIcon(this.props.line.transitType, false)}
               <span className={'line-number-' + this.props.line.transitType}>
-                  {lineHelper.parseLineNumber(this.props.line.lineId)}
+                  {this.props.line.lineNumber}
               </span>
               {this.props.line.routeNumber}
             </span>

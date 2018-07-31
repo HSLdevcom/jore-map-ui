@@ -29,7 +29,7 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
                   <span className='line-wrapper'>
                     {lineHelper.getTransitIcon(line.transitType, false)}
                     <span className={'line-number-' + line.transitType}>
-                        {lineHelper.parseLineNumber(line.lineId)}
+                        {line.lineNumber}
                     </span>
                     {line.routeNumber}
                   </span>
