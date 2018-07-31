@@ -94,7 +94,7 @@
   cursor: pointer;
 }
 
-.line-number-1 {
+.line-number-bus {
   color: busBlue;
   font-size: 24px;
   font-weight: 600;
@@ -102,7 +102,7 @@
   margin-left: 8px;
 }
 
-.line-number-2 {
+.line-number-subway {
   color: subwayOrange;
   font-size: 24px;
   font-weight: 600;
@@ -110,7 +110,7 @@
   margin-left: 8px;
 }
 
-.line-number-3 {
+.line-number-tram {
   color: tramGreen;
   font-size: 24px;
   font-weight: 600;
@@ -118,7 +118,7 @@
   margin-left: 8px;
 }
 
-.line-number-4 {
+.line-number-train {
   color: trainPurple;
   font-size: 24px;
   font-weight: 600;
@@ -126,7 +126,7 @@
   margin-left: 8px;
 }
 
-.line-number-7 {
+.line-number-ferry {
   color: ferryBlue;
   font-size: 24px;
   font-weight: 600;
