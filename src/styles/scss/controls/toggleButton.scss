@@ -1,6 +1,4 @@
-@value busBlue, ferryBlue, tramGreen, trainPurple, subwayOrange from '../common.css';
-
-
+@import '../common.scss';
 .switch {
     position: relative;
     display: inline-block;
@@ -9,7 +7,7 @@
 }
 
 .switch input {
-	display: none;
+    display: none;
 }
 
 .slider {
@@ -19,7 +17,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: lightGray;
+    background-color: $lightGrey;
     transition: .4s;
     border-radius: 30px;
 }
@@ -36,25 +34,26 @@
     border-radius: 50%;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     transform: translateX(26px);
 }
 
-input:checked + .bus {
-    background-color: busBlue;
+input:checked+.bus {
+    background-color: $busBlue;
 }
 
-input:checked + .tram {
-    background-color: tramGreen;
+input:checked+.tram {
+    background-color: $tramGreen;
 }
 
-input:checked + .train {
-    background-color: trainPurple;
+input:checked+.train {
+    background-color: $trainPurple;
 }
 
-input:checked + .ferry {
-    background-color: ferryBlue;
+input:checked+.ferry {
+    background-color: $ferryBlue;
 }
-input:checked + .subway {
-    background-color: subwayOrange;
+
+input:checked+.subway {
+    background-color: $subwayOrange;
 }

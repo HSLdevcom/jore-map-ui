@@ -3,7 +3,6 @@ import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
 import LineEditView from './LineEditView';
 import LineSearch from './LineSearch';
-import './Sidebar.css';
 
 interface ISidebarProps {
     lineStore?: LineStore;

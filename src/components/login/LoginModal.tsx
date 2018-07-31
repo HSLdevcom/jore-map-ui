@@ -1,7 +1,6 @@
-import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { inject, observer } from 'mobx-react';
 import { LoginStore } from '../../stores/loginStore';
-import './LoginModal.css';
 
 interface ILoginModalProps {
     loginStore?: LoginStore;

@@ -2,7 +2,6 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { LoginStore } from '../stores/loginStore';
-import './App.css';
 import OpenLoginFormButton from './controls/OpenLoginFormButton';
 import LoginModal from './login/LoginModal';
 import Map from './map/Map';

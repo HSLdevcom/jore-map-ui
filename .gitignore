@@ -6,6 +6,11 @@
 # testing
 /coverage
 
+# development
+src/**/*.css
+/.sass-cache
+src/styles/css
+
 # production
 /build
 
@@ -19,7 +24,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
 
 # IntelliJ
 .idea/

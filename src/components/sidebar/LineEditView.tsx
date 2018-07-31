@@ -4,7 +4,6 @@ import { LineStore } from '../../stores/lineStore';
 import lineHelper from '../../util/lineHelper';
 import ToggleButton from '../controls/ToggleButton';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
-import './LineEditView.css';
 import { ILine } from '../../models';
 
 interface ILineEditViewState {

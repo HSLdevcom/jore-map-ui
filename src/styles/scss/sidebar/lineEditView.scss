@@ -1,0 +1,65 @@
+@import '../common.scss';
+.editable-line-wrapper {
+    padding: 10px;
+}
+
+.editable-line {
+    border-bottom: 1px solid rgb(222, 222, 222);
+    padding-bottom: 20px;
+}
+
+.checkbox-container {
+    padding-top: 10px;
+    display: flex;
+}
+
+.editableLine-input-container {
+    text-align: center;
+    border-top: 1px solid rgb(222, 222, 222);
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.editableLine-input-container-title {
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: rgb(137, 137, 137);
+    letter-spacing: 0em;
+    padding-bottom: 3px;
+    display: block;
+}
+
+.editableLine-input {
+    width: 75%;
+    height: 30px;
+    font-family: hslFont;
+    padding: 3px;
+    border-radius: 5px;
+    border: 1.5px solid rgb(189, 190, 191);
+}
+
+.direction-toggle-title {
+    display: inline-block;
+    padding-right: 5Vh;
+}
+
+.direction-toggle {
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.editableLine-graph {
+    border-top: 1px solid rgb(222, 222, 222);
+    padding-bottom: 20px;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.container {
+    display: list-item;
+    padding-right: 11%;
+    padding-left: 11%;
+}

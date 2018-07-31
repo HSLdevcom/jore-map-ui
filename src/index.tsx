@@ -4,7 +4,7 @@ import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import * as ReactDOM from 'react-dom';
 import App from './components/App';
-import './index.css';
+import './styles/css/index.css';
 import observableLoginStore from './stores/loginStore';
 import observableMapStore from './stores/mapStore';
 import observableLineStore from './stores/lineStore';
