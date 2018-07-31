@@ -6,10 +6,10 @@ import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 import { MapStore } from '../../stores/mapStore';
 import { autorun } from 'mobx';
-import CoordinateSystem from '../../enums/coordinateSystems';
 import { RouteStore } from '../../stores/routeStore';
 import RouteLayerView from '../../layers/routeLayerView';
 import * as s from './map.scss';
+import CoordinateSystem from '../../enums/coordinateSystems';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -36,14 +36,10 @@ class Map extends React.Component<IMapProps> {
     public componentDidMount() {
         this.initializeMap();
         autorun(() => this.updateMap());
+        autorun(() => this.updateMap());
         this.routeLayerView = new RouteLayerView(this.map);
         autorun(() => this.updateRouteLines());
     }
-
-    // public componentWillReact() {
-    //     window.console.log('WILL REACT');
-    //     this.updateMap();
-    // }
 
     private updateRouteLines() {
         this.routeLayerView.drawRouteLines(this.props.routeStore!.openRoutes);
