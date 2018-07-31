@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from '../../../node_modules/mobx-react';
+import { inject, observer } from 'mobx-react';
 import { LoginStore } from '../../stores/loginStore';
 
 interface ILoginButtonProps {
