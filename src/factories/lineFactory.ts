@@ -1,7 +1,28 @@
 import { ILine } from '../models';
 import TransitType from '../enums/transitType';
 
-const convertTransitTypeCodeToTransitType = (type: string) => {
+class LineFactory {
+    public static linjaToILine = (linja: any) => {
+        const transitType = _convertTransitTypeCodeToTransitType(linja.linverkko);
+        const routeName = _getReiTunnus(linja.reittisByLintunnus.edges[0]);
+        const lineNumber = _parseLineNumber(linja.lintunnus);
+
+        return <ILine>{
+            routeName,
+            lineNumber,
+            transitType,
+            lineId: linja.lintunnus,
+        };
+    }
+
+    public static linjasToILines = (linja: any[]) => {
+        return linja.map(((node: any) => {
+            return LineFactory.linjaToILine(node);
+        }));
+    }
+}
+
+const _convertTransitTypeCodeToTransitType = (type: string) => {
     switch (type) {
     case '1':
         return TransitType.BUS;
@@ -18,34 +39,15 @@ const convertTransitTypeCodeToTransitType = (type: string) => {
     }
 };
 
-const parseLineNumber = (lineId: string) => {
+const _parseLineNumber = (lineId: string) => {
     return lineId.substring(1).replace(/^0+/, '');
 };
 
-const getReiTunnus = (edge: any) => {
+const _getReiTunnus = (edge: any) => {
     if (!edge || !edge.node.reinimi) {
         return 'Reitillä ei nimeä';
     }
     return edge.node.reinimi;
 };
 
-export default class LineFactory {
-    public static linjaToILine = (linja: any) => {
-        const transitType = convertTransitTypeCodeToTransitType(linja.linverkko);
-        const routeName = getReiTunnus(linja.reittisByLintunnus.edges[0]);
-        const lineNumber = parseLineNumber(linja.lintunnus);
-
-        return <ILine>{
-            routeName,
-            lineNumber,
-            transitType,
-            lineId: linja.lintunnus,
-        };
-    }
-
-    public static linjasToILines = (linja: any[]) => {
-        return linja.map(((node: any) => {
-            return LineFactory.linjaToILine(node);
-        }));
-    }
-}
+export default LineFactory;
