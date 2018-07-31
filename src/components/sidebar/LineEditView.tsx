@@ -4,7 +4,6 @@ import { SidebarStore } from '../../stores/sidebarStore';
 import lineHelper from '../../util/lineHelper';
 import ToggleButton from '../controls/ToggleButton';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
-import './LineEditView.css';
 
 interface ILineEditViewState {
     type: string;
