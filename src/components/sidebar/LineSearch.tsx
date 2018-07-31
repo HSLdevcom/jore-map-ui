@@ -1,11 +1,11 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { SidebarStore } from '../../stores/sidebarStore';
+import { LineStore } from '../../stores/lineStore';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import LineItems from './LineItems';
 
 interface ILineSearchProps {
-    sidebarStore?: SidebarStore;
+    lineStore?: LineStore;
 }
 
 interface ILineSearchState {
@@ -13,7 +13,7 @@ interface ILineSearchState {
     lineItems: any;
 }
 
-@inject('sidebarStore')
+@inject('lineStore')
 @observer
 class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
     constructor(props: ILineSearchProps) {
@@ -46,10 +46,10 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
                 onChange={this.handleSearchInputChange}
               />
             </div>
-            <TransitToggleButtonBar filters={this.props.sidebarStore!.filters || []} />
+            <TransitToggleButtonBar filters={this.props.lineStore!.filters || []} />
           </div>
           <LineItems
-              filters={this.props.sidebarStore!.filters || []}
+              filters={this.props.lineStore!.filters || []}
               searchInput={this.state.searchInput}
           />
         </div>

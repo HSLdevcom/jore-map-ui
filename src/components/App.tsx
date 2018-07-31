@@ -2,7 +2,6 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { LoginStore } from '../stores/loginStore';
-import { SidebarStore } from '../stores/sidebarStore';
 import OpenLoginFormButton from './controls/OpenLoginFormButton';
 import LoginModal from './login/LoginModal';
 import Map from './map/Map';
@@ -14,12 +13,10 @@ interface IAppState {
 }
 
 interface IAppProps {
-    sidebarStore?: SidebarStore;
     loginStore?: LoginStore;
 }
 
 @inject('loginStore')
-@inject('sidebarStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     public render(): any {
