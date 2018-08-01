@@ -1,25 +1,30 @@
 import { action, computed, observable } from 'mobx';
-import { IRoute } from '../models';
+import { IRoute, IDirection } from '../models';
 
 export class RouteStore {
-    @observable private _openRoutes: IRoute[];
+    @observable private _routes: IRoute[];
 
     constructor() {
-        this._openRoutes = [];
+        this._routes = [];
     }
 
-    @computed get openRoutes(): IRoute[] {
-        return this._openRoutes;
-    }
-
-    @action
-    public addToOpenedRoutes(node: IRoute) {
-        this._openRoutes.push(node);
+    @computed get routes(): IRoute[] {
+        return this._routes;
     }
 
     @action
-    public clearOpenRoutes() {
-        this._openRoutes = [];
+    public addToRoutes(node: IRoute) {
+        this._routes.push(node);
+    }
+
+    @action
+    public clearRoutes() {
+        this._routes = [];
+    }
+
+    @action
+    public toggleDirectionIsVisible(direction: IDirection) {
+        direction.visible = !direction.visible;
     }
 }
 
