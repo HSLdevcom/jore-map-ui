@@ -81,7 +81,6 @@ class Map extends React.Component<IMapProps> {
         this.map.addControl(this.coordinateControl);
         L.control.zoom({ position:'bottomright' }).addTo(this.map);
         this.map.on('moveend', this.setMapCenterAsCenter);
-
     }
 
     private fullscreenControlButton = () => {
