@@ -16,22 +16,19 @@ class TransitToggleButton extends React.Component
   <ITransitToggleButtonProps, ITransitToggleButtonState> {
     constructor(props: ITransitToggleButtonProps) {
         super(props);
-        this.state = {
-            type: this.props.type,
-        };
     }
 
     public toggleActivity = () => {
-        this.props.toggleActivity(this.state.type);
+        this.props.toggleActivity(this.props.type);
     }
 
     public render(): any {
         return (
       <button
-        className={`transit-toggle ${this.props.toggled ? this.state.type : 'toggled'}`}
+        className={`transit-toggle ${this.props.toggled ? this.props.type : 'toggled'}`}
         onClick={this.toggleActivity}
       >
-        {lineHelper.getTransitIcon(this.state.type, true)}
+        {lineHelper.getTransitIcon(this.props.type, true)}
       </button>
         );
     }

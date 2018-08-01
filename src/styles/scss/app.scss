@@ -4,3 +4,10 @@
     height: 100%;
     position: relative;
 }
+
+.login-button {
+    bottom: 20px;
+    right: 20px;
+    position: fixed;
+    z-index: 10;
+}

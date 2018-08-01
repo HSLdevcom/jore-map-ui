@@ -43,7 +43,7 @@ class TransitToggleButtonBar extends React.Component
         });
     }
 
-    public handleToggle = (type: TransitType) => {
+    public toggleActivity = (type: TransitType) => {
         const value: boolean = !this.state.toggles[type];
         const toggleState: object = this.state.toggles;
         toggleState[type] = value;
@@ -65,27 +65,27 @@ class TransitToggleButtonBar extends React.Component
         return (
           <div className='transit-toggle-container'>
             <TransitToggleButton
-              toggleActivity={this.handleToggle}
+              toggleActivity={this.toggleActivity}
               toggled={this.state.toggles.bus}
               type={TransitType.BUS}
             />
             <TransitToggleButton
-              toggleActivity={this.handleToggle}
+              toggleActivity={this.toggleActivity}
               toggled={this.state.toggles.tram}
               type={TransitType.TRAM}
             />
             <TransitToggleButton
-              toggleActivity={this.handleToggle}
+              toggleActivity={this.toggleActivity}
               toggled={this.state.toggles.train}
               type={TransitType.TRAIN}
             />
             <TransitToggleButton
-              toggleActivity={this.handleToggle}
+              toggleActivity={this.toggleActivity}
               toggled={this.state.toggles.subway}
               type={TransitType.SUBWAY}
             />
             <TransitToggleButton
-              toggleActivity={this.handleToggle}
+              toggleActivity={this.toggleActivity}
               toggled={this.state.toggles.ferry}
               type={TransitType.FERRY}
             />
