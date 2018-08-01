@@ -1,12 +1,12 @@
 @import './app.scss';
 @import './common.scss';
+@import './modal.scss';
 
-@import './controls/openLoginFormButton.scss';
-@import './controls/loginButton.scss';
+@import './controls/button.scss';
 @import './controls/toggleButton.scss';
 @import './controls/transitToggleButton.scss';
 
-@import './login/loginModal.scss';
+@import './login/login.scss';
 
 @import './map/map.scss';
 

@@ -1,0 +1,35 @@
+@import '../common.scss';
+
+.button {
+    cursor: pointer;
+    font-weight: 400;
+    line-height: normal;
+    text-align: center;
+    font-size: $mediumFontSize;
+    letter-spacing: -.025em;
+    font-size: $mediumFontSize;
+    margin-right: 5px;
+    margin-top: 10px;
+    padding: 10px;
+    border: hidden;
+    border-radius: 5px;
+}
+
+.button.primary {
+    background-color: $busBlue;
+    color: #fff;
+}
+
+.button.primary:hover {
+    background-color: darken($busBlue, 10);
+}
+
+.button.secondary {
+    background-color: #fff;
+    color: $fontColorDefault;
+    border: 1px solid $darkGrey;
+}
+
+.button.secondary:hover {
+    background-color: darken(#fff, 10);
+}
