@@ -20,6 +20,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     public selectLine = () => {
         RouteService.getRoute(this.props.line.lineId)
             .then((res: IRoute) => {
+                this.props.routeStore!.clearOpenRoutes();
                 this.props.routeStore!.addToOpenedRoutes(res);
             })
             .catch((err: any) => {

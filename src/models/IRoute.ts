@@ -2,8 +2,8 @@ import { IDirection } from '.';
 import ILine from './ILine';
 
 export default interface IRoute {
-    routeName: String;
-    routeNameSwedish: String;
+    routeName: string;
+    routeNameSwedish: string;
     lineId: string;
     directions: IDirection[];
     line: ILine;

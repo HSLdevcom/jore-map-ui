@@ -1,5 +1,5 @@
 export default interface IDirection {
-    directionName: String;
-    direction: String;
-    geoJson: String;
+    directionName: string;
+    direction: string;
+    geoJson: string;
 }
