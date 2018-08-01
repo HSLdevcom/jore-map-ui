@@ -32,11 +32,6 @@ class Map extends React.Component<IMapProps> {
         autorun(() => this.updateMap());
     }
 
-    // public componentWillReact() {
-    //     window.console.log('WILL REACT');
-    //     this.updateMap();
-    // }
-
     public render() {
         const classes = this.map !== undefined ? this.map.getContainer().classList : null;
         if (classes !== null) {
@@ -73,7 +68,6 @@ class Map extends React.Component<IMapProps> {
         this.map.addControl(this.coordinateControl);
         L.control.zoom({ position:'bottomright' }).addTo(this.map);
         this.map.on('moveend', this.setMapCenterAsCenter);
-
     }
 
     private fullscreenControlButton = () => {
