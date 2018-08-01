@@ -1,40 +1,43 @@
 import { inject, observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import * as React from 'react';
-import { LineStore } from '../../stores/lineStore';
-import lineHelper from '../../util/lineHelper';
-import ToggleButton from '../controls/ToggleButton';
+import { RouteStore } from '../../stores/routeStore';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
-import { ILine } from '../../models';
+import { IRoute } from '../../models';
+import ToggleButton from '../controls/ToggleButton';
+import LineHelper from '../../util/lineHelper';
 
 interface ILineEditViewState {
     type: string;
 }
 
 interface ILineEditViewProps {
-    lineStore?: LineStore;
-    lines: ILine[];
+    routeStore?: RouteStore;
 }
 
-@inject('lineStore')
+@inject('routeStore')
 @observer
 class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewState> {
 
     public render(): any {
         return (
         <span className='editable-line-wrapper'>
-          {this.props.lines.map((line: ILine) => {
+          {this.props.routeStore!.openRoutes.map((route: IRoute) => {
+              {
+                  console.log(toJS(route));
+              }
               return (
-                <div className='editable-line' key={line.lineId}>
+                <div className='editable-line' key={route.lineId}>
                   <span className='line-wrapper'>
-                    {lineHelper.getTransitIcon(line.transitType, false)}
-                    <span className={'line-number-' + line.transitType}>
-                        {line.lineNumber}
+                      {LineHelper.getTransitIcon(route.line.transitType, false)}
+                    <span className={'line-number-' + route.line.transitType}>
+                        {route.line.lineNumber}
                     </span>
-                    {line.routeName}
+                    {route.line.lineName}
                   </span>
                   <div className='direction-toggle'>
                     <span className='direction-toggle-title'>suunta 1 </span>
-                    <ToggleButton type={line.transitType}/>
+                    <ToggleButton type={route.line.transitType}/>
                   </div>
                   <div className='checkbox-container'>
                     <input
@@ -69,7 +72,7 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
           <div className='editableLine-graph'>
             <div className='container'>
             <label className='editableLine-input-container-title'>VERKKO</label>
-            <TransitToggleButtonBar filters={this.props.lineStore!.filters || []} />
+            <TransitToggleButtonBar filters={[]} />
             <div className='checkbox-container'>
               <input
                 type='checkbox'

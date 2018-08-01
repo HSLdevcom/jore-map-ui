@@ -1,18 +1,18 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LineStore } from '../../stores/lineStore';
+import { RouteStore } from '../../stores/routeStore';
 import LineEditView from './LineEditView';
 import LineSearch from './LineSearch';
 
 interface ISidebarProps {
-    lineStore?: LineStore;
+    routeStore?: RouteStore;
 }
 
 interface ILinelistState {
     searchInput: string;
 }
 
-@inject('lineStore')
+@inject('routeStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     constructor(props: ISidebarProps) {
@@ -20,7 +20,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     }
 
     public handleHeaderClick = () => {
-        this.props.lineStore!.removeSelectedLines();
+        this.props.routeStore!.clearOpenRoutes();
     }
 
     public render(): any {
@@ -35,11 +35,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
               </div>
             </div>
             <div className='sidebar-content'>
-              { this.props.lineStore!.selectedLines.length < 1 &&
+              { this.props.routeStore!.openRoutes.length < 1 &&
                 <LineSearch />
               }
-              {this.props.lineStore!.selectedLines.length > 0 &&
-                <LineEditView lines={this.props.lineStore!.selectedLines} />
+              {this.props.routeStore!.openRoutes.length > 0 &&
+                <LineEditView />
               }
             </div>
           </div>
