@@ -8,6 +8,7 @@ import './styles/css/index.css';
 import observableLoginStore from './stores/loginStore';
 import observableMapStore from './stores/mapStore';
 import observableLineStore from './stores/lineStore';
+import observableRouteStore from './stores/routeStore';
 import apolloClient from './util/ApolloClient';
 
 configure({ enforceActions: 'strict' });
@@ -17,6 +18,7 @@ ReactDOM.render(
       mapStore={observableMapStore}
       lineStore={observableLineStore}
       loginStore={observableLoginStore}
+      routeStore={observableRouteStore}
     >
         <ApolloProvider client={apolloClient}>
           <App/>
