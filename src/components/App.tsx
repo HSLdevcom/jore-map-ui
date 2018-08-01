@@ -2,7 +2,8 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { LoginStore } from '../stores/loginStore';
-import OpenLoginFormButton from './controls/OpenLoginFormButton';
+import Button from './controls/Button';
+import ButtonType from '../enums/buttonType';
 import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
@@ -21,6 +22,10 @@ interface IAppProps {
 @observer
 class App extends React.Component<IAppProps, IAppState> {
 
+    private openLoginForm = () => {
+        this.props.loginStore!.showLogin = true;
+    }
+
     private closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
     }
@@ -30,7 +35,12 @@ class App extends React.Component<IAppProps, IAppState> {
             <Router>
               <div className={'app-container'}>
                 <Map/>
-                <OpenLoginFormButton/>
+                <Button
+                    onClick={this.openLoginForm}
+                    className={'login-button'}
+                    type={ButtonType.SECONDARY}
+                    text={'Kirjaudu'}
+                />
                 <Modal
                     closeModal={this.closeLoginModal}
                     isVisible={this.props.loginStore!.showLogin}
@@ -38,7 +48,11 @@ class App extends React.Component<IAppProps, IAppState> {
                     <Login />
                 </Modal>
                 <Sidebar />
-                <Route exact={true} path='/' rootPath={rootPath}/>
+                <Route
+                    exact={true}
+                    path='/'
+                    rootPath={rootPath}
+                />
               </div>
             </Router>
         );

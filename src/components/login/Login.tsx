@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { LoginStore } from '../../stores/loginStore';
+import Button from '../controls/Button';
+import ButtonType from '../../enums/buttonType';
 
 interface ILoginProps {
     loginStore?: LoginStore;
@@ -48,16 +50,16 @@ class Login extends React.Component<ILoginProps> {
                 </label>
             </form>
             <div className='modal-button-bar'>
-                <button
-                    className='modal-cancel-button'
+                <Button
                     onClick={this.closeLoginModal}
-                >
-                Peruuta
-                </button>
-                <div className='button-divider'/>
-                <button className='modal-login-button'>
-                Kirjaudu
-                </button>
+                    type={ButtonType.SECONDARY}
+                    text={'Peruuta'}
+                />
+                <Button
+                    onClick={this.closeLoginModal}
+                    type={ButtonType.PRIMARY}
+                    text={'Kirjaudu'}
+                />
             </div>
         </div>
         );
