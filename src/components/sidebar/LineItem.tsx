@@ -27,7 +27,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
               <span className={'line-number-' + this.props.line.transitType}>
                   {this.props.line.lineNumber}
               </span>
-              {this.props.line.routeName}
+              {this.props.line.lineName}
             </span>
         );
     }
