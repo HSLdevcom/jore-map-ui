@@ -6,6 +6,10 @@ class DirectionFactory {
             directionName: suunta.suunimi,
             direction: suunta.suusuunta,
             geoJson: suunta.geojson,
+            startTime: new Date(suunta.suuvoimast),
+            endTime: new Date(suunta.suuviimpvm),
+            lastModified: new Date(suunta.suuvoimviimpvm),
+            visible: false,
         };
     }
 }
