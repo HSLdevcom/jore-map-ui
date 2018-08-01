@@ -2,14 +2,15 @@ import gql from 'graphql-tag';
 import apolloClient from '../util/ApolloClient';
 import { ApolloQueryResult } from 'apollo-client';
 import RouteFactory from '../factories/routeFactory';
+import LineStore from '../stores/lineStore';
 
 export default class RouteService {
     public static getRoute(lineId: string) {
         return new Promise((resolve: (res: any) => void, reject: (err: any) => void) => {
             apolloClient.query({ query: getRoute, variables: { routeId: lineId } })
                 .then((res: ApolloQueryResult<any>) => {
-                    console.log(res);
-                    resolve(RouteFactory.reittiToIRoute(res.data.route));
+                    const line = LineStore.lineByLineId(lineId);
+                    resolve(RouteFactory.reittiToIRoute(res.data.route, line));
                 })
                 .catch((err: any) => {
                     reject(err);
