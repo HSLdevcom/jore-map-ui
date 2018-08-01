@@ -1,23 +1,31 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LineStore } from '../../stores/lineStore';
+import { RouteStore } from '../../stores/routeStore';
 import lineHelper from '../../util/lineHelper';
-import { ILine } from '../../models';
+import { ILine, IRoute } from '../../models';
+import RouteService from '../../services/routeService';
 
 interface ILineItemState {
     type: string;
 }
 
 interface ILineItemProps {
-    lineStore?: LineStore;
+    routeStore?: RouteStore;
     line: ILine;
 }
 
-@inject('lineStore')
+@inject('routeStore')
 @observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     public selectLine = () => {
-        this.props.lineStore!.addSelectedLine(this.props.line);
+        RouteService.getRoute(this.props.line.lineId)
+            .then((res: IRoute) => {
+                this.props.routeStore!.clearOpenRoutes();
+                this.props.routeStore!.addToOpenedRoutes(res);
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
     }
 
     public render(): any {
@@ -27,7 +35,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
               <span className={'line-number-' + this.props.line.transitType}>
                   {this.props.line.lineNumber}
               </span>
-              {this.props.line.routeName}
+              {this.props.line.lineName}
             </span>
         );
     }

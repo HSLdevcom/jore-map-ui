@@ -3,16 +3,10 @@ import { ILine } from '../models';
 
 export class LineStore {
     @observable private _filters: string[];
-    @observable private _selectedLines: ILine[];
     @observable private _allLines: ILine[];
 
     constructor() {
-        this._selectedLines = [];
         this._allLines = [];
-    }
-
-    @computed get selectedLines(): ILine[] {
-        return this._selectedLines;
     }
 
     @computed get filters(): string[] {
@@ -23,18 +17,12 @@ export class LineStore {
         this._filters = filters;
     }
 
-    @action
-    public addSelectedLine(node: ILine) {
-        this._selectedLines.push(node);
-    }
-
-    @action
-    public removeSelectedLines() {
-        this._selectedLines = [];
-    }
-
     @computed get allLines(): ILine[] {
         return this._allLines;
+    }
+
+    public lineByLineId(lineId: string) {
+        return this._allLines.find(line => line.lineId === lineId);
     }
 
     @action

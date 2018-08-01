@@ -4,11 +4,11 @@ import TransitType from '../enums/transitType';
 class LineFactory {
     public static linjaToILine = (linja: any) => {
         const transitType = _convertTransitTypeCodeToTransitType(linja.linverkko);
-        const routeName = _getReiTunnus(linja.reittisByLintunnus.edges[0]);
+        const lineName = _getReiTunnus(linja.reittisByLintunnus.edges[0]);
         const lineNumber = _parseLineNumber(linja.lintunnus);
 
         return <ILine>{
-            routeName,
+            lineName,
             lineNumber,
             transitType,
             lineId: linja.lintunnus,
