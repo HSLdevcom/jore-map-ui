@@ -5,7 +5,25 @@ import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import { IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
 import LineHelper from '../../util/lineHelper';
-import './lineEditView.scss';
+import classNames from 'classnames';
+import {
+    container,
+    line,
+    toggle,
+    toggleTitle,
+    checkboxContainer,
+    inputContainer,
+    inputTitle,
+    network,
+    networkContainer,
+    bus,
+    ferry,
+    label,
+    subway,
+    train,
+    tram,
+} from './lineEditView.scss';
+import TransitType from '../../enums/transitType';
 
 interface ILineEditViewState {
     type: string;
@@ -23,76 +41,88 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
         // TODO
     }
 
+    private getType = (type: TransitType) => {
+        switch (type) {
+        case TransitType.BUS:
+            return classNames(label, bus);
+        case TransitType.FERRY:
+            return classNames(label, ferry);
+        case TransitType.SUBWAY:
+            return classNames(label, subway);
+        case TransitType.TRAM:
+            return classNames(label, tram);
+        case TransitType.TRAIN:
+            return classNames(label, train);
+        default:
+            return classNames(label, bus);
+        }
+    }
+
     public render(): any {
         return (
-            <span className='editable-line-wrapper'>
+            <span className={container}>
                 {this.props.routeStore!.openRoutes.map((route: IRoute) => {
                     return (
-                        <div className='editable-line' key={route.lineId}>
-                            <span className='line-wrapper'>
+                        <div className={line} key={route.lineId}>
+                            <span>
                                 {LineHelper.getTransitIcon(route.line.transitType, false)}
-                                <span className={'line-number-' + route.line.transitType}>
+                                <span className={this.getType(route.line.transitType)}>
                                     {route.line.lineNumber}
                                 </span>
                                 {route.routeName}
                             </span>
-                            <div className='direction-toggle'>
-                                <span className='direction-toggle-title'>suunta 1 </span>
+                            <div className={toggle}>
+                                <span className={toggleTitle}>suunta 1 </span>
                                 <ToggleButton
                                     onClick={this.toggleDirection}
                                     type={route.line.transitType}
                                 />
                             </div>
-                            <div className='checkbox-container'>
+                            <div className={checkboxContainer}>
                                 <input
                                     type='checkbox'
-                                    className='checkbox-input'
                                     checked={false}
                                 />
                                 Kopioi reitti toiseen suuntaan
-                  </div>
+                            </div>
                         </div>
                     );
                 })
                 }
-                <div className='editableLine-input-container'>
-                    <label className='editableLine-input-container-title'>
+                <div className={inputContainer}>
+                    <label className={inputTitle}>
                         HAE TOINEN LINJA TARKASTELUUN
-            </label>
+                    </label>
                     <input
                         placeholder='Hae reitti'
-                        className='editableLine-input'
                         type='text'
                     />
                 </div>
-                <div className='editableLine-input-container'>
-                    <span className='editableLine-input-container-title'>TARKASTELUPÄIVÄ</span>
+                <div className={inputContainer}>
+                    <span className={inputTitle}>TARKASTELUPÄIVÄ</span>
                     <input
                         placeholder='25.8.2017'
-                        className='editableLine-input'
                         type='text'
                     />
                 </div>
-                <div className='editableLine-graph'>
-                    <div className='container'>
-                        <label className='editableLine-input-container-title'>VERKKO</label>
+                <div className={network}>
+                    <div className={networkContainer}>
+                        <label className={inputTitle}>VERKKO</label>
                         <TransitToggleButtonBar filters={[]} />
-                        <div className='checkbox-container'>
+                        <div className={checkboxContainer}>
                             <input
                                 type='checkbox'
-                                className='checkbox-input'
                                 checked={false}
                             />
                             Hae alueen linkit
-            </div>
-                        <div className='checkbox-container'>
+                        </div>
+                        <div className={checkboxContainer}>
                             <input
                                 type='checkbox'
-                                className='checkbox-input'
                                 checked={false}
                             />
                             Hae alueen solmut
-            </div>
+                        </div>
                     </div>
                 </div>
             </span>

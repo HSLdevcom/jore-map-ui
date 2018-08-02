@@ -3,7 +3,14 @@ import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
 import LineEditView from './LineEditView';
 import LineSearch from './LineSearch';
-import { test } from './sidebar.scss';
+import {
+  container,
+  header,
+  headerContainer,
+  title,
+  content,
+  logo,
+} from './sidebar.scss';
 
 interface ISidebarProps {
     routeStore?: RouteStore;
@@ -26,16 +33,16 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
 
     public render(): any {
         return (
-          <div className='sidebar-container'>
-            <div className='sidebar-header'>
-              <div onClick={this.handleHeaderClick} className='sidebar-header-container'>
-                <img className='sidebar-logo' src='hsl-logo.png' />
-                <h2 className={test}>
+          <div className={container}>
+            <div className={header}>
+              <div onClick={this.handleHeaderClick} className={headerContainer}>
+                <img className={logo} src='hsl-logo.png' />
+                <h2 className={title}>
                   Joukkoliikennerekisteri
                 </h2>
               </div>
             </div>
-            <div className='sidebar-content'>
+            <div className={content}>
               { this.props.routeStore!.openRoutes.length < 1 &&
                 <LineSearch />
               }

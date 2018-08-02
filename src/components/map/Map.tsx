@@ -5,7 +5,12 @@ import * as React from 'react';
 import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 import { MapStore } from '../../stores/mapStore';
-import './map.scss';
+import {
+    mapLeaflet,
+    fullscreen,
+    fullscreenButton,
+    fullscreenButtonImg,
+} from './map.scss';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -33,19 +38,19 @@ class Map extends React.Component<IMapProps> {
         const classes = this.map !== undefined ? this.map.getContainer().classList : null;
         if (classes !== null) {
             classes.remove('root');
-            classes.remove('fullscreen');
+            classes.remove(fullscreen);
         }
         return (
             <div
-                id='map-leaflet'
+                id={mapLeaflet}
                 // tslint:disable-next-line:max-line-length
-                className={`${classes !== null ? classes.toString() : ''} root ${this.props.mapStore!.isMapFullscreen ? 'fullscreen' : ''}`}
+                className={`${classes !== null ? classes.toString() : ''} root ${this.props.mapStore!.isMapFullscreen ? fullscreen : ''}`}
             />
         );
     }
 
     private initializeMap = () => {
-        this.map = L.map('map-leaflet');
+        this.map = L.map(mapLeaflet);
         this.lastCenter = this.props.mapStore!.coordinates;
         this.map.setView(this.props.mapStore!.coordinates, 15);
         // tslint:disable-next-line:max-line-length
@@ -69,8 +74,8 @@ class Map extends React.Component<IMapProps> {
             const icon = L.DomUtil.create('img');
             const container = L.DomUtil.create('button', 'leaflet-bar leaflet-control');
             icon.setAttribute('src', fullScreenEnterIcon);
-            icon.className = 'fullscreenIcon';
-            container.className = 'fullscreenButton';
+            icon.className = fullscreenButtonImg;
+            container.className = fullscreenButton;
             container.appendChild(icon);
             container.onclick = () => {
                 this.props.mapStore!.toggleMapFullscreen();
