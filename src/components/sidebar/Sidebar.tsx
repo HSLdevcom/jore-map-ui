@@ -3,6 +3,7 @@ import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
 import LineEditView from './LineEditView';
 import LineSearch from './LineSearch';
+import './sidebar.scss';
 
 interface ISidebarProps {
     routeStore?: RouteStore;

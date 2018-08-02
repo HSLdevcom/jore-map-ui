@@ -5,6 +5,7 @@ import * as React from 'react';
 import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 import { MapStore } from '../../stores/mapStore';
+import './map.scss';
 
 interface IMapProps {
     mapStore?: MapStore;

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ButtonType from '../../enums/buttonType';
+import './button.scss';
 
 interface IButtonProps {
     onClick(event: any): void;

@@ -8,6 +8,7 @@ import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
+import './app.scss';
 const rootPath: string = '/';
 
 interface IAppState {

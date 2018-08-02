@@ -4,12 +4,12 @@ import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import * as ReactDOM from 'react-dom';
 import App from './components/App';
-// import './styles/css/index.css';
 import observableLoginStore from './stores/loginStore';
 import observableMapStore from './stores/mapStore';
 import observableLineStore from './stores/lineStore';
 import observableRouteStore from './stores/routeStore';
 import apolloClient from './util/ApolloClient';
+import './index.scss';
 
 configure({ enforceActions: 'strict' });
 

@@ -5,6 +5,7 @@ import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import { IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
 import LineHelper from '../../util/lineHelper';
+import './lineEditView.scss';
 
 interface ILineEditViewState {
     type: string;

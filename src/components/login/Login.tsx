@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { LoginStore } from '../../stores/loginStore';
 import Button from '../controls/Button';
 import ButtonType from '../../enums/buttonType';
+import './login.scss';
 
 interface ILoginProps {
     loginStore?: LoginStore;
