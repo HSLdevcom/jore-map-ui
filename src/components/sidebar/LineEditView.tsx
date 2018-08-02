@@ -4,8 +4,9 @@ import { RouteStore } from '../../stores/routeStore';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import { IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
-import LineHelper from '../../util/lineHelper';
 import classNames from 'classnames';
+import LineHelper from '../../util/lineHelper';
+import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import {
     container,
     line,
@@ -16,14 +17,8 @@ import {
     inputTitle,
     network,
     networkContainer,
-    bus,
-    ferry,
     label,
-    subway,
-    train,
-    tram,
 } from './lineEditView.scss';
-import TransitType from '../../enums/transitType';
 
 interface ILineEditViewState {
     type: string;
@@ -41,23 +36,6 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
         // TODO
     }
 
-    private getType = (type: TransitType) => {
-        switch (type) {
-        case TransitType.BUS:
-            return classNames(label, bus);
-        case TransitType.FERRY:
-            return classNames(label, ferry);
-        case TransitType.SUBWAY:
-            return classNames(label, subway);
-        case TransitType.TRAM:
-            return classNames(label, tram);
-        case TransitType.TRAIN:
-            return classNames(label, train);
-        default:
-            return classNames(label, bus);
-        }
-    }
-
     public render(): any {
         return (
             <span className={container}>
@@ -66,7 +44,17 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
                         <div className={line} key={route.lineId}>
                             <span>
                                 {LineHelper.getTransitIcon(route.line.transitType, false)}
-                                <span className={this.getType(route.line.transitType)}>
+                                <span
+                                    className={
+                                        classNames(
+                                            label,
+                                            TransitTypeColorHelper.getColorClass(
+                                                route.line.transitType,
+                                                false,
+                                            ),
+                                        )
+                                    }
+                                >
                                     {route.line.lineNumber}
                                 </span>
                                 {route.routeName}

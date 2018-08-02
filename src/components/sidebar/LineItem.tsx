@@ -5,17 +5,12 @@ import { RouteStore } from '../../stores/routeStore';
 import lineHelper from '../../util/lineHelper';
 import { ILine, IRoute } from '../../models';
 import RouteService from '../../services/routeService';
-import TransitType from '../../enums/transitType';
 import {
     container,
-    bus,
-    subway,
-    ferry,
-    train,
-    tram,
     icon,
     label,
  } from './lineItem.scss';
+import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 
 interface ILineItemState {
     type: string;
@@ -40,30 +35,23 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
             });
     }
 
-    private getClass = (transitType: TransitType) => {
-        switch (transitType) {
-        case TransitType.BUS:
-            return classNames(bus, label);
-        case TransitType.FERRY:
-            return classNames(ferry, label);
-        case TransitType.SUBWAY:
-            return classNames(subway, label);
-        case TransitType.TRAM:
-            return classNames(tram, label);
-        case TransitType.TRAIN:
-            return classNames(train, label);
-        default:
-            return classNames(subway, label);
-        }
-    }
-
     public render(): any {
         return (
             <span onClick={this.selectLine} className={container}>
               <span className={icon}>
                 {lineHelper.getTransitIcon(this.props.line.transitType, false)}
               </span>
-              <span className={this.getClass(this.props.line.transitType)}>
+              <span
+                className={
+                  classNames(
+                    TransitTypeColorHelper.getColorClass(
+                      this.props.line.transitType,
+                      false,
+                    ),
+                    label,
+                  )
+                }
+              >
                   {this.props.line.lineNumber}
               </span>
               {this.props.line.lineName}

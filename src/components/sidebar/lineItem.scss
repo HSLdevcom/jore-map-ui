@@ -11,27 +11,7 @@
   margin-bottom: 0;
   padding-top: 5px;
   cursor: pointer;
-
-  .bus {
-      color: $busBlue;
-  }
-
-  .subway {
-      color: $subwayOrange;
-  }
-
-  .tram {
-      color: $tramGreen;
-  }
-
-  .train {
-      color: $trainPurple;
-  }
-
-  .ferry {
-      color: $ferryBlue;
-  }
-
+  
   .label {
     font-size: $largeFontSize;
     font-weight: 600;

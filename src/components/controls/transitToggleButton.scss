@@ -7,28 +7,14 @@
     transition: .5s;
 }
 
-.ferry {
-    background-color: $ferryBlue;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-.bus {
-    background-color: $busBlue;
+.toggle:first-child {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
 
-.tram {
-    background-color: $tramGreen;
-}
-
-.train {
-    background-color: $trainPurple;
-}
-
-.subway {
-    background-color: $subwayOrange;
+.toggle:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 .toggled {

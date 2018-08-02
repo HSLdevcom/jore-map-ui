@@ -36,24 +36,4 @@
     input:checked+.slider:before {
         transform: translateX(26px);
     }
-    
-    input:checked+.bus {
-        background-color: $busBlue;
-    }
-    
-    input:checked+.tram {
-        background-color: $tramGreen;
-    }
-    
-    input:checked+.train {
-        background-color: $trainPurple;
-    }
-    
-    input:checked+.ferry {
-        background-color: $ferryBlue;
-    }
-    
-    input:checked+.subway {
-        background-color: $subwayOrange;
-    }
 }

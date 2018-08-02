@@ -2,47 +2,53 @@ import * as React from 'react';
 import TransitType from '../../enums/transitType';
 import classNames from 'classnames';
 import {
-    bus,
-    ferry,
-    slider,
-    subway,
     switchControl,
-    train,
-    tram,
+    slider,
 } from './toggleButton.scss';
+import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
+
+interface IToggleButtonState {
+    isChecked: boolean;
+}
 
 interface IToggleButtonProps {
     type: TransitType;
     onClick(event: any): void;
 }
 
-class ToggleButton extends React.Component<IToggleButtonProps, {}> {
-    private getTypeClass = (type: TransitType) => {
-        switch (type) {
-        case TransitType.BUS:
-            return classNames(slider, bus);
-        case TransitType.FERRY:
-            return classNames(slider, ferry);
-        case TransitType.SUBWAY:
-            return classNames(slider, subway);
-        case TransitType.TRAM:
-            return classNames(slider, tram);
-        case TransitType.TRAIN:
-            return classNames(slider, train);
-        default:
-            return classNames(slider, bus);
+class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonState> {
+    constructor (props: IToggleButtonProps) {
+        super(props);
+        this.state = {
+            isChecked: false,
+        };
+    }
+
+    private toggle = (event: React.MouseEvent<HTMLElement>) => {
+        this.setState({ isChecked: !this.state.isChecked });
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    private getClassname = () => {
+        if (this.state.isChecked) {
+            return classNames(slider,  TransitTypeColorHelper.getColorClass(this.props.type, true));
         }
+        return slider;
     }
 
     public render(): any {
         return (
             <label
-                onClick={this.props.onClick}
+                onClick={this.toggle}
                 className={switchControl}
             >
-                <input type='checkbox' />
+                <input
+                    type='checkbox'
+                    checked={this.state.isChecked}
+                />
                 <div
-                    className={this.getTypeClass(this.props.type)}
+                    className={this.getClassname()}
                 />
             </label>
         );
