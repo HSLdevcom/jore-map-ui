@@ -1,5 +1,5 @@
 @import '../../common.scss';
-#map-leaflet {
+#mapLeaflet {
     width: 100%;
     min-height: 400px;
     height: 100vh;
@@ -31,7 +31,7 @@
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
 }
 
-.fullscreenButton img {
+.fullscreenButtonImg {
     padding-top: 4px;
     height: 11px;
     width: 11px;

@@ -15,21 +15,21 @@
     border-radius: 5px;
 }
 
-.button.primary {
+.primary {
     background-color: $busBlue;
     color: #fff;
 }
 
-.button.primary:hover {
+.primary:hover {
     background-color: darken($busBlue, 10);
 }
 
-.button.secondary {
+.secondary {
     background-color: #fff;
     color: $fontColorDefault;
     border: 1px solid $darkGrey;
 }
 
-.button.secondary:hover {
+.secondary:hover {
     background-color: darken(#fff, 10);
 }

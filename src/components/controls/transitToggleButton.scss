@@ -1,5 +1,5 @@
 @import '../../common.scss';
-.transit-toggle-container>.transit-toggle {
+.toggle {
     flex: 1;
     height: 40px;
     border: hidden;
@@ -7,31 +7,31 @@
     transition: .5s;
 }
 
-.transit-toggle-container>.transit-toggle.ferry {
+.ferry {
     background-color: $ferryBlue;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
 
-.transit-toggle-container>.transit-toggle.bus {
+.bus {
     background-color: $busBlue;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
 
-.transit-toggle-container>.transit-toggle.tram {
+.tram {
     background-color: $tramGreen;
 }
 
-.transit-toggle-container>.transit-toggle.train {
+.train {
     background-color: $trainPurple;
 }
 
-.transit-toggle-container>.transit-toggle.subway {
+.subway {
     background-color: $subwayOrange;
 }
 
-.transit-toggle-container>.transit-toggle.toggled {
+.toggled {
     background-color: $darkGrey;
     transition: .5s;
 }
