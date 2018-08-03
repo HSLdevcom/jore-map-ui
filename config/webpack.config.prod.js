@@ -169,6 +169,25 @@ module.exports = {
               },
             ],
           },
+          {
+            test: /\.scss$/,
+            enforce: 'pre',
+            use: [
+                "style-loader", // creates style nodes from JS strings
+                {
+                  loader: require.resolve("typings-for-css-modules-loader"),
+                  options: {
+                    modules: true,
+                    namedExport: true,
+                    camelCase: true,
+                    importLoaders: 1,
+                    minimize: true,
+                    sourceMap: shouldUseSourceMap,
+                  }
+                },
+                "sass-loader" // compiles Sass to CSS, using Node Sass by default
+            ]
+          },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.

@@ -174,6 +174,7 @@ module.exports = {
                     modules: true,
                     namedExport: true,
                     camelCase: true,
+                    importLoaders: 1,
                   }
                 },
                 "sass-loader" // compiles Sass to CSS, using Node Sass by default
