@@ -20,9 +20,9 @@ interface IMapProps {
 class Map extends React.Component<IMapProps> {
     private map: L.Map;
     private lastCenter: L.LatLng;
-    private routeLayerView: any;
+    private routeLayerView: RouteLayerView;
 
-    constructor(props: any) {
+    constructor(props: IMapProps) {
         super(props);
     }
 

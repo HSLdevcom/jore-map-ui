@@ -2,11 +2,10 @@ import * as L from 'leaflet';
 import { IDirection, IRoute } from '../models';
 
 export default class RouteLayerView {
+    private map: L.Map;
+    private routeLayers: L.GeoJSON<any>[];
 
-    private map: any;
-    private routeLayers: any;
-
-    constructor(map: any) {
+    constructor(map: L.Map) {
         this.map = map;
         this.routeLayers = [];
     }
@@ -43,7 +42,7 @@ export default class RouteLayerView {
     }
 
     private clearRoute() {
-        this.routeLayers.map((layer: any) => {
+        this.routeLayers.map((layer: L.GeoJSON) => {
             this.map.removeLayer(layer);
         });
         this.routeLayers = [];
