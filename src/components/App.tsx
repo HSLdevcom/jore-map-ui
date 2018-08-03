@@ -8,6 +8,7 @@ import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
+import { container, loginButton } from './app.scss';
 const rootPath: string = '/';
 
 interface IAppState {
@@ -33,13 +34,13 @@ class App extends React.Component<IAppProps, IAppState> {
     public render(): any {
         return (
             <Router>
-              <div className={'app-container'}>
+              <div className={container}>
                 <Map/>
                 <Button
                     onClick={this.openLoginForm}
-                    className={'login-button'}
+                    className={loginButton}
                     type={ButtonType.SECONDARY}
-                    text={'Kirjaudu'}
+                    text='Kirjaudu'
                 />
                 <Modal
                     closeModal={this.closeLoginModal}

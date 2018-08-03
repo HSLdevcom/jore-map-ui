@@ -1,5 +1,15 @@
 import * as React from 'react';
 import TransitType from '../../enums/transitType';
+import classNames from 'classnames';
+import {
+    switchControl,
+    slider,
+} from './toggleButton.scss';
+import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
+
+interface IToggleButtonState {
+    isChecked: boolean;
+}
 
 interface IToggleButtonProps {
     type: TransitType;
@@ -7,7 +17,18 @@ interface IToggleButtonProps {
     value: boolean;
 }
 
-class ToggleButton extends React.Component<IToggleButtonProps, {}> {
+class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonState> {
+    constructor (props: IToggleButtonProps) {
+        super(props);
+    }
+
+    private getClassname = () => {
+        if (this.props.value) {
+            return classNames(slider,  TransitTypeColorHelper.getColorClass(this.props.type, true));
+        }
+        return slider;
+    }
+
     public render(): any {
         const buttonOnClick = (event: React.MouseEvent<HTMLElement>) => {
             this.props.onClick(event);
@@ -18,11 +39,11 @@ class ToggleButton extends React.Component<IToggleButtonProps, {}> {
         return (
             <label
                 onClick={buttonOnClick}
-                className={'switch'}
+                className={switchControl}
             >
                 <input type='checkbox' checked={this.props.value}/>
                 <div
-                    className={'slider ' + this.props.type}
+                    className={this.getClassname()}
                 />
             </label>
         );

@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { modal, wrapper } from './modal.scss';
 
 interface IModalProps {
     closeModal: Function;
     isVisible: boolean;
 }
 
-const MODAL_CLASS_NAME = 'modal';
+const MODAL_CLASS_NAME = modal;
 
 class Modal extends React.Component<IModalProps> {
 
@@ -23,7 +24,7 @@ class Modal extends React.Component<IModalProps> {
             className={MODAL_CLASS_NAME}
             onClick={this.closeModal}
         >
-            <div className='modal-wrapper'>
+            <div className={wrapper}>
                 {this.props.children}
             </div>
         </div>

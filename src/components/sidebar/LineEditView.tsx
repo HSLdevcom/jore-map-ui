@@ -4,7 +4,21 @@ import { RouteStore } from '../../stores/routeStore';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import { IDirection, IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
+import classNames from 'classnames';
 import LineHelper from '../../util/lineHelper';
+import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
+import {
+    container,
+    line,
+    toggle,
+    toggleTitle,
+    checkboxContainer,
+    inputContainer,
+    inputTitle,
+    network,
+    networkContainer,
+    label,
+} from './lineEditView.scss';
 
 interface ILineEditViewProps {
     routeStore?: RouteStore;
@@ -18,15 +32,15 @@ class LineEditView extends React.Component<ILineEditViewProps> {
             .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
             .map((direction: IDirection, index: number) => {
                 const onClick = () => {
-                    this.props.routeStore!.toggleDirectionIsVisible(direction);
+                    this.props.routeStore!.toggleDirectionIsVisible(route, direction);
                 };
 
                 return (
                     <div
-                        className='direction-toggle'
+                        className={toggle}
                         key={`${direction.directionName}-${index}`}
                     >
-                        <span className='direction-toggle-title'>
+                        <span className={toggleTitle}>
                             Suunta {direction.direction}
                         </span>
                         <ToggleButton
@@ -42,10 +56,20 @@ class LineEditView extends React.Component<ILineEditViewProps> {
     private routeList(routes: IRoute[]) {
         return routes.map((route: IRoute) => {
             return (
-                <div className='editable-line' key={route.lineId}>
-                    <span className='line-wrapper'>
+                <div className={line} key={route.lineId}>
+                    <span>
                         {LineHelper.getTransitIcon(route.line.transitType, false)}
-                        <span className={'line-number-' + route.line.transitType}>
+                        <span
+                            className={
+                                classNames(
+                                    label,
+                                    TransitTypeColorHelper.getColorClass(
+                                        route.line.transitType,
+                                        false,
+                                    ),
+                                )
+                            }
+                        >
                             {route.line.lineNumber}
                         </span>
                         {route.routeName}
@@ -53,10 +77,9 @@ class LineEditView extends React.Component<ILineEditViewProps> {
                     {
                         this.directionList(route)
                     }
-                    <div className='checkbox-container'>
+                    <div className={checkboxContainer}>
                         <input
                             type='checkbox'
-                            className='checkbox-input'
                             checked={false}
                         />
                         Kopioi reitti toiseen suuntaan
@@ -68,46 +91,40 @@ class LineEditView extends React.Component<ILineEditViewProps> {
 
     public render(): any {
         return (
-            <span className='editable-line-wrapper'>
+            <span className={container}>
                 {
                     this.routeList(this.props.routeStore!.routes)
                 }
-                <div className='editableLine-input-container'>
-                    <label className='editableLine-input-container-title'>
+                <div className={inputContainer}>
+                    <label className={inputTitle}>
                         HAE TOINEN LINJA TARKASTELUUN
                     </label>
                     <input
                         placeholder='Hae reitti'
-                        className='editableLine-input'
                         type='text'
                     />
                 </div>
-                <div className='editableLine-input-container'>
-                    <span className='editableLine-input-container-title'>
-                        TARKASTELUPÄIVÄ
-                    </span>
+                <div className={inputContainer}>
+                    <span className={inputTitle}>TARKASTELUPÄIVÄ</span>
                     <input
                         placeholder='25.8.2017'
-                        className='editableLine-input'
                         type='text'
                     />
                 </div>
-                <div className='editableLine-graph'>
-                    <div className='container'>
-                        <label className='editableLine-input-container-title'>VERKKO</label>
+                <div className={network}>
+                    <div className={networkContainer}>
+                        <label className={inputTitle}>VERKKO</label>
                         <TransitToggleButtonBar filters={[]} />
-                        <div className='checkbox-container'>
+                        <div className={checkboxContainer}>
                             <input
                                 type='checkbox'
-                                className='checkbox-input'
                                 checked={false}
                             />
                             Hae alueen linkit
                         </div>
-                        <div className='checkbox-container'>
+                        <div className={checkboxContainer}>
                             <input
                                 type='checkbox'
-                                className='checkbox-input'
                                 checked={false}
                             />
                             Hae alueen solmut

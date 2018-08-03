@@ -3,6 +3,7 @@ import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
 import TransitToggleButton from './TransitToggleButton';
 import TransitType from '../../enums/transitType';
+import { container } from './transitToggleButtonBar.scss';
 
 interface ITransitToggleButtonBarState {
     toggles: any;
@@ -63,7 +64,7 @@ class TransitToggleButtonBar extends React.Component
 
     public render(): any {
         return (
-          <div className='transit-toggle-container'>
+          <div className={container}>
             <TransitToggleButton
               toggleActivity={this.toggleActivity}
               toggled={this.state.toggles.bus}

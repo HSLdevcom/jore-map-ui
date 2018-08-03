@@ -1,0 +1,55 @@
+@import '../../common.scss';
+
+.container {
+    position: absolute;
+    display: block;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    font-size: $mediumFontSize;
+    height: 100Vh;
+    margin: 0;
+    background-color: $backgroundlightGrey;
+    z-index: 9;
+    overflow-y: auto;
+    min-width: 400px;
+    max-width: 400px;
+
+    .header {
+        display: block;
+        height: auto;
+        padding: 20px 20px 20px 20px;
+        background-color: $busBlue;
+        cursor: pointer;
+
+        .headerContainer {
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+
+            .title {
+                display: inline-block;
+                font-size: $largeFontSize;
+                -webkit-margin-before: 0.83em;
+                -webkit-margin-after: 0.83em;
+                -webkit-margin-start: 0px;
+                -webkit-margin-end: 0px;
+                color: #fff;
+                font-weight: normal;
+                vertical-align: middle;
+                padding-left: 10px;
+            }
+
+            .logo {
+                display: inline-block;
+                height: 40px;
+                text-align: center;
+                vertical-align: middle;
+            }
+        }
+    }
+
+    .content {
+        padding: 10px;
+    }
+}

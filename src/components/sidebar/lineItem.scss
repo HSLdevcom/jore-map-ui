@@ -1,0 +1,25 @@
+@import '../../common.scss';
+
+.container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 5px;
+  cursor: pointer;
+  
+  .label {
+    font-size: $largeFontSize;
+    font-weight: 600;
+    margin-right: 12px;
+    margin-left: 8px;
+  }
+
+  .icon {
+    flex-shrink: 0;
+  }
+}
