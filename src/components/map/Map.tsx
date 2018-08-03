@@ -1,10 +1,13 @@
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
+import { autorun } from 'mobx';
 import * as React from 'react';
 import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 import { MapStore } from '../../stores/mapStore';
+import { RouteStore } from '../../stores/routeStore';
+import RouteLayerView from '../../layers/routeLayerView';
 import {
     mapLeaflet,
     fullscreen,
@@ -14,24 +17,33 @@ import {
 
 interface IMapProps {
     mapStore?: MapStore;
+    routeStore?: RouteStore;
 }
 
 @inject('mapStore')
+@inject('routeStore')
 @observer
 class Map extends React.Component<IMapProps> {
     private map: L.Map;
     private lastCenter: L.LatLng;
+    private routeLayerView: RouteLayerView;
 
-    constructor(props: any) {
+    constructor(props: IMapProps) {
         super(props);
     }
 
     public componentDidMount() {
         this.initializeMap();
+        this.routeLayerView = new RouteLayerView(this.map);
+        autorun(() => this.updateRouteLines());
     }
 
     public componentWillReact() {
         this.updateMap();
+    }
+
+    private updateRouteLines() {
+        this.routeLayerView.drawRouteLines(this.props.routeStore!.openRoutes);
     }
 
     public render() {
