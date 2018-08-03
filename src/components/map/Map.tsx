@@ -1,7 +1,7 @@
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
-import { autorun, toJS } from 'mobx';
+import { autorun } from 'mobx';
 import * as React from 'react';
 import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
@@ -37,7 +37,7 @@ class Map extends React.Component<IMapProps> {
     }
 
     private updateRouteLines() {
-        this.routeLayerView.drawRouteLines(toJS(this.props.routeStore!.openRoutes));
+        this.routeLayerView.drawRouteLines(this.props.routeStore!.openRoutes);
     }
 
     public render() {
