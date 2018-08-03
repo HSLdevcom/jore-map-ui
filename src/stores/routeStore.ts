@@ -1,15 +1,11 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, toJS } from 'mobx';
 import { IRoute } from '../models';
 
 export class RouteStore {
-    @observable private _openRoutes: IRoute[];
-
-    constructor() {
-        this._openRoutes = [];
-    }
+    @observable private _openRoutes = observable<IRoute>([]);
 
     @computed get openRoutes(): IRoute[] {
-        return this._openRoutes;
+        return toJS(this._openRoutes);
     }
 
     @action
@@ -19,7 +15,7 @@ export class RouteStore {
 
     @action
     public clearOpenRoutes() {
-        this._openRoutes = [];
+        this._openRoutes.clear();
     }
 }
 
