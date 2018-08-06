@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
-import LineEditView from './LineEditView';
+import RoutesEdit from './RoutesEdit';
 import LineSearch from './LineSearch';
 import * as s from './sidebar.scss';
 
@@ -40,7 +40,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         <LineSearch />
                     }
                     {this.props.routeStore!.routes.length > 0 &&
-                        <LineEditView />
+                        <RoutesEdit />
                     }
                 </div>
             </div>

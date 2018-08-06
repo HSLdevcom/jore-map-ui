@@ -1,5 +1,5 @@
-export default interface IDirection {
-    directionName: string;
+export default interface IRoutePath {
+    routePathName: string;
     direction: string;
     geoJson: string;
     visible: boolean;

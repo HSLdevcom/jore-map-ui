@@ -1,5 +1,5 @@
 import { action, computed, observable, toJS } from 'mobx';
-import { IRoute, IDirection } from '../models';
+import { IRoute, IRoutePath } from '../models';
 
 export class RouteStore {
     @observable private _routes = observable<IRoute>([]);
@@ -18,30 +18,30 @@ export class RouteStore {
         this._routes.clear();
     }
 
-    private findObservableDirection(route: IRoute, direction: IDirection): IDirection | null {
-        let directionObservable: IDirection | null = null;
+    private findObservableRoutePath(route: IRoute, routePath: IRoutePath): IRoutePath | null {
+        let routePathObservable: IRoutePath | null = null;
 
-        this._routes.find((r) => {
-            const found = r.directions.find(d =>
-                d.direction === direction.direction &&
-                d.endTime.getTime() === direction.endTime.getTime() &&
-                d.startTime.getTime() === direction.startTime.getTime() &&
-                r.lineId === route.lineId,
+        this._routes.find((_route) => {
+            const found = _route.routePaths.find(_routePath =>
+                _routePath.direction === routePath.direction &&
+                _routePath.endTime.getTime() === routePath.endTime.getTime() &&
+                _routePath.startTime.getTime() === routePath.startTime.getTime() &&
+                _route.lineId === route.lineId,
             );
             if (found) {
-                directionObservable = found;
+                routePathObservable = found;
                 return true;
             }
             return false;
         });
-        return directionObservable;
+        return routePathObservable;
     }
 
     @action
-    public toggleDirectionIsVisible(route: IRoute, direction: IDirection) {
-        const directionObservable = this.findObservableDirection(route, direction);
-        if (directionObservable) {
-            directionObservable.visible = !directionObservable.visible;
+    public toggleRoutePathVisibility(route: IRoute, routePath: IRoutePath) {
+        const routePathObservable = this.findObservableRoutePath(route, routePath);
+        if (routePathObservable) {
+            routePathObservable.visible = !routePathObservable.visible;
         }
     }
 }

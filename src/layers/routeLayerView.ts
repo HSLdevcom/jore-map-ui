@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { IDirection, IRoute } from '../models';
+import { IRoutePath, IRoute } from '../models';
 import { routeLayerBlue, routeLayerRed } from './routeLayer.scss';
 
 export default class RouteLayerView {
@@ -13,30 +13,30 @@ export default class RouteLayerView {
 
     public drawRouteLines(routes: IRoute[]) {
         if (routes && routes[0]) {
-            if (routes[0].directions[0]) {
-                routes[0].directions.map(direction => (
-                    this.drawRouteLine(direction)
+            if (routes[0].routePaths[0]) {
+                routes[0].routePaths.map(routePath => (
+                    this.drawRouteLine(routePath)
                 ));
             } else {
-                // TODO: throw error / show error on UI if direction is empty?
+                // TODO: throw error / show error on UI if routePath is empty?
             }
         } else {
             this.clearRoute();
         }
     }
 
-    private drawRouteLine(direction: IDirection) {
+    private drawRouteLine(routePath: IRoutePath) {
         const getClassName = (type: string) => {
-            switch (direction.direction) {
+            switch (routePath.direction) {
             case '1': return routeLayerBlue;
             case '2': return routeLayerRed;
             default: return routeLayerBlue;
             }
         };
 
-        const geoJSON = new L.GeoJSON(JSON.parse(direction.geoJson))
+        const geoJSON = new L.GeoJSON(JSON.parse(routePath.geoJson))
         .setStyle({
-            className: getClassName(direction.direction),
+            className: getClassName(routePath.direction),
         })
         .addTo(this.map);
         this.routeLayers.push(geoJSON);

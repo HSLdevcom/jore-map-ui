@@ -1,10 +1,10 @@
-import { IDirection } from '.';
+import { IRoutePath } from '.';
 import ILine from './ILine';
 
 export default interface IRoute {
     routeName: string;
     routeNameSwedish: string;
     lineId: string;
-    directions: IDirection[];
+    routePaths: IRoutePath[];
     line: ILine;
 }
