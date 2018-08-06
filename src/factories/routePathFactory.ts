@@ -1,8 +1,8 @@
-import { IDirection } from '../models';
+import { IRoutePath } from '../models';
 
-class DirectionFactory {
-    public static suuntaToIDirection = (suunta: any): IDirection => {
-        return <IDirection>{
+class RoutePathFactory {
+    public static suuntaToIRoutePath = (suunta: any): IRoutePath => {
+        return <IRoutePath>{
             directionName: suunta.suunimi,
             direction: suunta.suusuunta,
             geoJson: suunta.geojson,
@@ -14,4 +14,4 @@ class DirectionFactory {
     }
 }
 
-export default DirectionFactory;
+export default RoutePathFactory;

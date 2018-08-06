@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
-import { IDirection, IRoute } from '../../models';
+import { IRoutePath, IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
 import classNames from 'classnames';
 import LineHelper from '../../util/lineHelper';
@@ -17,24 +17,24 @@ interface ILineEditViewProps {
 @observer
 class LineEditView extends React.Component<ILineEditViewProps> {
     private directionList(route: IRoute) {
-        return route.directions
+        return route.routePaths
             .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
-            .map((direction: IDirection, index: number) => {
-                const toggleDirectionIsVisible = () => {
-                    this.props.routeStore!.toggleDirectionIsVisible(route, direction);
+            .map((routePath: IRoutePath, index: number) => {
+                const toggleRoutePathVisibility = () => {
+                    this.props.routeStore!.toggleRoutePathVisibility(route, routePath);
                 };
 
                 return (
                     <div
                         className={s.toggle}
-                        key={`${direction.directionName}-${index}`}
+                        key={`${routePath.directionName}-${index}`}
                     >
                         <span className={s.toggleTitle}>
-                            Suunta {direction.direction}
+                            Suunta {routePath.direction}
                         </span>
                         <ToggleButton
-                            onClick={toggleDirectionIsVisible}
-                            value={direction.visible}
+                            onClick={toggleRoutePathVisibility}
+                            value={routePath.visible}
                             type={route.line.transitType}
                         />
                     </div>
