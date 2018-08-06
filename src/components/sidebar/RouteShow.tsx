@@ -30,8 +30,9 @@ class RouteShow extends React.Component<IRouteShowProps> {
                             ),
                         )}
                     >
-                        {this.props.route.routeName}
+                        {this.props.route.line.lineNumber}
                     </span>
+                    {this.props.route.routeName}
                 </span>
                 {this.props.route.routePaths
                     .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
