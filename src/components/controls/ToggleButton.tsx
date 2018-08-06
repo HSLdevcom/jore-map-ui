@@ -28,7 +28,7 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
     }
 
     public render(): any {
-        const buttonOnClick = (event: React.MouseEvent<HTMLElement>) => {
+        const onClick = (event: React.MouseEvent<HTMLElement>) => {
             this.props.onClick(event);
             event.stopPropagation();
             event.preventDefault();
@@ -36,7 +36,7 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
 
         return (
             <label
-                onClick={buttonOnClick}
+                onClick={onClick}
                 className={s.toggleButtonView}
             >
                 <input type='checkbox' checked={this.props.value}/>

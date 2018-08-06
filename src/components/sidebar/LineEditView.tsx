@@ -20,7 +20,7 @@ class LineEditView extends React.Component<ILineEditViewProps> {
         return route.directions
             .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
             .map((direction: IDirection, index: number) => {
-                const onClick = () => {
+                const toggleDirectionIsVisible = () => {
                     this.props.routeStore!.toggleDirectionIsVisible(route, direction);
                 };
 
@@ -33,7 +33,7 @@ class LineEditView extends React.Component<ILineEditViewProps> {
                             Suunta {direction.direction}
                         </span>
                         <ToggleButton
-                            onClick={onClick}
+                            onClick={toggleDirectionIsVisible}
                             value={direction.visible}
                             type={route.line.transitType}
                         />
@@ -66,13 +66,6 @@ class LineEditView extends React.Component<ILineEditViewProps> {
                     {
                         this.directionList(route)
                     }
-                    <div className={s.checkboxContainer}>
-                        <input
-                            type='checkbox'
-                            checked={false}
-                        />
-                        Kopioi reitti toiseen suuntaan
-                    </div>
                 </div>
             );
         });
@@ -84,21 +77,30 @@ class LineEditView extends React.Component<ILineEditViewProps> {
                 {
                     this.routeList(this.props.routeStore!.routes)
                 }
-                <div className={s.inputContainer}>
-                    <label className={s.inputTitle}>
-                        HAE TOINEN LINJA TARKASTELUUN
-                    </label>
+                <div className={s.checkboxContainer}>
                     <input
-                        placeholder='Hae reitti'
-                        type='text'
+                        type='checkbox'
+                        checked={false}
                     />
+                    Kopioi reitti toiseen suuntaan
                 </div>
-                <div className={s.inputContainer}>
-                    <span className={s.inputTitle}>TARKASTELUPÄIVÄ</span>
-                    <input
-                        placeholder='25.8.2017'
-                        type='text'
-                    />
+                <div className={s.inputWrapper}>
+                    <div className={s.inputContainer}>
+                        <label className={s.inputTitle}>
+                            HAE TOINEN LINJA TARKASTELUUN
+                        </label>
+                        <input
+                            placeholder='Hae reitti'
+                            type='text'
+                        />
+                    </div>
+                    <div className={s.inputContainer}>
+                        <span className={s.inputTitle}>TARKASTELUPÄIVÄ</span>
+                        <input
+                            placeholder='25.8.2017'
+                            type='text'
+                        />
+                    </div>
                 </div>
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>
