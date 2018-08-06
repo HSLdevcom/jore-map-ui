@@ -10,6 +10,7 @@
 src/**/*.css
 /.sass-cache
 src/styles/css
+src/**/*.scss.d.ts
 
 # production
 /build

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
 import LineEditView from './LineEditView';
 import LineSearch from './LineSearch';
+import * as s from './sidebar.scss';
 
 interface ISidebarProps {
     routeStore?: RouteStore;
@@ -25,24 +26,24 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
 
     public render(): any {
         return (
-          <div className='sidebar-container'>
-            <div className='sidebar-header'>
-              <div onClick={this.handleHeaderClick} className='sidebar-header-container'>
-                <img className='sidebar-logo' src='hsl-logo.png' />
-                <h2 className='sidebar-title'>
-                  Joukkoliikennerekisteri
+            <div className={s.sidebarView}>
+                <div className={s.header}>
+                    <div onClick={this.handleHeaderClick} className={s.headerContainer}>
+                        <img className={s.logo} src='hsl-logo.png' />
+                        <h2 className={s.title}>
+                            Joukkoliikennerekisteri
                 </h2>
-              </div>
+                    </div>
+                </div>
+                <div className={s.content}>
+                    {this.props.routeStore!.openRoutes.length < 1 &&
+                        <LineSearch />
+                    }
+                    {this.props.routeStore!.openRoutes.length > 0 &&
+                        <LineEditView />
+                    }
+                </div>
             </div>
-            <div className='sidebar-content'>
-              { this.props.routeStore!.openRoutes.length < 1 &&
-                <LineSearch />
-              }
-              {this.props.routeStore!.openRoutes.length > 0 &&
-                <LineEditView />
-              }
-            </div>
-          </div>
         );
     }
 }

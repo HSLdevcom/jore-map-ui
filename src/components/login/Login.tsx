@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { LoginStore } from '../../stores/loginStore';
 import Button from '../controls/Button';
 import ButtonType from '../../enums/buttonType';
+import * as s from './login.scss';
 
 interface ILoginProps {
     loginStore?: LoginStore;
@@ -27,29 +28,27 @@ class Login extends React.Component<ILoginProps> {
 
     public render(): any {
         return (
-        <div className='login-container'>
-            <h2 id='title'>Sisäänkirjautuminen</h2>
+        <div className={s.loginView}>
+            <h2>Sisäänkirjautuminen</h2>
             <form>
-                <label className='loginModal-label'>
+                <label className={s.label}>
                     Tunnus
                 <br/>
                     <input
-                        className='login-input'
                         type='text'
                         onChange={this.handleUserNameOnChange}
                     />
                 </label>
-                <label className='loginModal-label'>
+                <label className={s.label}>
                     Salasana
                 <br/>
                     <input
-                        className='login-input'
                         type='text'
                         onChange={this.handlePasswordOnChange}
                     />
                 </label>
             </form>
-            <div className='modal-button-bar'>
+            <div className={s.modalButtonBar}>
                 <Button
                     onClick={this.closeLoginModal}
                     type={ButtonType.SECONDARY}

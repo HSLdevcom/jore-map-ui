@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import { IDirection, IRoute } from '../models';
+import { routeLayerBlue, routeLayerRed } from './routeLayer.scss';
 
 export default class RouteLayerView {
     private map: L.Map;
@@ -27,15 +28,15 @@ export default class RouteLayerView {
     private drawRouteLine(direction: IDirection) {
         const getClassName = (type: string) => {
             switch (direction.direction) {
-            case '1': return 'blue';
-            case '2': return 'red';
-            default: return 'blue';
+            case '1': return routeLayerBlue;
+            case '2': return routeLayerRed;
+            default: return routeLayerBlue;
             }
         };
 
         const geoJSON = new L.GeoJSON(JSON.parse(direction.geoJson))
         .setStyle({
-            className: 'routeLayer-' + getClassName(direction.direction),
+            className: getClassName(direction.direction),
         })
         .addTo(this.map);
         this.routeLayers.push(geoJSON);

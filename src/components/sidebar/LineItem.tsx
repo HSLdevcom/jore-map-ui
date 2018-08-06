@@ -1,9 +1,12 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import classNames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import lineHelper from '../../util/lineHelper';
 import { ILine, IRoute } from '../../models';
 import RouteService from '../../services/routeService';
+import * as s from './lineItem.scss';
+import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 
 interface ILineItemState {
     type: string;
@@ -24,18 +27,27 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 this.props.routeStore!.addToOpenedRoutes(res);
             })
             .catch((err: any) => {
-                console.log(err);
             });
     }
 
     public render(): any {
         return (
-            <span onClick={this.selectLine} className={'line-wrapper'}>
-              {lineHelper.getTransitIcon(this.props.line.transitType, false)}
-              <span className={'line-number-' + this.props.line.transitType}>
-                  {this.props.line.lineNumber}
-              </span>
-              {this.props.line.lineName}
+            <span
+                className={s.listItemView}
+                onClick={this.selectLine}
+            >
+                <span className={s.icon}>
+                    {lineHelper.getTransitIcon(this.props.line.transitType, false)}
+                </span>
+                <span
+                    className={classNames(
+                        TransitTypeColorHelper.getColorClass(this.props.line.transitType, false),
+                        s.label,
+                    )}
+                >
+                    {this.props.line.lineNumber}
+                </span>
+                {this.props.line.lineName}
             </span>
         );
     }

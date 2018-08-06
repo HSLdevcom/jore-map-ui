@@ -1,0 +1,24 @@
+@import '../../common.scss';
+
+.toggle {
+    flex: 1;
+    height: 40px;
+    border: hidden;
+    cursor: pointer;
+    transition: .5s;
+}
+
+.toggled {
+    background-color: $darkGrey;
+    transition: .5s;
+}
+
+.toggle:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.toggle:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}

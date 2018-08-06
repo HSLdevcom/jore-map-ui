@@ -1,0 +1,41 @@
+@import '../common.scss';
+
+.ferry {
+  color: $ferryBlue !important;
+}
+
+.bus {
+  color: $busBlue !important;
+}
+
+.tram {
+  color: $tramGreen !important;
+}
+
+.train {
+  color: $trainPurple !important;
+}
+
+.subway {
+  color: $subwayOrange !important;
+}
+
+.ferryBg {
+  background-color: $ferryBlue !important;
+}
+
+.busBg {
+  background-color: $busBlue !important;
+}
+
+.tramBg {
+  background-color: $tramGreen !important;
+}
+
+.trainBg {
+  background-color: $trainPurple !important;
+}
+
+.subwayBg {
+  background-color: $subwayOrange !important;
+}
