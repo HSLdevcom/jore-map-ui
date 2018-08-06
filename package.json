@@ -60,7 +60,7 @@
   },
   "scripts": {
     "start": "npm run buildSass && npm run startDev",
-    "startDev" : "node scripts/start.js",
+    "startDev": "node scripts/start.js",
     "build": "npm run buildSass && npm run buildProd",
     "buildProd": "node scripts/build.js",
     "buildSass": "node scripts/buildSass.js && del-cli main.scss.d.ts",
