@@ -1,13 +1,14 @@
 import { LatLng } from 'leaflet';
 import { action, computed, observable } from 'mobx';
 import CoordinateSystem from '../enums/coordinateSystems';
+import GeometryService from '../services/geometryService';
 
 export class MapStore {
 
     @observable private _coordinates: LatLng;
     @observable private _isMapFullscreen: boolean;
     @observable private _routes: MapRoute[];
-    @observable private _coordinateSystem:CoordinateSystem;
+    @observable private _displayCoordinateSystem:CoordinateSystem;
 
     constructor(
         coordinate = new LatLng(60.24, 24.9),
@@ -16,7 +17,7 @@ export class MapStore {
         this._coordinates = coordinate;
         this._isMapFullscreen = isFullscreen;
         this._routes = [];
-        this._coordinateSystem = CoordinateSystem.EPSG4326;
+        this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
     }
 
     @computed get isMapFullscreen(): boolean {
@@ -47,6 +48,18 @@ export class MapStore {
         this._coordinates.lng = lon;
     }
 
+    @computed get getDisplayCoordinates(): number[] {
+        return GeometryService.reprojectToCrs(
+            this._coordinates.lat, this._coordinates.lng, this._displayCoordinateSystem);
+    }
+
+    @action
+    setCoordinatesFromDisplayCoordinateSystem(lat: number, lon: number) {
+        const [wgsLat, wgsLon] = GeometryService.reprojectToCrs(
+            lat, lon, CoordinateSystem.EPSG4326, this._displayCoordinateSystem);
+        this._coordinates = new LatLng(wgsLat, wgsLon);
+    }
+
     @action
     public setCoordinates(lat: number, lon: number) {
         this._coordinates = new LatLng(lat, lon);
@@ -58,12 +71,18 @@ export class MapStore {
     }
 
     @computed
-    get coordinateSystem(): CoordinateSystem {
-        return this._coordinateSystem;
+    get displayCoordinateSystem(): CoordinateSystem {
+        return this._displayCoordinateSystem;
     }
 
-    set coordinateSystem(value: CoordinateSystem) {
-        this._coordinateSystem = value;
+    set displayCoordinateSystem(value: CoordinateSystem) {
+        this._displayCoordinateSystem = value;
+    }
+
+    @action
+    public cycleCoordinateSystem() {
+        this._displayCoordinateSystem =
+            GeometryService.nextCoordinateSystem(this._displayCoordinateSystem);
     }
 }
 

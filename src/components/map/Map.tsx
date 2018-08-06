@@ -6,10 +6,12 @@ import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 import { MapStore } from '../../stores/mapStore';
 import { autorun } from 'mobx';
+import GeometryService from '../../services/geometryService';
+import CoordinateControl from './CoordinateControl';
+import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import RouteLayerView from '../../layers/routeLayerView';
 import * as s from './map.scss';
-import CoordinateSystem from '../../enums/coordinateSystems';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -21,8 +23,6 @@ interface IMapProps {
 @observer
 class Map extends React.Component<IMapProps> {
     private map: L.Map;
-    private lastCenter: L.LatLng;
-    private coordinateControl: L.Control;
     private xInput: HTMLInputElement;
     private yInput: HTMLInputElement;
     private xButton: HTMLElement;
@@ -52,17 +52,19 @@ class Map extends React.Component<IMapProps> {
             classes.remove(s.fullscreen);
         }
         return (
-            <div
-                id={s.mapLeaflet}
-                // tslint:disable-next-line:max-line-length
-                className={`${classes !== null ? classes.toString() : ''} root ${this.props.mapStore!.isMapFullscreen ? s.fullscreen : ''}`}
-            />
+            <div>
+                <div
+                    id='map-leaflet'
+                    // tslint:disable-next-line:max-line-length
+                    className={classnames(classes !== null ? classes.toString() : '', 'root', this.props.mapStore!.isMapFullscreen ? s.fullscreen : '')}
+                />
+                <CoordinateControl />
+            </div>
         );
     }
 
     private initializeMap = () => {
         this.map = L.map(s.mapLeaflet, { zoomControl: false });
-        this.lastCenter = this.props.mapStore!.coordinates;
         this.map.setView(this.props.mapStore!.coordinates, 15);
         // tslint:disable-next-line:max-line-length
         L.tileLayer('https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}{retina}.png', {
@@ -76,16 +78,17 @@ class Map extends React.Component<IMapProps> {
             tileSize: 512,
             zoomOffset: -1,
         }).addTo(this.map);
-        this.map.addControl(this.fullscreenControlButton());
-        this.coordinateControl = this.coordinateControlBox();
-        this.map.addControl(this.coordinateControl);
+        this.map.addControl(new this.fullscreenControlButton());
+        this.map.addControl(new this.coordinateControl());
         L.control.zoom({ position:'bottomright' }).addTo(this.map);
         this.map.on('moveend', this.setMapCenterAsCenter);
     }
 
-    private fullscreenControlButton = () => {
-        const fullscreenControl = new L.Control();
-        fullscreenControl.onAdd = () => {
+    private fullscreenControlButton = L.Control.extend({
+        options: {
+            position: 'bottomright',
+        },
+        onAdd: () => {
             const icon = L.DomUtil.create('img');
             const container = L.DomUtil.create('button', 'leaflet-bar leaflet-control');
             container.id = 'fullscreenControl';
@@ -103,18 +106,15 @@ class Map extends React.Component<IMapProps> {
             };
             L.DomEvent.disableClickPropagation(container);
             return container;
-        };
-        fullscreenControl.options = { position: 'bottomright' };
-        return fullscreenControl;
-    }
+        },
+    });
 
-    private coordinateControlBox = () => {
-        const coordinateControl = new L.Control();
-        coordinateControl.onAdd = () => {
-            const [lat, lon] = CoordinateSystem
-                .convertToCoordinateSystem(this.props.mapStore!.lat,
-                                           this.props.mapStore!.lon,
-                                           this.props.mapStore!.coordinateSystem);
+    private coordinateControl = L.Control.extend({
+        options: {
+            position: 'topright',
+        },
+        onAdd: () => {
+            const [lat, lon] = this.props.mapStore!.getDisplayCoordinates;
             const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
             container.id = 'coordinateControl';
             const xDiv = L.DomUtil.create('div');
@@ -145,29 +145,20 @@ class Map extends React.Component<IMapProps> {
                 }
             };
             this.xButton.onclick = this.yButton.onclick = () => {
-                this.props.mapStore!.coordinateSystem =
-                    CoordinateSystem.nextCoordinateSystem(this.props.mapStore!.coordinateSystem);
+                this.props.mapStore!.cycleCoordinateSystem();
             };
             L.DomEvent.disableClickPropagation(container);
             return container;
-        };
-        return coordinateControl;
-    }
+        },
+    });
 
     private updateMap = () => {
-        [this.xInput.value, this.yInput.value] = CoordinateSystem
-            .convertToCoordinateSystem(this.props.mapStore!.lat,
-                                       this.props.mapStore!.lon,
-                                       this.props.mapStore!.coordinateSystem)
-            .map(val => val.toString(10));
+        [this.xInput.value, this.yInput.value] =
+            this.props.mapStore!.getDisplayCoordinates.map(coord => coord.toString(10));
         ({ x: this.xButton.innerText, y: this.yButton.innerText } =
-            CoordinateSystem.coordinateNames(this.props.mapStore!.coordinateSystem));
-        if (!this.lastCenter.equals(this.props.mapStore!.coordinates)) {
+            GeometryService.coordinateNames(this.props.mapStore!.displayCoordinateSystem));
+        if (!this.map.getCenter().equals(this.props.mapStore!.coordinates)) {
             this.map.flyTo(this.props.mapStore!.coordinates);
-            this.lastCenter = new L.LatLng(
-                this.props.mapStore!.coordinates.lat,
-                this.props.mapStore!.coordinates.lng,
-            );
         }
     }
 
@@ -175,10 +166,7 @@ class Map extends React.Component<IMapProps> {
         this.props.mapStore!.setCoordinates(this.map.getCenter().lat, this.map.getCenter().lng)
 
     private setInputAsCenter = (lat: number, lon: number) => {
-        const [latt, lonn] =
-            CoordinateSystem.convertToCoordinateSystem(
-                lat, lon, CoordinateSystem.EPSG4326, this.props.mapStore!.coordinateSystem);
-        this.props.mapStore!.setCoordinates(latt, lonn);
+        this.props.mapStore!.setCoordinatesFromDisplayCoordinateSystem(lat, lon);
     }
 }
 
