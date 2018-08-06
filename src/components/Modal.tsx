@@ -1,17 +1,15 @@
 import * as React from 'react';
-import { modal, wrapper } from './modal.scss';
+import * as s from './modal.scss';
 
 interface IModalProps {
     closeModal: Function;
     isVisible: boolean;
 }
 
-const MODAL_CLASS_NAME = modal;
-
 class Modal extends React.Component<IModalProps> {
 
     private closeModal = (e: any) => {
-        if (e.target.className === MODAL_CLASS_NAME) {
+        if (e.target.className === s.modalView) {
             this.props.closeModal();
         }
     }
@@ -21,10 +19,10 @@ class Modal extends React.Component<IModalProps> {
 
         return (
         <div
-            className={MODAL_CLASS_NAME}
+            className={s.modalView}
             onClick={this.closeModal}
         >
-            <div className={wrapper}>
+            <div className={s.wrapper}>
                 {this.props.children}
             </div>
         </div>

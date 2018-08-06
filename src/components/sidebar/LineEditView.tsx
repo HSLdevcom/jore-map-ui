@@ -7,18 +7,7 @@ import ToggleButton from '../controls/ToggleButton';
 import classNames from 'classnames';
 import LineHelper from '../../util/lineHelper';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
-import {
-    container,
-    line,
-    toggle,
-    toggleTitle,
-    checkboxContainer,
-    inputContainer,
-    inputTitle,
-    network,
-    networkContainer,
-    label,
-} from './lineEditView.scss';
+import * as s from './lineEditView.scss';
 
 interface ILineEditViewState {
     type: string;
@@ -38,16 +27,16 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
 
     public render(): any {
         return (
-            <span className={container}>
+            <span className={s.lineEditView}>
                 {this.props.routeStore!.openRoutes.map((route: IRoute) => {
                     return (
-                        <div className={line} key={route.lineId}>
+                        <div className={s.line} key={route.lineId}>
                             <span>
                                 {LineHelper.getTransitIcon(route.line.transitType, false)}
                                 <span
                                     className={
                                         classNames(
-                                            label,
+                                            s.label,
                                             TransitTypeColorHelper.getColorClass(
                                                 route.line.transitType,
                                                 false,
@@ -59,14 +48,14 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
                                 </span>
                                 {route.routeName}
                             </span>
-                            <div className={toggle}>
-                                <span className={toggleTitle}>suunta 1 </span>
+                            <div className={s.toggle}>
+                                <span className={s.toggleTitle}>suunta 1 </span>
                                 <ToggleButton
                                     onClick={this.toggleDirection}
                                     type={route.line.transitType}
                                 />
                             </div>
-                            <div className={checkboxContainer}>
+                            <div className={s.checkboxContainer}>
                                 <input
                                     type='checkbox'
                                     checked={false}
@@ -77,8 +66,8 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
                     );
                 })
                 }
-                <div className={inputContainer}>
-                    <label className={inputTitle}>
+                <div className={s.inputContainer}>
+                    <label className={s.inputTitle}>
                         HAE TOINEN LINJA TARKASTELUUN
                     </label>
                     <input
@@ -86,31 +75,29 @@ class LineEditView extends React.Component<ILineEditViewProps, ILineEditViewStat
                         type='text'
                     />
                 </div>
-                <div className={inputContainer}>
-                    <span className={inputTitle}>TARKASTELUPÄIVÄ</span>
+                <div className={s.inputContainer}>
+                    <span className={s.inputTitle}>TARKASTELUPÄIVÄ</span>
                     <input
                         placeholder='25.8.2017'
                         type='text'
                     />
                 </div>
-                <div className={network}>
-                    <div className={networkContainer}>
-                        <label className={inputTitle}>VERKKO</label>
-                        <TransitToggleButtonBar filters={[]} />
-                        <div className={checkboxContainer}>
-                            <input
-                                type='checkbox'
-                                checked={false}
-                            />
-                            Hae alueen linkit
-                        </div>
-                        <div className={checkboxContainer}>
-                            <input
-                                type='checkbox'
-                                checked={false}
-                            />
-                            Hae alueen solmut
-                        </div>
+                <div className={s.network}>
+                    <label className={s.inputTitle}>VERKKO</label>
+                    <TransitToggleButtonBar filters={[]} />
+                    <div className={s.checkboxContainer}>
+                        <input
+                            type='checkbox'
+                            checked={false}
+                        />
+                        Hae alueen linkit
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <input
+                            type='checkbox'
+                            checked={false}
+                        />
+                        Hae alueen solmut
                     </div>
                 </div>
             </span>
