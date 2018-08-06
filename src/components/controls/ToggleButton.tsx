@@ -11,24 +11,16 @@ interface IToggleButtonState {
 interface IToggleButtonProps {
     type: TransitType;
     onClick(event: any): void;
+    value: boolean;
 }
 
 class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonState> {
     constructor (props: IToggleButtonProps) {
         super(props);
-        this.state = {
-            isChecked: false,
-        };
-    }
-
-    private toggle = (event: React.MouseEvent<HTMLElement>) => {
-        this.setState({ isChecked: !this.state.isChecked });
-        event.stopPropagation();
-        event.preventDefault();
     }
 
     private getClassname = () => {
-        if (this.state.isChecked) {
+        if (this.props.value) {
             return classNames(
                 s.slider,  TransitTypeColorHelper.getColorClass(this.props.type, true));
         }
@@ -36,15 +28,18 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
     }
 
     public render(): any {
+        const onClick = (event: React.MouseEvent<HTMLElement>) => {
+            this.props.onClick(event);
+            event.stopPropagation();
+            event.preventDefault();
+        };
+
         return (
             <label
-                onClick={this.toggle}
+                onClick={onClick}
                 className={s.toggleButtonView}
             >
-                <input
-                    type='checkbox'
-                    checked={this.state.isChecked}
-                />
+                <input type='checkbox' checked={this.props.value}/>
                 <div
                     className={this.getClassname()}
                 />

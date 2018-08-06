@@ -21,7 +21,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     }
 
     public handleHeaderClick = () => {
-        this.props.routeStore!.clearOpenRoutes();
+        this.props.routeStore!.clearRoutes();
     }
 
     public render(): any {
@@ -36,10 +36,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                     </div>
                 </div>
                 <div className={s.content}>
-                    {this.props.routeStore!.openRoutes.length < 1 &&
+                    {this.props.routeStore!.routes.length < 1 &&
                         <LineSearch />
                     }
-                    {this.props.routeStore!.openRoutes.length > 0 &&
+                    {this.props.routeStore!.routes.length > 0 &&
                         <LineEditView />
                     }
                 </div>

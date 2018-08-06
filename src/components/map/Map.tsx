@@ -38,7 +38,7 @@ class Map extends React.Component<IMapProps> {
     }
 
     private updateRouteLines() {
-        this.routeLayerView.drawRouteLines(this.props.routeStore!.openRoutes);
+        this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
     }
 
     public render() {
