@@ -1,27 +1,5 @@
 @import '../../common.scss';
-.lineEditView {
-    .line {
-        .label {
-            font-size: $largeFontSize;
-            font-weight: 600;
-            margin-right: 12px;
-            margin-left: 8px;
-        }
-
-        .toggle {
-            display: flex;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
-            align-items: center;
-            padding-top: 20px;
-
-            .toggleTitle {
-                display: inline-block;
-                padding-right: 5Vh;
-            }
-        }
-    }
-
+.routesEdit {
     .inputWrapper {
         padding-top: 10px;
 

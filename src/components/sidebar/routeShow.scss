@@ -1,0 +1,25 @@
+@import '../../common.scss';
+.routeName {
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+
+    .label {
+        font-size: $largeFontSize;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+}
+
+.toggle {
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 20px;
+
+    .toggleTitle {
+        display: inline-block;
+        width: 110px;
+    }
+}
