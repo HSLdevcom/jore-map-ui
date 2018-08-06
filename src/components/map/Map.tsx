@@ -7,7 +7,6 @@ import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 import { MapStore } from '../../stores/mapStore';
 import { autorun } from 'mobx';
 import GeometryService from '../../services/geometryService';
-import CoordinateControl from './CoordinateControl';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import RouteLayerView from '../../layers/routeLayerView';
@@ -54,11 +53,10 @@ class Map extends React.Component<IMapProps> {
         return (
             <div>
                 <div
-                    id='map-leaflet'
+                    id={s.mapLeaflet}
                     // tslint:disable-next-line:max-line-length
                     className={classnames(classes !== null ? classes.toString() : '', 'root', this.props.mapStore!.isMapFullscreen ? s.fullscreen : '')}
                 />
-                <CoordinateControl />
             </div>
         );
     }
@@ -116,7 +114,7 @@ class Map extends React.Component<IMapProps> {
         onAdd: () => {
             const [lat, lon] = this.props.mapStore!.getDisplayCoordinates;
             const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-            container.id = 'coordinateControl';
+            container.id = s.coordinateControl;
             const xDiv = L.DomUtil.create('div');
             this.xButton = L.DomUtil.create('button');
             this.xButton.innerText = 'Lat';
