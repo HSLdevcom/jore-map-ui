@@ -3,7 +3,7 @@ import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
 import TransitToggleButton from './TransitToggleButton';
 import TransitType from '../../enums/transitType';
-import { container } from './transitToggleButtonBar.scss';
+import * as s from './transitToggleButtonBar.scss';
 
 interface ITransitToggleButtonBarState {
     toggles: any;
@@ -17,7 +17,7 @@ interface ITtransitToggleButtonBarProps {
 @inject('lineStore')
 @observer
 class TransitToggleButtonBar extends React.Component
-  <ITtransitToggleButtonBarProps, ITransitToggleButtonBarState> {
+<ITtransitToggleButtonBarProps, ITransitToggleButtonBarState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -52,7 +52,7 @@ class TransitToggleButtonBar extends React.Component
             toggles: toggleState,
         });
 
-      // Set filters for RouteSearch.tsx
+        // Set filters for RouteSearch.tsx
         const filters: string[] = [];
         for (const key in this.state.toggles) {
             if (!this.state.toggles[key]) {
@@ -64,33 +64,33 @@ class TransitToggleButtonBar extends React.Component
 
     public render(): any {
         return (
-          <div className={container}>
-            <TransitToggleButton
-              toggleActivity={this.toggleActivity}
-              toggled={this.state.toggles.bus}
-              type={TransitType.BUS}
-            />
-            <TransitToggleButton
-              toggleActivity={this.toggleActivity}
-              toggled={this.state.toggles.tram}
-              type={TransitType.TRAM}
-            />
-            <TransitToggleButton
-              toggleActivity={this.toggleActivity}
-              toggled={this.state.toggles.train}
-              type={TransitType.TRAIN}
-            />
-            <TransitToggleButton
-              toggleActivity={this.toggleActivity}
-              toggled={this.state.toggles.subway}
-              type={TransitType.SUBWAY}
-            />
-            <TransitToggleButton
-              toggleActivity={this.toggleActivity}
-              toggled={this.state.toggles.ferry}
-              type={TransitType.FERRY}
-            />
-          </div>
+            <div className={s.transitToggleButtonBarView}>
+                <TransitToggleButton
+                    toggleActivity={this.toggleActivity}
+                    toggled={this.state.toggles.bus}
+                    type={TransitType.BUS}
+                />
+                <TransitToggleButton
+                    toggleActivity={this.toggleActivity}
+                    toggled={this.state.toggles.tram}
+                    type={TransitType.TRAM}
+                />
+                <TransitToggleButton
+                    toggleActivity={this.toggleActivity}
+                    toggled={this.state.toggles.train}
+                    type={TransitType.TRAIN}
+                />
+                <TransitToggleButton
+                    toggleActivity={this.toggleActivity}
+                    toggled={this.state.toggles.subway}
+                    type={TransitType.SUBWAY}
+                />
+                <TransitToggleButton
+                    toggleActivity={this.toggleActivity}
+                    toggled={this.state.toggles.ferry}
+                    type={TransitType.FERRY}
+                />
+            </div>
         );
     }
 }

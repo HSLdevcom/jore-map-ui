@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ButtonType from '../../enums/buttonType';
 import classNames from 'classnames';
-import { button, primary, secondary } from './button.scss';
+import * as s from './button.scss';
 
 interface IButtonProps {
     onClick(event: any): void;
@@ -16,8 +16,8 @@ class Button extends React.Component<IButtonProps, {}> {
     }
 
     private getClassname = (type: ButtonType, className?: string) => {
-        const typeClass = type === ButtonType.PRIMARY ? primary : secondary;
-        return classNames(button, typeClass, className);
+        const typeClass = type === ButtonType.PRIMARY ? s.primary : s.secondary;
+        return classNames(s.button, typeClass, className);
     }
 
     public render(): any {

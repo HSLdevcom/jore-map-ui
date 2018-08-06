@@ -2,10 +2,7 @@ import * as React from 'react';
 import lineHelper from '../../util/lineHelper';
 import TransitType from '../../enums/transitType';
 import classNames from 'classnames';
-import {
-    toggle,
-    toggled,
-} from './transitToggleButton.scss';
+import * as s from './transitToggleButton.scss';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 
 interface ITransitToggleButtonProps {
@@ -28,23 +25,24 @@ class TransitToggleButton extends React.Component
         this.props.toggleActivity(this.props.type);
     }
 
-    private getMergedClass = (transitType: TransitType, isToggled: boolean) => {
+    private getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
         if (isToggled) {
-            return classNames(
-                toggle,
-                TransitTypeColorHelper.getColorClass(transitType, true));
+            return TransitTypeColorHelper.getColorClass(transitType, true);
         }
-        return classNames(toggle, toggled);
+        return s.toggled;
     }
 
     public render(): any {
         return (
-      <button
-        className={this.getMergedClass(this.props.type, this.props.toggled)}
-        onClick={this.toggleActivity}
-      >
-        {lineHelper.getTransitIcon(this.props.type, true)}
-      </button>
+            <button
+                className={classNames(
+                    s.toggle,
+                    this.getToggledButtonClass(this.props.type, this.props.toggled),
+                )}
+                onClick={this.toggleActivity}
+            >
+                {lineHelper.getTransitIcon(this.props.type, true)}
+            </button>
         );
     }
 }
