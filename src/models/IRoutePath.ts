@@ -1,7 +1,7 @@
 export default interface IRoutePath {
     routePathName: string;
     direction: string;
-    geoJson: string;
+    geoJson: any;
     visible: boolean;
     startTime: Date;
     endTime: Date;

@@ -27,6 +27,11 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
         return s.slider;
     }
 
+    private doNothing() {
+        // Empty function
+        // Needed because input field wants an onChange function if its checked field is changed
+    }
+
     public render(): any {
         const onClick = (event: React.MouseEvent<HTMLElement>) => {
             this.props.onClick(event);
@@ -39,7 +44,11 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
                 onClick={onClick}
                 className={s.toggleButtonView}
             >
-                <input type='checkbox' checked={this.props.value}/>
+                <input
+                    type='checkbox'
+                    checked={this.props.value}
+                    onChange={this.doNothing}
+                />
                 <div
                     className={this.getClassname()}
                 />
