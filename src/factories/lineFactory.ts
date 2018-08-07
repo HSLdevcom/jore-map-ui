@@ -2,7 +2,8 @@ import { ILine } from '../models';
 import TransitType from '../enums/transitType';
 
 class LineFactory {
-    public static linjaToILine = (linja: any) => {
+    // linja to ILine
+    public static createLine = (linja: any) => {
         const transitType = _convertTransitTypeCodeToTransitType(linja.linverkko);
         const lineName = _getReiTunnus(linja.reittisByLintunnus.edges[0]);
         const lineNumber = _parseLineNumber(linja.lintunnus);
@@ -17,7 +18,7 @@ class LineFactory {
 
     public static linjasToILines = (linja: any[]) => {
         return linja.map(((node: any) => {
-            return LineFactory.linjaToILine(node);
+            return LineFactory.createLine(node);
         }));
     }
 }
