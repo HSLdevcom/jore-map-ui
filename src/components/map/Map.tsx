@@ -35,7 +35,6 @@ class Map extends React.Component<IMapProps> {
     public componentDidMount() {
         this.initializeMap();
         autorun(() => this.updateMap());
-        autorun(() => this.updateMap());
         this.routeLayerView = new RouteLayerView(this.map);
         autorun(() => this.updateRouteLines());
     }
