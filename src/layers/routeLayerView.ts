@@ -38,7 +38,7 @@ export default class RouteLayerView {
             }
         };
 
-        const geoJSON = new L.GeoJSON(JSON.parse(routePath.geoJson))
+        const geoJSON = new L.GeoJSON(routePath.geoJson)
         .setStyle({
             className: getClassName(routePath.direction),
         })
