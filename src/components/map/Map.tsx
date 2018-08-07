@@ -119,6 +119,7 @@ class Map extends React.Component<IMapProps> {
             this.xButton.innerText = 'Lat';
             this.xInput = L.DomUtil.create('input', '') as HTMLInputElement;
             this.xInput.id = 'xcoord';
+            this.xInput.tabIndex = 1;
             xDiv.appendChild(this.xButton);
             xDiv.appendChild(this.xInput);
             this.xInput.value = lat.toString(10);
@@ -128,6 +129,8 @@ class Map extends React.Component<IMapProps> {
             this.yButton.innerText = 'Lon';
             this.yInput = L.DomUtil.create('input', '') as HTMLInputElement;
             this.yInput.id = 'ycoord';
+            this.yInput.tabIndex = 2;
+            this.yInput.focus
             yDiv.appendChild(this.yButton);
             yDiv.appendChild(this.yInput);
             container.appendChild(xDiv);
@@ -139,6 +142,12 @@ class Map extends React.Component<IMapProps> {
                 const newY = Number(this.yInput.value);
                 if (!isNaN(newY) && !isNaN(newX)) {
                     this.setInputAsCenter(newX, newY);
+                }
+            };
+            this.xInput.onkeypress = this.yInput.onkeypress = (e: KeyboardEvent) => {
+                if (e.key === 'Enter') {
+                    this.xInput.blur();
+                    this.yInput.blur();
                 }
             };
             this.xButton.onclick = this.yButton.onclick = () => {
