@@ -77,6 +77,10 @@
     }
 }
 
+#measurementControl {
+    height: 34px;
+}
+
 @media (max-width: 768px) {
     .root {
         height: calc(100vh - 100px);
