@@ -12,11 +12,15 @@ export default class RouteLayerView {
     }
 
     public drawRouteLines(routes: IRoute[]) {
+        this.clearRoute();
+
         if (routes && routes[0]) {
             if (routes[0].routePaths[0]) {
-                routes[0].routePaths.map(routePath => (
-                    this.drawRouteLine(routePath)
-                ));
+                routes[0].routePaths.map((routePath) => {
+                    if (routePath.visible) {
+                        this.drawRouteLine(routePath);
+                    }
+                });
             } else {
                 // TODO: throw error / show error on UI if routePath is empty?
             }

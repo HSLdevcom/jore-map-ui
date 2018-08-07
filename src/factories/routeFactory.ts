@@ -5,7 +5,12 @@ class RouteFactory {
     public static reittiToIRoute = (reitti: any, line?: ILine): IRoute => {
         const routePaths:IRoutePath[]
             = reitti.reitinsuuntasByReitunnus.edges
-                .map((routePath: any) => RoutePathFactory.suuntaToIRoutePath(routePath.node));
+                .map((routePath: any, index:number) => {
+                    // By default make the first two routePaths visible
+                    const isVisible = (index <= 1);
+
+                    return RoutePathFactory.suuntaToIRoutePath(routePath.node, isVisible);
+                });
 
         return <IRoute>{
             routePaths,
