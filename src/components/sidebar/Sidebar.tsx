@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
-import LineEditView from './LineEditView';
+import RoutesEdit from './RoutesEdit';
 import LineSearch from './LineSearch';
 import * as s from './sidebar.scss';
 
@@ -21,7 +21,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     }
 
     public handleHeaderClick = () => {
-        this.props.routeStore!.clearOpenRoutes();
+        this.props.routeStore!.clearRoutes();
     }
 
     public render(): any {
@@ -36,11 +36,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                     </div>
                 </div>
                 <div className={s.content}>
-                    {this.props.routeStore!.openRoutes.length < 1 &&
+                    {this.props.routeStore!.routes.length < 1 &&
                         <LineSearch />
                     }
-                    {this.props.routeStore!.openRoutes.length > 0 &&
-                        <LineEditView />
+                    {this.props.routeStore!.routes.length > 0 &&
+                        <RoutesEdit />
                     }
                 </div>
             </div>

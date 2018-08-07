@@ -1,14 +1,14 @@
-import { IRoute, IDirection, ILine } from '../models';
-import DirectionFactory from './directionFactory';
+import { IRoute, IRoutePath, ILine } from '../models';
+import RoutePathFactory from './routePathFactory';
 
 class RouteFactory {
     public static reittiToIRoute = (reitti: any, line?: ILine): IRoute => {
-        const directions:IDirection[]
+        const routePaths:IRoutePath[]
             = reitti.reitinsuuntasByReitunnus.edges
-                .map((direction: any) => DirectionFactory.suuntaToIDirection(direction.node));
+                .map((routePath: any) => RoutePathFactory.suuntaToIRoutePath(routePath.node));
 
         return <IRoute>{
-            directions,
+            routePaths,
             line,
             routeName: reitti.reinimi,
             routeNameSwedish: reitti.reinimir,
