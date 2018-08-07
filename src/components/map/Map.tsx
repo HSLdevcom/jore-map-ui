@@ -130,7 +130,6 @@ class Map extends React.Component<IMapProps> {
             this.yInput = L.DomUtil.create('input', '') as HTMLInputElement;
             this.yInput.id = 'ycoord';
             this.yInput.tabIndex = 2;
-            this.yInput.focus
             yDiv.appendChild(this.yButton);
             yDiv.appendChild(this.yInput);
             container.appendChild(xDiv);
