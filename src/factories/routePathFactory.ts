@@ -1,8 +1,15 @@
-import { IRoutePath } from '../models';
+import { INode, IRoutePath } from '../models';
+import NodeFactory from './nodeFactory';
 
 class RoutePathFactory {
-    public static suuntaToIRoutePath = (suunta: any): IRoutePath => {
+    // suunta to IRoutePath
+    public static createRoutePath = (suunta: any): IRoutePath => {
+        const nodes:INode[]
+        = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
+            .map((node: any) => NodeFactory.createNode(node.node));
+
         return <IRoutePath>{
+            nodes,
             routePathName: suunta.suunimi,
             direction: suunta.suusuunta,
             geoJson: JSON.parse(suunta.geojson),

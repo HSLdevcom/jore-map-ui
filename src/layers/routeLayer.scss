@@ -1,9 +1,22 @@
-.routeLayerBlue {
-    stroke: #007ac9;
+@import '../common.scss';
+
+.blue {
+    stroke: $blue;
+}
+
+.red {
+    stroke: $red;
+}
+
+.grey {
+    stroke: $grey;
+}
+
+.route {
     stroke-width: 4;
 }
 
-.routeLayerRed {
-    stroke: #c90000;
-    stroke-width: 4;
+.node {
+    fill: $white;
+    fill-opacity: 0.5;
 }

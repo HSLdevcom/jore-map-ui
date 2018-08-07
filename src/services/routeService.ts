@@ -10,7 +10,7 @@ export default class RouteService {
             apolloClient.query({ query: getRoute, variables: { routeId: lineId } })
                 .then((res: ApolloQueryResult<any>) => {
                     const line = LineStore.lineByLineId(lineId);
-                    resolve(RouteFactory.reittiToIRoute(res.data.route, line));
+                    resolve(RouteFactory.createRoute(res.data.route, line));
                 })
                 .catch((err: any) => {
                     reject(err);
@@ -20,7 +20,7 @@ export default class RouteService {
 }
 
 const getRoute = gql`
-  query getLineDetails($routeId: String!) {
+query getLineDetails($routeId: String!) {
     route: reittiByReitunnus(reitunnus: $routeId) {
         reinimi
         reinimilyh
@@ -38,9 +38,23 @@ const getRoute = gql`
                     suuviimpvm
                     suuvoimviimpvm
                     geojson
+                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
+                    edges {
+                    node {
+                        relid
+                        solmuByLnkalkusolmu {
+                            geojson
+                        pysakkiBySoltunnus {
+                            pysnimi
+                        }
+                        soltyyppi
+                        }
+                    }
+                    }
+                }
                 }
             }
         }
     }
-  }
+}
 `;
