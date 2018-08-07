@@ -8,6 +8,7 @@ import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 import { MapStore } from '../../stores/mapStore';
 import { RouteStore } from '../../stores/routeStore';
 import RouteLayerView from '../../layers/routeLayerView';
+import { IRoute } from '../../models';
 import * as s from './map.scss';
 
 interface IMapProps {
@@ -39,6 +40,24 @@ class Map extends React.Component<IMapProps> {
 
     private updateRouteLines() {
         this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
+        this.centerMapToRoutes(this.props.routeStore!.routes);
+    }
+
+    private centerMapToRoutes(routes: IRoute[]) {
+        let bounds:L.LatLngBounds = new L.LatLngBounds([]);
+        if (routes && routes[0]) {
+            if (routes[0].routePaths[0]) {
+                routes[0].routePaths.map((routePath) => {
+                    const geoJSON = new L.GeoJSON(routePath.geoJson);
+                    if (!bounds) {
+                        bounds = geoJSON.getBounds();
+                    } else {
+                        bounds.extend(geoJSON.getBounds());
+                    }
+                });
+                this.map.fitBounds(bounds);
+            }
+        }
     }
 
     public render() {
