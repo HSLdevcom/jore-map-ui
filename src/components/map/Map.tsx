@@ -5,6 +5,7 @@ import * as React from 'react';
 import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 import { MapStore } from '../../stores/mapStore';
+import { SidebarStore } from '../../stores/sidebarStore';
 import { autorun } from 'mobx';
 import GeometryService from '../../services/geometryService';
 import classnames from 'classnames';
@@ -16,8 +17,10 @@ import * as s from './map.scss';
 interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
+    sidebarStore?: SidebarStore;
 }
 
+@inject('sidebarStore')
 @inject('mapStore')
 @inject('routeStore')
 @observer
@@ -36,7 +39,7 @@ class Map extends React.Component<IMapProps> {
     public componentDidMount() {
         this.initializeMap();
         autorun(() => this.updateMap());
-        this.routeLayerView = new RouteLayerView(this.map);
+        this.routeLayerView = new RouteLayerView(this.map, this.props.sidebarStore);
         autorun(() => this.updateRouteLines());
     }
 

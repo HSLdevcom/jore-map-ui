@@ -2,12 +2,14 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { LoginStore } from '../stores/loginStore';
+import { SidebarStore } from '../stores/sidebarStore';
 import Button from './controls/Button';
 import ButtonType from '../enums/buttonType';
 import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
+import NodeWindow from './NodeWindow';
 import * as s from './app.scss';
 const rootPath: string = '/';
 
@@ -17,8 +19,10 @@ interface IAppState {
 
 interface IAppProps {
     loginStore?: LoginStore;
+    sidebarStore?: SidebarStore;
 }
 
+@inject('sidebarStore')
 @inject('loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
@@ -29,6 +33,10 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
+    }
+
+    private closeNodeWindow = () => {
+        this.props.sidebarStore!.setOpenedNodeId(null);
     }
 
     public render(): any {
@@ -47,6 +55,12 @@ class App extends React.Component<IAppProps, IAppState> {
                     isVisible={this.props.loginStore!.showLogin}
                 >
                     <Login />
+                </Modal>
+                <Modal
+                    closeModal={this.closeNodeWindow}
+                    isVisible={this.props.sidebarStore!.showNodeWindow}
+                >
+                    <NodeWindow />
                 </Modal>
                 <Sidebar />
                 <Route

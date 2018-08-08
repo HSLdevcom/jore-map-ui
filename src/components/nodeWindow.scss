@@ -1,0 +1,87 @@
+@import '../common.scss';
+
+.nodeWindow {
+    padding: 20px;
+}
+
+.topic {
+    font-size: $largeFontSize;
+    font-weight: bold;
+}
+
+.rowR {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+    padding-bottom: 20px; 
+}
+
+.rowC {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.innerRowR {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.innerRowC {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.rowElement {
+    margin-right: 20px;
+}
+
+.stopInUseRow {
+    align-items: center;
+    border-bottom: 1px solid $lightGrey;
+}
+
+.targetsRow {
+    border-bottom: 1px solid $lightGrey;
+}
+
+
+.informationContainer {
+    margin-left: 20px;
+
+    .informationSource {
+        white-space: nowrap;
+    }
+}
+
+.informationField {
+    margin-top: 5px;
+    padding: 20px;
+    border: 1px solid $lightGrey;
+
+    .item {
+        white-space: nowrap;
+        padding-top: 2px;
+    }
+}
+
+.buttonContainer {
+    width: 275px;
+    margin-left: 50px;
+}
+
+
+
+
+
+
+
+
+
+
+

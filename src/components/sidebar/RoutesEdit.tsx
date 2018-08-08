@@ -1,10 +1,14 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
-import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
+import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
 import * as s from './routesEdit.scss';
+
+interface IRoutesEditState {
+    networkCheckboxToggles: any;
+}
 
 interface IRoutesEditProps {
     routeStore?: RouteStore;
@@ -12,7 +16,18 @@ interface IRoutesEditProps {
 
 @inject('routeStore')
 @observer
-class RoutesEdit extends React.Component<IRoutesEditProps> {
+class RoutesEdit extends
+React.Component<IRoutesEditProps, IRoutesEditState> {
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            networkCheckboxToggles: {
+                solmut: false,
+                linkit: false,
+            },
+        };
+    }
+
     private routeList(routes: IRoute[]) {
         return routes.map((route: IRoute) => {
             return (
@@ -21,6 +36,14 @@ class RoutesEdit extends React.Component<IRoutesEditProps> {
                     route={route}
                 />
             );
+        });
+    }
+
+    private networkCheckboxToggle = (type: string) => {
+        const newToggleState: object = this.state.networkCheckboxToggles;
+        newToggleState[type] = !this.state.networkCheckboxToggles[type];
+        this.setState({
+            networkCheckboxToggles: newToggleState,
         });
     }
 
@@ -59,18 +82,18 @@ class RoutesEdit extends React.Component<IRoutesEditProps> {
                     <label className={s.inputTitle}>VERKKO</label>
                     <TransitToggleButtonBar filters={[]} />
                     <div className={s.checkboxContainer}>
-                        <input
-                            type='checkbox'
-                            checked={false}
+                        <Checkbox
+                            onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
+                            checked={this.state.networkCheckboxToggles.linkit}
+                            text={'Hae alueen linkit'}
                         />
-                        Hae alueen linkit
                     </div>
                     <div className={s.checkboxContainer}>
-                        <input
-                            type='checkbox'
-                            checked={false}
+                        <Checkbox
+                            onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
+                            checked={this.state.networkCheckboxToggles.solmut}
+                            text={'Hae alueen solmut'}
                         />
-                        Hae alueen solmut
                     </div>
                 </div>
             </span>
