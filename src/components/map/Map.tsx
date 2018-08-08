@@ -1,4 +1,5 @@
 import * as L from 'leaflet';
+import 'leaflet-draw';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
@@ -11,6 +12,7 @@ import { IRoute } from '../../models';
 import * as s from './map.scss';
 import FullscreenControl from './FullscreenControl';
 import CoordinateControl from './CoordinateControl';
+import MeasurementControl from './MeasurementControl';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -33,6 +35,35 @@ class Map extends React.Component<IMapProps> {
         autorun(() => this.updateMap());
         this.routeLayerView = new RouteLayerView(this.map);
         autorun(() => this.updateRouteLines());
+
+        // const editableLayers = new L.FeatureGroup();
+        // this.map.addLayer(editableLayers);
+        // const drawPluginOptions:L.Control.DrawConstructorOptions = {
+        //     position: 'topright',
+        //     draw: {
+        //         polygon: {
+        //             allowIntersection: false, // Restricts shapes to simple polygons
+        //             drawError: {
+        //                 color: '#e1e100', // Color the shape will turn when intersects
+        //                 message: '<strong>Oh snap!<strong> you t!', // Mes
+        //             },
+        //             shapeOptions: {
+        //                 color: '#97009c',
+        //             },
+        //         },
+        //         // disable toolbar item by setting it to false
+        //         polyline: false,
+        //         circle: false, // Turns off this drawing tool
+        //         rectangle: false,
+        //         marker: false,
+        //     },
+        //     edit: {
+        //         featureGroup: editableLayers,
+        //         remove: false,
+        //     },
+        // };
+        // const drawControl = new L.Control.Draw(drawPluginOptions);
+        // this.map.addControl(drawControl);
     }
 
     private updateRouteLines() {
@@ -91,6 +122,7 @@ class Map extends React.Component<IMapProps> {
         }).addTo(this.map);
         this.map.addControl(new FullscreenControl({ position: 'bottomright' }));
         this.map.addControl(new CoordinateControl({ position: 'topright' }));
+        this.map.addControl(new MeasurementControl({ position: 'topright' }));
         L.control.zoom({ position:'bottomright' }).addTo(this.map);
         this.map.on('moveend', this.setMapCenterAsCenter);
     }
