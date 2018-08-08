@@ -35,35 +35,6 @@ class Map extends React.Component<IMapProps> {
         autorun(() => this.updateMap());
         this.routeLayerView = new RouteLayerView(this.map);
         autorun(() => this.updateRouteLines());
-
-        // const editableLayers = new L.FeatureGroup();
-        // this.map.addLayer(editableLayers);
-        // const drawPluginOptions:L.Control.DrawConstructorOptions = {
-        //     position: 'topright',
-        //     draw: {
-        //         polygon: {
-        //             allowIntersection: false, // Restricts shapes to simple polygons
-        //             drawError: {
-        //                 color: '#e1e100', // Color the shape will turn when intersects
-        //                 message: '<strong>Oh snap!<strong> you t!', // Mes
-        //             },
-        //             shapeOptions: {
-        //                 color: '#97009c',
-        //             },
-        //         },
-        //         // disable toolbar item by setting it to false
-        //         polyline: false,
-        //         circle: false, // Turns off this drawing tool
-        //         rectangle: false,
-        //         marker: false,
-        //     },
-        //     edit: {
-        //         featureGroup: editableLayers,
-        //         remove: false,
-        //     },
-        // };
-        // const drawControl = new L.Control.Draw(drawPluginOptions);
-        // this.map.addControl(drawControl);
     }
 
     private updateRouteLines() {
@@ -98,8 +69,9 @@ class Map extends React.Component<IMapProps> {
             <div>
                 <div
                     id={s.mapLeaflet}
-                    // tslint:disable-next-line:max-line-length
-                    className={classnames(classes !== null ? classes.toString() : '', 'root', this.props.mapStore!.isMapFullscreen ? s.fullscreen : '')}
+                    className={classnames(classes !== null ? classes.toString() : '',
+                                          'root',
+                                          this.props.mapStore!.isMapFullscreen ? s.fullscreen : '')}
                 />
             </div>
         );
