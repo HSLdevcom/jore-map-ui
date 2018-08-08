@@ -1,5 +1,4 @@
 import * as L from 'leaflet';
-import 'leaflet-draw';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
