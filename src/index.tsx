@@ -8,6 +8,7 @@ import observableLoginStore from './stores/loginStore';
 import observableMapStore from './stores/mapStore';
 import observableLineStore from './stores/lineStore';
 import observableRouteStore from './stores/routeStore';
+import observableSidebarStore from './stores/sidebarStore';
 import apolloClient from './util/ApolloClient';
 import './index.scss';
 
@@ -19,6 +20,7 @@ ReactDOM.render(
       lineStore={observableLineStore}
       loginStore={observableLoginStore}
       routeStore={observableRouteStore}
+      sidebarStore={observableSidebarStore}
     >
         <ApolloProvider client={apolloClient}>
           <App/>
