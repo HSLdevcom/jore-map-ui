@@ -16,8 +16,8 @@ class LineFactory {
         };
     }
 
-    public static linjasToILines = (linja: any[]) => {
-        return linja.map(((node: any) => {
+    public static linjasToILines = (linjat: any[]) => {
+        return linjat.map(((node: any) => {
             return LineFactory.createLine(node);
         }));
     }

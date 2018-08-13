@@ -15,15 +15,8 @@ interface ILineItemsProps {
 @inject('lineStore')
 @observer
 class LineItems extends React.Component<ILineItemsProps> {
-    componentDidMount() {
-        LineService.getAllLines()
-            .then((lines: ILine[]) => {
-                this.props.lineStore!.setAllLines(lines);
-            })
-            .catch((err: any) => {
-                // tslint:disable-next-line:no-console
-                console.log(err);
-            });
+    async componentDidMount() {
+        this.props.lineStore!.setAllLines(await LineService.getAllLines());
     }
 
     public filterLines = (lineName: string, lineNumber: string, transitType: TransitType) => {
@@ -32,10 +25,7 @@ class LineItems extends React.Component<ILineItemsProps> {
         if (this.props.filters.indexOf(transitType) !== -1) {
             return false;
         }
-        if (searchTargetAttributes.includes(this.props.searchInput)) {
-            return true;
-        }
-        return false;
+        return searchTargetAttributes.includes(this.props.searchInput);
     }
 
     public render(): any {

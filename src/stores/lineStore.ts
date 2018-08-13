@@ -4,9 +4,11 @@ import { ILine } from '../models';
 export class LineStore {
     @observable private _filters: string[];
     @observable private _allLines: ILine[];
+    private _linesLoading: boolean;
 
     constructor() {
         this._allLines = [];
+        this._linesLoading = true;
     }
 
     @computed get filters(): string[] {
@@ -28,6 +30,14 @@ export class LineStore {
     @action
     public setAllLines(lines: ILine[]) {
         this._allLines = lines;
+    }
+
+    @computed get linesLoading(): boolean {
+        return this._linesLoading;
+    }
+
+    set linesLoading(value: boolean) {
+        this._linesLoading = value;
     }
 }
 
