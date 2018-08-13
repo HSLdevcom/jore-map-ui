@@ -5,6 +5,7 @@ import LineService from '../../services/lineService';
 import LineItem from './LineItem';
 import { ILine } from '../../models';
 import TransitType from '../../enums/transitType';
+import * as s from './lineItems.scss';
 
 interface ILineItemsProps {
     lineStore?: LineStore;
@@ -16,7 +17,9 @@ interface ILineItemsProps {
 @observer
 class LineItems extends React.Component<ILineItemsProps> {
     async componentDidMount() {
-        this.props.lineStore!.setAllLines(await LineService.getAllLines());
+        this.props.lineStore!.linesLoading = true;
+        await this.props.lineStore!.setAllLines(await LineService.getAllLines());
+        this.props.lineStore!.linesLoading = false;
     }
 
     public filterLines = (lineName: string, lineNumber: string, transitType: TransitType) => {
@@ -30,9 +33,11 @@ class LineItems extends React.Component<ILineItemsProps> {
 
     public render(): any {
         const allLines = this.props.lineStore!.allLines;
-
-        if (!allLines.length) {
-            return 'Fetching';
+        const linesLoading = this.props.lineStore!.linesLoading;
+        if (linesLoading) {
+            return (
+                <div id={s.loader} />
+            );
         }
         return (
             <div>

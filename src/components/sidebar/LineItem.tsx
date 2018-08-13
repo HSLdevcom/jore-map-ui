@@ -3,7 +3,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import lineHelper from '../../util/lineHelper';
-import { ILine, IRoute } from '../../models';
+import { ILine } from '../../models';
 import RouteService from '../../services/routeService';
 import * as s from './lineItem.scss';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
@@ -20,14 +20,13 @@ interface ILineItemProps {
 @inject('routeStore')
 @observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
-    public selectLine = () => {
-        RouteService.getRoute(this.props.line.lineId)
-            .then((res: IRoute) => {
-                this.props.routeStore!.clearRoutes();
-                this.props.routeStore!.addToRoutes(res);
-            })
-            .catch((err: any) => {
-            });
+    public selectLine = async () => {
+        try {
+            const route = await RouteService.getRoute(this.props.line.lineId);
+            this.props.routeStore!.clearRoutes();
+            this.props.routeStore!.addToRoutes(route);
+        } catch (err) {
+        }
     }
 
     public render(): any {
