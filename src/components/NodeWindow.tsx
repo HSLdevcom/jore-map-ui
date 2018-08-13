@@ -2,13 +2,14 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '../stores/sidebarStore';
 import * as s from './nodeWindow.scss';
-import { Button, Checkbox, ToggleButton } from './controls';
+import { Button, Checkbox, Dropdown, ToggleButton } from './controls';
 import ButtonType from '../enums/buttonType';
 import TransitType from '../enums/transitType';
 import classnames from 'classnames';
 
 interface INodeWindowState {
     targetCheckboxToggles: any;
+    mapInformationSource: any;
 }
 
 interface INodeWindowProps {
@@ -27,6 +28,10 @@ class NodeWindow extends React.Component
                 solmut: true,
                 linkit: true,
                 alueet: false,
+            },
+            mapInformationSource: {
+                selected: 'X/1420004',
+                items: ['X/1420001', 'X/1420002', 'X/1420003', 'X/1420004', 'X/1420005'],
             },
         };
     }
@@ -47,6 +52,14 @@ class NodeWindow extends React.Component
         newToggleState[type] = !this.state.targetCheckboxToggles[type];
         this.setState({
             targetCheckboxToggles: newToggleState,
+        });
+    }
+
+    private onMapInformationSourceChange = (selectedItem: string) => {
+        const newMapInformationSourceState: object = this.state.mapInformationSource;
+        newMapInformationSourceState['selected'] = selectedItem;
+        this.setState({
+            mapInformationSource: newMapInformationSourceState,
         });
     }
 
@@ -117,9 +130,13 @@ class NodeWindow extends React.Component
                 Sijainti: (2555744, 6675294)
             </div>
             <div className={s.innerRowR}>
-                <div className={s.innerRowR}>
-                    Karttatietolähde
-                    X/1420004
+                <div className={s.innerRowC}>
+                    <div>Karttatietolähde</div>
+                    <Dropdown
+                        onChange={this.onMapInformationSourceChange}
+                        items={this.state.mapInformationSource.items}
+                        selected={this.state.mapInformationSource.selected}
+                    />
                 </div>
                 <div
                     className={classnames(
