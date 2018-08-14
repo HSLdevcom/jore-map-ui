@@ -98,7 +98,6 @@ class MeasurementControl extends L.Control {
 
     private startNewMeasurement = () => {
         this.measurements += 1;
-        global.console.log(this.measurements);
         this.distance = 0;
         this.points = [];
         this.measurementLayer = L.featureGroup().addTo(this.measurementsLayer);
@@ -119,7 +118,6 @@ class MeasurementControl extends L.Control {
     }
 
     private measurementClicked = (e: L.LeafletMouseEvent) => {
-        global.console.log('measurement click', e);
         if (!this.measuring) {
             this.startNewMeasurement();
         }
@@ -144,7 +142,6 @@ class MeasurementControl extends L.Control {
     }
 
     private measurementMoving = (e: L.LeafletMouseEvent) => {
-        global.console.log('moving');
         if (!this.measuring) return;
         const movingLatLng = e.latlng;
         this.tmpLine.clearLayers();
