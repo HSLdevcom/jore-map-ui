@@ -4,10 +4,12 @@ import { RouteStore } from '../../stores/routeStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
+import LineSearch from './LineSearch';
 import * as s from './routesEdit.scss';
 
 interface IRoutesEditState {
     networkCheckboxToggles: any;
+    lineSearchVisible: boolean;
 }
 
 interface IRoutesEditProps {
@@ -25,6 +27,7 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
                 solmut: false,
                 linkit: false,
             },
+            lineSearchVisible: false,
         };
     }
 
@@ -47,56 +50,54 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
         });
     }
 
+    private onSearchInputChange = (newValue: string) => {
+        this.setState({
+            lineSearchVisible: Boolean(newValue),
+        });
+    }
+
     public render(): any {
         return (
-            <span className={s.routesEdit}>
-                {
-                    this.routeList(this.props.routeStore!.routes)
+            <div className={s.routesEditView}>
+                <LineSearch
+                    showSearchResults={this.state.lineSearchVisible}
+                    onInputChange={this.onSearchInputChange}
+                />
+                { !this.state.lineSearchVisible &&
+                <div className={s.wrapper}>
+                    <div className={s.routeList}>
+                        {
+                            this.routeList(this.props.routeStore!.routes)
+                        }
+                        <div className={s.checkboxContainer}>
+                            <input
+                                type='checkbox'
+                                checked={false}
+                            />
+                            Kopioi reitti toiseen suuntaan
+                        </div>
+                    </div>
+                    <div className={s.network}>
+                        <label className={s.inputTitle}>VERKKO</label>
+                        <TransitToggleButtonBar filters={[]} />
+                        <div className={s.checkboxContainer}>
+                            <Checkbox
+                                onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
+                                checked={this.state.networkCheckboxToggles.linkit}
+                                text={'Hae alueen linkit'}
+                            />
+                        </div>
+                        <div className={s.checkboxContainer}>
+                            <Checkbox
+                                onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
+                                checked={this.state.networkCheckboxToggles.solmut}
+                                text={'Hae alueen solmut'}
+                            />
+                        </div>
+                    </div>
+                </div>
                 }
-                <div className={s.checkboxContainer}>
-                    <input
-                        type='checkbox'
-                        checked={false}
-                    />
-                    Kopioi reitti toiseen suuntaan
-                </div>
-                <div className={s.inputWrapper}>
-                    <div className={s.inputContainer}>
-                        <label className={s.inputTitle}>
-                            HAE TOINEN LINJA TARKASTELUUN
-                        </label>
-                        <input
-                            placeholder='Hae reitti'
-                            type='text'
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <span className={s.inputTitle}>TARKASTELUPÄIVÄ</span>
-                        <input
-                            placeholder='25.8.2017'
-                            type='text'
-                        />
-                    </div>
-                </div>
-                <div className={s.network}>
-                    <label className={s.inputTitle}>VERKKO</label>
-                    <TransitToggleButtonBar filters={[]} />
-                    <div className={s.checkboxContainer}>
-                        <Checkbox
-                            onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
-                            checked={this.state.networkCheckboxToggles.linkit}
-                            text={'Hae alueen linkit'}
-                        />
-                    </div>
-                    <div className={s.checkboxContainer}>
-                        <Checkbox
-                            onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
-                            checked={this.state.networkCheckboxToggles.solmut}
-                            text={'Hae alueen solmut'}
-                        />
-                    </div>
-                </div>
-            </span>
+            </div>
         );
     }
 }
