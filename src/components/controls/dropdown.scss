@@ -22,13 +22,6 @@ $dropdownWidth: 150px;
         padding: 10px 15px 10px 15px;
         border: 1px solid $lightGrey;
         cursor: pointer;
-
-        .downArrow {
-            background: url("../../icons/downArrow.svg");
-            width: 30px;
-            height: 30px;
-            background-size: contain;
-        }
     }
 
     .itemListHidden {

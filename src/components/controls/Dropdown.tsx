@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as s from './dropdown.scss';
+import DownArrow from '../../icons/downArrow';
 
 interface IDropdownState {
     isOpen: boolean;
@@ -56,7 +57,7 @@ class Dropdown extends React.Component
                     <div>
                         {this.props.selected}
                     </div>
-                    <div className={s.downArrow} />
+                    <DownArrow height={'30px'}/>
                 </div>
                 <div className={this.getItemListClassName()}>
                 {
