@@ -18,10 +18,10 @@ interface IRouteShowProps {
 class RouteShow extends React.Component<IRouteShowProps> {
     public render(): any {
         return (
-            <span>
-                <span className={s.routeName}>
+            <div className={s.routeShowView}>
+                <div className={s.routeName}>
                     {LineHelper.getTransitIcon(this.props.route.line.transitType, false)}
-                    <span
+                    <div
                         className={classNames(
                             s.label,
                             TransitTypeColorHelper.getColorClass(
@@ -31,9 +31,9 @@ class RouteShow extends React.Component<IRouteShowProps> {
                         )}
                     >
                         {this.props.route.line.lineNumber}
-                    </span>
+                    </div>
                     {this.props.route.routeName}
-                </span>
+                </div>
                 {this.props.route.routePaths
                     .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
                     .map((routePath: IRoutePath, index: number) => {
@@ -47,9 +47,9 @@ class RouteShow extends React.Component<IRouteShowProps> {
                                 className={s.toggle}
                                 key={`${routePath.routePathName}-${index}`}
                             >
-                                <span className={s.toggleTitle}>
+                                <div className={s.toggleTitle}>
                                     Suunta {routePath.direction}
-                                </span>
+                                </div>
                                 <ToggleButton
                                     onClick={toggleRoutePathVisibility}
                                     value={routePath.visible}
@@ -59,7 +59,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                         );
                     })
                 }
-            </span>
+            </div>
         );
     }
 }
