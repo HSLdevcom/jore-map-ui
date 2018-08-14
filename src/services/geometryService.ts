@@ -44,7 +44,7 @@ class GeometryService {
             return [lat, lon];
         }
         return proj4(this.projections[fromCoordSys], this.projections[toCoordSys])
-            .forward([lon, lat]).map(x => Number(x.toPrecision(10))).reverse();
+            .forward([lon, lat]).reverse();
     }
 }
 
