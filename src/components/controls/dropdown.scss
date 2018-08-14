@@ -1,0 +1,45 @@
+@import '../../common.scss';
+
+$dropdownWidth: 150px;
+
+.dropdown {
+    font-weight: bold;
+    width: 100%;
+    
+    .itemListShown {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        background-color: $white;
+    }
+
+    .selectedItem {
+        width: $dropdownWidth;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px 10px 15px;
+        border: 1px solid $lightGrey;
+        cursor: pointer;
+    }
+
+    .itemListHidden {
+        display: none;
+    }
+
+    .item {
+        width: $dropdownWidth;
+        padding: 15px;
+        border: 1px solid $lightGrey;
+        cursor: pointer;
+    }
+
+    .selectedItem:hover {
+        background-color: $backgroundlightGrey;
+    }
+    
+    .item:hover {
+        background-color: $backgroundlightGrey;
+    }
+}

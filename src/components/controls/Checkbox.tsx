@@ -8,10 +8,6 @@ interface ICheckboxProps {
 }
 
 class Checkbox extends React.Component<ICheckboxProps, {}> {
-    constructor(props: ICheckboxProps) {
-        super(props);
-    }
-
     private doNothing() {
         // Empty
     }
