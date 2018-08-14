@@ -7,9 +7,21 @@ import ButtonType from '../enums/buttonType';
 import TransitType from '../enums/transitType';
 import classnames from 'classnames';
 
+interface ITargetCheckboxToggles {
+    kadut: boolean;
+    solmut: boolean;
+    linkit: boolean;
+    alueet: boolean;
+}
+
+interface IMapInformationSource {
+    selected: string;
+    items: string[];
+}
+
 interface INodeWindowState {
-    targetCheckboxToggles: any;
-    mapInformationSource: any;
+    targetCheckboxToggles: ITargetCheckboxToggles;
+    mapInformationSource: IMapInformationSource;
 }
 
 interface INodeWindowProps {
@@ -48,7 +60,7 @@ class NodeWindow extends React.Component
     }
 
     private targetCheckboxToggle = (type: string) => {
-        const newToggleState: object = this.state.targetCheckboxToggles;
+        const newToggleState = this.state.targetCheckboxToggles;
         newToggleState[type] = !this.state.targetCheckboxToggles[type];
         this.setState({
             targetCheckboxToggles: newToggleState,
@@ -56,10 +68,11 @@ class NodeWindow extends React.Component
     }
 
     private onMapInformationSourceChange = (selectedItem: string) => {
-        const newMapInformationSourceState: object = this.state.mapInformationSource;
-        newMapInformationSourceState['selected'] = selectedItem;
         this.setState({
-            mapInformationSource: newMapInformationSourceState,
+            mapInformationSource: {
+                ...this.state.mapInformationSource,
+                selected: selectedItem,
+            },
         });
     }
 
