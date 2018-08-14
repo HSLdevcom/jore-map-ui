@@ -1,16 +1,19 @@
 import * as L from 'leaflet';
 import { IRoutePath, IRoute, INode } from '../models';
 import * as s from './routeLayer.scss';
+import { SidebarStore } from '../stores/sidebarStore';
 import NodeType from '../enums/nodeType';
 import classnames from 'classnames';
 
 export default class RouteLayerView {
     private map: L.Map;
+    private sidebarStore?: SidebarStore;
     private routeLines: L.GeoJSON<any>[];
     private routeNodes: L.CircleMarker<any>[];
 
-    constructor(map: L.Map) {
+    constructor(map: L.Map, sidebarStore?: SidebarStore) {
         this.map = map;
+        this.sidebarStore = sidebarStore;
         this.routeLines = [];
         this.routeNodes = [];
     }
@@ -72,6 +75,9 @@ export default class RouteLayerView {
         const circle = new L.CircleMarker([coordinates[1], coordinates[0]])
         .setStyle({
             className: classnames(s.node, getColorClassName(node.type, direction)),
+        })
+        .on('click', () => {
+            this.sidebarStore!.setOpenedNodeId(node.id);
         })
         .addTo(this.map);
         this.routeNodes.push(circle);

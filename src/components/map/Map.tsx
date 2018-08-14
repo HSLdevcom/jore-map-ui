@@ -3,6 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { MapStore } from '../../stores/mapStore';
+import { SidebarStore } from '../../stores/sidebarStore';
 import { autorun } from 'mobx';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
@@ -16,8 +17,10 @@ import MeasurementControl from './MeasurementControl';
 interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
+    sidebarStore?: SidebarStore;
 }
 
+@inject('sidebarStore')
 @inject('mapStore')
 @inject('routeStore')
 @observer
@@ -32,7 +35,7 @@ class Map extends React.Component<IMapProps> {
     public componentDidMount() {
         this.initializeMap();
         autorun(() => this.updateMap());
-        this.routeLayerView = new RouteLayerView(this.map);
+        this.routeLayerView = new RouteLayerView(this.map, this.props.sidebarStore);
         autorun(() => this.updateRouteLines());
     }
 

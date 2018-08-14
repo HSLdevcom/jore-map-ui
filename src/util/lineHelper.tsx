@@ -7,8 +7,8 @@ import TramIcon from '../icons/icon-tram';
 import TransitType from '../enums/transitType';
 
 class LineHelper {
-    public static getTransitIcon = (linjoukkollaji: TransitType, withoutBox: boolean) => {
-        switch (linjoukkollaji) {
+    public static getTransitIcon = (transitType: TransitType, withoutBox: boolean) => {
+        switch (transitType) {
         case TransitType.BUS:
             return <BusIcon height={'24'} withoutBox={withoutBox}/>;
         case TransitType.SUBWAY:
