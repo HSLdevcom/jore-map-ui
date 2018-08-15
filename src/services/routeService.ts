@@ -14,9 +14,9 @@ export default class RouteService {
                     resolve(RouteFactory.createRoute(res.data.route, line));
                 })
                 .catch((err: any) => {
-                    NotificationStore.addNotifications([
+                    NotificationStore.addNotification(
                         { message: 'Reitin haku ei onnistunut.', type: 'error' },
-                    ]);
+                    );
                     reject(err);
                 });
         });

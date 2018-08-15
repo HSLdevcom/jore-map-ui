@@ -18,16 +18,10 @@ export class NotificationStore {
     }
 
     @action
-    public addNotifications(notifications: INotification[]) {
-        const currentMessages = this._notifications.map((notification: INotification) => {
-            return notification.message;
-        });
-
-        const newNotifications = notifications.filter((notification: INotification) => {
-            return (!currentMessages.includes(notification.message));
-        });
-
-        this._notifications = this._notifications.concat(newNotifications);
+    public addNotification(notification: INotification) {
+        if (this._notifications.filter(n => n.message === notification.message).length === 0) {
+            this._notifications.push(notification);
+        }
     }
 
     @action

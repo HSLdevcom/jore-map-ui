@@ -1,25 +1,38 @@
+import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import * as s from './notificationWindow.scss';
 import classnames from 'classnames';
+import NotificationType from '../enums/notificationType';
+import { NotificationStore } from '../stores/notificationStore';
 
-interface IErrorWindow {
+interface INotificationWindow {
+    notificationStore?: NotificationStore;
     notifications: object[];
-    hideError: Function;
 }
 
-class ErrorWindow extends React.Component<IErrorWindow> {
+interface INotification {
+    message: string;
+    type: string;
+}
 
-    public onErrorWindowClick = (message: string) => {
-        this.props.hideError(message);
+@inject('notificationStore')
+@observer
+class NotificationWindow extends React.Component<INotificationWindow> {
+
+    private closeNotification = (message: string) => {
+        this.props.notificationStore!.closeNotification(message);
     }
 
     getColorClass = (type: string) => {
         switch (type) {
-        case 'error': {
+        case NotificationType.ERROR: {
             return s.error;
         }
-        case 'warning': {
+        case NotificationType.WARNING: {
             return s.warning;
+        }
+        case NotificationType.SUCCESS: {
+            return s.success;
         }
         default: {
             return s.success;
@@ -28,25 +41,25 @@ class ErrorWindow extends React.Component<IErrorWindow> {
     }
 
     public render(): any {
-        const notifications = this.props.notifications.map((notification: any) => {
-            if (!notification) return;
-
-            return (
-              <div
-                key={notification.message}
-                className={classnames(s.notificationItem, this.getColorClass(notification.type))}
-                onClick={this.onErrorWindowClick.bind(this, notification.message)}
-              >
-                {notification.message}
-              </div>
-            );
-        });
-
         return (
           <div className={s.notificationView}>
-            {notifications}
+            {this.props.notifications.map((notification: INotification) => {
+                if (!notification) return;
+                return (
+                  <div
+                    key={notification.message}
+                    className={classnames(
+                      s.notificationItem,
+                      this.getColorClass(notification.type))
+                    }
+                    onClick={this.closeNotification.bind(this, notification.message)}
+                  >
+                    {notification.message}
+                  </div>
+                );
+            })}
           </div>
         );
     }
 }
-export default ErrorWindow;
+export default NotificationWindow;

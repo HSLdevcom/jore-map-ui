@@ -43,10 +43,6 @@ class App extends React.Component<IAppProps, IAppState> {
         this.props.sidebarStore!.setOpenedNodeId(null);
     }
 
-    private closeErrorWindow = (message: string) => {
-        this.props.notificationStore!.closeNotification(message);
-    }
-
     public render(): any {
         return (
             <Router>
@@ -77,7 +73,6 @@ class App extends React.Component<IAppProps, IAppState> {
                     rootPath={rootPath}
                 />
                 <NotificationWindow
-                  hideError={this.closeErrorWindow}
                   notifications={this.props.notificationStore!.notifications}
                 />
               </div>

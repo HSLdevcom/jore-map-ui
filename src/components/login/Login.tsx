@@ -27,12 +27,12 @@ class Login extends React.Component<ILoginProps> {
 
     public closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
-        this.props.notificationStore!.addNotifications([
+        this.props.notificationStore!.addNotification(
             {
                 message: 'Kirjautuminen ei käytössä.',
                 type: 'warning',
             },
-        ]);
+        );
     }
 
     public render(): any {

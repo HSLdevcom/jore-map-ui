@@ -15,9 +15,9 @@ export default class LineService {
                     );
                 })
                 .catch((err: any) => {
-                    NotificationStore.addNotifications([
+                    NotificationStore.addNotification(
                         { message: 'Linjan haku ei onnistunut.', type: 'error' },
-                    ]);
+                    );
                     reject(err);
                 });
         });
