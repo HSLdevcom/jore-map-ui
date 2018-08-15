@@ -97,6 +97,7 @@ class NodeWindow extends React.Component
                     onClick={this.toggleStopInUse}
                     value={true}
                     type={TransitType.BUS}
+                    color={'#007ac9'}
                 />
             </div>
             <div
