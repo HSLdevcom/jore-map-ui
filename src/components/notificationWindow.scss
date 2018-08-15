@@ -1,5 +1,18 @@
 @import '../common.scss';
 
+@-moz-keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+ @-webkit-keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+ @keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
 .notificationView {
     display: flex;
     flex-direction: column;
@@ -19,6 +32,9 @@
         border-radius: 5px;
         opacity: 1;
         transition: .5s;
+        -webkit-animation: fadeIn 500ms;
+        -moz-animation: fadeIn 500ms;
+        animation: fadeIn 500ms;
     }
 
     .notificationItemDisappear {
