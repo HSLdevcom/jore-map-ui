@@ -1,14 +1,18 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import { NotificationStore } from '../../stores/notificationStore';
 import { LoginStore } from '../../stores/loginStore';
 import Button from '../controls/Button';
 import ButtonType from '../../enums/buttonType';
+import NotificationType from '../../enums/notificationType';
 import * as s from './login.scss';
 
 interface ILoginProps {
+    notificationStore?: NotificationStore;
     loginStore?: LoginStore;
 }
 
+@inject('notificationStore')
 @inject('loginStore')
 @observer
 class Login extends React.Component<ILoginProps> {
@@ -24,6 +28,12 @@ class Login extends React.Component<ILoginProps> {
 
     public closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
+        this.props.notificationStore!.addNotification(
+            {
+                message: 'Kirjautuminen ei käytössä.',
+                type: NotificationType.WARNING,
+            },
+        );
     }
 
     public render(): any {

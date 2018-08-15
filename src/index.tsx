@@ -4,6 +4,7 @@ import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import * as ReactDOM from 'react-dom';
 import App from './components/App';
+import observableNotificationStore from './stores/notificationStore';
 import observableLoginStore from './stores/loginStore';
 import observableMapStore from './stores/mapStore';
 import observableLineStore from './stores/lineStore';
@@ -16,6 +17,7 @@ configure({ enforceActions: 'strict' });
 
 ReactDOM.render(
     <Provider
+      notificationStore={observableNotificationStore}
       mapStore={observableMapStore}
       lineStore={observableLineStore}
       loginStore={observableLoginStore}
