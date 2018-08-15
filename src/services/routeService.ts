@@ -3,6 +3,8 @@ import apolloClient from '../util/ApolloClient';
 import { ApolloQueryResult } from 'apollo-client';
 import RouteFactory from '../factories/routeFactory';
 import LineStore from '../stores/lineStore';
+import NotificationType from '../enums/notificationType';
+import NotificationStore from '../stores/notificationStore';
 
 export default class RouteService {
     public static getRoute(lineId: string) {
@@ -13,6 +15,9 @@ export default class RouteService {
                     resolve(RouteFactory.createRoute(res.data.route, line));
                 })
                 .catch((err: any) => {
+                    NotificationStore.addNotification(
+                        { message: 'Reitin haku ei onnistunut.', type: NotificationType.ERROR },
+                    );
                     reject(err);
                 });
         });
