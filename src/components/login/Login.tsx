@@ -4,6 +4,7 @@ import { NotificationStore } from '../../stores/notificationStore';
 import { LoginStore } from '../../stores/loginStore';
 import Button from '../controls/Button';
 import ButtonType from '../../enums/buttonType';
+import NotificationType from '../../enums/notificationType';
 import * as s from './login.scss';
 
 interface ILoginProps {
@@ -30,7 +31,7 @@ class Login extends React.Component<ILoginProps> {
         this.props.notificationStore!.addNotification(
             {
                 message: 'Kirjautuminen ei käytössä.',
-                type: 'warning',
+                type: NotificationType.WARNING,
             },
         );
     }
