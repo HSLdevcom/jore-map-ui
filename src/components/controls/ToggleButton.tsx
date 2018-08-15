@@ -22,7 +22,7 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
     private getClassname = () => {
         if (this.props.value) {
             return classNames(
-                s.slider,  TransitTypeColorHelper.getColorClass(this.props.type, true));
+                s.slider,  TransitTypeColorHelper.getBackgroundColorClass(this.props.type));
         }
         return s.slider;
     }

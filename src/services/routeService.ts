@@ -5,9 +5,9 @@ import RouteFactory from '../factories/routeFactory';
 import LineStore from '../stores/lineStore';
 
 export default class RouteService {
-    public static getRoute(lineId: string) {
+    public static getRoute(lineId: string, routeId: string) {
         return new Promise((resolve: (res: any) => void, reject: (err: any) => void) => {
-            apolloClient.query({ query: getRoute, variables: { routeId: lineId } })
+            apolloClient.query({ query: getRoute, variables: { routeId } })
                 .then((res: ApolloQueryResult<any>) => {
                     const line = LineStore.lineByLineId(lineId);
                     resolve(RouteFactory.createRoute(res.data.route, line));

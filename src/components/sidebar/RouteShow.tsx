@@ -24,10 +24,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     <div
                         className={classNames(
                             s.label,
-                            TransitTypeColorHelper.getColorClass(
-                                this.props.route.line.transitType,
-                                false,
-                            ),
+                            TransitTypeColorHelper.getColorClass(this.props.route.line.transitType),
                         )}
                     >
                         {this.props.route.line.lineNumber}

@@ -27,10 +27,11 @@ const getLinjas = gql`
       lintunnus
       linjoukkollaji
       linverkko
-      reittisByLintunnus(first: 1, orderBy: REIVIIMPVM_DESC) {
+      reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
         edges {
           node {
             reinimi
+            reitunnus
             reiviimpvm
           }
         }
