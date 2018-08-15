@@ -5,6 +5,7 @@ import LineService from '../../services/lineService';
 import LineItem from './LineItem';
 import { ILine } from '../../models';
 import TransitType from '../../enums/transitType';
+import * as s from './lineItems.scss';
 
 interface ILineItemsProps {
     lineStore?: LineStore;
@@ -45,7 +46,7 @@ class LineItems extends React.Component<ILineItemsProps> {
             return 'Fetching';
         }
         return (
-            <div>
+            <div className={s.lineItemsView}>
                 {
                     allLines
                         .filter(line =>
