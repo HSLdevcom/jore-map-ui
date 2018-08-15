@@ -26,10 +26,9 @@ export class NotificationStore {
 
     @action
     public closeNotification(message: string) {
-        const notifications = this._notifications.filter((notification: INotification) => {
+        this._notifications = this._notifications.filter((notification: INotification) => {
             return (notification.message !== message);
         });
-        this._notifications = notifications;
     }
 
     @action

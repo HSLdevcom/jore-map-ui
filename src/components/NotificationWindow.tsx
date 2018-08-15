@@ -5,9 +5,13 @@ import classnames from 'classnames';
 import NotificationType from '../enums/notificationType';
 import { NotificationStore } from '../stores/notificationStore';
 
-interface INotificationWindow {
+interface INotificationWindowProps {
     notificationStore?: NotificationStore;
     notifications: object[];
+}
+
+interface INotificationWindowState {
+    disappearingNotifications: string[];
 }
 
 interface INotification {
@@ -17,10 +21,40 @@ interface INotification {
 
 @inject('notificationStore')
 @observer
-class NotificationWindow extends React.Component<INotificationWindow> {
+class NotificationWindow extends React.Component
+<INotificationWindowProps, INotificationWindowState> {
+
+    constructor(props: INotificationWindowProps) {
+        super(props);
+        this.state = {
+            disappearingNotifications: [], // used for disappearing animation
+        };
+    }
 
     private closeNotification = (message: string) => {
-        this.props.notificationStore!.closeNotification(message);
+        const newDisappearingNotifications = this.state.disappearingNotifications;
+        newDisappearingNotifications.push(message);
+        this.setState({
+            disappearingNotifications: newDisappearingNotifications,
+        });
+        setTimeout(
+            () => {
+                this.props.notificationStore!.closeNotification(message);
+                const newDisappearingNotifications =
+                    this.state.disappearingNotifications.filter(m => m !== message);
+                this.setState({
+                    disappearingNotifications: newDisappearingNotifications,
+                });
+            },
+            500,
+        );
+    }
+
+    private getDisappearingNotificationClass = (message: string) => {
+        if (this.state.disappearingNotifications.includes(message)) {
+            return s.notificationItemDisappear;
+        }
+        return;
     }
 
     getColorClass = (type: string) => {
@@ -49,8 +83,10 @@ class NotificationWindow extends React.Component<INotificationWindow> {
                   <div
                     key={notification.message}
                     className={classnames(
-                      s.notificationItem,
-                      this.getColorClass(notification.type))
+                        s.notificationItem,
+                        this.getColorClass(notification.type),
+                        this.getDisappearingNotificationClass(notification.message),
+                    )
                     }
                     onClick={this.closeNotification.bind(this, notification.message)}
                   >
