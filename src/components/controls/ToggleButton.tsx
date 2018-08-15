@@ -1,8 +1,6 @@
 import * as React from 'react';
 import TransitType from '../../enums/transitType';
-import classNames from 'classnames';
 import * as s from './toggleButton.scss';
-import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 
 interface IToggleButtonState {
     isChecked: boolean;
@@ -12,19 +10,12 @@ interface IToggleButtonProps {
     type: TransitType;
     onClick(event: any): void;
     value: boolean;
+    color: string;
 }
 
 class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonState> {
     constructor (props: IToggleButtonProps) {
         super(props);
-    }
-
-    private getClassname = () => {
-        if (this.props.value) {
-            return classNames(
-                s.slider,  TransitTypeColorHelper.getColorClass(this.props.type, true));
-        }
-        return s.slider;
     }
 
     private doNothing() {
@@ -39,6 +30,10 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
             event.preventDefault();
         };
 
+        const style = {
+            backgroundColor: this.props.color,
+        };
+
         return (
             <label
                 onClick={onClick}
@@ -50,7 +45,8 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
                     onChange={this.doNothing}
                 />
                 <div
-                    className={this.getClassname()}
+                    style={style}
+                    className={s.slider}
                 />
             </label>
         );
