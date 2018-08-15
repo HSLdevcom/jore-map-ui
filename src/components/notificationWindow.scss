@@ -1,0 +1,53 @@
+@import '../common.scss';
+
+@-moz-keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+@-webkit-keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+@keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+.notificationView {
+    display: flex;
+    flex-direction: column;
+    top: 0px;
+    left: 400px;
+    position:absolute;
+}
+
+.notificationItem {
+    opacity: 1;
+    position: relative;
+    z-index: 10;
+    padding: 10px 60px 10px 60px;
+    max-width: 250px;
+    margin: 8px;
+    font-size: $mediumFontSize;
+    border-radius: 5px;
+    -webkit-animation: fadeIn 500ms;
+    -moz-animation: fadeIn 500ms;
+    animation: fadeIn 500ms;
+}
+
+.error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+}
+
+.warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+
+.success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}

@@ -3,6 +3,7 @@ import apolloClient from '../util/ApolloClient';
 import LineFactory from '../factories/lineFactory';
 import { ApolloQueryResult } from 'apollo-client';
 import { ILine } from '../models';
+import NotificationStore from '../stores/notificationStore';
 
 export default class LineService {
     public static getAllLines() {
@@ -14,6 +15,9 @@ export default class LineService {
                     );
                 })
                 .catch((err: any) => {
+                    NotificationStore.addNotifications([
+                        { message: 'Linjan haku ei onnistunut.', type: 'error' },
+                    ]);
                     reject(err);
                 });
         });

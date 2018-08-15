@@ -1,10 +1,12 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { NotificationStore } from '../stores/notificationStore';
 import { LoginStore } from '../stores/loginStore';
 import { SidebarStore } from '../stores/sidebarStore';
 import Button from './controls/Button';
 import ButtonType from '../enums/buttonType';
+import NotificationWindow from './NotificationWindow';
 import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
@@ -18,10 +20,12 @@ interface IAppState {
 }
 
 interface IAppProps {
+    notificationStore?: NotificationStore;
     loginStore?: LoginStore;
     sidebarStore?: SidebarStore;
 }
 
+@inject('notificationStore')
 @inject('sidebarStore')
 @inject('loginStore')
 @observer
@@ -37,6 +41,10 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private closeNodeWindow = () => {
         this.props.sidebarStore!.setOpenedNodeId(null);
+    }
+
+    private closeErrorWindow = (message: string) => {
+        this.props.notificationStore!.closeNotification(message);
     }
 
     public render(): any {
@@ -67,6 +75,10 @@ class App extends React.Component<IAppProps, IAppState> {
                     exact={true}
                     path='/'
                     rootPath={rootPath}
+                />
+                <NotificationWindow
+                  hideError={this.closeErrorWindow}
+                  notifications={this.props.notificationStore!.notifications}
                 />
               </div>
             </Router>
