@@ -3,7 +3,7 @@ import { IRoutePath, IRoute, INode } from '../models';
 import * as s from './routeLayer.scss';
 import { SidebarStore } from '../stores/sidebarStore';
 import NodeType from '../enums/nodeType';
-import classnames from 'classnames';
+import colorScale from '../util/colorScale';
 
 enum PopupItemAction {
     TARGET = 'target',
@@ -38,12 +38,18 @@ export default class RouteLayerView {
     public drawRouteLines(routes: IRoute[]) {
         this.clearRoute();
 
+        let visibleRoutePathIndex = 0;
         if (routes && routes[0]) {
             if (routes[0].routePaths[0]) {
                 routes[0].routePaths.map((routePath) => {
                     if (routePath.visible) {
-                        this.drawRouteLine(routePath);
-                        this.drawNodes(routePath);
+                        const visibleRoutePaths = routes[0].routePaths.filter(
+                            x => x.visible).length;
+                        const routeColor = colorScale.getColors(
+                            visibleRoutePaths)[visibleRoutePathIndex];
+                        this.drawRouteLine(routePath, routeColor);
+                        this.drawNodes(routePath, routeColor);
+                        visibleRoutePathIndex += 1;
                     }
                 });
             } else {
@@ -54,44 +60,35 @@ export default class RouteLayerView {
         }
     }
 
-    private drawRouteLine(routePath: IRoutePath) {
-        const getColorClassName = (type: string) => {
-            switch (routePath.direction) {
-            case '1': return s.blue;
-            case '2': return s.red;
-            default: return s.blue;
-            }
-        };
-
+    private drawRouteLine(routePath: IRoutePath, color: string) {
         const geoJSON = new L.GeoJSON(routePath.geoJson)
         .setStyle({
-            className: classnames(s.route, getColorClassName(routePath.direction)),
+            color,
+            className: s.route,
         })
         .addTo(this.routeLayer);
         this.routeLines.push(geoJSON);
     }
 
-    private drawNodes(routePath: IRoutePath) {
+    private drawNodes(routePath: IRoutePath, color: string) {
         routePath.nodes.map((node) => {
-            this.drawNode(node, routePath.direction);
+            this.drawNode(node, routePath.direction, color);
         });
     }
 
-    private drawNode(node: INode, direction: string) {
-        const getColorClassName = (type: NodeType, direction: string) => {
-            if (type === NodeType.CROSSROAD) return s.grey;
-
-            switch (direction) {
-            case '1': return s.blue;
-            case '2': return s.red;
-            default: return s.blue;
+    private drawNode(node: INode, direction: string, color: string) {
+        const getColor = (type: NodeType, defaultColor: string) => {
+            if (node.type === NodeType.CROSSROAD) {
+                return '#666666'; // grey
             }
+            return defaultColor;
         };
 
         const coordinates = node.geoJson.coordinates;
         const circle = new L.CircleMarker([coordinates[1], coordinates[0]]);
         circle.setStyle({
-            className: classnames(s.node, getColorClassName(node.type, direction)),
+            color: getColor(node.type, color),
+            className: s.node,
         })
         .on('click', () => {
             this.sidebarStore!.setOpenedNodeId(node.id);
