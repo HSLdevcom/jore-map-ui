@@ -6,6 +6,7 @@ import lineHelper from '../../util/lineHelper';
 import { ILine, IRoute } from '../../models';
 import RouteService from '../../services/routeService';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
+import Moment from 'react-moment';
 import * as s from './lineItem.scss';
 
 interface ILineItemState {
@@ -63,7 +64,10 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                 {route.name}
                             </div>
                             <div className={s.routeDate}>
-                                {route.date}
+                                <Moment
+                                    date={route.date}
+                                    format='DD.MM.YYYY HH:mm'
+                                />
                             </div>
                         </div>
                     );
