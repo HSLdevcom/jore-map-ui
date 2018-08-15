@@ -37,7 +37,9 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 </div>
                 <div className={s.content}>
                     {this.props.routeStore!.routes.length < 1 &&
-                        <LineSearch />
+                        <LineSearch
+                            showSearchResults={true}
+                        />
                     }
                     {this.props.routeStore!.routes.length > 0 &&
                         <RoutesEdit />

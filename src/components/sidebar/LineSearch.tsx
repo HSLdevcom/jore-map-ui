@@ -7,6 +7,8 @@ import * as s from './lineSearch.scss';
 
 interface ILineSearchProps {
     lineStore?: LineStore;
+    onInputChange?: Function;
+    showSearchResults: boolean;
 }
 
 interface ILineSearchState {
@@ -26,35 +28,38 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
     }
 
     public handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+        const newValue = event.currentTarget.value;
         this.setState({
-            searchInput: event.currentTarget.value,
+            searchInput: newValue,
         });
+        if (this.props.onInputChange) {
+            this.props.onInputChange(newValue);
+        }
     }
 
     public render(): any {
         return (
             <div className={s.lineSearchView}>
-                <div className={s.header}>
-                    <label className={s.label}>
-                        Reitit<br />
-                    </label>
-                    <div className={s.inputContainer}>
-                        <input
-                            placeholder='Hae reitti'
-                            className={s.input}
-                            type='text'
-                            value={this.state.searchInput}
-                            onChange={this.handleSearchInputChange}
-                        />
-                    </div>
+                <div className={s.inputContainer}>
+                    <input
+                        placeholder='Hae'
+                        className={s.input}
+                        type='text'
+                        value={this.state.searchInput}
+                        onChange={this.handleSearchInputChange}
+                    />
+                </div>
+                { this.props.showSearchResults &&
+                <div className={s.searchResultsContainer}>
                     <TransitToggleButtonBar
                         filters={this.props.lineStore!.filters || []}
                     />
+                    <LineItems
+                        filters={this.props.lineStore!.filters || []}
+                        searchInput={this.state.searchInput}
+                    />
                 </div>
-                <LineItems
-                    filters={this.props.lineStore!.filters || []}
-                    searchInput={this.state.searchInput}
-                />
+                }
             </div>
         );
     }
