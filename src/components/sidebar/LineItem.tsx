@@ -64,6 +64,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                 {route.name}
                             </div>
                             <div className={s.routeDate}>
+                                {'Muokattu: '}
                                 <Moment
                                     date={route.date}
                                     format='DD.MM.YYYY HH:mm'
