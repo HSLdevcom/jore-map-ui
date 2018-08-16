@@ -1,5 +1,5 @@
 @import '../../common.scss';
-.mapLeaflet {
+#mapLeaflet {
     min-height: 400px;
     height: 100vh;
     overflow: hidden;
@@ -9,7 +9,7 @@
         left: 400px;
         width: calc(100vw - 400px);
     }
-    .fullscreen {
+    &.fullscreen {
         position: fixed !important;
         left: 0;
         top: 0;

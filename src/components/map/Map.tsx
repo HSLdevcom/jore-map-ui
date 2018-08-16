@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import * as s from './map.scss';
 import Control from './CustomControl';
+import FullscreenControl from './FullscreenControl';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -20,17 +21,21 @@ interface IMapProps {
 @inject('routeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps> {
-    constructor(props: IMapProps) {
-        super(props);
-    }
-
     public render() {
+        let mapClass = '';
+        if (this.props.mapStore!.isMapFullscreen) {
+            mapClass = classnames('root', s.fullscreen);
+        } else {
+            mapClass = classnames('root');
+        }
+
         return (
             <Map
                 center={this.props.mapStore!.coordinates}
                 zoom={15}
                 zoomControl={false}
-                className={classnames('root', s.mapLeaflet)}
+                id={s.mapLeaflet}
+                className={mapClass}
             >
                 <TileLayer
                     // tslint:disable:max-line-length
@@ -54,7 +59,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <div>Test Top-Left</div>
                 </Control>
                 <Control position='topright'>
-                    <div>Test Top-Right</div>
+                    <FullscreenControl />
                 </Control>
                 <ZoomControl position='bottomright' />
                 <Control position='bottomright'>
