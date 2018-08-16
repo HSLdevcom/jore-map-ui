@@ -7,6 +7,7 @@ import { SidebarStore } from '../../stores/sidebarStore';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import * as s from './map.scss';
+import Control from './CustomControl';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -49,9 +50,19 @@ class LeafletMap extends React.Component<IMapProps> {
                     zoomOffset={-1}
                     // tslint:enable:max-line-length
                 />
-                <ZoomControl
-                    position='bottomright'
-                />
+                <Control position='topleft'>
+                    <div>Test Top-Left</div>
+                </Control>
+                <Control position='topright'>
+                    <div>Test Top-Right</div>
+                </Control>
+                <ZoomControl position='bottomright' />
+                <Control position='bottomright'>
+                    <div>Test Bottom-Right</div>
+                </Control>
+                <Control position='bottomleft'>
+                    <div>Test Bottom-Left</div>
+                </Control>
             </Map>
         );
     }
