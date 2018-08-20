@@ -5,7 +5,13 @@
 }
 
 .red {
+    radius: 50;
     stroke: $red;
+}
+
+.green {
+    stroke: rgb(0, 255, 0);
+    stroke-width: 10;
 }
 
 .grey {
@@ -27,7 +33,7 @@
 
 .leafletPopup {
     font-family: $hslFont;
-    
+
     /* Override leaflet's default margin */
     div:first-child div {
         margin: 0 !important;

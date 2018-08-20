@@ -17,7 +17,7 @@ export default class RouteLayerView {
     private map: L.Map;
     private sidebarStore?: SidebarStore;
     private routeLines: L.GeoJSON<any>[];
-    private routeNodes: L.CircleMarker<any>[];
+    private routeNodes: any[];
     private popup: L.Popup;
     private highlightedMarker?: L.CircleMarker<any>;
     private routeLayer: L.FeatureGroup;
@@ -80,6 +80,7 @@ export default class RouteLayerView {
     private drawNode(node: INode, direction: string) {
         const getColorClassName = (type: NodeType, direction: string) => {
             if (type === NodeType.CROSSROAD) return s.grey;
+            if (node.type === NodeType.START) return s.green;
 
             switch (direction) {
             case '1': return s.blue;
@@ -87,7 +88,6 @@ export default class RouteLayerView {
             default: return s.blue;
             }
         };
-
         const coordinates = node.geoJson.coordinates;
         const circle = new L.CircleMarker([coordinates[1], coordinates[0]]);
         circle.setStyle({
@@ -116,6 +116,7 @@ export default class RouteLayerView {
             .openOn(this.map);
         })
         .addTo(this.routeLayer);
+
         this.routeNodes.push(circle);
 
     }
