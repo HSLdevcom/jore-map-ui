@@ -27,7 +27,7 @@ export default class RouteLayerView {
         this.sidebarStore = sidebarStore;
         this.routeLines = [];
         this.routeNodes = [];
-        this.routeLayer = new L.FeatureGroup;
+        this.routeLayer = L.featureGroup();
         this.map.addLayer(this.routeLayer);
 
         this.map.on('click', () => {
@@ -61,7 +61,7 @@ export default class RouteLayerView {
     }
 
     private drawRouteLine(routePath: IRoutePath, color: string) {
-        const geoJSON = new L.GeoJSON(routePath.geoJson)
+        const geoJSON = L.geoJSON(routePath.geoJson)
         .setStyle({
             color,
             className: s.route,
@@ -85,7 +85,7 @@ export default class RouteLayerView {
         };
 
         const coordinates = node.geoJson.coordinates;
-        const circle = new L.CircleMarker([coordinates[1], coordinates[0]]);
+        const circle = L.circleMarker([coordinates[1], coordinates[0]]);
         circle.setStyle({
             color: getColor(node.type, color),
             className: s.node,

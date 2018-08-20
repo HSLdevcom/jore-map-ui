@@ -1,14 +1,18 @@
 import { Map, TileLayer, ZoomControl } from 'react-leaflet';
+import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { MapStore } from '../../stores/mapStore';
 import { SidebarStore } from '../../stores/sidebarStore';
+import { autorun } from 'mobx';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
-import * as s from './map.scss';
 import Control from './CustomControl';
 import FullscreenControl from './FullscreenControl';
+import RouteLayerView from '../../layers/routeLayerView';
+import { IRoute } from '../../models';
+import * as s from './map.scss';
 
 interface IMapState {
     refreshMapKey: number;
@@ -26,12 +30,47 @@ interface IMapProps {
 @inject('routeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
+    private map: Map | null;
+    private routeLayerView: RouteLayerView;
+
     constructor(props: IMapProps) {
         super(props);
         this.state = {
             refreshMapKey: 1,
             isMapFullscreen: false,
         };
+    }
+
+    public componentDidMount() {
+        autorun(() => this.updateRouteLines());
+    }
+
+    private updateRouteLines() {
+        if (this.map) {
+            if (!this.routeLayerView) {
+                this.routeLayerView = new RouteLayerView(
+                    this.map.leafletElement, this.props.sidebarStore);
+            }
+            this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
+            this.centerMapToRoutes(this.props.routeStore!.routes);
+        }
+    }
+
+    private centerMapToRoutes(routes: IRoute[]) {
+        let bounds:L.LatLngBounds = new L.LatLngBounds([]);
+        if (routes && routes[0]) {
+            if (routes[0].routePaths[0]) {
+                routes[0].routePaths.map((routePath) => {
+                    const geoJSON = new L.GeoJSON(routePath.geoJson);
+                    if (!bounds) {
+                        bounds = geoJSON.getBounds();
+                    } else {
+                        bounds.extend(geoJSON.getBounds());
+                    }
+                });
+                this.map!.leafletElement.fitBounds(bounds);
+            }
+        }
     }
 
     public componentDidUpdate() {
@@ -55,6 +94,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
         return (
             <Map
+                ref={(ref) => { this.map = ref; }}
                 center={this.props.mapStore!.coordinates}
                 zoom={15}
                 key={this.state.refreshMapKey}
