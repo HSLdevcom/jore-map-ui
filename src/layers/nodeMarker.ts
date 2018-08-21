@@ -14,12 +14,7 @@ export default class NodeMarker {
     constructor(options: NodeMarkerOptions) {
         this.options = options;
 
-        const divIconOptions : L.DivIconOptions = {
-            className: s.nodeMarker,
-            html: this.getNodeMarkerHtml(this.options.color),
-        };
-
-        const icon = new L.DivIcon(divIconOptions);
+        const icon = this.getIcon(this.options.color);
 
         const markerOptions : L.MarkerOptions = {
             icon,
@@ -29,6 +24,24 @@ export default class NodeMarker {
         this.node = new L.Marker(
             [this.options.coordinates.lat, this.options.coordinates.lon],
             markerOptions);
+    }
+
+    private getIcon = (color: string) => {
+        const divIconOptions : L.DivIconOptions = {
+            className: s.nodeMarker,
+            html: this.getNodeMarkerHtml(color),
+        };
+
+        return new L.DivIcon(divIconOptions);
+    }
+
+    private getHighlightedIcon = (color: string) => {
+        const divIconOptions : L.DivIconOptions = {
+            className: s.highlightedMarker,
+            html: this.getNodeMarkerHtml(color),
+        };
+
+        return new L.DivIcon(divIconOptions);
     }
 
     private getNodeMarkerHtml = (color: string) => {
@@ -45,5 +58,15 @@ export default class NodeMarker {
 
     public getNodeMarker = () => {
         return this.node;
+    }
+
+    public addHighlight = () => {
+        const icon = this.getHighlightedIcon(this.options.color);
+        this.node.setIcon(icon);
+    }
+
+    public removeHighlight = () => {
+        const icon = this.getIcon(this.options.color);
+        this.node.setIcon(icon);
     }
 }

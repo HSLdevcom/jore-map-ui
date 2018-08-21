@@ -20,7 +20,7 @@ export default class RouteLayerView {
     private routeLines: L.GeoJSON<any>[];
     private routeNodes: L.Marker<any>[];
     private popup: L.Popup;
-    private highlightedMarker?: L.Marker<any>;
+    private highlightedMarker?: NodeMarker;
     private routeLayer: L.FeatureGroup;
 
     constructor(map: L.Map) {
@@ -94,9 +94,8 @@ export default class RouteLayerView {
             }
 
             this.deHighlightMarker();
-
-            L.DomUtil.addClass(leafletMarker.getElement() as HTMLElement, s.highlightedMarker);
-            this.highlightedMarker = leafletMarker;
+            marker.addHighlight();
+            this.highlightedMarker = marker;
 
             this.popup = L.popup({
                 className: s.leafletPopup,
@@ -114,8 +113,7 @@ export default class RouteLayerView {
 
     private deHighlightMarker() {
         if (this.highlightedMarker) {
-            L.DomUtil.removeClass(
-                this.highlightedMarker.getElement() as HTMLElement, s.highlightedMarker);
+            this.highlightedMarker.removeHighlight();
         }
     }
 
