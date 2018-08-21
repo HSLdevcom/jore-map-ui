@@ -1,9 +1,9 @@
 import * as L from 'leaflet';
 import { IRoutePath, IRoute, INode } from '../models';
-import * as s from './routeLayer.scss';
-import { SidebarStore } from '../stores/sidebarStore';
 import NodeType from '../enums/nodeType';
 import colorScale from '../util/colorScale';
+import observableSidebarStore, { SidebarStore } from '../stores/sidebarStore';
+import * as s from './routeLayer.scss';
 
 enum PopupItemAction {
     TARGET = 'target',
@@ -15,16 +15,16 @@ enum PopupItemAction {
 
 export default class RouteLayerView {
     private map: L.Map;
-    private sidebarStore?: SidebarStore;
+    private sidebarStore: SidebarStore;
     private routeLines: L.GeoJSON<any>[];
     private routeNodes: L.CircleMarker<any>[];
     private popup: L.Popup;
     private highlightedMarker?: L.CircleMarker<any>;
     private routeLayer: L.FeatureGroup;
 
-    constructor(map: L.Map, sidebarStore?: SidebarStore) {
+    constructor(map: L.Map) {
         this.map = map;
-        this.sidebarStore = sidebarStore;
+        this.sidebarStore = observableSidebarStore;
         this.routeLines = [];
         this.routeNodes = [];
         this.routeLayer = L.featureGroup();

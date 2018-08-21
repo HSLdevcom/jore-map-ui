@@ -4,6 +4,7 @@
     height: 100vh;
     overflow: hidden;
     z-index: 10;
+    background-color: #b2b2b2;
 
     &:not(.fullscreen) {
         left: 400px;

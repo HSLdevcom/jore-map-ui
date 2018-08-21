@@ -15,8 +15,7 @@ import { IRoute } from '../../models';
 import * as s from './map.scss';
 
 interface IMapState {
-    refreshMapKey: number;
-    isMapFullscreen: boolean;
+    map?: L.Map;
 }
 
 interface IMapProps {
@@ -30,26 +29,33 @@ interface IMapProps {
 @inject('routeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
-    private map: Map | null;
+    private map: Map | null;
     private routeLayerView: RouteLayerView;
 
     constructor(props: IMapProps) {
         super(props);
         this.state = {
-            refreshMapKey: 1,
-            isMapFullscreen: false,
+            map: undefined,
         };
     }
 
     public componentDidMount() {
         autorun(() => this.updateRouteLines());
+        if (!this.state.map && this.map) {
+            this.setState({
+                map: this.map.leafletElement,
+            });
+        }
+    }
+
+    public componentDidUpdate() {
+        this.state.map!.invalidateSize();
     }
 
     private updateRouteLines() {
         if (this.map) {
             if (!this.routeLayerView) {
-                this.routeLayerView = new RouteLayerView(
-                    this.map.leafletElement, this.props.sidebarStore);
+                this.routeLayerView = new RouteLayerView(this.map.leafletElement);
             }
             this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
             this.centerMapToRoutes(this.props.routeStore!.routes);
@@ -73,17 +79,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         }
     }
 
-    public componentDidUpdate() {
-        if (this.state.isMapFullscreen !== this.props.mapStore!.isMapFullscreen) {
-            const newRefreshMapKey = this.state.refreshMapKey + 1;
-            // Change refreshMapKey if isMapFullscreen is changed to refresh map
-            this.setState({
-                refreshMapKey: newRefreshMapKey,
-                isMapFullscreen: this.props.mapStore!.isMapFullscreen,
-            });
-        }
-    }
-
     public render() {
         let mapClass = '';
         if (this.props.mapStore!.isMapFullscreen) {
@@ -94,14 +89,14 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
         return (
             <Map
-                ref={(ref) => { this.map = ref; }}
+                ref={(map) => {
+                    this.map = map;
+                }}
                 center={this.props.mapStore!.coordinates}
                 zoom={15}
-                key={this.state.refreshMapKey}
                 zoomControl={false}
                 id={s.mapLeaflet}
                 className={mapClass}
-
             >
                 <TileLayer
                     // tslint:disable:max-line-length
@@ -125,7 +120,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <div>Test Top-Left</div>
                 </Control>
                 <Control position='topright'>
-                    <FullscreenControl />
+                    <FullscreenControl map={this.state.map} />
                 </Control>
                 <ZoomControl position='bottomright' />
                 <Control position='bottomright'>
