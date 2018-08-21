@@ -9,13 +9,16 @@ import { autorun } from 'mobx';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
+import CoordinateControl from './CoordinateControl';
 import FullscreenControl from './FullscreenControl';
+import MeasurementControl from './MeasurementControl';
 import RouteLayerView from '../../layers/routeLayerView';
 import { IRoute } from '../../models';
 import * as s from './map.scss';
 
 interface IMapState {
     map?: L.Map;
+    zoomLevel: number;
 }
 
 interface IMapProps {
@@ -36,14 +39,30 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         super(props);
         this.state = {
             map: undefined,
+            zoomLevel: 15,
         };
     }
 
     public componentDidMount() {
         autorun(() => this.updateRouteLines());
         if (!this.state.map && this.map) {
+            const leafletElement = this.map.leafletElement;
             this.setState({
-                map: this.map.leafletElement,
+                map: leafletElement,
+            });
+            // TODO: Convert these as react-components
+            leafletElement.addControl(new CoordinateControl({ position: 'topright' }));
+            leafletElement.addControl(new MeasurementControl({ position: 'topright' }));
+            leafletElement.on('moveend', () => {
+                this.props.mapStore!.setCoordinates(
+                    leafletElement.getCenter().lat,
+                    leafletElement.getCenter().lng,
+                );
+            });
+            leafletElement.on('zoomend', () => {
+                this.setState({
+                    zoomLevel: leafletElement.getZoom(),
+                });
             });
         }
     }
@@ -93,7 +112,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     this.map = map;
                 }}
                 center={this.props.mapStore!.coordinates}
-                zoom={15}
+                zoom={this.state.zoomLevel}
                 zoomControl={false}
                 id={s.mapLeaflet}
                 className={mapClass}
@@ -116,19 +135,13 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     zoomOffset={-1}
                     // tslint:enable:max-line-length
                 />
-                <Control position='topleft'>
-                    <div>Test Top-Left</div>
-                </Control>
+                <Control position='topleft' />
                 <Control position='topright'>
                     <FullscreenControl map={this.state.map} />
                 </Control>
                 <ZoomControl position='bottomright' />
-                <Control position='bottomright'>
-                    <div>Test Bottom-Right</div>
-                </Control>
-                <Control position='bottomleft'>
-                    <div>Test Bottom-Left</div>
-                </Control>
+                <Control position='bottomright' />
+                <Control position='bottomleft' />
             </Map>
         );
     }
