@@ -1,0 +1,37 @@
+@import '../../common.scss';
+
+.toolbarIcon {
+  position: relative;
+  display: inline-block;
+  font-size: $largeFontSize;
+  line-height: $largeFontSize;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.toolbarIcon .tooltiptext {
+    margin-top: 30px;
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    font-size: $mediumFontSize;
+}
+
+.toolbarIcon:hover .tooltiptext {
+    visibility: visible;
+}
+
+.active {
+    color: $blue;
+}
+
+.disabled {
+    color: #a0a0a0;
+    cursor: not-allowed;
+}
