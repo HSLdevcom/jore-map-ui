@@ -3,6 +3,7 @@ import { IRoutePath, IRoute, INode } from '../models';
 import NodeType from '../enums/nodeType';
 import colorScale from '../util/colorScale';
 import observableSidebarStore, { SidebarStore } from '../stores/sidebarStore';
+import NodeMarker, { NodeMarkerOptions } from './nodeMarker';
 import * as s from './routeLayer.scss';
 
 enum PopupItemAction {
@@ -17,9 +18,9 @@ export default class RouteLayerView {
     private map: L.Map;
     private sidebarStore: SidebarStore;
     private routeLines: L.GeoJSON<any>[];
-    private routeNodes: L.CircleMarker<any>[];
+    private routeNodes: L.Marker<any>[];
     private popup: L.Popup;
-    private highlightedMarker?: L.CircleMarker<any>;
+    private highlightedMarker?: NodeMarker;
     private routeLayer: L.FeatureGroup;
 
     constructor(map: L.Map) {
@@ -77,20 +78,14 @@ export default class RouteLayerView {
     }
 
     private drawNode(node: INode, direction: string, color: string) {
-        const getColor = (type: NodeType, defaultColor: string) => {
-            if (node.type === NodeType.CROSSROAD) {
-                return '#666666'; // grey
-            }
-            return defaultColor;
+        const nodeOptions : NodeMarkerOptions = {
+            color: node.type === NodeType.CROSSROAD ? '#666666' : color,
+            coordinates: node.coordinates,
         };
 
-        const coordinates = node.geoJson.coordinates;
-        const circle = L.circleMarker([coordinates[1], coordinates[0]]);
-        circle.setStyle({
-            color: getColor(node.type, color),
-            className: s.node,
-        })
-        .on('click', () => {
+        const marker = new NodeMarker(nodeOptions);
+        const leafletMarker = marker.getNodeMarker();
+        leafletMarker.on('click', () => {
             this.sidebarStore!.setOpenedNodeId(node.id);
         })
         .on('contextmenu', (e: L.LeafletMouseEvent) => {
@@ -99,9 +94,8 @@ export default class RouteLayerView {
             }
 
             this.deHighlightMarker();
-
-            L.DomUtil.addClass(circle.getElement() as HTMLElement, s.highlightedMarker);
-            this.highlightedMarker = circle;
+            marker.addHighlight();
+            this.highlightedMarker = marker;
 
             this.popup = L.popup({
                 className: s.leafletPopup,
@@ -113,14 +107,13 @@ export default class RouteLayerView {
             .openOn(this.map);
         })
         .addTo(this.routeLayer);
-        this.routeNodes.push(circle);
+        this.routeNodes.push(leafletMarker);
 
     }
 
     private deHighlightMarker() {
         if (this.highlightedMarker) {
-            L.DomUtil.removeClass(
-                this.highlightedMarker.getElement() as HTMLElement, s.highlightedMarker);
+            this.highlightedMarker.removeHighlight();
         }
     }
 
@@ -191,8 +184,8 @@ export default class RouteLayerView {
         this.routeLines.map((layer: L.GeoJSON) => {
             this.routeLayer.removeLayer(layer);
         });
-        this.routeNodes.map((circleMarker: L.CircleMarker) => {
-            this.routeLayer.removeLayer(circleMarker);
+        this.routeNodes.map((marker: L.Marker) => {
+            this.routeLayer.removeLayer(marker);
         });
         this.routeLines = [];
         this.routeNodes = [];
