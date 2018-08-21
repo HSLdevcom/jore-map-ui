@@ -1,5 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { FaTimes } from 'react-icons/fa';
+import { IconContext } from 'react-icons';
 import { RouteStore } from '../../stores/routeStore';
 import { IRoutePath, IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
@@ -12,11 +14,16 @@ import * as s from './routeShow.scss';
 interface IRouteShowProps {
     routeStore?: RouteStore;
     route: IRoute;
+    visibleRoutePathsIndex: number;
 }
 
 @inject('routeStore')
 @observer
 class RouteShow extends React.Component<IRouteShowProps> {
+
+    private onClose = () => {
+        this.props.routeStore!.removeFromRoutes(this.props.route.lineId);
+    }
 
     private renderRouteName() {
         return (
@@ -31,12 +38,17 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 {this.props.route.line.lineNumber}
             </div>
             {this.props.route.routeName}
+            <IconContext.Provider value={{}}>
+                <div onClick={this.onClose} className={s.closeView}>
+                    <FaTimes className={s.close}/>
+                </div >
+            </IconContext.Provider>
         </div>
         );
     }
 
     private renderRoutePaths() {
-        let visibleRoutePathsIndex = 0;
+        let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
 
         return this.props.route.routePaths
         .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
@@ -45,14 +57,11 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 this.props.routeStore!.toggleRoutePathVisibility(
                     this.props.route, routePath);
             };
-            const visibleRoutePaths = this.props.route.routePaths.filter(
-                x => x.visible).length;
             const routeColor = colorScale.getColors(
-                visibleRoutePaths)[visibleRoutePathsIndex];
+                this.props.routeStore!.visibleRoutePathAmount)[visibleRoutePathsIndex];
             if (routePath.visible) {
                 visibleRoutePathsIndex += 1;
             }
-
             return (
                 <div
                     className={s.toggle}

@@ -21,6 +21,7 @@ export class SidebarStore {
     public setOpenedNodeId(id: number|null) {
         this._openedNodeId = id;
     }
+
 }
 
 const observableSidebarStore = new SidebarStore();

@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
+import { LineStore } from '../../stores/lineStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
@@ -9,13 +10,14 @@ import * as s from './routesEdit.scss';
 
 interface IRoutesEditState {
     networkCheckboxToggles: any;
-    lineSearchVisible: boolean;
 }
 
 interface IRoutesEditProps {
+    lineStore?: LineStore;
     routeStore?: RouteStore;
 }
 
+@inject('lineStore')
 @inject('routeStore')
 @observer
 class RoutesEdit extends
@@ -27,18 +29,25 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
                 solmut: false,
                 linkit: false,
             },
-            lineSearchVisible: false,
         };
     }
 
     private routeList(routes: IRoute[]) {
+        let visibleRoutePathsIndex = 0;
         return routes.map((route: IRoute) => {
-            return (
+            const routeShow = (
                 <RouteShow
                     key={route.lineId}
                     route={route}
+                    visibleRoutePathsIndex={visibleRoutePathsIndex}
                 />
             );
+
+            const routePathsAmount = route.routePaths.filter(
+                x => x.visible).length;
+            visibleRoutePathsIndex += routePathsAmount;
+
+            return routeShow;
         });
     }
 
@@ -50,20 +59,13 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
         });
     }
 
-    private onSearchInputChange = (newValue: string) => {
-        this.setState({
-            lineSearchVisible: Boolean(newValue),
-        });
-    }
-
     public render(): any {
         return (
             <div className={s.routesEditView}>
                 <LineSearch
-                    showSearchResults={this.state.lineSearchVisible}
-                    onInputChange={this.onSearchInputChange}
+                    showSearchResults={this.props.lineStore!.lineSearchVisible}
                 />
-                { !this.state.lineSearchVisible &&
+                { !this.props.lineStore!.lineSearchVisible &&
                 <div className={s.wrapper}>
                     <div className={s.routeList}>
                         {
