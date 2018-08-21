@@ -31,7 +31,6 @@ export class RouteStore {
                 this._routes.splice(i, 1);
             }
         }
-        // this._routes.push(node);
     }
 
     @action
