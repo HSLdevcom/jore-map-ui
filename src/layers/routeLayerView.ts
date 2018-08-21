@@ -1,9 +1,9 @@
 import * as L from 'leaflet';
 import { IRoutePath, IRoute, INode } from '../models';
-import * as s from './routeLayer.scss';
-import { SidebarStore } from '../stores/sidebarStore';
 import NodeType from '../enums/nodeType';
 import colorScale from '../util/colorScale';
+import observableSidebarStore, { SidebarStore } from '../stores/sidebarStore';
+import * as s from './routeLayer.scss';
 
 enum PopupItemAction {
     TARGET = 'target',
@@ -15,19 +15,19 @@ enum PopupItemAction {
 
 export default class RouteLayerView {
     private map: L.Map;
-    private sidebarStore?: SidebarStore;
+    private sidebarStore: SidebarStore;
     private routeLines: L.GeoJSON<any>[];
     private routeNodes: L.CircleMarker<any>[];
     private popup: L.Popup;
     private highlightedMarker?: L.CircleMarker<any>;
     private routeLayer: L.FeatureGroup;
 
-    constructor(map: L.Map, sidebarStore?: SidebarStore) {
+    constructor(map: L.Map) {
         this.map = map;
-        this.sidebarStore = sidebarStore;
+        this.sidebarStore = observableSidebarStore;
         this.routeLines = [];
         this.routeNodes = [];
-        this.routeLayer = new L.FeatureGroup;
+        this.routeLayer = L.featureGroup();
         this.map.addLayer(this.routeLayer);
 
         this.map.on('click', () => {
@@ -61,7 +61,7 @@ export default class RouteLayerView {
     }
 
     private drawRouteLine(routePath: IRoutePath, color: string) {
-        const geoJSON = new L.GeoJSON(routePath.geoJson)
+        const geoJSON = L.geoJSON(routePath.geoJson)
         .setStyle({
             color,
             className: s.route,
@@ -85,7 +85,7 @@ export default class RouteLayerView {
         };
 
         const coordinates = node.geoJson.coordinates;
-        const circle = new L.CircleMarker([coordinates[1], coordinates[0]]);
+        const circle = L.circleMarker([coordinates[1], coordinates[0]]);
         circle.setStyle({
             color: getColor(node.type, color),
             className: s.node,

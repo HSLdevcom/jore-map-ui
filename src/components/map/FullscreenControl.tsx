@@ -1,40 +1,35 @@
-import * as L from 'leaflet';
-import observableMapStore, { MapStore } from '../../stores/mapStore';
+import React from 'react';
+import { Map } from 'leaflet';
+import MapStore from '../../stores/mapStore';
 import * as s from './map.scss';
 import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
 
-interface IFullscreenControlOptions extends L.ControlOptions {
-    color?: string; // TODO Use this for something.
+interface FullscreenControlProps {
+    map?: Map;
 }
 
-class FullscreenControl extends L.Control {
-    private mapStore: MapStore;
-    private map: L.Map;
-    constructor(options?: IFullscreenControlOptions) {
-        super(options);
-        this.mapStore = observableMapStore;
+class FullscreenControl extends React.Component<FullscreenControlProps> {
+    constructor(props: FullscreenControlProps) {
+        super(props);
     }
 
-    onAdd(map: L.Map) {
-        this.map = map;
-        const icon = L.DomUtil.create('img');
-        const container = L.DomUtil.create('button', 'leaflet-bar leaflet-control');
-        container.id = 'fullscreenControl';
-        icon.setAttribute('src', fullScreenEnterIcon);
-        icon.className = s.fullscreenButton;
-        container.className = s.fullscreenButton;
-        container.appendChild(icon);
-        container.onclick = () => {
-            this.mapStore!.toggleMapFullscreen();
-            icon.setAttribute(
-                'src',
-                this.mapStore!.isMapFullscreen
-                    ? fullScreenExitIcon : fullScreenEnterIcon);
-            this.map.invalidateSize();
+    render() {
+        const toggleFullscreen = () => {
+            MapStore.toggleMapFullscreen();
         };
-        L.DomEvent.disableClickPropagation(container);
-        return container;
+
+        return (
+            <button
+                className={s.fullscreenButton}
+                onClick={toggleFullscreen}
+            >
+                <img
+                    src={MapStore.isMapFullscreen ? fullScreenExitIcon : fullScreenEnterIcon}
+                    className={s.fullscreenButton}
+                />
+            </button>
+        );
     }
 }
 

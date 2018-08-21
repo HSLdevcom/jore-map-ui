@@ -4,12 +4,13 @@
     height: 100vh;
     overflow: hidden;
     z-index: 10;
+    background-color: #b2b2b2;
 
     &:not(.fullscreen) {
         left: 400px;
         width: calc(100vw - 400px);
     }
-    .fullscreen {
+    &.fullscreen {
         position: fixed !important;
         left: 0;
         top: 0;

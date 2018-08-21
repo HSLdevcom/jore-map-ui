@@ -1,3 +1,4 @@
+import { Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
@@ -7,12 +8,15 @@ import { SidebarStore } from '../../stores/sidebarStore';
 import { autorun } from 'mobx';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
+import Control from './CustomControl';
+import FullscreenControl from './FullscreenControl';
 import RouteLayerView from '../../layers/routeLayerView';
 import { IRoute } from '../../models';
 import * as s from './map.scss';
-import FullscreenControl from './FullscreenControl';
-import CoordinateControl from './CoordinateControl';
-import MeasurementControl from './MeasurementControl';
+
+interface IMapState {
+    map?: L.Map;
+}
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -24,24 +28,38 @@ interface IMapProps {
 @inject('mapStore')
 @inject('routeStore')
 @observer
-class Map extends React.Component<IMapProps> {
-    private map: L.Map;
+class LeafletMap extends React.Component<IMapProps, IMapState> {
+    private map: Map | null;
     private routeLayerView: RouteLayerView;
 
     constructor(props: IMapProps) {
         super(props);
+        this.state = {
+            map: undefined,
+        };
     }
 
     public componentDidMount() {
-        this.initializeMap();
-        autorun(() => this.updateMap());
-        this.routeLayerView = new RouteLayerView(this.map, this.props.sidebarStore);
         autorun(() => this.updateRouteLines());
+        if (!this.state.map && this.map) {
+            this.setState({
+                map: this.map.leafletElement,
+            });
+        }
+    }
+
+    public componentDidUpdate() {
+        this.state.map!.invalidateSize();
     }
 
     private updateRouteLines() {
-        this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
-        this.centerMapToRoutes(this.props.routeStore!.routes);
+        if (this.map) {
+            if (!this.routeLayerView) {
+                this.routeLayerView = new RouteLayerView(this.map.leafletElement);
+            }
+            this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
+            this.centerMapToRoutes(this.props.routeStore!.routes);
+        }
     }
 
     private centerMapToRoutes(routes: IRoute[]) {
@@ -56,59 +74,64 @@ class Map extends React.Component<IMapProps> {
                         bounds.extend(geoJSON.getBounds());
                     }
                 });
-                this.map.fitBounds(bounds);
+                this.map!.leafletElement.fitBounds(bounds);
             }
         }
     }
 
     public render() {
-        const classes = this.map !== undefined ? this.map.getContainer().classList : null;
-        if (classes !== null) {
-            classes.remove('root');
-            classes.remove(s.fullscreen);
+        let mapClass = '';
+        if (this.props.mapStore!.isMapFullscreen) {
+            mapClass = classnames('root', s.fullscreen);
+        } else {
+            mapClass = classnames('root');
         }
+
         return (
-            <div>
-                <div
-                    id={s.mapLeaflet}
-                    className={classnames(classes !== null ? classes.toString() : '',
-                                          'root',
-                                          this.props.mapStore!.isMapFullscreen ? s.fullscreen : '')}
+            <Map
+                ref={(map) => {
+                    this.map = map;
+                }}
+                center={this.props.mapStore!.coordinates}
+                zoom={15}
+                zoomControl={false}
+                id={s.mapLeaflet}
+                className={mapClass}
+            >
+                <TileLayer
+                    // tslint:disable:max-line-length
+                    url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
+                    attribution={
+                        `
+                            Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
+                            <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
+                            Imagery © <a href="http://mapbox.com">Mapbox</a>
+                            />
+                        `
+                    }
+                    baseLayer={true}
+                    maxZoom={18}
+                    detectRetina={true}
+                    tileSize={512}
+                    zoomOffset={-1}
+                    // tslint:enable:max-line-length
                 />
-            </div>
+                <Control position='topleft'>
+                    <div>Test Top-Left</div>
+                </Control>
+                <Control position='topright'>
+                    <FullscreenControl map={this.state.map} />
+                </Control>
+                <ZoomControl position='bottomright' />
+                <Control position='bottomright'>
+                    <div>Test Bottom-Right</div>
+                </Control>
+                <Control position='bottomleft'>
+                    <div>Test Bottom-Left</div>
+                </Control>
+            </Map>
         );
     }
-
-    private initializeMap = () => {
-        this.map = L.map(s.mapLeaflet, { zoomControl: false });
-        this.map.setView(this.props.mapStore!.coordinates, 15);
-        // tslint:disable-next-line:max-line-length
-        L.tileLayer('https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}{retina}.png', {
-            // tslint:disable-next-line:max-line-length
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-            'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            baseLayer: true,
-            maxZoom: 18,
-            retina: L.Browser.retina ? '' : '@2x',
-            tileSize: 512,
-            zoomOffset: -1,
-        }).addTo(this.map);
-        this.map.addControl(new FullscreenControl({ position: 'bottomright' }));
-        this.map.addControl(new CoordinateControl({ position: 'topright' }));
-        this.map.addControl(new MeasurementControl({ position: 'topright' }));
-        L.control.zoom({ position:'bottomright' }).addTo(this.map);
-        this.map.on('moveend', this.setMapCenterAsCenter);
-    }
-
-    private updateMap = () => {
-        if (!this.map.getCenter().equals(this.props.mapStore!.coordinates)) {
-            this.map.flyTo(this.props.mapStore!.coordinates);
-        }
-    }
-
-    private setMapCenterAsCenter = () =>
-        this.props.mapStore!.setCoordinates(this.map.getCenter().lat, this.map.getCenter().lng)
 }
 
-export default Map;
+export default LeafletMap;
