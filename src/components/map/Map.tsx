@@ -102,50 +102,45 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     public render() {
-        let mapClass = '';
-        if (this.props.mapStore!.isMapFullscreen) {
-            mapClass = classnames('root', s.fullscreen);
-        } else {
-            mapClass = classnames('root');
-        }
-
+        const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
         return (
-            <Map
-                ref={(map) => {
-                    this.map = map;
-                }}
-                center={this.props.mapStore!.coordinates}
-                zoom={this.state.zoomLevel}
-                zoomControl={false}
-                id={s.mapLeaflet}
-                className={mapClass}
-            >
-                <TileLayer
-                    // tslint:disable:max-line-length
-                    url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
-                    attribution={
-                        `
-                            Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
-                            <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
-                            Imagery © <a href="http://mapbox.com">Mapbox</a>
-                            />
-                        `
-                    }
-                    baseLayer={true}
-                    maxZoom={18}
-                    detectRetina={true}
-                    tileSize={512}
-                    zoomOffset={-1}
-                    // tslint:enable:max-line-length
-                />
-                <Control position='topleft' />
-                <Control position='topright'>
-                    <FullscreenControl map={this.state.map} />
-                </Control>
-                <ZoomControl position='bottomright' />
-                <Control position='bottomright' />
-                <Control position='bottomleft' />
-            </Map>
+            <div className={classnames(s.mapView, fullScreenMapViewClass)}>
+                <Map
+                    ref={(map) => {
+                        this.map = map;
+                    }}
+                    center={this.props.mapStore!.coordinates}
+                    zoom={this.state.zoomLevel}
+                    zoomControl={false}
+                    id={s.mapLeaflet}
+                >
+                    <TileLayer
+                        // tslint:disable:max-line-length
+                        url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
+                        attribution={
+                            `
+                                Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
+                                <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
+                                Imagery © <a href="http://mapbox.com">Mapbox</a>
+                                />
+                            `
+                        }
+                        baseLayer={true}
+                        maxZoom={18}
+                        detectRetina={true}
+                        tileSize={512}
+                        zoomOffset={-1}
+                        // tslint:enable:max-line-length
+                    />
+                    <Control position='topleft' />
+                    <Control position='topright'>
+                        <FullscreenControl map={this.state.map} />
+                    </Control>
+                    <ZoomControl position='bottomright' />
+                    <Control position='bottomright' />
+                    <Control position='bottomleft' />
+                </Map>
+            </div>
         );
     }
 }
