@@ -1,20 +1,7 @@
 import { INode, IRoutePath } from '../models';
 import NodeFactory from './nodeFactory';
-import NodeType from '../enums/nodeType';
 
 class RoutePathFactory {
-
-    private static getStartNode = (geoJson: any) => {
-        const startingPointNode: INode = {
-            id: 0,
-            type: NodeType.START,
-            geoJson: {
-                type: NodeType.START,
-                coordinates: geoJson.coordinates[0],
-            },
-        };
-        return startingPointNode;
-    }
 
     // suunta to IRoutePath
     public static createRoutePath = (suunta: any, isVisible:boolean): IRoutePath => {
@@ -25,8 +12,8 @@ class RoutePathFactory {
             });
 
         const geoJson = JSON.parse(suunta.geojson);
-        const startingPointNode = RoutePathFactory.getStartNode(geoJson);
-        nodes.unshift(startingPointNode);
+        const asd = NodeFactory.createStartingPointNode(geoJson.coordinates[0]);
+        nodes.unshift(asd);
 
         return <IRoutePath>{
             nodes,

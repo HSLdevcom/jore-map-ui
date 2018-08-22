@@ -1,12 +1,30 @@
-import { INode } from '../models';
+import { INode, ICoordinate } from '../models';
 import NodeType from '../enums/nodeType';
 
 class NodeFactory {
     public static createNode = (node: any): INode => {
+        const coordinateList = JSON.parse(node.solmuByLnkalkusolmu.geojson);
+        const coordinate : ICoordinate = {
+            lon: coordinateList.coordinates[0],
+            lat: coordinateList.coordinates[1],
+        };
+
         return <INode>{
             id: node.relid,
             type: getNodeType(node.solmuByLnkalkusolmu.soltyyppi),
-            geoJson: JSON.parse(node.solmuByLnkalkusolmu.geojson),
+            coordinates: coordinate,
+        };
+    }
+
+    public static createStartingPointNode = (coordinates: any): INode => {
+        const coordinate : ICoordinate = {
+            lon: coordinates[0],
+            lat: coordinates[1],
+        };
+        return <INode>{
+            id: 0,
+            type: NodeType.START,
+            coordinates: coordinate,
         };
     }
 }

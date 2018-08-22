@@ -1,9 +1,10 @@
 import * as L from 'leaflet';
 import { IRoutePath, IRoute, INode } from '../models';
-import * as s from './routeLayer.scss';
-import { SidebarStore } from '../stores/sidebarStore';
 import NodeType from '../enums/nodeType';
-import classnames from 'classnames';
+import colorScale from '../util/colorScale';
+import observableSidebarStore, { SidebarStore } from '../stores/sidebarStore';
+import NodeMarker, { NodeMarkerOptions } from './nodeMarker';
+import * as s from './routeLayer.scss';
 
 enum PopupItemAction {
     TARGET = 'target',
@@ -15,19 +16,19 @@ enum PopupItemAction {
 
 export default class RouteLayerView {
     private map: L.Map;
-    private sidebarStore?: SidebarStore;
+    private sidebarStore: SidebarStore;
     private routeLines: L.GeoJSON<any>[];
-    private routeNodes: any[];
+    private routeNodes: L.Marker<any>[];
     private popup: L.Popup;
-    private highlightedMarker?: L.CircleMarker<any>;
+    private highlightedMarker?: NodeMarker;
     private routeLayer: L.FeatureGroup;
 
-    constructor(map: L.Map, sidebarStore?: SidebarStore) {
+    constructor(map: L.Map) {
         this.map = map;
-        this.sidebarStore = sidebarStore;
+        this.sidebarStore = observableSidebarStore;
         this.routeLines = [];
         this.routeNodes = [];
-        this.routeLayer = new L.FeatureGroup;
+        this.routeLayer = L.featureGroup();
         this.map.addLayer(this.routeLayer);
 
         this.map.on('click', () => {
@@ -37,63 +38,60 @@ export default class RouteLayerView {
 
     public drawRouteLines(routes: IRoute[]) {
         this.clearRoute();
-
+        let visibleRoutePathIndex = 0;
+        let visibleRoutePaths = 0;
+        routes.forEach((route: IRoute) => {
+            const routePathsAmount = route.routePaths.filter(
+                x => x.visible).length;
+            visibleRoutePaths += routePathsAmount;
+        });
         if (routes && routes[0]) {
-            if (routes[0].routePaths[0]) {
-                routes[0].routePaths.map((routePath) => {
-                    if (routePath.visible) {
-                        this.drawRouteLine(routePath);
-                        this.drawNodes(routePath);
-                    }
-                });
-            } else {
-                // TODO: throw error / show error on UI if routePath is empty?
-            }
+            routes.forEach((route: IRoute) => {
+                if (route.routePaths[0]) {
+                    route.routePaths.map((routePath) => {
+                        if (routePath.visible) {
+                            const routeColor = colorScale.getColors(
+                                visibleRoutePaths)[visibleRoutePathIndex];
+                            this.drawRouteLine(routePath, routeColor);
+                            this.drawNodes(routePath, routeColor);
+                            visibleRoutePathIndex += 1;
+                        }
+                    });
+                } else {
+                    // TODO: throw error / show error on UI if routePath is empty?
+                }
+            });
         } else {
             this.clearRoute();
         }
     }
 
-    private drawRouteLine(routePath: IRoutePath) {
-        const getColorClassName = (type: string) => {
-            switch (routePath.direction) {
-            case '1': return s.blue;
-            case '2': return s.red;
-            default: return s.blue;
-            }
-        };
-
-        const geoJSON = new L.GeoJSON(routePath.geoJson)
+    private drawRouteLine(routePath: IRoutePath, color: string) {
+        const geoJSON = L.geoJSON(routePath.geoJson)
         .setStyle({
-            className: classnames(s.route, getColorClassName(routePath.direction)),
+            color,
+            className: s.route,
         })
         .addTo(this.routeLayer);
         this.routeLines.push(geoJSON);
     }
 
-    private drawNodes(routePath: IRoutePath) {
+    private drawNodes(routePath: IRoutePath, color: string) {
         routePath.nodes.map((node) => {
-            this.drawNode(node, routePath.direction);
+            this.drawNode(node, routePath.direction, color);
         });
     }
 
-    private drawNode(node: INode, direction: string) {
-        const getColorClassName = (type: NodeType, direction: string) => {
-            if (type === NodeType.CROSSROAD) return s.grey;
-            if (node.type === NodeType.START) return s.green;
-
-            switch (direction) {
-            case '1': return s.blue;
-            case '2': return s.red;
-            default: return s.blue;
-            }
+    private drawNode(node: INode, direction: string, color: string) {
+        const nodeOptions : NodeMarkerOptions = {
+            color: node.type === NodeType.CROSSROAD ? '#666666' : color,
+            coordinates: node.coordinates,
+            type: node.type,
         };
-        const coordinates = node.geoJson.coordinates;
-        const circle = new L.CircleMarker([coordinates[1], coordinates[0]]);
-        circle.setStyle({
-            className: classnames(s.node, getColorClassName(node.type, direction)),
-        })
-        .on('click', () => {
+
+        const marker = new NodeMarker(nodeOptions);
+        const leafletMarker = marker.getNodeMarker();
+        leafletMarker.on('click', () => {
             this.sidebarStore!.setOpenedNodeId(node.id);
         })
         .on('contextmenu', (e: L.LeafletMouseEvent) => {
@@ -102,9 +100,8 @@ export default class RouteLayerView {
             }
 
             this.deHighlightMarker();
-
-            L.DomUtil.addClass(circle.getElement() as HTMLElement, s.highlightedMarker);
-            this.highlightedMarker = circle;
+            marker.addHighlight();
+            this.highlightedMarker = marker;
 
             this.popup = L.popup({
                 className: s.leafletPopup,
@@ -116,15 +113,12 @@ export default class RouteLayerView {
             .openOn(this.map);
         })
         .addTo(this.routeLayer);
-
-        this.routeNodes.push(circle);
-
+        this.routeNodes.push(leafletMarker);
     }
 
     private deHighlightMarker() {
         if (this.highlightedMarker) {
-            L.DomUtil.removeClass(
-                this.highlightedMarker.getElement() as HTMLElement, s.highlightedMarker);
+            this.highlightedMarker.removeHighlight();
         }
     }
 
@@ -195,8 +189,8 @@ export default class RouteLayerView {
         this.routeLines.map((layer: L.GeoJSON) => {
             this.routeLayer.removeLayer(layer);
         });
-        this.routeNodes.map((circleMarker: L.CircleMarker) => {
-            this.routeLayer.removeLayer(circleMarker);
+        this.routeNodes.map((marker: L.Marker) => {
+            this.routeLayer.removeLayer(marker);
         });
         this.routeLines = [];
         this.routeNodes = [];

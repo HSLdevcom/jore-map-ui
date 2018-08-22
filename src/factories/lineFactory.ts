@@ -1,17 +1,23 @@
-import { ILine } from '../models';
+import { ILine, ILineRoute } from '../models';
 import TransitType from '../enums/transitType';
 
 class LineFactory {
     // linja to ILine
     public static createLine = (linja: any) => {
         const transitType = _convertTransitTypeCodeToTransitType(linja.linverkko);
-        const lineName = _getReiTunnus(linja.reittisByLintunnus.edges[0]);
         const lineNumber = _parseLineNumber(linja.lintunnus);
+        const routes = linja.reittisByLintunnus.edges.map((route: any) => {
+            return <ILineRoute>{
+                id: route.node.reitunnus,
+                name: _getRouteName(route),
+                date: route.node.reiviimpvm,
+            };
+        });
 
         return <ILine>{
-            lineName,
             lineNumber,
             transitType,
+            routes,
             lineId: linja.lintunnus,
         };
     }
@@ -44,11 +50,11 @@ const _parseLineNumber = (lineId: string) => {
     return lineId.substring(1).replace(/^0+/, '');
 };
 
-const _getReiTunnus = (edge: any) => {
-    if (!edge || !edge.node.reinimi) {
+const _getRouteName = (route: any) => {
+    if (!route.node.reinimi) {
         return 'Reitillä ei nimeä';
     }
-    return edge.node.reinimi;
+    return route.node.reinimi;
 };
 
 export default LineFactory;

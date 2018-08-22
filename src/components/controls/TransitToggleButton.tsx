@@ -27,7 +27,7 @@ class TransitToggleButton extends React.Component
 
     private getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
         if (isToggled) {
-            return TransitTypeColorHelper.getColorClass(transitType, true);
+            return TransitTypeColorHelper.getBackgroundColorClass(transitType);
         }
         return s.toggled;
     }

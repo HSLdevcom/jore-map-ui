@@ -1,32 +1,42 @@
 import TransitType from '../enums/transitType';
-import {
-  tram,
-  bus,
-  ferry,
-  subway,
-  train,
-  tramBg,
-  busBg,
-  ferryBg,
-  subwayBg,
-  trainBg,
-} from './transitTypeColors.scss';
+import * as s from './transitTypeColors.scss';
 
 class TransitTypeColorHelper {
-    public static getColorClass = (type: TransitType, isBackground: boolean) => {
+    public static getColorClass = (type: TransitType) => {
         switch (type) {
         case TransitType.BUS:
-            return isBackground ? busBg : bus;
+            return s.bus;
         case TransitType.FERRY:
-            return isBackground ? ferryBg : ferry;
+            return s.ferry;
         case TransitType.SUBWAY:
-            return isBackground ? subwayBg : subway;
+            return s.subway;
         case TransitType.TRAM:
-            return isBackground ? tramBg : tram;
+            return s.tram;
         case TransitType.TRAIN:
-            return isBackground ? trainBg : train;
+            return s.train;
+        case TransitType.NOT_FOUND:
+            return s.notFound;
         default:
-            return isBackground ? busBg : bus;
+            throw new Error('TransitType not supported: ' + type);
+        }
+    }
+
+    public static getBackgroundColorClass = (type: TransitType) => {
+        switch (type) {
+        case TransitType.BUS:
+            return s.busBg;
+        case TransitType.FERRY:
+            return s.ferryBg;
+        case TransitType.SUBWAY:
+            return s.subwayBg;
+        case TransitType.TRAM:
+            return s.tramBg;
+        case TransitType.TRAIN:
+            return s.trainBg;
+        case TransitType.NOT_FOUND:
+            return s.notFound;
+        default:
+            throw new Error('TransitType not supported: ' + type);
         }
     }
 }
