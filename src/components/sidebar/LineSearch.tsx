@@ -7,12 +7,10 @@ import * as s from './lineSearch.scss';
 
 interface ILineSearchProps {
     lineStore?: LineStore;
-    onInputChange?: Function;
     showSearchResults: boolean;
 }
 
 interface ILineSearchState {
-    searchInput: string;
     lineItems: any;
 }
 
@@ -23,18 +21,12 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
         super(props);
         this.state = {
             lineItems: '',
-            searchInput: '',
         };
     }
 
     public handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
-        this.setState({
-            searchInput: newValue,
-        });
-        if (this.props.onInputChange) {
-            this.props.onInputChange(newValue);
-        }
+        this.props.lineStore!.setSearchInput(newValue);
     }
 
     public render(): any {
@@ -45,7 +37,7 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
                         placeholder='Hae'
                         className={s.input}
                         type='text'
-                        value={this.state.searchInput}
+                        value={this.props.lineStore!.searchInput}
                         onChange={this.handleSearchInputChange}
                     />
                 </div>
@@ -55,8 +47,7 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
                         filters={this.props.lineStore!.filters || []}
                     />
                     <LineItems
-                        filters={this.props.lineStore!.filters || []}
-                        searchInput={this.state.searchInput}
+                        searchInput={this.props.lineStore!.searchInput}
                     />
                 </div>
                 }

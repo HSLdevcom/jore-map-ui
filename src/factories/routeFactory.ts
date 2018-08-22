@@ -19,6 +19,7 @@ class RouteFactory {
             routeName: reitti.reinimi,
             routeNameSwedish: reitti.reinimir,
             lineId: reitti.lintunnus,
+            routeId: reitti.reitunnus,
         };
     }
 }

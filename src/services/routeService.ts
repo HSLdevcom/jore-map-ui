@@ -27,6 +27,7 @@ export default class RouteService {
 const getRoute = gql`
 query getLineDetails($routeId: String!) {
     route: reittiByReitunnus(reitunnus: $routeId) {
+        reitunnus
         reinimi
         reinimilyh
         reinimir

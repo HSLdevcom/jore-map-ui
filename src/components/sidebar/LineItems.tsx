@@ -10,7 +10,6 @@ import * as s from './lineItems.scss';
 interface ILineItemsProps {
     lineStore?: LineStore;
     searchInput: string;
-    filters: string[];
 }
 
 @inject('lineStore')
@@ -30,13 +29,13 @@ class LineItems extends React.Component<ILineItemsProps> {
     }
 
     public filterLines = (lineNumber: string, transitType: TransitType) => {
-        // TODO: use route.name in search filter
         const searchTargetAttributes = lineNumber;
-
-        if (this.props.filters.indexOf(transitType) !== -1) {
+        if (this.props.lineStore!.filters &&
+            this.props.lineStore!.filters.indexOf(transitType) !== -1) {
             return false;
         }
-        if (searchTargetAttributes.includes(this.props.searchInput)) {
+
+        if (searchTargetAttributes.includes(this.props.lineStore!.searchInput)) {
             return true;
         }
         return false;
