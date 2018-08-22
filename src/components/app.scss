@@ -1,13 +1,17 @@
 @import '../common.scss';
 .appView {
+    position: absolute;
     width: 100%;
     height: 100%;
-    position: relative;
 
     .loginButton {
         bottom: 20px;
         right: 50px;
         position: fixed;
         z-index: 10;
+    }
+
+    .hidden {
+        display: none;
     }
 }

@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { NotificationStore } from '../stores/notificationStore';
 import { LoginStore } from '../stores/loginStore';
 import { SidebarStore } from '../stores/sidebarStore';
+import { MapStore } from '../stores/mapStore';
 import Button from './controls/Button';
 import ButtonType from '../enums/buttonType';
 import NotificationWindow from './NotificationWindow';
@@ -23,8 +24,10 @@ interface IAppProps {
     notificationStore?: NotificationStore;
     loginStore?: LoginStore;
     sidebarStore?: SidebarStore;
+    mapStore?: MapStore;
 }
 
+@inject('mapStore')
 @inject('notificationStore')
 @inject('sidebarStore')
 @inject('loginStore')
@@ -44,6 +47,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public render(): any {
+        const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         return (
             <Router>
               <div className={s.appView}>
@@ -66,7 +70,9 @@ class App extends React.Component<IAppProps, IAppState> {
                 >
                     <NodeWindow />
                 </Modal>
-                <Sidebar />
+                <div className={sidebarHiddenClass}>
+                    <Sidebar />
+                </div>
                 <Route
                     exact={true}
                     path='/'
