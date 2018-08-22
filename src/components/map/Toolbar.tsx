@@ -21,22 +21,18 @@ export default class Toolbar extends Component<ToolbarProps, ToolbarState> {
 
     render() {
         const editRoutes = () => {
-            console.log('Toggling editmode');
             this.setState({
                 editModeIsActive: !this.state.editModeIsActive,
             });
         };
 
         const copyRoute = () => {
-            console.log('Copying');
         };
 
         const addNode = () => {
-            console.log('Copying');
         };
 
         const print = () => {
-            console.log('Printing');
         };
 
         return (
