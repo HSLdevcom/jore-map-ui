@@ -1,7 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
-import { IconContext } from 'react-icons';
 import { RouteStore } from '../../stores/routeStore';
 import { IRoutePath, IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
@@ -38,11 +37,9 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 {this.props.route.line.lineNumber}
             </div>
             {this.props.route.routeName}
-            <IconContext.Provider value={{}}>
-                <div onClick={this.onClose} className={s.closeView}>
-                    <FaTimes className={s.close}/>
-                </div >
-            </IconContext.Provider>
+            <div onClick={this.onClose} className={s.closeView}>
+                <FaTimes className={s.close}/>
+            </div >
         </div>
         );
     }
