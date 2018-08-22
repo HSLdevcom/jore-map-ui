@@ -22,7 +22,7 @@ interface IRouteShowProps {
 class RouteShow extends React.Component<IRouteShowProps> {
 
     private onClose = () => {
-        this.props.routeStore!.removeFromRoutes(this.props.route.lineId);
+        this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
     }
 
     private renderRouteName() {

@@ -37,7 +37,7 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
         return routes.map((route: IRoute) => {
             const routeShow = (
                 <RouteShow
-                    key={route.lineId}
+                    key={route.routeId}
                     route={route}
                     visibleRoutePathsIndex={visibleRoutePathsIndex}
                 />

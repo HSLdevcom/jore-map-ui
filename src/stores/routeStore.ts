@@ -25,9 +25,9 @@ export class RouteStore {
     }
 
     @action
-    public removeFromRoutes(lineId: string) {
+    public removeFromRoutes(routeId: string) {
         for (let i = 0; i < this._routes.length; i += 1) {
-            if (this._routes[i].lineId === lineId) {
+            if (this._routes[i].routeId === routeId) {
                 this._routes.splice(i, 1);
             }
         }
