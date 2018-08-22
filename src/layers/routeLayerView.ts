@@ -86,6 +86,7 @@ export default class RouteLayerView {
         const nodeOptions : NodeMarkerOptions = {
             color: node.type === NodeType.CROSSROAD ? '#666666' : color,
             coordinates: node.coordinates,
+            type: node.type,
         };
 
         const marker = new NodeMarker(nodeOptions);
@@ -113,7 +114,6 @@ export default class RouteLayerView {
         })
         .addTo(this.routeLayer);
         this.routeNodes.push(leafletMarker);
-
     }
 
     private deHighlightMarker() {

@@ -1,10 +1,12 @@
 import * as L from 'leaflet';
 import * as s from './nodeMarker.scss';
 import { ICoordinate } from '../models';
+import NodeType from '../enums/nodeType';
 
 export interface NodeMarkerOptions {
     color: string;
     coordinates: ICoordinate;
+    type: string;
 }
 
 export default class NodeMarker {
@@ -14,7 +16,16 @@ export default class NodeMarker {
     constructor(options: NodeMarkerOptions) {
         this.options = options;
 
-        const icon = this.getIcon(this.options.color);
+        let icon;
+        if (this.options.type === NodeType.START) {
+            const divIconOptions : L.DivIconOptions = {
+                className: s.nodePin,
+                html: `<div class="${s.pin}" style="--pinColor: ${this.options.color};"/>`,
+            };
+            icon = new L.DivIcon(divIconOptions);
+        } else {
+            icon = this.getIcon(this.options.color);
+        }
 
         const markerOptions : L.MarkerOptions = {
             icon,
