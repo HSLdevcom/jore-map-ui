@@ -17,14 +17,16 @@ interface ILineItemsProps {
 @observer
 class LineItems extends React.Component<ILineItemsProps> {
     componentDidMount() {
-        LineService.getAllLines()
-            .then((lines: ILine[]) => {
-                this.props.lineStore!.setAllLines(lines);
-            })
-            .catch((err: any) => {
-                // tslint:disable-next-line:no-console
-                console.log(err);
-            });
+        if (this.props.lineStore!.allLines.length === 0) {
+            LineService.getAllLines()
+                .then((lines: ILine[]) => {
+                    this.props.lineStore!.setAllLines(lines);
+                })
+                .catch((err: any) => {
+                    // tslint:disable-next-line:no-console
+                    console.log(err);
+                });
+        }
     }
 
     public filterLines = (lineNumber: string, transitType: TransitType) => {
@@ -52,6 +54,8 @@ class LineItems extends React.Component<ILineItemsProps> {
                     allLines
                         .filter(line =>
                             this.filterLines(line.lineNumber, line.transitType))
+                        // Showing only the first 100 results to improve rendering performance
+                        .splice(0, 100)
                         .map((line: ILine) => {
                             return (
                                 <LineItem

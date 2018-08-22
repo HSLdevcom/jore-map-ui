@@ -134,8 +134,10 @@ class MeasurementControl extends L.Control {
         L.polyline(this.points, { className: s.polyline }).addTo(this.lineLayer);
         L.circleMarker(latLng, { className: s.circleMarker })
             .bindPopup(
-                this.distance.toFixed(2) + ' meters',
-                { autoClose: false, closeOnClick: false })
+                this.distance.toFixed(2) + ' meters', {
+                    autoClose: false,
+                    closeOnClick: false,
+                })
             .openPopup()
             .on('click', this.finishMeasurement)
             .addTo(this.pointLayer);
