@@ -85,17 +85,20 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     private centerMapToRoutes(routes: IRoute[]) {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
         if (routes && routes[0]) {
-            if (routes[0].routePaths[0]) {
-                routes[0].routePaths.map((routePath) => {
-                    const geoJSON = new L.GeoJSON(routePath.geoJson);
-                    if (!bounds) {
-                        bounds = geoJSON.getBounds();
-                    } else {
-                        bounds.extend(geoJSON.getBounds());
-                    }
-                });
-                this.map!.leafletElement.fitBounds(bounds);
-            }
+            routes.forEach((route: IRoute) => {
+                if (route.routePaths[0]) {
+                    route.routePaths.map((routePath) => {
+                        if (!routePath.visible) return;
+                        const geoJSON = new L.GeoJSON(routePath.geoJson);
+                        if (!bounds) {
+                            bounds = geoJSON.getBounds();
+                        } else {
+                            bounds.extend(geoJSON.getBounds());
+                        }
+                    });
+                }
+            });
+            this.map!.leafletElement.fitBounds(bounds);
         }
     }
 

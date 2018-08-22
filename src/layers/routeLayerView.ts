@@ -38,24 +38,29 @@ export default class RouteLayerView {
 
     public drawRouteLines(routes: IRoute[]) {
         this.clearRoute();
-
         let visibleRoutePathIndex = 0;
+        let visibleRoutePaths = 0;
+        routes.forEach((route: IRoute) => {
+            const routePathsAmount = route.routePaths.filter(
+                x => x.visible).length;
+            visibleRoutePaths += routePathsAmount;
+        });
         if (routes && routes[0]) {
-            if (routes[0].routePaths[0]) {
-                routes[0].routePaths.map((routePath) => {
-                    if (routePath.visible) {
-                        const visibleRoutePaths = routes[0].routePaths.filter(
-                            x => x.visible).length;
-                        const routeColor = colorScale.getColors(
-                            visibleRoutePaths)[visibleRoutePathIndex];
-                        this.drawRouteLine(routePath, routeColor);
-                        this.drawNodes(routePath, routeColor);
-                        visibleRoutePathIndex += 1;
-                    }
-                });
-            } else {
-                // TODO: throw error / show error on UI if routePath is empty?
-            }
+            routes.forEach((route: IRoute) => {
+                if (route.routePaths[0]) {
+                    route.routePaths.map((routePath) => {
+                        if (routePath.visible) {
+                            const routeColor = colorScale.getColors(
+                                visibleRoutePaths)[visibleRoutePathIndex];
+                            this.drawRouteLine(routePath, routeColor);
+                            this.drawNodes(routePath, routeColor);
+                            visibleRoutePathIndex += 1;
+                        }
+                    });
+                } else {
+                    // TODO: throw error / show error on UI if routePath is empty?
+                }
+            });
         } else {
             this.clearRoute();
         }
