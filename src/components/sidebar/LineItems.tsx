@@ -3,7 +3,7 @@ import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
 import LineService from '../../services/lineService';
 import LineItem from './LineItem';
-import { ILine } from '../../models';
+import { ILine, ILineRoute } from '../../models';
 import TransitType from '../../enums/transitType';
 import * as s from './lineItems.scss';
 
@@ -28,8 +28,13 @@ class LineItems extends React.Component<ILineItemsProps> {
         }
     }
 
-    public filterLines = (lineNumber: string, transitType: TransitType) => {
-        const searchTargetAttributes = lineNumber;
+    public filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
+        let routeNames = '';
+        routes.forEach((lineRoute: ILineRoute) => {
+            routeNames += lineRoute.name;
+        });
+
+        const searchTargetAttributes = lineId + routeNames.toLowerCase();
         if (this.props.lineStore!.filters &&
             this.props.lineStore!.filters.indexOf(transitType) !== -1) {
             return false;
@@ -52,7 +57,7 @@ class LineItems extends React.Component<ILineItemsProps> {
                 {
                     allLines
                         .filter(line =>
-                            this.filterLines(line.lineNumber, line.transitType))
+                            this.filterLines(line.routes, line.lineId, line.transitType))
                         // Showing only the first 100 results to improve rendering performance
                         .splice(0, 100)
                         .map((line: ILine) => {
