@@ -1,6 +1,6 @@
 import * as s from './toolbar.scss';
 import React, { Component } from 'react';
-import { FiEdit, FiCopy, FiPlusSquare } from 'react-icons/fi';
+import { FiEdit, FiCopy, FiPlusSquare, FiPrinter } from 'react-icons/fi';
 import ToolbarIcon from './ToolbarIcon';
 
 interface ToolbarState {
@@ -35,6 +35,10 @@ export default class Toolbar extends Component<ToolbarProps, ToolbarState> {
             console.log('Copying');
         };
 
+        const print = () => {
+            console.log('Printing');
+        };
+
         return (
             <div className={s.toolbar}>
                 <ToolbarIcon
@@ -48,7 +52,7 @@ export default class Toolbar extends Component<ToolbarProps, ToolbarState> {
                 <ToolbarIcon
                     onClick={copyRoute}
                     isActive={false}
-                    isDisabled={false}
+                    isDisabled={true}
                     label='Kopio reitti'
                 >
                     <FiCopy />
@@ -60,6 +64,14 @@ export default class Toolbar extends Component<ToolbarProps, ToolbarState> {
                     label='Lisää solmu'
                 >
                     <FiPlusSquare />
+                </ToolbarIcon>
+                <ToolbarIcon
+                    onClick={print}
+                    isActive={false}
+                    isDisabled={true}
+                    label='tulostaa kartan'
+                >
+                    <FiPrinter />
                 </ToolbarIcon>
             </div>
         );
