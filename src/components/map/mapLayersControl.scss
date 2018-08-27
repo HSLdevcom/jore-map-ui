@@ -5,37 +5,28 @@
     position: relative;
     width: 100%;
     height: 100%;
-
-    .mapLayerControlIcon {
-        display: flex;
-        font-size: $largeFontSize;
-        line-height: $largeFontSize;
-        cursor: pointer;
-        padding: 10px;
-        background-color: white;
-        border: 1px solid $darkGrey;
-        color: $darkGrey;
-    }
-
-    .mapLayersContainer {
-        display: flex;
-        flex-direction: column;
-        background-color: white;
-        border: 1px solid $darkGrey;
-
-        .mapLayersWrapper {
-            position: relative;
-            width: 100px;
-            height: 100%;
-            padding: 10px;
-        }
-
-        .fakeDiv {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-    }
 }
+
+.mapLayerControlView .mapLayerControlIcon {
+    display: flex;
+    font-size: $largeFontSize;
+    line-height: $largeFontSize;
+    cursor: pointer;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid $darkGrey;
+    color: $darkGrey;
+}
+
+.mapLayerControlView .mapLayersContainer {
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border: 1px solid $darkGrey;
+}
+
+.mapLayerControlView:hover .mapLayersContainer {
+    visibility: visible;
+}
+

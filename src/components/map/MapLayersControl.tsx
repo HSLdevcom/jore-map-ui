@@ -15,7 +15,6 @@ interface INodeWindowProps {
 
 interface IMapLayersControlState {
     checkboxToggles: ICheckboxToggles;
-    isMapLayersVisible: boolean;
 }
 
 @observer
@@ -29,7 +28,6 @@ export default class MapLayersControl extends React.Component
                 satelliitti: false,
                 maasto: false,
             },
-            isMapLayersVisible: false,
         };
     }
 
@@ -41,56 +39,29 @@ export default class MapLayersControl extends React.Component
         });
     }
 
-    private showMapLayersContainer = () => {
-        this.setState({
-            isMapLayersVisible: true,
-        });
-    }
-
-    private hideMapLayersContainer = () => {
-        this.setState({
-            isMapLayersVisible: false,
-        });
-    }
-
     render() {
         return (
-            <div
-                className={s.mapLayerControlView}
-                onMouseEnter={this.showMapLayersContainer}
-            >
-                { !this.state.isMapLayersVisible &&
+            <div className={s.mapLayerControlView}>
                 <div className={s.mapLayerControlIcon}>
                     <IoMdMap />
                 </div>
-                }
-                { this.state.isMapLayersVisible &&
                 <div className={s.mapLayersContainer}>
-                    { /* A screen sized invisible container is needed to get event registered
-                    when mouse is left from mapLayersContainer*/ }
-                    <div
-                        className={s.fakeDiv}
-                        onMouseMove={this.hideMapLayersContainer}
+                    <Checkbox
+                        onClick={this.toggleCheckbox.bind(this, 'kartta')}
+                        checked={this.state.checkboxToggles.kartta}
+                        text={'Kartta'}
                     />
-                    <div className={s.mapLayersWrapper}>
-                        <Checkbox
-                            onClick={this.toggleCheckbox.bind(this, 'kartta')}
-                            checked={this.state.checkboxToggles.kartta}
-                            text={'Kartta'}
-                        />
-                        <Checkbox
-                            onClick={this.toggleCheckbox.bind(this, 'satelliitti')}
-                            checked={this.state.checkboxToggles.satelliitti}
-                            text={'Satelliitti'}
-                        />
-                        <Checkbox
-                            onClick={this.toggleCheckbox.bind(this, 'maasto')}
-                            checked={this.state.checkboxToggles.maasto}
-                            text={'Maasto'}
-                        />
-                    </div>
+                    <Checkbox
+                        onClick={this.toggleCheckbox.bind(this, 'satelliitti')}
+                        checked={this.state.checkboxToggles.satelliitti}
+                        text={'Satelliitti'}
+                    />
+                    <Checkbox
+                        onClick={this.toggleCheckbox.bind(this, 'maasto')}
+                        checked={this.state.checkboxToggles.maasto}
+                        text={'Maasto'}
+                    />
                 </div>
-                }
             </div>
         );
     }
