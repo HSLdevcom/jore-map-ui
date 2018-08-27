@@ -16,6 +16,7 @@ import MapLayersControl from './MapLayersControl';
 import RouteLayerView from '../../layers/routeLayerView';
 import { IRoute } from '../../models';
 import * as s from './map.scss';
+import Toolbar from './Toolbar';
 
 interface IMapState {
     map?: L.Map;
@@ -133,7 +134,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
-                    <Control position='topleft' />
+                    <Control position='topleft'>
+                        <Toolbar />
+                    </Control>
                     <Control position='topright'>
                         <FullscreenControl map={this.state.map} />
                     </Control>
