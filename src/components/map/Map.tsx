@@ -12,6 +12,7 @@ import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
 import FullscreenControl from './FullscreenControl';
 import MeasurementControl from './MeasurementControl';
+import MapLayersControl from './MapLayersControl';
 import RouteLayerView from '../../layers/routeLayerView';
 import { IRoute } from '../../models';
 import * as s from './map.scss';
@@ -138,7 +139,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     </Control>
                     <ZoomControl position='bottomright' />
                     <Control position='bottomright' />
-                    <Control position='bottomleft' />
+                    <Control position='bottomleft'>
+                        <MapLayersControl />
+                    </Control>
                 </Map>
             </div>
         );
