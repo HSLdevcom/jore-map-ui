@@ -4,7 +4,7 @@ export default interface IRoutePath {
     nodes: INode[];
     routePathName: string;
     direction: string;
-    geoJson: any;
+    positions: [[number, number]];
     visible: boolean;
     startTime: Date;
     endTime: Date;

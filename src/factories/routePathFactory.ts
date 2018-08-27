@@ -8,11 +8,14 @@ class RoutePathFactory {
         = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
             .map((node: any) => NodeFactory.createNode(node.node));
 
+        const coordinates = JSON.parse(suunta.geojson).coordinates;
+        const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
+
         return <IRoutePath>{
             nodes,
+            positions,
             routePathName: suunta.suunimi,
             direction: suunta.suusuunta,
-            geoJson: JSON.parse(suunta.geojson),
             startTime: new Date(suunta.suuvoimast),
             endTime: new Date(suunta.suuviimpvm),
             lastModified: new Date(suunta.suuvoimviimpvm),

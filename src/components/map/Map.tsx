@@ -1,19 +1,17 @@
-import { Map, TileLayer, ZoomControl } from 'react-leaflet';
+import { Map, TileLayer, ZoomControl, FeatureGroup } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { MapStore } from '../../stores/mapStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import { autorun } from 'mobx';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
 import FullscreenControl from './FullscreenControl';
 import MeasurementControl from './MeasurementControl';
-import RouteLayerView from '../../layers/routeLayerView';
-import { IRoute } from '../../models';
+import RouteLayer from './RouteLayer';
 import * as s from './map.scss';
 
 interface IMapState {
@@ -33,7 +31,6 @@ interface IMapProps {
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private map: Map | null;
-    private routeLayerView: RouteLayerView;
 
     constructor(props: IMapProps) {
         super(props);
@@ -44,7 +41,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     public componentDidMount() {
-        autorun(() => this.updateRouteLines());
         if (!this.state.map && this.map) {
             const leafletElement = this.map.leafletElement;
             this.setState({
@@ -69,36 +65,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     public componentDidUpdate() {
         this.state.map!.invalidateSize();
-    }
-
-    private updateRouteLines() {
-        if (this.map) {
-            if (!this.routeLayerView) {
-                this.routeLayerView = new RouteLayerView(this.map.leafletElement);
-            }
-            this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
-            this.centerMapToRoutes(this.props.routeStore!.routes);
-        }
-    }
-
-    private centerMapToRoutes(routes: IRoute[]) {
-        let bounds:L.LatLngBounds = new L.LatLngBounds([]);
-        if (routes && routes[0]) {
-            routes.forEach((route: IRoute) => {
-                if (route.routePaths[0]) {
-                    route.routePaths.map((routePath) => {
-                        if (!routePath.visible) return;
-                        const geoJSON = new L.GeoJSON(routePath.geoJson);
-                        if (!bounds) {
-                            bounds = geoJSON.getBounds();
-                        } else {
-                            bounds.extend(geoJSON.getBounds());
-                        }
-                    });
-                }
-            });
-            this.map!.leafletElement.fitBounds(bounds);
-        }
     }
 
     public render() {
@@ -132,6 +98,11 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
+                    <FeatureGroup>
+                        <RouteLayer
+                            routes={this.props.routeStore!.routes}
+                        />
+                    </FeatureGroup>
                     <Control position='topleft' />
                     <Control position='topright'>
                         <FullscreenControl map={this.state.map} />
