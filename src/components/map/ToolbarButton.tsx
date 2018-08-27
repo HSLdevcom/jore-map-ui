@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import * as s from './toolbarIcon.scss';
+import * as s from './toolbarButton.scss';
 import classnames from 'classnames';
 
-interface ToolbarIconProps {
+interface ToolbarButtonProps {
     label: string;
     onClick: () => void;
     isActive: boolean;
     isDisabled: boolean;
 }
 
-export default class ToolbarIcon extends Component<ToolbarIconProps>{
+export default class ToolbarButton extends Component<ToolbarButtonProps>{
     render () {
         const classes = classnames(
-            s.toolbarIcon,
+            s.toolbarButton,
             this.props.isActive && !this.props.isDisabled ? s.active : null,
             this.props.isDisabled ? s.disabled : null,
         );
