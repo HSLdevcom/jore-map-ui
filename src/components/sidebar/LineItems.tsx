@@ -40,7 +40,7 @@ class LineItems extends React.Component<ILineItemsProps> {
             return false;
         }
 
-        if (searchTargetAttributes.includes(this.props.lineStore!.searchInput)) {
+        if (searchTargetAttributes.includes(this.props.lineStore!.searchInput.toLowerCase())) {
             return true;
         }
         return false;
