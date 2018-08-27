@@ -14,6 +14,7 @@ class RoutePathFactory {
         return <IRoutePath>{
             nodes,
             positions,
+            geoJson: JSON.parse(suunta.geojson),
             routePathName: suunta.suunimi,
             direction: suunta.suusuunta,
             startTime: new Date(suunta.suuvoimast),

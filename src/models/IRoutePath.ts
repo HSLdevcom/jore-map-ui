@@ -5,6 +5,7 @@ export default interface IRoutePath {
     routePathName: string;
     direction: string;
     positions: [[number, number]];
+    geoJson: any;
     visible: boolean;
     startTime: Date;
     endTime: Date;
