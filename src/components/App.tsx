@@ -1,6 +1,5 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { LoginStore } from '../stores/loginStore';
 import { SidebarStore } from '../stores/sidebarStore';
 import Button from './controls/Button';
@@ -11,7 +10,8 @@ import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import NodeWindow from './NodeWindow';
 import * as s from './app.scss';
-const rootPath: string = '/';
+import { Route } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 
 interface IAppState {
     showLogin: boolean;
@@ -40,8 +40,9 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public render(): any {
+        console.log(this.props);
         return (
-            <Router>
+            <BrowserRouter>
               <div className={s.appView}>
                 <Map/>
                 <Button
@@ -62,14 +63,10 @@ class App extends React.Component<IAppProps, IAppState> {
                 >
                     <NodeWindow />
                 </Modal>
-                <Sidebar />
-                <Route
-                    exact={true}
-                    path='/'
-                    rootPath={rootPath}
-                />
+                {/*<Sidebar />*/}
+                <Route component={Sidebar} />
               </div>
-            </Router>
+            </BrowserRouter>
         );
     }
 }

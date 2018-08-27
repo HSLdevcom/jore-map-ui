@@ -5,19 +5,25 @@ import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
 import * as s from './routesEdit.scss';
+import { RouteComponentProps } from 'react-router-dom';
+import RouteService from '../../services/routeService';
+import { toJS } from 'mobx';
+
+interface MatchParams {
+    route: string;
+}
 
 interface IRoutesEditState {
     networkCheckboxToggles: any;
 }
 
-interface IRoutesEditProps {
+interface IRoutesEditProps extends RouteComponentProps<MatchParams>{
     routeStore?: RouteStore;
 }
 
 @inject('routeStore')
 @observer
-class RoutesEdit extends
-React.Component<IRoutesEditProps, IRoutesEditState> {
+class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -28,15 +34,15 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
         };
     }
 
-    private routeList(routes: IRoute[]) {
-        return routes.map((route: IRoute) => {
-            return (
-                <RouteShow
-                    key={route.lineId}
-                    route={route}
-                />
-            );
-        });
+    async componentWillMount() {
+        this.props.routeStore!.routeLoading = true;
+        try {
+            const route = await RouteService.getRoute(this.props.match.params.route);
+            this.props.routeStore!.clearRoutes();
+            this.props.routeStore!.addToRoutes(route);
+            this.props.routeStore!.routeLoading = false;
+        } catch (err) { // TODO Handle errors?
+        }
     }
 
     private networkCheckboxToggle = (type: string) => {
@@ -48,10 +54,28 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
     }
 
     public render(): any {
+        const routesLoading = this.props.routeStore!.routeLoading;
+        const routeList = () => {
+            if (this.props.routeStore!.routes.length < 1) return null;
+            return this.props.routeStore!.routes.map((route: IRoute) => {
+                return (
+                    <RouteShow
+                        key={route.lineId}
+                        route={toJS(route)}
+                    />
+                );
+            });
+        };
+        if (routesLoading) {
+            return (
+                <div id={s.loader} />
+            );
+        }
         return (
             <span className={s.routesEdit}>
                 {
-                    this.routeList(this.props.routeStore!.routes)
+                    routeList()
+                    // routeList(this.props.match.path)
                 }
                 <div className={s.checkboxContainer}>
                     <input

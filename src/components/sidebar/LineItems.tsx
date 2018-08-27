@@ -16,7 +16,7 @@ interface ILineItemsProps {
 @inject('lineStore')
 @observer
 class LineItems extends React.Component<ILineItemsProps> {
-    async componentDidMount() {
+    async componentWillMount() {
         this.props.lineStore!.linesLoading = true;
         await this.props.lineStore!.setAllLines(await LineService.getAllLines());
         this.props.lineStore!.linesLoading = false;

@@ -23,10 +23,6 @@ export class LineStore {
         return this._allLines;
     }
 
-    public lineByLineId(lineId: string) {
-        return this._allLines.find(line => line.lineId === lineId);
-    }
-
     @action
     public setAllLines(lines: ILine[]) {
         this._allLines = lines;

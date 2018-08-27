@@ -5,7 +5,7 @@ class LineFactory {
     // linja to ILine
     public static createLine = (linja: any) => {
         const transitType = _convertTransitTypeCodeToTransitType(linja.linverkko);
-        const lineName = _getReiTunnus(linja.reittisByLintunnus.edges[0]);
+        const lineName = _getReiTunnus(linja.reittisByLintunnus);
         const lineNumber = _parseLineNumber(linja.lintunnus);
 
         return <ILine>{
@@ -44,11 +44,11 @@ const _parseLineNumber = (lineId: string) => {
     return lineId.substring(1).replace(/^0+/, '');
 };
 
-const _getReiTunnus = (edge: any) => {
-    if (!edge || !edge.node.reinimi) {
+const _getReiTunnus = (reitti: any) => {
+    if (!reitti || !reitti.nodes[0] || !reitti.nodes[0].reinimi) {
         return 'Reitillä ei nimeä';
     }
-    return edge.node.reinimi;
+    return reitti.nodes[0].reinimi;
 };
 
 export default LineFactory;

@@ -16,6 +16,7 @@ interface IRouteShowProps {
 @inject('routeStore')
 @observer
 class RouteShow extends React.Component<IRouteShowProps> {
+
     public render(): any {
         return (
             <span>

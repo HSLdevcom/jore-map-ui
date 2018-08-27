@@ -4,8 +4,12 @@ import { LineStore } from '../../stores/lineStore';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import LineItems from './LineItems';
 import * as s from './lineSearch.scss';
+import { RouteComponentProps } from 'react-router-dom';
 
-interface ILineSearchProps {
+interface MatchParams {
+}
+
+interface ILineSearchProps extends RouteComponentProps<MatchParams>{
     lineStore?: LineStore;
 }
 

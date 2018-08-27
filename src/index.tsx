@@ -14,17 +14,21 @@ import './index.scss';
 
 configure({ enforceActions: 'strict' });
 
+const stores = {
+    mapStore: observableMapStore,
+    lineStore: observableLineStore,
+    loginStore: observableLoginStore,
+    routeStore: observableRouteStore,
+    sidebarStore: observableSidebarStore,
+};
+
 ReactDOM.render(
-    <Provider
-      mapStore={observableMapStore}
-      lineStore={observableLineStore}
-      loginStore={observableLoginStore}
-      routeStore={observableRouteStore}
-      sidebarStore={observableSidebarStore}
-    >
-        <ApolloProvider client={apolloClient}>
-          <App/>
-        </ApolloProvider>
-    </Provider>,
-    document.getElementById('root') as HTMLElement,
+        <Provider
+            {...stores}
+        >
+            <ApolloProvider client={apolloClient}>
+                <App/>
+            </ApolloProvider>
+        </Provider>,
+        document.getElementById('root') as HTMLElement,
 );

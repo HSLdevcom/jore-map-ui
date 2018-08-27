@@ -1,47 +1,49 @@
-import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { RouteStore } from '../../stores/routeStore';
 import RoutesEdit from './RoutesEdit';
 import LineSearch from './LineSearch';
 import * as s from './sidebar.scss';
+import { Route, RouteComponentProps, Switch } from 'react-router-dom';
+import hslLogo from '../../assets/hsl-logo.png';
+import observableRouteStore from '../../stores/routeStore';
 
-interface ISidebarProps {
-    routeStore?: RouteStore;
+interface ISidebarProps  extends RouteComponentProps<any>{
 }
 
 interface ILinelistState {
     searchInput: string;
 }
 
-@inject('routeStore')
-@observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     constructor(props: ISidebarProps) {
         super(props);
     }
 
-    public handleHeaderClick = () => {
-        this.props.routeStore!.clearRoutes();
-    }
-
     public render(): any {
+        const handleHeaderClick = () => {
+            observableRouteStore.clearRoutes();
+            this.props.history.push('/');
+        };
         return (
             <div className={s.sidebarView}>
                 <div className={s.header}>
-                    <div onClick={this.handleHeaderClick} className={s.headerContainer}>
-                        <img className={s.logo} src='hsl-logo.png' />
+                    <div onClick={handleHeaderClick} className={s.headerContainer}>
+                        <img className={s.logo} src={hslLogo} />
                         <h2 className={s.title}>
                             Joukkoliikennerekisteri
                 </h2>
                     </div>
                 </div>
                 <div className={s.content}>
-                    {this.props.routeStore!.routes.length < 1 &&
-                        <LineSearch />
-                    }
-                    {this.props.routeStore!.routes.length > 0 &&
-                        <RoutesEdit />
-                    }
+                    <Switch>
+                        <Route
+                            path='/routes/:route'
+                            component={RoutesEdit}
+                        />
+                        <Route
+                            path='/'
+                            component={LineSearch}
+                        />
+                    </Switch>
                 </div>
             </div>
         );
