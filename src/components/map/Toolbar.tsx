@@ -35,15 +35,10 @@ export default class Toolbar extends Component<ToolbarProps, ToolbarState> {
     toggleActiveTool = (tool : Tools) => {
         if (this.state.disabledTools.indexOf(tool) > -1) {
             return;
-        } if (this.state.activeTool === tool) {
-            this.setState({
-                activeTool: Tools.None,
-            });
-        } else {
-            this.setState({
-                activeTool: tool,
-            });
         }
+        this.setState({
+            activeTool: (this.state.activeTool === tool) ? Tools.None : tool,
+        });
     }
 
     isDisabled = (tool: Tools) => {
