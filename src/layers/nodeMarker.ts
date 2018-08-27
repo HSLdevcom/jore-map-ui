@@ -6,7 +6,7 @@ import NodeType from '../enums/nodeType';
 export interface NodeMarkerOptions {
     color: string;
     coordinates: ICoordinate;
-    type: string;
+    type: NodeType;
 }
 
 export default class NodeMarker {
@@ -16,16 +16,7 @@ export default class NodeMarker {
     constructor(options: NodeMarkerOptions) {
         this.options = options;
 
-        let icon;
-        if (this.options.type === NodeType.START) {
-            const divIconOptions : L.DivIconOptions = {
-                className: s.nodePin,
-                html: `<div class="${s.pin}" style="--pinColor: ${this.options.color};"/>`,
-            };
-            icon = new L.DivIcon(divIconOptions);
-        } else {
-            icon = this.getIcon(this.options.color);
-        }
+        const icon = this.getIcon(this.options.color, this.options.type);
 
         const markerOptions : L.MarkerOptions = {
             icon,
@@ -37,10 +28,10 @@ export default class NodeMarker {
             markerOptions);
     }
 
-    private getIcon = (color: string) => {
+    private getIcon = (color: string, type: NodeType) => {
         const divIconOptions : L.DivIconOptions = {
-            className: s.nodeMarker,
-            html: this.getNodeMarkerHtml(color),
+            className: (type === NodeType.START) ? s.nodePin : s.nodeMarker,
+            html: this.getNodeMarkerHtml(color, type),
         };
 
         return new L.DivIcon(divIconOptions);
@@ -49,22 +40,30 @@ export default class NodeMarker {
     private getHighlightedIcon = (color: string) => {
         const divIconOptions : L.DivIconOptions = {
             className: s.highlightedMarker,
-            html: this.getNodeMarkerHtml(color),
+            html: this.getNodeMarkerHtml(color, this.options.type),
         };
 
         return new L.DivIcon(divIconOptions);
     }
 
-    private getNodeMarkerHtml = (color: string) => {
-        return `<div
-            style="border-color: ${color};
-            border-radius: 100px;
-            border-style: solid;
-            height: 12px;
-            width: 12px;
-            border-width: 3px;
-            margin: -3px"
-        />`;
+    private getNodeMarkerHtml = (color: string, type: NodeType) => {
+        switch (type) {
+        case NodeType.START: {
+            return `<div class="${s.pin}" style="--pinColor: ${this.options.color};"/>`;
+        }
+        default: {
+            return `<div
+               style="border-color: ${color};
+               border-radius: 100px;
+               border-style: solid;
+               height: 12px;
+               width: 12px;
+               border-width: 3px;
+               margin: -3px"
+            />`;
+        }
+        }
+
     }
 
     public getNodeMarker = () => {
@@ -77,7 +76,7 @@ export default class NodeMarker {
     }
 
     public removeHighlight = () => {
-        const icon = this.getIcon(this.options.color);
+        const icon = this.getIcon(this.options.color, this.options.type);
         this.node.setIcon(icon);
     }
 }

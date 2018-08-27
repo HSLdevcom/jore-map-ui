@@ -12,8 +12,8 @@ class RoutePathFactory {
             });
 
         const geoJson = JSON.parse(suunta.geojson);
-        const asd = NodeFactory.createStartingPointNode(geoJson.coordinates[0]);
-        nodes.unshift(asd);
+        const startinPointNode = NodeFactory.createStartingPointNode(geoJson.coordinates[0]);
+        nodes.push(startinPointNode);
 
         return <IRoutePath>{
             nodes,
