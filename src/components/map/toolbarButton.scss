@@ -2,14 +2,15 @@
 
 .toolbarButton {
   position: relative;
-  display: inline-block;
+  display: flex;
   font-size: $largeFontSize;
   line-height: $largeFontSize;
   cursor: pointer;
   margin: 5px;
   border-width: 1px;
-  border-style: hidden;
-  padding: 4px;
+  border-color: white;
+  border-style: solid;
+  padding: 3px;
 }
 
 .toolbarButton .tooltiptext {
@@ -34,11 +35,14 @@
     border-style: solid;
     border-color: #a0a0a0;
     border-radius: 3px;
-    padding: 3px;
 }
 
 .active {
-    color: $blue;
+    color: #ffffff;
+    transition: .5s;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 255, 0.54);
+    background-color: rgba(0, 122, 201, 0.8);
 }
 
 .disabled {

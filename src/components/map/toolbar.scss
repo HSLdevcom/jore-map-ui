@@ -1,7 +1,7 @@
 @import '../../common.scss';
 
 .toolbar {
-    display: block;
+    display: flex;
     background-color: $white;
     padding: 5px 10px;
     border-radius: 3px;
