@@ -3,9 +3,14 @@ import { IRoute, IRoutePath } from '../models';
 
 export class RouteStore {
     @observable private _routes = observable<IRoute>([]);
+    @observable private _routePaths = observable<IRoutePath>([]);
 
     @computed get routes(): IRoute[] {
         return toJS(this._routes);
+    }
+
+    @computed get routePaths(): IRoutePath[] {
+        return toJS(this._routePaths);
     }
 
     get visibleRoutePathAmount(): number {
@@ -22,6 +27,16 @@ export class RouteStore {
     @action
     public addToRoutes(node: IRoute) {
         this._routes.push(node);
+    }
+
+    @action
+    public addToRoutePaths(routePath: IRoutePath) {
+        this._routePaths.push(routePath);
+    }
+
+    @action
+    public clearRoutePaths() {
+        this._routePaths.clear();
     }
 
     @action

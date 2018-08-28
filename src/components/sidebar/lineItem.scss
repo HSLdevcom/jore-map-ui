@@ -28,13 +28,42 @@
     .routeItem {
         margin-left: 10px;
         margin-bottom: 10px;
-        cursor: pointer;
 
         .routeName {
             font-weight: bold;
+            cursor: pointer;
         }
+
         .routeDate {
             font-size: $smallFontSize;
         }
     }
+
+    .routePathToggle {
+        margin-left: auto;
+        padding-right: 8px;
+        width: 5px;
+        height: 5px;
+        cursor: pointer;
+        position: relative;
+        top: -30px;
+        font-size: 22px;
+
+        color: $mediumGrey;
+        background-color: rgb(238, 241, 243);
+        border-radius: 5px;
+        transition: .5s;
+
+        :hover {
+            color: $ferryBlue;
+            background-color: #e6e6e6;
+            border-radius: 5px;
+            transition: .5s;
+        }
+    }
+
+    .routePathView {
+        padding: 5px;
+    }
+
 }
