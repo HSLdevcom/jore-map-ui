@@ -1,10 +1,9 @@
 @import '../../common.scss';
 
 .listItemView {
-
+    text-decoration: none;
+    color: $fontColorDefault;
     .lineItem {
-        text-decoration: none;
-        color: $fontColorDefault;
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
