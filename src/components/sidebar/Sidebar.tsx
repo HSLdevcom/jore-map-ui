@@ -38,7 +38,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 <div className={s.content}>
                     <Switch>
                         <Route
-                            path='/routes/:route'
+                            path='/routes/'
                             component={RoutesEdit}
                         />
                         <Route

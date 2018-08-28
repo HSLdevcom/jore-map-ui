@@ -82,6 +82,8 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     private centerMapToRoutes(routes: IRoute[]) {
+        /*
+        TODO: Fix this: mobX warns about index out of bounds
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
         if (routes && routes[0]) {
             routes.forEach((route: IRoute) => {
@@ -99,6 +101,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
             });
             this.map!.leafletElement.fitBounds(bounds);
         }
+        */
     }
 
     public render() {

@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
 import lineHelper from '../../util/lineHelper';
 import { ILine } from '../../models';
+import { LineStore } from '../../stores/lineStore';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
@@ -14,20 +16,23 @@ interface ILineItemState {
 interface ILineItemProps {
     line: ILine;
     location: any;
+    lineStore?: LineStore;
 }
 
+@inject('lineStore')
+@observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
-    // private selectRoute(routeId: string) {
-    //     RouteService.getRoute(this.props.line.lineId, routeId)
-    //         .then((res: IRoute) => {
-    //             this.props.routeStore!.addToRoutes(res);
-    //             this.props.lineStore!.setSearchInput('');
-    //         })
-    //         .catch((err: any) => {
-    //         });
-    // }
+
+    constructor(props: ILineItemProps) {
+        super(props);
+    }
 
     public render(): any {
+        let pathname = (this.props.location.pathname === '/')
+            ? 'routes' : this.props.location.pathname;
+
+        const routeIds = this.props.location.search.replace('?routeIds=', '').split(',');
+        pathname += '?routeIds=' + (Boolean(routeIds[0]) ? routeIds.toString() + ',' : '');
         return (
             <div className={s.listItemView}>
                 <div className={s.lineItem}>
@@ -48,12 +53,11 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         <Link
                             key={route.name + '-' + index}
                             className={s.listItemView}
-                            to={`${this.props.location.pathname}/${route.id}`}
+                            to={`${pathname}${route.id}`}
                         >
                             <div
                                 key={route.name + '-' + index}
                                 className={s.routeItem}
-                                // onClick={this.selectRoute.bind(this, route.id)}
                             >
                                 <div
                                     className={classNames(

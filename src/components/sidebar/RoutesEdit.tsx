@@ -38,16 +38,34 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
         };
         this.props.lineStore!.lineSearchVisible = false;
     }
+    componentDidMount() {
+        this.queryRoutes(this.props.location.search);
+    }
 
-    async componentWillMount() {
-        this.props.routeStore!.routeLoading = true;
-        try {
-            const route = await RouteService.getRoute(this.props.match.params.route);
-            this.props.routeStore!.clearRoutes();
-            this.props.routeStore!.addToRoutes(route);
-            this.props.routeStore!.routeLoading = false;
-        } catch (err) { // TODO Handle errors?
-        }
+    componentWillReceiveProps(props: any) {
+        this.queryRoutes(props.location.search);
+    }
+
+    private queryRoutes(searchQuery: string) {
+        this.props.lineStore!.setSearchInput('');
+        const routeIds = searchQuery.replace('?routeIds=', '').split(',');
+        const routes = this.props.routeStore!.routes;
+        routeIds.map(async (routeId) => {
+            try {
+                console.log('Try: ', routeId);
+                const existingRoute = routes.find((route) => {
+                    return route.routeId === routeId;
+                });
+                if (!existingRoute) {
+                    console.log('Route not found, querying ', routeId);
+                    const route = await RouteService.getRoute(routeId.toString());
+                    // this.props.routeStore!.clearRoutes();
+                    this.props.routeStore!.addToRoutes(route);
+                }
+                this.props.routeStore!.routeLoading = false;
+            } catch (err) { // TODO Handle errors?
+            }
+        });
     }
 
     private networkCheckboxToggle = (type: string) => {
@@ -83,7 +101,6 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
                 <div id={s.loader} />
             );
         }
-        console.log(this.props.match);
         return (
             <div className={s.routesEditView}>
                 <Route component={LineSearch} />

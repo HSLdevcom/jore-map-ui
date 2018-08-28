@@ -25,8 +25,6 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
         this.state = {
             lineItems: '',
         };
-        console.log(props);
-        this.props.lineStore!.setSearchInput('');
     }
 
     public handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -35,7 +33,6 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
     }
 
     public render(): any {
-        console.log(this.props.location);
         return (
             <div className={s.lineSearchView}>
                 <div className={s.inputContainer}>

@@ -15,7 +15,7 @@ class RouteFactory {
 
         return <IRoute>{
             routePaths,
-            line,
+            line, // TODO, dont pass the whole line. Only needed fields (transitType at the moment)
             routeName: reitti.reinimi,
             routeNameSwedish: reitti.reinimir,
             lineId: reitti.lintunnus,
