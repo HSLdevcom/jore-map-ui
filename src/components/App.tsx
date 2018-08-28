@@ -1,9 +1,12 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { LoginStore } from '../stores/loginStore';
+import { NotificationStore } from '../stores/notificationStore';
 import { SidebarStore } from '../stores/sidebarStore';
+import { MapStore } from '../stores/mapStore';
 import Button from './controls/Button';
 import ButtonType from '../enums/buttonType';
+import NotificationWindow from './NotificationWindow';
 import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
@@ -18,10 +21,14 @@ interface IAppState {
 }
 
 interface IAppProps {
+    notificationStore?: NotificationStore;
     loginStore?: LoginStore;
     sidebarStore?: SidebarStore;
+    mapStore?: MapStore;
 }
 
+@inject('mapStore')
+@inject('notificationStore')
 @inject('sidebarStore')
 @inject('loginStore')
 @observer
@@ -40,7 +47,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public render(): any {
-        console.log(this.props);
+        const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         return (
             <BrowserRouter>
               <div className={s.appView}>
@@ -63,8 +70,12 @@ class App extends React.Component<IAppProps, IAppState> {
                 >
                     <NodeWindow />
                 </Modal>
-                {/*<Sidebar />*/}
-                <Route component={Sidebar} />
+                <div className={sidebarHiddenClass}>
+                    <Route component={Sidebar} />
+                </div>
+                <NotificationWindow
+                  notifications={this.props.notificationStore!.notifications}
+                />
               </div>
             </BrowserRouter>
         );

@@ -9,8 +9,7 @@ import * as s from './lineItems.scss';
 
 interface ILineItemsProps {
     lineStore?: LineStore;
-    searchInput: string;
-    filters: string[];
+    location: any;
 }
 
 @inject('lineStore')
@@ -22,13 +21,14 @@ class LineItems extends React.Component<ILineItemsProps> {
         this.props.lineStore!.linesLoading = false;
     }
 
-    public filterLines = (lineName: string, lineNumber: string, transitType: TransitType) => {
-        const searchTargetAttributes = lineName.toLowerCase() + lineNumber;
-
-        if (this.props.filters.indexOf(transitType) !== -1) {
+    public filterLines = (lineNumber: string, transitType: TransitType) => {
+        const searchTargetAttributes = lineNumber;
+        if (this.props.lineStore!.filters &&
+            this.props.lineStore!.filters.indexOf(transitType) !== -1) {
             return false;
         }
-        return searchTargetAttributes.includes(this.props.searchInput);
+
+        return searchTargetAttributes.includes(this.props.lineStore!.searchInput);
     }
 
     public render(): any {
@@ -40,17 +40,19 @@ class LineItems extends React.Component<ILineItemsProps> {
             );
         }
         return (
-            <div>
+            <div className={s.lineItemsView}>
                 {
                     allLines
                         .filter(line =>
-                            this.filterLines(
-                                line.lineName, line.lineNumber, line.transitType))
+                            this.filterLines(line.lineNumber, line.transitType))
+                        // Showing only the first 100 results to improve rendering performance
+                        .splice(0, 100)
                         .map((line: ILine) => {
                             return (
                                 <LineItem
                                     key={line.lineId}
                                     line={line}
+                                    location={this.props.location}
                                 />
                             );
                         })

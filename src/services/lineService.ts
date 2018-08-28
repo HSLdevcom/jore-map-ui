@@ -1,6 +1,8 @@
 import gql from 'graphql-tag';
 import apolloClient from '../util/ApolloClient';
 import LineFactory from '../factories/lineFactory';
+import NotificationType from '../enums/notificationType';
+import NotificationStore from '../stores/notificationStore';
 
 export default class LineService {
     public static async getAllLines() {
@@ -9,6 +11,9 @@ export default class LineService {
             const routes = LineFactory.linjasToILines(data.allLinjas.nodes);
             return routes;
         } catch (err) {
+            NotificationStore.addNotification(
+                { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
+            );
             return err;
         }
     }
@@ -19,6 +24,9 @@ export default class LineService {
                 .query({ query: getLinja, variables: { lineId: lintunnus } });
             return LineFactory.createLine(data.linjaByLintunnus);
         } catch (err) {
+            NotificationStore.addNotification(
+                { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
+            );
             return err;
         }
     }
@@ -47,9 +55,10 @@ const getLinjas = gql`
             lintunnus
             linjoukkollaji
             linverkko
-            reittisByLintunnus(first: 1, orderBy: REIVIIMPVM_DESC) {
+            reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
                 nodes {
                     reinimi
+                    reitunnus
                     reiviimpvm
                 }
             }

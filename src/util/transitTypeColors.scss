@@ -20,6 +20,10 @@
   color: $subwayOrange !important;
 }
 
+.notFound {
+  color: #000 !important;
+}
+
 .ferryBg {
   background-color: $ferryBlue !important;
 }
@@ -38,4 +42,8 @@
 
 .subwayBg {
   background-color: $subwayOrange !important;
+}
+
+.notFoundBg {
+  background-color: #000 !important;
 }

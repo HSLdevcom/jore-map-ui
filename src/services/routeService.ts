@@ -2,8 +2,9 @@ import gql from 'graphql-tag';
 import apolloClient from '../util/ApolloClient';
 import { ApolloQueryResult } from 'apollo-client';
 import RouteFactory from '../factories/routeFactory';
-// import LineStore from '../stores/lineStore';
 import LineService from './lineService';
+import NotificationType from '../enums/notificationType';
+import NotificationStore from '../stores/notificationStore';
 
 export default class RouteService {
     public static async getRoute(lineId: string) {
@@ -14,6 +15,9 @@ export default class RouteService {
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
             return RouteFactory.createRoute(queryResult.data.route, line);
         } catch (err) {
+            NotificationStore.addNotification(
+            { message: 'Reitin haku ei onnistunut.', type: NotificationType.ERROR },
+            );
             return err;
         }
     }
@@ -22,6 +26,7 @@ export default class RouteService {
 const getRoute = gql`
 query getLineDetails($routeId: String!) {
     route: reittiByReitunnus(reitunnus: $routeId) {
+        reitunnus
         reinimi
         reinimilyh
         reinimir

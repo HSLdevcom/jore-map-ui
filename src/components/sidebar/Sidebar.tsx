@@ -5,6 +5,7 @@ import * as s from './sidebar.scss';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import hslLogo from '../../assets/hsl-logo.png';
 import observableRouteStore from '../../stores/routeStore';
+import observableLineStore from '../../stores/lineStore';
 
 interface ISidebarProps  extends RouteComponentProps<any>{
 }
@@ -21,6 +22,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     public render(): any {
         const handleHeaderClick = () => {
             observableRouteStore.clearRoutes();
+            observableLineStore.lineSearchVisible = true;
             this.props.history.push('/');
         };
         return (
@@ -40,7 +42,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             component={RoutesEdit}
                         />
                         <Route
-                            path='/'
                             component={LineSearch}
                         />
                     </Switch>

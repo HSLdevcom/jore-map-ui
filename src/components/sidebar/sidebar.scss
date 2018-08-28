@@ -2,16 +2,16 @@
 
 .sidebarView {
     position: absolute;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     top: 0px;
     bottom: 0px;
     left: 0px;
     font-size: $mediumFontSize;
-    height: 100Vh;
     margin: 0;
     background-color: $backgroundlightGrey;
     z-index: 9;
-    overflow-y: auto;
     min-width: 400px;
     max-width: 400px;
 
@@ -53,8 +53,13 @@
             }
         }
     }
-
     .content {
-        padding: 10px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .routesText {
+            font-weight: bold;
+        }
     }
 }

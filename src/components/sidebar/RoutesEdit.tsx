@@ -1,11 +1,13 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
+import { LineStore } from '../../stores/lineStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
+import LineSearch from './LineSearch';
 import * as s from './routesEdit.scss';
-import { RouteComponentProps } from 'react-router-dom';
+import { Route, RouteComponentProps } from 'react-router-dom';
 import RouteService from '../../services/routeService';
 import { toJS } from 'mobx';
 
@@ -18,9 +20,11 @@ interface IRoutesEditState {
 }
 
 interface IRoutesEditProps extends RouteComponentProps<MatchParams>{
+    lineStore?: LineStore;
     routeStore?: RouteStore;
 }
 
+@inject('lineStore')
 @inject('routeStore')
 @observer
 class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
@@ -32,6 +36,7 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
                 linkit: false,
             },
         };
+        this.props.lineStore!.lineSearchVisible = false;
     }
 
     async componentWillMount() {
@@ -55,15 +60,22 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
 
     public render(): any {
         const routesLoading = this.props.routeStore!.routeLoading;
-        const routeList = () => {
+        const routeList = (routes: IRoute[]) => {
+            let visibleRoutePathsIndex = 0;
             if (this.props.routeStore!.routes.length < 1) return null;
             return this.props.routeStore!.routes.map((route: IRoute) => {
-                return (
+                const routeShow = (
                     <RouteShow
-                        key={route.lineId}
+                        key={route.routeId}
                         route={toJS(route)}
+                        visibleRoutePathsIndex={visibleRoutePathsIndex}
                     />
                 );
+                const routePathsAmount = route.routePaths.filter(
+                    x => x.visible).length;
+                visibleRoutePathsIndex += routePathsAmount;
+
+                return routeShow;
             });
         };
         if (routesLoading) {
@@ -71,56 +83,45 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
                 <div id={s.loader} />
             );
         }
+        console.log(this.props.match);
         return (
-            <span className={s.routesEdit}>
-                {
-                    routeList()
-                    // routeList(this.props.match.path)
+            <div className={s.routesEditView}>
+                <Route component={LineSearch} />
+                { !this.props.lineStore!.lineSearchVisible &&
+                <div className={s.wrapper}>
+                    <div className={s.routeList}>
+                        {
+                            routeList(this.props.routeStore!.routes)
+                        }
+                        <div className={s.checkboxContainer}>
+                            <input
+                                type='checkbox'
+                                checked={false}
+                            />
+                            Kopioi reitti toiseen suuntaan
+                        </div>
+                    </div>
+                    <div className={s.network}>
+                        <label className={s.inputTitle}>VERKKO</label>
+                        <TransitToggleButtonBar filters={[]} />
+                        <div className={s.checkboxContainer}>
+                            <Checkbox
+                                onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
+                                checked={this.state.networkCheckboxToggles.linkit}
+                                text={'Hae alueen linkit'}
+                            />
+                        </div>
+                        <div className={s.checkboxContainer}>
+                            <Checkbox
+                                onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
+                                checked={this.state.networkCheckboxToggles.solmut}
+                                text={'Hae alueen solmut'}
+                            />
+                        </div>
+                    </div>
+                </div>
                 }
-                <div className={s.checkboxContainer}>
-                    <input
-                        type='checkbox'
-                        checked={false}
-                    />
-                    Kopioi reitti toiseen suuntaan
-                </div>
-                <div className={s.inputWrapper}>
-                    <div className={s.inputContainer}>
-                        <label className={s.inputTitle}>
-                            HAE TOINEN LINJA TARKASTELUUN
-                        </label>
-                        <input
-                            placeholder='Hae reitti'
-                            type='text'
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <span className={s.inputTitle}>TARKASTELUPÄIVÄ</span>
-                        <input
-                            placeholder='25.8.2017'
-                            type='text'
-                        />
-                    </div>
-                </div>
-                <div className={s.network}>
-                    <label className={s.inputTitle}>VERKKO</label>
-                    <TransitToggleButtonBar filters={[]} />
-                    <div className={s.checkboxContainer}>
-                        <Checkbox
-                            onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
-                            checked={this.state.networkCheckboxToggles.linkit}
-                            text={'Hae alueen linkit'}
-                        />
-                    </div>
-                    <div className={s.checkboxContainer}>
-                        <Checkbox
-                            onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
-                            checked={this.state.networkCheckboxToggles.solmut}
-                            text={'Hae alueen solmut'}
-                        />
-                    </div>
-                </div>
-            </span>
+            </div>
         );
     }
 }

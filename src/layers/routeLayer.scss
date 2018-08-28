@@ -1,13 +1,5 @@
 @import '../common.scss';
 
-.blue {
-    stroke: $blue;
-}
-
-.red {
-    stroke: $red;
-}
-
 .grey {
     stroke: $grey;
 }
@@ -16,7 +8,26 @@
     stroke-width: 4;
 }
 
-.node {
-    fill: $white;
-    fill-opacity: 0.5;
+.leafletPopup {
+    font-family: $hslFont;
+    
+    /* Override leaflet's default margin */
+    div:first-child div {
+        margin: 0 !important;
+    }
+
+    /* Override leaflet's default border-radius */
+    div:first-child {
+        border-radius: 0 !important;
+    }
+
+    .popupContainer {
+        .popupItem {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .popupItem:hover {
+            background-color: $backgroundlightGrey;
+        }
+    }
 }

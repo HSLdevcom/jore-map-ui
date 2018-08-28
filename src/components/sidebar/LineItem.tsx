@@ -1,10 +1,10 @@
-import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classNames from 'classnames';
 import lineHelper from '../../util/lineHelper';
 import { ILine } from '../../models';
-import * as s from './lineItem.scss';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
+import Moment from 'react-moment';
+import * as s from './lineItem.scss';
 import { Link } from 'react-router-dom';
 
 interface ILineItemState {
@@ -13,33 +13,69 @@ interface ILineItemState {
 
 interface ILineItemProps {
     line: ILine;
+    location: any;
 }
 
-@inject('routeStore')
-@observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
+    // private selectRoute(routeId: string) {
+    //     RouteService.getRoute(this.props.line.lineId, routeId)
+    //         .then((res: IRoute) => {
+    //             this.props.routeStore!.addToRoutes(res);
+    //             this.props.lineStore!.setSearchInput('');
+    //         })
+    //         .catch((err: any) => {
+    //         });
+    // }
 
     public render(): any {
         return (
-            <Link className={s.listItemView} to={`/routes/${this.props.line.lineId}`}>
-                <span
-                    className={s.listItemView}
-                >
-                    <span className={s.icon}>
+            <div className={s.listItemView}>
+                <div className={s.lineItem}>
+                    <div className={s.icon}>
                         {lineHelper.getTransitIcon(this.props.line.transitType, false)}
-                    </span>
-                    <span
+                    </div>
+                    <div
                         className={classNames(
-                            TransitTypeColorHelper
-                                .getColorClass(this.props.line.transitType, false),
+                            TransitTypeColorHelper.getColorClass(this.props.line.transitType),
                             s.label,
                         )}
                     >
                         {this.props.line.lineNumber}
-                    </span>
-                    {this.props.line.lineName}
-                </span>
-            </Link>
+                    </div>
+                </div>
+                {this.props.line.routes.map((route, index) => {
+                    return (
+                        <Link
+                            key={route.name + '-' + index}
+                            className={s.listItemView}
+                            to={`${this.props.location.pathname}/${route.id}`}
+                        >
+                            <div
+                                key={route.name + '-' + index}
+                                className={s.routeItem}
+                                // onClick={this.selectRoute.bind(this, route.id)}
+                            >
+                                <div
+                                    className={classNames(
+                                        s.routeName,
+                                        TransitTypeColorHelper.getColorClass(
+                                            this.props.line.transitType),
+                                    )}
+                                >
+                                    {route.name}
+                                </div>
+                                <div className={s.routeDate}>
+                                    {'Muokattu: '}
+                                    <Moment
+                                        date={route.date}
+                                        format='DD.MM.YYYY HH:mm'
+                                    />
+                                </div>
+                            </div>
+                        </Link>
+                    );
+                })}
+            </div>
         );
     }
 }
