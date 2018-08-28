@@ -1,0 +1,51 @@
+@import '../../common.scss';
+
+.toolbarButton {
+  position: relative;
+  display: flex;
+  font-size: $largeFontSize;
+  line-height: $largeFontSize;
+  cursor: pointer;
+  margin: 5px;
+  border-width: 1px;
+  border-color: white;
+  border-style: solid;
+  padding: 3px;
+  transition: 0.5s;
+}
+
+.toolbarButton .tooltiptext {
+    margin-top: 30px;
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    font-size: $mediumFontSize;
+}
+
+.toolbarButton:hover .tooltiptext {
+    visibility: visible;
+}
+
+.toolbarButton:not(.disabled):hover {
+    border-style: solid;
+    border-color: #a0a0a0;
+    border-radius: 3px;
+}
+
+.active {
+    color: #ffffff;
+    transition: .5s;
+    border-radius: 4px;
+    background-color: rgba(0, 122, 201, 0.8);
+}
+
+.disabled {
+    color: #a0a0a0;
+    cursor: not-allowed;
+}
