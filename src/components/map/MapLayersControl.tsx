@@ -1,20 +1,14 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { IoMdMap } from 'react-icons/io';
-import { Checkbox } from '../controls';
+import { RadioButton } from '../controls';
 import * as s from './mapLayersControl.scss';
-
-interface ICheckboxToggles {
-    kartta: boolean;
-    satelliitti: boolean;
-    maasto: boolean;
-}
 
 interface INodeWindowProps {
 }
 
 interface IMapLayersControlState {
-    checkboxToggles: ICheckboxToggles;
+    selectedOption: string;
 }
 
 @observer
@@ -23,19 +17,13 @@ export default class MapLayersControl extends React.Component
     constructor (props: any) {
         super(props);
         this.state = {
-            checkboxToggles: {
-                kartta: true,
-                satelliitti: false,
-                maasto: false,
-            },
+            selectedOption: 'kartta',
         };
     }
 
-    private toggleCheckbox = (type: string) => {
-        const newToggleState = this.state.checkboxToggles;
-        newToggleState[type] = !this.state.checkboxToggles[type];
+    private toggleRadioButton = (option: string) => {
         this.setState({
-            checkboxToggles: newToggleState,
+            selectedOption: option,
         });
     }
 
@@ -46,19 +34,19 @@ export default class MapLayersControl extends React.Component
                     <IoMdMap />
                 </div>
                 <div className={s.mapLayersContainer}>
-                    <Checkbox
-                        onClick={this.toggleCheckbox.bind(this, 'kartta')}
-                        checked={this.state.checkboxToggles.kartta}
+                    <RadioButton
+                        onClick={this.toggleRadioButton.bind(this, 'kartta')}
+                        checked={this.state.selectedOption === 'kartta'}
                         text={'Kartta'}
                     />
-                    <Checkbox
-                        onClick={this.toggleCheckbox.bind(this, 'satelliitti')}
-                        checked={this.state.checkboxToggles.satelliitti}
+                    <RadioButton
+                        onClick={this.toggleRadioButton.bind(this, 'satelliitti')}
+                        checked={this.state.selectedOption === 'satelliitti'}
                         text={'Satelliitti'}
                     />
-                    <Checkbox
-                        onClick={this.toggleCheckbox.bind(this, 'maasto')}
-                        checked={this.state.checkboxToggles.maasto}
+                    <RadioButton
+                        onClick={this.toggleRadioButton.bind(this, 'maasto')}
+                        checked={this.state.selectedOption === 'maasto'}
                         text={'Maasto'}
                     />
                 </div>
