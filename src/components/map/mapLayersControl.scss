@@ -5,28 +5,33 @@
     position: relative;
     width: 100%;
     height: 100%;
+
+    .mapLayerControlIcon {
+        display: flex;
+        font-size: $largeFontSize;
+        line-height: $largeFontSize;
+        cursor: pointer;
+        padding: 10px;
+        background-color: white;
+        border: 1px solid $darkGrey;
+        color: $darkGrey;
+    }
+
+    .mapLayersContainer {
+        display: none;
+        visibility: none;
+        flex-direction: column;
+        background-color: white;
+        border: 1px solid $darkGrey;
+        z-index: 1;
+        padding: 10px;
+    }
 }
 
-.mapLayerControlView .mapLayerControlIcon {
+.mapLayerControlView:hover .mapLayerControlIcon {
+    display: none;
+}
+
+.mapLayerControlView:hover .mapLayersContainer  {
     display: flex;
-    font-size: $largeFontSize;
-    line-height: $largeFontSize;
-    cursor: pointer;
-    padding: 10px;
-    background-color: white;
-    border: 1px solid $darkGrey;
-    color: $darkGrey;
 }
-
-.mapLayerControlView .mapLayersContainer {
-    visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border: 1px solid $darkGrey;
-}
-
-.mapLayerControlView:hover .mapLayersContainer {
-    visibility: visible;
-}
-

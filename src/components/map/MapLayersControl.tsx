@@ -42,10 +42,7 @@ export default class MapLayersControl extends React.Component
     render() {
         return (
             <div className={s.mapLayerControlView}>
-                <div className={s.mapLayerControlIcon}>
-                    <IoMdMap />
-                </div>
-                <div className={s.mapLayersContainer}>
+                <span className={s.mapLayersContainer}>
                     <Checkbox
                         onClick={this.toggleCheckbox.bind(this, 'kartta')}
                         checked={this.state.checkboxToggles.kartta}
@@ -61,6 +58,9 @@ export default class MapLayersControl extends React.Component
                         checked={this.state.checkboxToggles.maasto}
                         text={'Maasto'}
                     />
+                </span>
+                <div className={s.mapLayerControlIcon}>
+                    <IoMdMap />
                 </div>
             </div>
         );
