@@ -5,6 +5,7 @@ import colorScale from '../util/colorScale';
 import observableSidebarStore, { SidebarStore } from '../stores/sidebarStore';
 import NodeMarker, { NodeMarkerOptions } from './nodeMarker';
 import * as s from './routeLayer.scss';
+import { toJS } from 'mobx';
 
 enum PopupItemAction {
     TARGET = 'target',
@@ -39,21 +40,21 @@ export default class RouteLayerView {
     public drawRouteLines(routes: IRoute[]) {
         this.clearRoute();
         let visibleRoutePathIndex = 0;
-        let visibleRoutePaths = 0;
-        routes.forEach((route: IRoute) => {
-            const routePathsAmount = route.routePaths.filter(
-                x => x.visible).length;
-            visibleRoutePaths += routePathsAmount;
-        });
+        const visibleRoutePaths = routes.reduce(
+            (sum, route) => {
+                return sum + route.routePaths.filter(x => x.visible).length;
+            },
+            0);
         if (routes && routes[0]) {
             routes.forEach((route: IRoute) => {
                 if (route.routePaths[0]) {
                     route.routePaths.map((routePath) => {
-                        if (routePath.visible) {
+                        const rp = toJS(routePath);
+                        if (rp.visible) {
                             const routeColor = colorScale.getColors(
                                 visibleRoutePaths)[visibleRoutePathIndex];
-                            this.drawRouteLine(routePath, routeColor);
-                            this.drawNodes(routePath, routeColor);
+                            this.drawRouteLine(rp, routeColor);
+                            this.drawNodes(rp, routeColor);
                             visibleRoutePathIndex += 1;
                         }
                     });

@@ -1,0 +1,10 @@
+@import '../../common.scss';
+.sidebarContentView {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .routesText {
+    font-weight: bold;
+  }
+}

@@ -7,10 +7,10 @@ import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
 
 export default class RouteService {
-    public static async getRoute(lineId: string) {
+    public static async getRoute(routeId: string) {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getRoute, variables: { routeId: lineId } },
+                { query: getRoute, variables: { routeId } },
                 );
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
             return RouteFactory.createRoute(queryResult.data.route, line);
@@ -20,6 +20,10 @@ export default class RouteService {
             );
             return err;
         }
+    }
+
+    public static async getRoutes(routeIds: string[]) {
+        return Promise.all(routeIds.map(x => RouteService.getRoute(x)));
     }
 }
 

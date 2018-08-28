@@ -5,21 +5,18 @@ import { LineStore } from '../../stores/lineStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
-import LineSearch from './LineSearch';
-import * as s from './routesEdit.scss';
-import { Route, RouteComponentProps } from 'react-router-dom';
-import RouteService from '../../services/routeService';
-import { toJS } from 'mobx';
+import * as s from './routesList.scss';
+import { RouteComponentProps } from 'react-router-dom';
 
 interface MatchParams {
     route: string;
 }
 
-interface IRoutesEditState {
+interface IRoutesListState {
     networkCheckboxToggles: any;
 }
 
-interface IRoutesEditProps extends RouteComponentProps<MatchParams>{
+interface IRoutesListProps extends RouteComponentProps<MatchParams>{
     lineStore?: LineStore;
     routeStore?: RouteStore;
 }
@@ -27,7 +24,7 @@ interface IRoutesEditProps extends RouteComponentProps<MatchParams>{
 @inject('lineStore')
 @inject('routeStore')
 @observer
-class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
+class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -36,18 +33,6 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
                 linkit: false,
             },
         };
-        this.props.lineStore!.lineSearchVisible = false;
-    }
-
-    async componentWillMount() {
-        this.props.routeStore!.routeLoading = true;
-        try {
-            const route = await RouteService.getRoute(this.props.match.params.route);
-            this.props.routeStore!.clearRoutes();
-            this.props.routeStore!.addToRoutes(route);
-            this.props.routeStore!.routeLoading = false;
-        } catch (err) { // TODO Handle errors?
-        }
     }
 
     private networkCheckboxToggle = (type: string) => {
@@ -59,7 +44,6 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
     }
 
     public render(): any {
-        const routesLoading = this.props.routeStore!.routeLoading;
         const routeList = (routes: IRoute[]) => {
             let visibleRoutePathsIndex = 0;
             if (this.props.routeStore!.routes.length < 1) return null;
@@ -67,27 +51,18 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
                 const routeShow = (
                     <RouteShow
                         key={route.routeId}
-                        route={toJS(route)}
+                        route={route}
                         visibleRoutePathsIndex={visibleRoutePathsIndex}
                     />
                 );
                 const routePathsAmount = route.routePaths.filter(
                     x => x.visible).length;
                 visibleRoutePathsIndex += routePathsAmount;
-
                 return routeShow;
             });
         };
-        if (routesLoading) {
-            return (
-                <div id={s.loader} />
-            );
-        }
-        console.log(this.props.match);
         return (
             <div className={s.routesEditView}>
-                <Route component={LineSearch} />
-                { !this.props.lineStore!.lineSearchVisible &&
                 <div className={s.wrapper}>
                     <div className={s.routeList}>
                         {
@@ -120,10 +95,9 @@ class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
                         </div>
                     </div>
                 </div>
-                }
             </div>
         );
     }
 }
 
-export default RoutesEdit;
+export default RoutesList;

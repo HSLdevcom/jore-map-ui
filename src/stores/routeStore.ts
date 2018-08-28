@@ -8,12 +8,16 @@ export class RouteStore {
 
     constructor() {
         this._routes = [];
-        this._routeLoading = true;
+        this._routeLoading = false;
     }
 
     @computed get routes(): IRoute[] {
         if (this._routes.length < 1) return [];
         return this._routes;
+    }
+
+    set routes(value: IRoute[]) {
+        this._routes = value;
     }
 
     get visibleRoutePathAmount(): number {

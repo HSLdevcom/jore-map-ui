@@ -2,9 +2,11 @@ import { action, computed, observable } from 'mobx';
 
 export class SidebarStore {
     @observable private _openedNodeId: number|null;
+    @observable private _isLoading: boolean;
 
     constructor() {
         this._openedNodeId = null;
+        this._isLoading = true;
     }
 
     @computed
@@ -20,6 +22,14 @@ export class SidebarStore {
     @action
     public setOpenedNodeId(id: number|null) {
         this._openedNodeId = id;
+    }
+
+    @computed get isLoading(): boolean {
+        return this._isLoading;
+    }
+
+    set isLoading(value: boolean) {
+        this._isLoading = value;
     }
 }
 

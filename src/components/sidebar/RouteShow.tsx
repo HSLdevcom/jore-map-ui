@@ -48,7 +48,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
         let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
 
         return this.props.route.routePaths
-        .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
+        .slice().sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
         .map((routePath: IRoutePath, index: number) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(

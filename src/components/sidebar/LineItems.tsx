@@ -33,12 +33,6 @@ class LineItems extends React.Component<ILineItemsProps> {
 
     public render(): any {
         const allLines = this.props.lineStore!.allLines;
-        const linesLoading = this.props.lineStore!.linesLoading;
-        if (linesLoading) {
-            return (
-                <div id={s.loader} />
-            );
-        }
         return (
             <div className={s.lineItemsView}>
                 {

@@ -1,0 +1,23 @@
+.lineSearchView {
+  max-height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .inputContainer {
+    padding: 10px;
+
+    .input {
+      width: 100%;
+      height: 28px;
+      text-indent: 4px;
+      border-radius: 5px;
+    }
+  }
+
+  .searchResultsContainer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}

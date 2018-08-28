@@ -12,6 +12,7 @@ import observableRouteStore from './stores/routeStore';
 import observableSidebarStore from './stores/sidebarStore';
 import apolloClient from './util/ApolloClient';
 import './index.scss';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 configure({ enforceActions: 'strict' });
 
@@ -25,11 +26,11 @@ const stores = {
 };
 
 ReactDOM.render(
-        <Provider
-            {...stores}
-        >
+        <Provider {...stores}>
             <ApolloProvider client={apolloClient}>
-                <App/>
+                <BrowserRouter>
+                    <Route component={App}/>
+                </BrowserRouter>
             </ApolloProvider>
         </Provider>,
         document.getElementById('root') as HTMLElement,

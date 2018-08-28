@@ -1,19 +1,23 @@
+import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import RoutesEdit from './RoutesEdit';
-import LineSearch from './LineSearch';
 import * as s from './sidebar.scss';
-import { Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { Route, RouteComponentProps } from 'react-router-dom';
 import hslLogo from '../../assets/hsl-logo.png';
-import observableRouteStore from '../../stores/routeStore';
-import observableLineStore from '../../stores/lineStore';
+import { RouteStore } from '../../stores/routeStore';
+import { LineStore } from '../../stores/lineStore';
+import SidebarContent from './SidebarContent';
 
-interface ISidebarProps  extends RouteComponentProps<any>{
+interface ISidebarProps extends RouteComponentProps<any>{
+    routeStore?: RouteStore;
+    lineStore?: LineStore;
 }
 
 interface ILinelistState {
     searchInput: string;
 }
 
+@inject('routeStore', 'lineStore')
+@observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     constructor(props: ISidebarProps) {
         super(props);
@@ -21,8 +25,9 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
 
     public render(): any {
         const handleHeaderClick = () => {
-            observableRouteStore.clearRoutes();
-            observableLineStore.lineSearchVisible = true;
+            this.props.routeStore!.clearRoutes();
+            this.props.lineStore!.setSearchInput('');
+            this.props.lineStore!.lineSearchVisible = true;
             this.props.history.push('/');
         };
         return (
@@ -35,17 +40,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 </h2>
                     </div>
                 </div>
-                <div className={s.content}>
-                    <Switch>
-                        <Route
-                            path='/routes/:route'
-                            component={RoutesEdit}
-                        />
-                        <Route
-                            component={LineSearch}
-                        />
-                    </Switch>
-                </div>
+                <Route component={SidebarContent} />
             </div>
         );
     }

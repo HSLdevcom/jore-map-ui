@@ -1,15 +1,9 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
-import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
-import LineItems from './LineItems';
 import * as s from './lineSearch.scss';
-import { RouteComponentProps } from 'react-router-dom';
 
-interface MatchParams {
-}
-
-interface ILineSearchProps extends RouteComponentProps<MatchParams>{
+interface ILineSearchProps {
     lineStore?: LineStore;
 }
 
@@ -25,7 +19,6 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
         this.state = {
             lineItems: '',
         };
-        console.log(props);
         this.props.lineStore!.setSearchInput('');
     }
 
@@ -35,7 +28,6 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
     }
 
     public render(): any {
-        console.log(this.props.location);
         return (
             <div className={s.lineSearchView}>
                 <div className={s.inputContainer}>
@@ -47,14 +39,6 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
                         onChange={this.handleSearchInputChange}
                     />
                 </div>
-                { this.props.lineStore!.lineSearchVisible &&
-                <div className={s.searchResultsContainer}>
-                    <TransitToggleButtonBar
-                        filters={this.props.lineStore!.filters || []}
-                    />
-                    <LineItems location={this.props.location}/>
-                </div>
-                }
             </div>
         );
     }

@@ -6,6 +6,7 @@ import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
 import { Link } from 'react-router-dom';
+import * as qs from 'qs';
 
 interface ILineItemState {
     type: string;
@@ -17,17 +18,24 @@ interface ILineItemProps {
 }
 
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
-    // private selectRoute(routeId: string) {
-    //     RouteService.getRoute(this.props.line.lineId, routeId)
-    //         .then((res: IRoute) => {
-    //             this.props.routeStore!.addToRoutes(res);
-    //             this.props.lineStore!.setSearchInput('');
-    //         })
-    //         .catch((err: any) => {
-    //         });
-    // }
-
     public render(): any {
+        let pathname = (this.props.location.pathname === '/')
+            ? 'routes/' : this.props.location.pathname;
+        pathname += '';
+        const queryValues = qs.parse(this.props.location.search,
+                                     { ignoreQueryPrefix: true, arrayLimit: 1 },
+            );
+        let routeIds: string[] = [];
+        if (queryValues.routes) {
+            routeIds = queryValues.routes.split(' ');
+        }
+        queryValues.routes = routeIds.join('+');
+        const buildPath = (routeIds: string[]) => {
+            return pathname +
+                qs.stringify({ ...queryValues, routes: routeIds.join('+') },
+                             { addQueryPrefix: true, encode: false },
+                    );
+        };
         return (
             <div className={s.listItemView}>
                 <div className={s.lineItem}>
@@ -48,7 +56,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         <Link
                             key={route.name + '-' + index}
                             className={s.listItemView}
-                            to={`${this.props.location.pathname}/${route.id}`}
+                            to={`${buildPath([...routeIds, route.id])}`}
                         >
                             <div
                                 key={route.name + '-' + index}

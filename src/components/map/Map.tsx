@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { MapStore } from '../../stores/mapStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import { autorun } from 'mobx';
+import { autorun, toJS } from 'mobx';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
@@ -83,12 +83,13 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     private centerMapToRoutes(routes: IRoute[]) {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
-        if (routes && routes[0]) {
-            routes.forEach((route: IRoute) => {
+        if (routes && routes[0] && routes.some(r => r.routePaths.some(rp => rp.visible))) {
+            routes.forEach((route: IRoute, i: number) => {
                 if (route.routePaths[0]) {
                     route.routePaths.map((routePath) => {
-                        if (!routePath.visible) return;
-                        const geoJSON = new L.GeoJSON(routePath.geoJson);
+                        const rp = toJS(routePath);
+                        if (!rp.visible) return;
+                        const geoJSON = new L.GeoJSON(rp.geoJson);
                         if (!bounds) {
                             bounds = geoJSON.getBounds();
                         } else {
