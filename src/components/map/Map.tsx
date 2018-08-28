@@ -1,4 +1,4 @@
-import { Map, TileLayer, ZoomControl, FeatureGroup } from 'react-leaflet';
+import { Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
@@ -12,6 +12,9 @@ import CoordinateControl from './CoordinateControl';
 import FullscreenControl from './FullscreenControl';
 import MeasurementControl from './MeasurementControl';
 import RouteLayer from './RouteLayer';
+import colorScale from '../../util/colorScale';
+import NodeLayer from './NodeLayer';
+import { IRoutePath, INode, IRoute } from '../../models';
 import * as s from './map.scss';
 
 interface IMapState {
@@ -75,8 +78,30 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         }
     }
 
+    private getVisibleRoutePaths = (routes: IRoute[]) => {
+        return routes.reduce<IRoutePath[]>(
+            (flatList, route) => {
+                return flatList.concat(route.routePaths);
+            },
+            [],
+        ).filter(routePath => routePath.visible);
+    }
+
+    private getVisibleNodes = (visibleRoutesPaths: IRoutePath[]) => {
+        return visibleRoutesPaths.reduce<INode[]>(
+            (flatList, routePath) => {
+                return flatList.concat(routePath.nodes);
+            },
+            [],
+        );
+    }
+
     public render() {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
+        const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
+        const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
+        const colors = colorScale.getColors(visibleRoutePaths.length);
+
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 <Map
@@ -106,12 +131,14 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
-                    <FeatureGroup>
-                        <RouteLayer
-                            routes={this.props.routeStore!.routes}
-                            fitBounds={this.fitBounds}
-                        />
-                    </FeatureGroup>
+                    <RouteLayer
+                        colors={colors}
+                        routePaths={visibleRoutePaths}
+                        fitBounds={this.fitBounds}
+                    />
+                    <NodeLayer
+                        nodes={visibleNodes}
+                    />
                     <Control position='topleft' />
                     <Control position='topright'>
                         <FullscreenControl map={this.state.map} />

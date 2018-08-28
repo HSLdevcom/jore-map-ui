@@ -3,7 +3,11 @@ import NodeFactory from './nodeFactory';
 
 class RoutePathFactory {
     // suunta to IRoutePath
-    public static createRoutePath = (suunta: any, isVisible:boolean): IRoutePath => {
+    public static createRoutePath = (
+        routeId: string,
+        suunta: any,
+        isVisible:boolean,
+    ): IRoutePath => {
         const nodes:INode[]
         = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
             .map((node: any) => NodeFactory.createNode(node.node));
@@ -12,6 +16,7 @@ class RoutePathFactory {
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
 
         return <IRoutePath>{
+            routeId,
             nodes,
             positions,
             geoJson: JSON.parse(suunta.geojson),

@@ -1,6 +1,7 @@
 import { INode } from '.';
 
 export default interface IRoutePath {
+    routeId: string;
     nodes: INode[];
     routePathName: string;
     direction: string;

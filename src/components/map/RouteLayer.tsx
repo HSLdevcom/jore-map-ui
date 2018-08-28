@@ -1,69 +1,38 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
 import { Polyline } from 'react-leaflet';
-import { IRoute, IRoutePath } from '../../models';
-import colorScale from '../../util/colorScale';
+import { IRoutePath } from '../../models';
 
 interface RouteLayerProps {
-    routes: IRoute[];
+    routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
+    colors: string[];
 }
 
 export default class RouteLayer extends Component<RouteLayerProps> {
-    private getFlattenRoutePaths = () => {
-        return this.props.routes.reduce<IRoutePath[]>(
-            (flatList, route) => {
-                return flatList.concat(route.routePaths);
-            },
-            [],
-        );
-    }
-
-    render() {
-        const flattenRoutes = this.getFlattenRoutePaths();
-        const visibleRoutes = flattenRoutes.filter(routePath => routePath.visible);
-        const colors = colorScale.getColors(visibleRoutes.length);
-
-        return visibleRoutes
-            .map((routePath, index) => {
-                return (
-                    <Polyline
-                        key={index}
-                        positions={routePath.positions}
-                        color={colors[index]}
-                    />
+    getVisibleRoutesFootprint(routePaths: IRoutePath[]) {
+        return routePaths.reduce(
+            (list: string[], routePath: IRoutePath) => {
+                list.push(
+                    `${routePath.routeId}-${routePath.startTime}`,
                 );
-            });
-    }
-
-    getVisibleRoutesFootprint(routes: IRoute[]) {
-        return routes.reduce(
-            (list: string[], route: IRoute) => {
-                return list.concat(
-                    list,
-                    route.routePaths
-                        .filter(routePath => routePath.visible)
-                        .map((routePath, index) => `${route.routeId}-${index}`),
-                );
+                return list;
             },
-            [],
-        ).join(';');
+            []).join(';');
     }
 
     calculateBounds() {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
-        this.props.routes.forEach((route) => {
-            route.routePaths.forEach((routePath) => {
-                if (routePath.visible) {
-                    const geoJSON = L.geoJSON(routePath.geoJson);
-                    if (!bounds) {
-                        bounds = geoJSON.getBounds();
-                    } else {
-                        bounds.extend(geoJSON.getBounds());
-                    }
+        this.props.routePaths.forEach((routePath) => {
+            if (routePath.visible) {
+                const geoJSON = L.geoJSON(routePath.geoJson);
+                if (!bounds) {
+                    bounds = geoJSON.getBounds();
+                } else {
+                    bounds.extend(geoJSON.getBounds());
                 }
-            });
+            }
         });
 
         if (bounds.isValid()) {
@@ -74,10 +43,23 @@ export default class RouteLayer extends Component<RouteLayerProps> {
     componentDidUpdate(prevProps: RouteLayerProps) {
         // Recalculate bounds if adding or removing routes
         if (
-            this.getVisibleRoutesFootprint(prevProps.routes)
-            !== this.getVisibleRoutesFootprint(this.props.routes)
+            this.getVisibleRoutesFootprint(prevProps.routePaths)
+            !== this.getVisibleRoutesFootprint(this.props.routePaths)
         ) {
             this.calculateBounds();
         }
+    }
+
+    render() {
+        return this.props.routePaths
+            .map((routePath, index) => {
+                return (
+                    <Polyline
+                        key={index}
+                        positions={routePath.positions}
+                        color={this.props.colors[index]}
+                    />
+                );
+            });
     }
 }
