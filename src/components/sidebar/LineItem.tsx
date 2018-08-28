@@ -61,7 +61,6 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                             <div
                                 key={route.name + '-' + index}
                                 className={s.routeItem}
-                                // onClick={this.selectRoute.bind(this, route.id)}
                             >
                                 <div
                                     className={classNames(

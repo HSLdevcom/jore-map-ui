@@ -4,11 +4,9 @@ import { IRoute, IRoutePath } from '../models';
 export class RouteStore {
 
     @observable private _routes: IRoute[];
-    @observable private _routeLoading: boolean;
 
     constructor() {
         this._routes = [];
-        this._routeLoading = false;
     }
 
     @computed get routes(): IRoute[] {
@@ -74,14 +72,6 @@ export class RouteStore {
         if (routePathObservable) {
             routePathObservable.visible = !routePathObservable.visible;
         }
-    }
-
-    @computed get routeLoading(): boolean {
-        return this._routeLoading;
-    }
-
-    set routeLoading(value: boolean) {
-        this._routeLoading = value;
     }
 }
 
