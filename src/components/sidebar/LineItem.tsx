@@ -1,13 +1,14 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+import Moment from 'react-moment';
+
 import { RouteStore } from '../../stores/routeStore';
 import lineHelper from '../../util/lineHelper';
 import { LineStore } from '../../stores/lineStore';
-import { ILine, IRoute } from '../../models';
-import RouteService from '../../services/routeService';
+import { ILine } from '../../models';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
-import Moment from 'react-moment';
 import * as s from './lineItem.scss';
 
 interface ILineItemState {
@@ -18,23 +19,25 @@ interface ILineItemProps {
     lineStore?: LineStore;
     routeStore?: RouteStore;
     line: ILine;
+    location: any;
 }
 
 @inject('lineStore')
 @inject('routeStore')
 @observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
-    private selectRoute(routeId: string) {
-        RouteService.getRoute(this.props.line.lineId, routeId)
-            .then((res: IRoute) => {
-                this.props.routeStore!.addToRoutes(res);
-                this.props.lineStore!.setSearchInput('');
-            })
-            .catch((err: any) => {
-            });
+
+    constructor(props: ILineItemProps) {
+        super(props);
     }
 
     public render(): any {
+        let pathname = (this.props.location.pathname === '/')
+            ? 'routes' : this.props.location.pathname;
+
+        // TODO: use a library to parse these?
+        const routeIds = this.props.location.search.replace('?routeIds=', '').split(',');
+        pathname += '?routeIds=' + (Boolean(routeIds[0]) ? routeIds.toString() + ',' : '');
         return (
             <div className={s.listItemView}>
                 <div className={s.lineItem}>
@@ -52,10 +55,10 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 </div>
                 {this.props.line.routes.map((route, index) => {
                     return (
-                        <div
+                        <Link
                             key={route.name + '-' + index}
-                            className={s.routeItem}
-                            onClick={this.selectRoute.bind(this, route.id)}
+                            className={s.listItemView}
+                            to={`${pathname}${route.id}`}
                         >
                             <div
                                 className={classNames(
@@ -73,7 +76,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                     format='DD.MM.YYYY HH:mm'
                                 />
                             </div>
-                        </div>
+                        </Link>
                     );
                 })}
             </div>

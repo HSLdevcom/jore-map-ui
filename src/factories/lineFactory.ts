@@ -6,11 +6,11 @@ class LineFactory {
     public static createLine = (linja: any) => {
         const transitType = _convertTransitTypeCodeToTransitType(linja.linverkko);
         const lineNumber = _parseLineNumber(linja.lintunnus);
-        const routes = linja.reittisByLintunnus.edges.map((route: any) => {
+        const routes = linja.reittisByLintunnus.nodes.map((route: any) => {
             return <ILineRoute>{
-                id: route.node.reitunnus,
+                id: route.reitunnus,
                 name: _getRouteName(route),
-                date: route.node.reiviimpvm,
+                date: route.reiviimpvm,
             };
         });
 
@@ -22,8 +22,8 @@ class LineFactory {
         };
     }
 
-    public static linjasToILines = (linja: any[]) => {
-        return linja.map(((node: any) => {
+    public static linjasToILines = (linjat: any[]) => {
+        return linjat.map(((node: any) => {
             return LineFactory.createLine(node);
         }));
     }
@@ -51,10 +51,10 @@ const _parseLineNumber = (lineId: string) => {
 };
 
 const _getRouteName = (route: any) => {
-    if (!route.node.reinimi) {
+    if (!route || !route.reinimi) {
         return 'Reitillä ei nimeä';
     }
-    return route.node.reinimi;
+    return route.reinimi;
 };
 
 export default LineFactory;

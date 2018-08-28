@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter, Switch } from 'react-router-dom';
 import { NotificationStore } from '../stores/notificationStore';
 import { LoginStore } from '../stores/loginStore';
 import { SidebarStore } from '../stores/sidebarStore';
@@ -13,6 +13,8 @@ import Login from './login/Login';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import NodeWindow from './NodeWindow';
+import { Route } from 'react-router';
+
 import * as s from './app.scss';
 const rootPath: string = '/';
 
@@ -49,7 +51,7 @@ class App extends React.Component<IAppProps, IAppState> {
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         return (
-            <Router>
+            <BrowserRouter>
               <div className={s.appView}>
                 <Map/>
                 <Button
@@ -71,7 +73,9 @@ class App extends React.Component<IAppProps, IAppState> {
                     <NodeWindow />
                 </Modal>
                 <div className={sidebarHiddenClass}>
-                    <Sidebar />
+                    <Switch>
+                        <Route component={Sidebar} />
+                    </Switch>
                 </div>
                 <Route
                     exact={true}
@@ -82,7 +86,7 @@ class App extends React.Component<IAppProps, IAppState> {
                   notifications={this.props.notificationStore!.notifications}
                 />
               </div>
-            </Router>
+            </BrowserRouter>
         );
     }
 }
