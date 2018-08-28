@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { INode } from '../../models';
-import * as s from './nodeMarker.scss';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
 import NodeType from '../../enums/nodeType';
+import * as s from './nodeMarker.scss';
 
 interface NodeLayerProps {
     nodes: INode[];
