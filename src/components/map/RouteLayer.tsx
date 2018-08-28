@@ -10,17 +10,6 @@ interface RouteLayerProps {
 }
 
 export default class RouteLayer extends Component<RouteLayerProps> {
-    getVisibleRoutesFootprint(routePaths: IRoutePath[]) {
-        return routePaths.reduce(
-            (list: string[], routePath: IRoutePath) => {
-                list.push(
-                    `${routePath.routeId}-${routePath.startTime}`,
-                );
-                return list;
-            },
-            []).join(';');
-    }
-
     calculateBounds() {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
@@ -43,8 +32,8 @@ export default class RouteLayer extends Component<RouteLayerProps> {
     componentDidUpdate(prevProps: RouteLayerProps) {
         // Recalculate bounds if adding or removing routes
         if (
-            this.getVisibleRoutesFootprint(prevProps.routePaths)
-            !== this.getVisibleRoutesFootprint(this.props.routePaths)
+            prevProps.routePaths.map(rPath => rPath.internalRoutePathId).join(':')
+            !== this.props.routePaths.map(rPath => rPath.internalRoutePathId).join(':')
         ) {
             this.calculateBounds();
         }
