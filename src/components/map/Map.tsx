@@ -18,6 +18,7 @@ import { IRoutePath, INode, IRoute } from '../../models';
 import * as s from './map.scss';
 import Toolbar from './Toolbar';
 import PopupLayer from './PopupLayer';
+import { ToolbarStore } from '../../stores/toolbarStore';
 
 interface IMapState {
     map?: L.Map;
@@ -28,11 +29,13 @@ interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
     sidebarStore?: SidebarStore;
+    toolbarStore?: ToolbarStore;
 }
 
 @inject('sidebarStore')
 @inject('mapStore')
 @inject('routeStore')
+@inject('toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private map: Map | null;
@@ -143,7 +146,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     />
                     <PopupLayer />
                     <Control position='topleft'>
-                        <Toolbar />
+                        <Toolbar toolbarStore={this.props.toolbarStore}/>
                     </Control>
                     <Control position='topright'>
                         <FullscreenControl map={this.state.map} />

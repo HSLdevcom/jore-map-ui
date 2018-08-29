@@ -5,16 +5,23 @@ import * as L from 'leaflet';
 import NodeType from '../../enums/nodeType';
 import * as s from './nodeMarker.scss';
 import { PopupStore } from '../../stores/popupStore';
+import { ToolbarStore } from '../../stores/toolbarStore';
 import { observer, inject } from 'mobx-react';
+import ToolbarTools from '../../enums/toolbarTools';
 
 interface NodeLayerProps {
     nodes: INode[];
     popupStore?: PopupStore;
+    toolbarStore?: ToolbarStore;
 }
 
-@inject('popupStore')
+@inject('popupStore', 'toolbarStore')
 @observer
 export default class NodeLayer extends Component<NodeLayerProps> {
+    constructor (props: NodeLayerProps) {
+        super(props);
+    }
+
     private getNodeMarkerHtml = (color: string) => {
         return `<div
             style="border-color: ${color};
@@ -50,7 +57,7 @@ export default class NodeLayer extends Component<NodeLayerProps> {
             return (
                 <Marker
                     onContextMenu={openPopup}
-                    draggable={true}
+                    draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
                     icon={icon}
                     key={index}
                     position={[node.coordinates.lat, node.coordinates.lon]}

@@ -2,95 +2,66 @@ import * as s from './toolbar.scss';
 import React, { Component } from 'react';
 import { FiEdit, FiCopy, FiPlusSquare, FiPrinter } from 'react-icons/fi';
 import ToolbarButton from './ToolbarButton';
-
-interface ToolbarState {
-    activeTool: Tools;
-    disabledTools: Tools[];
-}
+import { ToolbarStore } from '../../stores/toolbarStore';
+import { observer } from 'mobx-react';
+import ToolbarTools from '../../enums/toolbarTools';
 
 interface ToolbarProps {
-
+    toolbarStore?: ToolbarStore;
 }
 
-enum Tools {
-    Edit,
-    Copy,
-    AddNode,
-    Print,
-    None,
-}
-
-export default class Toolbar extends Component<ToolbarProps, ToolbarState> {
+@observer
+export default class Toolbar extends Component<ToolbarProps> {
     constructor (props: ToolbarProps) {
         super(props);
-        this.state = {
-            activeTool: Tools.None,
-            disabledTools: [Tools.Print],
-        };
-
-        this.toggleActiveTool = this.toggleActiveTool.bind(this);
-        this.isDisabled = this.isDisabled.bind(this);
     }
 
-    toggleActiveTool = (tool : Tools) => {
-        if (this.state.disabledTools.indexOf(tool) > -1) {
-            return;
-        }
-        this.setState({
-            activeTool: (this.state.activeTool === tool) ? Tools.None : tool,
-        });
+    private editRoutes = () => {
+        this.props.toolbarStore!.toggleTool(ToolbarTools.Edit);
     }
 
-    isDisabled = (tool: Tools) => {
-        return this.state.disabledTools.indexOf(tool) > -1;
+    private copyRoute = () => {
+        this.props.toolbarStore!.toggleTool(ToolbarTools.Copy);
+    }
+
+    private addNode = () => {
+        this.props.toolbarStore!.toggleTool(ToolbarTools.AddNode);
+    }
+
+    private print = () => {
     }
 
     render() {
-        const editRoutes = () => {
-            this.toggleActiveTool(Tools.Edit);
-        };
-
-        const copyRoute = () => {
-            this.toggleActiveTool(Tools.Copy);
-        };
-
-        const addNode = () => {
-            this.toggleActiveTool(Tools.AddNode);
-        };
-
-        const print = () => {
-        };
-
         return (
             <div className={s.toolbar}>
                 <ToolbarButton
-                    onClick={editRoutes}
-                    isActive={this.state.activeTool === Tools.Edit}
-                    isDisabled={this.isDisabled(Tools.Edit)}
+                    onClick={this.editRoutes}
+                    isActive={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
+                    isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.Edit)}
                     label='Muokkaa solmuja'
                 >
                     <FiEdit />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={copyRoute}
-                    isActive={this.state.activeTool === Tools.Copy}
-                    isDisabled={this.isDisabled(Tools.Copy)}
+                    onClick={this.copyRoute}
+                    isActive={this.props.toolbarStore!.isActive(ToolbarTools.Copy)}
+                    isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.Copy)}
                     label='Kopio reitti'
                 >
                     <FiCopy />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={addNode}
-                    isActive={this.state.activeTool === Tools.AddNode}
-                    isDisabled={this.isDisabled(Tools.AddNode)}
+                    onClick={this.addNode}
+                    isActive={this.props.toolbarStore!.isActive(ToolbarTools.AddNode)}
+                    isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.AddNode)}
                     label='Lisää solmu'
                 >
                     <FiPlusSquare />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={print}
+                    onClick={this.print}
                     isActive={false}
-                    isDisabled={this.isDisabled(Tools.Print)}
+                    isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.Print)}
                     label='tulostaa kartan'
                 >
                     <FiPrinter />
