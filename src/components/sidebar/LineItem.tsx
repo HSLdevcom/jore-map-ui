@@ -44,7 +44,6 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     }
 
     private selectRoute(routeId: string, e: any) {
-        e.stopPropagation();
         RouteService.getRoute(this.props.line.lineId, routeId)
             .then((res: IRoute) => {
                 this.props.routeStore!.addToRoutes(res);
@@ -52,7 +51,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
             })
             .catch((err: any) => {
                 this.props.notificationStore!.addNotification({
-                    message: err,
+                    message: 'Reitin haussa tapahtui virhe.',
                     type: NotificationType.ERROR,
                 });
             });
@@ -61,16 +60,12 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     private showPaths(routeId: string, routeSelectedIndex: number, e: any) {
         e.stopPropagation();
         this.props.routeStore!.clearRoutePaths();
-        if (this.state.routeSelectedIndex === routeSelectedIndex) {
-            const routePaths: IRoutePath[] = [];
-            this.setState({
-                routePaths,
-                routeSelectedIndex: null,
-            });
+        if (this.closeDropdownIfAlreadySelected(routeSelectedIndex)) {
             return;
         }
         RouteService.getRoute(this.props.line.lineId, routeId)
             .then((res: IRoute) => {
+                this.clearRoutePathSelection();
                 res.routePaths.forEach((routePath: IRoutePath) => {
                     this.props.routeStore!.addToRoutePaths(routePath);
                     const routePaths = this.props.routeStore!.routePaths;
@@ -81,10 +76,26 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 });
             })
             .catch((err: any) => {
+                this.props.notificationStore!.addNotification({
+                    message: 'Reitinsuuntien haussa tapahtui virhe.',
+                    type: NotificationType.ERROR,
+                });
             });
     }
 
-    private routePathSelected(index: number) {
+    private closeDropdownIfAlreadySelected(routeSelectedIndex: number) {
+        if (this.state.routeSelectedIndex === routeSelectedIndex) {
+            const routePaths: IRoutePath[] = [];
+            this.setState({
+                routePaths,
+                routeSelectedIndex: null,
+            });
+            return true;
+        }
+        return false;
+    }
+
+    private selectRoutePath(index: number) {
         const routePathsSelected = this.state.routePathsSelected;
         const indexInSelectedRoutePaths = routePathsSelected.indexOf(index);
         if (indexInSelectedRoutePaths === -1) {
@@ -94,6 +105,12 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         }
         this.setState({
             routePathsSelected,
+        });
+    }
+
+    private clearRoutePathSelection() {
+        this.setState({
+            routePathsSelected: [],
         });
     }
 
@@ -150,7 +167,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                             key={index}
                                         >
                                             <CheckBox
-                                                onClick={this.routePathSelected.bind(this, index)}
+                                                onClick={this.selectRoutePath.bind(this, index)}
                                                 checked={this.isRoutePathChecked(index)}
                                                 text={route.routePathName}
                                             />
