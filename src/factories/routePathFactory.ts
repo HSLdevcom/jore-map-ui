@@ -10,7 +10,13 @@ class RoutePathFactory {
         isVisible:boolean,
     ): IRoutePath => {
         const madeUpId = HashHelper.getHashFromString(
-            `${routeId}-${suunta.suunimi}-${suunta.suuvoimast}-${suunta.suuvoimviimpvm}`,
+            [
+                routeId,
+                suunta.suunimi,
+                suunta.suuvoimast,
+                suunta.suuvoimviimpvm,
+                suunta.suusuunta,
+            ].join('-'),
         ).toString();
 
         const nodes:INode[]
