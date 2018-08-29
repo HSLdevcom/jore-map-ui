@@ -61,7 +61,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
             return (
                 <div
                     className={s.toggle}
-                    key={`${routePath.routePathName}-${index}`}
+                    key={routePath.internalRoutePathId}
                 >
                     <div className={s.toggleTitle}>
                         Suunta {routePath.direction}
