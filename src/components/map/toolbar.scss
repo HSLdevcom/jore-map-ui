@@ -1,0 +1,9 @@
+@import '../../common.scss';
+
+.toolbar {
+    display: flex;
+    background-color: $white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    box-shadow: 0 0 4px $grey;
+}
