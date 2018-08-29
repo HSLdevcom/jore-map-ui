@@ -1,0 +1,9 @@
+@import '../../common.scss';
+
+.routePathView {
+    padding: 5px;
+
+    .routeDate {
+        font-size: $smallFontSize;
+    }
+}

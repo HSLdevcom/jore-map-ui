@@ -1,24 +1,21 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classNames from 'classnames';
-import CheckBox from '../controls/Checkbox';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import { NotificationStore } from '../../stores/notificationStore';
 import { RouteStore } from '../../stores/routeStore';
 import lineHelper from '../../util/lineHelper';
 import { LineStore } from '../../stores/lineStore';
-import { ILine, IRoute, IRoutePath } from '../../models';
+import { ILine, IRoute, ILineRoute } from '../../models';
 import RouteService from '../../services/routeService';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
 import NotificationType from '../../enums/notificationType';
+import LineItemSubMenu from './LineItemSubMenu';
 
 interface ILineItemState {
-    type: string;
-    routePaths: IRoutePath[] | null;
-    routePathsSelected: number[];
-    routeSelectedIndex: number | null;
+    openRouteIds: string[];
 }
 
 interface ILineItemProps {
@@ -36,10 +33,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     constructor(props: ILineItemProps) {
         super(props);
         this.state = {
-            type: '',
-            routePaths: null,
-            routePathsSelected: [],
-            routeSelectedIndex: null,
+            openRouteIds: [],
         };
     }
 
@@ -57,65 +51,70 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
             });
     }
 
-    private showPaths(routeId: string, routeSelectedIndex: number, e: any) {
+    private isRouteOpen(routeId: string) {
+        return this.state.openRouteIds.some(id => id === routeId);
+    }
+
+    private openRouteMenu(routeId: string) {
+        this.setState({
+            openRouteIds: this.state.openRouteIds.concat(routeId),
+        });
+    }
+
+    private closeRouteMenu(routeId: string) {
+        this.setState({
+            openRouteIds: this.state.openRouteIds.filter(id => id !== routeId),
+        });
+    }
+
+    private toggleRouteMenu(routeId: string, e: any) {
         e.stopPropagation();
-        this.props.routeStore!.clearRoutePaths();
-        if (this.closeDropdownIfAlreadySelected(routeSelectedIndex)) {
-            return;
-        }
-        RouteService.getRoute(this.props.line.lineId, routeId)
-            .then((res: IRoute) => {
-                this.clearRoutePathSelection();
-                res.routePaths.forEach((routePath: IRoutePath) => {
-                    this.props.routeStore!.addToRoutePaths(routePath);
-                    const routePaths = this.props.routeStore!.routePaths;
-                    this.setState({
-                        routePaths,
-                        routeSelectedIndex,
-                    });
-                });
-            })
-            .catch((err: any) => {
-                this.props.notificationStore!.addNotification({
-                    message: 'Reitinsuuntien haussa tapahtui virhe.',
-                    type: NotificationType.ERROR,
-                });
-            });
-    }
-
-    private closeDropdownIfAlreadySelected(routeSelectedIndex: number) {
-        if (this.state.routeSelectedIndex === routeSelectedIndex) {
-            const routePaths: IRoutePath[] = [];
-            this.setState({
-                routePaths,
-                routeSelectedIndex: null,
-            });
-            return true;
-        }
-        return false;
-    }
-
-    private selectRoutePath(index: number) {
-        const routePathsSelected = this.state.routePathsSelected;
-        const indexInSelectedRoutePaths = routePathsSelected.indexOf(index);
-        if (indexInSelectedRoutePaths === -1) {
-            routePathsSelected.push(index);
+        if (this.isRouteOpen(routeId)) {
+            this.closeRouteMenu(routeId);
         } else {
-            routePathsSelected.splice(indexInSelectedRoutePaths, 1);
+            this.openRouteMenu(routeId);
         }
-        this.setState({
-            routePathsSelected,
-        });
     }
 
-    private clearRoutePathSelection() {
-        this.setState({
-            routePathsSelected: [],
-        });
-    }
+    private getRoute(route: ILineRoute) {
+        return (
+            <div
+                key={route.id}
+                className={s.routeItem}
+            >
+                <div
+                    className={classNames(
+                        s.routeName,
+                        TransitTypeColorHelper.getColorClass(
+                            this.props.line.transitType),
+                    )}
+                    onClick={this.selectRoute.bind(this, route.id)}
+                >
+                    {route.name}
+                </div>
+                <div className={s.routeDate}>
+                    {'Muokattu: '}
+                    <Moment
+                        date={route.date}
+                        format='DD.MM.YYYY HH:mm'
+                    />
+                </div>
+                <div
+                    className={s.routePathToggle}
+                    onClick={this.toggleRouteMenu.bind(this, route.id)}
+                >
+                    {this.isRouteOpen(route.id) ?
+                        <FaAngleUp /> :
+                        <FaAngleDown />}
+                </div>
+                <LineItemSubMenu
+                    visible={this.isRouteOpen(route.id)}
+                    lineId={this.props.line.lineId}
+                    routeId={route.id}
+                />
+            </div>
 
-    private isRoutePathChecked = (index: number) => {
-        return (this.state.routePathsSelected.includes(index));
+        );
     }
 
     public render(): any {
@@ -134,70 +133,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         {this.props.line.lineNumber}
                     </div>
                 </div>
-                {this.props.line.routes.map((route, index) => {
+                {this.props.line.routes.map((route) => {
                     return (
-                        <div
-                            key={route.name + '-' + index}
-                            className={s.routeItem}
-                        >
-                            <div
-                                className={classNames(
-                                    s.routeName,
-                                    TransitTypeColorHelper.getColorClass(
-                                        this.props.line.transitType),
-                                )}
-                                onClick={this.selectRoute.bind(this, route.id)}
-                            >
-                                {route.name}
-                            </div>
-                            <div className={s.routeDate}>
-                                {'Muokattu: '}
-                                <Moment
-                                    date={route.date}
-                                    format='DD.MM.YYYY HH:mm'
-                                />
-                            </div>
-                            {
-                                this.state.routeSelectedIndex === index &&
-                                this.state.routePaths &&
-                                this.state.routePaths.map((route, index) => {
-                                    return (
-                                        <div
-                                            className={s.routePathView}
-                                            key={index}
-                                        >
-                                            <CheckBox
-                                                onClick={this.selectRoutePath.bind(this, index)}
-                                                checked={this.isRoutePathChecked(index)}
-                                                text={route.routePathName}
-                                            />
-                                            <div className={s.routeDate}>
-                                                {'Voim.ast: '}
-                                                <Moment
-                                                    date={route.startTime}
-                                                    format='DD.MM.YYYY HH:mm'
-                                                />
-                                            </div>
-                                            <div className={s.routeDate}>
-                                                {'Viim.voim.olo: '}
-                                                <Moment
-                                                    date={route.endTime}
-                                                    format='DD.MM.YYYY HH:mm'
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            }
-                            <div
-                                className={s.routePathToggle}
-                                onClick={this.showPaths.bind(this, route.id, index)}
-                            >
-                                {(this.state.routeSelectedIndex === index) ?
-                                    <FaAngleUp /> :
-                                    <FaAngleDown />}
-                            </div>
-                        </div>
+                        this.getRoute(route)
                     );
                 })}
             </div>
