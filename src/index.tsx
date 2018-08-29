@@ -10,6 +10,7 @@ import observableMapStore from './stores/mapStore';
 import observableLineStore from './stores/lineStore';
 import observableRouteStore from './stores/routeStore';
 import observableSidebarStore from './stores/sidebarStore';
+import observablePopupStore from './stores/popupStore';
 import apolloClient from './util/ApolloClient';
 import './index.scss';
 
@@ -23,6 +24,7 @@ ReactDOM.render(
       loginStore={observableLoginStore}
       routeStore={observableRouteStore}
       sidebarStore={observableSidebarStore}
+      popupStore={observablePopupStore}
     >
         <ApolloProvider client={apolloClient}>
           <App/>

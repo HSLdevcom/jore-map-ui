@@ -104,8 +104,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
         const colors = colorScale.getColors(visibleRoutePaths.length);
 
-        const firstNode = visibleNodes.length ? visibleNodes[0] : undefined;
-
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 <Map
@@ -143,7 +141,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <NodeLayer
                         nodes={visibleNodes}
                     />
-                    <PopupLayer node={firstNode}/>
+                    <PopupLayer />
                     <Control position='topleft'>
                         <Toolbar />
                     </Control>

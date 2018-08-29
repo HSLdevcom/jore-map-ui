@@ -1,20 +1,30 @@
 import React, { Component } from 'react';
-import { INode } from '../../models';
+import { inject, observer } from 'mobx-react';
 import { Popup } from 'react-leaflet';
+import { PopupStore } from '../../stores/popupStore';
 import * as s from './popupLayer.scss';
+import { INode } from '../../models';
 
 interface PopupLayerProps {
-    node?: INode;
+    popupStore?: PopupStore;
 }
 
+@inject('popupStore')
+@observer
 export default class PopupLayer extends Component<PopupLayerProps> {
+    onClose = () => {
+        this.props.popupStore!.removePopup();
+    }
+
     render() {
-        if (this.props.node) {
+        if (this.props.popupStore!.popupNode) {
+            const node = this.props.popupStore!.popupNode as INode;
             return (
                 <Popup
-                    position={[this.props.node.coordinates.lat, this.props.node.coordinates.lon]}
+                    position={[node.coordinates.lat, node.coordinates.lon]}
                     className={s.leafletPopup}
                     closeButton={false}
+                    onClose={this.onClose}
                 >
                     <div className={s.popupContainer}>
                         <div>Avaa kohde</div>

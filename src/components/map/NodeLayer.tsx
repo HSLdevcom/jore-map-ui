@@ -4,11 +4,16 @@ import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
 import NodeType from '../../enums/nodeType';
 import * as s from './nodeMarker.scss';
+import { PopupStore } from '../../stores/popupStore';
+import { observer, inject } from 'mobx-react';
 
 interface NodeLayerProps {
     nodes: INode[];
+    popupStore?: PopupStore;
 }
 
+@inject('popupStore')
+@observer
 export default class NodeLayer extends Component<NodeLayerProps> {
     private getNodeMarkerHtml = (color: string) => {
         return `<div
@@ -38,8 +43,13 @@ export default class NodeLayer extends Component<NodeLayerProps> {
                 ? '#666666' : '#f17c44';
             const icon = this.getIcon(color);
 
+            const openPopup = () => {
+                this.props.popupStore!.showPopup(node);
+            };
+
             return (
                 <Marker
+                    onContextMenu={openPopup}
                     draggable={true}
                     icon={icon}
                     key={index}
