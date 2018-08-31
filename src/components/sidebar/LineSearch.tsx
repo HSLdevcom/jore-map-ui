@@ -19,7 +19,6 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
         this.state = {
             lineItems: '',
         };
-        this.props.lineStore!.setSearchInput('');
     }
 
     public handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {

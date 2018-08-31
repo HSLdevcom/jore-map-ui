@@ -27,7 +27,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const handleHeaderClick = () => {
             this.props.routeStore!.clearRoutes();
             this.props.lineStore!.setSearchInput('');
-            this.props.lineStore!.lineSearchVisible = true;
             this.props.history.push('/');
         };
         return (

@@ -19,9 +19,8 @@ interface ILineItemProps {
 
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     public render(): any {
-        let pathname = (this.props.location.pathname === '/')
+        const pathname = (this.props.location.pathname === '/')
             ? 'routes/' : this.props.location.pathname;
-        pathname += '';
         const queryValues = qs.parse(this.props.location.search,
                                      { ignoreQueryPrefix: true, arrayLimit: 1 },
             );

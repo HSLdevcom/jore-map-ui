@@ -1,7 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
-import LineService from '../../services/lineService';
 import LineItem from './LineItem';
 import { ILine } from '../../models';
 import TransitType from '../../enums/transitType';
@@ -15,11 +14,6 @@ interface ILineItemsProps {
 @inject('lineStore')
 @observer
 class LineItems extends React.Component<ILineItemsProps> {
-    async componentWillMount() {
-        this.props.lineStore!.linesLoading = true;
-        await this.props.lineStore!.setAllLines(await LineService.getAllLines());
-        this.props.lineStore!.linesLoading = false;
-    }
 
     public filterLines = (lineNumber: string, transitType: TransitType) => {
         const searchTargetAttributes = lineNumber;
