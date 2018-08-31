@@ -15,6 +15,7 @@ import RouteLayer from './RouteLayer';
 import colorScale from '../../util/colorScale';
 import NodeLayer from './NodeLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
+import MapLayersControl from './MapLayersControl';
 import * as s from './map.scss';
 import Toolbar from './Toolbar';
 import PopupLayer from './PopupLayer';
@@ -153,7 +154,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     </Control>
                     <ZoomControl position='bottomright' />
                     <Control position='bottomright' />
-                    <Control position='bottomleft' />
+                    <Control position='bottomleft'>
+                        <MapLayersControl />
+                    </Control>
                 </Map>
             </div>
         );
