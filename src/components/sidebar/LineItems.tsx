@@ -9,23 +9,16 @@ import * as s from './lineItems.scss';
 
 interface ILineItemsProps {
     lineStore?: LineStore;
-    searchInput: string;
+    location: any;
 }
 
 @inject('lineStore')
 @observer
 class LineItems extends React.Component<ILineItemsProps> {
-    componentDidMount() {
-        if (this.props.lineStore!.allLines.length === 0) {
-            LineService.getAllLines()
-                .then((lines: ILine[]) => {
-                    this.props.lineStore!.setAllLines(lines);
-                })
-                .catch((err: any) => {
-                    // tslint:disable-next-line:no-console
-                    console.log(err);
-                });
-        }
+    async componentWillMount() {
+        this.props.lineStore!.linesLoading = true;
+        await this.props.lineStore!.setAllLines(await LineService.getAllLines());
+        this.props.lineStore!.linesLoading = false;
     }
 
     public filterLines = (lineNumber: string, transitType: TransitType) => {
@@ -35,17 +28,16 @@ class LineItems extends React.Component<ILineItemsProps> {
             return false;
         }
 
-        if (searchTargetAttributes.includes(this.props.lineStore!.searchInput)) {
-            return true;
-        }
-        return false;
+        return searchTargetAttributes.includes(this.props.lineStore!.searchInput);
     }
 
     public render(): any {
         const allLines = this.props.lineStore!.allLines;
-
-        if (!allLines.length) {
-            return 'Fetching';
+        const linesLoading = this.props.lineStore!.linesLoading;
+        if (linesLoading) {
+            return (
+                <div id={s.loader} />
+            );
         }
         return (
             <div className={s.lineItemsView}>
@@ -60,6 +52,7 @@ class LineItems extends React.Component<ILineItemsProps> {
                                 <LineItem
                                     key={line.lineId}
                                     line={line}
+                                    location={this.props.location}
                                 />
                             );
                         })

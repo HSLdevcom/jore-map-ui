@@ -7,12 +7,19 @@ import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
 import LineSearch from './LineSearch';
 import * as s from './routesEdit.scss';
+import { Route, RouteComponentProps } from 'react-router-dom';
+import RouteService from '../../services/routeService';
+import { toJS } from 'mobx';
+
+interface MatchParams {
+    route: string;
+}
 
 interface IRoutesEditState {
     networkCheckboxToggles: any;
 }
 
-interface IRoutesEditProps {
+interface IRoutesEditProps extends RouteComponentProps<MatchParams>{
     lineStore?: LineStore;
     routeStore?: RouteStore;
 }
@@ -20,8 +27,7 @@ interface IRoutesEditProps {
 @inject('lineStore')
 @inject('routeStore')
 @observer
-class RoutesEdit extends
-React.Component<IRoutesEditProps, IRoutesEditState> {
+class RoutesEdit extends React.Component<IRoutesEditProps, IRoutesEditState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -30,24 +36,35 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
                 linkit: false,
             },
         };
+        this.props.lineStore!.lineSearchVisible = false;
+    }
+    componentDidMount() {
+        this.queryRoutes(this.props.location.search);
     }
 
-    private routeList(routes: IRoute[]) {
-        let visibleRoutePathsIndex = 0;
-        return routes.map((route: IRoute) => {
-            const routeShow = (
-                <RouteShow
-                    key={route.routeId}
-                    route={route}
-                    visibleRoutePathsIndex={visibleRoutePathsIndex}
-                />
-            );
+    componentWillReceiveProps(props: any) {
+        this.queryRoutes(props.location.search);
+    }
 
-            const routePathsAmount = route.routePaths.filter(
-                x => x.visible).length;
-            visibleRoutePathsIndex += routePathsAmount;
-
-            return routeShow;
+    private queryRoutes(searchQuery: string) {
+        this.props.lineStore!.setSearchInput('');
+        const routeIds = searchQuery.replace('?routeIds=', '').split(',');
+        const routes = this.props.routeStore!.routes;
+        routeIds.map(async (routeId) => {
+            try {
+                console.log('Try: ', routeId);
+                const existingRoute = routes.find((route) => {
+                    return route.routeId === routeId;
+                });
+                if (!existingRoute) {
+                    console.log('Route not found, querying ', routeId);
+                    const route = await RouteService.getRoute(routeId.toString());
+                    // this.props.routeStore!.clearRoutes();
+                    this.props.routeStore!.addToRoutes(route);
+                }
+                this.props.routeStore!.routeLoading = false;
+            } catch (err) { // TODO Handle errors?
+            }
         });
     }
 
@@ -60,16 +77,38 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
     }
 
     public render(): any {
+        const routesLoading = this.props.routeStore!.routeLoading;
+        const routeList = (routes: IRoute[]) => {
+            let visibleRoutePathsIndex = 0;
+            if (this.props.routeStore!.routes.length < 1) return null;
+            return this.props.routeStore!.routes.map((route: IRoute) => {
+                const routeShow = (
+                    <RouteShow
+                        key={route.routeId}
+                        route={toJS(route)}
+                        visibleRoutePathsIndex={visibleRoutePathsIndex}
+                    />
+                );
+                const routePathsAmount = route.routePaths.filter(
+                    x => x.visible).length;
+                visibleRoutePathsIndex += routePathsAmount;
+
+                return routeShow;
+            });
+        };
+        if (routesLoading) {
+            return (
+                <div id={s.loader} />
+            );
+        }
         return (
             <div className={s.routesEditView}>
-                <LineSearch
-                    showSearchResults={this.props.lineStore!.lineSearchVisible}
-                />
+                <Route component={LineSearch} />
                 { !this.props.lineStore!.lineSearchVisible &&
                 <div className={s.wrapper}>
                     <div className={s.routeList}>
                         {
-                            this.routeList(this.props.routeStore!.routes)
+                            routeList(this.props.routeStore!.routes)
                         }
                         <div className={s.checkboxContainer}>
                             <input

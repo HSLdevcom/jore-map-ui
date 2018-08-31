@@ -67,6 +67,8 @@ export default class RouteLayerView {
     }
 
     private drawRouteLine(routePath: IRoutePath, color: string) {
+        /*
+        // TODO: fix this: mobX index out of bounds warning
         const geoJSON = L.geoJSON(routePath.geoJson)
         .setStyle({
             color,
@@ -74,6 +76,7 @@ export default class RouteLayerView {
         })
         .addTo(this.routeLayer);
         this.routeLines.push(geoJSON);
+        */
     }
 
     private drawNodes(routePath: IRoutePath, color: string) {

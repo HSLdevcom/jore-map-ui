@@ -40,6 +40,11 @@
                 padding-left: 10px;
             }
 
+            .title a {
+                text-decoration: none;
+                color: $white;
+            }
+
             .logo {
                 display: inline-block;
                 height: 40px;

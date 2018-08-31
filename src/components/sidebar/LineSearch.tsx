@@ -4,10 +4,13 @@ import { LineStore } from '../../stores/lineStore';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import LineItems from './LineItems';
 import * as s from './lineSearch.scss';
+import { RouteComponentProps } from 'react-router-dom';
 
-interface ILineSearchProps {
+interface MatchParams {
+}
+
+interface ILineSearchProps extends RouteComponentProps<MatchParams>{
     lineStore?: LineStore;
-    showSearchResults: boolean;
 }
 
 interface ILineSearchState {
@@ -41,14 +44,12 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
                         onChange={this.handleSearchInputChange}
                     />
                 </div>
-                { this.props.showSearchResults &&
+                { this.props.lineStore!.lineSearchVisible &&
                 <div className={s.searchResultsContainer}>
                     <TransitToggleButtonBar
                         filters={this.props.lineStore!.filters || []}
                     />
-                    <LineItems
-                        searchInput={this.props.lineStore!.searchInput}
-                    />
+                    <LineItems location={this.props.location}/>
                 </div>
                 }
             </div>

@@ -1,8 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { NotificationStore } from '../stores/notificationStore';
 import { LoginStore } from '../stores/loginStore';
+import { NotificationStore } from '../stores/notificationStore';
 import { SidebarStore } from '../stores/sidebarStore';
 import { MapStore } from '../stores/mapStore';
 import Button from './controls/Button';
@@ -14,7 +13,8 @@ import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import NodeWindow from './NodeWindow';
 import * as s from './app.scss';
-const rootPath: string = '/';
+import { Route } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 
 interface IAppState {
     showLogin: boolean;
@@ -49,7 +49,7 @@ class App extends React.Component<IAppProps, IAppState> {
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         return (
-            <Router>
+            <BrowserRouter>
               <div className={s.appView}>
                 <Map/>
                 <Button
@@ -71,18 +71,13 @@ class App extends React.Component<IAppProps, IAppState> {
                     <NodeWindow />
                 </Modal>
                 <div className={sidebarHiddenClass}>
-                    <Sidebar />
+                    <Route component={Sidebar} />
                 </div>
-                <Route
-                    exact={true}
-                    path='/'
-                    rootPath={rootPath}
-                />
                 <NotificationWindow
                   notifications={this.props.notificationStore!.notifications}
                 />
               </div>
-            </Router>
+            </BrowserRouter>
         );
     }
 }
