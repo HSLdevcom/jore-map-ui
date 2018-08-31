@@ -32,6 +32,9 @@ class LineItemSubMenu extends Component<lineItemSubMenuProps, lineItemSubMenuSta
     }
 
     private fetchRoutePaths() {
+        if (!this.props.visible || this.state.routePaths) {
+            return;
+        }
         RouteService.getRoute(this.props.lineId, this.props.routeId)
             .then((res: IRoute) => {
                 this.setState({
@@ -70,18 +73,12 @@ class LineItemSubMenu extends Component<lineItemSubMenuProps, lineItemSubMenuSta
         }
     }
 
-    private fetchRoutePathsIfNecessary() {
-        if (this.props.visible && this.state.routePaths == null) {
-            this.fetchRoutePaths();
-        }
-    }
-
     public componentDidMount() {
-        this.fetchRoutePathsIfNecessary();
+        this.fetchRoutePaths();
     }
 
     public componentDidUpdate() {
-        this.fetchRoutePathsIfNecessary();
+        this.fetchRoutePaths();
     }
 
     render () {
