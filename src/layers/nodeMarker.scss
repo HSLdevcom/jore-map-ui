@@ -6,3 +6,28 @@
 .highlightedMarker {
     background-color: rgba(102, 102, 102, 0.5);
 }
+
+.nodePin {
+    display: block;
+}
+
+.pin {
+  position: absolute;
+  left: -52%;
+  bottom: 140%;
+  border-radius: 50%;
+  border: 8px solid var(--pinColor);
+  width: 8px;
+  height: 8px;
+}
+
+.pin::after {
+  position: absolute;
+  content: '';
+  width: 0px;
+  height: 0px;
+  bottom: -30px;
+  left: -6px;
+  border: 10px solid transparent;
+  border-top: 17px solid var(--pinColor);
+}
