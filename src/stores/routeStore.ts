@@ -53,14 +53,11 @@ export class RouteStore {
         this._routes.clear();
     }
 
-    private findObservableRoutePath(route: IRoute, routePath: IRoutePath): IRoutePath | null {
+    private getRoutePath(internalId: string): IRoutePath | null {
         let routePathObservable: IRoutePath | null = null;
         this._routes.find((_route) => {
             const found = _route.routePaths.find(_routePath =>
-                _routePath.direction === routePath.direction &&
-                _routePath.endTime.getTime() === routePath.endTime.getTime() &&
-                _routePath.startTime.getTime() === routePath.startTime.getTime() &&
-                _route.lineId === route.lineId,
+                _routePath.internalId === internalId,
             );
             if (found) {
                 routePathObservable = found;
@@ -72,8 +69,8 @@ export class RouteStore {
     }
 
     @action
-    public toggleRoutePathVisibility(route: IRoute, routePath: IRoutePath) {
-        const routePathObservable = this.findObservableRoutePath(route, routePath);
+    public toggleRoutePathVisibility(internalId: string) {
+        const routePathObservable = this.getRoutePath(internalId);
         if (routePathObservable) {
             routePathObservable.visible = !routePathObservable.visible;
         }

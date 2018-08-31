@@ -51,8 +51,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
         .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
         .map((routePath: IRoutePath, index: number) => {
             const toggleRoutePathVisibility = () => {
-                this.props.routeStore!.toggleRoutePathVisibility(
-                    this.props.route, routePath);
+                this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
             };
             const routeColor = colorScale.getColors(
                 this.props.routeStore!.visibleRoutePathAmount)[visibleRoutePathsIndex];
@@ -62,7 +61,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
             return (
                 <div
                     className={s.toggle}
-                    key={`${routePath.routePathName}-${index}`}
+                    key={routePath.internalId}
                 >
                     <div className={s.toggleTitle}>
                         Suunta {routePath.direction}
