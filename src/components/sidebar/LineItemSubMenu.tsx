@@ -70,11 +70,21 @@ class LineItemSubMenu extends Component<lineItemSubMenuProps, lineItemSubMenuSta
         }
     }
 
-    render () {
+    private fetchRoutePathsIfNecessary() {
         if (this.props.visible && this.state.routePaths == null) {
             this.fetchRoutePaths();
         }
+    }
 
+    public componentDidMount() {
+        this.fetchRoutePathsIfNecessary();
+    }
+
+    public componentDidUpdate() {
+        this.fetchRoutePathsIfNecessary();
+    }
+
+    render () {
         if (!this.props.visible) {
             return null;
         }

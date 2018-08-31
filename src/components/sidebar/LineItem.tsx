@@ -76,7 +76,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         }
     }
 
-    private getRoute(route: ILineRoute) {
+    private renderRoute(route: ILineRoute) {
         return (
             <div
                 key={route.id}
@@ -135,7 +135,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 </div>
                 {this.props.line.routes.map((route) => {
                     return (
-                        this.getRoute(route)
+                        this.renderRoute(route)
                     );
                 })}
             </div>
