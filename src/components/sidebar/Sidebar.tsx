@@ -1,11 +1,12 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import * as s from './sidebar.scss';
-import { Route, RouteComponentProps } from 'react-router-dom';
+import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import hslLogo from '../../assets/hsl-logo.png';
 import { RouteStore } from '../../stores/routeStore';
 import { LineStore } from '../../stores/lineStore';
-import SidebarContent from './SidebarContent';
+import RoutesView from './RoutesView';
+import HomeView from './HomeView';
 
 interface ISidebarProps extends RouteComponentProps<any>{
     routeStore?: RouteStore;
@@ -19,10 +20,6 @@ interface ILinelistState {
 @inject('routeStore', 'lineStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
-    constructor(props: ISidebarProps) {
-        super(props);
-    }
-
     public render(): any {
         const handleHeaderClick = () => {
             this.props.routeStore!.clearRoutes();
@@ -39,7 +36,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 </h2>
                     </div>
                 </div>
-                <Route component={SidebarContent} />
+                <Switch>
+                    <Route path='/routes' component={RoutesView} />
+                    <Route component={HomeView} />
+                </Switch>
             </div>
         );
     }

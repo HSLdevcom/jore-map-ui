@@ -1,0 +1,9 @@
+@import '../../common.scss';
+.routesView {
+  display: flex;
+  flex-direction: column;
+
+  .routesText {
+    font-weight: bold;
+  }
+}

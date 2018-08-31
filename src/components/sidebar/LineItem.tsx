@@ -5,8 +5,9 @@ import { ILine } from '../../models';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
-import { Link } from 'react-router-dom';
-import * as qs from 'qs';
+import lineStore from '../../stores/lineStore';
+import { Location, History } from 'history';
+import LinkBuilder from '../../factories/linkBuilder';
 
 interface ILineItemState {
     type: string;
@@ -14,26 +15,15 @@ interface ILineItemState {
 
 interface ILineItemProps {
     line: ILine;
-    location: any;
+    location: Location;
+    history: History;
 }
 
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     public render(): any {
-        const pathname = (this.props.location.pathname === '/')
-            ? 'routes/' : this.props.location.pathname;
-        const queryValues = qs.parse(this.props.location.search,
-                                     { ignoreQueryPrefix: true, arrayLimit: 1 },
-            );
-        let routeIds: string[] = [];
-        if (queryValues.routes) {
-            routeIds = queryValues.routes.split(' ');
-        }
-        queryValues.routes = routeIds.join('+');
-        const buildPath = (routeIds: string[]) => {
-            return pathname +
-                qs.stringify({ ...queryValues, routes: routeIds.join('+') },
-                             { addQueryPrefix: true, encode: false },
-                    );
+        const gotoUrl = (url:string) => () => {
+            this.props.history.push(url);
+            lineStore.setSearchInput('');
         };
         return (
             <div className={s.listItemView}>
@@ -52,14 +42,11 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 </div>
                 {this.props.line.routes.map((route, index) => {
                     return (
-                        <Link
-                            key={route.name + '-' + index}
-                            className={s.listItemView}
-                            to={`${buildPath([...routeIds, route.id])}`}
-                        >
                             <div
                                 key={route.name + '-' + index}
                                 className={s.routeItem}
+                                onClick={
+                                    gotoUrl(LinkBuilder.createLink(this.props.location, route.id))}
                             >
                                 <div
                                     className={classNames(
@@ -78,7 +65,6 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                     />
                                 </div>
                             </div>
-                        </Link>
                     );
                 })}
             </div>

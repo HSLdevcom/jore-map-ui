@@ -7,6 +7,9 @@ import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
 import * as s from './routesList.scss';
 import { RouteComponentProps } from 'react-router-dom';
+import * as qs from 'qs';
+import RouteService from '../../services/routeService';
+import Loader from './Loader';
 
 interface MatchParams {
     route: string;
@@ -14,6 +17,7 @@ interface MatchParams {
 
 interface IRoutesListState {
     networkCheckboxToggles: any;
+    isLoading: boolean;
 }
 
 interface IRoutesListProps extends RouteComponentProps<MatchParams>{
@@ -21,8 +25,7 @@ interface IRoutesListProps extends RouteComponentProps<MatchParams>{
     routeStore?: RouteStore;
 }
 
-@inject('lineStore')
-@inject('routeStore')
+@inject('lineStore', 'routeStore')
 @observer
 class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     constructor(props: any) {
@@ -32,7 +35,13 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 solmut: false,
                 linkit: false,
             },
+            isLoading: false,
         };
+    }
+
+    async componentDidMount() {
+        await this.queryRoutes();
+        this.props.lineStore!.setSearchInput('');
     }
 
     private networkCheckboxToggle = (type: string) => {
@@ -41,6 +50,20 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         this.setState({
             networkCheckboxToggles: newToggleState,
         });
+    }
+
+    private async queryRoutes() {
+        this.setState({ isLoading: true });
+        const queryValues = qs.parse(
+            this.props.location.search,
+            { ignoreQueryPrefix: true, arrayLimit: 1 },
+        );
+        let routeIds: string[] = [];
+        if (queryValues.routes) {
+            routeIds = queryValues.routes.split(' ');
+            this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
+        }
+        this.setState({ isLoading: false });
     }
 
     public render(): any {
@@ -55,44 +78,48 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                         visibleRoutePathsIndex={visibleRoutePathsIndex}
                     />
                 );
-                const routePathsAmount = route.routePaths.filter(
+                visibleRoutePathsIndex += route.routePaths.filter(
                     x => x.visible).length;
-                visibleRoutePathsIndex += routePathsAmount;
                 return routeShow;
             });
         };
+        if (this.state.isLoading) {
+            return(
+                <div className={s.routesListView}>
+                    <Loader/>
+                </div>
+            );
+        }
         return (
-            <div className={s.routesEditView}>
-                <div className={s.wrapper}>
-                    <div className={s.routeList}>
-                        {
-                            routeList(this.props.routeStore!.routes)
-                        }
-                        <div className={s.checkboxContainer}>
-                            <input
-                                type='checkbox'
-                                checked={false}
-                            />
-                            Kopioi reitti toiseen suuntaan
-                        </div>
+            <div className={s.routesListView}>
+                <div className={s.routeList}>
+                    {
+                        routeList(this.props.routeStore!.routes)
+                    }
+                    <div className={s.checkboxContainer}>
+                        <input
+                            type='checkbox'
+                            checked={false}
+                        />
+                        Kopioi reitti toiseen suuntaan
                     </div>
-                    <div className={s.network}>
-                        <label className={s.inputTitle}>VERKKO</label>
-                        <TransitToggleButtonBar filters={[]} />
-                        <div className={s.checkboxContainer}>
-                            <Checkbox
-                                onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
-                                checked={this.state.networkCheckboxToggles.linkit}
-                                text={'Hae alueen linkit'}
-                            />
-                        </div>
-                        <div className={s.checkboxContainer}>
-                            <Checkbox
-                                onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
-                                checked={this.state.networkCheckboxToggles.solmut}
-                                text={'Hae alueen solmut'}
-                            />
-                        </div>
+                </div>
+                <div className={s.network}>
+                    <label className={s.inputTitle}>VERKKO</label>
+                    <TransitToggleButtonBar filters={[]} />
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
+                            checked={this.state.networkCheckboxToggles.linkit}
+                            text={'Hae alueen linkit'}
+                        />
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
+                            checked={this.state.networkCheckboxToggles.solmut}
+                            text={'Hae alueen solmut'}
+                        />
                     </div>
                 </div>
             </div>

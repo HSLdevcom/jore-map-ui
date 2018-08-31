@@ -2,7 +2,6 @@ import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '../models';
 
 export class RouteStore {
-
     @observable private _routes: IRoute[];
 
     constructor() {
