@@ -26,51 +26,52 @@
     }
 
     .routeItem {
-        margin-left: 10px;
         margin-bottom: 10px;
 
-        .routeName {
-            font-weight: bold;
-            cursor: pointer;
-            padding-top: 3px;
-            padding-bottom: 3px;
-            padding-left: 2px;
-            border-radius: 5px;
+        .routeItemHeader {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
 
-            transition: .5s;
-            width: 90%;
+            .routePathToggle {
+                margin: 10px;
+                font-size: 22px;
+                cursor: pointer;
+                color: $mediumGrey;
+                transition: .5s;
+                background-color: rgb(238, 241, 243);
+
+                :hover {
+                    color: $ferryBlue;
+                    border-radius: 5px;
+                    transition: .5s;
+                }
+            }
+
+            .routeName {
+                font-weight: bold;
+                cursor: pointer;
+                padding-top: 3px;
+                padding-bottom: 3px;
+                padding-left: 2px;
+                border-radius: 5px;
+    
+                transition: .5s;
+            }
+    
+            .routeName:hover {
+                background-color: #e6e6e6;
+                transition: .5s;
+            }
+    
+            .routeDate {
+                font-size: $smallFontSize;
+                padding: 5px 2px;
+            }
         }
 
-        .routeName:hover {
-            background-color: #e6e6e6;
-            transition: .5s;
-        }
-
-        .routeDate {
-            font-size: $smallFontSize;
-            padding: 5px 2px;
-        }
-    }
-
-    .routePathToggle {
-        margin-left: auto;
-        padding-right: 8px;
-        width: 5px;
-        height: 5px;
-        cursor: pointer;
-        position: relative;
-        top: -38px; // TODO How to do this properly? pls help
-        font-size: 22px;
-
-        color: $mediumGrey;
-        background-color: rgb(238, 241, 243);
-        border-radius: 5px;
-        transition: .5s;
-
-        :hover {
-            color: $ferryBlue;
-            border-radius: 5px;
-            transition: .5s;
+        .routePaths {
+            margin-left: 40px;
         }
     }
 }

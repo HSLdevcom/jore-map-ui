@@ -90,7 +90,7 @@ class LineItemSubMenu extends Component<lineItemSubMenuProps, lineItemSubMenuSta
         }
         if (this.state.routePaths === null) {
             return (
-                <div>Fetching</div>
+                <div>Lataa...</div>
             );
         }
         return (

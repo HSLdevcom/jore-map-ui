@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classNames from 'classnames';
-import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
+import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { NotificationStore } from '../../stores/notificationStore';
 import { RouteStore } from '../../stores/routeStore';
 import lineHelper from '../../util/lineHelper';
@@ -82,36 +82,42 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 key={route.id}
                 className={s.routeItem}
             >
-                <div
-                    className={classNames(
-                        s.routeName,
-                        TransitTypeColorHelper.getColorClass(
-                            this.props.line.transitType),
-                    )}
-                    onClick={this.selectRoute.bind(this, route.id)}
-                >
-                    {route.name}
+                <div className={s.routeItemHeader}>
+                    <div
+                        className={s.routePathToggle}
+                        onClick={this.toggleRouteMenu.bind(this, route.id)}
+                    >
+                        {this.isRouteOpen(route.id) ?
+                            <FaAngleDown /> :
+                            <FaAngleRight />}
+                    </div>
+                    <div>
+                        <div
+                            className={classNames(
+                                s.routeName,
+                                TransitTypeColorHelper.getColorClass(
+                                    this.props.line.transitType),
+                            )}
+                            onClick={this.selectRoute.bind(this, route.id)}
+                        >
+                            {route.name}
+                        </div>
+                        <div className={s.routeDate}>
+                            {'Muokattu: '}
+                            <Moment
+                                date={route.date}
+                                format='DD.MM.YYYY HH:mm'
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div className={s.routeDate}>
-                    {'Muokattu: '}
-                    <Moment
-                        date={route.date}
-                        format='DD.MM.YYYY HH:mm'
+                <div className={s.routePaths}>
+                    <LineItemSubMenu
+                        visible={this.isRouteOpen(route.id)}
+                        lineId={this.props.line.lineId}
+                        routeId={route.id}
                     />
                 </div>
-                <div
-                    className={s.routePathToggle}
-                    onClick={this.toggleRouteMenu.bind(this, route.id)}
-                >
-                    {this.isRouteOpen(route.id) ?
-                        <FaAngleUp /> :
-                        <FaAngleDown />}
-                </div>
-                <LineItemSubMenu
-                    visible={this.isRouteOpen(route.id)}
-                    lineId={this.props.line.lineId}
-                    routeId={route.id}
-                />
             </div>
 
         );
