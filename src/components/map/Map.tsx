@@ -78,12 +78,13 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
             if (!this.routeLayerView) {
                 this.routeLayerView = new RouteLayerView(this.map.leafletElement);
             }
-            this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
+            // this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
             this.centerMapToRoutes(this.props.routeStore!.routes);
         }
     }
 
     private centerMapToRoutes(routes: IRoute[]) {
+        /* TODO: mobx makes of warning of this code
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
         if (routes && routes[0]) {
             routes.forEach((route: IRoute) => {
@@ -101,6 +102,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
             });
             this.map!.leafletElement.fitBounds(bounds);
         }
+        */
     }
 
     public render() {

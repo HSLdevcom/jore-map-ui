@@ -2,25 +2,24 @@ import gql from 'graphql-tag';
 import apolloClient from '../util/ApolloClient';
 import { ApolloQueryResult } from 'apollo-client';
 import RouteFactory from '../factories/routeFactory';
-import LineStore from '../stores/lineStore';
+import LineService from './lineService';
 import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
 
 export default class RouteService {
-    public static getRoute(lineId: string, routeId: string) {
-        return new Promise((resolve: (res: any) => void, reject: (err: any) => void) => {
-            apolloClient.query({ query: getRoute, variables: { routeId } })
-                .then((res: ApolloQueryResult<any>) => {
-                    const line = LineStore.lineByLineId(lineId);
-                    resolve(RouteFactory.createRoute(res.data.route, line));
-                })
-                .catch((err: any) => {
-                    NotificationStore.addNotification(
-                        { message: 'Reitin haku ei onnistunut.', type: NotificationType.ERROR },
-                    );
-                    reject(err);
-                });
-        });
+    public static async getRoute(routeId: string) {
+        try {
+            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                { query: getRoute, variables: { routeId } },
+                );
+            const line = await LineService.getLine(queryResult.data.route.lintunnus);
+            return RouteFactory.createRoute(queryResult.data.route, line);
+        } catch (err) {
+            NotificationStore.addNotification(
+            { message: 'Reitin haku ei onnistunut.', type: NotificationType.ERROR },
+            );
+            return err;
+        }
     }
 }
 

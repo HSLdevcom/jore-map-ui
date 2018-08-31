@@ -5,14 +5,13 @@ import { LineStore } from '../../stores/lineStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
-import LineSearch from './LineSearch';
-import * as s from './routesEdit.scss';
+import * as s from './routeList.scss';
 
-interface IRoutesEditState {
+interface IRouteListState {
     networkCheckboxToggles: any;
 }
 
-interface IRoutesEditProps {
+interface IRouteListProps {
     lineStore?: LineStore;
     routeStore?: RouteStore;
 }
@@ -20,8 +19,8 @@ interface IRoutesEditProps {
 @inject('lineStore')
 @inject('routeStore')
 @observer
-class RoutesEdit extends
-React.Component<IRoutesEditProps, IRoutesEditState> {
+class RouteList extends
+React.Component<IRouteListProps, IRouteListState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -62,10 +61,6 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
     public render(): any {
         return (
             <div className={s.routesEditView}>
-                <LineSearch
-                    showSearchResults={this.props.lineStore!.lineSearchVisible}
-                />
-                { !this.props.lineStore!.lineSearchVisible &&
                 <div className={s.wrapper}>
                     <div className={s.routeList}>
                         {
@@ -98,10 +93,9 @@ React.Component<IRoutesEditProps, IRoutesEditState> {
                         </div>
                     </div>
                 </div>
-                }
             </div>
         );
     }
 }
 
-export default RoutesEdit;
+export default RouteList;

@@ -1,11 +1,16 @@
-import { action, computed, observable, toJS } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '../models';
 
 export class RouteStore {
-    @observable private _routes = observable<IRoute>([]);
+    @observable private _routes: IRoute[];
+
+    constructor() {
+        this._routes = [];
+    }
 
     @computed get routes(): IRoute[] {
-        return toJS(this._routes);
+        if (this._routes.length < 1) return [];
+        return this._routes;
     }
 
     get visibleRoutePathAmount(): number {
@@ -35,7 +40,7 @@ export class RouteStore {
 
     @action
     public clearRoutes() {
-        this._routes.clear();
+        this._routes = [];
     }
 
     private findObservableRoutePath(route: IRoute, routePath: IRoutePath): IRoutePath | null {

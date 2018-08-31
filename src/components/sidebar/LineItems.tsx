@@ -10,6 +10,7 @@ import * as s from './lineItems.scss';
 interface ILineItemsProps {
     lineStore?: LineStore;
     searchInput: string;
+    location: any;
 }
 
 @inject('lineStore')
@@ -60,6 +61,7 @@ class LineItems extends React.Component<ILineItemsProps> {
                                 <LineItem
                                     key={line.lineId}
                                     line={line}
+                                    location={this.props.location}
                                 />
                             );
                         })
