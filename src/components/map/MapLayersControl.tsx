@@ -8,7 +8,13 @@ interface INodeWindowProps {
 }
 
 interface IMapLayersControlState {
-    selectedOption: string;
+    selectedOption: option;
+}
+
+enum option {
+    MAP = 'Kartta',
+    SATELLITE = 'Satelliitti',
+    TERRAIN = 'Maasto',
 }
 
 @observer
@@ -17,11 +23,11 @@ export default class MapLayersControl extends React.Component
     constructor (props: any) {
         super(props);
         this.state = {
-            selectedOption: 'kartta',
+            selectedOption: option.MAP,
         };
     }
 
-    private toggleRadioButton = (option: string) => {
+    private toggleRadioButton = (option: option) => {
         this.setState({
             selectedOption: option,
         });
@@ -35,19 +41,19 @@ export default class MapLayersControl extends React.Component
                 </div>
                 <div className={s.mapLayersContainer}>
                     <RadioButton
-                        onClick={this.toggleRadioButton.bind(this, 'kartta')}
-                        checked={this.state.selectedOption === 'kartta'}
-                        text={'Kartta'}
+                        onClick={this.toggleRadioButton.bind(this, option.MAP)}
+                        checked={this.state.selectedOption === option.MAP}
+                        text={option.MAP}
                     />
                     <RadioButton
-                        onClick={this.toggleRadioButton.bind(this, 'satelliitti')}
-                        checked={this.state.selectedOption === 'satelliitti'}
-                        text={'Satelliitti'}
+                        onClick={this.toggleRadioButton.bind(this, option.SATELLITE)}
+                        checked={this.state.selectedOption === option.SATELLITE}
+                        text={option.SATELLITE}
                     />
                     <RadioButton
-                        onClick={this.toggleRadioButton.bind(this, 'maasto')}
-                        checked={this.state.selectedOption === 'maasto'}
-                        text={'Maasto'}
+                        onClick={this.toggleRadioButton.bind(this, option.TERRAIN)}
+                        checked={this.state.selectedOption === option.TERRAIN}
+                        text={option.TERRAIN}
                     />
                 </div>
             </div>
