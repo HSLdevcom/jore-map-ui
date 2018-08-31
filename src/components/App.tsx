@@ -38,7 +38,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     private closeNodeWindow = () => {
-        this.props.sidebarStore!.setOpenedNodeId(null);
+        this.props.sidebarStore!.closeNodeView();
     }
 
     public render(): any {

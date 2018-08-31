@@ -20,7 +20,7 @@ export class SidebarStore {
     }
 
     @action
-    public setOpenedNodeId(id: number|null) {
+    public openNodeView(id: number) {
         this._openedNodeId = id;
     }
 
@@ -30,6 +30,11 @@ export class SidebarStore {
 
     set isLoading(value: boolean) {
         this._isLoading = value;
+    }
+
+    @action
+    public closeNodeView() {
+        this._openedNodeId = null;
     }
 }
 
