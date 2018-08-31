@@ -16,7 +16,7 @@ interface PopupLayerProps {
 @observer
 export default class PopupLayer extends Component<PopupLayerProps> {
     onClose = () => {
-        this.props.popupStore!.removePopup();
+        this.props.popupStore!.closePopup();
     }
 
     render() {
@@ -24,7 +24,7 @@ export default class PopupLayer extends Component<PopupLayerProps> {
             const node = this.props.popupStore!.popupNode as INode;
 
             const openNode = () => {
-                this.props.sidebarStore!.setOpenedNodeId(node.id);
+                this.props.sidebarStore!.openNodeView(node.id);
                 this.onClose();
             };
 

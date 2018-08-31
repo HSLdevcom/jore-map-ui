@@ -24,13 +24,8 @@ export default class NodeLayer extends Component<NodeLayerProps> {
 
     private getNodeMarkerHtml = (color: string) => {
         return `<div
-            style="border-color: ${color};
-            border-radius: 100px;
-            border-style: solid;
-            height: 12px;
-            width: 12px;
-            border-width: 3px;
-            margin: -3px"
+            style="border-color: ${color}"
+            class=${s.nodeMarkerContent}
         />`;
     }
 

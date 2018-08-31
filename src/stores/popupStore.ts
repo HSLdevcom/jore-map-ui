@@ -18,7 +18,7 @@ export class PopupStore {
         this._node = node;
     }
 
-    @action public removePopup() {
+    @action public closePopup() {
         this._node = null;
     }
 }

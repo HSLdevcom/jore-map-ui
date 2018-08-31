@@ -16,16 +16,8 @@ export default class Toolbar extends Component<ToolbarProps> {
         super(props);
     }
 
-    private editRoutes = () => {
-        this.props.toolbarStore!.toggleTool(ToolbarTools.Edit);
-    }
-
-    private copyRoute = () => {
-        this.props.toolbarStore!.toggleTool(ToolbarTools.Copy);
-    }
-
-    private addNode = () => {
-        this.props.toolbarStore!.toggleTool(ToolbarTools.AddNode);
+    private toggleTool = (tool: ToolbarTools) => {
+        this.props.toolbarStore!.toggleTool(tool);
     }
 
     private print = () => {
@@ -35,7 +27,7 @@ export default class Toolbar extends Component<ToolbarProps> {
         return (
             <div className={s.toolbar}>
                 <ToolbarButton
-                    onClick={this.editRoutes}
+                    onClick={this.toggleTool.bind(this, ToolbarTools.Edit)}
                     isActive={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
                     isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.Edit)}
                     label='Muokkaa solmuja'
@@ -43,7 +35,7 @@ export default class Toolbar extends Component<ToolbarProps> {
                     <FiEdit />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={this.copyRoute}
+                    onClick={this.toggleTool.bind(this, ToolbarTools.Copy)}
                     isActive={this.props.toolbarStore!.isActive(ToolbarTools.Copy)}
                     isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.Copy)}
                     label='Kopio reitti'
@@ -51,7 +43,7 @@ export default class Toolbar extends Component<ToolbarProps> {
                     <FiCopy />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={this.addNode}
+                    onClick={this.toggleTool.bind(this, ToolbarTools.AddNode)}
                     isActive={this.props.toolbarStore!.isActive(ToolbarTools.AddNode)}
                     isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.AddNode)}
                     label='Lisää solmu'

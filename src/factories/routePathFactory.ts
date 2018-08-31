@@ -9,7 +9,7 @@ class RoutePathFactory {
         suunta: any,
         isVisible:boolean,
     ): IRoutePath => {
-        const madeUpId = HashHelper.getHashFromString(
+        const internalRoutePathId = HashHelper.getHashFromString(
             [
                 routeId,
                 suunta.suunimi,
@@ -21,7 +21,7 @@ class RoutePathFactory {
 
         const nodes:INode[]
         = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
-            .map((node: any) => NodeFactory.createNode(madeUpId, node.node));
+            .map((node: any) => NodeFactory.createNode(internalRoutePathId, node.node));
 
         const coordinates = JSON.parse(suunta.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
@@ -30,7 +30,7 @@ class RoutePathFactory {
             routeId,
             nodes,
             positions,
-            internalRoutePathId: madeUpId,
+            internalId: internalRoutePathId,
             geoJson: JSON.parse(suunta.geojson),
             routePathName: suunta.suunimi,
             direction: suunta.suusuunta,

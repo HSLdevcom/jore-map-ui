@@ -2,7 +2,7 @@ import { INode, ICoordinate } from '../models';
 import NodeType from '../enums/nodeType';
 
 class NodeFactory {
-    public static createNode = (routePathId: string, node: any): INode => {
+    public static createNode = (internalRoutePathId: string, node: any): INode => {
         const coordinateList = JSON.parse(node.solmuByLnkalkusolmu.geojson);
         const coordinate : ICoordinate = {
             lon: coordinateList.coordinates[0],
@@ -10,7 +10,7 @@ class NodeFactory {
         };
 
         return <INode>{
-            routePathId,
+            internalRoutePathId,
             id: node.relid,
             type: getNodeType(node.solmuByLnkalkusolmu.soltyyppi),
             coordinates: coordinate,

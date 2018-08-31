@@ -18,8 +18,13 @@ export class SidebarStore {
     }
 
     @action
-    public setOpenedNodeId(id: number|null) {
+    public openNodeView(id: number) {
         this._openedNodeId = id;
+    }
+
+    @action
+    public closeNodeView() {
+        this._openedNodeId = null;
     }
 }
 
