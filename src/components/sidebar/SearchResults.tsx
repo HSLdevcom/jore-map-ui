@@ -51,7 +51,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         } if (routes
                 .map(route => route.name.toLowerCase())
                 .some(name => name.indexOf(searchTerm) > -1) ||
-                searchTerm.indexOf(lineId) > -1) {
+                lineId.indexOf(searchTerm) > -1) {
             return true;
         } return false;
     }
