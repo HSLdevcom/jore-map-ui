@@ -12,7 +12,7 @@ import CoordinateControl from './CoordinateControl';
 import FullscreenControl from './FullscreenControl';
 import MeasurementControl from './MeasurementControl';
 import RouteLayer from './RouteLayer';
-import colorScale from '../../util/colorScale';
+import ColorScale from '../../util/colorScale';
 import NodeLayer from './NodeLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
@@ -32,10 +32,7 @@ interface IMapProps {
     toolbarStore?: ToolbarStore;
 }
 
-@inject('sidebarStore')
-@inject('mapStore')
-@inject('routeStore')
-@inject('toolbarStore')
+@inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private map: Map<MapProps, L.Map> | null;
@@ -99,7 +96,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
         const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
-        const colors = colorScale.getColors(visibleRoutePaths.length);
+        const colors = ColorScale.getColors(visibleRoutePaths.length);
 
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>

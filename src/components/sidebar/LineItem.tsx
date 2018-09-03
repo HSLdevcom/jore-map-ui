@@ -1,42 +1,114 @@
-import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classNames from 'classnames';
-import { RouteStore } from '../../stores/routeStore';
+import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import lineHelper from '../../util/lineHelper';
-import { LineStore } from '../../stores/lineStore';
-import { ILine, IRoute } from '../../models';
-import RouteService from '../../services/routeService';
+import { ILine, ILineRoute } from '../../models';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
+import lineStore from '../../stores/lineStore';
+import { Location, History } from 'history';
+import LinkBuilder from '../../factories/linkBuilder';
+import LineItemSubMenu from './LineItemSubMenu';
 
 interface ILineItemState {
-    type: string;
+    openRouteIds: string[];
 }
 
 interface ILineItemProps {
-    lineStore?: LineStore;
-    routeStore?: RouteStore;
     line: ILine;
+    location: Location;
+    history: History;
 }
 
-@inject('lineStore')
-@inject('routeStore')
-@observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
-    private selectRoute(routeId: string) {
-        RouteService.getRoute(this.props.line.lineId, routeId)
-            .then((res: IRoute) => {
-                this.props.routeStore!.addToRoutes(res);
-                this.props.lineStore!.setSearchInput('');
-            })
-            .catch((err: any) => {
-            });
+    constructor(props: ILineItemProps) {
+        super(props);
+        this.state = {
+            openRouteIds: [],
+        };
+    }
+
+    private isRouteOpen(routeId: string) {
+        return this.state.openRouteIds.some(id => id === routeId);
+    }
+
+    private openRouteMenu(routeId: string) {
+        this.setState({
+            openRouteIds: this.state.openRouteIds.concat(routeId),
+        });
+    }
+
+    private closeRouteMenu(routeId: string) {
+        this.setState({
+            openRouteIds: this.state.openRouteIds.filter(id => id !== routeId),
+        });
+    }
+
+    private toggleRouteMenu(routeId: string, e: any) {
+        e.stopPropagation();
+        if (this.isRouteOpen(routeId)) {
+            this.closeRouteMenu(routeId);
+        } else {
+            this.openRouteMenu(routeId);
+        }
+    }
+
+    public renderRoute(route: ILineRoute): any {
+        const gotoUrl = (url:string) => () => {
+            this.props.history.push(url);
+            lineStore.setSearchInput('');
+        };
+        return (
+            <div
+                key={route.id}
+                className={s.routeItem}
+            >
+                <div className={s.routeItemHeader}>
+                    <div
+                        className={s.routePathToggle}
+                        onClick={this.toggleRouteMenu.bind(this, route.id)}
+                    >
+                        {this.isRouteOpen(route.id) ?
+                            <FaAngleDown /> :
+                            <FaAngleRight />}
+                    </div>
+                    <div>
+                        <div
+                            className={classNames(
+                                s.routeName,
+                                TransitTypeColorHelper.getColorClass(
+                                    this.props.line.transitType),
+                            )}
+                            onClick={
+                                gotoUrl(LinkBuilder.createLink(this.props.location, route.id))}
+                        >
+                            {route.name}
+                        </div>
+                        <div className={s.routeDate}>
+                            {'Muokattu: '}
+                            <Moment
+                                date={route.date}
+                                format='DD.MM.YYYY HH:mm'
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className={s.routePaths}>
+                    <LineItemSubMenu
+                        visible={this.isRouteOpen(route.id)}
+                        lineId={this.props.line.lineId}
+                        routeId={route.id}
+                    />
+                </div>
+            </div>
+
+        );
     }
 
     public render(): any {
         return (
-            <div className={s.listItemView}>
+            <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
                         {lineHelper.getTransitIcon(this.props.line.transitType, false)}
@@ -50,30 +122,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         {this.props.line.lineNumber}
                     </div>
                 </div>
-                {this.props.line.routes.map((route, index) => {
+                {this.props.line.routes.map((route) => {
                     return (
-                        <div
-                            key={route.name + '-' + index}
-                            className={s.routeItem}
-                            onClick={this.selectRoute.bind(this, route.id)}
-                        >
-                            <div
-                                className={classNames(
-                                    s.routeName,
-                                    TransitTypeColorHelper.getColorClass(
-                                        this.props.line.transitType),
-                                )}
-                            >
-                                {route.name}
-                            </div>
-                            <div className={s.routeDate}>
-                                {'Muokattu: '}
-                                <Moment
-                                    date={route.date}
-                                    format='DD.MM.YYYY HH:mm'
-                                />
-                            </div>
-                        </div>
+                        this.renderRoute(route)
                     );
                 })}
             </div>

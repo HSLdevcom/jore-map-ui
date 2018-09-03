@@ -1,8 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { NotificationStore } from '../stores/notificationStore';
 import { LoginStore } from '../stores/loginStore';
+import { NotificationStore } from '../stores/notificationStore';
 import { SidebarStore } from '../stores/sidebarStore';
 import { MapStore } from '../stores/mapStore';
 import Button from './controls/Button';
@@ -14,26 +13,22 @@ import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import NodeWindow from './NodeWindow';
 import * as s from './app.scss';
-const rootPath: string = '/';
+import { Route, RouteComponentProps } from 'react-router-dom';
 
 interface IAppState {
     showLogin: boolean;
 }
 
-interface IAppProps {
+interface IAppProps extends RouteComponentProps<any> {
     notificationStore?: NotificationStore;
     loginStore?: LoginStore;
     sidebarStore?: SidebarStore;
     mapStore?: MapStore;
 }
 
-@inject('mapStore')
-@inject('notificationStore')
-@inject('sidebarStore')
-@inject('loginStore')
+@inject('mapStore', 'notificationStore', 'sidebarStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
-
     private openLoginForm = () => {
         this.props.loginStore!.showLogin = true;
     }
@@ -49,40 +44,33 @@ class App extends React.Component<IAppProps, IAppState> {
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         return (
-            <Router>
-              <div className={s.appView}>
-                <Map/>
-                <Button
-                    onClick={this.openLoginForm}
-                    className={s.loginButton}
-                    type={ButtonType.SECONDARY}
-                    text='Kirjaudu'
-                />
-                <Modal
-                    closeModal={this.closeLoginModal}
-                    isVisible={this.props.loginStore!.showLogin}
-                >
-                    <Login />
-                </Modal>
-                <Modal
-                    closeModal={this.closeNodeWindow}
-                    isVisible={this.props.sidebarStore!.showNodeWindow}
-                >
-                    <NodeWindow />
-                </Modal>
-                <div className={sidebarHiddenClass}>
-                    <Sidebar />
-                </div>
-                <Route
-                    exact={true}
-                    path='/'
-                    rootPath={rootPath}
-                />
-                <NotificationWindow
-                  notifications={this.props.notificationStore!.notifications}
-                />
-              </div>
-            </Router>
+          <div className={s.appView}>
+            <Map/>
+            <Button
+                onClick={this.openLoginForm}
+                className={s.loginButton}
+                type={ButtonType.SECONDARY}
+                text='Kirjaudu'
+            />
+            <Modal
+                closeModal={this.closeLoginModal}
+                isVisible={this.props.loginStore!.showLogin}
+            >
+                <Login />
+            </Modal>
+            <Modal
+                closeModal={this.closeNodeWindow}
+                isVisible={this.props.sidebarStore!.showNodeWindow}
+            >
+                <NodeWindow />
+            </Modal>
+            <div className={sidebarHiddenClass}>
+                <Route component={Sidebar} />
+            </div>
+            <NotificationWindow
+              notifications={this.props.notificationStore!.notifications}
+            />
+          </div>
         );
     }
 }

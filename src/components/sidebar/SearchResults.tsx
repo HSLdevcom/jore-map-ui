@@ -1,31 +1,46 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
-import LineService from '../../services/lineService';
 import LineItem from './LineItem';
 import { ILine } from '../../models';
 import TransitType from '../../enums/transitType';
-import * as s from './lineItems.scss';
+import * as s from './searchResults.scss';
+import LineService from '../../services/lineService';
+import Loader from './Loader';
+import { RouteComponentProps } from 'react-router';
 
-interface ILineItemsProps {
+interface ISearchResultsProps extends RouteComponentProps<any>{
     lineStore?: LineStore;
-    searchInput: string;
+    location: any;
+}
+
+interface ISearchResultsState {
+    isLoading: boolean;
 }
 
 @inject('lineStore')
 @observer
-class LineItems extends React.Component<ILineItemsProps> {
+class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
+
+    constructor(props: ISearchResultsProps) {
+        super(props);
+        this.state = {
+            isLoading: false,
+        };
+    }
+
     componentDidMount() {
-        if (this.props.lineStore!.allLines.length === 0) {
-            LineService.getAllLines()
-                .then((lines: ILine[]) => {
-                    this.props.lineStore!.setAllLines(lines);
-                })
-                .catch((err: any) => {
-                    // tslint:disable-next-line:no-console
-                    console.log(err);
-                });
+        this.queryAllLines();
+    }
+
+    async queryAllLines() {
+        this.setState({ isLoading: true });
+        try {
+            await this.props.lineStore!.setAllLines(await LineService.getAllLines());
+        } catch (err) {
+            // TODO: show error on screen that the query failed
         }
+        this.setState({ isLoading: false });
     }
 
     public filterLines = (lineNumber: string, transitType: TransitType) => {
@@ -35,20 +50,20 @@ class LineItems extends React.Component<ILineItemsProps> {
             return false;
         }
 
-        if (searchTargetAttributes.includes(this.props.lineStore!.searchInput)) {
-            return true;
-        }
-        return false;
+        return searchTargetAttributes.includes(this.props.lineStore!.searchInput);
     }
 
     public render(): any {
         const allLines = this.props.lineStore!.allLines;
-
-        if (!allLines.length) {
-            return 'Fetching';
+        if (this.state.isLoading) {
+            return (
+                <div className={s.searchResultsView}>
+                    <Loader/>
+                </div>
+            );
         }
         return (
-            <div className={s.lineItemsView}>
+            <div className={s.searchResultsView}>
                 {
                     allLines
                         .filter(line =>
@@ -60,6 +75,8 @@ class LineItems extends React.Component<ILineItemsProps> {
                                 <LineItem
                                     key={line.lineId}
                                     line={line}
+                                    location={this.props.location}
+                                    history={this.props.history}
                                 />
                             );
                         })
@@ -69,4 +86,4 @@ class LineItems extends React.Component<ILineItemsProps> {
     }
 }
 
-export default LineItems;
+export default SearchResults;

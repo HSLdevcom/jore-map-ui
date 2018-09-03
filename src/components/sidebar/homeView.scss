@@ -1,0 +1,10 @@
+@import '../../common.scss';
+.homeView {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .routesText {
+    font-weight: bold;
+  }
+}

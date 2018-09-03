@@ -7,7 +7,7 @@ import ToggleButton from '../controls/ToggleButton';
 import classNames from 'classnames';
 import LineHelper from '../../util/lineHelper';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
-import colorScale from '../../util/colorScale';
+import ColorScale from '../../util/colorScale';
 import * as s from './routeShow.scss';
 
 interface IRouteShowProps {
@@ -48,12 +48,12 @@ class RouteShow extends React.Component<IRouteShowProps> {
         let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
 
         return this.props.route.routePaths
-        .sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
+        .slice().sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
         .map((routePath: IRoutePath, index: number) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
             };
-            const routeColor = colorScale.getColors(
+            const routeColor = ColorScale.getColors(
                 this.props.routeStore!.visibleRoutePathAmount)[visibleRoutePathsIndex];
             if (routePath.visible) {
                 visibleRoutePathsIndex += 1;
