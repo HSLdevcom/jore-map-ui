@@ -1,11 +1,9 @@
 import * as L from 'leaflet';
-import * as s from './map.scss';
 import classnames from 'classnames';
-
 import measurementToolIcon from '../../icons/icon-ruler';
 import removeToolIcon from '../../icons/icon-eraser';
 import removeAllIcon from '../../icons/icon-bin';
-import {Layer, Point} from 'leaflet';
+import * as s from './map.scss';
 
 interface MeasurementControlOptions extends L.ControlOptions {
     color?: string; // TODO use this for something
@@ -110,21 +108,20 @@ class MeasurementControl extends L.Control {
 
         this.measurementLayer.on('click', this.removeMeasurement(this.measurementLayer));
         this.measuring = true;
-        // this.map.on('dblclick', this.finishMeasurement);
+        this.map.on('dblclick', this.finishMeasurementClick); // TODO: Fix doubleclick detection..
         this.showRemoveTools();
+    }
+
+    private finishMeasurementClick = (e: L.LeafletMouseEvent) => {
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+        this.finishMeasurement();
     }
 
     private finishMeasurement = () => {
         this.measuring = false;
         this.tmpLine.clearLayers();
-        this.map.off('dblclick', this.finishMeasurement);
-    }
-
-    private featuresNear = (layer: L.FeatureGroup, point: L.LatLng, distance: number) => {
-        layer.eachLayer((feat) => {
-            point.distanceTo(feat.);
-        })
-        return true;
+        this.map.off('dblclick', this.finishMeasurementClick);
     }
 
     private measurementClicked = (e: L.LeafletMouseEvent) => {
@@ -133,6 +130,15 @@ class MeasurementControl extends L.Control {
         }
         const latLng = e.latlng;
         if (this.points.length > 0) {
+            const { x: x1, y: y1 } =
+                this.map.latLngToContainerPoint(this.points[this.points.length - 1]);
+            const { x: x2, y: y2 } =
+                this.map.latLngToContainerPoint(latLng);
+            const pxDistance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+            if (pxDistance < 10) {
+                this.finishMeasurement();
+                return;
+            }
             this.distance +=
                 this.points[this.points.length - 1].distanceTo(latLng);
         }
@@ -149,7 +155,7 @@ class MeasurementControl extends L.Control {
                     closeOnClick: false,
                 })
             .openPopup()
-            .on('click', this.finishMeasurement)
+            .on('click', this.finishMeasurementClick)
             .addTo(this.pointLayer);
     }
 
@@ -161,11 +167,9 @@ class MeasurementControl extends L.Control {
         L.polyline(
             [prevPoint, movingLatLng],
             { className: classnames(s.movingPolyline, s.polyline) })
-            .on('click', this.measurementClicked)
             .addTo(this.tmpLine);
         L.circleMarker(movingLatLng,
                        { className: classnames(s.noEvents, s.measurementCursor, s.circleMarker) })
-            .on('click', this.measurementClicked)
             .bindTooltip(prevPoint.distanceTo(movingLatLng).toFixed(2))
             .openTooltip()
             .addTo(this.tmpLine);
