@@ -108,7 +108,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     public render(): any {
         return (
-            <div className={s.listItemView}>
+            <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
                         {lineHelper.getTransitIcon(this.props.line.transitType, false)}

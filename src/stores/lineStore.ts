@@ -2,7 +2,6 @@ import { action, computed, observable } from 'mobx';
 import { ILine } from '../models';
 
 export class LineStore {
-
     @observable private _filters: string[];
     @observable private _allLines: ILine[];
     @observable private _searchInput: string;

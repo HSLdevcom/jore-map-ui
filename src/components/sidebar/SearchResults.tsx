@@ -9,20 +9,20 @@ import LineService from '../../services/lineService';
 import Loader from './Loader';
 import { RouteComponentProps } from 'react-router';
 
-interface ILineItemsProps extends RouteComponentProps<any>{
+interface ISearchResultsProps extends RouteComponentProps<any>{
     lineStore?: LineStore;
     location: any;
 }
 
-interface ILineItemsState {
+interface ISearchResultsState {
     isLoading: boolean;
 }
 
 @inject('lineStore')
 @observer
-class SearchResults extends React.Component<ILineItemsProps, ILineItemsState> {
+class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
 
-    constructor(props: ILineItemsProps) {
+    constructor(props: ISearchResultsProps) {
         super(props);
         this.state = {
             isLoading: false,
