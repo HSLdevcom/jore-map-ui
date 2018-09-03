@@ -8,22 +8,22 @@ import NotificationType from '../../enums/notificationType';
 import { Checkbox } from '../controls';
 import Moment from 'react-moment';
 
-interface lineItemSubMenuProps {
+interface LineItemSubMenuProps {
     routeId: string;
     lineId: string;
     visible: boolean;
     notificationStore?: NotificationStore;
 }
 
-interface lineItemSubMenuState {
+interface LineItemSubMenuState {
     routePaths: IRoutePath[] | null;
     checkedRoutePaths: number[];
 }
 
 @inject('notificationStore')
 @observer
-class LineItemSubMenu extends Component<lineItemSubMenuProps, lineItemSubMenuState> {
-    constructor(props: lineItemSubMenuProps) {
+class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuState> {
+    constructor(props: LineItemSubMenuProps) {
         super(props);
         this.state = {
             routePaths: null,

@@ -12,7 +12,7 @@ import CoordinateControl from './CoordinateControl';
 import FullscreenControl from './FullscreenControl';
 import MeasurementControl from './MeasurementControl';
 import RouteLayer from './RouteLayer';
-import colorScale from '../../util/colorScale';
+import ColorScale from '../../util/colorScale';
 import NodeLayer from './NodeLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
@@ -103,7 +103,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
         const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
-        const colors = colorScale.getColors(visibleRoutePaths.length);
+        const colors = ColorScale.getColors(visibleRoutePaths.length);
 
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
