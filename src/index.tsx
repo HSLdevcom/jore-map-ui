@@ -16,7 +16,7 @@ import apolloClient from './util/ApolloClient';
 import './index.scss';
 import { BrowserRouter, Route } from 'react-router-dom';
 
-configure({ enforceActions: 'always' });
+configure({ enforceActions: 'strict' });
 
 const stores = {
     mapStore: observableMapStore,
