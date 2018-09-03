@@ -45,15 +45,24 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     public filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
         const searchTerm = this.props.lineStore!.searchInput.toLowerCase();
+
+        // Filter by transitType
         if (this.props.lineStore!.filters &&
             this.props.lineStore!.filters.indexOf(transitType) !== -1) {
             return false;
-        } if (routes
+        }
+
+        // Filter by line.lineId
+        if (lineId.indexOf(searchTerm) > -1) return true;
+
+        // Filter by route.name
+        if (routes
                 .map(route => route.name.toLowerCase())
-                .some(name => name.indexOf(searchTerm) > -1) ||
-                lineId.indexOf(searchTerm) > -1) {
+                .some(name => name.indexOf(searchTerm) > -1)) {
             return true;
-        } return false;
+        }
+
+        return false;
     }
 
     public render(): any {
