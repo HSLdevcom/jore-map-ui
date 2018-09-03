@@ -80,8 +80,8 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                 TransitTypeColorHelper.getColorClass(
                                     this.props.line.transitType),
                             )}
-                            onClick={
-                                gotoUrl(LinkBuilder.createLink(this.props.location, route.id))}
+                            onClick={gotoUrl(
+                                    LinkBuilder.createLinkWithRoute(this.props.location, route.id))}
                         >
                             {route.name}
                         </div>
