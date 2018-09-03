@@ -1,17 +1,14 @@
-import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classNames from 'classnames';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
-import { NotificationStore } from '../../stores/notificationStore';
-import { RouteStore } from '../../stores/routeStore';
 import lineHelper from '../../util/lineHelper';
-import { LineStore } from '../../stores/lineStore';
-import { ILine, IRoute, ILineRoute } from '../../models';
-import RouteService from '../../services/routeService';
+import { ILine, ILineRoute } from '../../models';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
-import NotificationType from '../../enums/notificationType';
+import lineStore from '../../stores/lineStore';
+import { Location, History } from 'history';
+import LinkBuilder from '../../factories/linkBuilder';
 import LineItemSubMenu from './LineItemSubMenu';
 
 interface ILineItemState {
@@ -19,36 +16,17 @@ interface ILineItemState {
 }
 
 interface ILineItemProps {
-    notificationStore?: NotificationStore;
-    lineStore?: LineStore;
-    routeStore?: RouteStore;
     line: ILine;
+    location: Location;
+    history: History;
 }
 
-@inject('notificationStore')
-@inject('lineStore')
-@inject('routeStore')
-@observer
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     constructor(props: ILineItemProps) {
         super(props);
         this.state = {
             openRouteIds: [],
         };
-    }
-
-    private selectRoute(routeId: string, e: any) {
-        RouteService.getRoute(this.props.line.lineId, routeId)
-            .then((res: IRoute) => {
-                this.props.routeStore!.addToRoutes(res);
-                this.props.lineStore!.setSearchInput('');
-            })
-            .catch((err: any) => {
-                this.props.notificationStore!.addNotification({
-                    message: 'Reitin haussa tapahtui virhe.',
-                    type: NotificationType.ERROR,
-                });
-            });
     }
 
     private isRouteOpen(routeId: string) {
@@ -76,7 +54,11 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         }
     }
 
-    private renderRoute(route: ILineRoute) {
+    public renderRoute(route: ILineRoute): any {
+        const gotoUrl = (url:string) => () => {
+            this.props.history.push(url);
+            lineStore.setSearchInput('');
+        };
         return (
             <div
                 key={route.id}
@@ -98,7 +80,8 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                 TransitTypeColorHelper.getColorClass(
                                     this.props.line.transitType),
                             )}
-                            onClick={this.selectRoute.bind(this, route.id)}
+                            onClick={
+                                gotoUrl(LinkBuilder.createLink(this.props.location, route.id))}
                         >
                             {route.name}
                         </div>
@@ -125,7 +108,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     public render(): any {
         return (
-            <div className={s.listItemView}>
+            <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
                         {lineHelper.getTransitIcon(this.props.line.transitType, false)}

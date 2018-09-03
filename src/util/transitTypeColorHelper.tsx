@@ -17,7 +17,7 @@ class TransitTypeColorHelper {
         case TransitType.NOT_FOUND:
             return s.notFound;
         default:
-            throw new Error('TransitType not supported: ' + type);
+            throw new Error(`TransitType not supported: ${type}`);
         }
     }
 
@@ -36,7 +36,7 @@ class TransitTypeColorHelper {
         case TransitType.NOT_FOUND:
             return s.notFound;
         default:
-            throw new Error('TransitType not supported: ' + type);
+            throw new Error(`TransitType not supported: ${type}`);
         }
     }
 }

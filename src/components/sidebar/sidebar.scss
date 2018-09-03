@@ -40,21 +40,17 @@
                 padding-left: 10px;
             }
 
+            .title a {
+                text-decoration: none;
+                color: $white;
+            }
+
             .logo {
                 display: inline-block;
                 height: 40px;
                 text-align: center;
                 vertical-align: middle;
             }
-        }
-    }
-    .content {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-
-        .routesText {
-            font-weight: bold;
         }
     }
 }

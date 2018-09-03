@@ -23,10 +23,6 @@ export class LineStore {
         return this._allLines;
     }
 
-    public lineByLineId(lineId: string) {
-        return this._allLines.find(line => line.lineId === lineId);
-    }
-
     @computed get searchInput(): string {
         return this._searchInput;
     }
@@ -40,11 +36,6 @@ export class LineStore {
     public setAllLines(lines: ILine[]) {
         this._allLines = lines;
     }
-
-    @computed get lineSearchVisible(): boolean {
-        return (this._searchInput.length > 0);
-    }
-
 }
 
 const observableLineStore = new LineStore();

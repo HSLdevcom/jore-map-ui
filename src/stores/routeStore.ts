@@ -1,16 +1,27 @@
-import { action, computed, observable, toJS } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '../models';
 
 export class RouteStore {
-    @observable private _routes = observable<IRoute>([]);
-    @observable private _routePaths = observable<IRoutePath>([]);
+    @observable private _routes: IRoute[];
+    @observable private _routePaths: IRoutePath[];
+
+    constructor() {
+        this._routes = [];
+        this._routePaths = [];
+    }
 
     @computed get routes(): IRoute[] {
-        return toJS(this._routes);
+        if (this._routes.length < 1) return [];
+        return this._routes;
+    }
+
+    set routes(value: IRoute[]) {
+        this._routes = value;
     }
 
     @computed get routePaths(): IRoutePath[] {
-        return toJS(this._routePaths);
+        if (this._routePaths.length < 1) return [];
+        return this._routePaths;
     }
 
     get visibleRoutePathAmount(): number {
@@ -36,7 +47,7 @@ export class RouteStore {
 
     @action
     public clearRoutePaths() {
-        this._routePaths.clear();
+        this._routePaths = [];
     }
 
     @action
@@ -50,7 +61,7 @@ export class RouteStore {
 
     @action
     public clearRoutes() {
-        this._routes.clear();
+        this._routes = [];
     }
 
     private getRoutePath(internalId: string): IRoutePath | null {
