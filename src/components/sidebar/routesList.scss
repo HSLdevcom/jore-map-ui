@@ -1,14 +1,8 @@
 @import '../../common.scss';
-.routesEditView {
+.routesListView {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
 
-    .wrapper {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
 
         .routeList {
             overflow-y: auto;
@@ -44,6 +38,6 @@
             padding-top: 10px;
             display: flex;
         }
-    }
+
 
 }

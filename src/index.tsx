@@ -10,23 +10,32 @@ import observableMapStore from './stores/mapStore';
 import observableLineStore from './stores/lineStore';
 import observableRouteStore from './stores/routeStore';
 import observableSidebarStore from './stores/sidebarStore';
+import observablePopupStore from './stores/popupStore';
+import observableToolbarStore from './stores/toolbarStore';
 import apolloClient from './util/ApolloClient';
 import './index.scss';
+import { BrowserRouter, Route } from 'react-router-dom';
 
-configure({ enforceActions: 'strict' });
+configure({ enforceActions: 'always' });
+
+const stores = {
+    mapStore: observableMapStore,
+    notificationStore: observableNotificationStore,
+    lineStore: observableLineStore,
+    loginStore: observableLoginStore,
+    routeStore: observableRouteStore,
+    sidebarStore: observableSidebarStore,
+    popupStore: observablePopupStore,
+    toolbarStore: observableToolbarStore,
+};
 
 ReactDOM.render(
-    <Provider
-      notificationStore={observableNotificationStore}
-      mapStore={observableMapStore}
-      lineStore={observableLineStore}
-      loginStore={observableLoginStore}
-      routeStore={observableRouteStore}
-      sidebarStore={observableSidebarStore}
-    >
-        <ApolloProvider client={apolloClient}>
-          <App/>
-        </ApolloProvider>
-    </Provider>,
-    document.getElementById('root') as HTMLElement,
+        <Provider {...stores}>
+            <ApolloProvider client={apolloClient}>
+                <BrowserRouter>
+                    <Route component={App}/>
+                </BrowserRouter>
+            </ApolloProvider>
+        </Provider>,
+        document.getElementById('root') as HTMLElement,
 );

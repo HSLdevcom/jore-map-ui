@@ -1,24 +1,27 @@
-import { Map, TileLayer, ZoomControl } from 'react-leaflet';
+import { Map, MapProps, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { MapStore } from '../../stores/mapStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import { autorun } from 'mobx';
 import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
 import FullscreenControl from './FullscreenControl';
 import MeasurementControl from './MeasurementControl';
-import RouteLayerView from '../../layers/routeLayerView';
-import { IRoute } from '../../models';
+import RouteLayer from './RouteLayer';
+import ColorScale from '../../util/colorScale';
+import NodeLayer from './NodeLayer';
+import { IRoutePath, INode, IRoute } from '../../models';
+import MapLayersControl from './MapLayersControl';
 import * as s from './map.scss';
 import Toolbar from './Toolbar';
+import PopupLayer from './PopupLayer';
+import { ToolbarStore } from '../../stores/toolbarStore';
 
 interface IMapState {
-    map?: L.Map;
     zoomLevel: number;
 }
 
@@ -26,84 +29,75 @@ interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
     sidebarStore?: SidebarStore;
+    toolbarStore?: ToolbarStore;
 }
 
-@inject('sidebarStore')
-@inject('mapStore')
-@inject('routeStore')
+@inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
-    private map: Map | null;
-    private routeLayerView: RouteLayerView;
+    private map: Map<MapProps, L.Map> | null;
 
     constructor(props: IMapProps) {
         super(props);
         this.state = {
-            map: undefined,
             zoomLevel: 15,
         };
+
+        this.fitBounds = this.fitBounds.bind(this);
     }
 
     public componentDidMount() {
-        autorun(() => this.updateRouteLines());
-        if (!this.state.map && this.map) {
-            const leafletElement = this.map.leafletElement;
+        const leafletElement = this.map!.leafletElement;
+        // TODO: Convert these as react-components
+        leafletElement.addControl(new CoordinateControl({ position: 'topright' }));
+        leafletElement.addControl(new MeasurementControl({ position: 'topright' }));
+        leafletElement.on('moveend', () => {
+            this.props.mapStore!.setCoordinates(
+                leafletElement.getCenter().lat,
+                leafletElement.getCenter().lng,
+            );
+        });
+        leafletElement.on('zoomend', () => {
             this.setState({
-                map: leafletElement,
+                zoomLevel: leafletElement.getZoom(),
             });
-            // TODO: Convert these as react-components
-            leafletElement.addControl(new CoordinateControl({ position: 'topright' }));
-            leafletElement.addControl(new MeasurementControl({ position: 'topright' }));
-            leafletElement.on('moveend', () => {
-                this.props.mapStore!.setCoordinates(
-                    leafletElement.getCenter().lat,
-                    leafletElement.getCenter().lng,
-                );
-            });
-            leafletElement.on('zoomend', () => {
-                this.setState({
-                    zoomLevel: leafletElement.getZoom(),
-                });
-            });
-        }
+        });
     }
 
     public componentDidUpdate() {
-        this.state.map!.invalidateSize();
+        this.map!.leafletElement.invalidateSize();
     }
 
-    private updateRouteLines() {
+    private fitBounds(bounds: L.LatLngBoundsExpression) {
         if (this.map) {
-            if (!this.routeLayerView) {
-                this.routeLayerView = new RouteLayerView(this.map.leafletElement);
-            }
-            this.routeLayerView.drawRouteLines(this.props.routeStore!.routes);
-            this.centerMapToRoutes(this.props.routeStore!.routes);
-        }
-    }
-
-    private centerMapToRoutes(routes: IRoute[]) {
-        let bounds:L.LatLngBounds = new L.LatLngBounds([]);
-        if (routes && routes[0]) {
-            routes.forEach((route: IRoute) => {
-                if (route.routePaths[0]) {
-                    route.routePaths.map((routePath) => {
-                        if (!routePath.visible) return;
-                        const geoJSON = new L.GeoJSON(routePath.geoJson);
-                        if (!bounds) {
-                            bounds = geoJSON.getBounds();
-                        } else {
-                            bounds.extend(geoJSON.getBounds());
-                        }
-                    });
-                }
-            });
             this.map!.leafletElement.fitBounds(bounds);
         }
     }
 
+    private getVisibleRoutePaths = (routes: IRoute[]) => {
+        return routes.reduce<IRoutePath[]>(
+            (flatList, route) => {
+                return flatList.concat(route.routePaths);
+            },
+            [],
+        ).filter(routePath => routePath.visible);
+    }
+
+    private getVisibleNodes = (visibleRoutesPaths: IRoutePath[]) => {
+        return visibleRoutesPaths.reduce<INode[]>(
+            (flatList, routePath) => {
+                return flatList.concat(routePath.nodes);
+            },
+            [],
+        );
+    }
+
     public render() {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
+        const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
+        const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
+        const colors = ColorScale.getColors(visibleRoutePaths.length);
+
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 <Map
@@ -133,15 +127,26 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
+                    <RouteLayer
+                        colors={colors}
+                        routePaths={visibleRoutePaths}
+                        fitBounds={this.fitBounds}
+                    />
+                    <NodeLayer
+                        nodes={visibleNodes}
+                    />
+                    <PopupLayer />
                     <Control position='topleft'>
-                        <Toolbar />
+                        <Toolbar toolbarStore={this.props.toolbarStore}/>
                     </Control>
                     <Control position='topright'>
-                        <FullscreenControl map={this.state.map} />
+                        <FullscreenControl map={this.map} />
                     </Control>
                     <ZoomControl position='bottomright' />
                     <Control position='bottomright' />
-                    <Control position='bottomleft' />
+                    <Control position='bottomleft'>
+                        <MapLayersControl />
+                    </Control>
                 </Map>
             </div>
         );

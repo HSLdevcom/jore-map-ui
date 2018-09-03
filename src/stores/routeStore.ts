@@ -1,11 +1,27 @@
-import { action, computed, observable, toJS } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '../models';
 
 export class RouteStore {
-    @observable private _routes = observable<IRoute>([]);
+    @observable private _routes: IRoute[];
+    @observable private _routePaths: IRoutePath[];
+
+    constructor() {
+        this._routes = [];
+        this._routePaths = [];
+    }
 
     @computed get routes(): IRoute[] {
-        return toJS(this._routes);
+        if (this._routes.length < 1) return [];
+        return this._routes;
+    }
+
+    set routes(value: IRoute[]) {
+        this._routes = value;
+    }
+
+    @computed get routePaths(): IRoutePath[] {
+        if (this._routePaths.length < 1) return [];
+        return this._routePaths;
     }
 
     get visibleRoutePathAmount(): number {
@@ -25,6 +41,16 @@ export class RouteStore {
     }
 
     @action
+    public addToRoutePaths(routePath: IRoutePath) {
+        this._routePaths.push(routePath);
+    }
+
+    @action
+    public clearRoutePaths() {
+        this._routePaths = [];
+    }
+
+    @action
     public removeFromRoutes(routeId: string) {
         for (let i = 0; i < this._routes.length; i += 1) {
             if (this._routes[i].routeId === routeId) {
@@ -35,17 +61,14 @@ export class RouteStore {
 
     @action
     public clearRoutes() {
-        this._routes.clear();
+        this._routes = [];
     }
 
-    private findObservableRoutePath(route: IRoute, routePath: IRoutePath): IRoutePath | null {
+    private getRoutePath(internalId: string): IRoutePath | null {
         let routePathObservable: IRoutePath | null = null;
         this._routes.find((_route) => {
             const found = _route.routePaths.find(_routePath =>
-                _routePath.direction === routePath.direction &&
-                _routePath.endTime.getTime() === routePath.endTime.getTime() &&
-                _routePath.startTime.getTime() === routePath.startTime.getTime() &&
-                _route.lineId === route.lineId,
+                _routePath.internalId === internalId,
             );
             if (found) {
                 routePathObservable = found;
@@ -57,8 +80,8 @@ export class RouteStore {
     }
 
     @action
-    public toggleRoutePathVisibility(route: IRoute, routePath: IRoutePath) {
-        const routePathObservable = this.findObservableRoutePath(route, routePath);
+    public toggleRoutePathVisibility(internalId: string) {
+        const routePathObservable = this.getRoutePath(internalId);
         if (routePathObservable) {
             routePathObservable.visible = !routePathObservable.visible;
         }

@@ -1,5 +1,4 @@
-import { IRoutePath } from '.';
-import ILine from './ILine';
+import { IRoutePath, ILine } from '.';
 
 export default interface IRoute {
     routeName: string;

@@ -10,7 +10,8 @@ class RouteFactory {
                     // By default make the first two routePaths visible
                     const isVisible = (index <= 1);
 
-                    return RoutePathFactory.createRoutePath(routePath.node, isVisible);
+                    return RoutePathFactory.createRoutePath(
+                        reitti.reitunnus, routePath.node, isVisible);
                 });
 
         return <IRoute>{
