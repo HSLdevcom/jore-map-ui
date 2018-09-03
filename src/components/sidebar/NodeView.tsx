@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { SidebarStore } from '../stores/sidebarStore';
-import * as s from './nodeWindow.scss';
-import { Button, Checkbox, Dropdown, ToggleButton } from './controls';
-import ButtonType from '../enums/buttonType';
-import TransitType from '../enums/transitType';
+import { SidebarStore } from '../../stores/sidebarStore';
+import * as s from './nodeView.scss';
+import { Button, Checkbox, Dropdown, ToggleButton } from '../controls';
+import ButtonType from '../../enums/buttonType';
+import TransitType from '../../enums/transitType';
 import classnames from 'classnames';
 
 interface ITargetCheckboxToggles {
@@ -19,19 +19,19 @@ interface IMapInformationSource {
     items: string[];
 }
 
-interface INodeWindowState {
+interface INodeViewState {
     targetCheckboxToggles: ITargetCheckboxToggles;
     mapInformationSource: IMapInformationSource;
 }
 
-interface INodeWindowProps {
+interface INodeViewProps {
     sidebarStore?: SidebarStore;
 }
 
 @inject('sidebarStore')
 @observer
-class NodeWindow extends React.Component
-<INodeWindowProps, INodeWindowState> {
+class NodeView extends React.Component
+<INodeViewProps, INodeViewState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -53,6 +53,10 @@ class NodeWindow extends React.Component
             // TODO: fetch GraphSQL with nodeId
             // const nodeId = this.props.sidebarStore!.openedNodeId;
         }
+    }
+
+    private closeNodeView = () => {
+        this.props.sidebarStore!.closeNodeView();
     }
 
     private toggleStopInUse() {
@@ -82,8 +86,14 @@ class NodeWindow extends React.Component
 
     public render(): any {
         return (
-        <div className={s.nodeWindow}>
-            <div className={s.topic}>Karttakohde</div>
+        <div className={s.nodeView}>
+            <div className={s.header}>
+                <div className={s.topic}>Karttakohde</div>
+                <div
+                    className={s.closeButton}
+                    onClick={this.closeNodeView}
+                />
+            </div>
             <div
                 className={classnames(
                     s.rowR,
@@ -223,4 +233,4 @@ class NodeWindow extends React.Component
         );
     }
 }
-export default NodeWindow;
+export default NodeView;
