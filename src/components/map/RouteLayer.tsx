@@ -5,8 +5,8 @@ import { IRoutePath } from '../../models';
 
 interface RouteLayerProps {
     routePaths: IRoutePath[];
-    fitBounds: (bounds: L.LatLngBoundsExpression) => void;
     colors: string[];
+    map: any;
 }
 
 export default class RouteLayer extends Component<RouteLayerProps> {
@@ -21,9 +21,10 @@ export default class RouteLayer extends Component<RouteLayerProps> {
                 bounds.extend(geoJSON.getBounds());
             }
         });
-
         if (bounds.isValid()) {
-            this.props.fitBounds(bounds);
+            if (this.props.map) {
+                this.props.map!.leafletElement.fitBounds(bounds);
+            }
         }
     }
 

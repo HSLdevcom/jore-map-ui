@@ -42,8 +42,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.state = {
             zoomLevel: 15,
         };
-
-        this.fitBounds = this.fitBounds.bind(this);
     }
 
     public componentDidMount() {
@@ -66,12 +64,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     public componentDidUpdate() {
         this.map!.leafletElement.invalidateSize();
-    }
-
-    private fitBounds(bounds: L.LatLngBoundsExpression) {
-        if (this.map) {
-            this.map!.leafletElement.fitBounds(bounds);
-        }
     }
 
     private getVisibleRoutePaths = (routes: IRoute[]) => {
@@ -130,7 +122,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <RouteLayer
                         colors={colors}
                         routePaths={visibleRoutePaths}
-                        fitBounds={this.fitBounds}
+                        map={this.map}
                     />
                     <NodeLayer
                         nodes={visibleNodes}
