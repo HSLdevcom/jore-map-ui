@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import measurementToolIcon from '../../icons/icon-ruler';
 import removeToolIcon from '../../icons/icon-eraser';
 import removeAllIcon from '../../icons/icon-bin';
+import {Layer, Point} from 'leaflet';
 
 interface MeasurementControlOptions extends L.ControlOptions {
     color?: string; // TODO use this for something
@@ -82,6 +83,7 @@ class MeasurementControl extends L.Control {
     private enableMeasure = () => {
         this.disableRemove();
         L.DomUtil.addClass(this.map.getContainer(), s.measurementCursor);
+        L.DomUtil.addClass(this.measurementToolContainer, s.selected);
         this.active = true;
         this.map.on('click', this.measurementClicked);
         this.map.doubleClickZoom.disable();
@@ -89,6 +91,7 @@ class MeasurementControl extends L.Control {
 
     private disableMeasure = () => {
         L.DomUtil.removeClass(this.map.getContainer(), s.measurementCursor);
+        L.DomUtil.removeClass(this.measurementToolContainer, s.selected);
         this.active = false;
         this.map.off('click', this.measurementClicked);
         this.map.off('mousemove', this.measurementMoving);
@@ -115,6 +118,13 @@ class MeasurementControl extends L.Control {
         this.measuring = false;
         this.tmpLine.clearLayers();
         this.map.off('dblclick', this.finishMeasurement);
+    }
+
+    private featuresNear = (layer: L.FeatureGroup, point: L.LatLng, distance: number) => {
+        layer.eachLayer((feat) => {
+            point.distanceTo(feat.);
+        })
+        return true;
     }
 
     private measurementClicked = (e: L.LeafletMouseEvent) => {
@@ -180,12 +190,14 @@ class MeasurementControl extends L.Control {
     }
 
     private enableRemove = () => {
+        L.DomUtil.addClass(this.removeToolContainer, s.selected);
         this.removing = true;
         this.finishMeasurement();
         this.disableMeasure();
     }
 
     private disableRemove = () => {
+        L.DomUtil.removeClass(this.removeToolContainer, s.selected);
         this.removing = false;
     }
 
