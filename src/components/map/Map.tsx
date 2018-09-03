@@ -42,7 +42,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.state = {
             zoomLevel: 15,
         };
-
+        this.setView = this.setView.bind(this);
         this.fitBounds = this.fitBounds.bind(this);
     }
 
@@ -92,6 +92,13 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         );
     }
 
+    /* Leaflet methods */
+    private setView(latLng: L.LatLng) {
+        if (this.map) {
+            this.map!.leafletElement.setView(latLng, 17);
+        }
+    }
+
     public render() {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
@@ -136,7 +143,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         nodes={visibleNodes}
                     />
                     <PopupLayer
-                        map={this.map}
+                        setView={this.setView}
                     />
                     <Control position='topleft'>
                         <Toolbar toolbarStore={this.props.toolbarStore}/>
