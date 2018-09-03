@@ -135,7 +135,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <NodeLayer
                         nodes={visibleNodes}
                     />
-                    <PopupLayer />
+                    <PopupLayer
+                        map={this.map}
+                    />
                     <Control position='topleft'>
                         <Toolbar toolbarStore={this.props.toolbarStore}/>
                     </Control>
