@@ -48,18 +48,12 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         if (this.props.lineStore!.filters &&
             this.props.lineStore!.filters.indexOf(transitType) !== -1) {
             return false;
-<<<<<<< HEAD:src/components/sidebar/LineItems.tsx
         } if (routes
                 .map(route => route.name.toLowerCase())
                 .some(name => name.indexOf(searchTerm) > -1) ||
                 searchTerm.indexOf(lineId) > -1) {
             return true;
         } return false;
-=======
-        }
-
-        return searchTargetAttributes.includes(this.props.lineStore!.searchInput);
->>>>>>> master:src/components/sidebar/SearchResults.tsx
     }
 
     public render(): any {
