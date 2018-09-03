@@ -29,21 +29,16 @@ class LineItems extends React.Component<ILineItemsProps> {
     }
 
     public filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
-        let routeNames = '';
-        routes.forEach((lineRoute: ILineRoute) => {
-            routeNames += lineRoute.name;
-        });
-
-        const searchTargetAttributes = lineId + routeNames.toLowerCase();
+        const searchTerm = this.props.lineStore!.searchInput.toLowerCase();
         if (this.props.lineStore!.filters &&
             this.props.lineStore!.filters.indexOf(transitType) !== -1) {
             return false;
-        }
-
-        if (searchTargetAttributes.includes(this.props.lineStore!.searchInput.toLowerCase())) {
+        } if (routes
+                .map(route => route.name.toLowerCase())
+                .some(name => name.indexOf(searchTerm) > -1) ||
+                searchTerm.indexOf(lineId) > -1) {
             return true;
-        }
-        return false;
+        } return false;
     }
 
     public render(): any {
