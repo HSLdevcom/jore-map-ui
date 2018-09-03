@@ -5,15 +5,15 @@ import { IRoutePath } from '../../models';
 
 interface RouteLayerProps {
     routePaths: IRoutePath[];
+    fitBounds: (bounds: L.LatLngBoundsExpression) => void;
     colors: string[];
-    map: any;
 }
 
 export default class RouteLayer extends Component<RouteLayerProps> {
-    calculateBounds() {
+    calculateBounds(nextProps: RouteLayerProps) {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
-        this.props.routePaths.forEach((routePath) => {
+        nextProps.routePaths.forEach((routePath) => {
             const geoJSON = L.geoJSON(routePath.geoJson);
             if (!bounds) {
                 bounds = geoJSON.getBounds();
@@ -21,19 +21,18 @@ export default class RouteLayer extends Component<RouteLayerProps> {
                 bounds.extend(geoJSON.getBounds());
             }
         });
+
         if (bounds.isValid()) {
-            if (this.props.map) {
-                this.props.map!.leafletElement.fitBounds(bounds);
-            }
+            this.props.fitBounds(bounds);
         }
     }
 
-    componentDidUpdate(prevProps: RouteLayerProps) {
+    componentWillReceiveProps(nextProps: RouteLayerProps) {
         const routePathsChanged =
-            prevProps.routePaths.map(rPath => rPath.internalId).join(':')
+            nextProps.routePaths.map(rPath => rPath.internalId).join(':')
             !== this.props.routePaths.map(rPath => rPath.internalId).join(':');
         if (routePathsChanged) {
-            this.calculateBounds();
+            this.calculateBounds(nextProps);
         }
     }
 
