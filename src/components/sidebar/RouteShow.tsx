@@ -9,11 +9,15 @@ import LineHelper from '../../util/lineHelper';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import ColorScale from '../../util/colorScale';
 import * as s from './routeShow.scss';
+import { History, Location } from 'history';
+import LinkBuilder from '../../factories/linkBuilder';
 
 interface IRouteShowProps {
     routeStore?: RouteStore;
     route: IRoute;
     visibleRoutePathsIndex: number;
+    history: History;
+    location: Location<any>;
 }
 
 @inject('routeStore')
@@ -22,6 +26,8 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
     private onClose = () => {
         this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
+        this.props.history.push(LinkBuilder
+            .createLinkWithoutRoute(this.props.location, this.props.route.routeId));
     }
 
     private renderRouteName() {

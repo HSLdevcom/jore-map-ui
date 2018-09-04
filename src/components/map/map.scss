@@ -1,7 +1,6 @@
 @import '../../common.scss';
 .mapView {
     position: absolute;
-
     &:not(.fullscreen) {
         left: 400px;
         width: calc(100vw - 400px);
@@ -13,151 +12,11 @@
         width: 100%;
         height: 100%;
     }
-
     #mapLeaflet {
         min-height: 400px;
         height: 100vh;
         overflow: hidden;
         z-index: 10;
         background-color: #b2b2b2;
-
-        button.fullscreenButton {
-            display: block;
-            background-color: white;
-            width: 34px;
-            height: 34px;
-            border: 2px solid $borderOpaque;
-            border-radius: 4px;
-            padding: 0;
-            cursor: pointer;
-            background-clip: padding-box;
-        }
-
-        button.fullscreenButton:hover {
-            background-color: $lightGrey;
-
-        }
-
-        .fullscreenButton img {
-            height: 13px;
-            width: 13px;
-            border: 0px;
-        }
     }
-}
-
-#coordinateControl {
-    border: 0px;
-    width: 304px;
-    div {
-        height: 29px;
-        width: 130px;
-        display: inline-block;
-        border: 1px solid black;
-        background-color: $lightGrey;
-    }
-    div:first-of-type{
-        margin-right: 40px;
-    }
-    div>button {
-        font-family: $hslFont;
-        color: $fontColorDefault;
-        background: transparent;
-        font-size: $smallFontSize;
-        width: 27px;
-        border: 0px;
-        padding: 0px;
-        margin: 0px;
-    }
-    div>input {
-        font-family: $hslFont;
-        color: $fontColorLightGrey;
-        font-size: $smallFontSize;
-        height: 100%;
-        width: 100px;
-        margin: 0px;
-        border: 0px;
-        border-left: 1px solid black;
-        padding: 0px 0px 0px 2px;
-    }
-}
-
-#measurementControl {
-    height: 30px;
-    background-color: $white;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    div{
-        border:0px;
-        cursor: pointer;
-        height:100%;
-        transition: 0.2s;
-        &:hover {
-            background-color: $lightGrey;
-        }
-        &:first-child {
-            border-top-left-radius: 2px;
-            border-bottom-left-radius: 2px;
-        }
-        &:nth-child(2) {
-            border-left: 1px solid $borderOpaque;
-        }
-        &:nth-child(3) {
-            border-left: 1px solid $borderOpaque;
-            border-top-right-radius: 2px;
-            border-bottom-right-radius: 2px;
-        }
-        svg {
-            stroke: $blue;
-            fill: $blue;
-            height: 30px;
-        }
-    }
-
-    div.measurementTool {
-        display: inline-block;
-    }
-
-
-    div.removeTool {
-        display: none;
-        svg:hover {
-            color: $darkGrey;
-        }
-    }
-
-    div.removeAll {
-        display: none;
-        svg:hover {
-            color: $darkGrey;
-        }
-    }
-
-
-    div.show {
-        display: inline-block;
-    }
-}
-
-.measurementCursor {
-    cursor: crosshair;
-}
-.movingPolyline {
-    @extend .no-events;
-    stroke: black;
-    stroke-dasharray: 10px;
-}
-
-.polyline {
-    stroke: $darkGrey;
-}
-
-.circleMarker {
-    stroke: black;
-    fill: $whiteOpaque;
-}
-
-.no-events{
-    pointer-events: none;
 }
