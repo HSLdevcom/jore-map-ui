@@ -44,7 +44,6 @@ interface IMapPropReference {
 @inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
-    // tslint:disable-next-line
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
 
     constructor(props: IMapProps) {
