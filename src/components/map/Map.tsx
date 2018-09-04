@@ -1,4 +1,4 @@
-import { Map, MapProps, TileLayer, ZoomControl } from 'react-leaflet';
+import { Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
@@ -35,10 +35,11 @@ interface IMapProps {
 @inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
-    private map: Map<MapProps, L.Map> | null;
+    private map: any;
 
     constructor(props: IMapProps) {
         super(props);
+        this.map = React.createRef();
         this.state = {
             zoomLevel: 15,
         };
@@ -47,7 +48,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     public componentDidMount() {
-        const leafletElement = this.map!.leafletElement;
+        const leafletElement = this.map.current!.leafletElement;
         // TODO: Convert these as react-components
         leafletElement.addControl(new CoordinateControl({ position: 'topright' }));
         leafletElement.addControl(new MeasurementControl({ position: 'topright' }));
@@ -65,12 +66,12 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     public componentDidUpdate() {
-        this.map!.leafletElement.invalidateSize();
+        this.map.current!.leafletElement.invalidateSize();
     }
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
         if (this.map) {
-            this.map!.leafletElement.fitBounds(bounds);
+            this.map.current!.leafletElement.fitBounds(bounds);
         }
     }
 
@@ -95,7 +96,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
         if (this.map) {
-            this.map!.leafletElement.setView(latLng, 17);
+            this.map.current!.leafletElement.setView(latLng, 17);
         }
     }
 
@@ -108,9 +109,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 <Map
-                    ref={(map) => {
-                        this.map = map;
-                    }}
+                    ref={this.map}
                     center={this.props.mapStore!.coordinates}
                     zoom={this.state.zoomLevel}
                     zoomControl={false}
