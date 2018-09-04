@@ -8,7 +8,7 @@ class LinkBuilder {
             { ignoreQueryPrefix: true, arrayLimit: 1 },
         );
         const routeIds = [...this.parseRouteIds(queryRoutes), routeId];
-        return this.createLink(queryValues, routeIds);
+        return this.createLink(location, queryValues, routeIds);
     }
 
     public static createLinkWithoutRoute(location: Location, routeId: string) {
@@ -17,16 +17,16 @@ class LinkBuilder {
             { ignoreQueryPrefix: true, arrayLimit: 1 },
         );
         const routeIds = this.parseRouteIds(queryRoutes).filter(x => x !== routeId);
-        return this.createLink(queryValues, routeIds);
+        return this.createLink(location, queryValues, routeIds);
     }
 
     public static parseRouteIds(queryValues: any): string[] {
         return queryValues ? queryValues.split(' ') : [];
     }
 
-    private static createLink(queryValues:any, routeIds: string[]) {
-        const pathname = (routeIds.length > 0)
-            ? 'routes/' : '/';
+    private static createLink(location: Location, queryValues:any, routeIds: string[]) {
+        const pathname = (routeIds.length < 1)
+            ? '/' : '/routes/';
         return pathname +
             qs.stringify(
                 routeIds.length < 1 ? queryValues : { ...queryValues, routes: routeIds.join('+') },
