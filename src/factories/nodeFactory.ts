@@ -16,6 +16,20 @@ class NodeFactory {
             coordinates: coordinate,
         };
     }
+
+    public static createStartingPointNode = (coordinates: any): INode => {
+        const coordinate : ICoordinate = {
+            lon: coordinates[0],
+            lat: coordinates[1],
+        };
+        return <INode>{
+            internalRoutePathId: '0',
+            id: 0,
+            type: NodeType.START,
+            coordinates: coordinate,
+        };
+    }
+
 }
 
 const getNodeType = (type:any) => {

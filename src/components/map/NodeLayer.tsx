@@ -8,6 +8,7 @@ import { PopupStore } from '../../stores/popupStore';
 import { ToolbarStore } from '../../stores/toolbarStore';
 import { observer, inject } from 'mobx-react';
 import ToolbarTools from '../../enums/toolbarTools';
+import PinIcon from '../../icons/pin';
 
 interface NodeLayerProps {
     nodes: INode[];
@@ -22,17 +23,25 @@ export default class NodeLayer extends Component<NodeLayerProps> {
         super(props);
     }
 
-    private getNodeMarkerHtml = (color: string) => {
-        return `<div
-            style="border-color: ${color}"
-            class=${s.nodeMarkerContent}
-        />`;
+    private getNodeMarkerHtml = (color: string, type: NodeType) => {
+
+        switch (type) {
+        case NodeType.START: {
+            return PinIcon.getPin(color);
+        }
+        default: {
+            return `<div
+                style="border-color: ${color}"
+                class=${s.nodeMarkerContent}
+            />`;
+        }
+        }
     }
 
-    private getIcon = (color: string) => {
+    private getIcon = (color: string, type: NodeType) => {
         const divIconOptions : L.DivIconOptions = {
-            className: s.nodeMarker,
-            html: this.getNodeMarkerHtml(color),
+            className: type !== NodeType.START ? s.nodeMarker : s.nodeMarker,
+            html: this.getNodeMarkerHtml(color, type),
         };
 
         return new L.DivIcon(divIconOptions);
@@ -43,7 +52,7 @@ export default class NodeLayer extends Component<NodeLayerProps> {
             const color =
                 node.type === NodeType.CROSSROAD
                 ? '#666666' : '#f17c44';
-            const icon = this.getIcon(color);
+            const icon = this.getIcon(color, node.type);
 
             const openPopup = () => {
                 this.props.popupStore!.showPopup(node);
