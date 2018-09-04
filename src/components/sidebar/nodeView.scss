@@ -80,13 +80,8 @@
         border-bottom: 1px solid $lightGrey;
     }
 
-
-    .informationContainer {
-        margin-left: 20px;
-
-        .informationSource {
-            white-space: nowrap;
-        }
+    .informationSource {
+        white-space: nowrap;
     }
 
     .informationField {
@@ -98,10 +93,5 @@
             white-space: nowrap;
             padding-top: 2px;
         }
-    }
-
-    .buttonContainer {
-        width: 275px;
-        margin-left: 50px;
     }
 }
