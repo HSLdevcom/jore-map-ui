@@ -14,9 +14,14 @@ import observablePopupStore from './stores/popupStore';
 import observableToolbarStore from './stores/toolbarStore';
 import apolloClient from './util/ApolloClient';
 import './index.scss';
-import { BrowserRouter, Route } from 'react-router-dom';
+import createBrowserHistory from 'history/createBrowserHistory';
+import { syncHistoryWithStore } from 'mobx-react-router';
+import { Router } from 'react-router';
+import navigator from './routing/navigator';
 
 configure({ enforceActions: 'always' });
+
+const browserHistory = createBrowserHistory();
 
 const stores = {
     mapStore: observableMapStore,
@@ -29,13 +34,15 @@ const stores = {
     toolbarStore: observableToolbarStore,
 };
 
+const history = syncHistoryWithStore(browserHistory, navigator.getStore());
+
 ReactDOM.render(
-        <Provider {...stores}>
-            <ApolloProvider client={apolloClient}>
-                <BrowserRouter>
-                    <Route component={App}/>
-                </BrowserRouter>
-            </ApolloProvider>
-        </Provider>,
-        document.getElementById('root') as HTMLElement,
+    <Provider {...stores}>
+        <ApolloProvider client={apolloClient}>
+            <Router history={history}>
+                <App />
+            </Router>
+        </ApolloProvider>
+    </Provider>,
+    document.getElementById('root') as HTMLElement,
 );

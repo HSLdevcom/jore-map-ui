@@ -9,7 +9,7 @@ import { SidebarStore } from '../../stores/sidebarStore';
 import { inject, observer } from 'mobx-react';
 import SearchResults from './SearchResults';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
-import routeBuilderProvider from '../../routing/routeBuilderProvider';
+import routeBuilder from '../../routing/routeBuilder';
 import routing from '../../routing/routing';
 
 interface ISidebarProps extends RouteComponentProps<any>{
@@ -22,9 +22,9 @@ interface ISidebarProps extends RouteComponentProps<any>{
 @observer
 class RoutesView extends React.Component<ISidebarProps> {
     public componentDidUpdate() {
-        if (!routeBuilderProvider.getValue('routes')) {
+        if (!routeBuilder.getValue('routes')) {
             this.props.history.push(
-                routeBuilderProvider
+                routeBuilder
                     .to(routing.home)
                     .toLink());
         }

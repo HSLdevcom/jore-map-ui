@@ -9,7 +9,7 @@ import * as s from './lineItem.scss';
 import lineStore from '../../stores/lineStore';
 import { Location, History } from 'history';
 import LineItemSubMenu from './LineItemSubMenu';
-import routeBuilderProvider from '../../routing/routeBuilderProvider';
+import routeBuilder from '../../routing/routeBuilder';
 import routing from '../../routing/routing';
 
 interface ILineItemState {
@@ -82,7 +82,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                     this.props.line.transitType),
                             )}
                             onClick={
-                                gotoUrl(routeBuilderProvider
+                                gotoUrl(routeBuilder
                                     .to(routing.routes).append('routes', route.id).toLink())
                             }
                         >

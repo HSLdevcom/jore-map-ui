@@ -9,7 +9,7 @@ import * as s from './routesList.scss';
 import { RouteComponentProps } from 'react-router-dom';
 import RouteService from '../../services/routeService';
 import Loader from './Loader';
-import routeBuilderProvider from '../../routing/routeBuilderProvider';
+import routeBuilder from '../../routing/routeBuilder';
 
 interface MatchParams {
     route: string;
@@ -54,7 +54,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     private async queryRoutes() {
         this.setState({ isLoading: true });
-        const routeIds = routeBuilderProvider.getValue('routes');
+        const routeIds = routeBuilder.getValue('routes');
         if (routeIds) {
             this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
         }
@@ -64,8 +64,8 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     public componentDidUpdate() {
         if (
             !this.state.isLoading &&
-            routeBuilderProvider.getValue('routes') &&
-            routeBuilderProvider.getValue('routes').length
+            routeBuilder.getValue('routes') &&
+            routeBuilder.getValue('routes').length
                 !== this.props.routeStore!.routes.length
             ) {
             if (!this.state.isLoading) {

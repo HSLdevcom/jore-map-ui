@@ -1,60 +1,50 @@
-export default class RouteBuilder {
-    private _target: string;
-    private _values: any;
+import * as qs from 'qs';
+import RouteBuilderContext from './routeBuilderContext';
+import { Url } from './routing';
+import navigator from './navigator';
+import { RouterStore } from 'mobx-react-router';
 
-    constructor(target: string, values: any) {
-        this._target = target;
-        this._values = this.jsonCopy(values);
+export class RouteBuilder {
+    private _routerStore: RouterStore;
+
+    constructor() {
+        this._routerStore = navigator.getStore();
     }
 
-    private jsonCopy(jsonObject: JSON) {
-        return JSON.parse(JSON.stringify(jsonObject));
+    private getLocation() {
+        return this._routerStore.location.pathname;
     }
 
-    public toLink() {
-        let search = this._target;
-        if (Object.keys(this._target).length !== 0) {
-            search += '?';
-        }
-        for (const property in this._values) {
-            if (Array.isArray(this._values[property])) {
-                for (const val in this._values[property]) {
-                    search += `${property}[]=${this._values[property][val]}&`;
-                }
-            } else {
-                search += `${property}=${this._values[property]}&`;
-            }
-        }
-        return search;
+    private getValues() {
+        return qs.parse(
+            this._routerStore.location.search,
+            { ignoreQueryPrefix: true, arrayLimit: 1 },
+        );
     }
 
-    public append(name: string, value: string) {
-        if (name in this._values) {
-            this._values[name].push(value);
-        } else {
-            this._values[name] = [value];
-        }
-        return this;
+    public to(route: Url) {
+        return new RouteBuilderContext(route.location, this.getValues());
     }
 
-    public remove(name: string, value: string) {
-        if (name in this._values) {
-            if (Array.isArray(this._values[name])) {
-                this._values[name] = this._values[name].filter((v : string) => v !== value);
-            } else {
-                this._values[name] = null;
-            }
-        }
-        return this;
+    public current() {
+        return new RouteBuilderContext(this.getLocation(), this.getValues());
     }
 
-    public set(name: string, value: string) {
-        this._values[name] = value;
-        return this;
+    public getValue(name: string) {
+        return this.getValues()[name];
     }
 
-    public clear() {
-        this._values = {};
-        return this;
+    public getCurrentLocation() {
+        return this.getLocation();
+    }
+
+    public getCurrentSearchParameters() {
+        return this.getValues();
+    }
+
+    public open(link: string) {
+        this._routerStore.history.push(link);
     }
 }
+
+export default new RouteBuilder();

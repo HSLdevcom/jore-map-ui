@@ -10,7 +10,7 @@ import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import ColorScale from '../../util/colorScale';
 import * as s from './routeShow.scss';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import routeBuilderProvider from '../../routing/routeBuilderProvider';
+import routeBuilder from '../../routing/routeBuilder';
 
 interface IRouteShowProps extends RouteComponentProps<any> {
     routeStore?: RouteStore;
@@ -27,7 +27,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 
     private closeRoute() {
-        const link = routeBuilderProvider
+        const link = routeBuilder
             .current()
             .remove('routes', this.props.route.routeId)
             .toLink();

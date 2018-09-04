@@ -1,18 +1,21 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import * as s from './sidebar.scss';
-import { Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router';
 import hslLogo from '../../assets/hsl-logo.png';
 import { RouteStore } from '../../stores/routeStore';
 import { LineStore } from '../../stores/lineStore';
 import RoutesView from './RoutesView';
 import HomeView from './HomeView';
-import routeBuilderProvider from '../../routing/routeBuilderProvider';
+import routeBuilder from '../../routing/routeBuilder';
 import routing from '../../routing/routing';
+import { Location } from 'history';
+import navigator from '../../routing/navigator';
 
-interface ISidebarProps extends RouteComponentProps<any>{
+interface ISidebarProps{
     routeStore?: RouteStore;
     lineStore?: LineStore;
+    location: Location;
 }
 
 interface ILinelistState {
@@ -26,10 +29,12 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const handleHeaderClick = () => {
             this.props.routeStore!.clearRoutes();
             this.props.lineStore!.setSearchInput('');
-            this.props.history.push(
-                routeBuilderProvider
+            navigator.push(
+                routeBuilder
                     .to(routing.home)
-                    .toLink());
+                    .clear()
+                    .toLink(),
+            );
         };
         return (
             <div className={s.sidebarView}>
@@ -42,8 +47,8 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                     </div>
                 </div>
                 <Switch>
-                    <Route path='/routes' component={RoutesView} />
-                    <Route component={HomeView} />
+                    <Route path={routing.routes.location} component={RoutesView} />
+                    <Route path={routing.home.location} component={HomeView} />
                 </Switch>
             </div>
         );
