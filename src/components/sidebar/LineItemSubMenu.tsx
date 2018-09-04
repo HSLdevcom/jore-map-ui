@@ -19,7 +19,6 @@ interface LineItemSubMenuProps {
 
 interface LineItemSubMenuState {
     routePaths: IRoutePath[] | null;
-    selectedIds: string[];
 }
 
 @inject('notificationStore', 'searchStore')
@@ -31,7 +30,6 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         super(props);
         this.state = {
             routePaths: null,
-            selectedIds: [],
         };
     }
 
@@ -45,6 +43,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         }
         RouteService.getRoute(this.props.routeId)
             .then((res: IRoute) => {
+                // Allow setState call only if LineItemSubMenu is mounted to the view.
                 if (this.mounted) {
                     this.setState({
                         routePaths: res.routePaths,
@@ -60,23 +59,21 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
     }
 
     private select(routePathId: string) {
-        const newSelectedIds = this.state.selectedIds;
-        newSelectedIds.push(routePathId);
-        this.setState({
-            selectedIds: newSelectedIds,
-        });
         this.props.searchStore!.addSubLineItem(this.props.routeId, routePathId);
     }
 
     private unSelect(routePathId: string) {
-        this.setState({
-            selectedIds: this.state.selectedIds.filter(id => routePathId !== id),
-        });
         this.props.searchStore!.removeSubLineItem(this.props.routeId, routePathId);
     }
 
     private isSelected(routePathId: string) {
-        return this.state.selectedIds.some(id => routePathId === id);
+        return this.props.searchStore!.subLineItems.some((subLineItem: {
+            routePathId: string;
+            routeId: string;
+        }) => {
+            return subLineItem.routeId === this.props.routeId
+                && subLineItem.routePathId === routePathId;
+        });
     }
 
     private toggle(routePathId: string) {
