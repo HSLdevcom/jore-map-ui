@@ -9,6 +9,7 @@ import observableLoginStore from './stores/loginStore';
 import observableMapStore from './stores/mapStore';
 import observableLineStore from './stores/lineStore';
 import observableRouteStore from './stores/routeStore';
+import observableSearchStore from './stores/searchStore';
 import observableSidebarStore from './stores/sidebarStore';
 import observablePopupStore from './stores/popupStore';
 import observableToolbarStore from './stores/toolbarStore';
@@ -24,6 +25,7 @@ const stores = {
     lineStore: observableLineStore,
     loginStore: observableLoginStore,
     routeStore: observableRouteStore,
+    searchStore: observableSearchStore,
     sidebarStore: observableSidebarStore,
     popupStore: observablePopupStore,
     toolbarStore: observableToolbarStore,

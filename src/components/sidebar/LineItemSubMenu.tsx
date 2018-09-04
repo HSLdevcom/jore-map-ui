@@ -4,31 +4,46 @@ import { IRoutePath, IRoute } from '../../models';
 import RouteService from '../../services/routeService';
 import { observer, inject } from 'mobx-react';
 import { NotificationStore } from '../../stores/notificationStore';
+import { SearchStore } from '../../stores/searchStore';
 import NotificationType from '../../enums/notificationType';
 import { Checkbox } from '../controls';
 import Moment from 'react-moment';
 
 interface LineItemSubMenuProps {
+    notificationStore?: NotificationStore;
+    searchStore?: SearchStore;
     routeId: string;
     lineId: string;
     visible: boolean;
-    notificationStore?: NotificationStore;
 }
 
 interface LineItemSubMenuState {
     routePaths: IRoutePath[] | null;
-    checkedRoutePaths: number[];
 }
 
-@inject('notificationStore')
+@inject('notificationStore', 'searchStore')
 @observer
 class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuState> {
+    private mounted: boolean;
+
     constructor(props: LineItemSubMenuProps) {
         super(props);
         this.state = {
             routePaths: null,
-            checkedRoutePaths: [],
         };
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
+    }
+
+    public componentDidMount() {
+        this.mounted = true;
+        this.fetchRoutePaths();
+    }
+
+    public componentDidUpdate() {
+        this.fetchRoutePaths();
     }
 
     private fetchRoutePaths() {
@@ -37,9 +52,12 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         }
         RouteService.getRoute(this.props.routeId)
             .then((res: IRoute) => {
-                this.setState({
-                    routePaths: res.routePaths,
-                });
+                // Allow setState call only if LineItemSubMenu is mounted to the view.
+                if (this.mounted) {
+                    this.setState({
+                        routePaths: res.routePaths,
+                    });
+                }
             })
             .catch((err: any) => {
                 this.props.notificationStore!.addNotification({
@@ -49,36 +67,30 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
             });
     }
 
-    private select(index: number) {
-        this.setState({
-            checkedRoutePaths: this.state.checkedRoutePaths.concat(index),
-        });
-    }
-
-    private unSelect(index: number) {
-        this.setState({
-            checkedRoutePaths: this.state.checkedRoutePaths.filter(path => index !== path),
-        });
-    }
-
-    private isSelected(index: number) {
-        return this.state.checkedRoutePaths.some(path => index === path);
-    }
-
-    private toggle(index: number) {
-        if (this.isSelected(index)) {
-            this.unSelect(index);
+    private toggle(routePathId: string) {
+        if (this.isSelected(routePathId)) {
+            this.unSelect(routePathId);
         } else {
-            this.select(index);
+            this.select(routePathId);
         }
     }
 
-    public componentDidMount() {
-        this.fetchRoutePaths();
+    private select(routePathId: string) {
+        this.props.searchStore!.addSubLineItem(this.props.routeId, routePathId);
     }
 
-    public componentDidUpdate() {
-        this.fetchRoutePaths();
+    private unSelect(routePathId: string) {
+        this.props.searchStore!.removeSubLineItem(this.props.routeId, routePathId);
+    }
+
+    private isSelected(routePathId: string) {
+        return this.props.searchStore!.subLineItems.some((subLineItem: {
+            routePathId: string;
+            routeId: string;
+        }) => {
+            return subLineItem.routeId === this.props.routeId
+                && subLineItem.routePathId === routePathId;
+        });
     }
 
     render () {
@@ -99,8 +111,8 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
                             key={index}
                         >
                             <Checkbox
-                                onClick={this.toggle.bind(this, index)}
-                                checked={this.isSelected(index)}
+                                onClick={this.toggle.bind(this, routePath.internalId)}
+                                checked={this.isSelected(routePath.internalId)}
                                 text={routePath.routePathName}
                             />
                             <div className={s.routeDate}>
