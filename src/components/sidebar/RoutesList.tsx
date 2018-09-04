@@ -1,15 +1,15 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import * as qs from 'qs';
 import { RouteStore } from '../../stores/routeStore';
 import searchStore from '../../stores/searchStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
-import * as s from './routesList.scss';
-import { RouteComponentProps } from 'react-router-dom';
-import * as qs from 'qs';
 import RouteService from '../../services/routeService';
 import Loader from './Loader';
+import * as s from './routesList.scss';
 
 interface MatchParams {
     route: string;
@@ -41,28 +41,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     async componentDidMount() {
         await this.queryRoutes();
         searchStore!.setSearchInput('');
-    }
-
-    private networkCheckboxToggle = (type: string) => {
-        const newToggleState: object = this.state.networkCheckboxToggles;
-        newToggleState[type] = !this.state.networkCheckboxToggles[type];
-        this.setState({
-            networkCheckboxToggles: newToggleState,
-        });
-    }
-
-    private async queryRoutes() {
-        this.setState({ isLoading: true });
-        const queryValues = qs.parse(
-            this.props.location.search,
-            { ignoreQueryPrefix: true, arrayLimit: 1 },
-        );
-        let routeIds: string[] = [];
-        if (queryValues.routes) {
-            routeIds = queryValues.routes.split(' ');
-            this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
-        }
-        this.setState({ isLoading: false });
     }
 
     public render(): any {
@@ -118,6 +96,28 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 </div>
             </div>
         );
+    }
+
+    private networkCheckboxToggle = (type: string) => {
+        const newToggleState: object = this.state.networkCheckboxToggles;
+        newToggleState[type] = !this.state.networkCheckboxToggles[type];
+        this.setState({
+            networkCheckboxToggles: newToggleState,
+        });
+    }
+
+    private async queryRoutes() {
+        this.setState({ isLoading: true });
+        const queryValues = qs.parse(
+            this.props.location.search,
+            { ignoreQueryPrefix: true, arrayLimit: 1 },
+        );
+        let routeIds: string[] = [];
+        if (queryValues.routes) {
+            routeIds = queryValues.routes.split(' ');
+            this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
+        }
+        this.setState({ isLoading: false });
     }
 }
 

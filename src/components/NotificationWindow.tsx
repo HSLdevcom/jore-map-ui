@@ -1,9 +1,9 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import * as s from './notificationWindow.scss';
 import classnames from 'classnames';
 import NotificationType from '../enums/notificationType';
 import { NotificationStore } from '../stores/notificationStore';
+import * as s from './notificationWindow.scss';
 
 interface INotificationWindowProps {
     notificationStore?: NotificationStore;
@@ -29,32 +29,6 @@ class NotificationWindow extends React.Component
         this.state = {
             disappearingNotifications: [], // used for disappearing animation
         };
-    }
-
-    private closeNotification = (message: string) => {
-        const newDisappearingNotifications = this.state.disappearingNotifications;
-        newDisappearingNotifications.push(message);
-        this.setState({
-            disappearingNotifications: newDisappearingNotifications,
-        });
-        setTimeout(
-            () => {
-                this.props.notificationStore!.closeNotification(message);
-                const newDisappearingNotifications =
-                    this.state.disappearingNotifications.filter(m => m !== message);
-                this.setState({
-                    disappearingNotifications: newDisappearingNotifications,
-                });
-            },
-            500,
-        );
-    }
-
-    private getDisappearingNotificationClass = (message: string) => {
-        if (this.state.disappearingNotifications.includes(message)) {
-            return s.notificationItemDisappear;
-        }
-        return;
     }
 
     getColorClass = (type: string) => {
@@ -96,6 +70,32 @@ class NotificationWindow extends React.Component
             })}
           </div>
         );
+    }
+
+    private closeNotification = (message: string) => {
+        const newDisappearingNotifications = this.state.disappearingNotifications;
+        newDisappearingNotifications.push(message);
+        this.setState({
+            disappearingNotifications: newDisappearingNotifications,
+        });
+        setTimeout(
+            () => {
+                this.props.notificationStore!.closeNotification(message);
+                const newDisappearingNotifications =
+                    this.state.disappearingNotifications.filter(m => m !== message);
+                this.setState({
+                    disappearingNotifications: newDisappearingNotifications,
+                });
+            },
+            500,
+        );
+    }
+
+    private getDisappearingNotificationClass = (message: string) => {
+        if (this.state.disappearingNotifications.includes(message)) {
+            return s.notificationItemDisappear;
+        }
+        return;
     }
 }
 export default NotificationWindow;

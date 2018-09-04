@@ -1,15 +1,15 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
+import Moment from 'react-moment';
+import { Location, History } from 'history';
 import lineHelper from '../../util/lineHelper';
 import { ILine, ILineRoute } from '../../models';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
-import Moment from 'react-moment';
-import * as s from './lineItem.scss';
 import searchStore from '../../stores/searchStore';
-import { Location, History } from 'history';
 import LinkBuilder from '../../factories/linkBuilder';
 import LineItemSubMenu from './LineItemSubMenu';
+import * as s from './lineItem.scss';
 
 interface ILineItemState {
     openRouteIds: string[];
@@ -27,31 +27,6 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         this.state = {
             openRouteIds: [],
         };
-    }
-
-    private isRouteOpen(routeId: string) {
-        return this.state.openRouteIds.some(id => id === routeId);
-    }
-
-    private openRouteMenu(routeId: string) {
-        this.setState({
-            openRouteIds: this.state.openRouteIds.concat(routeId),
-        });
-    }
-
-    private closeRouteMenu(routeId: string) {
-        this.setState({
-            openRouteIds: this.state.openRouteIds.filter(id => id !== routeId),
-        });
-    }
-
-    private toggleRouteMenu(routeId: string, e: any) {
-        e.stopPropagation();
-        if (this.isRouteOpen(routeId)) {
-            this.closeRouteMenu(routeId);
-        } else {
-            this.openRouteMenu(routeId);
-        }
     }
 
     public renderRoute(route: ILineRoute): any {
@@ -130,6 +105,31 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 })}
             </div>
         );
+    }
+
+    private isRouteOpen(routeId: string) {
+        return this.state.openRouteIds.some(id => id === routeId);
+    }
+
+    private openRouteMenu(routeId: string) {
+        this.setState({
+            openRouteIds: this.state.openRouteIds.concat(routeId),
+        });
+    }
+
+    private closeRouteMenu(routeId: string) {
+        this.setState({
+            openRouteIds: this.state.openRouteIds.filter(id => id !== routeId),
+        });
+    }
+
+    private toggleRouteMenu(routeId: string, e: any) {
+        e.stopPropagation();
+        if (this.isRouteOpen(routeId)) {
+            this.closeRouteMenu(routeId);
+        } else {
+            this.openRouteMenu(routeId);
+        }
     }
 }
 

@@ -3,9 +3,9 @@ import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import classnames from 'classnames';
 import { MapStore } from '../../stores/mapStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
@@ -16,10 +16,10 @@ import ColorScale from '../../util/colorScale';
 import NodeLayer from './NodeLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
-import * as s from './map.scss';
 import Toolbar from './Toolbar';
 import PopupLayer from './PopupLayer';
 import { ToolbarStore } from '../../stores/toolbarStore';
+import * as s from './map.scss';
 
 interface IMapState {
     zoomLevel: number;
@@ -56,10 +56,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.fitBounds = this.fitBounds.bind(this);
     }
 
-    private getMap() {
-        return this.mapReference.current!.leafletElement;
-    }
-
     public componentDidMount() {
         const map = this.getMap();
         // TODO: Convert these as react-components
@@ -80,33 +76,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     public componentDidUpdate() {
         this.getMap().invalidateSize();
-    }
-
-    private fitBounds(bounds: L.LatLngBoundsExpression) {
-        this.getMap().fitBounds(bounds);
-    }
-
-    private getVisibleRoutePaths = (routes: IRoute[]) => {
-        return routes.reduce<IRoutePath[]>(
-            (flatList, route) => {
-                return flatList.concat(route.routePaths);
-            },
-            [],
-        ).filter(routePath => routePath.visible);
-    }
-
-    private getVisibleNodes = (visibleRoutesPaths: IRoutePath[]) => {
-        return visibleRoutesPaths.reduce<INode[]>(
-            (flatList, routePath) => {
-                return flatList.concat(routePath.nodes);
-            },
-            [],
-        );
-    }
-
-    /* Leaflet methods */
-    private setView(latLng: L.LatLng) {
-        this.getMap().setView(latLng, 17);
     }
 
     public render() {
@@ -167,6 +136,37 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                 </Map>
             </div>
         );
+    }
+
+    private getMap() {
+        return this.mapReference.current!.leafletElement;
+    }
+
+    private fitBounds(bounds: L.LatLngBoundsExpression) {
+        this.getMap().fitBounds(bounds);
+    }
+
+    private getVisibleRoutePaths = (routes: IRoute[]) => {
+        return routes.reduce<IRoutePath[]>(
+            (flatList, route) => {
+                return flatList.concat(route.routePaths);
+            },
+            [],
+        ).filter(routePath => routePath.visible);
+    }
+
+    private getVisibleNodes = (visibleRoutesPaths: IRoutePath[]) => {
+        return visibleRoutesPaths.reduce<INode[]>(
+            (flatList, routePath) => {
+                return flatList.concat(routePath.nodes);
+            },
+            [],
+        );
+    }
+
+    /* Leaflet methods */
+    private setView(latLng: L.LatLng) {
+        this.getMap().setView(latLng, 17);
     }
 }
 

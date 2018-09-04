@@ -3,9 +3,9 @@ import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import { Popup } from 'react-leaflet';
 import { PopupStore } from '../../stores/popupStore';
-import * as s from './popupLayer.scss';
 import { INode } from '../../models';
 import { SidebarStore } from '../../stores/sidebarStore';
+import * as s from './popupLayer.scss';
 
 interface PopupLayerProps {
     popupStore?: PopupStore;
@@ -17,9 +17,6 @@ interface PopupLayerProps {
 @inject('sidebarStore')
 @observer
 export default class PopupLayer extends Component<PopupLayerProps> {
-    private onClose = () => {
-        this.props.popupStore!.closePopup();
-    }
 
     render() {
         if (this.props.popupStore!.popupNode) {
@@ -49,5 +46,8 @@ export default class PopupLayer extends Component<PopupLayerProps> {
                 </Popup>
             );
         } return null;
+    }
+    private onClose = () => {
+        this.props.popupStore!.closePopup();
     }
 }

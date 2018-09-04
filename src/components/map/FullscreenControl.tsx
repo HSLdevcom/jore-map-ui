@@ -1,8 +1,8 @@
 import React from 'react';
 import MapStore from '../../stores/mapStore';
-import * as s from './fullscreenControl.scss';
 import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
 import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
+import * as s from './fullscreenControl.scss';
 
 class FullscreenControl extends React.Component{
     render() {

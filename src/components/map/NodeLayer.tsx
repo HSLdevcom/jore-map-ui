@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { INode } from '../../models';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
+import { observer, inject } from 'mobx-react';
+import { INode } from '../../models';
 import NodeType from '../../enums/nodeType';
-import * as s from './nodeLayer.scss';
 import { PopupStore } from '../../stores/popupStore';
 import { ToolbarStore } from '../../stores/toolbarStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import { observer, inject } from 'mobx-react';
 import ToolbarTools from '../../enums/toolbarTools';
+import * as s from './nodeLayer.scss';
 
 interface NodeLayerProps {
     nodes: INode[];
@@ -31,6 +31,26 @@ export default class NodeLayer extends Component<NodeLayerProps> {
         super(props);
     }
 
+    render() {
+        return this.props.nodes.map((node, index) => {
+            const icon = this.getIcon(node);
+
+            const openPopup = () => {
+                this.props.popupStore!.showPopup(node);
+            };
+
+            return (
+                <Marker
+                    onContextMenu={openPopup}
+                    draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
+                    icon={icon}
+                    key={index}
+                    position={[node.coordinates.lat, node.coordinates.lon]}
+                />
+            );
+        });
+    }
+
     private getNodeMarkerHtml = (borderColor: string, fillColor: string) => {
         return `<div
             style="border-color: ${borderColor}; background-color: ${fillColor}"
@@ -50,25 +70,5 @@ export default class NodeLayer extends Component<NodeLayerProps> {
         };
 
         return new L.DivIcon(divIconOptions);
-    }
-
-    render() {
-        return this.props.nodes.map((node, index) => {
-            const icon = this.getIcon(node);
-
-            const openPopup = () => {
-                this.props.popupStore!.showPopup(node);
-            };
-
-            return (
-                <Marker
-                    onContextMenu={openPopup}
-                    draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
-                    icon={icon}
-                    key={index}
-                    position={[node.coordinates.lat, node.coordinates.lon]}
-                />
-            );
-        });
     }
 }

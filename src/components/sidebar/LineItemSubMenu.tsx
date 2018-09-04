@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import * as s from './lineItemSubMenu.scss';
+import { observer, inject } from 'mobx-react';
+import Moment from 'react-moment';
 import { IRoutePath, IRoute } from '../../models';
 import RouteService from '../../services/routeService';
-import { observer, inject } from 'mobx-react';
 import { NotificationStore } from '../../stores/notificationStore';
 import { SearchStore } from '../../stores/searchStore';
 import NotificationType from '../../enums/notificationType';
 import { Checkbox } from '../controls';
-import Moment from 'react-moment';
+import * as s from './lineItemSubMenu.scss';
 
 interface LineItemSubMenuProps {
     notificationStore?: NotificationStore;
@@ -44,6 +44,51 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
 
     public componentDidUpdate() {
         this.fetchRoutePaths();
+    }
+
+    render () {
+        if (!this.props.visible) {
+            return null;
+        }
+        if (this.state.routePaths === null) {
+            return (
+                <div>Lataa...</div>
+            );
+        }
+        return (
+            <div>
+                {this.state.routePaths.map((routePath, index) => {
+                    return (
+                        <div
+                            className={s.routePathView}
+                            key={index}
+                        >
+                            <Checkbox
+                                onClick={this.toggle.bind(this, routePath.internalId)}
+                                checked={this.isSelected(routePath.internalId)}
+                                text={routePath.routePathName}
+                            />
+                            <div className={s.routeDate}>
+                                {'Voim.ast: '}
+                                <Moment
+                                    date={routePath.startTime}
+                                    format='DD.MM.YYYY HH:mm'
+                                />
+                            </div>
+                            <div className={s.routeDate}>
+                                {'Viim.voim.olo: '}
+                                <Moment
+                                    date={routePath.endTime}
+                                    format='DD.MM.YYYY HH:mm'
+                                />
+                            </div>
+                        </div>
+                    );
+                })
+
+                }
+            </div>
+        );
     }
 
     private fetchRoutePaths() {
@@ -91,51 +136,6 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
             return subLineItem.routeId === this.props.routeId
                 && subLineItem.routePathId === routePathId;
         });
-    }
-
-    render () {
-        if (!this.props.visible) {
-            return null;
-        }
-        if (this.state.routePaths === null) {
-            return (
-                <div>Lataa...</div>
-            );
-        }
-        return (
-            <div>
-                {this.state.routePaths.map((routePath, index) => {
-                    return (
-                        <div
-                            className={s.routePathView}
-                            key={index}
-                        >
-                            <Checkbox
-                                onClick={this.toggle.bind(this, routePath.internalId)}
-                                checked={this.isSelected(routePath.internalId)}
-                                text={routePath.routePathName}
-                            />
-                            <div className={s.routeDate}>
-                                {'Voim.ast: '}
-                                <Moment
-                                    date={routePath.startTime}
-                                    format='DD.MM.YYYY HH:mm'
-                                />
-                            </div>
-                            <div className={s.routeDate}>
-                                {'Viim.voim.olo: '}
-                                <Moment
-                                    date={routePath.endTime}
-                                    format='DD.MM.YYYY HH:mm'
-                                />
-                            </div>
-                        </div>
-                    );
-                })
-
-                }
-            </div>
-        );
     }
 }
 

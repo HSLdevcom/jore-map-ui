@@ -1,9 +1,9 @@
 import * as React from 'react';
+import classNames from 'classnames';
 import lineHelper from '../../util/lineHelper';
 import TransitType from '../../enums/transitType';
-import classNames from 'classnames';
-import * as s from './transitToggleButton.scss';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
+import * as s from './transitToggleButton.scss';
 
 interface ITransitToggleButtonProps {
     type: TransitType;
@@ -25,13 +25,6 @@ class TransitToggleButton extends React.Component
         this.props.toggleActivity(this.props.type);
     }
 
-    private getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
-        if (isToggled) {
-            return TransitTypeColorHelper.getBackgroundColorClass(transitType);
-        }
-        return s.toggled;
-    }
-
     public render(): any {
         return (
             <button
@@ -44,6 +37,13 @@ class TransitToggleButton extends React.Component
                 {lineHelper.getTransitIcon(this.props.type, true)}
             </button>
         );
+    }
+
+    private getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
+        if (isToggled) {
+            return TransitTypeColorHelper.getBackgroundColorClass(transitType);
+        }
+        return s.toggled;
     }
 }
 
