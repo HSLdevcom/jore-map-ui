@@ -32,15 +32,24 @@ interface IMapProps {
     toolbarStore?: ToolbarStore;
 }
 
+interface IMapPropReference {
+    children: JSX.Element[];
+    ref: any;
+    center: L.LatLng;
+    zoom: number;
+    zoomControl: false;
+    id: string;
+}
+
 @inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     // tslint:disable-next-line
-    private map: React.RefObject<Map<{ children: JSX.Element[]; ref: any; center: L.LatLng; zoom: number; zoomControl: false; id: string; }, L.Map>>;
+    private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
 
     constructor(props: IMapProps) {
         super(props);
-        this.map = React.createRef();
+        this.mapReference = React.createRef();
         this.state = {
             zoomLevel: 15,
         };
@@ -48,8 +57,12 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.fitBounds = this.fitBounds.bind(this);
     }
 
+    private getMap() {
+        return this.mapReference.current!;
+    }
+
     public componentDidMount() {
-        const leafletElement = this.map.current!.leafletElement;
+        const leafletElement = this.getMap().leafletElement;
         // TODO: Convert these as react-components
         leafletElement.addControl(new CoordinateControl({ position: 'topright' }));
         leafletElement.addControl(new MeasurementControl({ position: 'topright' }));
@@ -67,12 +80,13 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     public componentDidUpdate() {
-        this.map.current!.leafletElement.invalidateSize();
+        this.getMap().leafletElement.invalidateSize();
     }
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
-        if (this.map) {
-            this.map.current!.leafletElement.fitBounds(bounds);
+        const map = this.getMap();
+        if (map) {
+            map.leafletElement.fitBounds(bounds);
         }
     }
 
@@ -96,8 +110,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
-        if (this.map) {
-            this.map.current!.leafletElement.setView(latLng, 17);
+        const map = this.getMap();
+        if (map) {
+            map.leafletElement.setView(latLng, 17);
         }
     }
 
@@ -110,7 +125,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 <Map
-                    ref={this.map}
+                    ref={this.mapReference}
                     center={this.props.mapStore!.coordinates}
                     zoom={this.state.zoomLevel}
                     zoomControl={false}
@@ -149,7 +164,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         <Toolbar toolbarStore={this.props.toolbarStore}/>
                     </Control>
                     <Control position='topright'>
-                        <FullscreenControl map={this.map} />
+                        <FullscreenControl map={this.getMap()} />
                     </Control>
                     <ZoomControl position='bottomright' />
                     <Control position='bottomright' />
