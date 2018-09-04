@@ -8,8 +8,9 @@ import Moment from 'react-moment';
 import * as s from './lineItem.scss';
 import lineStore from '../../stores/lineStore';
 import { Location, History } from 'history';
-import LinkBuilder from '../../factories/linkBuilder';
 import LineItemSubMenu from './LineItemSubMenu';
+import routeBuilderProvider from '../../routing/routeBuilderProvider';
+import routing from '../../routing/routing';
 
 interface ILineItemState {
     openRouteIds: string[];
@@ -81,7 +82,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                     this.props.line.transitType),
                             )}
                             onClick={
-                                gotoUrl(LinkBuilder.createLink(this.props.location, route.id))}
+                                gotoUrl(routeBuilderProvider
+                                    .to(routing.routes).append('routes', route.id).toLink())
+                            }
                         >
                             {route.name}
                         </div>

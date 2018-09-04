@@ -9,6 +9,8 @@ import { SidebarStore } from '../../stores/sidebarStore';
 import { inject, observer } from 'mobx-react';
 import SearchResults from './SearchResults';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
+import routeBuilderProvider from '../../routing/routeBuilderProvider';
+import routing from '../../routing/routing';
 
 interface ISidebarProps extends RouteComponentProps<any>{
     routeStore?: RouteStore;
@@ -19,6 +21,15 @@ interface ISidebarProps extends RouteComponentProps<any>{
 @inject('routeStore', 'lineStore', 'sidebarStore')
 @observer
 class RoutesView extends React.Component<ISidebarProps> {
+    public componentDidUpdate() {
+        if (!routeBuilderProvider.getValue('routes')) {
+            this.props.history.push(
+                routeBuilderProvider
+                    .to(routing.home)
+                    .toLink());
+        }
+    }
+
     public render() {
         return (
             <div className={s.routesView}>

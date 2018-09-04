@@ -14,6 +14,7 @@ import Sidebar from './sidebar/Sidebar';
 import NodeWindow from './NodeWindow';
 import * as s from './app.scss';
 import { Route, RouteComponentProps } from 'react-router-dom';
+import routeBuilderProvider from '../routing/routeBuilderProvider';
 
 interface IAppState {
     showLogin: boolean;
@@ -29,6 +30,15 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'notificationStore', 'sidebarStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
+    constructor(props: IAppProps) {
+        super(props);
+        routeBuilderProvider.setLocation(props.location);
+    }
+
+    componentWillReceiveProps(props: IAppProps) {
+        routeBuilderProvider.setLocation(props.location);
+    }
+
     private openLoginForm = () => {
         this.props.loginStore!.showLogin = true;
     }

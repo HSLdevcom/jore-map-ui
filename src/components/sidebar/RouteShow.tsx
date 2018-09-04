@@ -9,8 +9,10 @@ import LineHelper from '../../util/lineHelper';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import ColorScale from '../../util/colorScale';
 import * as s from './routeShow.scss';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import routeBuilderProvider from '../../routing/routeBuilderProvider';
 
-interface IRouteShowProps {
+interface IRouteShowProps extends RouteComponentProps<any> {
     routeStore?: RouteStore;
     route: IRoute;
     visibleRoutePathsIndex: number;
@@ -19,9 +21,17 @@ interface IRouteShowProps {
 @inject('routeStore')
 @observer
 class RouteShow extends React.Component<IRouteShowProps> {
+    constructor(props: IRouteShowProps) {
+        super(props);
+        this.closeRoute = this.closeRoute.bind(this);
+    }
 
-    private onClose = () => {
-        this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
+    private closeRoute() {
+        const link = routeBuilderProvider
+            .current()
+            .remove('routes', this.props.route.routeId)
+            .toLink();
+        this.props.history.push(link);
     }
 
     private renderRouteName() {
@@ -37,9 +47,12 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 {this.props.route.line.lineNumber}
             </div>
             {this.props.route.routeName}
-            <div onClick={this.onClose} className={s.closeView}>
+            <div
+                onClick={this.closeRoute}
+                className={s.closeView}
+            >
                 <FaTimes className={s.close}/>
-            </div >
+            </div>
         </div>
         );
     }
@@ -87,4 +100,4 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 }
 
-export default RouteShow;
+export default withRouter(RouteShow);

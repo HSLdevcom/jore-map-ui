@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 import { Polyline } from 'react-leaflet';
 import { IRoutePath } from '../../models';
+import { toJS } from 'mobx';
 
 interface RouteLayerProps {
     routePaths: IRoutePath[];
@@ -14,7 +15,7 @@ export default class RouteLayer extends Component<RouteLayerProps> {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
         this.props.routePaths.forEach((routePath) => {
-            const geoJSON = L.geoJSON(routePath.geoJson);
+            const geoJSON = L.geoJSON(toJS(routePath.geoJson));
             if (!bounds) {
                 bounds = geoJSON.getBounds();
             } else {

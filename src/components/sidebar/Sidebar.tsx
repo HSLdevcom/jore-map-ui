@@ -7,6 +7,8 @@ import { RouteStore } from '../../stores/routeStore';
 import { LineStore } from '../../stores/lineStore';
 import RoutesView from './RoutesView';
 import HomeView from './HomeView';
+import routeBuilderProvider from '../../routing/routeBuilderProvider';
+import routing from '../../routing/routing';
 
 interface ISidebarProps extends RouteComponentProps<any>{
     routeStore?: RouteStore;
@@ -24,7 +26,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const handleHeaderClick = () => {
             this.props.routeStore!.clearRoutes();
             this.props.lineStore!.setSearchInput('');
-            this.props.history.push('/');
+            this.props.history.push(
+                routeBuilderProvider
+                    .to(routing.home)
+                    .toLink());
         };
         return (
             <div className={s.sidebarView}>

@@ -7,9 +7,9 @@ import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
 import * as s from './routesList.scss';
 import { RouteComponentProps } from 'react-router-dom';
-import * as qs from 'qs';
 import RouteService from '../../services/routeService';
 import Loader from './Loader';
+import routeBuilderProvider from '../../routing/routeBuilderProvider';
 
 interface MatchParams {
     route: string;
@@ -54,16 +54,24 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     private async queryRoutes() {
         this.setState({ isLoading: true });
-        const queryValues = qs.parse(
-            this.props.location.search,
-            { ignoreQueryPrefix: true, arrayLimit: 1 },
-        );
-        let routeIds: string[] = [];
-        if (queryValues.routes) {
-            routeIds = queryValues.routes.split(' ');
+        const routeIds = routeBuilderProvider.getValue('routes');
+        if (routeIds) {
             this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
         }
         this.setState({ isLoading: false });
+    }
+
+    public componentDidUpdate() {
+        if (
+            !this.state.isLoading &&
+            routeBuilderProvider.getValue('routes') &&
+            routeBuilderProvider.getValue('routes').length
+                !== this.props.routeStore!.routes.length
+            ) {
+            if (!this.state.isLoading) {
+                this.queryRoutes();
+            }
+        }
     }
 
     public render(): any {
