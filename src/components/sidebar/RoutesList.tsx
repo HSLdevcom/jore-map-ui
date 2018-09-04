@@ -76,6 +76,8 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                         key={route.routeId}
                         route={route}
                         visibleRoutePathsIndex={visibleRoutePathsIndex}
+                        history={this.props.history}
+                        location={this.props.location}
                     />
                 );
                 visibleRoutePathsIndex += route.routePaths.filter(
