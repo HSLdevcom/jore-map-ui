@@ -42,14 +42,14 @@ class RouteShow extends React.Component<IRouteShowProps> {
     private renderRouteName() {
         return (
         <div className={s.routeName}>
-            {LineHelper.getTransitIcon(this.props.route.line.transitType, false)}
+            {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
             <div
                 className={classNames(
                     s.label,
-                    TransitTypeColorHelper.getColorClass(this.props.route.line.transitType),
+                    TransitTypeColorHelper.getColorClass(this.props.route.line!.transitType),
                 )}
             >
-                {this.props.route.line.lineNumber}
+                {this.props.route.line!.lineNumber}
             </div>
             {this.props.route.routeName}
             <div onClick={this.onClose} className={s.closeView}>
@@ -84,7 +84,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     <ToggleButton
                         onClick={toggleRoutePathVisibility}
                         value={routePath.visible}
-                        type={this.props.route.line.transitType}
+                        type={this.props.route.line!.transitType}
                         color={routePath.visible ? routeColor : '#898989'}
                     />
                 </div>
