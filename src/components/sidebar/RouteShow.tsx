@@ -9,10 +9,10 @@ import LineHelper from '../../util/lineHelper';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import ColorScale from '../../util/colorScale';
 import * as s from './routeShow.scss';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import routeBuilder from '../../routing/routeBuilder';
+import navigator from '../../routing/navigator';
 
-interface IRouteShowProps extends RouteComponentProps<any> {
+interface IRouteShowProps {
     routeStore?: RouteStore;
     route: IRoute;
     visibleRoutePathsIndex: number;
@@ -27,11 +27,11 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 
     private closeRoute() {
-        const link = routeBuilder
+        navigator.push(
+            routeBuilder
             .current()
             .remove('routes', this.props.route.routeId)
-            .toLink();
-        this.props.history.push(link);
+            .toLink());
     }
 
     private renderRouteName() {
@@ -100,4 +100,4 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 }
 
-export default withRouter(RouteShow);
+export default RouteShow;

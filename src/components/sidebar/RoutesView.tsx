@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as s from './routesView.scss';
 import LineSearch from './LineSearch';
-import { Route, RouteComponentProps } from 'react-router';
+import { Route } from 'react-router';
 import RoutesList from './RoutesList';
 import { RouteStore } from '../../stores/routeStore';
 import { LineStore } from '../../stores/lineStore';
@@ -11,8 +11,9 @@ import SearchResults from './SearchResults';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import routeBuilder from '../../routing/routeBuilder';
 import routing from '../../routing/routing';
+import navigator from '../../routing/navigator';
 
-interface ISidebarProps extends RouteComponentProps<any>{
+interface ISidebarProps{
     routeStore?: RouteStore;
     lineStore?: LineStore;
     sidebarStore?: SidebarStore;
@@ -23,7 +24,7 @@ interface ISidebarProps extends RouteComponentProps<any>{
 class RoutesView extends React.Component<ISidebarProps> {
     public componentDidUpdate() {
         if (!routeBuilder.getValue('routes')) {
-            this.props.history.push(
+            navigator.push(
                 routeBuilder
                     .to(routing.home)
                     .toLink());
@@ -39,7 +40,7 @@ class RoutesView extends React.Component<ISidebarProps> {
                 ) : (
                     <>
                         <TransitToggleButtonBar filters={[]}/>
-                        <Route component={SearchResults} />
+                        <SearchResults />
                     </>
                 )
                 }

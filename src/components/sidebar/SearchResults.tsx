@@ -7,11 +7,9 @@ import TransitType from '../../enums/transitType';
 import * as s from './searchResults.scss';
 import LineService from '../../services/lineService';
 import Loader from './Loader';
-import { RouteComponentProps } from 'react-router';
 
-interface ISearchResultsProps extends RouteComponentProps<any>{
+interface ISearchResultsProps{
     lineStore?: LineStore;
-    location: any;
 }
 
 interface ISearchResultsState {
@@ -75,8 +73,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                                 <LineItem
                                     key={line.lineId}
                                     line={line}
-                                    location={this.props.location}
-                                    history={this.props.history}
                                 />
                             );
                         })

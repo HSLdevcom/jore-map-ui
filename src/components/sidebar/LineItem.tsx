@@ -7,10 +7,10 @@ import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
 import lineStore from '../../stores/lineStore';
-import { Location, History } from 'history';
 import LineItemSubMenu from './LineItemSubMenu';
 import routeBuilder from '../../routing/routeBuilder';
 import routing from '../../routing/routing';
+import navigator from '../../routing/navigator';
 
 interface ILineItemState {
     openRouteIds: string[];
@@ -18,8 +18,6 @@ interface ILineItemState {
 
 interface ILineItemProps {
     line: ILine;
-    location: Location;
-    history: History;
 }
 
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
@@ -57,7 +55,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     public renderRoute(route: ILineRoute): any {
         const gotoUrl = (url:string) => () => {
-            this.props.history.push(url);
+            navigator.push(url);
             lineStore.setSearchInput('');
         };
         return (
@@ -83,7 +81,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                             )}
                             onClick={
                                 gotoUrl(routeBuilder
-                                    .to(routing.routes).append('routes', route.id).toLink())
+                                    .to(routing.routes)
+                                    .append('routes', route.id)
+                                    .toLink())
                             }
                         >
                             {route.name}

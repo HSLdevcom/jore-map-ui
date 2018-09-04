@@ -41,10 +41,6 @@ export class RouteBuilder {
     public getCurrentSearchParameters() {
         return this.getValues();
     }
-
-    public open(link: string) {
-        this._routerStore.history.push(link);
-    }
 }
 
 export default new RouteBuilder();
