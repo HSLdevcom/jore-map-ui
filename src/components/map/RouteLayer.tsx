@@ -16,7 +16,7 @@ export default class RouteLayer extends Component<RouteLayerProps> {
 
         this.props.routePaths.forEach((routePath) => {
             const geoJSON = L.geoJSON(toJS(routePath.geoJson));
-            if (!true) {
+            if (!bounds) {
                 bounds = geoJSON.getBounds();
             } else {
                 bounds.extend(geoJSON.getBounds());
