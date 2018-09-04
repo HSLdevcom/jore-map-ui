@@ -2,17 +2,10 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '../../stores/sidebarStore';
 import * as s from './nodeView.scss';
-import { Button, Checkbox, Dropdown, ToggleButton } from '../controls';
+import { Button, Dropdown, ToggleButton } from '../controls';
 import ButtonType from '../../enums/buttonType';
 import TransitType from '../../enums/transitType';
 import classnames from 'classnames';
-
-interface ITargetCheckboxToggles {
-    kadut: boolean;
-    solmut: boolean;
-    linkit: boolean;
-    alueet: boolean;
-}
 
 interface IMapInformationSource {
     selected: string;
@@ -20,7 +13,6 @@ interface IMapInformationSource {
 }
 
 interface INodeViewState {
-    targetCheckboxToggles: ITargetCheckboxToggles;
     mapInformationSource: IMapInformationSource;
 }
 
@@ -35,12 +27,6 @@ class NodeView extends React.Component
     constructor(props: any) {
         super(props);
         this.state = {
-            targetCheckboxToggles: {
-                kadut: true, // Todo: get these from props
-                solmut: true,
-                linkit: true,
-                alueet: false,
-            },
             mapInformationSource: {
                 selected: 'X/1420004',
                 items: ['X/1420001', 'X/1420002', 'X/1420003', 'X/1420004', 'X/1420005'],
@@ -61,14 +47,6 @@ class NodeView extends React.Component
 
     private toggleStopInUse() {
         // Todo
-    }
-
-    private targetCheckboxToggle = (type: string) => {
-        const newToggleState = this.state.targetCheckboxToggles;
-        newToggleState[type] = !this.state.targetCheckboxToggles[type];
-        this.setState({
-            targetCheckboxToggles: newToggleState,
-        });
     }
 
     private onMapInformationSourceChange = (selectedItem: string) => {
@@ -110,46 +88,6 @@ class NodeView extends React.Component
                     color={'#007ac9'}
                 />
             </div>
-            <div
-                className={classnames(
-                    s.rowC,
-                    s.targetsRow,
-                )}
-            >
-                <div className={s.innerRowC}>
-                    Käsiteltävät kohteet
-                </div>
-                <div className={s.innerRowR}>
-                    <div className={s.rowElement}>
-                        <Checkbox
-                            onClick={this.targetCheckboxToggle.bind(this, 'kadut')}
-                            checked={this.state.targetCheckboxToggles.kadut}
-                            text={'Kadut'}
-                        />
-                    </div>
-                    <div className={s.rowElement}>
-                        <Checkbox
-                            onClick={this.targetCheckboxToggle.bind(this, 'solmut')}
-                            checked={this.state.targetCheckboxToggles.solmut}
-                            text={'Solmut'}
-                        />
-                    </div>
-                    <div className={s.rowElement}>
-                        <Checkbox
-                            onClick={this.targetCheckboxToggle.bind(this, 'linkit')}
-                            checked={this.state.targetCheckboxToggles.linkit}
-                            text={'Linkit'}
-                        />
-                    </div>
-                    <div className={s.rowElement}>
-                        <Checkbox
-                            onClick={this.targetCheckboxToggle.bind(this, 'alueet')}
-                            checked={this.state.targetCheckboxToggles.alueet}
-                            text={'Alueet'}
-                        />
-                    </div>
-                </div>
-            </div>
             <div className={s.rowR}>
                 Sijainti: (2555744, 6675294)
             </div>
@@ -162,12 +100,9 @@ class NodeView extends React.Component
                         selected={this.state.mapInformationSource.selected}
                     />
                 </div>
-                <div
-                    className={classnames(
-                        s.innerRowC,
-                        s.informationContainer,
-                    )}
-                >
+            </div>
+            <div className={s.innerRowR}>
+                <div className={s.innerRowC}>
                     <div className={s.informationSource}>Tiedon lähde: pisteet</div>
                     <div className={s.innerRowC}>
                         Shape:
@@ -191,43 +126,13 @@ class NodeView extends React.Component
                         <div className={s.item}>Nimi = Kulosaarentie-Kulosaarentie</div>
                     </div>
                 </div>
-                <div
-                    className={classnames(
-                    s.buttonContainer,
-                    s.innerRowC,
-                    )}
-                >
-                    <Button
-                        onClick={this.doNothing}
-                        type={ButtonType.PRIMARY}
-                        text={'Avaa kohde'}
-                    />
-                    <Button
-                        onClick={this.doNothing}
-                        type={ButtonType.PRIMARY}
-                        text={'Valitse linkki reittisuunnan alkuun'}
-                    />
-                    <Button
-                        onClick={this.doNothing}
-                        type={ButtonType.PRIMARY}
-                        text={'Valitse linkki reittisuunnan väliin'}
-                    />
-                    <Button
-                        onClick={this.doNothing}
-                        type={ButtonType.PRIMARY}
-                        text={'Valitse linkki reittisuunnan loppuun'}
-                    />
-                    <Button
-                        onClick={this.doNothing}
-                        type={ButtonType.PRIMARY}
-                        text={'Poista linkki'}
-                    />
-                    <Button
-                        onClick={this.doNothing}
-                        type={ButtonType.PRIMARY}
-                        text={'Käsittele muotopisteitä'}
-                    />
-                </div>
+            </div>
+            <div className={s.innerRowR}>
+                <Button
+                    onClick={this.doNothing}
+                    type={ButtonType.PRIMARY}
+                    text={'Poista linkki'}
+                />
             </div>
         </div>
         );

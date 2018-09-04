@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
-import { LineStore } from '../../stores/lineStore';
+import searchStore from '../../stores/searchStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
@@ -21,11 +21,10 @@ interface IRoutesListState {
 }
 
 interface IRoutesListProps extends RouteComponentProps<MatchParams>{
-    lineStore?: LineStore;
     routeStore?: RouteStore;
 }
 
-@inject('lineStore', 'routeStore')
+@inject('routeStore')
 @observer
 class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     constructor(props: any) {
@@ -41,7 +40,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     async componentDidMount() {
         await this.queryRoutes();
-        this.props.lineStore!.setSearchInput('');
+        searchStore!.setSearchInput('');
     }
 
     private networkCheckboxToggle = (type: string) => {
@@ -76,6 +75,8 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                         key={route.routeId}
                         route={route}
                         visibleRoutePathsIndex={visibleRoutePathsIndex}
+                        history={this.props.history}
+                        location={this.props.location}
                     />
                 );
                 visibleRoutePathsIndex += route.routePaths.filter(
@@ -96,13 +97,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                     {
                         routeList(this.props.routeStore!.routes)
                     }
-                    <div className={s.checkboxContainer}>
-                        <input
-                            type='checkbox'
-                            checked={false}
-                        />
-                        Kopioi reitti toiseen suuntaan
-                    </div>
                 </div>
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>

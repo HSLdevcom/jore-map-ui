@@ -2,17 +2,15 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import hslLogo from '../../assets/hsl-logo.png';
-import { RouteStore } from '../../stores/routeStore';
-import { LineStore } from '../../stores/lineStore';
 import { SidebarStore } from '../../stores/sidebarStore';
+import routeStore from '../../stores/routeStore';
+import searchStore from '../../stores/searchStore';
 import NodeWindow from './NodeView';
 import RoutesView from './RoutesView';
 import HomeView from './HomeView';
 import * as s from './sidebar.scss';
 
 interface ISidebarProps extends RouteComponentProps<any>{
-    routeStore?: RouteStore;
-    lineStore?: LineStore;
     sidebarStore?: SidebarStore;
 }
 
@@ -20,13 +18,13 @@ interface ILinelistState {
     searchInput: string;
 }
 
-@inject('routeStore', 'lineStore', 'sidebarStore')
+@inject('sidebarStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     public render(): any {
         const handleHeaderClick = () => {
-            this.props.routeStore!.clearRoutes();
-            this.props.lineStore!.setSearchInput('');
+            routeStore!.clearRoutes();
+            searchStore.setSearchInput('');
             this.props.history.push('/');
         };
         return (

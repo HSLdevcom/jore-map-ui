@@ -1,6 +1,6 @@
 import * as L from 'leaflet';
 import observableMapStore, { MapStore } from '../../stores/mapStore';
-import * as s from './map.scss';
+import * as s from './coordinateControl.scss';
 import GeometryService from '../../services/geometryService';
 import { autorun } from 'mobx';
 
