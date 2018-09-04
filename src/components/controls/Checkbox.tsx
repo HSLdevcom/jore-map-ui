@@ -2,15 +2,12 @@ import * as React from 'react';
 import * as s from './checkbox.scss';
 
 interface ICheckboxProps {
-    onClick(event: any): void;
     checked: boolean;
     text: string;
+    onClick(event: any): void;
 }
 
 class Checkbox extends React.Component<ICheckboxProps, {}> {
-    private doNothing() {
-        // Empty
-    }
 
     public render(): any {
         const onClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -33,6 +30,9 @@ class Checkbox extends React.Component<ICheckboxProps, {}> {
                 <span className={s.checkmark} />
             </label>
         );
+    }
+    private doNothing() {
+        // Empty
     }
 }
 

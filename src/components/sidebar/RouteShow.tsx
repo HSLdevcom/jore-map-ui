@@ -24,6 +24,15 @@ interface IRouteShowProps {
 @observer
 class RouteShow extends React.Component<IRouteShowProps> {
 
+    public render(): any {
+        return (
+            <div className={s.routeShowView}>
+                {this.renderRouteName()}
+                {this.renderRoutePaths()}
+            </div>
+        );
+    }
+
     private onClose = () => {
         this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
         this.props.history.push(LinkBuilder
@@ -81,15 +90,6 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 </div>
             );
         });
-    }
-
-    public render(): any {
-        return (
-            <div className={s.routeShowView}>
-                {this.renderRouteName()}
-                {this.renderRoutePaths()}
-            </div>
-        );
     }
 }
 

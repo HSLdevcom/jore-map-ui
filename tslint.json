@@ -24,6 +24,17 @@
       "check-format",
       "allow-leading-underscore"
     ],
-    "origin-ordered-imports": [ true, "no-blank-lines" ]
+    "origin-ordered-imports": [ true, "no-blank-lines" ],
+    "await-promise": true,
+    "only-arrow-functions": [true, "allow-declarations"],
+    "use-isnan": true,
+    "deprecation": true,
+    "member-ordering": [true, {
+      "order": "fields-first"
+    }],
+    "typedef-whitespace": true,
+    "no-implicit-dependencies": true,
+    "no-object-literal-type-assertion": true,
+    "one-line": true
   }
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, RouteComponentProps } from 'react-router';
+import { Route, RouteComponentProps } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import LineSearch from './LineSearch';
 import RoutesList from './RoutesList';

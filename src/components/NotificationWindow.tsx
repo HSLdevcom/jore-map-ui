@@ -31,32 +31,6 @@ class NotificationWindow extends React.Component
         };
     }
 
-    private closeNotification = (message: string) => {
-        const newDisappearingNotifications = this.state.disappearingNotifications;
-        newDisappearingNotifications.push(message);
-        this.setState({
-            disappearingNotifications: newDisappearingNotifications,
-        });
-        setTimeout(
-            () => {
-                this.props.notificationStore!.closeNotification(message);
-                const newDisappearingNotifications =
-                    this.state.disappearingNotifications.filter(m => m !== message);
-                this.setState({
-                    disappearingNotifications: newDisappearingNotifications,
-                });
-            },
-            500,
-        );
-    }
-
-    private getDisappearingNotificationClass = (message: string) => {
-        if (this.state.disappearingNotifications.includes(message)) {
-            return s.notificationItemDisappear;
-        }
-        return;
-    }
-
     getColorClass = (type: string) => {
         switch (type) {
         case NotificationType.ERROR: {
@@ -96,6 +70,32 @@ class NotificationWindow extends React.Component
             })}
           </div>
         );
+    }
+
+    private closeNotification = (message: string) => {
+        const newDisappearingNotifications = this.state.disappearingNotifications;
+        newDisappearingNotifications.push(message);
+        this.setState({
+            disappearingNotifications: newDisappearingNotifications,
+        });
+        setTimeout(
+            () => {
+                this.props.notificationStore!.closeNotification(message);
+                const newDisappearingNotifications =
+                    this.state.disappearingNotifications.filter(m => m !== message);
+                this.setState({
+                    disappearingNotifications: newDisappearingNotifications,
+                });
+            },
+            500,
+        );
+    }
+
+    private getDisappearingNotificationClass = (message: string) => {
+        if (this.state.disappearingNotifications.includes(message)) {
+            return s.notificationItemDisappear;
+        }
+        return;
     }
 }
 export default NotificationWindow;

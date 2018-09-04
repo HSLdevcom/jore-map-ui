@@ -28,13 +28,6 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'notificationStore', 'sidebarStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
-    private openLoginForm = () => {
-        this.props.loginStore!.showLogin = true;
-    }
-
-    private closeLoginModal = () => {
-        this.props.loginStore!.showLogin = false;
-    }
 
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
@@ -61,6 +54,13 @@ class App extends React.Component<IAppProps, IAppState> {
             />
           </div>
         );
+    }
+    private openLoginForm = () => {
+        this.props.loginStore!.showLogin = true;
+    }
+
+    private closeLoginModal = () => {
+        this.props.loginStore!.showLogin = false;
     }
 }
 

@@ -56,10 +56,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.fitBounds = this.fitBounds.bind(this);
     }
 
-    private getMap() {
-        return this.mapReference.current!.leafletElement;
-    }
-
     public componentDidMount() {
         const map = this.getMap();
         // TODO: Convert these as react-components
@@ -80,33 +76,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     public componentDidUpdate() {
         this.getMap().invalidateSize();
-    }
-
-    private fitBounds(bounds: L.LatLngBoundsExpression) {
-        this.getMap().fitBounds(bounds);
-    }
-
-    private getVisibleRoutePaths = (routes: IRoute[]) => {
-        return routes.reduce<IRoutePath[]>(
-            (flatList, route) => {
-                return flatList.concat(route.routePaths);
-            },
-            [],
-        ).filter(routePath => routePath.visible);
-    }
-
-    private getVisibleNodes = (visibleRoutesPaths: IRoutePath[]) => {
-        return visibleRoutesPaths.reduce<INode[]>(
-            (flatList, routePath) => {
-                return flatList.concat(routePath.nodes);
-            },
-            [],
-        );
-    }
-
-    /* Leaflet methods */
-    private setView(latLng: L.LatLng) {
-        this.getMap().setView(latLng, 17);
     }
 
     public render() {
@@ -167,6 +136,37 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                 </Map>
             </div>
         );
+    }
+
+    private getMap() {
+        return this.mapReference.current!.leafletElement;
+    }
+
+    private fitBounds(bounds: L.LatLngBoundsExpression) {
+        this.getMap().fitBounds(bounds);
+    }
+
+    private getVisibleRoutePaths = (routes: IRoute[]) => {
+        return routes.reduce<IRoutePath[]>(
+            (flatList, route) => {
+                return flatList.concat(route.routePaths);
+            },
+            [],
+        ).filter(routePath => routePath.visible);
+    }
+
+    private getVisibleNodes = (visibleRoutesPaths: IRoutePath[]) => {
+        return visibleRoutesPaths.reduce<INode[]>(
+            (flatList, routePath) => {
+                return flatList.concat(routePath.nodes);
+            },
+            [],
+        );
+    }
+
+    /* Leaflet methods */
+    private setView(latLng: L.LatLng) {
+        this.getMap().setView(latLng, 17);
     }
 }
 

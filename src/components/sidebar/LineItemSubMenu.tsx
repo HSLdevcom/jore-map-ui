@@ -46,6 +46,51 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         this.fetchRoutePaths();
     }
 
+    render () {
+        if (!this.props.visible) {
+            return null;
+        }
+        if (this.state.routePaths === null) {
+            return (
+                <div>Lataa...</div>
+            );
+        }
+        return (
+            <div>
+                {this.state.routePaths.map((routePath, index) => {
+                    return (
+                        <div
+                            className={s.routePathView}
+                            key={index}
+                        >
+                            <Checkbox
+                                onClick={this.toggle.bind(this, routePath.internalId)}
+                                checked={this.isSelected(routePath.internalId)}
+                                text={routePath.routePathName}
+                            />
+                            <div className={s.routeDate}>
+                                {'Voim.ast: '}
+                                <Moment
+                                    date={routePath.startTime}
+                                    format='DD.MM.YYYY HH:mm'
+                                />
+                            </div>
+                            <div className={s.routeDate}>
+                                {'Viim.voim.olo: '}
+                                <Moment
+                                    date={routePath.endTime}
+                                    format='DD.MM.YYYY HH:mm'
+                                />
+                            </div>
+                        </div>
+                    );
+                })
+
+                }
+            </div>
+        );
+    }
+
     private fetchRoutePaths() {
         if (!this.props.visible || this.state.routePaths) {
             return;
@@ -91,51 +136,6 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
             return subLineItem.routeId === this.props.routeId
                 && subLineItem.routePathId === routePathId;
         });
-    }
-
-    render () {
-        if (!this.props.visible) {
-            return null;
-        }
-        if (this.state.routePaths === null) {
-            return (
-                <div>Lataa...</div>
-            );
-        }
-        return (
-            <div>
-                {this.state.routePaths.map((routePath, index) => {
-                    return (
-                        <div
-                            className={s.routePathView}
-                            key={index}
-                        >
-                            <Checkbox
-                                onClick={this.toggle.bind(this, routePath.internalId)}
-                                checked={this.isSelected(routePath.internalId)}
-                                text={routePath.routePathName}
-                            />
-                            <div className={s.routeDate}>
-                                {'Voim.ast: '}
-                                <Moment
-                                    date={routePath.startTime}
-                                    format='DD.MM.YYYY HH:mm'
-                                />
-                            </div>
-                            <div className={s.routeDate}>
-                                {'Viim.voim.olo: '}
-                                <Moment
-                                    date={routePath.endTime}
-                                    format='DD.MM.YYYY HH:mm'
-                                />
-                            </div>
-                        </div>
-                    );
-                })
-
-                }
-            </div>
-        );
     }
 }
 

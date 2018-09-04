@@ -26,7 +26,7 @@ class RoutePathFactory {
         const coordinates = JSON.parse(suunta.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
 
-        return <IRoutePath>{
+        return {
             routeId,
             nodes,
             positions,

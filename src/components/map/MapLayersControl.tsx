@@ -27,12 +27,6 @@ export default class MapLayersControl extends React.Component
         };
     }
 
-    private toggleRadioButton = (option: option) => {
-        this.setState({
-            selectedOption: option,
-        });
-    }
-
     render() {
         return (
             <div className={s.mapLayerControlView}>
@@ -58,5 +52,11 @@ export default class MapLayersControl extends React.Component
                 </div>
             </div>
         );
+    }
+
+    private toggleRadioButton = (option: option) => {
+        this.setState({
+            selectedOption: option,
+        });
     }
 }

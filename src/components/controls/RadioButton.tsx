@@ -2,15 +2,12 @@ import * as React from 'react';
 import * as s from './radioButton.scss';
 
 interface IRadioButtonProps {
-    onClick(event: any): void;
     checked: boolean;
     text: string;
+    onClick(event: any): void;
 }
 
 class RadioButton extends React.Component<IRadioButtonProps, {}> {
-    private doNothing() {
-        // Empty
-    }
 
     public render(): any {
         const onClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -33,6 +30,9 @@ class RadioButton extends React.Component<IRadioButtonProps, {}> {
                 <span className={s.checkmark} />
             </label>
         );
+    }
+    private doNothing() {
+        // Empty
     }
 }
 

@@ -8,19 +8,14 @@ interface IToggleButtonState {
 
 interface IToggleButtonProps {
     type: TransitType;
-    onClick(event: any): void;
     value: boolean;
     color: string;
+    onClick(event: any): void;
 }
 
 class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonState> {
     constructor (props: IToggleButtonProps) {
         super(props);
-    }
-
-    private doNothing() {
-        // Empty function
-        // Needed because input field wants an onChange function if its checked field is changed
     }
 
     public render(): any {
@@ -50,6 +45,11 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
                 />
             </label>
         );
+    }
+
+    private doNothing() {
+        // Empty function
+        // Needed because input field wants an onChange function if its checked field is changed
     }
 }
 

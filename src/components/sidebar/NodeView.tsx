@@ -55,35 +55,6 @@ class NodeView extends React.Component
         }
     }
 
-    private closeNodeView = () => {
-        this.props.sidebarStore!.closeNodeView();
-    }
-
-    private toggleStopInUse() {
-        // Todo
-    }
-
-    private targetCheckboxToggle = (type: string) => {
-        const newToggleState = this.state.targetCheckboxToggles;
-        newToggleState[type] = !this.state.targetCheckboxToggles[type];
-        this.setState({
-            targetCheckboxToggles: newToggleState,
-        });
-    }
-
-    private onMapInformationSourceChange = (selectedItem: string) => {
-        this.setState({
-            mapInformationSource: {
-                ...this.state.mapInformationSource,
-                selected: selectedItem,
-            },
-        });
-    }
-
-    private doNothing() {
-        // Empty
-    }
-
     public render(): any {
         return (
         <div className={s.nodeView}>
@@ -231,6 +202,35 @@ class NodeView extends React.Component
             </div>
         </div>
         );
+    }
+
+    private closeNodeView = () => {
+        this.props.sidebarStore!.closeNodeView();
+    }
+
+    private toggleStopInUse() {
+        // Todo
+    }
+
+    private targetCheckboxToggle = (type: string) => {
+        const newToggleState = this.state.targetCheckboxToggles;
+        newToggleState[type] = !this.state.targetCheckboxToggles[type];
+        this.setState({
+            targetCheckboxToggles: newToggleState,
+        });
+    }
+
+    private onMapInformationSourceChange = (selectedItem: string) => {
+        this.setState({
+            mapInformationSource: {
+                ...this.state.mapInformationSource,
+                selected: selectedItem,
+            },
+        });
+    }
+
+    private doNothing() {
+        // Empty
     }
 }
 export default NodeView;

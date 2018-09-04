@@ -31,6 +31,26 @@ export default class NodeLayer extends Component<NodeLayerProps> {
         super(props);
     }
 
+    render() {
+        return this.props.nodes.map((node, index) => {
+            const icon = this.getIcon(node);
+
+            const openPopup = () => {
+                this.props.popupStore!.showPopup(node);
+            };
+
+            return (
+                <Marker
+                    onContextMenu={openPopup}
+                    draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
+                    icon={icon}
+                    key={index}
+                    position={[node.coordinates.lat, node.coordinates.lon]}
+                />
+            );
+        });
+    }
+
     private getNodeMarkerHtml = (borderColor: string, fillColor: string) => {
         return `<div
             style="border-color: ${borderColor}; background-color: ${fillColor}"
@@ -50,25 +70,5 @@ export default class NodeLayer extends Component<NodeLayerProps> {
         };
 
         return new L.DivIcon(divIconOptions);
-    }
-
-    render() {
-        return this.props.nodes.map((node, index) => {
-            const icon = this.getIcon(node);
-
-            const openPopup = () => {
-                this.props.popupStore!.showPopup(node);
-            };
-
-            return (
-                <Marker
-                    onContextMenu={openPopup}
-                    draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
-                    icon={icon}
-                    key={index}
-                    position={[node.coordinates.lat, node.coordinates.lon]}
-                />
-            );
-        });
     }
 }

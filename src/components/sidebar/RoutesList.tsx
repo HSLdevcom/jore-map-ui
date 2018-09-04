@@ -43,28 +43,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         searchStore!.setSearchInput('');
     }
 
-    private networkCheckboxToggle = (type: string) => {
-        const newToggleState: object = this.state.networkCheckboxToggles;
-        newToggleState[type] = !this.state.networkCheckboxToggles[type];
-        this.setState({
-            networkCheckboxToggles: newToggleState,
-        });
-    }
-
-    private async queryRoutes() {
-        this.setState({ isLoading: true });
-        const queryValues = qs.parse(
-            this.props.location.search,
-            { ignoreQueryPrefix: true, arrayLimit: 1 },
-        );
-        let routeIds: string[] = [];
-        if (queryValues.routes) {
-            routeIds = queryValues.routes.split(' ');
-            this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
-        }
-        this.setState({ isLoading: false });
-    }
-
     public render(): any {
         const routeList = (routes: IRoute[]) => {
             let visibleRoutePathsIndex = 0;
@@ -125,6 +103,28 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 </div>
             </div>
         );
+    }
+
+    private networkCheckboxToggle = (type: string) => {
+        const newToggleState: object = this.state.networkCheckboxToggles;
+        newToggleState[type] = !this.state.networkCheckboxToggles[type];
+        this.setState({
+            networkCheckboxToggles: newToggleState,
+        });
+    }
+
+    private async queryRoutes() {
+        this.setState({ isLoading: true });
+        const queryValues = qs.parse(
+            this.props.location.search,
+            { ignoreQueryPrefix: true, arrayLimit: 1 },
+        );
+        let routeIds: string[] = [];
+        if (queryValues.routes) {
+            routeIds = queryValues.routes.split(' ');
+            this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
+        }
+        this.setState({ isLoading: false });
     }
 }
 
