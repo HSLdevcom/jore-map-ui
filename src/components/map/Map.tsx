@@ -57,36 +57,33 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     private getMap() {
-        return this.mapReference.current!;
+        return this.mapReference.current!.leafletElement;
     }
 
     public componentDidMount() {
-        const leafletElement = this.getMap().leafletElement;
+        const map = this.getMap();
         // TODO: Convert these as react-components
-        leafletElement.addControl(new CoordinateControl({ position: 'topright' }));
-        leafletElement.addControl(new MeasurementControl({ position: 'topright' }));
-        leafletElement.on('moveend', () => {
+        map.addControl(new CoordinateControl({ position: 'topright' }));
+        map.addControl(new MeasurementControl({ position: 'topright' }));
+        map.on('moveend', () => {
             this.props.mapStore!.setCoordinates(
-                leafletElement.getCenter().lat,
-                leafletElement.getCenter().lng,
+                map.getCenter().lat,
+                map.getCenter().lng,
             );
         });
-        leafletElement.on('zoomend', () => {
+        map.on('zoomend', () => {
             this.setState({
-                zoomLevel: leafletElement.getZoom(),
+                zoomLevel: map.getZoom(),
             });
         });
     }
 
     public componentDidUpdate() {
-        this.getMap().leafletElement.invalidateSize();
+        this.getMap().invalidateSize();
     }
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
-        const map = this.getMap();
-        if (map) {
-            map.leafletElement.fitBounds(bounds);
-        }
+        this.getMap().fitBounds(bounds);
     }
 
     private getVisibleRoutePaths = (routes: IRoute[]) => {
@@ -109,10 +106,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
-        const map = this.getMap();
-        if (map) {
-            map.leafletElement.setView(latLng, 17);
-        }
+        this.getMap().setView(latLng, 17);
     }
 
     public render() {
@@ -163,7 +157,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         <Toolbar toolbarStore={this.props.toolbarStore}/>
                     </Control>
                     <Control position='topright'>
-                        <FullscreenControl map={this.getMap()} />
+                        <FullscreenControl />
                     </Control>
                     <ZoomControl position='bottomright' />
                     <Control position='bottomright' />
