@@ -26,6 +26,7 @@ class MeasurementControl extends L.Control {
     private measurementToolContainer: HTMLElement;
     private removeToolContainer: HTMLElement;
     private removeAllContainer: HTMLElement;
+    private lastMarker: L.CircleMarker;
 
     constructor(options?: MeasurementControlOptions) {
         super(options);
@@ -122,6 +123,8 @@ class MeasurementControl extends L.Control {
         this.measuring = false;
         this.tmpLine.clearLayers();
         this.map.off('dblclick', this.finishMeasurementClick);
+        if (this.distance === 0) { this.measurementsLayer.removeLayer(this.measurementLayer); }
+        this.lastMarker.openPopup();
     }
 
     private measurementClicked = (e: L.LeafletMouseEvent) => {
@@ -148,13 +151,12 @@ class MeasurementControl extends L.Control {
         }
         this.lineLayer.clearLayers();
         L.polyline(this.points, { className: s.polyline }).addTo(this.lineLayer);
-        L.circleMarker(latLng, { className: s.circleMarker })
+        this.lastMarker = L.circleMarker(latLng, { className: s.circleMarker })
             .bindPopup(
                 `${this.distance.toFixed(2)} meters`, {
                     autoClose: false,
                     closeOnClick: false,
                 })
-            .openPopup()
             .on('click', this.finishMeasurementClick)
             .addTo(this.pointLayer);
     }
@@ -166,13 +168,15 @@ class MeasurementControl extends L.Control {
         const prevPoint = this.points[this.points.length - 1];
         L.polyline(
             [prevPoint, movingLatLng],
-            { className: classnames(s.movingPolyline, s.polyline) })
+            { className: classnames(s.movingPolyline, s.polyline), interactive: false })
             .addTo(this.tmpLine);
-        L.circleMarker(movingLatLng,
-                       { className: classnames(s.noEvents, s.measurementCursor, s.circleMarker) })
+        L.circleMarker(movingLatLng, {
+            className: classnames(s.noEvents, s.measurementCursor, s.circleMarker),
+            interactive: false,
+        })
             .bindTooltip(prevPoint.distanceTo(movingLatLng).toFixed(2))
-            .openTooltip()
-            .addTo(this.tmpLine);
+            .addTo(this.tmpLine)
+            .openTooltip();
     }
 
     private showRemoveTools = () => {
