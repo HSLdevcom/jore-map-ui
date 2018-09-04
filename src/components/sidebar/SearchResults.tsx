@@ -1,14 +1,14 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { RouteComponentProps } from 'react-router';
 import { LineStore } from '../../stores/lineStore';
 import LineItem from './LineItem';
 import { ILine, ILineRoute } from '../../models';
 import TransitType from '../../enums/transitType';
-import * as s from './searchResults.scss';
 import LineService from '../../services/lineService';
 import { SearchStore } from '../../stores/searchStore';
 import Loader from './Loader';
-import { RouteComponentProps } from 'react-router';
+import * as s from './searchResults.scss';
 
 interface ISearchResultsProps extends RouteComponentProps<any>{
     lineStore?: LineStore;

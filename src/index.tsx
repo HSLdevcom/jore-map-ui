@@ -3,6 +3,7 @@ import { Provider } from 'mobx-react';
 import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import * as ReactDOM from 'react-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import App from './components/App';
 import observableNotificationStore from './stores/notificationStore';
 import observableLoginStore from './stores/loginStore';
@@ -15,7 +16,6 @@ import observablePopupStore from './stores/popupStore';
 import observableToolbarStore from './stores/toolbarStore';
 import apolloClient from './util/ApolloClient';
 import './index.scss';
-import { BrowserRouter, Route } from 'react-router-dom';
 
 configure({ enforceActions: 'always' });
 
