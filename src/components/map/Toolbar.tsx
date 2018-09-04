@@ -38,7 +38,7 @@ export default class Toolbar extends Component<ToolbarProps> {
                     onClick={this.toggleTool.bind(this, ToolbarTools.Copy)}
                     isActive={this.props.toolbarStore!.isActive(ToolbarTools.Copy)}
                     isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.Copy)}
-                    label='Kopio reitti'
+                    label='Kopioi reitti toiseen suuntaan'
                 >
                     <FiCopy />
                 </ToolbarButton>
@@ -54,7 +54,7 @@ export default class Toolbar extends Component<ToolbarProps> {
                     onClick={this.print}
                     isActive={false}
                     isDisabled={this.props.toolbarStore!.isDisabled(ToolbarTools.Print)}
-                    label='tulostaa kartan'
+                    label='Tulosta kartta'
                 >
                     <FiPrinter />
                 </ToolbarButton>

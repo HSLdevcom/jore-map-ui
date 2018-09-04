@@ -97,13 +97,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                     {
                         routeList(this.props.routeStore!.routes)
                     }
-                    <div className={s.checkboxContainer}>
-                        <input
-                            type='checkbox'
-                            checked={false}
-                        />
-                        Kopioi reitti toiseen suuntaan
-                    </div>
                 </div>
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>
