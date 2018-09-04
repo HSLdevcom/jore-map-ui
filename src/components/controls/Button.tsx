@@ -1,6 +1,6 @@
 import * as React from 'react';
-import ButtonType from '../../enums/buttonType';
 import classNames from 'classnames';
+import ButtonType from '../../enums/buttonType';
 import * as s from './button.scss';
 
 interface IButtonProps {

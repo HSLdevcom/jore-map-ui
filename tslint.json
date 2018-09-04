@@ -6,6 +6,9 @@
       "node_modules/**/*.ts"
     ]
   },
+  "rulesDirectory": [
+    "node_modules/tslint-origin-ordered-imports-rule/dist"
+  ],
   "rules": {
     "ter-indent": [true, 4],
     "no-trailing-whitespace": true,
@@ -20,6 +23,7 @@
       "ban-keywords",
       "check-format",
       "allow-leading-underscore"
-    ]
+    ],
+    "origin-ordered-imports": [ true, "no-blank-lines" ]
   }
 }

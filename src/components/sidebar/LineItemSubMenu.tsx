@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import * as s from './lineItemSubMenu.scss';
+import { observer, inject } from 'mobx-react';
+import Moment from 'react-moment';
 import { IRoutePath, IRoute } from '../../models';
 import RouteService from '../../services/routeService';
-import { observer, inject } from 'mobx-react';
 import { NotificationStore } from '../../stores/notificationStore';
 import { SearchStore } from '../../stores/searchStore';
 import NotificationType from '../../enums/notificationType';
 import { Checkbox } from '../controls';
-import Moment from 'react-moment';
+import * as s from './lineItemSubMenu.scss';
 
 interface LineItemSubMenuProps {
     notificationStore?: NotificationStore;
