@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import { Popup } from 'react-leaflet';
 import { PopupStore } from '../../stores/popupStore';
@@ -9,13 +10,14 @@ import { SidebarStore } from '../../stores/sidebarStore';
 interface PopupLayerProps {
     popupStore?: PopupStore;
     sidebarStore?: SidebarStore;
+    setView: Function;
 }
 
 @inject('popupStore')
 @inject('sidebarStore')
 @observer
 export default class PopupLayer extends Component<PopupLayerProps> {
-    onClose = () => {
+    private onClose = () => {
         this.props.popupStore!.closePopup();
     }
 
@@ -25,6 +27,8 @@ export default class PopupLayer extends Component<PopupLayerProps> {
 
             const openNode = () => {
                 this.props.sidebarStore!.openNodeView(node.id);
+                const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
+                this.props.setView(latLng, 17);
                 this.onClose();
             };
 
