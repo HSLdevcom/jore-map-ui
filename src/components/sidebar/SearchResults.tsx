@@ -49,7 +49,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
 
     public filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
-        const searchTerm = this.props.lineStore!.searchInput.toLowerCase();
+        const searchTerm = this.props.searchStore!.searchInput.toLowerCase();
 
         // Filter by transitType
         if (this.props.lineStore!.filters &&
@@ -101,12 +101,12 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     private addSearchResults() {
         // TODO, add all selected routePaths into location (use LinkBuilder)
-        this.props.lineStore!.setSearchInput('');
+        this.props.searchStore!.setSearchInput('');
         this.props.searchStore!.removeAllSubLineItems();
     }
 
     private closeSearchResults() {
-        this.props.lineStore!.setSearchInput('');
+        this.props.searchStore!.setSearchInput('');
     }
 
     public render(): any {
