@@ -16,13 +16,6 @@ export default class Toolbar extends Component<ToolbarProps> {
         super(props);
     }
 
-    private toggleTool = (tool: ToolbarTools) => {
-        this.props.toolbarStore!.toggleTool(tool);
-    }
-
-    private print = () => {
-    }
-
     render() {
         return (
             <div className={s.toolbar}>
@@ -60,5 +53,12 @@ export default class Toolbar extends Component<ToolbarProps> {
                 </ToolbarButton>
             </div>
         );
+    }
+
+    private toggleTool = (tool: ToolbarTools) => {
+        this.props.toolbarStore!.toggleTool(tool);
+    }
+
+    private print = () => {
     }
 }

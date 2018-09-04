@@ -8,12 +8,6 @@ interface IModalProps {
 
 class Modal extends React.Component<IModalProps> {
 
-    private closeModal = (e: any) => {
-        if (e.target.className === s.modalView) {
-            this.props.closeModal();
-        }
-    }
-
     public render(): any {
         if (!this.props.isVisible) return (null);
 
@@ -27,6 +21,12 @@ class Modal extends React.Component<IModalProps> {
             </div>
         </div>
         );
+    }
+
+    private closeModal = (e: any) => {
+        if (e.target.className === s.modalView) {
+            this.props.closeModal();
+        }
     }
 }
 export default Modal;

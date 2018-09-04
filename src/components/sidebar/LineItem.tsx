@@ -29,31 +29,6 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         };
     }
 
-    private isRouteOpen(routeId: string) {
-        return this.state.openRouteIds.some(id => id === routeId);
-    }
-
-    private openRouteMenu(routeId: string) {
-        this.setState({
-            openRouteIds: this.state.openRouteIds.concat(routeId),
-        });
-    }
-
-    private closeRouteMenu(routeId: string) {
-        this.setState({
-            openRouteIds: this.state.openRouteIds.filter(id => id !== routeId),
-        });
-    }
-
-    private toggleRouteMenu(routeId: string, e: any) {
-        e.stopPropagation();
-        if (this.isRouteOpen(routeId)) {
-            this.closeRouteMenu(routeId);
-        } else {
-            this.openRouteMenu(routeId);
-        }
-    }
-
     public renderRoute(route: ILineRoute): any {
         const gotoUrl = (url:string) => () => {
             this.props.history.push(url);
@@ -130,6 +105,31 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 })}
             </div>
         );
+    }
+
+    private isRouteOpen(routeId: string) {
+        return this.state.openRouteIds.some(id => id === routeId);
+    }
+
+    private openRouteMenu(routeId: string) {
+        this.setState({
+            openRouteIds: this.state.openRouteIds.concat(routeId),
+        });
+    }
+
+    private closeRouteMenu(routeId: string) {
+        this.setState({
+            openRouteIds: this.state.openRouteIds.filter(id => id !== routeId),
+        });
+    }
+
+    private toggleRouteMenu(routeId: string, e: any) {
+        e.stopPropagation();
+        if (this.isRouteOpen(routeId)) {
+            this.closeRouteMenu(routeId);
+        } else {
+            this.openRouteMenu(routeId);
+        }
     }
 }
 

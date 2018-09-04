@@ -2,13 +2,6 @@ import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '../models';
 
 export class RouteStore {
-    @observable private _routes: IRoute[];
-    @observable private _routePaths: IRoutePath[];
-
-    constructor() {
-        this._routes = [];
-        this._routePaths = [];
-    }
 
     @computed get routes(): IRoute[] {
         if (this._routes.length < 1) return [];
@@ -33,6 +26,13 @@ export class RouteStore {
         });
 
         return visibleRoutePathsTotal;
+    }
+    @observable private _routes: IRoute[];
+    @observable private _routePaths: IRoutePath[];
+
+    constructor() {
+        this._routes = [];
+        this._routePaths = [];
     }
 
     @action
@@ -64,6 +64,14 @@ export class RouteStore {
         this._routes = [];
     }
 
+    @action
+    public toggleRoutePathVisibility(internalId: string) {
+        const routePathObservable = this.getRoutePath(internalId);
+        if (routePathObservable) {
+            routePathObservable.visible = !routePathObservable.visible;
+        }
+    }
+
     private getRoutePath(internalId: string): IRoutePath | null {
         let routePathObservable: IRoutePath | null = null;
         this._routes.find((_route) => {
@@ -77,14 +85,6 @@ export class RouteStore {
             return false;
         });
         return routePathObservable;
-    }
-
-    @action
-    public toggleRoutePathVisibility(internalId: string) {
-        const routePathObservable = this.getRoutePath(internalId);
-        if (routePathObservable) {
-            routePathObservable.visible = !routePathObservable.visible;
-        }
     }
 }
 

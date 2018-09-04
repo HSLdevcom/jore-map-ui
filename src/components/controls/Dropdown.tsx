@@ -7,9 +7,9 @@ interface IDropdownState {
 }
 
 interface IDropdownProps {
-    onChange(selectedItem: string): void;
     selected: string;
     items: string[];
+    onChange(selectedItem: string): void;
 }
 
 class Dropdown extends React.Component
@@ -19,22 +19,6 @@ class Dropdown extends React.Component
         this.state = {
             isOpen: false,
         };
-    }
-
-    private showDropdownList = () => {
-        this.setState({
-            isOpen: true,
-        });
-    }
-
-    private hideDropdownList = () => {
-        this.setState({
-            isOpen: false,
-        });
-    }
-
-    private getItemListClassName() {
-        return this.state.isOpen ? s.itemListShown : s.itemListHidden;
     }
 
     public render(): any {
@@ -76,6 +60,22 @@ class Dropdown extends React.Component
                 </div>
             </div>
         );
+    }
+
+    private showDropdownList = () => {
+        this.setState({
+            isOpen: true,
+        });
+    }
+
+    private hideDropdownList = () => {
+        this.setState({
+            isOpen: false,
+        });
+    }
+
+    private getItemListClassName() {
+        return this.state.isOpen ? s.itemListShown : s.itemListHidden;
     }
 
 }

@@ -17,9 +17,6 @@ interface PopupLayerProps {
 @inject('sidebarStore')
 @observer
 export default class PopupLayer extends Component<PopupLayerProps> {
-    private onClose = () => {
-        this.props.popupStore!.closePopup();
-    }
 
     render() {
         if (this.props.popupStore!.popupNode) {
@@ -49,5 +46,8 @@ export default class PopupLayer extends Component<PopupLayerProps> {
                 </Popup>
             );
         } return null;
+    }
+    private onClose = () => {
+        this.props.popupStore!.closePopup();
     }
 }

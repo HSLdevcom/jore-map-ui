@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 import { LineStore } from '../../stores/lineStore';
 import LineItem from './LineItem';
 import { ILine, ILineRoute } from '../../models';
@@ -41,7 +41,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     async queryAllLines() {
         this.setState({ isLoading: true });
         try {
-            await this.props.lineStore!.setAllLines(await LineService.getAllLines());
+            this.props.lineStore!.setAllLines(await LineService.getAllLines());
         } catch (err) {
             // TODO: show error on screen that the query failed
         }
@@ -61,13 +61,44 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         if (lineId.indexOf(searchTerm) > -1) return true;
 
         // Filter by route.name
-        if (routes
-                .map(route => route.name.toLowerCase())
-                .some(name => name.indexOf(searchTerm) > -1)) {
-            return true;
-        }
+        return routes
+            .map(route => route.name.toLowerCase())
+            .some(name => name.indexOf(searchTerm) > -1);
+    }
 
-        return false;
+    public render(): any {
+        const allLines = this.props.lineStore!.allLines;
+        if (this.state.isLoading) {
+            return (
+                <div className={s.searchResultsView}>
+                    <Loader/>
+                </div>
+            );
+        }
+        return (
+            <div className={s.searchResultsView}>
+                <div className={s.searchResultsWrapper}>
+                {
+                    allLines
+                        .filter(line =>
+                            this.filterLines(line.routes, line.lineId, line.transitType))
+                        // Showing only the first 100 results to improve rendering performance
+                        .splice(0, 100)
+                        .map((line: ILine) => {
+                            return (
+                                <LineItem
+                                    key={line.lineId}
+                                    line={line}
+                                    location={this.props.location}
+                                    history={this.props.history}
+                                />
+                            );
+                        })
+                }
+                </div>
+                {this.renderSearchResultButton()}
+            </div>
+        );
     }
 
     private renderSearchResultButton() {
@@ -107,41 +138,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     private closeSearchResults() {
         this.props.searchStore!.setSearchInput('');
-    }
-
-    public render(): any {
-        const allLines = this.props.lineStore!.allLines;
-        if (this.state.isLoading) {
-            return (
-                <div className={s.searchResultsView}>
-                    <Loader/>
-                </div>
-            );
-        }
-        return (
-            <div className={s.searchResultsView}>
-                <div className={s.searchResultsWrapper}>
-                {
-                    allLines
-                        .filter(line =>
-                            this.filterLines(line.routes, line.lineId, line.transitType))
-                        // Showing only the first 100 results to improve rendering performance
-                        .splice(0, 100)
-                        .map((line: ILine) => {
-                            return (
-                                <LineItem
-                                    key={line.lineId}
-                                    line={line}
-                                    location={this.props.location}
-                                    history={this.props.history}
-                                />
-                            );
-                        })
-                }
-                </div>
-                {this.renderSearchResultButton()}
-            </div>
-        );
     }
 }
 
