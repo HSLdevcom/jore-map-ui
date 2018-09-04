@@ -7,6 +7,7 @@ import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
 import lineStore from '../../stores/lineStore';
+import searchStore from '../../stores/searchStore';
 import { Location, History } from 'history';
 import LinkBuilder from '../../factories/linkBuilder';
 import LineItemSubMenu from './LineItemSubMenu';
@@ -58,6 +59,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         const gotoUrl = (url:string) => () => {
             this.props.history.push(url);
             lineStore.setSearchInput('');
+            searchStore.removeAllSubLineItems();
         };
         return (
             <div

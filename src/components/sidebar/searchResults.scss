@@ -1,6 +1,21 @@
 @import '../../common.scss';
 .searchResultsView {
-    overflow-y: auto;
-    padding-left: 10px;
-    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .searchResultsWrapper {
+        overflow-y: auto;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .searchResultButton{
+        width: 100%;
+        padding: 15px;
+        background-color: $busBlue;
+        color: #FFF;
+        text-align: center;
+        font-size: $mediumFontSize;
+        cursor: pointer;
+    }
 }
