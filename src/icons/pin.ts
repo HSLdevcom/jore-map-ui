@@ -1,20 +1,23 @@
 //tslint:disable
 
-
 class PinIcon {
     static getPin = (color: string) => {
         return(
             `
+            <div
+                style=
+                'position:absolute;
+                left:50%;
+                padding:15px;
+                -ms-transform: translateX(-50%) translateY(-50%);
+                -webkit-transform: translate(-50%,-50%);
+                transform: translate(-50%,-50%);'
+            >
                 <svg
-                    aria-hidden='true'
                     data-prefix='fas'
-                    data-icon='map-marker-alt'
-                    className='pinIcon'
-                    role='img'
-                    xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 384 512'
-                    width='32'
-                    height='32'
+                    width='35'
+                    height='35'
                     color='${color}'
                 >
                     <path
@@ -24,6 +27,7 @@ class PinIcon {
                          35.817-80 80 35.817 80 80 80z'>
                     </path>
                 </svg>
+            </div>
             `);
     }
 }

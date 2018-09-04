@@ -26,14 +26,11 @@ class RoutePathFactory {
         const coordinates = JSON.parse(suunta.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
 
-        const geoJson = JSON.parse(suunta.geojson);
-        nodes.push(NodeFactory.createStartingPointNode(geoJson.coordinates[0]));
-
         return <IRoutePath>{
             routeId,
             nodes,
             positions,
-            geoJson,
+            geoJson: JSON.parse(suunta.geojson),
             internalId: internalRoutePathId,
             routePathName: suunta.suunimi,
             direction: suunta.suusuunta,

@@ -92,6 +92,18 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         );
     }
 
+    private getFirstNodes() {
+        const firstNodes: number[] = [];
+        this.props.routeStore!.routes.forEach((route: IRoute) => {
+            route.routePaths.forEach((routePath: IRoutePath) => {
+                if (routePath.visible) {
+                    firstNodes.push(routePath.geoJson.coordinates[0]);
+                }
+            });
+        });
+        return firstNodes;
+    }
+
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
         if (this.map) {
@@ -104,7 +116,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
         const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
         const colors = ColorScale.getColors(visibleRoutePaths.length);
-
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 <Map
@@ -141,6 +152,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     />
                     <NodeLayer
                         nodes={visibleNodes}
+                        firstNodes={this.getFirstNodes()}
                     />
                     <PopupLayer
                         setView={this.setView}

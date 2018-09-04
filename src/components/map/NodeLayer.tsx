@@ -9,6 +9,7 @@ import { ToolbarStore } from '../../stores/toolbarStore';
 import { SidebarStore } from '../../stores/sidebarStore';
 import { observer, inject } from 'mobx-react';
 import ToolbarTools from '../../enums/toolbarTools';
+import ColorScale from '../../util/colorScale';
 import PinIcon from '../../icons/pin';
 
 interface NodeLayerProps {
@@ -16,6 +17,7 @@ interface NodeLayerProps {
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
     sidebarStore?: SidebarStore;
+    firstNodes: number[];
 }
 
 enum color {
@@ -53,23 +55,52 @@ export default class NodeLayer extends Component<NodeLayerProps> {
         return new L.DivIcon(divIconOptions);
     }
 
+    private getStartPointIcon = (color: string) => {
+        const divIconOptions : L.DivIconOptions = {
+            className: s.nodeMarker,
+            html: PinIcon.getPin(color),
+        };
+
+        return new L.DivIcon(divIconOptions);
+    }
+
     render() {
-        return this.props.nodes.map((node, index) => {
-            const icon = this.getIcon(node);
+        const colors = ColorScale.getColors(this.props.firstNodes.length);
+        return (
+            <div>
+            {
+                this.props.firstNodes.map((coordinates, index) => {
+                    const icon = this.getStartPointIcon(colors[index]);
+                    return (
+                        <Marker
+                            draggable={true}
+                            icon={icon}
+                            key={index}
+                            position={[coordinates[1], coordinates[0]]}
+                        />
+                    );
+                })
+            }
+            {
+                this.props.nodes.map((node, index) => {
+                    const icon = this.getIcon(node);
 
-            const openPopup = () => {
-                this.props.popupStore!.showPopup(node);
-            };
+                    const openPopup = () => {
+                        this.props.popupStore!.showPopup(node);
+                    };
 
-            return (
-                <Marker
-                    onContextMenu={openPopup}
-                    draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
-                    icon={icon}
-                    key={index}
-                    position={[node.coordinates.lat, node.coordinates.lon]}
-                />
-            );
-        });
+                    return (
+                        <Marker
+                            onContextMenu={openPopup}
+                            draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
+                            icon={icon}
+                            key={index}
+                            position={[node.coordinates.lat, node.coordinates.lon]}
+                        />
+                    );
+                })
+            }
+            </div>
+        );
     }
 }
