@@ -37,6 +37,15 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         this.mounted = false;
     }
 
+    public componentDidMount() {
+        this.mounted = true;
+        this.fetchRoutePaths();
+    }
+
+    public componentDidUpdate() {
+        this.fetchRoutePaths();
+    }
+
     private fetchRoutePaths() {
         if (!this.props.visible || this.state.routePaths) {
             return;
@@ -58,6 +67,14 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
             });
     }
 
+    private toggle(routePathId: string) {
+        if (this.isSelected(routePathId)) {
+            this.unSelect(routePathId);
+        } else {
+            this.select(routePathId);
+        }
+    }
+
     private select(routePathId: string) {
         this.props.searchStore!.addSubLineItem(this.props.routeId, routePathId);
     }
@@ -74,23 +91,6 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
             return subLineItem.routeId === this.props.routeId
                 && subLineItem.routePathId === routePathId;
         });
-    }
-
-    private toggle(routePathId: string) {
-        if (this.isSelected(routePathId)) {
-            this.unSelect(routePathId);
-        } else {
-            this.select(routePathId);
-        }
-    }
-
-    public componentDidMount() {
-        this.mounted = true;
-        this.fetchRoutePaths();
-    }
-
-    public componentDidUpdate() {
-        this.fetchRoutePaths();
     }
 
     render () {
