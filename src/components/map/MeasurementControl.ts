@@ -3,10 +3,9 @@ import classnames from 'classnames';
 import measurementToolIcon from '../../icons/icon-ruler';
 import removeToolIcon from '../../icons/icon-eraser';
 import removeAllIcon from '../../icons/icon-bin';
-import * as s from './map.scss';
+import * as s from './measurementControl.scss';
 
 interface MeasurementControlOptions extends L.ControlOptions {
-    color?: string; // TODO use this for something
 }
 
 class MeasurementControl extends L.Control {
