@@ -35,7 +35,8 @@ interface IMapProps {
 @inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
-    private map: any;
+    // tslint:disable-next-line
+    private map: React.RefObject<Map<{ children: JSX.Element[]; ref: any; center: L.LatLng; zoom: number; zoomControl: false; id: string; }, L.Map>>;
 
     constructor(props: IMapProps) {
         super(props);
