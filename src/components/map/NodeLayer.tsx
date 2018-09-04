@@ -3,9 +3,10 @@ import { INode } from '../../models';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
 import NodeType from '../../enums/nodeType';
-import * as s from './nodeMarker.scss';
+import * as s from './nodeLayer.scss';
 import { PopupStore } from '../../stores/popupStore';
 import { ToolbarStore } from '../../stores/toolbarStore';
+import { SidebarStore } from '../../stores/sidebarStore';
 import { observer, inject } from 'mobx-react';
 import ToolbarTools from '../../enums/toolbarTools';
 
@@ -13,26 +14,39 @@ interface NodeLayerProps {
     nodes: INode[];
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
+    sidebarStore?: SidebarStore;
 }
 
-@inject('popupStore', 'toolbarStore')
+enum color {
+    STOP_BORDER_COLOR = '#f17c44',
+    CROSSROAD_BORDER_COLOR = '#666666',
+    NORMAL_FILL_COLOR = '#FFF',
+    SELECTED_FILL_COLOR = '#f44268',
+}
+
+@inject('popupStore', 'toolbarStore', 'sidebarStore')
 @observer
 export default class NodeLayer extends Component<NodeLayerProps> {
     constructor (props: NodeLayerProps) {
         super(props);
     }
 
-    private getNodeMarkerHtml = (color: string) => {
+    private getNodeMarkerHtml = (borderColor: string, fillColor: string) => {
         return `<div
-            style="border-color: ${color}"
+            style="border-color: ${borderColor}; background-color: ${fillColor}"
             class=${s.nodeMarkerContent}
         />`;
     }
 
-    private getIcon = (color: string) => {
+    private getIcon = (node: INode) => {
+        const borderColor = node.type === NodeType.CROSSROAD
+        ? color.CROSSROAD_BORDER_COLOR : color.STOP_BORDER_COLOR;
+        const isSelected = node.id === this.props.sidebarStore!.openedNodeId;
+        const fillColor = isSelected ? color.SELECTED_FILL_COLOR : color.NORMAL_FILL_COLOR;
+
         const divIconOptions : L.DivIconOptions = {
             className: s.nodeMarker,
-            html: this.getNodeMarkerHtml(color),
+            html: this.getNodeMarkerHtml(borderColor, fillColor),
         };
 
         return new L.DivIcon(divIconOptions);
@@ -40,10 +54,7 @@ export default class NodeLayer extends Component<NodeLayerProps> {
 
     render() {
         return this.props.nodes.map((node, index) => {
-            const color =
-                node.type === NodeType.CROSSROAD
-                ? '#666666' : '#f17c44';
-            const icon = this.getIcon(color);
+            const icon = this.getIcon(node);
 
             const openPopup = () => {
                 this.props.popupStore!.showPopup(node);

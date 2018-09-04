@@ -11,7 +11,6 @@ import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
-import NodeWindow from './NodeWindow';
 import * as s from './app.scss';
 import { Route, RouteComponentProps } from 'react-router-dom';
 
@@ -37,10 +36,6 @@ class App extends React.Component<IAppProps, IAppState> {
         this.props.loginStore!.showLogin = false;
     }
 
-    private closeNodeWindow = () => {
-        this.props.sidebarStore!.closeNodeView();
-    }
-
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         return (
@@ -57,12 +52,6 @@ class App extends React.Component<IAppProps, IAppState> {
                 isVisible={this.props.loginStore!.showLogin}
             >
                 <Login />
-            </Modal>
-            <Modal
-                closeModal={this.closeNodeWindow}
-                isVisible={this.props.sidebarStore!.showNodeWindow}
-            >
-                <NodeWindow />
             </Modal>
             <div className={sidebarHiddenClass}>
                 <Route component={Sidebar} />
