@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 import { Polyline } from 'react-leaflet';
 import { IRoutePath } from '../../models';
+import { toJS } from 'mobx';
 
 interface RouteLayerProps {
     routePaths: IRoutePath[];
@@ -10,11 +11,11 @@ interface RouteLayerProps {
 }
 
 export default class RouteLayer extends Component<RouteLayerProps> {
-    calculateBounds(nextProps: RouteLayerProps) {
+    calculateBounds() {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
-        nextProps.routePaths.forEach((routePath) => {
-            const geoJSON = L.geoJSON(routePath.geoJson);
+        this.props.routePaths.forEach((routePath) => {
+            const geoJSON = L.geoJSON(toJS(routePath.geoJson));
             if (!bounds) {
                 bounds = geoJSON.getBounds();
             } else {
@@ -27,12 +28,12 @@ export default class RouteLayer extends Component<RouteLayerProps> {
         }
     }
 
-    componentWillReceiveProps(nextProps: RouteLayerProps) {
+    componentDidUpdate(prevProps: RouteLayerProps) {
         const routePathsChanged =
-            nextProps.routePaths.map(rPath => rPath.internalId).join(':')
+            prevProps.routePaths.map(rPath => rPath.internalId).join(':')
             !== this.props.routePaths.map(rPath => rPath.internalId).join(':');
         if (routePathsChanged) {
-            this.calculateBounds(nextProps);
+            this.calculateBounds();
         }
     }
 
