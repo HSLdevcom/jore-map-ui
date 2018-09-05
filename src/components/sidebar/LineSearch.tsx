@@ -1,17 +1,17 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LineStore } from '../../stores/lineStore';
+import { SearchStore } from '../../stores/searchStore';
 import * as s from './lineSearch.scss';
 
 interface ILineSearchProps {
-    lineStore?: LineStore;
+    searchStore?: SearchStore;
 }
 
 interface ILineSearchState {
     lineItems: any;
 }
 
-@inject('lineStore')
+@inject('searchStore')
 @observer
 class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
     constructor(props: ILineSearchProps) {
@@ -23,7 +23,7 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
 
     public handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
-        this.props.lineStore!.setSearchInput(newValue);
+        this.props.searchStore!.setSearchInput(newValue);
     }
 
     public render(): any {
@@ -34,7 +34,7 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
                         placeholder='Hae'
                         className={s.input}
                         type='text'
-                        value={this.props.lineStore!.searchInput}
+                        value={this.props.searchStore!.searchInput}
                         onChange={this.handleSearchInputChange}
                     />
                 </div>

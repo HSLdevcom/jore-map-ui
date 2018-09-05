@@ -1,13 +1,11 @@
 import * as L from 'leaflet';
-import * as s from './map.scss';
 import classnames from 'classnames';
-
 import measurementToolIcon from '../../icons/icon-ruler';
 import removeToolIcon from '../../icons/icon-eraser';
 import removeAllIcon from '../../icons/icon-bin';
+import * as s from './measurementControl.scss';
 
 interface MeasurementControlOptions extends L.ControlOptions {
-    color?: string; // TODO use this for something
 }
 
 class MeasurementControl extends L.Control {
@@ -27,6 +25,7 @@ class MeasurementControl extends L.Control {
     private measurementToolContainer: HTMLElement;
     private removeToolContainer: HTMLElement;
     private removeAllContainer: HTMLElement;
+    private lastMarker: L.CircleMarker;
 
     constructor(options?: MeasurementControlOptions) {
         super(options);
@@ -82,6 +81,7 @@ class MeasurementControl extends L.Control {
     private enableMeasure = () => {
         this.disableRemove();
         L.DomUtil.addClass(this.map.getContainer(), s.measurementCursor);
+        L.DomUtil.addClass(this.measurementToolContainer, s.selected);
         this.active = true;
         this.map.on('click', this.measurementClicked);
         this.map.doubleClickZoom.disable();
@@ -89,6 +89,7 @@ class MeasurementControl extends L.Control {
 
     private disableMeasure = () => {
         L.DomUtil.removeClass(this.map.getContainer(), s.measurementCursor);
+        L.DomUtil.removeClass(this.measurementToolContainer, s.selected);
         this.active = false;
         this.map.off('click', this.measurementClicked);
         this.map.off('mousemove', this.measurementMoving);
@@ -107,14 +108,22 @@ class MeasurementControl extends L.Control {
 
         this.measurementLayer.on('click', this.removeMeasurement(this.measurementLayer));
         this.measuring = true;
-        // this.map.on('dblclick', this.finishMeasurement);
+        this.map.on('dblclick', this.finishMeasurementClick); // TODO: Fix doubleclick detection..
         this.showRemoveTools();
+    }
+
+    private finishMeasurementClick = (e: L.LeafletMouseEvent) => {
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+        this.finishMeasurement();
     }
 
     private finishMeasurement = () => {
         this.measuring = false;
         this.tmpLine.clearLayers();
-        this.map.off('dblclick', this.finishMeasurement);
+        this.map.off('dblclick', this.finishMeasurementClick);
+        if (this.distance === 0) { this.measurementsLayer.removeLayer(this.measurementLayer); }
+        this.lastMarker.openPopup();
     }
 
     private measurementClicked = (e: L.LeafletMouseEvent) => {
@@ -123,6 +132,15 @@ class MeasurementControl extends L.Control {
         }
         const latLng = e.latlng;
         if (this.points.length > 0) {
+            const { x: x1, y: y1 } =
+                this.map.latLngToContainerPoint(this.points[this.points.length - 1]);
+            const { x: x2, y: y2 } =
+                this.map.latLngToContainerPoint(latLng);
+            const pxDistance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+            if (pxDistance < 10) {
+                this.finishMeasurement();
+                return;
+            }
             this.distance +=
                 this.points[this.points.length - 1].distanceTo(latLng);
         }
@@ -132,14 +150,13 @@ class MeasurementControl extends L.Control {
         }
         this.lineLayer.clearLayers();
         L.polyline(this.points, { className: s.polyline }).addTo(this.lineLayer);
-        L.circleMarker(latLng, { className: s.circleMarker })
+        this.lastMarker = L.circleMarker(latLng, { className: s.circleMarker })
             .bindPopup(
                 `${this.distance.toFixed(2)} meters`, {
                     autoClose: false,
                     closeOnClick: false,
                 })
-            .openPopup()
-            .on('click', this.finishMeasurement)
+            .on('click', this.finishMeasurementClick)
             .addTo(this.pointLayer);
     }
 
@@ -150,15 +167,15 @@ class MeasurementControl extends L.Control {
         const prevPoint = this.points[this.points.length - 1];
         L.polyline(
             [prevPoint, movingLatLng],
-            { className: classnames(s.movingPolyline, s.polyline) })
-            .on('click', this.measurementClicked)
+            { className: classnames(s.movingPolyline, s.polyline), interactive: false })
             .addTo(this.tmpLine);
-        L.circleMarker(movingLatLng,
-                       { className: classnames(s.noEvents, s.measurementCursor, s.circleMarker) })
-            .on('click', this.measurementClicked)
+        L.circleMarker(movingLatLng, {
+            className: classnames(s.noEvents, s.measurementCursor, s.circleMarker),
+            interactive: false,
+        })
             .bindTooltip(prevPoint.distanceTo(movingLatLng).toFixed(2))
-            .openTooltip()
-            .addTo(this.tmpLine);
+            .addTo(this.tmpLine)
+            .openTooltip();
     }
 
     private showRemoveTools = () => {
@@ -180,12 +197,14 @@ class MeasurementControl extends L.Control {
     }
 
     private enableRemove = () => {
+        L.DomUtil.addClass(this.removeToolContainer, s.selected);
         this.removing = true;
         this.finishMeasurement();
         this.disableMeasure();
     }
 
     private disableRemove = () => {
+        L.DomUtil.removeClass(this.removeToolContainer, s.selected);
         this.removing = false;
     }
 

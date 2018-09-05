@@ -1,4 +1,4 @@
-import { Map, MapProps, TileLayer, ZoomControl } from 'react-leaflet';
+import { Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
@@ -32,46 +32,58 @@ interface IMapProps {
     toolbarStore?: ToolbarStore;
 }
 
+interface IMapPropReference {
+    children: JSX.Element[];
+    ref: any;
+    center: L.LatLng;
+    zoom: number;
+    zoomControl: false;
+    id: string;
+}
+
 @inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
-    private map: Map<MapProps, L.Map> | null;
+    private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
 
     constructor(props: IMapProps) {
         super(props);
+        this.mapReference = React.createRef();
         this.state = {
             zoomLevel: 15,
         };
-
+        this.setView = this.setView.bind(this);
         this.fitBounds = this.fitBounds.bind(this);
     }
 
+    private getMap() {
+        return this.mapReference.current!.leafletElement;
+    }
+
     public componentDidMount() {
-        const leafletElement = this.map!.leafletElement;
+        const map = this.getMap();
         // TODO: Convert these as react-components
-        leafletElement.addControl(new CoordinateControl({ position: 'topright' }));
-        leafletElement.addControl(new MeasurementControl({ position: 'topright' }));
-        leafletElement.on('moveend', () => {
+        map.addControl(new CoordinateControl({ position: 'topright' }));
+        map.addControl(new MeasurementControl({ position: 'topright' }));
+        map.on('moveend', () => {
             this.props.mapStore!.setCoordinates(
-                leafletElement.getCenter().lat,
-                leafletElement.getCenter().lng,
+                map.getCenter().lat,
+                map.getCenter().lng,
             );
         });
-        leafletElement.on('zoomend', () => {
+        map.on('zoomend', () => {
             this.setState({
-                zoomLevel: leafletElement.getZoom(),
+                zoomLevel: map.getZoom(),
             });
         });
     }
 
     public componentDidUpdate() {
-        this.map!.leafletElement.invalidateSize();
+        this.getMap().invalidateSize();
     }
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
-        if (this.map) {
-            this.map!.leafletElement.fitBounds(bounds);
-        }
+        this.getMap().fitBounds(bounds);
     }
 
     private getVisibleRoutePaths = (routes: IRoute[]) => {
@@ -92,6 +104,11 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         );
     }
 
+    /* Leaflet methods */
+    private setView(latLng: L.LatLng) {
+        this.getMap().setView(latLng, 17);
+    }
+
     public render() {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
@@ -101,9 +118,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 <Map
-                    ref={(map) => {
-                        this.map = map;
-                    }}
+                    ref={this.mapReference}
                     center={this.props.mapStore!.coordinates}
                     zoom={this.state.zoomLevel}
                     zoomControl={false}
@@ -135,12 +150,14 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <NodeLayer
                         nodes={visibleNodes}
                     />
-                    <PopupLayer />
+                    <PopupLayer
+                        setView={this.setView}
+                    />
                     <Control position='topleft'>
                         <Toolbar toolbarStore={this.props.toolbarStore}/>
                     </Control>
                     <Control position='topright'>
-                        <FullscreenControl map={this.map} />
+                        <FullscreenControl />
                     </Control>
                     <ZoomControl position='bottomright' />
                     <Control position='bottomright' />

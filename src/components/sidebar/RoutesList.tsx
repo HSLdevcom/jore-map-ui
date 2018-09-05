@@ -1,31 +1,25 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { RouteStore } from '../../stores/routeStore';
-import { LineStore } from '../../stores/lineStore';
+import searchStore from '../../stores/searchStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
 import * as s from './routesList.scss';
-import { RouteComponentProps } from 'react-router-dom';
 import RouteService from '../../services/routeService';
 import Loader from './Loader';
 import routeBuilder from '../../routing/routeBuilder';
-
-interface MatchParams {
-    route: string;
-}
 
 interface IRoutesListState {
     networkCheckboxToggles: any;
     isLoading: boolean;
 }
 
-interface IRoutesListProps extends RouteComponentProps<MatchParams>{
-    lineStore?: LineStore;
+interface IRoutesListProps {
     routeStore?: RouteStore;
 }
 
-@inject('lineStore', 'routeStore')
+@inject('routeStore')
 @observer
 class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     constructor(props: any) {
@@ -41,7 +35,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     async componentDidMount() {
         await this.queryRoutes();
-        this.props.lineStore!.setSearchInput('');
+        searchStore!.setSearchInput('');
     }
 
     private networkCheckboxToggle = (type: string) => {
@@ -75,8 +69,8 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     public render(): any {
         const routeList = (routes: IRoute[]) => {
             let visibleRoutePathsIndex = 0;
-            if (this.props.routeStore!.routes.length < 1) return null;
-            return this.props.routeStore!.routes.map((route: IRoute) => {
+            if (routes.length < 1) return null;
+            return routes.map((route: IRoute) => {
                 const routeShow = (
                     <RouteShow
                         key={route.routeId}
@@ -102,13 +96,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                     {
                         routeList(this.props.routeStore!.routes)
                     }
-                    <div className={s.checkboxContainer}>
-                        <input
-                            type='checkbox'
-                            checked={false}
-                        />
-                        Kopioi reitti toiseen suuntaan
-                    </div>
                 </div>
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>

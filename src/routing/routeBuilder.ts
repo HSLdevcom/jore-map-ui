@@ -33,6 +33,10 @@ export class RouteBuilder {
     public getValue(name: string) {
         return this.getValues()[name];
     }
+
+    public getCurrentLocation() {
+        return this._routerStore.location.pathname;
+    }
 }
 
 export default new RouteBuilder();

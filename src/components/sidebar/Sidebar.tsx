@@ -1,20 +1,23 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import * as s from './sidebar.scss';
 import { Route, Switch } from 'react-router';
 import hslLogo from '../../assets/hsl-logo.png';
-import { RouteStore } from '../../stores/routeStore';
-import { LineStore } from '../../stores/lineStore';
+import { SidebarStore } from '../../stores/sidebarStore';
+import { RouteStore } from '../../stores/routeStore';
+import { SearchStore } from '../../stores/searchStore';
+import NodeWindow from './NodeView';
 import RoutesView from './RoutesView';
 import HomeView from './HomeView';
 import routeBuilder from '../../routing/routeBuilder';
 import routing from '../../routing/routing';
 import { Location } from 'history';
 import navigator from '../../routing/navigator';
+import * as s from './sidebar.scss';
 
 interface ISidebarProps{
+    sidebarStore?: SidebarStore;
     routeStore?: RouteStore;
-    lineStore?: LineStore;
+    searchStore?: SearchStore;
     location: Location;
 }
 
@@ -22,13 +25,13 @@ interface ILinelistState {
     searchInput: string;
 }
 
-@inject('routeStore', 'lineStore')
+@inject('sidebarStore', 'routeStore', 'searchStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     public render(): any {
         const handleHeaderClick = () => {
             this.props.routeStore!.clearRoutes();
-            this.props.lineStore!.setSearchInput('');
+            this.props.searchStore!.setSearchInput('');
             navigator.push(
                 routeBuilder
                     .to(routing.home)
@@ -46,10 +49,16 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 </h2>
                     </div>
                 </div>
-                <Switch>
-                    <Route path={routing.routes.location} component={RoutesView} />
-                    <Route path={routing.home.location} component={HomeView} />
-                </Switch>
+                {/* TODO: Use Route path=/node instead of this "if check" */}
+                { this.props.sidebarStore!.showNodeWindow ? (
+                    <NodeWindow />
+                ) : (
+                    <Switch>
+                        <Route path={routing.routes.location} component={RoutesView} />
+                        <Route path={routing.home.location} component={HomeView} />
+                    </Switch>
+                )
+                }
             </div>
         );
     }

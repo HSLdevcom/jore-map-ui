@@ -27,6 +27,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 
     private closeRoute() {
+        this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
         navigator.push(
             routeBuilder
             .current()
@@ -62,7 +63,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
         return this.props.route.routePaths
         .slice().sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
-        .map((routePath: IRoutePath, index: number) => {
+        .map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
             };

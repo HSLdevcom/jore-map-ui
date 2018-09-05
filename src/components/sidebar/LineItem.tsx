@@ -6,7 +6,7 @@ import { ILine, ILineRoute } from '../../models';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import Moment from 'react-moment';
 import * as s from './lineItem.scss';
-import lineStore from '../../stores/lineStore';
+import searchStore from '../../stores/searchStore';
 import LineItemSubMenu from './LineItemSubMenu';
 import routeBuilder from '../../routing/routeBuilder';
 import routing from '../../routing/routing';
@@ -56,7 +56,8 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     public renderRoute(route: ILineRoute): any {
         const gotoUrl = (url:string) => () => {
             navigator.push(url);
-            lineStore.setSearchInput('');
+            searchStore.setSearchInput('');
+            searchStore.removeAllSubLineItems();
         };
         return (
             <div

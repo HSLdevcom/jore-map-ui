@@ -2,21 +2,25 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
 import LineItem from './LineItem';
-import { ILine } from '../../models';
+import { ILine, ILineRoute } from '../../models';
 import TransitType from '../../enums/transitType';
 import * as s from './searchResults.scss';
 import LineService from '../../services/lineService';
+import { SearchStore } from '../../stores/searchStore';
 import Loader from './Loader';
+import routeBuilder from '../../routing/routeBuilder';
+import routing from '../../routing/routing';
 
 interface ISearchResultsProps{
     lineStore?: LineStore;
+    searchStore?: SearchStore;
 }
 
 interface ISearchResultsState {
     isLoading: boolean;
 }
 
-@inject('lineStore')
+@inject('lineStore', 'searchStore')
 @observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
 
@@ -25,6 +29,9 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.state = {
             isLoading: false,
         };
+
+        this.addSearchResults = this.addSearchResults.bind(this);
+        this.closeSearchResults = this.closeSearchResults.bind(this);
     }
 
     componentDidMount() {
@@ -41,14 +48,65 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.setState({ isLoading: false });
     }
 
-    public filterLines = (lineNumber: string, transitType: TransitType) => {
-        const searchTargetAttributes = lineNumber;
+    public filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
+        const searchTerm = this.props.searchStore!.searchInput.toLowerCase();
+
+        // Filter by transitType
         if (this.props.lineStore!.filters &&
             this.props.lineStore!.filters.indexOf(transitType) !== -1) {
             return false;
         }
 
-        return searchTargetAttributes.includes(this.props.lineStore!.searchInput);
+        // Filter by line.lineId
+        if (lineId.indexOf(searchTerm) > -1) return true;
+
+        // Filter by route.name
+        if (routes
+                .map(route => route.name.toLowerCase())
+                .some(name => name.indexOf(searchTerm) > -1)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private renderSearchResultButton() {
+        const subLineItemsLength = this.props.searchStore!.subLineItems.length;
+
+        const isSearchResultButtonVisible = subLineItemsLength > 0 ||
+        (routeBuilder.getCurrentLocation() !== routing.home.location && subLineItemsLength === 0);
+        if (!isSearchResultButtonVisible) {
+            return;
+        }
+
+        if (subLineItemsLength > 0) {
+            return (
+                <div
+                    className={s.searchResultButton}
+                    onClick={this.addSearchResults}
+                >
+                    Lisää tarkasteluun ({subLineItemsLength})
+                </div>
+            );
+        }
+        return (
+            <div
+                className={s.searchResultButton}
+                onClick={this.closeSearchResults}
+            >
+                Sulje
+            </div>
+        );
+    }
+
+    private addSearchResults() {
+        // TODO, add all selected routePaths into location (use LinkBuilder)
+        this.props.searchStore!.setSearchInput('');
+        this.props.searchStore!.removeAllSubLineItems();
+    }
+
+    private closeSearchResults() {
+        this.props.searchStore!.setSearchInput('');
     }
 
     public render(): any {
@@ -62,10 +120,11 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
         return (
             <div className={s.searchResultsView}>
+                <div className={s.searchResultsWrapper}>
                 {
                     allLines
                         .filter(line =>
-                            this.filterLines(line.lineNumber, line.transitType))
+                            this.filterLines(line.routes, line.lineId, line.transitType))
                         // Showing only the first 100 results to improve rendering performance
                         .splice(0, 100)
                         .map((line: ILine) => {
@@ -77,6 +136,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                             );
                         })
                 }
+                </div>
+                {this.renderSearchResultButton()}
             </div>
         );
     }
