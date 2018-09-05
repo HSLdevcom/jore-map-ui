@@ -1,3 +1,5 @@
+import * as qs from 'qs';
+
 export default class RouteBuilderContext {
     private _target: string;
     private _values: any;
@@ -13,17 +15,8 @@ export default class RouteBuilderContext {
 
     public toLink() {
         let search = this._target;
-        if (Object.keys(this._target).length !== 0) {
-            search += '?';
-        }
-        for (const property in this._values) {
-            if (Array.isArray(this._values[property])) {
-                for (const val in this._values[property]) {
-                    search += `${property}[]=${this._values[property][val]}&`;
-                }
-            } else {
-                search += `${property}=${this._values[property]}&`;
-            }
+        if (Object.keys(this._values).length !== 0) {
+            search += `?${qs.stringify(this._values, { encode: false })}`;
         }
         return search;
     }

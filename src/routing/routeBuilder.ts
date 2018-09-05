@@ -18,7 +18,7 @@ export class RouteBuilder {
     private getValues() {
         return qs.parse(
             this._routerStore.location.search,
-            { ignoreQueryPrefix: true, arrayLimit: 1 },
+            { ignoreQueryPrefix: true },
         );
     }
 
