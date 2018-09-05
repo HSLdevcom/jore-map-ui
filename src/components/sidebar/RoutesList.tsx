@@ -68,9 +68,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
             routeBuilder.getValue('routes').length
                 !== this.props.routeStore!.routes.length
             ) {
-            if (!this.state.isLoading) {
-                this.queryRoutes();
-            }
+            this.queryRoutes();
         }
     }
 
