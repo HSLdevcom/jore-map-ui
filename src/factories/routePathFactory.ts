@@ -1,6 +1,6 @@
-import { INode, IRoutePath } from '../models';
-import NodeFactory from './nodeFactory';
+import { IRoutePath, IRoutePathLink } from '../models';
 import HashHelper from '../util/hashHelper';
+import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
     // suunta to IRoutePath
@@ -19,17 +19,18 @@ class RoutePathFactory {
             ].join('-'),
         ).toString();
 
-        const nodes:INode[]
+        const routePathLinks:IRoutePathLink[]
         = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
-            .map((node: any) => NodeFactory.createNode(internalRoutePathId, node.node));
+            .map((node: any) =>
+                RoutePathLinkFactory.createRoutePathLink(node.node));
 
         const coordinates = JSON.parse(suunta.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
 
         return <IRoutePath>{
             routeId,
-            nodes,
             positions,
+            routePathLinks,
             internalId: internalRoutePathId,
             geoJson: JSON.parse(suunta.geojson),
             routePathName: suunta.suunimi,

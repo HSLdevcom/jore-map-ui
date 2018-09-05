@@ -8,8 +8,8 @@ import RouteShow from './RouteShow';
 import * as s from './routesList.scss';
 import { RouteComponentProps } from 'react-router-dom';
 import * as qs from 'qs';
-import RouteService from '../../services/routeService';
 import Loader from './Loader';
+import RoutesViewHelper from '../../util/routesViewHelper';
 
 interface MatchParams {
     route: string;
@@ -60,7 +60,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         let routeIds: string[] = [];
         if (queryValues.routes) {
             routeIds = queryValues.routes.split(' ');
-            this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
+            RoutesViewHelper.fetchRequiredData(routeIds);
         }
         this.setState({ isLoading: false });
     }

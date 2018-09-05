@@ -5,6 +5,17 @@ import RouteFactory from '../factories/routeFactory';
 import LineService from './lineService';
 import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
+import { IRoute, INode } from '../models';
+
+export interface IRouteServiceResult {
+    routes: IRoute[];
+    nodes: INode[];
+}
+
+export interface IRouteResult {
+    route: IRoute;
+    nodes: INode[];
+}
 
 export default class RouteService {
     public static async getRoute(routeId: string) {
@@ -22,8 +33,35 @@ export default class RouteService {
         }
     }
 
-    public static async getRoutes(routeIds: string[]) {
-        return Promise.all(routeIds.map(x => RouteService.getRoute(x)));
+    public static async getRouteData(routeId: string) {
+        try {
+            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                { query: getRoute, variables: { routeId } },
+                );
+            const line = await LineService.getLine(queryResult.data.route.lintunnus);
+            return <IRouteResult>{
+                route: RouteFactory.createRoute(queryResult.data.route, line),
+                nodes: [],
+            };
+        } catch (err) {
+            NotificationStore.addNotification(
+            { message: 'Reitin haku ei onnistunut.', type: NotificationType.ERROR },
+            );
+            return err;
+        }
+    }
+
+    public static async getRoutesData(routeIds: string[]) {
+        return new Promise<IRouteServiceResult>((resolve, reject) => {
+            Promise
+                .all(routeIds.map(id => RouteService.getRouteData(id)))
+                .then((routeResults: IRouteResult[]) => {
+                    resolve(<IRouteServiceResult>{
+                        routes: routeResults.map(res => res.route),
+                        nodes: [],
+                    });
+                });
+        });
     }
 }
 
@@ -47,20 +85,29 @@ query getLineDetails($routeId: String!) {
                     suuviimpvm
                     suuvoimviimpvm
                     geojson
-                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-                    edges {
-                    node {
-                        relid
-                        solmuByLnkalkusolmu {
-                            geojson
-                        pysakkiBySoltunnus {
-                            pysnimi
-                        }
-                        soltyyppi
+                    reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
+                        edges {
+                            node {
+                                relid
+                                lnkalkusolmu
+                                lnkloppusolmu
+                                reljarjnro
+                                lnkverkko
+                                solmuByLnkalkusolmu {
+                                    solx,
+                                    soly,
+                                    soltunnus,
+                                    soltyyppi
+                                }
+                                solmuByLnkloppusolmu {
+                                    solx,
+                                    soly,
+                                    soltunnus,
+                                    soltyyppi
+                                }
+                            }
                         }
                     }
-                    }
-                }
                 }
             }
         }

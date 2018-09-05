@@ -14,12 +14,13 @@ import MeasurementControl from './MeasurementControl';
 import RouteLayer from './RouteLayer';
 import ColorScale from '../../util/colorScale';
 import NodeLayer from './NodeLayer';
-import { IRoutePath, INode, IRoute } from '../../models';
+import { IRoutePath, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
 import * as s from './map.scss';
 import Toolbar from './Toolbar';
 import PopupLayer from './PopupLayer';
 import { ToolbarStore } from '../../stores/toolbarStore';
+import { NodeStore } from '../../stores/nodeStore';
 
 interface IMapState {
     zoomLevel: number;
@@ -30,6 +31,7 @@ interface IMapProps {
     routeStore?: RouteStore;
     sidebarStore?: SidebarStore;
     toolbarStore?: ToolbarStore;
+    nodeStore?: NodeStore;
 }
 
 interface IMapPropReference {
@@ -41,7 +43,7 @@ interface IMapPropReference {
     id: string;
 }
 
-@inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
+@inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore', 'nodeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -95,15 +97,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         ).filter(routePath => routePath.visible);
     }
 
-    private getVisibleNodes = (visibleRoutesPaths: IRoutePath[]) => {
-        return visibleRoutesPaths.reduce<INode[]>(
-            (flatList, routePath) => {
-                return flatList.concat(routePath.nodes);
-            },
-            [],
-        );
-    }
-
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
         this.getMap().setView(latLng, 17);
@@ -112,7 +105,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     public render() {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
-        const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
+        const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
         const colors = ColorScale.getColors(visibleRoutePaths.length);
 
         return (
@@ -128,7 +121,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         // tslint:disable:max-line-length
                         url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
                         attribution={
-                            `
+                                `
                                 Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
                                 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
                                 Imagery © <a href="http://mapbox.com">Mapbox</a>
