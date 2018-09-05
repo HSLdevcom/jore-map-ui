@@ -1,4 +1,4 @@
-import * as qs from 'qs';
+import qs from 'qs';
 import RouteBuilderContext from './routeBuilderContext';
 import { Url } from './routing';
 import navigator from './navigator';
@@ -32,14 +32,6 @@ export class RouteBuilder {
 
     public getValue(name: string) {
         return this.getValues()[name];
-    }
-
-    public getCurrentLocation() {
-        return this.getLocation();
-    }
-
-    public getCurrentSearchParameters() {
-        return this.getValues();
     }
 }
 
