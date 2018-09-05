@@ -13,7 +13,7 @@ import FullscreenControl from './FullscreenControl';
 import MeasurementControl from './MeasurementControl';
 import RouteLayer from './RouteLayer';
 import ColorScale from '../../util/colorScale';
-import NodeLayer from './NodeLayer';
+import MarkerLayer from './MarkerLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
 import * as s from './map.scss';
@@ -104,16 +104,14 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         );
     }
 
-    private getFirstNodes() {
-        const firstNodes: number[] = [];
-        this.props.routeStore!.routes.forEach((route: IRoute) => {
-            route.routePaths.forEach((routePath: IRoutePath) => {
-                if (routePath.visible) {
-                    firstNodes.push(routePath.geoJson.coordinates[0]);
-                }
-            });
+    private startCoordinates(visibleRoutePaths: IRoutePath[]) {
+        const startingPointCoordinates: number[] = [];
+        visibleRoutePaths.forEach((routePath: IRoutePath) => {
+            if (routePath.visible) {
+                startingPointCoordinates.push(routePath.geoJson.coordinates[0]);
+            }
         });
-        return firstNodes;
+        return startingPointCoordinates;
     }
 
     /* Leaflet methods */
@@ -158,9 +156,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         routePaths={visibleRoutePaths}
                         fitBounds={this.fitBounds}
                     />
-                    <NodeLayer
+                    <MarkerLayer
                         nodes={visibleNodes}
-                        firstNodes={this.getFirstNodes()}
+                        firstNodes={this.startCoordinates(visibleRoutePaths)}
                     />
                     <PopupLayer
                         setView={this.setView}

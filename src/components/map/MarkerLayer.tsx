@@ -3,7 +3,7 @@ import { INode } from '../../models';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
 import NodeType from '../../enums/nodeType';
-import * as s from './nodeLayer.scss';
+import * as s from './markerLayer.scss';
 import { PopupStore } from '../../stores/popupStore';
 import { ToolbarStore } from '../../stores/toolbarStore';
 import { SidebarStore } from '../../stores/sidebarStore';
@@ -12,7 +12,7 @@ import ToolbarTools from '../../enums/toolbarTools';
 import ColorScale from '../../util/colorScale';
 import PinIcon from '../../icons/pin';
 
-interface NodeLayerProps {
+interface MarkerLayerProps {
     nodes: INode[];
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
@@ -29,8 +29,8 @@ enum color {
 
 @inject('popupStore', 'toolbarStore', 'sidebarStore')
 @observer
-export default class NodeLayer extends Component<NodeLayerProps> {
-    constructor (props: NodeLayerProps) {
+export default class MarkerLayer extends Component<MarkerLayerProps> {
+    constructor (props: MarkerLayerProps) {
         super(props);
     }
 
@@ -73,7 +73,6 @@ export default class NodeLayer extends Component<NodeLayerProps> {
                     const icon = this.getStartPointIcon(colors[index]);
                     return (
                         <Marker
-                            draggable={true}
                             icon={icon}
                             key={index}
                             position={[coordinates[1], coordinates[0]]}
