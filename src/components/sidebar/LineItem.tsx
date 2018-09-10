@@ -53,12 +53,18 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         }
     }
 
+    private openRoute(routeId: string) {
+        const openRouteLink = routeBuilder
+            .to(subSites.routes)
+            .append('routes', routeId)
+            .toLink();
+        searchStore.setSearchInput('');
+        searchStore.removeAllSubLineItems();
+        navigator.goTo(openRouteLink);
+    }
+
     public renderRoute(route: ILineRoute): any {
-        const gotoUrl = (url:string) => () => {
-            navigator.goTo(url);
-            searchStore.setSearchInput('');
-            searchStore.removeAllSubLineItems();
-        };
+
         return (
             <div
                 key={route.id}
@@ -80,12 +86,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                 TransitTypeColorHelper.getColorClass(
                                     this.props.line.transitType),
                             )}
-                            onClick={
-                                gotoUrl(routeBuilder
-                                    .to(subSites.routes)
-                                    .append('routes', route.id)
-                                    .toLink())
-                            }
+                            onClick={this.openRoute.bind(this, route.id)}
                         >
                             {route.name}
                         </div>
