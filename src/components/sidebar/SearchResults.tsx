@@ -18,24 +18,29 @@ interface ISearchResultsProps extends RouteComponentProps<any>{
 
 interface ISearchResultsState {
     isLoading: boolean;
+    showLimit: number;
 }
 
 @inject('lineStore', 'searchStore')
 @observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
+    private paginatedDiv: React.RefObject<HTMLDivElement>;
 
     constructor(props: ISearchResultsProps) {
         super(props);
         this.state = {
             isLoading: false,
+            showLimit: 20,
         };
 
         this.addSearchResults = this.addSearchResults.bind(this);
         this.closeSearchResults = this.closeSearchResults.bind(this);
+        this.paginatedDiv = React.createRef();
     }
 
-    componentDidMount() {
-        this.queryAllLines();
+    async componentDidMount() {
+        this.showMore();
+        await this.queryAllLines();
     }
 
     async queryAllLines() {
@@ -64,6 +69,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         return routes
             .map(route => route.name.toLowerCase())
             .some(name => name.indexOf(searchTerm) > -1);
+    }
+
+    private filteredLines = () => {
+        return this.props.lineStore!.allLines
+            .filter(line =>
+                this.filterLines(line.routes, line.lineId, line.transitType))
+            .splice(0, this.state.showLimit);
     }
 
     private renderSearchResultButton() {
@@ -105,8 +117,15 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.props.searchStore!.setSearchInput('');
     }
 
+    private showMore = () => {
+        if (this.paginatedDiv.current &&
+            this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight
+            >= this.paginatedDiv.current.scrollHeight) {
+            this.setState({ showLimit: this.state.showLimit + 10 });
+        }
+    }
+
     public render(): any {
-        const allLines = this.props.lineStore!.allLines;
         if (this.state.isLoading) {
             return (
                 <div className={s.searchResultsView}>
@@ -116,13 +135,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
         return (
             <div className={s.searchResultsView}>
-                <div className={s.searchResultsWrapper}>
+                <div
+                    className={s.searchResultsWrapper}
+                    onScroll={this.showMore}
+                    ref={this.paginatedDiv}
+                >
                 {
-                    allLines
-                        .filter(line =>
-                            this.filterLines(line.routes, line.lineId, line.transitType))
-                        // Showing only the first 100 results to improve rendering performance
-                        .splice(0, 100)
+                    this.filteredLines()
                         .map((line: ILine) => {
                             return (
                                 <LineItem
