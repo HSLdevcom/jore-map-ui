@@ -39,6 +39,17 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         searchStore!.setSearchInput('');
     }
 
+    public componentDidUpdate() {
+        if (
+            !this.state.isLoading &&
+            routeBuilder.getValue(QueryParams.routes) &&
+            routeBuilder.getValue(QueryParams.routes).length
+                !== this.props.routeStore!.routes.length
+            ) {
+            this.queryRoutes();
+        }
+    }
+
     private networkCheckboxToggle = (type: string) => {
         const newToggleState: object = this.state.networkCheckboxToggles;
         newToggleState[type] = !this.state.networkCheckboxToggles[type];
@@ -53,17 +64,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
             this.setState({ isLoading: true });
             this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
             this.setState({ isLoading: false });
-        }
-    }
-
-    public componentDidUpdate() {
-        if (
-            !this.state.isLoading &&
-            routeBuilder.getValue(QueryParams.routes) &&
-            routeBuilder.getValue(QueryParams.routes).length
-                !== this.props.routeStore!.routes.length
-            ) {
-            this.queryRoutes();
         }
     }
 
