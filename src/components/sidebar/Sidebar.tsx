@@ -33,20 +33,16 @@ interface ILinelistState {
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     public render(): any {
-        const handleHeaderClick = () => {
+        const goToHomeView = () => {
             this.props.routeStore!.clearRoutes();
             this.props.searchStore!.setSearchInput('');
-            navigator.goTo(
-                routeBuilder
-                    .to(subSites.home)
-                    .clear()
-                    .toLink(),
-            );
+            const homeLink = routeBuilder.to(subSites.home).clear().toLink();
+            navigator.goTo(homeLink);
         };
         return (
             <div className={s.sidebarView}>
                 <div className={s.header}>
-                    <div onClick={handleHeaderClick} className={s.headerContainer}>
+                    <div onClick={goToHomeView} className={s.headerContainer}>
                         <img className={s.logo} src={hslLogo} />
                         <h2 className={s.title}>
                             Joukkoliikennerekisteri
