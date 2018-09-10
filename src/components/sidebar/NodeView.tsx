@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 import { SidebarStore } from '../../stores/sidebarStore';
-import * as s from './nodeView.scss';
 import { Button, Dropdown, ToggleButton } from '../controls';
 import ButtonType from '../../enums/buttonType';
 import TransitType from '../../enums/transitType';
-import classnames from 'classnames';
+import * as s from './nodeView.scss';
 
 interface IMapInformationSource {
     selected: string;

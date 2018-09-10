@@ -14,7 +14,7 @@ class RouteFactory {
                         reitti.reitunnus, routePath.node, isVisible);
                 });
 
-        return <IRoute>{
+        return {
             routePaths,
             line,
             routeName: reitti.reinimi,

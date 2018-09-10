@@ -1,12 +1,12 @@
 import * as React from 'react';
-import * as s from './homeView.scss';
+import { inject, observer } from 'mobx-react';
 import LineSearch from './LineSearch';
 import { RouteStore } from '../../stores/routeStore';
 import { LineStore } from '../../stores/lineStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import { inject, observer } from 'mobx-react';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import SearchResults from './SearchResults';
+import * as s from './homeView.scss';
 
 interface ISidebarProps {
     routeStore?: RouteStore;

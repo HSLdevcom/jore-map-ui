@@ -1,17 +1,18 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
+import classNames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import { IRoutePath, IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
-import classNames from 'classnames';
 import LineHelper from '../../util/lineHelper';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import ColorScale from '../../util/colorScale';
-import * as s from './routeShow.scss';
 import routeBuilder from '../../routing/routeBuilder';
 import navigator from '../../routing/navigator';
 import QueryParams from '../../routing/queryParams';
+import SubSites from '../../routing/subSites';
+import * as s from './routeShow.scss';
 
 interface IRouteShowProps {
     routeStore?: RouteStore;
@@ -30,7 +31,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
     private closeRoute() {
         this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
         const closeRouteLink = routeBuilder
-            .current()
+            .to(SubSites.current)
             .remove(QueryParams.routes, this.props.route.routeId)
             .toLink();
         navigator.goTo(closeRouteLink);
@@ -39,14 +40,14 @@ class RouteShow extends React.Component<IRouteShowProps> {
     private renderRouteName() {
         return (
         <div className={s.routeName}>
-            {LineHelper.getTransitIcon(this.props.route.line.transitType, false)}
+            {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
             <div
                 className={classNames(
                     s.label,
-                    TransitTypeColorHelper.getColorClass(this.props.route.line.transitType),
+                    TransitTypeColorHelper.getColorClass(this.props.route.line!.transitType),
                 )}
             >
-                {this.props.route.line.lineNumber}
+                {this.props.route.line!.lineNumber}
             </div>
             {this.props.route.routeName}
             <div
@@ -84,7 +85,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     <ToggleButton
                         onClick={toggleRoutePathVisibility}
                         value={routePath.visible}
-                        type={this.props.route.line.transitType}
+                        type={this.props.route.line!.transitType}
                         color={routePath.visible ? routeColor : '#898989'}
                     />
                 </div>

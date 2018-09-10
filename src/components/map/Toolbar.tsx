@@ -1,10 +1,10 @@
-import * as s from './toolbar.scss';
 import React, { Component } from 'react';
 import { FiEdit, FiCopy, FiPlusSquare, FiPrinter } from 'react-icons/fi';
+import { observer } from 'mobx-react';
 import ToolbarButton from './ToolbarButton';
 import { ToolbarStore } from '../../stores/toolbarStore';
-import { observer } from 'mobx-react';
 import ToolbarTools from '../../enums/toolbarTools';
+import * as s from './toolbar.scss';
 
 interface ToolbarProps {
     toolbarStore?: ToolbarStore;

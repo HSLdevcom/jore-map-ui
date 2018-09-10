@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { INode } from '../../models';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
+import { observer, inject } from 'mobx-react';
+import { INode } from '../../models';
 import NodeType from '../../enums/nodeType';
-import * as s from './nodeLayer.scss';
 import { PopupStore } from '../../stores/popupStore';
 import { ToolbarStore } from '../../stores/toolbarStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import { observer, inject } from 'mobx-react';
 import ToolbarTools from '../../enums/toolbarTools';
+import * as s from './nodeLayer.scss';
 
 interface NodeLayerProps {
     nodes: INode[];

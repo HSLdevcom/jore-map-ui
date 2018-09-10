@@ -1,7 +1,7 @@
+import { RouterStore } from 'mobx-react-router';
 import RouteBuilderContext from './routeBuilderContext';
 import subSites from './subSites';
 import navigator from './navigator';
-import { RouterStore } from 'mobx-react-router';
 
 export class RouteBuilder {
     private _routerStore: RouterStore;

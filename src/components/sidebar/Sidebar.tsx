@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
+import { Location } from 'history';
 import hslLogo from '../../assets/hsl-logo.png';
 import { SidebarStore } from '../../stores/sidebarStore';
 import { RouteStore } from '../../stores/routeStore';
@@ -10,7 +11,6 @@ import RoutesView from './RoutesView';
 import HomeView from './HomeView';
 import routeBuilder from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
-import { Location } from 'history';
 import navigator from '../../routing/navigator';
 import * as s from './sidebar.scss';
 
