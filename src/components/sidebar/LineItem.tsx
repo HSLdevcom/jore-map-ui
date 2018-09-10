@@ -9,7 +9,7 @@ import * as s from './lineItem.scss';
 import searchStore from '../../stores/searchStore';
 import LineItemSubMenu from './LineItemSubMenu';
 import routeBuilder from '../../routing/routeBuilder';
-import routing from '../../routing/routing';
+import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
 
 interface ILineItemState {
@@ -82,7 +82,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                             )}
                             onClick={
                                 gotoUrl(routeBuilder
-                                    .to(routing.routes)
+                                    .to(subSites.routes)
                                     .append('routes', route.id)
                                     .toLink())
                             }

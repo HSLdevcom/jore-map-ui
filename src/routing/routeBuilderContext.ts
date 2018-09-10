@@ -1,10 +1,11 @@
 import qs from 'qs';
+import SubSites from './subSites';
 
 export default class RouteBuilderContext {
     private _target: string;
     private _values: any;
 
-    constructor(target: string, values: any) {
+    constructor(target: SubSites | string, values: any) {
         this._target = target;
         this._values = this.jsonCopy(values);
     }
@@ -14,7 +15,7 @@ export default class RouteBuilderContext {
     }
 
     public toLink() {
-        let search = this._target;
+        let search = this._target.toString();
         if (Object.keys(this._values).length !== 0) {
             search += `?${qs.stringify(this._values, { encode: false })}`;
         }

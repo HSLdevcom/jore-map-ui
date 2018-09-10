@@ -9,7 +9,7 @@ import { inject, observer } from 'mobx-react';
 import SearchResults from './SearchResults';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import routeBuilder from '../../routing/routeBuilder';
-import routing from '../../routing/routing';
+import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
 import { SearchStore } from '../../stores/searchStore';
 
@@ -26,7 +26,7 @@ class RoutesView extends React.Component<ISidebarProps> {
         if (!routeBuilder.getValue('routes')) {
             navigator.push(
                 routeBuilder
-                    .to(routing.home)
+                    .to(subSites.home)
                     .toLink());
         }
     }

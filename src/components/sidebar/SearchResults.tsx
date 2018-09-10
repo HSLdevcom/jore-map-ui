@@ -9,7 +9,7 @@ import LineService from '../../services/lineService';
 import { SearchStore } from '../../stores/searchStore';
 import Loader from './Loader';
 import routeBuilder from '../../routing/routeBuilder';
-import routing from '../../routing/routing';
+import subSites from '../../routing/subSites';
 
 interface ISearchResultsProps{
     lineStore?: LineStore;
@@ -74,7 +74,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const subLineItemsLength = this.props.searchStore!.subLineItems.length;
 
         const isSearchResultButtonVisible = subLineItemsLength > 0 ||
-        (routeBuilder.getCurrentLocation() !== routing.home.location && subLineItemsLength === 0);
+        (routeBuilder.getCurrentLocation() !== subSites.home && subLineItemsLength === 0);
         if (!isSearchResultButtonVisible) {
             return;
         }

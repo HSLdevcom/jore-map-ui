@@ -9,7 +9,7 @@ import NodeWindow from './NodeView';
 import RoutesView from './RoutesView';
 import HomeView from './HomeView';
 import routeBuilder from '../../routing/routeBuilder';
-import routing from '../../routing/routing';
+import subSites from '../../routing/subSites';
 import { Location } from 'history';
 import navigator from '../../routing/navigator';
 import * as s from './sidebar.scss';
@@ -38,7 +38,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             this.props.searchStore!.setSearchInput('');
             navigator.push(
                 routeBuilder
-                    .to(routing.home)
+                    .to(subSites.home)
                     .clear()
                     .toLink(),
             );
@@ -58,8 +58,8 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                     <NodeWindow />
                 ) : (
                     <Switch>
-                        <Route path={routing.routes.location} component={RoutesView} />
-                        <Route path={routing.home.location} component={HomeView} />
+                        <Route path={subSites.routes} component={RoutesView} />
+                        <Route path={subSites.home} component={HomeView} />
                     </Switch>
                 )
                 }

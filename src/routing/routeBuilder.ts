@@ -1,6 +1,6 @@
 import qs from 'qs';
 import RouteBuilderContext from './routeBuilderContext';
-import { Url } from './routing';
+import subSites from './subSites';
 import navigator from './navigator';
 import { RouterStore } from 'mobx-react-router';
 
@@ -22,8 +22,8 @@ export class RouteBuilder {
         );
     }
 
-    public to(route: Url) {
-        return new RouteBuilderContext(route.location, this.getValues());
+    public to(subSites: subSites) {
+        return new RouteBuilderContext(subSites, this.getValues());
     }
 
     public current() {
