@@ -15,13 +15,15 @@ class Navigator {
         this._store.history.push(url);
     }
 
+    /* not used yet
+
     public goBack() {
         this._store.goBack();
     }
 
     public goForward() {
         this._store.goForward();
-    }
+    } */
 }
 
 export default new Navigator();
