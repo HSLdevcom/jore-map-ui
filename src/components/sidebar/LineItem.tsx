@@ -11,6 +11,7 @@ import LineItemSubMenu from './LineItemSubMenu';
 import routeBuilder from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
+import QueryParams from '../../routing/queryParams';
 
 interface ILineItemState {
     openRouteIds: string[];
@@ -56,7 +57,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     private openRoute(routeId: string) {
         const openRouteLink = routeBuilder
             .to(subSites.routes)
-            .append('routes', routeId)
+            .append(QueryParams.routes, routeId)
             .toLink();
         searchStore.setSearchInput('');
         searchStore.removeAllSubLineItems();

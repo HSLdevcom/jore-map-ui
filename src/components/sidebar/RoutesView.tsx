@@ -12,6 +12,7 @@ import routeBuilder from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
 import { SearchStore } from '../../stores/searchStore';
+import QueryParams from '../../routing/queryParams';
 
 interface ISidebarProps{
     routeStore?: RouteStore;
@@ -23,7 +24,7 @@ interface ISidebarProps{
 @observer
 class RoutesView extends React.Component<ISidebarProps> {
     public componentDidUpdate() {
-        if (!routeBuilder.getValue('routes')) {
+        if (!routeBuilder.getValue(QueryParams.routes)) {
             navigator.goTo(
                 routeBuilder
                     .to(subSites.home)

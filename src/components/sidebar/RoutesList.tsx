@@ -9,6 +9,7 @@ import * as s from './routesList.scss';
 import RouteService from '../../services/routeService';
 import Loader from './Loader';
 import routeBuilder from '../../routing/routeBuilder';
+import QueryParams from '../../routing/queryParams';
 
 interface IRoutesListState {
     networkCheckboxToggles: any;
@@ -48,7 +49,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     private async queryRoutes() {
         this.setState({ isLoading: true });
-        const routeIds = routeBuilder.getValue('routes');
+        const routeIds = routeBuilder.getValue(QueryParams.routes);
         if (routeIds) {
             this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
         }
@@ -58,8 +59,8 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     public componentDidUpdate() {
         if (
             !this.state.isLoading &&
-            routeBuilder.getValue('routes') &&
-            routeBuilder.getValue('routes').length
+            routeBuilder.getValue(QueryParams.routes) &&
+            routeBuilder.getValue(QueryParams.routes).length
                 !== this.props.routeStore!.routes.length
             ) {
             this.queryRoutes();

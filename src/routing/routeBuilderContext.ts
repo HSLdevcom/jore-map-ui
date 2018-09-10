@@ -1,5 +1,6 @@
 import qs from 'qs';
 import SubSites from './subSites';
+import QueryParams from './queryParams';
 
 export default class RouteBuilderContext {
     private _target: string;
@@ -22,28 +23,28 @@ export default class RouteBuilderContext {
         return search;
     }
 
-    public append(name: string, value: string) {
-        if (name in this._values) {
-            this._values[name].push(value);
+    public append(param: QueryParams, value: string) {
+        if (param in this._values) {
+            this._values[param].push(value);
         } else {
-            this._values[name] = [value];
+            this._values[param] = [value];
         }
         return this;
     }
 
-    public remove(name: string, value: string) {
-        if (name in this._values) {
-            if (Array.isArray(this._values[name])) {
-                this._values[name] = this._values[name].filter((v : string) => v !== value);
+    public remove(param: QueryParams, value: string) {
+        if (param in this._values) {
+            if (Array.isArray(this._values[param])) {
+                this._values[param] = this._values[param].filter((v : string) => v !== value);
             } else {
-                this._values[name] = null;
+                this._values[param] = null;
             }
         }
         return this;
     }
 
-    public set(name: string, value: string) {
-        this._values[name] = value;
+    public set(param: QueryParams, value: string) {
+        this._values[param] = value;
         return this;
     }
 

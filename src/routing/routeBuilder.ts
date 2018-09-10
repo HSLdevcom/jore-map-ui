@@ -3,6 +3,7 @@ import RouteBuilderContext from './routeBuilderContext';
 import subSites from './subSites';
 import navigator from './navigator';
 import { RouterStore } from 'mobx-react-router';
+import QueryParams from './queryParams';
 
 export class RouteBuilder {
     private _routerStore: RouterStore;
@@ -30,8 +31,8 @@ export class RouteBuilder {
         return new RouteBuilderContext(this.getLocation(), this.getValues());
     }
 
-    public getValue(name: string) {
-        return this.getValues()[name];
+    public getValue(param: QueryParams) {
+        return this.getValues()[param];
     }
 
     public getCurrentLocation() {

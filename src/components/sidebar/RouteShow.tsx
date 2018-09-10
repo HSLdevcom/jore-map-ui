@@ -11,6 +11,7 @@ import ColorScale from '../../util/colorScale';
 import * as s from './routeShow.scss';
 import routeBuilder from '../../routing/routeBuilder';
 import navigator from '../../routing/navigator';
+import QueryParams from '../../routing/queryParams';
 
 interface IRouteShowProps {
     routeStore?: RouteStore;
@@ -31,7 +32,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
         navigator.goTo(
             routeBuilder
             .current()
-            .remove('routes', this.props.route.routeId)
+            .remove(QueryParams.routes, this.props.route.routeId)
             .toLink());
     }
 
