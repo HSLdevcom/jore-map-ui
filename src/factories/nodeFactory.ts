@@ -16,6 +16,7 @@ class NodeFactory {
             coordinates: coordinate,
         };
     }
+
 }
 
 const getNodeType = (type:any) => {
