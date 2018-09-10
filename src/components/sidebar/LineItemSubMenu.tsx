@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import * as s from './lineItemSubMenu.scss';
+import Moment from 'react-moment';
+import { observer, inject } from 'mobx-react';
 import { IRoutePath, IRoute } from '../../models';
 import RouteService from '../../services/routeService';
-import { observer, inject } from 'mobx-react';
 import { NotificationStore } from '../../stores/notificationStore';
 import { SearchStore } from '../../stores/searchStore';
 import NotificationType from '../../enums/notificationType';
 import { Checkbox } from '../controls';
-import Moment from 'react-moment';
+import * as s from './lineItemSubMenu.scss';
 
 interface LineItemSubMenuProps {
     notificationStore?: NotificationStore;
@@ -59,7 +59,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
                     });
                 }
             })
-            .catch((err: any) => {
+            .catch(() => {
                 this.props.notificationStore!.addNotification({
                     message: 'Reitinsuuntien haussa tapahtui virhe.',
                     type: NotificationType.ERROR,

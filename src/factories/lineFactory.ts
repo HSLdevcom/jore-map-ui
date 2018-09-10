@@ -3,18 +3,18 @@ import TransitType from '../enums/transitType';
 
 class LineFactory {
     // linja to ILine
-    public static createLine = (linja: any) => {
+    public static createLine = (linja: any): ILine => {
         const transitType = _convertTransitTypeCodeToTransitType(linja.linverkko);
         const lineNumber = _parseLineNumber(linja.lintunnus);
-        const routes = linja.reittisByLintunnus.nodes.map((route: any) => {
-            return <ILineRoute>{
+        const routes = linja.reittisByLintunnus.nodes.map((route: any): ILineRoute => {
+            return {
                 id: route.reitunnus,
                 name: _getRouteName(route),
                 date: route.reiviimpvm,
             };
         });
 
-        return <ILine>{
+        return {
             lineNumber,
             transitType,
             routes,
