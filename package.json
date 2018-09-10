@@ -6,7 +6,7 @@
     "apollo-boost": "^0.1.10",
     "apollo-cache-inmemory": "^1.2.9",
     "apollo-client": "^2.4.1",
-    "apollo-link-http": "^1.5.4",
+    "apollo-link-batch-http": "^1.2.2",
     "autoprefixer": "7.1.6",
     "babel-jest": "^22.1.0",
     "babel-loader": "^7.1.2",
