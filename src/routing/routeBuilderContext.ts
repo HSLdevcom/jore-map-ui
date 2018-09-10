@@ -5,10 +5,12 @@ import QueryParams from './queryParams';
 export default class RouteBuilderContext {
     private _target: string;
     private _values: any;
+    private _currentLocation: string;
 
-    constructor(target: SubSites | string, values: any) {
+    constructor(currentLocation: string, target: SubSites | string, values: any) {
         this._target = target;
         this._values = this.jsonCopy(values);
+        this._currentLocation = currentLocation;
     }
 
     private jsonCopy(jsonObject: JSON) {
@@ -16,7 +18,10 @@ export default class RouteBuilderContext {
     }
 
     public toLink() {
-        let search = this._target.toString();
+        let search =
+            this._target !== SubSites.current
+            ? this._target.toString()
+            : this._currentLocation;
         if (Object.keys(this._values).length !== 0) {
             search += `?${qs.stringify(this._values, { encode: false })}`;
         }

@@ -12,14 +12,8 @@ export class RouteBuilder {
 
     public to(subSites: subSites) {
         return new RouteBuilderContext(
-            subSites,
-            navigator.getQueryParamValues(),
-        );
-    }
-
-    public current() {
-        return new RouteBuilderContext(
             this.getCurrentLocation(),
+            subSites,
             navigator.getQueryParamValues(),
         );
     }
