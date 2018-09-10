@@ -48,12 +48,12 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     }
 
     private async queryRoutes() {
-        this.setState({ isLoading: true });
         const routeIds = routeBuilder.getValue(QueryParams.routes);
         if (routeIds) {
+            this.setState({ isLoading: true });
             this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
+            this.setState({ isLoading: false });
         }
-        this.setState({ isLoading: false });
     }
 
     public componentDidUpdate() {
