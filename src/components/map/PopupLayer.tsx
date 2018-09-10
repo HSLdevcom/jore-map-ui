@@ -3,9 +3,9 @@ import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import { Popup } from 'react-leaflet';
 import { PopupStore } from '../../stores/popupStore';
-import * as s from './popupLayer.scss';
 import { INode } from '../../models';
 import { SidebarStore } from '../../stores/sidebarStore';
+import * as s from './popupLayer.scss';
 
 interface PopupLayerProps {
     popupStore?: PopupStore;
