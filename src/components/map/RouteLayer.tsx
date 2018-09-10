@@ -55,7 +55,6 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
 
     private selectPolyLine(routePath: IRoutePath) {
         const selectedPolylines = this.state.selectedPolylines;
-
         const indexInArray: number = selectedPolylines.indexOf(routePath.internalId);
 
         if (indexInArray > -1) {
