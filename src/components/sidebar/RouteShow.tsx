@@ -29,11 +29,11 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
     private closeRoute() {
         this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
-        navigator.goTo(
-            routeBuilder
+        const closeRouteLink = routeBuilder
             .current()
             .remove(QueryParams.routes, this.props.route.routeId)
-            .toLink());
+            .toLink();
+        navigator.goTo(closeRouteLink);
     }
 
     private renderRouteName() {
