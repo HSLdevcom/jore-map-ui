@@ -1,13 +1,13 @@
 import * as React from 'react';
-import ButtonType from '../../enums/buttonType';
 import classNames from 'classnames';
+import ButtonType from '../../enums/buttonType';
 import * as s from './button.scss';
 
 interface IButtonProps {
-    onClick(event: any): void;
     type: ButtonType;
     text: string;
     className?: string;
+    onClick(event: any): void;
 }
 
 class Button extends React.Component<IButtonProps, {}> {

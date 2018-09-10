@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { LineStore } from '../../stores/lineStore';
 import LineItem from './LineItem';
 import { ILine, ILineRoute } from '../../models';
@@ -8,7 +9,6 @@ import * as s from './searchResults.scss';
 import LineService from '../../services/lineService';
 import { SearchStore } from '../../stores/searchStore';
 import Loader from './Loader';
-import { RouteComponentProps } from 'react-router';
 
 interface ISearchResultsProps extends RouteComponentProps<any>{
     lineStore?: LineStore;
@@ -41,7 +41,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     async queryAllLines() {
         this.setState({ isLoading: true });
         try {
-            await this.props.lineStore!.setAllLines(await LineService.getAllLines());
+            this.props.lineStore!.setAllLines(await LineService.getAllLines());
         } catch (err) {
             // TODO: show error on screen that the query failed
         }
@@ -61,13 +61,9 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         if (lineId.indexOf(searchTerm) > -1) return true;
 
         // Filter by route.name
-        if (routes
-                .map(route => route.name.toLowerCase())
-                .some(name => name.indexOf(searchTerm) > -1)) {
-            return true;
-        }
-
-        return false;
+        return routes
+            .map(route => route.name.toLowerCase())
+            .some(name => name.indexOf(searchTerm) > -1);
     }
 
     private renderSearchResultButton() {

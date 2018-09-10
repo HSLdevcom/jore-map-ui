@@ -7,9 +7,9 @@ interface IDropdownState {
 }
 
 interface IDropdownProps {
-    onChange(selectedItem: string): void;
     selected: string;
     items: string[];
+    onChange(selectedItem: string): void;
 }
 
 class Dropdown extends React.Component

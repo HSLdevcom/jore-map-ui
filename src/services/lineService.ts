@@ -8,8 +8,7 @@ export default class LineService {
     public static async getAllLines() {
         try {
             const { data }:any = await apolloClient.query({ query: getLinjas });
-            const routes = LineFactory.linjasToILines(data.allLinjas.nodes);
-            return routes;
+            return LineFactory.linjasToILines(data.allLinjas.nodes);
         } catch (err) {
             NotificationStore.addNotification(
                 { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
