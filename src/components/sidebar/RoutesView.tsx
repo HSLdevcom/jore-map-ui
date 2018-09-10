@@ -1,14 +1,14 @@
 import * as React from 'react';
-import * as s from './routesView.scss';
+import { inject, observer } from 'mobx-react';
+import { Route, RouteComponentProps } from 'react-router-dom';
 import LineSearch from './LineSearch';
-import { Route, RouteComponentProps } from 'react-router';
 import RoutesList from './RoutesList';
 import { RouteStore } from '../../stores/routeStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import { inject, observer } from 'mobx-react';
 import SearchResults from './SearchResults';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import { SearchStore } from '../../stores/searchStore';
+import * as s from './routesView.scss';
 
 interface ISidebarProps extends RouteComponentProps<any>{
     routeStore?: RouteStore;

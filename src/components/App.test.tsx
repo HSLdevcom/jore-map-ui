@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { Route } from 'react-router-dom';
 import App from './App';
-import { Route } from 'react-router';
 
 it('renders without crashing', () => {
     const div = document.createElement('div');

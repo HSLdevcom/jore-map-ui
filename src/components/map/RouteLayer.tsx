@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
 import { Polyline } from 'react-leaflet';
-import { IRoutePath } from '../../models';
 import { toJS } from 'mobx';
+import { IRoutePath } from '../../models';
 
 interface RouteLayerProps {
     routePaths: IRoutePath[];

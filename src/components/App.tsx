@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { Route, RouteComponentProps } from 'react-router-dom';
 import { LoginStore } from '../stores/loginStore';
 import { NotificationStore } from '../stores/notificationStore';
 import { SidebarStore } from '../stores/sidebarStore';
@@ -12,7 +13,6 @@ import Login from './login/Login';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import * as s from './app.scss';
-import { Route, RouteComponentProps } from 'react-router-dom';
 
 interface IAppState {
     showLogin: boolean;

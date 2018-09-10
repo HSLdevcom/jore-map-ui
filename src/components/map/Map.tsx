@@ -3,9 +3,9 @@ import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import classnames from 'classnames';
 import { MapStore } from '../../stores/mapStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
@@ -16,10 +16,10 @@ import ColorScale from '../../util/colorScale';
 import NodeLayer from './NodeLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
-import * as s from './map.scss';
 import Toolbar from './Toolbar';
 import PopupLayer from './PopupLayer';
 import { ToolbarStore } from '../../stores/toolbarStore';
+import * as s from './map.scss';
 
 interface IMapState {
     zoomLevel: number;
