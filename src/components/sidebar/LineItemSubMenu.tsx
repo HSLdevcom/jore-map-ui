@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as s from './lineItemSubMenu.scss';
-import { IRoutePath, IRoute } from '../../models';
+import { IRoutePath } from '../../models';
 import RouteService from '../../services/routeService';
 import { observer, inject } from 'mobx-react';
 import { NotificationStore } from '../../stores/notificationStore';
@@ -46,25 +46,24 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         this.fetchRoutePaths();
     }
 
-    private fetchRoutePaths() {
+    private async fetchRoutePaths() {
         if (!this.props.visible || this.state.routePaths) {
             return;
         }
-        RouteService.getRoute(this.props.routeId)
-            .then((res: IRoute) => {
-                // Allow setState call only if LineItemSubMenu is mounted to the view.
-                if (this.mounted) {
-                    this.setState({
-                        routePaths: res.routePaths,
-                    });
-                }
-            })
-            .catch((err: any) => {
-                this.props.notificationStore!.addNotification({
-                    message: 'Reitinsuuntien haussa tapahtui virhe.',
-                    type: NotificationType.ERROR,
+        try {
+            const route = await RouteService.getRoute(this.props.routeId);
+            if (this.mounted) {
+                this.setState({
+
+                    routePaths: route.routePaths,
                 });
+            }
+        } catch {
+            this.props.notificationStore!.addNotification({
+                message: 'Reitinsuuntien haussa tapahtui virhe.',
+                type: NotificationType.ERROR,
             });
+        }
     }
 
     private toggle(routePathId: string) {
