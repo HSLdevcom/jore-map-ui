@@ -25,10 +25,8 @@ interface ISidebarProps{
 class RoutesView extends React.Component<ISidebarProps> {
     public componentDidUpdate() {
         if (!routeBuilder.getValue(QueryParams.routes)) {
-            navigator.goTo(
-                routeBuilder
-                    .to(subSites.home)
-                    .toLink());
+            const homeLink = routeBuilder.to(subSites.routes).toLink();
+            navigator.goTo(homeLink);
         }
     }
 
