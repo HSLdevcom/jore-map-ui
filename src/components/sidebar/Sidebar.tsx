@@ -14,6 +14,10 @@ import { Location } from 'history';
 import navigator from '../../routing/navigator';
 import * as s from './sidebar.scss';
 
+// Requiring location to force update on location change
+// This is due to blocked updates issue
+// tslint:disable-next-line
+// https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
 interface ISidebarProps{
     sidebarStore?: SidebarStore;
     routeStore?: RouteStore;
