@@ -1,4 +1,6 @@
 import { RouterStore } from 'mobx-react-router';
+import qs from 'qs';
+import QueryParams from './queryParams';
 
 class Navigator {
     private _store: RouterStore;
@@ -13,6 +15,17 @@ class Navigator {
 
     public goTo(url: string) {
         this._store.history.push(url);
+    }
+
+    public getQueryParam(param: QueryParams) {
+        return this.getQueryParamValues()[param];
+    }
+
+    public getQueryParamValues() {
+        return qs.parse(
+            this._store.location.search,
+            { ignoreQueryPrefix: true },
+        );
     }
 
     /* not used yet
