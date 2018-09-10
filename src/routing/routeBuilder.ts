@@ -12,10 +12,6 @@ export class RouteBuilder {
         this._routerStore = navigator.getStore();
     }
 
-    private getLocation() {
-        return this._routerStore.location.pathname;
-    }
-
     private getValues() {
         return qs.parse(
             this._routerStore.location.search,
@@ -28,7 +24,7 @@ export class RouteBuilder {
     }
 
     public current() {
-        return new RouteBuilderContext(this.getLocation(), this.getValues());
+        return new RouteBuilderContext(this.getCurrentLocation(), this.getValues());
     }
 
     public getValue(param: QueryParams) {
