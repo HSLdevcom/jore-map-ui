@@ -36,7 +36,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const handleHeaderClick = () => {
             this.props.routeStore!.clearRoutes();
             this.props.searchStore!.setSearchInput('');
-            navigator.push(
+            navigator.goTo(
                 routeBuilder
                     .to(subSites.home)
                     .clear()

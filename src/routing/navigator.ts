@@ -11,7 +11,7 @@ class Navigator {
         return this._store;
     }
 
-    public push(url: string) {
+    public goTo(url: string) {
         this._store.history.push(url);
     }
 

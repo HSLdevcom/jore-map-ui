@@ -28,7 +28,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
     private closeRoute() {
         this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
-        navigator.push(
+        navigator.goTo(
             routeBuilder
             .current()
             .remove('routes', this.props.route.routeId)

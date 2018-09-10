@@ -55,7 +55,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     public renderRoute(route: ILineRoute): any {
         const gotoUrl = (url:string) => () => {
-            navigator.push(url);
+            navigator.goTo(url);
             searchStore.setSearchInput('');
             searchStore.removeAllSubLineItems();
         };
