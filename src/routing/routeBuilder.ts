@@ -12,7 +12,7 @@ export class RouteBuilder {
         this._routerStore = navigator.getStore();
     }
 
-    private getValues() {
+    private getQueryParamValues() {
         return qs.parse(
             this._routerStore.location.search,
             { ignoreQueryPrefix: true },
@@ -20,15 +20,15 @@ export class RouteBuilder {
     }
 
     public to(subSites: subSites) {
-        return new RouteBuilderContext(subSites, this.getValues());
+        return new RouteBuilderContext(subSites, this.getQueryParamValues());
     }
 
     public current() {
-        return new RouteBuilderContext(this.getCurrentLocation(), this.getValues());
+        return new RouteBuilderContext(this.getCurrentLocation(), this.getQueryParamValues());
     }
 
-    public getValue(param: QueryParams) {
-        return this.getValues()[param];
+    public getQueryParam(param: QueryParams) {
+        return this.getQueryParamValues()[param];
     }
 
     public getCurrentLocation() {
