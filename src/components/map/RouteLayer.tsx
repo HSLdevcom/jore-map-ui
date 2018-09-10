@@ -12,6 +12,7 @@ interface RouteLayerProps {
 
 interface IRouteLayerState {
     selectedPolylines: string[];
+    hoveredPolylines: string[];
 }
 
 export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
@@ -19,6 +20,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         super(props);
         this.state = {
             selectedPolylines: [],
+            hoveredPolylines: [],
         };
     }
 
@@ -67,11 +69,26 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         });
     }
 
-    private isSelected(index: string) {
-        if (this.state.selectedPolylines.includes(index)) {
+    private isSelected(internalId: string) {
+        if (this.state.selectedPolylines.includes(internalId) ||
+            this.state.hoveredPolylines.includes(internalId)) {
             return true;
         }
         return false;
+    }
+
+    private mouseHoverIn(internalId: string) {
+        const hoveredPolylines = this.state.hoveredPolylines;
+        hoveredPolylines.push(internalId);
+        this.setState({
+            hoveredPolylines,
+        });
+    }
+
+    private mouseHoverOut = () => {
+        this.setState({
+            hoveredPolylines: [],
+        });
     }
 
     render() {
@@ -85,6 +102,8 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                         weight={this.isSelected(routePath.internalId) ? 5 : 4}
                         opacity={this.isSelected(routePath.internalId) ? 1 : 0.5}
                         onClick={this.selectPolyLine.bind(this, routePath)}
+                        onMouseOver={this.mouseHoverIn.bind(this, routePath.internalId)}
+                        onMouseOut={this.mouseHoverOut}
                     />
                 );
             });
