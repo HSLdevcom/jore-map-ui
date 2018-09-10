@@ -105,11 +105,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     private startCoordinates(visibleRoutePaths: IRoutePath[]) {
-        const startingPointCoordinates: number[] = [];
-        visibleRoutePaths.forEach((routePath: IRoutePath) => {
-            startingPointCoordinates.push(routePath.geoJson.coordinates[0]);
-        });
-        return startingPointCoordinates;
+        return visibleRoutePaths.map((routePath: IRoutePath) => routePath.geoJson.coordinates[0]);
     }
 
     /* Leaflet methods */
