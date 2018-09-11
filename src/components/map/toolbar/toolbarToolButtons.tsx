@@ -9,7 +9,7 @@ import * as s from './toolbarToolButtons.scss';
 @observer
 export default class ToolbarToolButtons extends React.Component {
 
-    private toggleTool = (tool: ToolbarTools) => {
+    private toggleTool = (tool: ToolbarTools) => () => {
         toolbarStore.toggleTool(tool); // TODO: fix importing toolbarStore
     }
 
@@ -22,7 +22,7 @@ export default class ToolbarToolButtons extends React.Component {
                 {/* First toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <ToolbarButton
-                        onClick={this.toggleTool.bind(this, ToolbarTools.Edit)}
+                        onClick={this.toggleTool(ToolbarTools.Edit)}
                         isActive={toolbarStore.isActive(ToolbarTools.Edit)}
                         isDisabled={toolbarStore.isDisabled(ToolbarTools.Edit)}
                         label='Muokkaa solmuja'
@@ -30,7 +30,7 @@ export default class ToolbarToolButtons extends React.Component {
                         <FiEdit />
                     </ToolbarButton>
                     <ToolbarButton
-                        onClick={this.toggleTool.bind(this, ToolbarTools.Copy)}
+                        onClick={this.toggleTool(ToolbarTools.Copy)}
                         isActive={toolbarStore.isActive(ToolbarTools.Copy)}
                         isDisabled={toolbarStore.isDisabled(ToolbarTools.Copy)}
                         label='Kopioi reitti toiseen suuntaan'
@@ -38,7 +38,7 @@ export default class ToolbarToolButtons extends React.Component {
                         <FiCopy />
                     </ToolbarButton>
                     <ToolbarButton
-                        onClick={this.toggleTool.bind(this, ToolbarTools.DivideLink)}
+                        onClick={this.toggleTool(ToolbarTools.DivideLink)}
                         isActive={toolbarStore.isActive(ToolbarTools.DivideLink)}
                         isDisabled={toolbarStore.isDisabled(ToolbarTools.DivideLink)}
                         label='Jaa linkki'
@@ -49,7 +49,7 @@ export default class ToolbarToolButtons extends React.Component {
                 {/* Second toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <ToolbarButton
-                        onClick={this.toggleTool.bind(this, ToolbarTools.AddNode)}
+                        onClick={this.toggleTool(ToolbarTools.AddNode)}
                         isActive={toolbarStore.isActive(ToolbarTools.AddNode)}
                         isDisabled={toolbarStore.isDisabled(ToolbarTools.AddNode)}
                         label='Lisää solmu'
