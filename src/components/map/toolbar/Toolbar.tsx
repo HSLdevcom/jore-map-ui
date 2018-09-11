@@ -3,9 +3,9 @@ import { FiEdit, FiCopy, FiPlusSquare, FiPrinter, FiShare2 } from 'react-icons/f
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import ToolbarButton from './ToolbarButton';
-import { ToolbarStore } from '../../stores/toolbarStore';
-import { RadioButton } from '../controls';
-import ToolbarTools from '../../enums/toolbarTools';
+import { ToolbarStore } from '../../../stores/toolbarStore';
+import { RadioButton } from '../../controls';
+import ToolbarTools from '../../../enums/toolbarTools';
 import * as s from './toolbar.scss';
 
 interface ToolbarProps {

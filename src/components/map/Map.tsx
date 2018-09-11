@@ -16,7 +16,7 @@ import ColorScale from '../../util/colorScale';
 import MarkerLayer from './MarkerLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
-import Toolbar from './Toolbar';
+import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './PopupLayer';
 import { ToolbarStore } from '../../stores/toolbarStore';
 import * as s from './map.scss';
