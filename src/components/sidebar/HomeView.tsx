@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { Route, RouteComponentProps } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import LineSearch from './LineSearch';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import SearchResults from './SearchResults';
-import * as s from './homeView.scss';
 import { SearchStore } from '../../stores/searchStore';
+import * as s from './homeView.scss';
 
-interface ISidebarProps extends RouteComponentProps<any>{
+interface ISidebarProps{
     searchStore?: SearchStore;
 }
 
@@ -21,7 +20,7 @@ class HomeView extends React.Component<ISidebarProps> {
                 <TransitToggleButtonBar
                     filters={this.props.searchStore!.filters}
                 />
-                <Route component={SearchResults} />
+                <SearchResults />
             </div>
         );
     }

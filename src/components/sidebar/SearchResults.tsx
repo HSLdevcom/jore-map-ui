@@ -1,7 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import { reaction } from 'mobx';
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import { LineStore } from '../../stores/lineStore';
 import LineItem from './LineItem';
 import { ILine, ILineRoute } from '../../models';
@@ -10,11 +9,12 @@ import * as s from './searchResults.scss';
 import LineService from '../../services/lineService';
 import { SearchStore } from '../../stores/searchStore';
 import Loader from './Loader';
+import routeBuilder from '../../routing/routeBuilder';
+import subSites from '../../routing/subSites';
 
-interface ISearchResultsProps extends RouteComponentProps<any>{
+interface ISearchResultsProps{
     lineStore?: LineStore;
     searchStore?: SearchStore;
-    location: any;
 }
 
 interface ISearchResultsState {
@@ -91,7 +91,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const subLineItemsLength = this.props.searchStore!.subLineItems.length;
 
         const isSearchResultButtonVisible = subLineItemsLength > 0 ||
-        (this.props.location.pathname !== '/' && subLineItemsLength === 0);
+        (routeBuilder.getCurrentLocation() !== subSites.home && subLineItemsLength === 0);
         if (!isSearchResultButtonVisible) {
             return;
         }
@@ -163,8 +163,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                                 <LineItem
                                     key={line.lineId}
                                     line={line}
-                                    location={this.props.location}
-                                    history={this.props.history}
                                 />
                             );
                         })
