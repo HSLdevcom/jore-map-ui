@@ -22,23 +22,24 @@ export class NodeStore {
     }
 
     public getNodesUsedInRoutePaths(routePaths: IRoutePath[]) {
+        const requiredRoutePathIds = RoutesViewHelper.getNodeIdsUsedByRoutePaths(routePaths);
         return this._nodes.filter(node =>
-            RoutesViewHelper.routePathHasStop(routePaths, node.id),
+            requiredRoutePathIds.some(rPathId => node.id === rPathId),
         );
     }
 
     @action
-    public addToNodes(node: INode) {
-        this._nodes.push(node);
+    public addToNodes(nodes: INode[]) {
+        this._nodes.push(...nodes);
     }
 
     @action
-    public removeFromNodes(nodeId: number) {
-        for (let i = 0; i < this._nodes.length; i += 1) {
-            if (this._nodes[i].id === nodeId) {
-                this._nodes.splice(i, 1);
+    public removeFromNodes(nodeIds: number[]) {
+        this._nodes.forEach((node, index) => {
+            if (nodeIds.indexOf(node.id) > -1) {
+                this._nodes.splice(index, 1);
             }
-        }
+        });
     }
 }
 

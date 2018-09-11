@@ -6,7 +6,7 @@ import LineService from './lineService';
 import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
 import { IRoute, INode } from '../models';
-import QueryParsingHelper from '../util/queryParsingHelper';
+import QueryParsingHelper from '../factories/queryParsingHelper';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];

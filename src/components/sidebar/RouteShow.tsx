@@ -13,6 +13,7 @@ import navigator from '../../routing/navigator';
 import QueryParams from '../../routing/queryParams';
 import SubSites from '../../routing/subSites';
 import * as s from './routeShow.scss';
+import RoutesViewHelper from '../../util/routesViewHelper';
 
 interface IRouteShowProps {
     routeStore?: RouteStore;
@@ -29,7 +30,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 
     private closeRoute() {
-        this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
+        RoutesViewHelper.removeRoute(this.props.route.routeId);
         const closeRouteLink = routeBuilder
             .to(SubSites.current)
             .remove(QueryParams.routes, this.props.route.routeId)

@@ -1,6 +1,6 @@
 import { IRoute, ILine, INode } from '../models';
 import RoutePathFactory, { IRoutePathResult } from './routePathFactory';
-import QueryParsingHelper from '../util/queryParsingHelper';
+import QueryParsingHelper from './queryParsingHelper';
 
 export interface IRouteResult{
     nodes: INode[];

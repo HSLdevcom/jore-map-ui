@@ -1,7 +1,7 @@
 import { IRoutePath, INode } from '../models';
 import HashHelper from '../util/hashHelper';
 import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
-import QueryParsingHelper from '../util/queryParsingHelper';
+import QueryParsingHelper from './queryParsingHelper';
 
 export interface IRoutePathResult {
     routePath: IRoutePath;

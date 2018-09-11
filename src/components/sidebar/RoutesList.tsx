@@ -51,7 +51,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         const routeIds = navigator.getQueryParam(QueryParams.routes);
         if (routeIds) {
             this.setState({ isLoading: true });
-            RoutesViewHelper.fetchRequiredData(routeIds);
+            RoutesViewHelper.addRequiredDataForRoutes(routeIds);
             this.setState({ isLoading: false });
         }
     }

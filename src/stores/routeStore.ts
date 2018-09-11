@@ -36,8 +36,8 @@ export class RouteStore {
     }
 
     @action
-    public addToRoutes(node: IRoute) {
-        this._routes.push(node);
+    public addToRoutes(routes: IRoute[]) {
+        this._routes.push(...routes);
     }
 
     @action
