@@ -127,7 +127,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         {this.props.line.lineNumber}
                     </div>
                 </div>
-                {this.props.line.routes.map(route => this.renderRoute(route))}
+                {this.props.line.routes.map(route =>
+                    this.renderRoute(route),
+                )}
             </div>
         );
     }
