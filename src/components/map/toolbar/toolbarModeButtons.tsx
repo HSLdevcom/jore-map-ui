@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { RadioButton } from '../../controls';
-import * as s from './toolbar.scss';
+import * as s from './toolbarModeButtons.scss';
 
 interface IToolbarModeButtonsProps {
 }
@@ -32,7 +32,7 @@ export default class ToolbarModeButtons extends React.Component
 
     render() {
         return (
-            <div className={s.modeRadioButtonWrapper}>
+            <div className={s.toolbarModeButtonsView}>
                 <div
                     className={classnames(
                         s.modeRadioButtonContainer,

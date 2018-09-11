@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import ToolbarButton from './ToolbarButton';
 import toolbarStore from '../../../stores/toolbarStore';
 import ToolbarTools from '../../../enums/toolbarTools';
-import * as s from './toolbar.scss';
+import * as s from './toolbarToolButtons.scss';
 
 @observer
 export default class ToolbarToolButtons extends React.Component {
@@ -18,7 +18,7 @@ export default class ToolbarToolButtons extends React.Component {
 
     render() {
         return (
-            <div className={s.toolbarButtonContainer}>
+            <div className={s.toolbarToolButtonsView}>
                 {/* First toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <ToolbarButton
