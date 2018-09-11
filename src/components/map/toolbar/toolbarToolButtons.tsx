@@ -10,7 +10,7 @@ import * as s from './toolbarToolButtons.scss';
 export default class ToolbarToolButtons extends React.Component {
 
     private toggleTool = (tool: ToolbarTools) => {
-        toolbarStore.toggleTool(tool);
+        toolbarStore.toggleTool(tool); // TODO: fix importing toolbarStore
     }
 
     private print = () => {
