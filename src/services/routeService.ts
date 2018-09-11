@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
-import apolloClient from '../util/ApolloClient';
 import { ApolloQueryResult } from 'apollo-client';
+import apolloClient from '../util/ApolloClient';
 import RouteFactory from '../factories/routeFactory';
 import LineService from './lineService';
 import NotificationType from '../enums/notificationType';

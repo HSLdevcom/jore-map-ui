@@ -9,13 +9,14 @@ class NodeFactory {
             lat: coordinateList.coordinates[1],
         };
 
-        return <INode>{
+        return {
             internalRoutePathId,
             id: node.relid,
             type: getNodeType(node.solmuByLnkalkusolmu.soltyyppi),
             coordinates: coordinate,
         };
     }
+
 }
 
 const getNodeType = (type:any) => {

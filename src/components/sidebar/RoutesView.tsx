@@ -1,16 +1,20 @@
 import * as React from 'react';
-import * as s from './routesView.scss';
+import { inject, observer } from 'mobx-react';
+import { Route } from 'react-router';
 import LineSearch from './LineSearch';
-import { Route, RouteComponentProps } from 'react-router';
 import RoutesList from './RoutesList';
 import { RouteStore } from '../../stores/routeStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import { inject, observer } from 'mobx-react';
 import SearchResults from './SearchResults';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
+import routeBuilder from '../../routing/routeBuilder';
+import subSites from '../../routing/subSites';
+import navigator from '../../routing/navigator';
 import { SearchStore } from '../../stores/searchStore';
+import QueryParams from '../../routing/queryParams';
+import * as s from './routesView.scss';
 
-interface ISidebarProps extends RouteComponentProps<any>{
+interface ISidebarProps{
     routeStore?: RouteStore;
     searchStore?: SearchStore;
     sidebarStore?: SidebarStore;
@@ -19,6 +23,13 @@ interface ISidebarProps extends RouteComponentProps<any>{
 @inject('routeStore', 'searchStore', 'sidebarStore')
 @observer
 class RoutesView extends React.Component<ISidebarProps> {
+    public componentDidUpdate() {
+        if (!navigator.getQueryParam(QueryParams.routes)) {
+            const homeLink = routeBuilder.to(subSites.home).toLink();
+            navigator.goTo(homeLink);
+        }
+    }
+
     public render() {
         return (
             <div className={s.routesView}>
@@ -28,7 +39,7 @@ class RoutesView extends React.Component<ISidebarProps> {
                 ) : (
                     <>
                         <TransitToggleButtonBar filters={[]}/>
-                        <Route component={SearchResults} />
+                        <SearchResults />
                     </>
                 )
                 }

@@ -8,9 +8,9 @@ interface IToggleButtonState {
 
 interface IToggleButtonProps {
     type: TransitType;
-    onClick(event: any): void;
     value: boolean;
     color: string;
+    onClick(event: any): void;
 }
 
 class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonState> {

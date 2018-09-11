@@ -1,12 +1,12 @@
-import * as s from './toolbar.scss';
 import React, { Component } from 'react';
 import { FiEdit, FiCopy, FiPlusSquare, FiPrinter, FiShare2 } from 'react-icons/fi';
+import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import ToolbarButton from './ToolbarButton';
 import { ToolbarStore } from '../../stores/toolbarStore';
-import { observer } from 'mobx-react';
 import { RadioButton } from '../controls';
 import ToolbarTools from '../../enums/toolbarTools';
-import classnames from 'classnames';
+import * as s from './toolbar.scss';
 
 interface ToolbarProps {
     toolbarStore?: ToolbarStore;

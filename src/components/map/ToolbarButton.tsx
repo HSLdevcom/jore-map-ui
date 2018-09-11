@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import * as s from './toolbarButton.scss';
 import classnames from 'classnames';
+import * as s from './toolbarButton.scss';
 
 interface ToolbarButtonProps {
     label: string;

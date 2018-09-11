@@ -3,9 +3,9 @@ import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import classnames from 'classnames';
 import { MapStore } from '../../stores/mapStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import classnames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
@@ -13,13 +13,13 @@ import FullscreenControl from './FullscreenControl';
 import MeasurementControl from './MeasurementControl';
 import RouteLayer from './RouteLayer';
 import ColorScale from '../../util/colorScale';
-import NodeLayer from './NodeLayer';
+import MarkerLayer from './MarkerLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
-import * as s from './map.scss';
 import Toolbar from './Toolbar';
 import PopupLayer from './PopupLayer';
 import { ToolbarStore } from '../../stores/toolbarStore';
+import * as s from './map.scss';
 
 interface IMapState {
     zoomLevel: number;
@@ -104,6 +104,10 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         );
     }
 
+    private startCoordinates(visibleRoutePaths: IRoutePath[]) {
+        return visibleRoutePaths.map((routePath: IRoutePath) => routePath.geoJson.coordinates[0]);
+    }
+
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
         this.getMap().setView(latLng, 17);
@@ -114,7 +118,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
         const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
         const colors = ColorScale.getColors(visibleRoutePaths.length);
-
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 <Map
@@ -147,8 +150,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         routePaths={visibleRoutePaths}
                         fitBounds={this.fitBounds}
                     />
-                    <NodeLayer
+                    <MarkerLayer
                         nodes={visibleNodes}
+                        firstNodes={this.startCoordinates(visibleRoutePaths)}
                     />
                     <PopupLayer
                         setView={this.setView}
