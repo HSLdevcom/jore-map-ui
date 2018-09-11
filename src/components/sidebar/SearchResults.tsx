@@ -22,8 +22,8 @@ interface ISearchResultsState {
     showLimit: number;
 }
 
-const SHOWLIMIT_DEFAULT = 20;
-const INCREASE_SHOWLIMIT = 10;
+const SHOW_LIMIT_DEFAULT = 20;
+const INCREASE_SHOW_LIMIT = 10;
 const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half way down
 
 @inject('lineStore', 'searchStore')
@@ -37,7 +37,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         super(props);
         this.state = {
             isLoading: false,
-            showLimit: SHOWLIMIT_DEFAULT,
+            showLimit: SHOW_LIMIT_DEFAULT,
         };
 
         this.addSearchResults = this.addSearchResults.bind(this);
@@ -135,13 +135,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         if (this.paginatedDiv.current &&
             this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight
             >= this.paginatedDiv.current.scrollHeight / SCROLL_PAGINATION_TRIGGER_POINT) {
-            this.setState({ showLimit: this.state.showLimit + INCREASE_SHOWLIMIT });
+            this.setState({ showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT });
         }
     }
 
     private resetShow = () => {
         this.setState({
-            showLimit: SHOWLIMIT_DEFAULT,
+            showLimit: SHOW_LIMIT_DEFAULT,
         });
         this.paginatedDiv.current!.scrollTo(0, 0);
     }
