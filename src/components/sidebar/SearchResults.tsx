@@ -1,4 +1,5 @@
 import { inject, observer } from 'mobx-react';
+import { reaction } from 'mobx';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { LineStore } from '../../stores/lineStore';
@@ -41,6 +42,14 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     async componentDidMount() {
         this.showMore();
         await this.queryAllLines();
+        reaction(() =>
+            this.props.searchStore!.searchInput,
+                 this.resetShow,
+            );
+        reaction(() =>
+            this.props.searchStore!.filters,
+                 this.resetShow,
+        );
     }
 
     async queryAllLines() {
@@ -57,8 +66,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const searchTerm = this.props.searchStore!.searchInput.toLowerCase();
 
         // Filter by transitType
-        if (this.props.lineStore!.filters &&
-            this.props.lineStore!.filters.indexOf(transitType) !== -1) {
+        if (this.props.searchStore!.filters &&
+            this.props.searchStore!.filters.indexOf(transitType) !== -1) {
             return false;
         }
 
@@ -120,9 +129,16 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     private showMore = () => {
         if (this.paginatedDiv.current &&
             this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight
-            >= this.paginatedDiv.current.scrollHeight) {
+            >= this.paginatedDiv.current.scrollHeight / 1.25) {
             this.setState({ showLimit: this.state.showLimit + 10 });
         }
+    }
+
+    private resetShow = () => {
+        this.setState({
+            showLimit: 20,
+        });
+        this.paginatedDiv.current!.scrollTo(0, 0);
     }
 
     public render(): any {
