@@ -1,6 +1,12 @@
-import { IRoutePath, IRoutePathLink } from '../models';
+import { IRoutePath, INode } from '../models';
 import HashHelper from '../util/hashHelper';
-import RoutePathLinkFactory from './routePathLinkFactory';
+import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
+import QueryParsingHelper from '../util/queryParsingHelper';
+
+export interface IRoutePathResult {
+    routePath: IRoutePath;
+    nodes: INode[];
+}
 
 class RoutePathFactory {
     // suunta to IRoutePath
@@ -8,7 +14,7 @@ class RoutePathFactory {
         routeId: string,
         suunta: any,
         isVisible:boolean,
-    ): IRoutePath => {
+    ): IRoutePathResult => {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
                 routeId,
@@ -19,7 +25,7 @@ class RoutePathFactory {
             ].join('-'),
         ).toString();
 
-        const routePathLinks:IRoutePathLink[]
+        const routePathLinks:IRoutePathLinkResult[]
         = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
             .map((node: any) =>
                 RoutePathLinkFactory.createRoutePathLink(node.node));
@@ -27,10 +33,10 @@ class RoutePathFactory {
         const coordinates = JSON.parse(suunta.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
 
-        return {
+        const routePath : IRoutePath = {
             routeId,
             positions,
-            routePathLinks,
+            routePathLinks: routePathLinks.map(res => res.link),
             internalId: internalRoutePathId,
             geoJson: JSON.parse(suunta.geojson),
             routePathName: suunta.suunimi,
@@ -39,6 +45,13 @@ class RoutePathFactory {
             endTime: new Date(suunta.suuviimpvm),
             lastModified: new Date(suunta.suuvoimviimpvm),
             visible: isVisible,
+        };
+
+        return {
+            routePath,
+            nodes: QueryParsingHelper.removeINodeDuplicates(
+                routePathLinks.reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
+            ),
         };
     }
 }

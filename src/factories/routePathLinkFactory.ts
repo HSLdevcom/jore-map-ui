@@ -1,11 +1,28 @@
-import IRoutePathLink from '../models/IRoutePathLink';
+import { IRoutePathLink, INode } from '../models';
+import NodeFactory from './nodeFactory';
+
+export interface IRoutePathLinkResult {
+    link: IRoutePathLink;
+    nodes: INode[];
+}
 
 class RoutePathLinkFactory {
-    public static createRoutePathLink = (node: any): IRoutePathLink => {
+    public static createRoutePathLink = (node: any): IRoutePathLinkResult => {
+        const nodes = [];
+        if (node.solmuByLnkalkusolmu) {
+            nodes.push(NodeFactory.createNode(node.solmuByLnkalkusolmu));
+        }
+        if (node.solmuByLnkloppusolmu) {
+            nodes.push(NodeFactory.createNode(node.solmuByLnkloppusolmu));
+        }
+
         return {
-            startNode: node.lnkalkusolmu,
-            endNode: node.lnkloppusolmu,
-            orderNumber: node.reljarjnro,
+            nodes,
+            link: {
+                startNode: node.lnkalkusolmu,
+                endNode: node.lnkloppusolmu,
+                orderNumber: node.reljarjnro,
+            },
         };
     }
 }

@@ -1,48 +1,41 @@
 import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '../util/ApolloClient';
-import RouteFactory from '../factories/routeFactory';
+import RouteFactory, { IRouteResult } from '../factories/routeFactory';
 import LineService from './lineService';
 import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
 import { IRoute, INode } from '../models';
-import NodeFactory from '../factories/nodeFactory';
+import QueryParsingHelper from '../util/queryParsingHelper';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];
     nodes: INode[];
 }
 
-export interface IRouteQueryResult {
-    route: IRoute;
-    nodes: INode[];
-}
-
 export default class RouteService {
-    public static async runFetchRouteQuery(routeId: string) : Promise<IRouteQueryResult | null> {
+    public static async runFetchRouteQuery(routeId: string) : Promise<IRouteResult> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: getRouteQuery, variables: { routeId } },
                 );
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
-            const route = RouteFactory.createRoute(queryResult.data.route, line);
-            const nodes = NodeFactory.parseNodes(queryResult);
-            return {
-                route,
-                nodes,
-            };
+            return RouteFactory.createRoute(queryResult.data.route, line);
         } catch (err) {
+            // tslint:disable-next-line
+            console.error(err);
             NotificationStore.addNotification({
                 message: 'Reitin haku ei onnistunut.',
                 type: NotificationType.ERROR,
             });
-            return null;
+            return {
+                nodes: [],
+            };
         }
     }
 
-    public static async fetchRoute(routeId: string): Promise<IRoute | null> {
-        const queryResult = await RouteService.runFetchRouteQuery(routeId);
-        return queryResult !== null ? queryResult.route : null;
+    public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
+        return (await RouteService.runFetchRouteQuery(routeId)).route;
     }
 
     public static async fetchMultipleRoutes(routeIds: string[]):
@@ -51,11 +44,17 @@ export default class RouteService {
             Promise
                 .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)))
                 .then((queryResults) => {
+                    const nonNullRoutes = queryResults.filter(res => res.route);
+
                     resolve({
-                        routes: queryResults
-                            .filter(res => res !== null)
-                            .map((res: IRouteQueryResult) => res.route),
-                        nodes: [],
+                        routes: nonNullRoutes
+                            .map((res: IRouteResult) => res.route!),
+                        nodes: QueryParsingHelper.removeINodeDuplicates(
+                            nonNullRoutes
+                                .reduce<INode[]>(
+                                    (flatList, node) => flatList.concat(node.nodes),
+                                    [],
+                                )),
                     });
                 });
         });
@@ -94,13 +93,15 @@ query getLineDetails($routeId: String!) {
                                     solx,
                                     soly,
                                     soltunnus,
-                                    soltyyppi
+                                    soltyyppi,
+                                    geojson
                                 }
                                 solmuByLnkloppusolmu {
                                     solx,
                                     soly,
                                     soltunnus,
-                                    soltyyppi
+                                    soltyyppi,
+                                    geojson
                                 }
                             }
                         }

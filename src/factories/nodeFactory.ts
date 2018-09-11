@@ -3,23 +3,18 @@ import NodeType from '../enums/nodeType';
 
 class NodeFactory {
     public static createNode = (node: any): INode => {
-        const coordinateList = JSON.parse(node.solmuByLnkalkusolmu.geojson);
+        const coordinateList = JSON.parse(node.geojson);
         const coordinate : ICoordinate = {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
 
         return {
-            id: node.relid,
-            type: getNodeType(node.solmuByLnkalkusolmu.soltyyppi),
+            id: node.soltunnus,
+            type: getNodeType(node.soltyyppi),
             coordinates: coordinate,
         };
     }
-
-    public static parseNodes = (queryResult: any): INode[] => {
-        return [];
-    }
-
 }
 
 const getNodeType = (type:any) => {
