@@ -57,7 +57,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     }
 
     private setFiltersFunction = (filters: string[]) => {
-        global.console.log(filters); // TODO: Make this do something to network.
+        // TODO: Make this do something to network.
     }
 
     public render(): any {
