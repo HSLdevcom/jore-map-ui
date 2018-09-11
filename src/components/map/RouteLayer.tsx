@@ -55,7 +55,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         }
     }
 
-    private selectPolyLine(internalId: string) {
+    private toggleHighlight(internalId: string) {
         const selectedPolylines = this.state.selectedPolylines;
         const isSelected = selectedPolylines.indexOf(internalId) > -1;
 
@@ -77,7 +77,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         return false;
     }
 
-    private setHoverHighlights(internalId: string) {
+    private setHoverHighlight(internalId: string) {
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
@@ -102,8 +102,8 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                         color={color}
                         weight={this.hasHighlight(internalId) ? 5 : 4}
                         opacity={this.hasHighlight(internalId) ? 1 : 0.6}
-                        onClick={this.selectPolyLine.bind(this, internalId)}
-                        onMouseOver={this.setHoverHighlights.bind(this, internalId)}
+                        onClick={this.toggleHighlight.bind(this, internalId)}
+                        onMouseOver={this.setHoverHighlight.bind(this, internalId)}
                         onMouseOut={this.clearHoverHightlights}
                         internalId={internalId}
                     />
