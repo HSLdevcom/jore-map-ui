@@ -2,32 +2,39 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
-import { History, Location } from 'history';
 import { RouteStore } from '../../stores/routeStore';
 import { IRoutePath, IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
 import LineHelper from '../../util/lineHelper';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import ColorScale from '../../util/colorScale';
-import LinkBuilder from '../../factories/linkBuilder';
+import routeBuilder from '../../routing/routeBuilder';
+import navigator from '../../routing/navigator';
+import QueryParams from '../../routing/queryParams';
+import SubSites from '../../routing/subSites';
 import * as s from './routeShow.scss';
 
 interface IRouteShowProps {
     routeStore?: RouteStore;
     route: IRoute;
     visibleRoutePathsIndex: number;
-    history: History;
-    location: Location<any>;
 }
 
 @inject('routeStore')
 @observer
 class RouteShow extends React.Component<IRouteShowProps> {
+    constructor(props: IRouteShowProps) {
+        super(props);
+        this.closeRoute = this.closeRoute.bind(this);
+    }
 
-    private onClose = () => {
+    private closeRoute() {
         this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
-        this.props.history.push(LinkBuilder
-            .createLinkWithoutRoute(this.props.location, this.props.route.routeId));
+        const closeRouteLink = routeBuilder
+            .to(SubSites.current)
+            .remove(QueryParams.routes, this.props.route.routeId)
+            .toLink();
+        navigator.goTo(closeRouteLink);
     }
 
     private renderRouteName() {
@@ -43,9 +50,12 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 {this.props.route.line!.lineNumber}
             </div>
             {this.props.route.routeName}
-            <div onClick={this.onClose} className={s.closeView}>
+            <div
+                onClick={this.closeRoute}
+                className={s.closeView}
+            >
                 <FaTimes className={s.close}/>
-            </div >
+            </div>
         </div>
         );
     }
