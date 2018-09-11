@@ -24,7 +24,7 @@ export default class ToolbarModeButtons extends React.Component
         };
     }
 
-    private toggleSelectedMode = (option: option) => {
+    private toggleSelectedMode = (option: option) => () => {
         this.setState({
             selectedMode: option,
         });
@@ -40,7 +40,7 @@ export default class ToolbarModeButtons extends React.Component
                     )}
                 >
                     <RadioButton
-                        onClick={this.toggleSelectedMode.bind(this, option.LINE)}
+                        onClick={this.toggleSelectedMode(option.LINE)}
                         checked={this.state.selectedMode === option.LINE}
                         text={option.LINE}
                     />
@@ -58,7 +58,7 @@ export default class ToolbarModeButtons extends React.Component
                     )}
                 >
                     <RadioButton
-                        onClick={this.toggleSelectedMode.bind(this, option.NETWORK)}
+                        onClick={this.toggleSelectedMode(option.NETWORK)}
                         checked={this.state.selectedMode === option.NETWORK}
                         text={option.NETWORK}
                     />
