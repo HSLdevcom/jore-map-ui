@@ -6,10 +6,12 @@ export class SearchStore {
         routePathId: string;
         routeId: string;
     }[];
+    @observable private _filters: string[];
 
     constructor() {
         this._searchInput = '';
         this._subLineItems = [];
+        this._filters = [];
     }
 
     @computed get searchInput(): string {
@@ -44,6 +46,14 @@ export class SearchStore {
 
     @computed get subLineItems(): any {
         return this._subLineItems;
+    }
+
+    @computed get filters(): string[] {
+        return this._filters;
+    }
+
+    set filters(value: string[]) {
+        this._filters = value;
     }
 }
 
