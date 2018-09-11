@@ -16,9 +16,8 @@ import ColorScale from '../../util/colorScale';
 import MarkerLayer from './MarkerLayer';
 import { IRoutePath, INode, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
-import Toolbar from './Toolbar';
+import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './PopupLayer';
-import { ToolbarStore } from '../../stores/toolbarStore';
 import * as s from './map.scss';
 
 interface IMapState {
@@ -29,7 +28,6 @@ interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
     sidebarStore?: SidebarStore;
-    toolbarStore?: ToolbarStore;
 }
 
 interface IMapPropReference {
@@ -41,7 +39,7 @@ interface IMapPropReference {
     id: string;
 }
 
-@inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore')
+@inject('sidebarStore', 'mapStore', 'routeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -158,7 +156,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         setView={this.setView}
                     />
                     <Control position='topleft'>
-                        <Toolbar toolbarStore={this.props.toolbarStore}/>
+                        <Toolbar />
                     </Control>
                     <Control position='topright'>
                         <FullscreenControl />
