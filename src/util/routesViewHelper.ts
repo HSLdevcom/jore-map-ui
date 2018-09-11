@@ -1,7 +1,20 @@
 import RouteStore from '../stores/routeStore';
 import RouteService from '../services/routeService';
+import NodeStore from '../stores/nodeStore';
+import { IRoutePath } from '../models';
 
 export default class RoutesViewHelper {
+    public static routePathHasStop(routePaths: IRoutePath[], nodeId: number) {
+        return routePaths.some(routePath =>
+            routePath.routePathLinks.some(routePathLink =>
+                (
+                    routePathLink.endNode === nodeId
+                    || routePathLink.startNode === nodeId
+                ),
+            ),
+        );
+    }
+
     public static async fetchRequiredData(routeIds: string[]) {
         const currentRoutes = RouteStore.routes;
         const currentRouteIds = currentRoutes
@@ -25,6 +38,24 @@ export default class RoutesViewHelper {
             .filter(route => routeIdsToRemove.indexOf(route.routeId) < 0)
             .concat(routeServiceResults.routes);
 
-        console.log(updatedRoutesList);
+        const currentNodes = NodeStore.nodes;
+        const currentNodeIds = currentNodes.map(node => node.id);
+        const nodeIdsToRemove = currentNodeIds
+            .filter(nodeId =>
+                !updatedRoutesList.some(route =>
+                    !RoutesViewHelper.routePathHasStop(route.routePaths, nodeId),
+                ),
+            );
+
+        nodeIdsToRemove.forEach(removedNode =>
+            NodeStore.removeFromNodes(removedNode),
+        );
+
+        const missingNodes = routeServiceResults.nodes
+            .filter(nodeId => !currentNodeIds.some(cNodeId => cNodeId === nodeId.id));
+
+        missingNodes.forEach(node =>
+            NodeStore.addToNodes(node),
+        );
     }
 }

@@ -1,5 +1,6 @@
 import { computed, observable, action } from 'mobx';
 import { INode, IRoutePath } from '../models';
+import RoutesViewHelper from '../util/routesViewHelper';
 
 export class NodeStore {
     @observable private _nodes: INode[];
@@ -21,7 +22,14 @@ export class NodeStore {
     }
 
     public getNodesUsedInRoutePaths(routePaths: IRoutePath[]) {
-        return this._nodes;
+        return this._nodes.filter(node =>
+            RoutesViewHelper.routePathHasStop(routePaths, node.id),
+        );
+    }
+
+    @action
+    public addToNodes(node: INode) {
+        this._nodes.push(node);
     }
 
     @action
