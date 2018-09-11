@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LineStore } from '../../stores/lineStore';
+import { SearchStore } from '../../stores/searchStore';
 import TransitToggleButton from './TransitToggleButton';
 import TransitType from '../../enums/transitType';
 import * as s from './transitToggleButtonBar.scss';
@@ -10,11 +10,11 @@ interface ITransitToggleButtonBarState {
 }
 
 interface ITtransitToggleButtonBarProps {
-    lineStore?: LineStore;
+    searchStore?: SearchStore;
     filters: string[];
 }
 
-@inject('lineStore')
+@inject('searchStore')
 @observer
 class TransitToggleButtonBar extends React.Component
 <ITtransitToggleButtonBarProps, ITransitToggleButtonBarState> {
@@ -55,11 +55,13 @@ class TransitToggleButtonBar extends React.Component
         // Set filters for RouteSearch.tsx
         const filters: string[] = [];
         for (const key in this.state.toggles) {
-            if (!this.state.toggles[key]) {
-                filters.push(key);
+            if (this.state.toggles.hasOwnProperty(key)) {
+                if (!this.state.toggles[key]) {
+                    filters.push(key);
+                }
             }
         }
-        this.props.lineStore!.filters = filters;
+        this.props.searchStore!.filters = filters;
     }
 
     public render(): any {
