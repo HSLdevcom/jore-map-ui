@@ -17,10 +17,12 @@ class Navigator {
         this._store.history.push(url);
     }
 
+    // TODO, rename
     public getQueryParam(param: QueryParams) {
         return this.getQueryParamValues()[param];
     }
 
+    // TODO, rename
     public getQueryParamValues() {
         return qs.parse(
             this._store.location.search,
