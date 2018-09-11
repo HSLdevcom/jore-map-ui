@@ -51,10 +51,9 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
             return;
         }
         try {
-            const route = await RouteService.getRoute(this.props.routeId);
-            if (this.mounted) {
+            const route = await RouteService.fetchRoute(this.props.routeId);
+            if (this.mounted && route != null) {
                 this.setState({
-
                     routePaths: route.routePaths,
                 });
             }

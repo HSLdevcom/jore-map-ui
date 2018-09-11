@@ -15,7 +15,7 @@ export default class RoutesViewHelper {
             RouteStore.removeFromRoutes(removedRoute);
         });
 
-        const routeServiceResults = await RouteService.getRoutesData(missingRouteIds);
+        const routeServiceResults = await RouteService.fetchMultipleRoutes(missingRouteIds);
 
         routeServiceResults.routes.forEach((route) => {
             RouteStore.addToRoutes(route);

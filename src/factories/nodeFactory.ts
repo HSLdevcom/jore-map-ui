@@ -16,6 +16,10 @@ class NodeFactory {
         };
     }
 
+    public static parseNodes = (queryResult: any): INode[] => {
+        return [];
+    }
+
 }
 
 const getNodeType = (type:any) => {

@@ -6,58 +6,55 @@ import LineService from './lineService';
 import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
 import { IRoute, INode } from '../models';
+import NodeFactory from '../factories/nodeFactory';
 
-export interface IRouteServiceResult {
+export interface IMultipleRoutesQueryResult {
     routes: IRoute[];
     nodes: INode[];
 }
 
-export interface IRouteResult {
+export interface IRouteQueryResult {
     route: IRoute;
     nodes: INode[];
 }
 
 export default class RouteService {
-    public static async getRoute(routeId: string) {
+    public static async runFetchRouteQuery(routeId: string) : Promise<IRouteQueryResult | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getRoute, variables: { routeId } },
+                { query: getRouteQuery, variables: { routeId } },
                 );
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
-            return RouteFactory.createRoute(queryResult.data.route, line);
-        } catch (err) {
-            NotificationStore.addNotification(
-            { message: 'Reitin haku ei onnistunut.', type: NotificationType.ERROR },
-            );
-            return err;
-        }
-    }
-
-    public static async getRouteData(routeId: string): Promise<IRouteResult> {
-        try {
-            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getRoute, variables: { routeId } },
-                );
-            const line = await LineService.getLine(queryResult.data.route.lintunnus);
+            const route = RouteFactory.createRoute(queryResult.data.route, line);
+            const nodes = NodeFactory.parseNodes(queryResult);
             return {
-                route: RouteFactory.createRoute(queryResult.data.route, line),
-                nodes: [],
+                route,
+                nodes,
             };
         } catch (err) {
-            NotificationStore.addNotification(
-            { message: 'Reitin haku ei onnistunut.', type: NotificationType.ERROR },
-            );
-            return err;
+            NotificationStore.addNotification({
+                message: 'Reitin haku ei onnistunut.',
+                type: NotificationType.ERROR,
+            });
+            return null;
         }
     }
 
-    public static async getRoutesData(routeIds: string[]): Promise<IRouteServiceResult> {
-        return new Promise<IRouteServiceResult>((resolve, reject) => {
+    public static async fetchRoute(routeId: string): Promise<IRoute | null> {
+        const queryResult = await RouteService.runFetchRouteQuery(routeId);
+        return queryResult !== null ? queryResult.route : null;
+    }
+
+    public static async fetchMultipleRoutes(routeIds: string[]):
+        Promise<IMultipleRoutesQueryResult> {
+        return new Promise<IMultipleRoutesQueryResult>((resolve, reject) => {
             Promise
-                .all(routeIds.map(id => RouteService.getRouteData(id)))
-                .then((routeResults: IRouteResult[]) => {
+                .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)))
+                .then((queryResults) => {
                     resolve({
-                        routes: routeResults.map(res => res.route),
+                        routes: queryResults
+                            .filter(res => res !== null)
+                            .map((res: IRouteQueryResult) => res.route),
                         nodes: [],
                     });
                 });
@@ -65,7 +62,7 @@ export default class RouteService {
     }
 }
 
-const getRoute = gql`
+const getRouteQuery = gql`
 query getLineDetails($routeId: String!) {
     route: reittiByReitunnus(reitunnus: $routeId) {
         reitunnus
