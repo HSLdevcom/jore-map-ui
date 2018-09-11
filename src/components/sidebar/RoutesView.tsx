@@ -30,6 +30,10 @@ class RoutesView extends React.Component<ISidebarProps> {
         }
     }
 
+    private setFiltersFunction = (filters: string[]) => {
+        this.props.searchStore!.filters = filters;
+    }
+
     public render() {
         return (
             <div className={s.routesView}>
@@ -38,7 +42,10 @@ class RoutesView extends React.Component<ISidebarProps> {
                     <Route component={RoutesList} />
                 ) : (
                     <>
-                        <TransitToggleButtonBar filters={[]}/>
+                        <TransitToggleButtonBar
+                            setFiltersFunction={this.setFiltersFunction}
+                            filters={this.props.searchStore!.filters}
+                        />
                         <SearchResults />
                     </>
                 )

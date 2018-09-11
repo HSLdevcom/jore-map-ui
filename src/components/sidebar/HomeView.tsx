@@ -13,11 +13,15 @@ interface ISidebarProps{
 @inject('searchStore')
 @observer
 class HomeView extends React.Component<ISidebarProps> {
+    private setFiltersFunction = (filters: string[]): void => {
+        this.props.searchStore!.filters = filters;
+    }
     public render() {
         return (
             <div className={s.homeView}>
                 <LineSearch/>
                 <TransitToggleButtonBar
+                    setFiltersFunction={this.setFiltersFunction}
                     filters={this.props.searchStore!.filters}
                 />
                 <SearchResults />

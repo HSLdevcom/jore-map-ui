@@ -56,6 +56,10 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         }
     }
 
+    private setFiltersFunction = (filters: string[]) => {
+        // TODO: Make this do something to network.
+    }
+
     public render(): any {
         const routeList = (routes: IRoute[]) => {
             let visibleRoutePathsIndex = 0;
@@ -89,7 +93,10 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 </div>
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>
-                    <TransitToggleButtonBar filters={[]} />
+                    <TransitToggleButtonBar
+                        setFiltersFunction={this.setFiltersFunction}
+                        filters={[]}
+                    />
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
