@@ -1,4 +1,5 @@
 import { inject, observer } from 'mobx-react';
+import { IReactionDisposer, reaction } from 'mobx';
 import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
 import LineItem from './LineItem';
@@ -18,24 +19,43 @@ interface ISearchResultsProps{
 
 interface ISearchResultsState {
     isLoading: boolean;
+    showLimit: number;
 }
+
+const SHOW_LIMIT_DEFAULT = 20;
+const INCREASE_SHOW_LIMIT = 10;
+const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half way down
 
 @inject('lineStore', 'searchStore')
 @observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
+    private paginatedDiv: React.RefObject<HTMLDivElement>;
+
+    private reactionDisposer: IReactionDisposer;
 
     constructor(props: ISearchResultsProps) {
         super(props);
         this.state = {
             isLoading: false,
+            showLimit: SHOW_LIMIT_DEFAULT,
         };
 
         this.addSearchResults = this.addSearchResults.bind(this);
         this.closeSearchResults = this.closeSearchResults.bind(this);
+        this.paginatedDiv = React.createRef();
     }
 
-    componentDidMount() {
-        this.queryAllLines();
+    async componentDidMount() {
+        this.showMore();
+        await this.queryAllLines();
+        this.reactionDisposer = reaction(() =>
+        [this.props.searchStore!.searchInput, this.props.searchStore!.filters],
+                                         this.resetShow,
+            );
+    }
+
+    componentWillUnmount() {
+        this.reactionDisposer();
     }
 
     async queryAllLines() {
@@ -52,8 +72,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const searchTerm = this.props.searchStore!.searchInput.toLowerCase();
 
         // Filter by transitType
-        if (this.props.lineStore!.filters &&
-            this.props.lineStore!.filters.indexOf(transitType) !== -1) {
+        if (this.props.searchStore!.filters &&
+            this.props.searchStore!.filters.indexOf(transitType) !== -1) {
             return false;
         }
 
@@ -64,6 +84,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         return routes
             .map(route => route.name.toLowerCase())
             .some(name => name.indexOf(searchTerm) > -1);
+    }
+
+    private filteredLines = () => {
+        return this.props.lineStore!.allLines
+            .filter(line =>
+                this.filterLines(line.routes, line.lineId, line.transitType))
+            .splice(0, this.state.showLimit);
     }
 
     private renderSearchResultButton() {
@@ -104,9 +131,22 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     private closeSearchResults() {
         this.props.searchStore!.setSearchInput('');
     }
+    private showMore = () => {
+        if (this.paginatedDiv.current &&
+            this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight
+            >= this.paginatedDiv.current.scrollHeight / SCROLL_PAGINATION_TRIGGER_POINT) {
+            this.setState({ showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT });
+        }
+    }
+
+    private resetShow = () => {
+        this.setState({
+            showLimit: SHOW_LIMIT_DEFAULT,
+        });
+        this.paginatedDiv.current!.scrollTo(0, 0);
+    }
 
     public render(): any {
-        const allLines = this.props.lineStore!.allLines;
         if (this.state.isLoading) {
             return (
                 <div className={s.searchResultsView}>
@@ -116,13 +156,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
         return (
             <div className={s.searchResultsView}>
-                <div className={s.searchResultsWrapper}>
+                <div
+                    className={s.searchResultsWrapper}
+                    onScroll={this.showMore}
+                    ref={this.paginatedDiv}
+                >
                 {
-                    allLines
-                        .filter(line =>
-                            this.filterLines(line.routes, line.lineId, line.transitType))
-                        // Showing only the first 100 results to improve rendering performance
-                        .splice(0, 100)
+                    this.filteredLines()
                         .map((line: ILine) => {
                             return (
                                 <LineItem
