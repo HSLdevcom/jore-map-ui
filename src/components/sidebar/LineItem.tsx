@@ -1,14 +1,16 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
-import { Location, History } from 'history';
 import Moment from 'react-moment';
 import lineHelper from '../../util/lineHelper';
 import { ILine, ILineRoute } from '../../models';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import searchStore from '../../stores/searchStore';
-import LinkBuilder from '../../factories/linkBuilder';
 import LineItemSubMenu from './LineItemSubMenu';
+import routeBuilder from '../../routing/routeBuilder';
+import subSites from '../../routing/subSites';
+import navigator from '../../routing/navigator';
+import QueryParams from '../../routing/queryParams';
 import * as s from './lineItem.scss';
 
 interface ILineItemState {
@@ -17,8 +19,6 @@ interface ILineItemState {
 
 interface ILineItemProps {
     line: ILine;
-    location: Location;
-    history: History;
 }
 
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
@@ -54,12 +54,18 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         }
     }
 
+    private openRoute(routeId: string) {
+        const openRouteLink = routeBuilder
+            .to(subSites.routes)
+            .append(QueryParams.routes, routeId)
+            .toLink();
+        searchStore.setSearchInput('');
+        searchStore.removeAllSubLineItems();
+        navigator.goTo(openRouteLink);
+    }
+
     public renderRoute(route: ILineRoute): any {
-        const gotoUrl = (url:string) => () => {
-            this.props.history.push(url);
-            searchStore.setSearchInput('');
-            searchStore.removeAllSubLineItems();
-        };
+
         return (
             <div
                 key={route.id}
@@ -81,8 +87,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                 TransitTypeColorHelper.getColorClass(
                                     this.props.line.transitType),
                             )}
-                            onClick={gotoUrl(
-                                    LinkBuilder.createLinkWithRoute(this.props.location, route.id))}
+                            onClick={this.openRoute.bind(this, route.id)}
                         >
                             {route.name}
                         </div>

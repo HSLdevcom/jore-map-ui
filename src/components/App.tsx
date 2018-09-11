@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { Route, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '../stores/loginStore';
 import { NotificationStore } from '../stores/notificationStore';
 import { SidebarStore } from '../stores/sidebarStore';
@@ -54,7 +54,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 <Login />
             </Modal>
             <div className={sidebarHiddenClass}>
-                <Route component={Sidebar} />
+                <Sidebar location={this.props.location}/>
             </div>
             <NotificationWindow
               notifications={this.props.notificationStore!.notifications}
@@ -64,4 +64,4 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-export default App;
+export default withRouter(App);

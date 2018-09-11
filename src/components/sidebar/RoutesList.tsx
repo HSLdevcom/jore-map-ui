@@ -1,7 +1,5 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import * as qs from 'qs';
 import { RouteStore } from '../../stores/routeStore';
 import searchStore from '../../stores/searchStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
@@ -9,18 +7,16 @@ import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
 import RouteService from '../../services/routeService';
 import Loader from './Loader';
+import QueryParams from '../../routing/queryParams';
+import navigator from '../../routing/navigator';
 import * as s from './routesList.scss';
-
-interface MatchParams {
-    route: string;
-}
 
 interface IRoutesListState {
     networkCheckboxToggles: any;
     isLoading: boolean;
 }
 
-interface IRoutesListProps extends RouteComponentProps<MatchParams>{
+interface IRoutesListProps {
     routeStore?: RouteStore;
 }
 
@@ -52,31 +48,24 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     }
 
     private async queryRoutes() {
-        this.setState({ isLoading: true });
-        const queryValues = qs.parse(
-            this.props.location.search,
-            { ignoreQueryPrefix: true, arrayLimit: 1 },
-        );
-        let routeIds: string[] = [];
-        if (queryValues.routes) {
-            routeIds = queryValues.routes.split(' ');
+        const routeIds = navigator.getQueryParam(QueryParams.routes);
+        if (routeIds) {
+            this.setState({ isLoading: true });
             this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
+            this.setState({ isLoading: false });
         }
-        this.setState({ isLoading: false });
     }
 
     public render(): any {
         const routeList = (routes: IRoute[]) => {
             let visibleRoutePathsIndex = 0;
-            if (this.props.routeStore!.routes.length < 1) return null;
-            return this.props.routeStore!.routes.map((route: IRoute) => {
+            if (routes.length < 1) return null;
+            return routes.map((route: IRoute) => {
                 const routeShow = (
                     <RouteShow
                         key={route.routeId}
                         route={route}
                         visibleRoutePathsIndex={visibleRoutePathsIndex}
-                        history={this.props.history}
-                        location={this.props.location}
                     />
                 );
                 visibleRoutePathsIndex += route.routePaths.filter(
