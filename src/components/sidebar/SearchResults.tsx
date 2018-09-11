@@ -1,5 +1,5 @@
 import { inject, observer } from 'mobx-react';
-import { reaction } from 'mobx';
+import { IReactionDisposer, reaction } from 'mobx';
 import * as React from 'react';
 import { LineStore } from '../../stores/lineStore';
 import LineItem from './LineItem';
@@ -26,6 +26,7 @@ interface ISearchResultsState {
 @observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
     private paginatedDiv: React.RefObject<HTMLDivElement>;
+    private reactionDisposer: IReactionDisposer;
 
     constructor(props: ISearchResultsProps) {
         super(props);
@@ -42,14 +43,14 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     async componentDidMount() {
         this.showMore();
         await this.queryAllLines();
-        reaction(() =>
-            this.props.searchStore!.searchInput,
-                 this.resetShow,
+        this.reactionDisposer = reaction(() =>
+        [this.props.searchStore!.searchInput, this.props.searchStore!.filters],
+                                         this.resetShow,
             );
-        reaction(() =>
-            this.props.searchStore!.filters,
-                 this.resetShow,
-        );
+    }
+
+    componentWillUnmount() {
+        this.reactionDisposer();
     }
 
     async queryAllLines() {
