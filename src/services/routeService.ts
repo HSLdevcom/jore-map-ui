@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
-import apolloClient from '../util/ApolloClient';
 import { ApolloQueryResult } from 'apollo-client';
+import apolloClient from '../util/ApolloClient';
 import RouteFactory from '../factories/routeFactory';
 import LineService from './lineService';
 import NotificationType from '../enums/notificationType';
@@ -33,13 +33,13 @@ export default class RouteService {
         }
     }
 
-    public static async getRouteData(routeId: string) {
+    public static async getRouteData(routeId: string): Promise<IRouteResult> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: getRoute, variables: { routeId } },
                 );
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
-            return <IRouteResult>{
+            return {
                 route: RouteFactory.createRoute(queryResult.data.route, line),
                 nodes: [],
             };
@@ -51,12 +51,12 @@ export default class RouteService {
         }
     }
 
-    public static async getRoutesData(routeIds: string[]) {
+    public static async getRoutesData(routeIds: string[]): Promise<IRouteServiceResult> {
         return new Promise<IRouteServiceResult>((resolve, reject) => {
             Promise
                 .all(routeIds.map(id => RouteService.getRouteData(id)))
                 .then((routeResults: IRouteResult[]) => {
-                    resolve(<IRouteServiceResult>{
+                    resolve({
                         routes: routeResults.map(res => res.route),
                         nodes: [],
                     });

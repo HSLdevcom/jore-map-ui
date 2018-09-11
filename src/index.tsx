@@ -3,6 +3,9 @@ import { Provider } from 'mobx-react';
 import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import * as ReactDOM from 'react-dom';
+import createBrowserHistory from 'history/createBrowserHistory';
+import { syncHistoryWithStore } from 'mobx-react-router';
+import { Router } from 'react-router';
 import App from './components/App';
 import observableNotificationStore from './stores/notificationStore';
 import observableLoginStore from './stores/loginStore';
@@ -15,10 +18,12 @@ import observablePopupStore from './stores/popupStore';
 import observableToolbarStore from './stores/toolbarStore';
 import observableNodeStore from './stores/nodeStore';
 import apolloClient from './util/ApolloClient';
+import navigator from './routing/navigator';
 import './index.scss';
-import { BrowserRouter, Route } from 'react-router-dom';
 
 configure({ enforceActions: 'always' });
+
+const browserHistory = createBrowserHistory();
 
 const stores = {
     mapStore: observableMapStore,
@@ -33,13 +38,15 @@ const stores = {
     nodeStore: observableNodeStore,
 };
 
+const history = syncHistoryWithStore(browserHistory, navigator.getStore());
+
 ReactDOM.render(
-        <Provider {...stores}>
-            <ApolloProvider client={apolloClient}>
-                <BrowserRouter>
-                    <Route component={App}/>
-                </BrowserRouter>
-            </ApolloProvider>
-        </Provider>,
-        document.getElementById('root') as HTMLElement,
+    <Provider {...stores}>
+        <ApolloProvider client={apolloClient}>
+            <Router history={history}>
+                <App />
+            </Router>
+        </ApolloProvider>
+    </Provider>,
+    document.getElementById('root') as HTMLElement,
 );

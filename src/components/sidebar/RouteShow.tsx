@@ -1,51 +1,61 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
+import classNames from 'classnames';
 import { RouteStore } from '../../stores/routeStore';
 import { IRoutePath, IRoute } from '../../models';
 import ToggleButton from '../controls/ToggleButton';
-import classNames from 'classnames';
 import LineHelper from '../../util/lineHelper';
 import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
 import ColorScale from '../../util/colorScale';
+import routeBuilder from '../../routing/routeBuilder';
+import navigator from '../../routing/navigator';
+import QueryParams from '../../routing/queryParams';
+import SubSites from '../../routing/subSites';
 import * as s from './routeShow.scss';
-import { History, Location } from 'history';
-import LinkBuilder from '../../factories/linkBuilder';
 
 interface IRouteShowProps {
     routeStore?: RouteStore;
     route: IRoute;
     visibleRoutePathsIndex: number;
-    history: History;
-    location: Location<any>;
 }
 
 @inject('routeStore')
 @observer
 class RouteShow extends React.Component<IRouteShowProps> {
+    constructor(props: IRouteShowProps) {
+        super(props);
+        this.closeRoute = this.closeRoute.bind(this);
+    }
 
-    private onClose = () => {
+    private closeRoute() {
         this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
-        this.props.history.push(LinkBuilder
-            .createLinkWithoutRoute(this.props.location, this.props.route.routeId));
+        const closeRouteLink = routeBuilder
+            .to(SubSites.current)
+            .remove(QueryParams.routes, this.props.route.routeId)
+            .toLink();
+        navigator.goTo(closeRouteLink);
     }
 
     private renderRouteName() {
         return (
         <div className={s.routeName}>
-            {LineHelper.getTransitIcon(this.props.route.line.transitType, false)}
+            {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
             <div
                 className={classNames(
                     s.label,
-                    TransitTypeColorHelper.getColorClass(this.props.route.line.transitType),
+                    TransitTypeColorHelper.getColorClass(this.props.route.line!.transitType),
                 )}
             >
-                {this.props.route.line.lineNumber}
+                {this.props.route.line!.lineNumber}
             </div>
             {this.props.route.routeName}
-            <div onClick={this.onClose} className={s.closeView}>
+            <div
+                onClick={this.closeRoute}
+                className={s.closeView}
+            >
                 <FaTimes className={s.close}/>
-            </div >
+            </div>
         </div>
         );
     }
@@ -55,7 +65,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
         return this.props.route.routePaths
         .slice().sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
-        .map((routePath: IRoutePath, index: number) => {
+        .map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
             };
@@ -75,7 +85,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     <ToggleButton
                         onClick={toggleRoutePathVisibility}
                         value={routePath.visible}
-                        type={this.props.route.line.transitType}
+                        type={this.props.route.line!.transitType}
                         color={routePath.visible ? routeColor : '#898989'}
                     />
                 </div>

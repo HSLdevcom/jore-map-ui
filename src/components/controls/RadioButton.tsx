@@ -2,9 +2,9 @@ import * as React from 'react';
 import * as s from './radioButton.scss';
 
 interface IRadioButtonProps {
-    onClick(event: any): void;
     checked: boolean;
     text: string;
+    onClick(event: any): void;
 }
 
 class RadioButton extends React.Component<IRadioButtonProps, {}> {

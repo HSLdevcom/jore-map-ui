@@ -6,5 +6,5 @@ export default interface IRoute {
     lineId: string;
     routeId: string;
     routePaths: IRoutePath[];
-    line: ILine;
+    line?: ILine;
 }

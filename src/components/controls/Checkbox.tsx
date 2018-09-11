@@ -2,9 +2,9 @@ import * as React from 'react';
 import * as s from './checkbox.scss';
 
 interface ICheckboxProps {
-    onClick(event: any): void;
     checked: boolean;
     text: string;
+    onClick(event: any): void;
 }
 
 class Checkbox extends React.Component<ICheckboxProps, {}> {
