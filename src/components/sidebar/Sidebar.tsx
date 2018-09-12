@@ -41,7 +41,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             navigator.goTo(homeLink);
         };
 
-        const getComponent = () => {
+        const getContentComponent = () => {
             if (this.props.sidebarStore!.showNodeWindow) {
                 return <NodeWindow />;
             }
@@ -70,7 +70,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                     </div>
                 </div>
                 {/* TODO: Use Route path=/node instead of this "if check" */}
-                {getComponent()}
+                {getContentComponent()}
             </div>
         );
     }
