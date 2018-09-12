@@ -119,7 +119,13 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
         const colors = ColorScale.getColors(visibleRoutePaths.length);
         return (
-            <div className={classnames(s.mapView, fullScreenMapViewClass)}>
+            <div
+                className={classnames(s.mapView, fullScreenMapViewClass)}
+                style={{
+                    width: `calc(100vw - ${this.props.sidebarStore!.getSideBarWidth}px)`,
+                    left: this.props.sidebarStore!.getSideBarWidth,
+                }}
+            >
                 <Map
                     ref={this.mapReference}
                     center={this.props.mapStore!.coordinates}

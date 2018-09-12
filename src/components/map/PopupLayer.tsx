@@ -32,6 +32,11 @@ export default class PopupLayer extends Component<PopupLayerProps> {
                 this.onClose();
             };
 
+            const openLink = () => {
+                this.props.sidebarStore!.openLinkView(123);
+                this.onClose();
+            };
+
             return (
                 <Popup
                     position={[node.coordinates.lat, node.coordinates.lon]}
@@ -43,7 +48,7 @@ export default class PopupLayer extends Component<PopupLayerProps> {
                         <div onClick={openNode}>Avaa kohde</div>
                         <div>Tulosta</div>
                         <div>Poista linkki</div>
-                        <div>Lisää linkki</div>
+                        <div onClick={openLink}>Lisää linkki</div>
                         <div>Kopioi toiseen suuntaan</div>
                     </div>
                 </Popup>

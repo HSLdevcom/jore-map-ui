@@ -12,9 +12,8 @@
     margin: 0;
     background-color: $backgroundlightGrey;
     z-index: 9;
-    min-width: 400px;
-    max-width: 400px;
-
+    transition: .5s;
+    
     .header {
         display: block;
         height: auto;

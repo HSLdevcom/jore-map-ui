@@ -1,10 +1,8 @@
 @import '../../common.scss';
 .mapView {
     position: absolute;
-    &:not(.fullscreen) {
-        left: 400px;
-        width: calc(100vw - 400px);
-    }
+    transition: .5s;
+
     &.fullscreen {
         position: fixed !important;
         left: 0;
