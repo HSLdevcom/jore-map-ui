@@ -14,11 +14,11 @@ export interface IMultipleRoutesQueryResult {
 }
 
 export default class RouteService {
-    public static async runFetchRouteQuery(routeId: string) : Promise<IRouteResult> {
+    public static async runFetchRouteQuery(routeId: string): Promise<IRouteResult> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getRouteQuery, variables: { routeId } },
-                );
+                {query: getRouteQuery, variables: {routeId}},
+            );
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
             return RouteFactory.createRoute(queryResult.data.route, line);
         } catch (err) {
@@ -40,23 +40,18 @@ export default class RouteService {
 
     public static async fetchMultipleRoutes(routeIds: string[]):
         Promise<IMultipleRoutesQueryResult> {
-        return new Promise<IMultipleRoutesQueryResult>((resolve, reject) => {
-            Promise
-                .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)))
-                .then((queryResults) => {
-                    const nonNullRoutes = queryResults.filter(res => res.route);
-
-                    resolve({
-                        routes: nonNullRoutes
-                            .map((res: IRouteResult) => res.route!),
-                        nodes: QueryParsingHelper.removeINodeDuplicates(
-                            nonNullRoutes
-                                .reduce<INode[]>(
-                                    (flatList, node) => flatList.concat(node.nodes),
-                                    [],
-                                )),
-                    });
-                });
+        const queryResults = await Promise
+            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)))
+        const nonNullRoutes = queryResults.filter(res => res.route);
+        return({
+            routes: nonNullRoutes
+                .map((res: IRouteResult) => res.route!),
+            nodes: QueryParsingHelper.removeINodeDuplicates(
+                nonNullRoutes
+                    .reduce<INode[]>(
+                        (flatList, node) => flatList.concat(node.nodes),
+                        [],
+                    )),
         });
     }
 }
