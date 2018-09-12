@@ -2,11 +2,13 @@
 .searchResultsView {
     display: flex;
     flex-direction: column;
+    height: 100%;
 
     .searchResultsWrapper {
         overflow-y: auto;
         padding-left: 10px;
         padding-right: 10px;
+        height: 100%;
     }
 
     .searchResultButton{
@@ -16,5 +18,9 @@
         text-align: center;
         font-size: $mediumFontSize;
         cursor: pointer;
+    }
+    .noResults {
+        text-align: center;
+        margin-top: 20px;
     }
 }

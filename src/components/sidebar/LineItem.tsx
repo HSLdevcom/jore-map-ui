@@ -45,7 +45,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         });
     }
 
-    private toggleRouteMenu(routeId: string, e: any) {
+    private toggleRouteMenu = (routeId: string) => (e: any) => {
         e.stopPropagation();
         if (this.isRouteOpen(routeId)) {
             this.closeRouteMenu(routeId);
@@ -54,7 +54,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         }
     }
 
-    private openRoute(routeId: string) {
+    private openRoute = (routeId: string) => () => {
         const openRouteLink = routeBuilder
             .to(subSites.routes)
             .append(QueryParams.routes, routeId)
@@ -65,7 +65,6 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     }
 
     public renderRoute(route: ILineRoute): any {
-
         return (
             <div
                 key={route.id}
@@ -74,7 +73,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 <div className={s.routeItemHeader}>
                     <div
                         className={s.routePathToggle}
-                        onClick={this.toggleRouteMenu.bind(this, route.id)}
+                        onClick={this.toggleRouteMenu(route.id)}
                     >
                         {this.isRouteOpen(route.id) ?
                             <FaAngleDown /> :
@@ -87,7 +86,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                                 TransitTypeColorHelper.getColorClass(
                                     this.props.line.transitType),
                             )}
-                            onClick={this.openRoute.bind(this, route.id)}
+                            onClick={this.openRoute(route.id)}
                         >
                             {route.name}
                         </div>
@@ -128,11 +127,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         {this.props.line.lineNumber}
                     </div>
                 </div>
-                {this.props.line.routes.map((route) => {
-                    return (
-                        this.renderRoute(route)
-                    );
-                })}
+                {this.props.line.routes.map(route =>
+                    this.renderRoute(route),
+                )}
             </div>
         );
     }

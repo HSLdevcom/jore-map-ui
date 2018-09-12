@@ -154,6 +154,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 </div>
             );
         }
+        const filteredLines = this.filteredLines();
         return (
             <div className={s.searchResultsView}>
                 <div
@@ -162,15 +163,20 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                     ref={this.paginatedDiv}
                 >
                 {
-                    this.filteredLines()
-                        .map((line: ILine) => {
-                            return (
-                                <LineItem
-                                    key={line.lineId}
-                                    line={line}
-                                />
-                            );
-                        })
+                    filteredLines.length === 0 ?
+                        <div className={s.noResults}>
+                            Ei hakutuloksia.
+                        </div>
+                        :
+                        filteredLines
+                            .map((line: ILine) => {
+                                return (
+                                    <LineItem
+                                        key={line.lineId}
+                                        line={line}
+                                    />
+                                );
+                            })
                 }
                 </div>
                 {this.renderSearchResultButton()}

@@ -1,9 +1,10 @@
 enum ToolbarTools {
-  Edit,
-  Copy,
   AddNode,
-  Print,
+  Copy,
+  DivideLink,
+  Edit,
   None,
+  Print,
 }
 
 export default ToolbarTools;
