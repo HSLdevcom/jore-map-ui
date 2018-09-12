@@ -7,21 +7,21 @@ export interface IRoutePathLinkResult {
 }
 
 class RoutePathLinkFactory {
-    public static createRoutePathLink = (node: any): IRoutePathLinkResult => {
+    public static createRoutePathLink = (routePathLinkNode: any): IRoutePathLinkResult => {
         const nodes = [];
-        if (node.solmuByLnkalkusolmu) {
-            nodes.push(NodeFactory.createNode(node.solmuByLnkalkusolmu));
+        if (routePathLinkNode.solmuByLnkalkusolmu) {
+            nodes.push(NodeFactory.createNode(routePathLinkNode.solmuByLnkalkusolmu));
         }
-        if (node.solmuByLnkloppusolmu) {
-            nodes.push(NodeFactory.createNode(node.solmuByLnkloppusolmu));
+        if (routePathLinkNode.solmuByLnkloppusolmu) {
+            nodes.push(NodeFactory.createNode(routePathLinkNode.solmuByLnkloppusolmu));
         }
 
         return {
             nodes,
             link: {
-                startNode: node.lnkalkusolmu,
-                endNode: node.lnkloppusolmu,
-                orderNumber: node.reljarjnro,
+                startNode: routePathLinkNode.lnkalkusolmu,
+                endNode: routePathLinkNode.lnkloppusolmu,
+                orderNumber: routePathLinkNode.reljarjnro,
             },
         };
     }

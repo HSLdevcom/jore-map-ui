@@ -25,10 +25,10 @@ class RoutePathFactory {
             ].join('-'),
         ).toString();
 
-        const routePathLinks:IRoutePathLinkResult[]
+        const routePathLinkResult:IRoutePathLinkResult[]
         = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
-            .map((node: any) =>
-                RoutePathLinkFactory.createRoutePathLink(node.node));
+            .map((routePathLinkNode: any) =>
+                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode.node));
 
         const coordinates = JSON.parse(suunta.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
@@ -36,7 +36,7 @@ class RoutePathFactory {
         const routePath : IRoutePath = {
             routeId,
             positions,
-            routePathLinks: routePathLinks.map(res => res.link),
+            routePathLinks: routePathLinkResult.map(res => res.link),
             internalId: internalRoutePathId,
             geoJson: JSON.parse(suunta.geojson),
             routePathName: suunta.suunimi,
@@ -50,7 +50,8 @@ class RoutePathFactory {
         return {
             routePath,
             nodes: QueryParsingHelper.removeINodeDuplicates(
-                routePathLinks.reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
+                routePathLinkResult
+                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
             ),
         };
     }

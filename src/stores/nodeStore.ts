@@ -17,10 +17,6 @@ export class NodeStore {
         this._nodes = value;
     }
 
-    public getNodes(nodeIds: number[]) {
-        return this._nodes.filter(node => nodeIds.indexOf(node.id) > -1);
-    }
-
     public getNodesUsedInRoutePaths(routePaths: IRoutePath[]) {
         const requiredRoutePathIds = NodeHelper.getNodeIdsUsedByRoutePaths(routePaths);
         return this._nodes.filter(node =>
@@ -35,11 +31,7 @@ export class NodeStore {
 
     @action
     public removeFromNodes(nodeIds: number[]) {
-        this._nodes.forEach((node, index) => {
-            if (nodeIds.indexOf(node.id) > -1) {
-                this._nodes.splice(index, 1);
-            }
-        });
+        this._nodes = this._nodes.filter(node => !nodeIds.includes(node.id));
     }
 }
 

@@ -17,7 +17,7 @@ export default class RouteService {
     public static async runFetchRouteQuery(routeId: string): Promise<IRouteResult> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                {query: getRouteQuery, variables: {routeId}},
+                { query: getRouteQuery, variables: { routeId } },
             );
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
             return RouteFactory.createRoute(queryResult.data.route, line);
@@ -41,7 +41,7 @@ export default class RouteService {
     public static async fetchMultipleRoutes(routeIds: string[]):
         Promise<IMultipleRoutesQueryResult> {
         const queryResults = await Promise
-            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)))
+            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
         const nonNullRoutes = queryResults.filter(res => res.route);
         return({
             routes: nonNullRoutes

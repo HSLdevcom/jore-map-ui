@@ -1,41 +1,41 @@
-import RouteStore from '../stores/routeStore';
-import NodeStore from '../stores/nodeStore';
+import routeStore from '../stores/routeStore';
+import nodeStore from '../stores/nodeStore';
 import NodeHelper from '../util/nodeHelper';
 import RouteService from '../services/routeService';
 
 export default class RouteAndStopHelper {
     private static getRouteIdsMissingFromStore(routeIds: string[]) {
-        const currentRouteIds = RouteStore.routes
+        const currentRouteIds = routeStore.routes
             .map(route => route.routeId);
         return routeIds
             .filter(routeId => currentRouteIds.indexOf(routeId) < 0);
     }
 
     private static removeUnusedNodes() {
-        const requiredStopIds = NodeHelper.getNodeIdsUsedByRoutes(RouteStore.routes);
+        const requiredStopIds = NodeHelper.getNodeIdsUsedByRoutes(routeStore.routes);
 
-        const nodeIdsToRemove = NodeStore.nodes
+        const nodeIdsToRemove = nodeStore.nodes
             .map(node => node.id)
             .filter(nodeId => !requiredStopIds.some(rStop => rStop === nodeId));
 
-        NodeStore.removeFromNodes(nodeIdsToRemove);
+        nodeStore.removeFromNodes(nodeIdsToRemove);
     }
 
     public static async addRequiredDataForRoutes(routeIds: string[]) {
         const missingRouteIds = RouteAndStopHelper.getRouteIdsMissingFromStore(routeIds);
         const routeServiceResults = await RouteService.fetchMultipleRoutes(missingRouteIds);
-        RouteStore.addToRoutes(routeServiceResults.routes);
+        routeStore.addToRoutes(routeServiceResults.routes);
 
-        const currentNodeIds = NodeStore.nodes.map(node => node.id);
+        const currentNodeIds = nodeStore.nodes.map(node => node.id);
 
         const missingNodes = routeServiceResults.nodes
             .filter(nodeId => !currentNodeIds.some(cNodeId => cNodeId === nodeId.id));
 
-        NodeStore.addToNodes(missingNodes);
+        nodeStore.addToNodes(missingNodes);
     }
 
     public static removeRoute(routeId: string) {
-        RouteStore.removeFromRoutes(routeId);
+        routeStore.removeFromRoutes(routeId);
         RouteAndStopHelper.removeUnusedNodes();
     }
 }

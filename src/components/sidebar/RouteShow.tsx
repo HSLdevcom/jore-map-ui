@@ -30,6 +30,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 
     private closeRoute() {
+        // TODO: Move actual logic somwhere else, so this function only navigates to new url
         RouteAndStopHelper.removeRoute(this.props.route.routeId);
         const closeRouteLink = routeBuilder
             .to(SubSites.current)
