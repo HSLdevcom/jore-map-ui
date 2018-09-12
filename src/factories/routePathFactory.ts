@@ -1,6 +1,12 @@
-import { INode, IRoutePath } from '../models';
-import NodeFactory from './nodeFactory';
+import { IRoutePath, INode } from '../models';
 import HashHelper from '../util/hashHelper';
+import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
+import QueryParsingHelper from './queryParsingHelper';
+
+export interface IRoutePathResult {
+    routePath: IRoutePath;
+    nodes: INode[];
+}
 
 class RoutePathFactory {
     // suunta to IRoutePath
@@ -8,7 +14,7 @@ class RoutePathFactory {
         routeId: string,
         suunta: any,
         isVisible:boolean,
-    ): IRoutePath => {
+    ): IRoutePathResult => {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
                 routeId,
@@ -19,25 +25,34 @@ class RoutePathFactory {
             ].join('-'),
         ).toString();
 
-        const nodes:INode[]
+        const routePathLinkResult:IRoutePathLinkResult[]
         = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
-            .map((node: any) => NodeFactory.createNode(internalRoutePathId, node.node));
+            .map((routePathLinkNode: any) =>
+                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode.node));
 
         const coordinates = JSON.parse(suunta.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
 
-        return {
+        const routePath : IRoutePath = {
             routeId,
-            nodes,
             positions,
-            geoJson: JSON.parse(suunta.geojson),
+            routePathLinks: routePathLinkResult.map(res => res.link),
             internalId: internalRoutePathId,
+            geoJson: JSON.parse(suunta.geojson),
             routePathName: suunta.suunimi,
             direction: suunta.suusuunta,
             startTime: new Date(suunta.suuvoimast),
             endTime: new Date(suunta.suuviimpvm),
             lastModified: new Date(suunta.suuvoimviimpvm),
             visible: isVisible,
+        };
+
+        return {
+            routePath,
+            nodes: QueryParsingHelper.removeINodeDuplicates(
+                routePathLinkResult
+                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
+            ),
         };
     }
 }

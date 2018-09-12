@@ -1,33 +1,62 @@
 import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '../util/ApolloClient';
-import RouteFactory from '../factories/routeFactory';
+import RouteFactory, { IRouteResult } from '../factories/routeFactory';
 import LineService from './lineService';
 import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
+import { IRoute, INode } from '../models';
+import QueryParsingHelper from '../factories/queryParsingHelper';
+
+export interface IMultipleRoutesQueryResult {
+    routes: IRoute[];
+    nodes: INode[];
+}
 
 export default class RouteService {
-    public static async getRoute(routeId: string) {
+    public static async runFetchRouteQuery(routeId: string): Promise<IRouteResult> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getRoute, variables: { routeId } },
-                );
+                { query: getRouteQuery, variables: { routeId } },
+            );
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
             return RouteFactory.createRoute(queryResult.data.route, line);
         } catch (err) {
-            NotificationStore.addNotification(
-            { message: 'Reitin haku ei onnistunut.', type: NotificationType.ERROR },
-            );
-            return err;
+            // tslint:disable-next-line
+            console.error(err);
+            NotificationStore.addNotification({
+                message: 'Reitin haku ei onnistunut.',
+                type: NotificationType.ERROR,
+            });
+            return {
+                nodes: [],
+            };
         }
     }
 
-    public static async getRoutes(routeIds: string[]) {
-        return Promise.all(routeIds.map(x => RouteService.getRoute(x)));
+    public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
+        return (await RouteService.runFetchRouteQuery(routeId)).route;
+    }
+
+    public static async fetchMultipleRoutes(routeIds: string[]):
+        Promise<IMultipleRoutesQueryResult> {
+        const queryResults = await Promise
+            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
+        const nonNullRoutes = queryResults.filter(res => res.route);
+        return({
+            routes: nonNullRoutes
+                .map((res: IRouteResult) => res.route!),
+            nodes: QueryParsingHelper.removeINodeDuplicates(
+                nonNullRoutes
+                    .reduce<INode[]>(
+                        (flatList, node) => flatList.concat(node.nodes),
+                        [],
+                    )),
+        });
     }
 }
 
-const getRoute = gql`
+const getRouteQuery = gql`
 query getLineDetails($routeId: String!) {
     route: reittiByReitunnus(reitunnus: $routeId) {
         reitunnus
@@ -47,20 +76,31 @@ query getLineDetails($routeId: String!) {
                     suuviimpvm
                     suuvoimviimpvm
                     geojson
-                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-                    edges {
-                    node {
-                        relid
-                        solmuByLnkalkusolmu {
-                            geojson
-                        pysakkiBySoltunnus {
-                            pysnimi
-                        }
-                        soltyyppi
+                    reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
+                        edges {
+                            node {
+                                relid
+                                lnkalkusolmu
+                                lnkloppusolmu
+                                reljarjnro
+                                lnkverkko
+                                solmuByLnkalkusolmu {
+                                    solx,
+                                    soly,
+                                    soltunnus,
+                                    soltyyppi,
+                                    geojson
+                                }
+                                solmuByLnkloppusolmu {
+                                    solx,
+                                    soly,
+                                    soltunnus,
+                                    soltyyppi,
+                                    geojson
+                                }
+                            }
                         }
                     }
-                    }
-                }
                 }
             }
         }
