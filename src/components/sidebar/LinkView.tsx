@@ -3,10 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '../../stores/sidebarStore';
 import * as s from './linkView.scss';
 
-interface IViewViewState {
-    view: string|null;
-}
-
 interface IViewViewProps {
     sidebarStore?: SidebarStore;
 }
@@ -14,12 +10,9 @@ interface IViewViewProps {
 @inject('sidebarStore')
 @observer
 class LinkView extends React.Component
-<IViewViewProps, IViewViewState> {
+<IViewViewProps> {
     constructor(props: any) {
         super(props);
-        this.state = {
-            view: null,
-        };
     }
 
     private closeLinkView = () => {
