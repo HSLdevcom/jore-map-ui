@@ -1,6 +1,6 @@
 import { computed, observable, action } from 'mobx';
 import { INode, IRoutePath } from '../models';
-import RoutesViewHelper from '../util/routesViewHelper';
+import NodeHelper from '../util/nodeHelper';
 
 export class NodeStore {
     @observable private _nodes: INode[];
@@ -22,7 +22,7 @@ export class NodeStore {
     }
 
     public getNodesUsedInRoutePaths(routePaths: IRoutePath[]) {
-        const requiredRoutePathIds = RoutesViewHelper.getNodeIdsUsedByRoutePaths(routePaths);
+        const requiredRoutePathIds = NodeHelper.getNodeIdsUsedByRoutePaths(routePaths);
         return this._nodes.filter(node =>
             requiredRoutePathIds.some(rPathId => node.id === rPathId),
         );
