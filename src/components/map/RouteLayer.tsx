@@ -8,9 +8,24 @@ interface RouteLayerProps {
     routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
     colors: string[];
+    bringRouteLayerToFront: Function;
 }
 
-export default class RouteLayer extends Component<RouteLayerProps> {
+interface IRouteLayerState {
+    selectedPolylines: string[];
+    hoveredPolylines: string[];
+}
+
+export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
+
+    constructor(props: RouteLayerProps) {
+        super(props);
+        this.state = {
+            selectedPolylines: [],
+            hoveredPolylines: [],
+        };
+    }
+
     calculateBounds() {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
@@ -34,17 +49,63 @@ export default class RouteLayer extends Component<RouteLayerProps> {
             !== this.props.routePaths.map(rPath => rPath.internalId).join(':');
         if (routePathsChanged) {
             this.calculateBounds();
+            this.setState({
+                selectedPolylines: [],
+            });
         }
+    }
+
+    private toggleHighlight(internalId: string) {
+        const selectedPolylines = this.state.selectedPolylines;
+        const isSelected = selectedPolylines.indexOf(internalId) > -1;
+
+        (isSelected) ?
+            selectedPolylines.splice(selectedPolylines.indexOf(internalId), 1) :
+            selectedPolylines.push(internalId);
+
+        this.setState({
+            selectedPolylines,
+        });
+        this.props.bringRouteLayerToFront(internalId);
+    }
+
+    private hasHighlight(internalId: string) {
+        if (this.state.selectedPolylines.includes(internalId) ||
+            this.state.hoveredPolylines.includes(internalId)) {
+            return true;
+        }
+        return false;
+    }
+
+    private setHoverHighlight(internalId: string) {
+        this.setState({
+            hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
+        });
+        this.props.bringRouteLayerToFront(internalId);
+    }
+
+    private clearHoverHightlights = () => {
+        this.setState({
+            hoveredPolylines: [],
+        });
     }
 
     render() {
         return this.props.routePaths
             .map((routePath, index) => {
+                const color = this.props.colors[index];
+                const internalId = routePath.internalId;
                 return (
                     <Polyline
                         key={index}
                         positions={routePath.positions}
-                        color={this.props.colors[index]}
+                        color={color}
+                        weight={this.hasHighlight(internalId) ? 5 : 4}
+                        opacity={this.hasHighlight(internalId) ? 1 : 0.6}
+                        onClick={this.toggleHighlight.bind(this, internalId)}
+                        onMouseOver={this.setHoverHighlight.bind(this, internalId)}
+                        onMouseOut={this.clearHoverHightlights}
+                        internalId={internalId}
                     />
                 );
             });
