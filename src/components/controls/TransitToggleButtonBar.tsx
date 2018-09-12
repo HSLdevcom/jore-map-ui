@@ -1,21 +1,17 @@
-import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { LineStore } from '../../stores/lineStore';
 import TransitToggleButton from './TransitToggleButton';
 import TransitType from '../../enums/transitType';
 import * as s from './transitToggleButtonBar.scss';
 
 interface ITransitToggleButtonBarState {
-    toggles: any;
+    toggles: {[key: string]: boolean};
 }
 
 interface ITtransitToggleButtonBarProps {
-    lineStore?: LineStore;
     filters: string[];
+    setFiltersFunction: (filters: string[]) => void;
 }
 
-@inject('lineStore')
-@observer
 class TransitToggleButtonBar extends React.Component
 <ITtransitToggleButtonBarProps, ITransitToggleButtonBarState> {
     constructor(props: any) {
@@ -46,7 +42,7 @@ class TransitToggleButtonBar extends React.Component
 
     public toggleActivity = (type: TransitType) => {
         const value: boolean = !this.state.toggles[type];
-        const toggleState: object = this.state.toggles;
+        const toggleState: {[key: string]: boolean} = this.state.toggles;
         toggleState[type] = value;
         this.setState({
             toggles: toggleState,
@@ -55,11 +51,13 @@ class TransitToggleButtonBar extends React.Component
         // Set filters for RouteSearch.tsx
         const filters: string[] = [];
         for (const key in this.state.toggles) {
-            if (!this.state.toggles[key]) {
-                filters.push(key);
+            if (this.state.toggles.hasOwnProperty(key)) {
+                if (!this.state.toggles[key]) {
+                    filters.push(key);
+                }
             }
         }
-        this.props.lineStore!.filters = filters;
+        this.props.setFiltersFunction(filters);
     }
 
     public render(): any {

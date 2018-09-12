@@ -1,28 +1,28 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import LineSearch from './LineSearch';
-import { RouteStore } from '../../stores/routeStore';
-import { LineStore } from '../../stores/lineStore';
-import { SidebarStore } from '../../stores/sidebarStore';
 import TransitToggleButtonBar from '../controls/TransitToggleButtonBar';
 import SearchResults from './SearchResults';
+import { SearchStore } from '../../stores/searchStore';
 import * as s from './homeView.scss';
 
-interface ISidebarProps {
-    routeStore?: RouteStore;
-    lineStore?: LineStore;
-    sidebarStore?: SidebarStore;
+interface ISidebarProps{
+    searchStore?: SearchStore;
 }
 
-@inject('routeStore', 'lineStore', 'sidebarStore')
+@inject('searchStore')
 @observer
 class HomeView extends React.Component<ISidebarProps> {
+    private setFiltersFunction = (filters: string[]): void => {
+        this.props.searchStore!.filters = filters;
+    }
     public render() {
         return (
             <div className={s.homeView}>
                 <LineSearch/>
                 <TransitToggleButtonBar
-                    filters={this.props.lineStore!.filters || []}
+                    setFiltersFunction={this.setFiltersFunction}
+                    filters={this.props.searchStore!.filters}
                 />
                 <SearchResults />
             </div>

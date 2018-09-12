@@ -1,0 +1,11 @@
+@import '../../../common.scss';
+
+.toolbarToolButtonsView {
+    display: flex;
+    flex-direction: column;
+    color: $busBlue;
+
+    .toolbarButtonRow {
+        display: flex;
+    }
+}

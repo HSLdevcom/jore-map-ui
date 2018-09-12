@@ -5,7 +5,6 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
 import { MapStore } from '../../stores/mapStore';
-import { SidebarStore } from '../../stores/sidebarStore';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
@@ -16,9 +15,8 @@ import ColorScale from '../../util/colorScale';
 import MarkerLayer from './MarkerLayer';
 import { IRoutePath, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
-import Toolbar from './Toolbar';
+import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './PopupLayer';
-import { ToolbarStore } from '../../stores/toolbarStore';
 import { NodeStore } from '../../stores/nodeStore';
 import * as s from './map.scss';
 
@@ -29,8 +27,6 @@ interface IMapState {
 interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
-    sidebarStore?: SidebarStore;
-    toolbarStore?: ToolbarStore;
     nodeStore?: NodeStore;
 }
 
@@ -43,7 +39,7 @@ interface IMapPropReference {
     id: string;
 }
 
-@inject('sidebarStore', 'mapStore', 'routeStore', 'toolbarStore', 'nodeStore')
+@inject('mapStore', 'routeStore', 'nodeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -151,7 +147,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         setView={this.setView}
                     />
                     <Control position='topleft'>
-                        <Toolbar toolbarStore={this.props.toolbarStore}/>
+                        <Toolbar />
                     </Control>
                     <Control position='topright'>
                         <FullscreenControl />
