@@ -3,9 +3,10 @@ import apolloClient from '../util/ApolloClient';
 import LineFactory from '../factories/lineFactory';
 import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
+import { ILine } from '../models';
 
 export default class LineService {
-    public static async getAllLines() {
+    public static async getAllLines(): Promise<ILine[] | null> {
         try {
             const { data }:any = await apolloClient.query({ query: getLinjas });
             return LineFactory.linjasToILines(data.allLinjas.nodes);
@@ -13,11 +14,11 @@ export default class LineService {
             NotificationStore.addNotification(
                 { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
             );
-            return err;
+            return null;
         }
     }
 
-    public static async getLine(lintunnus: string) {
+    public static async getLine(lintunnus: string): Promise<ILine | null> {
         try {
             const { data }:any = await apolloClient
                 .query({ query: getLinja, variables: { lineId: lintunnus } });
