@@ -1,6 +1,5 @@
 @import '../../common.scss';
 .mapView {
-    //position: absolute;
     transition: .5s;
     width: 100%;
 
@@ -12,10 +11,8 @@
         height: 100%;
     }
     #mapLeaflet {
-        //min-height: 400px;
         position: relative;
         height: 100vh;
-        //overflow: hidden;
         z-index: 10;
         background-color: #b2b2b2;
     }
