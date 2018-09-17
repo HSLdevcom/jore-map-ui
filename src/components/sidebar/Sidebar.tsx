@@ -6,7 +6,8 @@ import hslLogo from '../../assets/hsl-logo.png';
 import { SidebarStore } from '../../stores/sidebarStore';
 import { RouteStore } from '../../stores/routeStore';
 import { SearchStore } from '../../stores/searchStore';
-import NodeWindow from './NodeView';
+import LinkView from './LinkView';
+import NodeView from './NodeView';
 import RoutesView from './RoutesView';
 import HomeView from './HomeView';
 import routeBuilder from '../../routing/routeBuilder';
@@ -49,9 +50,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 </h2>
                     </div>
                 </div>
-                {/* TODO: Use Route path=/node instead of this "if check" */}
-                { this.props.sidebarStore!.showNodeWindow ? (
-                    <NodeWindow />
+                {/* TODO: Use Route path=/node instead of these "if checks" */}
+                { this.props.sidebarStore!.openNodeId !== null ? (
+                    <NodeView />
+                ) : this.props.sidebarStore!.openLinkId !== null ? (
+                    <LinkView />
                 ) : (
                     <Switch>
                         <Route path={subSites.routes} component={RoutesView} />

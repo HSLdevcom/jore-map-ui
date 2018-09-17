@@ -37,12 +37,12 @@ class NodeView extends React.Component
     public componentDidMount() {
         if (this.props.sidebarStore) {
             // TODO: fetch GraphSQL with nodeId
-            // const nodeId = this.props.sidebarStore!.openedNodeId;
+            // const nodeId = this.props.sidebarStore!.openNodeId;
         }
     }
 
     private closeNodeView = () => {
-        this.props.sidebarStore!.closeNodeView();
+        this.props.sidebarStore!.setOpenNodeId(null);
     }
 
     private toggleStopInUse() {

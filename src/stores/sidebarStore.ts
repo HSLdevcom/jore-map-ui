@@ -1,31 +1,34 @@
 import { action, computed, observable } from 'mobx';
 
 export class SidebarStore {
-    @observable private _openedNodeId: number|null;
+    @observable private _openNodeId: number|null;
+    @observable private _openLinkId: number|null;
 
     constructor() {
-        this._openedNodeId = null;
+        this._openNodeId = null;
+        this._openLinkId = null;
     }
 
     @computed
-    get showNodeWindow(): boolean {
-        return Boolean(this._openedNodeId);
+    get openNodeId(): number|null {
+        return this._openNodeId;
     }
 
     @computed
-    get openedNodeId(): number|null {
-        return this._openedNodeId;
+    get openLinkId(): number|null {
+        return this._openLinkId;
     }
 
     @action
-    public openNodeView(id: number) {
-        this._openedNodeId = id;
+    public setOpenNodeId(id: number|null) {
+        this._openNodeId = id;
     }
 
     @action
-    public closeNodeView() {
-        this._openedNodeId = null;
+    public setOpenLinkId(id: number|null) {
+        this._openLinkId = id;
     }
+
 }
 
 const observableSidebarStore = new SidebarStore();
