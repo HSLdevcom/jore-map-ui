@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import ToolbarModeButtons from './toolbarModeButtons';
 import toolbarStore from '../../../stores/toolbarStore';
 import * as s from './toolbar.scss';
+import ToolbarSubMenu from './toolbarSubMenu';
 import EditMode from '../../../enums/editModes';
 import ToolbarLineButtons from './toolbarLineButtons';
 import ToolbarNetworkButtons from './toolbarNetworkButtons';
@@ -28,6 +29,7 @@ export default class Toolbar extends React.Component {
                         <ToolbarCommonButtons />
                     </div>
                 </div>
+                <ToolbarSubMenu />
             </div>
         );
     }
