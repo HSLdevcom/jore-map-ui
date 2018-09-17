@@ -1,0 +1,54 @@
+@import '../../common.scss';
+
+.linkView {
+    padding: 20px;
+    overflow-y: auto;
+
+    .subTopic {
+        font-weight: bold;
+        color: $mediumGrey;
+        font-size: $smallFontSize;
+    }
+
+    .inputField {
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+    }
+
+    /* TODO: move into SidebarView.scss? */
+    .header {
+        display: flex;
+        justify-content: space-between;
+
+        .topic {
+            font-size: $largeFontSize;
+            font-weight: bold;
+        }
+
+        .closeButton {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            opacity: 0.8;
+            cursor: pointer;
+        }
+        .closeButton:hover {
+            opacity: 1;
+        }
+        .closeButton:before, .closeButton:after {
+            position: absolute;
+            left: 15px;
+            content: ' ';
+            height: 33px;
+            width: 2px;
+            background-color: $fontColorDefault;
+        }
+        .closeButton:before {
+            transform: rotate(45deg);
+        }
+        .closeButton:after {
+            transform: rotate(-45deg);
+        }
+    }
+}
