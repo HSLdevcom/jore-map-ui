@@ -22,13 +22,13 @@ export class SidebarStore {
     @action
     public setOpenNodeId(id: number|null) {
         this._openNodeId = id;
-        if (this._openLinkId) this._openLinkId = null;
+        this._openLinkId = null;
     }
 
     @action
     public setOpenLinkId(id: string|null) {
         this._openLinkId = id;
-        if (this._openNodeId) this._openNodeId = null;
+        this._openNodeId = null;
     }
 
 }
