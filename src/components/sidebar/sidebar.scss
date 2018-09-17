@@ -1,22 +1,22 @@
 @import '../../common.scss';
 
 .sidebarView {
-    position: absolute;
+    //position: absolute;
     display: flex;
     flex-direction: column;
     height: 100%;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
+    //top: 0px;
+    //bottom: 0px;
+    //left: 0px;
     font-size: $mediumFontSize;
-    margin: 0;
+    //margin: 0;
     background-color: $backgroundlightGrey;
     z-index: 9;
     transition: .5s;
 
     .header {
-        display: block;
-        height: auto;
+        //display: block;
+        //height: auto;
         padding: 20px 20px 20px 20px;
         background-color: $busBlue;
         cursor: pointer;

@@ -4,7 +4,6 @@ import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
-import styleHelper from '../../util/styleHelper';
 import { MapStore } from '../../stores/mapStore';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
@@ -122,7 +121,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                 className={classnames(
                     s.mapView,
                     fullScreenMapViewClass,
-                    styleHelper.getMapClassName(),
                 )}
             >
                 <Map

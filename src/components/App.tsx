@@ -39,27 +39,27 @@ class App extends React.Component<IAppProps, IAppState> {
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         return (
-          <div className={s.appView}>
-            <Map/>
-            <Button
-                onClick={this.openLoginForm}
-                className={s.loginButton}
-                type={ButtonType.SECONDARY}
-                text='Kirjaudu'
-            />
-            <Modal
-                closeModal={this.closeLoginModal}
-                isVisible={this.props.loginStore!.showLogin}
-            >
-                <Login />
-            </Modal>
-            <div className={sidebarHiddenClass}>
-                <Sidebar location={this.props.location}/>
+            <div className={s.appView}>
+                <Modal
+                    closeModal={this.closeLoginModal}
+                    isVisible={this.props.loginStore!.showLogin}
+                >
+                    <Login />
+                </Modal>
+                <div className={sidebarHiddenClass}>
+                    <Sidebar location={this.props.location}/>
+                </div>
+                <NotificationWindow
+                  notifications={this.props.notificationStore!.notifications}
+                />
+                <Map/>
+                <Button
+                  onClick={this.openLoginForm}
+                  className={s.loginButton}
+                  type={ButtonType.SECONDARY}
+                  text='Kirjaudu'
+                />
             </div>
-            <NotificationWindow
-              notifications={this.props.notificationStore!.notifications}
-            />
-          </div>
         );
     }
 }
