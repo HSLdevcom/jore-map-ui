@@ -16,6 +16,7 @@ import observableSearchStore from './stores/searchStore';
 import observableSidebarStore from './stores/sidebarStore';
 import observablePopupStore from './stores/popupStore';
 import observableToolbarStore from './stores/toolbarStore';
+import observableNodeStore from './stores/nodeStore';
 import apolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
 import './index.scss';
@@ -34,6 +35,7 @@ const stores = {
     sidebarStore: observableSidebarStore,
     popupStore: observablePopupStore,
     toolbarStore: observableToolbarStore,
+    nodeStore: observableNodeStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());

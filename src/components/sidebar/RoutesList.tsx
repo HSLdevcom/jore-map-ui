@@ -5,11 +5,11 @@ import searchStore from '../../stores/searchStore';
 import { Checkbox, TransitToggleButtonBar } from '../controls';
 import { IRoute } from '../../models';
 import RouteShow from './RouteShow';
-import RouteService from '../../services/routeService';
 import Loader from './Loader';
 import QueryParams from '../../routing/queryParams';
 import navigator from '../../routing/navigator';
 import * as s from './routesList.scss';
+import RouteAndStopHelper from '../../storeHelpers/routeAndStopHelper';
 
 interface IRoutesListState {
     networkCheckboxToggles: any;
@@ -51,7 +51,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         const routeIds = navigator.getQueryParam(QueryParams.routes);
         if (routeIds) {
             this.setState({ isLoading: true });
-            this.props.routeStore!.routes = await RouteService.getRoutes(routeIds);
+            await RouteAndStopHelper.addRequiredDataForRoutes(routeIds);
             this.setState({ isLoading: false });
         }
     }

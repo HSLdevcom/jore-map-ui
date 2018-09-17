@@ -44,7 +44,7 @@ export default class MarkerLayer extends Component<MarkerLayerProps> {
     private getIcon = (node: INode) => {
         const borderColor = node.type === NodeType.CROSSROAD
         ? color.CROSSROAD_BORDER_COLOR : color.STOP_BORDER_COLOR;
-        const isSelected = node.id === this.props.sidebarStore!.openedNodeId;
+        const isSelected = node.id === this.props.sidebarStore!.openNodeId;
         const fillColor = isSelected ? color.SELECTED_FILL_COLOR : color.NORMAL_FILL_COLOR;
 
         const divIconOptions : L.DivIconOptions = {

@@ -16,7 +16,7 @@ class LinkView extends React.Component
     }
 
     private closeLinkView = () => {
-        this.props.sidebarStore!.closeLinkView();
+        this.props.sidebarStore!.setOpenLinkId(null);
     }
 
     public render(): any {

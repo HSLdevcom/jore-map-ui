@@ -1,0 +1,23 @@
+.flexRow {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+}
+
+.flexColumn {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+
+.flexInnerRow {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+}
+
+.flexInnerColumn {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+}

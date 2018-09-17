@@ -4,8 +4,8 @@ import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
+import styleHelper from '../../util/styleHelper';
 import { MapStore } from '../../stores/mapStore';
-import { SidebarStore } from '../../stores/sidebarStore';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
@@ -14,10 +14,11 @@ import MeasurementControl from './MeasurementControl';
 import RouteLayer from './RouteLayer';
 import ColorScale from '../../util/colorScale';
 import MarkerLayer from './MarkerLayer';
-import { IRoutePath, INode, IRoute } from '../../models';
+import { IRoutePath, IRoute } from '../../models';
 import MapLayersControl from './MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './PopupLayer';
+import { NodeStore } from '../../stores/nodeStore';
 import * as s from './map.scss';
 
 interface IMapState {
@@ -27,7 +28,7 @@ interface IMapState {
 interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
-    sidebarStore?: SidebarStore;
+    nodeStore?: NodeStore;
 }
 
 interface IMapPropReference {
@@ -39,7 +40,7 @@ interface IMapPropReference {
     id: string;
 }
 
-@inject('sidebarStore', 'mapStore', 'routeStore')
+@inject('mapStore', 'routeStore', 'nodeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -102,15 +103,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         ).filter(routePath => routePath.visible);
     }
 
-    private getVisibleNodes = (visibleRoutesPaths: IRoutePath[]) => {
-        return visibleRoutesPaths.reduce<INode[]>(
-            (flatList, routePath) => {
-                return flatList.concat(routePath.nodes);
-            },
-            [],
-        );
-    }
-
     private startCoordinates(visibleRoutePaths: IRoutePath[]) {
         return visibleRoutePaths.map((routePath: IRoutePath) => routePath.geoJson.coordinates[0]);
     }
@@ -128,15 +120,15 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
             };
         }
         return {
-            width: `calc(100vw - ${this.props.sidebarStore!.getSideBarWidth}px)`,
-            left: this.props.sidebarStore!.getSideBarWidth,
+            width: `calc(100vw - ${styleHelper.getSideBarWidth()}px)`,
+            left: styleHelper.getSideBarWidth(),
         };
     }
 
     public render() {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
-        const visibleNodes = this.getVisibleNodes(visibleRoutePaths);
+        const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
         const colors = ColorScale.getColors(visibleRoutePaths.length);
         return (
             <div
@@ -154,7 +146,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         // tslint:disable:max-line-length
                         url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
                         attribution={
-                            `
+                                `
                                 Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
                                 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
                                 Imagery © <a href="http://mapbox.com">Mapbox</a>
