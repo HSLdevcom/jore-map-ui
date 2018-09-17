@@ -8,7 +8,7 @@ class StyleHelper {
             return 400;
         }
         case '/node/': {
-            return 400;
+            return 450;
         }
         case '/link/': {
             return 500;

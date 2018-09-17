@@ -5,6 +5,9 @@ import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '../../stores/sidebarStore';
 import { IRoutePath } from '../../models';
+import routeBuilder  from '../../routing/routeBuilder';
+import subSites from '../../routing/subSites';
+import navigator from '../../routing/navigator';
 
 interface RouteLayerProps {
     sidebarStore?: SidebarStore;
@@ -75,6 +78,8 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
 
     private openLinkWindow = (internalId: string) => () => {
         this.props.sidebarStore!.setOpenLinkId(internalId);
+        const linkLink = routeBuilder.to(subSites.link).toLink();
+        navigator.goTo(linkLink);
     }
 
     private hasHighlight(internalId: string) {
