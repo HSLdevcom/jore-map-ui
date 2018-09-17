@@ -2,6 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { SidebarStore } from '../../stores/sidebarStore';
+import SidebarViewHeader from './SidebarViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
@@ -35,13 +36,10 @@ class LinkView extends React.Component
     public render(): any {
         return (
         <div className={s.linkView}>
-            <div className={s.header}>
-                <div className={s.topic}>Reitin 1016 linkki</div>
-                <div
-                    className={s.closeButton}
-                    onClick={this.closeLinkView}
-                />
-            </div>
+            <SidebarViewHeader
+                header='Reitin 1016 linkki'
+                closeSidebarView={this.closeLinkView}
+            />
             <div className={classnames(s.flexInnerColumn, s.subTopic)}>
                 REITIN SUUNNAN TIEDOT
             </div>

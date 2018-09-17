@@ -5,6 +5,7 @@ import { SidebarStore } from '../../stores/sidebarStore';
 import { Button, Dropdown, ToggleButton } from '../controls';
 import ButtonType from '../../enums/buttonType';
 import TransitType from '../../enums/transitType';
+import SidebarViewHeader from './SidebarViewHeader';
 import * as s from './nodeView.scss';
 
 interface IMapInformationSource {
@@ -65,16 +66,13 @@ class NodeView extends React.Component
     public render(): any {
         return (
         <div className={s.nodeView}>
-            <div className={s.header}>
-                <div className={s.topic}>Karttakohde</div>
-                <div
-                    className={s.closeButton}
-                    onClick={this.closeNodeView}
-                />
-            </div>
+            <SidebarViewHeader
+                header='Karttakohde'
+                closeSidebarView={this.closeNodeView}
+            />
             <div
                 className={classnames(
-                    s.rowR,
+                    s.flexRow,
                     s.stopInUseRow,
                 )}
             >
@@ -88,11 +86,11 @@ class NodeView extends React.Component
                     color={'#007ac9'}
                 />
             </div>
-            <div className={s.rowR}>
+            <div className={s.flexRow}>
                 Sijainti: (2555744, 6675294)
             </div>
-            <div className={s.innerRowR}>
-                <div className={s.innerRowC}>
+            <div className={s.flexInnerRow}>
+                <div className={s.flexInnerColumn}>
                     <div>Karttatietolähde</div>
                     <Dropdown
                         onChange={this.onMapInformationSourceChange}
@@ -101,16 +99,16 @@ class NodeView extends React.Component
                     />
                 </div>
             </div>
-            <div className={s.innerRowR}>
-                <div className={s.innerRowC}>
+            <div className={s.flexInnerRow}>
+                <div className={s.flexInnerColumn}>
                     <div className={s.informationSource}>Tiedon lähde: pisteet</div>
-                    <div className={s.innerRowC}>
+                    <div className={s.flexInnerRow}>
                         Shape:
                     </div>
                 </div>
             </div>
-            <div className={s.innerRowR}>
-                <div className={s.innerRowC}>
+            <div className={s.flexInnerRow}>
+                <div className={s.flexInnerColumn}>
                     9 tietolähdettä löytyi.
                     <div className={s.informationField}>
                         <div className={s.item}>Info = X/1420004</div>
@@ -127,7 +125,7 @@ class NodeView extends React.Component
                     </div>
                 </div>
             </div>
-            <div className={s.innerRowR}>
+            <div className={s.flexInnerRow}>
                 <Button
                     onClick={this.doNothing}
                     type={ButtonType.PRIMARY}
