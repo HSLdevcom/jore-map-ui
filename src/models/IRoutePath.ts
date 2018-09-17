@@ -1,9 +1,8 @@
-import { INode } from '.';
+import IRoutePathLink from './IRoutePathLink';
 
 export default interface IRoutePath {
     internalId: string;
     routeId: string;
-    nodes: INode[];
     routePathName: string;
     direction: string;
     positions: [[number, number]];
@@ -12,4 +11,5 @@ export default interface IRoutePath {
     startTime: Date;
     endTime: Date;
     lastModified: Date;
+    routePathLinks: IRoutePathLink[];
 }

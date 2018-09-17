@@ -19,7 +19,8 @@
     "noUnusedLocals": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop":true
+    "esModuleInterop":true,
+    "downlevelIteration": true
   },
   "exclude": [
     "node_modules",

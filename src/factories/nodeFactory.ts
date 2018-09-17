@@ -2,21 +2,19 @@ import { INode, ICoordinate } from '../models';
 import NodeType from '../enums/nodeType';
 
 class NodeFactory {
-    public static createNode = (internalRoutePathId: string, node: any): INode => {
-        const coordinateList = JSON.parse(node.solmuByLnkalkusolmu.geojson);
+    public static createNode = (node: any): INode => {
+        const coordinateList = JSON.parse(node.geojson);
         const coordinate : ICoordinate = {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
 
         return {
-            internalRoutePathId,
-            id: node.relid,
-            type: getNodeType(node.solmuByLnkalkusolmu.soltyyppi),
+            id: node.soltunnus,
+            type: getNodeType(node.soltyyppi),
             coordinates: coordinate,
         };
     }
-
 }
 
 const getNodeType = (type:any) => {

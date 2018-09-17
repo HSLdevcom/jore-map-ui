@@ -26,7 +26,7 @@ export default class PopupLayer extends Component<PopupLayerProps> {
             const node = this.props.popupStore!.popupNode as INode;
 
             const openNode = () => {
-                this.props.sidebarStore!.openNodeView(node.id);
+                this.props.sidebarStore!.setOpenNodeId(node.id);
                 const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
                 this.props.setView(latLng, 17);
                 this.onClose();
