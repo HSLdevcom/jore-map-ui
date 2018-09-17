@@ -5,6 +5,8 @@ import RouteFactory, { IRouteResult } from '../factories/routeFactory';
 import LineService from './lineService';
 import { IRoute, INode } from '../models';
 import QueryParsingHelper from '../factories/queryParsingHelper';
+import notificationStore from '../stores/notificationStore';
+import NotificationType from '../enums/notificationType';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];
@@ -13,29 +15,35 @@ export interface IMultipleRoutesQueryResult {
 
 export default class RouteService {
     public static async runFetchRouteQuery(routeId: string): Promise<IRouteResult | null> {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-            { query: getRouteQuery, variables: { routeId } },
-        );
-        const line = await LineService.getLine(queryResult.data.route.lintunnus);
-        if (line !== null) {
-            return RouteFactory.createRoute(queryResult.data.route, line);
+        try {
+            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                { query: getRouteQuery, variables: { routeId } },
+            );
+            const line = await LineService.getLine(queryResult.data.route.lintunnus);
+            if (line !== null) {
+                return RouteFactory.createRoute(queryResult.data.route, line);
+            }
+            return null;
+        } catch (err) {
+            notificationStore.addNotification({
+                message: 'Reitin haku ei onnistunut.',
+                type: NotificationType.ERROR,
+            });
+            return null;
         }
-        return null;
     }
 
     public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
         const routeResult = await RouteService.runFetchRouteQuery(routeId);
-        if (routeResult !== null) {
-            return routeResult.route;
-        }
-        return undefined;
+        return routeResult ? routeResult.route : undefined;
     }
 
     public static async fetchMultipleRoutes(routeIds: string[]):
-        Promise<IMultipleRoutesQueryResult> {
+        Promise<IMultipleRoutesQueryResult | null> {
         const queryResults = await Promise
             .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
         const nonNullRoutes = queryResults.filter(res => res && res.route);
+        if (!nonNullRoutes) return null;
         return({
             routes: nonNullRoutes
                 .map((res: IRouteResult) => res.route!),

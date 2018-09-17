@@ -27,7 +27,7 @@ export default class LineService {
             NotificationStore.addNotification(
                 { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
             );
-            return err;
+            return null;
         }
     }
 }
