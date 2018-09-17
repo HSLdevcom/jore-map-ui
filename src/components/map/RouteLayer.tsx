@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-import { Polyline } from 'react-leaflet';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '../../stores/sidebarStore';
 import { IRoutePath } from '../../models';
+import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
     sidebarStore?: SidebarStore;
@@ -73,8 +73,8 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         this.props.bringRouteLayerToFront(internalId);
     }
 
-    private openLinkWindow = (internalId: string) => () => {
-        this.props.sidebarStore!.setOpenLinkId(internalId);
+    private openLinkWindow = (routePathLinkId: number) => {
+        this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
     }
 
     private hasHighlight(internalId: string) {
@@ -104,17 +104,16 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                 const color = this.props.colors[index];
                 const internalId = routePath.internalId;
                 return (
-                    <Polyline
+                    <RoutePathLayer
                         key={index}
-                        positions={routePath.positions}
-                        color={color}
-                        weight={this.hasHighlight(internalId) ? 5 : 4}
-                        opacity={this.hasHighlight(internalId) ? 1 : 0.6}
                         onClick={this.toggleHighlight.bind(this, internalId)}
-                        onContextMenu={this.openLinkWindow(internalId)}
+                        onContextMenu={this.openLinkWindow}
                         onMouseOver={this.setHoverHighlight.bind(this, internalId)}
                         onMouseOut={this.clearHoverHightlights}
-                        internalId={internalId}
+                        routePathLinks={routePath.routePathLinks}
+                        color={color}
+                        opacity={this.hasHighlight(internalId) ? 1 : 0.6}
+                        weight={this.hasHighlight(internalId) ? 8 : 7}
                     />
                 );
             });

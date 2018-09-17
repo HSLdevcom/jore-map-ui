@@ -30,8 +30,8 @@ export default class NodeHelper {
             .reduce<number[]>((flatlist, routePathLink) =>
             NodeHelper.getUniqueNumbers(
                     flatlist.concat(
-                        routePathLink.endNode,
-                        routePathLink.startNode,
+                        routePathLink.endNodeId,
+                        routePathLink.startNodeId,
                     ),
                 ),
                               [],
@@ -49,8 +49,8 @@ export default class NodeHelper {
         return routePaths.some(routePath =>
             routePath.routePathLinks.some(routePathLink =>
                 (
-                    routePathLink.endNode === nodeId
-                    || routePathLink.startNode === nodeId
+                    routePathLink.endNodeId === nodeId
+                    || routePathLink.startNodeId === nodeId
                 ),
             ),
         );

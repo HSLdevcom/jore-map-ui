@@ -15,12 +15,16 @@ class RoutePathLinkFactory {
         if (routePathLinkNode.solmuByLnkloppusolmu) {
             nodes.push(NodeFactory.createNode(routePathLinkNode.solmuByLnkloppusolmu));
         }
-
+        const coordinates = JSON.parse(
+            routePathLinkNode.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson).coordinates;
+        const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
         return {
             nodes,
             link: {
-                startNode: routePathLinkNode.lnkalkusolmu,
-                endNode: routePathLinkNode.lnkloppusolmu,
+                positions,
+                id: routePathLinkNode.relid,
+                startNodeId: routePathLinkNode.lnkalkusolmu,
+                endNodeId: routePathLinkNode.lnkloppusolmu,
                 orderNumber: routePathLinkNode.reljarjnro,
             },
         };
