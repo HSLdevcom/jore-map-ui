@@ -25,7 +25,7 @@ class LinkView extends React.Component
     public componentDidMount() {
         if (this.props.sidebarStore) {
             // TODO: fetch GraphSQL with linkId
-            // const linkId = this.props.sidebarStore!.openedLinkId;
+            // const linkId = this.props.sidebarStore!.openLinkId;
         }
     }
 
