@@ -8,7 +8,6 @@ import * as s from './toolbarToolButtons.scss';
 
 @observer
 export default class ToolbarLineButtons extends React.Component {
-
     private toggleTool = (tool: ToolbarTools) => () => {
         toolbarStore.toggleTool(tool); // TODO: fix importing toolbarStore
     }

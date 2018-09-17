@@ -3,16 +3,18 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import ToolbarModeButtons from './toolbarModeButtons';
 import toolbarStore from '../../../stores/toolbarStore';
-import * as s from './toolbar.scss';
-import ToolbarSubMenu from './toolbarSubMenu';
 import EditMode from '../../../enums/editModes';
 import ToolbarLineButtons from './toolbarLineButtons';
 import ToolbarNetworkButtons from './toolbarNetworkButtons';
 import ToolbarCommonButtons from './ToolbarCommonButtons';
+import { getSubmenu } from './toolbarSubmenus';
+import * as s from './toolbar.scss';
 
 @observer
 export default class Toolbar extends React.Component {
     render() {
+        const submenu = getSubmenu(toolbarStore.activeTool);
+
         return (
             <div className={s.toolbarContainer}>
                 <div className={s.toolbarRow}>
@@ -29,7 +31,13 @@ export default class Toolbar extends React.Component {
                         <ToolbarCommonButtons />
                     </div>
                 </div>
-                <ToolbarSubMenu />
+                { submenu !== null &&
+                    <div className={s.toolbarSubMenu}>
+                        {
+                            submenu
+                        }
+                    </div>
+                }
             </div>
         );
     }

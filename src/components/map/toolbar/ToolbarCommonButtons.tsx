@@ -14,7 +14,6 @@ export default class ToolbarCommonButtons extends React.Component {
     render() {
         return (
             <div className={s.toolbarToolButtonsView}>
-                {/* First toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <ToolbarButton
                         onClick={this.print}
