@@ -6,6 +6,12 @@ import * as s from './markerLayer.scss';
 import ColorScale from '../../util/colorScale';
 import PinIcon from '../../icons/pin';
 
+// The logic of Z Indexes is not very logical.
+// Setting z-index to 2, if other items is 1 wont force it to be on top.
+// Setting z-index to a very high number will however most likely set the item on top.
+// https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
+const VERY_HIGH_Z_INDEX = 1000;
+
 interface MarkerLayerProps {
     firstNodes: number[];
 }
@@ -27,6 +33,7 @@ export default class MarkerLayer extends Component<MarkerLayerProps> {
             const icon = this.getStartPointIcon(colors[index]);
             return (
                 <Marker
+                    zIndexOffset={VERY_HIGH_Z_INDEX}
                     icon={icon}
                     key={index}
                     position={[coordinates[1], coordinates[0]]}
