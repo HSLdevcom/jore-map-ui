@@ -1,8 +1,9 @@
 import { action, computed, observable } from 'mobx';
+import NotificationType from '../enums/notificationType';
 
 interface INotification {
     message: string;
-    type: string;
+    type: NotificationType;
 }
 
 export class NotificationStore {
