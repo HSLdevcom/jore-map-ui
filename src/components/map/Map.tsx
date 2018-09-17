@@ -19,6 +19,7 @@ import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './PopupLayer';
 import { NodeStore } from '../../stores/nodeStore';
 import * as s from './map.scss';
+import NodeLayer from './NodeLayer';
 
 interface IMapState {
     zoomLevel: number;
@@ -150,8 +151,10 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         bringRouteLayerToFront={this.bringRouteLayerToFront}
                     />
                     <MarkerLayer
-                        nodes={visibleNodes}
                         firstNodes={this.startCoordinates(visibleRoutePaths)}
+                    />
+                    <NodeLayer
+                        nodes={visibleNodes}
                     />
                     <PopupLayer
                         setView={this.setView}
