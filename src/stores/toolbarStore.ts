@@ -1,20 +1,31 @@
 import { observable, computed, action } from 'mobx';
 import ToolbarTools from '../enums/toolbarTools';
+import EditMode from '../enums/editModes';
 
 export class ToolbarStore {
     @observable private _activeTool: ToolbarTools;
     @observable private _disabledTools: ToolbarTools[];
+    @observable private _editMode: EditMode;
 
     constructor() {
         this._disabledTools = [
             ToolbarTools.Print,
         ];
+        this._editMode = EditMode.LINE;
         this._activeTool = ToolbarTools.None;
     }
 
     @computed
     get activeTool(): ToolbarTools {
         return this._activeTool;
+    }
+
+    @action setEditMode(editMode: EditMode) {
+        this._editMode = editMode;
+    }
+
+    @computed get editMode(): EditMode {
+        return this._editMode;
     }
 
     @action

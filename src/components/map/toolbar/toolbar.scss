@@ -1,9 +1,26 @@
 @import '../../../common.scss';
 
-.toolbarView {
-    display: flex;
-    height: 84px;
-    background-color: $white;
-    border-radius: 3px;
-    box-shadow: 0 0 4px $grey;
+.toolbarContainer {
+    display: inline;
+
+    .toolbarRow {
+        display: flex;
+
+        .toolbar {
+            display: flex;
+            height: 84px;
+            background-color: $white;
+            border-radius: 3px;
+            box-shadow: 0 0 4px $grey;
+        }
+
+        .modeSpecificToolbar {
+            margin-bottom: 10px;
+            margin-right: 10px;
+
+            .tools {
+                display: block;
+            }
+        }
+    }
 }

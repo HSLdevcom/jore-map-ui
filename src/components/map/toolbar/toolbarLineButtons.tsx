@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiEdit, FiCopy, FiPlusSquare, FiPrinter, FiShare2 } from 'react-icons/fi';
+import { FiEdit, FiCopy, FiPlusSquare, FiShare2 } from 'react-icons/fi';
 import { observer } from 'mobx-react';
 import ToolbarButton from './ToolbarButton';
 import toolbarStore from '../../../stores/toolbarStore';
@@ -7,13 +7,10 @@ import ToolbarTools from '../../../enums/toolbarTools';
 import * as s from './toolbarToolButtons.scss';
 
 @observer
-export default class ToolbarToolButtons extends React.Component {
+export default class ToolbarLineButtons extends React.Component {
 
     private toggleTool = (tool: ToolbarTools) => () => {
         toolbarStore.toggleTool(tool); // TODO: fix importing toolbarStore
-    }
-
-    private print = () => {
     }
 
     render() {
@@ -37,14 +34,6 @@ export default class ToolbarToolButtons extends React.Component {
                     >
                         <FiCopy />
                     </ToolbarButton>
-                    <ToolbarButton
-                        onClick={this.toggleTool(ToolbarTools.DivideLink)}
-                        isActive={toolbarStore.isActive(ToolbarTools.DivideLink)}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTools.DivideLink)}
-                        label='Jaa linkki'
-                    >
-                        <FiShare2/>
-                    </ToolbarButton>
                 </div>
                 {/* Second toolbar row */}
                 <div className={s.toolbarButtonRow}>
@@ -57,12 +46,12 @@ export default class ToolbarToolButtons extends React.Component {
                         <FiPlusSquare />
                     </ToolbarButton>
                     <ToolbarButton
-                        onClick={this.print}
-                        isActive={false}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTools.Print)}
-                        label='Tulosta kartta'
+                        onClick={this.toggleTool(ToolbarTools.DivideLink)}
+                        isActive={toolbarStore.isActive(ToolbarTools.DivideLink)}
+                        isDisabled={toolbarStore.isDisabled(ToolbarTools.DivideLink)}
+                        label='Jaa linkki'
                     >
-                        <FiPrinter />
+                        <FiShare2/>
                     </ToolbarButton>
                 </div>
             </div>
