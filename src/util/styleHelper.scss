@@ -1,0 +1,24 @@
+@import '../common.scss';
+
+.mapViewDefaultWidth {
+    width: calc(100vw - #{$defaultWidth});
+    left: $defaultWidth;
+}
+.mapViewLinkWidth {
+    width: calc(100vw - #{$linkWidth});
+    left: $linkWidth;
+}
+.mapViewNodeWidth {
+    width: calc(100vw - #{$nodeWidth});
+    left: $nodeWidth;
+}
+
+.sidebarViewDefaultWidth {
+    width: $defaultWidth;
+}
+.sidebarViewLinkWidth {
+    width: $linkWidth;
+}
+.sidebarViewNodeWidth {
+    width: $nodeWidth;
+}

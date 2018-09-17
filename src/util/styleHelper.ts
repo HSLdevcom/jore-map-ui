@@ -1,20 +1,39 @@
 import routeBuilder from '../routing/routeBuilder';
+import * as s from './styleHelper.scss';
 
 class StyleHelper {
-    public static getSideBarWidth() {
+    public static getSidebarClassName() {
         const currentUrl = routeBuilder.getCurrentLocation();
         switch (currentUrl) {
         case '/routes/': {
-            return 400;
+            return s.sidebarViewDefaultWidth;
         }
         case '/node/': {
-            return 450;
+            return s.sidebarViewNodeWidth;
         }
         case '/link/': {
-            return 500;
+            return s.sidebarViewLinkWidth;
         }
         default: {
-            return 400;
+            return s.sidebarViewDefaultWidth;
+        }
+        }
+    }
+
+    public static getMapClassName() {
+        const currentUrl = routeBuilder.getCurrentLocation();
+        switch (currentUrl) {
+        case '/routes/': {
+            return s.mapViewDefaultWidth;
+        }
+        case '/node/': {
+            return s.mapViewNodeWidth;
+        }
+        case '/link/': {
+            return s.mapViewLinkWidth;
+        }
+        default: {
+            return s.mapViewDefaultWidth;
         }
         }
     }

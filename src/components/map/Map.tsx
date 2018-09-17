@@ -112,19 +112,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.getMap().setView(latLng, 17);
     }
 
-    private sideBarWidthStyles() {
-        if (this.props.mapStore!.isMapFullscreen) {
-            return {
-                width: '100%',
-                left: '0',
-            };
-        }
-        return {
-            width: `calc(100vw - ${styleHelper.getSideBarWidth()}px)`,
-            left: styleHelper.getSideBarWidth(),
-        };
-    }
-
     public render() {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
@@ -132,8 +119,11 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const colors = ColorScale.getColors(visibleRoutePaths.length);
         return (
             <div
-                className={classnames(s.mapView, fullScreenMapViewClass)}
-                style={this.sideBarWidthStyles()}
+                className={classnames(
+                    s.mapView,
+                    fullScreenMapViewClass,
+                    styleHelper.getMapClassName(),
+                )}
             >
                 <Map
                     ref={this.mapReference}

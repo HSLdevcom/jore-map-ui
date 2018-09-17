@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import { Location } from 'history';
+import classnames from 'classnames';
 import styleHelper from '../../util/styleHelper';
 import hslLogo from '../../assets/hsl-logo.png';
 import { SidebarStore } from '../../stores/sidebarStore';
@@ -11,7 +12,9 @@ import LinkView from './LinkView';
 import NodeView from './NodeView';
 import RoutesView from './RoutesView';
 import HomeView from './HomeView';
+import routeBuilder  from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
+import navigator from '../../routing/navigator';
 import * as s from './sidebar.scss';
 
 // Requiring location to force update on location change
@@ -36,12 +39,16 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const goToHomeView = () => {
             this.props.routeStore!.clearRoutes();
             this.props.searchStore!.setSearchInput('');
+            const homeLink = routeBuilder.to(subSites.home).clear().toLink();
+            navigator.goTo(homeLink);
         };
 
         return (
             <div
-                className={s.sidebarView}
-                style={{ width: styleHelper.getSideBarWidth() }}
+                className={classnames(
+                    s.sidebarView,
+                    styleHelper.getSidebarClassName(),
+                )}
             >
                 <div className={s.header}>
                     <div onClick={goToHomeView} className={s.headerContainer}>
