@@ -1,60 +1,23 @@
 import React, { Component } from 'react';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
-import { observer, inject } from 'mobx-react';
-import { INode } from '../../models';
-import NodeType from '../../enums/nodeType';
-import * as s from './markerLayer.scss';
-import { PopupStore } from '../../stores/popupStore';
-import { ToolbarStore } from '../../stores/toolbarStore';
-import { SidebarStore } from '../../stores/sidebarStore';
-import ToolbarTools from '../../enums/toolbarTools';
+import { observer } from 'mobx-react';
 import ColorScale from '../../util/colorScale';
 import PinIcon from '../../icons/pin';
+import * as s from './markerLayer.scss';
+
+// The logic of Z Indexes is not very logical.
+// Setting z-index to 2, if other items is 1 wont force it to be on top.
+// Setting z-index to a very high number will however most likely set the item on top.
+// https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
+const VERY_HIGH_Z_INDEX = 1000;
 
 interface MarkerLayerProps {
-    nodes: INode[];
-    popupStore?: PopupStore;
-    toolbarStore?: ToolbarStore;
-    sidebarStore?: SidebarStore;
-    firstNodes: number[];
+    coordinates: number[];
 }
 
-enum color {
-    STOP_BORDER_COLOR = '#f17c44',
-    CROSSROAD_BORDER_COLOR = '#666666',
-    NORMAL_FILL_COLOR = '#FFF',
-    SELECTED_FILL_COLOR = '#f44268',
-}
-
-@inject('popupStore', 'toolbarStore', 'sidebarStore')
 @observer
 export default class MarkerLayer extends Component<MarkerLayerProps> {
-    constructor (props: MarkerLayerProps) {
-        super(props);
-    }
-
-    private getNodeMarkerHtml = (borderColor: string, fillColor: string) => {
-        return `<div
-            style="border-color: ${borderColor}; background-color: ${fillColor}"
-            class=${s.nodeMarkerContent}
-        />`;
-    }
-
-    private getIcon = (node: INode) => {
-        const borderColor = node.type === NodeType.CROSSROAD
-        ? color.CROSSROAD_BORDER_COLOR : color.STOP_BORDER_COLOR;
-        const isSelected = node.id === this.props.sidebarStore!.openNodeId;
-        const fillColor = isSelected ? color.SELECTED_FILL_COLOR : color.NORMAL_FILL_COLOR;
-
-        const divIconOptions : L.DivIconOptions = {
-            className: s.nodeMarker,
-            html: this.getNodeMarkerHtml(borderColor, fillColor),
-        };
-
-        return new L.DivIcon(divIconOptions);
-    }
-
     private getStartPointIcon = (color: string) => {
         const divIconOptions : L.DivIconOptions = {
             className: s.nodeMarker,
@@ -65,41 +28,17 @@ export default class MarkerLayer extends Component<MarkerLayerProps> {
     }
 
     render() {
-        const colors = ColorScale.getColors(this.props.firstNodes.length);
-        return (
-            <div>
-            {
-                this.props.firstNodes.map((coordinates, index) => {
-                    const icon = this.getStartPointIcon(colors[index]);
-                    return (
-                        <Marker
-                            icon={icon}
-                            key={index}
-                            position={[coordinates[1], coordinates[0]]}
-                        />
-                    );
-                })
-            }
-            {
-                this.props.nodes.map((node, index) => {
-                    const icon = this.getIcon(node);
-
-                    const openPopup = () => {
-                        this.props.popupStore!.showPopup(node);
-                    };
-
-                    return (
-                        <Marker
-                            onContextMenu={openPopup}
-                            draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
-                            icon={icon}
-                            key={index}
-                            position={[node.coordinates.lat, node.coordinates.lon]}
-                        />
-                    );
-                })
-            }
-            </div>
-        );
+        const colors = ColorScale.getColors(this.props.coordinates.length);
+        return this.props.coordinates.map((_coordinates, index) => {
+            const icon = this.getStartPointIcon(colors[index]);
+            return (
+                <Marker
+                    zIndexOffset={VERY_HIGH_Z_INDEX}
+                    icon={icon}
+                    key={index}
+                    position={[_coordinates[1], _coordinates[0]]}
+                />
+            );
+        });
     }
 }
