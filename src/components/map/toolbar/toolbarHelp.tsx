@@ -5,7 +5,7 @@ import * as s from './toolbarHelp.scss';
 const submenus = {
     edit: (
         <div>
-            Voit nyt raahata solmut ja pysäkit kartalla.
+            Voit siirtää pysäkkejä tai risteyksiä raahaamalla niitä kartalla.
         </div>
     ),
 };
