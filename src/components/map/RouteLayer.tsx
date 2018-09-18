@@ -77,6 +77,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     }
 
     private openLinkWindow = (internalId: string) => () => {
+        // TODO deal with fetching linkID in the endpoint
         this.props.sidebarStore!.setOpenLinkId(internalId);
         const linkLink = routeBuilder.to(subSites.link).toLink();
         navigator.goTo(linkLink);
