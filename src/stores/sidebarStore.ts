@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 
 export class SidebarStore {
     @observable private _openNodeId: number|null;
-    @observable private _openLinkId: string|null;
+    @observable private _openLinkId: number|null;
 
     constructor() {
         this._openNodeId = null;
@@ -15,7 +15,7 @@ export class SidebarStore {
     }
 
     @computed
-    get openLinkId(): string|null {
+    get openLinkId(): number|null {
         return this._openLinkId;
     }
 
@@ -26,7 +26,7 @@ export class SidebarStore {
     }
 
     @action
-    public setOpenLinkId(id: string|null) {
+    public setOpenLinkId(id: number|null) {
         this._openLinkId = id;
         this._openNodeId = null;
     }

@@ -60,10 +60,9 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     async queryAllLines() {
         this.setState({ isLoading: true });
-        try {
-            this.props.lineStore!.setAllLines(await LineService.getAllLines());
-        } catch (err) {
-            // TODO: show error on screen that the query failed
+        const lines = await LineService.getAllLines();
+        if (lines !== null) {
+            this.props.lineStore!.setAllLines(lines);
         }
         this.setState({ isLoading: false });
     }
