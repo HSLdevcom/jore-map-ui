@@ -14,7 +14,30 @@ export interface IMultipleRoutesQueryResult {
 }
 
 export default class RouteService {
-    public static async runFetchRouteQuery(routeId: string): Promise<IRouteResult | null> {
+    public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
+        const routeResult = await RouteService.runFetchRouteQuery(routeId);
+        return routeResult ? routeResult.route : undefined;
+    }
+
+    public static async fetchMultipleRoutes(routeIds: string[]):
+        Promise<IMultipleRoutesQueryResult | null> {
+        let queryResult = await Promise
+            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
+        queryResult = queryResult.filter(res => res && res.route);
+        if (!queryResult) return null;
+        return({
+            routes: queryResult
+                .map((res: IRouteResult) => res.route!),
+            nodes: QueryParsingHelper.removeINodeDuplicates(
+                queryResult
+                    .reduce<INode[]>(
+                        (flatList, node) => flatList.concat(node!.nodes),
+                        [],
+                    )),
+        });
+    }
+
+    private static async runFetchRouteQuery(routeId: string): Promise<IRouteResult | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: getRouteQuery, variables: { routeId } },
@@ -31,29 +54,6 @@ export default class RouteService {
             });
             return null;
         }
-    }
-
-    public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
-        const routeResult = await RouteService.runFetchRouteQuery(routeId);
-        return routeResult ? routeResult.route : undefined;
-    }
-
-    public static async fetchMultipleRoutes(routeIds: string[]):
-        Promise<IMultipleRoutesQueryResult | null> {
-        const queryResults = await Promise
-            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
-        const nonNullRoutes = queryResults.filter(res => res && res.route);
-        if (!nonNullRoutes) return null;
-        return({
-            routes: nonNullRoutes
-                .map((res: IRouteResult) => res.route!),
-            nodes: QueryParsingHelper.removeINodeDuplicates(
-                nonNullRoutes
-                    .reduce<INode[]>(
-                        (flatList, node) => flatList.concat(node!.nodes),
-                        [],
-                    )),
-        });
     }
 }
 

@@ -9,11 +9,15 @@ export default class LineService {
     public static async getAllLines(): Promise<ILine[] | null> {
         try {
             const { data }:any = await apolloClient.query({ query: getLinjas });
-            return LineFactory.linjasToILines(data.allLinjas.nodes);
+            return data.allLinjas.nodes.map(((node: any) => {
+                return LineFactory.createLine(node);
+            }));
         } catch (err) {
             NotificationStore.addNotification(
-                { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
+                { message: 'Linjojen haku ei onnistunut.', type: NotificationType.ERROR },
             );
+            // TODO: return object such as { success, result } to know
+            // at view component if whether query ended up into an error or not
             return null;
         }
     }
@@ -27,6 +31,8 @@ export default class LineService {
             NotificationStore.addNotification(
                 { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
             );
+            // TODO: return object such as { success, result } to know
+            // at view component if whether query ended up into an error or not
             return null;
         }
     }
