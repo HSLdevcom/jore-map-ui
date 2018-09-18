@@ -98,6 +98,9 @@ query getLineDetails($routeId: String!) {
                                     soltyyppi,
                                     geojson
                                 }
+                                linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
+                                    geojson
+                                }
                             }
                         }
                     }
