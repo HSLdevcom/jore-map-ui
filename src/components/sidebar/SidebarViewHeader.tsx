@@ -6,7 +6,6 @@ import navigator from '../../routing/navigator';
 
 interface ISidebarViewHeaderProps {
     header: string;
-    closeSidebarView: Function;
 }
 
 class SidebarViewHeader extends React.Component<ISidebarViewHeaderProps> {
@@ -17,7 +16,6 @@ class SidebarViewHeader extends React.Component<ISidebarViewHeaderProps> {
     private closeSidebarView = () => {
         const routesLink = routeBuilder.to(subSites.routes).toLink();
         navigator.goTo(routesLink);
-        this.props.closeSidebarView();
     }
 
     public render(): any {

@@ -29,7 +29,7 @@ class LinkView extends React.Component
         }
     }
 
-    private closeLinkView = () => {
+    public componentWillUnmount() {
         this.props.sidebarStore!.setOpenLinkId(null);
     }
 
@@ -38,7 +38,6 @@ class LinkView extends React.Component
         <div className={s.linkView}>
             <SidebarViewHeader
                 header='Reitin 1016 linkki'
-                closeSidebarView={this.closeLinkView}
             />
             <div className={classnames(s.flexInnerColumn, s.subTopic)}>
                 REITIN SUUNNAN TIEDOT
