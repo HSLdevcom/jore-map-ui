@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { IReactionDisposer } from 'mobx';
 import classnames from 'classnames';
 import { MapStore } from '../../stores/mapStore';
 import { RouteStore } from '../../stores/routeStore';
@@ -43,6 +44,7 @@ interface IMapPropReference {
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
+    private reactionDisposer: IReactionDisposer;
 
     constructor(props: IMapProps) {
         super(props);
@@ -81,6 +83,10 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.getMap().invalidateSize();
     }
 
+    public componentWillUnmount() {
+        this.reactionDisposer();
+    }
+
     private fitBounds(bounds: L.LatLngBoundsExpression) {
         this.getMap().fitBounds(bounds);
     }
@@ -112,7 +118,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     public render() {
-        const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
+        // TODO Fix this
+        const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
+
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
         const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
         const colors = ColorScale.getColors(visibleRoutePaths.length);

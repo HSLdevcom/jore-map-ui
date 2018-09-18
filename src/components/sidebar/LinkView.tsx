@@ -45,7 +45,7 @@ class LinkView extends React.Component
             </div>
             <div className={s.flexInnerColumn}>
                 <div className={s.flexInnerRow}>
-                    <div>
+                    <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             REITTITUNNUS
                         </div>
@@ -55,7 +55,7 @@ class LinkView extends React.Component
                             className={s.inputField}
                         />
                     </div>
-                    <div>
+                    <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             SUUNTA
                         </div>
@@ -67,7 +67,7 @@ class LinkView extends React.Component
                     </div>
                 </div>
                 <div className={s.flexInnerRow}>
-                    <div>
+                    <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             VOIM. AST
                         </div>
@@ -77,7 +77,7 @@ class LinkView extends React.Component
                             className={s.inputField}
                         />
                     </div>
-                    <div>
+                    <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             VIIM. VOIM
                         </div>
@@ -88,7 +88,7 @@ class LinkView extends React.Component
                         />
                     </div>
                 </div>
-                <div className={s.flexInnerColumn}>
+                <div className={s.largeInputContainer}>
                     <div className={classnames(s.subTopic)}>
                         NIMI
                     </div>

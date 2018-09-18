@@ -2,6 +2,8 @@
 .homeView {
   display: flex;
   flex-direction: column;
+  width: $homeWindowWidth;
+
 
   .routesText {
     font-weight: bold;

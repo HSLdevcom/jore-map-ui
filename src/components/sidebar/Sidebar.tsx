@@ -3,11 +3,11 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
-import styleHelper from '../../util/styleHelper';
 import hslLogo from '../../assets/hsl-logo.png';
 import { SidebarStore } from '../../stores/sidebarStore';
 import { RouteStore } from '../../stores/routeStore';
 import { SearchStore } from '../../stores/searchStore';
+import { MapStore } from '../../stores/mapStore';
 import LinkView from './LinkView';
 import NodeView from './NodeView';
 import RoutesView from './RoutesView';
@@ -25,6 +25,7 @@ interface ISidebarProps{
     sidebarStore?: SidebarStore;
     routeStore?: RouteStore;
     searchStore?: SearchStore;
+    mapStore?: MapStore;
     location: Location;
 }
 
@@ -32,7 +33,7 @@ interface ILinelistState {
     searchInput: string;
 }
 
-@inject('sidebarStore', 'routeStore', 'searchStore')
+@inject('sidebarStore', 'routeStore', 'searchStore', 'mapStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     public render(): any {
@@ -47,7 +48,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             <div
                 className={classnames(
                     s.sidebarView,
-                    styleHelper.getSidebarClassName(),
                 )}
             >
                 <div className={s.header}>
