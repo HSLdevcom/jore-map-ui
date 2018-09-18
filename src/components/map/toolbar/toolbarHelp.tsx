@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ToolbarTool from '../../../enums/toolbarTool';
 import * as s from './toolbarHelp.scss';
 
-const submenus = {
+const textContainers = {
     edit: (
         <div>
             Voit siirtää pysäkkejä tai risteyksiä raahaamalla niitä kartalla.
@@ -13,7 +13,7 @@ const submenus = {
 const getToolbarHelpContent = (tool: ToolbarTool) => {
     switch (tool) {
     case ToolbarTool.Edit:
-        return submenus.edit;
+        return textContainers.edit;
     default:
         return null;
     }
