@@ -21,12 +21,6 @@ class LineFactory {
             lineId: linja.lintunnus,
         };
     }
-
-    public static linjasToILines = (linjat: any[]) => {
-        return linjat.map(((node: any) => {
-            return LineFactory.createLine(node);
-        }));
-    }
 }
 
 const _convertTransitTypeCodeToTransitType = (type: string) => {

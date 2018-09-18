@@ -3,21 +3,26 @@ import apolloClient from '../util/ApolloClient';
 import LineFactory from '../factories/lineFactory';
 import NotificationType from '../enums/notificationType';
 import NotificationStore from '../stores/notificationStore';
+import { ILine } from '../models';
 
 export default class LineService {
-    public static async getAllLines() {
+    public static async getAllLines(): Promise<ILine[] | null> {
         try {
             const { data }:any = await apolloClient.query({ query: getLinjas });
-            return LineFactory.linjasToILines(data.allLinjas.nodes);
+            return data.allLinjas.nodes.map(((node: any) => {
+                return LineFactory.createLine(node);
+            }));
         } catch (err) {
             NotificationStore.addNotification(
-                { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
+                { message: 'Linjojen haku ei onnistunut.', type: NotificationType.ERROR },
             );
-            return err;
+            // TODO: return object such as { success, result } to know
+            // at view component if whether query ended up into an error or not
+            return null;
         }
     }
 
-    public static async getLine(lintunnus: string) {
+    public static async getLine(lintunnus: string): Promise<ILine | null> {
         try {
             const { data }:any = await apolloClient
                 .query({ query: getLinja, variables: { lineId: lintunnus } });
@@ -26,7 +31,9 @@ export default class LineService {
             NotificationStore.addNotification(
                 { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
             );
-            return err;
+            // TODO: return object such as { success, result } to know
+            // at view component if whether query ended up into an error or not
+            return null;
         }
     }
 }
