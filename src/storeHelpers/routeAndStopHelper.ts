@@ -24,6 +24,7 @@ export default class RouteAndStopHelper {
     public static async addRequiredDataForRoutes(routeIds: string[]) {
         const missingRouteIds = RouteAndStopHelper.getRouteIdsMissingFromStore(routeIds);
         const routeServiceResults = await RouteService.fetchMultipleRoutes(missingRouteIds);
+        if (!routeServiceResults) return;
         routeStore.addToRoutes(routeServiceResults.routes);
 
         const currentNodeIds = nodeStore.nodes.map(node => node.id);

@@ -1,34 +1,45 @@
 import { observable, computed, action } from 'mobx';
-import ToolbarTools from '../enums/toolbarTools';
+import ToolbarTool from '../enums/toolbarTool';
+import EditMode from '../enums/editMode';
 
 export class ToolbarStore {
-    @observable private _activeTool: ToolbarTools;
-    @observable private _disabledTools: ToolbarTools[];
+    @observable private _activeTool: ToolbarTool;
+    @observable private _disabledTools: ToolbarTool[];
+    @observable private _editMode: EditMode;
 
     constructor() {
         this._disabledTools = [
-            ToolbarTools.Print,
+            ToolbarTool.Print,
         ];
-        this._activeTool = ToolbarTools.None;
+        this._editMode = EditMode.LINE;
+        this._activeTool = ToolbarTool.None;
     }
 
     @computed
-    get activeTool(): ToolbarTools {
+    get activeTool(): ToolbarTool {
         return this._activeTool;
     }
 
+    @action setEditMode(editMode: EditMode) {
+        this._editMode = editMode;
+    }
+
+    @computed get editMode(): EditMode {
+        return this._editMode;
+    }
+
     @action
-    public toggleTool(tool: ToolbarTools) {
+    public toggleTool(tool: ToolbarTool) {
         if (!this.isDisabled(tool)) {
-            this._activeTool = (this._activeTool === tool) ? ToolbarTools.None : tool;
+            this._activeTool = (this._activeTool === tool) ? ToolbarTool.None : tool;
         }
     }
 
-    public isActive(tool: ToolbarTools): boolean {
+    public isActive(tool: ToolbarTool): boolean {
         return this._activeTool === tool;
     }
 
-    public isDisabled(tool: ToolbarTools): boolean {
+    public isDisabled(tool: ToolbarTool): boolean {
         return this._disabledTools.indexOf(tool) > -1;
     }
 }

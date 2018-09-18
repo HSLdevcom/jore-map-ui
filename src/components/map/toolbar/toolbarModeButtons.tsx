@@ -2,47 +2,29 @@ import React from 'react';
 import classnames from 'classnames';
 import { RadioButton } from '../../controls';
 import * as s from './toolbarModeButtons.scss';
+import EditMode from '../../../enums/editMode';
+import toolbarStore from '../../../stores/toolbarStore';
 
-interface IToolbarModeButtonsProps {
-}
-
-interface IToolbarState {
-    selectedMode: option;
-}
-
-enum option {
-    LINE = 'Linja',
-    NETWORK = 'Verkko',
-}
-
-export default class ToolbarModeButtons extends React.Component
-<IToolbarModeButtonsProps, IToolbarState> {
-    constructor (props: any) {
-        super(props);
-        this.state = {
-            selectedMode: option.LINE,
-        };
-    }
-
-    private toggleSelectedMode = (option: option) => () => {
-        this.setState({
-            selectedMode: option,
-        });
+export default class ToolbarModeButtons extends React.Component {
+    private toggleSelectedMode = (option: EditMode) => () => {
+        toolbarStore.setEditMode(option);
     }
 
     render() {
+        const currentMode = toolbarStore.editMode;
+
         return (
             <div className={s.toolbarModeButtonsView}>
                 <div
                     className={classnames(
                         s.modeRadioButtonContainer,
-                        this.state.selectedMode !== option.LINE ? s.selected : '',
+                        currentMode !== EditMode.LINE ? s.selected : '',
                     )}
                 >
                     <RadioButton
-                        onClick={this.toggleSelectedMode(option.LINE)}
-                        checked={this.state.selectedMode === option.LINE}
-                        text={option.LINE}
+                        onClick={this.toggleSelectedMode(EditMode.LINE)}
+                        checked={currentMode === EditMode.LINE}
+                        text={EditMode.LINE}
                     />
                     <div
                         className={classnames(
@@ -54,13 +36,13 @@ export default class ToolbarModeButtons extends React.Component
                 <div
                     className={classnames(
                         s.modeRadioButtonContainer,
-                        this.state.selectedMode !== option.NETWORK ? s.selected : '',
+                        currentMode !== EditMode.NETWORK ? s.selected : '',
                     )}
                 >
                     <RadioButton
-                        onClick={this.toggleSelectedMode(option.NETWORK)}
-                        checked={this.state.selectedMode === option.NETWORK}
-                        text={option.NETWORK}
+                        onClick={this.toggleSelectedMode(EditMode.NETWORK)}
+                        checked={currentMode === EditMode.NETWORK}
+                        text={EditMode.NETWORK}
                     />
                     <div
                         className={classnames(

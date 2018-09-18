@@ -3,10 +3,10 @@ import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '../util/ApolloClient';
 import RouteFactory, { IRouteResult } from '../factories/routeFactory';
 import LineService from './lineService';
-import NotificationType from '../enums/notificationType';
-import NotificationStore from '../stores/notificationStore';
 import { IRoute, INode } from '../models';
 import QueryParsingHelper from '../factories/queryParsingHelper';
+import notificationStore from '../stores/notificationStore';
+import NotificationType from '../enums/notificationType';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];
@@ -14,45 +14,46 @@ export interface IMultipleRoutesQueryResult {
 }
 
 export default class RouteService {
-    public static async runFetchRouteQuery(routeId: string): Promise<IRouteResult> {
+    public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
+        const routeResult = await RouteService.runFetchRouteQuery(routeId);
+        return routeResult ? routeResult.route : undefined;
+    }
+
+    public static async fetchMultipleRoutes(routeIds: string[]):
+        Promise<IMultipleRoutesQueryResult | null> {
+        let queryResult = await Promise
+            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
+        queryResult = queryResult.filter(res => res && res.route);
+        if (!queryResult) return null;
+        return({
+            routes: queryResult
+                .map((res: IRouteResult) => res.route!),
+            nodes: QueryParsingHelper.removeINodeDuplicates(
+                queryResult
+                    .reduce<INode[]>(
+                        (flatList, node) => flatList.concat(node!.nodes),
+                        [],
+                    )),
+        });
+    }
+
+    private static async runFetchRouteQuery(routeId: string): Promise<IRouteResult | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: getRouteQuery, variables: { routeId } },
             );
             const line = await LineService.getLine(queryResult.data.route.lintunnus);
-            return RouteFactory.createRoute(queryResult.data.route, line);
+            if (line !== null) {
+                return RouteFactory.createRoute(queryResult.data.route, line);
+            }
+            return null;
         } catch (err) {
-            // tslint:disable-next-line
-            console.error(err);
-            NotificationStore.addNotification({
+            notificationStore.addNotification({
                 message: 'Reitin haku ei onnistunut.',
                 type: NotificationType.ERROR,
             });
-            return {
-                nodes: [],
-            };
+            return null;
         }
-    }
-
-    public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
-        return (await RouteService.runFetchRouteQuery(routeId)).route;
-    }
-
-    public static async fetchMultipleRoutes(routeIds: string[]):
-        Promise<IMultipleRoutesQueryResult> {
-        const queryResults = await Promise
-            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
-        const nonNullRoutes = queryResults.filter(res => res.route);
-        return({
-            routes: nonNullRoutes
-                .map((res: IRouteResult) => res.route!),
-            nodes: QueryParsingHelper.removeINodeDuplicates(
-                nonNullRoutes
-                    .reduce<INode[]>(
-                        (flatList, node) => flatList.concat(node.nodes),
-                        [],
-                    )),
-        });
     }
 }
 
@@ -96,6 +97,9 @@ query getLineDetails($routeId: String!) {
                                     soly,
                                     soltunnus,
                                     soltyyppi,
+                                    geojson
+                                }
+                                linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
                                     geojson
                                 }
                             }

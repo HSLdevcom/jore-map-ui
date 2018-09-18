@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-import { Polyline } from 'react-leaflet';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '../../stores/sidebarStore';
@@ -8,6 +7,7 @@ import { IRoutePath } from '../../models';
 import routeBuilder  from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
+import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
     sidebarStore?: SidebarStore;
@@ -76,19 +76,16 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         this.props.bringRouteLayerToFront(internalId);
     }
 
-    private openLinkWindow = (internalId: string) => () => {
+    private openLinkWindow = (routePathLinkId: number) => {
         // TODO deal with fetching linkID in the endpoint
-        this.props.sidebarStore!.setOpenLinkId(internalId);
+        this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
         const linkLink = routeBuilder.to(subSites.link).toLink();
         navigator.goTo(linkLink);
     }
 
     private hasHighlight(internalId: string) {
-        if (this.state.selectedPolylines.includes(internalId) ||
-            this.state.hoveredPolylines.includes(internalId)) {
-            return true;
-        }
-        return false;
+        return this.state.selectedPolylines.includes(internalId) ||
+            this.state.hoveredPolylines.includes(internalId);
     }
 
     private setHoverHighlight(internalId: string) {
@@ -110,17 +107,16 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                 const color = this.props.colors[index];
                 const internalId = routePath.internalId;
                 return (
-                    <Polyline
+                    <RoutePathLayer
                         key={index}
-                        positions={routePath.positions}
-                        color={color}
-                        weight={this.hasHighlight(internalId) ? 5 : 4}
-                        opacity={this.hasHighlight(internalId) ? 1 : 0.6}
                         onClick={this.toggleHighlight.bind(this, internalId)}
-                        onContextMenu={this.openLinkWindow(internalId)}
+                        onContextMenu={this.openLinkWindow}
                         onMouseOver={this.setHoverHighlight.bind(this, internalId)}
                         onMouseOut={this.clearHoverHightlights}
-                        internalId={internalId}
+                        routePathLinks={routePath.routePathLinks}
+                        color={color}
+                        opacity={this.hasHighlight(internalId) ? 1 : 0.6}
+                        weight={this.hasHighlight(internalId) ? 8 : 7}
                     />
                 );
             });

@@ -1,5 +1,5 @@
 import proj4 from 'proj4';
-import CoordinateSystem from '../enums/coordinateSystems';
+import CoordinateSystem from '../enums/coordinateSystem';
 
 class GeometryService {
     private static projections = {

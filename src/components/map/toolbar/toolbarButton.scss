@@ -2,7 +2,6 @@
 
 .toolbarButton {
   position: relative;
-  display: flex;
   font-size: $largeFontSize;
   line-height: $largeFontSize;
   cursor: pointer;
@@ -12,6 +11,7 @@
   border-style: solid;
   padding: 3px;
   transition: 0.5s;
+  color: $busBlue;
 }
 
 .toolbarButton .tooltiptext {
