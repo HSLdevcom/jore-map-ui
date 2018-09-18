@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer } from 'mobx-react';
-import * as s from './markerLayer.scss';
 import ColorScale from '../../util/colorScale';
 import PinIcon from '../../icons/pin';
+import * as s from './markerLayer.scss';
 
 // The logic of Z Indexes is not very logical.
 // Setting z-index to 2, if other items is 1 wont force it to be on top.
@@ -13,7 +13,7 @@ import PinIcon from '../../icons/pin';
 const VERY_HIGH_Z_INDEX = 1000;
 
 interface MarkerLayerProps {
-    firstNodes: number[];
+    coordinates: number[];
 }
 
 @observer
@@ -28,15 +28,15 @@ export default class MarkerLayer extends Component<MarkerLayerProps> {
     }
 
     render() {
-        const colors = ColorScale.getColors(this.props.firstNodes.length);
-        return this.props.firstNodes.map((coordinates, index) => {
+        const colors = ColorScale.getColors(this.props.coordinates.length);
+        return this.props.coordinates.map((_coordinates, index) => {
             const icon = this.getStartPointIcon(colors[index]);
             return (
                 <Marker
                     zIndexOffset={VERY_HIGH_Z_INDEX}
                     icon={icon}
                     key={index}
-                    position={[coordinates[1], coordinates[0]]}
+                    position={[_coordinates[1], _coordinates[0]]}
                 />
             );
         });

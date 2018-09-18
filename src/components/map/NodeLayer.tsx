@@ -4,11 +4,11 @@ import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import { INode } from '../../models';
 import NodeType from '../../enums/nodeType';
-import * as s from './nodeLayer.scss';
 import { PopupStore } from '../../stores/popupStore';
 import { ToolbarStore } from '../../stores/toolbarStore';
 import { SidebarStore } from '../../stores/sidebarStore';
 import ToolbarTools from '../../enums/toolbarTools';
+import * as s from './nodeLayer.scss';
 
 interface MarkerLayerProps {
     nodes: INode[];

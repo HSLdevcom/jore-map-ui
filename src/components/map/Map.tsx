@@ -151,7 +151,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         bringRouteLayerToFront={this.bringRouteLayerToFront}
                     />
                     <MarkerLayer
-                        firstNodes={this.startCoordinates(visibleRoutePaths)}
+                        coordinates={this.startCoordinates(visibleRoutePaths)}
                     />
                     <NodeLayer
                         nodes={visibleNodes}
