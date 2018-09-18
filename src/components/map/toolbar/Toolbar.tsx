@@ -7,14 +7,12 @@ import EditMode from '../../../enums/editModes';
 import ToolbarLineButtons from './toolbarLineButtons';
 import ToolbarNetworkButtons from './toolbarNetworkButtons';
 import ToolbarCommonButtons from './ToolbarCommonButtons';
-import { getSubmenu } from './toolbarSubmenus';
+import ToolbarHelp from './toolbarHelp';
 import * as s from './toolbar.scss';
 
 @observer
 export default class Toolbar extends React.Component {
     render() {
-        const submenu = getSubmenu(toolbarStore.activeTool);
-
         return (
             <div className={s.toolbarContainer}>
                 <div className={s.toolbarRow}>
@@ -31,13 +29,7 @@ export default class Toolbar extends React.Component {
                         <ToolbarCommonButtons />
                     </div>
                 </div>
-                { submenu !== null &&
-                    <div className={s.toolbarSubMenu}>
-                        {
-                            submenu
-                        }
-                    </div>
-                }
+                <ToolbarHelp tool={toolbarStore.activeTool} />
             </div>
         );
     }
