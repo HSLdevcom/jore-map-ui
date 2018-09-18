@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import ToolbarModeButtons from './toolbarModeButtons';
 import toolbarStore from '../../../stores/toolbarStore';
-import EditMode from '../../../enums/editModes';
+import EditMode from '../../../enums/editMode';
 import ToolbarLineButtons from './toolbarLineButtons';
 import ToolbarNetworkButtons from './toolbarNetworkButtons';
 import ToolbarCommonButtons from './ToolbarCommonButtons';

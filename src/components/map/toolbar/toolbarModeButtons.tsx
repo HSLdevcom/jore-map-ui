@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { RadioButton } from '../../controls';
 import * as s from './toolbarModeButtons.scss';
-import EditMode from '../../../enums/editModes';
+import EditMode from '../../../enums/editMode';
 import toolbarStore from '../../../stores/toolbarStore';
 
 export default class ToolbarModeButtons extends React.Component {
