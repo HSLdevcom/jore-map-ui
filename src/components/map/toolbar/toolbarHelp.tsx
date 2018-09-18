@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ToolbarTools from '../../../enums/toolbarTools';
+import ToolbarTool from '../../../enums/toolbarTool';
 import * as s from './toolbarHelp.scss';
 
 const submenus = {
@@ -10,9 +10,9 @@ const submenus = {
     ),
 };
 
-const getToolbarHelpContent = (tool: ToolbarTools) => {
+const getToolbarHelpContent = (tool: ToolbarTool) => {
     switch (tool) {
-    case ToolbarTools.Edit:
+    case ToolbarTool.Edit:
         return submenus.edit;
     default:
         return null;
@@ -20,7 +20,7 @@ const getToolbarHelpContent = (tool: ToolbarTools) => {
 };
 
 interface IToolbarHelpProps {
-    tool: ToolbarTools;
+    tool: ToolbarTool;
 }
 
 export default class ToolbarHelp extends Component<IToolbarHelpProps> {

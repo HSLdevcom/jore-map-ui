@@ -1,4 +1,4 @@
-enum ToolbarTools {
+enum ToolbarTool {
   AddNode,
   Copy,
   DivideLink,
@@ -7,4 +7,4 @@ enum ToolbarTools {
   Print,
 }
 
-export default ToolbarTools;
+export default ToolbarTool;

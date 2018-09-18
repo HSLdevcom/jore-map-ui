@@ -7,7 +7,7 @@ import NodeType from '../../enums/nodeType';
 import { PopupStore } from '../../stores/popupStore';
 import { ToolbarStore } from '../../stores/toolbarStore';
 import { SidebarStore } from '../../stores/sidebarStore';
-import ToolbarTools from '../../enums/toolbarTools';
+import ToolbarTool from '../../enums/toolbarTool';
 import * as s from './nodeLayer.scss';
 
 interface MarkerLayerProps {
@@ -59,7 +59,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             return (
                 <Marker
                     onContextMenu={openPopup}
-                    draggable={this.props.toolbarStore!.isActive(ToolbarTools.Edit)}
+                    draggable={this.props.toolbarStore!.isActive(ToolbarTool.Edit)}
                     icon={icon}
                     key={index}
                     position={[node.coordinates.lat, node.coordinates.lon]}

@@ -3,7 +3,7 @@ import { FiPrinter } from 'react-icons/fi';
 import { observer } from 'mobx-react';
 import ToolbarButton from './ToolbarButton';
 import toolbarStore from '../../../stores/toolbarStore';
-import ToolbarTools from '../../../enums/toolbarTools';
+import ToolbarTool from '../../../enums/toolbarTool';
 import * as s from './toolbarToolButtons.scss';
 
 @observer
@@ -18,7 +18,7 @@ export default class ToolbarCommonButtons extends React.Component {
                     <ToolbarButton
                         onClick={this.print}
                         isActive={false}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTools.Print)}
+                        isDisabled={toolbarStore.isDisabled(ToolbarTool.Print)}
                         label='Tulosta kartta'
                     >
                         <FiPrinter />
