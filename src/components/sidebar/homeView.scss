@@ -1,8 +1,9 @@
 @import '../../common.scss';
 .homeView {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  width: $sidebarNarrow;
+
 
   .routesText {
     font-weight: bold;

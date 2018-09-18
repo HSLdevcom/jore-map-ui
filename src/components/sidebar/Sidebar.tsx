@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import { Location } from 'history';
+import classnames from 'classnames';
 import hslLogo from '../../assets/hsl-logo.png';
 import { SidebarStore } from '../../stores/sidebarStore';
 import { RouteStore } from '../../stores/routeStore';
@@ -10,7 +11,7 @@ import LinkView from './LinkView';
 import NodeView from './NodeView';
 import RoutesView from './RoutesView';
 import HomeView from './HomeView';
-import routeBuilder from '../../routing/routeBuilder';
+import routeBuilder  from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
 import * as s from './sidebar.scss';
@@ -40,8 +41,13 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             const homeLink = routeBuilder.to(subSites.home).clear().toLink();
             navigator.goTo(homeLink);
         };
+
         return (
-            <div className={s.sidebarView}>
+            <div
+                className={classnames(
+                    s.sidebarView,
+                )}
+            >
                 <div className={s.header}>
                     <div onClick={goToHomeView} className={s.headerContainer}>
                         <img className={s.logo} src={hslLogo} />
@@ -50,18 +56,13 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 </h2>
                     </div>
                 </div>
-                {/* TODO: Use Route path=/node instead of these "if checks" */}
-                { this.props.sidebarStore!.openNodeId !== null ? (
-                    <NodeView />
-                ) : this.props.sidebarStore!.openLinkId !== null ? (
-                    <LinkView />
-                ) : (
-                    <Switch>
-                        <Route path={subSites.routes} component={RoutesView} />
-                        <Route path={subSites.home} component={HomeView} />
-                    </Switch>
-                )
-                }
+                {/* TODO: Use Route path=/node instead of this "if check" */}
+                <Switch>
+                    <Route path={subSites.routes} component={RoutesView} />
+                    <Route path={subSites.node} component={NodeView} />
+                    <Route path={subSites.link} component={LinkView} />
+                    <Route path={subSites.home} component={HomeView} />
+                </Switch>
             </div>
         );
     }

@@ -1,9 +1,11 @@
 import * as React from 'react';
 import * as s from './sidebarViewHeader.scss';
+import routeBuilder  from '../../routing/routeBuilder';
+import subSites from '../../routing/subSites';
+import navigator from '../../routing/navigator';
 
 interface ISidebarViewHeaderProps {
     header: string;
-    closeSidebarView: Function;
 }
 
 class SidebarViewHeader extends React.Component<ISidebarViewHeaderProps> {
@@ -12,7 +14,8 @@ class SidebarViewHeader extends React.Component<ISidebarViewHeaderProps> {
     }
 
     private closeSidebarView = () => {
-        this.props.closeSidebarView();
+        const routesLink = routeBuilder.to(subSites.routes).toLink();
+        navigator.goTo(routesLink);
     }
 
     public render(): any {

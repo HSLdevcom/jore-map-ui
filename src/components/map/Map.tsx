@@ -113,12 +113,21 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     public render() {
-        const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? s.fullscreen : '';
+        // TODO Changing the class is no longer needed but the component needs to be
+        // rendered after changes to mapStore!.isMapFullscreen so there won't be any
+        // grey tiles.
+        const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
+
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
         const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
         const colors = ColorScale.getColors(visibleRoutePaths.length);
         return (
-            <div className={classnames(s.mapView, fullScreenMapViewClass)}>
+            <div
+                className={classnames(
+                    s.mapView,
+                    fullScreenMapViewClass,
+                )}
+            >
                 <Map
                     ref={this.mapReference}
                     center={this.props.mapStore!.coordinates}

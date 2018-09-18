@@ -6,6 +6,9 @@ import { PopupStore } from '../../stores/popupStore';
 import { INode } from '../../models';
 import { SidebarStore } from '../../stores/sidebarStore';
 import * as s from './popupLayer.scss';
+import routeBuilder  from '../../routing/routeBuilder';
+import subSites from '../../routing/subSites';
+import navigator from '../../routing/navigator';
 
 interface PopupLayerProps {
     popupStore?: PopupStore;
@@ -26,10 +29,13 @@ export default class PopupLayer extends Component<PopupLayerProps> {
             const node = this.props.popupStore!.popupNode as INode;
 
             const openNode = () => {
+                // TODO deal fetching nodeId this in the endpoint
                 this.props.sidebarStore!.setOpenNodeId(node.id);
                 const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
                 this.props.setView(latLng, 17);
                 this.onClose();
+                const nodeLink = routeBuilder.to(subSites.node).toLink();
+                navigator.goTo(nodeLink);
             };
 
             return (

@@ -29,7 +29,7 @@ class LinkView extends React.Component
         }
     }
 
-    private closeLinkView = () => {
+    public componentWillUnmount() {
         this.props.sidebarStore!.setOpenLinkId(null);
     }
 
@@ -38,14 +38,13 @@ class LinkView extends React.Component
         <div className={s.linkView}>
             <SidebarViewHeader
                 header='Reitin 1016 linkki'
-                closeSidebarView={this.closeLinkView}
             />
             <div className={classnames(s.flexInnerColumn, s.subTopic)}>
                 REITIN SUUNNAN TIEDOT
             </div>
             <div className={s.flexInnerColumn}>
                 <div className={s.flexInnerRow}>
-                    <div>
+                    <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             REITTITUNNUS
                         </div>
@@ -55,7 +54,7 @@ class LinkView extends React.Component
                             className={s.inputField}
                         />
                     </div>
-                    <div>
+                    <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             SUUNTA
                         </div>
@@ -67,7 +66,7 @@ class LinkView extends React.Component
                     </div>
                 </div>
                 <div className={s.flexInnerRow}>
-                    <div>
+                    <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             VOIM. AST
                         </div>
@@ -77,7 +76,7 @@ class LinkView extends React.Component
                             className={s.inputField}
                         />
                     </div>
-                    <div>
+                    <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             VIIM. VOIM
                         </div>
@@ -88,7 +87,7 @@ class LinkView extends React.Component
                         />
                     </div>
                 </div>
-                <div className={s.flexInnerColumn}>
+                <div className={s.largeInputContainer}>
                     <div className={classnames(s.subTopic)}>
                         NIMI
                     </div>

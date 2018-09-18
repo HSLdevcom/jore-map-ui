@@ -4,6 +4,9 @@ import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '../../stores/sidebarStore';
 import { IRoutePath } from '../../models';
+import routeBuilder  from '../../routing/routeBuilder';
+import subSites from '../../routing/subSites';
+import navigator from '../../routing/navigator';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
@@ -74,15 +77,15 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     }
 
     private openLinkWindow = (routePathLinkId: number) => {
+        // TODO deal with fetching linkID in the endpoint
         this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
+        const linkLink = routeBuilder.to(subSites.link).toLink();
+        navigator.goTo(linkLink);
     }
 
     private hasHighlight(internalId: string) {
-        if (this.state.selectedPolylines.includes(internalId) ||
-            this.state.hoveredPolylines.includes(internalId)) {
-            return true;
-        }
-        return false;
+        return this.state.selectedPolylines.includes(internalId) ||
+            this.state.hoveredPolylines.includes(internalId);
     }
 
     private setHoverHighlight(internalId: string) {

@@ -42,7 +42,7 @@ class NodeView extends React.Component
         }
     }
 
-    private closeNodeView = () => {
+    public componentWillUnmount() {
         this.props.sidebarStore!.setOpenNodeId(null);
     }
 
@@ -68,7 +68,6 @@ class NodeView extends React.Component
         <div className={s.nodeView}>
             <SidebarViewHeader
                 header='Karttakohde'
-                closeSidebarView={this.closeNodeView}
             />
             <div
                 className={classnames(
