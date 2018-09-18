@@ -1,17 +1,4 @@
 .nodeMarker {
   display: block;
   opacity: 0.8;
-
-  .nodeMarkerContent {
-    border-radius: 100px;
-    border-style: solid;
-    height: 12px;
-    width: 12px;
-    border-width: 3px;
-    margin: -3px;
-  }
-}
-
-.highlightedMarker {
-  background-color: rgba(102, 102, 102, 0.5);
 }
