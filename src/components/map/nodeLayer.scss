@@ -1,0 +1,13 @@
+.node {
+  display: block;
+  opacity: 0.8;
+
+  .nodeContent {
+    border-radius: 100px;
+    border-style: solid;
+    height: 12px;
+    width: 12px;
+    border-width: 3px;
+    margin: -3px;
+  }
+}
