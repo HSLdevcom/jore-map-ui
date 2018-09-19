@@ -86,7 +86,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     public componentDidUpdate() {
-        console.log('MAP!', this.getMap());
         this.getMap().invalidateSize();
     }
 
