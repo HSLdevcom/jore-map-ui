@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
-import { Popup } from 'react-leaflet';
+import { Popup, withLeaflet } from 'react-leaflet';
 import { PopupStore } from '../../stores/popupStore';
 import { INode } from '../../models';
 import { SidebarStore } from '../../stores/sidebarStore';
+import { LeafletContext } from './Map';
 import * as s from './popupLayer.scss';
 import routeBuilder  from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
@@ -14,12 +15,13 @@ interface PopupLayerProps {
     popupStore?: PopupStore;
     sidebarStore?: SidebarStore;
     setView: Function;
+    leaflet: LeafletContext;
 }
 
 @inject('popupStore')
 @inject('sidebarStore')
 @observer
-export default class PopupLayer extends Component<PopupLayerProps> {
+class PopupLayer extends Component<PopupLayerProps> {
     private onClose = () => {
         this.props.popupStore!.closePopup();
     }
@@ -32,7 +34,7 @@ export default class PopupLayer extends Component<PopupLayerProps> {
                 // TODO deal fetching nodeId this in the endpoint
                 this.props.sidebarStore!.setOpenNodeId(node.id);
                 const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
-                this.props.setView(latLng, 17);
+                this.props.leaflet.map!.setView(latLng, 17);
                 this.onClose();
                 const nodeLink = routeBuilder.to(subSites.node).toLink();
                 navigator.goTo(nodeLink);
@@ -57,3 +59,4 @@ export default class PopupLayer extends Component<PopupLayerProps> {
         } return null;
     }
 }
+export default withLeaflet(PopupLayer);

@@ -1,24 +1,25 @@
 import React from 'react';
+import { FiMaximize2, FiMinimize2 } from 'react-icons/fi';
 import MapStore from '../../stores/mapStore';
-import * as s from './fullscreenControl.scss';
-import fullScreenEnterIcon from '../../icons/icon-fullscreen-enter.svg';
-import fullScreenExitIcon from '../../icons/icon-fullscreen-exit.svg';
+import ToolbarButton from './toolbar/ToolbarButton';
 
 class FullscreenControl extends React.Component{
+    private toggleFullscreen = () => {
+        MapStore.toggleMapFullscreen();
+    }
     render() {
-        const toggleFullscreen = () => {
-            MapStore.toggleMapFullscreen();
-        };
 
         return (
-            <button
-                className={s.fullscreenButton}
-                onClick={toggleFullscreen}
-            >
-                <img
-                    src={MapStore.isMapFullscreen ? fullScreenExitIcon : fullScreenEnterIcon}
-                />
-            </button>
+            <div>
+                <ToolbarButton
+                    label={MapStore.isMapFullscreen ? 'Pienennä' : 'Suurenna'}
+                    onClick={this.toggleFullscreen}
+                    isActive={false}
+                    isDisabled={false}
+                >
+                    {MapStore.isMapFullscreen ? <FiMinimize2 /> : <FiMaximize2 />}
+                </ToolbarButton>
+            </div>
         );
     }
 }

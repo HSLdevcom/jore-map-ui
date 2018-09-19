@@ -1,5 +1,6 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { MapControl, MapControlProps, withLeaflet } from 'react-leaflet';
+import * as React from 'react';
 import DivControl from './DivControl';
 
 // Custom control wrapper
@@ -42,8 +43,11 @@ class Control extends MapControl<IControlProps>{
 
     renderContent() {
         const container = this.leafletElement.getContainer();
-        if (container) {
-            render(this.props.children, container);
+        if (container && this.props.children) {
+            const { children, ...rest } = this.props;
+            render(React.cloneElement(children, {
+                ...rest }),
+                   container);
         }
     }
 }

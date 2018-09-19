@@ -13,10 +13,4 @@ button.fullscreenButton {
   &:hover {
     background-color: $lightGrey;
   }
-  img {
-    padding-top: 2px; // TODO: check this is in the middle now
-    height: 13px;
-    width: 13px;
-    border: 0px;
-  }
 }

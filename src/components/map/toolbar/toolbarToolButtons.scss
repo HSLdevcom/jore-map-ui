@@ -7,5 +7,8 @@
 
     .toolbarButtonRow {
         display: flex;
+        div {
+            margin: 5px;
+        }
     }
 }
