@@ -179,16 +179,19 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <Control position='topleft'>
                         <Toolbar />
                     </Control>
+
+                    <Control position='topright'>
+                        <MeasurementControl />
+                    </Control>
+
+                    <Control position='bottomleft'>
+                        <MapLayersControl />
+                    </Control>
+
                     <Control position='bottomright'>
                         <FullscreenControl />
                     </Control>
                     <ZoomControl position='bottomright' />
-                    <Control position='topright'>
-                        <MeasurementControl />
-                    </Control>
-                    <Control position='bottomleft'>
-                        <MapLayersControl />
-                    </Control>
                 </Map>
             </div>
         );
