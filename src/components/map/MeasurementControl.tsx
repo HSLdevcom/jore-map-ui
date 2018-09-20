@@ -10,14 +10,13 @@ interface IMeasurementControlProps{
 }
 
 interface IMeasurementControlState {
-    measuring: boolean;
-    removing: boolean;
     activeTool: Tools;
     measurements: number;
 }
 
 enum Tools {
     NONE,
+    DRAGGING,
     MEASURE = 'Aloita mittaus',
     DELETE = 'Poista mittaus',
     CLEAR = 'Poista kaikki mittaukset',
@@ -37,8 +36,6 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     constructor(props: IMeasurementControlProps) {
         super(props);
         this.state = {
-            measuring: false,
-            removing: false,
             activeTool: Tools.NONE,
             measurements: 0,
         };
@@ -57,7 +54,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     }
 
     private toggleMeasure = () => {
-        if (this.state.activeTool === Tools.MEASURE) {
+        if (this.state.activeTool === Tools.MEASURE || this.state.activeTool === Tools.DRAGGING) {
             this.disableMeasure();
         } else {
             this.enableMeasure();
@@ -80,7 +77,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         this.props.leaflet!.layerContainer.off('click', this.measurementClicked);
         this.props.leaflet!.layerContainer.off('mousemove', this.measurementMoving);
         this.props.leaflet!.layerContainer.doubleClickZoom.enable();
-        if (this.state.measuring) {
+        if (this.state.activeTool === Tools.DRAGGING) {
             this.finishMeasurement();
         }
         this.setState({
@@ -98,19 +95,21 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
 
         this.measurementLayer.on('click', this.removeMeasurement(this.measurementLayer));
         this.setState({
-            measuring: true,
+            activeTool: Tools.DRAGGING,
         });
     }
 
     private finishMeasurementClick = (e: L.LeafletMouseEvent) => {
-        e.originalEvent.preventDefault();
-        e.originalEvent.stopPropagation();
-        this.finishMeasurement();
+        if (this.state.activeTool === Tools.DRAGGING) {
+            e.originalEvent.preventDefault();
+            e.originalEvent.stopPropagation();
+            this.finishMeasurement();
+        }
     }
 
     private finishMeasurement = () => {
         this.setState({
-            measuring: false,
+            activeTool: Tools.NONE,
         });
         this.tmpLine.clearLayers();
         if (this.distance === 0) {
@@ -124,7 +123,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     }
 
     private measurementClicked = (e: L.LeafletMouseEvent) => {
-        if (!this.state.measuring) {
+        if (this.state.activeTool !== Tools.DRAGGING) {
             this.startNewMeasurement();
         }
         const latLng = e.latlng;
@@ -159,7 +158,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     }
 
     private measurementMoving = (e: L.LeafletMouseEvent) => {
-        if (!this.state.measuring) return;
+        if (this.state.activeTool !== Tools.DRAGGING) return;
         const movingLatLng = e.latlng;
         this.tmpLine.clearLayers();
         const prevPoint = this.points[this.points.length - 1];
@@ -177,7 +176,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     }
 
     private toggleRemove = () => {
-        if (this.state.removing) {
+        if (this.state.activeTool === Tools.DELETE) {
             this.disableRemove();
         } else {
             this.enableRemove();
@@ -185,9 +184,6 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     }
 
     private enableRemove = () => {
-        this.setState({
-            removing: true,
-        });
         this.disableMeasure();
         this.setState({
             activeTool: Tools.DELETE,
@@ -196,15 +192,12 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
 
     private disableRemove = () => {
         this.setState({
-            removing: false,
-        });
-        this.setState({
             activeTool: Tools.NONE,
         });
     }
 
     private removeMeasurement = (measurement: L.Layer) => () => {
-        if (this.state.removing) {
+        if (this.state.activeTool === Tools.DELETE) {
             this.measurementsLayer.removeLayer(measurement);
             this.setState({
                 measurements: this.state.measurements - 1,
