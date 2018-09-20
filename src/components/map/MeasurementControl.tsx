@@ -1,5 +1,4 @@
-/* tslint:disable */
-import * as React from 'react';
+import React, { Component } from 'react';
 import * as L from 'leaflet';
 import classnames from 'classnames';
 import { FaEraser, FaRulerCombined, FaTrashAlt } from 'react-icons/fa';
@@ -24,8 +23,7 @@ enum Tools {
     CLEAR = 'Poista kaikki mittaukset',
 }
 
-class MeasurementControl extends React.Component<IMeasurementControlProps,
-                                            IMeasurementControlState> {
+class MeasurementControl extends Component<IMeasurementControlProps, IMeasurementControlState> {
     private points: L.LatLng[];
     private distance: number;
     private tmpLine: L.FeatureGroup;
@@ -77,7 +75,8 @@ class MeasurementControl extends React.Component<IMeasurementControlProps,
     }
 
     private disableMeasure = () => {
-        L.DomUtil.removeClass(this.props.leaflet!.layerContainer.getContainer(), s.measurementCursor);
+        L.DomUtil.removeClass(
+            this.props.leaflet!.layerContainer.getContainer(), s.measurementCursor);
         this.props.leaflet!.layerContainer.off('click', this.measurementClicked);
         this.props.leaflet!.layerContainer.off('mousemove', this.measurementMoving);
         this.props.leaflet!.layerContainer.doubleClickZoom.enable();
@@ -100,7 +99,7 @@ class MeasurementControl extends React.Component<IMeasurementControlProps,
         this.measurementLayer.on('click', this.removeMeasurement(this.measurementLayer));
         this.setState({
             measuring: true,
-        })
+        });
     }
 
     private finishMeasurementClick = (e: L.LeafletMouseEvent) => {
@@ -112,14 +111,14 @@ class MeasurementControl extends React.Component<IMeasurementControlProps,
     private finishMeasurement = () => {
         this.setState({
             measuring: false,
-        })
+        });
         this.tmpLine.clearLayers();
         if (this.distance === 0) {
             this.measurementsLayer.removeLayer(this.measurementLayer);
         } else {
             this.setState({
-                measurements: this.state.measurements + 1
-            })
+                measurements: this.state.measurements + 1,
+            });
             this.lastMarker.openPopup();
         }
     }
@@ -131,7 +130,8 @@ class MeasurementControl extends React.Component<IMeasurementControlProps,
         const latLng = e.latlng;
         if (this.points.length > 0) {
             const { x: x1, y: y1 } =
-                this.props.leaflet!.layerContainer.latLngToContainerPoint(this.points[this.points.length - 1]);
+                this.props.leaflet!.layerContainer.latLngToContainerPoint(
+                    this.points[this.points.length - 1]);
             const { x: x2, y: y2 } =
                 this.props.leaflet!.layerContainer.latLngToContainerPoint(latLng);
             const pxDistance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
@@ -187,7 +187,7 @@ class MeasurementControl extends React.Component<IMeasurementControlProps,
     private enableRemove = () => {
         this.setState({
             removing: true,
-        })
+        });
         this.disableMeasure();
         this.setState({
             activeTool: Tools.DELETE,
@@ -197,7 +197,7 @@ class MeasurementControl extends React.Component<IMeasurementControlProps,
     private disableRemove = () => {
         this.setState({
             removing: false,
-        })
+        });
         this.setState({
             activeTool: Tools.NONE,
         });
@@ -207,8 +207,8 @@ class MeasurementControl extends React.Component<IMeasurementControlProps,
         if (this.state.removing) {
             this.measurementsLayer.removeLayer(measurement);
             this.setState({
-                measurements: this.state.measurements - 1
-            })
+                measurements: this.state.measurements - 1,
+            });
         }
         if (this.state.measurements === 0) {
             this.disableRemove();
@@ -220,8 +220,8 @@ class MeasurementControl extends React.Component<IMeasurementControlProps,
             this.measurementsLayer.clearLayers();
             this.disableMeasure();
             this.setState({
-                measurements: 0
-            })
+                measurements: 0,
+            });
         }
     }
 
