@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as L from 'leaflet';
 import classnames from 'classnames';
 import { FaEraser, FaRulerCombined, FaTrashAlt } from 'react-icons/fa';
-import ToolbarButton from './toolbar/ToolbarButton';
+import * as mapStyle from './map.scss';
 import * as s from './measurementControl.scss';
 
 interface IMeasurementControlProps{
@@ -228,32 +228,40 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     render() {
         return(
             <div className={s.measurementControlView}>
-                <ToolbarButton
-                    label={Tools.MEASURE.toString()}
+                <div
+                    title={Tools.MEASURE.toString()}
                     onClick={this.toggleMeasure}
-                    isActive={this.state.activeTool === Tools.MEASURE}
-                    isDisabled={false} // TODO when are these disabled?
+                    className={
+                        classnames(
+                            mapStyle.control,
+                            this.state.activeTool === Tools.MEASURE && mapStyle.controlActive,
+                        )
+                    }
                 >
                     <FaRulerCombined />
-                </ToolbarButton>
+                </div>
                 {this.state.measurements > 0 &&
                     <>
-                        <ToolbarButton
-                            label={Tools.DELETE.toString()}
+                        <div
+                            title={Tools.DELETE.toString()}
                             onClick={this.toggleRemove}
-                            isActive={this.state.activeTool === Tools.DELETE}
-                            isDisabled={false}
+                            className={
+                                classnames(
+                                    mapStyle.control,
+                                    this.state.activeTool
+                                    === Tools.DELETE && mapStyle.controlActive,
+                                )
+                            }
                         >
                             <FaEraser />
-                        </ToolbarButton>
-                        <ToolbarButton
-                            label={Tools.CLEAR.toString()}
+                        </div>
+                        <div
+                            title={Tools.CLEAR.toString()}
                             onClick={this.removeAllMeasurements}
-                            isActive={false}
-                            isDisabled={false}
+                            className={mapStyle.control}
                         >
                             <FaTrashAlt />
-                        </ToolbarButton>
+                        </div>
                     </>
                 }
             </div>
