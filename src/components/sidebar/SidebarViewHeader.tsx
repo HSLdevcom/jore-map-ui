@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as s from './sidebarViewHeader.scss';
+import React from 'react';
 import routeBuilder  from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
+import * as s from './sidebarViewHeader.scss';
 
 interface ISidebarViewHeaderProps {
     header: string;
