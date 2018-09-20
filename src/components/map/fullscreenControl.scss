@@ -1,22 +1,4 @@
 @import '../../common.scss';
-button.fullscreenButton {
-  display: block;
-  background-color: white;
-  width: 34px;
-  height: 34px;
-  border: 2px solid $borderOpaque;
-  border-radius: 4px;
-  padding: 0;
-  cursor: pointer;
-  background-clip: padding-box;
-
-  &:hover {
-    background-color: $lightGrey;
-  }
-  img {
-    padding-top: 2px; // TODO: check this is in the middle now
-    height: 13px;
-    width: 13px;
-    border: 0px;
-  }
+.fullscreenControlView {
+  color: black;
 }

@@ -1,4 +1,4 @@
-import { Map, TileLayer, ZoomControl } from 'react-leaflet';
+import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
@@ -9,7 +9,6 @@ import { RouteStore } from '../../stores/routeStore';
 import Control from './CustomControl';
 import CoordinateControl from './CoordinateControl';
 import FullscreenControl from './FullscreenControl';
-import MeasurementControl from './MeasurementControl';
 import RouteLayer from './RouteLayer';
 import ColorScale from '../../util/colorScale';
 import MarkerLayer from './MarkerLayer';
@@ -20,6 +19,7 @@ import PopupLayer from './PopupLayer';
 import { NodeStore } from '../../stores/nodeStore';
 import * as s from './map.scss';
 import NodeLayer from './NodeLayer';
+import MeasurementControl from './MeasurementControl';
 
 interface IMapState {
     zoomLevel: number;
@@ -39,6 +39,13 @@ interface IMapPropReference {
     zoomControl: false;
     id: string;
 }
+
+export type LeafletContext = {
+    map?: L.Map,
+    pane?: string,
+    layerContainer?: LayerContainer,
+    popupContainer?: L.Layer,
+};
 
 @inject('mapStore', 'routeStore', 'nodeStore')
 @observer
@@ -64,7 +71,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const map = this.getMap();
         // TODO: Convert these as react-components
         map.addControl(new CoordinateControl({ position: 'topright' }));
-        map.addControl(new MeasurementControl({ position: 'topright' }));
+        // map.addControl(new MeasurementControl({ position: 'topright' }));
         map.on('moveend', () => {
             this.props.mapStore!.setCoordinates(
                 map.getCenter().lat,
@@ -171,14 +178,19 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <Control position='topleft'>
                         <Toolbar />
                     </Control>
+
                     <Control position='topright'>
-                        <FullscreenControl />
+                        <MeasurementControl />
                     </Control>
-                    <ZoomControl position='bottomright' />
-                    <Control position='bottomright' />
+
                     <Control position='bottomleft'>
                         <MapLayersControl />
                     </Control>
+
+                    <Control position='bottomright'>
+                        <FullscreenControl />
+                    </Control>
+                    <ZoomControl position='bottomright' />
                 </Map>
             </div>
         );
