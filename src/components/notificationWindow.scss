@@ -16,9 +16,9 @@
 .notificationView {
     display: flex;
     flex-direction: column;
-    top: 0px;
-    left: 400px;
+    left: 300px;
     position:absolute;
+    z-index: 400;
 
     .notificationItem {
         position: relative;
