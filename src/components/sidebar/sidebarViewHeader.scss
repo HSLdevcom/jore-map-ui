@@ -11,8 +11,8 @@
 
     .closeButton {
         position: relative;
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         opacity: 0.8;
         cursor: pointer;
     }
@@ -23,9 +23,9 @@
         position: absolute;
         left: 15px;
         content: ' ';
-        height: 33px;
-        width: 2px;
-        background-color: $fontColorDefault;
+        height: 28px;
+        width: 3px;
+        background-color: $busBlue;
     }
     .closeButton:before {
         transform: rotate(45deg);
