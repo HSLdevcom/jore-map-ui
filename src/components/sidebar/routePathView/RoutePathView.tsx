@@ -1,27 +1,9 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import { SidebarStore } from '../../../stores/sidebarStore';
 import ViewHeader from '../ViewHeader';
 import * as s from './routePathView.scss';
 
-interface IRoutePathViewState {
-}
-
-interface IRoutePathViewProps {
-    sidebarStore?: SidebarStore;
-}
-
-@inject('sidebarStore')
-@observer
-class RoutePathView extends React.Component
-<IRoutePathViewProps, IRoutePathViewState> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-        };
-    }
-
+class RoutePathView extends React.Component{
     public render(): any {
         return (
         <div className={s.routePathView}>
