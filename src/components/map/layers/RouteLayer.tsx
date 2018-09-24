@@ -76,11 +76,11 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         this.props.bringRouteLayerToFront(internalId);
     }
 
-    private openLinkWindow = (routePathLinkId: number) => {
+    private openLinkView = (routePathLinkId: number) => {
         // TODO deal with fetching linkID in the endpoint
         this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
-        const linkLink = routeBuilder.to(subSites.link).toLink();
-        navigator.goTo(linkLink);
+        const linkViewLink = routeBuilder.to(subSites.link).toLink();
+        navigator.goTo(linkViewLink);
     }
 
     private hasHighlight(internalId: string) {
@@ -110,7 +110,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                     <RoutePathLayer
                         key={index}
                         onClick={this.toggleHighlight.bind(this, internalId)}
-                        onContextMenu={this.openLinkWindow}
+                        onContextMenu={this.openLinkView}
                         onMouseOver={this.setHoverHighlight.bind(this, internalId)}
                         onMouseOut={this.clearHoverHightlights}
                         routePathLinks={routePath.routePathLinks}
