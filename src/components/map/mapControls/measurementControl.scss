@@ -2,7 +2,11 @@
 .measurementControlView {
   color: $busBlue;
   display: flex;
-  background-color: $lightGrey;
+  background-color: $white;
+  box-shadow: 0 0 4px #666666;
+  margin: 2px;
+  border-radius: 3px;
+  padding: 5px;
 }
 .measurementCursor {
   cursor: crosshair;
