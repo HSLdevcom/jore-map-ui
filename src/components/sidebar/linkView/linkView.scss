@@ -1,0 +1,27 @@
+@import '../../shared/styles/common.scss';
+
+.linkView {
+    padding: 20px;
+    overflow-y: auto;
+    width: $sidebarWide;
+
+    .subTopic {
+        font-weight: bold;
+        color: $mediumGrey;
+        font-size: $smallFontSize;
+    }
+
+    .inputField {
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+    }
+
+    .inputContainer {
+        padding-right: 10px;
+    }
+
+    .largeInputContainer {
+        margin-top: 10px;
+    }
+}

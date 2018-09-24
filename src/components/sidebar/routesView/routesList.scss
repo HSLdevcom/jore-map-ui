@@ -1,0 +1,43 @@
+@import '../../shared/styles/common.scss';
+.routesListView {
+    display: flex;
+    flex-direction: column;
+
+
+        .routeList {
+            overflow-y: auto;
+            border-top: 1px solid rgb(222, 222, 222);
+            padding: 10px 10px 20px 10px;
+        }
+
+        .network {
+            border-top: 1px solid rgb(222, 222, 222);
+            padding: 20px;
+            text-align: center;
+        }
+
+        input[type=text] {
+            width: 75%;
+            height: 30px;
+            font-family: hslFont;
+            padding: 3px;
+            border-radius: 5px;
+            border: 1.5px solid rgb(189, 190, 191);
+        }
+
+        .inputTitle {
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: rgb(137, 137, 137);
+            letter-spacing: 0em;
+            padding-bottom: 3px;
+            display: block;
+        }
+
+        .checkboxContainer {
+            padding-top: 10px;
+            display: flex;
+        }
+
+
+}

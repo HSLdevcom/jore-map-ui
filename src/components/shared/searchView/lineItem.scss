@@ -1,0 +1,78 @@
+@import '../styles/common.scss';
+
+.lineItemView {
+    text-decoration: none;
+    color: $fontColorDefault;
+    .lineItem {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 5px;
+
+        .label {
+            font-size: $largeFontSize;
+            font-weight: 600;
+            margin-right: 12px;
+            margin-left: 8px;
+        }
+
+        .icon {
+            flex-shrink: 0;
+        }
+    }
+
+    .routeItem {
+        margin-bottom: 10px;
+
+        .routeItemHeader {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            .routePathToggle {
+                margin: 10px;
+                font-size: 22px;
+                cursor: pointer;
+                color: $mediumGrey;
+                transition: .5s;
+                background-color: rgb(238, 241, 243);
+
+                :hover {
+                    color: $ferryBlue;
+                    border-radius: 5px;
+                    transition: .5s;
+                }
+            }
+
+            .routeName {
+                font-weight: bold;
+                cursor: pointer;
+                padding-top: 3px;
+                padding-bottom: 3px;
+                padding-left: 2px;
+                border-radius: 5px;
+    
+                transition: .5s;
+            }
+    
+            .routeName:hover {
+                background-color: #e6e6e6;
+                transition: .5s;
+            }
+    
+            .routeDate {
+                font-size: $smallFontSize;
+                padding: 5px 2px;
+            }
+        }
+
+        .routePaths {
+            margin-left: 40px;
+        }
+    }
+}

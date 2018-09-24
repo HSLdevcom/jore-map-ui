@@ -1,0 +1,11 @@
+@import '../../shared/styles/common.scss';
+.homeView {
+  display: flex;
+  flex-direction: column;
+  width: $sidebarNarrow;
+
+
+  .routesText {
+    font-weight: bold;
+  }
+}
