@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import * as L from 'leaflet';
 import classnames from 'classnames';
 import { FaEraser, FaRulerCombined, FaTrashAlt } from 'react-icons/fa';
-import * as mapStyle from '../map.scss';
 import * as s from './measurementControl.scss';
+import MapControlButton from './MapControlButton';
 
 interface IMeasurementControlProps{
     leaflet?: any;
@@ -100,11 +100,9 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     }
 
     private finishMeasurementClick = (e: L.LeafletMouseEvent) => {
-        if (this.state.activeTool === Tools.DRAGGING) {
-            e.originalEvent.preventDefault();
-            e.originalEvent.stopPropagation();
-            this.finishMeasurement();
-        }
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+        this.finishMeasurement();
     }
 
     private finishMeasurement = () => {
@@ -118,7 +116,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
             this.setState({
                 measurements: this.state.measurements + 1,
             });
-            this.lastMarker.openPopup();
+            this.lastMarker.off('click', this.finishMeasurementClick).openPopup();
         }
     }
 
@@ -221,41 +219,34 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     render() {
         return(
             <div className={s.measurementControlView}>
-                <div
-                    title={Tools.MEASURE.toString()}
+                <MapControlButton
+                    label={Tools.MEASURE.toString()}
                     onClick={this.toggleMeasure}
-                    className={
-                        classnames(
-                            mapStyle.control,
-                            this.state.activeTool === Tools.MEASURE && mapStyle.controlActive,
-                        )
-                    }
+                    isActive={this.state.activeTool === Tools.MEASURE ||
+                                this.state.activeTool === Tools.DRAGGING}
+                    isDisabled={false} // TODO when are these disabled?
                 >
                     <FaRulerCombined />
-                </div>
+                </MapControlButton>
                 {this.state.measurements > 0 &&
-                    <>
-                        <div
-                            title={Tools.DELETE.toString()}
-                            onClick={this.toggleRemove}
-                            className={
-                                classnames(
-                                    mapStyle.control,
-                                    this.state.activeTool
-                                    === Tools.DELETE && mapStyle.controlActive,
-                                )
-                            }
-                        >
-                            <FaEraser />
-                        </div>
-                        <div
-                            title={Tools.CLEAR.toString()}
-                            onClick={this.removeAllMeasurements}
-                            className={mapStyle.control}
-                        >
-                            <FaTrashAlt />
-                        </div>
-                    </>
+                <>
+                    <MapControlButton
+                        label={Tools.DELETE.toString()}
+                        onClick={this.toggleRemove}
+                        isActive={this.state.activeTool === Tools.DELETE}
+                        isDisabled={false}
+                    >
+                        <FaEraser />
+                    </MapControlButton>
+                    <MapControlButton
+                        label={Tools.CLEAR.toString()}
+                        onClick={this.removeAllMeasurements}
+                        isActive={false}
+                        isDisabled={false}
+                    >
+                        <FaTrashAlt />
+                    </MapControlButton>
+                </>
                 }
             </div>
         );

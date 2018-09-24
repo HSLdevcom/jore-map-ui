@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import * as s from './toolbarButton.scss';
+import * as s from './mapControlButton.scss';
 
 interface ToolbarButtonProps {
     label: string;
@@ -9,7 +9,7 @@ interface ToolbarButtonProps {
     isDisabled: boolean;
 }
 
-export default class ToolbarButton extends Component<ToolbarButtonProps>{
+export default class MapControlButton extends Component<ToolbarButtonProps>{
     render () {
         const classes = classnames(
             s.toolbarButton,
