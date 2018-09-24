@@ -1,12 +1,17 @@
 @import '../shared/styles/common.scss';
 
-.sidebarViewHeader {
+.viewHeaderView {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
     .topic {
         font-size: $largeFontSize;
         font-weight: bold;
+    }
+
+    .editButton {
+        margin-right: 20px;
     }
 
     .closeButton {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { SidebarStore } from '../../../stores/sidebarStore';
-import SidebarViewHeader from '../SidebarViewHeader';
+import ViewHeader from '../ViewHeader';
 import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
@@ -25,9 +25,10 @@ class RoutePathView extends React.Component
     public render(): any {
         return (
         <div className={s.routePathView}>
-            <SidebarViewHeader
-                header='Reitin suunta 1016 - 01.09.2017'
+            <ViewHeader
+                header='Reitin suunta 1016'
             />
+            <div className={s.routePathTimestamp}>01.09.2017</div>
             <div className={classnames(s.flexColumn, s.subTopic)}>
                 REITIN OTSIKKOTIEDOT
             </div>
