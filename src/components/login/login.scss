@@ -3,19 +3,21 @@
 .loginView {
     width: 100%;
     height: 100%;
-    
+
     .modalButtonBar {
         display: flex;
+        justify-content: space-between;
         padding-top: 10px;
     }
-    
+
     .label {
-        display: block;
+        display: flex;
+        flex-direction: column;
         padding-top: 10px;
     }
-    
+
     input {
-        width: 200px;
+        width: calc(100% - 10px);
         height: 20px;
         padding: 5px;
     }
