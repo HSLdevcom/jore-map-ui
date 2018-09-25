@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
-import VectorgridLayer from './layers/VectorgridLayer';
 import { MapStore } from '../../stores/mapStore';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './mapControls/CustomControl';
@@ -21,6 +20,7 @@ import { NodeStore } from '../../stores/nodeStore';
 import NodeLayer from './layers/NodeLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import * as s from './map.scss';
+import NetworkLayers from './layers/NetworkLayers';
 
 interface IMapState {
     zoomLevel: number;
@@ -47,9 +47,6 @@ export type LeafletContext = {
     layerContainer?: LayerContainer,
     popupContainer?: L.Layer,
 };
-
-// tslint:disable-next-line
-const linkaddress = 'http://localhost/geoserver/gwc/service/tms/1.0.0/joremapui%3Alinkki@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf';
 
 @inject('mapStore', 'routeStore', 'nodeStore')
 @observer
@@ -164,9 +161,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
-                    <VectorgridLayer
-                        url={linkaddress}
-                    />
+                    <NetworkLayers />
                     <RouteLayer
                         colors={colors}
                         routePaths={visibleRoutePaths}
