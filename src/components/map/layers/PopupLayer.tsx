@@ -36,7 +36,7 @@ class PopupLayer extends Component<PopupLayerProps> {
                 const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
                 this.props.leaflet.map!.setView(latLng, 17);
                 this.onClose();
-                const nodeLink = routeBuilder.to(subSites.node).toLink();
+                const nodeLink = routeBuilder.to(subSites.node).toTarget(`${node.id}`).toLink();
                 navigator.goTo(nodeLink);
             };
 

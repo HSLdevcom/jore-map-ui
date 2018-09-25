@@ -5,6 +5,7 @@ import QueryParams from './queryParams';
 export default class RouteBuilderContext {
     private currentLocation: string;
     private target: SubSites;
+    private targetId: string;
     private values: any;
 
     constructor(currentLocation: string, target: SubSites, values: any) {
@@ -17,11 +18,19 @@ export default class RouteBuilderContext {
         return JSON.parse(JSON.stringify(jsonObject));
     }
 
+    public toTarget(targetId :string) {
+        this.targetId = targetId;
+        return this;
+    }
+
     public toLink() {
         let link =
             this.target !== SubSites.current
             ? this.target.toString()
             : this.currentLocation;
+        if (this.targetId) {
+            link += `${this.targetId}/`;
+        }
         if (Object.keys(this.values).length !== 0) {
             link += `?${qs.stringify(this.values, { encode: false })}`;
         }
