@@ -2,12 +2,12 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '../stores/loginStore';
-import { NotificationStore } from '../stores/notificationStore';
 import { SidebarStore } from '../stores/sidebarStore';
 import { MapStore } from '../stores/mapStore';
+import { NotificationStore } from '../stores/notificationStore';
+import NotificationWindow from './NotificationWindow';
 import Button from './controls/Button';
 import ButtonType from '../enums/buttonType';
-import NotificationWindow from './NotificationWindow';
 import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
@@ -19,13 +19,13 @@ interface IAppState {
 }
 
 interface IAppProps extends RouteComponentProps<any> {
-    notificationStore?: NotificationStore;
     loginStore?: LoginStore;
     sidebarStore?: SidebarStore;
     mapStore?: MapStore;
+    notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'notificationStore', 'sidebarStore', 'loginStore')
+@inject('mapStore', 'sidebarStore', 'loginStore', 'notificationStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
@@ -49,15 +49,15 @@ class App extends React.Component<IAppProps, IAppState> {
                 <div className={sidebarHiddenClass}>
                     <Sidebar location={this.props.location}/>
                 </div>
-                <NotificationWindow
-                  notifications={this.props.notificationStore!.notifications}
-                />
                 <Map/>
                 <Button
                   onClick={this.openLoginForm}
                   className={s.loginButton}
                   type={ButtonType.SECONDARY}
                   text='Kirjaudu'
+                />
+                <NotificationWindow
+                    notifications={this.props.notificationStore!.notifications}
                 />
             </div>
         );
