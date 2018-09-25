@@ -22,12 +22,12 @@ class Button extends React.Component<IButtonProps, {}> {
 
     public render(): any {
         return (
-            <span
+            <div
                 className={this.getClassname(this.props.type, this.props.className)}
                 onClick={this.props.onClick}
             >
                 {this.props.text}
-            </span>
+            </div>
         );
     }
 }
