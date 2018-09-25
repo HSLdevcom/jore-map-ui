@@ -1,91 +1,42 @@
 import * as React from 'react';
+import { observer } from 'mobx-react';
 import TransitToggleButton from './TransitToggleButton';
 import TransitType from '../../enums/transitType';
 import * as s from './transitToggleButtonBar.scss';
 
-interface ITransitToggleButtonBarState {
-    toggles: {[key: string]: boolean};
-}
-
 interface ITtransitToggleButtonBarProps {
-    filters: string[];
-    setFiltersFunction: (filters: string[]) => void;
+    selectedTypes: TransitType[];
+    toggleSelectedTypes: (type: TransitType) => void;
 }
 
-class TransitToggleButtonBar extends React.Component
-<ITtransitToggleButtonBarProps, ITransitToggleButtonBarState> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            toggles: {
-                bus: true,
-                ferry: true,
-                subway: true,
-                train: true,
-                tram: true,
-            },
-        };
-    }
-
-    // Set previous filters if they exist
-    public componentWillMount() {
-        const filters = this.props.filters;
-        if (!filters) { return; }
-        const toggles = this.state.toggles;
-        filters.forEach((filter: string) => {
-            toggles[filter] = false;
-        });
-        this.setState({
-            toggles,
-        });
-    }
-
-    public toggleActivity = (type: TransitType) => {
-        const value: boolean = !this.state.toggles[type];
-        const toggleState: {[key: string]: boolean} = this.state.toggles;
-        toggleState[type] = value;
-        this.setState({
-            toggles: toggleState,
-        });
-
-        // Set filters for RouteSearch.tsx
-        const filters: string[] = [];
-        for (const key in this.state.toggles) {
-            if (this.state.toggles.hasOwnProperty(key)) {
-                if (!this.state.toggles[key]) {
-                    filters.push(key);
-                }
-            }
-        }
-        this.props.setFiltersFunction(filters);
-    }
-
+@observer
+class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarProps> {
     public render(): any {
         return (
             <div className={s.transitToggleButtonBarView}>
                 <TransitToggleButton
-                    toggleActivity={this.toggleActivity}
-                    toggled={this.state.toggles.bus}
+                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.BUS)}
+                    toggled={this.props.selectedTypes.includes(TransitType.BUS)}
                     type={TransitType.BUS}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.toggleActivity}
-                    toggled={this.state.toggles.tram}
+                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.TRAM)}
+                    toggled={this.props.selectedTypes.includes(TransitType.TRAM)}
                     type={TransitType.TRAM}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.toggleActivity}
-                    toggled={this.state.toggles.train}
+                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.TRAIN)}
+                    toggled={this.props.selectedTypes.includes(TransitType.TRAIN)}
                     type={TransitType.TRAIN}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.toggleActivity}
-                    toggled={this.state.toggles.subway}
+                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.SUBWAY)}
+                    toggled={this.props.selectedTypes.includes(TransitType.SUBWAY)}
                     type={TransitType.SUBWAY}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.toggleActivity}
-                    toggled={this.state.toggles.ferry}
+                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.FERRY)}
+                    toggled={this.props.selectedTypes.includes(TransitType.FERRY)}
                     type={TransitType.FERRY}
                 />
             </div>

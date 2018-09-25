@@ -13,8 +13,9 @@ import navigator from '../../../routing/navigator';
 import { SearchStore } from '../../../stores/searchStore';
 import QueryParams from '../../../routing/queryParams';
 import * as s from './routesView.scss';
+import TransitType from '../../../enums/transitType';
 
-interface ISidebarProps{
+interface IRoutesViewProps{
     routeStore?: RouteStore;
     searchStore?: SearchStore;
     sidebarStore?: SidebarStore;
@@ -22,16 +23,21 @@ interface ISidebarProps{
 
 @inject('routeStore', 'searchStore', 'sidebarStore')
 @observer
-class RoutesView extends React.Component<ISidebarProps> {
+class RoutesView extends React.Component<IRoutesViewProps> {
+    constructor (props: IRoutesViewProps) {
+        super(props);
+        this.toggleSelectedType = this.toggleSelectedType.bind(this);
+    }
+
+    public toggleSelectedType = (type: TransitType) => {
+        this.props.searchStore!.toggleSelectedTypes(type);
+    }
+
     public componentDidUpdate() {
         if (!navigator.getQueryParam(QueryParams.routes)) {
             const homeLink = routeBuilder.to(subSites.home).toLink();
             navigator.goTo(homeLink);
         }
-    }
-
-    private setFiltersFunction = (filters: string[]) => {
-        this.props.searchStore!.filters = filters;
     }
 
     public render() {
@@ -43,8 +49,8 @@ class RoutesView extends React.Component<ISidebarProps> {
                 ) : (
                     <>
                         <TransitToggleButtonBar
-                            setFiltersFunction={this.setFiltersFunction}
-                            filters={this.props.searchStore!.filters}
+                            toggleSelectedTypes={this.toggleSelectedType}
+                            selectedTypes={this.props.searchStore!.selectedTypes}
                         />
                         <SearchResults />
                     </>

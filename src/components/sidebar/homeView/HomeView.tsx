@@ -5,24 +5,31 @@ import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import SearchResults from '../../shared/searchView/SearchResults';
 import { SearchStore } from '../../../stores/searchStore';
 import * as s from './homeView.scss';
+import TransitType from '../../../enums/transitType';
 
-interface ISidebarProps{
+interface IHomeViewProps{
     searchStore?: SearchStore;
 }
 
 @inject('searchStore')
 @observer
-class HomeView extends React.Component<ISidebarProps> {
-    private setFiltersFunction = (filters: string[]): void => {
-        this.props.searchStore!.filters = filters;
+class HomeView extends React.Component<IHomeViewProps> {
+    constructor (props: IHomeViewProps) {
+        super(props);
+        this.toggleSelectedType = this.toggleSelectedType.bind(this);
     }
+
+    public toggleSelectedType = (type: TransitType) => {
+        this.props.searchStore!.toggleSelectedTypes(type);
+    }
+
     public render() {
         return (
             <div className={s.homeView}>
                 <LineSearch/>
                 <TransitToggleButtonBar
-                    setFiltersFunction={this.setFiltersFunction}
-                    filters={this.props.searchStore!.filters}
+                    toggleSelectedTypes={this.toggleSelectedType}
+                    selectedTypes={this.props.searchStore!.selectedTypes}
                 />
                 <SearchResults />
             </div>

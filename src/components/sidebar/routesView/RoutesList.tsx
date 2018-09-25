@@ -10,6 +10,7 @@ import QueryParams from '../../../routing/queryParams';
 import navigator from '../../../routing/navigator';
 import RouteAndStopHelper from '../../../storeAbstractions/routeAndStopAbstraction';
 import * as s from './routesList.scss';
+import TransitType from '../../../enums/transitType';
 
 interface IRoutesListState {
     networkCheckboxToggles: any;
@@ -56,7 +57,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         }
     }
 
-    private setFiltersFunction = (filters: string[]) => {
+    private toggleSelectedTypes = (type: TransitType) => {
         // TODO: Make this do something to network.
     }
 
@@ -94,8 +95,8 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>
                     <TransitToggleButtonBar
-                        setFiltersFunction={this.setFiltersFunction}
-                        filters={[]}
+                        toggleSelectedTypes={this.toggleSelectedTypes}
+                        selectedTypes={[]}
                     />
                     <div className={s.checkboxContainer}>
                         <Checkbox
