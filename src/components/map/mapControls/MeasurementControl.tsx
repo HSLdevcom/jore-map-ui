@@ -107,7 +107,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
 
     private finishMeasurement = () => {
         this.setState({
-            activeTool: Tools.NONE,
+            activeTool: Tools.MEASURE,
         });
         this.tmpLine.clearLayers();
         if (this.distance === 0) {
@@ -145,6 +145,9 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         }
         this.lineLayer.clearLayers();
         L.polyline(this.points, { className: s.polyline }).addTo(this.lineLayer);
+        if (this.lastMarker) {
+            this.lastMarker.off('click', this.finishMeasurementClick);
+        }
         this.lastMarker = L.circleMarker(latLng, { className: s.circleMarker })
             .bindPopup(
                 `${this.distance.toFixed(2)} meters`, {

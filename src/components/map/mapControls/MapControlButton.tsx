@@ -12,7 +12,7 @@ interface ToolbarButtonProps {
 export default class MapControlButton extends Component<ToolbarButtonProps>{
     render () {
         const classes = classnames(
-            s.toolbarButton,
+            s.mapControlButton,
             this.props.isActive && !this.props.isDisabled ? s.active : null,
             this.props.isDisabled ? s.disabled : null,
         );
@@ -27,12 +27,8 @@ export default class MapControlButton extends Component<ToolbarButtonProps>{
             <div
                 className={classes}
                 onClick={onClick}
+                title={this.props.label}
             >
-                <span className={s.tooltiptext}>
-                    {
-                        this.props.label
-                    }
-                </span>
                 {
                     this.props.children
                 }
