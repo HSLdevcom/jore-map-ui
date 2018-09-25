@@ -3,14 +3,14 @@ import SubSites from './subSites';
 import QueryParams from './queryParams';
 
 export default class RouteBuilderContext {
-    private _currentLocation: string;
-    private _target: SubSites;
-    private _values: any;
+    private currentLocation: string;
+    private target: SubSites;
+    private values: any;
 
     constructor(currentLocation: string, target: SubSites, values: any) {
-        this._currentLocation = currentLocation;
-        this._target = target;
-        this._values = this.jsonCopy(values);
+        this.currentLocation = currentLocation;
+        this.target = target;
+        this.values = this.jsonCopy(values);
     }
 
     private jsonCopy(jsonObject: JSON) {
@@ -19,42 +19,42 @@ export default class RouteBuilderContext {
 
     public toLink() {
         let link =
-            this._target !== SubSites.current
-            ? this._target.toString()
-            : this._currentLocation;
-        if (Object.keys(this._values).length !== 0) {
-            link += `?${qs.stringify(this._values, { encode: false })}`;
+            this.target !== SubSites.current
+            ? this.target.toString()
+            : this.currentLocation;
+        if (Object.keys(this.values).length !== 0) {
+            link += `?${qs.stringify(this.values, { encode: false })}`;
         }
         return link;
     }
 
     public append(param: QueryParams, value: string) {
-        if (param in this._values) {
-            this._values[param].push(value);
+        if (param in this.values) {
+            this.values[param].push(value);
         } else {
-            this._values[param] = [value];
+            this.values[param] = [value];
         }
         return this;
     }
 
     public remove(param: QueryParams, value: string) {
-        if (param in this._values) {
-            if (Array.isArray(this._values[param])) {
-                this._values[param] = this._values[param].filter((v : string) => v !== value);
+        if (param in this.values) {
+            if (Array.isArray(this.values[param])) {
+                this.values[param] = this.values[param].filter((v : string) => v !== value);
             } else {
-                this._values[param] = null;
+                this.values[param] = null;
             }
         }
         return this;
     }
 
     public set(param: QueryParams, value: string) {
-        this._values[param] = value;
+        this.values[param] = value;
         return this;
     }
 
     public clear() {
-        this._values = {};
+        this.values = {};
         return this;
     }
 }
