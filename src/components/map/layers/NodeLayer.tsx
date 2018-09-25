@@ -19,12 +19,25 @@ interface MarkerLayerProps {
 
 const DEFAULT_RADIUS = 25;
 
+enum color {
+    CROSSROAD_BORDER_COLOR = '#727272',
+    CROSSROAD_BORDER_COLOR_SELECTED = '#727272',
+    CROSSROAD_FILL_COLOR = '#FFF',
+    CROSSROAD_FILL_COLOR_SELECTED = '#727272',
+    STOP_BORDER_COLOR = '#007ac9',
+    STOP_BORDER_COLOR_SELECTED = '#007ac9',
+    STOP_FILL_COLOR = '#FFF',
+    STOP_FILL_COLOR_SELECTED = '#007ac9',
+}
+
 @inject('popupStore', 'toolbarStore', 'sidebarStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getNodeCrossroadMarkerHtml = (isSelected: boolean) => {
-        const borderColor = isSelected ? '#727272' : '#727272';
-        const fillColor = isSelected ? '#727272' : '#FFF';
+        const borderColor = isSelected ?
+            color.CROSSROAD_BORDER_COLOR_SELECTED : color.CROSSROAD_BORDER_COLOR;
+        const fillColor = isSelected ?
+            color.CROSSROAD_FILL_COLOR_SELECTED : color.CROSSROAD_FILL_COLOR;
         return `<div
             style="border-color: ${borderColor}; background-color: ${fillColor}"
             class=${s.nodeContent}
@@ -32,8 +45,10 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
     }
 
     private getNodeStopMarkerHtml = (isSelected: boolean) => {
-        const borderColor = isSelected ? '#007ac9' : '#007ac9';
-        const fillColor = isSelected ? '#007ac9' : '#FFF';
+        const borderColor = isSelected ?
+            color.STOP_BORDER_COLOR_SELECTED : color.STOP_BORDER_COLOR;
+        const fillColor = isSelected ?
+            color.STOP_FILL_COLOR_SELECTED : color.STOP_FILL_COLOR;
         return `<div
             style="border-color: ${borderColor}; background-color: ${fillColor}"
             class=${s.nodeContent}
