@@ -4,7 +4,7 @@ import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { RouteStore } from '../../../stores/routeStore';
 import { IRoutePath, IRoute } from '../../../models';
-import RoutePathToggleButton from '../../controls/RoutePathToggleButton';
+import ToggleSwitch from '../../controls/ToggleSwitch';
 import LineHelper from '../../../util/lineHelper';
 import TransitTypeColorHelper from '../../../util/transitTypeColorHelper';
 import ColorScale from '../../../util/colorScale';
@@ -84,7 +84,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     <div className={s.toggleTitle}>
                         Suunta {routePath.direction}
                     </div>
-                    <RoutePathToggleButton
+                    <ToggleSwitch
                         onClick={toggleRoutePathVisibility}
                         value={routePath.visible}
                         type={this.props.route.line!.transitType}
