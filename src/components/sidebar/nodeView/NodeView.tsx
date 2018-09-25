@@ -1,10 +1,14 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
+import { match } from 'react-router';
 import { SidebarStore } from '../../../stores/sidebarStore';
+import { NodeStore } from '../../../stores/nodeStore';
 import { Button, Dropdown, ToggleButton } from '../../controls';
+import NodeService from '../../../services/nodeService';
 import ButtonType from '../../../enums/buttonType';
 import TransitType from '../../../enums/transitType';
+import { INode } from '../../../models';
 import ViewHeader from '../ViewHeader';
 import * as s from './nodeView.scss';
 
@@ -14,32 +18,47 @@ interface IMapInformationSource {
 }
 
 interface INodeViewState {
+    isLoading: boolean;
     mapInformationSource: IMapInformationSource;
+    node: INode|null;
 }
 
 interface INodeViewProps {
     sidebarStore?: SidebarStore;
+    nodeStore?: NodeStore;
+    match?: match<any>;
 }
 
-@inject('sidebarStore')
+@inject('sidebarStore', 'nodeStore')
 @observer
 class NodeView extends React.Component
 <INodeViewProps, INodeViewState> {
     constructor(props: any) {
         super(props);
         this.state = {
+            isLoading: false,
             mapInformationSource: {
                 selected: 'X/1420004',
                 items: ['X/1420001', 'X/1420002', 'X/1420003', 'X/1420004', 'X/1420005'],
             },
+            node: null,
         };
     }
 
     public componentDidMount() {
-        if (this.props.sidebarStore) {
-            // TODO: fetch GraphSQL with nodeId
-            // const nodeId = this.props.sidebarStore!.openNodeId;
+        const nodeId = this.props.match!.params.id;
+        if (nodeId) {
+            this.queryNode(nodeId);
         }
+    }
+
+    private async queryNode(nodeId: string) {
+        this.setState({ isLoading: true });
+        const node = await NodeService.fetchNode(nodeId);
+        if (node) {
+            this.props.nodeStore!.addNode(node);
+        }
+        this.setState({ isLoading: false });
     }
 
     public componentWillUnmount() {
@@ -64,6 +83,7 @@ class NodeView extends React.Component
     }
 
     public render(): any {
+        // TODO: Use isLoading
         return (
         <div className={s.nodeView}>
             <ViewHeader

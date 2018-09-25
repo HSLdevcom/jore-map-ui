@@ -13,6 +13,9 @@ class NodeFactory {
             id: node.soltunnus,
             type: getNodeType(node.soltyyppi),
             coordinates: coordinate,
+            jore_mittpvm: node.mittpvm,
+            jore_solviimpvm: node.solviimpvm,
+            jore_solkuka: node.solkuka,
         };
     }
 }

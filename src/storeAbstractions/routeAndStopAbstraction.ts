@@ -32,7 +32,7 @@ export default class RouteAndStopAbstraction {
         const missingNodes = routeServiceResults.nodes
             .filter(nodeId => !currentNodeIds.some(cNodeId => cNodeId === nodeId.id));
 
-        nodeStore.addToNodes(missingNodes);
+        nodeStore.addNodes(missingNodes);
     }
 
     public static removeRoute(routeId: string) {

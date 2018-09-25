@@ -4,13 +4,13 @@ import QueryParams from './queryParams';
 
 export default class RouteBuilderContext {
     private currentLocation: string;
-    private target: SubSites;
+    private target: string;
     private targetId: string;
     private values: any;
 
     constructor(currentLocation: string, target: SubSites, values: any) {
         this.currentLocation = currentLocation;
-        this.target = target;
+        this.target = target.replace(':id', '');
         this.values = this.jsonCopy(values);
     }
 

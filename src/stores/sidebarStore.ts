@@ -1,7 +1,9 @@
 import { action, computed, observable } from 'mobx';
 
 export class SidebarStore {
+    // TODO: remove this from store. We get this at component from react-router's match param.
     @observable private _openNodeId: number|null;
+    // TODO: remove this from store. We get this at component from react-router's match param.
     @observable private _openLinkId: number|null;
 
     constructor() {

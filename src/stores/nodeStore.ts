@@ -17,6 +17,11 @@ export class NodeStore {
         this._nodes = value;
     }
 
+    @action
+    public getNode(nodeId: number): INode | undefined {
+        return this._nodes.find(node => node.id === nodeId);
+    }
+
     public getNodesUsedInRoutePaths(routePaths: IRoutePath[]) {
         const requiredRoutePathIds = NodeHelper.getNodeIdsUsedByRoutePaths(routePaths);
         return this._nodes.filter(node =>
@@ -25,7 +30,12 @@ export class NodeStore {
     }
 
     @action
-    public addToNodes(nodes: INode[]) {
+    public addNode(node: INode) {
+        this._nodes.push(node);
+    }
+
+    @action
+    public addNodes(nodes: INode[]) {
         this._nodes.push(...nodes);
     }
 
