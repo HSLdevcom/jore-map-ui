@@ -9,11 +9,11 @@ declare module 'leaflet' {
 interface IVectorGridLayerProps extends GridLayerProps {
     url: string;
     tms: boolean;
+    vectorTileLayerStyles: any;
 }
 
 class VectorgridLayer extends GridLayer<IVectorGridLayerProps> {
-    createLeafletElement(props: IVectorGridLayerProps):
-        any {
+    createLeafletElement(props: IVectorGridLayerProps): any {
         const { url, ...options } = props;
         options.tms = true;
 
