@@ -2,26 +2,35 @@ import React from 'react';
 import routeBuilder  from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
-import * as s from './sidebarViewHeader.scss';
+import Button from '../controls/Button';
+import ButtonType from '../../enums/buttonType';
+import * as s from './viewHeader.scss';
 
-interface ISidebarViewHeaderProps {
+interface IViewHeaderProps {
     header: string;
 }
 
-class SidebarViewHeader extends React.Component<ISidebarViewHeaderProps> {
-    constructor(props: any) {
-        super(props);
-    }
-
+class ViewHeader extends React.Component<IViewHeaderProps> {
     private closeSidebarView = () => {
         const routesLink = routeBuilder.to(subSites.routes).toLink();
         navigator.goTo(routesLink);
     }
 
+    private doNothing = () => {
+        // TODO
+    }
+
     public render(): any {
         return (
-            <div className={s.sidebarViewHeader}>
+            <div className={s.viewHeaderView}>
                 <div className={s.topic}>{this.props.header}</div>
+                <div className={s.flexFiller} />
+                <Button
+                    className={s.editButton}
+                    onClick={this.doNothing}
+                    type={ButtonType.PRIMARY}
+                    text={'Muokkaa'}
+                />
                 <div
                     className={s.closeButton}
                     onClick={this.closeSidebarView}
@@ -31,4 +40,4 @@ class SidebarViewHeader extends React.Component<ISidebarViewHeaderProps> {
 
     }
 }
-export default SidebarViewHeader;
+export default ViewHeader;

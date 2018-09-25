@@ -11,6 +11,7 @@ import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
 import RoutesView from './routesView/RoutesView';
 import HomeView from './homeView/HomeView';
+import RoutePathView from './routePathView/RoutePathView';
 import routeBuilder  from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
@@ -56,12 +57,12 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 </h2>
                     </div>
                 </div>
-                {/* TODO: Use Route path=/node instead of this "if check" */}
                 <Switch>
-                    <Route path={subSites.routes} component={RoutesView} />
-                    <Route path={subSites.node} component={NodeView} />
-                    <Route path={subSites.link} component={LinkView} />
-                    <Route path={subSites.home} component={HomeView} />
+                    <Route exact={true} path={subSites.home} component={HomeView} />
+                    <Route exact={true} path={subSites.routePath} component={RoutePathView} />
+                    <Route exact={true} path={subSites.routes} component={RoutesView} />
+                    <Route exact={true} path={subSites.node} component={NodeView} />
+                    <Route exact={true} path={subSites.link} component={LinkView} />
                 </Switch>
             </div>
         );

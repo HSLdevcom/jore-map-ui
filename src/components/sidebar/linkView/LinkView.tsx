@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { SidebarStore } from '../../../stores/sidebarStore';
-import SidebarViewHeader from '../SidebarViewHeader';
+import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
@@ -36,7 +36,7 @@ class LinkView extends React.Component
     public render(): any {
         return (
         <div className={s.linkView}>
-            <SidebarViewHeader
+            <ViewHeader
                 header='Reitin 1016 linkki'
             />
             <div className={classnames(s.flexInnerColumn, s.subTopic)}>
