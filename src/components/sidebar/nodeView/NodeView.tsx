@@ -5,7 +5,7 @@ import { SidebarStore } from '../../../stores/sidebarStore';
 import { Button, Dropdown, ToggleSwitch } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import TransitType from '../../../enums/transitType';
-import SidebarViewHeader from '../SidebarViewHeader';
+import ViewHeader from '../ViewHeader';
 import * as s from './nodeView.scss';
 
 interface IMapInformationSource {
@@ -66,7 +66,7 @@ class NodeView extends React.Component
     public render(): any {
         return (
         <div className={s.nodeView}>
-            <SidebarViewHeader
+            <ViewHeader
                 header='Karttakohde'
             />
             <div
