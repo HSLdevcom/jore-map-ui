@@ -1,9 +1,10 @@
 import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
+import 'leaflet/dist/leaflet.css';
+import VectorgridLayer from './layers/VectorgridLayer';
 import { MapStore } from '../../stores/mapStore';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './mapControls/CustomControl';
@@ -46,6 +47,9 @@ export type LeafletContext = {
     layerContainer?: LayerContainer,
     popupContainer?: L.Layer,
 };
+
+// tslint:disable-next-line
+const linkaddress = 'http://localhost/geoserver/gwc/service/tms/1.0.0/joremapui%3Alinkki@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf';
 
 @inject('mapStore', 'routeStore', 'nodeStore')
 @observer
@@ -159,6 +163,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         tileSize={512}
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
+                    />
+                    <VectorgridLayer
+                        url={linkaddress}
                     />
                     <RouteLayer
                         colors={colors}
