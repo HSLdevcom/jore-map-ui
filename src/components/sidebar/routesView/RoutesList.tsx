@@ -11,41 +11,33 @@ import navigator from '../../../routing/navigator';
 import RouteAndStopHelper from '../../../storeAbstractions/routeAndStopAbstraction';
 import * as s from './routesList.scss';
 import TransitType from '../../../enums/transitType';
+import { NetworkStore } from '../../../stores/networkStore';
 
 interface IRoutesListState {
-    networkCheckboxToggles: any;
     isLoading: boolean;
 }
 
 interface IRoutesListProps {
     routeStore?: RouteStore;
+    networkStore?: NetworkStore;
 }
 
-@inject('routeStore')
+@inject('routeStore', 'networkStore')
 @observer
 class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            networkCheckboxToggles: {
-                solmut: false,
-                linkit: false,
-            },
             isLoading: false,
         };
+        this.toggleSelectedTransitTypes = this.toggleSelectedTransitTypes.bind(this);
+        this.toggleShowLinks = this.toggleShowLinks.bind(this);
+        this.toggleShowNodes = this.toggleShowNodes.bind(this);
     }
 
     async componentDidMount() {
         await this.queryRoutes();
         searchStore!.setSearchInput('');
-    }
-
-    private networkCheckboxToggle = (type: string) => {
-        const newToggleState: object = this.state.networkCheckboxToggles;
-        newToggleState[type] = !this.state.networkCheckboxToggles[type];
-        this.setState({
-            networkCheckboxToggles: newToggleState,
-        });
     }
 
     private async queryRoutes() {
@@ -57,8 +49,16 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         }
     }
 
-    private toggleSelectedTypes = (type: TransitType) => {
-        // TODO: Make this do something to network.
+    public toggleSelectedTransitTypes = (type: TransitType) => {
+        this.props.networkStore!.toggleTransitType(type);
+    }
+
+    public toggleShowLinks = () => {
+        this.props.networkStore!.toggleShowLinks();
+    }
+
+    public toggleShowNodes = () => {
+        this.props.networkStore!.toggleShowNodes();
     }
 
     public render(): any {
@@ -95,21 +95,21 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>
                     <TransitToggleButtonBar
-                        toggleSelectedTypes={this.toggleSelectedTypes}
-                        selectedTypes={[]}
+                        toggleSelectedTypes={this.toggleSelectedTransitTypes}
+                        selectedTypes={this.props.networkStore!.enabledTypes}
                     />
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
-                            checked={this.state.networkCheckboxToggles.linkit}
-                            text={'Hae alueen linkit'}
+                            onClick={this.toggleShowLinks}
+                            checked={this.props.networkStore!.showLinks}
+                            text={'Näytä alueen linkit'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
-                            checked={this.state.networkCheckboxToggles.solmut}
-                            text={'Hae alueen solmut'}
+                            onClick={this.toggleShowNodes}
+                            checked={this.props.networkStore!.showNodes}
+                            text={'Näytä alueen solmut'}
                         />
                     </div>
                 </div>
