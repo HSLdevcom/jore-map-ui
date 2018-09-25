@@ -4,10 +4,8 @@ import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
-import NotificationWindow from '../NotificationWindow';
 import { MapStore } from '../../stores/mapStore';
 import { RouteStore } from '../../stores/routeStore';
-import { NotificationStore } from '../../stores/notificationStore';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
@@ -31,7 +29,6 @@ interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
     nodeStore?: NodeStore;
-    notificationStore?: NotificationStore;
 }
 
 interface IMapPropReference {
@@ -50,7 +47,7 @@ export type LeafletContext = {
     popupContainer?: L.Layer,
 };
 
-@inject('mapStore', 'routeStore', 'nodeStore', 'notificationStore')
+@inject('mapStore', 'routeStore', 'nodeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps, IMapState> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -194,9 +191,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         <FullscreenControl />
                     </Control>
                     <ZoomControl position='bottomright' />
-                    <NotificationWindow
-                        notifications={this.props.notificationStore!.notifications}
-                    />
                 </Map>
             </div>
         );

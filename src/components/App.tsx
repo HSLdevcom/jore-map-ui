@@ -4,6 +4,8 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '../stores/loginStore';
 import { SidebarStore } from '../stores/sidebarStore';
 import { MapStore } from '../stores/mapStore';
+import { NotificationStore } from '../stores/notificationStore';
+import NotificationWindow from './NotificationWindow';
 import Button from './controls/Button';
 import ButtonType from '../enums/buttonType';
 import Modal from './Modal';
@@ -20,9 +22,10 @@ interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
     sidebarStore?: SidebarStore;
     mapStore?: MapStore;
+    notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'sidebarStore', 'loginStore')
+@inject('mapStore', 'sidebarStore', 'loginStore', 'notificationStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
@@ -52,6 +55,9 @@ class App extends React.Component<IAppProps, IAppState> {
                   className={s.loginButton}
                   type={ButtonType.SECONDARY}
                   text='Kirjaudu'
+                />
+                <NotificationWindow
+                    notifications={this.props.notificationStore!.notifications}
                 />
             </div>
         );

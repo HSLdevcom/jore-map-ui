@@ -16,7 +16,8 @@
 .notificationView {
     display: flex;
     flex-direction: column;
-    left: 300px;
+    left: 50%;
+    transform: translate(-40%, 0);
     position:absolute;
     z-index: 400;
 
