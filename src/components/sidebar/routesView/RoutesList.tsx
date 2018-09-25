@@ -61,6 +61,10 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         this.props.networkStore!.toggleShowNodes();
     }
 
+    public toggleShowPoints = () => {
+        this.props.networkStore!.toggleShowPoints();
+    }
+
     public render(): any {
         const routeList = (routes: IRoute[]) => {
             let visibleRoutePathsIndex = 0;
@@ -103,6 +107,13 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                             onClick={this.toggleShowLinks}
                             checked={this.props.networkStore!.showLinks}
                             text={'Näytä alueen linkit'}
+                        />
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleShowPoints}
+                            checked={this.props.networkStore!.showPoints}
+                            text={'Näytä linkkien pisteet'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>

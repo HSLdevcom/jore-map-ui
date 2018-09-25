@@ -5,11 +5,13 @@ export class NetworkStore {
     @observable private _enabledTypes: TransitType[];
     @observable private _showLinks: boolean;
     @observable private _showNodes: boolean;
+    @observable private _showPoints: boolean;
 
     constructor() {
         this._enabledTypes = [];
         this._showLinks = false;
         this._showNodes = false;
+        this._showPoints = false;
     }
 
     private isAnythingEnabled() {
@@ -32,6 +34,15 @@ export class NetworkStore {
     @action
     public toggleShowNodes() {
         this._showNodes = !this._showNodes;
+    }
+
+    @computed get showPoints(): boolean {
+        return this._showPoints;
+    }
+
+    @action
+    public toggleShowPoints() {
+        this._showPoints = !this._showPoints;
     }
 
     public isTypeEnabled(type: TransitType) {

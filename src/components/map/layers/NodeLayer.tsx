@@ -17,7 +17,7 @@ interface MarkerLayerProps {
     sidebarStore?: SidebarStore;
 }
 
-enum color {
+export enum color {
     STOP_BORDER_COLOR = '#f17c44',
     CROSSROAD_BORDER_COLOR = '#666666',
     NORMAL_FILL_COLOR = '#FFF',
