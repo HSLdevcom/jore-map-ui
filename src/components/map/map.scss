@@ -10,28 +10,3 @@
         background-color: #b2b2b2;
     }
 }
-
-.control {
-    color: #666666;
-    display: flex;
-    margin: 2px;
-    font-size: 24px;
-    background-color: white;
-    padding: 5px;
-    transition: 0.5s;
-    cursor: pointer;
-    box-shadow: 0 0 4px #666666;
-    border-radius: 3px;
-}
-
-.control:hover {
-    background-color: #dddddd;
-}
-
-.controlActive { 
-    color: $busBlue;
-}
-
-.controlButton {
-
-}

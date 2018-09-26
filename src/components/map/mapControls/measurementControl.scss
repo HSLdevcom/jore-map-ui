@@ -1,7 +1,11 @@
 @import '../../shared/styles/common.scss';
+@import '../../shared/styles/mapControl';
+
 .measurementControlView {
+  @extend %soloControl;
   color: $busBlue;
   display: flex;
+
 }
 .measurementCursor {
   cursor: crosshair;
