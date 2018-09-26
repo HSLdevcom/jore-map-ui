@@ -1,0 +1,60 @@
+.tabsInputContainer {
+    width: 100%;
+}
+
+.tabsButtonContainer {
+    background-color: yellow;
+}
+
+.tabButtonA {
+    width:138px;
+    height:40px;
+    border-top-left-radius: 8px;
+    background-color: #fff;
+    color: #333;
+    border-bottom: none;
+    border-left: 2px solid #bebebe;
+    border-top: 2px solid #bebebe;
+}
+
+.tabButtonA.open {
+    width:138px;
+    height:40px;
+    border-top-left-radius: 8px;
+    background-color: red;
+    color: red;
+    border-bottom: none;
+    border-left: 2px solid #bebebe;
+    border-top: 2px solid #bebebe;
+}
+
+.tabButtonB {
+    width:138px;
+    height:40px;
+    background-color: #fff;
+    color: #333;
+    border-bottom: none;
+    border-left: 2px solid #bebebe;
+    border-right: 2px solid #bebebe;
+    border-top: 2px solid #bebebe;
+}
+
+.tabButtonC {
+    width:139px;
+    height:40px;
+    border-top-right-radius: 8px;
+    background-color: #fff;
+    color: #333;
+    border-bottom: none;
+    border-top-right-radius: 8px;
+    border-right: 2px solid #bebebe;
+    border-top: 2px solid #bebebe;
+}
+
+.tabsInput {
+    border-radius: 0px;
+    margin-top: 0px;
+    padding-bottom:200px;
+    width:400px;
+    border-top: none;
+}

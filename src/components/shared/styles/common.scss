@@ -28,6 +28,7 @@ $successGreen: #4F8A10;
 $successGreenLight: #DFF2BF;
 
 $lightGrey: rgb(222,222,222);
+$mediumLightGrey: rgb(190,190,190);
 $mediumGrey: rgb(137, 137, 137);
 $darkGrey: rgb(87,87,87);
 
@@ -41,3 +42,13 @@ $leafletControlBackgroundHover: rgba(255,255,255,0.5);
 
 $sidebarNarrow: 400px;
 $sidebarWide: 500px;
+$sidebarExtraWide: 600px;
+
+$inputMaxHeight: 20px;
+
+input {
+    max-height: $inputMaxHeight;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+}
