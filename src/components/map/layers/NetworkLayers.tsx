@@ -19,7 +19,7 @@ enum geoserverLayer {
 
 enum nodeColors {
     CROSSROAD_COLOR = '#727272',
-    STOP_COLOR = '#007ac9',
+    STOP_COLOR = '#ff7070',
 }
 
 interface INetworkLayersProps {
@@ -95,7 +95,6 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     <VectorgridLayer
                         key={geoserverLayer.Link}
                         url={this.getAddress(geoserverLayer.Link)}
-                        minZoom={15}
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
                 }
@@ -103,7 +102,6 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     <VectorgridLayer
                         key={geoserverLayer.Point}
                         url={this.getAddress(geoserverLayer.Point)}
-                        minZoom={15}
                         vectorTileLayerStyles={this.getPointStyle()}
                     />
                 }
