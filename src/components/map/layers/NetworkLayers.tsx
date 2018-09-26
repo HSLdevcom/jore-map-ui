@@ -8,12 +8,15 @@ import TransitTypeColorHelper from '../../../util/transitTypeColorHelper';
 import * as NodeLayer from './NodeLayer';
 import NodeType from '../../../enums/nodeType';
 
-// tslint:disable-next-line
-const linkAddress = 'http://localhost/geoserver/gwc/service/tms/1.0.0/joremapui%3Alinkki@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf';
-// tslint:disable-next-line
-const pointAddress = 'http://localhost/geoserver/gwc/service/tms/1.0.0/joremapui%3Apiste@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf';
-// tslint:disable-next-line
-const nodeAddress = 'http://localhost/geoserver/gwc/service/tms/1.0.0/joremapui%3Asolmu@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf';
+const layerNameSeparator = '{LAYER_NAME}';
+// tslint:disable-next-line:max-line-length
+const geoserverVectorTileLayerAddress = `http://localhost/geoserver/gwc/service/tms/1.0.0/joremapui%3A${layerNameSeparator}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
+
+enum geoserverLayer {
+    Node = 'solmu',
+    Link = 'linkki',
+    Point = 'piste',
+}
 
 interface INetworkLayersProps {
     networkStore?: NetworkStore;
@@ -22,6 +25,10 @@ interface INetworkLayersProps {
 @inject('networkStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
+    private getAddress(layer: geoserverLayer) {
+        return geoserverVectorTileLayerAddress.replace(layerNameSeparator, layer);
+    }
+
     private getLinkStyle = () => {
         return {
             linkki: (properties: any, zoom: any) => {
@@ -82,24 +89,24 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
             <React.Fragment>
                 { this.props.networkStore!.showLinks &&
                     <VectorgridLayer
-                        key='links'
-                        url={linkAddress}
-                        minZoom={12}
+                        key={geoserverLayer.Link}
+                        url={this.getAddress(geoserverLayer.Link)}
+                        minZoom={15}
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
                 }
                 { this.props.networkStore!.showPoints &&
                     <VectorgridLayer
-                        key='points'
-                        url={pointAddress}
+                        key={geoserverLayer.Point}
+                        url={this.getAddress(geoserverLayer.Point)}
                         minZoom={15}
                         vectorTileLayerStyles={this.getPointStyle()}
                     />
                 }
                 { this.props.networkStore!.showNodes &&
                     <VectorgridLayer
-                        key='nodes'
-                        url={nodeAddress}
+                        key={geoserverLayer.Node}
+                        url={this.getAddress(geoserverLayer.Node)}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }
