@@ -64,7 +64,7 @@ export class NetworkStore {
 
     @action
     public toggleTransitType(type: TransitType) {
-        if (this.isTypeEnabled(type)) {
+        if (this._enabledTypes.includes(type)) {
             this._enabledTypes = this._enabledTypes.filter(t => t !== type);
         } else {
             this._enabledTypes.push(type);
