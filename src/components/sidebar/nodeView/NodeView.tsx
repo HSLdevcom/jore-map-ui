@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { SidebarStore } from '../../../stores/sidebarStore';
-import { Button, Dropdown, ToggleButton } from '../../controls';
+import { Button, Dropdown, ToggleSwitch } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import TransitType from '../../../enums/transitType';
 import ViewHeader from '../ViewHeader';
@@ -78,7 +78,7 @@ class NodeView extends React.Component
                 <div className={s.rowElement}>
                     Pysäkki käytössä
                 </div>
-                <ToggleButton
+                <ToggleSwitch
                     onClick={this.toggleStopInUse}
                     value={true}
                     type={TransitType.BUS}

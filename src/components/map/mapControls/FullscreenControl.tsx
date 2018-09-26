@@ -2,7 +2,7 @@ import React from 'react';
 import { FiMaximize2, FiMinimize2 } from 'react-icons/fi';
 import MapStore from '../../../stores/mapStore';
 import * as s from './fullscreenControl.scss';
-import * as mapStyle from '../map.scss';
+import MapControlButton from './MapControlButton';
 
 class FullscreenControl extends React.Component{
     private toggleFullscreen = () => {
@@ -12,13 +12,14 @@ class FullscreenControl extends React.Component{
 
         return (
             <div className={s.fullscreenControlView}>
-                <div
-                    title={MapStore.isMapFullscreen ? 'Pienennä' : 'Suurenna'}
+                <MapControlButton
+                    label={MapStore.isMapFullscreen ? 'Pienennä' : 'Suurenna'}
                     onClick={this.toggleFullscreen}
-                    className={mapStyle.control}
+                    isActive={false}
+                    isDisabled={false}
                 >
                     {MapStore.isMapFullscreen ? <FiMinimize2 /> : <FiMaximize2 />}
-                </div>
+                </MapControlButton>
             </div>
         );
     }
