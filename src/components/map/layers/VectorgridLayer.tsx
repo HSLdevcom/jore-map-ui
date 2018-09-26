@@ -1,5 +1,5 @@
 import L from 'leaflet';
-require('leaflet.vectorgrid/dist/Leaflet.VectorGrid.bundled.js');
+import 'leaflet.vectorgrid';
 import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
 
 declare module 'leaflet' {
