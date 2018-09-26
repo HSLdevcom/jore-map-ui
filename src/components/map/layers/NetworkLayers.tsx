@@ -25,9 +25,14 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     private getLinkStyle = () => {
         return {
             linkki: (properties: any, zoom: any) => {
+                const type = TransitTypeHelper
+                    .convertTransitTypeCodeToTransitType(properties.lnkverkko);
+
+                const color = TransitTypeColorHelper.getColor(type);
+
                 return {
+                    color,
                     weight: 1,
-                    color: '#549ae6',
                     fillOpacity: 1,
                     fill: true,
                 };
