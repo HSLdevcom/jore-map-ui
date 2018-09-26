@@ -5,7 +5,6 @@ import VectorgridLayer from './VectorgridLayer';
 import { NetworkStore } from '../../../stores/networkStore';
 import TransitTypeHelper from '../../../util/transitTypeHelper';
 import TransitTypeColorHelper from '../../../util/transitTypeColorHelper';
-import * as NodeLayer from './NodeLayer';
 import NodeType from '../../../enums/nodeType';
 
 const layerNameSeparator = '{LAYER_NAME}';
@@ -16,6 +15,11 @@ enum geoserverLayer {
     Node = 'solmu',
     Link = 'linkki',
     Point = 'piste',
+}
+
+enum nodeColors {
+    CROSSROAD_COLOR = '#727272',
+    STOP_COLOR = '#007ac9',
 }
 
 interface INetworkLayersProps {
@@ -69,10 +73,10 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 let color;
                 switch (properties.soltyyppi) {
                 case NodeType.STOP:
-                    color = NodeLayer.color.STOP_BORDER_COLOR;
+                    color = nodeColors.STOP_COLOR;
                     break;
                 case NodeType.CROSSROAD:
-                    color = NodeLayer.color.CROSSROAD_BORDER_COLOR;
+                    color = nodeColors.CROSSROAD_COLOR;
                     break;
                 }
 

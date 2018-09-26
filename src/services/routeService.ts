@@ -90,14 +90,24 @@ query getLineDetails($routeId: String!) {
                                     soly,
                                     soltunnus,
                                     soltyyppi,
-                                    geojson
+                                    geojson,
+                                    pysakkiBySoltunnus {
+                                        pyssade,
+                                        pysnimi,
+                                        pysnimir
+                                    }
                                 }
                                 solmuByLnkloppusolmu {
                                     solx,
                                     soly,
                                     soltunnus,
                                     soltyyppi,
-                                    geojson
+                                    geojson,
+                                    pysakkiBySoltunnus {
+                                        pyssade,
+                                        pysnimi,
+                                        pysnimir
+                                    }
                                 }
                                 linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
                                     geojson
