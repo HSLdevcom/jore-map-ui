@@ -8,7 +8,13 @@ export class NetworkStore {
     @observable private _showPoints: boolean;
 
     constructor() {
-        this._enabledTypes = [];
+        this._enabledTypes = [
+            TransitType.BUS,
+            TransitType.FERRY,
+            TransitType.SUBWAY,
+            TransitType.TRAIN,
+            TransitType.TRAM,
+        ];
         this._showLinks = false;
         this._showNodes = false;
         this._showPoints = false;
