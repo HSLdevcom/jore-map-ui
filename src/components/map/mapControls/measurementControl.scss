@@ -1,4 +1,6 @@
 @import '../../shared/styles/common.scss';
+@import '../../shared/styles/mapControl';
+
 .measurementControlView {
   @extend %soloControl;
   color: $busBlue;
