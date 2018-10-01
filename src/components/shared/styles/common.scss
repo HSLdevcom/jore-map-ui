@@ -44,7 +44,8 @@ $sidebarNarrow: 400px;
 $sidebarWide: 500px;
 $sidebarExtraWide: 600px;
 
-$inputMaxHeight: 20px;
+$inputMaxHeight: 22px;
+$textareaMaxHeight: 200px;
 
 input {
     max-height: $inputMaxHeight;
@@ -54,7 +55,7 @@ input {
 }
 
 textarea {
-    max-height: $inputMaxHeight;
+    max-height: $textareaMaxHeight;
     padding: 10px;
     margin-top: 5px;
     border-radius: 5px;

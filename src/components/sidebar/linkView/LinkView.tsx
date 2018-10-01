@@ -40,10 +40,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         // console.log('asd');
     }
 
-    public doNothing = () => {
-        // console.log('klik');
-    }
-
     public render(): any {
         return (
         <div className={s.linkView}>
@@ -83,11 +79,17 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRow}>
-                        <InputContainer
-                            label='TIEDOT'
-                            placeholder=''
-                            className={s.textArea}
-                        />
+                        <div className={s.inputContainer}>
+                            <div className={classnames(s.subTopic)}>
+                                TIEDOT
+                            </div>
+                            <input
+                                placeholder=''
+                                type='text'
+                                className={s.textArea}
+                                readOnly={true}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -360,22 +362,22 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             />
             <div className={s.flexRow}>
                 <Button
-                    onClick={this.doNothing}
+                    onClick={this.onChange}
                     type={ButtonType.PRIMARY}
                     text={'Seuraava'}
                 />
                 <Button
-                    onClick={this.doNothing}
+                    onClick={this.onChange}
                     type={ButtonType.PRIMARY}
                     text={'Edellinen'}
                 />
                 <Button
-                    onClick={this.doNothing}
+                    onClick={this.onChange}
                     type={ButtonType.PRIMARY}
                     text={'Alkusolmu'}
                 />
                 <Button
-                    onClick={this.doNothing}
+                    onClick={this.onChange}
                     type={ButtonType.PRIMARY}
                     text={'Loppusolmu'}
                 />

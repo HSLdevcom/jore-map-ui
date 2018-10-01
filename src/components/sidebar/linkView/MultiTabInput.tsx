@@ -8,7 +8,6 @@ interface IMultiTabInputProps {
 
 interface IMultiTabInputState {
     tabSelected: number;
-    value: string;
 }
 
 class MultiTabInput extends React.Component<IMultiTabInputProps, IMultiTabInputState> {
@@ -16,7 +15,6 @@ class MultiTabInput extends React.Component<IMultiTabInputProps, IMultiTabInputS
         super(props);
         this.state = {
             tabSelected: 0,
-            value: '',
         };
 
     }
