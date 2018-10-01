@@ -25,7 +25,7 @@ interface IRoutesViewProps{
 @observer
 class RoutesView extends React.Component<IRoutesViewProps> {
     public toggleSelectedType = (type: TransitType) => {
-        this.props.searchStore!.toggleSelectedTypes(type);
+        this.props.searchStore!.toggleTransitType(type);
     }
 
     public componentDidUpdate() {

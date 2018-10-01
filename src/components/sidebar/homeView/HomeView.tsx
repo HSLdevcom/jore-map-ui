@@ -15,7 +15,7 @@ interface IHomeViewProps{
 @observer
 class HomeView extends React.Component<IHomeViewProps> {
     public toggleSelectedType = (type: TransitType) => {
-        this.props.searchStore!.toggleSelectedTypes(type);
+        this.props.searchStore!.toggleTransitType(type);
     }
 
     public render() {

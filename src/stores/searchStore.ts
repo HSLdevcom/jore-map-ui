@@ -60,7 +60,7 @@ export class SearchStore {
     }
 
     @action
-    public toggleSelectedTypes(type: TransitType) {
+    public toggleTransitType(type: TransitType) {
         if (this._selectedTypes.includes(type)) {
             this._selectedTypes = this._selectedTypes.filter(t => t !== type);
         } else {
