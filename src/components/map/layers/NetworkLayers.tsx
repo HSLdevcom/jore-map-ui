@@ -93,7 +93,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
     render() {
         return (
-            <React.Fragment>
+            <>
                 { this.props.networkStore!.isLinksVisible &&
                     <VectorGridLayer
                         key={GeoserverLayer.Link}
@@ -115,7 +115,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }
-            </React.Fragment>
+            </>
 
         );
     }
