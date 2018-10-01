@@ -96,7 +96,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>
                     <TransitToggleButtonBar
-                        toggleSelectedTransitTypes={this.toggleTransitType}
+                        toggleSelectedTransitType={this.toggleTransitType}
                         selectedTransitTypes={this.props.networkStore!.selectedTransitTypes}
                     />
                     <div className={s.checkboxContainer}>

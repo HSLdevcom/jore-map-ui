@@ -44,7 +44,7 @@ class RoutesView extends React.Component<IRoutesViewProps> {
                 ) : (
                     <>
                         <TransitToggleButtonBar
-                            toggleSelectedTransitTypes={this.toggleTransitType}
+                            toggleSelectedTransitType={this.toggleTransitType}
                             selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
                         />
                         <SearchResults />
