@@ -50,7 +50,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             <SidebarViewHeader
                 header='Reitin 1016 linkki'
             />
-            <MultiTabInput />
             <div className={classnames(s.flexInnerColumn, s.subTopic)}>
                 REITIN SUUNNAN TIEDOT
             </div>
@@ -82,11 +81,15 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         className={s.largeInput}
                     />
                 </div>
-                <InputContainer
-                    label='TIEDOT'
-                    placeholder=''
-                    className={s.textArea}
-                />
+                <div className={s.flexRow}>
+                    <div className={s.flexInnerRow}>
+                        <InputContainer
+                            label='TIEDOT'
+                            placeholder=''
+                            className={s.textArea}
+                        />
+                    </div>
+                </div>
             </div>
             <div className={classnames(s.flexInnerColumn, s.subTopic)}>
                 REITIN LINKKI
@@ -97,21 +100,27 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         ALKU
                     </div>
                     <div className={s.inputRowContainer}>
-                        <input
-                            placeholder='1020112'
-                            type='text'
-                        />
-                        <div>
-                            <Dropdown
-                                onChange={this.onChange}
-                                items={['P', 'P1', 'P2']}
-                                selected={'P'}
+                        <div className={s.inputContainer}>
+                            <input
+                                placeholder='1020112'
+                                type='text'
                             />
                         </div>
-                        <input
-                            placeholder='Rautatientori'
-                            type='text'
-                        />
+                        <div className={s.inputContainer}>
+                            <div>
+                                <Dropdown
+                                    onChange={this.onChange}
+                                    items={['P', 'P1', 'P2']}
+                                    selected={'P'}
+                                />
+                            </div>
+                        </div>
+                        <div className={s.inputContainer}>
+                            <input
+                                placeholder='Rautatientori'
+                                type='text'
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -121,21 +130,27 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         LOPPU
                     </div>
                     <div className={s.inputRowContainer}>
-                        <input
-                            placeholder='1020126'
-                            type='text'
-                        />
-                        <div>
-                            <Dropdown
-                                onChange={this.onChange}
-                                items={['P', 'P1', 'P2']}
-                                selected={'P'}
+                        <div className={s.inputContainer}>
+                            <input
+                                placeholder='1020126'
+                                type='text'
                             />
                         </div>
-                        <input
-                            placeholder='Rautatientori'
-                            type='text'
-                        />
+                        <div className={s.inputContainer}>
+                            <div>
+                                <Dropdown
+                                    onChange={this.onChange}
+                                    items={['P', 'P1', 'P2']}
+                                    selected={'P'}
+                                />
+                            </div>
+                        </div>
+                        <div className={s.inputContainer}>
+                            <input
+                                placeholder='Rautatientori'
+                                type='text'
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -203,28 +218,36 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             ALKUSOLMUN SARAKE NRO
                         </div>
                         <div className={s.flexInnerRow}>
-                            <input
-                                placeholder='1'
-                                type='text'
-                                className={s.smallInput}
-                            />
-                            <Checkbox
-                                checked={false}
-                                text={'Ohitusaika kirjat-aikat.'}
-                                onClick={this.onChange}
-                            />
+                            <div className={s.smallInputContainer}>
+                                <input
+                                    placeholder='1'
+                                    type='text'
+                                    className={s.smallInput}
+                                />
+                            </div>
+                            <div className={s.checkBoxContainer}>
+                                <Checkbox
+                                    checked={false}
+                                    text={'Ohitusaika kirja-aikat.'}
+                                    onClick={this.onChange}
+                                />
+                            </div>
                         </div>
                         <div className={s.flexInnerRow}>
-                            <input
-                                placeholder='1'
-                                type='text'
-                                className={s.smallInput}
-                            />
-                            <Checkbox
-                                checked={false}
-                                text={'Ohitusaika kirjat-aikat.'}
-                                onClick={this.onChange}
-                            />
+                            <div className={s.smallInputContainer}>
+                                <input
+                                    placeholder='1'
+                                    type='text'
+                                    className={s.smallInput}
+                                />
+                            </div>
+                            <div className={s.checkBoxContainer}>
+                                <Checkbox
+                                    checked={false}
+                                    text={'Ohitusaika nettiaikat.'}
+                                    onClick={this.onChange}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className={s.inputContainer}>
@@ -269,28 +292,36 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             VIIM. LINKIN LOPPUSOLMU SARAKE NRO
                         </div>
                         <div className={s.flexInnerRow}>
-                            <input
-                                placeholder=''
-                                type='text'
-                                className={s.smallInput}
-                            />
-                            <Checkbox
-                                checked={false}
-                                text={'Ohitusaika kirjat-aikat.'}
-                                onClick={this.onChange}
-                            />
+                            <div className={s.smallInputContainer}>
+                                <input
+                                    placeholder=''
+                                    type='text'
+                                    className={s.smallInput}
+                                />
+                            </div>
+                            <div className={s.checkBoxContainer}>
+                                <Checkbox
+                                    checked={false}
+                                    text={'Ohitusaika kirja-aikat.'}
+                                    onClick={this.onChange}
+                                />
+                            </div>
                         </div>
                         <div className={s.flexInnerRow}>
-                            <input
-                                placeholder=''
-                                type='text'
-                                className={s.smallInput}
-                            />
-                            <Checkbox
-                                checked={false}
-                                text={'Ohitusaika kirjat-aikat.'}
-                                onClick={this.onChange}
-                            />
+                            <div className={s.smallInputContainer}>
+                                <input
+                                    placeholder=''
+                                    type='text'
+                                    className={s.smallInput}
+                                />
+                            </div>
+                            <div className={s.checkBoxContainer}>
+                                <Checkbox
+                                    checked={false}
+                                    text={'Ohitusaika nettiaikat.'}
+                                    onClick={this.onChange}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className={s.inputContainer}>
@@ -324,7 +355,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     className={s.mediumInput}
                 />
             </div>
-
+            <MultiTabInput
+                tabs={['Tariffialueet', 'Määränpäät', 'Ajoajat']}
+            />
             <div className={s.flexRow}>
                 <Button
                     onClick={this.doNothing}

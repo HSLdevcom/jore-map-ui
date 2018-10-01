@@ -1,13 +1,14 @@
-// import classnames from 'classnames';
+import classnames from 'classnames';
 import * as React from 'react';
-import * as s from './linkView.scss';
+import * as s from './multiTabInput.scss';
 
 interface IMultiTabInputProps {
+    tabs: string[];
 }
 
 interface IMultiTabInputState {
     tabSelected: number;
-    class: string;
+    value: string;
 }
 
 class MultiTabInput extends React.Component<IMultiTabInputProps, IMultiTabInputState> {
@@ -15,7 +16,7 @@ class MultiTabInput extends React.Component<IMultiTabInputProps, IMultiTabInputS
         super(props);
         this.state = {
             tabSelected: 0,
-            class: s.tabButtonA,
+            value: '',
         };
 
     }
@@ -23,36 +24,41 @@ class MultiTabInput extends React.Component<IMultiTabInputProps, IMultiTabInputS
     public onTabClick = (tabSelected: number) => {
         this.setState({
             tabSelected,
-            class: s.tabButtonC,
         });
     }
 
-    public isTabSelected = (tabIndex: number) => {
-        const tabSelected = this.state.tabSelected;
-        console.log(tabSelected);
-        return (tabIndex === tabSelected);
+    public generateTabs = () => {
+        return this.props.tabs.map((tab: string, index) => {
+            let classname = classnames(s.tabButton, s.tabButtonMiddle);
+            if (index === 0) {
+                classname = classnames(s.tabButton, s.tabButtonLeft);
+            } else if (index === this.props.tabs.length - 1) {
+                classname = classnames(s.tabButton, s.tabButtonRight);
+            }
+            return(
+                <div
+                    key={index}
+                    className={(this.state.tabSelected === index) ?
+                    classnames(classname, s.opened) :
+                    classname}
+                    onClick={this.onTabClick.bind(this, index)}
+                >
+                    <div className={s.tabLabel}>
+                        {tab}
+                    </div>
+                </div>
+            );
+        });
     }
 
     public render(): any {
         return (
              <div className={s.tabsInputContainer}>
                 <div className={s.flexRow}>
-                    <div
-                        className={this.state.class}
-                        onClick={this.onTabClick.bind(this, 0)}
-                    >
-                        1
-                    </div>
-                    <div className={s.tabButtonB} onClick={this.onTabClick.bind(this, 1)}>
-                        2
-                    </div>
-                    <div className={s.tabButtonC} onClick={this.onTabClick.bind(this, 2)}>
-                        3
-                    </div>
+                    {this.generateTabs()}
                 </div>
-                <input
+                <textarea
                     placeholder=''
-                    type='text'
                     className={s.tabsInput}
                 />
             </div>
