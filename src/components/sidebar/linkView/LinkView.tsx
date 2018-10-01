@@ -97,7 +97,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             <input
                                 placeholder=''
                                 type='text'
-                                className={s.textArea}
                                 readOnly={true}
                             />
                         </div>
