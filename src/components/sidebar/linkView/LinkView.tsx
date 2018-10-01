@@ -176,7 +176,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div>
                         <Dropdown
                             onChange={this.onChange}
-                            items={['Kyl', 'Salee', 'Ehk']}
+                            items={['Kyllä']}
                             selected={'Ei'}
                         />
                     </div>
