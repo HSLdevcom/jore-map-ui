@@ -5,8 +5,8 @@ import TransitType from '../../enums/transitType';
 import * as s from './transitToggleButtonBar.scss';
 
 interface ITtransitToggleButtonBarProps {
-    selectedTypes: TransitType[];
-    toggleSelectedTypes: (type: TransitType) => void;
+    selectedTransitTypes: TransitType[];
+    toggleSelectedTransitTypes: (type: TransitType) => void;
 }
 
 @observer
@@ -15,28 +15,28 @@ class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarPro
         return (
             <div className={s.transitToggleButtonBarView}>
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes}
-                    toggled={this.props.selectedTypes.includes(TransitType.BUS)}
+                    toggleActivity={this.props.toggleSelectedTransitTypes}
+                    toggled={this.props.selectedTransitTypes.includes(TransitType.BUS)}
                     type={TransitType.BUS}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes}
-                    toggled={this.props.selectedTypes.includes(TransitType.TRAM)}
+                    toggleActivity={this.props.toggleSelectedTransitTypes}
+                    toggled={this.props.selectedTransitTypes.includes(TransitType.TRAM)}
                     type={TransitType.TRAM}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes}
-                    toggled={this.props.selectedTypes.includes(TransitType.TRAIN)}
+                    toggleActivity={this.props.toggleSelectedTransitTypes}
+                    toggled={this.props.selectedTransitTypes.includes(TransitType.TRAIN)}
                     type={TransitType.TRAIN}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes}
-                    toggled={this.props.selectedTypes.includes(TransitType.SUBWAY)}
+                    toggleActivity={this.props.toggleSelectedTransitTypes}
+                    toggled={this.props.selectedTransitTypes.includes(TransitType.SUBWAY)}
                     type={TransitType.SUBWAY}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes}
-                    toggled={this.props.selectedTypes.includes(TransitType.FERRY)}
+                    toggleActivity={this.props.toggleSelectedTransitTypes}
+                    toggled={this.props.selectedTransitTypes.includes(TransitType.FERRY)}
                     type={TransitType.FERRY}
                 />
             </div>

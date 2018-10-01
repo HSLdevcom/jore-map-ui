@@ -49,7 +49,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.showMore();
         await this.queryAllLines();
         this.reactionDisposer = reaction(() =>
-        [this.props.searchStore!.searchInput, this.props.searchStore!.selectedTypes],
+        [this.props.searchStore!.searchInput, this.props.searchStore!.selectedTransitTypes],
                                          this.resetShow,
             );
     }
@@ -71,7 +71,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const searchTerm = this.props.searchStore!.searchInput.toLowerCase();
 
         // Filter by transitType
-        if (!this.props.searchStore!.selectedTypes.includes(transitType)) {
+        if (!this.props.searchStore!.selectedTransitTypes.includes(transitType)) {
             return false;
         }
 

@@ -7,12 +7,12 @@ export class SearchStore {
         routePathId: string;
         routeId: string;
     }[];
-    @observable private _selectedTypes: TransitType[];
+    @observable private _selectedTransitTypes: TransitType[];
 
     constructor() {
         this._searchInput = '';
         this._subLineItems = [];
-        this._selectedTypes = [
+        this._selectedTransitTypes = [
             TransitType.BUS,
             TransitType.FERRY,
             TransitType.SUBWAY,
@@ -55,16 +55,16 @@ export class SearchStore {
         return this._subLineItems;
     }
 
-    @computed get selectedTypes(): TransitType[] {
-        return this._selectedTypes;
+    @computed get selectedTransitTypes(): TransitType[] {
+        return this._selectedTransitTypes;
     }
 
     @action
     public toggleTransitType(type: TransitType) {
-        if (this._selectedTypes.includes(type)) {
-            this._selectedTypes = this._selectedTypes.filter(t => t !== type);
+        if (this._selectedTransitTypes.includes(type)) {
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
-            this._selectedTypes.push(type);
+            this._selectedTransitTypes.push(type);
         }
     }
 }
