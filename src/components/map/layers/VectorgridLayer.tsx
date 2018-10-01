@@ -12,7 +12,7 @@ interface IVectorGridLayerProps extends GridLayerProps {
     vectorTileLayerStyles: any;
 }
 
-class VectorgridLayer extends GridLayer<IVectorGridLayerProps> {
+class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
     createLeafletElement(props: IVectorGridLayerProps): any {
         const { url, ...options } = props;
         options.tms = true;
@@ -28,4 +28,4 @@ class VectorgridLayer extends GridLayer<IVectorGridLayerProps> {
     }
 }
 
-export default withLeaflet(VectorgridLayer);
+export default withLeaflet(VectorGridLayer);

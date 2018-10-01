@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import VectorgridLayer from './VectorgridLayer';
+import VectorGridLayer from './VectorGridLayer';
 import { NetworkStore } from '../../../stores/networkStore';
 import TransitTypeHelper from '../../../util/transitTypeHelper';
 import TransitTypeColorHelper from '../../../util/transitTypeColorHelper';
