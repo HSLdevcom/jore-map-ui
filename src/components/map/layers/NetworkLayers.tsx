@@ -35,7 +35,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
     private getLinkStyle = () => {
         return {
-            // GeoServer layer linkki: link
+            // Layer name 'linkki' is directly mirrored from Jore through geoserver
             linkki: (properties: any, zoom: any) => {
                 const type = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(properties.lnkverkko);
@@ -54,7 +54,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
     private getPointStyle = () => {
         return {
-            // GeoServer layer piste: point
+            // Layer name 'piste' is directly mirrored from Jore through geoserver
             piste: (properties: any, zoom: any) => {
                 const type = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(properties.lnkverkko);
@@ -71,7 +71,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
     private getNodeStyle = () => {
         return {
-            // GeoServer layer solmu: node
+            // Layer name 'solmu' is directly mirrored from Jore through geoserver
             solmu: (properties: any, zoom: any) => {
                 let color;
                 switch (properties.soltyyppi) {
