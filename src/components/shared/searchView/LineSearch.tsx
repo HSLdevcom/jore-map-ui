@@ -32,7 +32,7 @@ class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
                 <div className={s.inputContainer}>
                     <input
                         placeholder='Hae'
-                        className={s.input}
+                        className={s.searchInput}
                         type='text'
                         value={this.props.searchStore!.searchInput}
                         onChange={this.handleSearchInputChange}

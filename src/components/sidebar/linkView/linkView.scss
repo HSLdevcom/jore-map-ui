@@ -4,7 +4,7 @@
 .linkView {
     padding: 20px;
     overflow-y: auto;
-    width: $sidebarWide;
+    width: $sidebarExtraWide;
 
     .subTopic {
         font-weight: bold;
@@ -12,17 +12,59 @@
         font-size: $smallFontSize;
     }
 
-    .inputField {
-        padding: 10px;
+    .textArea {
+        padding-bottom: 160px;
         margin-top: 5px;
-        border-radius: 5px;
+    }
+
+
+    .mediumSmallInput {
+        width: 30px;
+        margin-right: 10px;
+    }
+
+    .largeInput {
+        width: 90%;
+    }
+
+    .mediumInput {
+        width: 80%;
+    }
+
+    .smallInput {
+        width:10px;
+    }
+
+    .checkBoxContainer {
+        margin-top: 15px;
     }
 
     .inputContainer {
         padding-right: 10px;
+        padding-bottom: 10px;
+        width:100%;
     }
 
-    .largeInputContainer {
-        margin-top: 10px;
+    .smallInputContainer {
+        padding-right: 8px;
+        padding-bottom: 8px;
+    }
+
+    .inputRowContainer {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+    }
+
+    .transitButtonBar {
+        padding-top: 10px;
+        width: 50%;
+    }
+
+    .buttonBar {
+        display: flex;
+        flex-direction: row;
+        padding-top:: 10px;
+        justify-content: space-between;
     }
 }
