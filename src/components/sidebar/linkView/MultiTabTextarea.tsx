@@ -1,42 +1,37 @@
 import classnames from 'classnames';
 import * as React from 'react';
-import * as s from './multiTabInput.scss';
+import * as s from './multiTabTextarea.scss';
 
 interface IMultiTabInputProps {
     tabs: string[];
 }
 
 interface IMultiTabInputState {
-    tabSelected: number;
+    selectedTabIndex: number;
 }
 
-class MultiTabInput extends React.Component<IMultiTabInputProps, IMultiTabInputState> {
+class MultiTabTextarea extends React.Component<IMultiTabInputProps, IMultiTabInputState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            tabSelected: 0,
+            selectedTabIndex: 0,
         };
 
     }
 
-    public onTabClick = (tabSelected: number) => {
+    public onTabClick = (selectedTabIndex: number) => {
         this.setState({
-            tabSelected,
+            selectedTabIndex,
         });
     }
 
     public generateTabs = () => {
         return this.props.tabs.map((tab: string, index) => {
-            let classname = classnames(s.tabButton, s.tabButtonMiddle);
-            if (index === 0) {
-                classname = classnames(s.tabButton, s.tabButtonLeft);
-            } else if (index === this.props.tabs.length - 1) {
-                classname = classnames(s.tabButton, s.tabButtonRight);
-            }
+            const classname = classnames(s.tabButton, s.tabButtonPiece);
             return(
                 <div
                     key={index}
-                    className={(this.state.tabSelected === index) ?
+                    className={(this.state.selectedTabIndex === index) ?
                     classnames(classname, s.opened) :
                     classname}
                     onClick={this.onTabClick.bind(this, index)}
@@ -64,4 +59,4 @@ class MultiTabInput extends React.Component<IMultiTabInputProps, IMultiTabInputS
     }
 }
 
-export default MultiTabInput;
+export default MultiTabTextarea;

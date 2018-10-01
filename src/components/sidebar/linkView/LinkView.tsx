@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import InputContainer from './InputContainer';
-import MultiTabInput from './MultiTabInput';
+import MultiTabTextarea from './MultiTabTextarea';
 import { SidebarStore } from '../../../stores/sidebarStore';
 import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
@@ -36,9 +36,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.sidebarStore!.setOpenLinkId(null);
     }
 
-    private setFiltersFunction = (filters: string[]): void => {
+    private toggleSelectedTransitType = (filters: string[]): void => {
         // TODO
-        // console.log('setFiltersFunction');
+        // console.log('toggleSelectedTransitType');
     }
 
     private getFilters = () => {
@@ -210,7 +210,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.transitButtonBar}>
                     <TransitToggleButtonBar
-                        setFiltersFunction={this.setFiltersFunction}
+                        setFiltersFunction={this.toggleSelectedTransitType}
                         filters={this.getFilters()}
                     />
                 </div>
@@ -374,7 +374,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     placeholder='23.08.2017'
                 />
             </div>
-            <MultiTabInput
+            <MultiTabTextarea
                 tabs={['Tariffialueet', 'Määränpäät', 'Ajoajat']}
             />
             <div className={s.buttonBar}>

@@ -11,10 +11,6 @@
     width: 100%;
 }
 
-.tabsButtonContainer {
-    background-color: yellow;
-}
-
 .tabButton {
     width:100%;
     height:40px;
@@ -28,6 +24,7 @@
     top: 50%;
     transform: translateY(3%);
     transition: .2s;
+    cursor: pointer;
 }
 
 .tabLabel {
@@ -35,17 +32,17 @@
     transform: translateY(50%);
 }
 
-.tabButtonLeft {
+.tabButtonPiece:first-of-type {
     border-top-left-radius: 8px;
     border-left: 1.5px solid $mediumLightGrey;
     border-right: 1.5px solid $mediumLightGrey;
 }
 
-.tabButtonMiddle {
+.tabButtonPiece {
     border-right: 1.5px solid $mediumLightGrey;
 }
 
-.tabButtonRight {
+.tabButtonPiece:last-of-type {
     border-top-right-radius: 8px;
     border-right: 1.5px solid $mediumLightGrey;
 }
@@ -71,6 +68,6 @@
     outline: none;
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
-    font-family: Gotham Rounded SSm A, Gotham Rounded SSm B, Arial, Georgia, Serif;
+    font-family: $hslFont;
     resize: none;
 }
