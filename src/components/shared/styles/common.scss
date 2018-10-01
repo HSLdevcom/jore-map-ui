@@ -44,17 +44,3 @@ $sidebarExtraWide: 600px;
 
 $inputMaxHeight: 22px;
 $textareaMaxHeight: 200px;
-
-input {
-    max-height: $inputMaxHeight;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 5px;
-}
-
-textarea {
-    max-height: $textareaMaxHeight;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 5px;
-}

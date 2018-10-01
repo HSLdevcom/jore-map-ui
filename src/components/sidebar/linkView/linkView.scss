@@ -6,6 +6,20 @@
     overflow-y: auto;
     width: $sidebarExtraWide;
 
+    input {
+        max-height: $inputMaxHeight;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+    }
+
+    textarea {
+        max-height: $textareaMaxHeight;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+    }
+
     .subTopic {
         font-weight: bold;
         color: $mediumGrey;
