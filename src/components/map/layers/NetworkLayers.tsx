@@ -8,6 +8,8 @@ import TransitTypeColorHelper from '../../../util/transitTypeColorHelper';
 import NodeType from '../../../enums/nodeType';
 
 const layerNameSeparator = '{LAYER_NAME}';
+// TODO: Don't hardcode
+// Will be fixed in: https://github.com/HSLdevcom/jore-map-ui/issues/235
 // tslint:disable-next-line:max-line-length
 const geoserverVectorTileLayerAddress = `http://localhost/geoserver/gwc/service/tms/1.0.0/joremapui%3A${layerNameSeparator}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 
