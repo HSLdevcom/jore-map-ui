@@ -94,24 +94,24 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     render() {
         return (
             <React.Fragment>
-                { this.props.networkStore!.showLinks &&
-                    <VectorgridLayer
-                        key={geoserverLayer.Link}
-                        url={this.getAddress(geoserverLayer.Link)}
+                { this.props.networkStore!.isLinksVisible &&
+                    <VectorGridLayer
+                        key={GeoserverLayer.Link}
+                        url={this.getAddress(GeoserverLayer.Link)}
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
                 }
-                { this.props.networkStore!.showPoints &&
-                    <VectorgridLayer
-                        key={geoserverLayer.Point}
-                        url={this.getAddress(geoserverLayer.Point)}
+                { this.props.networkStore!.isPointsVisible &&
+                    <VectorGridLayer
+                        key={GeoserverLayer.Point}
+                        url={this.getAddress(GeoserverLayer.Point)}
                         vectorTileLayerStyles={this.getPointStyle()}
                     />
                 }
-                { this.props.networkStore!.showNodes &&
-                    <VectorgridLayer
-                        key={geoserverLayer.Node}
-                        url={this.getAddress(geoserverLayer.Node)}
+                { this.props.networkStore!.isNodesVisible &&
+                    <VectorGridLayer
+                        key={GeoserverLayer.Node}
+                        url={this.getAddress(GeoserverLayer.Node)}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }

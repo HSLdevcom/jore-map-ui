@@ -2,72 +2,61 @@ import { action, computed, observable } from 'mobx';
 import TransitType from '../enums/transitType';
 
 export class NetworkStore {
-    @observable private _enabledTypes: TransitType[];
-    @observable private _showLinks: boolean;
-    @observable private _showNodes: boolean;
-    @observable private _showPoints: boolean;
+    @observable private _selectedTypes: TransitType[];
+    @observable private _isLinksVisible: boolean;
+    @observable private _isNodesVisible: boolean;
+    @observable private _isPointsVisible: boolean;
 
     constructor() {
-        this._enabledTypes = [
+        this._selectedTypes = [
             TransitType.BUS,
             TransitType.FERRY,
             TransitType.SUBWAY,
             TransitType.TRAIN,
             TransitType.TRAM,
         ];
-        this._showLinks = false;
-        this._showNodes = false;
-        this._showPoints = false;
+        this._isLinksVisible = false;
+        this._isNodesVisible = false;
+        this._isPointsVisible = false;
     }
 
-    private isAnythingEnabled() {
-        return this._showLinks || this._showNodes;
-    }
-
-    @computed get showLinks(): boolean {
-        return this._showLinks;
+    @computed get isLinksVisible(): boolean {
+        return this._isLinksVisible;
     }
 
     @action
     public toggleShowLinks() {
-        this._showLinks = !this._showLinks;
+        this._isLinksVisible = !this._isLinksVisible;
     }
 
-    @computed get showNodes(): boolean {
-        return this._showNodes;
+    @computed get isNodesVisible(): boolean {
+        return this._isNodesVisible;
     }
 
     @action
     public toggleShowNodes() {
-        this._showNodes = !this._showNodes;
+        this._isNodesVisible = !this._isNodesVisible;
     }
 
-    @computed get showPoints(): boolean {
-        return this._showPoints;
+    @computed get isPointsVisible(): boolean {
+        return this._isPointsVisible;
     }
 
     @action
     public toggleShowPoints() {
-        this._showPoints = !this._showPoints;
+        this._isPointsVisible = !this._isPointsVisible;
     }
 
-    public isTypeEnabled(type: TransitType) {
-        if (this.isAnythingEnabled()) {
-            return this._enabledTypes.includes(type);
-        }
-        return false;
-    }
-
-    @computed get enabledTypes() {
-        return this._enabledTypes;
+    @computed get selectedTypes() {
+        return this._selectedTypes;
     }
 
     @action
     public toggleTransitType(type: TransitType) {
-        if (this._enabledTypes.includes(type)) {
-            this._enabledTypes = this._enabledTypes.filter(t => t !== type);
+        if (this._selectedTypes.includes(type)) {
+            this._selectedTypes = this._selectedTypes.filter(t => t !== type);
         } else {
-            this._enabledTypes.push(type);
+            this._selectedTypes.push(type);
         }
     }
 }

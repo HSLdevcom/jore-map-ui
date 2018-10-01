@@ -97,26 +97,26 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                     <label className={s.inputTitle}>VERKKO</label>
                     <TransitToggleButtonBar
                         toggleSelectedTypes={this.toggleSelectedTransitTypes}
-                        selectedTypes={this.props.networkStore!.enabledTypes}
+                        selectedTypes={this.props.networkStore!.selectedTypes}
                     />
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleShowLinks}
-                            checked={this.props.networkStore!.showLinks}
+                            checked={this.props.networkStore!.isLinksVisible}
                             text={'Näytä alueen linkit'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleShowPoints}
-                            checked={this.props.networkStore!.showPoints}
+                            checked={this.props.networkStore!.isPointsVisible}
                             text={'Näytä linkkien pisteet'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleShowNodes}
-                            checked={this.props.networkStore!.showNodes}
+                            checked={this.props.networkStore!.isNodesVisible}
                             text={'Näytä alueen solmut'}
                         />
                     </div>
