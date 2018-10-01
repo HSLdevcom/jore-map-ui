@@ -6,7 +6,7 @@ import ButtonType from '../../../enums/buttonType';
 import InputContainer from './InputContainer';
 import MultiTabInput from './MultiTabInput';
 import { SidebarStore } from '../../../stores/sidebarStore';
-import SidebarViewHeader from '../SidebarViewHeader';
+import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
@@ -43,7 +43,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     public render(): any {
         return (
         <div className={s.linkView}>
-            <SidebarViewHeader
+            <ViewHeader
                 header='Reitin 1016 linkki'
             />
             <div className={classnames(s.flexInnerColumn, s.subTopic)}>

@@ -2,10 +2,10 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { SidebarStore } from '../../../stores/sidebarStore';
-import { Button, Dropdown, ToggleButton } from '../../controls';
+import { Button, Dropdown, ToggleSwitch } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import TransitType from '../../../enums/transitType';
-import SidebarViewHeader from '../SidebarViewHeader';
+import ViewHeader from '../ViewHeader';
 import * as s from './nodeView.scss';
 
 interface IMapInformationSource {
@@ -66,7 +66,7 @@ class NodeView extends React.Component
     public render(): any {
         return (
         <div className={s.nodeView}>
-            <SidebarViewHeader
+            <ViewHeader
                 header='Karttakohde'
             />
             <div
@@ -78,7 +78,7 @@ class NodeView extends React.Component
                 <div className={s.rowElement}>
                     Pysäkki käytössä
                 </div>
-                <ToggleButton
+                <ToggleSwitch
                     onClick={this.toggleStopInUse}
                     value={true}
                     type={TransitType.BUS}

@@ -1,20 +1,20 @@
 import * as React from 'react';
 import TransitType from '../../enums/transitType';
-import * as s from './toggleButton.scss';
+import * as s from './toggleSwitch.scss';
 
-interface IToggleButtonState {
+interface IToggleSwitchState {
     isChecked: boolean;
 }
 
-interface IToggleButtonProps {
+interface IToggleSwitchProps {
     type: TransitType;
     value: boolean;
     color: string;
     onClick(event: any): void;
 }
 
-class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonState> {
-    constructor (props: IToggleButtonProps) {
+class ToggleSwitch extends React.Component<IToggleSwitchProps, IToggleSwitchState> {
+    constructor (props: IToggleSwitchProps) {
         super(props);
     }
 
@@ -37,7 +37,7 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
         return (
             <label
                 onClick={onClick}
-                className={s.toggleButtonView}
+                className={s.toggleSwitchView}
             >
                 <input
                     type='checkbox'
@@ -53,4 +53,4 @@ class ToggleButton extends React.Component<IToggleButtonProps, IToggleButtonStat
     }
 }
 
-export default ToggleButton;
+export default ToggleSwitch;

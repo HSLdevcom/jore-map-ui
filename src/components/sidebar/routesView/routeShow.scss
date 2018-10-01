@@ -1,4 +1,5 @@
-@import '../../shared/styles/common.scss';
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
 
 .routeShowView {
     .routeName {
@@ -46,5 +47,24 @@
             display: inline-block;
             width: 110px;
         }
+    }
+
+    .routeInfoButton {
+        position: relative;
+        color: $busBlue;
+        font-size: 1.8rem;
+        line-height: 1.8rem;
+        height: 29px;
+        width: 29px;
+        cursor: pointer;
+        border: none;
+        transition: .5s;
+        border-radius: 5px;
+        padding: 3px;
+    }
+
+    .routeInfoButton:hover {
+        color: #FFF;
+        background-color: $busBlue;
     }
 }

@@ -2,16 +2,17 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
+import { FiInfo } from 'react-icons/fi';
 import { RouteStore } from '../../../stores/routeStore';
 import { IRoutePath, IRoute } from '../../../models';
-import ToggleButton from '../../controls/ToggleButton';
+import ToggleSwitch from '../../controls/ToggleSwitch';
 import LineHelper from '../../../util/lineHelper';
 import TransitTypeColorHelper from '../../../util/transitTypeColorHelper';
 import ColorScale from '../../../util/colorScale';
 import routeBuilder from '../../../routing/routeBuilder';
+import subSites from '../../../routing/subSites';
 import navigator from '../../../routing/navigator';
 import QueryParams from '../../../routing/queryParams';
-import SubSites from '../../../routing/subSites';
 import RouteAndStopHelper from '../../../storeAbstractions/routeAndStopAbstraction';
 import * as s from './routeShow.scss';
 
@@ -33,7 +34,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
         // TODO: Move actual logic somwhere else, so this function only navigates to new url
         RouteAndStopHelper.removeRoute(this.props.route.routeId);
         const closeRouteLink = routeBuilder
-            .to(SubSites.current)
+            .to(subSites.current)
             .remove(QueryParams.routes, this.props.route.routeId)
             .toLink();
         navigator.goTo(closeRouteLink);
@@ -84,15 +85,27 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     <div className={s.toggleTitle}>
                         Suunta {routePath.direction}
                     </div>
-                    <ToggleButton
+                    <ToggleSwitch
                         onClick={toggleRoutePathVisibility}
                         value={routePath.visible}
                         type={this.props.route.line!.transitType}
                         color={routePath.visible ? routeColor : '#898989'}
                     />
+                    <div className={s.flexFiller} />
+                    <div
+                        className={s.routeInfoButton}
+                        onClick={this.openRoutePathView}
+                    >
+                        <FiInfo />
+                    </div>
                 </div>
             );
         });
+    }
+
+    private openRoutePathView = () => {
+        const routePathViewLink = routeBuilder.to(subSites.routePath).toLink();
+        navigator.goTo(routePathViewLink);
     }
 
     public render(): any {

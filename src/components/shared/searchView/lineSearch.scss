@@ -3,11 +3,13 @@
     .inputContainer {
         padding: 10px;
 
-      .input {
+      .searchInput {
             width: 100%;
-            height: 28px;
+            box-sizing: border-box;
+            padding: 18px;
             text-indent: 4px;
             border-radius: 5px;
+
         }
     }
 

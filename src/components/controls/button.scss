@@ -1,6 +1,7 @@
 @import '../shared/styles/common.scss';
 
 .button {
+    display:inline-block;
     cursor: pointer;
     font-weight: 400;
     line-height: normal;
@@ -8,8 +9,6 @@
     font-size: $mediumFontSize;
     letter-spacing: -.025em;
     font-size: $mediumFontSize;
-    margin-right: 5px;
-    margin-top: 10px;
     padding: 10px;
     border: hidden;
     border-radius: 5px;
