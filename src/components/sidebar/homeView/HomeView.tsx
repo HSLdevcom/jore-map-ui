@@ -14,11 +14,6 @@ interface IHomeViewProps{
 @inject('searchStore')
 @observer
 class HomeView extends React.Component<IHomeViewProps> {
-    constructor (props: IHomeViewProps) {
-        super(props);
-        this.toggleSelectedType = this.toggleSelectedType.bind(this);
-    }
-
     public toggleSelectedType = (type: TransitType) => {
         this.props.searchStore!.toggleSelectedTypes(type);
     }

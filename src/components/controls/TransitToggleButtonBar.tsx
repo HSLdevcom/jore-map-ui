@@ -15,27 +15,27 @@ class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarPro
         return (
             <div className={s.transitToggleButtonBarView}>
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.BUS)}
+                    toggleActivity={this.props.toggleSelectedTypes}
                     toggled={this.props.selectedTypes.includes(TransitType.BUS)}
                     type={TransitType.BUS}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.TRAM)}
+                    toggleActivity={this.props.toggleSelectedTypes}
                     toggled={this.props.selectedTypes.includes(TransitType.TRAM)}
                     type={TransitType.TRAM}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.TRAIN)}
+                    toggleActivity={this.props.toggleSelectedTypes}
                     toggled={this.props.selectedTypes.includes(TransitType.TRAIN)}
                     type={TransitType.TRAIN}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.SUBWAY)}
+                    toggleActivity={this.props.toggleSelectedTypes}
                     toggled={this.props.selectedTypes.includes(TransitType.SUBWAY)}
                     type={TransitType.SUBWAY}
                 />
                 <TransitToggleButton
-                    toggleActivity={this.props.toggleSelectedTypes.bind(this, TransitType.FERRY)}
+                    toggleActivity={this.props.toggleSelectedTypes}
                     toggled={this.props.selectedTypes.includes(TransitType.FERRY)}
                     type={TransitType.FERRY}
                 />

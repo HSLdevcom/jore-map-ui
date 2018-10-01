@@ -24,11 +24,6 @@ interface IRoutesViewProps{
 @inject('routeStore', 'searchStore', 'sidebarStore')
 @observer
 class RoutesView extends React.Component<IRoutesViewProps> {
-    constructor (props: IRoutesViewProps) {
-        super(props);
-        this.toggleSelectedType = this.toggleSelectedType.bind(this);
-    }
-
     public toggleSelectedType = (type: TransitType) => {
         this.props.searchStore!.toggleSelectedTypes(type);
     }

@@ -30,9 +30,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         this.state = {
             isLoading: false,
         };
-        this.toggleSelectedTransitTypes = this.toggleSelectedTransitTypes.bind(this);
-        this.toggleShowLinks = this.toggleShowLinks.bind(this);
-        this.toggleShowNodes = this.toggleShowNodes.bind(this);
     }
 
     async componentDidMount() {
