@@ -55,4 +55,16 @@
         justify-content: center;
         flex-direction: row;
     }
+
+    .transitButtonBar {
+        padding-top: 10px;
+        width: 50%;
+    }
+
+    .buttonBar {
+        display: flex;
+        flex-direction: row;
+        padding-top:: 10px;
+        justify-content: space-between;
+    }
 }

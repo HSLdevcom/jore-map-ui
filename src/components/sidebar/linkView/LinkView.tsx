@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Checkbox, Dropdown, Button } from '../../controls';
+import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import InputContainer from './InputContainer';
 import MultiTabInput from './MultiTabInput';
@@ -36,8 +36,19 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.sidebarStore!.setOpenLinkId(null);
     }
 
+    private setFiltersFunction = (filters: string[]): void => {
+        // TODO
+        // console.log('setFiltersFunction');
+    }
+
+    private getFilters = () => {
+        // TODO
+        return ['bus', 'tram', 'train', 'subway', 'ferry'];
+    }
+
     public onChange = () => {
-        // console.log('asd');
+        // TODO
+        // console.log('onChange');
     }
 
     public render(): any {
@@ -192,6 +203,17 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             selected={'Kyllä'}
                         />
                     </div>
+                </div>
+            </div>
+            <div className={s.inputContainer}>
+                <div className={classnames(s.subTopic)}>
+                    VERKKO
+                </div>
+                <div className={s.transitButtonBar}>
+                    <TransitToggleButtonBar
+                        setFiltersFunction={this.setFiltersFunction}
+                        filters={this.getFilters()}
+                    />
                 </div>
             </div>
             <div className={s.flexInnerRow}>
@@ -360,7 +382,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             <MultiTabInput
                 tabs={['Tariffialueet', 'Määränpäät', 'Ajoajat']}
             />
-            <div className={s.flexRow}>
+            <div className={s.buttonBar}>
                 <Button
                     onClick={this.onChange}
                     type={ButtonType.PRIMARY}
