@@ -2,13 +2,13 @@ import { action, computed, observable } from 'mobx';
 import TransitType from '../enums/transitType';
 
 export class NetworkStore {
-    @observable private _selectedTypes: TransitType[];
+    @observable private _selectedTransitTypes: TransitType[];
     @observable private _isLinksVisible: boolean;
     @observable private _isNodesVisible: boolean;
     @observable private _isPointsVisible: boolean;
 
     constructor() {
-        this._selectedTypes = [
+        this._selectedTransitTypes = [
             TransitType.BUS,
             TransitType.FERRY,
             TransitType.SUBWAY,
@@ -25,7 +25,7 @@ export class NetworkStore {
     }
 
     @action
-    public toggleShowLinks() {
+    public toggleIsLinksVisible() {
         this._isLinksVisible = !this._isLinksVisible;
     }
 
@@ -34,7 +34,7 @@ export class NetworkStore {
     }
 
     @action
-    public toggleShowNodes() {
+    public toggleIsNodesVisible() {
         this._isNodesVisible = !this._isNodesVisible;
     }
 
@@ -43,20 +43,20 @@ export class NetworkStore {
     }
 
     @action
-    public toggleShowPoints() {
+    public toggleIsPointsVisible() {
         this._isPointsVisible = !this._isPointsVisible;
     }
 
-    @computed get selectedTypes() {
-        return this._selectedTypes;
+    @computed get selectedTransitTypes() {
+        return this._selectedTransitTypes;
     }
 
     @action
     public toggleTransitType(type: TransitType) {
-        if (this._selectedTypes.includes(type)) {
-            this._selectedTypes = this._selectedTypes.filter(t => t !== type);
+        if (this._selectedTransitTypes.includes(type)) {
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
-            this._selectedTypes.push(type);
+            this._selectedTransitTypes.push(type);
         }
     }
 }

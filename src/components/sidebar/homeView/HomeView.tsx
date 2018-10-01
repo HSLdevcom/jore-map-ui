@@ -14,7 +14,7 @@ interface IHomeViewProps{
 @inject('searchStore')
 @observer
 class HomeView extends React.Component<IHomeViewProps> {
-    public toggleSelectedType = (type: TransitType) => {
+    public toggleTransitType = (type: TransitType) => {
         this.props.searchStore!.toggleTransitType(type);
     }
 
@@ -23,7 +23,7 @@ class HomeView extends React.Component<IHomeViewProps> {
             <div className={s.homeView}>
                 <LineSearch/>
                 <TransitToggleButtonBar
-                    toggleSelectedTypes={this.toggleSelectedType}
+                    toggleSelectedTypes={this.toggleTransitType}
                     selectedTypes={this.props.searchStore!.selectedTypes}
                 />
                 <SearchResults />
