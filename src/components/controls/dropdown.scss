@@ -6,6 +6,10 @@ $dropdownWidth: 150px;
     font-weight: bold;
     width: 100%;
 
+    input, div {
+        box-sizing: unset !important; /* TODO: remove this */
+    }
+
     .itemListShown {
         position: absolute;
         display: flex;

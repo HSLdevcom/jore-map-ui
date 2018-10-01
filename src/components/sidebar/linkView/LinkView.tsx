@@ -61,7 +61,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 REITIN SUUNNAN TIEDOT
             </div>
             <div className={s.flexRow}>
-                <div className={s.flexInnerColumn}>
+                <div className={s.column}>
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='REITTITUNNUS'
@@ -85,7 +85,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <InputContainer
                         label='NIMI'
                         placeholder='Rautatientori - Korkeasaari'
-                        className={s.largeInput}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -235,7 +234,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <InputContainer
                         label='KATU'
                         placeholder='Rautatientori'
-                        className={s.mediumInput}
                     />
                     <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
@@ -309,7 +307,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <InputContainer
                         label='KATUOSAN OS. NRO'
                         placeholder='1'
-                        className={s.mediumInput}
                     />
                     <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
@@ -371,12 +368,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <InputContainer
                     label='PÄIVITTÄJÄ'
                     placeholder='Vuori Tuomas'
-                    className={s.mediumInput}
                 />
                 <InputContainer
                     label='PÄIVITYSPVM'
                     placeholder='23.08.2017'
-                    className={s.mediumInput}
                 />
             </div>
             <MultiTabInput
