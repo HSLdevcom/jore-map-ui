@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
 import TransitToggleButton from './TransitToggleButton';
 import TransitType from '../../enums/transitType';
 import * as s from './transitToggleButtonBar.scss';
@@ -9,7 +8,6 @@ interface ITtransitToggleButtonBarProps {
     toggleSelectedTransitType: (type: TransitType) => void;
 }
 
-@observer
 class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarProps> {
     public render(): any {
         return (
