@@ -11,13 +11,13 @@ const layerNameSeparator = '{LAYER_NAME}';
 // tslint:disable-next-line:max-line-length
 const geoserverVectorTileLayerAddress = `http://localhost/geoserver/gwc/service/tms/1.0.0/joremapui%3A${layerNameSeparator}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 
-enum geoserverLayer {
+enum GeoserverLayer {
     Node = 'solmu',
     Link = 'linkki',
     Point = 'piste',
 }
 
-enum nodeColors {
+enum NodeColors {
     CROSSROAD_COLOR = '#727272',
     STOP_COLOR = '#ff7070',
 }
@@ -29,7 +29,7 @@ interface INetworkLayersProps {
 @inject('networkStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
-    private getAddress(layer: geoserverLayer) {
+    private getAddress(layer: GeoserverLayer) {
         return geoserverVectorTileLayerAddress.replace(layerNameSeparator, layer);
     }
 
@@ -73,10 +73,10 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 let color;
                 switch (properties.soltyyppi) {
                 case NodeType.STOP:
-                    color = nodeColors.STOP_COLOR;
+                    color = NodeColors.STOP_COLOR;
                     break;
                 case NodeType.CROSSROAD:
-                    color = nodeColors.CROSSROAD_COLOR;
+                    color = NodeColors.CROSSROAD_COLOR;
                     break;
                 }
 
