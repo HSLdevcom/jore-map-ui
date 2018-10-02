@@ -13,25 +13,13 @@
 .flexInnerRow {
     display: flex;
     flex-direction: row;
-    padding-top: 10px;
-    padding-right: 10px;
     width: 100%;
-}
-
-.flexInnerRow:last-of-type {
-    padding-right: 0px;
 }
 
 .flexInnerColumn {
     display: flex;
     flex-direction: column;
-    padding-top: 10px;
-    padding-right: 10px;
     width:100%;
-}
-
-.flexInnerColumn:last-of-type {
-    padding-right: 0px;
 }
 
 .flexFiller {

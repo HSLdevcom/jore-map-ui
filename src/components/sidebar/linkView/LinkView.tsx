@@ -110,7 +110,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={classnames(s.subTopic)}>
                         ALKU
                     </div>
-                    <div className={s.inputRowContainer}>
+                    <div className={s.flexInnerRow}>
                         <div className={s.inputContainer}>
                             <input
                                 placeholder='1020112'
@@ -140,7 +140,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={classnames(s.subTopic)}>
                         LOPPU
                     </div>
-                    <div className={s.inputRowContainer}>
+                    <div className={s.flexInnerRow}>
                         <div className={s.inputContainer}>
                             <input
                                 placeholder='1020126'
