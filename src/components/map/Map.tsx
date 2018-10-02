@@ -155,7 +155,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                             `
                         }
                         baseLayer={true}
-                        maxZoom={23}
+                        maxZoom={19}
                         minZoom={6}
                         detectRetina={true}
                         tileSize={512}
