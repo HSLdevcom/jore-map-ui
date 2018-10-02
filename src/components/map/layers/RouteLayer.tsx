@@ -62,9 +62,9 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         }
     }
 
-    private toggleHighlight(internalId: string) {
+    private toggleHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
         const selectedPolylines = this.state.selectedPolylines;
-        const isSelected = selectedPolylines.indexOf(internalId) > -1;
+        const isSelected = selectedPolylines.includes(internalId);
 
         (isSelected) ?
             selectedPolylines.splice(selectedPolylines.indexOf(internalId), 1) :
@@ -73,7 +73,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         this.setState({
             selectedPolylines,
         });
-        this.props.bringRouteLayerToFront(internalId);
+        e.target!.bringToFront();
     }
 
     private openLinkView = (routePathLinkId: number) => {
@@ -88,14 +88,14 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             this.state.hoveredPolylines.includes(internalId);
     }
 
-    private setHoverHighlight(internalId: string) {
+    private setHoverHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
-        this.props.bringRouteLayerToFront(internalId);
+        e.target!.bringToFront();
     }
 
-    private clearHoverHightlights = () => {
+    private clearHoverHighlights = () => {
         this.setState({
             hoveredPolylines: [],
         });
@@ -109,10 +109,11 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                 return (
                     <RoutePathLayer
                         key={index}
-                        onClick={this.toggleHighlight.bind(this, internalId)}
+                        internalId={internalId}
+                        onClick={this.toggleHighlight(internalId)}
                         onContextMenu={this.openLinkView}
-                        onMouseOver={this.setHoverHighlight.bind(this, internalId)}
-                        onMouseOut={this.clearHoverHightlights}
+                        onMouseOver={this.setHoverHighlight(internalId)}
+                        onMouseOut={this.clearHoverHighlights}
                         routePathLinks={routePath.routePathLinks}
                         color={color}
                         opacity={this.hasHighlight(internalId) ? 1 : 0.6}
