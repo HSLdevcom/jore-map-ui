@@ -1,25 +1,32 @@
 .flexRow {
     display: flex;
     flex-direction: row;
-    padding-top: 20px;
+    padding-top:: 10px;
 }
 
 .flexColumn {
     display: flex;
     flex-direction: column;
-    padding-top: 20px;
+    width: 100%;
 }
 
 .flexInnerRow {
     display: flex;
     flex-direction: row;
-    padding-top: 10px;
+    width: 100%;
+}
+
+.inputDropdownContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: flex-end;
 }
 
 .flexInnerColumn {
     display: flex;
     flex-direction: column;
-    padding-top: 10px;
+    width:100%;
 }
 
 .flexFiller {
