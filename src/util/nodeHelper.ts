@@ -1,10 +1,10 @@
 import { IRoutePath, IRoute } from '../models';
 
 export default class NodeHelper {
-    public static getNodeIdsUsedByRoutes(routes: IRoute[]): number[] {
+    public static getNodeIdsUsedByRoutes(routes: IRoute[]): string[] {
         return routes
-            .reduce<number[]>((flatlist, route) =>
-            NodeHelper.getUniqueNumbers(
+            .reduce<string[]>((flatlist, route) =>
+            NodeHelper.getUniqueIds(
                     flatlist.concat(
                         NodeHelper.getNodeIdsUsedByRoutePaths(route.routePaths),
                     ),
@@ -13,10 +13,10 @@ export default class NodeHelper {
             );
     }
 
-    public static getNodeIdsUsedByRoutePaths(routePaths: IRoutePath[]): number[] {
+    public static getNodeIdsUsedByRoutePaths(routePaths: IRoutePath[]): string[] {
         return routePaths
-            .reduce<number[]>((flatlist, routePath) =>
-            NodeHelper.getUniqueNumbers(
+            .reduce<string[]>((flatlist, routePath) =>
+            NodeHelper.getUniqueIds(
                     flatlist.concat(
                         NodeHelper.getNodeIdsUsedByRoutePath(routePath),
                     ),
@@ -25,10 +25,10 @@ export default class NodeHelper {
             );
     }
 
-    public static getNodeIdsUsedByRoutePath(routePath: IRoutePath): number[] {
+    public static getNodeIdsUsedByRoutePath(routePath: IRoutePath): string[] {
         return routePath.routePathLinks
-            .reduce<number[]>((flatlist, routePathLink) =>
-            NodeHelper.getUniqueNumbers(
+            .reduce<string[]>((flatlist, routePathLink) =>
+            NodeHelper.getUniqueIds(
                     flatlist.concat(
                         routePathLink.endNodeId,
                         routePathLink.startNodeId,
@@ -38,14 +38,14 @@ export default class NodeHelper {
             );
     }
 
-    public static getUniqueNumbers(numbers: number[]): number[] {
+    public static getUniqueIds(ids: string[]): string[] {
         const seen = {};
-        return numbers.filter(num =>
-            seen.hasOwnProperty(num) ? false : (seen[num] = true),
+        return ids.filter(id =>
+            seen.hasOwnProperty(id) ? false : (seen[id] = true),
         );
     }
 
-    public static routePathHasStop(routePaths: IRoutePath[], nodeId: number) {
+    public static routePathHasStop(routePaths: IRoutePath[], nodeId: string) {
         return routePaths.some(routePath =>
             routePath.routePathLinks.some(routePathLink =>
                 (
