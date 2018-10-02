@@ -3,7 +3,7 @@
 ## Git conventions
 
 * When making a PR, write closes #{*card id(s)*} or resolves #{*card id(s)*}
-* Branch name: {*card number}-{describing name}
+* Branch name: {*card number*}-{*describing name*}
 
 **Git columns**
 
