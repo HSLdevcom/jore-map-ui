@@ -101,8 +101,8 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         this.setState({
             hoveredPolylines: [],
         });
-        for (const internalId of this.state.selectedPolylines) {
-            this.props.bringRouteLayerToFront(internalId);
+        if (!this.hasHighlight(e.target.options.internalId)) {
+            e.target.bringToBack();
         }
     }
 

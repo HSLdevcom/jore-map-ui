@@ -25,6 +25,7 @@ export default class RoutePathLayer extends Component<RoutePathLayerProps> {
             <FeatureGroup
                 routePathInternalId={this.props.internalId}
                 onMouseOver={this.props.onMouseOver}
+                onMouseOut={this.props.onMouseOut}
             >
                 {this.props.routePathLinks
                     .map((routePathLink, index) => {
@@ -37,7 +38,6 @@ export default class RoutePathLayer extends Component<RoutePathLayerProps> {
                                 opacity={this.props.opacity}
                                 onClick={this.props.onClick}
                                 onContextMenu={this.onContextMenu(routePathLink.id)}
-                                onMouseOut={this.props.onMouseOut}
                             />
                         );
                     })}
