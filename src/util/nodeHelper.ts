@@ -4,7 +4,7 @@ export default class NodeHelper {
     public static getNodeIdsUsedByRoutes(routes: IRoute[]): string[] {
         return routes
             .reduce<string[]>((flatlist, route) =>
-            NodeHelper.getUniqueNumbers(
+            NodeHelper.getUniqueIds(
                     flatlist.concat(
                         NodeHelper.getNodeIdsUsedByRoutePaths(route.routePaths),
                     ),
@@ -16,7 +16,7 @@ export default class NodeHelper {
     public static getNodeIdsUsedByRoutePaths(routePaths: IRoutePath[]): string[] {
         return routePaths
             .reduce<string[]>((flatlist, routePath) =>
-            NodeHelper.getUniqueNumbers(
+            NodeHelper.getUniqueIds(
                     flatlist.concat(
                         NodeHelper.getNodeIdsUsedByRoutePath(routePath),
                     ),
@@ -28,7 +28,7 @@ export default class NodeHelper {
     public static getNodeIdsUsedByRoutePath(routePath: IRoutePath): string[] {
         return routePath.routePathLinks
             .reduce<string[]>((flatlist, routePathLink) =>
-            NodeHelper.getUniqueNumbers(
+            NodeHelper.getUniqueIds(
                     flatlist.concat(
                         routePathLink.endNodeId,
                         routePathLink.startNodeId,
@@ -38,10 +38,10 @@ export default class NodeHelper {
             );
     }
 
-    public static getUniqueNumbers(numbers: string[]): string[] {
+    public static getUniqueIds(ids: string[]): string[] {
         const seen = {};
-        return numbers.filter(num =>
-            seen.hasOwnProperty(num) ? false : (seen[num] = true),
+        return ids.filter(id =>
+            seen.hasOwnProperty(id) ? false : (seen[id] = true),
         );
     }
 
