@@ -31,7 +31,7 @@ class NotificationWindow extends React.Component
         };
     }
 
-    private closeNotification = (message: string) => {
+    private closeNotification = (message: string) => () => {
         const newDisappearingNotifications = this.state.disappearingNotifications;
         newDisappearingNotifications.push(message);
         this.setState({
@@ -88,7 +88,7 @@ class NotificationWindow extends React.Component
                         this.getDisappearingNotificationClass(notification.message),
                     )
                     }
-                    onClick={this.closeNotification.bind(this, notification.message)}
+                    onClick={this.closeNotification(notification.message)}
                   >
                     {notification.message}
                   </div>

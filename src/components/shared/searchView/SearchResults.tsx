@@ -40,8 +40,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             showLimit: SHOW_LIMIT_DEFAULT,
         };
 
-        this.addSearchResults = this.addSearchResults.bind(this);
-        this.closeSearchResults = this.closeSearchResults.bind(this);
         this.paginatedDiv = React.createRef();
     }
 
@@ -120,13 +118,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         );
     }
 
-    private addSearchResults() {
+    private addSearchResults = () => {
         // TODO, add all selected routePaths into location (use LinkBuilder)
         this.props.searchStore!.setSearchInput('');
         this.props.searchStore!.removeAllSubLineItems();
     }
 
-    private closeSearchResults() {
+    private closeSearchResults = () => {
         this.props.searchStore!.setSearchInput('');
     }
     private showMore = () => {
