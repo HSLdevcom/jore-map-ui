@@ -16,7 +16,7 @@ interface RoutePathLayerProps {
 
 export default class RoutePathLayer extends Component<RoutePathLayerProps> {
 
-    private onContextMenu = (routePathLinkId: number) => () => {
+    private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
     }
 
