@@ -11,6 +11,7 @@ import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
+    selectedTransitType: TransitType;
 }
 
 interface ILinkViewProps {
@@ -23,6 +24,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: any) {
         super(props);
         this.state = {
+            selectedTransitType: TransitType.BUS,
         };
     }
 
@@ -39,11 +41,12 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     // TODO
     private toggleSelectedTransitType = (selectedTransitType: TransitType): void => {
+        this.setState({ selectedTransitType });
     }
 
     // TODO
     private getFilters = () => {
-        return [TransitType.BUS];
+        return [this.state.selectedTransitType];
     }
 
     // TODO
