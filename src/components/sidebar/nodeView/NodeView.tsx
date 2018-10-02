@@ -95,6 +95,21 @@ class NodeView extends React.Component
         return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
     }
 
+    private renderNodeName(node: INode|null) {
+        let nodeName = null;
+        if (node && node.stop && (node.stop.nameFi || node.stop.nameSe)) {
+            if (node.stop.nameFi) nodeName = node.stop.nameFi;
+            else if (node.stop.nameSe) nodeName = node.stop.nameSe;
+        }
+
+        if (nodeName) {
+            return (
+                this.capitalizeFirstLetter(nodeName)
+            );
+        }
+        return 'Nimi puuttuu';
+    }
+
     private renderNodeView(node: INode|null) {
         return (
             <div>
@@ -109,7 +124,7 @@ class NodeView extends React.Component
                 ) : (
                 <div>
                     <ViewHeader
-                        header={`Solmu ${this.capitalizeFirstLetter(node.jore_solkuka)}`}
+                        header={`Solmu ${this.renderNodeName(node)}`}
                     />
                     <div
                         className={classnames(

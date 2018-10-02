@@ -30,12 +30,17 @@ export default class NodeService {
 const getNodeQuery = gql`
 query getNodeDetails($nodeId: String!) {
     node: solmuBySoltunnus(soltunnus: $nodeId) {
-      soltyyppi
-      soltunnus
-      solkuka
-      solviimpvm
-      mittpvm
-      geojson
+        soltyyppi
+        soltunnus
+        solkuka
+        solviimpvm
+        mittpvm
+        geojson
+        pysakkiBySoltunnus {
+            pysnimi
+            pysnimir
+            pyssade
+        }
     }
 }
 `;
