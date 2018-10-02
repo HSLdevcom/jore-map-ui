@@ -39,12 +39,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.sidebarStore!.setOpenLinkId(null);
     }
 
-    // TODO
     private toggleSelectedTransitType = (selectedTransitType: TransitType): void => {
         this.setState({ selectedTransitType });
     }
 
-    // TODO
     private getFilters = () => {
         return [this.state.selectedTransitType];
     }
