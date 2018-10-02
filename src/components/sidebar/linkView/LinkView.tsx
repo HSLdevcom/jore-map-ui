@@ -109,62 +109,58 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.flexInnerRow}>
-                <div className={s.inputContainer}>
-                    <div className={classnames(s.subTopic)}>
-                        ALKU
+                <div className={s.inputDropdownContainer}>
+                    <div className={s.inputContainer}>
+                        <div className={classnames(s.subTopic)}>
+                            ALKU
+                        </div>
+                        <input
+                            placeholder='1020112'
+                            type='text'
+                        />
                     </div>
-                    <div className={s.flexInnerRow}>
-                        <div className={s.inputContainer}>
-                            <input
-                                placeholder='1020112'
-                                type='text'
+                    <div className={s.inputContainer}>
+                        <div>
+                            <Dropdown
+                                onChange={this.onChange}
+                                items={['P', 'P1', 'P2']}
+                                selected={'P'}
                             />
                         </div>
-                        <div className={s.inputContainer}>
-                            <div>
-                                <Dropdown
-                                    onChange={this.onChange}
-                                    items={['P', 'P1', 'P2']}
-                                    selected={'P'}
-                                />
-                            </div>
-                        </div>
-                        <div className={s.inputContainer}>
-                            <input
-                                placeholder='Rautatientori'
-                                type='text'
-                            />
-                        </div>
+                    </div>
+                    <div className={s.inputContainer}>
+                        <input
+                            placeholder='Rautatientori'
+                            type='text'
+                        />
                     </div>
                 </div>
             </div>
             <div className={s.flexInnerRow}>
-                <div className={s.inputContainer}>
-                    <div className={classnames(s.subTopic)}>
-                        LOPPU
+                <div className={s.inputDropdownContainer}>
+                    <div className={s.inputContainer}>
+                        <div className={classnames(s.subTopic)}>
+                            LOPPU
+                        </div>
+                        <input
+                            placeholder='1020126'
+                            type='text'
+                        />
                     </div>
-                    <div className={s.flexInnerRow}>
-                        <div className={s.inputContainer}>
-                            <input
-                                placeholder='1020126'
-                                type='text'
+                    <div className={s.inputContainer}>
+                        <div>
+                            <Dropdown
+                                onChange={this.onChange}
+                                items={['P', 'P1', 'P2']}
+                                selected={'P'}
                             />
                         </div>
-                        <div className={s.inputContainer}>
-                            <div>
-                                <Dropdown
-                                    onChange={this.onChange}
-                                    items={['P', 'P1', 'P2']}
-                                    selected={'P'}
-                                />
-                            </div>
-                        </div>
-                        <div className={s.inputContainer}>
-                            <input
-                                placeholder='Rautatientori'
-                                type='text'
-                            />
-                        </div>
+                    </div>
+                    <div className={s.inputContainer}>
+                        <input
+                            placeholder='Rautatientori'
+                            type='text'
+                        />
                     </div>
                 </div>
             </div>
