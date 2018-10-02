@@ -43,18 +43,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     // TODO
     private getFilters = () => {
-        return [
-            TransitType.BUS,
-            TransitType.TRAM,
-            TransitType.TRAIN,
-            TransitType.SUBWAY,
-            TransitType.FERRY,
-        ];
+        return [TransitType.BUS];
     }
 
     // TODO
     public onChange = () => {
-
     }
 
     public render(): any {
