@@ -94,7 +94,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
-        e.target!.bringToFront();
+        e.target.bringToFront();
     }
 
     private clearHoverHighlights = (e: L.LeafletMouseEvent) => {
