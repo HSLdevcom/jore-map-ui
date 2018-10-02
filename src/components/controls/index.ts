@@ -2,7 +2,7 @@ import Button from './Button';
 import Checkbox from './Checkbox';
 import Dropdown from './Dropdown';
 import RadioButton from './RadioButton';
-import ToggleButton from './ToggleButton';
+import ToggleSwitch from './ToggleSwitch';
 import TransitToggleButton from './TransitToggleButton';
 import TransitToggleButtonBar from './TransitToggleButtonBar';
 
@@ -11,7 +11,7 @@ export {
     Checkbox,
     Dropdown,
     RadioButton,
-    ToggleButton,
+    ToggleSwitch,
     TransitToggleButton,
     TransitToggleButtonBar,
 };

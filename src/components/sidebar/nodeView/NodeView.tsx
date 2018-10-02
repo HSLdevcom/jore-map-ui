@@ -5,7 +5,7 @@ import { match } from 'react-router';
 import { SidebarStore } from '../../../stores/sidebarStore';
 import { NodeStore } from '../../../stores/nodeStore';
 import Loader from '../../shared/loader/Loader';
-import { Button, Dropdown, ToggleButton } from '../../controls';
+import { Button, Dropdown, ToggleSwitch } from '../../controls';
 import NodeService from '../../../services/nodeService';
 import ButtonType from '../../../enums/buttonType';
 import TransitType from '../../../enums/transitType';
@@ -120,7 +120,7 @@ class NodeView extends React.Component
                         <div className={s.rowElement}>
                             Pysäkki käytössä
                         </div>
-                        <ToggleButton
+                        <ToggleSwitch
                             onClick={this.toggleStopInUse}
                             value={true}
                             type={TransitType.BUS}

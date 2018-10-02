@@ -10,26 +10,24 @@ import QueryParams from '../../../routing/queryParams';
 import navigator from '../../../routing/navigator';
 import RouteAndStopHelper from '../../../storeAbstractions/routeAndStopAbstraction';
 import * as s from './routesList.scss';
+import TransitType from '../../../enums/transitType';
+import { NetworkStore } from '../../../stores/networkStore';
 
 interface IRoutesListState {
-    networkCheckboxToggles: any;
     isLoading: boolean;
 }
 
 interface IRoutesListProps {
     routeStore?: RouteStore;
+    networkStore?: NetworkStore;
 }
 
-@inject('routeStore')
+@inject('routeStore', 'networkStore')
 @observer
 class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            networkCheckboxToggles: {
-                solmut: false,
-                linkit: false,
-            },
             isLoading: false,
         };
     }
@@ -37,14 +35,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     async componentDidMount() {
         await this.queryRoutes();
         searchStore!.setSearchInput('');
-    }
-
-    private networkCheckboxToggle = (type: string) => {
-        const newToggleState: object = this.state.networkCheckboxToggles;
-        newToggleState[type] = !this.state.networkCheckboxToggles[type];
-        this.setState({
-            networkCheckboxToggles: newToggleState,
-        });
     }
 
     private async queryRoutes() {
@@ -56,8 +46,20 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         }
     }
 
-    private setFiltersFunction = (filters: string[]) => {
-        // TODO: Make this do something to network.
+    public toggleTransitType = (type: TransitType) => {
+        this.props.networkStore!.toggleTransitType(type);
+    }
+
+    public toggleIsLinksVisible = () => {
+        this.props.networkStore!.toggleIsLinksVisible();
+    }
+
+    public toggleIsNodesVisible = () => {
+        this.props.networkStore!.toggleIsNodesVisible();
+    }
+
+    public toggleIsPointsVisible = () => {
+        this.props.networkStore!.toggleIsPointsVisible();
     }
 
     public render(): any {
@@ -94,21 +96,28 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 <div className={s.network}>
                     <label className={s.inputTitle}>VERKKO</label>
                     <TransitToggleButtonBar
-                        setFiltersFunction={this.setFiltersFunction}
-                        filters={[]}
+                        toggleSelectedTransitType={this.toggleTransitType}
+                        selectedTransitTypes={this.props.networkStore!.selectedTransitTypes}
                     />
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.networkCheckboxToggle.bind(this, 'linkit')}
-                            checked={this.state.networkCheckboxToggles.linkit}
-                            text={'Hae alueen linkit'}
+                            onClick={this.toggleIsLinksVisible}
+                            checked={this.props.networkStore!.isLinksVisible}
+                            text={'Näytä alueen linkit'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.networkCheckboxToggle.bind(this, 'solmut')}
-                            checked={this.state.networkCheckboxToggles.solmut}
-                            text={'Hae alueen solmut'}
+                            onClick={this.toggleIsPointsVisible}
+                            checked={this.props.networkStore!.isPointsVisible}
+                            text={'Näytä linkkien pisteet'}
+                        />
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleIsNodesVisible}
+                            checked={this.props.networkStore!.isNodesVisible}
+                            text={'Näytä alueen solmut'}
                         />
                     </div>
                 </div>

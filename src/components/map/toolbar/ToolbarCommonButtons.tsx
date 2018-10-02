@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiPrinter } from 'react-icons/fi';
 import { observer } from 'mobx-react';
-import ToolbarButton from './ToolbarButton';
+import MapControlButton from '../mapControls/MapControlButton';
 import toolbarStore from '../../../stores/toolbarStore';
 import ToolbarTool from '../../../enums/toolbarTool';
 import * as s from './toolbarToolButtons.scss';
@@ -15,14 +15,14 @@ export default class ToolbarCommonButtons extends React.Component {
         return (
             <div className={s.toolbarToolButtonsView}>
                 <div className={s.toolbarButtonRow}>
-                    <ToolbarButton
+                    <MapControlButton
                         onClick={this.print}
                         isActive={false}
                         isDisabled={toolbarStore.isDisabled(ToolbarTool.Print)}
                         label='Tulosta kartta'
                     >
                         <FiPrinter />
-                    </ToolbarButton>
+                    </MapControlButton>
                 </div>
             </div>
         );
