@@ -56,7 +56,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             <ViewHeader
                 header='Reitin 1016 linkki'
             />
-            <div className={classnames(s.flexInnerColumn, s.subTopic)}>
+            <div className={classnames(s.topic)}>
                 REITIN SUUNNAN TIEDOT
             </div>
             <div className={s.flexRow}>
@@ -102,8 +102,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </div>
                 </div>
             </div>
-            <div className={classnames(s.flexInnerColumn, s.subTopic)}>
-                REITIN LINKKI
+            <div className={s.sectionDivider}/>
+            <div className={s.flexRow}>
+                <div className={classnames(s.topic)}>
+                    REITIN LINKKI
+                </div>
             </div>
             <div className={s.flexInnerRow}>
                 <div className={s.inputContainer}>
@@ -272,34 +275,31 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         </div>
                     </div>
                     <div className={s.inputContainer}>
-                        <div className={s.inputContainer}>
-                            <div className={classnames(s.subTopic)}>
-                                ALKUSOLMUN SÄDE JA PAIKKA
-                            </div>
-                            <div className={s.flexInnerRow}>
-                                <input
-                                    placeholder=''
-                                    type='text'
-                                    className={s.mediumSmallInput}
-                                />
-                                <input
-                                    placeholder='1RT'
-                                    type='text'
-                                    className={s.mediumSmallInput}
-                                />
-                            </div>
+                        <div className={classnames(s.subTopic)}>
+                            ALKUSOLMUN SÄDE JA PAIKKA
                         </div>
-                        <div className={s.inputContainer}>
-                            <div className={classnames(s.subTopic)}>
-                                ALKUSOLMU PAIKKANA
-                            </div>
-                            <Dropdown
-                                onChange={this.onChange}
-                                items={['Ei']}
-                                selected={'Kyllä'}
+                        <div className={s.flexInnerRow}>
+                            <input
+                                placeholder=''
+                                type='text'
+                                className={s.mediumSmallInput}
+                            />
+                            <input
+                                placeholder='1RT'
+                                type='text'
+                                className={s.mediumSmallInput}
                             />
                         </div>
-
+                    </div>
+                    <div className={s.inputContainer}>
+                        <div className={classnames(s.subTopic)}>
+                            ALKUSOLMU PAIKKANA
+                        </div>
+                        <Dropdown
+                            onChange={this.onChange}
+                            items={['Ei']}
+                            selected={'Kyllä'}
+                        />
                     </div>
                 </div>
                 <div className={s.flexColumn}>
@@ -373,6 +373,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     placeholder='23.08.2017'
                 />
             </div>
+            <div className={s.sectionDivider}/>
             <MultiTabTextarea
                 tabs={['Tariffialueet', 'Määränpäät', 'Ajoajat']}
             />
