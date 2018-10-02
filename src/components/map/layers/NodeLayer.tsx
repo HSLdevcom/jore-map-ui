@@ -7,6 +7,7 @@ import NodeType from '../../../enums/nodeType';
 import { PopupStore } from '../../../stores/popupStore';
 import { ToolbarStore } from '../../../stores/toolbarStore';
 import { SidebarStore } from '../../../stores/sidebarStore';
+import { NodeStore } from '../../../stores/nodeStore';
 import ToolbarTool from '../../../enums/toolbarTool';
 import * as s from './nodeLayer.scss';
 
@@ -15,6 +16,7 @@ interface MarkerLayerProps {
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
     sidebarStore?: SidebarStore;
+    nodeStore?: NodeStore;
 }
 
 enum color {
@@ -24,7 +26,7 @@ enum color {
     SELECTED_FILL_COLOR = '#f44268',
 }
 
-@inject('popupStore', 'toolbarStore', 'sidebarStore')
+@inject('popupStore', 'toolbarStore', 'sidebarStore', 'nodeStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getNodeMarkerHtml = (borderColor: string, fillColor: string) => {
@@ -35,9 +37,11 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
     }
 
     private getIcon = (node: INode) => {
+        const selectedNodeId = this.props.nodeStore ? this.props.nodeStore!.selectedNodeId : null;
+
         const borderColor = node.type === NodeType.CROSSROAD
         ? color.CROSSROAD_BORDER_COLOR : color.STOP_BORDER_COLOR;
-        const isSelected = node.id === this.props.sidebarStore!.openNodeId;
+        const isSelected = node.id === selectedNodeId;
         const fillColor = isSelected ? color.SELECTED_FILL_COLOR : color.NORMAL_FILL_COLOR;
 
         const divIconOptions : L.DivIconOptions = {

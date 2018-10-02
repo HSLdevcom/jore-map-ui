@@ -1,9 +1,9 @@
 import { IRoutePath, IRoute } from '../models';
 
 export default class NodeHelper {
-    public static getNodeIdsUsedByRoutes(routes: IRoute[]): number[] {
+    public static getNodeIdsUsedByRoutes(routes: IRoute[]): string[] {
         return routes
-            .reduce<number[]>((flatlist, route) =>
+            .reduce<string[]>((flatlist, route) =>
             NodeHelper.getUniqueNumbers(
                     flatlist.concat(
                         NodeHelper.getNodeIdsUsedByRoutePaths(route.routePaths),
@@ -13,9 +13,9 @@ export default class NodeHelper {
             );
     }
 
-    public static getNodeIdsUsedByRoutePaths(routePaths: IRoutePath[]): number[] {
+    public static getNodeIdsUsedByRoutePaths(routePaths: IRoutePath[]): string[] {
         return routePaths
-            .reduce<number[]>((flatlist, routePath) =>
+            .reduce<string[]>((flatlist, routePath) =>
             NodeHelper.getUniqueNumbers(
                     flatlist.concat(
                         NodeHelper.getNodeIdsUsedByRoutePath(routePath),
@@ -25,9 +25,9 @@ export default class NodeHelper {
             );
     }
 
-    public static getNodeIdsUsedByRoutePath(routePath: IRoutePath): number[] {
+    public static getNodeIdsUsedByRoutePath(routePath: IRoutePath): string[] {
         return routePath.routePathLinks
-            .reduce<number[]>((flatlist, routePathLink) =>
+            .reduce<string[]>((flatlist, routePathLink) =>
             NodeHelper.getUniqueNumbers(
                     flatlist.concat(
                         routePathLink.endNodeId,
@@ -38,14 +38,14 @@ export default class NodeHelper {
             );
     }
 
-    public static getUniqueNumbers(numbers: number[]): number[] {
+    public static getUniqueNumbers(numbers: string[]): string[] {
         const seen = {};
         return numbers.filter(num =>
             seen.hasOwnProperty(num) ? false : (seen[num] = true),
         );
     }
 
-    public static routePathHasStop(routePaths: IRoutePath[], nodeId: number) {
+    public static routePathHasStop(routePaths: IRoutePath[], nodeId: string) {
         return routePaths.some(routePath =>
             routePath.routePathLinks.some(routePathLink =>
                 (
