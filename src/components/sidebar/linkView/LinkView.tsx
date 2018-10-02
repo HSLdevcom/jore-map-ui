@@ -110,7 +110,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.flexInnerRow}>
-                <div className={s.inputDropdownContainer}>
+                <div className={s.flexInnerRowFlexEnd}>
                     <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             ALKU
@@ -138,7 +138,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.flexInnerRow}>
-                <div className={s.inputDropdownContainer}>
+                <div className={s.flexInnerRowFlexEnd}>
                     <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
                             LOPPU
