@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Polyline } from 'react-leaflet';
+import { Polyline, FeatureGroup } from 'react-leaflet';
 import { IRoutePathLink } from '../../../models';
 
 interface RoutePathLayerProps {
+    internalId: string;
     routePathLinks: IRoutePathLink[];
     onClick: Function;
     onContextMenu: Function;
@@ -15,26 +16,32 @@ interface RoutePathLayerProps {
 
 export default class RoutePathLayer extends Component<RoutePathLayerProps> {
 
-    private onContextMenu = (routePathLinkId: number) => {
+    private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
     }
 
     render() {
-        return this.props.routePathLinks
-            .map((routePathLink, index) => {
-                return (
-                    <Polyline
-                        positions={routePathLink.positions}
-                        key={index}
-                        color={this.props.color}
-                        weight={this.props.weight}
-                        opacity={this.props.opacity}
-                        onClick={this.props.onClick}
-                        onContextMenu={this.onContextMenu.bind(this, routePathLink.id)}
-                        onMouseOver={this.props.onMouseOver}
-                        onMouseOut={this.props.onMouseOut}
-                    />
-                );
-            });
+        return (
+            <FeatureGroup
+                internalId={this.props.internalId}
+                onMouseOver={this.props.onMouseOver}
+            >
+                {this.props.routePathLinks
+                    .map((routePathLink, index) => {
+                        return (
+                            <Polyline
+                                positions={routePathLink.positions}
+                                key={index}
+                                color={this.props.color}
+                                weight={this.props.weight}
+                                opacity={this.props.opacity}
+                                onClick={this.props.onClick}
+                                onContextMenu={this.onContextMenu(routePathLink.id)}
+                                onMouseOut={this.props.onMouseOut}
+                            />
+                        );
+                    })}
+            </FeatureGroup>
+        );
     }
 }

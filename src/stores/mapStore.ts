@@ -32,22 +32,6 @@ export class MapStore {
         return this._coordinates;
     }
 
-    @computed get lat(): number {
-        return this._coordinates.lat;
-    }
-
-    set lat(lat: number) {
-        this._coordinates.lat = lat;
-    }
-
-    @computed get lon(): number {
-        return this._coordinates.lng;
-    }
-
-    set lon(lon: number) {
-        this._coordinates.lng = lon;
-    }
-
     @computed get getDisplayCoordinates(): number[] {
         return GeometryService.reprojectToCrs(
             this._coordinates.lat, this._coordinates.lng, this._displayCoordinateSystem);
