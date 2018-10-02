@@ -7,7 +7,7 @@ export default interface INode {
     stop: INodeStop|null;
     type: NodeType;
     coordinates: ICoordinate;
-    jore_mittpvm: string;
-    jore_solviimpvm: string;
-    jore_solkuka: string;
+    measurementDate: string;
+    modifiedOn: string;
+    modifiedBy: string;
 }

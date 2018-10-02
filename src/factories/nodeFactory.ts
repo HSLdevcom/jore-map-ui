@@ -15,9 +15,9 @@ class NodeFactory {
             stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : null,
             type: getNodeType(node.soltyyppi),
             coordinates: coordinate,
-            jore_mittpvm: node.mittpvm,
-            jore_solviimpvm: node.solviimpvm,
-            jore_solkuka: node.solkuka,
+            measurementDate: node.mittpvm,
+            modifiedOn: node.solviimpvm,
+            modifiedBy: node.solkuka,
         };
     }
 }
