@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
+import TransitType from '../../../enums/transitType';
 import InputContainer from './InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
 import { SidebarStore } from '../../../stores/sidebarStore';
@@ -36,19 +37,24 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.sidebarStore!.setOpenLinkId(null);
     }
 
-    private toggleSelectedTransitType = (filters: string[]): void => {
-        // TODO
-        // console.log('toggleSelectedTransitType');
+    // TODO
+    private toggleSelectedTransitType = (selectedTransitType: TransitType): void => {
     }
 
+    // TODO
     private getFilters = () => {
-        // TODO
-        return ['bus', 'tram', 'train', 'subway', 'ferry'];
+        return [
+            TransitType.BUS,
+            TransitType.TRAM,
+            TransitType.TRAIN,
+            TransitType.SUBWAY,
+            TransitType.FERRY,
+        ];
     }
 
+    // TODO
     public onChange = () => {
-        // TODO
-        // console.log('onChange');
+
     }
 
     public render(): any {
@@ -210,8 +216,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.transitButtonBar}>
                     <TransitToggleButtonBar
-                        setFiltersFunction={this.toggleSelectedTransitType}
-                        filters={this.getFilters()}
+                        toggleSelectedTransitType={this.toggleSelectedTransitType}
+                        selectedTransitTypes={this.getFilters()}
                     />
                 </div>
             </div>
