@@ -8,10 +8,6 @@ import NodeFactory from '../factories/nodeFactory';
 
 export default class NodeService {
     public static async fetchNode(nodeId: string): Promise<INode | null> {
-        return await this.runFetchNodeQuery(nodeId);
-    }
-
-    private static async runFetchNodeQuery(nodeId: string): Promise<INode | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: getNodeQuery, variables: { nodeId } },
