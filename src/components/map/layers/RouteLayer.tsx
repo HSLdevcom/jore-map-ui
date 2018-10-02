@@ -14,7 +14,6 @@ interface RouteLayerProps {
     routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
     colors: string[];
-    bringRouteLayerToFront: Function;
 }
 
 interface IRouteLayerState {
@@ -101,7 +100,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         this.setState({
             hoveredPolylines: [],
         });
-        if (!this.hasHighlight(e.target.options.internalId)) {
+        if (!this.hasHighlight(e['sourceTarget'].options.routePathInternalId)) {
             e.target.bringToBack();
         }
     }
