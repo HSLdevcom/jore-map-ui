@@ -1,0 +1,74 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+
+.inputContainer {
+    padding-right: 10px;
+    padding-bottom: 10px;
+    width:100%;
+}
+
+.tabsInputContainer {
+    padding-top: 10px;
+    width: 100%;
+}
+
+.tabButton {
+    width:100%;
+    height:40px;
+    background-color: $lightGrey;
+    border-bottom: none;
+    border-top: 1.5px solid $mediumLightGrey;
+    border-bottom: 1.5px solid $mediumLightGrey;
+    text-align: center;
+    color: $blue;
+    font-weight: 500;
+    top: 50%;
+    transform: translateY(3%);
+    transition: .2s;
+    cursor: pointer;
+}
+
+.tabLabel {
+    top: 50%;
+    transform: translateY(50%);
+}
+
+.tabButtonPiece:first-of-type {
+    border-top-left-radius: 8px;
+    border-left: 1.5px solid $mediumLightGrey;
+    border-right: 1.5px solid $mediumLightGrey;
+}
+
+.tabButtonPiece {
+    border-right: 1.5px solid $mediumLightGrey;
+}
+
+.tabButtonPiece:last-of-type {
+    border-top-right-radius: 8px;
+    border-right: 1.5px solid $mediumLightGrey;
+}
+
+.opened {
+    background-color: white;
+    color: black;
+    font-weight: 500;
+    border-bottom: none;
+    border-top: 3px solid $blue;
+}
+
+.tabsInput {
+    width:100%;
+    height:200px;
+    box-sizing: border-box;
+    margin-top: 0px;
+    border-radius: 0px;
+    border-right: 1.5px solid $mediumLightGrey;
+    border-left: 1.5px solid $mediumLightGrey;
+    border-top: none;
+    border-bottom: 1.5px solid $mediumLightGrey;
+    outline: none;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    font-family: $hslFont;
+    resize: none;
+}

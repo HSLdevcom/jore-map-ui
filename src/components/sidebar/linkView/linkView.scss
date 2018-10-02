@@ -1,28 +1,69 @@
 @import '../../shared/styles/common';
 @import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
 
 .linkView {
     padding: 20px;
     overflow-y: auto;
-    width: $sidebarWide;
+    width: $sidebarExtraWide;
+    overflow-x: hidden;
 
-    .subTopic {
-        font-weight: bold;
-        color: $mediumGrey;
-        font-size: $smallFontSize;
-    }
-
-    .inputField {
+    input {
         padding: 10px;
+        line-height: 20px;
         margin-top: 5px;
         border-radius: 5px;
+        width: 100%;
     }
 
-    .inputContainer {
+    div, input {
+        box-sizing: border-box;
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        padding-top: 10px;
         padding-right: 10px;
     }
 
-    .largeInputContainer {
-        margin-top: 10px;
+    .textArea {
+        padding-bottom: 158px; /* TODO: fix this hack */
+        margin-top: 5px;
+    }
+
+    .mediumSmallInput {
+        width: 70px;
+        margin-right: 10px;
+    }
+
+    .smallInput {
+        width: 35px;
+        text-align: center;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .checkBoxContainer {
+        margin-top: 15px;
+    }
+
+    .smallInputContainer {
+        padding-right: 8px;
+        padding-bottom: 8px;
+    }
+
+    .transitButtonBar {
+        padding-top: 10px;
+        width: 50%;
+    }
+
+    .buttonBar {
+        display: flex;
+        flex-direction: row;
+        padding-top: 10px;
+        justify-content: space-between;
     }
 }

@@ -1,0 +1,30 @@
+@import './common';
+
+.inputContainer {
+    padding-right: 10px;
+    padding-top: 10px;
+    width:100%;
+}
+
+.inputContainer:last-of-type {
+    padding-right: 0px;
+}
+
+.subTopic {
+    font-weight: bold;
+    color: $mediumGrey;
+    font-size: $smallFontSize;
+    white-space: nowrap;
+}
+
+.topic {
+    font-weight: bold;
+    color: $mediumGrey;
+    font-size: $mediumFontSize;
+}
+
+.sectionDivider {
+    padding-top:20px;
+    border-bottom: 1.5px solid $lightGrey;
+    width: 100%;
+}
