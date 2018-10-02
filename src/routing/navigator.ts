@@ -3,18 +3,18 @@ import qs from 'qs';
 import QueryParams from './queryParams';
 
 class Navigator {
-    private _store: RouterStore;
+    private store: RouterStore;
 
     constructor() {
-        this._store = new RouterStore();
+        this.store = new RouterStore();
     }
 
     public getStore() {
-        return this._store;
+        return this.store;
     }
 
     public goTo(url: string) {
-        this._store.history.push(url);
+        this.store.history.push(url);
     }
 
     // TODO, rename
@@ -25,7 +25,7 @@ class Navigator {
     // TODO, rename
     public getQueryParamValues() {
         return qs.parse(
-            this._store.location.search,
+            this.store.location.search,
             { ignoreQueryPrefix: true },
         );
     }

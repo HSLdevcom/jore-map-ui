@@ -61,7 +61,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         };
         this.setView = this.setView.bind(this);
         this.fitBounds = this.fitBounds.bind(this);
-        this.bringRouteLayerToFront = this.bringRouteLayerToFront.bind(this);
     }
 
     private getMap() {
@@ -94,9 +93,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.getMap().fitBounds(bounds);
     }
 
-    private bringRouteLayerToFront(internalId: string) {
+    private bringRouteLayerToFront = (internalId: string) => {
         this.getMap().eachLayer((layer: any) => {
-            if (layer.options.internalId === internalId) {
+            if (layer.options.routePathInternalId === internalId) {
                 layer.bringToFront();
             }
         });
