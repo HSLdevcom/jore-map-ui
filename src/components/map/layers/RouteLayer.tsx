@@ -63,17 +63,19 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     }
 
     private toggleHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
-        const selectedPolylines = this.state.selectedPolylines;
-        const isSelected = selectedPolylines.includes(internalId);
+        let selectedPolylines = this.state.selectedPolylines;
 
-        (isSelected) ?
-            selectedPolylines.splice(selectedPolylines.indexOf(internalId), 1) :
+        if (selectedPolylines.includes(internalId)) {
+            selectedPolylines =
+                selectedPolylines.filter(id => id !== internalId);
+        } else {
             selectedPolylines.push(internalId);
+        }
 
         this.setState({
             selectedPolylines,
         });
-        e.target!.bringToFront();
+        e.target.bringToFront();
     }
 
     private openLinkView = (routePathLinkId: number) => {
@@ -95,10 +97,13 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         e.target!.bringToFront();
     }
 
-    private clearHoverHighlights = () => {
+    private clearHoverHighlights = (e: L.LeafletMouseEvent) => {
         this.setState({
             hoveredPolylines: [],
         });
+        for (const internalId of this.state.selectedPolylines) {
+            this.props.bringRouteLayerToFront(internalId);
+        }
     }
 
     render() {

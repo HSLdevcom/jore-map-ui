@@ -23,7 +23,7 @@ export default class RoutePathLayer extends Component<RoutePathLayerProps> {
     render() {
         return (
             <FeatureGroup
-                internalId={this.props.internalId}
+                routePathInternalId={this.props.internalId}
                 onMouseOver={this.props.onMouseOver}
             >
                 {this.props.routePathLinks
