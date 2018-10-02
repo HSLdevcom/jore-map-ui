@@ -1,4 +1,5 @@
 import { action, computed, observable } from 'mobx';
+import TransitType from '../enums/transitType';
 
 export class SearchStore {
     @observable private _searchInput: string;
@@ -6,12 +7,18 @@ export class SearchStore {
         routePathId: string;
         routeId: string;
     }[];
-    @observable private _filters: string[];
+    @observable private _selectedTransitTypes: TransitType[];
 
     constructor() {
         this._searchInput = '';
         this._subLineItems = [];
-        this._filters = [];
+        this._selectedTransitTypes = [
+            TransitType.BUS,
+            TransitType.FERRY,
+            TransitType.SUBWAY,
+            TransitType.TRAIN,
+            TransitType.TRAM,
+        ];
     }
 
     @computed get searchInput(): string {
@@ -48,12 +55,17 @@ export class SearchStore {
         return this._subLineItems;
     }
 
-    @computed get filters(): string[] {
-        return this._filters;
+    @computed get selectedTransitTypes(): TransitType[] {
+        return this._selectedTransitTypes;
     }
 
-    set filters(value: string[]) {
-        this._filters = value;
+    @action
+    public toggleTransitType(type: TransitType) {
+        if (this._selectedTransitTypes.includes(type)) {
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
+        } else {
+            this._selectedTransitTypes.push(type);
+        }
     }
 }
 
