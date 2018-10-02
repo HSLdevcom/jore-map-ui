@@ -16,13 +16,6 @@
     width: 100%;
 }
 
-.inputDropdownContainer {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    align-items: flex-end;
-}
-
 .flexInnerColumn {
     display: flex;
     flex-direction: column;
@@ -31,4 +24,11 @@
 
 .flexFiller {
     flex-grow: 1;
+}
+
+.flexInnerRowFlexEnd {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: flex-end;
 }
