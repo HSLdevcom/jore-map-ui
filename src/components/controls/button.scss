@@ -32,3 +32,11 @@
 .secondary:hover {
     background-color: darken(#fff, 10);
 }
+
+.form {
+    background-color: $busBlue;
+    color: #fff;
+    padding: 10px 15px 10px 15px;
+    border-radius: 20px;
+    width:100%;
+}

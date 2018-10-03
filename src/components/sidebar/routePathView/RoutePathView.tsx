@@ -41,6 +41,7 @@ class RoutePathView extends React.Component{
                 </div>
             </div>
             <div className={s.sectionDivider} />
+            <div className={s.padding} />
             <div className={classnames(s.topic)}>
                 REITINSUUNNAN TIEDOT
             </div>
@@ -71,6 +72,7 @@ class RoutePathView extends React.Component{
                             label='VIIM.VOIM.OLO'
                             placeholder='31.12.2050'
                         />
+                        <div />
                     </div>
                     <div className={s.inputContainer}>
                         <div className={classnames(s.subTopic)}>
@@ -118,8 +120,8 @@ class RoutePathView extends React.Component{
                         <div className={s.inputContainer}>
                             <Button
                                 onClick={this.onChange}
-                                type={ButtonType.PRIMARY}
-                                text={'Edellinen'}
+                                type={ButtonType.FORM}
+                                text={'Laske'}
                             />
                         </div>
                     </div>
@@ -147,6 +149,99 @@ class RoutePathView extends React.Component{
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className={s.flexRow}>
+                <InputContainer
+                    label='PÄIVITYSPVM'
+                    placeholder='23.08.2017'
+                />
+                <InputContainer
+                    label='PÄIVITTÄJÄ'
+                    placeholder='Vuori Tuomas'
+                />
+            </div>
+            <div className={s.sectionDivider}/>
+            <div className={s.flexRow}>
+                <div className={s.flexInnerColumn}>
+                    <div className={s.inputContainer}>
+                        <Button
+                            onClick={this.onChange}
+                            type={ButtonType.FORM}
+                            text={'Varustelutiedot'}
+                        />
+                    </div>
+                    <div className={s.inputContainer}>
+                        <Button
+                            onClick={this.onChange}
+                            type={ButtonType.FORM}
+                            text={'Solmu'}
+                        />
+                    </div>
+                    <div />
+                </div>
+                <div className={s.flexInnerColumn}>
+                    <div className={s.inputContainer}>
+                        <Button
+                            onClick={this.onChange}
+                            type={ButtonType.FORM}
+                            text={'Solmut Exceliin'}
+                        />
+                    </div>
+                    <div className={s.inputContainer}>
+                        <Button
+                            onClick={this.onChange}
+                            type={ButtonType.FORM}
+                            text={'Linkki'}
+                        />
+                    </div>
+                    <div />
+                </div>
+                <div className={s.flexInnerColumn}>
+                    <div className={s.inputContainer}>
+                        <Button
+                            onClick={this.onChange}
+                            type={ButtonType.FORM}
+                            text={'Aikataulu'}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className={s.sectionDivider}/>
+            <div className={s.inputContainer}>
+                <div className={s.topic}>
+                    KARTTA
+                </div>
+                <div className={s.padding} />
+                <div className={s.flexRow}>
+                    <Button
+                        onClick={this.onChange}
+                        type={ButtonType.FORM}
+                        text={'Kartta'}
+                    />
+                    <div className={s.mapCheckboxContainer}>
+                        <Checkbox
+                            checked={false}
+                            text={'Muotopisteet kartalle'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className={s.padding} />
+            <div className={s.inputContainer}>
+                Esitettävien ajoaikojen kausi ja aikajakso
+            </div>
+            <div className={s.flexRow}>
+                <Dropdown
+                    onChange={this.onChange}
+                    items={['Suunta 2']}
+                    selected={'Suunta 1'}
+                />
+                <Dropdown
+                    onChange={this.onChange}
+                    items={['Suunta 2']}
+                    selected={'Suunta 1'}
+                />
             </div>
         </div>
         );

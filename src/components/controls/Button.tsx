@@ -15,8 +15,25 @@ class Button extends React.Component<IButtonProps, {}> {
         super(props);
     }
 
+    private getTypeClass = (type: ButtonType) => {
+        switch (type) {
+        case ButtonType.PRIMARY: {
+            return s.primary;
+        }
+        case ButtonType.SECONDARY: {
+            return s.primary;
+        }
+        case ButtonType.FORM: {
+            return s.form;
+        }
+        default: {
+            return s.primary;
+        }
+        }
+    }
+
     private getClassname = (type: ButtonType, className?: string) => {
-        const typeClass = type === ButtonType.PRIMARY ? s.primary : s.secondary;
+        const typeClass = this.getTypeClass(type);
         return classNames(s.button, typeClass, className);
     }
 
