@@ -1,26 +1,37 @@
 @import '../../shared/styles/common';
 @import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
 
 .routePathView {
     padding: 20px;
     overflow-y: auto;
     width: $sidebarWide;
 
-    .routePathTimestamp {
-        font-weight: bold;
+    input {
+        padding: 10px;
+        line-height: 20px;
+        margin-top: 5px;
+        border-radius: 5px;
+        width: 100%;
     }
 
-    .subTopic {
+    div, input {
+        box-sizing: border-box;
+    }
+
+
+    .routePathTimestamp {
         font-weight: bold;
-        color: $mediumGrey;
-        font-size: $smallFontSize;
     }
 
     .routeInformationContainer {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        padding-bottom: 10px;
-        border-bottom: 1px solid $lightGrey;
+        padding-top:10px;
+    }
+
+    .checkBoxContainer {
+        margin-top: 15px;
     }
 }
