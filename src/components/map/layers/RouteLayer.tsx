@@ -14,7 +14,6 @@ interface RouteLayerProps {
     routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
     colors: string[];
-    bringRouteLayerToFront: Function;
 }
 
 interface IRouteLayerState {
@@ -62,18 +61,20 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         }
     }
 
-    private toggleHighlight(internalId: string) {
-        const selectedPolylines = this.state.selectedPolylines;
-        const isSelected = selectedPolylines.indexOf(internalId) > -1;
+    private toggleHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
+        let selectedPolylines = this.state.selectedPolylines;
 
-        (isSelected) ?
-            selectedPolylines.splice(selectedPolylines.indexOf(internalId), 1) :
+        if (selectedPolylines.includes(internalId)) {
+            selectedPolylines =
+                selectedPolylines.filter(id => id !== internalId);
+        } else {
             selectedPolylines.push(internalId);
+        }
 
         this.setState({
             selectedPolylines,
         });
-        this.props.bringRouteLayerToFront(internalId);
+        e.target.bringToFront();
     }
 
     private openLinkView = (routePathLinkId: number) => {
@@ -88,17 +89,20 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             this.state.hoveredPolylines.includes(internalId);
     }
 
-    private setHoverHighlight(internalId: string) {
+    private setHoverHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
-        this.props.bringRouteLayerToFront(internalId);
+        e.target.bringToFront();
     }
 
-    private clearHoverHightlights = () => {
+    private clearHoverHighlights = (e: L.LeafletMouseEvent) => {
         this.setState({
             hoveredPolylines: [],
         });
+        if (!this.hasHighlight(e['sourceTarget'].options.routePathInternalId)) {
+            e.target.bringToBack();
+        }
     }
 
     render() {
@@ -109,10 +113,11 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                 return (
                     <RoutePathLayer
                         key={index}
-                        onClick={this.toggleHighlight.bind(this, internalId)}
+                        internalId={internalId}
+                        onClick={this.toggleHighlight(internalId)}
                         onContextMenu={this.openLinkView}
-                        onMouseOver={this.setHoverHighlight.bind(this, internalId)}
-                        onMouseOut={this.clearHoverHightlights}
+                        onMouseOver={this.setHoverHighlight(internalId)}
+                        onMouseOut={this.clearHoverHighlights}
                         routePathLinks={routePath.routePathLinks}
                         color={color}
                         opacity={this.hasHighlight(internalId) ? 1 : 0.6}

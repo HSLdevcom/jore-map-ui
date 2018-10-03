@@ -7,7 +7,7 @@ interface IToggleSwitchState {
 }
 
 interface IToggleSwitchProps {
-    type: TransitType;
+    type: TransitType; // TODO: use this variable.
     value: boolean;
     color: string;
     onClick(event: any): void;

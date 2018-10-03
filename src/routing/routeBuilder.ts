@@ -4,10 +4,10 @@ import subSites from './subSites';
 import navigator from './navigator';
 
 export class RouteBuilder {
-    private _routerStore: RouterStore;
+    private routerStore: RouterStore;
 
     constructor() {
-        this._routerStore = navigator.getStore();
+        this.routerStore = navigator.getStore();
     }
 
     public to(subSites: subSites) {
@@ -19,7 +19,7 @@ export class RouteBuilder {
     }
 
     public getCurrentLocation() {
-        return this._routerStore.location.pathname;
+        return this.routerStore.location.pathname;
     }
 }
 

@@ -1,7 +1,7 @@
 export default interface IRoutePathLink {
-    id: number;
+    id: string;
     positions: [[number, number]];
-    startNodeId: number;
-    endNodeId: number;
+    startNodeId: string;
+    endNodeId: string;
     orderNumber: number;
 }

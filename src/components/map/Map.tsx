@@ -1,9 +1,9 @@
 import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
+import 'leaflet/dist/leaflet.css';
 import { MapStore } from '../../stores/mapStore';
 import { RouteStore } from '../../stores/routeStore';
 import Control from './mapControls/CustomControl';
@@ -20,6 +20,7 @@ import { NodeStore } from '../../stores/nodeStore';
 import NodeLayer from './layers/NodeLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import * as s from './map.scss';
+import NetworkLayers from './layers/NetworkLayers';
 
 interface IMapState {
     zoomLevel: number;
@@ -60,7 +61,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         };
         this.setView = this.setView.bind(this);
         this.fitBounds = this.fitBounds.bind(this);
-        this.bringRouteLayerToFront = this.bringRouteLayerToFront.bind(this);
     }
 
     private getMap() {
@@ -91,14 +91,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
         this.getMap().fitBounds(bounds);
-    }
-
-    private bringRouteLayerToFront(internalId: string) {
-        this.getMap().eachLayer((layer: any) => {
-            if (layer.options.internalId === internalId) {
-                layer.bringToFront();
-            }
-        });
     }
 
     private getVisibleRoutePaths = (routes: IRoute[]) => {
@@ -154,18 +146,18 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                             `
                         }
                         baseLayer={true}
-                        maxZoom={23}
-                        minZoom={6}
+                        maxZoom={19}
+                        minZoom={8}
                         detectRetina={true}
                         tileSize={512}
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
+                    <NetworkLayers />
                     <RouteLayer
                         colors={colors}
                         routePaths={visibleRoutePaths}
                         fitBounds={this.fitBounds}
-                        bringRouteLayerToFront={this.bringRouteLayerToFront}
                     />
                     <MarkerLayer
                         coordinates={this.startCoordinates(visibleRoutePaths)}

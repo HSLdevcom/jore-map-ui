@@ -5,7 +5,11 @@ $dropdownWidth: 150px;
 .dropdown {
     font-weight: bold;
     width: 100%;
-    
+
+    input, div {
+        box-sizing: unset !important; /* TODO: remove this */
+    }
+
     .itemListShown {
         position: absolute;
         display: flex;
@@ -19,9 +23,13 @@ $dropdownWidth: 150px;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 15px 10px 15px;
-        border: 1px solid $lightGrey;
+        padding: 9px 15px 10px 15px;
+        border: 1px solid $mediumLightGrey;
         cursor: pointer;
+        max-height: $inputMaxHeight;
+        border-radius: 5px;
+        background-color: white;
+        margin-top: 5px;
     }
 
     .itemListHidden {
@@ -30,7 +38,7 @@ $dropdownWidth: 150px;
 
     .item {
         width: $dropdownWidth;
-        padding: 15px;
+        padding: 10px 15px 10px 15px;
         border: 1px solid $lightGrey;
         cursor: pointer;
     }
@@ -38,7 +46,7 @@ $dropdownWidth: 150px;
     .selectedItem:hover {
         background-color: $backgroundlightGrey;
     }
-    
+
     .item:hover {
         background-color: $backgroundlightGrey;
     }
