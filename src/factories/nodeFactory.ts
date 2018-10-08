@@ -4,7 +4,8 @@ import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {
     public static createNode = (node: any): INode => {
-        const coordinateList = JSON.parse(node.geojson);
+        const coordinateList = // Use less accurate location if measured location is missing.
+            JSON.parse(node.geojson ? node.geojson : node.geojsonDisp);
         const coordinate : ICoordinate = {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
