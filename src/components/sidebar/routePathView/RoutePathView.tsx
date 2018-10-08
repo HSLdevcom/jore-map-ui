@@ -131,7 +131,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         label='LYHENNE RUOTSIKSI'
                         disabled={this.state.isEditingDisabled}
                     />
-                    <div className={s.flexInnerRow}>
+                    <div className={s.flexInnerRowAligned}>
                         <InputContainer
                             label='PITUUS'
                             disabled={this.state.isEditingDisabled}
