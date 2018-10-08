@@ -47,7 +47,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         return [this.state.selectedTransitType];
     }
 
-    public onEditButtonClick = () => {
+    public toggleEditing = () => {
     }
 
     // TODO
@@ -59,7 +59,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         <div className={s.linkView}>
             <ViewHeader
                 header='Reitin 1016 linkki'
-                onEditButtonClick={this.onEditButtonClick}
+                toggleEditing={this.toggleEditing}
             />
             <div className={classnames(s.topic)}>
                 REITIN SUUNNAN TIEDOT
@@ -381,22 +381,22 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             <div className={s.buttonBar}>
                 <Button
                     onClick={this.onChange}
-                    type={ButtonType.PRIMARY}
+                    type={ButtonType.ROUND}
                     text={'Seuraava'}
                 />
                 <Button
                     onClick={this.onChange}
-                    type={ButtonType.PRIMARY}
+                    type={ButtonType.ROUND}
                     text={'Edellinen'}
                 />
                 <Button
                     onClick={this.onChange}
-                    type={ButtonType.PRIMARY}
+                    type={ButtonType.ROUND}
                     text={'Alkusolmu'}
                 />
                 <Button
                     onClick={this.onChange}
-                    type={ButtonType.PRIMARY}
+                    type={ButtonType.ROUND}
                     text={'Loppusolmu'}
                 />
             </div>

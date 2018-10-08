@@ -8,7 +8,7 @@ import * as s from './viewHeader.scss';
 
 interface IViewHeaderProps {
     header: string;
-    onEditButtonClick: Function;
+    toggleEditing: Function;
 }
 
 class ViewHeader extends React.Component<IViewHeaderProps> {
@@ -17,8 +17,8 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
         navigator.goTo(routesLink);
     }
 
-    private onEditButtonClick = () => {
-        this.props.onEditButtonClick();
+    private toggleEditing = () => {
+        this.props.toggleEditing();
     }
 
     public render(): any {
@@ -28,7 +28,7 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
                 <div className={s.flexFiller} />
                 <Button
                     className={s.editButton}
-                    onClick={this.onEditButtonClick}
+                    onClick={this.toggleEditing}
                     type={ButtonType.PRIMARY}
                     text={'Muokkaa'}
                 />

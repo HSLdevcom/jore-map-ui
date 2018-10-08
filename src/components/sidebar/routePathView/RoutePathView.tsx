@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classnames from 'classnames';
 import ViewHeader from '../ViewHeader';
 import InputContainer from '../InputContainer';
 import { Button, Dropdown, Checkbox } from '../../controls';
@@ -21,7 +20,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         };
     }
 
-    public onEditButtonClick = () => {
+    public toggleEditing = () => {
         const isEditingDisabled = !this.state.isEditingDisabled;
         this.setState({ isEditingDisabled });
     }
@@ -35,7 +34,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         <div className={s.routePathView}>
             <ViewHeader
                 header='Reitin suunta 1016'
-                onEditButtonClick={this.onEditButtonClick}
+                toggleEditing={this.toggleEditing}
             />
             <div className={s.routePathTimestamp}>01.09.2017</div>
             <div className={s.topic}>
@@ -61,7 +60,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             </div>
             <div className={s.sectionDivider} />
             <div className={s.padding} />
-            <div className={classnames(s.topic)}>
+            <div className={s.topic}>
                 REITINSUUNNAN TIEDOT
             </div>
             <div className={s.flexRow}>
@@ -94,7 +93,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         <div />
                     </div>
                     <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
+                        <div className={s.subTopic}>
                             SUUNTA
                         </div>
                         <Dropdown
@@ -104,7 +103,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         />
                     </div>
                     <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
+                        <div className={s.subTopic}>
                             SOLMUTYYPIT
                         </div>
                         <Dropdown
