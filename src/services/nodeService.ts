@@ -32,7 +32,7 @@ query getNodeDetails($nodeId: String!) {
         solviimpvm
         mittpvm
         geojson
-        geojsonDisp
+        geojsonDisplay
         pysakkiBySoltunnus {
             pysnimi
             pysnimir
