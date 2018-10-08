@@ -90,6 +90,10 @@ class NodeView extends React.Component
         // Empty
     }
 
+    private onEditButtonClick = () => {
+        console.log('asd');
+    }
+
     private capitalizeFirstLetter(input: string|null) {
         if (!input) return '';
         return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
@@ -125,6 +129,7 @@ class NodeView extends React.Component
                 <div>
                     <ViewHeader
                         header={`Solmu ${this.renderNodeName(node)}`}
+                        onEditButtonClick={this.onEditButtonClick}
                     />
                     <div
                         className={classnames(

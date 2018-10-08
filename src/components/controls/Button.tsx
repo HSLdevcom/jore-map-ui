@@ -23,8 +23,8 @@ class Button extends React.Component<IButtonProps, {}> {
         case ButtonType.SECONDARY: {
             return s.primary;
         }
-        case ButtonType.FORM: {
-            return s.form;
+        case ButtonType.ROUND: {
+            return s.round;
         }
         default: {
             return s.primary;

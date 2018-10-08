@@ -47,6 +47,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         return [this.state.selectedTransitType];
     }
 
+    public onEditButtonClick = () => {
+        console.log('asd');
+    }
+
     // TODO
     public onChange = () => {
     }
@@ -56,6 +60,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         <div className={s.linkView}>
             <ViewHeader
                 header='Reitin 1016 linkki'
+                onEditButtonClick={this.onEditButtonClick}
             />
             <div className={classnames(s.topic)}>
                 REITIN SUUNNAN TIEDOT

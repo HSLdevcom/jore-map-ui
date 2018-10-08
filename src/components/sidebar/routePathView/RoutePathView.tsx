@@ -6,7 +6,25 @@ import { Button, Dropdown, Checkbox } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import * as s from './routePathView.scss';
 
-class RoutePathView extends React.Component{
+interface IRoutePathViewState {
+    isEditingDisabled: boolean;
+}
+
+interface IRoutePathViewProps {
+}
+
+class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            isEditingDisabled: true,
+        };
+    }
+
+    public onEditButtonClick = () => {
+        const isEditingDisabled = !this.state.isEditingDisabled;
+        this.setState({ isEditingDisabled });
+    }
 
     // TODO
     public onChange = () => {
@@ -17,6 +35,7 @@ class RoutePathView extends React.Component{
         <div className={s.routePathView}>
             <ViewHeader
                 header='Reitin suunta 1016'
+                onEditButtonClick={this.onEditButtonClick}
             />
             <div className={s.routePathTimestamp}>01.09.2017</div>
             <div className={s.topic}>
@@ -50,27 +69,33 @@ class RoutePathView extends React.Component{
                     <InputContainer
                         label='REITIN NIMI SUOMEKSI'
                         placeholder='Rautatientori - Korkeasaari'
+                        disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='LÄHTÖPAIKKA SUOMEKSI'
                         placeholder='Rautatientori, I. 17'
+                        disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='LÄHTÖPAIKKA RUOTSIKSI'
                         placeholder='Järnvägstorget, p. 17'
+                        disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='LYHENNE SUOMEKSI'
                         placeholder='Rautatient - Korkeas'
+                        disabled={this.state.isEditingDisabled}
                     />
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='VOIM. AST'
                             placeholder='01.09.2017'
+                            disabled={this.state.isEditingDisabled}
                         />
                         <InputContainer
                             label='VIIM.VOIM.OLO'
                             placeholder='31.12.2050'
+                            disabled={this.state.isEditingDisabled}
                         />
                         <div />
                     </div>
@@ -99,28 +124,33 @@ class RoutePathView extends React.Component{
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
                         placeholder='Järnvägstorget - Högholmen'
+                        disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA SUOMEKSI'
                         placeholder='Korkeasaari'
+                        disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA RUOTSIKSI'
                         placeholder='Högholmen'
+                        disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='LYHENNE RUOTSIKSI'
                         placeholder='Järnvägst - Högholmen'
+                        disabled={this.state.isEditingDisabled}
                     />
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='PITUUS'
                             placeholder='8700'
+                            disabled={this.state.isEditingDisabled}
                         />
-                        <div className={s.inputContainer}>
+                        <div className={s.calculateButtonContainer}>
                             <Button
                                 onClick={this.onChange}
-                                type={ButtonType.FORM}
+                                type={ButtonType.ROUND}
                                 text={'Laske'}
                             />
                         </div>
@@ -154,10 +184,12 @@ class RoutePathView extends React.Component{
                 <InputContainer
                     label='PÄIVITYSPVM'
                     placeholder='23.08.2017'
+                    disabled={this.state.isEditingDisabled}
                 />
                 <InputContainer
                     label='PÄIVITTÄJÄ'
                     placeholder='Vuori Tuomas'
+                    disabled={this.state.isEditingDisabled}
                 />
             </div>
             <div className={s.sectionDivider}/>
@@ -166,14 +198,14 @@ class RoutePathView extends React.Component{
                     <div className={s.inputContainer}>
                         <Button
                             onClick={this.onChange}
-                            type={ButtonType.FORM}
+                            type={ButtonType.ROUND}
                             text={'Varustelutiedot'}
                         />
                     </div>
                     <div className={s.inputContainer}>
                         <Button
                             onClick={this.onChange}
-                            type={ButtonType.FORM}
+                            type={ButtonType.ROUND}
                             text={'Solmu'}
                         />
                     </div>
@@ -183,14 +215,14 @@ class RoutePathView extends React.Component{
                     <div className={s.inputContainer}>
                         <Button
                             onClick={this.onChange}
-                            type={ButtonType.FORM}
+                            type={ButtonType.ROUND}
                             text={'Solmut Exceliin'}
                         />
                     </div>
                     <div className={s.inputContainer}>
                         <Button
                             onClick={this.onChange}
-                            type={ButtonType.FORM}
+                            type={ButtonType.ROUND}
                             text={'Linkki'}
                         />
                     </div>
@@ -200,7 +232,7 @@ class RoutePathView extends React.Component{
                     <div className={s.inputContainer}>
                         <Button
                             onClick={this.onChange}
-                            type={ButtonType.FORM}
+                            type={ButtonType.ROUND}
                             text={'Aikataulu'}
                         />
                     </div>
@@ -215,7 +247,7 @@ class RoutePathView extends React.Component{
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onChange}
-                        type={ButtonType.FORM}
+                        type={ButtonType.ROUND}
                         text={'Kartta'}
                     />
                     <div className={s.mapCheckboxContainer}>

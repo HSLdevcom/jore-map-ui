@@ -6,6 +6,7 @@ interface IInputProps {
     label: string;
     placeholder: string;
     className?: string;
+    disabled?: boolean;
 }
 
 class InputContainer extends React.Component<IInputProps> {
@@ -16,9 +17,10 @@ class InputContainer extends React.Component<IInputProps> {
                     {this.props.label}
                 </div>
                 <input
-                    placeholder={this.props.placeholder}
+                    placeholder={this.props.disabled ? '' : this.props.placeholder}
                     type='text'
                     className={this.props.className}
+                    disabled={this.props.disabled}
                 />
             </div>
         );

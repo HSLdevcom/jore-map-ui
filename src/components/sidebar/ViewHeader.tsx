@@ -8,6 +8,7 @@ import * as s from './viewHeader.scss';
 
 interface IViewHeaderProps {
     header: string;
+    onEditButtonClick: Function;
 }
 
 class ViewHeader extends React.Component<IViewHeaderProps> {
@@ -16,8 +17,8 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
         navigator.goTo(routesLink);
     }
 
-    private doNothing = () => {
-        // TODO
+    private onEditButtonClick = () => {
+        this.props.onEditButtonClick();
     }
 
     public render(): any {
@@ -27,7 +28,7 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
                 <div className={s.flexFiller} />
                 <Button
                     className={s.editButton}
-                    onClick={this.doNothing}
+                    onClick={this.onEditButtonClick}
                     type={ButtonType.PRIMARY}
                     text={'Muokkaa'}
                 />

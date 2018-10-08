@@ -33,10 +33,15 @@
     background-color: darken(#fff, 10);
 }
 
-.form {
+.round {
     background-color: $busBlue;
     color: #fff;
     padding: 10px 15px 10px 15px;
     border-radius: 20px;
     width:100%;
+    white-space: nowrap;
+}
+
+.round:hover {
+    background-color: darken($busBlue, 10);
 }
