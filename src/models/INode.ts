@@ -1,4 +1,4 @@
-import NodeType from '../enums/nodeType';
+import NodeType from '~/enums/nodeType';
 import INodeStop from './INodeStop';
 import { ICoordinate } from '.';
 

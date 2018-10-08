@@ -1,7 +1,7 @@
-import routeStore from '../stores/routeStore';
-import nodeStore from '../stores/nodeStore';
-import NodeHelper from '../util/nodeHelper';
-import RouteService from '../services/routeService';
+import routeStore from '~/stores/routeStore';
+import nodeStore from '~/stores/nodeStore';
+import NodeHelper from '~/util/nodeHelper';
+import RouteService from '~/services/routeService';
 
 export default class RouteAndStopAbstraction {
     private static getRouteIdsMissingFromStore(routeIds: string[]) {

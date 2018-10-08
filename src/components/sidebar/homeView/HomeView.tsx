@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import { SearchStore } from '~/stores/searchStore';
+import TransitType from '~/enums/transitType';
 import LineSearch from '../../shared/searchView/LineSearch';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import SearchResults from '../../shared/searchView/SearchResults';
-import { SearchStore } from '../../../stores/searchStore';
 import * as s from './homeView.scss';
-import TransitType from '../../../enums/transitType';
 
 interface IHomeViewProps{
     searchStore?: SearchStore;

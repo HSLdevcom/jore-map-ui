@@ -1,5 +1,5 @@
 import { computed, observable, action } from 'mobx';
-import { INode } from '../models';
+import { INode } from '~/models';
 
 export class PopupStore {
     @observable private _node: INode | null;

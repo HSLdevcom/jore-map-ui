@@ -1,6 +1,6 @@
 import * as React from 'react';
+import DownArrow from '~/icons/downArrow';
 import * as s from './dropdown.scss';
-import DownArrow from '../../icons/downArrow';
 
 interface IDropdownState {
     isOpen: boolean;

@@ -3,18 +3,18 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
-import hslLogo from '../../assets/hsl-logo.png';
-import { SidebarStore } from '../../stores/sidebarStore';
-import { RouteStore } from '../../stores/routeStore';
-import { SearchStore } from '../../stores/searchStore';
+import { SidebarStore } from '~/stores/sidebarStore';
+import { RouteStore } from '~/stores/routeStore';
+import { SearchStore } from '~/stores/searchStore';
+import routeBuilder  from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
+import hslLogo from '~/assets/hsl-logo.png';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
 import RoutesView from './routesView/RoutesView';
 import HomeView from './homeView/HomeView';
 import RoutePathView from './routePathView/RoutePathView';
-import routeBuilder  from '../../routing/routeBuilder';
-import subSites from '../../routing/subSites';
-import navigator from '../../routing/navigator';
 import * as s from './sidebar.scss';
 
 // Requiring location to force update on location change

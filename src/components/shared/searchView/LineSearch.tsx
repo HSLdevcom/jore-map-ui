@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { SearchStore } from '../../../stores/searchStore';
+import { SearchStore } from '~/stores/searchStore';
 import * as s from './lineSearch.scss';
 
 interface ILineSearchProps {
