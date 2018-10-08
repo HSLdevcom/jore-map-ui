@@ -3,4 +3,22 @@
 .dropdownView {
     height: 43px; /* TODO: fix this hack to get dropdown height the same as input field height */
     margin-top: 5px;
+
+    background:
+        linear-gradient(45deg, transparent 50%, $busBlue 50%),
+        linear-gradient(135deg, $busBlue 50%, transparent 50%);
+    background-position:
+        calc(100% - 21px) calc(16px + 2px),
+        calc(100% - 17px) calc(16px + 2px),
+        100% 0;
+    background-size:
+        4px 5px,
+        4px 5px,
+        12px 12px;
+    background-repeat: no-repeat;
+    background-color: white;
+
+    /* Remove default browser arrow */
+    -webkit-appearance:none;
+    -moz-appearance:none;
 }
