@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import TransitType from '../../../enums/transitType';
-import InputContainer from './InputContainer';
+import InputContainer from '../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
 import { SidebarStore } from '../../../stores/sidebarStore';
 import ViewHeader from '../ViewHeader';

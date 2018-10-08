@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import ViewHeader from '../ViewHeader';
-import InputContainer from '../linkView/InputContainer';
+import InputContainer from '../InputContainer';
 import { Button, Dropdown, Checkbox } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import * as s from './routePathView.scss';
@@ -68,33 +68,27 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 <div className={s.flexColumn}>
                     <InputContainer
                         label='REITIN NIMI SUOMEKSI'
-                        placeholder='Rautatientori - Korkeasaari'
                         disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='LÄHTÖPAIKKA SUOMEKSI'
-                        placeholder='Rautatientori, I. 17'
                         disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='LÄHTÖPAIKKA RUOTSIKSI'
-                        placeholder='Järnvägstorget, p. 17'
                         disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='LYHENNE SUOMEKSI'
-                        placeholder='Rautatient - Korkeas'
                         disabled={this.state.isEditingDisabled}
                     />
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='VOIM. AST'
-                            placeholder='01.09.2017'
                             disabled={this.state.isEditingDisabled}
                         />
                         <InputContainer
                             label='VIIM.VOIM.OLO'
-                            placeholder='31.12.2050'
                             disabled={this.state.isEditingDisabled}
                         />
                         <div />
@@ -123,28 +117,23 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 <div className={s.flexColumn}>
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
-                        placeholder='Järnvägstorget - Högholmen'
                         disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA SUOMEKSI'
-                        placeholder='Korkeasaari'
                         disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA RUOTSIKSI'
-                        placeholder='Högholmen'
                         disabled={this.state.isEditingDisabled}
                     />
                     <InputContainer
                         label='LYHENNE RUOTSIKSI'
-                        placeholder='Järnvägst - Högholmen'
                         disabled={this.state.isEditingDisabled}
                     />
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='PITUUS'
-                            placeholder='8700'
                             disabled={this.state.isEditingDisabled}
                         />
                         <div className={s.calculateButtonContainer}>
@@ -183,12 +172,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             <div className={s.flexRow}>
                 <InputContainer
                     label='PÄIVITYSPVM'
-                    placeholder='23.08.2017'
                     disabled={this.state.isEditingDisabled}
                 />
                 <InputContainer
                     label='PÄIVITTÄJÄ'
-                    placeholder='Vuori Tuomas'
                     disabled={this.state.isEditingDisabled}
                 />
             </div>

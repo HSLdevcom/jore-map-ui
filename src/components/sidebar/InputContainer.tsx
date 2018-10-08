@@ -1,10 +1,10 @@
 import * as React from 'react';
 import classnames from 'classnames';
-import * as s from './linkView.scss';
+import s from './inputContainer.scss';
 
 interface IInputProps {
     label: string;
-    placeholder: string;
+    placeholder?: string;
     className?: string;
     disabled?: boolean;
 }
