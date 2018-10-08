@@ -2,8 +2,8 @@
 
 ## Git conventions
 
-* When making a PR, write closes #{*card id(s)*} or resolves #{*card id(s)*}
-* Branch name: {*card number*}-{*describing name*}
+* When making a PR, write closes #{*issue_id(s)*} or resolves #{*issue_id(s)*}
+* Branch name: {*issue_number*}-{*describing_name*}
 
 **Git columns**
 
@@ -21,7 +21,7 @@
 * Always use ```<div>``` instead of ```<span>``` (only use span is there is a reason to use it)
 * Use classnames if there are multiple classes
 * Use async await instead of promises
-* Don't use .bind in jsx
+* Don't use .bind in jsx, use arrow functions instead
 
 
 ### IModels
