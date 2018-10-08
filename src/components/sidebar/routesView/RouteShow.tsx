@@ -27,10 +27,9 @@ interface IRouteShowProps {
 class RouteShow extends React.Component<IRouteShowProps> {
     constructor(props: IRouteShowProps) {
         super(props);
-        this.closeRoute = this.closeRoute.bind(this);
     }
 
-    private closeRoute() {
+    private closeRoute = () => {
         // TODO: Move actual logic somwhere else, so this function only navigates to new url
         RouteAndStopHelper.removeRoute(this.props.route.routeId);
         const closeRouteLink = routeBuilder

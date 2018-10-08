@@ -27,7 +27,7 @@ export default class MapLayersControl extends React.Component
         };
     }
 
-    private toggleRadioButton = (option: option) => {
+    private toggleRadioButton = (option: option) => () => {
         this.setState({
             selectedOption: option,
         });
@@ -41,17 +41,17 @@ export default class MapLayersControl extends React.Component
                 </div>
                 <div className={s.mapLayersContainer}>
                     <RadioButton
-                        onClick={this.toggleRadioButton.bind(this, option.MAP)}
+                        onClick={this.toggleRadioButton(option.MAP)}
                         checked={this.state.selectedOption === option.MAP}
                         text={option.MAP}
                     />
                     <RadioButton
-                        onClick={this.toggleRadioButton.bind(this, option.SATELLITE)}
+                        onClick={this.toggleRadioButton(option.SATELLITE)}
                         checked={this.state.selectedOption === option.SATELLITE}
                         text={option.SATELLITE}
                     />
                     <RadioButton
-                        onClick={this.toggleRadioButton.bind(this, option.TERRAIN)}
+                        onClick={this.toggleRadioButton(option.TERRAIN)}
                         checked={this.state.selectedOption === option.TERRAIN}
                         text={option.TERRAIN}
                     />
