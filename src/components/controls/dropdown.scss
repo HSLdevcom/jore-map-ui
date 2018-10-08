@@ -1,53 +1,6 @@
 @import '../shared/styles/common.scss';
 
-$dropdownWidth: 150px;
-
-.dropdown {
-    font-weight: bold;
-    width: 100%;
-
-    input, div {
-        box-sizing: unset !important; /* TODO: remove this */
-    }
-
-    .itemListShown {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        background-color: $white;
-    }
-
-    .selectedItem {
-        width: $dropdownWidth;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 9px 15px 10px 15px;
-        border: 1px solid $mediumLightGrey;
-        cursor: pointer;
-        max-height: $inputMaxHeight;
-        border-radius: 5px;
-        background-color: white;
-        margin-top: 5px;
-    }
-
-    .itemListHidden {
-        display: none;
-    }
-
-    .item {
-        width: $dropdownWidth;
-        padding: 10px 15px 10px 15px;
-        border: 1px solid $lightGrey;
-        cursor: pointer;
-    }
-
-    .selectedItem:hover {
-        background-color: $backgroundlightGrey;
-    }
-
-    .item:hover {
-        background-color: $backgroundlightGrey;
-    }
+.dropdownView {
+    height: 43px; /* TODO: fix this hack to get dropdown height the same as input field height */
+    margin-top: 5px;
 }

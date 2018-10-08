@@ -121,13 +121,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                     </div>
                     <div className={s.inputContainer}>
-                        <div>
-                            <Dropdown
-                                onChange={this.onChange}
-                                items={['P', 'P1', 'P2']}
-                                selected={'P'}
-                            />
-                        </div>
+                        <Dropdown
+                            onChange={this.onChange}
+                            items={['P', 'P1', 'P2']}
+                            selected={'P'}
+                        />
                     </div>
                     <div className={s.inputContainer}>
                         <input
@@ -149,13 +147,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                     </div>
                     <div className={s.inputContainer}>
-                        <div>
-                            <Dropdown
-                                onChange={this.onChange}
-                                items={['P', 'P1', 'P2']}
-                                selected={'P'}
-                            />
-                        </div>
+                        <Dropdown
+                            onChange={this.onChange}
+                            items={['P', 'P1', 'P2']}
+                            selected={'P'}
+                        />
                     </div>
                     <div className={s.inputContainer}>
                         <input
@@ -170,37 +166,31 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={classnames(s.subTopic)}>
                         KUTSU-/JÄTTÖ-/OTTOP
                     </div>
-                    <div>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['0 - Ei', '1 - Ei', '2 - Ei']}
-                            selected={'0 - Ei'}
-                        />
-                    </div>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['0 - Ei', '1 - Ei', '2 - Ei']}
+                        selected={'0 - Ei'}
+                    />
                 </div>
                 <div className={s.inputContainer}>
                     <div className={classnames(s.subTopic)}>
                         AJANTASAUSPYSÄKKI
                     </div>
-                    <div>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['Kyllä']}
-                            selected={'Ei'}
-                        />
-                    </div>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['Kyllä']}
+                        selected={'Ei'}
+                    />
                 </div>
                 <div className={s.inputContainer}>
                     <div className={classnames(s.subTopic)}>
                         VÄLIPISTEAIKAPYSÄKKI
                     </div>
-                    <div>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['Ei']}
-                            selected={'Kyllä'}
-                        />
-                    </div>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['Ei']}
+                        selected={'Kyllä'}
+                    />
                 </div>
             </div>
             <div className={s.inputContainer}>
