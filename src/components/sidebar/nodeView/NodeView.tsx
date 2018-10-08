@@ -91,7 +91,6 @@ class NodeView extends React.Component
     }
 
     private onEditButtonClick = () => {
-        console.log('asd');
     }
 
     private capitalizeFirstLetter(input: string|null) {

@@ -48,7 +48,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     public onEditButtonClick = () => {
-        console.log('asd');
     }
 
     // TODO
