@@ -19,7 +19,7 @@ class MultiTabTextarea extends React.Component<IMultiTabInputProps, IMultiTabInp
 
     }
 
-    public onTabClick = (selectedTabIndex: number) => {
+    public onTabClick = (selectedTabIndex: number) => () => {
         this.setState({
             selectedTabIndex,
         });
@@ -34,7 +34,7 @@ class MultiTabTextarea extends React.Component<IMultiTabInputProps, IMultiTabInp
                     className={(this.state.selectedTabIndex === index) ?
                     classnames(classname, s.opened) :
                     classname}
-                    onClick={this.onTabClick.bind(this, index)}
+                    onClick={this.onTabClick(index)}
                 >
                     <div className={s.tabLabel}>
                         {tab}
