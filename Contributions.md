@@ -28,17 +28,15 @@
 
 * **IDs** are in the same format as in jore.
 
-* Use **null** instead of undefined. *For example: routeName: string;*
 
-
-
-### Store
+### MobX
 
 **Annotations**
 
-* Place annotations above functions
-* Use @computed for getters
-* Use @action for functions that modify state
+* Use decorators
+* Place decorators above functions
+* Use @computed for getters https://mobx.js.org/refguide/computed-decorator.html
+* Use @action for functions that modify state https://mobx.js.org/refguide/action.html
 
 Variables order:
 
