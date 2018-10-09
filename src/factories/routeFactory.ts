@@ -12,16 +12,15 @@ class RouteFactory {
         const routePathResults:IRoutePathResult[]
             = reitti.reitinsuuntasByReitunnus.edges
                 .map((routePath: any, index:number) => {
-                    // By default make the first two routePaths visible
-                    const isVisible = (index <= 1);
-
                     return RoutePathFactory.createRoutePath(
-                        reitti.reitunnus, routePath.node, isVisible);
+                        reitti.reitunnus, routePath.node);
                 });
 
         const route = {
             line,
-            routePaths: routePathResults.map(res => res.routePath),
+            routePaths: routePathResults
+                .map(res => res.routePath)
+                .sort((a, b) => b.endTime.getTime() - a.endTime.getTime()),
             routeName: reitti.reinimi,
             routeNameSwedish: reitti.reinimir,
             lineId: reitti.lintunnus,

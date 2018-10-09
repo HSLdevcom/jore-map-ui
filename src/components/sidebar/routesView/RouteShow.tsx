@@ -25,8 +25,13 @@ interface IRouteShowProps {
 @inject('routeStore')
 @observer
 class RouteShow extends React.Component<IRouteShowProps> {
-    constructor(props: IRouteShowProps) {
-        super(props);
+    async componentDidMount() {
+        this.props.route.routePaths.forEach((routePath, index) => {
+            // Make two first route paths visible by default
+            if (index < 2) {
+                this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
+            }
+        });
     }
 
     private closeRoute = () => {
@@ -66,7 +71,6 @@ class RouteShow extends React.Component<IRouteShowProps> {
         let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
 
         return this.props.route.routePaths
-        .slice().sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
         .map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);

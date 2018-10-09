@@ -13,7 +13,6 @@ class RoutePathFactory {
     public static createRoutePath = (
         routeId: string,
         suunta: any,
-        isVisible:boolean,
     ): IRoutePathResult => {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
