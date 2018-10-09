@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as s from './dropdown.scss';
 
 interface IDropdownState {
-    selectedName?: string;
     selectedValue?: string;
 }
 
@@ -17,14 +16,12 @@ class Dropdown extends React.Component
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedName: undefined,
             selectedValue: undefined,
         };
     }
 
     onChange = (event: any) => {
         this.setState({
-            selectedName: event.target.name,
             selectedValue: event.target.value,
         });
         this.props.onChange(event.target.value);
