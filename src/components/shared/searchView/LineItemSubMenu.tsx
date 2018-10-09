@@ -66,7 +66,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         }
     }
 
-    private toggle(routePathId: string) {
+    private toggle = (routePathId: string) => () => {
         if (this.isSelected(routePathId)) {
             this.unSelect(routePathId);
         } else {
@@ -110,7 +110,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
                             key={index}
                         >
                             <Checkbox
-                                onClick={this.toggle.bind(this, routePath.internalId)}
+                                onClick={this.toggle(routePath.internalId)}
                                 checked={this.isSelected(routePath.internalId)}
                                 text={routePath.routePathName}
                             />

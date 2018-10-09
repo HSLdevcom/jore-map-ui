@@ -38,7 +38,7 @@ class Dropdown extends React.Component
     }
 
     public render(): any {
-        const onChange = (selectedItem: string) => {
+        const onChange = (selectedItem: string) => () => {
             this.setState({
                 isOpen: false,
             });
@@ -65,7 +65,7 @@ class Dropdown extends React.Component
                         return (
                             <div
                                 key={item}
-                                onClick={onChange.bind(this, item)}
+                                onClick={onChange(item)}
                                 className={s.item}
                             >
                                 {item}
