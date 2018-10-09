@@ -91,6 +91,7 @@ query getLineDetails($routeId: String!) {
                                     soltunnus,
                                     soltyyppi,
                                     geojson,
+                                    geojsonManual,
                                     pysakkiBySoltunnus {
                                         pyssade,
                                         pysnimi,
@@ -103,6 +104,7 @@ query getLineDetails($routeId: String!) {
                                     soltunnus,
                                     soltyyppi,
                                     geojson,
+                                    geojsonManual,
                                     pysakkiBySoltunnus {
                                         pyssade,
                                         pysnimi,
