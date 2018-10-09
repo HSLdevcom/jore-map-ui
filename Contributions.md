@@ -12,7 +12,7 @@
 * Sprint *- tasks to do in the current sprint*
 * In progress *- tasks that are in progress or need review fixes*
 * Done sprint *- completed tasks in the current sprint*
-* Done *- all completed tasks*
+* Done *- completed tasks from previous sprints*
 
 ## Code conventions
 
