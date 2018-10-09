@@ -1,7 +1,10 @@
 @import '../shared/styles/common.scss';
 
 .button {
-    display:inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 2;
     cursor: pointer;
     font-weight: 400;
     line-height: normal;
