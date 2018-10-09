@@ -16,7 +16,7 @@ class Dropdown extends React.Component
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedValue: undefined,
+            selectedValue: this.props.selected,
         };
     }
 
@@ -33,7 +33,6 @@ class Dropdown extends React.Component
                 className={s.dropdownView}
                 value={this.state.selectedValue}
                 onChange={this.onChange}
-                defaultValue={this.props.selected}
             >
             {
                 this.props.items.map((item) => {
