@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch, Redirect } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
 import hslLogo from '../../assets/hsl-logo.png';
@@ -22,6 +22,7 @@ import * as s from './sidebar.scss';
 // tslint:disable-next-line
 // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
 interface ISidebarProps{
+    history: any;
     sidebarStore?: SidebarStore;
     routeStore?: RouteStore;
     searchStore?: SearchStore;
@@ -35,6 +36,12 @@ interface ILinelistState {
 @inject('sidebarStore', 'routeStore', 'searchStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
+
+    private renderRoutesView = () => {
+        const search = this.props.history.location.search;
+        return search === '' ?  <Redirect to='/' /> : <RoutesView />;
+    }
+
     public render(): any {
         const goToHomeView = () => {
             this.props.routeStore!.clearRoutes();
@@ -60,7 +67,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 <Switch>
                     <Route exact={true} path={subSites.home} component={HomeView} />
                     <Route exact={true} path={subSites.routePath} component={RoutePathView} />
-                    <Route exact={true} path={subSites.routes} component={RoutesView} />
+                    <Route exact={true} path={subSites.routes} component={this.renderRoutesView} />
                     <Route path={subSites.node} component={NodeView} />
                     <Route exact={true} path={subSites.link} component={LinkView} />
                 </Switch>

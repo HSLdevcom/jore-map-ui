@@ -47,7 +47,10 @@ class App extends React.Component<IAppProps, IAppState> {
                     <Login />
                 </Modal>
                 <div className={sidebarHiddenClass}>
-                    <Sidebar location={this.props.location}/>
+                    <Sidebar
+                        history={this.props.history}
+                        location={this.props.location}
+                    />
                 </div>
                 <Map/>
                 <Button
