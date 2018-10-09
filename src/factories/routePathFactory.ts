@@ -42,9 +42,13 @@ class RoutePathFactory {
             routePathName: suunta.suunimi,
             direction: suunta.suusuunta,
             startTime: new Date(suunta.suuvoimast),
-            endTime: new Date(suunta.suuviimpvm),
-            lastModified: new Date(suunta.suuvoimviimpvm),
-            visible: isVisible,
+            endTime: new Date(suunta.suuvoimviimpvm),
+            lastModified: new Date(suunta.suuviimpvm),
+            visible: false,
+            originFi: suunta.suulahpaik,
+            originSe: suunta.suulahpaikr,
+            destinationFi: suunta.suupaapaik,
+            destinationSe: suunta.suupaapaikr,
         };
 
         return {

@@ -76,6 +76,10 @@ query getLineDetails($routeId: String!) {
                     suuvoimast
                     suuviimpvm
                     suuvoimviimpvm
+                    suulahpaik
+                    suulahpaikr
+                    suupaapaikr
+                    suupaapaik
                     geojson
                     reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
                         edges {
