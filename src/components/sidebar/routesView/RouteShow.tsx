@@ -3,6 +3,7 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
+import Moment from 'react-moment';
 import { RouteStore } from '../../../stores/routeStore';
 import { IRoutePath, IRoute } from '../../../models';
 import ToggleSwitch from '../../controls/ToggleSwitch';
@@ -86,7 +87,23 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     key={routePath.internalId}
                 >
                     <div className={s.toggleTitle}>
-                        Suunta {routePath.direction}
+                        <div className={s.toggleTitlePrimary}>
+                            {`${routePath.originFi}-${routePath.destinationFi}`}
+                        </div>
+                        <div>
+                            {'Alk.pvm: '}
+                            <Moment
+                                date={routePath.startTime}
+                                format='DD.MM.YYYY'
+                            />
+                        </div>
+                        <div>
+                            {'Voim.ast: '}
+                            <Moment
+                                date={routePath.endTime}
+                                format='DD.MM.YYYY'
+                            />
+                        </div>
                     </div>
                     <ToggleSwitch
                         onClick={toggleRoutePathVisibility}

@@ -45,7 +45,11 @@
 
         .toggleTitle {
             display: inline-block;
-            width: 110px;
+            width: 270px;
+
+            .toggleTitlePrimary {
+                font-weight: 600;
+            }
         }
     }
 
