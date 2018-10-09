@@ -30,6 +30,10 @@ Runs at http://localhost:3000/
 $ # Specify location of API:s
 $ docker build --build-arg BACKEND_API_URL=${API_URL} --build-arg BACKEND_GEOSERVER_URL=${GEOSERVER_URL} --tag=$DOCKER_IMAGE .
 
+# dev:
+# ${API_URL} = "http://jore-map-dev.hsldev.com/api/graphql"
+# ${GEOSERVER_URL} = "http://jore-map-dev.hsldev.com/geoserver"
+
 $ # Use default API:s locations (localhost)
 $ docker build -t jore-map-ui .
 
