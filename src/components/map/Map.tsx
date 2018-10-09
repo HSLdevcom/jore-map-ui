@@ -97,6 +97,9 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
+        // Invalidate size is required to notice screen size on launch.
+        // Problem only in docker containers.
+        // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
         this.getMap().invalidateSize();
         this.getMap().fitBounds(bounds);
     }
