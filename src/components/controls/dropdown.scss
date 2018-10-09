@@ -8,8 +8,8 @@
         linear-gradient(45deg, transparent 50%, $busBlue 50%),
         linear-gradient(135deg, $busBlue 50%, transparent 50%);
     background-position:
-        calc(100% - 21px) calc(16px + 2px),
-        calc(100% - 17px) calc(16px + 2px),
+        calc(100% - 21px) 18px,
+        calc(100% - 17px) 18px,
         100% 0;
     background-size:
         4px 5px,
