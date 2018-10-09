@@ -178,7 +178,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </div>
                     <Dropdown
                         onChange={this.onChange}
-                        items={['Kyllä']}
+                        items={['Kyllä', 'Ei']}
                         selected={'Ei'}
                     />
                 </div>
@@ -188,7 +188,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </div>
                     <Dropdown
                         onChange={this.onChange}
-                        items={['Ei']}
+                        items={['Kyllä', 'Ei']}
                         selected={'Kyllä'}
                     />
                 </div>
@@ -284,7 +284,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         </div>
                         <Dropdown
                             onChange={this.onChange}
-                            items={['Ei']}
+                            items={['Kyllä', 'Ei']}
                             selected={'Kyllä'}
                         />
                     </div>
