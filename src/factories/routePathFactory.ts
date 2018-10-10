@@ -45,9 +45,7 @@ class RoutePathFactory {
             lastModified: new Date(suunta.suuviimpvm),
             visible: false,
             originFi: suunta.suulahpaik,
-            originSe: suunta.suulahpaikr,
             destinationFi: suunta.suupaapaik,
-            destinationSe: suunta.suupaapaikr,
         };
 
         return {

@@ -36,19 +36,24 @@
 
     }
 
-    .toggle {
+    .routePathContainer {
         display: flex;
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
         padding-top: 20px;
 
-        .toggleTitle {
+        .routePathInfo {
             display: inline-block;
             width: 270px;
 
-            .toggleTitlePrimary {
+            .routePathTitle {
                 font-weight: 600;
+            }
+
+            .routePathDate {
+                font-size: $smallFontSize;
+                padding-left: 10px;
             }
         }
     }

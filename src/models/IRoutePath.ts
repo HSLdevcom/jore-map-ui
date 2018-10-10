@@ -13,7 +13,5 @@ export default interface IRoutePath {
     lastModified: Date;
     routePathLinks: IRoutePathLink[];
     originFi: string;
-    originSe: string;
     destinationFi: string;
-    destinationSe: string;
 }

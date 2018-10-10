@@ -83,21 +83,21 @@ class RouteShow extends React.Component<IRouteShowProps> {
             }
             return (
                 <div
-                    className={s.toggle}
+                    className={s.routePathContainer}
                     key={routePath.internalId}
                 >
-                    <div className={s.toggleTitle}>
-                        <div className={s.toggleTitlePrimary}>
+                    <div className={s.routePathInfo}>
+                        <div className={s.routePathTitle}>
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
-                        <div>
+                        <div className={s.routePathDate}>
                             {'Alk.pvm: '}
                             <Moment
                                 date={routePath.startTime}
                                 format='DD.MM.YYYY'
                             />
                         </div>
-                        <div>
+                        <div className={s.routePathDate}>
                             {'Voim.ast: '}
                             <Moment
                                 date={routePath.endTime}
