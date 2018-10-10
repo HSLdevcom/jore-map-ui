@@ -118,7 +118,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     label='PITUUS'
                     disabled={this.state.isEditingDisabled}
                 />
-                <div className={s.flexInnerRowAlignedBottom}>
+                <div className={s.flexInnerRowFlexEnd}>
                     <Button
                         onClick={this.onChange}
                         type={ButtonType.ROUND}
