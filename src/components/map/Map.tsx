@@ -69,6 +69,13 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     public componentDidMount() {
         const map = this.getMap();
+
+        // Ugly hack to force map to reload, necessary because map stays gray when app is in docker
+        // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
+        setTimeout(() => {
+            this.getMap().invalidateSize();
+        },         1000);
+
         // TODO: Convert these as react-components
         map.addControl(new CoordinateControl({ position: 'topright' }));
         // map.addControl(new MeasurementControl({ position: 'topright' }));
@@ -90,6 +97,10 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
+        // Invalidate size is required to notice screen size on launch.
+        // Problem only in docker containers.
+        // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
+        this.getMap().invalidateSize();
         this.getMap().fitBounds(bounds);
     }
 
