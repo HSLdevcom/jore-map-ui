@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import classnames from 'classnames';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import TransitType from '../../../enums/transitType';
@@ -61,7 +60,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 header='Reitin 1016 linkki'
                 toggleEditing={this.toggleEditing}
             />
-            <div className={classnames(s.topic)}>
+            <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT
             </div>
             <div className={s.flexRow}>
@@ -94,7 +93,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRow}>
                         <div className={s.inputContainer}>
-                            <div className={classnames(s.subTopic)}>
+                            <div className={s.subTopic}>
                                 TIEDOT
                             </div>
                             <input
@@ -109,14 +108,14 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             </div>
             <div className={s.sectionDivider}/>
             <div className={s.flexRow}>
-                <div className={classnames(s.topic)}>
+                <div className={s.topic}>
                     REITIN LINKKI
                 </div>
             </div>
             <div className={s.flexInnerRow}>
                 <div className={s.flexInnerRowFlexEnd}>
                     <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
+                        <div className={s.subTopic}>
                             ALKU
                         </div>
                         <input
@@ -142,7 +141,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             <div className={s.flexInnerRow}>
                 <div className={s.flexInnerRowFlexEnd}>
                     <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
+                        <div className={s.subTopic}>
                             LOPPU
                         </div>
                         <input
@@ -167,7 +166,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             </div>
             <div className={s.flexInnerRow}>
                 <div className={s.inputContainer}>
-                    <div className={classnames(s.subTopic)}>
+                    <div className={s.subTopic}>
                         KUTSU-/JÄTTÖ-/OTTOP
                     </div>
                     <Dropdown
@@ -177,7 +176,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     />
                 </div>
                 <div className={s.inputContainer}>
-                    <div className={classnames(s.subTopic)}>
+                    <div className={s.subTopic}>
                         AJANTASAUSPYSÄKKI
                     </div>
                     <Dropdown
@@ -187,7 +186,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     />
                 </div>
                 <div className={s.inputContainer}>
-                    <div className={classnames(s.subTopic)}>
+                    <div className={s.subTopic}>
                         VÄLIPISTEAIKAPYSÄKKI
                     </div>
                     <Dropdown
@@ -198,7 +197,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.inputContainer}>
-                <div className={classnames(s.subTopic)}>
+                <div className={s.subTopic}>
                     VERKKO
                 </div>
                 <div className={s.transitButtonBar}>
@@ -222,137 +221,132 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     placeholder='2'
                 />
             </div>
-            <div className={s.flexInnerRow}>
-                <div className={s.flexColumn}>
-                    <InputContainer
-                        label='KATU'
-                        placeholder='Rautatientori'
+            <div className={s.flexRow}>
+                <InputContainer
+                    label='KATU'
+                    placeholder='Rautatientori'
+                />
+                <InputContainer
+                    label='KATUOSAN OS. NRO'
+                    placeholder='1'
+                />
+            </div>
+            <div className={s.flexRow}>
+                <div className={s.subTopic}>
+                    ALKUSOLMUN SARAKE NRO
+                </div>
+                <div className={s.subTopic}>
+                    VIIM. LINKIN LOPPUSOLMU SARAKE NRO
+                </div>
+            </div>
+            <div className={s.flexRow}>
+                <div className={s.flexRowAlignedCenter}>
+                    <div className={s.smallInputContainer}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                    </div>
+                    <Checkbox
+                        checked={false}
+                        text={'Ohitusaika kirja-aikat.'}
+                        onClick={this.onChange}
                     />
-                    <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
-                            ALKUSOLMUN SARAKE NRO
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <div className={s.smallInputContainer}>
-                                <input
-                                    placeholder='1'
-                                    type='text'
-                                    className={s.smallInput}
-                                />
-                            </div>
-                            <div className={s.checkBoxContainer}>
-                                <Checkbox
-                                    checked={false}
-                                    text={'Ohitusaika kirja-aikat.'}
-                                    onClick={this.onChange}
-                                />
-                            </div>
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <div className={s.smallInputContainer}>
-                                <input
-                                    placeholder='1'
-                                    type='text'
-                                    className={s.smallInput}
-                                />
-                            </div>
-                            <div className={s.checkBoxContainer}>
-                                <Checkbox
-                                    checked={false}
-                                    text={'Ohitusaika nettiaikat.'}
-                                    onClick={this.onChange}
-                                />
-                            </div>
-                        </div>
+                </div>
+                <div className={s.flexRowAlignedCenter}>
+                    <div className={s.smallInputContainer}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
                     </div>
-                    <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
-                            ALKUSOLMUN SÄDE JA PAIKKA
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <input
-                                placeholder=''
-                                type='text'
-                                className={s.mediumSmallInput}
-                            />
-                            <input
-                                placeholder='1RT'
-                                type='text'
-                                className={s.mediumSmallInput}
-                            />
-                        </div>
+                    <Checkbox
+                        checked={false}
+                        text={'Ohitusaika kirja-aikat.'}
+                        onClick={this.onChange}
+                    />
+                </div>
+            </div>
+            <div className={s.flexRow}>
+                <div className={s.flexRowAlignedCenter}>
+                    <div className={s.smallInputContainer}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
                     </div>
-                    <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
-                            ALKUSOLMU PAIKKANA
-                        </div>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['Kyllä', 'Ei']}
-                            selected={'Kyllä'}
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika kirja-aikat.'}
+                            onClick={this.onChange}
+                        />
+                </div>
+                <div className={s.flexRowAlignedCenter}>
+                    <div className={s.smallInputContainer}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                    </div>
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika kirja-aikat.'}
+                            onClick={this.onChange}
+                        />
+                </div>
+            </div>
+            <div className={s.flexRow}>
+                <div className={s.inputContainer}>
+                    <div className={s.subTopic}>
+                        ALKUSOLMUN SÄDE JA PAIKKA
+                    </div>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder=''
+                            type='text'
+                            className={s.mediumSmallInput}
+                        />
+                        <input
+                            placeholder='1RT'
+                            type='text'
+                            className={s.mediumSmallInput}
                         />
                     </div>
                 </div>
-                <div className={s.flexColumn}>
-                    <InputContainer
-                        label='KATUOSAN OS. NRO'
-                        placeholder='1'
-                    />
-                    <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
-                            VIIM. LINKIN LOPPUSOLMU SARAKE NRO
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <div className={s.smallInputContainer}>
-                                <input
-                                    placeholder=''
-                                    type='text'
-                                    className={s.smallInput}
-                                />
-                            </div>
-                            <div className={s.checkBoxContainer}>
-                                <Checkbox
-                                    checked={false}
-                                    text={'Ohitusaika kirja-aikat.'}
-                                    onClick={this.onChange}
-                                />
-                            </div>
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <div className={s.smallInputContainer}>
-                                <input
-                                    placeholder=''
-                                    type='text'
-                                    className={s.smallInput}
-                                />
-                            </div>
-                            <div className={s.checkBoxContainer}>
-                                <Checkbox
-                                    checked={false}
-                                    text={'Ohitusaika nettiaikat.'}
-                                    onClick={this.onChange}
-                                />
-                            </div>
-                        </div>
+                <div className={s.inputContainer}>
+                    <div className={s.subTopic}>
+                        LOPPUSOLMUN SÄDE JA PAIKKA
                     </div>
-                    <div className={s.inputContainer}>
-                        <div className={classnames(s.subTopic)}>
-                            LOPPUSOLMUN SÄDE JA PAIKKA
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <input
-                                placeholder=''
-                                type='text'
-                                className={s.mediumSmallInput}
-                            />
-                            <input
-                                placeholder='1RT'
-                                type='text'
-                                className={s.mediumSmallInput}
-                            />
-                        </div>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder=''
+                            type='text'
+                            className={s.mediumSmallInput}
+                        />
+                        <input
+                            placeholder='1RT'
+                            type='text'
+                            className={s.mediumSmallInput}
+                        />
                     </div>
                 </div>
+            </div>
+            <div className={s.flexRow}>
+                <div className={s.flexGrow}>
+                    <div className={s.subTopic}>
+                        ALKUSOLMU PAIKKANA
+                    </div>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['Kyllä', 'Ei']}
+                        selected={'Kyllä'}
+                    />
+                </div>
+                <div className={s.flexFiller} />
             </div>
             <div className={s.flexInnerRow}>
                 <InputContainer

@@ -36,14 +36,16 @@
     background-color: darken(#fff, 10);
 }
 
+//flexgrow ja width 100% pois, flexfiller tyhjän napin paikalle
 .round {
     background-color: $busBlue;
     color: #fff;
-    padding: 10px 15px 10px 15px;
+    // padding: 10px 15px 10px 15px;
     border-radius: 20px;
-    width:100%;
     white-space: nowrap;
     margin-right: 15px;
+    flex-grow: 1;
+    flex-basis: 1px;
 }
 
 .round:last-of-type {

@@ -66,109 +66,109 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 REITINSUUNNAN TIEDOT
             </div>
             <div className={s.flexRow}>
-                <div className={s.flexColumn}>
-                    <InputContainer
-                        label='REITIN NIMI SUOMEKSI'
-                        disabled={this.state.isEditingDisabled}
+                <InputContainer
+                    label='REITIN NIMI SUOMEKSI'
+                    disabled={this.state.isEditingDisabled}
+                />
+                <InputContainer
+                    label='REITIN NIMI RUOTSIKSI'
+                    disabled={this.state.isEditingDisabled}
+                />
+            </div>
+            <div className={s.flexRow}>
+                <InputContainer
+                    label='LÄHTÖPAIKKA SUOMEKSI'
+                    disabled={this.state.isEditingDisabled}
+                />
+                <InputContainer
+                    label='PÄÄTEPAIKKA SUOMEKSI'
+                    disabled={this.state.isEditingDisabled}
+                />
+            </div>
+            <div className={s.flexRow}>
+                <InputContainer
+                    label='LÄHTÖPAIKKA RUOTSIKSI'
+                    disabled={this.state.isEditingDisabled}
+                />
+                <InputContainer
+                    label='PÄÄTEPAIKKA RUOTSIKSI'
+                    disabled={this.state.isEditingDisabled}
+                />
+            </div>
+            <div className={s.flexRow}>
+                <InputContainer
+                    label='LYHENNE SUOMEKSI'
+                    disabled={this.state.isEditingDisabled}
+                />
+                <InputContainer
+                    label='LYHENNE RUOTSIKSI'
+                    disabled={this.state.isEditingDisabled}
+                />
+            </div>
+            <div className={s.flexRow}>
+                <InputContainer
+                    label='VOIM. AST'
+                    disabled={this.state.isEditingDisabled}
+                />
+                <InputContainer
+                    label='VIIM.VOIM.OLO'
+                    disabled={this.state.isEditingDisabled}
+                />
+                <InputContainer
+                    label='PITUUS'
+                    disabled={this.state.isEditingDisabled}
+                />
+                <div className={s.flexInnerRowAlignedBottom}>
+                    <Button
+                        onClick={this.onChange}
+                        type={ButtonType.ROUND}
+                        text={'Laske'}
                     />
-                    <InputContainer
-                        label='LÄHTÖPAIKKA SUOMEKSI'
-                        disabled={this.state.isEditingDisabled}
-                    />
-                    <InputContainer
-                        label='LÄHTÖPAIKKA RUOTSIKSI'
-                        disabled={this.state.isEditingDisabled}
-                    />
-                    <InputContainer
-                        label='LYHENNE SUOMEKSI'
-                        disabled={this.state.isEditingDisabled}
-                    />
-                    <div className={s.flexInnerRow}>
-                        <InputContainer
-                            label='VOIM. AST'
-                            disabled={this.state.isEditingDisabled}
-                        />
-                        <InputContainer
-                            label='VIIM.VOIM.OLO'
-                            disabled={this.state.isEditingDisabled}
-                        />
-                        <div />
+                </div>
+            </div>
+            <div className={s.flexRow}>
+                <div className={s.inputContainer}>
+                    <div className={s.subTopic}>
+                        SUUNTA
                     </div>
-                    <div className={s.inputContainer}>
-                        <div className={s.subTopic}>
-                            SUUNTA
-                        </div>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['Suunta 2']}
-                            selected={'Suunta 1'}
-                        />
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['Suunta 2']}
+                        selected={'Suunta 1'}
+                    />
+                </div>
+                <div className={s.inputContainer}>
+                    <div className={s.subTopic}>
+                        POIKKEUSREITTI
                     </div>
-                    <div className={s.inputContainer}>
-                        <div className={s.subTopic}>
-                            SOLMUTYYPIT
-                        </div>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['Kaikki solmut']}
-                            selected={'Kaikki solmut'}
+                    <div className={s.flexRowAlignedCenter}>
+                        <Checkbox
+                            checked={false}
+                            text={'Ei'}
+                            onClick={this.onChange}
                         />
+                        <div className={s.flexFiller} />
+                        <Checkbox
+                            checked={false}
+                            text={'Kyllä'}
+                            onClick={this.onChange}
+                        />
+                        <div className={s.flexFiller} />
                     </div>
                 </div>
-                <div className={s.flexColumn}>
-                    <InputContainer
-                        label='REITIN NIMI RUOTSIKSI'
-                        disabled={this.state.isEditingDisabled}
-                    />
-                    <InputContainer
-                        label='PÄÄTEPAIKKA SUOMEKSI'
-                        disabled={this.state.isEditingDisabled}
-                    />
-                    <InputContainer
-                        label='PÄÄTEPAIKKA RUOTSIKSI'
-                        disabled={this.state.isEditingDisabled}
-                    />
-                    <InputContainer
-                        label='LYHENNE RUOTSIKSI'
-                        disabled={this.state.isEditingDisabled}
-                    />
-                    <div className={s.flexInnerRowAligned}>
-                        <InputContainer
-                            label='PITUUS'
-                            disabled={this.state.isEditingDisabled}
-                        />
-                        <div className={s.calculateButtonContainer}>
-                            <Button
-                                onClick={this.onChange}
-                                type={ButtonType.ROUND}
-                                text={'Laske'}
-                            />
-                        </div>
+            </div>
+            <div className={s.flexRow}>
+                <div className={s.flexGrow}>
+                    <div className={s.subTopic}>
+                        SOLMUTYYPIT
                     </div>
-                    <div className={s.inputContainer}>
-                        <div className={s.subTopic}>
-                            POIKKEUSREITTI
-                        </div>
-                        <div className={s.checkBoxContainer}>
-                            <div className={s.flexInnerRow}>
-                                <div className={s.flexInnerRow}>
-                                    <Checkbox
-                                        checked={false}
-                                        text={'Ei'}
-                                        onClick={this.onChange}
-                                    />
-                                </div>
-                                <div className={s.flexInnerRow}>
-                                    <Checkbox
-                                        checked={false}
-                                        text={'Kyllä'}
-                                        onClick={this.onChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['Kaikki solmut']}
+                        selected={'Kaikki solmut'}
+                    />
                 </div>
+                <div className={s.flexFiller} />
             </div>
             <div className={s.flexRow}>
                 <InputContainer
@@ -182,49 +182,34 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             </div>
             <div className={s.sectionDivider}/>
             <div className={s.flexRow}>
-                <div className={s.flexInnerColumn}>
-                    <div className={s.inputContainer}>
-                        <Button
-                            onClick={this.onChange}
-                            type={ButtonType.ROUND}
-                            text={'Varustelutiedot'}
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <Button
-                            onClick={this.onChange}
-                            type={ButtonType.ROUND}
-                            text={'Solmu'}
-                        />
-                    </div>
-                    <div />
-                </div>
-                <div className={s.flexInnerColumn}>
-                    <div className={s.inputContainer}>
-                        <Button
-                            onClick={this.onChange}
-                            type={ButtonType.ROUND}
-                            text={'Solmut Exceliin'}
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <Button
-                            onClick={this.onChange}
-                            type={ButtonType.ROUND}
-                            text={'Linkki'}
-                        />
-                    </div>
-                    <div />
-                </div>
-                <div className={s.flexInnerColumn}>
-                    <div className={s.inputContainer}>
-                        <Button
-                            onClick={this.onChange}
-                            type={ButtonType.ROUND}
-                            text={'Aikataulu'}
-                        />
-                    </div>
-                </div>
+                <Button
+                    onClick={this.onChange}
+                    type={ButtonType.ROUND}
+                    text={'Varustelutiedot'}
+                />
+                <Button
+                    onClick={this.onChange}
+                    type={ButtonType.ROUND}
+                    text={'Solmu'}
+                />
+                <Button
+                    onClick={this.onChange}
+                    type={ButtonType.ROUND}
+                    text={'Solmut Exceliin'}
+                />
+            </div>
+            <div className={s.flexRow}>
+                <Button
+                    onClick={this.onChange}
+                    type={ButtonType.ROUND}
+                    text={'Linkki'}
+                />
+                <Button
+                    onClick={this.onChange}
+                    type={ButtonType.ROUND}
+                    text={'Aikataulu'}
+                />
+                <div className={s.flexButtonFiller} />
             </div>
             <div className={s.sectionDivider}/>
             <div className={s.inputContainer}>
@@ -232,19 +217,18 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     KARTTA
                 </div>
                 <div className={s.padding} />
-                <div className={s.flexRow}>
+                <div className={s.flexRowAlignedCenter}>
                     <Button
                         onClick={this.onChange}
                         type={ButtonType.ROUND}
                         text={'Kartta'}
                     />
-                    <div className={s.mapCheckboxContainer}>
-                        <Checkbox
-                            checked={false}
-                            text={'Muotopisteet kartalle'}
-                            onClick={this.onChange}
-                        />
-                    </div>
+                    <Checkbox
+                        checked={false}
+                        text={'Muotopisteet kartalle'}
+                        onClick={this.onChange}
+                    />
+                    <div className={s.flexButtonFiller} />
                 </div>
             </div>
             <div className={s.padding} />
