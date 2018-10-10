@@ -105,18 +105,19 @@ class RouteShow extends React.Component<IRouteShowProps> {
                             />
                         </div>
                     </div>
-                    <ToggleSwitch
-                        onClick={toggleRoutePathVisibility}
-                        value={routePath.visible}
-                        type={this.props.route.line!.transitType}
-                        color={routePath.visible ? routeColor : '#898989'}
-                    />
-                    <div className={s.flexFiller} />
-                    <div
-                        className={s.routeInfoButton}
-                        onClick={this.openRoutePathView}
-                    >
-                        <FiInfo />
+                    <div className={s.routePathControls}>
+                        <ToggleSwitch
+                            onClick={toggleRoutePathVisibility}
+                            value={routePath.visible}
+                            type={this.props.route.line!.transitType}
+                            color={routePath.visible ? routeColor : '#898989'}
+                        />
+                        <div
+                            className={s.routeInfoButton}
+                            onClick={this.openRoutePathView}
+                        >
+                            <FiInfo />
+                        </div>
                     </div>
                 </div>
             );

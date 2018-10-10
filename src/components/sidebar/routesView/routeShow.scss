@@ -39,13 +39,14 @@
     .routePathContainer {
         display: flex;
         -webkit-box-align: center;
+        justify-content: space-between;
+        flex-direction: row;
         -ms-flex-align: center;
         align-items: center;
         padding-top: 20px;
 
         .routePathInfo {
             display: inline-block;
-            width: 270px;
 
             .routePathTitle {
                 font-weight: 600;
@@ -54,6 +55,14 @@
             .routePathDate {
                 font-size: $smallFontSize;
                 padding-left: 10px;
+            }
+        }
+
+        .routePathControls {
+            display: flex;
+
+            > * {
+                margin: 0 5px;
             }
         }
     }
