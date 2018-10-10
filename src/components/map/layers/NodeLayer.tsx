@@ -8,6 +8,8 @@ import { PopupStore } from '../../../stores/popupStore';
 import { ToolbarStore } from '../../../stores/toolbarStore';
 import { SidebarStore } from '../../../stores/sidebarStore';
 import { NodeStore } from '../../../stores/nodeStore';
+import { NotificationStore } from '../../../stores/notificationStore';
+import notificationType from '../../../enums/notificationType';
 import ToolbarTool from '../../../enums/toolbarTool';
 import * as s from './nodeLayer.scss';
 
@@ -16,6 +18,7 @@ interface MarkerLayerProps {
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
     sidebarStore?: SidebarStore;
+    notificationStore?: NotificationStore;
     nodeStore?: NodeStore;
 }
 
@@ -30,9 +33,13 @@ enum color {
     STOP_BORDER_COLOR_SELECTED = '#007ac9',
     STOP_FILL_COLOR = '#FFF',
     STOP_FILL_COLOR_SELECTED = '#007ac9',
+    UNKNOWN_BORDER_COLOR = '#ff0000',
+    UNKNOWN_BORDER_COLOR_SELECTED = '#ff0000',
+    UNKNOWN_FILL_COLOR = '#000',
+    UNKNOWN_FILL_COLOR_SELECTED = '#000',
 }
 
-@inject('popupStore', 'toolbarStore', 'sidebarStore', 'nodeStore')
+@inject('popupStore', 'toolbarStore', 'sidebarStore', 'nodeStore', 'notificationStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getNodeCrossroadMarkerHtml = (isSelected: boolean) => {
@@ -57,6 +64,17 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         />`;
     }
 
+    private getUnknownNodeMarkerHtml = (isSelected: boolean) => {
+        const borderColor = isSelected ?
+            color.UNKNOWN_BORDER_COLOR_SELECTED : color.UNKNOWN_BORDER_COLOR;
+        const fillColor = isSelected ?
+            color.UNKNOWN_FILL_COLOR_SELECTED : color.UNKNOWN_FILL_COLOR;
+        return `<div
+            style="border-color: ${borderColor}; background-color: ${fillColor}"
+            class=${s.nodeContent}
+        />`;
+    }
+
     private getIcon = (node: INode) => {
         const isSelected = this.isSelected(node);
 
@@ -71,7 +89,11 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             break;
         }
         default: {
-            throw new Error(`NodeType not supported: ${node.type}!`);
+            this.props.notificationStore!.addNotification({
+                message: `Solmu id: '${node.id}', tyyppi '${node.type}' on virheellinen`,
+                type: notificationType.WARNING,
+            });
+            html = this.getUnknownNodeMarkerHtml(isSelected);
             break;
         }
         }
