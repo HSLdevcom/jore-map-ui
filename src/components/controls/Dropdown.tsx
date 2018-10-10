@@ -1,9 +1,8 @@
 import * as React from 'react';
 import * as s from './dropdown.scss';
-import DownArrow from '../../icons/downArrow';
 
 interface IDropdownState {
-    isOpen: boolean;
+    selectedValue?: string;
 }
 
 interface IDropdownProps {
@@ -17,67 +16,39 @@ class Dropdown extends React.Component
     constructor(props: any) {
         super(props);
         this.state = {
-            isOpen: false,
+            selectedValue: this.props.selected,
         };
     }
 
-    private showDropdownList = () => {
+    onChange = (event: any) => {
         this.setState({
-            isOpen: true,
+            selectedValue: event.target.value,
         });
-    }
-
-    private hideDropdownList = () => {
-        this.setState({
-            isOpen: false,
-        });
-    }
-
-    private getItemListClassName() {
-        return this.state.isOpen ? s.itemListShown : s.itemListHidden;
+        this.props.onChange(event.target.value);
     }
 
     public render(): any {
-        const onChange = (selectedItem: string) => () => {
-            this.setState({
-                isOpen: false,
-            });
-            this.props.onChange(selectedItem);
-        };
-
         return (
-            <div
-                onMouseLeave={this.hideDropdownList}
-                className={s.dropdown}
+            <select
+                className={s.dropdownView}
+                value={this.state.selectedValue}
+                onChange={this.onChange}
             >
-                <div
-                    onMouseEnter={this.showDropdownList}
-                    className={s.selectedItem}
-                >
-                    <div>
-                        {this.props.selected}
-                    </div>
-                    <DownArrow height={'30px'}/>
-                </div>
-                <div className={this.getItemListClassName()}>
-                {
-                    this.props.items.map((item) => {
-                        return (
-                            <div
-                                key={item}
-                                onClick={onChange(item)}
-                                className={s.item}
-                            >
-                                {item}
-                            </div>
-                        );
-                    })
-                }
-                </div>
-            </div>
+            {
+                this.props.items.map((item) => {
+                    return (
+                        <option
+                            key={item}
+                            value={item}
+                        >
+                            {item}
+                        </option>
+                    );
+                })
+            }
+            </select>
         );
     }
-
 }
 
 export default Dropdown;

@@ -7,7 +7,19 @@ body {
     color: $fontColorDefault;
 }
 
-input {
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid $mediumLightGrey;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    cursor: pointer;
     font-family: $hslFont;
-    border: 1.5px solid rgb(190, 190, 190);
+    color: $fontColorDefault;
+    background-color: white;
+}
+
+input:focus, select:focus {
+    border: 1.5px solid $busBlue;
 }
