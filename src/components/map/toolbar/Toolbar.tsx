@@ -1,9 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import toolbarStore from '~/stores/toolbarStore';
+import EditMode from '~/enums/editMode';
 import ToolbarModeButtons from './toolbarModeButtons';
-import toolbarStore from '../../../stores/toolbarStore';
-import EditMode from '../../../enums/editMode';
 import ToolbarLineButtons from './toolbarLineButtons';
 import ToolbarNetworkButtons from './toolbarNetworkButtons';
 import ToolbarCommonButtons from './ToolbarCommonButtons';

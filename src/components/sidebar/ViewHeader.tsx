@@ -1,9 +1,9 @@
 import React from 'react';
-import routeBuilder  from '../../routing/routeBuilder';
-import subSites from '../../routing/subSites';
-import navigator from '../../routing/navigator';
+import routeBuilder  from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
+import ButtonType from '~/enums/buttonType';
 import Button from '../controls/Button';
-import ButtonType from '../../enums/buttonType';
 import * as s from './viewHeader.scss';
 
 interface IViewHeaderProps {

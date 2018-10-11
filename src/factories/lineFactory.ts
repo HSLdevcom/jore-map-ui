@@ -1,5 +1,5 @@
-import { ILine, ILineRoute } from '../models';
-import TransitTypeHelper from '../util/transitTypeHelper';
+import { ILine, ILineRoute } from '~/models';
+import TransitTypeHelper from '~/util/transitTypeHelper';
 
 class LineFactory {
     // linja to ILine

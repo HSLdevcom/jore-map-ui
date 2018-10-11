@@ -1,5 +1,5 @@
-import { INode, ICoordinate } from '../models';
-import NodeType from '../enums/nodeType';
+import { INode, ICoordinate } from '~/models';
+import NodeType from '~/enums/nodeType';
 import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {

@@ -1,5 +1,5 @@
 import { action, computed, observable } from 'mobx';
-import { ILine } from '../models';
+import { ILine } from '~/models';
 
 export class LineStore {
     @observable private _allLines: ILine[];

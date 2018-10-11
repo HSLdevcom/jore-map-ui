@@ -1,13 +1,13 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { LoginStore } from '../stores/loginStore';
-import { SidebarStore } from '../stores/sidebarStore';
-import { MapStore } from '../stores/mapStore';
-import { NotificationStore } from '../stores/notificationStore';
+import { LoginStore } from '~/stores/loginStore';
+import { SidebarStore } from '~/stores/sidebarStore';
+import { MapStore } from '~/stores/mapStore';
+import { NotificationStore } from '~/stores/notificationStore';
+import ButtonType from '~/enums/buttonType';
 import NotificationWindow from './NotificationWindow';
 import Button from './controls/Button';
-import ButtonType from '../enums/buttonType';
 import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';

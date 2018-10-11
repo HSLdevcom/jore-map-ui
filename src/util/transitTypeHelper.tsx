@@ -1,4 +1,4 @@
-import TransitType from '../enums/transitType';
+import TransitType from '~/enums/transitType';
 
 export default class TransitTypeHelper {
     public static convertTransitTypeCodeToTransitType = (type: string) => {

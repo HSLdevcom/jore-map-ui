@@ -3,17 +3,17 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
-import { RouteStore } from '../../../stores/routeStore';
-import { IRoutePath, IRoute } from '../../../models';
+import { RouteStore } from '~/stores/routeStore';
+import LineHelper from '~/util/lineHelper';
+import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import ColorScale from '~/util/colorScale';
+import routeBuilder from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
+import RouteAndStopHelper from '~/storeAbstractions/routeAndStopAbstraction';
+import { IRoutePath, IRoute } from '~/models';
 import ToggleSwitch from '../../controls/ToggleSwitch';
-import LineHelper from '../../../util/lineHelper';
-import TransitTypeColorHelper from '../../../util/transitTypeColorHelper';
-import ColorScale from '../../../util/colorScale';
-import routeBuilder from '../../../routing/routeBuilder';
-import subSites from '../../../routing/subSites';
-import navigator from '../../../routing/navigator';
-import QueryParams from '../../../routing/queryParams';
-import RouteAndStopHelper from '../../../storeAbstractions/routeAndStopAbstraction';
 import * as s from './routeShow.scss';
 
 interface IRouteShowProps {

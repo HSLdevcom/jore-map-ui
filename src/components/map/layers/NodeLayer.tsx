@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
-import { INode } from '../../../models';
-import NodeType from '../../../enums/nodeType';
-import { PopupStore } from '../../../stores/popupStore';
-import { ToolbarStore } from '../../../stores/toolbarStore';
-import { SidebarStore } from '../../../stores/sidebarStore';
-import { NodeStore } from '../../../stores/nodeStore';
-import { NotificationStore } from '../../../stores/notificationStore';
-import notificationType from '../../../enums/notificationType';
-import ToolbarTool from '../../../enums/toolbarTool';
+import { INode } from '~/models';
+import NodeType from '~/enums/nodeType';
+import { PopupStore } from '~/stores/popupStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
+import { SidebarStore } from '~/stores/sidebarStore';
+import { NodeStore } from '~/stores/nodeStore';
+import { NotificationStore } from '~/stores/notificationStore';
+import notificationType from '~/enums/notificationType';
+import ToolbarTool from '~/enums/toolbarTool';
 import * as s from './nodeLayer.scss';
 
 interface MarkerLayerProps {

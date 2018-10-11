@@ -1,4 +1,4 @@
-import TransitType from '../enums/transitType';
+import TransitType from '~/enums/transitType';
 import * as s from './transitTypeColors.scss';
 
 class TransitTypeColorHelper {
