@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Polyline, FeatureGroup } from 'react-leaflet';
-import { IRoutePathLink } from '../../../models';
+import { IRoutePathLink } from '~/models';
 
 interface RoutePathLayerProps {
     internalId: string;

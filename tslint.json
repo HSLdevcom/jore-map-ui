@@ -39,7 +39,7 @@
       ]
     }],
     "typedef-whitespace": true,
-    "no-implicit-dependencies": true,
+    "no-implicit-dependencies": [true, ["~"]],
     "no-object-literal-type-assertion": true,
     "one-line": true
   }

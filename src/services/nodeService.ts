@@ -1,10 +1,10 @@
 import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '../util/ApolloClient';
-import { INode } from '../models';
-import notificationStore from '../stores/notificationStore';
-import NotificationType from '../enums/notificationType';
-import NodeFactory from '../factories/nodeFactory';
+import apolloClient from '~/util/ApolloClient';
+import { INode } from '~/models';
+import notificationStore from '~/stores/notificationStore';
+import NotificationType from '~/enums/notificationType';
+import NodeFactory from '~/factories/nodeFactory';
 
 export default class NodeService {
     public static async fetchNode(nodeId: string): Promise<INode | null> {

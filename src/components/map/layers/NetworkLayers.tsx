@@ -1,11 +1,10 @@
-
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { NetworkStore } from '~/stores/networkStore';
+import TransitTypeHelper from '~/util/transitTypeHelper';
+import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import NodeType from '~/enums/nodeType';
 import VectorGridLayer from './VectorGridLayer';
-import { NetworkStore } from '../../../stores/networkStore';
-import TransitTypeHelper from '../../../util/transitTypeHelper';
-import TransitTypeColorHelper from '../../../util/transitTypeColorHelper';
-import NodeType from '../../../enums/nodeType';
 
 enum GeoserverLayer {
     Node = 'solmu',

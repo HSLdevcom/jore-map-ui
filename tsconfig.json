@@ -20,7 +20,10 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop":true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "paths": {
+      "~/*": ["src/*"]
+    }
   },
   "exclude": [
     "node_modules",

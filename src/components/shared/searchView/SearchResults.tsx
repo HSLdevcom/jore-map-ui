@@ -1,15 +1,15 @@
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import * as React from 'react';
-import { LineStore } from '../../../stores/lineStore';
+import { LineStore } from '~/stores/lineStore';
+import { ILine, ILineRoute } from '~/models';
+import TransitType from '~/enums/transitType';
+import LineService from '~/services/lineService';
+import { SearchStore } from '~/stores/searchStore';
+import routeBuilder from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
 import LineItem from './LineItem';
-import { ILine, ILineRoute } from '../../../models';
-import TransitType from '../../../enums/transitType';
-import LineService from '../../../services/lineService';
-import { SearchStore } from '../../../stores/searchStore';
 import Loader from '../loader/Loader';
-import routeBuilder from '../../../routing/routeBuilder';
-import subSites from '../../../routing/subSites';
 import * as s from './searchResults.scss';
 
 interface ISearchResultsProps{

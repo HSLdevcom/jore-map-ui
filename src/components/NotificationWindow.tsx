@@ -1,8 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
-import NotificationType from '../enums/notificationType';
-import { NotificationStore } from '../stores/notificationStore';
+import NotificationType from '~/enums/notificationType';
+import { NotificationStore } from '~/stores/notificationStore';
 import * as s from './notificationWindow.scss';
 
 interface INotificationWindowProps {

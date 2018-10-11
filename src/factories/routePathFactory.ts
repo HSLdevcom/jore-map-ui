@@ -1,5 +1,5 @@
-import { IRoutePath, INode } from '../models';
-import HashHelper from '../util/hashHelper';
+import { IRoutePath, INode } from '~/models';
+import HashHelper from '~/util/hashHelper';
 import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
 import QueryParsingHelper from './queryParsingHelper';
 

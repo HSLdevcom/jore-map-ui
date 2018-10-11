@@ -1,5 +1,5 @@
 import { action, computed, observable } from 'mobx';
-import TransitType from '../enums/transitType';
+import TransitType from '~/enums/transitType';
 
 export class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
