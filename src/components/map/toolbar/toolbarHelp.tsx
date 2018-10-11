@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ToolbarTool from '../../../enums/toolbarTool';
+import ToolbarTool from '~/enums/toolbarTool';
 import * as s from './toolbarHelp.scss';
 
 interface IToolbarHelpProps {

@@ -1,6 +1,6 @@
 import { observable, computed, action } from 'mobx';
-import ToolbarTool from '../enums/toolbarTool';
-import EditMode from '../enums/editMode';
+import ToolbarTool from '~/enums/toolbarTool';
+import EditMode from '~/enums/editMode';
 
 export class ToolbarStore {
     @observable private _activeTool: ToolbarTool;

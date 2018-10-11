@@ -1,5 +1,5 @@
 import * as React from 'react';
-import TransitType from '../../enums/transitType';
+import TransitType from '~/enums/transitType';
 import * as s from './toggleSwitch.scss';
 
 interface IToggleSwitchState {

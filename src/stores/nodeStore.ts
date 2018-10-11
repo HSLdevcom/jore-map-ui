@@ -1,6 +1,6 @@
 import { computed, observable, action } from 'mobx';
-import { INode, IRoutePath } from '../models';
-import NodeHelper from '../util/nodeHelper';
+import { INode, IRoutePath } from '~/models';
+import NodeHelper from '~/util/nodeHelper';
 
 export class NodeStore {
     @observable private _nodes: INode[];

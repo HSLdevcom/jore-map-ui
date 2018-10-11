@@ -1,7 +1,7 @@
 import * as L from 'leaflet';
 import { autorun } from 'mobx';
-import observableMapStore, { MapStore } from '../../../stores/mapStore';
-import GeometryService from '../../../services/geometryService';
+import observableMapStore, { MapStore } from '~/stores/mapStore';
+import GeometryService from '~/services/geometryService';
 import * as s from './coordinateControl.scss';
 
 interface ICoordinateControlOptions extends L.ControlOptions {

@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
-import apolloClient from '../util/ApolloClient';
-import LineFactory from '../factories/lineFactory';
-import NotificationType from '../enums/notificationType';
-import NotificationStore from '../stores/notificationStore';
-import { ILine } from '../models';
+import apolloClient from '~/util/ApolloClient';
+import LineFactory from '~/factories/lineFactory';
+import NotificationType from '~/enums/notificationType';
+import NotificationStore from '~/stores/notificationStore';
+import { ILine } from '~/models';
 
 export default class LineService {
     public static async getAllLines(): Promise<ILine[] | null> {

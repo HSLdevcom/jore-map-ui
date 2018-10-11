@@ -1,4 +1,4 @@
-import { INode } from '../models';
+import { INode } from '~/models';
 
 export default class QueryParsingHelper {
     public static removeINodeDuplicates(nodes: INode[]): INode[] {

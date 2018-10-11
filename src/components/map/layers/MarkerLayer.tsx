@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer } from 'mobx-react';
-import ColorScale from '../../../util/colorScale';
-import PinIcon from '../../../icons/pin';
+import ColorScale from '~/util/colorScale';
+import PinIcon from '~/icons/pin';
 import * as s from './markerLayer.scss';
 
 // The logic of Z Indexes is not very logical.
