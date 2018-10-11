@@ -1,5 +1,4 @@
 import * as React from 'react';
-import DownArrow from '~/icons/downArrow';
 import * as s from './dropdown.scss';
 
 interface IDropdownState {
