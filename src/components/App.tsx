@@ -48,7 +48,6 @@ class App extends React.Component<IAppProps, IAppState> {
                 </Modal>
                 <div className={sidebarHiddenClass}>
                     <Sidebar
-                        history={this.props.history}
                         location={this.props.location}
                     />
                 </div>

@@ -15,6 +15,7 @@ import RoutePathView from './routePathView/RoutePathView';
 import routeBuilder  from '../../routing/routeBuilder';
 import subSites from '../../routing/subSites';
 import navigator from '../../routing/navigator';
+import QueryParams from '../../routing/queryParams';
 import * as s from './sidebar.scss';
 
 // Requiring location to force update on location change
@@ -22,7 +23,6 @@ import * as s from './sidebar.scss';
 // tslint:disable-next-line
 // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
 interface ISidebarProps{
-    history: any;
     sidebarStore?: SidebarStore;
     routeStore?: RouteStore;
     searchStore?: SearchStore;
@@ -38,8 +38,8 @@ interface ILinelistState {
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
 
     private renderRoutesView = () => {
-        const search = this.props.history.location.search;
-        return search === '' ?  <Redirect to='/' /> : <RoutesView />;
+        const queryParams = navigator.getQueryParam(QueryParams.routes);
+        return queryParams ? <RoutesView /> : <Redirect to='/' />;
     }
 
     public render(): any {
