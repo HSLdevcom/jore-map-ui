@@ -30,7 +30,7 @@ const DEFAULT_RADIUS = 25;
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getMarkerHtml = (markerClass: string) => {
         return `<div
-            class="${classnames(s.nodeContent, markerClass)}"
+            class="${classnames(s.nodeBase, markerClass)}"
         />`;
     }
 
