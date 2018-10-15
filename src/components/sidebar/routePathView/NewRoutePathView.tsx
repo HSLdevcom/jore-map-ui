@@ -16,7 +16,6 @@ class NewRoutePathView extends React.Component{
         <div className={s.routePathView}>
             <ViewHeader
                 header='Luo uusi reitinsuunta'
-                hideEditButton={true}
             />
             <RoutePathViewForm
                 isEditingDisabled={false}

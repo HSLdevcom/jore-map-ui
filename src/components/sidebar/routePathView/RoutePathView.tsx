@@ -1,4 +1,6 @@
 import * as React from 'react';
+import ButtonType from '~/enums/buttonType';
+import Button from '~/components/controls/Button';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -14,7 +16,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     constructor(props: any) {
         super(props);
         this.state = {
-            isEditingDisabled: true,
+            isEditingDisabled: false,
         };
     }
 
@@ -28,9 +30,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         <div className={s.routePathView}>
             <ViewHeader
                 header='Reitin suunta 1016'
-                toggleEditing={this.toggleEditing}
-                hideEditButton={false}
-            />
+            >
+                <Button
+                    className={s.editButton}
+                    onClick={this.toggleEditing}
+                    type={ButtonType.SQUARE}
+                    text={'Muokkaa'}
+                />
+            </ViewHeader>
             <RoutePathViewForm
                 isEditingDisabled={this.state.isEditingDisabled}
             />

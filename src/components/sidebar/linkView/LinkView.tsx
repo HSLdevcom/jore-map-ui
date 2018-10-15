@@ -58,7 +58,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         <div className={s.linkView}>
             <ViewHeader
                 header='Reitin 1016 linkki'
-                toggleEditing={this.toggleEditing}
             />
             <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT
