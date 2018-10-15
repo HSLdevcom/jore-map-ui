@@ -8,7 +8,7 @@ import * as s from './viewHeader.scss';
 
 interface IViewHeaderProps {
     header: string;
-    toggleEditing: Function;
+    toggleEditing?: Function;
     hideEditButton?: boolean;
 }
 
@@ -19,7 +19,7 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
     }
 
     private toggleEditing = () => {
-        this.props.toggleEditing();
+        this.props.toggleEditing!();
     }
 
     public render(): any {
