@@ -47,10 +47,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             color.CROSSROAD_BORDER_COLOR_SELECTED : color.CROSSROAD_BORDER_COLOR;
         const fillColor = isSelected ?
             color.CROSSROAD_FILL_COLOR_SELECTED : color.CROSSROAD_FILL_COLOR;
-        return `<div
-            style="border-color: ${borderColor}; background-color: ${fillColor}"
-            class=${s.nodeContent}
-        />`;
+        return this.getMarkerHtml(borderColor, fillColor);
     }
 
     private getNodeStopMarkerHtml = (isSelected: boolean) => {
@@ -58,10 +55,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             color.STOP_BORDER_COLOR_SELECTED : color.STOP_BORDER_COLOR;
         const fillColor = isSelected ?
             color.STOP_FILL_COLOR_SELECTED : color.STOP_FILL_COLOR;
-        return `<div
-            style="border-color: ${borderColor}; background-color: ${fillColor}"
-            class=${s.nodeContent}
-        />`;
+        return this.getMarkerHtml(borderColor, fillColor);
     }
 
     private getUnknownNodeMarkerHtml = (isSelected: boolean) => {
@@ -69,8 +63,12 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             color.UNKNOWN_BORDER_COLOR_SELECTED : color.UNKNOWN_BORDER_COLOR;
         const fillColor = isSelected ?
             color.UNKNOWN_FILL_COLOR_SELECTED : color.UNKNOWN_FILL_COLOR;
+        return this.getMarkerHtml(borderColor, fillColor);
+    }
+
+    private getMarkerHtml = (borderColor: string, backgroundColor: string) => {
         return `<div
-            style="border-color: ${borderColor}; background-color: ${fillColor}"
+            style="border-color: ${borderColor}; background-color: ${backgroundColor}"
             class=${s.nodeContent}
         />`;
     }
