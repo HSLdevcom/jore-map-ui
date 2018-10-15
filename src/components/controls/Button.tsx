@@ -17,17 +17,17 @@ class Button extends React.Component<IButtonProps, {}> {
 
     private getTypeClass = (type: ButtonType) => {
         switch (type) {
-        case ButtonType.PRIMARY: {
-            return s.primary;
+        case ButtonType.SQUARE: {
+            return s.square;
         }
-        case ButtonType.SECONDARY: {
-            return s.secondary;
+        case ButtonType.SQUARE_SECONDARY: {
+            return s.squareSecondary;
         }
         case ButtonType.ROUND: {
             return s.round;
         }
         default: {
-            return s.primary;
+            return s.square;
         }
         }
     }

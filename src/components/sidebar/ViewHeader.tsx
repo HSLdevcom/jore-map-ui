@@ -29,7 +29,7 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
                 <Button
                     className={s.editButton}
                     onClick={this.toggleEditing}
-                    type={ButtonType.PRIMARY}
+                    type={ButtonType.SQUARE}
                     text={'Muokkaa'}
                 />
                 <div

@@ -8,8 +8,7 @@
     font-weight: 400;
     line-height: normal;
     text-align: center;
-    font-size: $mediumFontSize;
-    letter-spacing: -.025em;
+    white-space: nowrap;
     font-size: $mediumFontSize;
     padding: $buttonPadding;
     border: hidden;
@@ -18,22 +17,22 @@
     flex-grow: 1;
 }
 
-.primary {
+.square {
     background-color: $busBlue;
     color: #fff;
 }
 
-.primary:hover {
+.square:hover {
     background-color: darken($busBlue, 10);
 }
 
-.secondary {
+.squareSecondary {
     background-color: #fff;
     color: $fontColorDefault;
     border: 1px solid $darkGrey;
 }
 
-.secondary:hover {
+.squareSecondary:hover {
     background-color: darken(#fff, 10);
 }
 
@@ -41,7 +40,6 @@
     background-color: $busBlue;
     color: #fff;
     border-radius: 20px;
-    white-space: nowrap;
     margin-right: 15px;
 }
 

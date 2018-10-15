@@ -188,7 +188,7 @@ class NodeView extends React.Component
                     <div className={s.flexInnerRow}>
                         <Button
                             onClick={this.doNothing}
-                            type={ButtonType.PRIMARY}
+                            type={ButtonType.SQUARE}
                             text={'Poista linkki'}
                         />
                     </div>
