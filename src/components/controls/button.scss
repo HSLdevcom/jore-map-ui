@@ -1,34 +1,52 @@
 @import '../shared/styles/common.scss';
 
 .button {
-    display:inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     font-weight: 400;
     line-height: normal;
     text-align: center;
+    white-space: nowrap;
     font-size: $mediumFontSize;
-    letter-spacing: -.025em;
-    font-size: $mediumFontSize;
-    padding: 10px;
+    padding: $buttonPadding;
     border: hidden;
     border-radius: 5px;
+    flex-basis: 0px;
+    flex-grow: 1;
+    margin-right: 15px;
 }
 
-.primary {
+.button:last-of-type {
+    margin-right: 0px;
+}
+
+.square {
     background-color: $busBlue;
     color: #fff;
 }
 
-.primary:hover {
+.square:hover {
     background-color: darken($busBlue, 10);
 }
 
-.secondary {
+.squareSecondary {
     background-color: #fff;
     color: $fontColorDefault;
     border: 1px solid $darkGrey;
 }
 
-.secondary:hover {
+.squareSecondary:hover {
     background-color: darken(#fff, 10);
+}
+
+.round {
+    background-color: $busBlue;
+    color: #fff;
+    border-radius: 20px;
+}
+
+.round:hover {
+    background-color: darken($busBlue, 10);
 }

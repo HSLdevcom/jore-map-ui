@@ -1,26 +1,39 @@
 @import '../../shared/styles/common';
 @import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
 
 .routePathView {
     padding: 20px;
+    padding-bottom: 30px;
     overflow-y: auto;
     width: $sidebarWide;
 
-    .routePathTimestamp {
-        font-weight: bold;
+    /* TODO: move to form.scss when inputContainer is refactored */
+    div, input {
+        box-sizing: border-box;
     }
 
-    .subTopic {
+    /* TODO: move to form.scss when inputContainer is refactored */
+    input {
+        padding: 10px;
+        line-height: 20px;
+        margin-top: 5px;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+    .routePathTimestamp {
         font-weight: bold;
-        color: $mediumGrey;
-        font-size: $smallFontSize;
     }
 
     .routeInformationContainer {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        padding-bottom: 10px;
-        border-bottom: 1px solid $lightGrey;
+        padding-top:10px;
+    }
+
+    .padding {
+        padding-top: 10px;
     }
 }
