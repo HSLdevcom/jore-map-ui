@@ -1,5 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import NotificationType from '~/enums/notificationType';
+import HashHelper from '../util/hashHelper';
 
 interface INotification {
     message: string;
@@ -20,7 +21,11 @@ export class NotificationStore {
 
     @action
     public addNotification(notification: INotification) {
-        if (this._notifications.filter(n => n.message === notification.message).length === 0) {
+        const notificationHash = HashHelper.getHashFromString(notification.message);
+        if (this._notifications
+            .filter(n =>
+                HashHelper.getHashFromString(n.message) === notificationHash,
+            ).length === 0) {
             this._notifications.push(notification);
         }
     }
