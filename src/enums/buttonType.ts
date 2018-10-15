@@ -1,6 +1,7 @@
 enum ButtonType {
-    PRIMARY = 'primary',
-    SECONDARY = 'secondary',
+    SQUARE = 'square',
+    SQUARE_SECONDARY = 'squareSecondary',
+    ROUND = 'round',
 }
 
 export default ButtonType;
