@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch, Redirect } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
 import { SidebarStore } from '~/stores/sidebarStore';
@@ -9,6 +9,7 @@ import { SearchStore } from '~/stores/searchStore';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import hslLogo from '~/assets/hsl-logo.png';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
@@ -35,6 +36,12 @@ interface ILinelistState {
 @inject('sidebarStore', 'routeStore', 'searchStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
+
+    private renderRoutesView = () => {
+        const queryParams = navigator.getQueryParam(QueryParams.routes);
+        return queryParams ? <RoutesView /> : <Redirect to='/' />;
+    }
+
     public render(): any {
         const goToHomeView = () => {
             this.props.routeStore!.clearRoutes();
@@ -60,7 +67,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 <Switch>
                     <Route exact={true} path={subSites.home} component={HomeView} />
                     <Route exact={true} path={subSites.routePath} component={RoutePathView} />
-                    <Route exact={true} path={subSites.routes} component={RoutesView} />
+                    <Route exact={true} path={subSites.routes} component={this.renderRoutesView} />
                     <Route path={subSites.node} component={NodeView} />
                     <Route exact={true} path={subSites.link} component={LinkView} />
                 </Switch>
