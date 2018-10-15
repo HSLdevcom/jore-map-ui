@@ -3,6 +3,7 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
+import Moment from 'react-moment';
 import { RouteStore } from '~/stores/routeStore';
 import LineHelper from '~/util/lineHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -25,8 +26,13 @@ interface IRouteShowProps {
 @inject('routeStore')
 @observer
 class RouteShow extends React.Component<IRouteShowProps> {
-    constructor(props: IRouteShowProps) {
-        super(props);
+    async componentDidMount() {
+        this.props.route.routePaths.forEach((routePath, index) => {
+            // Make two first route paths visible by default
+            if (index < 2) {
+                this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
+            }
+        });
     }
 
     private closeRoute = () => {
@@ -66,7 +72,6 @@ class RouteShow extends React.Component<IRouteShowProps> {
         let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
 
         return this.props.route.routePaths
-        .slice().sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime())
         .map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
@@ -78,24 +83,41 @@ class RouteShow extends React.Component<IRouteShowProps> {
             }
             return (
                 <div
-                    className={s.toggle}
+                    className={s.routePathContainer}
                     key={routePath.internalId}
                 >
-                    <div className={s.toggleTitle}>
-                        Suunta {routePath.direction}
+                    <div className={s.routePathInfo}>
+                        <div className={s.routePathTitle}>
+                            {`${routePath.originFi}-${routePath.destinationFi}`}
+                        </div>
+                        <div className={s.routePathDate}>
+                            {'Alk.pvm: '}
+                            <Moment
+                                date={routePath.startTime}
+                                format='DD.MM.YYYY'
+                            />
+                        </div>
+                        <div className={s.routePathDate}>
+                            {'Voim.ast: '}
+                            <Moment
+                                date={routePath.endTime}
+                                format='DD.MM.YYYY'
+                            />
+                        </div>
                     </div>
-                    <ToggleSwitch
-                        onClick={toggleRoutePathVisibility}
-                        value={routePath.visible}
-                        type={this.props.route.line!.transitType}
-                        color={routePath.visible ? routeColor : '#898989'}
-                    />
-                    <div className={s.flexFiller} />
-                    <div
-                        className={s.routeInfoButton}
-                        onClick={this.openRoutePathView}
-                    >
-                        <FiInfo />
+                    <div className={s.routePathControls}>
+                        <ToggleSwitch
+                            onClick={toggleRoutePathVisibility}
+                            value={routePath.visible}
+                            type={this.props.route.line!.transitType}
+                            color={routePath.visible ? routeColor : '#898989'}
+                        />
+                        <div
+                            className={s.routeInfoButton}
+                            onClick={this.openRoutePathView}
+                        >
+                            <FiInfo />
+                        </div>
                     </div>
                 </div>
             );
