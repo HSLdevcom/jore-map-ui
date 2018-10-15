@@ -9,8 +9,6 @@ import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { SidebarStore } from '~/stores/sidebarStore';
 import { NodeStore } from '~/stores/nodeStore';
-import { NotificationStore } from '~/stores/notificationStore';
-import notificationType from '~/enums/notificationType';
 import ToolbarTool from '~/enums/toolbarTool';
 import * as s from './nodeLayer.scss';
 
@@ -19,13 +17,12 @@ interface MarkerLayerProps {
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
     sidebarStore?: SidebarStore;
-    notificationStore?: NotificationStore;
     nodeStore?: NodeStore;
 }
 
 const DEFAULT_RADIUS = 25;
 
-@inject('popupStore', 'toolbarStore', 'sidebarStore', 'nodeStore', 'notificationStore')
+@inject('popupStore', 'toolbarStore', 'sidebarStore', 'nodeStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getMarkerHtml = (markerClass: string) => {
@@ -48,10 +45,6 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             break;
         }
         default: {
-            this.props.notificationStore!.addNotification({
-                message: `Solmun (id: '${node.id}') tyyppi on virheellinen`,
-                type: notificationType.WARNING,
-            });
             html = this.getMarkerHtml(isSelected ? s.unknownMarkerHighlight : s.unknownMarker);
             break;
         }
