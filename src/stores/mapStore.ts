@@ -1,7 +1,7 @@
 import { LatLng } from 'leaflet';
 import { action, computed, observable } from 'mobx';
-import CoordinateSystem from '../enums/coordinateSystem';
-import GeometryService from '../services/geometryService';
+import CoordinateSystem from '~/enums/coordinateSystem';
+import GeometryService from '~/services/geometryService';
 
 export class MapStore {
 

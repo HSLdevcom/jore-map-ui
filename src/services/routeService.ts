@@ -1,12 +1,12 @@
 import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '../util/ApolloClient';
-import RouteFactory, { IRouteResult } from '../factories/routeFactory';
+import apolloClient from '~/util/ApolloClient';
+import RouteFactory, { IRouteResult } from '~/factories/routeFactory';
+import { IRoute, INode } from '~/models';
+import QueryParsingHelper from '~/factories/queryParsingHelper';
+import notificationStore from '~/stores/notificationStore';
+import NotificationType from '~/enums/notificationType';
 import LineService from './lineService';
-import { IRoute, INode } from '../models';
-import QueryParsingHelper from '../factories/queryParsingHelper';
-import notificationStore from '../stores/notificationStore';
-import NotificationType from '../enums/notificationType';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];
@@ -76,6 +76,8 @@ query getLineDetails($routeId: String!) {
                     suuvoimast
                     suuviimpvm
                     suuvoimviimpvm
+                    suulahpaik
+                    suupaapaik
                     geojson
                     reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
                         edges {

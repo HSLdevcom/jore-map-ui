@@ -1,9 +1,9 @@
 import React from 'react';
 import { FiEdit, FiCopy, FiPlusSquare, FiShare2 } from 'react-icons/fi';
 import { observer } from 'mobx-react';
+import toolbarStore from '~/stores/toolbarStore';
+import ToolbarTool from '~/enums/toolbarTool';
 import MapControlButton from '../mapControls/MapControlButton';
-import toolbarStore from '../../../stores/toolbarStore';
-import ToolbarTool from '../../../enums/toolbarTool';
 import * as s from './toolbarToolButtons.scss';
 
 @observer

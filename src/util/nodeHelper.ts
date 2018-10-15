@@ -1,4 +1,4 @@
-import { IRoutePath, IRoute } from '../models';
+import { IRoutePath, IRoute } from '~/models';
 
 export default class NodeHelper {
     public static getNodeIdsUsedByRoutes(routes: IRoute[]): string[] {

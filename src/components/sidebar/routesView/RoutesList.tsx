@@ -1,17 +1,17 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import { RouteStore } from '../../../stores/routeStore';
-import searchStore from '../../../stores/searchStore';
+import { RouteStore } from '~/stores/routeStore';
+import searchStore from '~/stores/searchStore';
+import { IRoute } from '~/models';
+import QueryParams from '~/routing/queryParams';
+import navigator from '~/routing/navigator';
+import RouteAndStopHelper from '~/storeAbstractions/routeAndStopAbstraction';
+import TransitType from '~/enums/transitType';
+import { NetworkStore } from '~/stores/networkStore';
 import { Checkbox, TransitToggleButtonBar } from '../../controls';
-import { IRoute } from '../../../models';
 import RouteShow from './RouteShow';
 import Loader from '../../shared/loader/Loader';
-import QueryParams from '../../../routing/queryParams';
-import navigator from '../../../routing/navigator';
-import RouteAndStopHelper from '../../../storeAbstractions/routeAndStopAbstraction';
 import * as s from './routesList.scss';
-import TransitType from '../../../enums/transitType';
-import { NetworkStore } from '../../../stores/networkStore';
 
 interface IRoutesListState {
     isLoading: boolean;

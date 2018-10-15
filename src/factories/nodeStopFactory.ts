@@ -1,4 +1,4 @@
-import INodeStop from '../models/INodeStop';
+import INodeStop from '~/models/INodeStop';
 export default class StopFactory {
     public static createStop = (node: any): INodeStop => {
         return {
