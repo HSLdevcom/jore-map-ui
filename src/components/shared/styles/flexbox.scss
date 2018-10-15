@@ -1,18 +1,8 @@
-.flexRow {
-    display: flex;
-    flex-direction: row;
-    padding-top: 10px;
-}
+@import './common';
 
 .flexColumn {
     display: flex;
     flex-direction: column;
-    width: 100%;
-}
-
-.flexInnerRow {
-    display: flex;
-    flex-direction: row;
     width: 100%;
 }
 
@@ -22,8 +12,17 @@
     width:100%;
 }
 
-.flexFiller {
-    flex-grow: 1;
+.flexRow {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+}
+
+.flexInnerRow {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
 }
 
 .flexInnerRowFlexEnd {
@@ -32,3 +31,21 @@
     width: 100%;
     align-items: flex-end;
 }
+
+.flexFiller {
+    flex-grow: 1;
+}
+
+.flexButtonFiller {
+    flex-grow: 1;
+    flex-basis: 0px;
+    padding: $buttonPadding;
+}
+
+/* TODO: remove when inputContainers are refactored */
+.flexGrow {
+    flex-grow: 1;
+    flex-basis: 0px;
+    margin-right: 10px;
+}
+

@@ -90,6 +90,9 @@ class NodeView extends React.Component
         // Empty
     }
 
+    private toggleEditing = () => {
+    }
+
     private capitalizeFirstLetter(input: string|null) {
         if (!input) return '';
         return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
@@ -125,6 +128,7 @@ class NodeView extends React.Component
                 <div>
                     <ViewHeader
                         header={`Solmu ${this.renderNodeName(node)}`}
+                        toggleEditing={this.toggleEditing}
                     />
                     <div
                         className={classnames(
@@ -184,7 +188,7 @@ class NodeView extends React.Component
                     <div className={s.flexInnerRow}>
                         <Button
                             onClick={this.doNothing}
-                            type={ButtonType.PRIMARY}
+                            type={ButtonType.SQUARE}
                             text={'Poista linkki'}
                         />
                     </div>

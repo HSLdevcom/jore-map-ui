@@ -55,7 +55,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 <Button
                   onClick={this.openLoginForm}
                   className={s.loginButton}
-                  type={ButtonType.SECONDARY}
+                  type={ButtonType.SQUARE_SECONDARY}
                   text='Kirjaudu'
                 />
                 <NotificationWindow

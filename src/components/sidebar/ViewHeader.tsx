@@ -8,6 +8,7 @@ import * as s from './viewHeader.scss';
 
 interface IViewHeaderProps {
     header: string;
+    toggleEditing: Function;
 }
 
 class ViewHeader extends React.Component<IViewHeaderProps> {
@@ -16,8 +17,8 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
         navigator.goTo(routesLink);
     }
 
-    private doNothing = () => {
-        // TODO
+    private toggleEditing = () => {
+        this.props.toggleEditing();
     }
 
     public render(): any {
@@ -27,8 +28,8 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
                 <div className={s.flexFiller} />
                 <Button
                     className={s.editButton}
-                    onClick={this.doNothing}
-                    type={ButtonType.PRIMARY}
+                    onClick={this.toggleEditing}
+                    type={ButtonType.SQUARE}
                     text={'Muokkaa'}
                 />
                 <div

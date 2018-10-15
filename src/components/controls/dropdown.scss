@@ -21,4 +21,10 @@
     /* Remove default browser arrow */
     -webkit-appearance:none;
     -moz-appearance:none;
+
+    margin-right:10px;
+}
+
+.dropdownView:last-of-type {
+    margin-right:0px;
 }
