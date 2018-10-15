@@ -4,7 +4,7 @@
     display: block;
     opacity: 0.8;
 
-    .nodeContent {
+    .nodeBase {
         border-radius: 100px;
         border-style: solid;
         height: 12px;
@@ -13,6 +13,35 @@
         margin: -3px;
     }
 
+    .crossroadMarker {
+        border-color: #727272;
+        background-color: #FFF;
+    }
+
+    .crossroadMarkerHighlight {
+        border-color: #727272;
+        background-color: #727272;
+    }
+
+    .stopMarker {
+        border-color: #007ac9;
+        background-color: #FFF;
+    }
+
+    .stopMarkerHighlight {
+        border-color: #007ac9;
+        background-color: #007ac9
+    }
+
+    .unknownMarker {
+        border-color: #ff0000;
+        background-color: #000;
+    }
+
+    .unknownMarkerHighlight {
+        border-color: #ff0000;
+        background-color: #000;
+    }
 }
 
 .crossroadCircle {
@@ -26,5 +55,6 @@
     fill: $busBlue;
     fill-opacity: 0.3;
 }
+
 
 

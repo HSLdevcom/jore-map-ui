@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
+import classnames from 'classnames';
 import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
@@ -21,39 +22,12 @@ interface MarkerLayerProps {
 
 const DEFAULT_RADIUS = 25;
 
-enum color {
-    CROSSROAD_BORDER_COLOR = '#727272',
-    CROSSROAD_BORDER_COLOR_SELECTED = '#727272',
-    CROSSROAD_FILL_COLOR = '#FFF',
-    CROSSROAD_FILL_COLOR_SELECTED = '#727272',
-    STOP_BORDER_COLOR = '#007ac9',
-    STOP_BORDER_COLOR_SELECTED = '#007ac9',
-    STOP_FILL_COLOR = '#FFF',
-    STOP_FILL_COLOR_SELECTED = '#007ac9',
-}
-
 @inject('popupStore', 'toolbarStore', 'sidebarStore', 'nodeStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
-    private getNodeCrossroadMarkerHtml = (isSelected: boolean) => {
-        const borderColor = isSelected ?
-            color.CROSSROAD_BORDER_COLOR_SELECTED : color.CROSSROAD_BORDER_COLOR;
-        const fillColor = isSelected ?
-            color.CROSSROAD_FILL_COLOR_SELECTED : color.CROSSROAD_FILL_COLOR;
+    private getMarkerHtml = (markerClass: string) => {
         return `<div
-            style="border-color: ${borderColor}; background-color: ${fillColor}"
-            class=${s.nodeContent}
-        />`;
-    }
-
-    private getNodeStopMarkerHtml = (isSelected: boolean) => {
-        const borderColor = isSelected ?
-            color.STOP_BORDER_COLOR_SELECTED : color.STOP_BORDER_COLOR;
-        const fillColor = isSelected ?
-            color.STOP_FILL_COLOR_SELECTED : color.STOP_FILL_COLOR;
-        return `<div
-            style="border-color: ${borderColor}; background-color: ${fillColor}"
-            class=${s.nodeContent}
+            class="${classnames(s.nodeBase, markerClass)}"
         />`;
     }
 
@@ -63,15 +37,15 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         let html;
         switch (node.type) {
         case NodeType.STOP: {
-            html = this.getNodeStopMarkerHtml(isSelected);
+            html = this.getMarkerHtml(isSelected ? s.stopMarkerHighlight : s.stopMarker);
             break;
         }
         case NodeType.CROSSROAD: {
-            html = this.getNodeCrossroadMarkerHtml(isSelected);
+            html = this.getMarkerHtml(isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker);
             break;
         }
         default: {
-            throw new Error(`NodeType not supported: ${node.type}!`);
+            html = this.getMarkerHtml(isSelected ? s.unknownMarkerHighlight : s.unknownMarker);
             break;
         }
         }
