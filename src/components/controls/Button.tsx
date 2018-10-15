@@ -21,7 +21,7 @@ class Button extends React.Component<IButtonProps, {}> {
             return s.primary;
         }
         case ButtonType.SECONDARY: {
-            return s.primary;
+            return s.secondary;
         }
         case ButtonType.ROUND: {
             return s.round;

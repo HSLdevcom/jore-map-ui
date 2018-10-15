@@ -112,7 +112,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     REITIN LINKKI
                 </div>
             </div>
-            <div className={s.flexInnerRow}>
+            <div className={s.flexRow}>
                 <div className={s.flexInnerRowFlexEnd}>
                     <div className={s.inputContainer}>
                         <div className={s.subTopic}>
@@ -138,7 +138,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </div>
                 </div>
             </div>
-            <div className={s.flexInnerRow}>
+            <div className={s.flexRow}>
                 <div className={s.flexInnerRowFlexEnd}>
                     <div className={s.inputContainer}>
                         <div className={s.subTopic}>
@@ -164,7 +164,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </div>
                 </div>
             </div>
-            <div className={s.flexInnerRow}>
+            <div className={s.flexRow}>
                 <div className={s.inputContainer}>
                     <div className={s.subTopic}>
                         KUTSU-/JÄTTÖ-/OTTOP
@@ -207,7 +207,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     />
                 </div>
             </div>
-            <div className={s.flexInnerRow}>
+            <div className={s.flexRow}>
                 <InputContainer
                     label='SUUNTA'
                     placeholder='Suunta 1'
@@ -348,7 +348,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.flexFiller} />
             </div>
-            <div className={s.flexInnerRow}>
+            <div className={s.flexRow}>
                 <InputContainer
                     label='PÄIVITTÄJÄ'
                     placeholder='Vuori Tuomas'

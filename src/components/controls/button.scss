@@ -4,7 +4,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-shrink: 2;
     cursor: pointer;
     font-weight: 400;
     line-height: normal;
@@ -15,6 +14,8 @@
     padding: 10px;
     border: hidden;
     border-radius: 5px;
+    flex-basis: 0px;
+    flex-grow: 1;
 }
 
 .primary {
@@ -36,16 +37,12 @@
     background-color: darken(#fff, 10);
 }
 
-//flexgrow ja width 100% pois, flexfiller tyhjän napin paikalle
 .round {
     background-color: $busBlue;
     color: #fff;
-    // padding: 10px 15px 10px 15px;
     border-radius: 20px;
     white-space: nowrap;
     margin-right: 15px;
-    flex-grow: 1;
-    flex-basis: 1px;
 }
 
 .round:last-of-type {
