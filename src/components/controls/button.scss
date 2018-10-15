@@ -15,6 +15,11 @@
     border-radius: 5px;
     flex-basis: 0px;
     flex-grow: 1;
+    margin-right: 15px;
+}
+
+.button:last-of-type {
+    margin-right: 0px;
 }
 
 .square {
@@ -40,11 +45,6 @@
     background-color: $busBlue;
     color: #fff;
     border-radius: 20px;
-    margin-right: 15px;
-}
-
-.round:last-of-type {
-    margin-right: 0px;
 }
 
 .round:hover {
