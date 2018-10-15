@@ -20,7 +20,7 @@ export class NotificationStore {
 
     @action
     public addNotification(notification: INotification) {
-        if (this._notifications.filter(n => n.message === notification.message).length === 0) {
+        if (!this._notifications.some(n => n.message === notification.message)) {
             this._notifications.push(notification);
         }
     }
