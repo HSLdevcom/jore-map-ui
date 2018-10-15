@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
+import classnames from 'classnames';
 import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
@@ -24,52 +25,12 @@ interface MarkerLayerProps {
 
 const DEFAULT_RADIUS = 25;
 
-enum color {
-    CROSSROAD_BORDER_COLOR = '#727272',
-    CROSSROAD_BORDER_COLOR_SELECTED = '#727272',
-    CROSSROAD_FILL_COLOR = '#FFF',
-    CROSSROAD_FILL_COLOR_SELECTED = '#727272',
-    STOP_BORDER_COLOR = '#007ac9',
-    STOP_BORDER_COLOR_SELECTED = '#007ac9',
-    STOP_FILL_COLOR = '#FFF',
-    STOP_FILL_COLOR_SELECTED = '#007ac9',
-    UNKNOWN_BORDER_COLOR = '#ff0000',
-    UNKNOWN_BORDER_COLOR_SELECTED = '#ff0000',
-    UNKNOWN_FILL_COLOR = '#000',
-    UNKNOWN_FILL_COLOR_SELECTED = '#000',
-}
-
 @inject('popupStore', 'toolbarStore', 'sidebarStore', 'nodeStore', 'notificationStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
-    private getNodeCrossroadMarkerHtml = (isSelected: boolean) => {
-        const borderColor = isSelected ?
-            color.CROSSROAD_BORDER_COLOR_SELECTED : color.CROSSROAD_BORDER_COLOR;
-        const fillColor = isSelected ?
-            color.CROSSROAD_FILL_COLOR_SELECTED : color.CROSSROAD_FILL_COLOR;
-        return this.getMarkerHtml(borderColor, fillColor);
-    }
-
-    private getNodeStopMarkerHtml = (isSelected: boolean) => {
-        const borderColor = isSelected ?
-            color.STOP_BORDER_COLOR_SELECTED : color.STOP_BORDER_COLOR;
-        const fillColor = isSelected ?
-            color.STOP_FILL_COLOR_SELECTED : color.STOP_FILL_COLOR;
-        return this.getMarkerHtml(borderColor, fillColor);
-    }
-
-    private getUnknownNodeMarkerHtml = (isSelected: boolean) => {
-        const borderColor = isSelected ?
-            color.UNKNOWN_BORDER_COLOR_SELECTED : color.UNKNOWN_BORDER_COLOR;
-        const fillColor = isSelected ?
-            color.UNKNOWN_FILL_COLOR_SELECTED : color.UNKNOWN_FILL_COLOR;
-        return this.getMarkerHtml(borderColor, fillColor);
-    }
-
-    private getMarkerHtml = (borderColor: string, backgroundColor: string) => {
+    private getMarkerHtml = (markerClass: string) => {
         return `<div
-            style="border-color: ${borderColor}; background-color: ${backgroundColor}"
-            class=${s.nodeContent}
+            class="${classnames(s.nodeContent, markerClass)}"
         />`;
     }
 
@@ -79,11 +40,11 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         let html;
         switch (node.type) {
         case NodeType.STOP: {
-            html = this.getNodeStopMarkerHtml(isSelected);
+            html = this.getMarkerHtml(isSelected ? s.stopMarkerHighlight : s.stopMarker);
             break;
         }
         case NodeType.CROSSROAD: {
-            html = this.getNodeCrossroadMarkerHtml(isSelected);
+            html = this.getMarkerHtml(isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker);
             break;
         }
         default: {
@@ -91,7 +52,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
                 message: `Solmu (id: '${node.id}'), tyyppi on virheellinen`,
                 type: notificationType.WARNING,
             });
-            html = this.getUnknownNodeMarkerHtml(isSelected);
+            html = this.getMarkerHtml(isSelected ? s.unknownMarkerHighlight : s.unknownMarker);
             break;
         }
         }
