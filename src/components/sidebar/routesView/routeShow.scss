@@ -5,8 +5,8 @@
     .routeName {
         display: flex;
         align-items: center;
-        padding-top: 10px;
-        overflow:hidden;
+        padding-top: 20px;
+        overflow: hidden;
 
         .label {
             font-size: $largeFontSize;
@@ -18,7 +18,6 @@
         .closeView {
             margin-left: auto;
         }
-
 
         .close {
             color: $mediumGrey;
@@ -33,7 +32,6 @@
             font-size: 18px;
             cursor: pointer;
         }
-
     }
 
     .routePathContainer {
@@ -43,13 +41,11 @@
         flex-direction: row;
         -ms-flex-align: center;
         align-items: center;
-        padding-top: 20px;
+        padding-top: 15px;
 
         .routePathInfo {
-            display: inline-block;
-
             .routePathTitle {
-                font-weight: 600;
+                font-weight: bold;
             }
 
             .routePathDate {
@@ -84,5 +80,11 @@
     .routeInfoButton:hover {
         color: #FFF;
         background-color: $busBlue;
+    }
+}
+
+.routeShowView:first-of-type {
+    .routeName {
+        padding-top: 10px;
     }
 }
