@@ -1,6 +1,6 @@
 import * as React from 'react';
+import TransitType from '~/enums/transitType';
 import TransitToggleButton from './TransitToggleButton';
-import TransitType from '../../enums/transitType';
 import * as s from './transitToggleButtonBar.scss';
 
 interface ITtransitToggleButtonBarProps {

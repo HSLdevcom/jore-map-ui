@@ -1,5 +1,5 @@
-import { IRoutePath, INode } from '../models';
-import HashHelper from '../util/hashHelper';
+import { IRoutePath, INode } from '~/models';
+import HashHelper from '~/util/hashHelper';
 import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
 import QueryParsingHelper from './queryParsingHelper';
 
@@ -13,7 +13,6 @@ class RoutePathFactory {
     public static createRoutePath = (
         routeId: string,
         suunta: any,
-        isVisible:boolean,
     ): IRoutePathResult => {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
@@ -42,9 +41,11 @@ class RoutePathFactory {
             routePathName: suunta.suunimi,
             direction: suunta.suusuunta,
             startTime: new Date(suunta.suuvoimast),
-            endTime: new Date(suunta.suuviimpvm),
-            lastModified: new Date(suunta.suuvoimviimpvm),
-            visible: isVisible,
+            endTime: new Date(suunta.suuvoimviimpvm),
+            lastModified: new Date(suunta.suuviimpvm),
+            visible: false,
+            originFi: suunta.suulahpaik,
+            destinationFi: suunta.suupaapaik,
         };
 
         return {

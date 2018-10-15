@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import ButtonType from '~/enums/buttonType';
+import TransitType from '~/enums/transitType';
+import { SidebarStore } from '~/stores/sidebarStore';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
-import ButtonType from '../../../enums/buttonType';
-import TransitType from '../../../enums/transitType';
 import InputContainer from '../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
-import { SidebarStore } from '../../../stores/sidebarStore';
 import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
 

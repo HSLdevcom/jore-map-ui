@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { SidebarStore } from '../../../stores/sidebarStore';
-import { IRoutePath } from '../../../models';
-import routeBuilder  from '../../../routing/routeBuilder';
-import subSites from '../../../routing/subSites';
-import navigator from '../../../routing/navigator';
+import { SidebarStore } from '~/stores/sidebarStore';
+import { IRoutePath } from '~/models';
+import routeBuilder  from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {

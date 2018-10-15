@@ -1,4 +1,4 @@
-import { IRoutePathLink, INode } from '../models';
+import { IRoutePathLink, INode } from '~/models';
 import NodeFactory from './nodeFactory';
 
 export interface IRoutePathLinkResult {

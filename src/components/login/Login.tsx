@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { NotificationStore } from '../../stores/notificationStore';
-import { LoginStore } from '../../stores/loginStore';
+import { NotificationStore } from '~/stores/notificationStore';
+import { LoginStore } from '~/stores/loginStore';
+import ButtonType from '~/enums/buttonType';
+import NotificationType from '~/enums/notificationType';
 import Button from '../controls/Button';
-import ButtonType from '../../enums/buttonType';
-import NotificationType from '../../enums/notificationType';
 import * as s from './login.scss';
 
 interface ILoginProps {

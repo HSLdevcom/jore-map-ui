@@ -4,19 +4,19 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
-import { MapStore } from '../../stores/mapStore';
-import { RouteStore } from '../../stores/routeStore';
+import { MapStore } from '~/stores/mapStore';
+import { RouteStore } from '~/stores/routeStore';
+import ColorScale from '~/util/colorScale';
+import { IRoutePath, IRoute } from '~/models';
+import { NodeStore } from '~/stores/nodeStore';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import RouteLayer from './layers/RouteLayer';
-import ColorScale from '../../util/colorScale';
 import MarkerLayer from './layers/MarkerLayer';
-import { IRoutePath, IRoute } from '../../models';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './layers/PopupLayer';
-import { NodeStore } from '../../stores/nodeStore';
 import NodeLayer from './layers/NodeLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import * as s from './map.scss';
@@ -69,6 +69,13 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
 
     public componentDidMount() {
         const map = this.getMap();
+
+        // Ugly hack to force map to reload, necessary because map stays gray when app is in docker
+        // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
+        setTimeout(() => {
+            this.getMap().invalidateSize();
+        },         1000);
+
         // TODO: Convert these as react-components
         map.addControl(new CoordinateControl({ position: 'topright' }));
         // map.addControl(new MeasurementControl({ position: 'topright' }));
@@ -90,6 +97,10 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     }
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
+        // Invalidate size is required to notice screen size on launch.
+        // Problem only in docker containers.
+        // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
+        this.getMap().invalidateSize();
         this.getMap().fitBounds(bounds);
     }
 

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
 import { observer, inject } from 'mobx-react';
-import { IRoutePath } from '../../../models';
-import RouteService from '../../../services/routeService';
-import { NotificationStore } from '../../../stores/notificationStore';
-import { SearchStore } from '../../../stores/searchStore';
-import NotificationType from '../../../enums/notificationType';
+import { IRoutePath } from '~/models';
+import RouteService from '~/services/routeService';
+import { NotificationStore } from '~/stores/notificationStore';
+import { SearchStore } from '~/stores/searchStore';
+import NotificationType from '~/enums/notificationType';
 import { Checkbox } from '../../controls';
 import Loader from '../loader/Loader';
 import * as s from './lineItemSubMenu.scss';

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import lineHelper from '../../util/lineHelper';
-import TransitType from '../../enums/transitType';
-import TransitTypeColorHelper from '../../util/transitTypeColorHelper';
+import lineHelper from '~/util/lineHelper';
+import TransitType from '~/enums/transitType';
+import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import * as s from './transitToggleButton.scss';
 
 interface ITransitToggleButtonProps {
