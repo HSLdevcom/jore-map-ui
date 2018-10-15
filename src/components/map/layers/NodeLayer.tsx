@@ -88,7 +88,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         }
         default: {
             this.props.notificationStore!.addNotification({
-                message: `Solmu id: '${node.id}', tyyppi '${node.type}' on virheellinen`,
+                message: `Solmu (id: '${node.id}'), tyyppi on virheellinen`,
                 type: notificationType.WARNING,
             });
             html = this.getUnknownNodeMarkerHtml(isSelected);
