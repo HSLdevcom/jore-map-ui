@@ -141,7 +141,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     <div className={s.subTopic}>
                         POIKKEUSREITTI
                     </div>
-                    <div className={s.flexRowAlignedCenter}>
+                    <div className={s.padding} />
+                    <div className={s.flexInnerRow}>
                         <Checkbox
                             checked={false}
                             text={'Ei'}
@@ -217,7 +218,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     KARTTA
                 </div>
                 <div className={s.padding} />
-                <div className={s.flexRowAlignedCenter}>
+                <div className={s.flexInnerRow}>
                     <Button
                         onClick={this.onChange}
                         type={ButtonType.ROUND}

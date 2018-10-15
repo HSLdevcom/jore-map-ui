@@ -240,28 +240,24 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.flexRow}>
-                <div className={s.flexRowAlignedCenter}>
-                    <div className={s.smallInputContainer}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                    </div>
+                <div className={s.flexInnerRow}>
+                    <input
+                        placeholder='1'
+                        type='text'
+                        className={s.smallInput}
+                    />
                     <Checkbox
                         checked={false}
                         text={'Ohitusaika kirja-aikat.'}
                         onClick={this.onChange}
                     />
                 </div>
-                <div className={s.flexRowAlignedCenter}>
-                    <div className={s.smallInputContainer}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                    </div>
+                <div className={s.flexInnerRow}>
+                    <input
+                        placeholder='1'
+                        type='text'
+                        className={s.smallInput}
+                    />
                     <Checkbox
                         checked={false}
                         text={'Ohitusaika kirja-aikat.'}
@@ -270,33 +266,29 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.flexRow}>
-                <div className={s.flexRowAlignedCenter}>
-                    <div className={s.smallInputContainer}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                    </div>
-                        <Checkbox
-                            checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
-                            onClick={this.onChange}
-                        />
+                <div className={s.flexInnerRow}>
+                    <input
+                        placeholder='1'
+                        type='text'
+                        className={s.smallInput}
+                    />
+                    <Checkbox
+                        checked={false}
+                        text={'Ohitusaika kirja-aikat.'}
+                        onClick={this.onChange}
+                    />
                 </div>
-                <div className={s.flexRowAlignedCenter}>
-                    <div className={s.smallInputContainer}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                    </div>
-                        <Checkbox
-                            checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
-                            onClick={this.onChange}
-                        />
+                <div className={s.flexInnerRow}>
+                    <input
+                        placeholder='1'
+                        type='text'
+                        className={s.smallInput}
+                    />
+                    <Checkbox
+                        checked={false}
+                        text={'Ohitusaika kirja-aikat.'}
+                        onClick={this.onChange}
+                    />
                 </div>
             </div>
             <div className={s.flexRow}>
