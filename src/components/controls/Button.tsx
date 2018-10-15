@@ -26,6 +26,9 @@ class Button extends React.Component<IButtonProps, {}> {
         case ButtonType.ROUND: {
             return s.round;
         }
+        case ButtonType.SAVE: {
+            return s.save;
+        }
         default: {
             return s.square;
         }

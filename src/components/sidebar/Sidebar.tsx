@@ -63,6 +63,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                     <Route exact={true} path={subSites.routes} component={RoutesView} />
                     <Route path={subSites.node} component={NodeView} />
                     <Route exact={true} path={subSites.link} component={LinkView} />
+                    <Route exact={true} path={subSites.newRoutePath} component={RoutePathView} />
                 </Switch>
             </div>
         );

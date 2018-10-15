@@ -1,4 +1,6 @@
 import * as React from 'react';
+import routeBuilder  from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
 import ViewHeader from '../ViewHeader';
 import InputContainer from '../InputContainer';
 import { Button, Dropdown, Checkbox } from '../../controls';
@@ -7,6 +9,7 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     isEditingDisabled: boolean;
+    isAddingEnabled: boolean;
 }
 
 interface IRoutePathViewProps {
@@ -17,7 +20,18 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         super(props);
         this.state = {
             isEditingDisabled: true,
+            isAddingEnabled: false,
         };
+    }
+
+    componentDidMount() {
+        const currentLocation = routeBuilder.getCurrentLocation();
+        if (currentLocation === subSites.newRoutePath) {
+            this.setState({
+                isAddingEnabled: true,
+                isEditingDisabled: false,
+            });
+        }
     }
 
     public toggleEditing = () => {
@@ -33,8 +47,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         return (
         <div className={s.routePathView}>
             <ViewHeader
-                header='Reitin suunta 1016'
+                header={(this.state.isAddingEnabled) ?
+                    'Luo uusi reitinsuunta' :
+                    'Reitin suunta 1016'
+                }
                 toggleEditing={this.toggleEditing}
+                hideEditButton={this.state.isAddingEnabled}
             />
             <div className={s.routePathTimestamp}>01.09.2017</div>
             <div className={s.padding} />
@@ -248,6 +266,21 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     selected={'Suunta 1'}
                 />
             </div>
+            {this.state.isAddingEnabled &&
+                <div>
+                    <div className={s.sectionDivider} />
+                    <div className={s.padding} />
+                    <div className={s.flexRow}>
+                        <div className={s.flexButtonFiller} />
+                        <Button
+                            onClick={this.onChange}
+                            type={ButtonType.SAVE}
+                            text={'Tallenna reitinsuunta'}
+                        />
+                        <div className={s.flexButtonFiller} />
+                    </div>
+                </div>
+            }
         </div>
         );
     }

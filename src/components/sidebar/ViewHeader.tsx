@@ -9,6 +9,7 @@ import * as s from './viewHeader.scss';
 interface IViewHeaderProps {
     header: string;
     toggleEditing: Function;
+    hideEditButton?: boolean;
 }
 
 class ViewHeader extends React.Component<IViewHeaderProps> {
@@ -26,12 +27,14 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
             <div className={s.viewHeaderView}>
                 <div className={s.topic}>{this.props.header}</div>
                 <div className={s.flexFiller} />
-                <Button
-                    className={s.editButton}
-                    onClick={this.toggleEditing}
-                    type={ButtonType.SQUARE}
-                    text={'Muokkaa'}
-                />
+                {!this.props.hideEditButton &&
+                    <Button
+                        className={s.editButton}
+                        onClick={this.toggleEditing}
+                        type={ButtonType.SQUARE}
+                        text={'Muokkaa'}
+                    />
+                }
                 <div
                     className={s.closeButton}
                     onClick={this.closeSidebarView}

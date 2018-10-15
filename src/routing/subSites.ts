@@ -4,6 +4,7 @@ enum SubSites{
     node= '/node/:id',
     link= '/link/',
     routePath= '/routePath/',
+    newRoutePath= '/routePath/new',
     current= '',
 }
 
