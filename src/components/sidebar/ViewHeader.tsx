@@ -2,13 +2,11 @@ import React from 'react';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import ButtonType from '~/enums/buttonType';
-import Button from '../controls/Button';
 import * as s from './viewHeader.scss';
 
 interface IViewHeaderProps {
     header: string;
-    toggleEditing: Function;
+    children?: any;
 }
 
 class ViewHeader extends React.Component<IViewHeaderProps> {
@@ -17,21 +15,12 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
         navigator.goTo(routesLink);
     }
 
-    private toggleEditing = () => {
-        this.props.toggleEditing();
-    }
-
     public render(): any {
         return (
             <div className={s.viewHeaderView}>
                 <div className={s.topic}>{this.props.header}</div>
                 <div className={s.flexFiller} />
-                <Button
-                    className={s.editButton}
-                    onClick={this.toggleEditing}
-                    type={ButtonType.SQUARE}
-                    text={'Muokkaa'}
-                />
+                 {this.props.children}
                 <div
                     className={s.closeButton}
                     onClick={this.closeSidebarView}

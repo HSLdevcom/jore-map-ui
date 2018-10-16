@@ -50,3 +50,13 @@
 .round:hover {
     background-color: darken($busBlue, 10);
 }
+
+.save {
+    background-color: $saveButtonGreen;
+    color: #fff;
+    border-radius: 20px;
+}
+
+.save:hover {
+    background-color: darken($saveButtonGreen, 10);
+}
