@@ -82,6 +82,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     label='PITUUS'
                     disabled={isEditingDisabled}
                 />
+                <div className={s.marginFiller}/>
                 <div className={s.flexInnerRowFlexEnd}>
                     <Button
                         onClick={this.onChange}
@@ -91,17 +92,15 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                 </div>
             </div>
             <div className={s.flexRow}>
-                <div className={s.inputContainer}>
-                    <div className={s.subTopic}>
-                        SUUNTA
-                    </div>
+                <label className={s.inputLabel}>
                     <Dropdown
+                        label='SUUNTA'
                         onChange={this.onChange}
                         items={['Suunta 2']}
                         selected={'Suunta 1'}
                     />
-                </div>
-                <div className={s.inputContainer}>
+                </label>
+                <label className={s.inputLabel}>
                     <div className={s.subTopic}>
                         POIKKEUSREITTI
                     </div>
@@ -120,18 +119,18 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         />
                         <div className={s.flexFiller} />
                     </div>
-                </div>
+                </label>
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexGrow}>
-                    <div className={s.subTopic}>
-                        SOLMUTYYPIT
-                    </div>
-                    <Dropdown
-                        onChange={this.onChange}
-                        items={['Kaikki solmut']}
-                        selected={'Kaikki solmut'}
-                    />
+                    <label className={s.inputLabel}>
+                        <Dropdown
+                            onChange={this.onChange}
+                            items={['Kaikki solmut']}
+                            selected={'Kaikki solmut'}
+                            label='SOLMUTYYPIT'
+                        />
+                    </label>
                 </div>
                 <div className={s.flexFiller} />
             </div>
@@ -177,7 +176,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                 <div className={s.flexButtonFiller} />
             </div>
             <div className={s.sectionDivider}/>
-            <div className={s.inputContainer}>
+            <label className={s.inputLabel}>
                 <div className={s.topic}>
                     KARTTA
                 </div>
@@ -195,11 +194,11 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     />
                     <div className={s.flexButtonFiller} />
                 </div>
-            </div>
+            </label>
             <div className={s.padding} />
-            <div className={s.inputContainer}>
+            <label className={s.inputLabel}>
                 Esitettävien ajoaikojen kausi ja aikajakso
-            </div>
+            </label>
             <div className={s.flexRow}>
                 <Dropdown
                     onChange={this.onChange}

@@ -6,6 +6,7 @@ interface IDropdownState {
 }
 
 interface IDropdownProps {
+    label?: string;
     selected: string;
     items: string[];
     onChange(selectedItem: string): void;
@@ -26,27 +27,33 @@ class Dropdown extends React.Component
         });
         this.props.onChange(event.target.value);
     }
-
     public render(): any {
         return (
-            <select
-                className={s.dropdownView}
-                value={this.state.selectedValue}
-                onChange={this.onChange}
-            >
-            {
-                this.props.items.map((item) => {
-                    return (
-                        <option
-                            key={item}
-                            value={item}
-                        >
-                            {item}
-                        </option>
-                    );
-                })
-            }
-            </select>
+            <label className={s.inputLabel}>
+                {this.props.label &&
+                    <div className={s.subTopic}>
+                        {this.props.label}
+                    </div>
+                }
+                <select
+                    className={s.dropdownView}
+                    value={this.state.selectedValue}
+                    onChange={this.onChange}
+                >
+                {
+                    this.props.items.map((item) => {
+                        return (
+                            <option
+                                key={item}
+                                value={item}
+                            >
+                                {item}
+                            </option>
+                        );
+                    })
+                }
+                </select>
+            </label>
         );
     }
 }

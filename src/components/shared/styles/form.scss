@@ -1,12 +1,12 @@
 @import './common';
 
-.inputContainer {
+.inputLabel {
     margin-right: 10px;
     padding-top: 10px;
     width:100%;
 }
 
-.inputContainer:last-of-type {
+.inputLabel:last-of-type {
     margin-right: 0px;
 }
 
@@ -28,4 +28,8 @@
     padding-top:20px;
     border-bottom: 1.5px solid $lightGrey;
     width: 100%;
+}
+
+.marginFiller {
+    margin-right: 10px;
 }

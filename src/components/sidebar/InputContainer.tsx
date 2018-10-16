@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classnames from 'classnames';
 import s from './inputContainer.scss';
 
 interface IInputProps {
@@ -8,12 +7,11 @@ interface IInputProps {
     className?: string;
     disabled?: boolean;
 }
-
 class InputContainer extends React.Component<IInputProps> {
     public render(): any {
         return (
-            <div className={s.inputContainer}>
-                <div className={classnames(s.subTopic)}>
+            <label className={s.inputLabel}>
+                <div className={s.subTopic}>
                     {this.props.label}
                 </div>
                 <input
@@ -22,7 +20,7 @@ class InputContainer extends React.Component<IInputProps> {
                     className={this.props.className}
                     disabled={this.props.disabled}
                 />
-            </div>
+            </label>
         );
     }
 }
