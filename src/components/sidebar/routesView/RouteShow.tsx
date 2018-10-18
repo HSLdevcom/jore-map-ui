@@ -3,7 +3,8 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
-import Moment from 'react-moment';
+import ReactMoment from 'react-moment';
+import Moment from 'moment';
 import { RouteStore } from '~/stores/routeStore';
 import LineHelper from '~/util/lineHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -70,6 +71,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
     private renderRoutePaths() {
         let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
+        const currentTime = Moment();
 
         return this.props.route.routePaths
         .map((routePath: IRoutePath) => {
@@ -81,6 +83,10 @@ class RouteShow extends React.Component<IRouteShowProps> {
             if (routePath.visible) {
                 visibleRoutePathsIndex += 1;
             }
+
+            const isWithinRange = (Moment(routePath.startTime).isBefore(currentTime) &&
+                                    Moment(routePath.endTime).isAfter(currentTime));
+
             return (
                 <div
                     className={s.routePathContainer}
@@ -90,16 +96,24 @@ class RouteShow extends React.Component<IRouteShowProps> {
                         <div className={s.routePathTitle}>
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
-                        <div className={s.routePathDate}>
+                        <div
+                            className={(isWithinRange) ?
+                            classNames(s.routePathDate, s.highlighted) :
+                            s.routePathDate}
+                        >
                             {'Alk.pvm: '}
-                            <Moment
+                            <ReactMoment
                                 date={routePath.startTime}
                                 format='DD.MM.YYYY'
                             />
                         </div>
-                        <div className={s.routePathDate}>
+                        <div
+                            className={(isWithinRange) ?
+                            classNames(s.routePathDate, s.highlighted) :
+                            s.routePathDate}
+                        >
                             {'Voim.ast: '}
-                            <Moment
+                            <ReactMoment
                                 date={routePath.endTime}
                                 format='DD.MM.YYYY'
                             />

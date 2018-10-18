@@ -51,6 +51,16 @@
             .routePathDate {
                 font-size: $smallFontSize;
                 padding-left: 10px;
+
+                &.highlighted {
+                    font-weight: 800;
+                }
+            }
+
+            .routePathDateHighlighted {
+                font-size: $smallFontSize;
+                padding-left: 10px;
+                font-weight: 800;
             }
         }
 
