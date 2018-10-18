@@ -21,6 +21,10 @@ export class RouteBuilder {
     public getCurrentLocation() {
         return this.routerStore.location.pathname;
     }
+
+    public getCurrentLocationWithParams() {
+        return this.routerStore.location.pathname + this.routerStore.location.search;
+    }
 }
 
 export default new RouteBuilder();
