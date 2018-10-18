@@ -81,6 +81,17 @@ class RouteShow extends React.Component<IRouteShowProps> {
             if (routePath.visible) {
                 visibleRoutePathsIndex += 1;
             }
+
+            const openRoutePathView = () => {
+                const routePathViewLink = routeBuilder
+                    .to(subSites.routePath)
+                    .set(QueryParams.startTime, encodeURIComponent(routePath.startTime.format()))
+                    .set(QueryParams.routeId, routePath.routeId)
+                    .set(QueryParams.direction, routePath.direction)
+                    .toLink();
+                navigator.goTo(routePathViewLink);
+            };
+
             return (
                 <div
                     className={s.routePathContainer}
@@ -114,7 +125,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                         />
                         <div
                             className={s.routeInfoButton}
-                            onClick={this.openRoutePathView}
+                            onClick={openRoutePathView}
                         >
                             <FiInfo />
                         </div>
@@ -122,11 +133,6 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 </div>
             );
         });
-    }
-
-    private openRoutePathView = () => {
-        const routePathViewLink = routeBuilder.to(subSites.routePath).toLink();
-        navigator.goTo(routePathViewLink);
     }
 
     public render(): any {
