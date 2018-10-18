@@ -20,7 +20,7 @@ class RouteFactory {
             line,
             routePaths: routePathResults
                 .map(res => res.routePath)
-                .sort((a, b) => b.endTime.getTime() - a.endTime.getTime()),
+                .sort((a, b) => b.endTime.unix() - a.endTime.unix()),
             routeName: reitti.reinimi,
             routeNameSwedish: reitti.reinimir,
             lineId: reitti.lintunnus,
@@ -31,7 +31,7 @@ class RouteFactory {
             route,
             nodes: QueryParsingHelper.removeINodeDuplicates(
                 routePathResults
-                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
+                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes!), []),
             ),
         };
     }

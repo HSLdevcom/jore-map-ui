@@ -118,7 +118,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                         onContextMenu={this.openLinkView}
                         onMouseOver={this.setHoverHighlight(internalId)}
                         onMouseOut={this.clearHoverHighlights}
-                        routePathLinks={routePath.routePathLinks}
+                        routePathLinks={routePath.routePathLinks!}
                         color={color}
                         opacity={this.hasHighlight(internalId) ? 1 : 0.6}
                         weight={this.hasHighlight(internalId) ? 8 : 7}

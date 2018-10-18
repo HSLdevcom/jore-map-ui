@@ -26,7 +26,7 @@ export default class NodeHelper {
     }
 
     public static getNodeIdsUsedByRoutePath(routePath: IRoutePath): string[] {
-        return routePath.routePathLinks
+        return routePath.routePathLinks!
             .reduce<string[]>((flatlist, routePathLink) =>
             NodeHelper.getUniqueIds(
                     flatlist.concat(
@@ -47,7 +47,7 @@ export default class NodeHelper {
 
     public static routePathHasStop(routePaths: IRoutePath[], nodeId: string) {
         return routePaths.some(routePath =>
-            routePath.routePathLinks.some(routePathLink =>
+            routePath.routePathLinks!.some(routePathLink =>
                 (
                     routePathLink.endNodeId === nodeId
                     || routePathLink.startNodeId === nodeId
