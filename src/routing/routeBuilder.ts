@@ -1,29 +1,14 @@
-import { RouterStore } from 'mobx-react-router';
 import RouteBuilderContext from './routeBuilderContext';
 import subSites from './subSites';
-import navigator from './navigator';
+import Navigator from './navigator';
 
 export class RouteBuilder {
-    private routerStore: RouterStore;
-
-    constructor() {
-        this.routerStore = navigator.getStore();
-    }
-
     public to(subSites: subSites) {
         return new RouteBuilderContext(
-            this.getCurrentLocation(),
+            Navigator.getPathName(),
             subSites,
-            navigator.getQueryParamValues(),
+            Navigator.getQueryParamValues(),
         );
-    }
-
-    public getCurrentLocation() {
-        return this.routerStore.location.pathname;
-    }
-
-    public getCurrentLocationWithParams() {
-        return this.routerStore.location.pathname + this.routerStore.location.search;
     }
 }
 

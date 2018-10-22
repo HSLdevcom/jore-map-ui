@@ -3,7 +3,7 @@ import { FiPrinter, FiExternalLink } from 'react-icons/fi';
 import { observer } from 'mobx-react';
 import toolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
-import RouteBuilder from '~/routing/routeBuilder';
+import Navigator from '~/routing/navigator';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 
@@ -13,7 +13,7 @@ export default class ToolbarCommonButtons extends React.Component {
     }
 
     private newWindowUrl = () => {
-        return RouteBuilder.getCurrentLocationWithParams();
+        return Navigator.getPathName() + Navigator.getSearch();
     }
 
     render() {
