@@ -24,7 +24,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     constructor(props: any) {
         super(props);
         this.state = {
-            isEditingDisabled: false,
+            isEditingDisabled: true,
             isDirty: false,
             routePath: null,
         };
@@ -49,12 +49,21 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isEditingDisabled });
     }
 
+    public save = () => {
+        console.log('Saving');
+        this.setState({ isDirty: false });
+    }
+
+    public onEdit = () => {
+        this.setState({ isDirty: true });
+    }
+
     public render(): any {
         if (!this.state.routePath) return 'loading';
         return (
         <div className={s.routePathView}>
             <ViewHeader
-                header='Reitin suunta'
+                header={`Reitin suunta ${this.state.routePath.lineId}`}
             >
                 <Button
                     onClick={this.toggleEditing}
@@ -62,40 +71,50 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     text={'Muokkaa'}
                 />
             </ViewHeader>
-            <div className={s.routePathTimestamp}>
-                <Moment
-                    date={this.state.routePath.lastModified}
-                    format='DD.MM.YYYY HH:mm'
+            <div className={s.section} >
+                <div className={s.topic}>
+                    REITIN OTSIKKOTIEDOT
+                </div>
+                <div className={s.routeInformationContainer}>
+                    <div className={s.flexInnerColumn}>
+                        <div>Reittitunnus</div>
+                        <div>{this.state.routePath.routeId}</div>
+                    </div>
+                    <div className={s.flexInnerColumn}>
+                        <div>Linja</div>
+                        <div>{this.state.routePath.lineId}</div>
+                    </div>
+                    <div className={s.flexInnerColumn}>
+                        <div>Päivityspvm</div>
+                        <Moment
+                            date={this.state.routePath.lastModified}
+                            format='DD.MM.YYYY HH:mm'
+                        />
+                    </div>
+                    <div className={s.flexInnerColumn}>
+                        <div>Päivittää</div>
+                        <div>{this.state.routePath.modifiedBy}</div>
+                    </div>
+                </div>
+                <div className={s.sectionDivider} />
+            </div>
+            <div className={s.section}>
+                <RoutePathViewForm
+                    onEdit={this.onEdit}
+                    isEditingDisabled={this.state.isEditingDisabled}
+                    routePath={this.state.routePath}
                 />
             </div>
-            <div className={s.padding} />
-            <div className={s.padding} />
-            <div className={s.topic}>
-                REITIN OTSIKKOTIEDOT
-            </div>
-            <div className={s.routeInformationContainer}>
-                <div className={s.flexInnerColumn}>
-                    <div>Reittitunnus</div>
-                    <div>{this.state.routePath.routeId}</div>
-                </div>
-                <div className={s.flexInnerColumn}>
-                    <div>Linja</div>
-                    <div>?</div>
-                </div>
-                <div className={s.flexInnerColumn}>
-                    <div>Päivityspvm</div>
-                    <div>23.08.2017</div>
-                </div>
-                <div className={s.flexInnerColumn}>
-                    <div>Päivittää</div>
-                    <div>Vuori Tuomas</div>
+            <div className={s.section}>
+                <div className={s.flexRow}>
+                    <Button
+                        onClick={this.save}
+                        type={ButtonType.SAVE}
+                        text={'Tallenna reitinsuunta'}
+                        disabled={!this.state.isDirty}
+                    />
                 </div>
             </div>
-            <div className={s.sectionDivider} />
-            <RoutePathViewForm
-                isEditingDisabled={this.state.isEditingDisabled}
-                routePath={this.state.routePath}
-            />
         </div>
         );
     }

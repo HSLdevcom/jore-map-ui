@@ -45,6 +45,7 @@ class RoutePathFactory {
             startTime: moment(suunta.suuvoimast),
             endTime: moment(suunta.suuvoimviimpvm),
             lastModified: new Date(suunta.suuviimpvm),
+            modifiedBy: suunta.suukuka,
             visible: false,
             originFi: suunta.suulahpaik,
             originSw: suunta.suulahpaikr,
@@ -52,6 +53,7 @@ class RoutePathFactory {
             destinationSw: suunta.suupaapaikr,
             routePathShortName: suunta.suunimilyh,
             routePathShortNameSw: suunta.suunimilyhr,
+            lineId: suunta.reittiByReitunnus ? suunta.reittiByReitunnus.lintunnus : null,
         };
 
         return {

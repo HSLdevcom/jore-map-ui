@@ -47,7 +47,11 @@ query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!
         suulahpaik
         suulahpaikr
         suupaapaik
+        suukuka
         suupaapaikr
+        reittiByReitunnus {
+            lintunnus
+        }
     }
 }
 `;

@@ -4,6 +4,7 @@ import IRoutePathLink from './IRoutePathLink';
 export default interface IRoutePath {
     internalId: string;
     routeId: string;
+    lineId?: string;
     routePathName: string;
     routePathNameSw: string;
     direction: string;
@@ -20,4 +21,5 @@ export default interface IRoutePath {
     destinationSw: string;
     routePathShortName: string;
     routePathShortNameSw: string;
+    modifiedBy: string;
 }

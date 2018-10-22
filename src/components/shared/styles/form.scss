@@ -28,8 +28,12 @@
     font-size: $mediumFontSize;
 }
 
-.sectionDivider {
-    padding-top:20px;
-    border-bottom: 1.5px solid $lightGrey;
-    width: 100%;
+.section {
+    margin: 30px 0;
+
+    .sectionDivider {
+        padding-top:20px;
+        border-bottom: 1.5px solid $lightGrey;
+        width: 100%;
+    }
 }
