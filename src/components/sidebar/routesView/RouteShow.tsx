@@ -90,16 +90,25 @@ class RouteShow extends React.Component<IRouteShowProps> {
                         <div className={s.routePathTitle}>
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
-                        <div className={s.routePathDate}>
-                            <Moment
-                                date={routePath.startTime}
-                                format='DD.MM.YYYY'
-                            />
-                            {' - '}
-                            <Moment
-                                date={routePath.endTime}
-                                format='DD.MM.YYYY'
-                            />
+                        <div className={s.flexInnerRow}>
+                            <div className={s.routePathDate}>
+                                <div className={s.flexColumn}>
+                                    {'Alk.pvm:'}
+                                    <Moment
+                                        date={routePath.startTime}
+                                        format='DD.MM.YYYY'
+                                    />
+                                </div>
+                            </div>
+                            <div className={s.routePathDate}>
+                                <div className={s.flexColumn}>
+                                    {'Voim.ast:'}
+                                    <Moment
+                                        date={routePath.endTime}
+                                        format='DD.MM.YYYY'
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className={s.routePathControls}>
