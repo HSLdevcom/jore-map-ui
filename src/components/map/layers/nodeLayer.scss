@@ -42,6 +42,16 @@
         border-color: #ff0000;
         background-color: #000;
     }
+
+    .disabledMarker {
+        border-color: #353333;
+        background-color: #615e5e;
+    }
+
+    .disabledMarkerHighlight {
+        border-color: #353333;
+        background-color: #615e5e;
+    }
 }
 
 .crossroadCircle {
@@ -55,6 +65,3 @@
     fill: $busBlue;
     fill-opacity: 0.3;
 }
-
-
-

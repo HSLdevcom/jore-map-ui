@@ -50,6 +50,7 @@ class RoutePathFactory {
 
         return {
             routePath,
+            // TODO Determine duplicates by coordinates.
             nodes: QueryParsingHelper.removeINodeDuplicates(
                 routePathLinkResult
                     .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),

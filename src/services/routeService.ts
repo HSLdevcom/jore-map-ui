@@ -86,6 +86,7 @@ query getLineDetails($routeId: String!) {
                                 lnkalkusolmu
                                 lnkloppusolmu
                                 reljarjnro
+                                relpysakki
                                 lnkverkko
                                 solmuByLnkalkusolmu {
                                     solx,

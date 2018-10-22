@@ -50,6 +50,10 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         }
         }
 
+        if (node.disabled) {
+            html = this.getMarkerHtml(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
+        }
+
         const divIconOptions : L.DivIconOptions = {
             html,
             className: s.node,
@@ -95,7 +99,6 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
 
             const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
             const displayCircle = this.isSelected(node);
-
             return (
                 <Marker
                     onContextMenu={openPopup}
