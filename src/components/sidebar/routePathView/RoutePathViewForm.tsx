@@ -92,7 +92,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                 </div>
             </div>
             <div className={s.flexRow}>
-                <label className={s.inputLabel}>
+                <label className={s.inputContainer}>
                     <Dropdown
                         label='SUUNTA'
                         onChange={this.onChange}
@@ -100,8 +100,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         selected={'Suunta 1'}
                     />
                 </label>
-                <label className={s.inputLabel}>
-                    <div className={s.subTopic}>
+                <label className={s.inputContainer}>
+                    <div className={s.inputLabel}>
                         POIKKEUSREITTI
                     </div>
                     <div className={s.padding} />
@@ -123,7 +123,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexGrow}>
-                    <label className={s.inputLabel}>
+                    <label className={s.inputContainer}>
                         <Dropdown
                             onChange={this.onChange}
                             items={['Kaikki solmut']}
@@ -176,7 +176,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                 <div className={s.flexButtonFiller} />
             </div>
             <div className={s.sectionDivider}/>
-            <label className={s.inputLabel}>
+            <label className={s.inputContainer}>
                 <div className={s.topic}>
                     KARTTA
                 </div>
@@ -196,7 +196,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                 </div>
             </label>
             <div className={s.padding} />
-            <label className={s.inputLabel}>
+            <label className={s.inputContainer}>
                 Esitettävien ajoaikojen kausi ja aikajakso
             </label>
             <div className={s.flexRow}>

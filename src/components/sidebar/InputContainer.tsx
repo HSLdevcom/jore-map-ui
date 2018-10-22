@@ -10,8 +10,8 @@ interface IInputProps {
 class InputContainer extends React.Component<IInputProps> {
     public render(): any {
         return (
-            <label className={s.inputLabel}>
-                <div className={s.subTopic}>
+            <label className={s.inputContainer}>
+                <div className={s.inputLabel}>
                     {this.props.label}
                 </div>
                 <input

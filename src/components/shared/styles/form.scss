@@ -1,16 +1,16 @@
 @import './common';
 
-.inputLabel {
+.inputContainer {
     margin-right: 10px;
     padding-top: 10px;
     width:100%;
 }
 
-.inputLabel:last-of-type {
+.inputContainer:last-of-type {
     margin-right: 0px;
 }
 
-.subTopic {
+.inputLabel {
     font-weight: bold;
     color: $mediumGrey;
     font-size: $smallFontSize;

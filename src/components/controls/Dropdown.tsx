@@ -29,9 +29,9 @@ class Dropdown extends React.Component
     }
     public render(): any {
         return (
-            <label className={s.inputLabel}>
+            <label className={s.inputContainer}>
                 {this.props.label &&
-                    <div className={s.subTopic}>
+                    <div className={s.inputLabel}>
                         {this.props.label}
                     </div>
                 }
