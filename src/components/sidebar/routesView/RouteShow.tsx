@@ -91,14 +91,11 @@ class RouteShow extends React.Component<IRouteShowProps> {
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
                         <div className={s.routePathDate}>
-                            {'Alk.pvm: '}
                             <Moment
                                 date={routePath.startTime}
                                 format='DD.MM.YYYY'
                             />
-                        </div>
-                        <div className={s.routePathDate}>
-                            {'Voim.ast: '}
+                            {' - '}
                             <Moment
                                 date={routePath.endTime}
                                 format='DD.MM.YYYY'
