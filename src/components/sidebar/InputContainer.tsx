@@ -31,7 +31,9 @@ class InputContainer extends React.Component<IInputProps> {
                 <input
                     placeholder={this.props.disabled ? '' : this.props.placeholder}
                     type='text'
-                    className={this.props.className}
+                    className={
+                        classnames(this.props.className, this.props.disabled ? s.disabled : null)
+                    }
                     disabled={this.props.disabled}
                     value={this.props.value!}
                     onChange={onChange}
