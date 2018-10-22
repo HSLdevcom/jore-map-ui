@@ -7,13 +7,14 @@ interface IButtonProps {
     type: ButtonType;
     text: string;
     className?: string;
+    disabled?: boolean;
     onClick(event: any): void;
 }
 
 class Button extends React.Component<IButtonProps, {}> {
-    constructor(props: IButtonProps) {
-        super(props);
-    }
+    public static defaultProps: Partial<IButtonProps> = {
+        disabled: false,
+    };
 
     private getTypeClass = (type: ButtonType) => {
         switch (type) {
@@ -35,16 +36,28 @@ class Button extends React.Component<IButtonProps, {}> {
         }
     }
 
-    private getClassname = (type: ButtonType, className?: string) => {
+    private getClassname = (type: ButtonType, disabled: boolean, className?: string) => {
         const typeClass = this.getTypeClass(type);
-        return classNames(s.button, typeClass, className);
+        return classNames(s.button, typeClass, className, disabled ? s.disabled : null);
+    }
+
+    private onClick = (e: any) => {
+        if (!this.props.disabled) {
+            this.props.onClick(e);
+        }
     }
 
     public render(): any {
         return (
             <div
-                className={this.getClassname(this.props.type, this.props.className)}
-                onClick={this.props.onClick}
+                className={
+                    this.getClassname(
+                        this.props.type,
+                        this.props.disabled!,
+                        this.props.className,
+                    )
+                }
+                onClick={this.onClick}
             >
                 {this.props.text}
             </div>
