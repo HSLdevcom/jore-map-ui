@@ -45,16 +45,24 @@
 
         .routePathInfo {
             .routePathTitle {
-                font-weight: bold;
+                font-weight: normal;
+
+                &.highlight {
+                    font-weight: bold;
+                }
             }
 
             .routePathDate {
                 font-size: $smallFontSize;
                 padding-left: 10px;
+                padding-top: 5px;
 
-                &.highlighted {
-                    font-weight: 800;
+                &.highlight {
+                    font-weight: bold;
                 }
+            }
+            .routePathDate:last-of-type {
+                padding-top: 0px;
             }
 
         }

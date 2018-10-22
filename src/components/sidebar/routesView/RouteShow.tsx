@@ -71,7 +71,6 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
     private renderRoutePaths() {
         let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
-        const currentTime = Moment();
 
         return this.props.route.routePaths
         .map((routePath: IRoutePath) => {
@@ -84,8 +83,8 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 visibleRoutePathsIndex += 1;
             }
 
-            const isWithinRange = (Moment(routePath.startTime).isBefore(currentTime) &&
-                                    Moment(routePath.endTime).isAfter(currentTime));
+            const isWithinTimeSpan = (Moment(routePath.startTime).isBefore(Moment()) &&
+                                    Moment(routePath.endTime).isAfter(Moment()));
 
             return (
                 <div
@@ -93,12 +92,16 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     key={routePath.internalId}
                 >
                     <div className={s.routePathInfo}>
-                        <div className={s.routePathTitle}>
+                        <div
+                            className={(isWithinTimeSpan) ?
+                            classNames(s.routePathTitle, s.highlight) :
+                            s.routePathTitle}
+                        >
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
                         <div
-                            className={(isWithinRange) ?
-                            classNames(s.routePathDate, s.highlighted) :
+                            className={(isWithinTimeSpan) ?
+                            classNames(s.routePathDate, s.highlight) :
                             s.routePathDate}
                         >
                             {'Alk.pvm: '}
@@ -108,8 +111,8 @@ class RouteShow extends React.Component<IRouteShowProps> {
                             />
                         </div>
                         <div
-                            className={(isWithinRange) ?
-                            classNames(s.routePathDate, s.highlighted) :
+                            className={(isWithinTimeSpan) ?
+                            classNames(s.routePathDate, s.highlight) :
                             s.routePathDate}
                         >
                             {'Voim.ast: '}
