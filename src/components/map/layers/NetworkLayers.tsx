@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import NodeService from '~/services/nodeService';
+import navigator from '~/routing/navigator';
 import { NetworkStore } from '~/stores/networkStore';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import { NewRoutePathStore } from '~/stores/new/newRoutePathStore';
 import NodeType from '~/enums/nodeType';
 import VectorGridLayer from './VectorGridLayer';
 
@@ -12,13 +15,19 @@ enum GeoserverLayer {
     Point = 'piste',
 }
 
+// TODO: use .scss for these?
 enum NodeColors {
     CROSSROAD_COLOR = '#727272',
-    STOP_COLOR = '#ff7070',
+    CROSSROAD_FILL_COLOR = '#c6c6c6',
+    STOP_COLOR = '#3e3c87',
+    STOP_FILL_COLOR = '#FFF',
+    IS_EDITING_STOP_COLOR = '#3e3c87',
+    IS_EDITING_STOP_FILL_COLOR = '#FFF',
 }
 
 interface INetworkLayersProps {
     networkStore?: NetworkStore;
+    newRoutePathStore?: NewRoutePathStore;
 }
 
 function getGeoServerUrl(layerName: string) {
@@ -27,9 +36,10 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('networkStore')
+@inject('networkStore', 'newRoutePathStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
+
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
@@ -67,28 +77,55 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private getNodeStyle = () => {
+        const isCreatingNewRoutePath = navigator.getCurrentPath().includes('routePath/new');
+        const radius = isCreatingNewRoutePath ? 6 : 4;
+
         return {
             // Layer name 'solmu' is directly mirrored from Jore through geoserver
             solmu: (properties: any, zoom: any) => {
                 let color;
+                let fillColor;
+
                 switch (properties.soltyyppi) {
                 case NodeType.STOP:
-                    color = NodeColors.STOP_COLOR;
+                    color = isCreatingNewRoutePath ?
+                        NodeColors.IS_EDITING_STOP_COLOR : NodeColors.STOP_COLOR;
+                    fillColor = isCreatingNewRoutePath ?
+                        NodeColors.IS_EDITING_STOP_FILL_COLOR : NodeColors.STOP_FILL_COLOR;
                     break;
                 case NodeType.CROSSROAD:
                     color = NodeColors.CROSSROAD_COLOR;
+                    fillColor = NodeColors.CROSSROAD_FILL_COLOR;
                     break;
                 }
 
                 return {
                     color,
-                    radius: 2,
+                    radius,
+                    fillColor,
+                    opacity: 1,
+                    fillOpacity: 1,
+                    fill: true,
                 };
             },
         };
     }
 
+    private addNodeFromClickEvent = (clickEvent: any) => {
+        const properties =  clickEvent.sourceTarget.properties;
+        NodeService.fetchNode(properties.soltunnus).then((node) => {
+            if (node) {
+                this.props.newRoutePathStore!.addNode({
+                    id: node.id,
+                    coordinates: node.coordinates,
+                });
+            }
+        });
+    }
+
     render() {
+        const isCreatingNewRoutePath = navigator.getCurrentPath().includes('routePath/new');
+
         return (
             <>
                 { this.props.networkStore!.isLinksVisible &&
@@ -105,15 +142,16 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         vectorTileLayerStyles={this.getPointStyle()}
                     />
                 }
-                { this.props.networkStore!.isNodesVisible &&
+                { (this.props.networkStore!.isNodesVisible || isCreatingNewRoutePath) &&
                     <VectorGridLayer
+                        onClick={isCreatingNewRoutePath ? this.addNodeFromClickEvent : null}
                         key={GeoserverLayer.Node}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
+                        interactive={isCreatingNewRoutePath}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }
             </>
-
         );
     }
 }

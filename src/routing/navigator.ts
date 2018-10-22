@@ -17,6 +17,13 @@ class Navigator {
         this.store.history.push(url);
     }
 
+    /**
+     * @return {String} - current pathName, for example /routePath/new
+     */
+    public getCurrentPath(): String {
+        return this.store.location.pathname;
+    }
+
     // TODO, rename
     public getQueryParam(param: QueryParams) {
         return this.getQueryParamValues()[param];
