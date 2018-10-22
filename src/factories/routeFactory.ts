@@ -20,7 +20,7 @@ class RouteFactory {
             line,
             routePaths: routePathResults
                 .map(res => res.routePath)
-                .sort((a, b) => b.endTime.unix() - a.endTime.unix()),
+                .sort((a, b) => b.endTime.getTime() - a.endTime.getTime()),
             routeName: reitti.reinimi,
             routeNameSwedish: reitti.reinimir,
             lineId: reitti.lintunnus,

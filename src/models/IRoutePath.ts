@@ -1,4 +1,3 @@
-import moment from 'moment';
 import IRoutePathLink from './IRoutePathLink';
 
 export default interface IRoutePath {
@@ -11,8 +10,8 @@ export default interface IRoutePath {
     positions: [[number, number]];
     geoJson: any;
     visible: boolean;
-    startTime: moment.Moment;
-    endTime: moment.Moment;
+    startTime: Date;
+    endTime: Date;
     lastModified: Date;
     routePathLinks: IRoutePathLink[] | null;
     originFi: string;

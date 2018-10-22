@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { IRoutePath, INode } from '~/models';
 import HashHelper from '~/util/hashHelper';
 import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
@@ -42,8 +41,8 @@ class RoutePathFactory {
             routePathName: suunta.suunimi,
             routePathNameSw: suunta.suunimir,
             direction: suunta.suusuunta,
-            startTime: moment(suunta.suuvoimast),
-            endTime: moment(suunta.suuvoimviimpvm),
+            startTime: new Date(suunta.suuvoimast),
+            endTime: new Date(suunta.suuvoimviimpvm),
             lastModified: new Date(suunta.suuviimpvm),
             modifiedBy: suunta.suukuka,
             visible: false,

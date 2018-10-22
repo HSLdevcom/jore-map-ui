@@ -3,6 +3,7 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
+import moment from 'moment';
 import Moment from 'react-moment';
 import { RouteStore } from '~/stores/routeStore';
 import LineHelper from '~/util/lineHelper';
@@ -85,7 +86,9 @@ class RouteShow extends React.Component<IRouteShowProps> {
             const openRoutePathView = () => {
                 const routePathViewLink = routeBuilder
                     .to(subSites.routePath)
-                    .set(QueryParams.startTime, encodeURIComponent(routePath.startTime.format()))
+                    .set(
+                        QueryParams.startTime,
+                        encodeURIComponent(moment(routePath.startTime).format()))
                     .set(QueryParams.routeId, routePath.routeId)
                     .set(QueryParams.direction, routePath.direction)
                     .toLink();
