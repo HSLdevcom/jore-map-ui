@@ -23,15 +23,15 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
         };
     }
 
-    public onChange = (name: string, value: any) => {
-        this.props.onEdit();
-        this.setState({
-            routePath: { ...this.state.routePath, [name]: value },
-        });
-    }
-
     public onClick = () => {
         // TODO
+    }
+
+    public onChange = (property: string) => (value: string) => {
+        this.props.onEdit();
+        this.setState({
+            routePath: { ...this.state.routePath, [property]: value },
+        });
     }
 
     public render(): any {
@@ -48,15 +48,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         label='REITIN NIMI SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={this.state.routePath.routePathName}
-                        name='routePathName'
-                        onChange={this.onChange}
+                        onChange={this.onChange('routePathName')}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={this.state.routePath.routePathNameSw}
-                        name='routePathNameSw'
-                        onChange={this.onChange}
+                        onChange={this.onChange('routePathNameSw')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -64,15 +62,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         label='LÄHTÖPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={this.state.routePath.originFi}
-                        name='originFi'
-                        onChange={this.onChange}
+                        onChange={this.onChange('originFi')}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={this.state.routePath.destinationFi}
-                        name='destinationFi'
-                        onChange={this.onChange}
+                        onChange={this.onChange('destinationFi')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -80,15 +76,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         label='LÄHTÖPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={this.state.routePath.originSw}
-                        name='originSw'
-                        onChange={this.onChange}
+                        onChange={this.onChange('originSw')}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={this.state.routePath.destinationSw}
-                        name='destinationSw'
-                        onChange={this.onChange}
+                        onChange={this.onChange('destinationSw')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -96,15 +90,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         label='LYHENNE SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={this.state.routePath.routePathShortName}
-                        name='routePathShortName'
-                        onChange={this.onChange}
+                        onChange={this.onChange('routePathShortName')}
                     />
                     <InputContainer
                         label='LYHENNE RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={this.state.routePath.routePathShortNameSw}
-                        name='routePathShortNameSw'
-                        onChange={this.onChange}
+                        onChange={this.onChange('routePathShortNameSw')}
                     />
                 </div>
                 <div className={s.flexRow}>

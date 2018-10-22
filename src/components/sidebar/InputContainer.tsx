@@ -8,7 +8,6 @@ interface IInputProps {
     className?: string;
     disabled?: boolean;
     onChange?: Function;
-    name?: string;
     value?: string;
 }
 
@@ -16,10 +15,7 @@ class InputContainer extends React.Component<IInputProps> {
     public render(): any {
         const onChange = (e: React.FormEvent<HTMLInputElement>) => {
             if (!this.props.disabled && this.props.onChange) {
-                const value = e.type === 'checkbox'
-                    ? e.currentTarget.checked
-                    : e.currentTarget.value;
-                this.props.onChange!(this.props.name, value);
+                this.props.onChange!(e.currentTarget.value);
             }
         };
 
