@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
-import Moment from 'react-moment';
+import ReactMoment from 'react-moment';
 import lineHelper from '~/util/lineHelper';
 import { ILine, ILineRoute } from '~/models';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -92,7 +92,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         </div>
                         <div className={s.routeDate}>
                             {'Muokattu: '}
-                            <Moment
+                            <ReactMoment
                                 date={route.date}
                                 format='DD.MM.YYYY HH:mm'
                             />
