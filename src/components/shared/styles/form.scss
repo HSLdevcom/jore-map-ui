@@ -1,7 +1,9 @@
 @import './common';
 
+$marginRight: 10px;
+
 .inputContainer {
-    margin-right: 10px;
+    margin-right: $marginRight;
     padding-top: 10px;
     width:100%;
 }
@@ -19,17 +21,18 @@
 }
 
 .topic {
+    padding-top: 10px;
     font-weight: bold;
     color: $mediumGrey;
     font-size: $mediumFontSize;
 }
 
 .sectionDivider {
-    padding-top:20px;
+    padding-top: 20px;
     border-bottom: 1.5px solid $lightGrey;
     width: 100%;
 }
 
 .marginFiller {
-    margin-right: 10px;
+    margin-right: $marginRight;
 }
