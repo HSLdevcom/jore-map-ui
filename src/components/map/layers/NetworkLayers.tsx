@@ -77,7 +77,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private getNodeStyle = () => {
-        const isCreatingNewRoutePath = navigator.getCurrentPath().includes('routePath/new');
+        const isCreatingNewRoutePath = navigator.getPathName().includes('routePath/new');
         const radius = isCreatingNewRoutePath ? 6 : 4;
 
         return {
@@ -124,7 +124,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     render() {
-        const isCreatingNewRoutePath = navigator.getCurrentPath().includes('routePath/new');
+        const isCreatingNewRoutePath = navigator.getPathName().includes('routePath/new');
 
         return (
             <>

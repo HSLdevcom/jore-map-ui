@@ -18,10 +18,17 @@ class Navigator {
     }
 
     /**
-     * @return {String} - current pathName, for example /routePath/new
+     * @return {String} for example /routePath/new
      */
-    public getCurrentPath(): String {
+    public getPathName() {
         return this.store.location.pathname;
+    }
+
+    /**
+     * @return {String} for example ?routes=0033
+     */
+    public getSearch() {
+        return this.store.location.search;
     }
 
     // TODO, rename
