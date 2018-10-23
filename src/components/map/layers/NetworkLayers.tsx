@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import MapStore, { NodeSize } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
-import navigator from '~/routing/navigator';
 import { NetworkStore } from '~/stores/networkStore';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -77,8 +77,19 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private getNodeStyle = () => {
-        const isCreatingNewRoutePath = navigator.getPathName().includes('routePath/new');
-        const radius = isCreatingNewRoutePath ? 6 : 4;
+        const isCreatingNewRoutePath = MapStore.isCreatingNewRoutePath;
+
+        let radius: any;
+        switch (MapStore.nodeSize) {
+        case NodeSize.normal:
+            radius = 4;
+            break;
+        case NodeSize.large:
+            radius = 6;
+            break;
+        default:
+            throw new Error(`nodeSize not supported ${MapStore.nodeSize}`);
+        }
 
         return {
             // Layer name 'solmu' is directly mirrored from Jore through geoserver
@@ -126,7 +137,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     render() {
-        const isCreatingNewRoutePath = navigator.getPathName().includes('routePath/new');
+        const isCreatingNewRoutePath = MapStore.isCreatingNewRoutePath;
 
         return (
             <>
@@ -144,7 +155,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         vectorTileLayerStyles={this.getPointStyle()}
                     />
                 }
-                { (this.props.networkStore!.isNodesVisible || isCreatingNewRoutePath) &&
+                { (this.props.networkStore!.isNodesVisible) &&
                     <VectorGridLayer
                         onClick={isCreatingNewRoutePath ? this.addNodeFromClickEvent : null}
                         key={GeoserverLayer.Node}
