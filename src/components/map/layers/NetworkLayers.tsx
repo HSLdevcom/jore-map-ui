@@ -113,6 +113,8 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
     private addNodeFromClickEvent = (clickEvent: any) => {
         const properties =  clickEvent.sourceTarget.properties;
+        // TODO: Use factory call instead of service call because
+        // geojson / geojsonManual are not found from properties
         NodeService.fetchNode(properties.soltunnus).then((node) => {
             if (node) {
                 this.props.newRoutePathStore!.addNode({
