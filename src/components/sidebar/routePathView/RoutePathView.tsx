@@ -7,6 +7,7 @@ import { IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import RoutePathService from '~/services/routePathService';
+import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -59,7 +60,11 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     public render(): any {
-        if (!this.state.routePath) return 'loading';
+        if (!this.state.routePath) {
+            return (
+                <Loader size={Loader.SMALL}/>
+            );
+        }
         return (
         <div className={s.routePathView}>
             <ViewHeader
