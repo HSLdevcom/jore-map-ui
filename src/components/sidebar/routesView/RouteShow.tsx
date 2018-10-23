@@ -70,21 +70,17 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 
     private renderRoutePaths() {
-        let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
+        // let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
+        const routePaths = this.props.route.routePaths;
 
-        return this.props.route.routePaths
-        .map((routePath: IRoutePath) => {
+        return routePaths.map((routePath: IRoutePath, index) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
             };
-            const routeColor = ColorScale.getColors(
-                this.props.routeStore!.visibleRoutePathAmount)[visibleRoutePathsIndex];
-            if (routePath.visible) {
-                visibleRoutePathsIndex += 1;
-            }
 
             const isWithinTimeSpan = (Moment(routePath.startTime).isBefore(Moment()) &&
                                     Moment(routePath.endTime).isAfter(Moment()));
+            const routeColor = ColorScale.getColors(routePaths.length)[index];
 
             return (
                 <div

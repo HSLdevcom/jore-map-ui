@@ -1,47 +1,131 @@
 import React, { Component } from 'react';
-import { Polyline, FeatureGroup } from 'react-leaflet';
-import { IRoutePathLink } from '~/models';
+import L from 'leaflet';
+// import { toJS } from 'mobx';
+import { inject, observer } from 'mobx-react';
+import { SidebarStore } from '~/stores/sidebarStore';
+import { IRoutePath } from '~/models';
+import routeBuilder  from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
+import RoutePathLinkLayer from './RoutePathLinkLayer';
 
 interface RoutePathLayerProps {
-    internalId: string;
-    routePathLinks: IRoutePathLink[];
-    onClick: Function;
-    onContextMenu: Function;
-    onMouseOver: Function;
-    onMouseOut: Function;
-    color: string;
-    opacity: number;
-    weight: number;
+    sidebarStore?: SidebarStore;
+    routePaths: IRoutePath[];
+    fitBounds: (bounds: L.LatLngBoundsExpression) => void;
+    colors: string[];
 }
 
-export default class RoutePathLayer extends Component<RoutePathLayerProps> {
+interface IRouteLayerState {
+    selectedPolylines: string[];
+    hoveredPolylines: string[];
+}
 
-    private onContextMenu = (routePathLinkId: string) => () => {
-        this.props.onContextMenu(routePathLinkId);
+@inject('sidebarStore')
+@observer
+export default class RouteLayer extends Component<RoutePathLayerProps, IRouteLayerState> {
+    constructor(props: RoutePathLayerProps) {
+        super(props);
+        this.state = {
+            selectedPolylines: [],
+            hoveredPolylines: [],
+        };
+    }
+
+    calculateBounds() {
+        // let bounds:L.LatLngBounds = new L.LatLngBounds([]);
+
+        // this.props.routePaths.forEach((routePath) => {
+        //     const geoJSON = L.geoJSON(toJS(routePath.geoJson));
+        //     if (!bounds) {
+        //         bounds = geoJSON.getBounds();
+        //     } else {
+        //         bounds.extend(geoJSON.getBounds());
+        //     }
+        // });
+
+        // if (bounds.isValid()) {
+        //     this.props.fitBounds(bounds);
+        // }
+    }
+
+    componentDidUpdate(prevProps: RoutePathLayerProps) {
+        // const routePathsChanged =
+        //     prevProps.routePaths.map(rPath => rPath.internalId).join(':')
+        //     !== this.props.routePaths.map(rPath => rPath.internalId).join(':');
+        // if (routePathsChanged) {
+        //     this.calculateBounds();
+        //     this.setState({
+        //         selectedPolylines: [],
+        //     });
+        // }
+    }
+
+    private toggleHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
+        let selectedPolylines = this.state.selectedPolylines;
+
+        if (selectedPolylines.includes(internalId)) {
+            selectedPolylines =
+                selectedPolylines.filter(id => id !== internalId);
+        } else {
+            selectedPolylines.push(internalId);
+        }
+
+        this.setState({
+            selectedPolylines,
+        });
+        e.target.bringToFront();
+    }
+
+    private openLinkView = (routePathLinkId: number) => {
+        // TODO deal with fetching linkID in the endpoint
+        this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
+        const linkViewLink = routeBuilder.to(subSites.link).toLink();
+        navigator.goTo(linkViewLink);
+    }
+
+    private hasHighlight(internalId: string) {
+        return this.state.selectedPolylines.includes(internalId) ||
+            this.state.hoveredPolylines.includes(internalId);
+    }
+
+    private setHoverHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
+        this.setState({
+            hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
+        });
+        e.target.bringToFront();
+    }
+
+    private clearHoverHighlights = (e: L.LeafletMouseEvent) => {
+        this.setState({
+            hoveredPolylines: [],
+        });
+        if (!this.hasHighlight(e['sourceTarget'].options.routePathInternalId)) {
+            e.target.bringToBack();
+        }
     }
 
     render() {
-        return (
-            <FeatureGroup
-                routePathInternalId={this.props.internalId}
-                onMouseOver={this.props.onMouseOver}
-                onMouseOut={this.props.onMouseOut}
-            >
-                {this.props.routePathLinks
-                    .map((routePathLink, index) => {
-                        return (
-                            <Polyline
-                                positions={routePathLink.positions}
-                                key={index}
-                                color={this.props.color}
-                                weight={this.props.weight}
-                                opacity={this.props.opacity}
-                                onClick={this.props.onClick}
-                                onContextMenu={this.onContextMenu(routePathLink.id)}
-                            />
-                        );
-                    })}
-            </FeatureGroup>
-        );
+        console.log('rendering routePathLayer');
+        return this.props.routePaths
+            .filter(routePath => routePath.visible)
+            .map((routePath, index) => {
+                const color = this.props.colors[index];
+                const internalId = routePath.internalId;
+                return (
+                    <RoutePathLinkLayer
+                        key={index}
+                        internalId={internalId}
+                        onClick={this.toggleHighlight(internalId)}
+                        onContextMenu={this.openLinkView}
+                        onMouseOver={this.setHoverHighlight(internalId)}
+                        onMouseOut={this.clearHoverHighlights}
+                        routePathLinks={routePath.routePathLinks}
+                        color={color}
+                        opacity={this.hasHighlight(internalId) ? 1 : 0.6}
+                        weight={this.hasHighlight(internalId) ? 8 : 7}
+                    />
+                );
+            });
     }
 }

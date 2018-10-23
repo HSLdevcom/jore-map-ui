@@ -128,7 +128,8 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         // grey tiles.
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
 
-        const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
+        const routes = this.props.routeStore!.routes;
+        const visibleRoutePaths = this.getVisibleRoutePaths(routes);
         const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
         const colors = ColorScale.getColors(visibleRoutePaths.length);
         return (
@@ -167,7 +168,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <NetworkLayers />
                     <RouteLayer
                         colors={colors}
-                        routePaths={visibleRoutePaths}
+                        routes={routes}
                         fitBounds={this.fitBounds}
                     />
                     <MarkerLayer
