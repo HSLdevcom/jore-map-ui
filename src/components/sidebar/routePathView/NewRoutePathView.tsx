@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { IRoutePath } from '~/models';
+import { Button } from '~/components/controls';
+import ButtonType from '~/enums/buttonType';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -42,8 +44,9 @@ class NewRoutePathView extends React.Component{
     public onChange = () => {
     }
 
-    public componentDidMount() {
-        this.initialRoutePath = this.getInitialRoutePath();
+    // TODO
+    public onSave = () => {
+
     }
 
     public render(): any {
@@ -52,13 +55,21 @@ class NewRoutePathView extends React.Component{
             <ViewHeader
                 header='Luo uusi reitinsuunta'
             />
-            <RoutePathViewForm
-                isEditingDisabled={false}
-                onEdit={this.onChange}
-                routePath={this.initialRoutePath}
-            />
-            <div>
-                <div className={s.sectionDivider} />
+            <div className={s.section}>
+                <RoutePathViewForm
+                    isEditingDisabled={false}
+                    onEdit={this.onChange}
+                    routePath={this.initialRoutePath}
+                />
+            </div>
+            <div className={s.section}>
+                <div className={s.flexRow}>
+                    <Button
+                        onClick={this.onSave}
+                        type={ButtonType.SAVE}
+                        text={'Tallenna reitinsuunta'}
+                    />
+                </div>
             </div>
         </div>
         );
