@@ -3,7 +3,8 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
-import Moment from 'react-moment';
+import ReactMoment from 'react-moment';
+import Moment from 'moment';
 import { RouteStore } from '~/stores/routeStore';
 import LineHelper from '~/util/lineHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -81,25 +82,41 @@ class RouteShow extends React.Component<IRouteShowProps> {
             if (routePath.visible) {
                 visibleRoutePathsIndex += 1;
             }
+
+            const isWithinTimeSpan = (Moment(routePath.startTime).isBefore(Moment()) &&
+                                    Moment(routePath.endTime).isAfter(Moment()));
+
             return (
                 <div
                     className={s.routePathContainer}
                     key={routePath.internalId}
                 >
                     <div className={s.routePathInfo}>
-                        <div className={s.routePathTitle}>
+                        <div
+                            className={(isWithinTimeSpan) ?
+                            classNames(s.routePathTitle, s.highlight) :
+                            s.routePathTitle}
+                        >
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
-                        <div className={s.routePathDate}>
+                        <div
+                            className={(isWithinTimeSpan) ?
+                            classNames(s.routePathDate, s.highlight) :
+                            s.routePathDate}
+                        >
                             {'Alk.pvm: '}
-                            <Moment
+                            <ReactMoment
                                 date={routePath.startTime}
                                 format='DD.MM.YYYY'
                             />
                         </div>
-                        <div className={s.routePathDate}>
+                        <div
+                            className={(isWithinTimeSpan) ?
+                            classNames(s.routePathDate, s.highlight) :
+                            s.routePathDate}
+                        >
                             {'Voim.ast: '}
-                            <Moment
+                            <ReactMoment
                                 date={routePath.endTime}
                                 format='DD.MM.YYYY'
                             />
