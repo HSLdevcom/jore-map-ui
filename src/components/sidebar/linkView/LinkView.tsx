@@ -287,7 +287,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.flexRow}>
-                <label className={s.inputContainer}>
+                <div className={s.inputContainer}>
                     <div className={s.inputLabel}>
                         ALKUSOLMUN SÄDE JA PAIKKA
                     </div>
@@ -303,8 +303,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             className={s.mediumSmallInput}
                         />
                     </div>
-                </label>
-                <label className={s.inputContainer}>
+                </div>
+                <div className={s.inputContainer}>
                     <div className={s.inputLabel}>
                         LOPPUSOLMUN SÄDE JA PAIKKA
                     </div>
@@ -320,7 +320,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             className={s.mediumSmallInput}
                         />
                     </div>
-                </label>
+                </div>
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexGrow}>
