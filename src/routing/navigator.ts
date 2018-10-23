@@ -17,6 +17,14 @@ class Navigator {
         this.store.history.push(url);
     }
 
+    public getPathName() {
+        return this.store.location.pathname;
+    }
+
+    public getSearch() {
+        return this.store.location.search;
+    }
+
     // TODO, rename
     public getQueryParam(param: QueryParams) {
         return this.getQueryParamValues()[param];

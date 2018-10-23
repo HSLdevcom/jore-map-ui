@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Moment from 'react-moment';
+import ReactMoment from 'react-moment';
 import { observer, inject } from 'mobx-react';
 import { IRoutePath } from '~/models';
 import RouteService from '~/services/routeService';
@@ -116,14 +116,14 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
                             />
                             <div className={s.routeDate}>
                                 {'Voim.ast: '}
-                                <Moment
+                                <ReactMoment
                                     date={routePath.startTime}
                                     format='DD.MM.YYYY HH:mm'
                                 />
                             </div>
                             <div className={s.routeDate}>
                                 {'Viim.voim.olo: '}
-                                <Moment
+                                <ReactMoment
                                     date={routePath.endTime}
                                     format='DD.MM.YYYY HH:mm'
                                 />
