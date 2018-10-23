@@ -176,11 +176,10 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                 <div className={s.flexButtonFiller} />
             </div>
             <div className={s.sectionDivider}/>
-            <label className={s.inputContainer}>
-                <div className={s.topic}>
-                    KARTTA
-                </div>
-                <div className={s.padding} />
+            <div className={s.topic}>
+                KARTTA
+            </div>
+            <div className={s.inputContainer}>
                 <div className={s.flexInnerRow}>
                     <Button
                         onClick={this.onChange}
@@ -194,22 +193,22 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     />
                     <div className={s.flexButtonFiller} />
                 </div>
-            </label>
+            </div>
             <div className={s.padding} />
-            <label className={s.inputContainer}>
+            <div className={s.inputContainer}>
                 Esitettävien ajoaikojen kausi ja aikajakso
-            </label>
-            <div className={s.flexRow}>
-                <Dropdown
-                    onChange={this.onChange}
-                    items={['Suunta 2']}
-                    selected={'Suunta 1'}
-                />
-                <Dropdown
-                    onChange={this.onChange}
-                    items={['Suunta 2']}
-                    selected={'Suunta 1'}
-                />
+                <div className={s.flexInnerRow}>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['Suunta 2']}
+                        selected={'Suunta 1'}
+                    />
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['Suunta 2']}
+                        selected={'Suunta 1'}
+                    />
+                </div>
             </div>
         </div>
         );
