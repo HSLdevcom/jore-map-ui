@@ -8,12 +8,10 @@
     overflow-y: auto;
     width: $sidebarWide;
 
-    /* TODO: move to form.scss when inputContainer is refactored */
     div, input {
         box-sizing: border-box;
     }
 
-    /* TODO: move to form.scss when inputContainer is refactored */
     input {
         padding: 10px;
         line-height: 20px;

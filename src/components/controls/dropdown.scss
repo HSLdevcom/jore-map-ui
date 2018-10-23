@@ -29,3 +29,21 @@
 .dropdownView:last-of-type {
     margin-right:0px;
 }
+
+.dropdownContainer {
+    margin-right: $marginRight;
+    padding-top: 10px;
+    width:100%;
+}
+
+.dropdownContainer:last-of-type {
+    margin-right: 0px;
+}
+
+.dropdownLabel {
+    font-weight: bold;
+    color: $mediumGrey;
+    font-size: $smallFontSize;
+    white-space: nowrap;
+    width: 100%;
+}

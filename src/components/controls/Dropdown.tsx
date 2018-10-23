@@ -27,9 +27,10 @@ class Dropdown extends React.Component
         });
         this.props.onChange(event.target.value);
     }
+
     public render(): any {
         return (
-            <label className={s.inputContainer}>
+            <label className={s.dropdownContainer}>
                 {this.props.label &&
                     <div className={s.inputLabel}>
                         {this.props.label}

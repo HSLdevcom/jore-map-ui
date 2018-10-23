@@ -113,15 +113,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexInnerRowFlexEnd}>
-                    <label className={s.inputContainer}>
-                        <div className={s.inputLabel}>
-                            ALKU
-                        </div>
-                        <input
-                            placeholder='1020112'
-                            type='text'
-                        />
-                    </label>
+                    <InputContainer
+                        label='ALKU'
+                        placeholder='1020112'
+                    />
                     <label className={s.inputContainer}>
                         <Dropdown
                             onChange={this.onChange}
@@ -129,25 +124,18 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             selected={'P'}
                         />
                     </label>
-                    <label className={s.inputContainer}>
-                        <input
-                            placeholder='Rautatientori'
-                            type='text'
-                        />
-                    </label>
+                    <InputContainer
+                        label=''
+                        placeholder='Rautatientori'
+                    />
                 </div>
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexInnerRowFlexEnd}>
-                    <label className={s.inputContainer}>
-                        <div className={s.inputLabel}>
-                            LOPPU
-                        </div>
-                        <input
-                            placeholder='1020126'
-                            type='text'
-                        />
-                    </label>
+                    <InputContainer
+                        label='LOPPU'
+                        placeholder='1020126'
+                    />
                     <label className={s.inputContainer}>
                         <Dropdown
                             onChange={this.onChange}
@@ -155,12 +143,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             selected={'P'}
                         />
                     </label>
-                    <label className={s.inputContainer}>
-                        <input
-                            placeholder='Rautatientori'
-                            type='text'
-                        />
-                    </label>
+                    <InputContainer
+                        label=''
+                        placeholder='Rautatientori'
+                    />
                 </div>
             </div>
             <div className={s.flexRow}>
