@@ -5,33 +5,19 @@ import { Button, Dropdown, Checkbox } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import * as s from './routePathView.scss';
 
-interface IRoutePathViewFormState {
-    routePath: IRoutePath;
-}
-
 interface IRoutePathViewFormProps {
     isEditingDisabled: boolean;
-    routePath: IRoutePath;
     onEdit: Function;
+    routePath: IRoutePath;
 }
 
-class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRoutePathViewFormState>{
-    constructor(props: IRoutePathViewFormProps) {
-        super(props);
-        this.state = {
-            routePath: this.props.routePath,
-        };
-    }
-
+class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
     public onClick = () => {
         // TODO
     }
 
     public onChange = (property: string) => (value: string) => {
-        this.props.onEdit();
-        this.setState({
-            routePath: { ...this.state.routePath, [property]: value },
-        });
+        this.props.onEdit(property, value);
     }
 
     public render(): any {
@@ -47,13 +33,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     <InputContainer
                         label='REITIN NIMI SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={this.state.routePath.routePathName}
+                        value={this.props.routePath.routePathName}
                         onChange={this.onChange('routePathName')}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
-                        value={this.state.routePath.routePathNameSw}
+                        value={this.props.routePath.routePathNameSw}
                         onChange={this.onChange('routePathNameSw')}
                     />
                 </div>
@@ -61,13 +47,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     <InputContainer
                         label='LÄHTÖPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={this.state.routePath.originFi}
+                        value={this.props.routePath.originFi}
                         onChange={this.onChange('originFi')}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={this.state.routePath.destinationFi}
+                        value={this.props.routePath.destinationFi}
                         onChange={this.onChange('destinationFi')}
                     />
                 </div>
@@ -75,13 +61,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     <InputContainer
                         label='LÄHTÖPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
-                        value={this.state.routePath.originSw}
+                        value={this.props.routePath.originSw}
                         onChange={this.onChange('originSw')}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
-                        value={this.state.routePath.destinationSw}
+                        value={this.props.routePath.destinationSw}
                         onChange={this.onChange('destinationSw')}
                     />
                 </div>
@@ -89,13 +75,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     <InputContainer
                         label='LYHENNE SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={this.state.routePath.routePathShortName}
+                        value={this.props.routePath.routePathShortName}
                         onChange={this.onChange('routePathShortName')}
                     />
                     <InputContainer
                         label='LYHENNE RUOTSIKSI'
                         disabled={isEditingDisabled}
-                        value={this.state.routePath.routePathShortNameSw}
+                        value={this.props.routePath.routePathShortNameSw}
                         onChange={this.onChange('routePathShortNameSw')}
                     />
                 </div>

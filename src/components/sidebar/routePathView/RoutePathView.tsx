@@ -16,6 +16,7 @@ interface IRoutePathViewState {
     isEditingDisabled: boolean;
     isDirty: boolean;
     routePath: IRoutePath | null;
+    isLoading: boolean;
 }
 
 interface IRoutePathViewProps {
@@ -28,7 +29,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             isEditingDisabled: true,
             isDirty: false,
             routePath: null,
+            isLoading: true,
         };
+        this.save = this.save.bind(this);
     }
 
     public componentDidMount() {
@@ -42,7 +45,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             decodeURIComponent(navigator.getQueryParam(QueryParams.startTime)));
         const routePath =
             await RoutePathService.fetchRoutePath(routeId, startTime, direction);
-        this.setState({ routePath });
+        this.setState({
+            routePath,
+            isLoading: false,
+        });
     }
 
     public toggleEditing = () => {
@@ -50,21 +56,27 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isEditingDisabled });
     }
 
-    public save = () => {
-        console.log('Saving');
-        this.setState({ isDirty: false });
+    public async save () {
+        this.setState({ isLoading: true });
+        await RoutePathService.saveRoutePath(this.state.routePath!);
+        // if (success) { this.setState({ isDirty: false })}
+        this.setState({ isLoading: false });
     }
 
-    public onEdit = () => {
-        this.setState({ isDirty: true });
+    public onEdit = (property: string, value: any) => {
+        this.setState({
+            routePath: { ...this.state.routePath!, [property]: value },
+            isDirty: true,
+        });
     }
 
     public render(): any {
-        if (!this.state.routePath) {
+        if (this.state.isLoading) {
             return (
                 <Loader size={Loader.SMALL}/>
             );
         }
+        if (!this.state.routePath) return 'Error';
         return (
         <div className={s.routePathView}>
             <ViewHeader
