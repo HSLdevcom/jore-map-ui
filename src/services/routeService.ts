@@ -48,7 +48,7 @@ export default class RouteService {
             }
             return null;
         } catch (err) {
-            console.log(err);
+            console.log(err); // tslint:disable-line
             notificationStore.addNotification({
                 message: 'Reitin haku ei onnistunut.',
                 type: NotificationType.ERROR,
