@@ -25,6 +25,10 @@ export default class ApiClient {
         return await fetch(this.getUrl(entityName), {
             method,
             body: JSON.stringify(object),
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
         });
     }
 
