@@ -29,7 +29,7 @@
     "html-webpack-plugin": "2.29.0",
     "jest": "22.4.2",
     "leaflet": "^1.3.4",
-    "leaflet.vectorgrid": "git+https://github.com/chriszrc/Leaflet.VectorGrid.git#6bdad6d07290db04ff02ebf44830b85bcfe6c020",
+    "leaflet.vectorgrid": "github:chriszrc/Leaflet.VectorGrid#6bdad6d07290db04ff02ebf44830b85bcfe6c020",
     "mobx": "^5.0.3",
     "mobx-react": "^5.2.3",
     "mobx-react-router": "^4.0.4",
