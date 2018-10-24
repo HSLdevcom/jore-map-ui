@@ -8,6 +8,8 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import RoutePathService from '~/services/routePathService';
 import Loader from '~/components/shared/loader/Loader';
+import NotificationStore from '~/stores/notificationStore';
+import NotificationType from '~/enums/notificationType';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -58,8 +60,19 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     public async save () {
         this.setState({ isLoading: true });
-        await RoutePathService.saveRoutePath(this.state.routePath!);
-        // if (success) { this.setState({ isDirty: false })}
+        try {
+            await RoutePathService.saveRoutePath(this.state.routePath!);
+            this.setState({ isDirty: false });
+            NotificationStore.addNotification({
+                message: 'Tallennus onnistui',
+                type: NotificationType.SUCCESS,
+            });
+        } catch {
+            NotificationStore.addNotification({
+                message: 'Tallennus epäonnistui',
+                type: NotificationType.ERROR,
+            });
+        }
         this.setState({ isLoading: false });
     }
 
@@ -73,7 +86,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     public render(): any {
         if (this.state.isLoading) {
             return (
-                <Loader size={Loader.SMALL}/>
+                <div className={s.routePathView}>
+                    <Loader size={Loader.MEDIUM}/>
+                </div>
             );
         }
         if (!this.state.routePath) return 'Error';
