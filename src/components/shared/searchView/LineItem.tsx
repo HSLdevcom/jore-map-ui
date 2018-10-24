@@ -88,7 +88,8 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                             )}
                             onClick={this.openRoute(route.id)}
                         >
-                            {route.name}
+                            <div>{route.id}</div>
+                            <div>{route.name}</div>
                         </div>
                         <div className={s.routeDate}>
                             {'Muokattu: '}
