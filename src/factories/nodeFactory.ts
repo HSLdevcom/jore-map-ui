@@ -41,6 +41,8 @@ const getNodeType = (type:any) => {
         return NodeType.CROSSROAD;
     case 'P':
         return NodeType.STOP;
+    case '-':
+        return NodeType.CITYBORDER;
     default:
         return NodeType.INVALID;
     }

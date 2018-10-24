@@ -44,6 +44,10 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             html = this.getMarkerHtml(isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker);
             break;
         }
+        case NodeType.CITYBORDER: {
+            html = this.getMarkerHtml(isSelected ? s.borderMarkerHighlight : s.borderMarker);
+            break;
+        }
         default: {
             html = this.getMarkerHtml(isSelected ? s.unknownMarkerHighlight : s.unknownMarker);
             break;
