@@ -34,8 +34,7 @@ export default class RoutePathService {
 
     public static async saveRoutePath(routePath: IRoutePath) {
         const client = new ApiClient();
-        const response = await client.saveObject(entityNames.ROUTEPATH, routePath);
-        console.log(response);
+        return await client.saveObject(entityNames.ROUTEPATH, routePath);
     }
 }
 
