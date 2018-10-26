@@ -7,8 +7,22 @@ export interface IRouteResult{
     route?: IRoute;
 }
 
+interface IExternalRoute {
+    lintunnus: string;
+    reikuka: string;
+    reinimi: string;
+    reinimilyh: string;
+    reinimilyhr: string;
+    reinimir: string;
+    reitinsuuntasByReitunnus: {
+        edges: Object[],
+    };
+    reitunnus: string;
+    reiviimpvm: string;
+}
+
 class RouteFactory {
-    public static createRoute = (reitti: any, line?: ILine): IRouteResult => {
+    public static createRoute = (reitti: IExternalRoute, line?: ILine): IRouteResult => {
         const routePathResults:IRoutePathResult[]
             = reitti.reitinsuuntasByReitunnus.edges
                 .map((routePath: any, index:number) => {

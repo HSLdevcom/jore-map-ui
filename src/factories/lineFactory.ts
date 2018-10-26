@@ -1,9 +1,18 @@
 import { ILine, ILineRoute } from '~/models';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 
+interface IExternalLine {
+    linjoukkollaji: string;
+    lintunnus: string;
+    linverkko: string;
+    reittisByLintunnus: {
+        nodes: Object[],
+    };
+}
+
 class LineFactory {
     // linja to ILine
-    public static createLine = (linja: any): ILine => {
+    public static createLine = (linja: IExternalLine): ILine => {
         const transitType = TransitTypeHelper.convertTransitTypeCodeToTransitType(linja.linverkko);
         const lineNumber = _parseLineNumber(linja.lintunnus);
         const routes = linja.reittisByLintunnus.nodes.map((route: any): ILineRoute => {

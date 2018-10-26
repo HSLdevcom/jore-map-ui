@@ -6,8 +6,22 @@ export interface IRoutePathLinkResult {
     nodes: INode[];
 }
 
+interface IExternalRoutePathLinkNode {
+    linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu: {
+        geojson: string,
+    };
+    lnkalkusolmu: string;
+    lnkloppusolmu: string;
+    lnkverkko: string;
+    relid: string;
+    reljarjnro: number;
+    solmuByLnkalkusolmu: Object;
+    solmuByLnkloppusolmu: Object;
+}
+
 class RoutePathLinkFactory {
-    public static createRoutePathLink = (routePathLinkNode: any): IRoutePathLinkResult => {
+    public static createRoutePathLink =
+    (routePathLinkNode: IExternalRoutePathLinkNode): IRoutePathLinkResult => {
         const nodes = [];
         if (routePathLinkNode.solmuByLnkalkusolmu) {
             nodes.push(NodeFactory.createNode(routePathLinkNode.solmuByLnkalkusolmu));
