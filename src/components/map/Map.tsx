@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
-import ColorScale from '~/util/colorScale';
 import { IRoutePath, IRoute } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import Control from './mapControls/CustomControl';
@@ -113,10 +112,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         ).filter(routePath => routePath.visible);
     }
 
-    private startCoordinates(visibleRoutePaths: IRoutePath[]) {
-        return visibleRoutePaths.map((routePath: IRoutePath) => routePath.geoJson.coordinates[0]);
-    }
-
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
         this.getMap().setView(latLng, 17);
@@ -131,7 +126,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const routes = this.props.routeStore!.routes;
         const visibleRoutePaths = this.getVisibleRoutePaths(routes);
         const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
-        const colors = ColorScale.getColors(visibleRoutePaths.length);
+
         return (
             <div
                 className={classnames(
@@ -167,12 +162,11 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     />
                     <NetworkLayers />
                     <RouteLayer
-                        colors={colors}
                         routes={routes}
                         fitBounds={this.fitBounds}
                     />
                     <MarkerLayer
-                        coordinates={this.startCoordinates(visibleRoutePaths)}
+                        routes={routes}
                     />
                     <NodeLayer
                         nodes={visibleNodes}

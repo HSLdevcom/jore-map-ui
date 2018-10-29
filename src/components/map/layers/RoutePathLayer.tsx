@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-// import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
 import { IRoutePath } from '~/models';
@@ -11,70 +10,20 @@ import RoutePathLinkLayer from './RoutePathLinkLayer';
 
 interface RoutePathLayerProps {
     sidebarStore?: SidebarStore;
+    toggleHighlight: Function;
+    setHoverHighlight: Function;
+    clearHoverHighlights: Function;
+    hasHighlight: Function;
+    colors: string[];
     routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
-    colors: string[];
-}
-
-interface IRouteLayerState {
-    selectedPolylines: string[];
-    hoveredPolylines: string[];
 }
 
 @inject('sidebarStore')
 @observer
-export default class RouteLayer extends Component<RoutePathLayerProps, IRouteLayerState> {
+export default class RouteLayer extends Component<RoutePathLayerProps> {
     constructor(props: RoutePathLayerProps) {
         super(props);
-        this.state = {
-            selectedPolylines: [],
-            hoveredPolylines: [],
-        };
-    }
-
-    calculateBounds() {
-        // let bounds:L.LatLngBounds = new L.LatLngBounds([]);
-
-        // this.props.routePaths.forEach((routePath) => {
-        //     const geoJSON = L.geoJSON(toJS(routePath.geoJson));
-        //     if (!bounds) {
-        //         bounds = geoJSON.getBounds();
-        //     } else {
-        //         bounds.extend(geoJSON.getBounds());
-        //     }
-        // });
-
-        // if (bounds.isValid()) {
-        //     this.props.fitBounds(bounds);
-        // }
-    }
-
-    componentDidUpdate(prevProps: RoutePathLayerProps) {
-        // const routePathsChanged =
-        //     prevProps.routePaths.map(rPath => rPath.internalId).join(':')
-        //     !== this.props.routePaths.map(rPath => rPath.internalId).join(':');
-        // if (routePathsChanged) {
-        //     this.calculateBounds();
-        //     this.setState({
-        //         selectedPolylines: [],
-        //     });
-        // }
-    }
-
-    private toggleHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
-        let selectedPolylines = this.state.selectedPolylines;
-
-        if (selectedPolylines.includes(internalId)) {
-            selectedPolylines =
-                selectedPolylines.filter(id => id !== internalId);
-        } else {
-            selectedPolylines.push(internalId);
-        }
-
-        this.setState({
-            selectedPolylines,
-        });
-        e.target.bringToFront();
     }
 
     private openLinkView = (routePathLinkId: number) => {
@@ -84,46 +33,24 @@ export default class RouteLayer extends Component<RoutePathLayerProps, IRouteLay
         navigator.goTo(linkViewLink);
     }
 
-    private hasHighlight(internalId: string) {
-        return this.state.selectedPolylines.includes(internalId) ||
-            this.state.hoveredPolylines.includes(internalId);
-    }
-
-    private setHoverHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
-        this.setState({
-            hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
-        });
-        e.target.bringToFront();
-    }
-
-    private clearHoverHighlights = (e: L.LeafletMouseEvent) => {
-        this.setState({
-            hoveredPolylines: [],
-        });
-        if (!this.hasHighlight(e['sourceTarget'].options.routePathInternalId)) {
-            e.target.bringToBack();
-        }
-    }
-
     render() {
-        console.log('rendering routePathLayer');
         return this.props.routePaths
-            .filter(routePath => routePath.visible)
             .map((routePath, index) => {
+                if (!routePath.visible) return;
                 const color = this.props.colors[index];
                 const internalId = routePath.internalId;
                 return (
                     <RoutePathLinkLayer
                         key={index}
                         internalId={internalId}
-                        onClick={this.toggleHighlight(internalId)}
+                        onClick={this.props.toggleHighlight(internalId)}
                         onContextMenu={this.openLinkView}
-                        onMouseOver={this.setHoverHighlight(internalId)}
-                        onMouseOut={this.clearHoverHighlights}
+                        onMouseOver={this.props.setHoverHighlight(internalId)}
+                        onMouseOut={this.props.clearHoverHighlights}
                         routePathLinks={routePath.routePathLinks}
                         color={color}
-                        opacity={this.hasHighlight(internalId) ? 1 : 0.6}
-                        weight={this.hasHighlight(internalId) ? 8 : 7}
+                        opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}
+                        weight={this.props.hasHighlight(internalId) ? 8 : 7}
                     />
                 );
             });
