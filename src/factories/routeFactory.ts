@@ -1,4 +1,6 @@
 import { IRoute, ILine, INode } from '~/models';
+import IExternalRoute from '~/models/externals/IExternalRoute.ts';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import RoutePathFactory, { IRoutePathResult } from './routePathFactory';
 import QueryParsingHelper from './queryParsingHelper';
 
@@ -7,25 +9,11 @@ export interface IRouteResult{
     route?: IRoute;
 }
 
-interface IExternalRoute {
-    lintunnus: string;
-    reikuka: string;
-    reinimi: string;
-    reinimilyh: string;
-    reinimilyhr: string;
-    reinimir: string;
-    reitinsuuntasByReitunnus: {
-        edges: Object[],
-    };
-    reitunnus: string;
-    reiviimpvm: string;
-}
-
 class RouteFactory {
     public static createRoute = (reitti: IExternalRoute, line?: ILine): IRouteResult => {
         const routePathResults:IRoutePathResult[]
             = reitti.reitinsuuntasByReitunnus.edges
-                .map((routePath: any, index:number) => {
+                .map((routePath: IExternalRoutePath, index:number) => {
                     return RoutePathFactory.createRoutePath(
                         reitti.reitunnus, routePath.node);
                 });

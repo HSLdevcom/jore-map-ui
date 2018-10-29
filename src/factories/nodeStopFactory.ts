@@ -1,11 +1,5 @@
 import INodeStop from '~/models/INodeStop';
-
-interface IExternalNodeStop{
-    id: number;
-    pysnimi: string;
-    pysnimir: string;
-    pyssade: number;
-}
+import IExternalNodeStop  from '~/models/externals/IExternalNodeStop.ts';
 
 export default class StopFactory {
     public static createStop = (node: IExternalNodeStop): INodeStop => {

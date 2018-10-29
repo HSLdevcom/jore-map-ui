@@ -1,22 +1,10 @@
 import { IRoutePathLink, INode } from '~/models';
+import IExternalRoutePathLinkNode from '~/models/externals/IExternalRoutePathLinkNode';
 import NodeFactory from './nodeFactory';
 
 export interface IRoutePathLinkResult {
     link: IRoutePathLink;
     nodes: INode[];
-}
-
-interface IExternalRoutePathLinkNode {
-    linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu: {
-        geojson: string,
-    };
-    lnkalkusolmu: string;
-    lnkloppusolmu: string;
-    lnkverkko: string;
-    relid: string;
-    reljarjnro: number;
-    solmuByLnkalkusolmu: Object;
-    solmuByLnkloppusolmu: Object;
 }
 
 class RoutePathLinkFactory {

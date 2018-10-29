@@ -1,14 +1,6 @@
 import { ILine, ILineRoute } from '~/models';
+import IExternalLine  from '~/models/externals/IExternalLine.ts';
 import TransitTypeHelper from '~/util/transitTypeHelper';
-
-interface IExternalLine {
-    linjoukkollaji: string;
-    lintunnus: string;
-    linverkko: string;
-    reittisByLintunnus: {
-        nodes: Object[],
-    };
-}
 
 class LineFactory {
     // linja to ILine
