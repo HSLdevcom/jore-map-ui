@@ -23,6 +23,7 @@ enum NodeColors {
     STOP_FILL_COLOR = '#FFF',
     IS_EDITING_STOP_COLOR = '#3e3c87',
     IS_EDITING_STOP_FILL_COLOR = '#FFF',
+    MUNICIPALITY_BORDER_COLOR = '#c900ff',
 }
 
 interface INetworkLayersProps {
@@ -108,8 +109,10 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     color = NodeColors.CROSSROAD_COLOR;
                     fillColor = NodeColors.CROSSROAD_FILL_COLOR;
                     break;
+                case NodeType.MUNICIPALITY_BORDER:
+                    color = NodeColors.MUNICIPALITY_BORDER_COLOR;
+                    break;
                 }
-
                 return {
                     color,
                     radius,
