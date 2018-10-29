@@ -18,7 +18,6 @@ class InputContainer extends React.Component<IInputProps> {
                 <input
                     placeholder={this.props.disabled ? '' : this.props.placeholder}
                     type='text'
-                    id={s.formItem}
                     className={this.props.className}
                     disabled={this.props.disabled}
                 />
