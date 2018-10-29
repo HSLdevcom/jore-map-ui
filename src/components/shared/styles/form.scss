@@ -28,12 +28,22 @@
     font-size: $mediumFontSize;
 }
 
-.section {
-    margin: 30px 0;
+.sectionDivider {
+    padding-top:20px;
+    border-bottom: 1.5px solid $lightGrey;
+    width: 100%;
+}
 
-    .sectionDivider {
-        padding-top:20px;
-        border-bottom: 1.5px solid $lightGrey;
-        width: 100%;
-    }
+.form > div {
+    border-bottom: 1.5px solid $lightGrey;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.form > div:last-of-type {
+    border-bottom: none;
+}
+
+.form > div:first-of-type {
+    padding-top: 0;
 }

@@ -55,14 +55,14 @@ class NewRoutePathView extends React.Component{
             <ViewHeader
                 header='Luo uusi reitinsuunta'
             />
-            <div className={s.section}>
+            <div>
                 <RoutePathViewForm
                     isEditingDisabled={false}
                     onEdit={this.onEdit}
                     routePath={this.initialRoutePath}
                 />
             </div>
-            <div className={s.section}>
+            <div>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onSave}

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
+import classnames from 'classnames';
 import Moment from 'react-moment';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
@@ -14,7 +15,7 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     isEditingDisabled: boolean;
-    isDirty: boolean;
+    hasModifications: boolean;
     routePath: IRoutePath | null;
 }
 
@@ -26,7 +27,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         super(props);
         this.state = {
             isEditingDisabled: true,
-            isDirty: false,
+            hasModifications: false,
             routePath: null,
         };
     }
@@ -52,11 +53,11 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     public save = () => {
         console.log('Saving');
-        this.setState({ isDirty: false });
+        this.setState({ hasModifications: false });
     }
 
     public onEdit = () => {
-        this.setState({ isDirty: true });
+        this.setState({ hasModifications: true });
     }
 
     public render(): any {
@@ -66,7 +67,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             );
         }
         return (
-        <div className={s.routePathView}>
+        <div className={classnames(s.routePathView, s.form)}>
             <ViewHeader
                 header={`Reitin suunta ${this.state.routePath.lineId}`}
             >
@@ -76,7 +77,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     text={'Muokkaa'}
                 />
             </ViewHeader>
-            <div className={s.section} >
+            <div>
                 <div className={s.topic}>
                     REITIN OTSIKKOTIEDOT
                 </div>
@@ -101,22 +102,21 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         <div>{this.state.routePath.modifiedBy}</div>
                     </div>
                 </div>
-                <div className={s.sectionDivider} />
             </div>
-            <div className={s.section}>
+            <div>
                 <RoutePathViewForm
                     onEdit={this.onEdit}
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.state.routePath}
                 />
             </div>
-            <div className={s.section}>
+            <div>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.save}
                         type={ButtonType.SAVE}
                         text={'Tallenna reitinsuunta'}
-                        disabled={!this.state.isDirty}
+                        disabled={!this.state.hasModifications}
                     />
                 </div>
             </div>

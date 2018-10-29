@@ -38,8 +38,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
         const isEditingDisabled = this.props.isEditingDisabled;
 
         return (
-        <div>
-            <div className={s.section}>
+        <div className={s.form}>
+            <div>
                 <div className={s.topic}>
                     REITINSUUNNAN TIEDOT
                 </div>
@@ -174,7 +174,6 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         disabled={isEditingDisabled}
                     />
                 </div>
-                <div className={s.sectionDivider}/>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onClick}
@@ -205,9 +204,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     />
                     <div className={s.flexButtonFiller} />
                 </div>
-                <div className={s.sectionDivider}/>
             </div>
-            <div className={s.section}>
+            <div>
                 <div className={s.inputContainer}>
                     <div className={s.topic}>
                         KARTTA
