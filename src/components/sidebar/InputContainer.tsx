@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classnames from 'classnames';
 import s from './inputContainer.scss';
 
 interface IInputProps {
@@ -12,8 +11,8 @@ interface IInputProps {
 class InputContainer extends React.Component<IInputProps> {
     public render(): any {
         return (
-            <div className={s.inputContainer}>
-                <div className={classnames(s.subTopic)}>
+            <div className={s.formItem}>
+                <div className={s.inputLabel}>
                     {this.props.label}
                 </div>
                 <input

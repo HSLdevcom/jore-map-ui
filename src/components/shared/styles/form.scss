@@ -1,16 +1,18 @@
 @import './common';
 
-.inputContainer {
-    margin-right: 10px;
+$marginRight: 10px;
+
+.formItem {
+    margin-right: $marginRight;
     padding-top: 10px;
     width:100%;
 }
 
-.inputContainer:last-of-type {
+.formItem:last-of-type {
     margin-right: 0px;
 }
 
-.subTopic {
+.inputLabel {
     font-weight: bold;
     color: $mediumGrey;
     font-size: $smallFontSize;
@@ -19,13 +21,18 @@
 }
 
 .topic {
+    padding-top: 10px;
     font-weight: bold;
     color: $mediumGrey;
     font-size: $mediumFontSize;
 }
 
 .sectionDivider {
-    padding-top:20px;
+    padding-top: 20px;
     border-bottom: 1.5px solid $lightGrey;
     width: 100%;
+}
+
+.marginFiller {
+    margin-right: $marginRight;
 }
