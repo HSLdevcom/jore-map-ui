@@ -24,9 +24,9 @@ class RoutePathFactory {
 
         const routePathLinkResult:IRoutePathLinkResult[] | null
         = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta ?
-            suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
+            suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes
             .map((routePathLinkNode: any) =>
-                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode.node)) : null;
+                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode)) : null;
 
         const coordinates = suunta.geojson ? JSON.parse(suunta.geojson).coordinates : null;
         const positions = coordinates

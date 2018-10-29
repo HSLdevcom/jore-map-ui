@@ -63,7 +63,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     public render(): any {
         if (!this.state.routePath) {
             return (
-                <Loader size={Loader.SMALL}/>
+                <Loader size={Loader.MEDIUM}/>
             );
         }
         return (
@@ -78,6 +78,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         text={'Muokkaa'}
                     />
                 </ViewHeader>
+                <div className={s.routePathTimestamp}>01.09.2017</div>
             </div>
             <div className={s.formSection}>
                 <div className={s.topic}>

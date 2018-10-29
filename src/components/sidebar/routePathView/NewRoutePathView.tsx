@@ -3,6 +3,8 @@ import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import MapStore, { NodeSize } from '~/stores/mapStore';
+import NetworkStore from '~/stores/networkStore';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -48,6 +50,17 @@ class NewRoutePathView extends React.Component{
     // TODO
     public onSave = () => {
 
+    }
+
+    componentDidMount() {
+        MapStore.setNodeSize(NodeSize.large);
+        MapStore.setIsCreatingNewRoutePath(true);
+        NetworkStore.setIsNodesVisible(true);
+    }
+
+    componentWillUnmount() {
+        MapStore.setNodeSize(NodeSize.normal);
+        MapStore.setIsCreatingNewRoutePath(false);
     }
 
     public render(): any {
