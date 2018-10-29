@@ -1,4 +1,5 @@
 import * as React from 'react';
+import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
@@ -51,18 +52,20 @@ class NewRoutePathView extends React.Component{
 
     public render(): any {
         return (
-        <div className={s.routePathView}>
-            <ViewHeader
-                header='Luo uusi reitinsuunta'
-            />
-            <div>
+        <div className={classnames(s.routePathView, s.form)}>
+            <div className={s.formSection}>
+                <ViewHeader
+                    header='Luo uusi reitinsuunta'
+                />
+            </div>
+            <div className={s.formSection}>
                 <RoutePathViewForm
                     isEditingDisabled={false}
                     onEdit={this.onEdit}
                     routePath={this.initialRoutePath}
                 />
             </div>
-            <div>
+            <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onSave}

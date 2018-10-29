@@ -68,16 +68,18 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         }
         return (
         <div className={classnames(s.routePathView, s.form)}>
-            <ViewHeader
-                header={`Reitin suunta ${this.state.routePath.lineId}`}
-            >
-                <Button
-                    onClick={this.toggleEditing}
-                    type={ButtonType.SQUARE}
-                    text={'Muokkaa'}
-                />
-            </ViewHeader>
-            <div>
+            <div className={s.formSection}>
+                <ViewHeader
+                    header={`Reitin suunta ${this.state.routePath.lineId}`}
+                >
+                    <Button
+                        onClick={this.toggleEditing}
+                        type={ButtonType.SQUARE}
+                        text={'Muokkaa'}
+                    />
+                </ViewHeader>
+            </div>
+            <div className={s.formSection}>
                 <div className={s.topic}>
                     REITIN OTSIKKOTIEDOT
                 </div>
@@ -103,14 +105,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     </div>
                 </div>
             </div>
-            <div>
+            <div className={s.formSection}>
                 <RoutePathViewForm
                     onEdit={this.onEdit}
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.state.routePath}
                 />
             </div>
-            <div>
+            <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.save}

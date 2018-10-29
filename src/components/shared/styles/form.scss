@@ -34,16 +34,16 @@
     width: 100%;
 }
 
-.form > div {
+.form > .formSection {
     border-bottom: 1.5px solid $lightGrey;
     padding: 20px 0;
     width: 100%;
 }
 
-.form > div:last-of-type {
+.form > .formSection:last-of-type {
     border-bottom: none;
 }
 
-.form > div:first-of-type {
+.form > .formSection:first-of-type {
     padding-top: 0;
 }

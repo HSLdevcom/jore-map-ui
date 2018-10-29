@@ -39,7 +39,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
 
         return (
         <div className={s.form}>
-            <div>
+            <div className={s.formSection}>
                 <div className={s.topic}>
                     REITINSUUNNAN TIEDOT
                 </div>
@@ -205,7 +205,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     <div className={s.flexButtonFiller} />
                 </div>
             </div>
-            <div>
+            <div className={s.formSection}>
                 <div className={s.inputContainer}>
                     <div className={s.topic}>
                         KARTTA
