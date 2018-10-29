@@ -92,15 +92,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                 </div>
             </div>
             <div className={s.flexRow}>
-                <label className={s.inputContainer}>
-                    <Dropdown
-                        label='SUUNTA'
-                        onChange={this.onChange}
-                        items={['Suunta 2']}
-                        selected={'Suunta 1'}
-                    />
-                </label>
-                <label className={s.inputContainer}>
+                <Dropdown
+                    label='SUUNTA'
+                    onChange={this.onChange}
+                    items={['Suunta 2']}
+                    selected={'Suunta 1'}
+                />
+                <div className={s.inputContainer}>
                     <div className={s.inputLabel}>
                         POIKKEUSREITTI
                     </div>
@@ -119,18 +117,16 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         />
                         <div className={s.flexFiller} />
                     </div>
-                </label>
+                </div>
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexGrow}>
-                    <label className={s.inputContainer}>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['Kaikki solmut']}
-                            selected={'Kaikki solmut'}
-                            label='SOLMUTYYPIT'
-                        />
-                    </label>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['Kaikki solmut']}
+                        selected={'Kaikki solmut'}
+                        label='SOLMUTYYPIT'
+                    />
                 </div>
                 <div className={s.flexFiller} />
             </div>

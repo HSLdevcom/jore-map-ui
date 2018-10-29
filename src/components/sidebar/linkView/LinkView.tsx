@@ -91,7 +91,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRow}>
-                        <label className={s.inputContainer}>
+                        <div className={s.inputContainer}>
                             <div className={s.inputLabel}>
                                 TIEDOT
                             </div>
@@ -101,7 +101,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                                 className={s.textArea}
                                 readOnly={true}
                             />
-                        </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,13 +117,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         label='ALKU'
                         placeholder='1020112'
                     />
-                    <label className={s.inputContainer}>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['P', 'P1', 'P2']}
-                            selected={'P'}
-                        />
-                    </label>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['P', 'P1', 'P2']}
+                        selected={'P'}
+                    />
                     <InputContainer
                         label=''
                         placeholder='Rautatientori'
@@ -136,13 +134,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         label='LOPPU'
                         placeholder='1020126'
                     />
-                    <label className={s.inputContainer}>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['P', 'P1', 'P2']}
-                            selected={'P'}
-                        />
-                    </label>
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['P', 'P1', 'P2']}
+                        selected={'P'}
+                    />
                     <InputContainer
                         label=''
                         placeholder='Rautatientori'
@@ -150,33 +146,27 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.flexRow}>
-                <label className={s.inputContainer}>
-                    <Dropdown
-                        label='KUTSU-/JÄTTÖ-/OTTOP'
-                        onChange={this.onChange}
-                        items={['0 - Ei', '1 - Ei', '2 - Ei']}
-                        selected={'0 - Ei'}
-                    />
-                </label>
-                <label className={s.inputContainer}>
-                    <Dropdown
-                        label='AJANTASAUSPYSÄKKI'
-                        onChange={this.onChange}
-                        items={['Kyllä', 'Ei']}
-                        selected={'Ei'}
-                    />
-                </label>
-                <label className={s.inputContainer}>
-                    <Dropdown
-                        label='VÄLIPISTEAIKAPYSÄKKI'
-                        onChange={this.onChange}
-                        items={['Kyllä', 'Ei']}
-                        selected={'Kyllä'}
-                    />
-                </label>
+                <Dropdown
+                    label='KUTSU-/JÄTTÖ-/OTTOP'
+                    onChange={this.onChange}
+                    items={['0 - Ei', '1 - Ei', '2 - Ei']}
+                    selected={'0 - Ei'}
+                />
+                <Dropdown
+                    label='AJANTASAUSPYSÄKKI'
+                    onChange={this.onChange}
+                    items={['Kyllä', 'Ei']}
+                    selected={'Ei'}
+                />
+                <Dropdown
+                    label='VÄLIPISTEAIKAPYSÄKKI'
+                    onChange={this.onChange}
+                    items={['Kyllä', 'Ei']}
+                    selected={'Kyllä'}
+                />
             </div>
             <div className={s.flexRow}>
-                <label className={s.inputContainer}>
+                <div className={s.inputContainer}>
                     <div className={s.inputLabel}>
                         VERKKO
                     </div>
@@ -186,7 +176,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             selectedTransitTypes={this.getFilters()}
                         />
                     </div>
-                </label>
+                </div>
             </div>
             <div className={s.flexRow}>
                 <InputContainer

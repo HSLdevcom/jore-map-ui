@@ -30,31 +30,33 @@ class Dropdown extends React.Component
 
     public render(): any {
         return (
-            <label className={s.dropdownContainer}>
-                {this.props.label &&
-                    <div className={s.inputLabel}>
-                        {this.props.label}
-                    </div>
-                }
-                <select
-                    className={s.dropdownView}
-                    value={this.state.selectedValue}
-                    onChange={this.onChange}
-                >
-                {
-                    this.props.items.map((item) => {
-                        return (
-                            <option
-                                key={item}
-                                value={item}
-                            >
-                                {item}
-                            </option>
-                        );
-                    })
-                }
-                </select>
-            </label>
+            <div className={s.inputContainer}>
+                <div className={s.dropdownView}>
+                    {this.props.label &&
+                        <div className={s.inputLabel}>
+                            {this.props.label}
+                        </div>
+                    }
+                    <select
+                        className={s.dropdown}
+                        value={this.state.selectedValue}
+                        onChange={this.onChange}
+                    >
+                    {
+                        this.props.items.map((item) => {
+                            return (
+                                <option
+                                    key={item}
+                                    value={item}
+                                >
+                                    {item}
+                                </option>
+                            );
+                        })
+                    }
+                    </select>
+                </div>
+            </div>
         );
     }
 }
