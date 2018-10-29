@@ -169,6 +169,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         disabled={isEditingDisabled}
                     />
                 </div>
+            </div>
+            <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onClick}
@@ -206,17 +208,19 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         KARTTA
                     </div>
                     <div className={s.formItem}>
-                        <Button
-                            onClick={this.onClick}
-                            type={ButtonType.ROUND}
-                            text={'Kartta'}
-                        />
-                        <Checkbox
-                            checked={false}
-                            text={'Muotopisteet kartalle'}
-                            onClick={this.onClick}
-                        />
-                        <div className={s.flexButtonFiller} />
+                        <div className={s.flexInnerRow}>
+                            <Button
+                                onClick={this.onClick}
+                                type={ButtonType.ROUND}
+                                text={'Kartta'}
+                            />
+                            <Checkbox
+                                checked={false}
+                                text={'Muotopisteet kartalle'}
+                                onClick={this.onClick}
+                            />
+                            <div className={s.flexButtonFiller} />
+                        </div>
                     </div>
                 </div>
                 <div className={s.formItem}>
