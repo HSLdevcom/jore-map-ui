@@ -42,7 +42,7 @@ const getNodeType = (type:any) => {
     case 'P':
         return NodeType.STOP;
     case '-':
-        return NodeType.CITYBORDER;
+        return NodeType.MUNICIPALITY_BORDER;
     default:
         return NodeType.INVALID;
     }

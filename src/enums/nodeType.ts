@@ -1,7 +1,7 @@
 enum NodeType {
     STOP = 'P',
     CROSSROAD = 'X',
-    CITYBORDER = '-',
+    MUNICIPALITY_BORDER = '-',
     INVALID = 'invalid',
 }
 
