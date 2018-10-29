@@ -91,8 +91,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRow}>
-                        <div className={s.inputContainer}>
-                            <div className={s.subTopic}>
+                        <div className={s.formItem}>
+                            <div className={s.inputLabel}>
                                 TIEDOT
                             </div>
                             <input
@@ -113,97 +113,69 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexInnerRowFlexEnd}>
-                    <div className={s.inputContainer}>
-                        <div className={s.subTopic}>
-                            ALKU
-                        </div>
-                        <input
-                            placeholder='1020112'
-                            type='text'
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['P', 'P1', 'P2']}
-                            selected={'P'}
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <input
-                            placeholder='Rautatientori'
-                            type='text'
-                        />
-                    </div>
+                    <InputContainer
+                        label='ALKU'
+                        placeholder='1020112'
+                    />
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['P', 'P1', 'P2']}
+                        selected={'P'}
+                    />
+                    <InputContainer
+                        label=''
+                        placeholder='Rautatientori'
+                    />
                 </div>
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexInnerRowFlexEnd}>
-                    <div className={s.inputContainer}>
-                        <div className={s.subTopic}>
-                            LOPPU
-                        </div>
-                        <input
-                            placeholder='1020126'
-                            type='text'
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <Dropdown
-                            onChange={this.onChange}
-                            items={['P', 'P1', 'P2']}
-                            selected={'P'}
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <input
-                            placeholder='Rautatientori'
-                            type='text'
-                        />
-                    </div>
+                    <InputContainer
+                        label='LOPPU'
+                        placeholder='1020126'
+                    />
+                    <Dropdown
+                        onChange={this.onChange}
+                        items={['P', 'P1', 'P2']}
+                        selected={'P'}
+                    />
+                    <InputContainer
+                        label=''
+                        placeholder='Rautatientori'
+                    />
                 </div>
             </div>
             <div className={s.flexRow}>
-                <div className={s.inputContainer}>
-                    <div className={s.subTopic}>
-                        KUTSU-/JÄTTÖ-/OTTOP
-                    </div>
-                    <Dropdown
-                        onChange={this.onChange}
-                        items={['0 - Ei', '1 - Ei', '2 - Ei']}
-                        selected={'0 - Ei'}
-                    />
-                </div>
-                <div className={s.inputContainer}>
-                    <div className={s.subTopic}>
-                        AJANTASAUSPYSÄKKI
-                    </div>
-                    <Dropdown
-                        onChange={this.onChange}
-                        items={['Kyllä', 'Ei']}
-                        selected={'Ei'}
-                    />
-                </div>
-                <div className={s.inputContainer}>
-                    <div className={s.subTopic}>
-                        VÄLIPISTEAIKAPYSÄKKI
-                    </div>
-                    <Dropdown
-                        onChange={this.onChange}
-                        items={['Kyllä', 'Ei']}
-                        selected={'Kyllä'}
-                    />
-                </div>
+                <Dropdown
+                    label='KUTSU-/JÄTTÖ-/OTTOP'
+                    onChange={this.onChange}
+                    items={['0 - Ei', '1 - Ei', '2 - Ei']}
+                    selected={'0 - Ei'}
+                />
+                <Dropdown
+                    label='AJANTASAUSPYSÄKKI'
+                    onChange={this.onChange}
+                    items={['Kyllä', 'Ei']}
+                    selected={'Ei'}
+                />
+                <Dropdown
+                    label='VÄLIPISTEAIKAPYSÄKKI'
+                    onChange={this.onChange}
+                    items={['Kyllä', 'Ei']}
+                    selected={'Kyllä'}
+                />
             </div>
-            <div className={s.inputContainer}>
-                <div className={s.subTopic}>
-                    VERKKO
-                </div>
-                <div className={s.transitButtonBar}>
-                    <TransitToggleButtonBar
-                        toggleSelectedTransitType={this.toggleSelectedTransitType}
-                        selectedTransitTypes={this.getFilters()}
-                    />
+            <div className={s.flexRow}>
+                <div className={s.formItem}>
+                    <div className={s.inputLabel}>
+                        VERKKO
+                    </div>
+                    <div className={s.transitButtonBar}>
+                        <TransitToggleButtonBar
+                            toggleSelectedTransitType={this.toggleSelectedTransitType}
+                            selectedTransitTypes={this.getFilters()}
+                        />
+                    </div>
                 </div>
             </div>
             <div className={s.flexRow}>
@@ -231,10 +203,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 />
             </div>
             <div className={s.flexRow}>
-                <div className={s.subTopic}>
+                <div className={s.inputLabel}>
                     ALKUSOLMUN SARAKE NRO
                 </div>
-                <div className={s.subTopic}>
+                <div className={s.inputLabel}>
                     VIIM. LINKIN LOPPUSOLMU SARAKE NRO
                 </div>
             </div>
@@ -291,8 +263,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
             </div>
             <div className={s.flexRow}>
-                <div className={s.inputContainer}>
-                    <div className={s.subTopic}>
+                <div className={s.formItem}>
+                    <div className={s.inputLabel}>
                         ALKUSOLMUN SÄDE JA PAIKKA
                     </div>
                     <div className={s.flexInnerRow}>
@@ -308,8 +280,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                     </div>
                 </div>
-                <div className={s.inputContainer}>
-                    <div className={s.subTopic}>
+                <div className={s.formItem}>
+                    <div className={s.inputLabel}>
                         LOPPUSOLMUN SÄDE JA PAIKKA
                     </div>
                     <div className={s.flexInnerRow}>
@@ -328,10 +300,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             </div>
             <div className={s.flexRow}>
                 <div className={s.flexGrow}>
-                    <div className={s.subTopic}>
-                        ALKUSOLMU PAIKKANA
-                    </div>
                     <Dropdown
+                        label='ALKUSOLMU PAIKKANA'
                         onChange={this.onChange}
                         items={['Kyllä', 'Ei']}
                         selected={'Kyllä'}
