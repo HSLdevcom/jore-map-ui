@@ -56,7 +56,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     TransitTypeColorHelper.getColorClass(this.props.route.line!.transitType),
                 )}
             >
-                {this.props.route.line!.lineNumber}
+                {this.props.route.routeId}
             </div>
             {this.props.route.routeName}
             <div
