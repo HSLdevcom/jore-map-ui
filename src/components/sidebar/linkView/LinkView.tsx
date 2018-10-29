@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { SidebarStore } from '~/stores/sidebarStore';
@@ -55,14 +56,14 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     public render(): any {
         return (
-        <div className={s.linkView}>
+        <div className={classnames(s.linkView, s.form)}>
             <ViewHeader
                 header='Reitin 1016 linkki'
             />
             <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT
             </div>
-            <div className={s.flexRow}>
+            <div className={classnames(s.flexRow, s.formSection)}>
                 <div className={s.column}>
                     <div className={s.flexInnerRow}>
                         <InputContainer
@@ -105,221 +106,221 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </div>
                 </div>
             </div>
-            <div className={s.sectionDivider}/>
-            <div className={s.flexRow}>
-                <div className={s.topic}>
-                    REITIN LINKKI
+            <div className={s.formSection}>
+                <div className={s.flexRow}>
+                    <div className={s.topic}>
+                        REITIN LINKKI
+                    </div>
                 </div>
-            </div>
-            <div className={s.flexRow}>
-                <div className={s.flexInnerRowFlexEnd}>
-                    <InputContainer
-                        label='ALKU'
-                        placeholder='1020112'
-                    />
+                <div className={s.flexRow}>
+                    <div className={s.flexInnerRowFlexEnd}>
+                        <InputContainer
+                            label='ALKU'
+                            placeholder='1020112'
+                        />
+                        <Dropdown
+                            onChange={this.onChange}
+                            items={['P', 'P1', 'P2']}
+                            selected={'P'}
+                        />
+                        <InputContainer
+                            label=''
+                            placeholder='Rautatientori'
+                        />
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.flexInnerRowFlexEnd}>
+                        <InputContainer
+                            label='LOPPU'
+                            placeholder='1020126'
+                        />
+                        <Dropdown
+                            onChange={this.onChange}
+                            items={['P', 'P1', 'P2']}
+                            selected={'P'}
+                        />
+                        <InputContainer
+                            label=''
+                            placeholder='Rautatientori'
+                        />
+                    </div>
+                </div>
+                <div className={s.flexRow}>
                     <Dropdown
+                        label='KUTSU-/JÄTTÖ-/OTTOP'
                         onChange={this.onChange}
-                        items={['P', 'P1', 'P2']}
-                        selected={'P'}
-                    />
-                    <InputContainer
-                        label=''
-                        placeholder='Rautatientori'
-                    />
-                </div>
-            </div>
-            <div className={s.flexRow}>
-                <div className={s.flexInnerRowFlexEnd}>
-                    <InputContainer
-                        label='LOPPU'
-                        placeholder='1020126'
+                        items={['0 - Ei', '1 - Ei', '2 - Ei']}
+                        selected={'0 - Ei'}
                     />
                     <Dropdown
+                        label='AJANTASAUSPYSÄKKI'
                         onChange={this.onChange}
-                        items={['P', 'P1', 'P2']}
-                        selected={'P'}
+                        items={['Kyllä', 'Ei']}
+                        selected={'Ei'}
                     />
-                    <InputContainer
-                        label=''
-                        placeholder='Rautatientori'
-                    />
-                </div>
-            </div>
-            <div className={s.flexRow}>
-                <Dropdown
-                    label='KUTSU-/JÄTTÖ-/OTTOP'
-                    onChange={this.onChange}
-                    items={['0 - Ei', '1 - Ei', '2 - Ei']}
-                    selected={'0 - Ei'}
-                />
-                <Dropdown
-                    label='AJANTASAUSPYSÄKKI'
-                    onChange={this.onChange}
-                    items={['Kyllä', 'Ei']}
-                    selected={'Ei'}
-                />
-                <Dropdown
-                    label='VÄLIPISTEAIKAPYSÄKKI'
-                    onChange={this.onChange}
-                    items={['Kyllä', 'Ei']}
-                    selected={'Kyllä'}
-                />
-            </div>
-            <div className={s.flexRow}>
-                <div className={s.formItem}>
-                    <div className={s.inputLabel}>
-                        VERKKO
-                    </div>
-                    <div className={s.transitButtonBar}>
-                        <TransitToggleButtonBar
-                            toggleSelectedTransitType={this.toggleSelectedTransitType}
-                            selectedTransitTypes={this.getFilters()}
-                        />
-                    </div>
-                </div>
-            </div>
-            <div className={s.flexRow}>
-                <InputContainer
-                    label='SUUNTA'
-                    placeholder='Suunta 1'
-                />
-                <InputContainer
-                    label='OS. NRO'
-                    placeholder='2 B'
-                />
-                <InputContainer
-                    label='LINKIN PITUUS'
-                    placeholder='2'
-                />
-            </div>
-            <div className={s.flexRow}>
-                <InputContainer
-                    label='KATU'
-                    placeholder='Rautatientori'
-                />
-                <InputContainer
-                    label='KATUOSAN OS. NRO'
-                    placeholder='1'
-                />
-            </div>
-            <div className={s.flexRow}>
-                <div className={s.inputLabel}>
-                    ALKUSOLMUN SARAKE NRO
-                </div>
-                <div className={s.inputLabel}>
-                    VIIM. LINKIN LOPPUSOLMU SARAKE NRO
-                </div>
-            </div>
-            <div className={s.flexRow}>
-                <div className={s.flexInnerRow}>
-                    <input
-                        placeholder='1'
-                        type='text'
-                        className={s.smallInput}
-                    />
-                    <Checkbox
-                        checked={false}
-                        text={'Ohitusaika kirja-aikat.'}
-                        onClick={this.onChange}
-                    />
-                </div>
-                <div className={s.flexInnerRow}>
-                    <input
-                        placeholder='1'
-                        type='text'
-                        className={s.smallInput}
-                    />
-                    <Checkbox
-                        checked={false}
-                        text={'Ohitusaika kirja-aikat.'}
-                        onClick={this.onChange}
-                    />
-                </div>
-            </div>
-            <div className={s.flexRow}>
-                <div className={s.flexInnerRow}>
-                    <input
-                        placeholder='1'
-                        type='text'
-                        className={s.smallInput}
-                    />
-                    <Checkbox
-                        checked={false}
-                        text={'Ohitusaika kirja-aikat.'}
-                        onClick={this.onChange}
-                    />
-                </div>
-                <div className={s.flexInnerRow}>
-                    <input
-                        placeholder='1'
-                        type='text'
-                        className={s.smallInput}
-                    />
-                    <Checkbox
-                        checked={false}
-                        text={'Ohitusaika kirja-aikat.'}
-                        onClick={this.onChange}
-                    />
-                </div>
-            </div>
-            <div className={s.flexRow}>
-                <div className={s.formItem}>
-                    <div className={s.inputLabel}>
-                        ALKUSOLMUN SÄDE JA PAIKKA
-                    </div>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder=''
-                            type='text'
-                            className={s.mediumSmallInput}
-                        />
-                        <input
-                            placeholder='1RT'
-                            type='text'
-                            className={s.mediumSmallInput}
-                        />
-                    </div>
-                </div>
-                <div className={s.formItem}>
-                    <div className={s.inputLabel}>
-                        LOPPUSOLMUN SÄDE JA PAIKKA
-                    </div>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder=''
-                            type='text'
-                            className={s.mediumSmallInput}
-                        />
-                        <input
-                            placeholder='1RT'
-                            type='text'
-                            className={s.mediumSmallInput}
-                        />
-                    </div>
-                </div>
-            </div>
-            <div className={s.flexRow}>
-                <div className={s.flexGrow}>
                     <Dropdown
-                        label='ALKUSOLMU PAIKKANA'
+                        label='VÄLIPISTEAIKAPYSÄKKI'
                         onChange={this.onChange}
                         items={['Kyllä', 'Ei']}
                         selected={'Kyllä'}
                     />
                 </div>
-                <div className={s.flexFiller} />
+                <div className={s.flexRow}>
+                    <div className={s.formItem}>
+                        <div className={s.inputLabel}>
+                            VERKKO
+                        </div>
+                        <div className={s.transitButtonBar}>
+                            <TransitToggleButtonBar
+                                toggleSelectedTransitType={this.toggleSelectedTransitType}
+                                selectedTransitTypes={this.getFilters()}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <InputContainer
+                        label='SUUNTA'
+                        placeholder='Suunta 1'
+                    />
+                    <InputContainer
+                        label='OS. NRO'
+                        placeholder='2 B'
+                    />
+                    <InputContainer
+                        label='LINKIN PITUUS'
+                        placeholder='2'
+                    />
+                </div>
+                <div className={s.flexRow}>
+                    <InputContainer
+                        label='KATU'
+                        placeholder='Rautatientori'
+                    />
+                    <InputContainer
+                        label='KATUOSAN OS. NRO'
+                        placeholder='1'
+                    />
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.inputLabel}>
+                        ALKUSOLMUN SARAKE NRO
+                    </div>
+                    <div className={s.inputLabel}>
+                        VIIM. LINKIN LOPPUSOLMU SARAKE NRO
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika kirja-aikat.'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika kirja-aikat.'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika kirja-aikat.'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika kirja-aikat.'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.formItem}>
+                        <div className={s.inputLabel}>
+                            ALKUSOLMUN SÄDE JA PAIKKA
+                        </div>
+                        <div className={s.flexInnerRow}>
+                            <input
+                                placeholder=''
+                                type='text'
+                                className={s.mediumSmallInput}
+                            />
+                            <input
+                                placeholder='1RT'
+                                type='text'
+                                className={s.mediumSmallInput}
+                            />
+                        </div>
+                    </div>
+                    <div className={s.formItem}>
+                        <div className={s.inputLabel}>
+                            LOPPUSOLMUN SÄDE JA PAIKKA
+                        </div>
+                        <div className={s.flexInnerRow}>
+                            <input
+                                placeholder=''
+                                type='text'
+                                className={s.mediumSmallInput}
+                            />
+                            <input
+                                placeholder='1RT'
+                                type='text'
+                                className={s.mediumSmallInput}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.flexGrow}>
+                        <Dropdown
+                            label='ALKUSOLMU PAIKKANA'
+                            onChange={this.onChange}
+                            items={['Kyllä', 'Ei']}
+                            selected={'Kyllä'}
+                        />
+                    </div>
+                    <div className={s.flexFiller} />
+                </div>
+                <div className={s.flexRow}>
+                    <InputContainer
+                        label='PÄIVITTÄJÄ'
+                        placeholder='Vuori Tuomas'
+                    />
+                    <InputContainer
+                        label='PÄIVITYSPVM'
+                        placeholder='23.08.2017'
+                    />
+                </div>
             </div>
-            <div className={s.flexRow}>
-                <InputContainer
-                    label='PÄIVITTÄJÄ'
-                    placeholder='Vuori Tuomas'
-                />
-                <InputContainer
-                    label='PÄIVITYSPVM'
-                    placeholder='23.08.2017'
-                />
-            </div>
-            <div className={s.sectionDivider}/>
             <MultiTabTextarea
                 tabs={['Tariffialueet', 'Määränpäät', 'Ajoajat']}
             />
