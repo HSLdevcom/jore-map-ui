@@ -4,15 +4,16 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
-import { MapStore } from '~/stores/mapStore';
-import { RouteStore } from '~/stores/routeStore';
 import ColorScale from '~/util/colorScale';
 import { IRoutePath, IRoute } from '~/models';
+import { MapStore } from '~/stores/mapStore';
+import { RouteStore } from '~/stores/routeStore';
 import { NodeStore } from '~/stores/nodeStore';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import RouteLayer from './layers/RouteLayer';
+import NewRoutePathLayer from './layers/new/NewRoutePathLayer';
 import MarkerLayer from './layers/MarkerLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
@@ -170,6 +171,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         routePaths={visibleRoutePaths}
                         fitBounds={this.fitBounds}
                     />
+                    <NewRoutePathLayer />
                     <MarkerLayer
                         coordinates={this.startCoordinates(visibleRoutePaths)}
                     />

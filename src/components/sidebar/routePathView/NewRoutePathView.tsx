@@ -1,4 +1,6 @@
 import * as React from 'react';
+import MapStore, { NodeSize } from '~/stores/mapStore';
+import NetworkStore from '~/stores/networkStore';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import { Button } from '../../controls';
@@ -9,6 +11,17 @@ class NewRoutePathView extends React.Component{
 
     // TODO
     public onChange = () => {
+    }
+
+    componentDidMount() {
+        MapStore.setNodeSize(NodeSize.large);
+        MapStore.setIsCreatingNewRoutePath(true);
+        NetworkStore.setIsNodesVisible(true);
+    }
+
+    componentWillUnmount() {
+        MapStore.setNodeSize(NodeSize.normal);
+        MapStore.setIsCreatingNewRoutePath(false);
     }
 
     public render(): any {

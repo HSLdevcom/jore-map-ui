@@ -23,11 +23,10 @@ class RoutePathFactory {
                 suunta.suusuunta,
             ].join('-'),
         ).toString();
-
         const routePathLinkResult:IRoutePathLinkResult[]
-        = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
+        = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes
             .map((routePathLinkNode: any) =>
-                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode.node));
+                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode));
 
         const coordinates = JSON.parse(suunta.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
