@@ -6,7 +6,6 @@ class LineFactory {
     // linja to ILine
     public static createLine = (linja: IExternalLine): ILine => {
         const transitType = TransitTypeHelper.convertTransitTypeCodeToTransitType(linja.linverkko);
-        const lineNumber = _parseLineNumber(linja.lintunnus);
         const routes = linja.reittisByLintunnus.nodes.map((route: any): ILineRoute => {
             return {
                 id: route.reitunnus,
@@ -16,17 +15,12 @@ class LineFactory {
         });
 
         return {
-            lineNumber,
             transitType,
             routes,
             lineId: linja.lintunnus,
         };
     }
 }
-
-const _parseLineNumber = (lineId: string) => {
-    return lineId.substring(1).replace(/^0+/, '');
-};
 
 const _getRouteName = (route: any) => {
     if (!route || !route.reinimi) {
