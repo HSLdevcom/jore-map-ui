@@ -10,5 +10,4 @@ export default interface INode {
     measurementDate: string;
     modifiedOn: string;
     modifiedBy: string;
-    disabled?: boolean;
 }

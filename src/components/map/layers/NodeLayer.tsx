@@ -50,7 +50,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         }
         }
 
-        if (node.disabled) {
+        if (this.props.nodeStore!.isNodeDisabled(node.id)) {
             html = this.getMarkerHtml(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
         }
 

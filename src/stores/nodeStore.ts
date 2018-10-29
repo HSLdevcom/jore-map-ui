@@ -37,6 +37,10 @@ export class NodeStore {
         this._selectedNodeId = nodeId;
     }
 
+    public isNodeDisabled(nodeId: string): boolean {
+        return (this._disabledNodeIds.includes(nodeId));
+    }
+
     @action
     public getNode(nodeId: string): INode | null {
         const node = this._nodes.find(node => node.id === nodeId);
@@ -44,17 +48,11 @@ export class NodeStore {
         return null;
     }
 
-    @action
     public getNodesUsedInRoutePaths(routePaths: IRoutePath[]) {
         const requiredRoutePathIds = NodeHelper.getNodeIdsUsedByRoutePaths(routePaths);
-        const nodes = this._nodes.filter(node =>
+        return this._nodes.filter(node =>
             requiredRoutePathIds.some(rPathId => node.id === rPathId),
         );
-        nodes.forEach((node) => {
-            (this._disabledNodeIds.includes(node.id)) ?
-                node.disabled = true : node.disabled = false;
-        });
-        return nodes;
     }
 
     /**
