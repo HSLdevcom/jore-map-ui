@@ -98,7 +98,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                     items={['Suunta 2']}
                     selected={'Suunta 1'}
                 />
-                <div className={s.inputContainer}>
+                <div className={s.formItemContainer}>
                     <div className={s.inputLabel}>
                         POIKKEUSREITTI
                     </div>
@@ -175,7 +175,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
             <div className={s.topic}>
                 KARTTA
             </div>
-            <div className={s.inputContainer}>
+            <div className={s.formItemContainer}>
                 <div className={s.flexInnerRow}>
                     <Button
                         onClick={this.onChange}
@@ -191,7 +191,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                 </div>
             </div>
             <div className={s.padding} />
-            <div className={s.inputContainer}>
+            <div className={s.formItemContainer}>
                 Esitettävien ajoaikojen kausi ja aikajakso
                 <div className={s.flexInnerRow}>
                     <Dropdown

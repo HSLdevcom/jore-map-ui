@@ -2,18 +2,13 @@
 
 $marginRight: 10px;
 
-div, input {
-    box-sizing: border-box;
-}
-
-/* TODO: Rename as formItemContainer? */
-.inputContainer {
+.formItemContainer {
     margin-right: $marginRight;
     padding-top: 10px;
     width:100%;
 }
 
-.inputContainer:last-of-type {
+.formItemContainer:last-of-type {
     margin-right: 0px;
 }
 
