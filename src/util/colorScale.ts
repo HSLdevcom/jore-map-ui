@@ -1,14 +1,11 @@
-import * as chroma from 'chroma-js';
+import chroma from 'chroma-js';
 import IRoute from '~/models/IRoute';
 
 class ColorScale {
     public static getColorMap(routes: IRoute[]) {
         const colorMap = new Map();
 
-        let totalColorCount = 0;
-        routes.forEach((route) => {
-            totalColorCount += route.routePaths.length;
-        });
+        const totalColorCount = routes.reduce((acc, curr) => curr.routePaths.length + acc, 0);
         const colors = this.getColors(totalColorCount);
         routes.forEach((route) => {
             const key = route.routeId;
