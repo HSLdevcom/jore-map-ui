@@ -15,6 +15,7 @@ enum GeoserverLayer {
 enum NodeColors {
     CROSSROAD_COLOR = '#727272',
     STOP_COLOR = '#ff7070',
+    MUNICIPALITY_BORDER_COLOR = '#c900ff',
 }
 
 interface INetworkLayersProps {
@@ -78,8 +79,10 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 case NodeType.CROSSROAD:
                     color = NodeColors.CROSSROAD_COLOR;
                     break;
+                case NodeType.MUNICIPALITY_BORDER:
+                    color = NodeColors.MUNICIPALITY_BORDER_COLOR;
+                    break;
                 }
-
                 return {
                     color,
                     radius: 2,
