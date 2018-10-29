@@ -1,3 +1,4 @@
+import IExternalRoutePathNode from './IExternalRoutePath';
 
 export default interface IExternalRoute {
     lintunnus: string;
@@ -7,7 +8,7 @@ export default interface IExternalRoute {
     reinimilyhr: string;
     reinimir: string;
     reitinsuuntasByReitunnus: {
-        edges: Object[],
+        edges: IExternalRoutePathNode[],
     };
     reitunnus: string;
     reiviimpvm: string;
