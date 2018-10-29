@@ -8,7 +8,6 @@ import Moment from 'moment';
 import { RouteStore } from '~/stores/routeStore';
 import LineHelper from '~/util/lineHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
-import ColorScale from '~/util/colorScale';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -21,7 +20,7 @@ import * as s from './routeShow.scss';
 interface IRouteShowProps {
     routeStore?: RouteStore;
     route: IRoute;
-    visibleRoutePathsIndex: number;
+    colors: string[];
 }
 
 @inject('routeStore')
@@ -70,22 +69,17 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 
     private renderRoutePaths() {
-        let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
+        const routePaths = this.props.route.routePaths;
 
-        return this.props.route.routePaths
-        .map((routePath: IRoutePath) => {
+        return routePaths.map((routePath: IRoutePath, index) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
             };
-            const routeColor = ColorScale.getColors(
-                this.props.routeStore!.visibleRoutePathAmount)[visibleRoutePathsIndex];
-            if (routePath.visible) {
-                visibleRoutePathsIndex += 1;
-            }
 
             const isWithinTimeSpan = (Moment(routePath.startTime).isBefore(Moment()) &&
                                     Moment(routePath.endTime).isAfter(Moment()));
 
+            const routeColor = this.props.colors[index];
             return (
                 <div
                     className={s.routePathContainer}
