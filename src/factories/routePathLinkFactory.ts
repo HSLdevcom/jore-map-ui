@@ -11,9 +11,6 @@ class RoutePathLinkFactory {
         const nodes = [];
         if (routePathLinkNode.solmuByLnkalkusolmu) {
             const node = NodeFactory.createNode(routePathLinkNode.solmuByLnkalkusolmu);
-            if (routePathLinkNode.relpysakki === 'E') {
-                node.disabled = true;
-            }
             nodes.push(node);
         }
         if (routePathLinkNode.solmuByLnkloppusolmu) {
@@ -30,6 +27,7 @@ class RoutePathLinkFactory {
                 startNodeId: routePathLinkNode.lnkalkusolmu,
                 endNodeId: routePathLinkNode.lnkloppusolmu,
                 orderNumber: routePathLinkNode.reljarjnro,
+                relPysakki: routePathLinkNode.relpysakki,
             },
         };
     }

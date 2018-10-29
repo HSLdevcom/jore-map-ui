@@ -5,9 +5,11 @@ import NodeHelper from '~/util/nodeHelper';
 export class NodeStore {
     @observable private _nodes: INode[];
     @observable private _selectedNodeId: string|null;
+    @observable private _disabledNodeIds: string[];
 
     constructor() {
         this._nodes = [];
+        this._disabledNodeIds = [];
         this._selectedNodeId = null;
     }
 
@@ -19,6 +21,14 @@ export class NodeStore {
         this._nodes = value;
     }
 
+    @computed get disabledNodeIds(): string[] {
+        return this._disabledNodeIds;
+    }
+
+    @action
+    public setDisabledNodeIds(nodes: string[]) {
+        this._disabledNodeIds = nodes;
+    }
     @computed get selectedNodeId(): string|null {
         return this._selectedNodeId;
     }
@@ -34,11 +44,17 @@ export class NodeStore {
         return null;
     }
 
+    @action
     public getNodesUsedInRoutePaths(routePaths: IRoutePath[]) {
         const requiredRoutePathIds = NodeHelper.getNodeIdsUsedByRoutePaths(routePaths);
-        return this._nodes.filter(node =>
+        const nodes = this._nodes.filter(node =>
             requiredRoutePathIds.some(rPathId => node.id === rPathId),
         );
+        nodes.forEach((node) => {
+            (this._disabledNodeIds.includes(node.id)) ?
+                node.disabled = true : node.disabled = false;
+        });
+        return nodes;
     }
 
     /**

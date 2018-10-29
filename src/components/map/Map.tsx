@@ -7,7 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
 import ColorScale from '~/util/colorScale';
-import { IRoutePath, IRoute } from '~/models';
+import { IRoutePath, IRoute, IRoutePathLink } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
@@ -122,14 +122,24 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.getMap().setView(latLng, 17);
     }
 
+    private setDisabledNodeIds = (links: IRoutePathLink[]) => {
+        const linksWithDisabledNodes = links.filter(link => (link.relPysakki === 'E'));
+        const disabledNodeIds: string[] = linksWithDisabledNodes.map((link: IRoutePathLink) => {
+            return link.startNodeId;
+        });
+        this.props.nodeStore!.setDisabledNodeIds(disabledNodeIds);
+        this.forceUpdate();
+    }
+
     public render() {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
-        // grey tiles.
-        const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
+        // grey tiles
 
+        const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
         const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
         const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
+
         const colors = ColorScale.getColors(visibleRoutePaths.length);
         return (
             <div
@@ -169,6 +179,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         colors={colors}
                         routePaths={visibleRoutePaths}
                         fitBounds={this.fitBounds}
+                        setDisabledNodeIds={this.setDisabledNodeIds}
                     />
                     <MarkerLayer
                         coordinates={this.startCoordinates(visibleRoutePaths)}

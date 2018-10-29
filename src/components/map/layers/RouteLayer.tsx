@@ -3,7 +3,7 @@ import L from 'leaflet';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { IRoutePath } from '~/models';
+import { IRoutePath, IRoutePathLink } from '~/models';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -13,6 +13,7 @@ interface RouteLayerProps {
     sidebarStore?: SidebarStore;
     routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
+    setDisabledNodeIds: Function;
     colors: string[];
 }
 
@@ -89,7 +90,9 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             this.state.hoveredPolylines.includes(internalId);
     }
 
-    private setHoverHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
+    private setHoverHighlight = (internalId: string, links: IRoutePathLink[]) =>
+    (e: L.LeafletMouseEvent) => {
+        this.props.setDisabledNodeIds(links);
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
@@ -116,7 +119,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                         internalId={internalId}
                         onClick={this.toggleHighlight(internalId)}
                         onContextMenu={this.openLinkView}
-                        onMouseOver={this.setHoverHighlight(internalId)}
+                        onMouseOver={this.setHoverHighlight(internalId, routePath.routePathLinks)}
                         onMouseOut={this.clearHoverHighlights}
                         routePathLinks={routePath.routePathLinks}
                         color={color}

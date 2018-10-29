@@ -4,4 +4,5 @@ export default interface IRoutePathLink {
     startNodeId: string;
     endNodeId: string;
     orderNumber: number;
+    relPysakki: string;
 }
