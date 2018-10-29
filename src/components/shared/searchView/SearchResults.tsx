@@ -6,7 +6,7 @@ import { ILine, ILineRoute } from '~/models';
 import TransitType from '~/enums/transitType';
 import LineService from '~/services/lineService';
 import { SearchStore } from '~/stores/searchStore';
-import routeBuilder from '~/routing/routeBuilder';
+import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
 import LineItem from './LineItem';
 import Loader from '../loader/Loader';
@@ -93,7 +93,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const subLineItemsLength = this.props.searchStore!.subLineItems.length;
 
         const isSearchResultButtonVisible = subLineItemsLength > 0 ||
-        (routeBuilder.getCurrentLocation() !== subSites.home && subLineItemsLength === 0);
+        (Navigator.getPathName() !== subSites.home && subLineItemsLength === 0);
         if (!isSearchResultButtonVisible) {
             return;
         }

@@ -6,12 +6,13 @@ import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
-import { IRoutePath, IRoute } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
+import { IRoutePath, IRoute } from '~/models';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import RouteLayer from './layers/RouteLayer';
+import NewRoutePathLayer from './layers/new/NewRoutePathLayer';
 import MarkerLayer from './layers/MarkerLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
@@ -165,6 +166,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         routes={routes}
                         fitBounds={this.fitBounds}
                     />
+                    <NewRoutePathLayer />
                     <MarkerLayer
                         routes={routes}
                     />

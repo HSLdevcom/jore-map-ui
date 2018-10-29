@@ -39,7 +39,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             </ViewHeader>
             <div className={s.routePathTimestamp}>01.09.2017</div>
             <div className={s.padding} />
-            <div className={s.padding} />
             <div className={s.topic}>
                 REITIN OTSIKKOTIEDOT
             </div>

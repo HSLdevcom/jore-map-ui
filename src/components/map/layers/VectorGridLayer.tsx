@@ -10,6 +10,7 @@ interface IVectorGridLayerProps extends GridLayerProps {
     url: string;
     tms: boolean;
     vectorTileLayerStyles: any;
+    onClick?: Function;
 }
 
 class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
@@ -17,7 +18,11 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         const { url, ...options } = props;
         options.tms = true;
 
-        return L.vectorGrid.protobuf(url, options);
+        return L.vectorGrid.protobuf(url, options).on('click', (event: any) => {
+            if (this.props.onClick) {
+                this.props.onClick(event);
+            }
+        });
     }
 
     updateLeafletElement(fromProps: IVectorGridLayerProps, toProps: IVectorGridLayerProps) {

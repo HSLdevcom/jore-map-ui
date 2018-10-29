@@ -4,8 +4,19 @@ import NodeStopFactory from './nodeStopFactory';
 import NotificationType from '../enums/notificationType';
 import notificationStore from '../stores/notificationStore';
 
+interface IExternalNode {
+    geojson?: string;
+    geojsonManual: string;
+    mittpvm: string;
+    pysakkiBySoltunnus: string;
+    solkuka: string;
+    soltunnus: string;
+    soltyyppi: string;
+    solviimpvm: string;
+}
+
 class NodeFactory {
-    public static createNode = (node: any): INode => {
+    public static createNode = (node: IExternalNode): INode => {
         const coordinateList = // Use less accurate location if measured location is missing.
             JSON.parse(node.geojson ? node.geojson : node.geojsonManual);
         const coordinate : ICoordinate = {
@@ -41,6 +52,8 @@ const getNodeType = (type:any) => {
         return NodeType.CROSSROAD;
     case 'P':
         return NodeType.STOP;
+    case '-':
+        return NodeType.MUNICIPALITY_BORDER;
     default:
         return NodeType.INVALID;
     }

@@ -112,7 +112,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
                             <Checkbox
                                 onClick={this.toggle(routePath.internalId)}
                                 checked={this.isSelected(routePath.internalId)}
-                                text={routePath.routePathName}
+                                text={`${routePath.originFi}-${routePath.destinationFi}`}
                             />
                             <div className={s.routeDate}>
                                 {'Voim.ast: '}
