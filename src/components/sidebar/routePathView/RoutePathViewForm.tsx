@@ -112,7 +112,6 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps, IRouteP
                         label='PITUUS'
                         disabled={isEditingDisabled}
                     />
-                    <div className={s.marginFiller}/>
                     <div className={s.flexInnerRowFlexEnd}>
                         <Button
                             onClick={this.onClick}

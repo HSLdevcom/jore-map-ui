@@ -22,6 +22,7 @@ $marginRight: 10px;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;
+    margin-bottom: 5px;
 }
 
 .topic {
@@ -29,12 +30,6 @@ $marginRight: 10px;
     font-weight: bold;
     color: $mediumGrey;
     font-size: $mediumFontSize;
-}
-
-.sectionDivider {
-    padding-top: 20px;
-    border-bottom: 1.5px solid $lightGrey;
-    width: 100%;
 }
 
 .form > .formSection {
@@ -49,8 +44,4 @@ $marginRight: 10px;
 
 .form > .formSection:first-of-type {
     padding-top: 0;
-}
-
-.marginFiller {
-    margin-right: $marginRight;
 }
