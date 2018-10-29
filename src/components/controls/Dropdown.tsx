@@ -30,7 +30,7 @@ class Dropdown extends React.Component
 
     public render(): any {
         return (
-            <div className={s.formItemContainer}>
+            <div className={s.formItem}>
                 <div className={s.dropdownView}>
                     {this.props.label &&
                         <div className={s.inputLabel}>

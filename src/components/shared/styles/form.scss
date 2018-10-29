@@ -2,13 +2,13 @@
 
 $marginRight: 10px;
 
-.formItemContainer {
+.formItem {
     margin-right: $marginRight;
     padding-top: 10px;
     width:100%;
 }
 
-.formItemContainer:last-of-type {
+.formItem:last-of-type {
     margin-right: 0px;
 }
 
