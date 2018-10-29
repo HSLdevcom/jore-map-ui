@@ -8,18 +8,6 @@
     overflow-y: auto;
     width: $sidebarWide;
 
-    div, input {
-        box-sizing: border-box;
-    }
-
-    input {
-        padding: 10px;
-        line-height: 20px;
-        margin-top: 5px;
-        border-radius: 5px;
-        width: 100%;
-    }
-
     .routePathTimestamp {
         font-weight: bold;
     }

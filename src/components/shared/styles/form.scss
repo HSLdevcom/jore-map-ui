@@ -2,6 +2,10 @@
 
 $marginRight: 10px;
 
+div, input {
+    box-sizing: border-box;
+}
+
 /* TODO: Rename as formItemContainer? */
 .inputContainer {
     margin-right: $marginRight;
