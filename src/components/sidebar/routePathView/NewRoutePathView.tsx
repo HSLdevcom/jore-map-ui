@@ -44,7 +44,7 @@ class NewRoutePathView extends React.Component{
     }
 
     // TODO
-    public onEdit = () => {
+    public onChange = () => {
     }
 
     // TODO
@@ -74,7 +74,7 @@ class NewRoutePathView extends React.Component{
             <div className={s.formSection}>
                 <RoutePathViewForm
                     isEditingDisabled={false}
-                    onEdit={this.onEdit}
+                    onChange={this.onChange}
                     routePath={this.initialRoutePath}
                 />
             </div>

@@ -8,7 +8,7 @@ import * as s from './routePathView.scss';
 interface IRoutePathViewFormProps {
     isEditingDisabled: boolean;
     routePath: IRoutePath;
-    onEdit: Function;
+    onChange: Function;
 }
 
 class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
@@ -17,7 +17,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
     }
 
     public onChange = (property: string) => (value: string) => {
-        this.props.onEdit(property, value);
+        this.props.onChange(property, value);
     }
 
     public render(): any {

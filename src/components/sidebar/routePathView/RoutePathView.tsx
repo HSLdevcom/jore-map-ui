@@ -34,7 +34,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             routePath: null,
             isLoading: true,
         };
-        this.save = this.save.bind(this);
     }
 
     public componentDidMount() {
@@ -77,7 +76,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isLoading: false });
     }
 
-    public onEdit = (property: string, value: any) => {
+    public onChange = (property: string, value: any) => {
         this.setState({
             routePath: { ...this.state.routePath!, [property]: value },
             hasModifications: true,
@@ -141,7 +140,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             </div>
             <div className={s.formSection}>
                 <RoutePathViewForm
-                    onEdit={this.onEdit}
+                    onEdit={this.onChange}
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.state.routePath}
                 />
