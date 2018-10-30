@@ -140,7 +140,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             </div>
             <div className={s.formSection}>
                 <RoutePathViewForm
-                    onEdit={this.onChange}
+                    onChange={this.onChange}
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.state.routePath}
                 />
