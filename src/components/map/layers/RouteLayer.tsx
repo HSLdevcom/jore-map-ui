@@ -3,6 +3,7 @@ import L from 'leaflet';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
+import { NodeStore } from '~/stores/nodeStore';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
@@ -11,9 +12,9 @@ import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
     sidebarStore?: SidebarStore;
+    nodeStore?: NodeStore;
     routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
-    setDisabledNodeIds: Function;
     colors: string[];
 }
 
@@ -22,7 +23,7 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
-@inject('sidebarStore')
+@inject('sidebarStore', 'nodeStore')
 @observer
 export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
@@ -90,16 +91,25 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             this.state.hoveredPolylines.includes(internalId);
     }
 
-    private setHoverHighlight = (internalId: string, links: IRoutePathLink[]) =>
+    private bringRouteToFront = (internalId: string, links: IRoutePathLink[]) =>
     (e: L.LeafletMouseEvent) => {
-        this.props.setDisabledNodeIds(links);
+        this.setDisabledNodeIds(links);
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
         e.target.bringToFront();
     }
 
-    private clearHoverHighlights = (e: L.LeafletMouseEvent) => {
+    private setDisabledNodeIds = (links: IRoutePathLink[]) => {
+        const linksWithDisabledNodes = links.filter(link => (link.startNodeType === 'E'));
+        const disabledNodeIds: string[] = linksWithDisabledNodes.map((link: IRoutePathLink) => {
+            return link.startNodeId;
+        });
+        this.props.nodeStore!.setDisabledNodeIds(disabledNodeIds);
+    }
+
+    private bringRouteToBack = (e: L.LeafletMouseEvent) => {
+        this.props.nodeStore!.setDisabledNodeIds([]);
         this.setState({
             hoveredPolylines: [],
         });
@@ -119,8 +129,8 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                         internalId={internalId}
                         onClick={this.toggleHighlight(internalId)}
                         onContextMenu={this.openLinkView}
-                        onMouseOver={this.setHoverHighlight(internalId, routePath.routePathLinks)}
-                        onMouseOut={this.clearHoverHighlights}
+                        onMouseOver={this.bringRouteToFront(internalId, routePath.routePathLinks)}
+                        onMouseOut={this.bringRouteToBack}
                         routePathLinks={routePath.routePathLinks}
                         color={color}
                         opacity={this.hasHighlight(internalId) ? 1 : 0.6}

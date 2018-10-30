@@ -27,7 +27,7 @@ class RoutePathLinkFactory {
                 startNodeId: routePathLinkNode.lnkalkusolmu,
                 endNodeId: routePathLinkNode.lnkloppusolmu,
                 orderNumber: routePathLinkNode.reljarjnro,
-                relPysakki: routePathLinkNode.relpysakki,
+                startNodeType: routePathLinkNode.relpysakki,
             },
         };
     }
