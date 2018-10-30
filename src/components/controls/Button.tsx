@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import ButtonType from '~/enums/buttonType';
 import * as s from './button.scss';
 
@@ -36,11 +36,6 @@ class Button extends React.Component<IButtonProps, {}> {
         }
     }
 
-    private getClassname = (type: ButtonType, disabled: boolean, className?: string) => {
-        const typeClass = this.getTypeClass(type);
-        return classNames(s.button, typeClass, className, disabled ? s.disabled : null);
-    }
-
     private onClick = (e: any) => {
         if (!this.props.disabled) {
             this.props.onClick(e);
@@ -51,10 +46,11 @@ class Button extends React.Component<IButtonProps, {}> {
         return (
             <div
                 className={
-                    this.getClassname(
-                        this.props.type,
-                        this.props.disabled!,
+                    classnames(
+                        s.button,
                         this.props.className,
+                        this.getTypeClass(this.props.type),
+                        this.props.disabled ? s.disabled : null,
                     )
                 }
                 onClick={this.onClick}
