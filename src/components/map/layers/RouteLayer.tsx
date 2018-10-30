@@ -97,11 +97,13 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     }
 
     private setDisabledNodeIds = (links: IRoutePathLink[]) => {
-        const linksWithDisabledNodes = links.filter(link => (link.startNodeType === 'E'));
-        const disabledNodeIds: string[] = linksWithDisabledNodes.map((link: IRoutePathLink) => {
+        // TODO: E could be enum with the same style as NodeType. Use RoutePathLinkStartNodeType.ts
+        // link.startNodeType === RoutePathLinkStartNodeType.DISABLED
+        const nodeIds = links.filter(link => (link.startNodeType === 'E'))
+        .map((link: IRoutePathLink) => {
             return link.startNodeId;
         });
-        this.props.nodeStore!.setDisabledNodeIds(disabledNodeIds);
+        this.props.nodeStore!.setDisabledNodeIds(nodeIds);
     }
 
     private bringRouteToBack = (e: L.LeafletMouseEvent) => {
