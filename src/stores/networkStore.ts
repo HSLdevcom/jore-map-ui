@@ -20,8 +20,39 @@ export class NetworkStore {
         this._isPointsVisible = false;
     }
 
-    @computed get isLinksVisible(): boolean {
+    @computed
+    get selectedTransitTypes() {
+        return this._selectedTransitTypes;
+    }
+
+    @computed
+    get isLinksVisible(): boolean {
         return this._isLinksVisible;
+    }
+
+    @computed
+    get isNodesVisible(): boolean {
+        return this._isNodesVisible;
+    }
+
+    @computed
+    get isPointsVisible(): boolean {
+        return this._isPointsVisible;
+    }
+
+    @action
+    public setIsNodesVisible(isVisible: boolean) {
+        this._isNodesVisible = isVisible;
+    }
+
+    @action
+    public setIsLinksVisible(isVisible: boolean) {
+        this._isLinksVisible = isVisible;
+    }
+
+    @action
+    public setIsPointsVisible(isVisible: boolean) {
+        this._isPointsVisible = isVisible;
     }
 
     @action
@@ -29,26 +60,14 @@ export class NetworkStore {
         this._isLinksVisible = !this._isLinksVisible;
     }
 
-    @computed get isNodesVisible(): boolean {
-        return this._isNodesVisible;
-    }
-
     @action
     public toggleIsNodesVisible() {
         this._isNodesVisible = !this._isNodesVisible;
     }
 
-    @computed get isPointsVisible(): boolean {
-        return this._isPointsVisible;
-    }
-
     @action
     public toggleIsPointsVisible() {
         this._isPointsVisible = !this._isPointsVisible;
-    }
-
-    @computed get selectedTransitTypes() {
-        return this._selectedTransitTypes;
     }
 
     @action

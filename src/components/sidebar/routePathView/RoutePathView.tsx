@@ -1,5 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
+import classnames from 'classnames';
 import Moment from 'react-moment';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
@@ -16,7 +17,7 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     isEditingDisabled: boolean;
-    isDirty: boolean;
+    hasModifications: boolean;
     routePath: IRoutePath | null;
     isLoading: boolean;
 }
@@ -29,7 +30,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         super(props);
         this.state = {
             isEditingDisabled: true,
-            isDirty: false,
+            hasModifications: false,
             routePath: null,
             isLoading: true,
         };
@@ -62,7 +63,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isLoading: true });
         try {
             await RoutePathService.saveRoutePath(this.state.routePath!);
-            this.setState({ isDirty: false });
+            this.setState({ hasModifications: false });
             NotificationStore.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
@@ -79,7 +80,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     public onEdit = (property: string, value: any) => {
         this.setState({
             routePath: { ...this.state.routePath!, [property]: value },
-            isDirty: true,
+            hasModifications: true,
         });
     }
 
@@ -93,7 +94,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         }
         if (!this.state.routePath) return 'Error';
         return (
-        <div className={s.routePathView}>
+        <div className={classnames(s.routePathView, s.form)}>
             <ViewHeader
                 header={`Reitin suunta ${this.state.routePath.lineId}`}
             >
@@ -103,7 +104,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     text={'Muokkaa'}
                 />
             </ViewHeader>
-            <div className={s.section} >
+            <div className={s.routePathTimestamp}>01.09.2017</div>
+            <div className={s.formSection}>
                 <div className={s.topic}>
                     REITIN OTSIKKOTIEDOT
                 </div>
@@ -128,22 +130,21 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         <div>{this.state.routePath.modifiedBy}</div>
                     </div>
                 </div>
-                <div className={s.sectionDivider} />
             </div>
-            <div className={s.section}>
+            <div className={s.formSection}>
                 <RoutePathViewForm
                     onEdit={this.onEdit}
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.state.routePath}
                 />
             </div>
-            <div className={s.section}>
+            <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.save}
                         type={ButtonType.SAVE}
                         text={'Tallenna reitinsuunta'}
-                        disabled={!this.state.isDirty}
+                        disabled={!this.state.hasModifications}
                     />
                 </div>
             </div>

@@ -17,10 +17,16 @@ class Navigator {
         this.store.history.push(url);
     }
 
+    /**
+     * @return {String} for example /routePath/new
+     */
     public getPathName() {
         return this.store.location.pathname;
     }
 
+    /**
+     * @return {String} for example ?routes=0033
+     */
     public getSearch() {
         return this.store.location.search;
     }

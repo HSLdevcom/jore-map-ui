@@ -7,8 +7,8 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewFormProps {
     isEditingDisabled: boolean;
-    onEdit: Function;
     routePath: IRoutePath;
+    onEdit: Function;
 }
 
 class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
@@ -24,8 +24,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         const isEditingDisabled = this.props.isEditingDisabled;
 
         return (
-        <div>
-            <div className={s.section}>
+        <div className={s.form}>
+            <div className={s.formSection}>
                 <div className={s.topic}>
                     REITINSUUNNAN TIEDOT
                 </div>
@@ -107,21 +107,17 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     </div>
                 </div>
                 <div className={s.flexRow}>
-                    <div className={s.inputContainer}>
-                        <div className={s.subTopic}>
-                            SUUNTA
-                        </div>
-                        <Dropdown
-                            onChange={this.onClick}
-                            items={['Suunta 2']}
-                            selected={'Suunta 1'}
-                        />
-                    </div>
-                    <div className={s.inputContainer}>
-                        <div className={s.subTopic}>
+                    <Dropdown
+                        label='SUUNTA'
+                        onChange={this.onChange}
+                        items={['Suunta 2']}
+                        selected={'Suunta 1'}
+                    />
+                    <div className={s.formItem}>
+                        <div className={s.inputLabel}>
                             POIKKEUSREITTI
                         </div>
-                        <div className={s.flexRow}>
+                        <div className={s.flexInnerRow}>
                             <Checkbox
                                 checked={false}
                                 text={'Ei'}
@@ -139,13 +135,11 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.flexGrow}>
-                        <div className={s.subTopic}>
-                            SOLMUTYYPIT
-                        </div>
                         <Dropdown
                             onChange={this.onClick}
                             items={['Kaikki solmut']}
                             selected={'Kaikki solmut'}
+                            label='SOLMUTYYPIT'
                         />
                     </div>
                     <div className={s.flexFiller} />
@@ -160,7 +154,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                     />
                 </div>
-                <div className={s.sectionDivider}/>
+            </div>
+            <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onClick}
@@ -191,41 +186,42 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     />
                     <div className={s.flexButtonFiller} />
                 </div>
-                <div className={s.sectionDivider}/>
             </div>
-            <div className={s.section}>
-                <div className={s.inputContainer}>
+            <div className={s.formSection}>
+                <div className={s.formItem}>
                     <div className={s.topic}>
                         KARTTA
                     </div>
-                    <div className={s.flexRow}>
-                        <Button
-                            onClick={this.onClick}
-                            type={ButtonType.ROUND}
-                            text={'Kartta'}
-                        />
-                        <Checkbox
-                            checked={false}
-                            text={'Muotopisteet kartalle'}
-                            onClick={this.onClick}
-                        />
-                        <div className={s.flexButtonFiller} />
+                    <div className={s.formItem}>
+                        <div className={s.flexInnerRow}>
+                            <Button
+                                onClick={this.onClick}
+                                type={ButtonType.ROUND}
+                                text={'Kartta'}
+                            />
+                            <Checkbox
+                                checked={false}
+                                text={'Muotopisteet kartalle'}
+                                onClick={this.onClick}
+                            />
+                            <div className={s.flexButtonFiller} />
+                        </div>
                     </div>
                 </div>
-                <div className={s.inputContainer}>
+                <div className={s.formItem}>
                     Esitettävien ajoaikojen kausi ja aikajakso
-                </div>
-                <div className={s.flexRow}>
-                    <Dropdown
-                        onChange={this.onClick}
-                        items={['Suunta 2']}
-                        selected={'Suunta 1'}
-                    />
-                    <Dropdown
-                        onChange={this.onClick}
-                        items={['Suunta 2']}
-                        selected={'Suunta 1'}
-                    />
+                    <div className={s.flexInnerRow}>
+                        <Dropdown
+                            onChange={this.onChange}
+                            items={['Suunta 2']}
+                            selected={'Suunta 1'}
+                        />
+                        <Dropdown
+                            onChange={this.onClick}
+                            items={['Suunta 2']}
+                            selected={'Suunta 1'}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

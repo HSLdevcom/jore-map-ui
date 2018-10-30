@@ -62,6 +62,7 @@
 }
 
 .disabled {
-    background-color: $disabledGrey !important;
-    cursor: default
+    background-color: $disabledGrey;
+    cursor: default;
+    pointer-events: none;
 }

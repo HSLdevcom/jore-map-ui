@@ -1,7 +1,10 @@
 import * as React from 'react';
+import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import MapStore, { NodeSize } from '~/stores/mapStore';
+import NetworkStore from '~/stores/networkStore';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -49,20 +52,33 @@ class NewRoutePathView extends React.Component{
 
     }
 
+    componentDidMount() {
+        MapStore.setNodeSize(NodeSize.large);
+        MapStore.setIsCreatingNewRoutePath(true);
+        NetworkStore.setIsNodesVisible(true);
+    }
+
+    componentWillUnmount() {
+        MapStore.setNodeSize(NodeSize.normal);
+        MapStore.setIsCreatingNewRoutePath(false);
+    }
+
     public render(): any {
         return (
-        <div className={s.routePathView}>
-            <ViewHeader
-                header='Luo uusi reitinsuunta'
-            />
-            <div className={s.section}>
+        <div className={classnames(s.routePathView, s.form)}>
+            <div className={s.formSection}>
+                <ViewHeader
+                    header='Luo uusi reitinsuunta'
+                />
+            </div>
+            <div className={s.formSection}>
                 <RoutePathViewForm
                     isEditingDisabled={false}
                     onEdit={this.onEdit}
                     routePath={this.initialRoutePath}
                 />
             </div>
-            <div className={s.section}>
+            <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onSave}

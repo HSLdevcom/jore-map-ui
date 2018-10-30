@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
+import ColorScale from '~/util/colorScale';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { IRoutePath } from '~/models';
-import routeBuilder  from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
+import { IRoute } from '~/models';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
     sidebarStore?: SidebarStore;
-    routePaths: IRoutePath[];
+    routes: IRoute[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
-    colors: string[];
 }
 
 interface IRouteLayerState {
@@ -35,13 +32,15 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     calculateBounds() {
         let bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
-        this.props.routePaths.forEach((routePath) => {
-            const geoJSON = L.geoJSON(toJS(routePath.geoJson));
-            if (!bounds) {
-                bounds = geoJSON.getBounds();
-            } else {
-                bounds.extend(geoJSON.getBounds());
-            }
+        this.props.routes.forEach((route) => {
+            route.routePaths.forEach((routePath) => {
+                const geoJSON = L.geoJSON(toJS(routePath.geoJson));
+                if (!bounds) {
+                    bounds = geoJSON.getBounds();
+                } else {
+                    bounds.extend(geoJSON.getBounds());
+                }
+            });
         });
 
         if (bounds.isValid()) {
@@ -50,9 +49,13 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     }
 
     componentDidUpdate(prevProps: RouteLayerProps) {
-        const routePathsChanged =
-            prevProps.routePaths.map(rPath => rPath.internalId).join(':')
-            !== this.props.routePaths.map(rPath => rPath.internalId).join(':');
+        // TODO: Fix this check when calculateBounds() is called
+        const prevRoutePathIds = prevProps.routes.map(route =>
+            route.routePaths.map(rPath => rPath.internalId).join(':')).join(':');
+        const currentRoutePathIds = this.props.routes.map(route =>
+            route.routePaths.map(rPath => rPath.internalId).join(':')).join(':');
+        const routePathsChanged = prevRoutePathIds !== currentRoutePathIds;
+
         if (routePathsChanged) {
             this.calculateBounds();
             this.setState({
@@ -77,14 +80,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         e.target.bringToFront();
     }
 
-    private openLinkView = (routePathLinkId: number) => {
-        // TODO deal with fetching linkID in the endpoint
-        this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
-        const linkViewLink = routeBuilder.to(subSites.link).toLink();
-        navigator.goTo(linkViewLink);
-    }
-
-    private hasHighlight(internalId: string) {
+    private hasHighlight = (internalId: string) => {
         return this.state.selectedPolylines.includes(internalId) ||
             this.state.hoveredPolylines.includes(internalId);
     }
@@ -106,22 +102,20 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     }
 
     render() {
-        return this.props.routePaths
-            .map((routePath, index) => {
-                const color = this.props.colors[index];
-                const internalId = routePath.internalId;
+        const colorMap = ColorScale.getColorMap(this.props.routes);
+
+        return this.props.routes
+            .map((route, index) => {
                 return (
                     <RoutePathLayer
                         key={index}
-                        internalId={internalId}
-                        onClick={this.toggleHighlight(internalId)}
-                        onContextMenu={this.openLinkView}
-                        onMouseOver={this.setHoverHighlight(internalId)}
-                        onMouseOut={this.clearHoverHighlights}
-                        routePathLinks={routePath.routePathLinks!}
-                        color={color}
-                        opacity={this.hasHighlight(internalId) ? 1 : 0.6}
-                        weight={this.hasHighlight(internalId) ? 8 : 7}
+                        toggleHighlight={this.toggleHighlight}
+                        setHoverHighlight={this.setHoverHighlight}
+                        clearHoverHighlights={this.clearHoverHighlights}
+                        hasHighlight={this.hasHighlight}
+                        colors={colorMap.get(route.routeId)}
+                        routePaths={route.routePaths}
+                        fitBounds={this.props.fitBounds}
                     />
                 );
             });

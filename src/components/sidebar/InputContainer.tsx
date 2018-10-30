@@ -20,8 +20,8 @@ class InputContainer extends React.Component<IInputProps> {
         };
 
         return (
-            <div className={s.inputContainer}>
-                <div className={classnames(s.subTopic)}>
+            <div className={s.formItem}>
+                <div className={s.inputLabel}>
                     {this.props.label}
                 </div>
                 <input
