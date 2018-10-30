@@ -6,6 +6,10 @@ $marginRight: 10px;
     margin-right: $marginRight;
     padding-top: 10px;
     width:100%;
+
+    .disabled {
+        background-color: $disabledGrey;
+    }
 }
 
 .formItem:last-of-type {
@@ -18,6 +22,7 @@ $marginRight: 10px;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;
+    margin-bottom: 5px;
 }
 
 .topic {
@@ -27,12 +32,16 @@ $marginRight: 10px;
     font-size: $mediumFontSize;
 }
 
-.sectionDivider {
-    padding-top: 20px;
+.form > .formSection {
     border-bottom: 1.5px solid $lightGrey;
+    padding: 20px 0;
     width: 100%;
 }
 
-.marginFiller {
-    margin-right: $marginRight;
+.form > .formSection:last-of-type {
+    border-bottom: none;
+}
+
+.form > .formSection:first-of-type {
+    padding-top: 0;
 }

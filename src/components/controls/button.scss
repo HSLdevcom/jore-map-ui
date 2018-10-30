@@ -60,3 +60,9 @@
 .save:hover {
     background-color: darken($saveButtonGreen, 10);
 }
+
+.disabled {
+    background-color: $disabledGrey;
+    cursor: default;
+    pointer-events: none;
+}

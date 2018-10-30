@@ -31,7 +31,7 @@ class RouteFactory {
             route,
             nodes: QueryParsingHelper.removeINodeDuplicates(
                 routePathResults
-                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
+                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes!), []),
             ),
         };
     }
