@@ -1,5 +1,5 @@
 enum entityNames {
-    ROUTEPATH = 'routepath',
+    ROUTEPATH = 'routePath',
 }
 
 export default entityNames;
