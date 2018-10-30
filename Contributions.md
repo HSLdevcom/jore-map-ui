@@ -31,6 +31,8 @@
 
 ### MobX
 
+* Import store through props always if possible. Use import without props only if needed.
+
 **Annotations**
 
 * Use decorators
