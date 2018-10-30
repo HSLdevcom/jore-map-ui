@@ -7,12 +7,15 @@ import * as s from './viewHeader.scss';
 interface IViewHeaderProps {
     header: string;
     children?: any;
+    onBeforeClosing?: Function;
 }
 
 class ViewHeader extends React.Component<IViewHeaderProps> {
     private closeSidebarView = () => {
-        const routesLink = routeBuilder.to(subSites.routes).toLink();
-        navigator.goTo(routesLink);
+        if (!this.props.onBeforeClosing || this.props.onBeforeClosing()) {
+            const routesLink = routeBuilder.to(subSites.routes).toLink();
+            navigator.goTo(routesLink);
+        }
     }
 
     public render(): any {

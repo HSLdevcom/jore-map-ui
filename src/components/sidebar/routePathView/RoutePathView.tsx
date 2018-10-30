@@ -59,7 +59,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isEditingDisabled });
     }
 
-    public async save () {
+    public save = async () => {
         this.setState({ isLoading: true });
         try {
             await RoutePathService.saveRoutePath(this.state.routePath!);
@@ -84,6 +84,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
+    public blockClosing = () => {
+        // tslint:disable-next-line:max-line-length
+        const message = 'Suunnalla on muutoksia, joita ei ole tallennettu. Oletko varma, että haluat poistaa näkymästä?';
+        if (this.state.hasModifications && !confirm(message)) return false;
+        return true;
+    }
+
     public render(): any {
         if (this.state.isLoading) {
             return (
@@ -97,11 +104,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         <div className={classnames(s.routePathView, s.form)}>
             <ViewHeader
                 header={`Reitin suunta ${this.state.routePath.lineId}`}
+                onBeforeClosing={this.blockClosing}
             >
                 <Button
                     onClick={this.toggleEditing}
                     type={ButtonType.SQUARE}
-                    text={'Muokkaa'}
+                    text={this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'}
                 />
             </ViewHeader>
             <div className={s.routePathTimestamp}>01.09.2017</div>
