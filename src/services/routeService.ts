@@ -48,6 +48,7 @@ export default class RouteService {
             }
             return null;
         } catch (err) {
+            console.log(err); // tslint:disable-line
             notificationStore.addNotification({
                 message: 'Reitin haku ei onnistunut.',
                 type: NotificationType.ERROR,
@@ -69,55 +70,51 @@ query getLineDetails($routeId: String!) {
         reikuka
         reiviimpvm
         reitinsuuntasByReitunnus{
-            edges {
-                node {
-                    suusuunta
-                    suunimi
-                    suuvoimast
-                    suuviimpvm
-                    suuvoimviimpvm
-                    suulahpaik
-                    suupaapaik
-                    geojson
-                    reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-                        edges {
-                            node {
-                                relid
-                                lnkalkusolmu
-                                lnkloppusolmu
-                                reljarjnro
-                                relpysakki
-                                lnkverkko
-                                solmuByLnkalkusolmu {
-                                    solx,
-                                    soly,
-                                    soltunnus,
-                                    soltyyppi,
-                                    geojson,
-                                    geojsonManual,
-                                    pysakkiBySoltunnus {
-                                        pyssade,
-                                        pysnimi,
-                                        pysnimir
-                                    }
-                                }
-                                solmuByLnkloppusolmu {
-                                    solx,
-                                    soly,
-                                    soltunnus,
-                                    soltyyppi,
-                                    geojson,
-                                    geojsonManual,
-                                    pysakkiBySoltunnus {
-                                        pyssade,
-                                        pysnimi,
-                                        pysnimir
-                                    }
-                                }
-                                linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
-                                    geojson
-                                }
+            nodes {
+                suusuunta
+                suunimi
+                suuvoimast
+                suuviimpvm
+                suuvoimviimpvm
+                suulahpaik
+                suupaapaik
+                geojson
+                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
+                    nodes {
+                        relid
+                        lnkalkusolmu
+                        lnkloppusolmu
+                        relpysakki
+                        reljarjnro
+                        lnkverkko
+                        solmuByLnkalkusolmu {
+                            solx,
+                            soly,
+                            soltunnus,
+                            soltyyppi,
+                            geojson,
+                            geojsonManual,
+                            pysakkiBySoltunnus {
+                                pyssade,
+                                pysnimi,
+                                pysnimir
                             }
+                        }
+                        solmuByLnkloppusolmu {
+                            solx,
+                            soly,
+                            soltunnus,
+                            soltyyppi,
+                            geojson,
+                            geojsonManual,
+                            pysakkiBySoltunnus {
+                                pyssade,
+                                pysnimi,
+                                pysnimir
+                            }
+                        }
+                        linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
+                            geojson
                         }
                     }
                 }

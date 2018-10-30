@@ -26,9 +26,7 @@ const DEFAULT_RADIUS = 25;
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getMarkerHtml = (markerClass: string) => {
-        return `<div
-            class="${classnames(s.nodeBase, markerClass)}"
-        />`;
+        return `<div class="${classnames(s.nodeBase, markerClass)}" />`;
     }
 
     private getIcon = (node: INode) => {
@@ -42,6 +40,11 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         }
         case NodeType.CROSSROAD: {
             html = this.getMarkerHtml(isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker);
+            break;
+        }
+        case NodeType.MUNICIPALITY_BORDER: {
+            html = this.getMarkerHtml(isSelected ?
+                s.municipalityMarkerHighlight : s.municipalityMarker);
             break;
         }
         default: {

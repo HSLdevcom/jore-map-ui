@@ -6,13 +6,13 @@ import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
-import ColorScale from '~/util/colorScale';
-import { IRoutePath, IRoute } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
+import { IRoutePath, IRoute } from '~/models';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import RouteLayer from './layers/RouteLayer';
+import NewRoutePathLayer from './layers/new/NewRoutePathLayer';
 import MarkerLayer from './layers/MarkerLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
@@ -113,10 +113,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         ).filter(routePath => routePath.visible);
     }
 
-    private startCoordinates(visibleRoutePaths: IRoutePath[]) {
-        return visibleRoutePaths.map((routePath: IRoutePath) => routePath.geoJson.coordinates[0]);
-    }
-
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
         this.getMap().setView(latLng, 17);
@@ -126,12 +122,12 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
-
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
-        const visibleRoutePaths = this.getVisibleRoutePaths(this.props.routeStore!.routes);
+
+        const routes = this.props.routeStore!.routes;
+        const visibleRoutePaths = this.getVisibleRoutePaths(routes);
         const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
 
-        const colors = ColorScale.getColors(visibleRoutePaths.length);
         return (
             <div
                 className={classnames(
@@ -167,12 +163,12 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     />
                     <NetworkLayers />
                     <RouteLayer
-                        colors={colors}
-                        routePaths={visibleRoutePaths}
+                        routes={routes}
                         fitBounds={this.fitBounds}
                     />
+                    <NewRoutePathLayer />
                     <MarkerLayer
-                        coordinates={this.startCoordinates(visibleRoutePaths)}
+                        routes={routes}
                     />
                     <NodeLayer
                         nodes={visibleNodes}

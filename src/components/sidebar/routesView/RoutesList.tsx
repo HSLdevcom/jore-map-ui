@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import ColorScale from '~/util/colorScale';
 import { RouteStore } from '~/stores/routeStore';
 import searchStore from '~/stores/searchStore';
 import { IRoute } from '~/models';
@@ -62,23 +63,23 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         this.props.networkStore!.toggleIsPointsVisible();
     }
 
+    public renderRouteList() {
+        const routes = this.props.routeStore!.routes;
+        const colorMap = ColorScale.getColorMap(routes);
+
+        if (routes.length < 1) return null;
+        return routes.map((route: IRoute) => {
+            return (
+                <RouteShow
+                    key={route.routeId}
+                    route={route}
+                    colors={colorMap.get(route.routeId)}
+                />
+            );
+        });
+    }
+
     public render(): any {
-        const routeList = (routes: IRoute[]) => {
-            let visibleRoutePathsIndex = 0;
-            if (routes.length < 1) return null;
-            return routes.map((route: IRoute) => {
-                const routeShow = (
-                    <RouteShow
-                        key={route.routeId}
-                        route={route}
-                        visibleRoutePathsIndex={visibleRoutePathsIndex}
-                    />
-                );
-                visibleRoutePathsIndex += route.routePaths.filter(
-                    x => x.visible).length;
-                return routeShow;
-            });
-        };
         if (this.state.isLoading) {
             return(
                 <div className={s.routesListView}>
@@ -90,11 +91,11 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
             <div className={s.routesListView}>
                 <div className={s.routeList}>
                     {
-                        routeList(this.props.routeStore!.routes)
+                        this.renderRouteList()
                     }
                 </div>
                 <div className={s.network}>
-                    <label className={s.inputTitle}>VERKKO</label>
+                    <div className={s.inputTitle}>VERKKO</div>
                     <TransitToggleButtonBar
                         toggleSelectedTransitType={this.toggleTransitType}
                         selectedTransitTypes={this.props.networkStore!.selectedTransitTypes}

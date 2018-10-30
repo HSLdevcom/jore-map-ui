@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import ButtonType from '~/enums/buttonType';
 import * as s from './button.scss';
 
@@ -7,13 +7,14 @@ interface IButtonProps {
     type: ButtonType;
     text: string;
     className?: string;
+    disabled?: boolean;
     onClick(event: any): void;
 }
 
 class Button extends React.Component<IButtonProps, {}> {
-    constructor(props: IButtonProps) {
-        super(props);
-    }
+    public static defaultProps: Partial<IButtonProps> = {
+        disabled: false,
+    };
 
     private getTypeClass = (type: ButtonType) => {
         switch (type) {
@@ -35,16 +36,24 @@ class Button extends React.Component<IButtonProps, {}> {
         }
     }
 
-    private getClassname = (type: ButtonType, className?: string) => {
-        const typeClass = this.getTypeClass(type);
-        return classNames(s.button, typeClass, className);
+    private onClick = (e: any) => {
+        if (!this.props.disabled) {
+            this.props.onClick(e);
+        }
     }
 
     public render(): any {
         return (
             <div
-                className={this.getClassname(this.props.type, this.props.className)}
-                onClick={this.props.onClick}
+                className={
+                    classnames(
+                        s.button,
+                        this.props.className,
+                        this.getTypeClass(this.props.type),
+                        this.props.disabled ? s.disabled : null,
+                    )
+                }
+                onClick={this.onClick}
             >
                 {this.props.text}
             </div>

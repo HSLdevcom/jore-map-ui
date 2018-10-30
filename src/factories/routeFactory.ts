@@ -9,10 +9,10 @@ export interface IRouteResult{
 class RouteFactory {
     public static createRoute = (reitti: any, line?: ILine): IRouteResult => {
         const routePathResults:IRoutePathResult[]
-            = reitti.reitinsuuntasByReitunnus.edges
+            = reitti.reitinsuuntasByReitunnus.nodes
                 .map((routePath: any, index:number) => {
                     return RoutePathFactory.createRoutePath(
-                        reitti.reitunnus, routePath.node);
+                        reitti.reitunnus, routePath);
                 });
 
         const route = {
@@ -30,7 +30,7 @@ class RouteFactory {
             route,
             nodes: QueryParsingHelper.removeINodeDuplicates(
                 routePathResults
-                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
+                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes!), []),
             ),
         };
     }
