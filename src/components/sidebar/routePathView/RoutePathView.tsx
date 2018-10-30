@@ -52,7 +52,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     public save = () => {
-        console.log('Saving');
         this.setState({ hasModifications: false });
     }
 

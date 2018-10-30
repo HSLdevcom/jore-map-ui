@@ -11,8 +11,8 @@ import RoutePathLinkLayer from './RoutePathLinkLayer';
 interface RoutePathLayerProps {
     sidebarStore?: SidebarStore;
     toggleHighlight: Function;
-    setHoverHighlight: Function;
-    clearHoverHighlights: Function;
+    bringRouteToFront: Function;
+    bringRouteToBack: Function;
     hasHighlight: Function;
     colors: string[];
     routePaths: IRoutePath[];
@@ -41,8 +41,10 @@ export default class RouteLayer extends Component<RoutePathLayerProps> {
                         internalId={internalId}
                         onClick={this.props.toggleHighlight(internalId)}
                         onContextMenu={this.openLinkView}
-                        onMouseOver={this.props.setHoverHighlight(internalId)}
-                        onMouseOut={this.props.clearHoverHighlights}
+                        onMouseOver={
+                            this.props.bringRouteToFront(internalId, routePath.routePathLinks)
+                        }
+                        onMouseOut={this.props.bringRouteToBack}
                         routePathLinks={routePath.routePathLinks!}
                         color={color}
                         opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}

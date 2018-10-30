@@ -121,7 +121,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
     public render() {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
-        // grey tiles.
+        // grey tiles
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
 
         const routes = this.props.routeStore!.routes;
