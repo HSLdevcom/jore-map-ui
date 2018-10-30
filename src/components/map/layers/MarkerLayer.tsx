@@ -4,6 +4,7 @@ import * as L from 'leaflet';
 import { observer } from 'mobx-react';
 import ColorScale from '~/util/colorScale';
 import PinIcon from '~/icons/pin';
+import { IRoute } from '~/models';
 import * as s from './markerLayer.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -13,7 +14,7 @@ import * as s from './markerLayer.scss';
 const VERY_HIGH_Z_INDEX = 1000;
 
 interface MarkerLayerProps {
-    coordinates: number[];
+    routes: IRoute[];
 }
 
 @observer
@@ -28,17 +29,24 @@ export default class MarkerLayer extends Component<MarkerLayerProps> {
     }
 
     render() {
-        const colors = ColorScale.getColors(this.props.coordinates.length);
-        return this.props.coordinates.map((_coordinates, index) => {
-            const icon = this.getStartPointIcon(colors[index]);
-            return (
-                <Marker
-                    zIndexOffset={VERY_HIGH_Z_INDEX}
-                    icon={icon}
-                    key={index}
-                    position={[_coordinates[1], _coordinates[0]]}
-                />
-            );
+        const colorMap = ColorScale.getColorMap(this.props.routes);
+
+        return this.props.routes.map((route) => {
+            const colors = colorMap.get(route.routeId);
+            return route.routePaths.map((routePath, index) => {
+                if (!routePath.visible) return;
+
+                const icon = this.getStartPointIcon(colors[index]);
+                const coordinates = routePath.geoJson.coordinates[0];
+                return (
+                    <Marker
+                        zIndexOffset={VERY_HIGH_Z_INDEX}
+                        icon={icon}
+                        key={index}
+                        position={[coordinates[1], coordinates[0]]}
+                    />
+                );
+            });
         });
     }
 }
