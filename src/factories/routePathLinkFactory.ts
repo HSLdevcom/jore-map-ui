@@ -10,7 +10,8 @@ class RoutePathLinkFactory {
     public static createRoutePathLink = (routePathLinkNode: any): IRoutePathLinkResult => {
         const nodes = [];
         if (routePathLinkNode.solmuByLnkalkusolmu) {
-            nodes.push(NodeFactory.createNode(routePathLinkNode.solmuByLnkalkusolmu));
+            const node = NodeFactory.createNode(routePathLinkNode.solmuByLnkalkusolmu);
+            nodes.push(node);
         }
         if (routePathLinkNode.solmuByLnkloppusolmu) {
             nodes.push(NodeFactory.createNode(routePathLinkNode.solmuByLnkloppusolmu));
@@ -26,6 +27,7 @@ class RoutePathLinkFactory {
                 startNodeId: routePathLinkNode.lnkalkusolmu,
                 endNodeId: routePathLinkNode.lnkloppusolmu,
                 orderNumber: routePathLinkNode.reljarjnro,
+                startNodeType: routePathLinkNode.relpysakki,
             },
         };
     }

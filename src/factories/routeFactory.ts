@@ -6,7 +6,6 @@ export interface IRouteResult{
     nodes: INode[];
     route?: IRoute;
 }
-
 class RouteFactory {
     public static createRoute = (reitti: any, line?: ILine): IRouteResult => {
         const routePathResults:IRoutePathResult[]
