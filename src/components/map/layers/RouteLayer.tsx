@@ -4,11 +4,13 @@ import ColorScale from '~/util/colorScale';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { IRoute } from '~/models';
+import { NodeStore } from '~/stores/nodeStore';
+import { IRoute, IRoutePathLink } from '~/models';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
     sidebarStore?: SidebarStore;
+    nodeStore?: NodeStore;
     routes: IRoute[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
@@ -18,7 +20,7 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
-@inject('sidebarStore')
+@inject('sidebarStore', 'nodeStore')
 @observer
 export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
@@ -85,14 +87,27 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             this.state.hoveredPolylines.includes(internalId);
     }
 
-    private setHoverHighlight = (internalId: string) => (e: L.LeafletMouseEvent) => {
+    private bringRouteToFront = (internalId: string, links: IRoutePathLink[]) =>
+    (e: L.LeafletMouseEvent) => {
+        this.setDisabledNodeIds(links);
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
         e.target.bringToFront();
     }
 
-    private clearHoverHighlights = (e: L.LeafletMouseEvent) => {
+    private setDisabledNodeIds = (links: IRoutePathLink[]) => {
+        // TODO: E could be enum with the same style as NodeType. Use RoutePathLinkStartNodeType.ts
+        // link.startNodeType === RoutePathLinkStartNodeType.DISABLED
+        const nodeIds = links.filter(link => (link.startNodeType === 'E'))
+        .map((link: IRoutePathLink) => {
+            return link.startNodeId;
+        });
+        this.props.nodeStore!.setDisabledNodeIds(nodeIds);
+    }
+
+    private bringRouteToBack = (e: L.LeafletMouseEvent) => {
+        this.props.nodeStore!.setDisabledNodeIds([]);
         this.setState({
             hoveredPolylines: [],
         });
@@ -110,8 +125,8 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                     <RoutePathLayer
                         key={index}
                         toggleHighlight={this.toggleHighlight}
-                        setHoverHighlight={this.setHoverHighlight}
-                        clearHoverHighlights={this.clearHoverHighlights}
+                        bringRouteToFront={this.bringRouteToFront}
+                        bringRouteToBack={this.bringRouteToBack}
                         hasHighlight={this.hasHighlight}
                         colors={colorMap.get(route.routeId)}
                         routePaths={route.routePaths}
