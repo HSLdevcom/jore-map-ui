@@ -42,10 +42,8 @@
     padding: $buttonPadding;
 }
 
-/* TODO: remove when inputContainers are refactored */
 .flexGrow {
     flex-grow: 1;
     flex-basis: 0px;
     margin-right: 10px;
 }
-

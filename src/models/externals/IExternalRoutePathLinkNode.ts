@@ -1,13 +1,4 @@
-
-interface RoutePathLinkNode {
-    geojson: string;
-    geojsonManual: string;
-    pysakkiBySoltunnus: string;
-    soltunnus: string;
-    soltyyppi: string;
-    solx: string;
-    soly: string;
-}
+import IExternalNode from './IExternalNode';
 
 export default interface IExternalRoutePathLinkNode {
     linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu: {
@@ -18,6 +9,7 @@ export default interface IExternalRoutePathLinkNode {
     lnkverkko: string;
     relid: string;
     reljarjnro: number;
-    solmuByLnkalkusolmu: RoutePathLinkNode;
-    solmuByLnkloppusolmu: RoutePathLinkNode;
+    relpysakki: string;
+    solmuByLnkalkusolmu: IExternalNode;
+    solmuByLnkloppusolmu: IExternalNode;
 }

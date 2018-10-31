@@ -5,9 +5,11 @@ import NodeHelper from '~/util/nodeHelper';
 export class NodeStore {
     @observable private _nodes: INode[];
     @observable private _selectedNodeId: string|null;
+    @observable private _disabledNodeIds: string[];
 
     constructor() {
         this._nodes = [];
+        this._disabledNodeIds = [];
         this._selectedNodeId = null;
     }
 
@@ -19,12 +21,24 @@ export class NodeStore {
         this._nodes = value;
     }
 
+    @computed get disabledNodeIds(): string[] {
+        return this._disabledNodeIds;
+    }
+
+    @action
+    public setDisabledNodeIds(nodes: string[]) {
+        this._disabledNodeIds = nodes;
+    }
     @computed get selectedNodeId(): string|null {
         return this._selectedNodeId;
     }
 
     set selectedNodeId(nodeId: string|null) {
         this._selectedNodeId = nodeId;
+    }
+
+    public isNodeDisabled(nodeId: string): boolean {
+        return (this._disabledNodeIds.includes(nodeId));
     }
 
     @action

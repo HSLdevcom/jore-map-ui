@@ -8,20 +8,6 @@
     overflow-y: auto;
     width: $sidebarWide;
 
-    /* TODO: move to form.scss when inputContainer is refactored */
-    div, input {
-        box-sizing: border-box;
-    }
-
-    /* TODO: move to form.scss when inputContainer is refactored */
-    input {
-        padding: 10px;
-        line-height: 20px;
-        margin-top: 5px;
-        border-radius: 5px;
-        width: 100%;
-    }
-
     .routePathTimestamp {
         font-weight: bold;
     }
@@ -32,9 +18,4 @@
         justify-content: space-between;
         padding-top:10px;
     }
-
-    .padding {
-        padding-top: 10px;
-    }
-
 }

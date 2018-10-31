@@ -7,20 +7,32 @@ interface IInputProps {
     placeholder?: string;
     className?: string;
     disabled?: boolean;
+    onChange?: Function;
+    value?: string;
 }
 
 class InputContainer extends React.Component<IInputProps> {
     public render(): any {
+        const onChange = (e: React.FormEvent<HTMLInputElement>) => {
+            if (!this.props.disabled && this.props.onChange) {
+                this.props.onChange!(e.currentTarget.value);
+            }
+        };
+
         return (
-            <div className={s.inputContainer}>
-                <div className={classnames(s.subTopic)}>
+            <div className={s.formItem}>
+                <div className={s.inputLabel}>
                     {this.props.label}
                 </div>
                 <input
                     placeholder={this.props.disabled ? '' : this.props.placeholder}
                     type='text'
-                    className={this.props.className}
+                    className={
+                        classnames(this.props.className, this.props.disabled ? s.disabled : null)
+                    }
                     disabled={this.props.disabled}
+                    value={this.props.value!}
+                    onChange={onChange}
                 />
             </div>
         );

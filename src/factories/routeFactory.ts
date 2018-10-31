@@ -8,14 +8,13 @@ export interface IRouteResult{
     nodes: INode[];
     route?: IRoute;
 }
-
 class RouteFactory {
     public static createRoute = (reitti: IExternalRoute, line?: ILine): IRouteResult => {
         const routePathResults:IRoutePathResult[]
-            = reitti.reitinsuuntasByReitunnus.edges
+            = reitti.reitinsuuntasByReitunnus.nodes
                 .map((routePath: IExternalRoutePath, index:number) => {
                     return RoutePathFactory.createRoutePath(
-                        reitti.reitunnus, routePath.node);
+                        reitti.reitunnus, routePath);
                 });
 
         const route = {
@@ -33,7 +32,7 @@ class RouteFactory {
             route,
             nodes: QueryParsingHelper.removeINodeDuplicates(
                 routePathResults
-                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
+                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes!), []),
             ),
         };
     }

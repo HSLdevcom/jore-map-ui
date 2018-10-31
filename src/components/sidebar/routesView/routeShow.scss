@@ -55,14 +55,11 @@
             .routePathDate {
                 font-size: $smallFontSize;
                 padding-left: 10px;
-                padding-top: 5px;
+                padding-top: 2px;
 
                 &.highlight {
                     font-weight: bold;
                 }
-            }
-            .routePathDate:last-of-type {
-                padding-top: 0px;
             }
 
         }

@@ -3,12 +3,12 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
+
 import ReactMoment from 'react-moment';
 import Moment from 'moment';
 import { RouteStore } from '~/stores/routeStore';
 import LineHelper from '~/util/lineHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
-import ColorScale from '~/util/colorScale';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -21,7 +21,7 @@ import * as s from './routeShow.scss';
 interface IRouteShowProps {
     routeStore?: RouteStore;
     route: IRoute;
-    visibleRoutePathsIndex: number;
+    colors: string[];
 }
 
 @inject('routeStore')
@@ -70,22 +70,29 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 
     private renderRoutePaths() {
-        let visibleRoutePathsIndex = this.props.visibleRoutePathsIndex;
+        const routePaths = this.props.route.routePaths;
 
-        return this.props.route.routePaths
-        .map((routePath: IRoutePath) => {
+        return routePaths.map((routePath: IRoutePath, index) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
             };
-            const routeColor = ColorScale.getColors(
-                this.props.routeStore!.visibleRoutePathAmount)[visibleRoutePathsIndex];
-            if (routePath.visible) {
-                visibleRoutePathsIndex += 1;
-            }
+
+            const openRoutePathView = () => {
+                const routePathViewLink = routeBuilder
+                    .to(subSites.routePath)
+                    .set(
+                        QueryParams.startTime,
+                        encodeURIComponent(Moment(routePath.startTime).format()))
+                    .set(QueryParams.routeId, routePath.routeId)
+                    .set(QueryParams.direction, routePath.direction)
+                    .toLink();
+                navigator.goTo(routePathViewLink);
+            };
 
             const isWithinTimeSpan = (Moment(routePath.startTime).isBefore(Moment()) &&
                                     Moment(routePath.endTime).isAfter(Moment()));
 
+            const routeColor = this.props.colors[index];
             return (
                 <div
                     className={s.routePathContainer}
@@ -137,7 +144,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                         />
                         <div
                             className={s.routeInfoButton}
-                            onClick={this.openRoutePathView}
+                            onClick={openRoutePathView}
                         >
                             <FiInfo />
                         </div>
@@ -145,11 +152,6 @@ class RouteShow extends React.Component<IRouteShowProps> {
                 </div>
             );
         });
-    }
-
-    private openRoutePathView = () => {
-        const routePathViewLink = routeBuilder.to(subSites.routePath).toLink();
-        navigator.goTo(routePathViewLink);
     }
 
     public render(): any {

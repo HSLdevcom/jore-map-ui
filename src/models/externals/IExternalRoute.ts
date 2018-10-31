@@ -8,7 +8,7 @@ export default interface IExternalRoute {
     reinimilyhr: string;
     reinimir: string;
     reitinsuuntasByReitunnus: {
-        edges: IExternalRoutePathNode[],
+        nodes: IExternalRoutePathNode[],
     };
     reitunnus: string;
     reiviimpvm: string;

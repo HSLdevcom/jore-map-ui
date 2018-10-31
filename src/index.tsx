@@ -7,17 +7,18 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import { Router } from 'react-router';
 import App from './components/App';
-import observableNotificationStore from './stores/notificationStore';
-import observableLoginStore from './stores/loginStore';
-import observableMapStore from './stores/mapStore';
-import observableLineStore from './stores/lineStore';
-import observableRouteStore from './stores/routeStore';
-import observableSearchStore from './stores/searchStore';
-import observableSidebarStore from './stores/sidebarStore';
-import observablePopupStore from './stores/popupStore';
-import observableToolbarStore from './stores/toolbarStore';
-import observableNodeStore from './stores/nodeStore';
-import observableNetworkStore from './stores/networkStore';
+import NotificationStore from './stores/notificationStore';
+import LoginStore from './stores/loginStore';
+import MapStore from './stores/mapStore';
+import LineStore from './stores/lineStore';
+import RouteStore from './stores/routeStore';
+import NewRoutePathStore from './stores/new/newRoutePathStore';
+import SearchStore from './stores/searchStore';
+import SidebarStore from './stores/sidebarStore';
+import PopupStore from './stores/popupStore';
+import ToolbarStore from './stores/toolbarStore';
+import NodeStore from './stores/nodeStore';
+import NetworkStore from './stores/networkStore';
 import apolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
 import './index.scss';
@@ -26,18 +27,20 @@ configure({ enforceActions: 'always' });
 
 const browserHistory = createBrowserHistory();
 
+// Observable stores
 const stores = {
-    mapStore: observableMapStore,
-    notificationStore: observableNotificationStore,
-    lineStore: observableLineStore,
-    loginStore: observableLoginStore,
-    routeStore: observableRouteStore,
-    searchStore: observableSearchStore,
-    sidebarStore: observableSidebarStore,
-    popupStore: observablePopupStore,
-    toolbarStore: observableToolbarStore,
-    nodeStore: observableNodeStore,
-    networkStore: observableNetworkStore,
+    mapStore: MapStore,
+    notificationStore: NotificationStore,
+    lineStore: LineStore,
+    loginStore: LoginStore,
+    routeStore: RouteStore,
+    newRoutePathStore: NewRoutePathStore,
+    searchStore: SearchStore,
+    sidebarStore: SidebarStore,
+    popupStore: PopupStore,
+    toolbarStore: ToolbarStore,
+    nodeStore: NodeStore,
+    networkStore: NetworkStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());

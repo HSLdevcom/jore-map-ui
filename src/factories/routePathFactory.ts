@@ -5,7 +5,7 @@ import QueryParsingHelper from './queryParsingHelper';
 
 export interface IRoutePathResult {
     routePath: IRoutePath;
-    nodes: INode[];
+    nodes: INode[] | null;
 }
 
 class RoutePathFactory {
@@ -17,43 +17,49 @@ class RoutePathFactory {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
                 routeId,
-                suunta.suunimi,
                 suunta.suuvoimast,
-                suunta.suuvoimviimpvm,
                 suunta.suusuunta,
             ].join('-'),
         ).toString();
-
-        const routePathLinkResult:IRoutePathLinkResult[]
-        = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.edges
+        const routePathLinkResult:IRoutePathLinkResult[] | null
+        = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta ?
+            suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes
             .map((routePathLinkNode: any) =>
-                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode.node));
+                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode)) : null;
 
-        const coordinates = JSON.parse(suunta.geojson).coordinates;
-        const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
+        const coordinates = suunta.geojson ? JSON.parse(suunta.geojson).coordinates : null;
+        const positions = coordinates
+            ? coordinates.map((coor: [number, number]) => [coor[1], coor[0]]) : null;
 
         const routePath : IRoutePath = {
             routeId,
             positions,
-            routePathLinks: routePathLinkResult.map(res => res.link),
+            routePathLinks: routePathLinkResult ? routePathLinkResult.map(res => res.link) : null,
             internalId: internalRoutePathId,
-            geoJson: JSON.parse(suunta.geojson),
+            geoJson: suunta.geojson ? JSON.parse(suunta.geojson) : null,
             routePathName: suunta.suunimi,
+            routePathNameSw: suunta.suunimir,
             direction: suunta.suusuunta,
             startTime: new Date(suunta.suuvoimast),
             endTime: new Date(suunta.suuvoimviimpvm),
             lastModified: new Date(suunta.suuviimpvm),
+            modifiedBy: suunta.suukuka,
             visible: false,
             originFi: suunta.suulahpaik,
+            originSw: suunta.suulahpaikr,
             destinationFi: suunta.suupaapaik,
+            destinationSw: suunta.suupaapaikr,
+            routePathShortName: suunta.suunimilyh,
+            routePathShortNameSw: suunta.suunimilyhr,
+            lineId: suunta.reittiByReitunnus ? suunta.reittiByReitunnus.lintunnus : null,
         };
 
         return {
             routePath,
-            nodes: QueryParsingHelper.removeINodeDuplicates(
+            nodes: routePathLinkResult ? QueryParsingHelper.removeINodeDuplicates(
                 routePathLinkResult
                     .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
-            ),
+            ) : null,
         };
     }
 }

@@ -26,9 +26,7 @@ const DEFAULT_RADIUS = 25;
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getMarkerHtml = (markerClass: string) => {
-        return `<div
-            class="${classnames(s.nodeBase, markerClass)}"
-        />`;
+        return `<div class="${classnames(s.nodeBase, markerClass)}" />`;
     }
 
     private getIcon = (node: INode) => {
@@ -53,6 +51,10 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             html = this.getMarkerHtml(isSelected ? s.unknownMarkerHighlight : s.unknownMarker);
             break;
         }
+        }
+
+        if (this.props.nodeStore!.isNodeDisabled(node.id)) {
+            html = this.getMarkerHtml(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
         }
 
         const divIconOptions : L.DivIconOptions = {
@@ -100,7 +102,6 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
 
             const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
             const displayCircle = this.isSelected(node);
-
             return (
                 <Marker
                     onContextMenu={openPopup}

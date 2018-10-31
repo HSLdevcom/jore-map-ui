@@ -8,14 +8,6 @@
     width: $sidebarExtraWide;
     overflow-x: hidden;
 
-    input {
-        margin-top: 5px;
-    }
-
-    div, input {
-        box-sizing: border-box;
-    }
-
     .column {
         display: flex;
         flex-direction: column;
@@ -24,8 +16,7 @@
     }
 
     .textArea {
-        padding-bottom: 158px; /* TODO: fix this hack */
-        margin-top: 5px;
+        padding-bottom: 151px; /* TODO: fix this hack */
     }
 
     .mediumSmallInput {

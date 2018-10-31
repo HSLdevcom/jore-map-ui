@@ -1,9 +1,9 @@
 import IExternalRoutePath from './IExternalRoutePath';
 
-export default interface IExternalroutePathNode {
+export default interface IExternalRoutePathNode {
     geojson: string;
     reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta: {
-        edges: IExternalRoutePath[],
+        nodes: IExternalRoutePath[],
     };
     suulahpaik: string;
     suunimi: string;
