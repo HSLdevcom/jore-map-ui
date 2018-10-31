@@ -12,6 +12,7 @@ import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
+import PackageJson from '../project/package.alias.json';
 import * as s from './app.scss';
 
 interface IAppState {
@@ -39,11 +40,10 @@ class App extends React.Component<IAppProps, IAppState> {
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         const date = '31.10.2018';
-        const appPackageJson = '0.1.0';
         return (
             <div className={s.appView}>
                 <div className={s.buildInfo}>
-                    {`Build Version: ${appPackageJson}; Build Date: ${date}`}
+                    {`Build Version: ${PackageJson.version}; Build Date: ${date}`}
                 </div>
                 <Modal
                     closeModal={this.closeLoginModal}
