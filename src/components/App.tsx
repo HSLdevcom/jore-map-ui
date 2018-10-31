@@ -38,8 +38,13 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
+        const date = '31.10.2018';
+        const appPackageJson = '0.1.0';
         return (
             <div className={s.appView}>
+                <div className={s.buildInfo}>
+                    {`Build Version: ${appPackageJson}; Build Date: ${date}`}
+                </div>
                 <Modal
                     closeModal={this.closeLoginModal}
                     isVisible={this.props.loginStore!.showLogin}
