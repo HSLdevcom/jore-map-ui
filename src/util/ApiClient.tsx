@@ -6,7 +6,7 @@ enum RequestMethod {
     DELETE= 'DELETE',
 }
 
-const API_URL = 'http://localhost:3040/';
+const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 export default class ApiClient {
     public async saveObject(entityName: entityNames, object: any) {
