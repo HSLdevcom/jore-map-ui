@@ -128,7 +128,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         NodeService.fetchNode(properties.soltunnus).then((node) => {
             if (node) {
                 this.props.newRoutePathStore!.addNode({
-                    nodeId: node.id,
+                    id: node.id,
                     coordinates: node.coordinates,
                 });
             }

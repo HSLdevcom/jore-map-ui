@@ -58,7 +58,7 @@ export default class NodeService {
 
             return {
                 coordinates,
-                nodeId: node.soltunnus,
+                id: node.soltunnus,
             };
         });
     }

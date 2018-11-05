@@ -3,7 +3,7 @@ import { ICoordinate } from '~/models';
 import NodeService from '~/services/nodeService';
 
 export interface INewRoutePathNode {
-    nodeId: string;
+    id: string;
     coordinates: ICoordinate;
 }
 
@@ -38,7 +38,7 @@ export class NewRoutePathStore {
     }
 
     @action
-    addNode(node: INewRoutePathNode, preventUpdate?: boolean) {
+    addNode(node: INewRoutePathNode) {
         if (this.nodes.includes(node)) return;
 
         this._nodes.push(node);
@@ -53,7 +53,7 @@ export class NewRoutePathStore {
     async updateNeighborNodes() {
         const lastNode = this._nodes[this._nodes.length - 1];
         const neighborNodes: INewRoutePathNode[]|null
-            = await NodeService.fetchNodesWithRoutePathLinkStartNodeId(lastNode.nodeId);
+            = await NodeService.fetchNodesWithRoutePathLinkStartNodeId(lastNode.id);
 
         if (neighborNodes) {
             this.addNeighborNodes(neighborNodes);
