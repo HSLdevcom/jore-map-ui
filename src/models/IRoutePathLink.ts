@@ -5,4 +5,5 @@ export default interface IRoutePathLink {
     endNodeId: string;
     orderNumber: number;
     startNodeType: string;
+    timeAlignmentStop: string;
 }
