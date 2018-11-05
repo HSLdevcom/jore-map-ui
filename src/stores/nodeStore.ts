@@ -6,12 +6,12 @@ export class NodeStore {
     @observable private _nodes: INode[];
     @observable private _selectedNodeId: string|null;
     @observable private _disabledNodeIds: string[];
-    @observable private _timeALignmentNodeIds: string[];
+    @observable private _timeAlignmentNodeIds: string[];
 
     constructor() {
         this._nodes = [];
         this._disabledNodeIds = [];
-        this._timeALignmentNodeIds = [];
+        this._timeAlignmentNodeIds = [];
         this._selectedNodeId = null;
     }
 
@@ -27,8 +27,8 @@ export class NodeStore {
         return this._disabledNodeIds;
     }
 
-    @computed get timeALignmentNodeIds(): string[] {
-        return this._timeALignmentNodeIds;
+    @computed get timeAlignmentNodeIds(): string[] {
+        return this._timeAlignmentNodeIds;
     }
 
     @action
@@ -37,8 +37,8 @@ export class NodeStore {
     }
 
     @action
-    public setTimeALignmentNodeIds(nodes: string[]) {
-        this._timeALignmentNodeIds = nodes;
+    public setTimeAlignmentNodeIds(nodes: string[]) {
+        this._timeAlignmentNodeIds = nodes;
     }
 
     @computed get selectedNodeId(): string|null {
@@ -54,7 +54,7 @@ export class NodeStore {
     }
 
     public isNodeTimeAlignmentStop(nodeId: string): boolean {
-        return (this._timeALignmentNodeIds.includes(nodeId));
+        return (this._timeAlignmentNodeIds.includes(nodeId));
     }
 
     @action
@@ -93,12 +93,6 @@ export class NodeStore {
     @action
     public removeFromNodes(nodeIds: string[]) {
         this._nodes = this._nodes.filter(node => !nodeIds.includes(node.id));
-    }
-
-    @action
-    public clearAdditionalNodeIds() {
-        this._disabledNodeIds = [];
-        this._timeALignmentNodeIds = [];
     }
 
 }
