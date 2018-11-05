@@ -9,7 +9,7 @@ enum RequestMethod {
 const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 export default class ApiClient {
-    public async saveObject(entityName: entityNames, object: any) {
+    public async updateObject(entityName: entityNames, object: any) {
         return await this.sendRequest(RequestMethod.POST, entityName, object);
     }
 

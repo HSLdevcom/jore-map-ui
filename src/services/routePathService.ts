@@ -33,8 +33,8 @@ export default class RoutePathService {
     }
 
     public static async saveRoutePath(routePath: IRoutePath) {
-        const client = new ApiClient();
-        return await client.saveObject(entityNames.ROUTEPATH, routePath);
+        const apiClient = new ApiClient();
+        return await apiClient.updateObject(entityNames.ROUTEPATH, routePath);
     }
 }
 
