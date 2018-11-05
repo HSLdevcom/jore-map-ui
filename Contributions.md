@@ -31,7 +31,7 @@
 
 ### MobX
 
-* Import store through props always if possible. Use import without props only if needed.
+* Use @inject when importing stores whenever possible.
 
 **Annotations**
 
