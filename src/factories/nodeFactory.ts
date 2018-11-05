@@ -17,9 +17,10 @@ interface IExternalNode {
 
 class NodeFactory {
     public static createNode = (node: IExternalNode): INode => {
-        const coordinateList = // Use less accurate location if measured location is missing.
+         // Use less accurate location if measured location is missing.
+        const coordinateList =
             JSON.parse(node.geojson ? node.geojson : node.geojsonManual);
-        const coordinate : ICoordinate = {
+        const coordinates : ICoordinate = {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
@@ -36,9 +37,9 @@ class NodeFactory {
 
         return {
             type,
+            coordinates,
             id: node.soltunnus,
             stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : null,
-            coordinates: coordinate,
             measurementDate: node.mittpvm,
             modifiedOn: node.solviimpvm,
             modifiedBy: node.solkuka,
