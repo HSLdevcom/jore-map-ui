@@ -39,11 +39,12 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public render(): any {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
-        const date = '31.10.2018';
+        const buildDate = process.env.BUILD_DATE;
+        const buildDateInfo = buildDate ? `Date: ${buildDate}` : '';
         return (
             <div className={s.appView}>
                 <div className={s.buildInfo}>
-                    {`Build Version: ${PackageJson.version}; Build Date: ${date}`}
+                    {`Build: ${PackageJson.version} ${buildDateInfo}`}
                 </div>
                 <Modal
                     closeModal={this.closeLoginModal}
