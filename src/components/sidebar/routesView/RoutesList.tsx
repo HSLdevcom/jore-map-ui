@@ -2,13 +2,13 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import ColorScale from '~/util/colorScale';
 import { RouteStore } from '~/stores/routeStore';
-import searchStore from '~/stores/searchStore';
+import { SearchStore } from '~/stores/searchStore';
+import { NetworkStore } from '~/stores/networkStore';
 import { IRoute } from '~/models';
 import QueryParams from '~/routing/queryParams';
 import navigator from '~/routing/navigator';
 import RouteAndStopHelper from '~/storeAbstractions/routeAndStopAbstraction';
 import TransitType from '~/enums/transitType';
-import { NetworkStore } from '~/stores/networkStore';
 import { Checkbox, TransitToggleButtonBar } from '../../controls';
 import RouteShow from './RouteShow';
 import Loader from '../../shared/loader/Loader';
@@ -19,11 +19,12 @@ interface IRoutesListState {
 }
 
 interface IRoutesListProps {
+    searchStore?: SearchStore;
     routeStore?: RouteStore;
     networkStore?: NetworkStore;
 }
 
-@inject('routeStore', 'networkStore')
+@inject('searchStore', 'routeStore', 'networkStore')
 @observer
 class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     constructor(props: any) {
@@ -35,7 +36,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     async componentDidMount() {
         await this.queryRoutes();
-        searchStore!.setSearchInput('');
+        this.props.searchStore!.setSearchInput('');
     }
 
     private async queryRoutes() {

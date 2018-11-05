@@ -15,7 +15,6 @@ export class MapStore {
     @observable private _routes: MapRoute[];
     @observable private _displayCoordinateSystem:CoordinateSystem;
     @observable private _nodeSize:NodeSize;
-    @observable private _isCreatingNewRoutePath: boolean;
 
     constructor(
         coordinate = new LatLng(60.24, 24.9),
@@ -26,7 +25,6 @@ export class MapStore {
         this._routes = [];
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._nodeSize = NodeSize.normal;
-        this._isCreatingNewRoutePath = false;
     }
 
     @computed
@@ -58,10 +56,6 @@ export class MapStore {
 
     @computed get nodeSize(): NodeSize {
         return this._nodeSize;
-    }
-
-    @computed get isCreatingNewRoutePath(): boolean {
-        return this._isCreatingNewRoutePath;
     }
 
     @action
@@ -96,11 +90,6 @@ export class MapStore {
     @action
     setNodeSize(nodeSize: NodeSize) {
         this._nodeSize = nodeSize;
-    }
-
-    @action
-    setIsCreatingNewRoutePath(isCreatingNewRoutePath: boolean) {
-        this._isCreatingNewRoutePath = isCreatingNewRoutePath;
     }
 }
 
