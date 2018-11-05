@@ -7,7 +7,7 @@ import { ILine } from '~/models';
 
 export default class LineService {
     // TODO: rename as fetchAllLines
-    public static async getAllLines(): Promise<ILine[] | null> {
+    public static async fetchAllLines(): Promise<ILine[] | null> {
         try {
             const { data }:any = await apolloClient.query({ query: getLinjas });
             return data.allLinjas.nodes.map(((node: any) => {
@@ -24,7 +24,7 @@ export default class LineService {
     }
 
     // TODO: rename as fetchLine
-    public static async getLine(lintunnus: string): Promise<ILine | null> {
+    public static async fetchLine(lintunnus: string): Promise<ILine | null> {
         try {
             const { data }:any = await apolloClient
                 .query({ query: getLinja, variables: { lineId: lintunnus } });
