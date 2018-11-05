@@ -83,14 +83,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
-    public blockClosing = () => {
+    public render(): any {
         // tslint:disable-next-line:max-line-length
         const message = 'Suunnalla on muutoksia, joita ei ole tallennettu. Oletko varma, että haluat poistaa näkymästä?';
-        if (this.state.hasModifications && !confirm(message)) return false;
-        return true;
-    }
 
-    public render(): any {
         if (this.state.isLoading) {
             return (
                 <div className={s.routePathView}>
@@ -103,7 +99,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         <div className={classnames(s.routePathView, s.form)}>
             <ViewHeader
                 header={`Reitin suunta ${this.state.routePath.lineId}`}
-                onBeforeClosing={this.blockClosing}
+                closePromptMessage={this.state.hasModifications ? message : undefined}
             >
                 <Button
                     onClick={this.toggleEditing}

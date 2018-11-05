@@ -7,12 +7,12 @@ import * as s from './viewHeader.scss';
 interface IViewHeaderProps {
     header: string;
     children?: any;
-    onBeforeClosing?: Function;
+    closePromptMessage?: string;
 }
 
 class ViewHeader extends React.Component<IViewHeaderProps> {
     private closeSidebarView = () => {
-        if (!this.props.onBeforeClosing || this.props.onBeforeClosing()) {
+        if (!this.props.closePromptMessage || confirm(this.props.closePromptMessage)) {
             const routesLink = routeBuilder.to(subSites.routes).toLink();
             navigator.goTo(routesLink);
         }
