@@ -32,8 +32,17 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
     private getIcon = (node: INode) => {
         const isSelected = this.isSelected(node);
 
+        let type;
+        if (this.props.nodeStore!.isNodeDisabled(node.id)) {
+            type = NodeType.DISABLED;
+        } else if (this.props.nodeStore!.isNodeTimeAlignmentStop(node.id)) {
+            type = NodeType.TIME_ALIGNMENT;
+        } else {
+            type = node.type;
+        }
+
         let html;
-        switch (node.type) {
+        switch (type) {
         case NodeType.STOP: {
             html = this.getMarkerHtml(isSelected ? s.stopMarkerHighlight : s.stopMarker);
             break;
@@ -47,14 +56,18 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
                 s.municipalityMarkerHighlight : s.municipalityMarker);
             break;
         }
+        case NodeType.DISABLED: {
+            html = this.getMarkerHtml(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
+            break;
+        }
+        case NodeType.TIME_ALIGNMENT: {
+            html = this.getMarkerHtml(s.timeAlignmentMarker);
+            break;
+        }
         default: {
             html = this.getMarkerHtml(isSelected ? s.unknownMarkerHighlight : s.unknownMarker);
             break;
         }
-        }
-
-        if (this.props.nodeStore!.isNodeDisabled(node.id)) {
-            html = this.getMarkerHtml(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
         }
 
         const divIconOptions : L.DivIconOptions = {

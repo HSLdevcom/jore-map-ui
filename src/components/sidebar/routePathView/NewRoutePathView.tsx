@@ -1,15 +1,25 @@
+import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
-import MapStore, { NodeSize } from '~/stores/mapStore';
-import NetworkStore from '~/stores/networkStore';
+import { MapStore, NodeSize } from '~/stores/mapStore';
+import { NetworkStore } from '~/stores/networkStore';
+import { NewRoutePathStore } from '~/stores/new/newRoutePathStore';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
 
-class NewRoutePathView extends React.Component{
+interface INewRoutePathViewProps {
+    mapStore?: MapStore;
+    newRoutePathStore?: NewRoutePathStore;
+    networkStore?: NetworkStore;
+}
+
+@inject('mapStore', 'newRoutePathStore', 'networkStore')
+@observer
+class NewRoutePathView extends React.Component<INewRoutePathViewProps>{
     initialRoutePath: IRoutePath;
 
     constructor(props: any) {
@@ -53,14 +63,18 @@ class NewRoutePathView extends React.Component{
     }
 
     componentDidMount() {
-        MapStore.setNodeSize(NodeSize.large);
-        MapStore.setIsCreatingNewRoutePath(true);
-        NetworkStore.setIsNodesVisible(true);
+        this.props.mapStore!.setNodeSize(NodeSize.large);
+
+        this.props.networkStore!.setIsNodesVisible(true);
+        this.props.networkStore!.setIsLinksVisible(true);
+
+        this.props.newRoutePathStore!.setIsCreating(true);
     }
 
     componentWillUnmount() {
-        MapStore.setNodeSize(NodeSize.normal);
-        MapStore.setIsCreatingNewRoutePath(false);
+        this.props.mapStore!.setNodeSize(NodeSize.normal);
+        this.props.newRoutePathStore!.setIsCreating(false);
+
     }
 
     public render(): any {

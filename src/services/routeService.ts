@@ -42,7 +42,7 @@ export default class RouteService {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: getRouteQuery, variables: { routeId } },
             );
-            const line = await LineService.getLine(queryResult.data.route.lintunnus);
+            const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
             if (line !== null) {
                 return RouteFactory.createRoute(queryResult.data.route, line);
             }
@@ -87,6 +87,7 @@ query getLineDetails($routeId: String!) {
                         relpysakki
                         reljarjnro
                         lnkverkko
+                        ajantaspys
                         solmuByLnkalkusolmu {
                             solx,
                             soly,
