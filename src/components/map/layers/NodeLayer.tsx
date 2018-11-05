@@ -57,6 +57,10 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             html = this.getMarkerHtml(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
         }
 
+        if (this.props.nodeStore!.isNodeTimeAlignmentStop(node.id)) {
+            html = this.getMarkerHtml(s.timeAlignmentMarker);
+        }
+
         const divIconOptions : L.DivIconOptions = {
             html,
             className: s.node,
