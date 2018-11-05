@@ -21,7 +21,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         )}" />`;
     }
 
-    private getIcon(isNeighbor: boolean) {
+    private getIcon({ isNeighbor }: any) {
         const divIconOptions : L.DivIconOptions = {
             html: this.getMarkerHtml(isNeighbor),
             className: s.node,
@@ -35,7 +35,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
             const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
             return (
                 <Marker
-                    icon={this.getIcon(false)}
+                    icon={this.getIcon({ isNeighbor: false })}
                     key={index}
                     position={latLng}
                 />
@@ -49,7 +49,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
             return (
                 <Marker
                     onClick={this.addNode(node)}
-                    icon={this.getIcon(true)}
+                    icon={this.getIcon({ isNeighbor: true })}
                     key={index}
                     position={latLng}
                 />
