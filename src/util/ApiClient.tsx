@@ -33,6 +33,6 @@ export default class ApiClient {
     }
 
     private getUrl(entityName: entityNames) {
-        return `${API_URL}${entityName}`;
+        return `${API_URL}/${entityName}`;
     }
 }
