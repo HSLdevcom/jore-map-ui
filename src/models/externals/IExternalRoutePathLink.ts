@@ -1,6 +1,8 @@
 import IExternalNode from './IExternalNode';
 
 export default interface IExternalRoutePathLink {
+    startNode: IExternalNode;
+    endNode: IExternalNode;
     geojson: string;
     ajantaspys: string;
     lnkalkusolmu: string;
@@ -9,6 +11,4 @@ export default interface IExternalRoutePathLink {
     relid: string;
     reljarjnro: number;
     relpysakki: string;
-    startNode: IExternalNode;
-    endNode: IExternalNode;
 }
