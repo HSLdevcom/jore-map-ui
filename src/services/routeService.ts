@@ -45,7 +45,6 @@ export default class RouteService {
             );
             const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
             if (line !== null) {
-
                 const externalRoute = this.getExternalRoute(queryResult.data.route);
                 return RouteFactory.createRoute(externalRoute, line);
             }

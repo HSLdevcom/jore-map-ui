@@ -23,7 +23,7 @@ export default class RoutePathService {
                         startDate: startDate.format(),
                     } },
             );
-            const externalRoutePath = this.getExternalRoute(queryResult);
+            const externalRoutePath = this.getExternalRoute(queryResult.data.routePath);
             return RoutePathFactory.createRoutePath(routeId, externalRoutePath).routePath;
         } catch (err) {
             notificationStore.addNotification({
@@ -41,9 +41,7 @@ export default class RoutePathService {
      * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.startNode
      * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.endNode
      */
-    private static getExternalRoute(queryResult: any): IExternalRoutePath {
-        const routePath = queryResult.data.routePath;
-
+    private static getExternalRoute(routePath: any): IExternalRoutePath {
         // routePath.lintunnus might already exist (got from cache)
         if (routePath.reittiByReitunnus) {
             routePath.lintunnus = routePath.reittiByReitunnus.lintunnus;

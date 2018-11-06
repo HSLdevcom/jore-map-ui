@@ -1,6 +1,7 @@
 import { IRoutePath, INode } from '~/models';
 import HashHelper from '~/util/hashHelper';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
+import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
 import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
 import QueryParsingHelper from './queryParsingHelper';
 
@@ -25,7 +26,7 @@ class RoutePathFactory {
         // TODO: refactor. createRoutePathLink should return IRoutePathLink
         const routePathLinkResult:IRoutePathLinkResult[] | null
         = externalRoutePath.externalRoutePathLinks
-            .map((externalRoutePathLink: any) => {
+            .map((externalRoutePathLink: IExternalRoutePathLink) => {
                 return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
             });
 
