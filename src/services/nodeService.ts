@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import { INode, ICoordinate } from '~/models';
-
+import IExternalNode from '~/models/externals/IExternalNode';
 import notificationStore from '~/stores/notificationStore';
 import { INewRoutePathNode } from '~/stores/new/newRoutePathStore';
 import NotificationType from '~/enums/notificationType';
@@ -14,7 +14,10 @@ export default class NodeService {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: getNodeQuery, variables: { nodeId } },
             );
-            return NodeFactory.createNode(queryResult.data.node);
+
+            const externalNode = this.getExternalNode(queryResult.data.node);
+
+            return NodeFactory.createNode(externalNode);
         } catch (err) {
             notificationStore.addNotification({
                 message: 'Solmun haku ei onnistunut.',
@@ -22,6 +25,18 @@ export default class NodeService {
             });
             return null;
         }
+    }
+
+    private static getExternalNode(node: any): IExternalNode {
+
+        // node.stop might already exist (got from cache)
+        if (node.pysakkiBySoltunnus) {
+            node.stop = node.pysakkiBySoltunnus;
+
+            delete node.pysakkiBySoltunnus;
+        }
+
+        return node;
     }
 
     public static async fetchNodesWithRoutePathLinkStartNodeId(nodeId: string)

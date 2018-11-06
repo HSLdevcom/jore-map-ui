@@ -1,10 +1,10 @@
 import NodeType from '~/enums/nodeType';
-import INodeStop from './INodeStop';
+import IStop from './IStop';
 import { ICoordinate } from '.';
 
 export default interface INode {
     id: string;
-    stop: INodeStop|null;
+    stop: IStop|null;
     type: NodeType;
     coordinates: ICoordinate;
     measurementDate: string;

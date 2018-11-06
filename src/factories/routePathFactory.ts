@@ -1,6 +1,8 @@
 import { IRoutePath, INode } from '~/models';
 import HashHelper from '~/util/hashHelper';
-import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
+import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
+import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
 import QueryParsingHelper from './queryParsingHelper';
 
 export interface IRoutePathResult {
@@ -9,26 +11,27 @@ export interface IRoutePathResult {
 }
 
 class RoutePathFactory {
-    // suunta to IRoutePath
     public static createRoutePath = (
         routeId: string,
-        suunta: any,
+        externalRoutePath: IExternalRoutePath,
     ): IRoutePathResult => {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
                 routeId,
-                suunta.suuvoimast,
-                suunta.suusuunta,
+                externalRoutePath.suuvoimast,
+                externalRoutePath.suusuunta,
             ].join('-'),
         ).toString();
 
+        // TODO: refactor. createRoutePathLink should return IRoutePathLink
         const routePathLinkResult:IRoutePathLinkResult[] | null
-        = suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta ?
-            suunta.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes
-            .map((routePathLinkNode: any) =>
-                RoutePathLinkFactory.createRoutePathLink(routePathLinkNode)) : null;
+        = externalRoutePath.externalRoutePathLinks
+            .map((externalRoutePathLink: IExternalRoutePathLink) => {
+                return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
+            });
 
-        const coordinates = suunta.geojson ? JSON.parse(suunta.geojson).coordinates : null;
+        const coordinates = externalRoutePath.geojson ?
+            JSON.parse(externalRoutePath.geojson).coordinates : null;
         const positions = coordinates
             ? coordinates.map((coor: [number, number]) => [coor[1], coor[0]]) : null;
 
@@ -36,23 +39,23 @@ class RoutePathFactory {
             routeId,
             positions,
             routePathLinks: routePathLinkResult ? routePathLinkResult.map(res => res.link) : null,
+            geoJson: externalRoutePath.geojson ? JSON.parse(externalRoutePath.geojson) : null,
+            lineId: externalRoutePath.lintunnus,
             internalId: internalRoutePathId,
-            geoJson: suunta.geojson ? JSON.parse(suunta.geojson) : null,
-            routePathName: suunta.suunimi,
-            routePathNameSw: suunta.suunimir,
-            direction: suunta.suusuunta,
-            startTime: new Date(suunta.suuvoimast),
-            endTime: new Date(suunta.suuvoimviimpvm),
-            lastModified: new Date(suunta.suuviimpvm),
-            modifiedBy: suunta.suukuka,
+            routePathName: externalRoutePath.suunimi,
+            routePathNameSw: externalRoutePath.suunimir,
+            direction: externalRoutePath.suusuunta,
+            startTime: new Date(externalRoutePath.suuvoimast),
+            endTime: new Date(externalRoutePath.suuvoimviimpvm),
+            lastModified: new Date(externalRoutePath.suuviimpvm),
+            modifiedBy: externalRoutePath.suukuka,
             visible: false,
-            originFi: suunta.suulahpaik,
-            originSw: suunta.suulahpaikr,
-            destinationFi: suunta.suupaapaik,
-            destinationSw: suunta.suupaapaikr,
-            routePathShortName: suunta.suunimilyh,
-            routePathShortNameSw: suunta.suunimilyhr,
-            lineId: suunta.reittiByReitunnus ? suunta.reittiByReitunnus.lintunnus : null,
+            originFi: externalRoutePath.suulahpaik,
+            originSw: externalRoutePath.suulahpaikr,
+            destinationFi: externalRoutePath.suupaapaik,
+            destinationSw: externalRoutePath.suupaapaikr,
+            routePathShortName: externalRoutePath.suunimilyh,
+            routePathShortNameSw: externalRoutePath.suunimilyhr,
         };
 
         return {
