@@ -58,7 +58,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     async queryAllLines() {
         this.setState({ isLoading: true });
-        const lines = await LineService.getAllLines();
+        const lines = await LineService.fetchAllLines();
         if (lines !== null) {
             this.props.lineStore!.setAllLines(lines);
         }

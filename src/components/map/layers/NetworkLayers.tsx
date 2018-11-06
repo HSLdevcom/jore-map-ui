@@ -21,8 +21,6 @@ enum NodeColors {
     CROSSROAD_FILL_COLOR = '#c6c6c6',
     STOP_COLOR = '#3e3c87',
     STOP_FILL_COLOR = '#FFF',
-    IS_EDITING_STOP_COLOR = '#3e3c87',
-    IS_EDITING_STOP_FILL_COLOR = '#FFF',
     MUNICIPALITY_BORDER_COLOR = '#c900ff',
 }
 
@@ -78,8 +76,6 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private getNodeStyle = () => {
-        const isCreatingNewRoutePath = MapStore.isCreatingNewRoutePath;
-
         let radius: any;
         switch (MapStore.nodeSize) {
         case NodeSize.normal:
@@ -100,10 +96,8 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
                 switch (properties.soltyyppi) {
                 case NodeType.STOP:
-                    color = isCreatingNewRoutePath ?
-                        NodeColors.IS_EDITING_STOP_COLOR : NodeColors.STOP_COLOR;
-                    fillColor = isCreatingNewRoutePath ?
-                        NodeColors.IS_EDITING_STOP_FILL_COLOR : NodeColors.STOP_FILL_COLOR;
+                    color = NodeColors.STOP_COLOR;
+                    fillColor = NodeColors.STOP_FILL_COLOR;
                     break;
                 case NodeType.CROSSROAD:
                     color = NodeColors.CROSSROAD_COLOR;
@@ -125,8 +119,10 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private addNodeFromClickEvent = (clickEvent: any) => {
+    private addNodeFromInitialClickEvent = (clickEvent: any) => {
         const properties =  clickEvent.sourceTarget.properties;
+        if (properties.soltyyppi !== NodeType.STOP) return;
+
         // TODO: Use factory call instead of service call because
         // geojson / geojsonManual are not found from properties
         NodeService.fetchNode(properties.soltunnus).then((node) => {
@@ -139,9 +135,12 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         });
     }
 
-    render() {
-        const isCreatingNewRoutePath = MapStore.isCreatingNewRoutePath;
+    private isWaitingForNewRoutePathFirstNodeClick() {
+        return this.props.newRoutePathStore!.isCreating
+            && this.props.newRoutePathStore!.nodes.length === 0;
+    }
 
+    render() {
         return (
             <>
                 { this.props.networkStore!.isLinksVisible &&
@@ -160,10 +159,11 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 }
                 { (this.props.networkStore!.isNodesVisible) &&
                     <VectorGridLayer
-                        onClick={isCreatingNewRoutePath ? this.addNodeFromClickEvent : null}
+                        onClick={this.isWaitingForNewRoutePathFirstNodeClick ?
+                            this.addNodeFromInitialClickEvent : null}
                         key={GeoserverLayer.Node}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
-                        interactive={isCreatingNewRoutePath}
+                        interactive={this.isWaitingForNewRoutePathFirstNodeClick}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }
