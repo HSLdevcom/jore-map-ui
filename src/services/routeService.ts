@@ -73,7 +73,7 @@ export default class RouteService {
             route.externalRoutePaths = route.reitinsuuntasByReitunnus.nodes;
             delete route.reitinsuuntasByReitunnus;
 
-            const externalRoutePaths = route.externalRoutePaths
+            route.externalRoutePaths = route.externalRoutePaths
             .map((externalRoutePath: any) => {
 
                 externalRoutePath.externalRoutePathLinks =
@@ -100,7 +100,6 @@ export default class RouteService {
 
                 return externalRoutePath;
             });
-            route.externalRoutePaths = externalRoutePaths;
         }
 
         return route;
