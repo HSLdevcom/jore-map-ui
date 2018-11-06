@@ -12,7 +12,7 @@ class ColorScale {
         '#469990',
         '#e6beff',
         '#9A6324',
-        '#fffac8',
+        // '#fffac8',
         '#800000',
         '#aaffc3',
         '#000075',
@@ -32,7 +32,7 @@ class ColorScale {
         return this.colorStack.pop();
     }
 
-    public releseColor(color: string) {
+    public releaseColor(color: string) {
         if (ColorScale.allColors.includes(color)) {
             this.colorStack.push(color);
         }

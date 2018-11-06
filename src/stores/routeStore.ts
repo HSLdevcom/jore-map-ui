@@ -17,6 +17,7 @@ export class RouteStore {
     }
 
     set routes(value: IRoute[]) {
+        this.colorScale = new ColorScale();
         this._routes = value;
     }
 
@@ -40,6 +41,8 @@ export class RouteStore {
     public removeFromRoutes(routeId: string) {
         for (let i = 0; i < this._routes.length; i += 1) {
             if (this._routes[i].routeId === routeId) {
+                this._routes[i].routePaths
+                    .forEach(routePath => this.colorScale.releaseColor(routePath.color!));
                 this._routes.splice(i, 1);
             }
         }
@@ -48,6 +51,7 @@ export class RouteStore {
     @action
     public clearRoutes() {
         this._routes = [];
+        this.colorScale = new ColorScale();
     }
 
     private getRoutePath(internalId: string): IRoutePath | null {
@@ -72,7 +76,7 @@ export class RouteStore {
             routePathObservable.visible = !routePathObservable.visible;
             routePathObservable.color = routePathObservable.visible ?
                 this.colorScale.reserveColor()
-                : this.colorScale.releseColor(routePathObservable.color!);
+                : this.colorScale.releaseColor(routePathObservable.color!);
         }
     }
 }
