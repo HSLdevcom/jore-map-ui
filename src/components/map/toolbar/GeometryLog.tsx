@@ -26,9 +26,31 @@ export default class GeometryLog extends React.Component<IGeometryLogProps, IGeo
     }
 
     private toggleLog = () => {
-        const isToggled = !this.state.isToggled;
-        this.setState({ isToggled });
+        this.setState({
+            isToggled: !this.state.isToggled,
+        });
     }
+
+    private logView = () => (
+        <div className={s.flexInnerColumn}>
+            <div className={s.flexInnerRow}>
+                <div className={s.topic}>
+                    TAPAHTUMALOKI
+                </div>
+                <div
+                    onClick={this.toggleLog}
+                    className={s.closeView}
+                >
+                    <FaTimes className={s.close}/>
+                </div>
+            </div>
+            <textarea
+                className={s.textArea}
+                value={this.getLogs()}
+                readOnly={true}
+            />
+        </div>
+    )
 
     render() {
         return (
@@ -38,27 +60,10 @@ export default class GeometryLog extends React.Component<IGeometryLogProps, IGeo
                     this.state.isToggled ? s.toggled : '',
                 )}
             >
-            {(this.state.isToggled) ?
-                <div className={s.flexInnerColumn}>
-                    <div className={s.flexInnerRow}>
-                        <div className={s.topic}>
-                            TAPAHTUMALOKI
-                        </div>
-                        <div
-                            onClick={this.toggleLog}
-                            className={s.closeView}
-                        >
-                            <FaTimes className={s.close}/>
-                        </div>
-                    </div>
-                    <textarea
-                        className={s.textArea}
-                        value={this.getLogs()}
-                        readOnly={true}
-                    />
-                </div> :
-                <FiClipboard onClick={this.toggleLog}/>
-            }
+                {(this.state.isToggled) ?
+                        this.logView() :
+                        <FiClipboard onClick={this.toggleLog}/>
+                }
             </div>
         );
     }
