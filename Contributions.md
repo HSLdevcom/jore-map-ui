@@ -31,6 +31,8 @@
 
 ### MobX
 
+* Use @inject when importing stores whenever possible.
+
 **Annotations**
 
 * Use decorators
