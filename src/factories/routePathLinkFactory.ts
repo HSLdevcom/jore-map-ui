@@ -19,6 +19,7 @@ class RoutePathLinkFactory {
         const coordinates = JSON.parse(
             routePathLinkNode.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
+
         return {
             nodes,
             link: {
@@ -28,6 +29,7 @@ class RoutePathLinkFactory {
                 endNodeId: routePathLinkNode.lnkloppusolmu,
                 orderNumber: routePathLinkNode.reljarjnro,
                 startNodeType: routePathLinkNode.relpysakki,
+                timeAlignmentStop: routePathLinkNode.ajantaspys,
             },
         };
     }

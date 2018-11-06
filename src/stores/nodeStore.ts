@@ -6,10 +6,12 @@ export class NodeStore {
     @observable private _nodes: INode[];
     @observable private _selectedNodeId: string|null;
     @observable private _disabledNodeIds: string[];
+    @observable private _timeAlignmentNodeIds: string[];
 
     constructor() {
         this._nodes = [];
         this._disabledNodeIds = [];
+        this._timeAlignmentNodeIds = [];
         this._selectedNodeId = null;
     }
 
@@ -25,10 +27,20 @@ export class NodeStore {
         return this._disabledNodeIds;
     }
 
+    @computed get timeAlignmentNodeIds(): string[] {
+        return this._timeAlignmentNodeIds;
+    }
+
     @action
     public setDisabledNodeIds(nodes: string[]) {
         this._disabledNodeIds = nodes;
     }
+
+    @action
+    public setTimeAlignmentNodeIds(nodes: string[]) {
+        this._timeAlignmentNodeIds = nodes;
+    }
+
     @computed get selectedNodeId(): string|null {
         return this._selectedNodeId;
     }
@@ -39,6 +51,10 @@ export class NodeStore {
 
     public isNodeDisabled(nodeId: string): boolean {
         return (this._disabledNodeIds.includes(nodeId));
+    }
+
+    public isNodeTimeAlignmentStop(nodeId: string): boolean {
+        return (this._timeAlignmentNodeIds.includes(nodeId));
     }
 
     @action
@@ -78,6 +94,7 @@ export class NodeStore {
     public removeFromNodes(nodeIds: string[]) {
         this._nodes = this._nodes.filter(node => !nodeIds.includes(node.id));
     }
+
 }
 
 const observableNodeStore = new NodeStore();
