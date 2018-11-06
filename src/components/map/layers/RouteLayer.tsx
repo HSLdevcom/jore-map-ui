@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-import ColorScale from '~/util/colorScale';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
@@ -117,8 +116,6 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     }
 
     render() {
-        const colorMap = ColorScale.getColorMap(this.props.routes);
-
         return this.props.routes
             .map((route, index) => {
                 return (
@@ -128,7 +125,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                         bringRouteToFront={this.bringRouteToFront}
                         bringRouteToBack={this.bringRouteToBack}
                         hasHighlight={this.hasHighlight}
-                        colors={colorMap.get(route.routeId)}
+                        // colors={colorMap.get(route.routeId)}
                         routePaths={route.routePaths}
                         fitBounds={this.props.fitBounds}
                     />

@@ -14,7 +14,6 @@ interface RoutePathLayerProps {
     bringRouteToFront: Function;
     bringRouteToBack: Function;
     hasHighlight: Function;
-    colors: string[];
     routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
@@ -33,7 +32,6 @@ export default class RouteLayer extends Component<RoutePathLayerProps> {
         return this.props.routePaths
             .map((routePath, index) => {
                 if (!routePath.visible) return;
-                const color = this.props.colors[index];
                 const internalId = routePath.internalId;
                 return (
                     <RoutePathLinkLayer
@@ -46,7 +44,7 @@ export default class RouteLayer extends Component<RoutePathLayerProps> {
                         }
                         onMouseOut={this.props.bringRouteToBack}
                         routePathLinks={routePath.routePathLinks!}
-                        color={color}
+                        color={routePath.color!}
                         opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}
                         weight={this.props.hasHighlight(internalId) ? 8 : 7}
                     />

@@ -1,11 +1,14 @@
 import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '~/models';
+import ColorScale from '~/util/colorScale';
 
 export class RouteStore {
     @observable private _routes: IRoute[];
+    private colorScale: ColorScale;
 
     constructor() {
         this._routes = [];
+        this.colorScale = new ColorScale();
     }
 
     @computed get routes(): IRoute[] {
@@ -67,6 +70,9 @@ export class RouteStore {
         const routePathObservable = this.getRoutePath(internalId);
         if (routePathObservable) {
             routePathObservable.visible = !routePathObservable.visible;
+            routePathObservable.color = routePathObservable.visible ?
+                this.colorScale.reserveColor()
+                : this.colorScale.releseColor(routePathObservable.color!);
         }
     }
 }

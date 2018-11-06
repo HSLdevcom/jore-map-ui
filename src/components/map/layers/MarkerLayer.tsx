@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Marker } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer } from 'mobx-react';
-import ColorScale from '~/util/colorScale';
 import PinIcon from '~/icons/pin';
 import { IRoute } from '~/models';
 import * as s from './markerLayer.scss';
@@ -29,14 +28,11 @@ export default class MarkerLayer extends Component<MarkerLayerProps> {
     }
 
     render() {
-        const colorMap = ColorScale.getColorMap(this.props.routes);
-
         return this.props.routes.map((route) => {
-            const colors = colorMap.get(route.routeId);
             return route.routePaths.map((routePath, index) => {
                 if (!routePath.visible) return;
 
-                const icon = this.getStartPointIcon(colors[index]);
+                const icon = this.getStartPointIcon(routePath.color!);
                 const coordinates = routePath.geoJson.coordinates[0];
                 return (
                     <Marker
