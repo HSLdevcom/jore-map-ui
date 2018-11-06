@@ -1,4 +1,4 @@
-export default interface IExternalNodeStop {
+export default interface IExternalStop {
     id: number;
     pysnimi: string;
     pysnimir: string;

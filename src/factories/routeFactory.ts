@@ -9,12 +9,12 @@ export interface IRouteResult{
     route?: IRoute;
 }
 class RouteFactory {
-    public static createRoute = (reitti: IExternalRoute, line?: ILine): IRouteResult => {
+    public static createRoute = (externalRoute: IExternalRoute, line?: ILine): IRouteResult => {
         const routePathResults:IRoutePathResult[]
-            = reitti.reitinsuuntasByReitunnus.nodes
-                .map((routePath: IExternalRoutePath, index:number) => {
+            = externalRoute.externalRoutePaths
+                .map((routePath: IExternalRoutePath) => {
                     return RoutePathFactory.createRoutePath(
-                        reitti.reitunnus, routePath);
+                        externalRoute.reitunnus, routePath);
                 });
 
         const route = {
@@ -22,10 +22,10 @@ class RouteFactory {
             routePaths: routePathResults
                 .map(res => res.routePath)
                 .sort((a, b) => b.endTime.getTime() - a.endTime.getTime()),
-            routeName: reitti.reinimi,
-            routeNameSwedish: reitti.reinimir,
-            lineId: reitti.lintunnus,
-            routeId: reitti.reitunnus,
+            routeName: externalRoute.reinimi,
+            routeNameSwedish: externalRoute.reinimir,
+            lineId: externalRoute.lintunnus,
+            routeId: externalRoute.reitunnus,
         };
 
         return {

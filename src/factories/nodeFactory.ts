@@ -6,32 +6,32 @@ import NotificationType from '../enums/notificationType';
 import notificationStore from '../stores/notificationStore';
 
 class NodeFactory {
-    public static createNode = (node: IExternalNode): INode => {
+    public static createNode = (externalNode: IExternalNode): INode => {
          // Use less accurate location if measured location is missing.
         const coordinateList =
-            JSON.parse(node.geojson ? node.geojson : node.geojsonManual);
+            JSON.parse(externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual);
         const coordinates : ICoordinate = {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
-        const nodeStop = node.pysakkiBySoltunnus;
-        const type = getNodeType(node.soltyyppi);
+        const nodeStop = externalNode.externalStop;
+        const type = getNodeType(externalNode.soltyyppi);
 
         // TODO: Change this when creating abstraction layers for reading from postgis
         if (type === NodeType.INVALID) {
             notificationStore.addNotification({
-                message: `Solmun (id: '${node.soltunnus}') tyyppi on virheellinen`,
+                message: `Solmun (id: '${externalNode.soltunnus}') tyyppi on virheellinen`,
                 type: NotificationType.WARNING,
             });
         }
         return {
             type,
             coordinates,
-            id: node.soltunnus,
+            id: externalNode.soltunnus,
             stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : null,
-            measurementDate: node.mittpvm,
-            modifiedOn: node.solviimpvm,
-            modifiedBy: node.solkuka,
+            measurementDate: externalNode.mittpvm,
+            modifiedOn: externalNode.solviimpvm,
+            modifiedBy: externalNode.solkuka,
         };
     }
 }

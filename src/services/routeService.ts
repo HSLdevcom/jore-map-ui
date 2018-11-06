@@ -3,6 +3,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import RouteFactory, { IRouteResult } from '~/factories/routeFactory';
 import { IRoute, INode } from '~/models';
+import IExternalRoute from '~/models/externals/IExternalRoute';
 import QueryParsingHelper from '~/factories/queryParsingHelper';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
@@ -44,7 +45,9 @@ export default class RouteService {
             );
             const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
             if (line !== null) {
-                return RouteFactory.createRoute(queryResult.data.route, line);
+
+                const externalRoute = this.getExternalRoute(queryResult.data.route);
+                return RouteFactory.createRoute(externalRoute, line);
             }
             return null;
         } catch (err) {
@@ -55,6 +58,53 @@ export default class RouteService {
             });
             return null;
         }
+    }
+
+    /**
+     * Converts Apollo's queryResult into:
+     * @return {IExternalRoute} externalRoute
+     * @return {IExternalRoutePath[]} externalRoute.externalRoutePaths
+     * @return {IExternalRoutePathLink[]} externalRoutePaths.externalRoutePathLinks
+     * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.startNode
+     * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.endNode
+     */
+    private static getExternalRoute(route: any): IExternalRoute {
+
+        if (route.reitinsuuntasByReitunnus) {
+            route.externalRoutePaths = route.reitinsuuntasByReitunnus.nodes;
+            delete route.reitinsuuntasByReitunnus;
+
+            const externalRoutePaths = route.externalRoutePaths
+            .map((externalRoutePath: any) => {
+
+                externalRoutePath.externalRoutePathLinks =
+                externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes
+                .map((externalRoutePathLink: any) => {
+                    externalRoutePathLink.geojson = externalRoutePathLink
+                        .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson;
+                    externalRoutePathLink.startNode = externalRoutePathLink
+                        .solmuByLnkalkusolmu;
+                    externalRoutePathLink.endNode = externalRoutePathLink
+                        .solmuByLnkloppusolmu;
+
+                    delete externalRoutePathLink
+                        .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
+                    delete externalRoutePathLink
+                        .solmuByLnkalkusolmu;
+                    delete externalRoutePathLink
+                        .solmuByLnkloppusolmu;
+
+                    return externalRoutePathLink;
+                });
+
+                delete externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta;
+
+                return externalRoutePath;
+            });
+            route.externalRoutePaths = externalRoutePaths;
+        }
+
+        return route;
     }
 }
 

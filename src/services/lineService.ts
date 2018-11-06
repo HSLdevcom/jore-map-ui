@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import LineFactory from '~/factories/lineFactory';
 import NotificationType from '~/enums/notificationType';
@@ -6,12 +7,15 @@ import NotificationStore from '~/stores/notificationStore';
 import { ILine } from '~/models';
 
 export default class LineService {
-    // TODO: rename as fetchAllLines
     public static async fetchAllLines(): Promise<ILine[] | null> {
         try {
-            const { data }:any = await apolloClient.query({ query: getLinjas });
-            return data.allLinjas.nodes.map(((node: any) => {
-                return LineFactory.createLine(node);
+            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                { query: getLinjas },
+            );
+
+            return queryResult.data.allLinjas.nodes.map(((linja: any) => {
+                const externalLine = this.getExternalLine(linja);
+                return LineFactory.createLine(externalLine);
             }));
         } catch (err) {
             NotificationStore.addNotification(
@@ -23,12 +27,14 @@ export default class LineService {
         }
     }
 
-    // TODO: rename as fetchLine
     public static async fetchLine(lintunnus: string): Promise<ILine | null> {
         try {
-            const { data }:any = await apolloClient
-                .query({ query: getLinja, variables: { lineId: lintunnus } });
-            return LineFactory.createLine(data.linjaByLintunnus);
+            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                { query: getLinja, variables: { lineId: lintunnus } },
+            );
+
+            const externalLine = this.getExternalLine(queryResult.data.linjaByLintunnus);
+            return LineFactory.createLine(externalLine);
         } catch (err) {
             NotificationStore.addNotification(
                 { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
@@ -37,6 +43,22 @@ export default class LineService {
             // at view component if whether query ended up into an error or not
             return null;
         }
+    }
+
+    /**
+     * Converts Apollo's queryResult into:
+     * @return {IExternalLine} externalLine
+     * @return {IExternalRoute[]} externalLine.externalRoutes
+     */
+    private static getExternalLine(line: any) {
+        // externalRoutes might already exist at line (line got from cache)
+        if (line.reittisByLintunnus) {
+            line.externalRoutes = line.reittisByLintunnus.nodes;
+
+            delete line.reittisByLintunnus;
+        }
+
+        return line;
     }
 }
 

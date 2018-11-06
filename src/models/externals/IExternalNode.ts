@@ -1,10 +1,10 @@
-import IExternalNodeStop from './IExternalNodeStop';
+import IExternalStop from './IExternalStop';
 
 export default interface IExternalNode {
     geojson?: string;
     geojsonManual: string;
     mittpvm: string;
-    pysakkiBySoltunnus: IExternalNodeStop;
+    externalStop?: IExternalStop;
     solkuka: string;
     soltunnus: string;
     soltyyppi: string;

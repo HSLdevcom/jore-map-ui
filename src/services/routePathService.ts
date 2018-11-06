@@ -3,6 +3,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import moment from 'moment';
 import apolloClient from '~/util/ApolloClient';
 import { IRoutePath } from '~/models';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import RoutePathFactory from '../factories/routePathFactory';
@@ -20,7 +21,8 @@ export default class RoutePathService {
                         startDate: startDate.format(),
                     } },
             );
-            return RoutePathFactory.createRoutePath(routeId, queryResult.data.routePath).routePath;
+            const externalRoutePath = this.getExternalRoute(queryResult);
+            return RoutePathFactory.createRoutePath(routeId, externalRoutePath).routePath;
         } catch (err) {
             notificationStore.addNotification({
                 message: 'Reitinsuunnan haku ei onnistunut.',
@@ -28,6 +30,27 @@ export default class RoutePathService {
             });
             return null;
         }
+    }
+
+    /**
+     * Converts Apollo's queryResult into:
+     * @return {IExternalRoutePath} externalRoutePath
+     * @return {IExternalRoutePathLink[]} externalRoutePath.externalRoutePathLinks
+     * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.startNode
+     * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.endNode
+     */
+    private static getExternalRoute(queryResult: any): IExternalRoutePath {
+        const routePath = queryResult.data.routePath;
+
+        // routePath.lintunnus might already exist (got from cache)
+        if (routePath.reittiByReitunnus) {
+            routePath.lintunnus = routePath.reittiByReitunnus.lintunnus;
+            delete routePath.reittiByReitunnus;
+        }
+
+        routePath.externalRoutePathLinks = [];
+
+        return routePath;
     }
 }
 
