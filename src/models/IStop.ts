@@ -1,5 +1,5 @@
 // TODO: rename as IStop
-export default interface INodeStop {
+export default interface IStop {
     id: number;
     radius: number;
     nameFi: string;
