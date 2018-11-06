@@ -3,7 +3,6 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
-
 import ReactMoment from 'react-moment';
 import Moment from 'moment';
 import { RouteStore } from '~/stores/routeStore';
@@ -21,7 +20,6 @@ import * as s from './routeShow.scss';
 interface IRouteShowProps {
     routeStore?: RouteStore;
     route: IRoute;
-    colors: string[];
 }
 
 @inject('routeStore')
@@ -92,7 +90,6 @@ class RouteShow extends React.Component<IRouteShowProps> {
             const isWithinTimeSpan = (Moment(routePath.startTime).isBefore(Moment()) &&
                                     Moment(routePath.endTime).isAfter(Moment()));
 
-            const routeColor = this.props.colors[index];
             return (
                 <div
                     className={s.routePathContainer}
@@ -140,7 +137,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                             onClick={toggleRoutePathVisibility}
                             value={routePath.visible}
                             type={this.props.route.line!.transitType}
-                            color={routePath.visible ? routeColor : '#898989'}
+                            color={routePath.visible ? routePath.color! : '#898989'}
                         />
                         <div
                             className={s.routeInfoButton}

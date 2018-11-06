@@ -1,11 +1,14 @@
 import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '~/models';
+import ColorScale from '~/util/colorScale';
 
 export class RouteStore {
     @observable private _routes: IRoute[];
+    private colorScale: ColorScale;
 
     constructor() {
         this._routes = [];
+        this.colorScale = new ColorScale();
     }
 
     @computed get routes(): IRoute[] {
@@ -14,6 +17,7 @@ export class RouteStore {
     }
 
     set routes(value: IRoute[]) {
+        this.colorScale = new ColorScale();
         this._routes = value;
     }
 
@@ -37,6 +41,8 @@ export class RouteStore {
     public removeFromRoutes(routeId: string) {
         for (let i = 0; i < this._routes.length; i += 1) {
             if (this._routes[i].routeId === routeId) {
+                this._routes[i].routePaths
+                    .forEach(routePath => this.colorScale.releaseColor(routePath.color!));
                 this._routes.splice(i, 1);
             }
         }
@@ -45,6 +51,7 @@ export class RouteStore {
     @action
     public clearRoutes() {
         this._routes = [];
+        this.colorScale = new ColorScale();
     }
 
     private getRoutePath(internalId: string): IRoutePath | null {
@@ -67,6 +74,9 @@ export class RouteStore {
         const routePathObservable = this.getRoutePath(internalId);
         if (routePathObservable) {
             routePathObservable.visible = !routePathObservable.visible;
+            routePathObservable.color = routePathObservable.visible ?
+                this.colorScale.reserveColor()
+                : this.colorScale.releaseColor(routePathObservable.color!);
         }
     }
 }
