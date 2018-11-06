@@ -1,6 +1,8 @@
-import INodeStop from '~/models/INodeStop';
+import IStop from '~/models/IStop';
+import IExternalStop  from '~/models/externals/IExternalStop';
+
 export default class StopFactory {
-    public static createStop = (node: any): INodeStop => {
+    public static createStop = (node: IExternalStop): IStop => {
         return {
             id: node.id,
             nameFi: node.pysnimi,
