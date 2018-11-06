@@ -1,0 +1,65 @@
+import React from 'react';
+import { observer } from 'mobx-react';
+import classnames from 'classnames';
+import { FaTimes } from 'react-icons/fa';
+import { FiClipboard } from 'react-icons/fi';
+import * as s from './geometryLog.scss';
+
+interface IGeometryLogState {
+    isToggled: boolean;
+}
+
+interface IGeometryLogProps {
+}
+
+@observer
+export default class GeometryLog extends React.Component<IGeometryLogProps, IGeometryLogState> {
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            isToggled: false,
+        };
+    }
+
+    private getLogs = () => {
+        return 'logs';
+    }
+
+    private toggleLog = () => {
+        const isToggled = !this.state.isToggled;
+        this.setState({ isToggled });
+    }
+
+    render() {
+        return (
+            <div
+                className={classnames(
+                    s.geometryLogView,
+                    this.state.isToggled ? s.toggled : '',
+                )}
+            >
+            {(this.state.isToggled) ?
+                <div className={s.flexInnerColumn}>
+                    <div className={s.flexInnerRow}>
+                        <div className={s.topic}>
+                            TAPAHTUMALOKI
+                        </div>
+                        <div
+                            onClick={this.toggleLog}
+                            className={s.closeView}
+                        >
+                            <FaTimes className={s.close}/>
+                        </div>
+                    </div>
+                    <textarea
+                        className={s.textArea}
+                        value={this.getLogs()}
+                        readOnly={true}
+                    />
+                </div> :
+                <FiClipboard onClick={this.toggleLog}/>
+            }
+            </div>
+        );
+    }
+}

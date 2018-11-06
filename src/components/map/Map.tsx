@@ -16,6 +16,7 @@ import NewRoutePathLayer from './layers/new/NewRoutePathLayer';
 import MarkerLayer from './layers/MarkerLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
+import GeometryLog from './toolbar/GeometryLog';
 import PopupLayer from './layers/PopupLayer';
 import NodeLayer from './layers/NodeLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
@@ -177,7 +178,10 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         setView={this.setView}
                     />
                     <Control position='topleft'>
-                        <Toolbar />
+                        <div>
+                            <Toolbar />
+                            <GeometryLog />
+                        </div>
                     </Control>
 
                     <Control position='topright'>
