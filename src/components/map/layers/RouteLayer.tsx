@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { IRoute, IRoutePathLink } from '~/models';
-import NodeType from '~/enums/nodeType';
+// import NodeType from '~/enums/nodeType';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
@@ -81,7 +81,6 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             selectedPolylines,
         });
         e.target.bringToFront();
-        this.setTempNodeIds(links);
     }
 
     private hasHighlight = (internalId: string) => {
@@ -91,26 +90,10 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
 
     private hoverHighlight = (internalId: string, links: IRoutePathLink[]) =>
     (e: L.LeafletMouseEvent) => {
-        this.setTempNodeIds(links);
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
         e.target.bringToFront();
-    }
-
-    private setTempNodeIds = (links: IRoutePathLink[]) => {
-        const timeAlignmentNodeIds: string[] = [];
-        const disabledNodeIds: string[] = [];
-        links.forEach((link) => {
-            if (link.startNodeType === NodeType.DISABLED) {
-                disabledNodeIds.push(link.startNodeId);
-            }
-            if (link.timeAlignmentStop === NodeType.TIME_ALIGNMENT) {
-                timeAlignmentNodeIds.push(link.startNodeId);
-            }
-        });
-        this.props.nodeStore!.setDisabledNodeIds(disabledNodeIds);
-        this.props.nodeStore!.setTimeAlignmentNodeIds(timeAlignmentNodeIds);
     }
 
     private hoverHighlightOff = (e: L.LeafletMouseEvent) => {

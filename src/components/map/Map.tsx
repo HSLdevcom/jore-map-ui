@@ -7,7 +7,6 @@ import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
 import { NodeStore } from '~/stores/nodeStore';
-import { IRoutePath, IRoute } from '~/models';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
@@ -17,7 +16,6 @@ import MarkerLayer from './layers/MarkerLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './layers/PopupLayer';
-import NodeLayer from './layers/NodeLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import * as s from './map.scss';
 import NetworkLayers from './layers/NetworkLayers';
@@ -104,15 +102,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         this.getMap().fitBounds(bounds);
     }
 
-    private getVisibleRoutePaths = (routes: IRoute[]) => {
-        return routes.reduce<IRoutePath[]>(
-            (flatList, route) => {
-                return flatList.concat(route.routePaths);
-            },
-            [],
-        ).filter(routePath => routePath.visible);
-    }
-
     /* Leaflet methods */
     private setView(latLng: L.LatLng) {
         this.getMap().setView(latLng, 17);
@@ -125,8 +114,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
 
         const routes = this.props.routeStore!.routes;
-        const visibleRoutePaths = this.getVisibleRoutePaths(routes);
-        const visibleNodes = this.props.nodeStore!.getNodesUsedInRoutePaths(visibleRoutePaths);
 
         return (
             <div
@@ -169,9 +156,6 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                     <NewRoutePathLayer />
                     <MarkerLayer
                         routes={routes}
-                    />
-                    <NodeLayer
-                        nodes={visibleNodes}
                     />
                     <PopupLayer
                         setView={this.setView}

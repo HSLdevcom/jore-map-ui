@@ -1,10 +1,9 @@
 import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
-import RouteFactory, { IRouteResult } from '~/factories/routeFactory';
+import RouteFactory from '~/factories/routeFactory';
 import { IRoute, INode } from '~/models';
 import IExternalRoute from '~/models/externals/IExternalRoute';
-import QueryParsingHelper from '~/factories/queryParsingHelper';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import LineService from './lineService';
@@ -15,30 +14,24 @@ export interface IMultipleRoutesQueryResult {
 }
 
 export default class RouteService {
+    // TODO: refactor undefined to null?
     public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
-        const routeResult = await RouteService.runFetchRouteQuery(routeId);
-        return routeResult ? routeResult.route : undefined;
+        const route = await RouteService.runFetchRouteQuery(routeId);
+        return route ? route : undefined;
     }
 
+    // TODO: fix (IRoute | null)[] type?
     public static async fetchMultipleRoutes(routeIds: string[]):
-        Promise<IMultipleRoutesQueryResult | null> {
-        let queryResult = await Promise
+        Promise<IRoute[] | null> {
+        const routes = await Promise
             .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
-        queryResult = queryResult.filter(res => res && res.route);
-        if (!queryResult) return null;
-        return({
-            routes: queryResult
-                .map((res: IRouteResult) => res.route!),
-            nodes: QueryParsingHelper.removeINodeDuplicates(
-                queryResult
-                    .reduce<INode[]>(
-                        (flatList, node) => flatList.concat(node!.nodes),
-                        [],
-                    )),
-        });
+
+        if (!routes) return null;
+
+        return routes.map((res: IRoute) => res!);
     }
 
-    private static async runFetchRouteQuery(routeId: string): Promise<IRouteResult | null> {
+    private static async runFetchRouteQuery(routeId: string): Promise<IRoute | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: getRouteQuery, variables: { routeId } },
