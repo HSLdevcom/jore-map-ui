@@ -73,12 +73,12 @@ export default class RouteService {
             route.externalRoutePaths = route.reitinsuuntasByReitunnus.nodes;
             delete route.reitinsuuntasByReitunnus;
 
-            route.externalRoutePaths = route.externalRoutePaths
-            .map((externalRoutePath: any) => {
+            route.externalRoutePaths.forEach((externalRoutePath: any) => {
+                externalRoutePath.externalRoutePathLinks
+                    = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes;
+                delete externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta;
 
-                externalRoutePath.externalRoutePathLinks =
-                externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes
-                .map((externalRoutePathLink: any) => {
+                externalRoutePath.externalRoutePathLinks.forEach((externalRoutePathLink: any) => {
                     externalRoutePathLink.geojson = externalRoutePathLink
                         .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson;
                     externalRoutePathLink.startNode = externalRoutePathLink
@@ -92,13 +92,7 @@ export default class RouteService {
                         .solmuByLnkalkusolmu;
                     delete externalRoutePathLink
                         .solmuByLnkloppusolmu;
-
-                    return externalRoutePathLink;
                 });
-
-                delete externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta;
-
-                return externalRoutePath;
             });
         }
 
