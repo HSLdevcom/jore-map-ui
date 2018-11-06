@@ -134,7 +134,6 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
                         hoverHighlight={this.hoverHighlight}
                         hoverHighlightOff={this.hoverHighlightOff}
                         hasHighlight={this.hasHighlight}
-                        // colors={colorMap.get(route.routeId)}
                         routePaths={route.routePaths}
                         fitBounds={this.props.fitBounds}
                     />

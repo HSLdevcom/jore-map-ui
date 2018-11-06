@@ -20,7 +20,7 @@ interface RoutePathLayerProps {
 
 @inject('sidebarStore')
 @observer
-export default class RouteLayer extends Component<RoutePathLayerProps> {
+export default class RoutePathLayer extends Component<RoutePathLayerProps> {
     private openLinkView = (routePathLinkId: number) => {
         // TODO deal with fetching linkID in the endpoint
         this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
