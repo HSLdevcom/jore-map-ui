@@ -5,6 +5,8 @@ import apolloClient from '~/util/ApolloClient';
 import { IRoutePath } from '~/models';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
+import ApiClient from '~/util/ApiClient';
+import entityNames from '~/enums/entityNames';
 import RoutePathFactory from '../factories/routePathFactory';
 
 export default class RoutePathService {
@@ -28,6 +30,11 @@ export default class RoutePathService {
             });
             return null;
         }
+    }
+
+    public static async saveRoutePath(routePath: IRoutePath) {
+        const apiClient = new ApiClient();
+        return await apiClient.updateObject(entityNames.ROUTEPATH, routePath);
     }
 }
 

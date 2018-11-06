@@ -9,6 +9,8 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import RoutePathService from '~/services/routePathService';
 import Loader from '~/components/shared/loader/Loader';
+import NotificationStore from '~/stores/notificationStore';
+import NotificationType from '~/enums/notificationType';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -17,6 +19,7 @@ interface IRoutePathViewState {
     isEditingDisabled: boolean;
     hasModifications: boolean;
     routePath: IRoutePath | null;
+    isLoading: boolean;
 }
 
 interface IRoutePathViewProps {
@@ -29,6 +32,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             isEditingDisabled: true,
             hasModifications: false,
             routePath: null,
+            isLoading: true,
         };
     }
 
@@ -43,7 +47,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             decodeURIComponent(navigator.getQueryParam(QueryParams.startTime)));
         const routePath =
             await RoutePathService.fetchRoutePath(routeId, startTime, direction);
-        this.setState({ routePath });
+        this.setState({
+            routePath,
+            isLoading: false,
+        });
     }
 
     public toggleEditing = () => {
@@ -51,29 +58,53 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isEditingDisabled });
     }
 
-    public save = () => {
-        this.setState({ hasModifications: false });
+    public save = async () => {
+        this.setState({ isLoading: true });
+        try {
+            await RoutePathService.saveRoutePath(this.state.routePath!);
+            this.setState({ hasModifications: false });
+            NotificationStore.addNotification({
+                message: 'Tallennus onnistui',
+                type: NotificationType.SUCCESS,
+            });
+        } catch {
+            NotificationStore.addNotification({
+                message: 'Tallennus epäonnistui',
+                type: NotificationType.ERROR,
+            });
+        }
+        this.setState({ isLoading: false });
     }
 
-    public onEdit = () => {
-        this.setState({ hasModifications: true });
+    public onChange = (property: string, value: any) => {
+        this.setState({
+            routePath: { ...this.state.routePath!, [property]: value },
+            hasModifications: true,
+        });
     }
 
     public render(): any {
-        if (!this.state.routePath) {
+        // tslint:disable-next-line:max-line-length
+        const message = 'Suunnalla on muutoksia, joita ei ole tallennettu. Oletko varma, että haluat poistaa näkymästä?';
+
+        if (this.state.isLoading) {
             return (
-                <Loader size={Loader.MEDIUM}/>
+                <div className={s.routePathView}>
+                    <Loader size={Loader.MEDIUM}/>
+                </div>
             );
         }
+        if (!this.state.routePath) return 'Error';
         return (
         <div className={classnames(s.routePathView, s.form)}>
             <ViewHeader
                 header={`Reitin suunta ${this.state.routePath.lineId}`}
+                closePromptMessage={this.state.hasModifications ? message : undefined}
             >
                 <Button
                     onClick={this.toggleEditing}
                     type={ButtonType.SQUARE}
-                    text={'Muokkaa'}
+                    text={this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'}
                 />
             </ViewHeader>
             <div className={s.routePathTimestamp}>01.09.2017</div>
@@ -105,7 +136,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             </div>
             <div className={s.formSection}>
                 <RoutePathViewForm
-                    onEdit={this.onEdit}
+                    onChange={this.onChange}
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.state.routePath}
                 />
