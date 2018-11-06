@@ -21,4 +21,5 @@ export default interface IRoutePath {
     routePathShortName: string;
     routePathShortNameSw: string;
     modifiedBy: string;
+    color?: string;
 }

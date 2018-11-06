@@ -14,14 +14,13 @@ interface RoutePathLayerProps {
     hoverHighlight: Function;
     hoverHighlightOff: Function;
     hasHighlight: Function;
-    colors: string[];
     routePaths: IRoutePath[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
 
 @inject('sidebarStore')
 @observer
-export default class RouteLayer extends Component<RoutePathLayerProps> {
+export default class RoutePathLayer extends Component<RoutePathLayerProps> {
     private openLinkView = (routePathLinkId: number) => {
         // TODO deal with fetching linkID in the endpoint
         this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
@@ -33,7 +32,6 @@ export default class RouteLayer extends Component<RoutePathLayerProps> {
         return this.props.routePaths
             .map((routePath, index) => {
                 if (!routePath.visible) return;
-                const color = this.props.colors[index];
                 const internalId = routePath.internalId;
                 return (
                     <RoutePathLinkLayer
@@ -46,7 +44,7 @@ export default class RouteLayer extends Component<RoutePathLayerProps> {
                         }
                         onMouseOut={this.props.hoverHighlightOff}
                         routePathLinks={routePath.routePathLinks!}
-                        color={color}
+                        color={routePath.color!}
                         opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}
                         weight={this.props.hasHighlight(internalId) ? 8 : 7}
                     />

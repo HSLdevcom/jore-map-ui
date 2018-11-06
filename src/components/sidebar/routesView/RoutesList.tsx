@@ -1,6 +1,5 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import ColorScale from '~/util/colorScale';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import { NetworkStore } from '~/stores/networkStore';
@@ -66,7 +65,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     public renderRouteList() {
         const routes = this.props.routeStore!.routes;
-        const colorMap = ColorScale.getColorMap(routes);
 
         if (routes.length < 1) return null;
         return routes.map((route: IRoute) => {
@@ -74,7 +72,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                 <RouteShow
                     key={route.routeId}
                     route={route}
-                    colors={colorMap.get(route.routeId)}
                 />
             );
         });

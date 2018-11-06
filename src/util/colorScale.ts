@@ -1,24 +1,42 @@
-import chroma from 'chroma-js';
-import IRoute from '~/models/IRoute';
 
 class ColorScale {
-    public static getColorMap(routes: IRoute[]) {
-        const colorMap = new Map();
+    public static allColors = [
+        '#e6194B',
+        '#3cb44b',
+        '#ffe119',
+        '#4363d8',
+        '#f58231',
+        '#42d4f4',
+        '#f032e6',
+        '#fabebe',
+        '#469990',
+        '#e6beff',
+        '#9A6324',
+        // '#fffac8',
+        '#800000',
+        '#aaffc3',
+        '#000075',
+        // '#a9a9a9',
+    ];
 
-        const totalColorCount = routes.reduce((acc, curr) => curr.routePaths.length + acc, 0);
-        const colors = this.getColors(totalColorCount);
-        routes.forEach((route) => {
-            const key = route.routeId;
-            const value = colors.splice(0, route.routePaths.length);
-            colorMap.set(key, value);
-        });
+    public colorStack: string[];
 
-        return colorMap;
+    constructor() {
+        this.colorStack = ColorScale.allColors.slice();
     }
 
-    private static getColors(colorCount: number) {
-        return chroma.scale(['red', 'yellow', 'green', 'blue'])
-        .mode('lch').colors(colorCount);
+    public reserveColor() {
+        if (this.colorStack.length < 1) {
+            return '#007ac9';
+        }
+        return this.colorStack.pop();
+    }
+
+    public releaseColor(color: string) {
+        if (ColorScale.allColors.includes(color)) {
+            this.colorStack.push(color);
+        }
+        return undefined;
     }
 }
 
