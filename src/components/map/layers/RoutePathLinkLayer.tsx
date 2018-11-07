@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { IRoutePathLink } from '~/models';
+import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import NodeLayer from './NodeLayer';
 
@@ -48,38 +49,22 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
         const routePathLinks = this.props.routePathLinks;
 
         return routePathLinks.map((routePathLink, index) => {
-
-            if (index === routePathLinks.length - 1) {
-
-                // TODO fix. get these from routePath link
-                const isDisabled1 = false;
-                const isTimeAlignmentStop1 = false;
-                return (
-                    <>
-                        <NodeLayer
-                            node={routePathLink.startNode}
-                            isDisabled={isDisabled1}
-                            isTimeAlignmentStop={isTimeAlignmentStop1}
-                        />
+            return (
+                <>
+                    <NodeLayer
+                        key={index}
+                        node={routePathLink.startNode}
+                        isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
+                        isTimeAlignmentStop={routePathLink.startNodeIsTimeAligned}
+                    />
+                    { index === routePathLinks.length - 1 &&
                         <NodeLayer
                             node={routePathLink.endNode}
-                            isDisabled={isDisabled1}
-                            isTimeAlignmentStop={isTimeAlignmentStop1}
+                            isDisabled={false}
+                            isTimeAlignmentStop={false}
                         />
-                    </>
-                );
-            }
-
-            // TODO fix. get these from routePath link
-            const isDisabled2 = false;
-            const isTimeAlignmentStop2 = false;
-            return (
-                <NodeLayer
-                    key={index}
-                    node={routePathLink.endNode}
-                    isDisabled={isDisabled2}
-                    isTimeAlignmentStop={isTimeAlignmentStop2}
-                />
+                    }
+                </>
             );
         });
     }
