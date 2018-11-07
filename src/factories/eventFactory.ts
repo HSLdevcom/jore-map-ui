@@ -6,6 +6,7 @@ class EventFactory {
         return {
             message,
             timestamp: date,
+            read: false,
         };
     }
 }

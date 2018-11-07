@@ -22,6 +22,10 @@ export class EventStore {
         this._eventLogs.push(event);
     }
 
+    @computed get allUnreadEvents(): IEventLog[] {
+        return this._eventLogs.filter((event: IEventLog) => (!event.read));
+    }
+
 }
 
 const observableEventStore = new EventStore();
