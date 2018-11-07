@@ -4,12 +4,20 @@
 
 .geometryLogView {
     display: flex;
-    width: 12px;
     background-color: white;
     border-radius: 3px;
     box-shadow: 0 0 4px #666666;
     padding: 5px;
-    background-color: #eef1f3;
+    background-color: $backgroundlightGrey;
+}
+
+.logIcon {
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.alertIcon {
+    color: #ffb300;
 }
 
 .geometryLogView.toggled {

@@ -1,12 +1,13 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
 import * as s from './geometryLog.scss';
 
 interface IGeometryLogState {
     isToggled: boolean;
+    showAlert: boolean;
 }
 
 interface IGeometryLogProps {
@@ -18,6 +19,7 @@ export default class GeometryLog extends React.Component<IGeometryLogProps, IGeo
         super(props);
         this.state = {
             isToggled: false,
+            showAlert: false,
         };
     }
 
@@ -54,16 +56,27 @@ export default class GeometryLog extends React.Component<IGeometryLogProps, IGeo
 
     render() {
         return (
-            <div
-                className={classnames(
-                    s.geometryLogView,
-                    this.state.isToggled ? s.toggled : '',
-                )}
-            >
-                {(this.state.isToggled) ?
-                        this.logView() :
-                        <FiClipboard onClick={this.toggleLog}/>
-                }
+            <div className={s.flexRow}>
+                <div
+                    className={classnames(
+                        s.geometryLogView,
+                        this.state.isToggled ? s.toggled : '',
+                    )}
+                >
+                    {(this.state.isToggled) ?
+                            this.logView() :
+                            <FiClipboard
+                                onClick={this.toggleLog}
+                                className={s.logIcon}
+                            />
+                    }
+                    {this.state.showAlert && !this.state.isToggled &&
+                        <FaExclamation
+                            className={s.alertIcon}
+                        />
+                    }
+
+                </div>
             </div>
         );
     }
