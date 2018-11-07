@@ -3,18 +3,18 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
-import * as s from './geometryLog.scss';
+import * as s from './eventLog.scss';
 
-interface IGeometryLogState {
+interface IEventLogState {
     isToggled: boolean;
     showAlert: boolean;
 }
 
-interface IGeometryLogProps {
+interface IEventLogProps {
 }
 
 @observer
-export default class GeometryLog extends React.Component<IGeometryLogProps, IGeometryLogState> {
+export default class EventLog extends React.Component<IEventLogProps, IEventLogState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -24,6 +24,8 @@ export default class GeometryLog extends React.Component<IGeometryLogProps, IGeo
     }
 
     private getLogs = () => {
+        // TODO Get unread logs from store and show them in the window
+        // Show alert based on unread logs.
         return 'logs';
     }
 
@@ -56,10 +58,10 @@ export default class GeometryLog extends React.Component<IGeometryLogProps, IGeo
 
     render() {
         return (
-            <div className={s.flexRow}>
+            <div className={s.flexInnerRow}>
                 <div
                     className={classnames(
-                        s.geometryLogView,
+                        s.eventLogContainer,
                         this.state.isToggled ? s.toggled : '',
                     )}
                 >
@@ -75,7 +77,6 @@ export default class GeometryLog extends React.Component<IGeometryLogProps, IGeo
                             className={s.alertIcon}
                         />
                     }
-
                 </div>
             </div>
         );

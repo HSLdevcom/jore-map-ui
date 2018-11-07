@@ -2,13 +2,24 @@
 @import '../../shared/styles/flexbox';
 @import '../../shared/styles/form';
 
-.geometryLogView {
+.eventLogView {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+}
+
+.eventLogContainer {
     display: flex;
     background-color: white;
     border-radius: 3px;
     box-shadow: 0 0 4px #666666;
     padding: 5px;
     background-color: $backgroundlightGrey;
+}
+
+.eventLogContainer.toggled {
+    width: 100%;
 }
 
 .logIcon {
@@ -18,10 +29,6 @@
 
 .alertIcon {
     color: #ffb300;
-}
-
-.geometryLogView.toggled {
-    width: 100%;
 }
 
 .textArea {

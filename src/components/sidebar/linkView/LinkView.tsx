@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { SidebarStore } from '~/stores/sidebarStore';
+import { EventStore } from '~/stores/eventStore';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
@@ -16,9 +17,10 @@ interface ILinkViewState {
 
 interface ILinkViewProps {
     sidebarStore?: SidebarStore;
+    eventStore?: EventStore;
 }
 
-@inject('sidebarStore')
+@inject('sidebarStore', 'eventStore')
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: any) {
