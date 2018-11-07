@@ -31,7 +31,6 @@ export default class RoutePathLayer extends Component<RoutePathLayerProps> {
     render() {
         return this.props.routePaths
             .map((routePath, index) => {
-                console.log('rendering ', routePath);
                 if (!routePath.visible) return;
                 const internalId = routePath.internalId;
                 return (

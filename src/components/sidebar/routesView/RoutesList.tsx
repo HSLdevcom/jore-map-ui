@@ -6,8 +6,8 @@ import { NetworkStore } from '~/stores/networkStore';
 import { IRoute } from '~/models';
 import QueryParams from '~/routing/queryParams';
 import navigator from '~/routing/navigator';
-import RouteAndStopHelper from '~/storeAbstractions/routeAndStopAbstraction';
 import TransitType from '~/enums/transitType';
+import RouteService from '~/services/routeService';
 import { Checkbox, TransitToggleButtonBar } from '../../controls';
 import RouteShow from './RouteShow';
 import Loader from '../../shared/loader/Loader';
@@ -39,10 +39,19 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     }
 
     private async queryRoutes() {
-        const routeIds = navigator.getQueryParam(QueryParams.routes);
+        const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
             this.setState({ isLoading: true });
-            await RouteAndStopHelper.addRequiredDataForRoutes(routeIds);
+            const currentRouteIds = this.props.routeStore!.routes.map(r => r.routeId);
+            const missingRouteIds = routeIds.filter(id => !currentRouteIds.includes(id));
+            currentRouteIds
+                .filter(id => !routeIds.includes(id))
+                .forEach(id => this.props.routeStore!.removeFromRoutes(id));
+
+            const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
+            if (routes) {
+                this.props.routeStore!.addToRoutes(routes);
+            }
             this.setState({ isLoading: false });
         }
     }

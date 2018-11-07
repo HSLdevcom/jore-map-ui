@@ -91,8 +91,8 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
                 onMouseOver={this.props.onMouseOver}
                 onMouseOut={this.props.onMouseOut}
             >
-                {this.renderRoutePathLinks}
-                {this.renderNodes}
+                {this.renderRoutePathLinks()}
+                {this.renderNodes()}
             </FeatureGroup>
         );
     }
