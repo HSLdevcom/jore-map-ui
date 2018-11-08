@@ -10,6 +10,7 @@ export default class ApiClientHelper {
     }
 
     public static format = (obj: object) => {
+        // Formats the object to include dates as formatted strings, instead of Date objects
         const entries = Object.entries(obj);
         const dates = entries
             .filter(([key, value]: [string, any]) => value instanceof Date)

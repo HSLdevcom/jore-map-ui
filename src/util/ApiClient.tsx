@@ -13,7 +13,7 @@ export class IRequestError {
     message: string;
 }
 
-const API_URL = process.env.API_URL || 'http://localhost:3050';
+const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 export default class ApiClient {
     public async updateObject(entityName: entityNames, object: any) {
