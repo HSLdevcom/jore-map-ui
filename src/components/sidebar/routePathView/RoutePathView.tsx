@@ -67,9 +67,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
             });
-        } catch {
+        } catch (err) {
+            const errMessage = err.message ? `, (${err.message})` : '';
             NotificationStore.addNotification({
-                message: 'Tallennus epäonnistui',
+                message: `Tallennus epäonnistui${errMessage}`,
                 type: NotificationType.ERROR,
             });
         }

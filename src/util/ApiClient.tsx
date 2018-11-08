@@ -1,4 +1,6 @@
 import entityNames from '~/enums/entityNames';
+import FetchStatusCode from '~/enums/fetchStatusCode';
+import ApiClientHelper from './apiClientHelper';
 
 enum RequestMethod {
     POST= 'POST',
@@ -6,7 +8,12 @@ enum RequestMethod {
     DELETE= 'DELETE',
 }
 
-const API_URL = process.env.API_URL || 'http://localhost:3040';
+export class IRequestError {
+    errorCode: FetchStatusCode;
+    message: string;
+}
+
+const API_URL = process.env.API_URL || 'http://localhost:3050';
 
 export default class ApiClient {
     public async updateObject(entityName: entityNames, object: any) {
@@ -22,13 +29,32 @@ export default class ApiClient {
     }
 
     private async sendRequest(method: RequestMethod, entityName: entityNames, object: any) {
+        const formattedObject = ApiClientHelper.format(object);
         return await fetch(this.getUrl(entityName), {
             method,
-            body: JSON.stringify(object),
+            body: JSON.stringify(formattedObject),
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
+        }).then((response: Response) => {
+            if (response.status >= 200 && response.status < 300) {
+                return Promise.resolve();
+            }
+            const error: IRequestError = {
+                errorCode: response.status,
+                message: response.statusText,
+            };
+            return Promise.reject(error);
+        }).catch((err) => {
+            if (err.errorCode) {
+                return Promise.reject(err);
+            }
+            const error: IRequestError = {
+                errorCode: FetchStatusCode.CONNECTION_ERROR,
+                message: 'Yhteysongelma',
+            };
+            return Promise.reject(error);
         });
     }
 
