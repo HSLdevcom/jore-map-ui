@@ -3,14 +3,12 @@ import L from 'leaflet';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { NodeStore } from '~/stores/nodeStore';
 import { IRoute, IRoutePathLink } from '~/models';
 // import NodeType from '~/enums/nodeType';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
     sidebarStore?: SidebarStore;
-    nodeStore?: NodeStore;
     routes: IRoute[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
@@ -20,7 +18,7 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
-@inject('sidebarStore', 'nodeStore')
+@inject('sidebarStore')
 @observer
 export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
@@ -102,8 +100,6 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         });
         if (!this.hasHighlight(e['sourceTarget'].options.routePathInternalId)) {
             e.target.bringToBack();
-            this.props.nodeStore!.setDisabledNodeIds([]);
-            this.props.nodeStore!.setTimeAlignmentNodeIds([]);
         }
     }
 

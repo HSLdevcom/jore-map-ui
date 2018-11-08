@@ -15,9 +15,9 @@ import RouteStore from './stores/routeStore';
 import NewRoutePathStore from './stores/new/newRoutePathStore';
 import SearchStore from './stores/searchStore';
 import SidebarStore from './stores/sidebarStore';
+import SelectionStore from './stores/selectionStore';
 import PopupStore from './stores/popupStore';
 import ToolbarStore from './stores/toolbarStore';
-import NodeStore from './stores/nodeStore';
 import NetworkStore from './stores/networkStore';
 import apolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
@@ -39,8 +39,8 @@ const stores = {
     sidebarStore: SidebarStore,
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,
-    nodeStore: NodeStore,
     networkStore: NetworkStore,
+    selectionStore: SelectionStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());

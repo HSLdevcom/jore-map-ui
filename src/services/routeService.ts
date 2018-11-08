@@ -61,7 +61,6 @@ export default class RouteService {
      * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.endNode
      */
     private static getExternalRoute(route: any): IExternalRoute {
-
         if (route.reitinsuuntasByReitunnus) {
             route.externalRoutePaths = route.reitinsuuntasByReitunnus.nodes;
             delete route.reitinsuuntasByReitunnus;
@@ -78,6 +77,12 @@ export default class RouteService {
                         .solmuByLnkalkusolmu;
                     externalRoutePathLink.endNode = externalRoutePathLink
                         .solmuByLnkloppusolmu;
+
+                    externalRoutePathLink.startNode.externalStop
+                        = externalRoutePathLink.startNode.pysakkiBySoltunnus;
+
+                    externalRoutePathLink.endNode.externalStop
+                        = externalRoutePathLink.endNode.pysakkiBySoltunnus;
 
                     delete externalRoutePathLink
                         .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
