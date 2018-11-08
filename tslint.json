@@ -3,8 +3,7 @@
   "linterOptions": {
     "exclude": [
       "config/**/*.js",
-      "node_modules/**/*.ts",
-      "src/project/*"
+      "node_modules/**/*.ts"
     ]
   },
   "rulesDirectory": [
