@@ -12,7 +12,7 @@ import Modal from './Modal';
 import Login from './login/Login';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
-import PackageJson from '../project/package.alias.json';
+import packageVersion from '../project/version.json';
 import * as s from './app.scss';
 
 interface IAppState {
@@ -44,7 +44,7 @@ class App extends React.Component<IAppProps, IAppState> {
         return (
             <div className={s.appView}>
                 <div className={s.buildInfo}>
-                    {`Build: ${PackageJson.version} ${buildDateInfo}`}
+                    {`Build: ${packageVersion.version} ${buildDateInfo}`}
                 </div>
                 <Modal
                     closeModal={this.closeLoginModal}
