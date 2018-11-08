@@ -7,8 +7,8 @@ export default interface IRoutePath {
     routePathName: string;
     routePathNameSw: string;
     direction: string;
-    positions: [[number, number]];
-    geoJson: any;
+    positions: [[number, number]]; // TODO: remove?
+    geoJson: any; // TODO: remove?
     visible: boolean;
     startTime: Date;
     endTime: Date;
@@ -21,4 +21,5 @@ export default interface IRoutePath {
     routePathShortName: string;
     routePathShortNameSw: string;
     modifiedBy: string;
+    color?: string;
 }
