@@ -4,7 +4,6 @@ import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
 import { IRoute, IRoutePathLink } from '~/models';
-// import NodeType from '~/enums/nodeType';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
