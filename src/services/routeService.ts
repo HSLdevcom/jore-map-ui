@@ -20,7 +20,6 @@ export default class RouteService {
         return route ? route : undefined;
     }
 
-    // TODO: fix (IRoute | null)[] type?
     public static async fetchMultipleRoutes(routeIds: string[]):
         Promise<IRoute[] | null> {
         const routes = await Promise
