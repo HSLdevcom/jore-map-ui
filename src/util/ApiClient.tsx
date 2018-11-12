@@ -50,8 +50,6 @@ export default class ApiClient {
                 message: response.statusText,
             };
         } catch (err) {
-            // tslint:disable-next-line
-            console.log(err);
             error = {
                 errorCode: FetchStatusCode.CONNECTION_ERROR,
                 message: 'Yhteysongelma',
