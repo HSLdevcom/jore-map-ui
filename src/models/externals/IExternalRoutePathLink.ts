@@ -6,8 +6,6 @@ export default interface IExternalRoutePathLink {
     endNode: IExternalNode;
     geojson: string;
     ajantaspys: string;
-    lnkalkusolmu: string;
-    lnkloppusolmu: string;
     lnkverkko: string;
     relid: string;
     reljarjnro: number;
