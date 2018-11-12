@@ -5,14 +5,8 @@ import NodeFactory from './nodeFactory';
 class RoutePathLinkFactory {
     public static createRoutePathLink =
     (externalRoutePathLink: IExternalRoutePathLink): IRoutePathLink => {
-        let startNode = null;
-        let endNode = null;
-        if (externalRoutePathLink.startNode) {
-            startNode = NodeFactory.createNode(externalRoutePathLink.startNode);
-        }
-        if (externalRoutePathLink.endNode) {
-            endNode = NodeFactory.createNode(externalRoutePathLink.endNode);
-        }
+        const startNode = NodeFactory.createNode(externalRoutePathLink.startNode);
+        const endNode = NodeFactory.createNode(externalRoutePathLink.endNode);
         const coordinates = JSON.parse(
             externalRoutePathLink.geojson).coordinates;
         const positions = coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);

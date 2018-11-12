@@ -29,12 +29,11 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
 
     private renderRoutePathLinks() {
         const routePathLinks = this.props.routePathLinks;
-
         return routePathLinks.map((routePathLink, index) => {
             return (
                 <Polyline
                     positions={routePathLink.positions}
-                    key={index}
+                    key={routePathLink.id}
                     color={this.props.color}
                     weight={this.props.weight}
                     opacity={this.props.opacity}
@@ -47,30 +46,31 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
 
     private renderNodes() {
         const routePathLinks = this.props.routePathLinks;
-
         return routePathLinks.map((routePathLink, index) => {
             return (
-                <>
+                <div key={index}>
                     <NodeLayer
-                        key={index}
+                        key={`${routePathLink.startNode.id}`}
                         node={routePathLink.startNode}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
                         isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
                     />
                     { index === routePathLinks.length - 1 &&
                         <NodeLayer
+                            key={`${routePathLink.endNode.id}`}
                             node={routePathLink.endNode}
                             isDisabled={false}
                             isTimeAlignmentStop={false}
                         />
                     }
-                </>
+                </div>
             );
         });
     }
 
     render() {
         return (
+
             <FeatureGroup
                 routePathInternalId={this.props.internalId}
                 onMouseOver={this.props.onMouseOver}

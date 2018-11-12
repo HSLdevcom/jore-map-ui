@@ -107,7 +107,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             .map((route, index) => {
                 return (
                     <RoutePathLayer
-                        key={index}
+                        key={route.routeId}
                         toggleHighlight={this.toggleHighlight}
                         hoverHighlight={this.hoverHighlight}
                         hoverHighlightOff={this.hoverHighlightOff}

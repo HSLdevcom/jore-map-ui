@@ -119,6 +119,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         const displayCircle = this.isSelected(node);
         return (
             <Marker
+                key={node.id}
                 onContextMenu={openPopup}
                 draggable={this.props.toolbarStore!.isActive(ToolbarTool.Edit)}
                 icon={icon}

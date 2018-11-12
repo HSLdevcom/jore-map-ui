@@ -35,7 +35,7 @@ export default class RoutePathLayer extends Component<RoutePathLayerProps> {
                 const internalId = routePath.internalId;
                 return (
                     <RoutePathLinkLayer
-                        key={index}
+                        key={routePath.internalId}
                         internalId={internalId}
                         onClick={this.props.toggleHighlight(internalId, routePath.routePathLinks)}
                         onContextMenu={this.openLinkView}

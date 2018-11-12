@@ -4,8 +4,8 @@ import INode from './INode';
 export default interface IRoutePathLink {
     id: string;
     positions: [[number, number]];
-    startNode: INode | null;
-    endNode: INode | null;
+    startNode: INode;
+    endNode: INode;
     orderNumber: number;
     startNodeType: NodeType;
     isStartNodeTimeAlignmentStop: boolean;
