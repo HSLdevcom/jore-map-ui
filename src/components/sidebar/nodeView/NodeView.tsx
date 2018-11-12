@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { SelectionStore } from '~/stores/selectionStore';
+import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
@@ -27,10 +27,10 @@ interface INodeViewState {
 interface INodeViewProps {
     match?: match<any>;
     sidebarStore?: SidebarStore;
-    selectionStore?: SelectionStore;
+    mapStore?: MapStore;
 }
 
-@inject('sidebarStore', 'selectionStore')
+@inject('sidebarStore', 'mapStore')
 @observer
 class NodeView extends React.Component
 <INodeViewProps, INodeViewState> {
@@ -46,23 +46,23 @@ class NodeView extends React.Component
     }
 
     public componentDidMount() {
-        const nodeId = this.props.match!.params.id;
-        if (nodeId) {
-            this.props.selectionStore!.setSelectedNodeId(nodeId);
-            this.queryNode(nodeId);
+        const selectedNodeId = this.props.match!.params.id;
+        if (selectedNodeId) {
+            this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+            this.queryNode(selectedNodeId);
         }
     }
 
     public componentWillReceiveProps(props: any) {
         const nodeId = props.match!.params.id;
         if (nodeId) {
-            this.props.selectionStore!.setSelectedNodeId(nodeId);
+            this.props.mapStore!.setSelectedNodeId(nodeId);
             this.queryNode(nodeId);
         }
     }
 
     public componentWillUnmount() {
-        this.props.selectionStore!.clearSelectedNode();
+        this.props.mapStore!.setSelectedNodeId(null);
     }
 
     private async queryNode(nodeId: string) {
@@ -114,13 +114,14 @@ class NodeView extends React.Component
     }
 
     private renderNodeView() {
+        const selectedNodeId = this.props.match!.params.id;
         return (
             <div>
                 { !this.state.node ? (
                     <div>
-                        {this.props.selectionStore!.selectedNodeId ? (
+                        {selectedNodeId ? (
                             <div>
-                                Solmua {this.props.selectionStore!.selectedNodeId} ei löytynyt.
+                                Solmua {selectedNodeId} ei löytynyt.
                             </div>
                         ) : (
                             <div>Solmua ei löytynyt.</div>
