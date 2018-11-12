@@ -59,7 +59,9 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
                         <NodeLayer
                             key={`${routePathLink.endNode.id}`}
                             node={routePathLink.endNode}
+                            /* hardcoded because last node doens't have this data */
                             isDisabled={false}
+                            /* hardcoded because last node doens't have this data */
                             isTimeAlignmentStop={false}
                         />
                     }
