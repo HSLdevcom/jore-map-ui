@@ -8,21 +8,23 @@ import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { NodeStore } from '~/stores/nodeStore';
+import { MapStore } from '~/stores/mapStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import * as s from './nodeLayer.scss';
 
 interface MarkerLayerProps {
-    nodes: INode[];
+    node: INode | null;
+    isDisabled: boolean;
+    isTimeAlignmentStop: boolean;
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
     sidebarStore?: SidebarStore;
-    nodeStore?: NodeStore;
+    mapStore?: MapStore;
 }
 
 const DEFAULT_RADIUS = 25;
 
-@inject('popupStore', 'toolbarStore', 'sidebarStore', 'nodeStore')
+@inject('popupStore', 'toolbarStore', 'sidebarStore', 'mapStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getMarkerHtml = (markerClass: string) => {
@@ -33,9 +35,9 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         const isSelected = this.isSelected(node);
 
         let type;
-        if (this.props.nodeStore!.isNodeDisabled(node.id)) {
+        if (this.props.isDisabled) {
             type = NodeType.DISABLED;
-        } else if (this.props.nodeStore!.isNodeTimeAlignmentStop(node.id)) {
+        } else if (this.props.isTimeAlignmentStop) {
             type = NodeType.TIME_ALIGNMENT;
         } else {
             type = node.type;
@@ -79,8 +81,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
     }
 
     private isSelected(node: INode) {
-        const selectedNodeId = this.props.nodeStore ? this.props.nodeStore!.selectedNodeId : null;
-        return node.id === selectedNodeId;
+        return this.props.mapStore!.selectedNodeId === node.id;
     }
 
     private getNodeCrossroadCircle(node: INode, latLng :L.LatLng) {
@@ -106,32 +107,32 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
     }
 
     render() {
-        return this.props.nodes.map((node, index) => {
-            const icon = this.getIcon(node);
+        const node = this.props.node;
+        if (!node) return;
 
-            const openPopup = () => {
-                this.props.popupStore!.showPopup(node);
-            };
+        const icon = this.getIcon(node);
+        const openPopup = () => {
+            this.props.popupStore!.showPopup(node);
+        };
 
-            const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
-            const displayCircle = this.isSelected(node);
-            return (
-                <Marker
-                    onContextMenu={openPopup}
-                    draggable={this.props.toolbarStore!.isActive(ToolbarTool.Edit)}
-                    icon={icon}
-                    key={index}
-                    position={latLng}
-                >
-                {
-                    (displayCircle && node.type === NodeType.STOP) ?
-                        this.getNodeStopCircle(node, latLng)
-                    : (displayCircle && node.type === NodeType.CROSSROAD) ?
-                        this.getNodeCrossroadCircle(node, latLng)
-                    : null
-                }
-                </Marker>
-            );
-        });
+        const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
+        const displayCircle = this.isSelected(node);
+        return (
+            <Marker
+                key={node.id}
+                onContextMenu={openPopup}
+                draggable={this.props.toolbarStore!.isActive(ToolbarTool.Edit)}
+                icon={icon}
+                position={latLng}
+            >
+            {
+                (displayCircle && node.type === NodeType.STOP) ?
+                    this.getNodeStopCircle(node, latLng)
+                : (displayCircle && node.type === NodeType.CROSSROAD) ?
+                    this.getNodeCrossroadCircle(node, latLng)
+                : null
+            }
+            </Marker>
+        );
     }
 }

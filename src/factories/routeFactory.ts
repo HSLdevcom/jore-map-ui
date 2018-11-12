@@ -1,16 +1,11 @@
-import { IRoute, ILine, INode } from '~/models';
+import { IRoute, IRoutePath, ILine } from '~/models';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
-import RoutePathFactory, { IRoutePathResult } from './routePathFactory';
-import QueryParsingHelper from './queryParsingHelper';
+import RoutePathFactory from './routePathFactory';
 
-export interface IRouteResult{
-    nodes: INode[];
-    route?: IRoute;
-}
 class RouteFactory {
-    public static createRoute = (externalRoute: IExternalRoute, line?: ILine): IRouteResult => {
-        const routePathResults:IRoutePathResult[]
+    public static createRoute = (externalRoute: IExternalRoute, line?: ILine): IRoute => {
+        const routePaths:IRoutePath[]
             = externalRoute.externalRoutePaths
                 .map((routePath: IExternalRoutePath) => {
                     return RoutePathFactory.createRoutePath(
@@ -19,8 +14,7 @@ class RouteFactory {
 
         const route = {
             line,
-            routePaths: routePathResults
-                .map(res => res.routePath)
+            routePaths: routePaths
                 .sort((a, b) => b.endTime.getTime() - a.endTime.getTime()),
             routeName: externalRoute.reinimi,
             routeNameSwedish: externalRoute.reinimir,
@@ -28,13 +22,7 @@ class RouteFactory {
             routeId: externalRoute.reitunnus,
         };
 
-        return {
-            route,
-            nodes: QueryParsingHelper.removeINodeDuplicates(
-                routePathResults
-                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes!), []),
-            ),
-        };
+        return route;
     }
 }
 
