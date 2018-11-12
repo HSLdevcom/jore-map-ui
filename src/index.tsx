@@ -15,7 +15,6 @@ import RouteStore from './stores/routeStore';
 import NewRoutePathStore from './stores/new/newRoutePathStore';
 import SearchStore from './stores/searchStore';
 import SidebarStore from './stores/sidebarStore';
-import SelectionStore from './stores/selectionStore';
 import PopupStore from './stores/popupStore';
 import ToolbarStore from './stores/toolbarStore';
 import NetworkStore from './stores/networkStore';
@@ -40,7 +39,6 @@ const stores = {
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,
     networkStore: NetworkStore,
-    selectionStore: SelectionStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());

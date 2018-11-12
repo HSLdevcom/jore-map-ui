@@ -8,7 +8,7 @@ import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { SelectionStore } from '~/stores/selectionStore';
+import { MapStore } from '~/stores/mapStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import * as s from './nodeLayer.scss';
 
@@ -19,12 +19,12 @@ interface MarkerLayerProps {
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
     sidebarStore?: SidebarStore;
-    selectionStore?: SelectionStore;
+    mapStore?: MapStore;
 }
 
 const DEFAULT_RADIUS = 25;
 
-@inject('popupStore', 'toolbarStore', 'sidebarStore', 'selectionStore')
+@inject('popupStore', 'toolbarStore', 'sidebarStore', 'mapStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getMarkerHtml = (markerClass: string) => {
@@ -81,7 +81,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
     }
 
     private isSelected(node: INode) {
-        return this.props.selectionStore!.selectedNodeId === node.id;
+        return this.props.mapStore!.selectedNodeId === node.id;
     }
 
     private getNodeCrossroadCircle(node: INode, latLng :L.LatLng) {
