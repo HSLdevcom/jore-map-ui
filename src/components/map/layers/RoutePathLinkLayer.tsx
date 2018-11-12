@@ -55,7 +55,7 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
                         key={index}
                         node={routePathLink.startNode}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
-                        isTimeAlignmentStop={routePathLink.isTimeAlignmentStop}
+                        isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
                     />
                     { index === routePathLinks.length - 1 &&
                         <NodeLayer

@@ -24,7 +24,7 @@ class RoutePathLinkFactory {
             id: externalRoutePathLink.relid,
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeType: externalRoutePathLink.relpysakki,
-            isTimeAlignmentStop: !!externalRoutePathLink.ajantaspys,
+            isStartNodeTimeAlignmentStop: !!externalRoutePathLink.ajantaspys,
         };
     }
 }

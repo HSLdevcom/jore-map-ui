@@ -8,5 +8,5 @@ export default interface IRoutePathLink {
     endNode: INode | null;
     orderNumber: number;
     startNodeType: NodeType;
-    isTimeAlignmentStop: boolean;
+    isStartNodeTimeAlignmentStop: boolean;
 }
