@@ -15,8 +15,8 @@ export default class ApiClientHelper {
         const dates = entries
             .filter(([key, value]: [string, any]) => value instanceof Date)
             .map(
-                ([key, value]: [string, any]) =>
-                    [key, moment(value).format()] as [string, any]);
+                ([key, value]: [string, Date]) =>
+                    [key, moment(value).format()] as [string, string]);
 
         return {
             ...obj,

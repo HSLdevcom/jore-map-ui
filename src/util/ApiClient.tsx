@@ -30,32 +30,37 @@ export default class ApiClient {
 
     private async sendRequest(method: RequestMethod, entityName: entityNames, object: any) {
         const formattedObject = ApiClientHelper.format(object);
-        return await fetch(this.getUrl(entityName), {
-            method,
-            body: JSON.stringify(formattedObject),
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        }).then((response: Response) => {
+        let error : (IRequestError | null) = null;
+
+        try {
+            const response = await fetch(this.getUrl(entityName), {
+                method,
+                body: JSON.stringify(formattedObject),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            });
+
             if (response.status >= 200 && response.status < 300) {
-                return Promise.resolve();
+                return;
             }
-            const error: IRequestError = {
+            error = {
                 errorCode: response.status,
                 message: response.statusText,
             };
-            return Promise.reject(error);
-        }).catch((err) => {
-            if (err.errorCode) {
-                return Promise.reject(err);
-            }
-            const error: IRequestError = {
+        } catch (err) {
+            // tslint:disable-next-line
+            console.log(err);
+            error = {
                 errorCode: FetchStatusCode.CONNECTION_ERROR,
                 message: 'Yhteysongelma',
             };
-            return Promise.reject(error);
-        });
+        }
+
+        if (error) {
+            throw error;
+        }
     }
 
     private getUrl(entityName: entityNames) {
