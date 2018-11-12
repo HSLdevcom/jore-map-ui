@@ -24,9 +24,6 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
     }
 
     private getLogs = () => {
-        // TODO Get all logs from store and show them in the window.
-        // Show alert based on unread logs. Implement logic when IEventLogs are
-        // marked as read.
         return 'logs';
     }
 
