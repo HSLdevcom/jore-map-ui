@@ -1,9 +1,12 @@
+import NodeType from '~/enums/nodeType';
+import INode from './INode';
+
 export default interface IRoutePathLink {
     id: string;
     positions: [[number, number]];
-    startNodeId: string;
-    endNodeId: string;
+    startNode: INode;
+    endNode: INode;
     orderNumber: number;
-    startNodeType: string;
-    timeAlignmentStop: string;
+    startNodeType: NodeType;
+    isStartNodeTimeAlignmentStop: boolean;
 }

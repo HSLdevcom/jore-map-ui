@@ -24,7 +24,7 @@ export default class RoutePathService {
                     } },
             );
             const externalRoutePath = this.getExternalRoute(queryResult.data.routePath);
-            return RoutePathFactory.createRoutePath(routeId, externalRoutePath).routePath;
+            return RoutePathFactory.createRoutePath(routeId, externalRoutePath);
         } catch (err) {
             notificationStore.addNotification({
                 message: 'Reitinsuunnan haku ei onnistunut.',

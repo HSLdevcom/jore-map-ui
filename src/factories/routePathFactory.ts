@@ -1,20 +1,14 @@
-import { IRoutePath, INode } from '~/models';
+import { IRoutePath } from '~/models';
 import HashHelper from '~/util/hashHelper';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
-import RoutePathLinkFactory, { IRoutePathLinkResult } from './routePathLinkFactory';
-import QueryParsingHelper from './queryParsingHelper';
-
-export interface IRoutePathResult {
-    routePath: IRoutePath;
-    nodes: INode[] | null;
-}
+import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
     public static createRoutePath = (
         routeId: string,
         externalRoutePath: IExternalRoutePath,
-    ): IRoutePathResult => {
+    ): IRoutePath => {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
                 routeId,
@@ -23,9 +17,7 @@ class RoutePathFactory {
             ].join('-'),
         ).toString();
 
-        // TODO: refactor. createRoutePathLink should return IRoutePathLink
-        const routePathLinkResult:IRoutePathLinkResult[] | null
-        = externalRoutePath.externalRoutePathLinks
+        const routePathLinks = externalRoutePath.externalRoutePathLinks
             .map((externalRoutePathLink: IExternalRoutePathLink) => {
                 return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
             });
@@ -38,7 +30,7 @@ class RoutePathFactory {
         const routePath : IRoutePath = {
             routeId,
             positions,
-            routePathLinks: routePathLinkResult ? routePathLinkResult.map(res => res.link) : null,
+            routePathLinks,
             geoJson: externalRoutePath.geojson ? JSON.parse(externalRoutePath.geojson) : null,
             lineId: externalRoutePath.lintunnus,
             internalId: internalRoutePathId,
@@ -58,13 +50,7 @@ class RoutePathFactory {
             routePathShortNameSw: externalRoutePath.suunimilyhr,
         };
 
-        return {
-            routePath,
-            nodes: routePathLinkResult ? QueryParsingHelper.removeINodeDuplicates(
-                routePathLinkResult
-                    .reduce<INode[]>((flatList, node) => flatList.concat(node.nodes), []),
-            ) : null,
-        };
+        return routePath;
     }
 }
 
