@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { NodeStore } from '~/stores/nodeStore';
+import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
@@ -21,15 +21,16 @@ interface IMapInformationSource {
 interface INodeViewState {
     isLoading: boolean;
     mapInformationSource: IMapInformationSource;
+    node?: INode;
 }
 
 interface INodeViewProps {
     match?: match<any>;
     sidebarStore?: SidebarStore;
-    nodeStore?: NodeStore;
+    mapStore?: MapStore;
 }
 
-@inject('sidebarStore', 'nodeStore')
+@inject('sidebarStore', 'mapStore')
 @observer
 class NodeView extends React.Component
 <INodeViewProps, INodeViewState> {
@@ -45,31 +46,33 @@ class NodeView extends React.Component
     }
 
     public componentDidMount() {
-        const nodeId = this.props.match!.params.id;
-        if (nodeId) {
-            this.props.nodeStore!.selectedNodeId = nodeId;
-            this.queryNode(nodeId);
+        const selectedNodeId = this.props.match!.params.id;
+        if (selectedNodeId) {
+            this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+            this.queryNode(selectedNodeId);
         }
     }
 
     public componentWillReceiveProps(props: any) {
         const nodeId = props.match!.params.id;
         if (nodeId) {
-            this.props.nodeStore!.selectedNodeId = nodeId;
+            this.props.mapStore!.setSelectedNodeId(nodeId);
             this.queryNode(nodeId);
         }
     }
 
     public componentWillUnmount() {
-        this.props.nodeStore!.selectedNodeId = null;
+        this.props.mapStore!.setSelectedNodeId(null);
     }
 
     private async queryNode(nodeId: string) {
         this.setState({ isLoading: true });
+
         const node = await NodeService.fetchNode(nodeId);
         if (node) {
-            this.props.nodeStore!.addNode(node);
+            this.setState({ node });
         }
+
         this.setState({ isLoading: false });
     }
 
@@ -95,9 +98,9 @@ class NodeView extends React.Component
         return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
     }
 
-    private renderNodeName(node: INode|null) {
+    private renderNodeName(node: INode) {
         let nodeName = null;
-        if (node && node.stop && (node.stop.nameFi || node.stop.nameSe)) {
+        if (node.stop && (node.stop.nameFi || node.stop.nameSe)) {
             if (node.stop.nameFi) nodeName = node.stop.nameFi;
             else if (node.stop.nameSe) nodeName = node.stop.nameSe;
         }
@@ -110,13 +113,16 @@ class NodeView extends React.Component
         return 'Nimi puuttuu';
     }
 
-    private renderNodeView(node: INode|null) {
+    private renderNodeView() {
+        const selectedNodeId = this.props.match!.params.id;
         return (
             <div>
-                { node == null ? (
+                { !this.state.node ? (
                     <div>
-                        {this.props.nodeStore!.selectedNodeId ? (
-                            <div>Solmua {this.props.nodeStore!.selectedNodeId} ei löytynyt.</div>
+                        {selectedNodeId ? (
+                            <div>
+                                Solmua {selectedNodeId} ei löytynyt.
+                            </div>
                         ) : (
                             <div>Solmua ei löytynyt.</div>
                         )}
@@ -124,7 +130,7 @@ class NodeView extends React.Component
                 ) : (
                 <div>
                     <ViewHeader
-                        header={`Solmu ${this.renderNodeName(node)}`}
+                        header={`Solmu ${this.renderNodeName(this.state.node)}`}
                     />
                     <div
                         className={classnames(
@@ -194,22 +200,13 @@ class NodeView extends React.Component
         );
     }
 
-    private getNode() {
-        const selectedNodeId = this.props.nodeStore!.selectedNodeId;
-        if (selectedNodeId) {
-            return this.props.nodeStore!.getNode(selectedNodeId);
-        }
-        return null;
-    }
-
     public render(): any {
-        const node = this.getNode();
         return (
             <div className={s.nodeView}>
                 { this.state.isLoading ? (
                     <Loader />
                 ) : (
-                    this.renderNodeView(node)
+                    this.renderNodeView()
                 )}
             </div>
         );

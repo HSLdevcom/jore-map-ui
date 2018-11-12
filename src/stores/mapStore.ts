@@ -15,6 +15,7 @@ export class MapStore {
     @observable private _routes: MapRoute[];
     @observable private _displayCoordinateSystem:CoordinateSystem;
     @observable private _nodeSize:NodeSize;
+    @observable private _selectedNodeId: string|null;
 
     constructor(
         coordinate = new LatLng(60.24, 24.9),
@@ -58,6 +59,10 @@ export class MapStore {
         return this._nodeSize;
     }
 
+    @computed get selectedNodeId() {
+        return this._selectedNodeId;
+    }
+
     @action
     public setCoordinates(lat: number, lon: number) {
         this._coordinates = new LatLng(lat, lon);
@@ -91,6 +96,12 @@ export class MapStore {
     setNodeSize(nodeSize: NodeSize) {
         this._nodeSize = nodeSize;
     }
+
+    @action
+    public setSelectedNodeId(id: string|null) {
+        this._selectedNodeId = id;
+    }
+
 }
 
 const observableMapStore = new MapStore();

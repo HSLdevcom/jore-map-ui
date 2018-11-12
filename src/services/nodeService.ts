@@ -31,7 +31,7 @@ export default class NodeService {
 
         // node.stop might already exist (got from cache)
         if (node.pysakkiBySoltunnus) {
-            node.stop = node.pysakkiBySoltunnus;
+            node.externalStop = node.pysakkiBySoltunnus;
 
             delete node.pysakkiBySoltunnus;
         }

@@ -3,14 +3,11 @@ import L from 'leaflet';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
-import { NodeStore } from '~/stores/nodeStore';
 import { IRoute, IRoutePathLink } from '~/models';
-import NodeType from '~/enums/nodeType';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
     sidebarStore?: SidebarStore;
-    nodeStore?: NodeStore;
     routes: IRoute[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
@@ -20,7 +17,7 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
-@inject('sidebarStore', 'nodeStore')
+@inject('sidebarStore')
 @observer
 export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
@@ -81,7 +78,6 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             selectedPolylines,
         });
         e.target.bringToFront();
-        this.setTempNodeIds(links);
     }
 
     private hasHighlight = (internalId: string) => {
@@ -91,26 +87,10 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
 
     private hoverHighlight = (internalId: string, links: IRoutePathLink[]) =>
     (e: L.LeafletMouseEvent) => {
-        this.setTempNodeIds(links);
         this.setState({
             hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
         });
         e.target.bringToFront();
-    }
-
-    private setTempNodeIds = (links: IRoutePathLink[]) => {
-        const timeAlignmentNodeIds: string[] = [];
-        const disabledNodeIds: string[] = [];
-        links.forEach((link) => {
-            if (link.startNodeType === NodeType.DISABLED) {
-                disabledNodeIds.push(link.startNodeId);
-            }
-            if (link.timeAlignmentStop === NodeType.TIME_ALIGNMENT) {
-                timeAlignmentNodeIds.push(link.startNodeId);
-            }
-        });
-        this.props.nodeStore!.setDisabledNodeIds(disabledNodeIds);
-        this.props.nodeStore!.setTimeAlignmentNodeIds(timeAlignmentNodeIds);
     }
 
     private hoverHighlightOff = (e: L.LeafletMouseEvent) => {
@@ -119,8 +99,6 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         });
         if (!this.hasHighlight(e['sourceTarget'].options.routePathInternalId)) {
             e.target.bringToBack();
-            this.props.nodeStore!.setDisabledNodeIds([]);
-            this.props.nodeStore!.setTimeAlignmentNodeIds([]);
         }
     }
 
@@ -129,7 +107,7 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             .map((route, index) => {
                 return (
                     <RoutePathLayer
-                        key={index}
+                        key={route.routeId}
                         toggleHighlight={this.toggleHighlight}
                         hoverHighlight={this.hoverHighlight}
                         hoverHighlightOff={this.hoverHighlightOff}

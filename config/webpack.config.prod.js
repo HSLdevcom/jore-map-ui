@@ -298,6 +298,7 @@ module.exports = {
     new webpack.DefinePlugin(env.stringified),
     new webpack.DefinePlugin({ 'process.env.API_URL': JSON.stringify(process.env.API_URL) }),
     new webpack.DefinePlugin({ 'process.env.GEOSERVER_URL': JSON.stringify(process.env.GEOSERVER_URL) }),
+    new webpack.DefinePlugin({ 'process.env.BUILD_DATE': JSON.stringify(process.env.BUILD_DATE) }),
     // Minify the code.
     new UglifyJsPlugin({
       uglifyOptions: {
