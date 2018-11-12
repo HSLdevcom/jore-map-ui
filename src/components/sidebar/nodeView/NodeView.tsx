@@ -67,11 +67,12 @@ class NodeView extends React.Component
 
     private async queryNode(nodeId: string) {
         this.setState({ isLoading: true });
+
         const node = await NodeService.fetchNode(nodeId);
-        console.log('my', node);
         if (node) {
             this.setState({ node });
         }
+
         this.setState({ isLoading: false });
     }
 
@@ -113,7 +114,6 @@ class NodeView extends React.Component
     }
 
     private renderNodeView() {
-        console.log(this.state);
         return (
             <div>
                 { !this.state.node ? (
