@@ -12,7 +12,6 @@ import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import RouteAndStopHelper from '~/storeAbstractions/routeAndStopAbstraction';
 import { IRoutePath, IRoute } from '~/models';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import * as s from './routeShow.scss';
@@ -36,7 +35,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
     private closeRoute = () => {
         // TODO: Move actual logic somwhere else, so this function only navigates to new url
-        RouteAndStopHelper.removeRoute(this.props.route.routeId);
+        this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
         const closeRouteLink = routeBuilder
             .to(subSites.current)
             .remove(QueryParams.routes, this.props.route.routeId)

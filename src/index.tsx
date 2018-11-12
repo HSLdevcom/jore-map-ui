@@ -17,7 +17,6 @@ import SearchStore from './stores/searchStore';
 import SidebarStore from './stores/sidebarStore';
 import PopupStore from './stores/popupStore';
 import ToolbarStore from './stores/toolbarStore';
-import NodeStore from './stores/nodeStore';
 import NetworkStore from './stores/networkStore';
 import apolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
@@ -39,7 +38,6 @@ const stores = {
     sidebarStore: SidebarStore,
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,
-    nodeStore: NodeStore,
     networkStore: NetworkStore,
 };
 
