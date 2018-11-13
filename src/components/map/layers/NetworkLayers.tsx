@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MapStore, { NodeSize } from '~/stores/mapStore';
-import NodeService from '~/services/nodeService';
 import { NetworkStore } from '~/stores/networkStore';
+import { RoutePathStore } from '~/stores/routePathStore';
+import RoutePathLinkService from '~/services/routePathLinkService';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
-import { NewRoutePathStore } from '~/stores/new/newRoutePathStore';
 import NodeType from '~/enums/nodeType';
 import VectorGridLayer from './VectorGridLayer';
 
@@ -26,7 +26,7 @@ enum NodeColors {
 
 interface INetworkLayersProps {
     networkStore?: NetworkStore;
-    newRoutePathStore?: NewRoutePathStore;
+    routePathStore?: RoutePathStore;
 }
 
 function getGeoServerUrl(layerName: string) {
@@ -35,7 +35,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('networkStore', 'newRoutePathStore')
+@inject('networkStore', 'routePathStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
 
@@ -119,25 +119,24 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private addNodeFromInitialClickEvent = (clickEvent: any) => {
+    private addNodeFromInitialClickEvent = async (clickEvent: any) => {
         const properties =  clickEvent.sourceTarget.properties;
         if (properties.soltyyppi !== NodeType.STOP) return;
 
-        // TODO: Use factory call instead of service call because
-        // geojson / geojsonManual are not found from properties
-        NodeService.fetchNode(properties.soltunnus).then((node) => {
-            if (node) {
-                this.props.newRoutePathStore!.addNode({
-                    id: node.id,
-                    coordinates: node.coordinates,
-                });
-            }
-        });
+        const links = await this.queryNeighborLinks(properties.soltunnus);
+        this.props.routePathStore!.setNeighborLinks(links);
+    }
+
+    private async queryNeighborLinks(nodeId: string) {
+        const links = await RoutePathLinkService.fetchLinksWithLinkStartNodeId(nodeId);
+        return links;
     }
 
     private isWaitingForNewRoutePathFirstNodeClick() {
-        return this.props.newRoutePathStore!.isCreating
-            && this.props.newRoutePathStore!.nodes.length === 0;
+        const hasRoutePathLinks = this.props.routePathStore!.routePath.routePathLinks!.length === 0;
+
+        return this.props.routePathStore!.isCreating
+            && hasRoutePathLinks;
     }
 
     render() {
@@ -159,11 +158,11 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 }
                 { (this.props.networkStore!.isNodesVisible) &&
                     <VectorGridLayer
-                        onClick={this.isWaitingForNewRoutePathFirstNodeClick ?
+                        onClick={this.isWaitingForNewRoutePathFirstNodeClick() ?
                             this.addNodeFromInitialClickEvent : null}
                         key={GeoserverLayer.Node}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
-                        interactive={this.isWaitingForNewRoutePathFirstNodeClick}
+                        interactive={this.isWaitingForNewRoutePathFirstNodeClick()}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }

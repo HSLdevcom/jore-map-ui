@@ -6,18 +6,19 @@ import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import { MapStore, NodeSize } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
-import { NewRoutePathStore } from '~/stores/new/newRoutePathStore';
+import { RoutePathStore } from '~/stores/routePathStore';
+import RoutePathFactory from '~/factories/routePathFactory';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
 
 interface INewRoutePathViewProps {
     mapStore?: MapStore;
-    newRoutePathStore?: NewRoutePathStore;
+    routePathStore?: RoutePathStore;
     networkStore?: NetworkStore;
 }
 
-@inject('mapStore', 'newRoutePathStore', 'networkStore')
+@inject('mapStore', 'routePathStore', 'networkStore')
 @observer
 class NewRoutePathView extends React.Component<INewRoutePathViewProps>{
     initialRoutePath: IRoutePath;
@@ -25,8 +26,13 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps>{
     constructor(props: any) {
         super(props);
         this.initialRoutePath = this.getInitialRoutePath();
+
+         // TODO: call this when newRoutePath button is clicked
+        const newRoutePath = RoutePathFactory.createNewRoutePath('1', '1');
+        this.props.routePathStore!.setRoutePath(newRoutePath);
     }
 
+    // TODO: Use routePath store instead of state
     // TODO, this is just a placeholder, implement real logic for creating new routePaths
     private getInitialRoutePath = () => {
         const newRoutePath: IRoutePath = {
@@ -68,12 +74,12 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps>{
         this.props.networkStore!.setIsNodesVisible(true);
         this.props.networkStore!.setIsLinksVisible(true);
 
-        this.props.newRoutePathStore!.setIsCreating(true);
+        this.props.routePathStore!.setIsCreating(true);
     }
 
     componentWillUnmount() {
         this.props.mapStore!.setNodeSize(NodeSize.normal);
-        this.props.newRoutePathStore!.setIsCreating(false);
+        this.props.routePathStore!.setIsCreating(false);
 
     }
 

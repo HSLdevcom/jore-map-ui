@@ -72,7 +72,6 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
 
     render() {
         return (
-
             <FeatureGroup
                 routePathInternalId={this.props.internalId}
                 onMouseOver={this.props.onMouseOver}

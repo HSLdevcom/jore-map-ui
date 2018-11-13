@@ -12,7 +12,7 @@ import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
 import LineStore from './stores/lineStore';
 import RouteStore from './stores/routeStore';
-import NewRoutePathStore from './stores/new/newRoutePathStore';
+import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
 import SidebarStore from './stores/sidebarStore';
 import PopupStore from './stores/popupStore';
@@ -33,7 +33,7 @@ const stores = {
     lineStore: LineStore,
     loginStore: LoginStore,
     routeStore: RouteStore,
-    newRoutePathStore: NewRoutePathStore,
+    routePathStore: RoutePathStore,
     searchStore: SearchStore,
     sidebarStore: SidebarStore,
     popupStore: PopupStore,
