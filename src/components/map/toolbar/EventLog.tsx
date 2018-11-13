@@ -14,7 +14,7 @@ interface IEventLogProps {
 
 @observer
 export default class EventLog extends React.Component<IEventLogProps, IEventLogState> {
-    constructor(props: any) {
+    constructor(props: IEventLogProps) {
         super(props);
         this.state = {
             isOpen: false,

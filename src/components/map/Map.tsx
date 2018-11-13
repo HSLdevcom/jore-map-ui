@@ -160,10 +160,11 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                         setView={this.setView}
                     />
                     <Control position='topleft'>
-                        <div>
-                            <Toolbar />
-                            <EventLog />
-                        </div>
+                        <Toolbar />
+                    </Control>
+
+                    <Control position='topleft'>
+                        <EventLog />
                     </Control>
 
                     <Control position='topright'>
