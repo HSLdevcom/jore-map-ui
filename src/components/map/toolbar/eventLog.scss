@@ -2,26 +2,26 @@
 @import '../../shared/styles/flexbox';
 @import '../../shared/styles/form';
 
-.eventLogContainer {
+.eventLogView {
     display: flex;
 
-    .eventLogButtonView {
+    .eventLogButton {
         display: flex;
         border-radius: 3px;
         box-shadow: 0 0 4px #666666;
         padding: 5px;
         background-color: $backgroundlightGrey;
+        cursor: pointer;
 
         .alertIcon {
             color: #ffb300;
         }
         .logIcon {
-            cursor: pointer;
             font-size: 0.9rem;
         }
     }
 
-    .eventLogView {
+    .eventLogContainer {
         background-color: $backgroundlightGrey;
         border-radius: 3px;
         box-shadow: 0 0 4px #666666;

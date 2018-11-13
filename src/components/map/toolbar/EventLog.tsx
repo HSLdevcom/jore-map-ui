@@ -6,7 +6,7 @@ import * as s from './eventLog.scss';
 
 interface IEventLogState {
     isOpen: boolean;
-    showAlert: boolean;
+    isAlertShown: boolean;
 }
 
 interface IEventLogProps {
@@ -18,7 +18,7 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         super(props);
         this.state = {
             isOpen: false,
-            showAlert: false,
+            isAlertShown: false,
         };
     }
 
@@ -26,20 +26,20 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         return 'logs';
     }
 
-    private toggleLog = () => {
+    private toggleEventLog = () => {
         this.setState({
             isOpen: !this.state.isOpen,
         });
     }
 
-    private logView = () => (
-        <div className={s.eventLogView}>
+    private renderEventLog = () => (
+        <div className={s.eventLogContainer}>
             <div className={s.flexInnerRow}>
                 <div className={s.topic}>
                     TAPAHTUMALOKI
                 </div>
                 <div
-                    onClick={this.toggleLog}
+                    onClick={this.toggleEventLog}
                     className={s.closeView}
                 >
                     <FaTimes className={s.close}/>
@@ -53,13 +53,13 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         </div>
     )
 
-    private logButtonView = () => (
-        <div className={s.eventLogButtonView}>
-            <FiClipboard
-                onClick={this.toggleLog}
-                className={s.logIcon}
-            />
-            {this.state.showAlert &&
+    private renderEventLogButton = () => (
+        <div
+            onClick={this.toggleEventLog}
+            className={s.eventLogButton}
+        >
+            <FiClipboard className={s.logIcon} />
+            {this.state.isAlertShown &&
                 <FaExclamation
                     className={s.alertIcon}
                 />
@@ -69,10 +69,10 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
 
     render() {
         return (
-            <div className={s.eventLogContainer}>
+            <div className={s.eventLogView}>
                 {!this.state.isOpen ?
-                    this.logButtonView() :
-                    this.logView()
+                    this.renderEventLogButton() :
+                    this.renderEventLog()
                 }
             </div>
         );
