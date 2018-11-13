@@ -17,14 +17,20 @@
         background-color: #FFF;
     }
 
-    .newRoutePathMarkerNeighbor {
+    /* TODO: get this from common styles */
+    .crossroadMarker {
+        border-color: #727272;
+        background-color: #FFF;
+    }
+
+    .neighborMarker {
         position: absolute;
         width: 20px;
         height: 20px;
         top: -4px;
         left: -4px;
-        border-color: #00df0b;
-        background-color: #00df0b;
+        border-color: #ca00f7;
+        background-color: #ca00f7;
     }
 
 }

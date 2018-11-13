@@ -52,6 +52,32 @@ class RoutePathFactory {
 
         return routePath;
     }
+
+    public static createNewRoutePath(lineId: string, routeId: string): IRoutePath {
+        const routePath: IRoutePath = {
+            lineId,
+            routeId,
+            internalId: '',
+            routePathName: 'Uusi reitinsuunta',
+            routePathNameSw: 'Ny ruttriktning',
+            direction: '1',
+            positions: [[0, 0]], // TODO: remove
+            geoJson: null, // TODO: remove
+            visible: true,
+            startTime: new Date,
+            endTime: new Date,
+            lastModified: new Date,
+            routePathLinks: [],
+            originFi: '',
+            originSw: '',
+            destinationFi: '',
+            destinationSw: '',
+            routePathShortName: '',
+            routePathShortNameSw: '',
+            modifiedBy: '',
+        };
+        return routePath;
+    }
 }
 
 export default RoutePathFactory;
