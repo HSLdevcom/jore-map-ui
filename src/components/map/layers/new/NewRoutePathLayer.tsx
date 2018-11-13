@@ -92,12 +92,16 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         );
     }
 
-    private addLinkToRoutePath = (link: IRoutePathLink) => () => {
-        RoutePathLinkService.fetchLinksWithLinkStartNodeId(link.endNode.id).then((links) => {
-            this.props.routePathStore!.setNeighborLinks(links);
-        });
+    private addLinkToRoutePath = (link: IRoutePathLink) => async () => {
+        const links = await this.queryNeighborLinks(link.endNode.id);
+        this.props.routePathStore!.setNeighborLinks(links);
 
         this.props.routePathStore!.addLink(link);
+    }
+
+    private async queryNeighborLinks(nodeId: string) {
+        const links = await RoutePathLinkService.fetchLinksWithLinkStartNodeId(nodeId);
+        return links;
     }
 
     private renderFirstNode() {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MapStore, { NodeSize } from '~/stores/mapStore';
-import NodeService from '~/services/nodeService';
 import { NetworkStore } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
@@ -120,17 +119,17 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private addNodeFromInitialClickEvent = (clickEvent: any) => {
+    private addNodeFromInitialClickEvent = async (clickEvent: any) => {
         const properties =  clickEvent.sourceTarget.properties;
         if (properties.soltyyppi !== NodeType.STOP) return;
 
-        NodeService.fetchNode(properties.soltunnus).then((node) => {
-            if (node) {
-                RoutePathLinkService.fetchLinksWithLinkStartNodeId(node.id).then((links) => {
-                    this.props.routePathStore!.setNeighborLinks(links);
-                });
-            }
-        });
+        const links = await this.queryNeighborLinks(properties.soltunnus);
+        this.props.routePathStore!.setNeighborLinks(links);
+    }
+
+    private async queryNeighborLinks(nodeId: string) {
+        const links = await RoutePathLinkService.fetchLinksWithLinkStartNodeId(nodeId);
+        return links;
     }
 
     private isWaitingForNewRoutePathFirstNodeClick() {
