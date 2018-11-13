@@ -18,7 +18,6 @@ import SidebarStore from './stores/sidebarStore';
 import PopupStore from './stores/popupStore';
 import ToolbarStore from './stores/toolbarStore';
 import NetworkStore from './stores/networkStore';
-import EventStore from './stores/eventStore';
 import apolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
 import './index.scss';
@@ -40,7 +39,6 @@ const stores = {
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,
     networkStore: NetworkStore,
-    eventStore: EventStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());
