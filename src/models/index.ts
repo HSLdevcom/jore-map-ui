@@ -1,5 +1,4 @@
 import ICoordinate from './ICoordinate';
-import IEventLog from './IEventLog';
 import ILine from './ILine';
 import ILineRoute from './ILineRoute';
 import INode from './INode';
@@ -10,7 +9,6 @@ import IRoutePathLink from './IRoutePathLink';
 
 export {
     ICoordinate,
-    IEventLog,
     ILine,
     ILineRoute,
     INode,
