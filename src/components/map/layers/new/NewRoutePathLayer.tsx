@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Polyline, Marker } from 'react-leaflet';
+import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import NodeType from '~/enums/nodeType';
-import * as L from 'leaflet';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
-import classnames from 'classnames';
 import * as s from './newRoutePathLayer.scss';
 
 interface IRoutePathLayerProps {
