@@ -109,6 +109,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     render() {
+        if (!this.props.routePathStore!.routePath) return null;
         return (
             <>
                 {this.renderLinks(
