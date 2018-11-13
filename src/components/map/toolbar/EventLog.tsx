@@ -1,12 +1,11 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
 import * as s from './eventLog.scss';
 
 interface IEventLogState {
-    isToggled: boolean;
+    isOpen: boolean;
     showAlert: boolean;
 }
 
@@ -18,7 +17,7 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
     constructor(props: any) {
         super(props);
         this.state = {
-            isToggled: false,
+            isOpen: false,
             showAlert: false,
         };
     }
@@ -29,12 +28,12 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
 
     private toggleLog = () => {
         this.setState({
-            isToggled: !this.state.isToggled,
+            isOpen: !this.state.isOpen,
         });
     }
 
     private logView = () => (
-        <div className={s.flexInnerColumn}>
+        <div className={s.eventLogView}>
             <div className={s.flexInnerRow}>
                 <div className={s.topic}>
                     TAPAHTUMALOKI
@@ -54,28 +53,27 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         </div>
     )
 
+    private logButtonView = () => (
+        <div className={s.eventLogButtonView}>
+            <FiClipboard
+                onClick={this.toggleLog}
+                className={s.logIcon}
+            />
+            {this.state.showAlert &&
+                <FaExclamation
+                    className={s.alertIcon}
+                />
+            }
+        </div>
+    )
+
     render() {
         return (
-            <div className={s.flexInnerRow}>
-                <div
-                    className={classnames(
-                        s.eventLogContainer,
-                        this.state.isToggled ? s.toggled : '',
-                    )}
-                >
-                    {(this.state.isToggled) ?
-                            this.logView() :
-                            <FiClipboard
-                                onClick={this.toggleLog}
-                                className={s.logIcon}
-                            />
-                    }
-                    {this.state.showAlert && !this.state.isToggled &&
-                        <FaExclamation
-                            className={s.alertIcon}
-                        />
-                    }
-                </div>
+            <div className={s.eventLogContainer}>
+                {!this.state.isOpen ?
+                    this.logButtonView() :
+                    this.logView()
+                }
             </div>
         );
     }
