@@ -1,3 +1,10 @@
+<a name="0.1.2"></a>
+## <small>0.1.2 (2018-11-14)</small>
+
+* Add scripts ([55dec10](https://github.com/HSLdevcom/jore-map-ui/commit/55dec10))
+
+
+
 <a name="0.1.1"></a>
 ## <small>0.1.1 (2018-11-14)</small>
 
