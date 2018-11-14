@@ -5,8 +5,12 @@ import { SearchStore } from '~/stores/searchStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { IRoute } from '~/models';
 import QueryParams from '~/routing/queryParams';
+import routeBuilder from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import TransitType from '~/enums/transitType';
+import ButtonType from '~/enums/buttonType';
+import Button from '~/components/controls/Button';
 import RouteService from '~/services/routeService';
 import { Checkbox, TransitToggleButtonBar } from '../../controls';
 import RouteShow from './RouteShow';
@@ -76,14 +80,34 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         const routes = this.props.routeStore!.routes;
 
         if (routes.length < 1) return null;
+
         return routes.map((route: IRoute) => {
             return (
-                <RouteShow
-                    key={route.routeId}
-                    route={route}
-                />
+                <div key={route.routeId}>
+                    <RouteShow
+                        key={route.routeId}
+                        route={route}
+                    />
+                    <Button
+                        onClick={this.redirectToNewRoutePathView(route)}
+                        className={s.createRoutePathButton}
+                        type={ButtonType.SQUARE}
+                        text={`Luo uusi reitin suunta reitille ${route.routeId}`}
+                    />
+                </div>
             );
         });
+    }
+
+    private redirectToNewRoutePathView = (route: IRoute) => () => {
+        const newRoutePathLink = routeBuilder
+        .to(subSites.newRoutePath, { routeId: route.routeId, lineId: route.lineId })
+        .toLink();
+
+        // const newRoutePath = RoutePathFactory.createNewRoutePath('1', '1');
+        // this.props.routePathStore!.setRoutePath(newRoutePath);
+
+        navigator.goTo(newRoutePathLink);
     }
 
     public render(): any {

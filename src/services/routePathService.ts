@@ -47,7 +47,8 @@ export default class RoutePathService {
             routePath.lintunnus = routePath.reittiByReitunnus.lintunnus;
             delete routePath.reittiByReitunnus;
         }
-
+        console.log('queried .... ', routePath);
+        // TODO: jatka tästä
         routePath.externalRoutePathLinks = [];
 
         return routePath;
@@ -62,7 +63,7 @@ export default class RoutePathService {
 // tslint:disable:max-line-length
 const getRoutePathQuery = gql`
 query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
-    routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction){
+    routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
         reitunnus
         suusuunta
         suunimi
@@ -79,6 +80,46 @@ query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!
         suupaapaikr
         reittiByReitunnus {
             lintunnus
+        }
+        reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
+            nodes {
+                relid
+                lnkalkusolmu
+                lnkloppusolmu
+                relpysakki
+                reljarjnro
+                lnkverkko
+                ajantaspys
+                solmuByLnkalkusolmu {
+                    solx,
+                    soly,
+                    soltunnus,
+                    soltyyppi,
+                    geojson,
+                    geojsonManual,
+                    pysakkiBySoltunnus {
+                        pyssade,
+                        pysnimi,
+                        pysnimir
+                    }
+                }
+                solmuByLnkloppusolmu {
+                    solx,
+                    soly,
+                    soltunnus,
+                    soltyyppi,
+                    geojson,
+                    geojsonManual,
+                    pysakkiBySoltunnus {
+                        pyssade,
+                        pysnimi,
+                        pysnimir
+                    }
+                }
+                linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
+                    geojson
+                }
+            }
         }
     }
 }

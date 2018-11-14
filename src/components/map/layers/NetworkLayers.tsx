@@ -133,7 +133,9 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private isWaitingForNewRoutePathFirstNodeClick() {
-        const hasRoutePathLinks = this.props.routePathStore!.routePath.routePathLinks!.length === 0;
+        const hasRoutePathLinks =
+        this.props.routePathStore!.routePath &&
+        this.props.routePathStore!.routePath!.routePathLinks!.length === 0;
 
         return this.props.routePathStore!.isCreating
             && hasRoutePathLinks;
