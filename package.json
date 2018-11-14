@@ -73,7 +73,10 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "lint": "tslint --project tsconfig.json --format codeFrame",
-    "lint-fix": "tslint --fix --project tsconfig.json --format codeFrame 'src/**/*.ts'"
+    "lint-fix": "tslint --fix --project tsconfig.json --format codeFrame 'src/**/*.ts'",
+    "release-patch": "bumped release patch",
+    "release-minor": "bumped release minor",
+    "release-major": "bumped release major"
   },
   "devDependencies": {
     "@types/chroma-js": "^1.3.5",
