@@ -108,7 +108,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                                     date={routePath.startTime}
                                     format='DD.MM.YYYY'
                                 />
-                                <div className={s.separator}>
+                                <div className={s.dateDeltaSeparator}>
                                     -
                                 </div>
                                 <ReactMoment
