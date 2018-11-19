@@ -56,6 +56,12 @@
                 font-size: $smallFontSize;
                 padding-left: 10px;
                 padding-top: 2px;
+                display: flex;
+
+                div:nth-child(2) {
+                    min-width: 20px;
+                    text-align: center;
+                }
 
                 &.highlight {
                     font-weight: bold;
