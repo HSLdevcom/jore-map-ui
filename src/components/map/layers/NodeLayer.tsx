@@ -28,6 +28,12 @@ const HASTUS_MIN_ZOOM = 16;
 @inject('popupStore', 'toolbarStore', 'sidebarStore', 'mapStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
+    private getLabelHtml = (text: string) => {
+        return `<div class=${s.hastusId}>
+            ${text}
+        </div>`;
+    }
+
     private getMarkerHtml = (markerClass: string, children: string[]) => {
         return `<div class="${classnames(s.nodeBase, markerClass)}">
                 ${
@@ -51,7 +57,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
 
         if (node.stop && node.stop.hastusId && this.props.mapStore!.zoom >= HASTUS_MIN_ZOOM) {
             children.push(
-                `<div class=${s.hastusId}>${node.stop.hastusId}</div>`,
+                this.getLabelHtml(node.stop.hastusId),
             );
         }
 
