@@ -14,7 +14,6 @@ import * as s from './popupLayer.scss';
 interface PopupLayerProps {
     popupStore?: PopupStore;
     sidebarStore?: SidebarStore;
-    setView: Function;
     leaflet: LeafletContext;
 }
 
@@ -32,7 +31,9 @@ class PopupLayer extends Component<PopupLayerProps> {
 
             const openNode = () => {
                 const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
-                this.props.leaflet.map!.setView(latLng, 17);
+                const map = this.props.leaflet.map;
+
+                map!.setView(latLng, map!.getZoom());
                 this.onClose();
                 const nodeLink = routeBuilder.to(subSites.node).toTarget(`${node.id}`).toLink();
                 navigator.goTo(nodeLink);
