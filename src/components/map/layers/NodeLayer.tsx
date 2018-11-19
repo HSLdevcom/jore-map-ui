@@ -84,16 +84,6 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         return this.props.mapStore!.selectedNodeId === node.id;
     }
 
-    private getNodeCrossroadCircle(node: INode, latLng :L.LatLng) {
-        return (
-            <Circle
-                className={s.crossroadCircle}
-                center={latLng}
-                radius={DEFAULT_RADIUS}
-            />
-        );
-    }
-
     private getNodeStopCircle(node: INode, latLng :L.LatLng) {
         const radius = (node.stop && node.stop!.radius) ? node.stop!.radius : DEFAULT_RADIUS;
 
@@ -116,7 +106,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         };
 
         const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
-        const displayCircle = this.isSelected(node);
+        const displayCircle = this.isSelected(node) && node.type === NodeType.STOP;
         return (
             <Marker
                 key={node.id}
@@ -126,10 +116,8 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
                 position={latLng}
             >
             {
-                (displayCircle && node.type === NodeType.STOP) ?
+                (displayCircle) ?
                     this.getNodeStopCircle(node, latLng)
-                : (displayCircle && node.type === NodeType.CROSSROAD) ?
-                    this.getNodeCrossroadCircle(node, latLng)
                 : null
             }
             </Marker>
