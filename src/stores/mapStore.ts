@@ -15,6 +15,7 @@ export class MapStore {
     @observable private _routes: MapRoute[];
     @observable private _displayCoordinateSystem:CoordinateSystem;
     @observable private _nodeSize:NodeSize;
+    @observable private _zoom:number;
     @observable private _selectedNodeId: string|null;
 
     constructor(
@@ -26,11 +27,22 @@ export class MapStore {
         this._routes = [];
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._nodeSize = NodeSize.normal;
+        this._zoom = 15;
     }
 
     @computed
     get coordinates(): LatLng {
         return this._coordinates;
+    }
+
+    @computed
+    get zoom(): number {
+        return this._zoom;
+    }
+
+    @action
+    setZoom(zoom: number) {
+        this._zoom = zoom;
     }
 
     @computed

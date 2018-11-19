@@ -20,10 +20,6 @@ import MeasurementControl from './mapControls/MeasurementControl';
 import * as s from './map.scss';
 import NetworkLayers from './layers/NetworkLayers';
 
-interface IMapState {
-    zoomLevel: number;
-}
-
 interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
@@ -47,15 +43,12 @@ export type LeafletContext = {
 
 @inject('mapStore', 'routeStore')
 @observer
-class LeafletMap extends React.Component<IMapProps, IMapState> {
+class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
 
     constructor(props: IMapProps) {
         super(props);
         this.mapReference = React.createRef();
-        this.state = {
-            zoomLevel: 15,
-        };
         this.setView = this.setView.bind(this);
         this.fitBounds = this.fitBounds.bind(this);
     }
@@ -83,9 +76,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
             );
         });
         map.on('zoomend', () => {
-            this.setState({
-                zoomLevel: map.getZoom(),
-            });
+            this.props.mapStore!.setZoom(map.getZoom());
         });
     }
 
@@ -124,7 +115,7 @@ class LeafletMap extends React.Component<IMapProps, IMapState> {
                 <Map
                     ref={this.mapReference}
                     center={this.props.mapStore!.coordinates}
-                    zoom={this.state.zoomLevel}
+                    zoom={this.props.mapStore!.zoom}
                     zoomControl={false}
                     id={s.mapLeaflet}
                 >
