@@ -114,7 +114,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                                         format='DD.MM.YYYY'
                                     />
                                 </div>
-                                <div>
+                                <div className={s.separator}>
                                     -
                                 </div>
                                 <div>
