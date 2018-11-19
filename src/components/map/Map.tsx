@@ -82,21 +82,21 @@ class LeafletMap extends React.Component<IMapProps> {
         [this.props.mapStore!.coordinates],
                                          this.centerMap,
             );
-        this.centerMap();
+
+        // setup initial map zoom level
+        const zoomLevel = map.getZoom();
+        if (!zoomLevel) {
+            const storeCoordinates = this.props.mapStore!.coordinates;
+            map.setView(storeCoordinates, this.INITIAL_ZOOM_LEVEL);
+        }
     }
 
     private centerMap = () => {
         const map = this.getMap();
         const storeCoordinates = this.props.mapStore!.coordinates;
-
-        const zoomLevel = map.getZoom();
-        if (!zoomLevel) {
-            map.setView(storeCoordinates, this.INITIAL_ZOOM_LEVEL);
-        } else {
-            const mapCoordinates = map.getCenter();
-            if (!L.latLng(storeCoordinates).equals(L.latLng(mapCoordinates))) {
-                map.setView(storeCoordinates, map.getZoom());
-            }
+        const mapCoordinates = map.getCenter();
+        if (!L.latLng(storeCoordinates).equals(L.latLng(mapCoordinates))) {
+            map.setView(storeCoordinates, map.getZoom());
         }
     }
 
