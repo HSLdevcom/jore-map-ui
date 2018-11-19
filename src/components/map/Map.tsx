@@ -1,6 +1,7 @@
 import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
+import { IReactionDisposer, reaction } from 'mobx';
 import * as React from 'react';
 import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
@@ -45,11 +46,12 @@ export type LeafletContext = {
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
+    private reactionDisposer: IReactionDisposer;
+    private INITIAL_ZOOM_LEVEL:number = 15;
 
     constructor(props: IMapProps) {
         super(props);
         this.mapReference = React.createRef();
-        this.setView = this.setView.bind(this);
         this.fitBounds = this.fitBounds.bind(this);
     }
 
@@ -57,7 +59,7 @@ class LeafletMap extends React.Component<IMapProps> {
         return this.mapReference.current!.leafletElement;
     }
 
-    public componentDidMount() {
+    componentDidMount() {
         const map = this.getMap();
 
         // Ugly hack to force map to reload, necessary because map stays gray when app is in docker
@@ -75,13 +77,39 @@ class LeafletMap extends React.Component<IMapProps> {
                 map.getCenter().lng,
             );
         });
+
         map.on('zoomend', () => {
             this.props.mapStore!.setZoom(map.getZoom());
         });
+
+        this.reactionDisposer = reaction(() =>
+        [this.props.mapStore!.coordinates],
+                                         this.centerMap,
+            );
+
+        // setup initial map zoom level
+        const zoomLevel = map.getZoom();
+        if (!zoomLevel) {
+            const storeCoordinates = this.props.mapStore!.coordinates;
+            map.setView(storeCoordinates, this.INITIAL_ZOOM_LEVEL);
+        }
     }
 
-    public componentDidUpdate() {
+    private centerMap = () => {
+        const map = this.getMap();
+        const storeCoordinates = this.props.mapStore!.coordinates;
+        const mapCoordinates = map.getCenter();
+        if (!L.latLng(storeCoordinates).equals(L.latLng(mapCoordinates))) {
+            map.setView(storeCoordinates, map.getZoom());
+        }
+    }
+
+    componentDidUpdate() {
         this.getMap().invalidateSize();
+    }
+
+    componentWillUnmount() {
+        this.reactionDisposer();
     }
 
     private fitBounds(bounds: L.LatLngBoundsExpression) {
@@ -92,19 +120,12 @@ class LeafletMap extends React.Component<IMapProps> {
         this.getMap().fitBounds(bounds);
     }
 
-    /* Leaflet methods */
-    private setView(latLng: L.LatLng) {
-        this.getMap().setView(latLng, 17);
-    }
-
     public render() {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
-
         const routes = this.props.routeStore!.routes;
-
         return (
             <div
                 className={classnames(
@@ -114,8 +135,6 @@ class LeafletMap extends React.Component<IMapProps> {
             >
                 <Map
                     ref={this.mapReference}
-                    center={this.props.mapStore!.coordinates}
-                    zoom={this.props.mapStore!.zoom}
                     zoomControl={false}
                     id={s.mapLeaflet}
                 >
@@ -147,9 +166,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <MarkerLayer
                         routes={routes}
                     />
-                    <PopupLayer
-                        setView={this.setView}
-                    />
+                    <PopupLayer />
                     <Control position='topleft'>
                         <Toolbar />
                     </Control>

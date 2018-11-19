@@ -18,12 +18,9 @@ export class MapStore {
     @observable private _zoom:number;
     @observable private _selectedNodeId: string|null;
 
-    constructor(
-        coordinate = new LatLng(60.24, 24.9),
-        isFullscreen = false,
-    ) {
-        this._coordinates = coordinate;
-        this._isMapFullscreen = isFullscreen;
+    constructor() {
+        this._coordinates = new LatLng(60.24, 24.9);
+        this._isMapFullscreen = false;
         this._routes = [];
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._nodeSize = NodeSize.normal;
