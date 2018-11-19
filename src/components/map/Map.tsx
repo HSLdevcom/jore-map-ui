@@ -52,7 +52,6 @@ class LeafletMap extends React.Component<IMapProps> {
     constructor(props: IMapProps) {
         super(props);
         this.mapReference = React.createRef();
-        this.setView = this.setView.bind(this);
         this.fitBounds = this.fitBounds.bind(this);
     }
 
@@ -117,11 +116,6 @@ class LeafletMap extends React.Component<IMapProps> {
         this.getMap().fitBounds(bounds);
     }
 
-    /* Leaflet methods */
-    private setView(latLng: L.LatLng) {
-        this.getMap().setView(latLng, 17);
-    }
-
     public render() {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
@@ -168,9 +162,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <MarkerLayer
                         routes={routes}
                     />
-                    <PopupLayer
-                        setView={this.setView}
-                    />
+                    <PopupLayer />
                     <Control position='topleft'>
                         <Toolbar />
                     </Control>
