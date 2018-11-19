@@ -22,47 +22,42 @@ interface INewRoutePathViewProps {
 }
 
 interface INewRoutePathViewState {
-    initialRoutePath?: IRoutePath;
+    currentRoutePath?: IRoutePath;
 }
 
 @inject('mapStore', 'routeStore', 'routePathStore', 'networkStore')
 @observer
 class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoutePathViewState>{
-    initialRoutePath: IRoutePath;
+    currentRoutePath: IRoutePath;
 
     constructor(props: any) {
         super(props);
 
-        //  // TODO: call this when newRoutePath button is clicked
-        // const newRoutePath = RoutePathFactory.createNewRoutePath('1', '1');
-        // this.props.routePathStore!.setRoutePath(newRoutePath);
-
-        // this.initialRoutePath = newRoutePath;
         this.state = {
-            initialRoutePath: undefined,
+            currentRoutePath: undefined,
         };
     }
 
-    // TODO
-    public onChange = () => {
+    public onChange = (property: string) => (value: string) => {
+        this.setState({
+            currentRoutePath: { ...this.state.currentRoutePath!, [property]: value },
+        });
     }
 
-    // TODO
     public onSave = () => {
-
+        // TODO
     }
 
     componentWillMount() {
-        // TODO
         if (!this.props.routePathStore!.routePath) {
-            console.log('will mount if');
-            const queryParams = navigator.getQueryParamValues();
-            const newRoutePath =
-                RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
+            const newRoutePath = this.createNewRoutePath();
             this.props.routePathStore!.setRoutePath(newRoutePath);
-        } else {
-            console.log('will mount else ', this.props.routePathStore!.routePath);
         }
+    }
+
+    private createNewRoutePath() {
+        const queryParams = navigator.getQueryParamValues();
+        return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
     }
 
     componentDidMount() {
@@ -76,8 +71,11 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         // TODO: this should be action call
         this.props.routeStore!.routes = [];
 
-        if (!this.state.initialRoutePath) {
-            //
+        if (!this.state.currentRoutePath) {
+            const currentRoutePath = this.props.routePathStore!.routePath;
+            this.setState({
+                currentRoutePath:  currentRoutePath ? currentRoutePath : undefined,
+            });
         }
     }
 
@@ -88,12 +86,10 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     }
 
     public render(): any {
-        const initialRoutePath = this.props.routePathStore!.routePath;
-        if (!initialRoutePath) {
-            console.log('initial RP was not found ');
+        const currentRoutePath = this.state.currentRoutePath;
+        if (!currentRoutePath) {
             return null;
         }
-        console.log('initial RP ', initialRoutePath);
 
         return (
         <div className={classnames(s.routePathView, s.form)}>
@@ -102,15 +98,15 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
                     header='Luo uusi reitinsuunta'
                 />
                 <div className={s.flexInnerRow}>
-                    <div className={s.staticInfo}>LINJA: {initialRoutePath.lineId}</div>
-                    <div className={s.staticInfo}>REITTI: {initialRoutePath.routeId}</div>
+                    <div className={s.staticInfo}>LINJA: {currentRoutePath.lineId}</div>
+                    <div className={s.staticInfo}>REITTI: {currentRoutePath.routeId}</div>
                 </div>
             </div>
             <div className={s.formSection}>
                 <RoutePathViewForm
                     isEditingDisabled={false}
                     onChange={this.onChange}
-                    routePath={initialRoutePath}
+                    routePath={currentRoutePath}
                 />
             </div>
             <div className={s.formSection}>

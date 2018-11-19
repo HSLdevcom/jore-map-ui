@@ -92,14 +92,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private redirectToNewRoutePathView = () => {
-        // const route = this.state.routePath
-        const routeId = navigator.getQueryParam(QueryParams.routeId);
+        const routePath = this.state.routePath;
+        if (!routePath) return;
 
         const newRoutePathLink = routeBuilder
-        .to(subSites.newRoutePath, { routeId, lineId: '1234' })
+        .to(subSites.newRoutePath, { routeId: routePath.routeId, lineId: routePath.lineId })
         .toLink();
-        // console.log('newLink ', newRoutePathLink);
-        // console.log('settign as state routPath ', this.state.routePath);
+
         this.props.routePathStore!.setRoutePath(this.state.routePath);
         navigator.goTo(newRoutePathLink);
 
@@ -152,7 +151,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         />
                     </div>
                     <div className={s.flexInnerColumn}>
-                        <div>Päivittää</div>
+                        <div>Päivittäjä</div>
                         <div>{this.state.routePath.modifiedBy}</div>
                     </div>
                 </div>

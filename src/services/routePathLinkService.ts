@@ -24,7 +24,8 @@ export default class RoutePathLinkService {
                 return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
 
             });
-        } catch (err) {
+        } catch (error) {
+            console.log(error); // tslint:disable-line
             notificationStore.addNotification({
                 message: `Haku löytää reitin linkkien Lnkalkusolmu solmuja, joilla on
                     soltunnus ${nodeId}, ei onnistunut.`,

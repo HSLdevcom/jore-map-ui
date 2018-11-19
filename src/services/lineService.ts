@@ -17,7 +17,8 @@ export default class LineService {
                 const externalLine = this.getExternalLine(linja);
                 return LineFactory.createLine(externalLine);
             }));
-        } catch (err) {
+        } catch (error) {
+            console.log(error); // tslint:disable-line
             NotificationStore.addNotification(
                 { message: 'Linjojen haku ei onnistunut.', type: NotificationType.ERROR },
             );

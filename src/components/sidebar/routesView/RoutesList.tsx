@@ -104,9 +104,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         .to(subSites.newRoutePath, { routeId: route.routeId, lineId: route.lineId })
         .toLink();
 
-        // const newRoutePath = RoutePathFactory.createNewRoutePath('1', '1');
-        // this.props.routePathStore!.setRoutePath(newRoutePath);
-
         navigator.goTo(newRoutePathLink);
     }
 

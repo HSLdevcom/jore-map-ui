@@ -17,7 +17,8 @@ export default class NodeService {
             const externalNode = this.getExternalNode(queryResult.data.node);
 
             return NodeFactory.createNode(externalNode);
-        } catch (err) {
+        } catch (error) {
+            console.log(error); // tslint:disable-line
             notificationStore.addNotification({
                 message: 'Solmun haku ei onnistunut.',
                 type: NotificationType.ERROR,
