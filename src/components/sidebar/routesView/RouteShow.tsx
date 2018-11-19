@@ -102,22 +102,22 @@ class RouteShow extends React.Component<IRouteShowProps> {
                         >
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
-                        <div className={s.flexInnerRow}>
+                        <div>
                             <div
                                 className={(isWithinTimeSpan) ?
                                 classNames(s.routePathDate, s.highlight) :
                                 classNames(s.routePathDate)}
                             >
-                                <div className={s.flexColumn}>
+                                <div>
                                     <ReactMoment
                                         date={routePath.startTime}
                                         format='DD.MM.YYYY'
                                     />
                                 </div>
-                                <div className={s.flexColumn}>
+                                <div>
                                     -
                                 </div>
-                                <div className={s.flexColumn}>
+                                <div>
                                     <ReactMoment
                                         date={routePath.endTime}
                                         format='DD.MM.YYYY'
