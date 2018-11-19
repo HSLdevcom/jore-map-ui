@@ -44,12 +44,8 @@
         padding-top: 15px;
 
         .routePathInfo {
-            .routePathTitle {
-                font-weight: normal;
-
-                &.highlight {
-                    font-weight: bold;
-                }
+            &.highlight {
+                font-weight: bold;
             }
 
             .routePathDate {
@@ -61,10 +57,6 @@
                 .separator {
                     min-width: 20px;
                     text-align: center;
-                }
-
-                &.highlight {
-                    font-weight: bold;
                 }
             }
 

@@ -94,35 +94,27 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     className={s.routePathContainer}
                     key={routePath.internalId}
                 >
-                    <div className={s.routePathInfo}>
-                        <div
-                            className={(isWithinTimeSpan) ?
-                            classNames(s.routePathTitle, s.highlight) :
-                            s.routePathTitle}
-                        >
+                    <div
+                        className={(isWithinTimeSpan) ?
+                        classNames(s.routePathInfo, s.highlight) :
+                        s.routePathInfo}
+                    >
+                        <div>
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
                         <div>
-                            <div
-                                className={(isWithinTimeSpan) ?
-                                classNames(s.routePathDate, s.highlight) :
-                                classNames(s.routePathDate)}
-                            >
-                                <div>
-                                    <ReactMoment
-                                        date={routePath.startTime}
-                                        format='DD.MM.YYYY'
-                                    />
-                                </div>
+                            <div className={s.routePathDate}>
+                                <ReactMoment
+                                    date={routePath.startTime}
+                                    format='DD.MM.YYYY'
+                                />
                                 <div className={s.separator}>
                                     -
                                 </div>
-                                <div>
-                                    <ReactMoment
-                                        date={routePath.endTime}
-                                        format='DD.MM.YYYY'
-                                    />
-                                </div>
+                                <ReactMoment
+                                    date={routePath.endTime}
+                                    format='DD.MM.YYYY'
+                                />
                             </div>
                         </div>
                     </div>
