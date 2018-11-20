@@ -6,10 +6,10 @@ export class RoutePathStore {
     @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
 
-    @observable private _neighborLinks: IRoutePathLink[];
+    @observable private _neighborRoutePathLinks: IRoutePathLink[];
 
     constructor() {
-        this._neighborLinks = [];
+        this._neighborRoutePathLinks = [];
     }
 
     @computed
@@ -24,7 +24,7 @@ export class RoutePathStore {
 
     @computed
     get neighborLinks(): IRoutePathLink[] {
-        return this._neighborLinks;
+        return this._neighborRoutePathLinks;
     }
 
     @action
@@ -36,18 +36,18 @@ export class RoutePathStore {
     setRoutePath(routePath: IRoutePath|null) {
         this._routePath = routePath;
         if (!routePath) {
-            this._neighborLinks = [];
+            this._neighborRoutePathLinks = [];
         }
     }
 
     @action
-    setNeighborLinks(links: IRoutePathLink[]) {
-        this._neighborLinks = links;
+    setNeighborRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+        this._neighborRoutePathLinks = routePathLinks;
     }
 
     @action
-    addLink(link: IRoutePathLink) {
-        this._routePath!.routePathLinks!.push(link);
+    addLink(routePathLink: IRoutePathLink) {
+        this._routePath!.routePathLinks!.push(routePathLink);
     }
 
 }
