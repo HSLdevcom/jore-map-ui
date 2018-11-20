@@ -44,21 +44,19 @@
         padding-top: 15px;
 
         .routePathInfo {
-            .routePathTitle {
-                font-weight: normal;
-
-                &.highlight {
-                    font-weight: bold;
-                }
+            &.highlight {
+                font-weight: bold;
             }
 
             .routePathDate {
                 font-size: $smallFontSize;
                 padding-left: 10px;
                 padding-top: 2px;
+                display: flex;
 
-                &.highlight {
-                    font-weight: bold;
+                .dateDeltaSeparator {
+                    min-width: 20px;
+                    text-align: center;
                 }
             }
 

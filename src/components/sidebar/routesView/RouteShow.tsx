@@ -94,40 +94,27 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     className={s.routePathContainer}
                     key={routePath.internalId}
                 >
-                    <div className={s.routePathInfo}>
-                        <div
-                            className={(isWithinTimeSpan) ?
-                            classNames(s.routePathTitle, s.highlight) :
-                            s.routePathTitle}
-                        >
+                    <div
+                        className={(isWithinTimeSpan) ?
+                        classNames(s.routePathInfo, s.highlight) :
+                        s.routePathInfo}
+                    >
+                        <div>
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
-                        <div className={s.flexInnerRow}>
+                        <div>
                             <div className={s.routePathDate}>
-                                <div
-                                    className={(isWithinTimeSpan) ?
-                                    classNames(s.flexColumn, s.routePathDate, s.highlight) :
-                                    classNames(s.flexColumn, s.routePathDate)}
-                                >
-                                    {'Alk.pvm:'}
-                                    <ReactMoment
-                                        date={routePath.startTime}
-                                        format='DD.MM.YYYY'
-                                    />
+                                <ReactMoment
+                                    date={routePath.startTime}
+                                    format='DD.MM.YYYY'
+                                />
+                                <div className={s.dateDeltaSeparator}>
+                                    -
                                 </div>
-                            </div>
-                            <div className={s.routePathDate}>
-                                <div
-                                    className={(isWithinTimeSpan) ?
-                                    classNames(s.flexColumn, s.routePathDate, s.highlight) :
-                                    classNames(s.flexColumn, s.routePathDate)}
-                                >
-                                    {'Voim.ast:'}
-                                    <ReactMoment
-                                        date={routePath.endTime}
-                                        format='DD.MM.YYYY'
-                                    />
-                                </div>
+                                <ReactMoment
+                                    date={routePath.endTime}
+                                    format='DD.MM.YYYY'
+                                />
                             </div>
                         </div>
                     </div>
