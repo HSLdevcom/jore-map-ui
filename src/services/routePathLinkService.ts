@@ -17,7 +17,7 @@ export default class RoutePathLinkService {
             );
             const externalRoutePathLinks = queryResult.data.solmuBySoltunnus.
                 linkkisByLnkalkusolmu.nodes.map((link: any) =>
-                    this.getExternalRoutePathLink(link),
+                    this.createNewRoutePathLinkFromExternalLink(link),
             );
 
             return externalRoutePathLinks.map((externalRoutePathLink: any) => {
@@ -34,7 +34,7 @@ export default class RoutePathLinkService {
         }
     }
 
-    private static getExternalRoutePathLink(link: any): IExternalRoutePathLink {
+    private static createNewRoutePathLinkFromExternalLink(link: any): IExternalRoutePathLink {
         return {
             startNode: link.solmuByLnkalkusolmu,
             endNode: link.solmuByLnkloppusolmu,

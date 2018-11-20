@@ -123,13 +123,9 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         const properties =  clickEvent.sourceTarget.properties;
         if (properties.soltyyppi !== NodeType.STOP) return;
 
-        const links = await this.queryNeighborLinks(properties.soltunnus);
-        this.props.routePathStore!.setNeighborLinks(links);
-    }
-
-    private async queryNeighborLinks(nodeId: string) {
-        const links = await RoutePathLinkService.fetchLinksWithLinkStartNodeId(nodeId);
-        return links;
+        const routePathLinks =
+            await RoutePathLinkService.fetchLinksWithLinkStartNodeId(properties.soltunnus);
+        this.props.routePathStore!.setNeighborRoutePathLinks(routePathLinks);
     }
 
     private isWaitingForNewRoutePathFirstNodeClick() {
