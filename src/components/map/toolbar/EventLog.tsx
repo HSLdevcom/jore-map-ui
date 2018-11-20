@@ -1,7 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import moment from 'moment';
 import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
+import ILogEntry from '~/models/ILogEntry';
+import GeometryLogStore from '../../../stores/geometryLogStore';
 import * as s from './eventLog.scss';
 
 interface IEventLogState {
@@ -22,8 +25,15 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         };
     }
 
+    private getLog = (event: ILogEntry) => {
+        // tslint:disable-next-line
+        return `- ${moment(event.timestamp).format('HH.mm')}: [${event.action}] ${event.entity} (${event.objectId})`;
+    }
+
     private getLogs = () => {
-        return 'logs';
+        return GeometryLogStore!.log
+            .map(entry => this.getLog(entry))
+            .join('\n');
     }
 
     private toggleEventLog = () => {

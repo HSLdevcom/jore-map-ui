@@ -7,14 +7,18 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import NodeType from '~/enums/nodeType';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { GeometryLogStore } from '~/stores/geometryLogStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
+import logActions from '~/enums/logActions';
+import entityNames from '~/enums/entityNames';
 import * as s from './newRoutePathLayer.scss';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
+    geometryLogStore?: GeometryLogStore;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'geometryLogStore')
 @observer
 export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderLinks(links: IRoutePathLink[]|null, { isNeighbor }: any) {
@@ -95,7 +99,12 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
     private addLinkToRoutePath = (link: IRoutePathLink) => async () => {
         const links = await this.queryNeighborLinks(link.endNode.id);
         this.props.routePathStore!.setNeighborLinks(links);
-
+        this.props.geometryLogStore!.pushToLog({
+            action: logActions.ADD,
+            entityName: entityNames.ROUTELINK,
+            newObject: link,
+            objectId: link.id,
+        });
         this.props.routePathStore!.addLink(link);
     }
 
