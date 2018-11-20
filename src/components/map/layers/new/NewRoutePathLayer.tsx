@@ -37,8 +37,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         });
     }
 
-    private renderNode
-        (
+    private renderNode(
             node: INode,
             routePathLink: IRoutePathLink,
             { isNeighbor } : { isNeighbor: boolean },
