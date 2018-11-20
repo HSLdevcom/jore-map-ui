@@ -28,14 +28,9 @@ interface INewRoutePathViewState {
 @inject('mapStore', 'routeStore', 'routePathStore', 'networkStore')
 @observer
 class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoutePathViewState>{
-    currentRoutePath: IRoutePath;
-
     constructor(props: any) {
         super(props);
-
-        this.state = {
-            currentRoutePath: undefined,
-        };
+        this.state = {};
     }
 
     public onChange = (property: string) => (value: string) => {
