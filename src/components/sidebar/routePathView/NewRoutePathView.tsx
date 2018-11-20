@@ -50,24 +50,31 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
     componentWillMount() {
         if (!this.props.routePathStore!.routePath) {
-            const newRoutePath = this.createNewRoutePath();
-            this.props.routePathStore!.setRoutePath(newRoutePath);
+            this.initEmptyRoutePath();
         }
     }
 
-    private createNewRoutePath() {
+    initEmptyRoutePath() {
         const queryParams = navigator.getQueryParamValues();
-        return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
+        const newRoutePath =
+            RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
+
+        this.props.routePathStore!.setRoutePath(newRoutePath);
     }
 
     componentDidMount() {
-        this.props.mapStore!.setNodeSize(NodeSize.large);
+        this.initStores();
+        this.initCurrentRoutePath();
+    }
 
+    private initStores() {
+        this.props.mapStore!.setNodeSize(NodeSize.large);
         this.props.networkStore!.setIsNodesVisible(true);
         this.props.networkStore!.setIsLinksVisible(true);
-
         this.props.routePathStore!.setIsCreating(true);
+    }
 
+    private initCurrentRoutePath() {
         // TODO: this should be action call
         this.props.routeStore!.routes = [];
 
