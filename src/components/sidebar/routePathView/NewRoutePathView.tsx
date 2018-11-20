@@ -30,7 +30,34 @@ interface INewRoutePathViewState {
 class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoutePathViewState>{
     constructor(props: any) {
         super(props);
-        this.state = {};
+
+        const currentRoutePath = this.props.routePathStore!.routePath;
+        if (!currentRoutePath) {
+            const newRoutePath = this.createNewRoutePath();
+
+            this.props.routePathStore!.setRoutePath(newRoutePath);
+            this.state = {
+                currentRoutePath: newRoutePath,
+            };
+        } else {
+            this.state = {
+                currentRoutePath,
+            };
+        }
+
+        this.initStores();
+    }
+
+    createNewRoutePath() {
+        const queryParams = navigator.getQueryParamValues();
+        return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
+    }
+
+    private initStores() {
+        this.props.mapStore!.setNodeSize(NodeSize.large);
+        this.props.networkStore!.setIsNodesVisible(true);
+        this.props.networkStore!.setIsLinksVisible(true);
+        this.props.routePathStore!.setIsCreating(true);
     }
 
     public onChange = (property: string) => (value: string) => {
@@ -41,44 +68,6 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
     public onSave = () => {
         // TODO
-    }
-
-    componentWillMount() {
-        if (!this.props.routePathStore!.routePath) {
-            this.initEmptyRoutePath();
-        }
-    }
-
-    initEmptyRoutePath() {
-        const queryParams = navigator.getQueryParamValues();
-        const newRoutePath =
-            RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
-
-        this.props.routePathStore!.setRoutePath(newRoutePath);
-    }
-
-    componentDidMount() {
-        this.initStores();
-        this.initCurrentRoutePath();
-    }
-
-    private initStores() {
-        this.props.mapStore!.setNodeSize(NodeSize.large);
-        this.props.networkStore!.setIsNodesVisible(true);
-        this.props.networkStore!.setIsLinksVisible(true);
-        this.props.routePathStore!.setIsCreating(true);
-    }
-
-    private initCurrentRoutePath() {
-        // TODO: this should be action call
-        this.props.routeStore!.routes = [];
-
-        if (!this.state.currentRoutePath) {
-            const currentRoutePath = this.props.routePathStore!.routePath;
-            this.setState({
-                currentRoutePath:  currentRoutePath ? currentRoutePath : undefined,
-            });
-        }
     }
 
     componentWillUnmount() {
