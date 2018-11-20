@@ -126,21 +126,17 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         const properties =  clickEvent.sourceTarget.properties;
         if (properties.soltyyppi !== NodeType.STOP) return;
 
-        const links = await this.queryNeighborLinks(properties.soltunnus);
-        if (links.length === 0) {
+        const routePathLinks =
+            await RoutePathLinkService.fetchLinksWithLinkStartNodeId(properties.soltunnus);
+        if (routePathLinks.length === 0) {
             this.props.notificationStore!.addNotification({
                 message:
                     `Tästä solmusta (soltunnus: ${properties.soltunnus}) alkavaa linkkiä ei löytynyt.`, // tslint:disable
                 type: NotificationType.ERROR,
             });
         } else {
-            this.props.routePathStore!.setNeighborLinks(links);
+            this.props.routePathStore!.setNeighborRoutePathLinks(routePathLinks);
         }
-    }
-
-    private async queryNeighborLinks(nodeId: string) {
-        const links = await RoutePathLinkService.fetchLinksWithLinkStartNodeId(nodeId);
-        return links;
     }
 
     private isWaitingForNewRoutePathFirstNodeClick() {
