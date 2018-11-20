@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MapStore, { NodeSize } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
+import { NotificationStore } from '~/stores/notificationStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeType from '~/enums/nodeType';
+import NotificationType from '~/enums/notificationType';
 import VectorGridLayer from './VectorGridLayer';
 
 enum GeoserverLayer {
@@ -27,6 +29,7 @@ enum NodeColors {
 interface INetworkLayersProps {
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
+    notificationStore?: NotificationStore;
 }
 
 function getGeoServerUrl(layerName: string) {
@@ -35,7 +38,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('networkStore', 'routePathStore')
+@inject('networkStore', 'routePathStore', 'notificationStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
 
@@ -124,7 +127,15 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         if (properties.soltyyppi !== NodeType.STOP) return;
 
         const links = await this.queryNeighborLinks(properties.soltunnus);
-        this.props.routePathStore!.setNeighborLinks(links);
+        if (links.length === 0) {
+            this.props.notificationStore!.addNotification({
+                message:
+                    `Tästä solmusta (soltunnus: ${properties.soltunnus}) alkavaa linkkiä ei löytynyt.`, // tslint:disable
+                type: NotificationType.ERROR,
+            });
+        } else {
+            this.props.routePathStore!.setNeighborLinks(links);
+        }
     }
 
     private async queryNeighborLinks(nodeId: string) {
