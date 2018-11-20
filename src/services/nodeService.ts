@@ -18,7 +18,7 @@ export default class NodeService {
 
             return NodeFactory.createNode(externalNode);
         } catch (error) {
-            console.log(error); // tslint:disable-line
+            console.error(error); // tslint:disable-line
             notificationStore.addNotification({
                 message: 'Solmun haku ei onnistunut.',
                 type: NotificationType.ERROR,

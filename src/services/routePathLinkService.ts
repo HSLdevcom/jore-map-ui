@@ -25,7 +25,7 @@ export default class RoutePathLinkService {
 
             });
         } catch (error) {
-            console.log(error); // tslint:disable-line
+            console.error(error); // tslint:disable-line
             notificationStore.addNotification({
                 message: `Haku löytää reitin linkkien Lnkalkusolmu solmuja, joilla on
                     soltunnus ${nodeId}, ei onnistunut.`,

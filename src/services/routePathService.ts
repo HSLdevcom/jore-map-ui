@@ -27,7 +27,7 @@ export default class RoutePathService {
             const externalRoutePath = this.getExternalRoute(queryResult.data.routePath);
             return RoutePathFactory.createRoutePath(routeId, externalRoutePath);
         } catch (error) {
-            console.log(error); // tslint:disable-line
+            console.error(error); // tslint:disable-line
             notificationStore.addNotification({
                 message: 'Reitinsuunnan haku ei onnistunut.',
                 type: NotificationType.ERROR,
