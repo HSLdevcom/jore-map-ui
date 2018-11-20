@@ -1,9 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import moment from 'moment';
 import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
 import ILogEntry from '~/models/ILogEntry';
+import logActions from '~/enums/logActions';
+import entityNames from '~/enums/entityNames';
 import GeometryLogStore from '../../../stores/geometryLogStore';
 import * as s from './eventLog.scss';
 
@@ -25,15 +26,50 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         };
     }
 
-    private getLog = (event: ILogEntry) => {
-        // tslint:disable-next-line
-        return `- ${moment(event.timestamp).format('HH.mm')}: [${event.action}] ${event.entity} (${event.objectId})`;
+    private getLogRow = (action: logActions | null, objectId: string, entity: entityNames) => {
+        return `- [${action}] ${entity} (${objectId})`;
+    }
+
+    private getSummaryAction = (logs: ILogEntry[]) => {
+        let action = null;
+        if (
+            logs.some(ev => ev.action === logActions.ADD) &&
+            logs.some(ev => ev.action === logActions.DELETE)
+        ) {
+            action = null;
+        } else if (
+            logs.some(ev => ev.action === logActions.ADD)
+        ) {
+            action = logActions.ADD;
+        } else if (
+            logs.some(ev => ev.action === logActions.DELETE)
+        ) {
+            action = logActions.DELETE;
+        } else {
+            action = logActions.MOVE;
+        }
+        return action;
     }
 
     private getLogs = () => {
-        return GeometryLogStore!.log
-            .map(entry => this.getLog(entry))
-            .join('\n');
+        const groupedById = GeometryLogStore!.log.reduce(
+            (rv, x) => {
+                (rv[x.objectId] = rv[x.objectId] || []).push(x);
+                return rv;
+            },
+            {},
+        );
+        const res : string[] = [];
+        Object.entries(groupedById).forEach(([tag, group]: [string, ILogEntry[]]) => {
+            const first = group[0];
+            res.push(this.getLogRow(
+                this.getSummaryAction(group),
+                tag,
+                first.entity,
+            ));
+        });
+
+        return res;
     }
 
     private toggleEventLog = () => {
