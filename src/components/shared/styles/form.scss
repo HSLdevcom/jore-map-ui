@@ -1,6 +1,7 @@
 @import './common';
 
 $marginRight: 10px;
+$labelColor: $mediumGrey;
 
 .formItem {
     margin-right: $marginRight;
@@ -18,7 +19,7 @@ $marginRight: 10px;
 
 .inputLabel {
     font-weight: bold;
-    color: $mediumGrey;
+    color: $labelColor;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;
@@ -28,7 +29,7 @@ $marginRight: 10px;
 .topic {
     padding-top: 10px;
     font-weight: bold;
-    color: $mediumGrey;
+    color: $labelColor;
     font-size: $mediumFontSize;
 }
 

@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import IExternalLink from '~/models/externals/IExternalLink';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
@@ -14,10 +15,11 @@ export default class RoutePathLinkService {
                 { query: getLinksWithRoutePathLinkStartNodeIdQuery, variables: { nodeId } },
             );
             return queryResult.data.solmuBySoltunnus.
-                linkkisByLnkalkusolmu.nodes.map((link: any) =>
+                linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
                     RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(link),
             );
-        } catch (err) {
+        } catch (error) {
+            console.error(error); // tslint:disable-line
             notificationStore.addNotification({
                 message: `Haku löytää reitin linkkien Lnkalkusolmu solmuja, joilla on
                     soltunnus ${nodeId}, ei onnistunut.`,
