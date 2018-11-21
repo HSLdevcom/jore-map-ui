@@ -4,11 +4,9 @@ import MapStore, { NodeSize } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import RoutePathLinkService from '~/services/routePathLinkService';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeType from '~/enums/nodeType';
-import NotificationType from '~/enums/notificationType';
 import VectorGridLayer from './VectorGridLayer';
 
 enum GeoserverLayer {
@@ -41,6 +39,12 @@ function getGeoServerUrl(layerName: string) {
 @inject('networkStore', 'routePathStore', 'notificationStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
+    refis : React.RefObject<any>;
+
+    constructor(props: any) {
+        super(props);
+        this.refis = React.createRef();
+    }
 
     private getLinkStyle = () => {
         return {
@@ -117,6 +121,9 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     opacity: 1,
                     fillOpacity: 1,
                     fill: true,
+                    getFeatureId: (s: any) => {
+                        return s.properties.soltunnus;
+                    },
                 };
             },
         };
@@ -124,18 +131,20 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
     private addNodeFromInitialClickEvent = async (clickEvent: any) => {
         const properties =  clickEvent.sourceTarget.properties;
-        if (properties.soltyyppi !== NodeType.STOP) return;
-
-        const routePathLinks =
-            await RoutePathLinkService.fetchLinksWithLinkStartNodeId(properties.soltunnus);
-        if (routePathLinks.length === 0) {
-            this.props.notificationStore!.addNotification({
-                message:
-                    `Tästä solmusta (soltunnus: ${properties.soltunnus}) alkavaa linkkiä ei löytynyt.`, // tslint:disable
-                type: NotificationType.ERROR,
-            });
-        } else {
-            this.props.routePathStore!.setNeighborRoutePathLinks(routePathLinks);
+        if (this.refis.current) {
+            this.refis.current!.leafletElement.setFeatureStyle(
+                properties.soltunnus,
+                {
+                    solmu: () => {
+                        return {
+                            opacity: 1,
+                            radius: 30,
+                            fillOpacity: 1,
+                            fill: true,
+                        };
+                    },
+                },
+            );
         }
     }
 
@@ -167,6 +176,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 }
                 { (this.props.networkStore!.isNodesVisible) &&
                     <VectorGridLayer
+                        ref={this.refis}
                         onClick={this.isWaitingForNewRoutePathFirstNodeClick() ?
                             this.addNodeFromInitialClickEvent : null}
                         key={GeoserverLayer.Node}
