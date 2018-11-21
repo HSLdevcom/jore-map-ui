@@ -12,7 +12,8 @@ export default class ToolbarHelp extends Component<IToolbarHelpProps> {
         const textContainers = {
             edit: (
                 <div>
-                    Muokataksesi verkon solmua tai siihen liittyviä linkkejä, valitse solmu kartata.
+                    Muokataksesi verkon solmua tai siihen
+                    liittyviä linkkejä, valitse solmu kartalta.
                 </div>
             ),
         };
