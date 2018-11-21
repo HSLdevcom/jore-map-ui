@@ -100,7 +100,8 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
 
     private addLinkToRoutePath = (routePathLink: IRoutePathLink) => async () => {
         const newRoutePathLinks =
-            await RoutePathLinkService.fetchLinksWithLinkStartNodeId(routePathLink.endNode.id);
+            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
+                routePathLink.endNode.id);
         this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
         this.props.routePathStore!.addLink(routePathLink);
     }
@@ -129,7 +130,8 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
             throw new Error('RoutePathLinks not found');
         }
         const lastNode = routePathLinks[routePathLinks.length - 1].endNode;
-        const neighborLinks = await RoutePathLinkService.fetchLinksWithLinkStartNodeId(lastNode.id);
+        const neighborLinks =
+            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(lastNode.id);
         this.props.routePathStore!.setNeighborRoutePathLinks(neighborLinks);
     }
 

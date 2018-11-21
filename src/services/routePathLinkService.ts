@@ -2,13 +2,13 @@ import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import IRoutePathLink from '~/models/IRoutePathLink';
-import IExternalLink from '~/models/externals/IExternalLink';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
+import IExternalLink from '~/models/externals/IExternalLink';
 
 export default class RoutePathLinkService {
-    public static async fetchLinksWithLinkStartNodeId(nodeId: string)
+    public static async fetchAndCreateRoutePathLinksWithStartNodeId(nodeId: string)
         : Promise<IRoutePathLink[]> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
@@ -28,6 +28,22 @@ export default class RoutePathLinkService {
             return [];
         }
     }
+
+    public static async fetchRoutePathLink(id: number) : Promise<IRoutePathLink | null> {
+        try {
+            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                { query: getRoutePathLinkByRoutePathLinkId, variables: { routeLinkId: id } },
+            );
+            return RoutePathLinkFactory.createRoutePathLink(queryResult.data.routePathLink);
+        } catch (error) {
+            console.error(error); // tslint:disable-line
+            notificationStore.addNotification({
+                message: `Ei onnistunut.`,
+                type: NotificationType.ERROR,
+            });
+            return null;
+        }
+    }
 }
 
 const getLinksWithRoutePathLinkStartNodeIdQuery = gql`
@@ -45,7 +61,7 @@ query getNodesWithRoutePathLinkStartNodeId($nodeId: String!) {
                     geojsonManual
                 }
                 solmuByLnkloppusolmu {
-                    soltunnus
+                    soltunnusSolmu
                     geojson
                     soltyyppi
                     solkirjain
@@ -54,5 +70,21 @@ query getNodesWithRoutePathLinkStartNodeId($nodeId: String!) {
             }
         }
     }
+}
+`;
+
+const getRoutePathLinkByRoutePathLinkId = gql`
+query getRoutePathLink($routeLinkId: Int!) {
+    routePathLink: reitinlinkkiByRelid(relid: $routeLinkId) {
+    reitunnus
+    reljarjnro
+    lnkverkko
+    lnkverkko
+    lnkalkusolmu
+    lnkloppusolmu
+    linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
+        geojson
+    }
+}
 }
 `;

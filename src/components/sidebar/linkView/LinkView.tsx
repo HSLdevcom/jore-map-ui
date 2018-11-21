@@ -1,42 +1,64 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import { match } from 'react-router';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
-import { SidebarStore } from '~/stores/sidebarStore';
+import { IRoutePathLink } from '~/models';
+import RoutePathLinkService from '~/services/routePathLinkService';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
+import Loader from '../../shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
     selectedTransitType: TransitType;
+    routePathLink: IRoutePathLink | null;
+    isLoading: boolean;
 }
 
 interface ILinkViewProps {
-    sidebarStore?: SidebarStore;
+    match?: match<any>;
 }
 
-@inject('sidebarStore')
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: any) {
         super(props);
         this.state = {
             selectedTransitType: TransitType.BUS,
+            routePathLink: null,
+            isLoading: true,
         };
     }
 
     public componentDidMount() {
-        if (this.props.sidebarStore) {
-            // TODO: fetch GraphSQL with linkId
-            // const linkId = this.props.sidebarStore!.openLinkId;
+        const routeLinkId = this.props.match!.params.id;
+        if (routeLinkId) {
+            this.fetchRoutePathLink(routeLinkId);
         }
     }
 
-    public componentWillUnmount() {
-        this.props.sidebarStore!.setOpenLinkId(null);
+    public componentWillReceiveProps(props: any) {
+        const routeLinkId = props.match!.params.id;
+        if (routeLinkId) {
+            this.fetchRoutePathLink(routeLinkId);
+        }
+    }
+
+    private async fetchRoutePathLink(id: string) {
+        const routePathLinkId = parseInt(id, 10);
+
+        this.setState({ isLoading: true });
+
+        const routePathLink =
+            await RoutePathLinkService.fetchRoutePathLink(routePathLinkId);
+        if (routePathLink) {
+            this.setState({ routePathLink });
+        }
+        this.setState({ isLoading: false });
     }
 
     private toggleSelectedTransitType = (selectedTransitType: TransitType): void => {
@@ -55,10 +77,18 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     public render(): any {
+        if (this.state.isLoading) {
+            return (
+                <div className={classnames(s.linkView, s.form)}>
+                    <Loader />
+                </div>
+            );
+        }
+
         return (
         <div className={classnames(s.linkView, s.form)}>
             <ViewHeader
-                header='Reitin 1016 linkki'
+                header={`Reitinlinkki ${this.state.routePathLink!.id}`}
             />
             <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT
