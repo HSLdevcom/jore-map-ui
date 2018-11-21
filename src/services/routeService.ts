@@ -4,6 +4,7 @@ import apolloClient from '~/util/ApolloClient';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute, INode } from '~/models';
 import IExternalRoute from '~/models/externals/IExternalRoute';
+import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import LineService from './lineService';
@@ -41,8 +42,8 @@ export default class RouteService {
                 return RouteFactory.createRoute(externalRoute, line);
             }
             return null;
-        } catch (err) {
-            console.log(err); // tslint:disable-line
+        } catch (error) {
+            console.error(error); // tslint:disable-line
             notificationStore.addNotification({
                 message: 'Reitin haku ei onnistunut.',
                 type: NotificationType.ERROR,
@@ -90,6 +91,11 @@ export default class RouteService {
                     delete externalRoutePathLink
                         .solmuByLnkloppusolmu;
                 });
+
+                externalRoutePath.externalRoutePathLinks.sort(
+                    (a: IExternalRoutePathLink, b: IExternalRoutePathLink) => {
+                        return a.reljarjnro - b.reljarjnro;
+                    });
             });
         }
 

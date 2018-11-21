@@ -4,7 +4,7 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 
 export class RoutePathStore {
     @observable private _isCreating: boolean;
-    @observable private _routePath: IRoutePath;
+    @observable private _routePath: IRoutePath|null;
 
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
 
@@ -18,7 +18,7 @@ export class RoutePathStore {
     }
 
     @computed
-    get routePath(): IRoutePath {
+    get routePath(): IRoutePath|null {
         return this._routePath;
     }
 
@@ -33,8 +33,11 @@ export class RoutePathStore {
     }
 
     @action
-    setRoutePath(routePath: IRoutePath) {
+    setRoutePath(routePath: IRoutePath|null) {
         this._routePath = routePath;
+        if (!routePath) {
+            this._neighborRoutePathLinks = [];
+        }
     }
 
     @action
