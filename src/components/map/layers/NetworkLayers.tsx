@@ -136,6 +136,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         return {
                             opacity: 1,
                             radius: 30,
+                            color: '#FF0000',
                             fillOpacity: 1,
                             fill: true,
                         };
