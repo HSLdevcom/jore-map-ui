@@ -121,9 +121,6 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     opacity: 1,
                     fillOpacity: 1,
                     fill: true,
-                    getFeatureId: (s: any) => {
-                        return s.properties.soltunnus;
-                    },
                 };
             },
         };
@@ -157,6 +154,8 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
             && hasRoutePathLinks;
     }
 
+    public getFeatureId = (s: any) => { return s.properties.soltunnus; };
+
     render() {
         return (
             <>
@@ -183,6 +182,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         url={getGeoServerUrl(GeoserverLayer.Node)}
                         interactive={this.isWaitingForNewRoutePathFirstNodeClick()}
                         vectorTileLayerStyles={this.getNodeStyle()}
+                        getFeatureId={this.getFeatureId}
                     />
                 }
             </>
