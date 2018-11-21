@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { FaTimes, FaExclamation } from 'react-icons/fa';
+import classnames from 'classnames';
+import { FaTimes, FaExclamation, FaUndo } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
 import ILogEntry from '~/models/ILogEntry';
 import logActions from '~/enums/logActions';
@@ -18,16 +19,44 @@ interface IEventLogProps {
 
 @observer
 export default class EventLog extends React.Component<IEventLogProps, IEventLogState> {
+    scrollRef: React.RefObject<HTMLDivElement>;
+
     constructor(props: IEventLogProps) {
         super(props);
         this.state = {
             isOpen: false,
             isAlertShown: false,
         };
+        this.scrollRef = React.createRef();
     }
 
     private getLogRow = (action: logActions | null, objectId: string, entity: entityNames) => {
-        return `- [${action}] ${entity} (${objectId})`;
+        let logActionClass = '';
+        switch (action) {
+        case logActions.ADD:
+            logActionClass = s.logActionAdd;
+            break;
+        case logActions.DELETE:
+            logActionClass = s.logActionDelete;
+            break;
+        case logActions.MOVE:
+            logActionClass = s.logActionMove;
+            break;
+        }
+
+        return (
+            <div className={s.logRow}>
+                <div className={classnames(s.logAction, logActionClass)}>
+                    {action}
+                </div>
+                <div className={s.logActionContent}>
+                    {`${entity} (${objectId})`}
+                </div>
+                <div className={s.logActionButtons}>
+                    <FaUndo />
+                </div>
+            </div>
+        );
     }
 
     private getSummaryAction = (logs: ILogEntry[]) => {
@@ -59,12 +88,12 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
             },
             {},
         );
-        const res : string[] = [];
-        Object.entries(groupedById).forEach(([tag, group]: [string, ILogEntry[]]) => {
-            const first = group[0];
+        const res : JSX.Element[] = [];
+        Object.entries(groupedById).forEach(([id, groupedLogs]: [string, ILogEntry[]]) => {
+            const first = groupedLogs[0];
             res.push(this.getLogRow(
-                this.getSummaryAction(group),
-                tag,
+                this.getSummaryAction(groupedLogs),
+                id,
                 first.entity,
             ));
         });
@@ -76,6 +105,20 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         this.setState({
             isOpen: !this.state.isOpen,
         });
+    }
+
+    private scrollToBottom = () => {
+        if (this.scrollRef.current) {
+            this.scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    componentDidMount() {
+        this.scrollToBottom();
+    }
+
+    componentDidUpdate() {
+        this.scrollToBottom();
     }
 
     private renderEventLog = () => (
@@ -91,11 +134,12 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
                     <FaTimes className={s.close}/>
                 </div>
             </div>
-            <textarea
-                className={s.textArea}
-                value={this.getLogs()}
-                readOnly={true}
-            />
+            <div className={s.logArea}>
+                {
+                    this.getLogs()
+                }
+                <div ref={this.scrollRef} />
+            </div>
         </div>
     )
 
