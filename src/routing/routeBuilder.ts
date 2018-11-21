@@ -3,11 +3,16 @@ import subSites from './subSites';
 import Navigator from './navigator';
 
 export class RouteBuilder {
-    public to(subSites: subSites) {
+
+    /**
+     * @param {string} subSites
+     * @param {Object} values - { field: value, ... }
+     */
+    public to(subSites: subSites, values?: any) {
         return new RouteBuilderContext(
             Navigator.getPathName(),
             subSites,
-            Navigator.getQueryParamValues(),
+            values ? values : Navigator.getQueryParamValues(),
         );
     }
 }

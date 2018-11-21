@@ -3,6 +3,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import moment from 'moment';
 import apolloClient from '~/util/ApolloClient';
 import { IRoutePath } from '~/models';
+import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
@@ -25,7 +26,8 @@ export default class RoutePathService {
             );
             const externalRoutePath = this.getExternalRoute(queryResult.data.routePath);
             return RoutePathFactory.createRoutePath(routeId, externalRoutePath);
-        } catch (err) {
+        } catch (error) {
+            console.error(error); // tslint:disable-line
             notificationStore.addNotification({
                 message: 'Reitinsuunnan haku ei onnistunut.',
                 type: NotificationType.ERROR,
@@ -42,14 +44,44 @@ export default class RoutePathService {
      * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.endNode
      */
     private static getExternalRoute(routePath: any): IExternalRoutePath {
-        // routePath.lintunnus might already exist (got from cache)
-        if (routePath.reittiByReitunnus) {
-            routePath.lintunnus = routePath.reittiByReitunnus.lintunnus;
-            delete routePath.reittiByReitunnus;
+        // routePath.externalRoutePathLinks might already exist (got from cache)
+        if (routePath.externalRoutePathLinks) {
+            return routePath;
         }
 
-        routePath.externalRoutePathLinks = [];
+        routePath.lintunnus = routePath.reittiByReitunnus.lintunnus;
+        delete routePath.reittiByReitunnus;
 
+        routePath.externalRoutePathLinks
+        = routePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes;
+        delete routePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta;
+
+        routePath.externalRoutePathLinks.forEach((externalRoutePathLink: any) => {
+            externalRoutePathLink.geojson = externalRoutePathLink
+                .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson;
+            externalRoutePathLink.startNode = externalRoutePathLink
+                .solmuByLnkalkusolmu;
+            externalRoutePathLink.endNode = externalRoutePathLink
+                .solmuByLnkloppusolmu;
+
+            externalRoutePathLink.startNode.externalStop
+                = externalRoutePathLink.startNode.pysakkiBySoltunnus;
+
+            externalRoutePathLink.endNode.externalStop
+                = externalRoutePathLink.endNode.pysakkiBySoltunnus;
+
+            delete externalRoutePathLink
+                .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
+            delete externalRoutePathLink
+                .solmuByLnkalkusolmu;
+            delete externalRoutePathLink
+                .solmuByLnkloppusolmu;
+        });
+
+        routePath.externalRoutePathLinks.sort(
+        (a: IExternalRoutePathLink, b: IExternalRoutePathLink) => {
+            return a.reljarjnro - b.reljarjnro;
+        });
         return routePath;
     }
 
@@ -62,7 +94,7 @@ export default class RoutePathService {
 // tslint:disable:max-line-length
 const getRoutePathQuery = gql`
 query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
-    routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction){
+    routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
         reitunnus
         suusuunta
         suunimi
@@ -79,6 +111,46 @@ query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!
         suupaapaikr
         reittiByReitunnus {
             lintunnus
+        }
+        reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
+            nodes {
+                relid
+                lnkalkusolmu
+                lnkloppusolmu
+                relpysakki
+                reljarjnro
+                lnkverkko
+                ajantaspys
+                solmuByLnkalkusolmu {
+                    solx,
+                    soly,
+                    soltunnus,
+                    soltyyppi,
+                    geojson,
+                    geojsonManual,
+                    pysakkiBySoltunnus {
+                        pyssade,
+                        pysnimi,
+                        pysnimir
+                    }
+                }
+                solmuByLnkloppusolmu {
+                    solx,
+                    soly,
+                    soltunnus,
+                    soltyyppi,
+                    geojson,
+                    geojsonManual,
+                    pysakkiBySoltunnus {
+                        pyssade,
+                        pysnimi,
+                        pysnimir
+                    }
+                }
+                linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
+                    geojson
+                }
+            }
         }
     }
 }

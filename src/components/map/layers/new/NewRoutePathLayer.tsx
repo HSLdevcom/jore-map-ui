@@ -113,6 +113,26 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         return this.renderNode(firstNode, link, { isNeighbor: false }, 0);
     }
 
+    componentDidUpdate() {
+        const routePathStore = this.props.routePathStore;
+
+        if (routePathStore!.routePath
+            && routePathStore!.routePath!.routePathLinks!.length > 0
+            && routePathStore!.neighborLinks.length === 0) {
+            this.getNeighborsForExistingRoutePath();
+        }
+    }
+
+    private async getNeighborsForExistingRoutePath() {
+        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
+        if (!routePathLinks) {
+            throw new Error('RoutePathLinks not found');
+        }
+        const lastNode = routePathLinks[routePathLinks.length - 1].endNode;
+        const neighborLinks = await RoutePathLinkService.fetchLinksWithLinkStartNodeId(lastNode.id);
+        this.props.routePathStore!.setNeighborRoutePathLinks(neighborLinks);
+    }
+
     render() {
         if (!this.props.routePathStore!.routePath) return null;
         return (

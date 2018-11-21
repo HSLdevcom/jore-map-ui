@@ -1,5 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
+import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import Moment from 'react-moment';
 import ButtonType from '~/enums/buttonType';
@@ -7,8 +8,11 @@ import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import routeBuilder from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
 import Loader from '~/components/shared/loader/Loader';
+import { RoutePathStore } from '~/stores/routePathStore';
 import NotificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import ViewHeader from '../ViewHeader';
@@ -23,8 +27,11 @@ interface IRoutePathViewState {
 }
 
 interface IRoutePathViewProps {
+    routePathStore?: RoutePathStore;
 }
 
+@inject('routePathStore')
+@observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: any) {
         super(props);
@@ -84,9 +91,22 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
+    private redirectToNewRoutePathView = () => {
+        const routePath = this.state.routePath;
+        if (!routePath) return;
+
+        const newRoutePathLink = routeBuilder
+        .to(subSites.newRoutePath, { routeId: routePath.routeId, lineId: routePath.lineId })
+        .toLink();
+
+        this.props.routePathStore!.setRoutePath(this.state.routePath);
+        navigator.goTo(newRoutePathLink);
+
+    }
+
     public render(): any {
         // tslint:disable-next-line:max-line-length
-        const message = 'Suunnalla on muutoksia, joita ei ole tallennettu. Oletko varma, että haluat poistaa näkymästä?';
+        const message = 'Reitin suunnalla tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
         if (this.state.isLoading) {
             return (
@@ -98,17 +118,18 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         if (!this.state.routePath) return 'Error';
         return (
         <div className={classnames(s.routePathView, s.form)}>
-            <ViewHeader
-                header={`Reitin suunta ${this.state.routePath.lineId}`}
-                closePromptMessage={this.state.hasModifications ? message : undefined}
-            >
-                <Button
-                    onClick={this.toggleEditing}
-                    type={ButtonType.SQUARE}
-                    text={this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'}
-                />
-            </ViewHeader>
-            <div className={s.routePathTimestamp}>01.09.2017</div>
+            <div className={s.formSection}>
+                <ViewHeader
+                    header={`Reitin suunta`}
+                    closePromptMessage={this.state.hasModifications ? message : undefined}
+                >
+                    <Button
+                        onClick={this.toggleEditing}
+                        type={ButtonType.SQUARE}
+                        text={this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'}
+                    />
+                </ViewHeader>
+            </div>
             <div className={s.formSection}>
                 <div className={s.topic}>
                     REITIN OTSIKKOTIEDOT
@@ -130,7 +151,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         />
                     </div>
                     <div className={s.flexInnerColumn}>
-                        <div>Päivittää</div>
+                        <div>Päivittäjä</div>
                         <div>{this.state.routePath.modifiedBy}</div>
                     </div>
                 </div>
@@ -152,6 +173,11 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     />
                 </div>
             </div>
+            <Button
+                onClick={this.redirectToNewRoutePathView}
+                type={ButtonType.SQUARE}
+                text={`Luo uusi reitin suunta käyttäen tätä pohjana`}
+            />
         </div>
         );
     }
