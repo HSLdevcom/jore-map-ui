@@ -12,7 +12,7 @@ export default class ToolbarHelp extends Component<IToolbarHelpProps> {
         const textContainers = {
             edit: (
                 <div>
-                    Voit siirtää pysäkkejä tai risteyksiä raahaamalla niitä kartalla.
+                    Muokataksesi verkon solmua tai siihen liittyviä linkkejä, valitse solmu kartata.
                 </div>
             ),
         };
