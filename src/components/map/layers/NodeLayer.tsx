@@ -7,7 +7,6 @@ import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import { SidebarStore } from '~/stores/sidebarStore';
 import { MapStore } from '~/stores/mapStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import * as s from './nodeLayer.scss';
@@ -18,13 +17,12 @@ interface MarkerLayerProps {
     isTimeAlignmentStop: boolean;
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
-    sidebarStore?: SidebarStore;
     mapStore?: MapStore;
 }
 
 const DEFAULT_RADIUS = 25;
 
-@inject('popupStore', 'toolbarStore', 'sidebarStore', 'mapStore')
+@inject('popupStore', 'toolbarStore', 'mapStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
     private getMarkerHtml = (markerClass: string) => {

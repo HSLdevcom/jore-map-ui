@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
 import { toJS } from 'mobx';
-import { inject, observer } from 'mobx-react';
-import { SidebarStore } from '~/stores/sidebarStore';
+import { observer } from 'mobx-react';
 import { IRoute, IRoutePathLink } from '~/models';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
-    sidebarStore?: SidebarStore;
     routes: IRoute[];
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
@@ -17,7 +15,6 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
-@inject('sidebarStore')
 @observer
 export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
