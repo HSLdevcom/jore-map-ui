@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiEdit, FiCopy, FiPlusSquare, FiShare2 } from 'react-icons/fi';
+import { FiCopy, FiPlusSquare, FiShare2 } from 'react-icons/fi';
 import { observer } from 'mobx-react';
 import toolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -18,20 +18,20 @@ export default class ToolbarLineButtons extends React.Component {
                 {/* First toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <MapControlButton
-                        onClick={this.toggleTool(ToolbarTool.Edit)}
-                        isActive={toolbarStore.isActive(ToolbarTool.Edit)}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTool.Edit)}
-                        label='Muokkaa solmuja'
-                    >
-                        <FiEdit />
-                    </MapControlButton>
-                    <MapControlButton
                         onClick={this.toggleTool(ToolbarTool.Copy)}
                         isActive={toolbarStore.isActive(ToolbarTool.Copy)}
                         isDisabled={toolbarStore.isDisabled(ToolbarTool.Copy)}
                         label='Kopioi reitti toiseen suuntaan'
                     >
                         <FiCopy />
+                    </MapControlButton>
+                    <MapControlButton
+                        onClick={this.toggleTool(ToolbarTool.DivideLink)}
+                        isActive={toolbarStore.isActive(ToolbarTool.DivideLink)}
+                        isDisabled={toolbarStore.isDisabled(ToolbarTool.DivideLink)}
+                        label='Jaa linkki'
+                    >
+                        <FiShare2/>
                     </MapControlButton>
                 </div>
                 {/* Second toolbar row */}
@@ -43,14 +43,6 @@ export default class ToolbarLineButtons extends React.Component {
                         label='Lisää solmu'
                     >
                         <FiPlusSquare />
-                    </MapControlButton>
-                    <MapControlButton
-                        onClick={this.toggleTool(ToolbarTool.DivideLink)}
-                        isActive={toolbarStore.isActive(ToolbarTool.DivideLink)}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTool.DivideLink)}
-                        label='Jaa linkki'
-                    >
-                        <FiShare2/>
                     </MapControlButton>
                 </div>
             </div>
