@@ -21,7 +21,7 @@ export default class ToolbarNetworkButtons extends React.Component {
                         onClick={this.toggleTool(ToolbarTool.Edit)}
                         isActive={toolbarStore.isActive(ToolbarTool.Edit)}
                         isDisabled={toolbarStore.isDisabled(ToolbarTool.Edit)}
-                        label='Muokkaa solmuja'
+                        label='Muokkaa solmuja tai solmuun liittyviä linkkejä'
                     >
                         <FiEdit />
                     </MapControlButton>
