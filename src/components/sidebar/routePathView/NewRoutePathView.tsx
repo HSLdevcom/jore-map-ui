@@ -5,6 +5,7 @@ import { IRoutePath } from '~/models';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import navigator from '~/routing/navigator';
+import LineService from '~/services/lineService';
 import { MapStore, NodeSize } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -22,7 +23,7 @@ interface INewRoutePathViewProps {
 }
 
 interface INewRoutePathViewState {
-    currentRoutePath?: IRoutePath;
+    currentRoutePath: IRoutePath;
 }
 
 @inject('mapStore', 'routeStore', 'routePathStore', 'networkStore')
@@ -31,7 +32,8 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     constructor(props: any) {
         super(props);
 
-        const currentRoutePath = this.props.routePathStore!.routePath;
+        const routePathStore = this.props.routePathStore;
+        const currentRoutePath = routePathStore ? routePathStore.routePath : null;
         if (!currentRoutePath) {
             const newRoutePath = this.createNewRoutePath();
 
@@ -45,21 +47,37 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
             };
         }
 
-        this.initStores();
+        this.initStores(currentRoutePath);
     }
 
     createNewRoutePath() {
         const queryParams = navigator.getQueryParamValues();
+        // TODO: add transitType to this call
         return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
     }
 
-    private initStores() {
+    private initStores(currentRoutePath: IRoutePath|null) {
         this.props.mapStore!.setNodeSize(NodeSize.large);
         this.props.networkStore!.setIsNodesVisible(true);
         this.props.networkStore!.setIsLinksVisible(true);
         this.props.routePathStore!.setIsCreating(true);
         // TODO: UI should go back to the previous state
         this.props.routeStore!.clearRoutes();
+
+        if (currentRoutePath) {
+            this.setTransitType(currentRoutePath);
+        }
+    }
+
+    // TODO: transitType should be routePath's property
+    // then we wouldn't need to fetch transitType from line
+    private async setTransitType(currentRoutePath: IRoutePath) {
+        if (currentRoutePath.lineId) {
+            const line = await LineService.fetchLine(currentRoutePath.lineId);
+            if (line) {
+                this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
+            }
+        }
     }
 
     public onChange = (property: string) => (value: string) => {
@@ -80,10 +98,6 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
     public render(): any {
         const currentRoutePath = this.state.currentRoutePath;
-        if (!currentRoutePath) {
-            return null;
-        }
-
         return (
         <div className={classnames(s.routePathView, s.form)}>
             <div className={s.formSection}>
