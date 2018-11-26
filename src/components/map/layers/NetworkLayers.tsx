@@ -47,7 +47,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
             linkki: (properties: any, zoom: number) => {
                 const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-                const transitType: TransitType = TransitTypeHelper
+                const transitType = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(properties.lnkverkko);
                 const color = TransitTypeColorHelper.getColor(transitType);
 
@@ -70,7 +70,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
             // Layer name 'piste' is directly mirrored from Jore through geoserver
             piste: (properties: any, zoom: any) => {
                 const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-                const transitType: TransitType = TransitTypeHelper
+                const transitType = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(properties.lnkverkko);
                 const color = TransitTypeColorHelper.getColor(transitType);
 
@@ -108,7 +108,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 /*
                 TODO: uncomment this after solmu has .lnkverkko property
                 const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-                const transitType: TransitType = TransitTypeHelper
+                const transitType = TransitTypeHelper
                 .convertTransitTypeCodeToTransitType(properties.lnkverkko);
                 if (!selectedTransitTypes.includes(transitType)) {
                     return this.getEmptyStyle();
