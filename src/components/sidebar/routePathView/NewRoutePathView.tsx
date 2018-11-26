@@ -1,6 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import classnames from 'classnames';
+import RouteService from '~/services/routeService.ts';
+import moment from 'moment';
 import { IRoutePath } from '~/models';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
@@ -41,11 +43,31 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
             };
         } else {
             this.state = {
-                currentRoutePath,
+                currentRoutePath: { ... currentRoutePath },
             };
         }
 
         this.initStores();
+    }
+
+    componentWillMount() {
+        this.getDateSuggestion();
+    }
+
+    public async getDateSuggestion() {
+        const currentRoutePath = this.state.currentRoutePath;
+        if (currentRoutePath) {
+            const results = await RouteService.fetchRoute(currentRoutePath.routeId);
+            const routePaths = results!.routePaths;
+            let newestDate = moment(routePaths[0].endTime);
+            routePaths.forEach((routePath: any) => {
+                const date = moment(routePath.endTime);
+                if (date.isAfter(newestDate)) newestDate = date;
+            });
+            newestDate.add(1, 'days');
+            currentRoutePath.startTime = newestDate.toDate();
+            this.setState({ currentRoutePath });
+        }
     }
 
     createNewRoutePath() {

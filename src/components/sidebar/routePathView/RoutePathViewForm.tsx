@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import InputContainer from '../InputContainer';
 import { Button, Dropdown, Checkbox } from '../../controls';
@@ -89,6 +90,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     <InputContainer
                         label='VOIM. AST'
                         disabled={isEditingDisabled}
+                        value={Moment(this.props.routePath.startTime).format('DD.MM.YYYY')}
                     />
                     <InputContainer
                         label='VIIM.VOIM.OLO'
