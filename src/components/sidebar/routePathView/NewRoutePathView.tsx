@@ -69,7 +69,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         }
     }
 
-    // TODO: transitType should be routePath's property
+    // TODO: transitType could be routePath's property
     // then we wouldn't need to fetch transitType from line
     private async setTransitType(currentRoutePath: IRoutePath) {
         if (currentRoutePath.lineId) {
