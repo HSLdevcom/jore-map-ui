@@ -31,15 +31,17 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         return gridLayer;
     }
 
-    private isEqualArrays(array1: string[], array2: string[]) {
-        return array1.length === array2.length && array1.slice().sort().every((value, index) => {
-            return value === array2.slice().sort()[index];
+    private areArraysEqual(arr1: string[], arr2: string[]) {
+        const array1 = arr1.sort();
+        const array2 = arr2.sort();
+        return array1.length === array2.length && array1.slice().every((value, index) => {
+            return value === array2.slice()[index];
         });
     }
 
     updateLeafletElement(fromProps: IVectorGridLayerProps, toProps: IVectorGridLayerProps) {
         super.updateLeafletElement(fromProps, toProps);
-        if (!this.isEqualArrays(fromProps.selectedTransitTypes, toProps.selectedTransitTypes)) {
+        if (!this.areArraysEqual(fromProps.selectedTransitTypes, toProps.selectedTransitTypes)) {
             this.leafletElement.redraw();
         }
     }
