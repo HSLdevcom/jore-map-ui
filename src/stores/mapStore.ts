@@ -3,6 +3,12 @@ import { action, computed, observable } from 'mobx';
 import CoordinateSystem from '~/enums/coordinateSystem';
 import GeometryService from '~/services/geometryService';
 
+const INITIAL_COORDINATES = new LatLng(
+    60.1699,
+    24.9384,
+);
+const INITIAL_ZOOM = 15;
+
 export enum NodeSize {
     normal,
     large,
@@ -15,10 +21,12 @@ export class MapStore {
     @observable private _routes: MapRoute[];
     @observable private _displayCoordinateSystem:CoordinateSystem;
     @observable private _nodeSize:NodeSize;
+    @observable private _zoom:number;
     @observable private _selectedNodeId: string|null;
 
     constructor() {
-        this._coordinates = new LatLng(60.24, 24.9);
+        this._coordinates = INITIAL_COORDINATES;
+        this._zoom = INITIAL_ZOOM;
         this._isMapFullscreen = false;
         this._routes = [];
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
@@ -28,6 +36,16 @@ export class MapStore {
     @computed
     get coordinates(): LatLng {
         return this._coordinates;
+    }
+
+    @computed
+    get zoom(): number {
+        return this._zoom;
+    }
+
+    @action
+    setZoom(zoom: number) {
+        this._zoom = zoom;
     }
 
     @computed

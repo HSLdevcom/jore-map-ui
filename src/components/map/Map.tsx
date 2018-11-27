@@ -47,7 +47,6 @@ export type LeafletContext = {
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
     private reactionDisposer: IReactionDisposer;
-    private INITIAL_ZOOM_LEVEL:number = 15;
 
     constructor(props: IMapProps) {
         super(props);
@@ -78,17 +77,19 @@ class LeafletMap extends React.Component<IMapProps> {
             );
         });
 
+        map.on('zoomend', () => {
+            this.props.mapStore!.setZoom(map.getZoom());
+        });
+
         this.reactionDisposer = reaction(() =>
         [this.props.mapStore!.coordinates],
                                          this.centerMap,
             );
 
-        // setup initial map zoom level
-        const zoomLevel = map.getZoom();
-        if (!zoomLevel) {
-            const storeCoordinates = this.props.mapStore!.coordinates;
-            map.setView(storeCoordinates, this.INITIAL_ZOOM_LEVEL);
-        }
+        map.setView(
+            this.props.mapStore!.coordinates,
+            this.props.mapStore!.zoom,
+        );
     }
 
     private centerMap = () => {
