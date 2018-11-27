@@ -80,7 +80,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         }
     }
 
-    public onChange = (property: string) => (value: string) => {
+    public onChange = (property: string, value: string) => {
         this.setState({
             currentRoutePath: { ...this.state.currentRoutePath!, [property]: value },
         });
