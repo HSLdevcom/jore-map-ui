@@ -52,7 +52,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
     createNewRoutePath() {
         const queryParams = navigator.getQueryParamValues();
-        // TODO: add transitType to this call
+        // TODO: add transitType to this call (if transitType is routePath's property)
         return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
     }
 
