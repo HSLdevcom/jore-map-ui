@@ -3,4 +3,5 @@ export default interface IStop {
     radius: number;
     nameFi: string;
     nameSe: string;
+    hastusId: string;
 }

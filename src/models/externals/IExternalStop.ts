@@ -3,4 +3,5 @@ export default interface IExternalStop {
     pysnimi: string;
     pysnimir: string;
     pyssade: number;
+    paitunnus: string;
 }
