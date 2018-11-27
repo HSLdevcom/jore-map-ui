@@ -28,7 +28,7 @@ const HASTUS_MIN_ZOOM = 16;
 @inject('popupStore', 'toolbarStore', 'sidebarStore', 'mapStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
-    private getLabelHtml = (text: string) => {
+    private getHastusLabel = (text: string) => {
         return `<div class=${s.hastusId}>
             ${text}
         </div>`;
@@ -42,9 +42,20 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             </div>`;
     }
 
+    private getChildren = (node: INode) => {
+        const children = [];
+
+        if (node.stop && node.stop.hastusId && this.props.mapStore!.zoom >= HASTUS_MIN_ZOOM) {
+            children.push(
+                this.getHastusLabel(node.stop.hastusId),
+            );
+        }
+
+        return children;
+    }
+
     private getIcon = (node: INode) => {
         const isSelected = this.isSelected(node);
-        const children = [];
 
         let type;
         if (this.props.isDisabled) {
@@ -55,11 +66,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             type = node.type;
         }
 
-        if (node.stop && node.stop.hastusId && this.props.mapStore!.zoom >= HASTUS_MIN_ZOOM) {
-            children.push(
-                this.getLabelHtml(node.stop.hastusId),
-            );
-        }
+        const children = this.getChildren(node);
 
         let html;
         switch (type) {
