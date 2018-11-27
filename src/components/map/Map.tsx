@@ -1,7 +1,7 @@
 import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
+import { IReactionDisposer, reaction, toJS } from 'mobx';
 import * as React from 'react';
 import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
@@ -108,7 +108,7 @@ class LeafletMap extends React.Component<IMapProps> {
         this.reactionDisposer();
     }
 
-    private fitBounds(bounds: L.LatLngBoundsExpression) {
+    private fitBounds(bounds: L.LatLngBounds) {
         // Invalidate size is required to notice screen size on launch.
         // Problem only in docker containers.
         // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
@@ -121,7 +121,7 @@ class LeafletMap extends React.Component<IMapProps> {
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
-        const routes = this.props.routeStore!.routes;
+        const routes = toJS(this.props.routeStore!.routes);
         return (
             <div
                 className={classnames(
