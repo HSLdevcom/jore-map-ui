@@ -8,8 +8,6 @@ export default interface IRoutePath {
     routePathName: string;
     routePathNameSw: string;
     direction: string;
-    positions: [[number, number]]; // TODO: remove?
-    geoJson: any; // TODO: remove?
     visible: boolean;
     startTime: Date;
     endTime: Date;
