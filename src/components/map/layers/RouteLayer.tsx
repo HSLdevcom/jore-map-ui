@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { SidebarStore } from '~/stores/sidebarStore';
 import { IRoute, IRoutePathLink } from '~/models';
@@ -29,16 +28,14 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
     }
 
     calculateBounds() {
-        let bounds:L.LatLngBounds = new L.LatLngBounds([]);
+        const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
         this.props.routes.forEach((route) => {
             route.routePaths.forEach((routePath) => {
-                const geoJSON = L.geoJSON(toJS(routePath.geoJson));
-                if (!bounds) {
-                    bounds = geoJSON.getBounds();
-                } else {
-                    bounds.extend(geoJSON.getBounds());
-                }
+                routePath.routePathLinks!.forEach((routePathLink) => {
+                    routePathLink.positions
+                        .forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+                });
             });
         });
 
@@ -54,7 +51,6 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
         const currentRoutePathIds = this.props.routes.map(route =>
             route.routePaths.map(rPath => rPath.internalId).join(':')).join(':');
         const routePathsChanged = prevRoutePathIds !== currentRoutePathIds;
-
         if (routePathsChanged) {
             this.calculateBounds();
             this.setState({
