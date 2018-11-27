@@ -8,7 +8,6 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import TransitType from '~/enums/transitType';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import RouteService from '~/services/routeService';
@@ -57,22 +56,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
             }
             this.setState({ isLoading: false });
         }
-    }
-
-    public toggleTransitType = (type: TransitType) => {
-        this.props.networkStore!.toggleTransitType(type);
-    }
-
-    public toggleIsLinksVisible = () => {
-        this.props.networkStore!.toggleIsLinksVisible();
-    }
-
-    public toggleIsNodesVisible = () => {
-        this.props.networkStore!.toggleIsNodesVisible();
-    }
-
-    public toggleIsPointsVisible = () => {
-        this.props.networkStore!.toggleIsPointsVisible();
     }
 
     public renderRouteList() {

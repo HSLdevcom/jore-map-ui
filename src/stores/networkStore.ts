@@ -56,17 +56,17 @@ export class NetworkStore {
     }
 
     @action
-    public toggleIsLinksVisible() {
+    public toggleLinkVisibility() {
         this._isLinksVisible = !this._isLinksVisible;
     }
 
     @action
-    public toggleIsNodesVisible() {
+    public toggleNodeVisibility() {
         this._isNodesVisible = !this._isNodesVisible;
     }
 
     @action
-    public toggleIsPointsVisible() {
+    public togglePointVisibility() {
         this._isPointsVisible = !this._isPointsVisible;
     }
 
