@@ -71,11 +71,18 @@ export class NetworkStore {
     }
 
     @action
+    public setSelectedTransitTypes(types: TransitType[]) {
+        this._selectedTransitTypes = types;
+    }
+
+    // TODO rename as toggleSelectedTransitType?
+    @action
     public toggleTransitType(type: TransitType) {
         if (this._selectedTransitTypes.includes(type)) {
             this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
-            this._selectedTransitTypes.push(type);
+            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            this._selectedTransitTypes = this._selectedTransitTypes.concat([type]);
         }
     }
 }
