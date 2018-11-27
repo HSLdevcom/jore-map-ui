@@ -1,4 +1,5 @@
 @import '../../shared/styles/common.scss';
+@import '../../shared/styles/flexbox.scss';
 
 .mapLayerControlView {
     display: flex;
@@ -24,6 +25,31 @@
         border: 1px solid $darkGrey;
         z-index: 1;
         padding: 10px;
+
+        .networkToggleView {
+            border-bottom: 1px solid rgb(222, 222, 222);
+            text-align: left;
+            padding-bottom: 10px;
+
+            .checkboxContainer {
+                padding-top: 10px;
+                display: flex;
+            }
+        }
+
+        .inputTitle {
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: rgb(137, 137, 137);
+            letter-spacing: 0em;
+            padding-bottom: 3px;
+            display: block;
+        }
+
+        .mapLayerToggleView {
+            padding-top: 10px;
+            text-align: left;
+        }
     }
 }
 
