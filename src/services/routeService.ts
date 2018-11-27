@@ -141,6 +141,7 @@ query getLineDetails($routeId: String!) {
                             geojsonManual,
                             pysakkiBySoltunnus {
                                 pyssade,
+                                paitunnus,
                                 pysnimi,
                                 pysnimir
                             }
@@ -154,6 +155,7 @@ query getLineDetails($routeId: String!) {
                             geojsonManual,
                             pysakkiBySoltunnus {
                                 pyssade,
+                                paitunnus,
                                 pysnimi,
                                 pysnimir
                             }
