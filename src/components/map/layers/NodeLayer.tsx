@@ -28,33 +28,22 @@ const HASTUS_MIN_ZOOM = 16;
 @inject('popupStore', 'toolbarStore', 'sidebarStore', 'mapStore')
 @observer
 export default class NodeLayer extends Component<MarkerLayerProps> {
-    private getHastusLabel = (text: string) => {
-        return `<div class=${s.hastusId}>
-            ${text}
-        </div>`;
+    private getHastusLabel = (node: INode) => {
+        if (node.stop && node.stop.hastusId && this.props.mapStore!.zoom >= HASTUS_MIN_ZOOM) {
+            return `<div class=${s.hastusIdLabel}>
+                ${node.stop.hastusId}
+            </div>`;
+        }
+        return '';
     }
 
-    private getMarkerHtml = (markerClass: string, children: string[]) => {
-        return `<div class="${classnames(s.nodeBase, markerClass)}">
-                ${
-                    children
-                }
+    private getMarkerHtml = (node: INode) => {
+        return `<div class="${classnames(s.nodeBase, this.getMarkerClass(node))}">
+                ${ this.getHastusLabel(node) }
             </div>`;
     }
 
-    private getChildren = (node: INode) => {
-        const children = [];
-
-        if (node.stop && node.stop.hastusId && this.props.mapStore!.zoom >= HASTUS_MIN_ZOOM) {
-            children.push(
-                this.getHastusLabel(node.stop.hastusId),
-            );
-        }
-
-        return children;
-    }
-
-    private getIcon = (node: INode) => {
+    private getMarkerClass = (node: INode) => {
         const isSelected = this.isSelected(node);
 
         let type;
@@ -66,42 +55,31 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
             type = node.type;
         }
 
-        const children = this.getChildren(node);
-
-        let html;
         switch (type) {
         case NodeType.STOP: {
-            html = this.getMarkerHtml(isSelected ? s.stopMarkerHighlight : s.stopMarker, children);
-            break;
+            return isSelected ? s.stopMarkerHighlight : s.stopMarker;
         }
         case NodeType.CROSSROAD: {
-            html = this.getMarkerHtml(
-                isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker, children);
-            break;
+            return isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker;
         }
         case NodeType.MUNICIPALITY_BORDER: {
-            html = this.getMarkerHtml(
-                isSelected ? s.municipalityMarkerHighlight : s.municipalityMarker, children);
-            break;
+            return isSelected ? s.municipalityMarkerHighlight : s.municipalityMarker;
         }
         case NodeType.DISABLED: {
-            html = this.getMarkerHtml(
-                isSelected ? s.disabledMarkerHighlight : s.disabledMarker, children);
-            break;
+            return isSelected ? s.disabledMarkerHighlight : s.disabledMarker;
         }
         case NodeType.TIME_ALIGNMENT: {
-            html = this.getMarkerHtml(s.timeAlignmentMarker, children);
-            break;
+            return s.timeAlignmentMarker;
         }
         default: {
-            html = this.getMarkerHtml(
-                isSelected ? s.unknownMarkerHighlight : s.unknownMarker, children);
-            break;
+            return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;
         }
         }
+    }
 
+    private getIcon = (node: INode) => {
         const divIconOptions : L.DivIconOptions = {
-            html,
+            html: this.getMarkerHtml(node),
             className: s.node,
         };
 
@@ -112,7 +90,7 @@ export default class NodeLayer extends Component<MarkerLayerProps> {
         return this.props.mapStore!.selectedNodeId === node.id;
     }
 
-    private getNodeStopCircle(node: INode, latLng :L.LatLng) {
+    private getNodeStopCircle(node: INode, latLng: L.LatLng) {
         const radius = (node.stop && node.stop!.radius) ? node.stop!.radius : DEFAULT_RADIUS;
 
         return (
