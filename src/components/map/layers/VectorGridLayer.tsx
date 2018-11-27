@@ -33,7 +33,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
     }
 
     private areArraysEqual(array1: string[], array2: string[]) {
-        return _.isEqual(array1.sort(), array2.sort());
+        return _.isEqual(array1.slice().sort(), array2.slice().sort());
     }
 
     updateLeafletElement(fromProps: IVectorGridLayerProps, toProps: IVectorGridLayerProps) {
