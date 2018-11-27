@@ -8,7 +8,6 @@ import RoutePathLinkService from '~/services/routePathLinkService';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeType from '~/enums/nodeType';
-import TransitType from '~/enums/transitType';
 import NotificationType from '~/enums/notificationType';
 import VectorGridLayer from './VectorGridLayer';
 
@@ -106,7 +105,8 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 let fillColor;
 
                 /*
-                TODO: uncomment this after solmu has .lnkverkko property
+                TODO: should solmu have .lnkverkko property? Is it even possible?
+                If solmu gets .lnkverkko, uncomment this:
                 const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
                 const transitType = TransitTypeHelper
                 .convertTransitTypeCodeToTransitType(properties.lnkverkko);

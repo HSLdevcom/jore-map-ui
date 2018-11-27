@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import 'leaflet.vectorgrid';
+import _ from 'lodash';
 import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
 import TransitType from '~/enums/transitType';
 
@@ -31,12 +32,8 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         return gridLayer;
     }
 
-    private areArraysEqual(arr1: string[], arr2: string[]) {
-        const array1 = arr1.sort();
-        const array2 = arr2.sort();
-        return array1.length === array2.length && array1.slice().every((value, index) => {
-            return value === array2.slice()[index];
-        });
+    private areArraysEqual(array1: string[], array2: string[]) {
+        return _.isEqual(array1.sort(), array2.sort());
     }
 
     updateLeafletElement(fromProps: IVectorGridLayerProps, toProps: IVectorGridLayerProps) {
