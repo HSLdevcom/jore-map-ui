@@ -4,6 +4,7 @@ export default interface IRoutePath {
     internalId: string;
     routeId: string;
     lineId?: string;
+    routePathLinks: IRoutePathLink[] | null;
     routePathName: string;
     routePathNameSw: string;
     direction: string;
@@ -11,7 +12,6 @@ export default interface IRoutePath {
     startTime: Date;
     endTime: Date;
     lastModified: Date;
-    routePathLinks: IRoutePathLink[] | null;
     originFi: string;
     originSw: string;
     destinationFi: string;
