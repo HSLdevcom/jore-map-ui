@@ -1,7 +1,7 @@
-enum logActions {
+enum eventTypes {
     ADD= 'Lisäys',
     DELETE= 'Poisto',
     MOVE= 'Siirto',
 }
 
-export default logActions;
+export default eventTypes;

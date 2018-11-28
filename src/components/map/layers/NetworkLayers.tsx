@@ -156,7 +156,6 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
         const routePathLinks =
             await RoutePathLinkService.fetchLinksWithLinkStartNodeId(properties.soltunnus);
-
         if (routePathLinks.length === 0) {
             this.props.notificationStore!.addNotification({
                 message:

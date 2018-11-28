@@ -1,6 +1,6 @@
 import { action, computed, observable, observe, IObjectDidChange } from 'mobx';
-import ILogEntry from '~/models/ILogEntry';
-import logActions from '~/enums/logActions';
+import IEvent from '~/models/IEvent';
+import eventTypes from '~/enums/eventTypes';
 import entityNames from '~/enums/entityNames';
 import { IRoutePathLink } from '~/models';
 import RoutePathStore from './routePathStore';
@@ -9,31 +9,31 @@ const enum IObjectDidChangeUpdateTypes {
     ADDED = 'added',
 }
 
-export class GeometryLogStore {
-    @observable private _log: ILogEntry[];
+export class GeometryEventStore {
+    @observable private _events: IEvent[];
 
     constructor() {
-        this._log = [];
+        this._events = [];
 
         this.initRoutePathLinkObservable();
     }
 
-    @computed get log(): ILogEntry[] {
-        return this._log;
+    @computed get events(): IEvent[] {
+        return this._events;
     }
 
     @action
-    public pushToLog(
+    private pushToEvents(
         { action, entityName, objectId, oldObject, newObject }
       : {
-          action: logActions,
+          action: eventTypes,
           entityName: entityNames,
           objectId: string,
           oldObject?: object,
           newObject?: object,
       },
       ) {
-        this._log.push({
+        this._events.push({
             action,
             objectId,
             postObject: newObject,
@@ -47,8 +47,8 @@ export class GeometryLogStore {
         if (change.hasOwnProperty(IObjectDidChangeUpdateTypes.ADDED)) {
             change[IObjectDidChangeUpdateTypes.ADDED].slice()
                 .forEach((routePathLink: IRoutePathLink) => {
-                    this.pushToLog({
-                        action: logActions.ADD,
+                    this.pushToEvents({
+                        action: eventTypes.ADD,
                         entityName: entityNames.ROUTELINK,
                         newObject: routePathLink,
                         objectId: routePathLink.id,
@@ -82,6 +82,6 @@ export class GeometryLogStore {
     }
 }
 
-const observableGeometryLogStore = new GeometryLogStore();
+const observableGeometryEventStore = new GeometryEventStore();
 
-export default observableGeometryLogStore;
+export default observableGeometryEventStore;

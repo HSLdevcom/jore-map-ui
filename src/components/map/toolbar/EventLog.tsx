@@ -3,10 +3,10 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { FaTimes, FaExclamation, FaUndo } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
-import ILogEntry from '~/models/ILogEntry';
-import logActions from '~/enums/logActions';
+import ILogEntry from '~/models/IEvent';
+import logActions from '~/enums/eventTypes';
 import entityNames from '~/enums/entityNames';
-import GeometryLogStore from '../../../stores/geometryLogStore';
+import GeometryEventStore from '../../../stores/geometryEventStore';
 import * as s from './eventLog.scss';
 
 interface IEventLogState {
@@ -30,18 +30,20 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         this.scrollRef = React.createRef();
     }
 
-    private getLogRow = (action: logActions | null, objectId: string, entity: entityNames) => {
+    private renderLogRow = (action: logActions | null, objectId: string, entity: entityNames) => {
         let logActionClass = '';
         switch (action) {
         case logActions.ADD:
             logActionClass = s.logActionAdd;
             break;
-        case logActions.DELETE:
-            logActionClass = s.logActionDelete;
-            break;
-        case logActions.MOVE:
-            logActionClass = s.logActionMove;
-            break;
+        // Uncomment when we have use case for edit and deletion
+        //
+        // case logActions.DELETE:
+        //     logActionClass = s.logActionDelete;
+        //     break;
+        // case logActions.MOVE:
+        //     logActionClass = s.logActionMove;
+        //     break;
         }
 
         return (
@@ -61,27 +63,31 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
 
     private getSummaryAction = (logs: ILogEntry[]) => {
         let action = null;
+        // Uncomment when we have use cases for logging edits and deletion
+        //
+        // if (
+        //     logs.some(ev => ev.action === logActions.ADD) &&
+        //     logs.some(ev => ev.action === logActions.DELETE)
+        // ) {
+        //     action = null;
+        // } else
         if (
-            logs.some(ev => ev.action === logActions.ADD) &&
-            logs.some(ev => ev.action === logActions.DELETE)
-        ) {
-            action = null;
-        } else if (
             logs.some(ev => ev.action === logActions.ADD)
         ) {
             action = logActions.ADD;
-        } else if (
-            logs.some(ev => ev.action === logActions.DELETE)
-        ) {
-            action = logActions.DELETE;
-        } else {
-            action = logActions.MOVE;
         }
+        // else if (
+        //     logs.some(ev => ev.action === logActions.DELETE)
+        // ) {
+        //     action = logActions.DELETE;
+        // } else {
+        //     action = logActions.MOVE;
+        // }
         return action;
     }
 
-    private getLogs = () => {
-        const groupedById = GeometryLogStore!.log.reduce(
+    private renderEventList = () => {
+        const groupedById = GeometryEventStore!.events.reduce(
             (rv, x) => {
                 (rv[x.objectId] = rv[x.objectId] || []).push(x);
                 return rv;
@@ -91,7 +97,7 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         const res : JSX.Element[] = [];
         Object.entries(groupedById).forEach(([id, groupedLogs]: [string, ILogEntry[]]) => {
             const first = groupedLogs[0];
-            res.push(this.getLogRow(
+            res.push(this.renderLogRow(
                 this.getSummaryAction(groupedLogs),
                 id,
                 first.entity,
@@ -136,7 +142,7 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
             </div>
             <div className={s.logArea}>
                 {
-                    this.getLogs()
+                    this.renderEventList()
                 }
                 <div ref={this.scrollRef} />
             </div>

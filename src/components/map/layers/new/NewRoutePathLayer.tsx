@@ -7,16 +7,14 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import NodeType from '~/enums/nodeType';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { GeometryLogStore } from '~/stores/geometryLogStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import * as s from './newRoutePathLayer.scss';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
-    geometryLogStore?: GeometryLogStore;
 }
 
-@inject('routePathStore', 'geometryLogStore')
+@inject('routePathStore')
 @observer
 export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathLinks(
@@ -40,10 +38,10 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderNode(
-        node: INode,
-        routePathLink: IRoutePathLink,
-        { isNeighbor } : { isNeighbor: boolean },
-        key: number) {
+            node: INode,
+            routePathLink: IRoutePathLink,
+            { isNeighbor } : { isNeighbor: boolean },
+            key: number) {
         const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
         return (
             <Marker

@@ -1,9 +1,9 @@
-import logActions from '~/enums/logActions';
+import eventTypes from '~/enums/eventTypes';
 import entityNames from '~/enums/entityNames';
 
-export default interface ILogEntry {
+export default interface IEvent {
     entity: entityNames;
-    action: logActions;
+    action: eventTypes;
     objectId: string;
     preObject?: object;
     postObject?: object;
