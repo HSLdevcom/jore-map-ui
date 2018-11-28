@@ -1,6 +1,6 @@
 import { IRoutePathLink } from '~/models';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
-import RandomNumberGenerator from '~/util/randomNumberGenerator';
+import NumberIterator from '~/util/NumberIterator';
 import IExternalLink from '~/models/externals/IExternalLink';
 import { NEW_OBJECT_TAG } from '~/constants';
 import NodeFactory from './nodeFactory';
@@ -12,7 +12,7 @@ class RoutePathLinkFactory {
     }
 
     private static getTemporaryRoutePathLinkId() {
-        return `${NEW_OBJECT_TAG}-${RandomNumberGenerator.getWithLength(7)}`;
+        return `${NEW_OBJECT_TAG}-${NumberIterator.getNumber()}`;
     }
 
     public static createRoutePathLink =

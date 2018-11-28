@@ -45,12 +45,12 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         }
 
         return (
-            <div className={s.logRow}>
+            <div className={s.logRow} key={objectId}>
                 <div className={classnames(s.logAction, logActionClass)}>
                     {action}
                 </div>
                 <div className={s.logActionContent}>
-                    {`${entity} (${objectId})`}
+                    {entity}
                 </div>
                 <div className={s.logActionButtons}>
                     <FaUndo />
