@@ -7,7 +7,7 @@ function getLineQuery() {
         gql`query getLineByLintunnus ($lineId: String!) {
             linjaByLintunnus(lintunnus:$lineId) {
                 ${lineQueryFields}
-                reittisByLintunnus(first: 1, orderBy: REIVIIMPVM_DESC) {
+                reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
                     nodes {
                         reinimi
                         reiviimpvm
@@ -45,17 +45,7 @@ function getRouteQuery() {
                 reitinsuuntasByReitunnus{
                     nodes {
                         ${routePathQueryFields}
-                        reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-                            nodes {
-                                ${routePathLinkQueryFields}
-                                solmuByLnkalkusolmu {
-                                    ${startNodeQueryFields}
-                                }
-                                solmuByLnkloppusolmu {
-                                    ${endNodeQueryFields}
-                                }
-                            }
-                        }
+                        ${routePathLinkQuery}
                     }
                 }
             }
@@ -71,17 +61,7 @@ function getRoutePathQuery() {
                 reittiByReitunnus {
                     lintunnus
                 }
-                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-                    nodes {
-                        ${routePathLinkQueryFields}
-                        solmuByLnkalkusolmu {
-                            ${startNodeQueryFields}
-                        }
-                        solmuByLnkloppusolmu {
-                            ${endNodeQueryFields}
-                        }
-                    }
-                }
+                ${routePathLinkQuery}
             }
         }`
     );
@@ -94,7 +74,6 @@ function getLinksQuery() {
                 linkkisByLnkalkusolmu {
                     nodes {
                         ${routeLinkQueryFields}
-                        geojson
                         solmuByLnkalkusolmu {
                             ${startNodeQueryFields}
                         }
@@ -181,6 +160,19 @@ const routePathLinkQueryFields = `
         geojson
     }
 `;
+
+const routePathLinkQuery = `
+reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
+    nodes {
+        ${routePathLinkQueryFields}
+        solmuByLnkalkusolmu {
+            ${startNodeQueryFields}
+        }
+        solmuByLnkloppusolmu {
+            ${endNodeQueryFields}
+        }
+    }
+}`;
 
 const routeLinkQueryFields = `
     geojson
