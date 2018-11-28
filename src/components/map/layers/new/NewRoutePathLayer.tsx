@@ -9,8 +9,6 @@ import NodeType from '~/enums/nodeType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { GeometryLogStore } from '~/stores/geometryLogStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
-import logActions from '~/enums/logActions';
-import entityNames from '~/enums/entityNames';
 import * as s from './newRoutePathLayer.scss';
 
 interface IRoutePathLayerProps {
@@ -106,13 +104,6 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         const newRoutePathLinks =
             await RoutePathLinkService.fetchLinksWithLinkStartNodeId(routePathLink.endNode.id);
         this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
-        this.props.geometryLogStore!.pushToLog({
-            action: logActions.ADD,
-            entityName: entityNames.ROUTELINK,
-            newObject: routePathLink,
-            objectId: routePathLink.id,
-        });
-
         this.props.routePathStore!.addLink(routePathLink);
     }
 

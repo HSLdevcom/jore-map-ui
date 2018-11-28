@@ -1,7 +1,7 @@
 enum logActions {
     ADD= 'Lisäys',
-    DELETE= 'Poistaus',
-    MOVE= 'Siirräys',
+    DELETE= 'Poisto',
+    MOVE= 'Siirto',
 }
 
 export default logActions;
