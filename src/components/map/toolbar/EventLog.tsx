@@ -31,30 +31,30 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
     }
 
     private renderLogRow = (action: logActions | null, objectId: string, entity: entityNames) => {
-        let logActionClass = '';
+        let eventTypeClass = '';
         switch (action) {
         case logActions.ADD:
-            logActionClass = s.logActionAdd;
+            eventTypeClass = s.eventTypeAdd;
             break;
         // Uncomment when we have use case for edit and deletion
         //
         // case logActions.DELETE:
-        //     logActionClass = s.logActionDelete;
+        //     eventTypeClass = s.eventTypeDelete;
         //     break;
         // case logActions.MOVE:
-        //     logActionClass = s.logActionMove;
+        //     eventTypeClass = s.eventTypeMove;
         //     break;
         }
 
         return (
-            <div className={s.logRow} key={objectId}>
-                <div className={classnames(s.logAction, logActionClass)}>
+            <div className={s.event} key={objectId}>
+                <div className={classnames(s.eventType, eventTypeClass)}>
                     {action}
                 </div>
-                <div className={s.logActionContent}>
+                <div className={s.eventContent}>
                     {entity}
                 </div>
-                <div className={s.logActionButtons}>
+                <div className={s.eventButtons}>
                     <FaUndo />
                 </div>
             </div>
@@ -140,7 +140,7 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
                     <FaTimes className={s.close}/>
                 </div>
             </div>
-            <div className={s.logArea}>
+            <div className={s.eventLogArea}>
                 {
                     this.renderEventList()
                 }
