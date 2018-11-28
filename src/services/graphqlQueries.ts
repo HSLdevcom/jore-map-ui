@@ -118,11 +118,17 @@ const routeQueryFields = `
 const routePathQueryFields = `
     suusuunta
     suunimi
+    suunimir
+    suunimilyh
+    suunimilyhr
     suuvoimast
     suuviimpvm
     suuvoimviimpvm
     suulahpaik
+    suulahpaikr
     suupaapaik
+    suukuka
+    suupaapaikr
 `;
 
 const nodeQueryFields = `
