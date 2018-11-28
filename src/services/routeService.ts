@@ -123,7 +123,6 @@ query getLineDetails($routeId: String!) {
                 suuvoimviimpvm
                 suulahpaik
                 suupaapaik
-                geojson
                 reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
                     nodes {
                         relid
@@ -142,6 +141,7 @@ query getLineDetails($routeId: String!) {
                             geojsonManual,
                             pysakkiBySoltunnus {
                                 pyssade,
+                                paitunnus,
                                 pysnimi,
                                 pysnimir
                             }
@@ -155,6 +155,7 @@ query getLineDetails($routeId: String!) {
                             geojsonManual,
                             pysakkiBySoltunnus {
                                 pyssade,
+                                paitunnus,
                                 pysnimi,
                                 pysnimir
                             }

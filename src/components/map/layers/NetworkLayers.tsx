@@ -41,15 +41,18 @@ function getGeoServerUrl(layerName: string) {
 @inject('networkStore', 'routePathStore', 'notificationStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
-
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
-            linkki: (properties: any, zoom: any) => {
-                const type = TransitTypeHelper
+            linkki: (properties: any, zoom: number) => {
+                const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+                const transitType = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(properties.lnkverkko);
+                const color = TransitTypeColorHelper.getColor(transitType);
 
-                const color = TransitTypeColorHelper.getColor(type);
+                if (!selectedTransitTypes.includes(transitType)) {
+                    return this.getEmptyStyle();
+                }
 
                 return {
                     color,
@@ -65,10 +68,14 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         return {
             // Layer name 'piste' is directly mirrored from Jore through geoserver
             piste: (properties: any, zoom: any) => {
-                const type = TransitTypeHelper
+                const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+                const transitType = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(properties.lnkverkko);
+                const color = TransitTypeColorHelper.getColor(transitType);
 
-                const color = TransitTypeColorHelper.getColor(type);
+                if (!selectedTransitTypes.includes(transitType)) {
+                    return this.getEmptyStyle();
+                }
 
                 return {
                     color,
@@ -97,6 +104,16 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 let color;
                 let fillColor;
 
+                /*
+                TODO: should solmu have .lnkverkko property? Is it even possible?
+                If solmu gets .lnkverkko, uncomment this:
+                const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+                const transitType = TransitTypeHelper
+                .convertTransitTypeCodeToTransitType(properties.lnkverkko);
+                if (!selectedTransitTypes.includes(transitType)) {
+                    return this.getEmptyStyle();
+                }
+                */
                 switch (properties.soltyyppi) {
                 case NodeType.STOP:
                     color = NodeColors.STOP_COLOR;
@@ -110,6 +127,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     color = NodeColors.MUNICIPALITY_BORDER_COLOR;
                     break;
                 }
+
                 return {
                     color,
                     radius,
@@ -119,6 +137,16 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     fill: true,
                 };
             },
+        };
+    }
+
+    private getEmptyStyle() {
+        return {
+            fillOpacity: 0,
+            stroke: false,
+            fill: false,
+            opacity: 0,
+            weight: 0,
         };
     }
 
@@ -150,10 +178,12 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     render() {
+        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         return (
             <>
                 { this.props.networkStore!.isLinksVisible &&
                     <VectorGridLayer
+                        selectedTransitTypes={selectedTransitTypes}
                         key={GeoserverLayer.Link}
                         url={getGeoServerUrl(GeoserverLayer.Link)}
                         vectorTileLayerStyles={this.getLinkStyle()}
@@ -161,6 +191,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 }
                 { this.props.networkStore!.isPointsVisible &&
                     <VectorGridLayer
+                        selectedTransitTypes={selectedTransitTypes}
                         key={GeoserverLayer.Point}
                         url={getGeoServerUrl(GeoserverLayer.Point)}
                         vectorTileLayerStyles={this.getPointStyle()}
@@ -168,6 +199,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 }
                 { (this.props.networkStore!.isNodesVisible) &&
                     <VectorGridLayer
+                        selectedTransitTypes={selectedTransitTypes}
                         onClick={this.isWaitingForNewRoutePathFirstNodeClick() ?
                             this.addNodeFromInitialClickEvent : null}
                         key={GeoserverLayer.Node}
