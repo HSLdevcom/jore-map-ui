@@ -7,6 +7,7 @@ import NotificationType from '~/enums/notificationType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import Graphql from './graphql';
 
+// TODO: create two services, RoutePathLinkService and LinkService?
 export default class RoutePathLinkService {
     public static async fetchLinksWithLinkStartNodeId(nodeId: string)
         : Promise<IRoutePathLink[]> {
