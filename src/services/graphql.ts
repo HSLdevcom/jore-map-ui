@@ -180,7 +180,7 @@ const routePathLinkQueryFields = `
     linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
         geojson
     }
-`; // TODO: linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu should be removed before merge to master
+`;
 
 const routeLinkQueryFields = `
     geojson
