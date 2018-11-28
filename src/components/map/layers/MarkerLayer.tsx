@@ -33,13 +33,13 @@ export default class MarkerLayer extends Component<MarkerLayerProps> {
                 if (!routePath.visible) return;
 
                 const icon = this.getStartPointIcon(routePath.color!);
-                const coordinates = routePath.geoJson.coordinates[0];
+                const coordinates = routePath.routePathLinks![0].startNode.coordinates;
                 return (
                     <Marker
                         zIndexOffset={VERY_HIGH_Z_INDEX}
                         icon={icon}
                         key={index}
-                        position={[coordinates[1], coordinates[0]]}
+                        position={[coordinates.lat, coordinates.lon]}
                     />
                 );
             });

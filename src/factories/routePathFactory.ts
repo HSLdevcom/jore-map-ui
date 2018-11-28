@@ -22,16 +22,9 @@ class RoutePathFactory {
                 return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
             });
 
-        const coordinates = externalRoutePath.geojson ?
-            JSON.parse(externalRoutePath.geojson).coordinates : null;
-        const positions = coordinates
-            ? coordinates.map((coor: [number, number]) => [coor[1], coor[0]]) : null;
-
-        const routePath : IRoutePath = {
+        return {
             routeId,
-            positions,
             routePathLinks,
-            geoJson: externalRoutePath.geojson ? JSON.parse(externalRoutePath.geojson) : null,
             lineId: externalRoutePath.lintunnus,
             internalId: internalRoutePathId,
             routePathName: externalRoutePath.suunimi,
@@ -49,20 +42,16 @@ class RoutePathFactory {
             routePathShortName: externalRoutePath.suunimilyh,
             routePathShortNameSw: externalRoutePath.suunimilyhr,
         };
-
-        return routePath;
     }
 
     public static createNewRoutePath(lineId: string, routeId: string): IRoutePath {
-        const routePath: IRoutePath = {
+        return {
             lineId,
             routeId,
             internalId: '',
             routePathName: 'Uusi reitinsuunta',
             routePathNameSw: 'Ny ruttriktning',
             direction: '1',
-            positions: [[0, 0]], // TODO: remove
-            geoJson: null, // TODO: remove
             visible: true,
             startTime: new Date,
             endTime: new Date,
@@ -76,7 +65,6 @@ class RoutePathFactory {
             routePathShortNameSw: '',
             modifiedBy: '',
         };
-        return routePath;
     }
 }
 

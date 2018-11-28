@@ -144,7 +144,6 @@ const routePathQueryFields = `
     suuvoimviimpvm
     suulahpaik
     suupaapaik
-    geojson
 `;
 
 const nodeQueryFields = `
