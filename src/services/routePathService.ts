@@ -9,7 +9,7 @@ import NotificationType from '~/enums/notificationType';
 import ApiClient from '~/util/ApiClient';
 import entityNames from '~/enums/entityNames';
 import RoutePathFactory from '../factories/routePathFactory';
-import Graphql from './graphql';
+import GraphqlQueries from './graphqlQueries';
 
 export default class RoutePathService {
     public static async fetchRoutePath
@@ -17,7 +17,7 @@ export default class RoutePathService {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 {
-                    query: Graphql.getRoutePathQuery(),
+                    query: GraphqlQueries.getRoutePathQuery(),
                     variables: {
                         routeId,
                         direction,

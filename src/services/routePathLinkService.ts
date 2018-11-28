@@ -5,7 +5,7 @@ import IExternalLink from '~/models/externals/IExternalLink';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
-import Graphql from './graphql';
+import GraphqlQueries from './graphqlQueries';
 
 // TODO: create two services, RoutePathLinkService and LinkService?
 export default class RoutePathLinkService {
@@ -13,7 +13,7 @@ export default class RoutePathLinkService {
         : Promise<IRoutePathLink[]> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: Graphql.getLinksQuery(), variables: { nodeId } },
+                { query: GraphqlQueries.getLinksQuery(), variables: { nodeId } },
             );
             return queryResult.data.solmuBySoltunnus.
                 linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>

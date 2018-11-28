@@ -7,7 +7,7 @@ import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import LineService from './lineService';
-import Graphql from './graphql';
+import GraphqlQueries from './graphqlQueries';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];
@@ -34,7 +34,7 @@ export default class RouteService {
     private static async runFetchRouteQuery(routeId: string): Promise<IRoute | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: Graphql.getRouteQuery(), variables: { routeId } },
+                { query: GraphqlQueries.getRouteQuery(), variables: { routeId } },
             );
             const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
             if (line !== null) {

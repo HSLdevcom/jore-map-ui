@@ -5,13 +5,13 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import NodeFactory from '~/factories/nodeFactory';
-import Graphql from './graphql';
+import GraphqlQueries from './graphqlQueries';
 
 export default class NodeService {
     public static async fetchNode(nodeId: string): Promise<INode | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: Graphql.getNodeQuery(), variables: { nodeId } },
+                { query: GraphqlQueries.getNodeQuery(), variables: { nodeId } },
             );
 
             const externalNode = this.getExternalNode(queryResult.data.node);

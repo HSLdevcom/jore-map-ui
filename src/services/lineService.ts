@@ -4,13 +4,13 @@ import LineFactory from '~/factories/lineFactory';
 import NotificationType from '~/enums/notificationType';
 import NotificationStore from '~/stores/notificationStore';
 import { ILine } from '~/models';
-import Graphql from './graphql';
+import GraphqlQueries from './graphqlQueries';
 
 export default class LineService {
     public static async fetchAllLines(): Promise<ILine[] | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: Graphql.getAllLinesQuery() },
+                { query: GraphqlQueries.getAllLinesQuery() },
             );
 
             return queryResult.data.allLinjas.nodes.map(((linja: any) => {
@@ -31,7 +31,7 @@ export default class LineService {
     public static async fetchLine(lintunnus: string): Promise<ILine | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: Graphql.getLineQuery(), variables: { lineId: lintunnus } },
+                { query: GraphqlQueries.getLineQuery(), variables: { lineId: lintunnus } },
             );
 
             const externalLine = this.getExternalLine(queryResult.data.linjaByLintunnus);
