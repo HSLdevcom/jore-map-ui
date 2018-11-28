@@ -1,4 +1,3 @@
-import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import moment from 'moment';
 import apolloClient from '~/util/ApolloClient';
@@ -10,6 +9,7 @@ import NotificationType from '~/enums/notificationType';
 import ApiClient from '~/util/ApiClient';
 import entityNames from '~/enums/entityNames';
 import RoutePathFactory from '../factories/routePathFactory';
+import Graphql from './graphql';
 
 export default class RoutePathService {
     public static async fetchRoutePath
@@ -17,7 +17,7 @@ export default class RoutePathService {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 {
-                    query: getRoutePathQuery,
+                    query: Graphql.getRoutePathQuery(),
                     variables: {
                         routeId,
                         direction,
@@ -90,69 +90,3 @@ export default class RoutePathService {
         return await apiClient.updateObject(entityNames.ROUTEPATH, routePath);
     }
 }
-
-// tslint:disable:max-line-length
-const getRoutePathQuery = gql`
-query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
-    routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
-        reitunnus
-        suusuunta
-        suunimi
-        suunimir
-        suunimilyh
-        suunimilyhr
-        suuvoimast
-        suuviimpvm
-        suuvoimviimpvm
-        suulahpaik
-        suulahpaikr
-        suupaapaik
-        suukuka
-        suupaapaikr
-        reittiByReitunnus {
-            lintunnus
-        }
-        reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-            nodes {
-                relid
-                lnkalkusolmu
-                lnkloppusolmu
-                relpysakki
-                reljarjnro
-                lnkverkko
-                ajantaspys
-                solmuByLnkalkusolmu {
-                    solx,
-                    soly,
-                    soltunnus,
-                    soltyyppi,
-                    geojson,
-                    geojsonManual,
-                    pysakkiBySoltunnus {
-                        pyssade,
-                        pysnimi,
-                        pysnimir
-                    }
-                }
-                solmuByLnkloppusolmu {
-                    solx,
-                    soly,
-                    soltunnus,
-                    soltyyppi,
-                    geojson,
-                    geojsonManual,
-                    pysakkiBySoltunnus {
-                        pyssade,
-                        pysnimi,
-                        pysnimir
-                    }
-                }
-                linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
-                    geojson
-                }
-            }
-        }
-    }
-}
-`;
-// tslint:enable:max-line-length
