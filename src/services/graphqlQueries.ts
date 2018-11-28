@@ -172,6 +172,9 @@ const routePathLinkQueryFields = `
     reljarjnro
     lnkverkko
     ajantaspys
+    suusuunta
+    suuvoimast
+    reitunnus
     linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
         geojson
     }

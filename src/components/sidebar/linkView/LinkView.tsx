@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
+import moment from 'moment';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { IRoutePathLink } from '~/models';
@@ -85,6 +86,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             );
         }
 
+        const startNode = this.state.routePathLink!.startNode;
+        const endNode = this.state.routePathLink!.endNode;
+
         return (
         <div className={classnames(s.linkView, s.form)}>
             <ViewHeader
@@ -98,21 +102,24 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='REITTITUNNUS'
-                            placeholder='1016'
+                            placeholder={this.state.routePathLink!.routeId}
                         />
                         <InputContainer
                             label='SUUNTA'
-                            placeholder='Suunta 1'
+                            placeholder={`Suunta ${this.state.routePathLink!.routePathDirection}`}
                         />
                     </div>
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='VOIM. AST'
-                            placeholder='01.09.2017'
+                            placeholder={
+                                moment(
+                                    this.state.routePathLink!.routePathStartDate!,
+                                ).format('DD.MM.YYYY')}
                         />
                         <InputContainer
                             label='VIIM. VOIM'
-                            placeholder='31.12.2050'
+                            placeholder='-'
                         />
                     </div>
                     <InputContainer
@@ -146,7 +153,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
                             label='ALKU'
-                            placeholder={this.state.routePathLink!.startNode.id}
+                            placeholder={startNode ? startNode.id : '-'}
                         />
                         <Dropdown
                             onChange={this.onChange}
@@ -155,7 +162,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <InputContainer
                             label=''
-                            placeholder='Rautatientori'
+                            placeholder={
+                                startNode && startNode.stop ? startNode.stop!.nameFi : '-'}
                         />
                     </div>
                 </div>
@@ -163,7 +171,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
                             label='LOPPU'
-                            placeholder={this.state.routePathLink!.endNode.id}
+                            placeholder={endNode ? endNode.id : '-'}
                         />
                         <Dropdown
                             onChange={this.onChange}
@@ -172,7 +180,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <InputContainer
                             label=''
-                            placeholder='Rautatientori'
+                            placeholder={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
                         />
                     </div>
                 </div>
