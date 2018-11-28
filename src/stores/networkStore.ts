@@ -56,26 +56,33 @@ export class NetworkStore {
     }
 
     @action
-    public toggleIsLinksVisible() {
+    public toggleLinkVisibility() {
         this._isLinksVisible = !this._isLinksVisible;
     }
 
     @action
-    public toggleIsNodesVisible() {
+    public toggleNodeVisibility() {
         this._isNodesVisible = !this._isNodesVisible;
     }
 
     @action
-    public toggleIsPointsVisible() {
+    public togglePointVisibility() {
         this._isPointsVisible = !this._isPointsVisible;
     }
 
+    @action
+    public setSelectedTransitTypes(types: TransitType[]) {
+        this._selectedTransitTypes = types;
+    }
+
+    // TODO rename as toggleSelectedTransitType?
     @action
     public toggleTransitType(type: TransitType) {
         if (this._selectedTransitTypes.includes(type)) {
             this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
-            this._selectedTransitTypes.push(type);
+            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            this._selectedTransitTypes = this._selectedTransitTypes.concat([type]);
         }
     }
 }

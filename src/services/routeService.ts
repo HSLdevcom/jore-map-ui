@@ -1,4 +1,3 @@
-import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import RouteFactory from '~/factories/routeFactory';
@@ -8,6 +7,7 @@ import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import LineService from './lineService';
+import GraphqlQueries from './graphqlQueries';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];
@@ -34,7 +34,7 @@ export default class RouteService {
     private static async runFetchRouteQuery(routeId: string): Promise<IRoute | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getRouteQuery, variables: { routeId } },
+                { query: GraphqlQueries.getRouteQuery(), variables: { routeId } },
             );
             const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
             if (line !== null) {
@@ -102,70 +102,3 @@ export default class RouteService {
         return route;
     }
 }
-
-const getRouteQuery = gql`
-query getLineDetails($routeId: String!) {
-    route: reittiByReitunnus(reitunnus: $routeId) {
-        reitunnus
-        reinimi
-        reinimilyh
-        reinimir
-        reinimilyhr
-        lintunnus
-        reikuka
-        reiviimpvm
-        reitinsuuntasByReitunnus{
-            nodes {
-                suusuunta
-                suunimi
-                suuvoimast
-                suuviimpvm
-                suuvoimviimpvm
-                suulahpaik
-                suupaapaik
-                geojson
-                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-                    nodes {
-                        relid
-                        lnkalkusolmu
-                        lnkloppusolmu
-                        relpysakki
-                        reljarjnro
-                        lnkverkko
-                        ajantaspys
-                        solmuByLnkalkusolmu {
-                            solx,
-                            soly,
-                            soltunnus,
-                            soltyyppi,
-                            geojson,
-                            geojsonManual,
-                            pysakkiBySoltunnus {
-                                pyssade,
-                                pysnimi,
-                                pysnimir
-                            }
-                        }
-                        solmuByLnkloppusolmu {
-                            solx,
-                            soly,
-                            soltunnus,
-                            soltyyppi,
-                            geojson,
-                            geojsonManual,
-                            pysakkiBySoltunnus {
-                                pyssade,
-                                pysnimi,
-                                pysnimir
-                            }
-                        }
-                        linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
-                            geojson
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-`;

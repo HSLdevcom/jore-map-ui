@@ -1,4 +1,5 @@
 @import '../../shared/styles/common.scss';
+@import '../../shared/styles/flexbox.scss';
 
 .mapLayerControlView {
     display: flex;
@@ -13,17 +14,44 @@
         cursor: pointer;
         padding: 10px;
         background-color: white;
-        border: 1px solid $darkGrey;
-        color: $darkGrey;
+        border-radius: 3px;
+        box-shadow: 0 0 4px #666666;
+        color: #007ac9;
     }
 
-    .mapLayersContainer {
+    .mapLayersContainer {
         display: none;
         flex-direction: column;
         background-color: white;
-        border: 1px solid $darkGrey;
+        border-radius: 3px;
+        box-shadow: 0 0 4px #666666;
         z-index: 1;
-        padding: 10px;
+        padding: 20px;
+
+        .networkToggleView {
+            border-bottom: 1px solid rgb(222, 222, 222);
+            text-align: left;
+            padding-bottom: 10px;
+
+            .checkboxContainer {
+                padding-top: 10px;
+                display: flex;
+            }
+        }
+
+        .inputTitle {
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: rgb(137, 137, 137);
+            letter-spacing: 0em;
+            padding-bottom: 3px;
+            display: block;
+        }
+
+        .mapLayerToggleView {
+            padding-top: 10px;
+            text-align: left;
+        }
     }
 }
 
@@ -31,6 +59,6 @@
     display: none;
 }
 
-.mapLayerControlView:hover .mapLayersContainer  {
+.mapLayerControlView:hover .mapLayersContainer {
     display: flex;
 }

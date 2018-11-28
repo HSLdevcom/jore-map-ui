@@ -8,6 +8,7 @@ export default class StopFactory {
             nameFi: node.pysnimi,
             nameSe: node.pysnimir,
             radius: node.pyssade,
+            hastusId: node.paitunnus,
         };
     }
 }

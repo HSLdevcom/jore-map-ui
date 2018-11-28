@@ -8,11 +8,9 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import TransitType from '~/enums/transitType';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import RouteService from '~/services/routeService';
-import { Checkbox, TransitToggleButtonBar } from '../../controls';
 import RouteShow from './RouteShow';
 import Loader from '../../shared/loader/Loader';
 import * as s from './routesList.scss';
@@ -60,22 +58,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         }
     }
 
-    public toggleTransitType = (type: TransitType) => {
-        this.props.networkStore!.toggleTransitType(type);
-    }
-
-    public toggleIsLinksVisible = () => {
-        this.props.networkStore!.toggleIsLinksVisible();
-    }
-
-    public toggleIsNodesVisible = () => {
-        this.props.networkStore!.toggleIsNodesVisible();
-    }
-
-    public toggleIsPointsVisible = () => {
-        this.props.networkStore!.toggleIsPointsVisible();
-    }
-
     public renderRouteList() {
         const routes = this.props.routeStore!.routes;
 
@@ -121,34 +103,6 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
                     {
                         this.renderRouteList()
                     }
-                </div>
-                <div className={s.network}>
-                    <div className={s.inputTitle}>VERKKO</div>
-                    <TransitToggleButtonBar
-                        toggleSelectedTransitType={this.toggleTransitType}
-                        selectedTransitTypes={this.props.networkStore!.selectedTransitTypes}
-                    />
-                    <div className={s.checkboxContainer}>
-                        <Checkbox
-                            onClick={this.toggleIsLinksVisible}
-                            checked={this.props.networkStore!.isLinksVisible}
-                            text={'Näytä alueen linkit'}
-                        />
-                    </div>
-                    <div className={s.checkboxContainer}>
-                        <Checkbox
-                            onClick={this.toggleIsPointsVisible}
-                            checked={this.props.networkStore!.isPointsVisible}
-                            text={'Näytä linkkien pisteet'}
-                        />
-                    </div>
-                    <div className={s.checkboxContainer}>
-                        <Checkbox
-                            onClick={this.toggleIsNodesVisible}
-                            checked={this.props.networkStore!.isNodesVisible}
-                            text={'Näytä alueen solmut'}
-                        />
-                    </div>
                 </div>
             </div>
         );

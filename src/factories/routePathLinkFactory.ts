@@ -18,7 +18,7 @@ class RoutePathLinkFactory {
             startNode,
             endNode,
             positions: RoutePathLinkFactory.getPositions(
-                externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson),
+                externalRoutePathLink.link.geojson),
             id: externalRoutePathLink.relid,
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeType: externalRoutePathLink.relpysakki,

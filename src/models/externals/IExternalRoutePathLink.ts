@@ -3,7 +3,7 @@ import IExternalNode from './IExternalNode';
 import IExternalLink from './IExternalLink';
 
 export default interface IExternalRoutePathLink {
-    linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu: IExternalLink;
+    link: IExternalLink;
     startNode: IExternalNode;
     endNode: IExternalNode;
     ajantaspys: string;

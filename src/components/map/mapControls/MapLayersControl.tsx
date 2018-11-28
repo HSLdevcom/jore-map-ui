@@ -1,14 +1,17 @@
-import React from 'react';
+import * as React from 'react';
 import { observer } from 'mobx-react';
 import { IoMdMap } from 'react-icons/io';
+import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
+import TransitType from '~/enums/transitType';
+import NetworkStore from '~/stores/networkStore';
 import { RadioButton } from '../../controls';
 import * as s from './mapLayersControl.scss';
 
-interface INodeWindowProps {
-}
-
 interface IMapLayersControlState {
     selectedOption: option;
+}
+
+interface IMapLayersControlProps {
 }
 
 enum option {
@@ -19,7 +22,7 @@ enum option {
 
 @observer
 export default class MapLayersControl extends React.Component
-<INodeWindowProps, IMapLayersControlState> {
+<IMapLayersControlProps, IMapLayersControlState> {
     constructor (props: any) {
         super(props);
         this.state = {
@@ -33,28 +36,76 @@ export default class MapLayersControl extends React.Component
         });
     }
 
+    public toggleTransitType = (type: TransitType) => {
+        NetworkStore.toggleTransitType(type);
+    }
+
+    public toggleLinkVisibility = () => {
+        NetworkStore.toggleLinkVisibility();
+    }
+
+    public toggleNodeVisibility = () => {
+        NetworkStore.toggleNodeVisibility();
+    }
+
+    public togglePointVisibility = () => {
+        NetworkStore.togglePointVisibility();
+    }
+
     render() {
         return (
             <div className={s.mapLayerControlView}>
                 <div className={s.mapLayerControlIcon}>
                     <IoMdMap />
                 </div>
+
                 <div className={s.mapLayersContainer}>
-                    <RadioButton
-                        onClick={this.toggleRadioButton(option.MAP)}
-                        checked={this.state.selectedOption === option.MAP}
-                        text={option.MAP}
-                    />
-                    <RadioButton
-                        onClick={this.toggleRadioButton(option.SATELLITE)}
-                        checked={this.state.selectedOption === option.SATELLITE}
-                        text={option.SATELLITE}
-                    />
-                    <RadioButton
-                        onClick={this.toggleRadioButton(option.TERRAIN)}
-                        checked={this.state.selectedOption === option.TERRAIN}
-                        text={option.TERRAIN}
-                    />
+                    <div className={s.networkToggleView}>
+                        <div className={s.inputTitle}>VERKKO</div>
+                        <TransitToggleButtonBar
+                            toggleSelectedTransitType={this.toggleTransitType}
+                            selectedTransitTypes={NetworkStore.selectedTransitTypes}
+                        />
+                        <div className={s.checkboxContainer}>
+                            <Checkbox
+                                onClick={this.toggleLinkVisibility}
+                                checked={NetworkStore.isLinksVisible}
+                                text={'Näytä alueen linkit'}
+                            />
+                        </div>
+                        <div className={s.checkboxContainer}>
+                            <Checkbox
+                                onClick={this.togglePointVisibility}
+                                checked={NetworkStore.isPointsVisible}
+                                text={'Näytä linkkien pisteet'}
+                            />
+                        </div>
+                        <div className={s.checkboxContainer}>
+                            <Checkbox
+                                onClick={this.toggleNodeVisibility}
+                                checked={NetworkStore.isNodesVisible}
+                                text={'Näytä alueen solmut'}
+                            />
+                        </div>
+                    </div>
+                    <div className={s.mapLayerToggleView}>
+                        <div className={s.inputTitle}>KARTTA</div>
+                        <RadioButton
+                            onClick={this.toggleRadioButton(option.MAP)}
+                            checked={this.state.selectedOption === option.MAP}
+                            text={option.MAP}
+                        />
+                        <RadioButton
+                            onClick={this.toggleRadioButton(option.SATELLITE)}
+                            checked={this.state.selectedOption === option.SATELLITE}
+                            text={option.SATELLITE}
+                        />
+                        <RadioButton
+                            onClick={this.toggleRadioButton(option.TERRAIN)}
+                            checked={this.state.selectedOption === option.TERRAIN}
+                            text={option.TERRAIN}
+                        />
+                    </div>
                 </div>
             </div>
         );
