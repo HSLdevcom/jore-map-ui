@@ -26,7 +26,7 @@ interface ILinkViewProps {
 
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
-    constructor(props: any) {
+    constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
             selectedTransitType: TransitType.BUS,
@@ -42,7 +42,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         }
     }
 
-    public componentWillReceiveProps(props: any) {
+    public componentWillReceiveProps(props: ILinkViewProps) {
         const routeLinkId = props.match!.params.id;
         if (routeLinkId) {
             this.fetchRoutePathLink(routeLinkId);
