@@ -1,16 +1,16 @@
-import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import LineFactory from '~/factories/lineFactory';
 import NotificationType from '~/enums/notificationType';
 import NotificationStore from '~/stores/notificationStore';
 import { ILine } from '~/models';
+import GraphqlQueries from './graphqlQueries';
 
 export default class LineService {
     public static async fetchAllLines(): Promise<ILine[] | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getLinjas },
+                { query: GraphqlQueries.getAllLinesQuery() },
             );
 
             return queryResult.data.allLinjas.nodes.map(((linja: any) => {
@@ -31,7 +31,7 @@ export default class LineService {
     public static async fetchLine(lintunnus: string): Promise<ILine | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getLinja, variables: { lineId: lintunnus } },
+                { query: GraphqlQueries.getLineQuery(), variables: { lineId: lintunnus } },
             );
 
             const externalLine = this.getExternalLine(queryResult.data.linjaByLintunnus);
@@ -62,38 +62,3 @@ export default class LineService {
         return line;
     }
 }
-
-const getLinja = gql`
-query getLineByLintunnus ($lineId: String!) {
-    linjaByLintunnus(lintunnus:$lineId) {
-        lintunnus
-        linjoukkollaji
-        linverkko
-        reittisByLintunnus(first: 1, orderBy: REIVIIMPVM_DESC) {
-            nodes {
-                reinimi
-                reiviimpvm
-            }
-        }
-    }
-}
-`;
-
-const getLinjas = gql`
-{
-    allLinjas {
-        nodes {
-            lintunnus
-            linjoukkollaji
-            linverkko
-            reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
-                nodes {
-                    reinimi
-                    reitunnus
-                    reiviimpvm
-                }
-            }
-        }
-    }
-}
-`;
