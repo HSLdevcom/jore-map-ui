@@ -142,7 +142,9 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
 
     private renderStartMarker() {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks || !routePathLinks[0] || !routePathLinks[0].startNode) return null;
+        if (!routePathLinks || routePathLinks.length === 0 || !routePathLinks[0].startNode) {
+            return null;
+        }
 
         const icon = this.getStartPointIcon();
         const coordinates = routePathLinks![0].startNode.coordinates;
