@@ -1,4 +1,5 @@
 enum NodeType {
+    START = 'S',
     STOP = 'P',
     CROSSROAD = 'X',
     MUNICIPALITY_BORDER = '-',
