@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { toJS } from 'mobx';
 import MapStore, { NodeSize } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { NotificationStore } from '~/stores/notificationStore';
@@ -67,7 +68,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     private getPointStyle = () => {
         return {
             // Layer name 'piste' is directly mirrored from Jore through geoserver
-            piste: (properties: any, zoom: any) => {
+            piste: (properties: any, zoom: number) => {
                 const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
                 const transitType = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(properties.lnkverkko);
@@ -100,7 +101,16 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
         return {
             // Layer name 'solmu' is directly mirrored from Jore through geoserver
-            solmu: (properties: any, zoom: any) => {
+            solmu: (properties: any, zoom: number) => {
+
+                const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
+                if (properties.transittypes) {
+                    const transitTypes = TransitTypeHelper
+                        .convertTransitTypeCodesToTransitTypes(properties.transittypes.split(','));
+                    if (selectedTransitTypes.every(type => !transitTypes.includes(type))) {
+                        return this.getEmptyStyle();
+                    }
+                }
                 let color;
                 let fillColor;
 
@@ -140,13 +150,14 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private getEmptyStyle() {
+    private getEmptyStyle = () => {
         return {
             fillOpacity: 0,
             stroke: false,
             fill: false,
             opacity: 0,
             weight: 0,
+            radius: 0,
         };
     }
 
@@ -167,7 +178,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         }
     }
 
-    private isWaitingForNewRoutePathFirstNodeClick() {
+    private isWaitingForNewRoutePathFirstNodeClick = () => {
         const hasRoutePathLinks =
         this.props.routePathStore!.routePath &&
         this.props.routePathStore!.routePath!.routePathLinks!.length === 0;
