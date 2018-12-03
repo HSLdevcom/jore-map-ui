@@ -2,7 +2,6 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
-import { SidebarStore } from '~/stores/sidebarStore';
 import { MapStore } from '~/stores/mapStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import ButtonType from '~/enums/buttonType';
@@ -21,12 +20,11 @@ interface IAppState {
 
 interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
-    sidebarStore?: SidebarStore;
     mapStore?: MapStore;
     notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'sidebarStore', 'loginStore', 'notificationStore')
+@inject('mapStore', 'loginStore', 'notificationStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {

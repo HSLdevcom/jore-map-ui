@@ -5,10 +5,17 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
+import PinIcon from '~/icons/pin';
 import NodeType from '~/enums/nodeType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import * as s from './newRoutePathLayer.scss';
+
+// The logic of Z Indexes is not very logical.
+// Setting z-index to 2, if other items is 1 wont force it to be on top.
+// Setting z-index to a very high number will however most likely set the item on top.
+// https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
+const VERY_HIGH_Z_INDEX = 1000;
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
@@ -133,6 +140,32 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         this.props.routePathStore!.setNeighborRoutePathLinks(neighborLinks);
     }
 
+    private renderStartMarker() {
+        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
+        if (!routePathLinks || routePathLinks.length === 0 || !routePathLinks[0].startNode) {
+            return null;
+        }
+
+        const icon = this.getStartPointIcon();
+        const coordinates = routePathLinks![0].startNode.coordinates;
+        return (
+            <Marker
+                zIndexOffset={VERY_HIGH_Z_INDEX}
+                icon={icon}
+                position={[coordinates.lat, coordinates.lon]}
+            />
+        );
+    }
+
+    private getStartPointIcon = () => {
+        const divIconOptions : L.DivIconOptions = {
+            className: s.startMarker,
+            html: PinIcon.getPin('#00df0b'),
+        };
+
+        return new L.DivIcon(divIconOptions);
+    }
+
     render() {
         if (!this.props.routePathStore!.routePath) return null;
         return (
@@ -145,6 +178,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
                 {/* Neighbors should be drawn last */}
                 {this.renderRoutePathLinks(
                     this.props.routePathStore!.neighborLinks, { isNeighbor: true })};
+                {this.renderStartMarker()}
             </>
         );
     }
