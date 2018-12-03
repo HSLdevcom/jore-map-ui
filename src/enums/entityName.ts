@@ -1,6 +1,6 @@
-enum entityNames {
+enum entityName {
     ROUTEPATH = 'routePath',
     ROUTELINK = 'routeLink',
 }
 
-export default entityNames;
+export default entityName;

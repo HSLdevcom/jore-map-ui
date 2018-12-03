@@ -1,7 +1,7 @@
-enum eventTypes {
+enum eventType {
     ADD= 'Lisäys',
     DELETE= 'Poisto',
     MOVE= 'Siirto',
 }
 
-export default eventTypes;
+export default eventType;
