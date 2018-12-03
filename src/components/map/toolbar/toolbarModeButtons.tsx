@@ -8,8 +8,11 @@ import navigator from '~/routing/navigator';
 import { RadioButton } from '../../controls';
 import * as s from './toolbarModeButtons.scss';
 
-export default class ToolbarModeButtons extends React.Component {
-    constructor(props: any) {
+interface IToolbarModeButtons {
+}
+
+export default class ToolbarModeButtons extends React.Component<IToolbarModeButtons> {
+    constructor(props: IToolbarModeButtons) {
         super(props);
 
         this.initStores();
