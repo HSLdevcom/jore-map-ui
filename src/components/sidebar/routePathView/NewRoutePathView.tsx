@@ -58,10 +58,9 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
     private initStores(currentRoutePath: IRoutePath|null) {
         this.props.mapStore!.setNodeSize(NodeSize.large);
-        this.props.networkStore!.setIsNodesVisible(true);
-        this.props.networkStore!.setIsLinksVisible(true);
+        this.props.networkStore!.setNodeVisibility(true);
+        this.props.networkStore!.setLinkVisibility(true);
         this.props.routePathStore!.setIsCreating(true);
-        // TODO: UI should go back to the previous state
         this.props.routeStore!.clearRoutes();
 
         if (currentRoutePath) {
