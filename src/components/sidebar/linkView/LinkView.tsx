@@ -49,6 +49,19 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         }
     }
 
+    private getRoutePath() {
+        if (this.state.route && this.state.routePathLink) {
+            return this.state.route.routePaths
+                .find(p =>
+                    p.routeId === this.state.routePathLink!.routeId &&
+                    p.direction === this.state.routePathLink!.routePathDirection &&
+                    p.startTime.getTime()
+                    === this.state.routePathLink!.routePathStartDate!.getTime(),
+                );
+        }
+        return;
+    }
+
     private async fetchRoutePathLink(id: string) {
         const routePathLinkId = parseInt(id, 10);
 
@@ -89,6 +102,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         const startNode = this.state.routePathLink!.startNode;
         const endNode = this.state.routePathLink!.endNode;
         const route = this.state.route;
+        const routePath = this.getRoutePath();
 
         return (
         <div className={classnames(s.linkView, s.form)}>
@@ -107,20 +121,23 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <InputContainer
                             label='SUUNTA'
-                            value={`Suunta ${this.state.routePathLink!.routePathDirection}`}
+                            value={`Suunta ${routePath ? routePath.direction : '?'}`}
                         />
                     </div>
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='VOIM. AST'
                             value={
-                                moment(
-                                    this.state.routePathLink!.routePathStartDate!,
-                                ).format('DD.MM.YYYY')}
+                                routePath ? moment(
+                                    routePath.startTime,
+                                ).format('DD.MM.YYYY') : ''}
                         />
                         <InputContainer
                             label='VIIM. VOIM'
-                            value='-'
+                            value={
+                                routePath ? moment(
+                                    routePath.endTime,
+                                ).format('DD.MM.YYYY') : ''}
                         />
                     </div>
                     <InputContainer

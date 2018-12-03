@@ -3,7 +3,7 @@ import INode from './INode';
 
 export default interface IRoutePathLink {
     routeId?: string;
-    routePathDirection?: number;
+    routePathDirection?: string;
     routePathStartDate?: Date;
     id: string;
     positions: [[number, number]];

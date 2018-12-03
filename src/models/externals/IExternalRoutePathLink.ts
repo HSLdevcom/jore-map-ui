@@ -11,7 +11,7 @@ export default interface IExternalRoutePathLink {
     relid: string;
     reljarjnro: number;
     relpysakki: NodeType;
-    suusuunta: number;
+    suusuunta: string;
     suuvoimast: string;
     reitunnus: string;
 }
