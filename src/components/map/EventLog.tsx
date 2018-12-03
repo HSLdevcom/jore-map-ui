@@ -1,7 +1,11 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
+import ILogEntry from '~/models/IEvent';
+import eventType from '~/enums/eventType';
+import GeometryEventStore from '../../stores/geometryEventStore';
 import * as s from './eventLog.scss';
 
 interface IEventLogState {
@@ -14,22 +18,65 @@ interface IEventLogProps {
 
 @observer
 export default class EventLog extends React.Component<IEventLogProps, IEventLogState> {
+    scrollRef: React.RefObject<HTMLDivElement>;
+
     constructor(props: IEventLogProps) {
         super(props);
         this.state = {
             isOpen: false,
             isAlertShown: false,
         };
+        this.scrollRef = React.createRef();
     }
 
-    private getLogs = () => {
-        return 'logs';
+    private renderEvents = (entries: ILogEntry[]) => {
+        return entries.map((entry, index) => {
+            let eventTypeClass = '';
+            switch (entry.action) {
+            case eventType.ADD:
+                eventTypeClass = s.eventTypeAdd;
+                break;
+            // Uncomment when we have use case for edit and deletion
+            //
+            // case logActions.DELETE:
+            //     eventTypeClass = s.eventTypeDelete;
+            //     break;
+            // case logActions.MOVE:
+            //     eventTypeClass = s.eventTypeMove;
+            //     break;
+            }
+
+            return (
+                <div className={s.event} key={index}>
+                    <div className={classnames(s.eventType, eventTypeClass)}>
+                        {entry.action}
+                    </div>
+                    <div className={s.eventContent}>
+                        {entry.entity}
+                    </div>
+                </div>
+            );
+        });
     }
 
     private toggleEventLog = () => {
         this.setState({
             isOpen: !this.state.isOpen,
         });
+    }
+
+    private scrollToBottom = () => {
+        if (this.scrollRef.current) {
+            this.scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    componentDidMount() {
+        this.scrollToBottom();
+    }
+
+    componentDidUpdate() {
+        this.scrollToBottom();
     }
 
     private renderEventLog = () => (
@@ -45,11 +92,12 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
                     <FaTimes className={s.close}/>
                 </div>
             </div>
-            <textarea
-                className={s.textArea}
-                value={this.getLogs()}
-                readOnly={true}
-            />
+            <div className={s.eventLogArea}>
+                {
+                    this.renderEvents(GeometryEventStore.events)
+                }
+                <div ref={this.scrollRef} />
+            </div>
         </div>
     )
 

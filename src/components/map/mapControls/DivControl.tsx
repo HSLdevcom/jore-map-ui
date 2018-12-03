@@ -6,6 +6,7 @@ const divControl : any = Control.extend({
     onAdd: () => {
         const container = DomUtil.create('div');
         DomEvent.disableClickPropagation(container);
+        DomEvent.disableScrollPropagation(container);
         return container;
     },
 });
