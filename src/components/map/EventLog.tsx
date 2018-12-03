@@ -1,10 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { FaTimes, FaExclamation, FaUndo } from 'react-icons/fa';
+import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
 import ILogEntry from '~/models/IEvent';
-import logActions from '~/enums/eventTypes';
+import logActions from '~/enums/eventType';
 import GeometryEventStore from '../../stores/geometryEventStore';
 import * as s from './eventLog.scss';
 
@@ -52,9 +52,6 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
                 </div>
                 <div className={s.eventContent}>
                     {entry.entity}
-                </div>
-                <div className={s.eventButtons}>
-                    <FaUndo />
                 </div>
             </div>
         );
