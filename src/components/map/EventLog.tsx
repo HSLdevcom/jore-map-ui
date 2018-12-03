@@ -5,8 +5,7 @@ import { FaTimes, FaExclamation, FaUndo } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
 import ILogEntry from '~/models/IEvent';
 import logActions from '~/enums/eventTypes';
-import entityNames from '~/enums/entityNames';
-import GeometryEventStore from '../../../stores/geometryEventStore';
+import GeometryEventStore from '../../stores/geometryEventStore';
 import * as s from './eventLog.scss';
 
 interface IEventLogState {
@@ -30,9 +29,9 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         this.scrollRef = React.createRef();
     }
 
-    private renderLogRow = (action: logActions | null, objectId: string, entity: entityNames) => {
+    private renderLogRow = (entry: ILogEntry) => {
         let eventTypeClass = '';
-        switch (action) {
+        switch (entry.action) {
         case logActions.ADD:
             eventTypeClass = s.eventTypeAdd;
             break;
@@ -47,64 +46,18 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         }
 
         return (
-            <div className={s.event} key={objectId}>
+            <div className={s.event} key={entry.timestamp.toString()}>
                 <div className={classnames(s.eventType, eventTypeClass)}>
-                    {action}
+                    {entry.action}
                 </div>
                 <div className={s.eventContent}>
-                    {entity}
+                    {entry.entity}
                 </div>
                 <div className={s.eventButtons}>
                     <FaUndo />
                 </div>
             </div>
         );
-    }
-
-    private getSummaryAction = (logs: ILogEntry[]) => {
-        let action = null;
-        // Uncomment when we have use cases for logging edits and deletion
-        //
-        // if (
-        //     logs.some(ev => ev.action === logActions.ADD) &&
-        //     logs.some(ev => ev.action === logActions.DELETE)
-        // ) {
-        //     action = null;
-        // } else
-        if (
-            logs.some(ev => ev.action === logActions.ADD)
-        ) {
-            action = logActions.ADD;
-        }
-        // else if (
-        //     logs.some(ev => ev.action === logActions.DELETE)
-        // ) {
-        //     action = logActions.DELETE;
-        // } else {
-        //     action = logActions.MOVE;
-        // }
-        return action;
-    }
-
-    private renderEventList = () => {
-        const groupedById = GeometryEventStore!.events.reduce(
-            (rv, x) => {
-                (rv[x.objectId] = rv[x.objectId] || []).push(x);
-                return rv;
-            },
-            {},
-        );
-        const res : JSX.Element[] = [];
-        Object.entries(groupedById).forEach(([id, groupedLogs]: [string, ILogEntry[]]) => {
-            const first = groupedLogs[0];
-            res.push(this.renderLogRow(
-                this.getSummaryAction(groupedLogs),
-                id,
-                first.entity,
-            ));
-        });
-
-        return res;
     }
 
     private toggleEventLog = () => {
@@ -142,7 +95,7 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
             </div>
             <div className={s.eventLogArea}>
                 {
-                    this.renderEventList()
+                    GeometryEventStore.events.map(event => this.renderLogRow(event))
                 }
                 <div ref={this.scrollRef} />
             </div>
