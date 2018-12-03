@@ -3,6 +3,6 @@ import { ILineRoute } from '.';
 
 export default interface ILine {
     transitType: TransitType;
-    lineId: string;
+    id: string;
     routes: ILineRoute[];
 }

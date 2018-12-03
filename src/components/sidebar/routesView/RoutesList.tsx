@@ -44,7 +44,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
             this.setState({ isLoading: true });
-            const currentRouteIds = this.props.routeStore!.routes.map(r => r.routeId);
+            const currentRouteIds = this.props.routeStore!.routes.map(r => r.id);
             const missingRouteIds = routeIds.filter(id => !currentRouteIds.includes(id));
             currentRouteIds
                 .filter(id => !routeIds.includes(id))
@@ -65,16 +65,16 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
         return routes.map((route: IRoute) => {
             return (
-                <div key={route.routeId}>
+                <div key={route.id}>
                     <RouteShow
-                        key={route.routeId}
+                        key={route.id}
                         route={route}
                     />
                     <Button
                         onClick={this.redirectToNewRoutePathView(route)}
                         className={s.createRoutePathButton}
                         type={ButtonType.SQUARE}
-                        text={`Luo uusi reitin suunta reitille ${route.routeId}`}
+                        text={`Luo uusi reitin suunta reitille ${route.id}`}
                     />
                 </div>
             );
@@ -83,7 +83,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     private redirectToNewRoutePathView = (route: IRoute) => () => {
         const newRoutePathLink = routeBuilder
-        .to(subSites.newRoutePath, { routeId: route.routeId, lineId: route.lineId })
+        .to(subSites.newRoutePath, { routeId: route.id, lineId: route.lineId })
         .toLink();
 
         navigator.goTo(newRoutePathLink);
