@@ -1,4 +1,4 @@
-import entityNames from '~/enums/entityNames';
+import entityName from '~/enums/entityName';
 import FetchStatusCode from '~/enums/fetchStatusCode';
 import ApiClientHelper from './apiClientHelper';
 
@@ -16,19 +16,19 @@ export class IRequestError {
 const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 export default class ApiClient {
-    public async updateObject(entityName: entityNames, object: any) {
+    public async updateObject(entityName: entityName, object: any) {
         return await this.sendRequest(RequestMethod.POST, entityName, object);
     }
 
-    public async addObject(entityName: entityNames, object: any) {
+    public async addObject(entityName: entityName, object: any) {
         return await this.sendRequest(RequestMethod.PUT, entityName, object);
     }
 
-    public async deleteObject(entityName: entityNames, object: any) {
+    public async deleteObject(entityName: entityName, object: any) {
         return await this.sendRequest(RequestMethod.DELETE, entityName, object);
     }
 
-    private async sendRequest(method: RequestMethod, entityName: entityNames, object: any) {
+    private async sendRequest(method: RequestMethod, entityName: entityName, object: any) {
         const formattedObject = ApiClientHelper.format(object);
         let error : (IRequestError | null) = null;
 
@@ -61,7 +61,7 @@ export default class ApiClient {
         }
     }
 
-    private getUrl(entityName: entityNames) {
+    private getUrl(entityName: entityName) {
         return `${API_URL}/${entityName}`;
     }
 }

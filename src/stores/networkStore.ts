@@ -1,6 +1,14 @@
 import { action, computed, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 
+const TRANSIT_TYPES = [
+    TransitType.BUS,
+    TransitType.FERRY,
+    TransitType.SUBWAY,
+    TransitType.TRAIN,
+    TransitType.TRAM,
+];
+
 export class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isLinksVisible: boolean;
@@ -8,13 +16,7 @@ export class NetworkStore {
     @observable private _isPointsVisible: boolean;
 
     constructor() {
-        this._selectedTransitTypes = [
-            TransitType.BUS,
-            TransitType.FERRY,
-            TransitType.SUBWAY,
-            TransitType.TRAIN,
-            TransitType.TRAM,
-        ];
+        this._selectedTransitTypes = TRANSIT_TYPES;
         this._isLinksVisible = false;
         this._isNodesVisible = false;
         this._isPointsVisible = false;
@@ -41,17 +43,17 @@ export class NetworkStore {
     }
 
     @action
-    public setIsNodesVisible(isVisible: boolean) {
+    public setNodeVisibility(isVisible: boolean) {
         this._isNodesVisible = isVisible;
     }
 
     @action
-    public setIsLinksVisible(isVisible: boolean) {
+    public setLinkVisibility(isVisible: boolean) {
         this._isLinksVisible = isVisible;
     }
 
     @action
-    public setIsPointsVisible(isVisible: boolean) {
+    public setPointVisibility(isVisible: boolean) {
         this._isPointsVisible = isVisible;
     }
 
@@ -73,6 +75,11 @@ export class NetworkStore {
     @action
     public setSelectedTransitTypes(types: TransitType[]) {
         this._selectedTransitTypes = types;
+    }
+
+    @action
+    public selectAllTransitTypes() {
+        this._selectedTransitTypes = TRANSIT_TYPES;
     }
 
     // TODO rename as toggleSelectedTransitType?

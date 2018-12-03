@@ -6,12 +6,15 @@ class PinIcon {
             `
             <div
                 style=
-                'position:absolute;
+                '
+                position:absolute;
                 left:50%;
                 padding:15px;
                 -ms-transform: translateX(-50%) translateY(-50%);
                 -webkit-transform: translate(-50%,-50%);
-                transform: translate(-50%,-50%);'
+                transform: translate(-50%,-50%);
+                pointer-events:none;
+                '
             >
                 <svg
                     data-prefix='fas'

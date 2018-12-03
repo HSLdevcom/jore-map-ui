@@ -11,7 +11,6 @@ export class ToolbarStore {
         this._disabledTools = [
             ToolbarTool.Print,
         ];
-        this._editMode = EditMode.LINE;
         this._activeTool = ToolbarTool.None;
     }
 
