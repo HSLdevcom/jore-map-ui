@@ -81,14 +81,17 @@ export class GeometryEventStore {
         observe(
             RoutePathStore!,
             (change) => {
+                // We need to watch routePath, however, this object is created and
+                // deleted when switching between pages. Here we create a watcher
+                // when routePath is created, and remove the watcher when it is
+                // deleted.
                 if (
                     change.name === '_routePath'
                     && !change['oldValue']
                     && change['newValue']
                 ) {
-                    // RoutePath store and RoutePathStore!.routePath are defined
-                    // We can now delete old watcher and create new watcher for:
-                    // RoutePathStore!.routePath!.routePathLinks!
+                    // Creating watcher for RoutePathStore.routePath.routePathLinks.
+                    // Which is the list that we want to observe.
                     reactor = observe(
                         RoutePathStore!.routePath!.routePathLinks!,
                         (change) => {
