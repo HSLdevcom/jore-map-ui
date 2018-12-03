@@ -1,4 +1,4 @@
-import { action, computed, observable, observe, IObjectDidChange } from 'mobx';
+import { action, computed, observable, observe, IObjectDidChange, Lambda } from 'mobx';
 import IEvent from '~/models/IEvent';
 import eventType from '~/enums/eventType';
 import entityName from '~/enums/entityName';
@@ -74,24 +74,33 @@ export class GeometryEventStore {
     }
 
     private initRoutePathLinkObservable() {
+        let reactor : Lambda | null = null;
         // Creating watcher which will trigger when RoutePathStore is initialized
         // We cannot watch RoutePathStore!.routePath!.routePathLinks!
         // before we know that it is defined
-        const reactor = observe(
+        observe(
             RoutePathStore!,
-            () => {
-                const routePath = RoutePathStore!.routePath;
-                if (routePath) {
+            (change) => {
+                if (
+                    change.name === '_routePath'
+                    && !change['oldValue']
+                    && change['newValue']
+                ) {
                     // RoutePath store and RoutePathStore!.routePath are defined
                     // We can now delete old watcher and create new watcher for:
                     // RoutePathStore!.routePath!.routePathLinks!
-                    reactor();
-                    observe(
+                    reactor = observe(
                         RoutePathStore!.routePath!.routePathLinks!,
                         (change) => {
                             this.logRoutePathLinkChanges(change);
                         },
                     );
+                } else if (
+                    change.name === '_routePath'
+                    && !change['newValue']
+                    && reactor !== null
+                ) {
+                    reactor!();
                 }
             },
         );
