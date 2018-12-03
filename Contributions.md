@@ -22,7 +22,7 @@
 * Use classnames if there are multiple classes
 * Use async await instead of promises
 * Don't use .bind in jsx, use arrow functions instead
-
+* Use render prefix in methods that return JSX or HTML
 
 ### IModels
 
