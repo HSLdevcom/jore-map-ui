@@ -5,7 +5,8 @@ import { match } from 'react-router';
 import moment from 'moment';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
-import { IRoutePathLink } from '~/models';
+import RouteService from '~/services/routeService';
+import { IRoutePathLink, IRoute } from '~/models';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
@@ -17,6 +18,7 @@ import * as s from './linkView.scss';
 interface ILinkViewState {
     selectedTransitType: TransitType;
     routePathLink: IRoutePathLink | null;
+    route: IRoute | null;
     isLoading: boolean;
 }
 
@@ -31,6 +33,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.state = {
             selectedTransitType: TransitType.BUS,
             routePathLink: null,
+            route: null,
             isLoading: true,
         };
     }
@@ -56,18 +59,18 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
         const routePathLink =
             await RoutePathLinkService.fetchRoutePathLink(routePathLinkId);
+
         if (routePathLink) {
             this.setState({ routePathLink });
+
+            if (routePathLink.routeId) {
+                const route = await RouteService.fetchRoute(routePathLink.routeId!);
+                if (route) {
+                    this.setState({ route });
+                }
+            }
         }
         this.setState({ isLoading: false });
-    }
-
-    private toggleSelectedTransitType = (selectedTransitType: TransitType): void => {
-        this.setState({ selectedTransitType });
-    }
-
-    private getFilters = () => {
-        return [this.state.selectedTransitType];
     }
 
     public toggleEditing = () => {
@@ -88,6 +91,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
         const startNode = this.state.routePathLink!.startNode;
         const endNode = this.state.routePathLink!.endNode;
+        const route = this.state.route;
 
         return (
         <div className={classnames(s.linkView, s.form)}>
@@ -102,29 +106,29 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='REITTITUNNUS'
-                            placeholder={this.state.routePathLink!.routeId}
+                            value={this.state.routePathLink!.routeId}
                         />
                         <InputContainer
                             label='SUUNTA'
-                            placeholder={`Suunta ${this.state.routePathLink!.routePathDirection}`}
+                            value={`Suunta ${this.state.routePathLink!.routePathDirection}`}
                         />
                     </div>
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='VOIM. AST'
-                            placeholder={
+                            value={
                                 moment(
                                     this.state.routePathLink!.routePathStartDate!,
                                 ).format('DD.MM.YYYY')}
                         />
                         <InputContainer
                             label='VIIM. VOIM'
-                            placeholder='-'
+                            value='-'
                         />
                     </div>
                     <InputContainer
                         label='NIMI'
-                        placeholder='Rautatientori - Korkeasaari'
+                        value={route ? route.routeName : ''}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -157,8 +161,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['P', 'P1', 'P2']}
-                            selected={'P'}
+                            items={['P', 'X', '-']}
+                            selected={startNode ? startNode.type : 'tyhjä'}
                         />
                         <InputContainer
                             label=''
@@ -175,8 +179,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['P', 'P1', 'P2']}
-                            selected={'P'}
+                            items={['P', 'X', '-']}
+                            selected={endNode ? endNode.type : 'tyhjä'}
                         />
                         <InputContainer
                             label=''
@@ -195,7 +199,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         label='AJANTASAUSPYSÄKKI'
                         onChange={this.onChange}
                         items={['Kyllä', 'Ei']}
-                        selected={'Ei'}
+                        selected={
+                            this.state.routePathLink!.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'Ei'
+                        }
                     />
                     <Dropdown
                         label='VÄLIPISTEAIKAPYSÄKKI'
@@ -211,8 +217,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         </div>
                         <div className={s.transitButtonBar}>
                             <TransitToggleButtonBar
-                                toggleSelectedTransitType={this.toggleSelectedTransitType}
-                                selectedTransitTypes={this.getFilters()}
+                                selectedTransitTypes={route ? [route.line!.transitType] : []}
                             />
                         </div>
                     </div>
