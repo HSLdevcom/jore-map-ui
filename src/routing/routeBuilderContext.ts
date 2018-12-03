@@ -6,7 +6,7 @@ export default class RouteBuilderContext {
     private currentLocation: string;
     private target: string;
     private targetId: string;
-    private values: any;
+    private values: Object;
 
     constructor(currentLocation: string, target: SubSites, values: any) {
         this.currentLocation = currentLocation;
