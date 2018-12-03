@@ -7,7 +7,7 @@ import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import ApiClient from '~/util/ApiClient';
-import entityNames from '~/enums/entityNames';
+import entityName from '~/enums/entityName';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 
@@ -87,6 +87,6 @@ export default class RoutePathService {
 
     public static async saveRoutePath(routePath: IRoutePath) {
         const apiClient = new ApiClient();
-        return await apiClient.updateObject(entityNames.ROUTEPATH, routePath);
+        return await apiClient.updateObject(entityName.ROUTEPATH, routePath);
     }
 }
