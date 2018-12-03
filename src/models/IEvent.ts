@@ -5,7 +5,11 @@ export default interface IEvent {
     entity: entityName;
     action: eventType;
     objectId: string;
-    preObject?: object;
-    postObject?: object;
+    // Add variables for keeping track of changes
+    //
+    // changedObject: object;
+    // or
+    // preObject?: object;
+    // postObject?: object;
     timestamp: Date;
 }

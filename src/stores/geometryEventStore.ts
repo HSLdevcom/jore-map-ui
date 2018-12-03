@@ -31,20 +31,16 @@ export class GeometryEventStore {
 
     @action
     private pushToEvents(
-        { action, entityName, objectId, oldObject, newObject }
+        { action, entityName, objectId }
       : {
           action: eventType,
           entityName: entityName,
           objectId: string,
-          oldObject?: object,
-          newObject?: object,
       },
       ) {
         this._events.push({
             action,
             objectId,
-            postObject: newObject,
-            preObject: oldObject,
             timestamp: new Date(),
             entity: entityName,
         });
@@ -57,7 +53,6 @@ export class GeometryEventStore {
                     this.pushToEvents({
                         action: eventType.ADD,
                         entityName: entityName.ROUTELINK,
-                        newObject: routePathLink,
                         objectId: routePathLink.id,
                     });
                 });
