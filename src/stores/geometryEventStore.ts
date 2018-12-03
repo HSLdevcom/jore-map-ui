@@ -4,6 +4,7 @@ import eventTypes from '~/enums/eventTypes';
 import entityNames from '~/enums/entityNames';
 import { IRoutePathLink } from '~/models';
 import RoutePathStore from './routePathStore';
+import Navigator from '../routing/navigator';
 
 const enum IObjectDidChangeUpdateTypes {
     ADDED = 'added',
@@ -16,10 +17,16 @@ export class GeometryEventStore {
         this._events = [];
 
         this.initRoutePathLinkObservable();
+        this.initClearEventListOnPageChange();
     }
 
     @computed get events(): IEvent[] {
         return this._events;
+    }
+
+    @action
+    private clearEvents() {
+        this._events = [];
     }
 
     @action
@@ -55,6 +62,15 @@ export class GeometryEventStore {
                     });
                 });
         }
+    }
+
+    private initClearEventListOnPageChange() {
+        observe(
+            Navigator!.getStore(),
+            () => {
+                this.clearEvents();
+            },
+        );
     }
 
     private initRoutePathLinkObservable() {
