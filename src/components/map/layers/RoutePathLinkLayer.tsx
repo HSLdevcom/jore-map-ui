@@ -95,7 +95,7 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
 
     private getStartPointIcon = () => {
         const divIconOptions : L.DivIconOptions = {
-            className: s.nodeMarker,
+            className: s.startMarker,
             html: PinIcon.getPin(this.props.color),
         };
 
