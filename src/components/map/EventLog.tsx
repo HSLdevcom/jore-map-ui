@@ -29,32 +29,34 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         this.scrollRef = React.createRef();
     }
 
-    private renderLogRow = (entry: ILogEntry) => {
-        let eventTypeClass = '';
-        switch (entry.action) {
-        case logActions.ADD:
-            eventTypeClass = s.eventTypeAdd;
-            break;
-        // Uncomment when we have use case for edit and deletion
-        //
-        // case logActions.DELETE:
-        //     eventTypeClass = s.eventTypeDelete;
-        //     break;
-        // case logActions.MOVE:
-        //     eventTypeClass = s.eventTypeMove;
-        //     break;
-        }
+    private renderEvents = (entries: ILogEntry[]) => {
+        return entries.map((entry, index) => {
+            let eventTypeClass = '';
+            switch (entry.action) {
+            case logActions.ADD:
+                eventTypeClass = s.eventTypeAdd;
+                break;
+            // Uncomment when we have use case for edit and deletion
+            //
+            // case logActions.DELETE:
+            //     eventTypeClass = s.eventTypeDelete;
+            //     break;
+            // case logActions.MOVE:
+            //     eventTypeClass = s.eventTypeMove;
+            //     break;
+            }
 
-        return (
-            <div className={s.event} key={entry.timestamp.toString()}>
-                <div className={classnames(s.eventType, eventTypeClass)}>
-                    {entry.action}
+            return (
+                <div className={s.event} key={index}>
+                    <div className={classnames(s.eventType, eventTypeClass)}>
+                        {entry.action}
+                    </div>
+                    <div className={s.eventContent}>
+                        {entry.entity}
+                    </div>
                 </div>
-                <div className={s.eventContent}>
-                    {entry.entity}
-                </div>
-            </div>
-        );
+            );
+        });
     }
 
     private toggleEventLog = () => {
@@ -92,7 +94,7 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
             </div>
             <div className={s.eventLogArea}>
                 {
-                    GeometryEventStore.events.map(event => this.renderLogRow(event))
+                    this.renderEvents(GeometryEventStore.events)
                 }
                 <div ref={this.scrollRef} />
             </div>
