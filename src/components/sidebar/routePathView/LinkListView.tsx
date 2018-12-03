@@ -4,12 +4,10 @@ import { SidebarStore } from '~/stores/sidebarStore';
 import { IRoutePath, INode, IRoutePathLink } from '~/models';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-// import navigator from '~/routing/navigator';
 import NodeType from '~/enums/nodeType';
 import ButtonType from '~/enums/buttonType';
 import { Dropdown, Button } from '../../controls';
 import * as s from './linkListView.scss';
-// import classnames from 'classnames';
 
 interface ILinkListViewProps {
     sidebarStore?: SidebarStore;
@@ -32,10 +30,9 @@ const filterTypes = {
 @inject('sidebarStore')
 @observer
 class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewState>{
-    constructor(props: any) {
+    constructor(props: ILinkListViewProps) {
         super(props);
         this.state = {
-            selectedRoutePathLink: undefined,
             linkTableFilter:  NodeType.STOP,
         };
     }
@@ -116,9 +113,10 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         return `Ei valittua linkkiä`;
     }
 
-    public isRoutePathLinkSelected = () => {
-        const routePathLinkSelected = this.state.selectedRoutePathLink;
-        if (routePathLinkSelected) return false;
+    public noRoutePathLinkSelected = () => {
+        if (this.state.selectedRoutePathLink) {
+            return false;
+        }
         return true;
     }
 
@@ -185,7 +183,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
             <Button
                 type={ButtonType.SQUARE}
                 text={this.getLinkViewButtonTitle()}
-                disabled={this.isRoutePathLinkSelected()}
+                disabled={this.noRoutePathLinkSelected()}
                 onClick={this.openLinkView}
             />
         </div>
