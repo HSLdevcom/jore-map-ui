@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { match } from 'react-router';
 import moment from 'moment';
 import ButtonType from '~/enums/buttonType';
-import TransitType from '~/enums/transitType';
 import RouteService from '~/services/routeService';
 import { IRoutePathLink, IRoute } from '~/models';
 import RoutePathLinkService from '~/services/routePathLinkService';
@@ -16,7 +15,6 @@ import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
-    selectedTransitType: TransitType;
     routePathLink: IRoutePathLink | null;
     route: IRoute | null;
     isLoading: boolean;
@@ -31,7 +29,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
-            selectedTransitType: TransitType.BUS,
             routePathLink: null,
             route: null,
             isLoading: true,
