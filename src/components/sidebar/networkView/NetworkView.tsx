@@ -11,7 +11,7 @@ interface INetworkViewProps {
 @inject('networkStore')
 @observer
 class NetworkView extends React.Component<INetworkViewProps> {
-    constructor(props: any) {
+    constructor(props: INetworkViewProps) {
         super(props);
 
         this.initStores();
