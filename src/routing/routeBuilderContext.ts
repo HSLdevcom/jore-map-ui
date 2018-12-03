@@ -57,11 +57,6 @@ export default class RouteBuilderContext {
         return this;
     }
 
-    removeQueryParams() {
-        this.values = {};
-        return this;
-    }
-
     public set(param: QueryParams, value: string) {
         this.values[param] = value;
         return this;

@@ -19,16 +19,16 @@ export default class ToolbarModeButtons extends React.Component<IToolbarModeButt
     }
 
     private initStores() {
-        if (navigator.getPathName() === subSites.network) {
-            toolbarStore.setEditMode(EditMode.NETWORK);
-        }
+        const editMode = navigator.getPathName() === subSites.network
+            ? EditMode.NETWORK : EditMode.LINE;
+        toolbarStore.setEditMode(editMode);
     }
 
     private selectLineMode() {
         toolbarStore.setEditMode(EditMode.LINE);
         const homeViewLink = routeBuilder
             .to(subSites.home)
-            .removeQueryParams()
+            .clear()
             .toLink();
         navigator.goTo(homeViewLink);
     }
@@ -37,7 +37,7 @@ export default class ToolbarModeButtons extends React.Component<IToolbarModeButt
         toolbarStore.setEditMode(EditMode.NETWORK);
         const networkViewLink = routeBuilder
             .to(subSites.network)
-            .removeQueryParams()
+            .clear()
             .toLink();
         navigator.goTo(networkViewLink);
     }
