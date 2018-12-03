@@ -35,10 +35,10 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
     private closeRoute = () => {
         // TODO: Move actual logic somwhere else, so this function only navigates to new url
-        this.props.routeStore!.removeFromRoutes(this.props.route.routeId);
+        this.props.routeStore!.removeFromRoutes(this.props.route.id);
         const closeRouteLink = routeBuilder
             .to(subSites.current)
-            .remove(QueryParams.routes, this.props.route.routeId)
+            .remove(QueryParams.routes, this.props.route.id)
             .toLink();
         navigator.goTo(closeRouteLink);
     }
@@ -53,7 +53,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     TransitTypeColorHelper.getColorClass(this.props.route.line!.transitType),
                 )}
             >
-                {this.props.route.routeId}
+                {this.props.route.id}
             </div>
             {this.props.route.routeName}
             <div
