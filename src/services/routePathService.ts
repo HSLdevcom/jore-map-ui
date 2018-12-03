@@ -57,6 +57,9 @@ export default class RoutePathService {
         delete routePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta;
 
         routePath.externalRoutePathLinks.forEach((externalRoutePathLink: any) => {
+            externalRoutePathLink.link = externalRoutePathLink
+                .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
+
             externalRoutePathLink.geojson = externalRoutePathLink
                 .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson;
             externalRoutePathLink.startNode = externalRoutePathLink
@@ -64,11 +67,11 @@ export default class RoutePathService {
             externalRoutePathLink.endNode = externalRoutePathLink
                 .solmuByLnkloppusolmu;
 
-            externalRoutePathLink.startNode.externalStop
-                = externalRoutePathLink.startNode.pysakkiBySoltunnus;
+            externalRoutePathLink.solmuByLnkalkusolmu.externalStop
+                = externalRoutePathLink.solmuByLnkalkusolmu.pysakkiBySoltunnus;
 
-            externalRoutePathLink.endNode.externalStop
-                = externalRoutePathLink.endNode.pysakkiBySoltunnus;
+            externalRoutePathLink.solmuByLnkloppusolmu.externalStop
+                = externalRoutePathLink.solmuByLnkloppusolmu.pysakkiBySoltunnus;
 
             delete externalRoutePathLink
                 .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
