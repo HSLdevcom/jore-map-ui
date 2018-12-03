@@ -1,0 +1,65 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.linkListView {
+
+    .dropDownFilter {
+        width: 50%;
+    }
+
+    .linkList {
+        background-color: white;
+        height:  120px;
+        overflow: auto;
+        cursor: pointer;
+        margin-top: 5px;
+
+        .routePathLinkRow {
+            background-color: white;
+        }
+
+        .routePathLinkRowSelected {
+            color: white;
+            background-color: $blue;
+        }
+
+        .routePathLinkData:first-of-type {
+            flex-grow: 1;
+            flex-basis: 0px;
+            overflow: hidden;
+            margin-left: 2px;
+        }
+    }
+
+    .columnTitleRow {
+        display: flex;
+        flex-direction: row;
+        padding-top: 10px;
+        margin-right: 19px; // Scrollbar width
+        @supports (-ms-ime-align: auto) {
+          margin-right: 12px; // Scrollbar width in Edge
+        }
+    }
+
+    .tableItem {
+        margin-left: 5px;
+        flex-grow: 4;
+        flex-basis: 0px;
+        overflow: hidden;
+    }
+
+    .tableItemSmall {
+        margin-left: 5px;
+        flex-grow: 1;
+        flex-basis: 0px;
+        overflow: hidden;
+    }
+
+    .tableItemMedium {
+        margin-left: 5px;
+        flex-grow: 3;
+        flex-basis: 0px;
+        overflow: hidden;
+    }
+}
