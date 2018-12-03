@@ -69,7 +69,7 @@ export class GeometryEventStore {
     }
 
     private initRoutePathLinkObservable() {
-        let reactor : Lambda | null = null;
+        let routePathReactor : Lambda | null = null;
         // Creating watcher which will trigger when RoutePathStore is initialized
         // We cannot watch RoutePathStore!.routePath!.routePathLinks!
         // before we know that it is defined
@@ -80,25 +80,25 @@ export class GeometryEventStore {
                 // deleted when switching between pages. Here we create a watcher
                 // when routePath is created, and remove the watcher when it is
                 // deleted.
-                if (
-                    change.name === '_routePath'
-                    && !change['oldValue']
-                    && change['newValue']
-                ) {
-                    // Creating watcher for RoutePathStore.routePath.routePathLinks.
-                    // Which is the list that we want to observe.
-                    reactor = observe(
-                        RoutePathStore!.routePath!.routePathLinks!,
-                        (change) => {
-                            this.logRoutePathLinkChanges(change);
-                        },
-                    );
-                } else if (
-                    change.name === '_routePath'
-                    && !change['newValue']
-                    && reactor !== null
-                ) {
-                    reactor!();
+                if (change.name === '_routePath') {
+                    if (
+                        !change['oldValue']
+                        && change['newValue']
+                    ) {
+                        // Creating watcher for RoutePathStore.routePath.routePathLinks.
+                        // Which is the list that we want to observe.
+                        routePathReactor = observe(
+                            RoutePathStore!.routePath!.routePathLinks!,
+                            (change) => {
+                                this.logRoutePathLinkChanges(change);
+                            },
+                        );
+                    } else if (
+                        !change['newValue']
+                        && routePathReactor !== null
+                    ) {
+                        routePathReactor!();
+                    }
                 }
             },
         );
