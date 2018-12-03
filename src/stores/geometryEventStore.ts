@@ -1,7 +1,7 @@
 import { action, computed, observable, observe, IObjectDidChange } from 'mobx';
 import IEvent from '~/models/IEvent';
-import eventTypes from '~/enums/eventTypes';
-import entityNames from '~/enums/entityNames';
+import eventType from '~/enums/eventType';
+import entityName from '~/enums/entityName';
 import { IRoutePathLink } from '~/models';
 import RoutePathStore from './routePathStore';
 import Navigator from '../routing/navigator';
@@ -33,8 +33,8 @@ export class GeometryEventStore {
     private pushToEvents(
         { action, entityName, objectId, oldObject, newObject }
       : {
-          action: eventTypes,
-          entityName: entityNames,
+          action: eventType,
+          entityName: entityName,
           objectId: string,
           oldObject?: object,
           newObject?: object,
@@ -55,8 +55,8 @@ export class GeometryEventStore {
             change[IObjectDidChangeUpdateTypes.ADDED].slice()
                 .forEach((routePathLink: IRoutePathLink) => {
                     this.pushToEvents({
-                        action: eventTypes.ADD,
-                        entityName: entityNames.ROUTELINK,
+                        action: eventType.ADD,
+                        entityName: entityName.ROUTELINK,
                         newObject: routePathLink,
                         objectId: routePathLink.id,
                     });

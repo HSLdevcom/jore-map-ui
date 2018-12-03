@@ -1,9 +1,9 @@
-import eventTypes from '~/enums/eventTypes';
-import entityNames from '~/enums/entityNames';
+import eventType from '~/enums/eventType';
+import entityName from '~/enums/entityName';
 
 export default interface IEvent {
-    entity: entityNames;
-    action: eventTypes;
+    entity: entityName;
+    action: eventType;
     objectId: string;
     preObject?: object;
     postObject?: object;
