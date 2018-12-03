@@ -76,29 +76,31 @@ export class GeometryEventStore {
         observe(
             RoutePathStore!,
             (change) => {
+                if (change.name !== '_routePath') {
+                    return;
+                }
+
                 // We need to watch routePath, however, this object is created and
                 // deleted when switching between pages. Here we create a watcher
                 // when routePath is created, and remove the watcher when it is
                 // deleted.
-                if (change.name === '_routePath') {
-                    if (
-                        !change['oldValue']
-                        && change['newValue']
-                    ) {
-                        // Creating watcher for RoutePathStore.routePath.routePathLinks.
-                        // Which is the list that we want to observe.
-                        routePathReactor = observe(
-                            RoutePathStore!.routePath!.routePathLinks!,
-                            (change) => {
-                                this.logRoutePathLinkChanges(change);
-                            },
-                        );
-                    } else if (
-                        !change['newValue']
-                        && routePathReactor !== null
-                    ) {
-                        routePathReactor!();
-                    }
+                if (
+                    !change['oldValue']
+                    && change['newValue']
+                ) {
+                    // Creating watcher for RoutePathStore.routePath.routePathLinks.
+                    // Which is the list that we want to observe.
+                    routePathReactor = observe(
+                        RoutePathStore!.routePath!.routePathLinks!,
+                        (change) => {
+                            this.logRoutePathLinkChanges(change);
+                        },
+                    );
+                } else if (
+                    !change['newValue']
+                    && routePathReactor !== null
+                ) {
+                    routePathReactor!();
                 }
             },
         );
