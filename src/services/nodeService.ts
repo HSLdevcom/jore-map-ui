@@ -1,4 +1,3 @@
-import gql from 'graphql-tag';
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import { INode } from '~/models';
@@ -6,12 +5,13 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import NodeFactory from '~/factories/nodeFactory';
+import GraphqlQueries from './graphqlQueries';
 
 export default class NodeService {
     public static async fetchNode(nodeId: string): Promise<INode | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: getNodeQuery, variables: { nodeId } },
+                { query: GraphqlQueries.getNodeQuery(), variables: { nodeId } },
             );
 
             const externalNode = this.getExternalNode(queryResult.data.node);
@@ -39,22 +39,3 @@ export default class NodeService {
         return node;
     }
 }
-
-const getNodeQuery = gql`
-query getNodeDetails($nodeId: String!) {
-    node: solmuBySoltunnus(soltunnus: $nodeId) {
-        soltyyppi
-        soltunnus
-        solkuka
-        solviimpvm
-        mittpvm
-        geojson
-        geojsonManual
-        pysakkiBySoltunnus {
-            pysnimi
-            pysnimir
-            pyssade
-        }
-    }
-}
-`;
