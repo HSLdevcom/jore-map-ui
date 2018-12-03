@@ -154,7 +154,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
                             label='ALKU'
-                            placeholder={startNode ? startNode.id : '-'}
+                            value={startNode ? startNode.id : '-'}
                         />
                         <Dropdown
                             onChange={this.onChange}
@@ -163,7 +163,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <InputContainer
                             label=''
-                            placeholder={
+                            value={
                                 startNode && startNode.stop ? startNode.stop!.nameFi : '-'}
                         />
                     </div>
@@ -172,7 +172,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
                             label='LOPPU'
-                            placeholder={endNode ? endNode.id : '-'}
+                            value={endNode ? endNode.id : '-'}
                         />
                         <Dropdown
                             onChange={this.onChange}
@@ -181,7 +181,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <InputContainer
                             label=''
-                            placeholder={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
+                            value={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
                         />
                     </div>
                 </div>
