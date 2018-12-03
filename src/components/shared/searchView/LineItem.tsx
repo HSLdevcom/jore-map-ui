@@ -103,7 +103,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                 <div className={s.routePaths}>
                     <LineItemSubMenu
                         visible={this.isRouteOpen(route.id)}
-                        lineId={this.props.line.lineId}
+                        lineId={this.props.line.id}
                         routeId={route.id}
                     />
                 </div>
@@ -125,7 +125,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                             s.label,
                         )}
                     >
-                        {this.props.line.lineId}
+                        {this.props.line.id}
                     </div>
                 </div>
                 {this.props.line.routes.map(route =>

@@ -4,7 +4,7 @@ export default interface IRoute {
     routeName: string;
     routeNameSwedish: string;
     lineId: string;
-    routeId: string;
+    id: string;
     routePaths: IRoutePath[];
     line?: ILine;
 }
