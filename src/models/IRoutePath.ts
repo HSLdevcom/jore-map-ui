@@ -20,4 +20,6 @@ export default interface IRoutePath {
     routePathShortNameSw: string;
     modifiedBy: string;
     color?: string;
+    // TODO: add fetching logic and remove nullable
+    length?: number;
 }

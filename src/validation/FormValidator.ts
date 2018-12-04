@@ -7,23 +7,31 @@ export interface IValidationResult {
 }
 
 export default class FormValidator {
-    public static validateString(value: string, rule: string) : IValidationResult {
+    private static validate<type>(type: string, value: type, rule: string) {
         const validator = new Validator(
             {
-                value,
+                [type]: value,
             },
             {
-                value: rule,
+                [type]: rule,
             },
             ruleTranslations,
             );
 
         const isValid = !!validator.passes();
-        const firstErrorMessage = validator.errors.first('value');
+        const firstErrorMessage = validator.errors.first(type);
 
         return {
             isValid,
             errorMessage: typeof firstErrorMessage === 'string' ? firstErrorMessage : '',
         };
+    }
+
+    public static validateString(value: string, rule: string) : IValidationResult {
+        return FormValidator.validate<string>('string', value, rule);
+    }
+
+    public static validateNumber(value: number, rule: string) : IValidationResult {
+        return FormValidator.validate<number>('numeric', value, rule);
     }
 }
