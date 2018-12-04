@@ -5,15 +5,23 @@ import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import { IStop } from '~/models';
 import NodeType from '~/enums/nodeType';
+import PinIcon from '~/icons/pin';
 import { MapStore } from '~/stores/mapStore';
-import * as s from './nodeLayer.scss';
+import * as s from './nodeMarker.scss';
+
+// The logic of Z Indexes is not very logical.
+// Setting z-index to 2, if other items is 1 wont force it to be on top.
+// Setting z-index to a very high number will however most likely set the item on top.
+// https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
+const VERY_HIGH_Z_INDEX = 1000;
 
 interface INodeMarkerProps {
     nodeType: NodeType;
-    isSelected: boolean;
     latLng: L.LatLng;
+    isSelected?: boolean;
     color?: string;
     onContextMenu?: Function;
+    onClick?: Function;
     isDraggable?: boolean;
     stop?: IStop;
     mapStore?: MapStore;
@@ -24,7 +32,12 @@ const HASTUS_MIN_ZOOM = 16;
 
 @inject('mapStore')
 @observer
-export default class NodeLayer extends Component<INodeMarkerProps> {
+export default class NodeMarker extends Component<INodeMarkerProps> {
+    static defaultProps = {
+        isSelected: false,
+        isDraggable: false,
+    };
+
     private renderMarkerLabel = () => {
         const stop = this.props.stop;
         if (!stop) return '';
@@ -63,19 +76,38 @@ export default class NodeLayer extends Component<INodeMarkerProps> {
         case NodeType.TIME_ALIGNMENT: {
             return s.timeAlignmentMarker;
         }
+        case NodeType.IS_NEIGHBOR: {
+            return s.neighborMarker;
+        }
         default: {
             return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;
         }
         }
     }
 
-    private getIcon = () => {
+    private renderMarker(html: any) {
         const divIconOptions : L.DivIconOptions = {
-            html: this.renderMarkerHtml(),
+            html,
             className: s.node,
         };
 
         return new L.DivIcon(divIconOptions);
+    }
+
+    private renderStartMarker() {
+        const color = this.props.color;
+        if (!color) {
+            throw new Error('Color should never be falsey when rendering start markers.');
+        }
+
+        const icon = this.renderMarker(PinIcon.getPin(color));
+        return (
+            <Marker
+                zIndexOffset={VERY_HIGH_Z_INDEX}
+                icon={icon}
+                position={this.props.latLng}
+            />
+        );
     }
 
     private renderNodeStopCircle() {
@@ -94,13 +126,18 @@ export default class NodeLayer extends Component<INodeMarkerProps> {
     }
 
     render() {
-        const icon = this.getIcon();
+        const nodeType = this.props.nodeType;
+        if (nodeType === NodeType.START) {
+            return this.renderStartMarker();
+        }
 
+        const icon = this.renderMarker(this.renderMarkerHtml());
         const displayCircle = this.props.isSelected && this.props.nodeType === NodeType.STOP;
         return (
             <Marker
                 onContextMenu={this.props.onContextMenu}
-                draggable={Boolean(this.props.isDraggable)}
+                onClick={this.props.onClick}
+                draggable={this.props.isDraggable}
                 icon={icon}
                 position={this.props.latLng}
             >

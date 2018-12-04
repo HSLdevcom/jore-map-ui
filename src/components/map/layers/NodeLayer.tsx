@@ -10,7 +10,7 @@ import { MapStore } from '~/stores/mapStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import NodeMarker from './NodeMarker';
 
-interface MarkerLayerProps {
+interface INodeLayerProps {
     node: INode | null;
     isDisabled: boolean;
     isTimeAlignmentStop: boolean;
@@ -22,7 +22,7 @@ interface MarkerLayerProps {
 
 @inject('popupStore', 'toolbarStore', 'sidebarStore', 'mapStore')
 @observer
-export default class NodeLayer extends Component<MarkerLayerProps> {
+export default class NodeLayer extends Component<INodeLayerProps> {
     private isSelected(node: INode) {
         return this.props.mapStore!.selectedNodeId === node.id;
     }

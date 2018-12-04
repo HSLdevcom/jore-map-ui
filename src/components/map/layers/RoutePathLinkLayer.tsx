@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
 import * as L from 'leaflet';
-import { Polyline, FeatureGroup, Marker } from 'react-leaflet';
+import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
-import PinIcon from '~/icons/pin';
 import { PopupStore } from '~/stores/popupStore';
 import NodeLayer from './NodeLayer';
-import * as s from './routePathLinkLayer.scss';
-
-// The logic of Z Indexes is not very logical.
-// Setting z-index to 2, if other items is 1 wont force it to be on top.
-// Setting z-index to a very high number will however most likely set the item on top.
-// https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
-const VERY_HIGH_Z_INDEX = 1000;
+import NodeMarker from './NodeMarker';
 
 interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;
@@ -81,25 +74,15 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
 
     private renderStartMarker() {
         const routePathLinks = this.props.routePathLinks;
-
-        const icon = this.getStartPointIcon();
         const coordinates = routePathLinks![0].startNode.coordinates;
+        const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
-            <Marker
-                zIndexOffset={VERY_HIGH_Z_INDEX}
-                icon={icon}
-                position={[coordinates.lat, coordinates.lon]}
+            <NodeMarker
+                nodeType={NodeType.START}
+                latLng={latLng}
+                color={this.props.color}
             />
         );
-    }
-
-    private getStartPointIcon = () => {
-        const divIconOptions : L.DivIconOptions = {
-            className: s.startMarker,
-            html: PinIcon.getPin(this.props.color),
-        };
-
-        return new L.DivIcon(divIconOptions);
     }
 
     render() {

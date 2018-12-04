@@ -6,6 +6,7 @@ enum NodeType {
     INVALID = 'invalid',
     DISABLED = 'E',
     TIME_ALIGNMENT = '1',
+    IS_NEIGHBOR = 'N',
 }
 
 export default NodeType;
