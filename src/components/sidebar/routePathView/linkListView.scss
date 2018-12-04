@@ -10,18 +10,22 @@
 
     .linkList {
         background-color: white;
-        height:  120px;
+        height:  160px;
         overflow: auto;
         cursor: pointer;
         margin-top: 5px;
 
         .routePathLinkRow {
             background-color: white;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
 
         .routePathLinkRowSelected {
             color: white;
             background-color: $blue;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
 
         .routePathLinkData:first-of-type {
@@ -47,6 +51,7 @@
         flex-grow: 4;
         flex-basis: 0px;
         overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .tableItemSmall {
