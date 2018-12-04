@@ -113,17 +113,6 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 }
                 let color;
                 let fillColor;
-
-                /*
-                TODO: should solmu have .lnkverkko property? Is it even possible?
-                If solmu gets .lnkverkko, uncomment this:
-                const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-                const transitType = TransitTypeHelper
-                .convertTransitTypeCodeToTransitType(properties.lnkverkko);
-                if (!selectedTransitTypes.includes(transitType)) {
-                    return this.getEmptyStyle();
-                }
-                */
                 switch (properties.soltyyppi) {
                 case NodeType.STOP:
                     color = NodeColors.STOP_COLOR;
