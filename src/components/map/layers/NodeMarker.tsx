@@ -39,24 +39,13 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         isDraggable: false,
     };
 
-    private renderMarkerLabel = () => {
-        const zoom = this.props.mapStore!.zoom;
-        const hastusId = this.props.stop ? this.props.stop!.hastusId : null;
-        if (!hastusId || zoom < HASTUS_MIN_ZOOM) return null;
+    private createDivIcon = (html: any) => {
+        const divIconOptions : L.DivIconOptions = {
+            html,
+            className: s.node,
+        };
 
-        return (
-            <div className={s.hastusIdLabel}>
-                {hastusId}
-            </div>
-        );
-    }
-
-    private renderMarkerHtml = () => {
-        return (
-            <div className={classnames(s.nodeBase, this.getMarkerClass())}>
-                {this.renderMarkerLabel()}
-            </div>
-        );
+        return new L.DivIcon(divIconOptions);
     }
 
     private getMarkerClass = () => {
@@ -88,29 +77,15 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private renderMarker = (html: any) => {
-        const divIconOptions : L.DivIconOptions = {
-            html,
-            className: s.node,
-        };
+    private renderMarkerLabel = () => {
+        const zoom = this.props.mapStore!.zoom;
+        const hastusId = this.props.stop ? this.props.stop!.hastusId : null;
+        if (!hastusId || zoom < HASTUS_MIN_ZOOM) return null;
 
-        return new L.DivIcon(divIconOptions);
-    }
-
-    private renderStartMarker = () => {
-        const latLng = this.props.latLng;
-        const color = this.props.color;
-        if (!color) {
-            throw new Error('Color should never be falsey when rendering start markers.');
-        }
-
-        const icon = this.renderMarker(PinIcon.getPin(color));
         return (
-            <Marker
-                zIndexOffset={VERY_HIGH_Z_INDEX}
-                icon={icon}
-                position={latLng}
-            />
+            <div className={s.hastusIdLabel}>
+                {hastusId}
+            </div>
         );
     }
 
@@ -125,14 +100,35 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
+    private renderStartMarker = () => {
+        const latLng = this.props.latLng;
+        const color = this.props.color;
+        if (!color) {
+            throw new Error('Color should never be falsey when rendering start markers.');
+        }
+
+        const icon = this.createDivIcon(PinIcon.getPin(color));
+        return (
+            <Marker
+                zIndexOffset={VERY_HIGH_Z_INDEX}
+                icon={icon}
+                position={latLng}
+            />
+        );
+    }
+
     render() {
         const nodeType = this.props.nodeType;
         if (nodeType === NodeType.START) {
             return this.renderStartMarker();
         }
 
-        const icon = this.renderMarker(
-            ReactDOMServer.renderToStaticMarkup(this.renderMarkerHtml()),
+        const icon = this.createDivIcon(
+            ReactDOMServer.renderToStaticMarkup(
+                <div className={classnames(s.nodeBase, this.getMarkerClass())}>
+                    {this.renderMarkerLabel()}
+                </div>,
+            ),
         );
         const displayCircle = this.props.isSelected && nodeType === NodeType.STOP;
         return (
