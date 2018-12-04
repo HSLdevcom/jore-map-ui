@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { IRoutePath } from '~/models';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
+import { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../InputContainer';
 import { Button, Dropdown, Checkbox } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
@@ -17,8 +18,9 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         // TODO
     }
 
-    public onChange = (property: string) => (value: string) => {
-        this.props.onChange(property, value);
+    public onChange = (property: string) =>
+    (value: string, validationResult: IValidationResult) => {
+        this.props.onChange(property, value, validationResult);
     }
 
     public render(): any {

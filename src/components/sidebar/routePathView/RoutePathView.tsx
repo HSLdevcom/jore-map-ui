@@ -15,6 +15,7 @@ import Loader from '~/components/shared/loader/Loader';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NotificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
+import { IValidationResult } from '~/validation/FormValidator';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -24,6 +25,7 @@ interface IRoutePathViewState {
     hasModifications: boolean;
     routePath: IRoutePath | null;
     isLoading: boolean;
+    invalidFieldsDictionary: object;
 }
 
 interface IRoutePathViewProps {
@@ -40,6 +42,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             hasModifications: false,
             routePath: null,
             isLoading: true,
+            invalidFieldsDictionary: {},
         };
     }
 
@@ -84,11 +87,28 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isLoading: false });
     }
 
-    public onChange = (property: string, value: any) => {
+    private markFieldIsValid = (field: string, isValid: boolean) => {
+        this.setState({
+            invalidFieldsDictionary: {
+                ...this.state.invalidFieldsDictionary,
+                [field]: isValid,
+            },
+        });
+    }
+
+    private isFormValid = () => {
+        return !Object.values(this.state.invalidFieldsDictionary)
+            .some(fieldIsValid => !fieldIsValid);
+    }
+
+    public onChange = (property: string, value: any, validationResult?: IValidationResult) => {
         this.setState({
             routePath: { ...this.state.routePath!, [property]: value },
             hasModifications: true,
         });
+        if (validationResult) {
+            this.markFieldIsValid(property, validationResult!.isValid);
+        }
     }
 
     private redirectToNewRoutePathView = () => {
@@ -169,7 +189,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         onClick={this.save}
                         type={ButtonType.SAVE}
                         text={'Tallenna reitinsuunta'}
-                        disabled={!this.state.hasModifications}
+                        disabled={!this.state.hasModifications || !this.isFormValid()}
                     />
                 </div>
             </div>

@@ -33,6 +33,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
             isValid: validatorResult.isValid,
             errorMessage: validatorResult.errorMessage,
         });
+        return validatorResult;
     }
 
     private shouldUpdate = () => {
@@ -43,10 +44,11 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         const value = e.currentTarget.value;
         if (this.shouldUpdate()) {
             if (this.props.validator) {
-                this.validate(value);
+                const validationResult = this.validate(value);
+                this.props.onChange!(value, validationResult);
+            } else {
+                this.props.onChange!(value);
             }
-
-            this.props.onChange!(value);
         }
     }
 
