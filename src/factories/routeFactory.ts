@@ -19,7 +19,7 @@ class RouteFactory {
             routeName: externalRoute.reinimi,
             routeNameSwedish: externalRoute.reinimir,
             lineId: externalRoute.lintunnus,
-            routeId: externalRoute.reitunnus,
+            id: externalRoute.reitunnus,
         };
 
         return route;
