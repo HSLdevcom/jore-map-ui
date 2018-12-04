@@ -40,7 +40,7 @@ export class RouteStore {
     @action
     public removeFromRoutes(routeId: string) {
         for (let i = 0; i < this._routes.length; i += 1) {
-            if (this._routes[i].routeId === routeId) {
+            if (this._routes[i].id === routeId) {
                 this._routes[i].routePaths
                     .forEach(routePath => this.colorScale.releaseColor(routePath.color!));
                 this._routes.splice(i, 1);
