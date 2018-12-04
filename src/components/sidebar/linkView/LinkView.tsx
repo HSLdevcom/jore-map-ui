@@ -120,8 +120,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['P', 'E', 'X', '-']}
-                            selected={'P'}
+                            items={['Pysäkki', 'Pysäkki - Ei käytössä', 'Risteys', 'Raja']}
+                            selected={'Pysäkki'}
                         />
                         <InputContainer
                             label=''
@@ -137,8 +137,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['P', 'E', 'X', '-']}
-                            selected={'P'}
+                            items={['Pysäkki', 'Pysäkki - Ei käytössä', 'Risteys', 'Raja']}
+                            selected={'Pysäkki'}
                         />
                         <InputContainer
                             label=''
@@ -150,7 +150,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <Dropdown
                         label='KUTSU-/JÄTTÖ-/OTTOP'
                         onChange={this.onChange}
-                        items={['0 - Ei', '1 - Ei', '2 - Ei']}
+                        items={['Ei', 'Kyllä']}
                         selected={'0 - Ei'}
                     />
                     <Dropdown
