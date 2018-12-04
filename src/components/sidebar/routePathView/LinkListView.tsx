@@ -114,10 +114,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
     }
 
     public noRoutePathLinkSelected = () => {
-        if (this.state.selectedRoutePathLink) {
-            return false;
-        }
-        return true;
+        return !this.state.selectedRoutePathLink;
     }
 
     public setLinkTableFilter = (filter: string) => {
@@ -158,8 +155,8 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         <div className={s.linkListView}>
             <div className={s.dropDownFilter}>
                 <Dropdown
-                    label={'Alkusolmutyyppi'}
-                    selected={'Pysäkki'}
+                    label='Alkusolmutyyppi'
+                    selected='Pysäkki'
                     items={[
                         filterTypes.STOPS,
                         filterTypes.DISABLED,
