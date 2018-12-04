@@ -3,11 +3,11 @@ import moment from 'moment';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import Moment from 'react-moment';
+import { match } from 'react-router';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
@@ -28,6 +28,7 @@ interface IRoutePathViewState {
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
+    match?: match<any>;
 }
 
 @inject('routePathStore')
@@ -48,10 +49,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private async fetchRoutePath() {
-        const routeId = navigator.getQueryParam(QueryParams.routeId);
-        const direction = navigator.getQueryParam(QueryParams.direction);
-        const startTime = moment(
-            decodeURIComponent(navigator.getQueryParam(QueryParams.startTime)));
+        console.log(this.props.match!.params.id);
+        const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
+        const startTime = moment(startTimeString);
         const routePath =
             await RoutePathService.fetchRoutePath(routeId, startTime, direction);
         this.setState({
