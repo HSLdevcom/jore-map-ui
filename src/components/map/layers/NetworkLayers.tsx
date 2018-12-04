@@ -105,9 +105,9 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
                 const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
                 if (properties.transittypes) {
-                    const transitTypes = TransitTypeHelper
+                    const nodeTransitTypes = TransitTypeHelper
                         .convertTransitTypeCodesToTransitTypes(properties.transittypes.split(','));
-                    if (!selectedTransitTypes.some(type => transitTypes.includes(type))) {
+                    if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
                         return this.getEmptyStyle();
                     }
                 }
