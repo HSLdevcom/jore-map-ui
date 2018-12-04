@@ -102,18 +102,18 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         return {
             // Layer name 'solmu' is directly mirrored from Jore through geoserver
             solmu: (properties: any, zoom: number) => {
-
+                const { transittypes: transitTypes, soltyyppi: nodeType } = properties;
                 const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
-                if (properties.transittypes) {
+                if (transitTypes) {
                     const nodeTransitTypes = TransitTypeHelper
-                        .convertTransitTypeCodesToTransitTypes(properties.transittypes.split(','));
+                        .convertTransitTypeCodesToTransitTypes(transitTypes.split(','));
                     if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
                         return this.getEmptyStyle();
                     }
                 }
                 let color;
                 let fillColor;
-                switch (properties.soltyyppi) {
+                switch (nodeType) {
                 case NodeType.STOP:
                     color = NodeColors.STOP_COLOR;
                     fillColor = NodeColors.STOP_FILL_COLOR;
