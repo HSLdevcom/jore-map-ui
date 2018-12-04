@@ -120,7 +120,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['P', 'P1', 'P2']}
+                            items={['P', 'E', 'X', '-']}
                             selected={'P'}
                         />
                         <InputContainer
@@ -137,7 +137,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['P', 'P1', 'P2']}
+                            items={['P', 'E', 'X', '-']}
                             selected={'P'}
                         />
                         <InputContainer
@@ -159,12 +159,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         items={['Kyllä', 'Ei']}
                         selected={'Ei'}
                     />
-                    <Dropdown
-                        label='VÄLIPISTEAIKAPYSÄKKI'
-                        onChange={this.onChange}
-                        items={['Kyllä', 'Ei']}
-                        selected={'Kyllä'}
-                    />
+                    <div className={s.formItem} />
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.formItem}>
@@ -246,7 +241,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text={'Ohitusaika nettiaikat.'}
                             onClick={this.onChange}
                         />
                     </div>
@@ -258,7 +253,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text={'Ohitusaika nettiaikat.'}
                             onClick={this.onChange}
                         />
                     </div>
@@ -302,7 +297,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <div className={s.flexRow}>
                     <div className={s.flexGrow}>
                         <Dropdown
-                            label='ALKUSOLMU PAIKKANA'
+                            label='SOLMU HASTUS-PAIKKANA'
                             onChange={this.onChange}
                             items={['Kyllä', 'Ei']}
                             selected={'Kyllä'}
