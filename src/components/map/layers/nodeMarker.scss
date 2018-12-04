@@ -79,6 +79,16 @@
         text-shadow: 0 0 5px white, 0 0 5px white;
     }
 
+    .neighborMarker {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: -4px;
+        left: -4px;
+        border-color: #ca00f7;
+        background-color: #ca00f7;
+    }
+
 }
 
 .crossroadCircle {
