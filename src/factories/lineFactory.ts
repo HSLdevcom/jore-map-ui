@@ -19,7 +19,7 @@ class LineFactory {
         return {
             transitType,
             routes,
-            lineId: externalLine.lintunnus,
+            id: externalLine.lintunnus,
         };
     }
 }
