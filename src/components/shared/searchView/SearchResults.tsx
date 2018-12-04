@@ -73,7 +73,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             return false;
         }
 
-        // Filter by line.lineId
+        // Filter by line.id
         if (lineId.indexOf(searchTerm) > -1) return true;
 
         // Filter by route.name
@@ -85,7 +85,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     private filteredLines = () => {
         return this.props.lineStore!.allLines
             .filter(line =>
-                this.filterLines(line.routes, line.lineId, line.transitType))
+                this.filterLines(line.routes, line.id, line.transitType))
             .splice(0, this.state.showLimit);
     }
 
@@ -168,7 +168,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                             .map((line: ILine) => {
                                 return (
                                     <LineItem
-                                        key={line.lineId}
+                                        key={line.id}
                                         line={line}
                                     />
                                 );
