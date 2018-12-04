@@ -10,6 +10,7 @@ import RoutePathLinkService from '~/services/routePathLinkService';
 import NodeMarker from '../NodeMarker';
 
 const MARKER_COLOR = '#00df0b';
+const NEIGHBOR_MARKER_COLOR = '#ca00f7';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
@@ -57,7 +58,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderLink(routePathLink: IRoutePathLink, { isNeighbor }: any) {
-        const color = isNeighbor ? '#ca00f7' : '#00df0b';
+        const color = isNeighbor ? NEIGHBOR_MARKER_COLOR : MARKER_COLOR;
         return (
             <Polyline
                 positions={routePathLink.positions}

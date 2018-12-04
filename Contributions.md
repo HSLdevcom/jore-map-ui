@@ -21,7 +21,7 @@
 * Always use ```<div>``` instead of ```<span>``` (only use span if there is a reason to use it)
 * Use classnames if there are multiple classes
 * Use async await instead of promises
-* Don't use .bind in jsx, use arrow functions instead
+* Use arrow functions in components
 * Use render prefix in methods that return JSX or HTML
 
 ### IModels

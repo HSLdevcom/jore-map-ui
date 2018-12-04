@@ -73,6 +73,7 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     private renderStartMarker() {
+        const color = this.props.color;
         const routePathLinks = this.props.routePathLinks;
         const coordinates = routePathLinks![0].startNode.coordinates;
         const latLng = L.latLng(coordinates.lat, coordinates.lon);
@@ -80,7 +81,7 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
             <NodeMarker
                 nodeType={NodeType.START}
                 latLng={latLng}
-                color={this.props.color}
+                color={color}
             />
         );
     }

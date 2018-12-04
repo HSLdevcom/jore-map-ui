@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
@@ -39,21 +40,23 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     private renderMarkerLabel = () => {
-        const stop = this.props.stop;
-        if (!stop) return '';
+        const zoom = this.props.mapStore!.zoom;
+        const hastusId = this.props.stop ? this.props.stop!.hastusId : null;
+        if (!hastusId || zoom < HASTUS_MIN_ZOOM) return null;
 
-        if (this.props.mapStore!.zoom >= HASTUS_MIN_ZOOM) {
-            return `<div class=${s.hastusIdLabel}>
-                ${stop.hastusId}
-            </div>`;
-        }
-        return '';
+        return (
+            <div className={s.hastusIdLabel}>
+                {hastusId}
+            </div>
+        );
     }
 
     private renderMarkerHtml = () => {
-        return `<div class="${classnames(s.nodeBase, this.getMarkerClass())}">
-                ${ this.renderMarkerLabel() }
-            </div>`;
+        return (
+            <div className={classnames(s.nodeBase, this.getMarkerClass())}>
+                {this.renderMarkerLabel()}
+            </div>
+        );
     }
 
     private getMarkerClass = () => {
@@ -85,7 +88,7 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private renderMarker(html: any) {
+    private renderMarker = (html: any) => {
         const divIconOptions : L.DivIconOptions = {
             html,
             className: s.node,
@@ -94,7 +97,8 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         return new L.DivIcon(divIconOptions);
     }
 
-    private renderStartMarker() {
+    private renderStartMarker = () => {
+        const latLng = this.props.latLng;
         const color = this.props.color;
         if (!color) {
             throw new Error('Color should never be falsey when rendering start markers.');
@@ -105,21 +109,17 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
             <Marker
                 zIndexOffset={VERY_HIGH_Z_INDEX}
                 icon={icon}
-                position={this.props.latLng}
+                position={latLng}
             />
         );
     }
 
-    private renderNodeStopCircle() {
-        const stop = this.props.stop;
-        if (!stop) return null;
-
-        const radius = stop.radius ? stop.radius : DEFAULT_RADIUS;
-
+    private renderStopRadiusCircle = (radius: number = DEFAULT_RADIUS) => {
+        const latLng = this.props.latLng;
         return (
             <Circle
                 className={s.stopCircle}
-                center={this.props.latLng}
+                center={latLng}
                 radius={radius}
             />
         );
@@ -131,8 +131,10 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
             return this.renderStartMarker();
         }
 
-        const icon = this.renderMarker(this.renderMarkerHtml());
-        const displayCircle = this.props.isSelected && this.props.nodeType === NodeType.STOP;
+        const icon = this.renderMarker(
+            ReactDOMServer.renderToStaticMarkup(this.renderMarkerHtml()),
+        );
+        const displayCircle = this.props.isSelected && nodeType === NodeType.STOP;
         return (
             <Marker
                 onContextMenu={this.props.onContextMenu}
@@ -143,7 +145,7 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
             >
             {
                 (displayCircle) ?
-                    this.renderNodeStopCircle()
+                    this.renderStopRadiusCircle(this.props.stop!.radius)
                 : null
             }
             </Marker>
