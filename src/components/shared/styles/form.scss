@@ -46,3 +46,17 @@ $labelColor: $mediumGrey;
 .form > .formSection:first-of-type {
     padding-top: 0;
 }
+
+.errorMessage {
+    color: $errorRed;
+    font-size: 12px;
+}
+
+.invalidInput {
+    border-color: $errorRed;
+}
+
+.invalidInput:focus {
+    box-shadow: 0 0 2px $errorRed;
+    border-color: $errorRed;
+}

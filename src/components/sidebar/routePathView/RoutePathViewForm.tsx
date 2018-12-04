@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { IRoutePath } from '~/models';
+import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import InputContainer from '../InputContainer';
 import { Button, Dropdown, Checkbox } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
@@ -35,6 +36,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         value={this.props.routePath.routePathName}
                         onChange={this.onChange('routePathName')}
+                        validator={routePathValidationModel.nameFi}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
