@@ -18,7 +18,7 @@ export default class FormValidator {
             ruleTranslations,
             );
 
-        const isValid = !!validator.passes();
+        const isValid = Boolean(validator.passes());
         const firstErrorMessage = validator.errors.first('value');
 
         return {
