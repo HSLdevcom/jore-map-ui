@@ -1,50 +1,109 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import { match } from 'react-router';
+import moment from 'moment';
 import ButtonType from '~/enums/buttonType';
-import TransitType from '~/enums/transitType';
-import { SidebarStore } from '~/stores/sidebarStore';
+import RouteService from '~/services/routeService';
+import { IRoutePathLink, IRoute } from '~/models';
+import RoutePathLinkService from '~/services/routePathLinkService';
+import NodeType from '~/enums/nodeType';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
+import Loader from '../../shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
-    selectedTransitType: TransitType;
+    routePathLink: IRoutePathLink | null;
+    route: IRoute | null;
+    isLoading: boolean;
 }
 
 interface ILinkViewProps {
-    sidebarStore?: SidebarStore;
+    match?: match<any>;
 }
 
-@inject('sidebarStore')
+const nodeDescriptions = {
+    stop: 'Pysäkki',
+    stopNotInUse: 'Pysäkki - Ei käytössä',
+    crossroad: 'Risteys',
+    border: 'Raja',
+    unknown: 'Tyhjä',
+};
+
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
-    constructor(props: any) {
+    constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
-            selectedTransitType: TransitType.BUS,
+            routePathLink: null,
+            route: null,
+            isLoading: true,
         };
     }
 
     public componentDidMount() {
-        if (this.props.sidebarStore) {
-            // TODO: fetch GraphSQL with linkId
-            // const linkId = this.props.sidebarStore!.openLinkId;
+        const routeLinkId = this.props.match!.params.id;
+        if (routeLinkId) {
+            this.fetchRoutePathLink(routeLinkId);
         }
     }
 
-    public componentWillUnmount() {
-        this.props.sidebarStore!.setOpenLinkId(null);
+    public componentWillReceiveProps(props: ILinkViewProps) {
+        const routeLinkId = props.match!.params.id;
+        if (routeLinkId) {
+            this.fetchRoutePathLink(routeLinkId);
+        }
     }
 
-    private toggleSelectedTransitType = (selectedTransitType: TransitType): void => {
-        this.setState({ selectedTransitType });
+    private getRoutePath() {
+        if (this.state.route && this.state.routePathLink) {
+            return this.state.route.routePaths
+                .find(p =>
+                    p.routeId === this.state.routePathLink!.routeId &&
+                    p.direction === this.state.routePathLink!.routePathDirection &&
+                    p.startTime.getTime()
+                    === this.state.routePathLink!.routePathStartDate!.getTime(),
+                );
+        }
+        return;
     }
 
-    private getFilters = () => {
-        return [this.state.selectedTransitType];
+    private async fetchRoutePathLink(id: string) {
+        this.setState({ isLoading: true });
+
+        const routePathLinkId = parseInt(id, 10);
+        const routePathLink =
+            await RoutePathLinkService.fetchRoutePathLink(routePathLinkId);
+
+        if (routePathLink) {
+            this.setState({ routePathLink });
+
+            if (routePathLink.routeId) {
+                const route = await RouteService.fetchRoute(routePathLink.routeId!);
+                if (route) {
+                    this.setState({ route });
+                }
+            }
+        }
+        this.setState({ isLoading: false });
+    }
+
+    private getNodeDescription(nodeType: NodeType) {
+        switch (nodeType) {
+        case NodeType.STOP:
+            return nodeDescriptions.stop;
+        case NodeType.DISABLED:
+            return nodeDescriptions.stopNotInUse;
+        case NodeType.MUNICIPALITY_BORDER:
+            return nodeDescriptions.border;
+        case NodeType.CROSSROAD:
+            return nodeDescriptions.crossroad;
+        default:
+            return nodeDescriptions.unknown;
+        }
     }
 
     public toggleEditing = () => {
@@ -54,11 +113,24 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     public onChange = () => {
     }
 
-    public render(): any {
+    public render() {
+        if (this.state.isLoading) {
+            return (
+                <div className={classnames(s.linkView, s.form)}>
+                    <Loader />
+                </div>
+            );
+        }
+
+        const startNode = this.state.routePathLink!.startNode;
+        const endNode = this.state.routePathLink!.endNode;
+        const route = this.state.route;
+        const routePath = this.getRoutePath();
+
         return (
         <div className={classnames(s.linkView, s.form)}>
             <ViewHeader
-                header='Reitin 1016 linkki'
+                header={`Reitinlinkki ${this.state.routePathLink!.id}`}
             />
             <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT
@@ -68,26 +140,37 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='REITTITUNNUS'
-                            placeholder='1016'
+                            disabled={true}
+                            value={this.state.routePathLink!.routeId}
                         />
                         <InputContainer
                             label='SUUNTA'
-                            placeholder='Suunta 1'
+                            disabled={true}
+                            value={`Suunta ${routePath ? routePath.direction : '?'}`}
                         />
                     </div>
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='VOIM. AST'
-                            placeholder='01.09.2017'
+                            disabled={true}
+                            value={
+                                routePath ? moment(
+                                    routePath.startTime,
+                                ).format('DD.MM.YYYY') : ''}
                         />
                         <InputContainer
                             label='VIIM. VOIM'
-                            placeholder='31.12.2050'
+                            disabled={true}
+                            value={
+                                routePath ? moment(
+                                    routePath.endTime,
+                                ).format('DD.MM.YYYY') : ''}
                         />
                     </div>
                     <InputContainer
                         label='NIMI'
-                        placeholder='Rautatientori - Korkeasaari'
+                        disabled={true}
+                        value={route ? route.routeName : ''}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -116,16 +199,22 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
                             label='ALKU'
-                            placeholder='1020112'
+                            disabled={true}
+                            value={startNode ? startNode.id : '-'}
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['Pysäkki', 'Pysäkki - Ei käytössä', 'Risteys', 'Raja']}
-                            selected={'Pysäkki'}
+                            items={Object.values(nodeDescriptions)}
+                            selected={
+                                startNode
+                                    ? this.getNodeDescription(startNode.type)
+                                    : nodeDescriptions.unknown}
                         />
                         <InputContainer
                             label=''
-                            placeholder='Rautatientori'
+                            disabled={true}
+                            value={
+                                startNode && startNode.stop ? startNode.stop!.nameFi : '-'}
                         />
                     </div>
                 </div>
@@ -133,16 +222,21 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
                             label='LOPPU'
-                            placeholder='1020126'
+                            disabled={true}
+                            value={endNode ? endNode.id : '-'}
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['Pysäkki', 'Pysäkki - Ei käytössä', 'Risteys', 'Raja']}
-                            selected={'Pysäkki'}
+                            items={Object.values(nodeDescriptions)}
+                            selected={
+                                endNode
+                                    ? this.getNodeDescription(endNode.type)
+                                    : nodeDescriptions.unknown}
                         />
                         <InputContainer
                             label=''
-                            placeholder='Rautatientori'
+                            disabled={true}
+                            value={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
                         />
                     </div>
                 </div>
@@ -157,7 +251,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         label='AJANTASAUSPYSÄKKI'
                         onChange={this.onChange}
                         items={['Kyllä', 'Ei']}
-                        selected={'Ei'}
+                        selected={
+                            this.state.routePathLink!.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'Ei'
+                        }
                     />
                     <div className={s.formItem} />
                 </div>
@@ -168,8 +264,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         </div>
                         <div className={s.transitButtonBar}>
                             <TransitToggleButtonBar
-                                toggleSelectedTransitType={this.toggleSelectedTransitType}
-                                selectedTransitTypes={this.getFilters()}
+                                selectedTransitTypes={route ? [route.line!.transitType] : []}
                             />
                         </div>
                     </div>

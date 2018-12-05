@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Route, Switch, Redirect } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
-import { SidebarStore } from '~/stores/sidebarStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import routeBuilder  from '~/routing/routeBuilder';
@@ -25,7 +24,6 @@ import * as s from './sidebar.scss';
 // tslint:disable-next-line
 // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
 interface ISidebarProps{
-    sidebarStore?: SidebarStore;
     routeStore?: RouteStore;
     searchStore?: SearchStore;
     location: Location;
@@ -35,7 +33,7 @@ interface ILinelistState {
     searchInput: string;
 }
 
-@inject('sidebarStore', 'routeStore', 'searchStore')
+@inject('routeStore', 'searchStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
 

@@ -23,11 +23,15 @@ class RoutePathLinkFactory {
         return {
             startNode,
             endNode,
-            positions: RoutePathLinkFactory.getPositions(externalRoutePathLink.geojson),
+            positions: RoutePathLinkFactory.getPositions(
+                externalRoutePathLink.link.geojson),
             id: externalRoutePathLink.relid,
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeType: externalRoutePathLink.relpysakki,
             isStartNodeTimeAlignmentStop: !!externalRoutePathLink.ajantaspys,
+            routeId: externalRoutePathLink.reitunnus,
+            routePathDirection: externalRoutePathLink.suusuunta,
+            routePathStartDate: new Date(externalRoutePathLink.suuvoimast),
         };
     }
 

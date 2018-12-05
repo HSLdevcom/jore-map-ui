@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-import { SidebarStore } from '~/stores/sidebarStore';
+import { observer } from 'mobx-react';
 import { IRoutePath, INode, IRoutePathLink } from '~/models';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
@@ -10,7 +9,6 @@ import { Dropdown, Button } from '../../controls';
 import * as s from './linkListView.scss';
 
 interface ILinkListViewProps {
-    sidebarStore?: SidebarStore;
     routePath: IRoutePath;
 }
 
@@ -27,7 +25,6 @@ const filterTypes = {
     ALL: 'Näytä kaikki',
 };
 
-@inject('sidebarStore')
 @observer
 class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewState>{
     constructor(props: ILinkListViewProps) {
@@ -38,7 +35,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
     }
 
     public selectRoutePathLink = (id: string) =>
-    (event: React.MouseEvent<HTMLElement>) => {
+    () => {
         this.setState({
             selectedRoutePathLink: id,
         });
@@ -99,8 +96,13 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
 
     public openLinkView = () => {
         if (this.state.selectedRoutePathLink) {
-            this.props.sidebarStore!.setOpenLinkId(parseInt(this.state.selectedRoutePathLink, 10));
-            const linkViewLink = routeBuilder.to(subSites.link).toLink();
+            const linkViewLink =
+                routeBuilder
+                    .to(subSites.link)
+                    .toTarget(
+                        this.state.selectedRoutePathLink,
+                    )
+                    .toLink();
             window.open(linkViewLink);
         }
     }

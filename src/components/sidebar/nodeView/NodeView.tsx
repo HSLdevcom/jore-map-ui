@@ -2,7 +2,6 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
-import { SidebarStore } from '~/stores/sidebarStore';
 import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
 import ButtonType from '~/enums/buttonType';
@@ -26,11 +25,10 @@ interface INodeViewState {
 
 interface INodeViewProps {
     match?: match<any>;
-    sidebarStore?: SidebarStore;
     mapStore?: MapStore;
 }
 
-@inject('sidebarStore', 'mapStore')
+@inject('mapStore')
 @observer
 class NodeView extends React.Component
 <INodeViewProps, INodeViewState> {

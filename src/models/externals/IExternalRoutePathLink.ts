@@ -1,13 +1,17 @@
 import NodeType from '~/enums/nodeType';
 import IExternalNode from './IExternalNode';
+import IExternalLink from './IExternalLink';
 
 export default interface IExternalRoutePathLink {
+    link: IExternalLink;
     startNode: IExternalNode;
     endNode: IExternalNode;
-    geojson: string;
     ajantaspys: string;
     lnkverkko: string;
     relid: string;
     reljarjnro: number;
     relpysakki: NodeType;
+    suusuunta: string;
+    suuvoimast: string;
+    reitunnus: string;
 }
