@@ -28,7 +28,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     }
 
     private validate = (value: string) => {
-        const validatorResult = FormValidator.validateString(value, this.props.validator!);
+        const validatorResult = FormValidator.validate(value, this.props.validator!);
         this.setState({
             isValid: validatorResult.isValid,
             errorMessage: validatorResult.errorMessage,
