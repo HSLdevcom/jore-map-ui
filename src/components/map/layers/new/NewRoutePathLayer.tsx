@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
-import { Polyline, Marker } from 'react-leaflet';
+import { Polyline } from 'react-leaflet';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
-import classnames from 'classnames';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
-import PinIcon from '~/icons/pin';
 import NodeType from '~/enums/nodeType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
-import * as s from './newRoutePathLayer.scss';
+import NodeMarker from '../NodeMarker';
 
-// The logic of Z Indexes is not very logical.
-// Setting z-index to 2, if other items is 1 wont force it to be on top.
-// Setting z-index to a very high number will however most likely set the item on top.
-// https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
-const VERY_HIGH_Z_INDEX = 1000;
+const MARKER_COLOR = '#00df0b';
+const NEIGHBOR_MARKER_COLOR = '#ca00f7';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
@@ -50,49 +45,20 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
             { isNeighbor } : { isNeighbor: boolean },
             key: number) {
         const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
+        const nodeType = isNeighbor ? NodeType.IS_NEIGHBOR : node.type;
+
         return (
-            <Marker
+            <NodeMarker
                 key={`${key}-${node.id}`}
-                onClick={isNeighbor ? this.addLinkToRoutePath(routePathLink) : null}
-                icon={this.getIcon({ isNeighbor }, node.type)}
-                position={latLng}
+                nodeType={nodeType}
+                onClick={isNeighbor ? this.addLinkToRoutePath(routePathLink) : undefined}
+                latLng={latLng}
             />
         );
     }
 
-    private getIcon({ isNeighbor }: any, nodeType: NodeType) {
-        const divIconOptions : L.DivIconOptions = {
-            html: this.getMarkerHtml(isNeighbor, nodeType),
-            className: s.node,
-        };
-
-        return new L.DivIcon(divIconOptions);
-    }
-
-    private getMarkerHtml = (isNeighbor: boolean, nodeType: NodeType) => {
-        let className;
-
-        if (isNeighbor) {
-            className = s.neighborMarker;
-        } else {
-            switch (nodeType) {
-            case NodeType.STOP: {
-                className = s.newRoutePathMarker;
-                break;
-            }
-            case NodeType.CROSSROAD: {
-                className = s.crossroadMarker;
-            }
-            }
-        }
-        return `<div class="${classnames(
-            s.nodeBase,
-            className,
-        )}" />`;
-    }
-
     private renderLink(routePathLink: IRoutePathLink, { isNeighbor }: any) {
-        const color = isNeighbor ? '#ca00f7' : '#00df0b';
+        const color = isNeighbor ? NEIGHBOR_MARKER_COLOR : MARKER_COLOR;
         return (
             <Polyline
                 positions={routePathLink.positions}
@@ -148,24 +114,15 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
             return null;
         }
 
-        const icon = this.getStartPointIcon();
         const coordinates = routePathLinks![0].startNode.coordinates;
+        const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
-            <Marker
-                zIndexOffset={VERY_HIGH_Z_INDEX}
-                icon={icon}
-                position={[coordinates.lat, coordinates.lon]}
+            <NodeMarker
+                nodeType={NodeType.START}
+                latLng={latLng}
+                color={MARKER_COLOR}
             />
         );
-    }
-
-    private getStartPointIcon = () => {
-        const divIconOptions : L.DivIconOptions = {
-            className: s.startMarker,
-            html: PinIcon.getPin('#00df0b'),
-        };
-
-        return new L.DivIcon(divIconOptions);
     }
 
     render() {

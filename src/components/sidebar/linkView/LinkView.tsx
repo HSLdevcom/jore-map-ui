@@ -7,6 +7,7 @@ import ButtonType from '~/enums/buttonType';
 import RouteService from '~/services/routeService';
 import { IRoutePathLink, IRoute } from '~/models';
 import RoutePathLinkService from '~/services/routePathLinkService';
+import NodeType from '~/enums/nodeType';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
@@ -23,6 +24,14 @@ interface ILinkViewState {
 interface ILinkViewProps {
     match?: match<any>;
 }
+
+const nodeDescriptions = {
+    stop: 'Pysäkki',
+    stopNotInUse: 'Pysäkki - Ei käytössä',
+    crossroad: 'Risteys',
+    border: 'Raja',
+    unknown: 'Tyhjä',
+};
 
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
@@ -81,6 +90,21 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             }
         }
         this.setState({ isLoading: false });
+    }
+
+    private getNodeDescription(nodeType: NodeType) {
+        switch (nodeType) {
+        case NodeType.STOP:
+            return nodeDescriptions.stop;
+        case NodeType.DISABLED:
+            return nodeDescriptions.stopNotInUse;
+        case NodeType.MUNICIPALITY_BORDER:
+            return nodeDescriptions.border;
+        case NodeType.CROSSROAD:
+            return nodeDescriptions.crossroad;
+        default:
+            return nodeDescriptions.unknown;
+        }
     }
 
     public toggleEditing = () => {
@@ -175,8 +199,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['P', 'X', '-']}
-                            selected={startNode ? startNode.type : 'tyhjä'}
+                            items={Object.values(nodeDescriptions)}
+                            selected={
+                                startNode
+                                    ? this.getNodeDescription(startNode.type)
+                                    : nodeDescriptions.unknown}
                         />
                         <InputContainer
                             label=''
@@ -193,8 +220,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={['P', 'X', '-']}
-                            selected={endNode ? endNode.type : 'tyhjä'}
+                            items={Object.values(nodeDescriptions)}
+                            selected={
+                                endNode
+                                    ? this.getNodeDescription(endNode.type)
+                                    : nodeDescriptions.unknown}
                         />
                         <InputContainer
                             label=''
@@ -206,7 +236,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <Dropdown
                         label='KUTSU-/JÄTTÖ-/OTTOP'
                         onChange={this.onChange}
-                        items={['0 - Ei', '1 - Ei', '2 - Ei']}
+                        items={['Ei', 'Kyllä']}
                         selected={'0 - Ei'}
                     />
                     <Dropdown
@@ -217,12 +247,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             this.state.routePathLink!.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'Ei'
                         }
                     />
-                    <Dropdown
-                        label='VÄLIPISTEAIKAPYSÄKKI'
-                        onChange={this.onChange}
-                        items={['Kyllä', 'Ei']}
-                        selected={'Kyllä'}
-                    />
+                    <div className={s.formItem} />
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.formItem}>
@@ -303,7 +328,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text={'Ohitusaika nettiaikat.'}
                             onClick={this.onChange}
                         />
                     </div>
@@ -315,7 +340,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text={'Ohitusaika nettiaikat.'}
                             onClick={this.onChange}
                         />
                     </div>
@@ -359,7 +384,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <div className={s.flexRow}>
                     <div className={s.flexGrow}>
                         <Dropdown
-                            label='ALKUSOLMU PAIKKANA'
+                            label='SOLMU HASTUS-PAIKKANA'
                             onChange={this.onChange}
                             items={['Kyllä', 'Ei']}
                             selected={'Kyllä'}

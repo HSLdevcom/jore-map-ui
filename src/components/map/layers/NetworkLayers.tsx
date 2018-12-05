@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { toJS } from 'mobx';
 import MapStore, { NodeSize } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { NotificationStore } from '~/stores/notificationStore';
@@ -67,7 +68,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     private getPointStyle = () => {
         return {
             // Layer name 'piste' is directly mirrored from Jore through geoserver
-            piste: (properties: any, zoom: any) => {
+            piste: (properties: any, zoom: number) => {
                 const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
                 const transitType = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(properties.lnkverkko);
@@ -100,21 +101,19 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
 
         return {
             // Layer name 'solmu' is directly mirrored from Jore through geoserver
-            solmu: (properties: any, zoom: any) => {
+            solmu: (properties: any, zoom: number) => {
+                const { transittypes: transitTypes, soltyyppi: nodeType } = properties;
+                const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
+                if (transitTypes) {
+                    const nodeTransitTypes = TransitTypeHelper
+                        .convertTransitTypeCodesToTransitTypes(transitTypes.split(','));
+                    if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
+                        return this.getEmptyStyle();
+                    }
+                }
                 let color;
                 let fillColor;
-
-                /*
-                TODO: should solmu have .lnkverkko property? Is it even possible?
-                If solmu gets .lnkverkko, uncomment this:
-                const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-                const transitType = TransitTypeHelper
-                .convertTransitTypeCodeToTransitType(properties.lnkverkko);
-                if (!selectedTransitTypes.includes(transitType)) {
-                    return this.getEmptyStyle();
-                }
-                */
-                switch (properties.soltyyppi) {
+                switch (nodeType) {
                 case NodeType.STOP:
                     color = NodeColors.STOP_COLOR;
                     fillColor = NodeColors.STOP_FILL_COLOR;
@@ -140,13 +139,14 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private getEmptyStyle() {
+    private getEmptyStyle = () => {
         return {
             fillOpacity: 0,
             stroke: false,
             fill: false,
             opacity: 0,
             weight: 0,
+            radius: 0,
         };
     }
 
@@ -168,7 +168,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         }
     }
 
-    private isWaitingForNewRoutePathFirstNodeClick() {
+    private isWaitingForNewRoutePathFirstNodeClick = () => {
         const hasRoutePathLinks =
         this.props.routePathStore!.routePath &&
         this.props.routePathStore!.routePath!.routePathLinks!.length === 0;
