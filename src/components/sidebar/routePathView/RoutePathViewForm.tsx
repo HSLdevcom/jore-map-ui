@@ -38,7 +38,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         value={this.props.routePath.routePathName}
                         onChange={this.onChange('routePathName')}
-                        validator={routePathValidationModel.nameFi}
+                        validatorRule={routePathValidationModel.nameFi}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
@@ -102,7 +102,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         label='PITUUS'
                         disabled={isEditingDisabled}
                         onChange={this.onChange('length')}
-                        validator={routePathValidationModel.length}
+                        validatorRule={routePathValidationModel.length}
                     />
                     <div className={s.flexInnerRowFlexEnd}>
                         <Button

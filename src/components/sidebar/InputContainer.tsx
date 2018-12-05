@@ -10,7 +10,7 @@ interface IInputProps {
     disabled?: boolean;
     onChange?: Function;
     value?: string;
-    validator?: string;
+    validatorRule?: string;
 }
 
 interface IInputState {
@@ -28,7 +28,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     }
 
     private validate = (value: string) => {
-        const validatorResult = FormValidator.validate(value, this.props.validator!);
+        const validatorResult = FormValidator.validate(value, this.props.validatorRule!);
         this.setState({
             isValid: validatorResult.isValid,
             errorMessage: validatorResult.errorMessage,
@@ -43,7 +43,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     private onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
         if (this.shouldUpdate()) {
-            if (this.props.validator) {
+            if (this.props.validatorRule) {
                 const validationResult = this.validate(value);
                 this.props.onChange!(value, validationResult);
             } else {
