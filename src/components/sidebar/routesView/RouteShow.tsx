@@ -77,11 +77,11 @@ class RouteShow extends React.Component<IRouteShowProps> {
             const openRoutePathView = () => {
                 const routePathViewLink = routeBuilder
                     .to(subSites.routePath)
-                    .set(
-                        QueryParams.startTime,
-                        encodeURIComponent(Moment(routePath.startTime).format()))
-                    .set(QueryParams.routeId, routePath.routeId)
-                    .set(QueryParams.direction, routePath.direction)
+                    .toTarget([
+                            routePath.routeId,
+                            Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                            routePath.direction,
+                    ].join(','))
                     .toLink();
                 navigator.goTo(routePathViewLink);
             };

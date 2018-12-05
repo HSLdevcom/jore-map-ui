@@ -1,6 +1,7 @@
 import IExternalRoutePathLink from './IExternalRoutePathLink';
 
 export default interface IExternalRoutePath {
+    poikkeusreitti: string;
     externalRoutePathLinks: IExternalRoutePathLink[];
     lintunnus: string;
     suulahpaik: string;
@@ -16,4 +17,5 @@ export default interface IExternalRoutePath {
     suuviimpvm: string;
     suuvoimast: string;
     suuvoimviimpvm: string;
+    suupituus: number;
 }
