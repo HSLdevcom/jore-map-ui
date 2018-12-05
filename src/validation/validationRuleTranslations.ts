@@ -1,15 +1,15 @@
 const ruleTranslations = {
     min: {
-        string: 'Kenttä saa olla vähintään :min merkkiä',
-        numeric: 'Arvo saa olla vähintään :min',
+        string: 'Kentän arvon tulee olla vähintään :min merkkiä',
+        numeric: 'Kentän arvon tulee olla vähintään :min',
     },
     max: {
-        string: 'Kenttä saa olla enintään :max merkkiä',
-        numeric: 'Arvo saa olla enintään :max',
+        string: 'Kentän arvon tulee olla enintään :max merkkiä',
+        numeric: 'Kentän arvon tulee olla enintään :max',
     },
     required: 'Kenttä ei saa olla tyhjä',
-    string: 'Arvo pitää olla merkkijono',
-    numeric: 'Arvo pitää olla numero',
+    string: 'Kentän arvon tulee olla merkkijono',
+    numeric: 'Kentän arvon tulee olla numero',
 };
 
 export default ruleTranslations;

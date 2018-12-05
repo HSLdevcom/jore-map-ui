@@ -86,7 +86,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isLoading: false });
     }
 
-    private markFieldIsValid = (field: string, isValid: boolean) => {
+    private markInvalidFields = (field: string, isValid: boolean) => {
         this.setState({
             invalidFieldsMap: {
                 ...this.state.invalidFieldsMap,
@@ -106,7 +106,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             hasModifications: true,
         });
         if (validationResult) {
-            this.markFieldIsValid(property, validationResult!.isValid);
+            this.markInvalidFields(property, validationResult!.isValid);
         }
     }
 

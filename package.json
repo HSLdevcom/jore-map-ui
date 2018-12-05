@@ -3,7 +3,6 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "@types/validatorjs": "^3.7.1",
     "apollo-boost": "^0.1.10",
     "apollo-cache-inmemory": "^1.2.9",
     "apollo-client": "^2.4.1",
@@ -95,6 +94,7 @@
     "@types/react-dom": "^16.0.6",
     "@types/react-leaflet": "^1.1.6",
     "@types/react-router-dom": "^4.2.7",
+    "@types/validatorjs": "^3.7.1",
     "bumped": "^0.10.11",
     "bumped-changelog": "^0.3.10",
     "bumped-terminal": "^0.7.6",
