@@ -139,6 +139,8 @@ const routePathQueryFields = `
     suupaapaik
     suukuka
     suupaapaikr
+    suupituus
+    poikkeusreitti
 `;
 
 const nodeQueryFields = `
