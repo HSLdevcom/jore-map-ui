@@ -35,7 +35,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
     }
 
     public selectRoutePathLink = (id: string) =>
-    (event: React.MouseEvent<HTMLElement>) => {
+    () => {
         this.setState({
             selectedRoutePathLink: id,
         });

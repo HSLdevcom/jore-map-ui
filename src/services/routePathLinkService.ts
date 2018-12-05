@@ -42,7 +42,7 @@ export default class RoutePathLinkService {
         } catch (error) {
             console.error(error); // tslint:disable-line
             notificationStore.addNotification({
-                message: `Ei onnistunut.`,
+                message: `Haku löytää linkki (${id}) ei onnistunut.`,
                 type: NotificationType.ERROR,
             });
             return null;

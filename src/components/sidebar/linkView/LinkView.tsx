@@ -72,10 +72,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     private async fetchRoutePathLink(id: string) {
-        const routePathLinkId = parseInt(id, 10);
-
         this.setState({ isLoading: true });
 
+        const routePathLinkId = parseInt(id, 10);
         const routePathLink =
             await RoutePathLinkService.fetchRoutePathLink(routePathLinkId);
 
@@ -114,7 +113,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     public onChange = () => {
     }
 
-    public render(): any {
+    public render() {
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.linkView, s.form)}>
@@ -141,16 +140,19 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='REITTITUNNUS'
+                            disabled={true}
                             value={this.state.routePathLink!.routeId}
                         />
                         <InputContainer
                             label='SUUNTA'
+                            disabled={true}
                             value={`Suunta ${routePath ? routePath.direction : '?'}`}
                         />
                     </div>
                     <div className={s.flexInnerRow}>
                         <InputContainer
                             label='VOIM. AST'
+                            disabled={true}
                             value={
                                 routePath ? moment(
                                     routePath.startTime,
@@ -158,6 +160,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <InputContainer
                             label='VIIM. VOIM'
+                            disabled={true}
                             value={
                                 routePath ? moment(
                                     routePath.endTime,
@@ -166,6 +169,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </div>
                     <InputContainer
                         label='NIMI'
+                        disabled={true}
                         value={route ? route.routeName : ''}
                     />
                 </div>
@@ -195,6 +199,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
                             label='ALKU'
+                            disabled={true}
                             value={startNode ? startNode.id : '-'}
                         />
                         <Dropdown
@@ -207,6 +212,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <InputContainer
                             label=''
+                            disabled={true}
                             value={
                                 startNode && startNode.stop ? startNode.stop!.nameFi : '-'}
                         />
@@ -216,6 +222,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
                             label='LOPPU'
+                            disabled={true}
                             value={endNode ? endNode.id : '-'}
                         />
                         <Dropdown
@@ -228,6 +235,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         />
                         <InputContainer
                             label=''
+                            disabled={true}
                             value={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
                         />
                     </div>
