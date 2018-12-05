@@ -25,7 +25,7 @@ interface IRoutePathViewState {
     hasModifications: boolean;
     routePath: IRoutePath | null;
     isLoading: boolean;
-    invalidFieldsDictionary: object;
+    invalidFieldsMap: object;
 }
 
 interface IRoutePathViewProps {
@@ -43,7 +43,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             hasModifications: false,
             routePath: null,
             isLoading: true,
-            invalidFieldsDictionary: {},
+            invalidFieldsMap: {},
         };
     }
 
@@ -88,15 +88,15 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private markFieldIsValid = (field: string, isValid: boolean) => {
         this.setState({
-            invalidFieldsDictionary: {
-                ...this.state.invalidFieldsDictionary,
+            invalidFieldsMap: {
+                ...this.state.invalidFieldsMap,
                 [field]: isValid,
             },
         });
     }
 
     private isFormValid = () => {
-        return !Object.values(this.state.invalidFieldsDictionary)
+        return !Object.values(this.state.invalidFieldsMap)
             .some(fieldIsValid => !fieldIsValid);
     }
 
