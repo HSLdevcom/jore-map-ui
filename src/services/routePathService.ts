@@ -92,4 +92,9 @@ export default class RoutePathService {
         const apiClient = new ApiClient();
         return await apiClient.updateObject(entityName.ROUTEPATH, routePath);
     }
+
+    public static async createRoutePath(routePath: IRoutePath) {
+        const apiClient = new ApiClient();
+        return await apiClient.addObject(entityName.ROUTEPATH, routePath);
+    }
 }

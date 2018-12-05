@@ -11,6 +11,9 @@ import { NetworkStore } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import RoutePathFactory from '~/factories/routePathFactory';
+import RoutePathService from '~/services/routePathService';
+import NotificationStore from '~/stores/notificationStore';
+import NotificationType from '~/enums/notificationType';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -24,6 +27,7 @@ interface INewRoutePathViewProps {
 
 interface INewRoutePathViewState {
     currentRoutePath: IRoutePath;
+    isLoading: boolean;
 }
 
 @inject('mapStore', 'routeStore', 'routePathStore', 'networkStore')
@@ -39,11 +43,13 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
             this.props.routePathStore!.setRoutePath(newRoutePath);
             this.state = {
+                isLoading: false,
                 currentRoutePath: newRoutePath,
             };
         } else {
             this.state = {
                 currentRoutePath,
+                isLoading: false,
             };
         }
 
@@ -85,8 +91,22 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         });
     }
 
-    public onSave = () => {
-        // TODO
+    public onSave = async () => {
+        this.setState({ isLoading: true });
+        try {
+            await RoutePathService.createRoutePath(this.state.currentRoutePath!);
+            NotificationStore.addNotification({
+                message: 'Tallennus onnistui',
+                type: NotificationType.SUCCESS,
+            });
+        } catch (err) {
+            const errMessage = err.message ? `, (${err.message})` : '';
+            NotificationStore.addNotification({
+                message: `Tallennus epäonnistui${errMessage}`,
+                type: NotificationType.ERROR,
+            });
+        }
+        this.setState({ isLoading: false });
     }
 
     componentWillUnmount() {
