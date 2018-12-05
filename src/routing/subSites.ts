@@ -2,7 +2,7 @@ enum SubSites{
     home = '/',
     routes = '/routes/',
     node = '/node/:id',
-    link = '/link/',
+    link = '/link/:id',
     routePath = '/routePath/',
     newRoutePath = '/routePath/new',
     network = '/network/',

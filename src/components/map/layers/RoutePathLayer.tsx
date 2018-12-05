@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-import { inject, observer } from 'mobx-react';
-import { SidebarStore } from '~/stores/sidebarStore';
+import { observer } from 'mobx-react';
 import { IRoutePath } from '~/models';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
@@ -9,7 +8,6 @@ import navigator from '~/routing/navigator';
 import RoutePathLinkLayer from './RoutePathLinkLayer';
 
 interface RoutePathLayerProps {
-    sidebarStore?: SidebarStore;
     toggleHighlight: Function;
     hoverHighlight: Function;
     hoverHighlightOff: Function;
@@ -18,13 +16,13 @@ interface RoutePathLayerProps {
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
 
-@inject('sidebarStore')
 @observer
 export default class RoutePathLayer extends Component<RoutePathLayerProps> {
     private openLinkView = (routePathLinkId: number) => {
-        // TODO deal with fetching linkID in the endpoint
-        this.props.sidebarStore!.setOpenLinkId(routePathLinkId);
-        const linkViewLink = routeBuilder.to(subSites.link).toLink();
+        const linkViewLink = routeBuilder
+            .to(subSites.link)
+            .toTarget(routePathLinkId.toString())
+            .toLink();
         navigator.goTo(linkViewLink);
     }
 
