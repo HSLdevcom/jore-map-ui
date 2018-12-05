@@ -2,6 +2,7 @@ import * as React from 'react';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import InputContainer from '../InputContainer';
+import LinkListView from './LinkListView';
 import { Button, Dropdown, Checkbox } from '../../controls';
 import ButtonType from '../../../enums/buttonType';
 import * as s from './routePathView.scss';
@@ -235,6 +236,9 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     </div>
                 </div>
             </div>
+            <LinkListView
+                routePath={this.props.routePath}
+            />
         </div>
         );
     }

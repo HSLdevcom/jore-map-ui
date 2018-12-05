@@ -145,7 +145,8 @@ const nodeQueryFields = `
     pysakkiBySoltunnus {
         pyssade,
         pysnimi,
-        pysnimir
+        pysnimir,
+        paitunnus
     }
 `;
 

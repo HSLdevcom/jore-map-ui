@@ -17,4 +17,7 @@ export default class TransitTypeHelper {
             return TransitType.NOT_FOUND;
         }
     }
+    public static convertTransitTypeCodesToTransitTypes = (types: string[]) => {
+        return types.map(t => TransitTypeHelper.convertTransitTypeCodeToTransitType(t));
+    }
 }
