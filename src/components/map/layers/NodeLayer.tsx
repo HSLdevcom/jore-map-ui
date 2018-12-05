@@ -5,7 +5,6 @@ import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import { SidebarStore } from '~/stores/sidebarStore';
 import { MapStore } from '~/stores/mapStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import NodeMarker from './NodeMarker';
@@ -16,11 +15,10 @@ interface INodeLayerProps {
     isTimeAlignmentStop: boolean;
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
-    sidebarStore?: SidebarStore;
     mapStore?: MapStore;
 }
 
-@inject('popupStore', 'toolbarStore', 'sidebarStore', 'mapStore')
+@inject('popupStore', 'toolbarStore', 'mapStore')
 @observer
 export default class NodeLayer extends Component<INodeLayerProps> {
     private isSelected(node: INode) {

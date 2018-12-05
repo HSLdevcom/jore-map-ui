@@ -2,7 +2,6 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router';
 import { RouteStore } from '~/stores/routeStore';
-import { SidebarStore } from '~/stores/sidebarStore';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -18,10 +17,9 @@ import * as s from './routesView.scss';
 interface IRoutesViewProps{
     routeStore?: RouteStore;
     searchStore?: SearchStore;
-    sidebarStore?: SidebarStore;
 }
 
-@inject('routeStore', 'searchStore', 'sidebarStore')
+@inject('routeStore', 'searchStore')
 @observer
 class RoutesView extends React.Component<IRoutesViewProps> {
     public toggleTransitType = (type: TransitType) => {
