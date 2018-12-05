@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
+import routePathValidationModel from '~/validation/models/routePathValidationModel';
+import { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../InputContainer';
 import LinkListView from './LinkListView';
 import { Button, Dropdown, Checkbox } from '../../controls';
@@ -18,8 +20,9 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         // TODO
     }
 
-    public onChange = (property: string) => (value: string) => {
-        this.props.onChange(property, value);
+    public onChange = (property: string) =>
+    (value: string, validationResult: IValidationResult) => {
+        this.props.onChange(property, value, validationResult);
     }
 
     public render(): any {
@@ -39,6 +42,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         value={routePath.routePathName}
                         onChange={this.onChange('routePathName')}
+                        validatorRule={routePathValidationModel.nameFi}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
@@ -106,6 +110,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         label='PITUUS'
                         value={routePath.length.toString()}
                         disabled={isEditingDisabled}
+                        onChange={this.onChange('length')}
+                        validatorRule={routePathValidationModel.length}
                     />
                     <div className={s.flexInnerRowFlexEnd}>
                         <Button
