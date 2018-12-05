@@ -24,6 +24,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
     public render(): any {
         const isEditingDisabled = this.props.isEditingDisabled;
 
+        const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
+        const routePath = this.props.routePath;
         return (
         <div className={s.form}>
             <div className={s.formSection}>
@@ -34,13 +36,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     <InputContainer
                         label='REITIN NIMI SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={this.props.routePath.routePathName}
+                        value={routePath.routePathName}
                         onChange={this.onChange('routePathName')}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
-                        value={this.props.routePath.routePathNameSw}
+                        value={routePath.routePathNameSw}
                         onChange={this.onChange('routePathNameSw')}
                     />
                 </div>
@@ -48,13 +50,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     <InputContainer
                         label='LÄHTÖPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={this.props.routePath.originFi}
+                        value={routePath.originFi}
                         onChange={this.onChange('originFi')}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={this.props.routePath.destinationFi}
+                        value={routePath.destinationFi}
                         onChange={this.onChange('destinationFi')}
                     />
                 </div>
@@ -62,13 +64,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     <InputContainer
                         label='LÄHTÖPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
-                        value={this.props.routePath.originSw}
+                        value={routePath.originSw}
                         onChange={this.onChange('originSw')}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
-                        value={this.props.routePath.destinationSw}
+                        value={routePath.destinationSw}
                         onChange={this.onChange('destinationSw')}
                     />
                 </div>
@@ -76,31 +78,32 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     <InputContainer
                         label='LYHENNE SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={this.props.routePath.routePathShortName}
+                        value={routePath.routePathShortName}
                         onChange={this.onChange('routePathShortName')}
                     />
                     <InputContainer
                         label='LYHENNE RUOTSIKSI'
                         disabled={isEditingDisabled}
-                        value={this.props.routePath.routePathShortNameSw}
+                        value={routePath.routePathShortNameSw}
                         onChange={this.onChange('routePathShortNameSw')}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='VOIM. AST'
-                        value={Moment(this.props.routePath.startTime)
-                            .format('YYYY-MM-DDTHH:mm:ss')}
+                        value={Moment(routePath.startTime)
+                            .format(datetimeStringDisplayFormat)}
                         disabled={isEditingDisabled}
                     />
                     <InputContainer
                         label='VIIM.VOIM.OLO'
-                        value={Moment(this.props.routePath.endTime)
-                            .format('YYYY-MM-DDTHH:mm:ss')}
+                        value={Moment(routePath.endTime)
+                            .format(datetimeStringDisplayFormat)}
                         disabled={isEditingDisabled}
                     />
                     <InputContainer
                         label='PITUUS'
+                        value={routePath.length.toString()}
                         disabled={isEditingDisabled}
                     />
                     <div className={s.flexInnerRowFlexEnd}>
@@ -115,8 +118,8 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     <Dropdown
                         label='SUUNTA'
                         onChange={this.onChange}
-                        items={['Suunta 2']}
-                        selected={'Suunta 1'}
+                        items={['1', '2', '3']}
+                        selected={this.props.routePath.direction}
                     />
                     <div className={s.formItem}>
                         <div className={s.inputLabel}>
@@ -124,13 +127,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         </div>
                         <div className={s.flexInnerRow}>
                             <Checkbox
-                                checked={false}
+                                checked={!routePath.alternativePath}
                                 text={'Ei'}
                                 onClick={this.onClick}
                             />
                             <div className={s.flexFiller} />
                             <Checkbox
-                                checked={false}
+                                checked={routePath.alternativePath}
                                 text={'Kyllä'}
                                 onClick={this.onClick}
                             />
@@ -140,7 +143,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.flexGrow}>
-                        <Dropdown
+                        <Dropdown // TODO: what is this field?
                             onChange={this.onClick}
                             items={['Kaikki solmut']}
                             selected={'Kaikki solmut'}
@@ -152,10 +155,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                 <div className={s.flexRow}>
                     <InputContainer
                         label='PÄIVITYSPVM'
+                        value={Moment(routePath.lastModified)
+                            .format(datetimeStringDisplayFormat)}
                         disabled={isEditingDisabled}
                     />
                     <InputContainer
                         label='PÄIVITTÄJÄ'
+                        value={routePath.modifiedBy}
                         disabled={isEditingDisabled}
                     />
                 </div>
