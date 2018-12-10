@@ -3,22 +3,52 @@
 @import '../../shared/styles/form';
 
 .routePathView {
-    padding: 20px;
     padding-bottom: 30px;
-    overflow-y: auto;
+    overflow-y: scroll;
     width: $sidebarWide;
 
-    .routeInformationContainer {
+    .routePathViewHeader {
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding-top:10px;
     }
 
-    .staticInfo {
-        margin-top: 5px;
-        font-size: $smallFontSize;
-        margin-right: 10px;
+    .tabButton {
+        width:100%;
+        height:40px;
+        background-color: $lightGrey;
+        border-bottom: none;
+        border-bottom: 1.5px solid $mediumLightGrey;
+        text-align: center;
+        color: $blue;
+        font-weight: 500;
+        top: 50%;
+        transition: .2s;
+        cursor: pointer;
+    }
+
+    .tabLabel {
+        top: 50%;
+        transform: translateY(50%);
+    }
+
+    .tabButton {
+        border-right: 1.5px solid $mediumLightGrey;
+    }
+
+    .tabButton:last-of-type {
+        border-right: none
+    }
+
+    .selected {
+        background-color: $backgroundlightGrey;
+        color: black;
+        font-weight: 500;
+        border-bottom: none;
+    }
+
+    .topic {
+        padding: 10px;
         font-weight: bold;
+        color: #898989;
+        font-size: 1rem;
     }
 }

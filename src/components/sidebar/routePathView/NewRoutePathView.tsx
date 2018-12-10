@@ -13,7 +13,7 @@ import { RouteStore } from '~/stores/routeStore';
 import RoutePathFactory from '~/factories/routePathFactory';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './routePathView.scss';
+import * as s from './routePathViewTab.scss';
 
 interface INewRoutePathViewProps {
     mapStore?: MapStore;
@@ -98,7 +98,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     public render(): any {
         const currentRoutePath = this.state.currentRoutePath;
         return (
-        <div className={classnames(s.routePathView, s.form)}>
+        <div className={classnames(s.routePathViewTab, s.form)}>
             <div className={s.formSection}>
                 <ViewHeader
                     header='Luo uusi reitinsuunta'
