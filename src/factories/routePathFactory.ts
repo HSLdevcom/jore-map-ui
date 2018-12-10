@@ -70,6 +70,16 @@ class RoutePathFactory {
             alternativePath: false,
         };
     }
+
+    public static createNewRoutePathFromOld(routePath: IRoutePath): IRoutePath {
+        const startTime = routePath.startTime;
+        startTime.setDate(startTime.getDate() + 1);
+        return {
+            ...routePath,
+            // TODO: this is only temporary, but required since starttime is part of ID
+            startTime,
+        };
+    }
 }
 
 export default RoutePathFactory;

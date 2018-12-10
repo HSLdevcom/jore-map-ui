@@ -26,7 +26,6 @@ interface INewRoutePathViewProps {
 }
 
 interface INewRoutePathViewState {
-    currentRoutePath: IRoutePath;
     isLoading: boolean;
 }
 
@@ -36,24 +35,20 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     constructor(props: any) {
         super(props);
 
-        const routePathStore = this.props.routePathStore;
-        const currentRoutePath = routePathStore ? routePathStore.routePath : null;
-        if (!currentRoutePath) {
-            const newRoutePath = this.createNewRoutePath();
-
-            this.props.routePathStore!.setRoutePath(newRoutePath);
-            this.state = {
-                isLoading: false,
-                currentRoutePath: newRoutePath,
-            };
+        const oldRoutePath = this.props.routePathStore!.routePath;
+        let newRoutepath: IRoutePath;
+        if (!oldRoutePath) {
+            newRoutepath = this.createNewRoutePath();
         } else {
-            this.state = {
-                currentRoutePath,
-                isLoading: false,
-            };
+            newRoutepath = RoutePathFactory.createNewRoutePathFromOld(oldRoutePath);
         }
+        this.props.routePathStore!.setRoutePath(newRoutepath);
 
-        this.initStores(currentRoutePath);
+        this.state = {
+            isLoading: false,
+        };
+
+        this.initStores(newRoutepath);
     }
 
     createNewRoutePath() {
@@ -62,39 +57,33 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
     }
 
-    private initStores(currentRoutePath: IRoutePath|null) {
+    private initStores(routePath: IRoutePath|null) {
         this.props.mapStore!.setNodeSize(NodeSize.large);
         this.props.networkStore!.setNodeVisibility(true);
         this.props.networkStore!.setLinkVisibility(true);
         this.props.routePathStore!.setIsCreating(true);
         this.props.routeStore!.clearRoutes();
 
-        if (currentRoutePath) {
-            this.setTransitType(currentRoutePath);
+        if (routePath) {
+            this.setTransitType(routePath);
         }
     }
 
     // TODO: transitType could be routePath's property
     // then we wouldn't need to fetch transitType from line
-    private async setTransitType(currentRoutePath: IRoutePath) {
-        if (currentRoutePath.lineId) {
-            const line = await LineService.fetchLine(currentRoutePath.lineId);
+    private async setTransitType(routePath: IRoutePath) {
+        if (routePath.lineId) {
+            const line = await LineService.fetchLine(routePath.lineId);
             if (line) {
                 this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
             }
         }
     }
 
-    public onChange = (property: string, value: string) => {
-        this.setState({
-            currentRoutePath: { ...this.state.currentRoutePath!, [property]: value },
-        });
-    }
-
     public onSave = async () => {
         this.setState({ isLoading: true });
         try {
-            await RoutePathService.createRoutePath(this.state.currentRoutePath!);
+            await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
             NotificationStore.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
@@ -109,6 +98,10 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         this.setState({ isLoading: false });
     }
 
+    public onChange = (property: string, value: string) => {
+        this.props.routePathStore!.updateRoutePathField(property, value);
+    }
+
     componentWillUnmount() {
         this.props.mapStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.setIsCreating(false);
@@ -116,7 +109,10 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     }
 
     public render(): any {
-        const currentRoutePath = this.state.currentRoutePath;
+        console.log('updates');
+        if (this.state.isLoading) return 'Loading';
+        if (!this.props.routePathStore!.routePath) return 'Error';
+        const routePath = this.props.routePathStore!.routePath!;
         return (
         <div className={classnames(s.routePathView, s.form)}>
             <div className={s.formSection}>
@@ -124,15 +120,15 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
                     header='Luo uusi reitinsuunta'
                 />
                 <div className={s.flexInnerRow}>
-                    <div className={s.staticInfo}>LINJA: {currentRoutePath.lineId}</div>
-                    <div className={s.staticInfo}>REITTI: {currentRoutePath.routeId}</div>
+                    <div className={s.staticInfo}>LINJA: {routePath.lineId}</div>
+                    <div className={s.staticInfo}>REITTI: {routePath.routeId}</div>
                 </div>
             </div>
             <div className={s.formSection}>
                 <RoutePathViewForm
                     isEditingDisabled={false}
                     onChange={this.onChange}
-                    routePath={currentRoutePath}
+                    routePath={routePath}
                 />
             </div>
             <div className={s.formSection}>

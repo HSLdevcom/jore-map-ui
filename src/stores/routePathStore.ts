@@ -41,6 +41,14 @@ export class RoutePathStore {
     }
 
     @action
+    updateRoutePathField(property: string, value: string) {
+        this._routePath = {
+            ...this._routePath!,
+            [property]: value,
+        };
+    }
+
+    @action
     setNeighborRoutePathLinks(routePathLinks: IRoutePathLink[]) {
         this._neighborRoutePathLinks = routePathLinks;
     }
