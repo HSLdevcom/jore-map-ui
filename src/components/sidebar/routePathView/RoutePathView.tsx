@@ -3,11 +3,11 @@ import moment from 'moment';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import Moment from 'react-moment';
+import { match } from 'react-router';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
@@ -15,6 +15,7 @@ import Loader from '~/components/shared/loader/Loader';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NotificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
+import { IValidationResult } from '~/validation/FormValidator';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -24,10 +25,12 @@ interface IRoutePathViewState {
     hasModifications: boolean;
     routePath: IRoutePath | null;
     isLoading: boolean;
+    invalidFieldsMap: object;
 }
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
+    match?: match<any>;
 }
 
 @inject('routePathStore')
@@ -40,6 +43,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             hasModifications: false,
             routePath: null,
             isLoading: true,
+            invalidFieldsMap: {},
         };
     }
 
@@ -48,10 +52,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private async fetchRoutePath() {
-        const routeId = navigator.getQueryParam(QueryParams.routeId);
-        const direction = navigator.getQueryParam(QueryParams.direction);
-        const startTime = moment(
-            decodeURIComponent(navigator.getQueryParam(QueryParams.startTime)));
+        const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
+        const startTime = moment(startTimeString);
         const routePath =
             await RoutePathService.fetchRoutePath(routeId, startTime, direction);
         this.setState({
@@ -84,11 +86,28 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setState({ isLoading: false });
     }
 
-    public onChange = (property: string, value: any) => {
+    private markInvalidFields = (field: string, isValid: boolean) => {
+        this.setState({
+            invalidFieldsMap: {
+                ...this.state.invalidFieldsMap,
+                [field]: isValid,
+            },
+        });
+    }
+
+    private isFormValid = () => {
+        return !Object.values(this.state.invalidFieldsMap)
+            .some(fieldIsValid => !fieldIsValid);
+    }
+
+    public onChange = (property: string, value: any, validationResult?: IValidationResult) => {
         this.setState({
             routePath: { ...this.state.routePath!, [property]: value },
             hasModifications: true,
         });
+        if (validationResult) {
+            this.markInvalidFields(property, validationResult!.isValid);
+        }
     }
 
     private redirectToNewRoutePathView = () => {
@@ -169,7 +188,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         onClick={this.save}
                         type={ButtonType.SAVE}
                         text={'Tallenna reitinsuunta'}
-                        disabled={!this.state.hasModifications}
+                        disabled={!this.state.hasModifications || !this.isFormValid()}
                     />
                 </div>
             </div>

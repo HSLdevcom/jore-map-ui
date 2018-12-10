@@ -20,4 +20,6 @@ export default interface IRoutePath {
     routePathShortNameSw: string;
     modifiedBy: string;
     color?: string;
+    length: number;
+    alternativePath: boolean;
 }

@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import { Popup, withLeaflet } from 'react-leaflet';
 import { PopupStore } from '~/stores/popupStore';
 import { INode } from '~/models';
-import { SidebarStore } from '~/stores/sidebarStore';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -13,12 +12,10 @@ import * as s from './popupLayer.scss';
 
 interface PopupLayerProps {
     popupStore?: PopupStore;
-    sidebarStore?: SidebarStore;
     leaflet: LeafletContext;
 }
 
 @inject('popupStore')
-@inject('sidebarStore')
 @observer
 class PopupLayer extends Component<PopupLayerProps> {
     private onClose = () => {

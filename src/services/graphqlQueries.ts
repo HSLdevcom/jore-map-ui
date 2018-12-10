@@ -45,7 +45,7 @@ function getRouteQuery() {
                 reitinsuuntasByReitunnus{
                     nodes {
                         ${routePathQueryFields}
-                        ${routePathLinkQuery}
+                        ${routePathLinksForRoutePathQuery}
                     }
                 }
             }
@@ -61,7 +61,17 @@ function getRoutePathQuery() {
                 reittiByReitunnus {
                     lintunnus
                 }
-                ${routePathLinkQuery}
+                ${routePathLinksForRoutePathQuery}
+            }
+        }`
+    );
+}
+
+function getRoutePathLinkQuery() {
+    return (
+        gql`query getRoutePathLink($routeLinkId: Int!) {
+            routePathLink: reitinlinkkiByRelid(relid: $routeLinkId) {
+                ${routePathLinkQueryFields}
             }
         }`
     );
@@ -129,6 +139,8 @@ const routePathQueryFields = `
     suupaapaik
     suukuka
     suupaapaikr
+    suupituus
+    poikkeusreitti
 `;
 
 const nodeQueryFields = `
@@ -163,21 +175,24 @@ const routePathLinkQueryFields = `
     reljarjnro
     lnkverkko
     ajantaspys
+    suusuunta
+    suuvoimast
+    reitunnus
     linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
         geojson
     }
+    solmuByLnkalkusolmu {
+        ${startNodeQueryFields}
+    }
+    solmuByLnkloppusolmu {
+        ${endNodeQueryFields}
+    }
 `;
 
-const routePathLinkQuery = `
+const routePathLinksForRoutePathQuery = `
 reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
     nodes {
         ${routePathLinkQueryFields}
-        solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
-        }
-        solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
-        }
     }
 }`;
 
@@ -195,4 +210,5 @@ export default {
     getRoutePathQuery,
     getLinksQuery,
     getNodeQuery,
+    getRoutePathLinkQuery,
 };

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { toJS } from 'mobx';
 import { NetworkStore, NodeSize } from '~/stores/networkStore';
-import { NotificationStore } from '~/stores/notificationStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -30,7 +29,6 @@ interface INetworkLayersProps {
     editNetworkStore?: EditNetworkStore;
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
-    notificationStore?: NotificationStore;
     toolbarStore?: ToolbarStore;
 }
 
@@ -40,7 +38,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('editNetworkStore', 'networkStore', 'routePathStore', 'notificationStore', 'toolbarStore')
+@inject('editNetworkStore', 'networkStore', 'routePathStore', 'toolbarStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
     static defaultProps = {

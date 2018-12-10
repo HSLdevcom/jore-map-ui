@@ -14,7 +14,6 @@ import LineStore from './stores/lineStore';
 import RouteStore from './stores/routeStore';
 import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
-import SidebarStore from './stores/sidebarStore';
 import PopupStore from './stores/popupStore';
 import ToolbarStore from './stores/toolbarStore';
 import EditNetworkStore from './stores/editNetworkStore';
@@ -37,7 +36,6 @@ const stores = {
     routeStore: RouteStore,
     routePathStore: RoutePathStore,
     searchStore: SearchStore,
-    sidebarStore: SidebarStore,
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,
     editNetworkStore: EditNetworkStore,
