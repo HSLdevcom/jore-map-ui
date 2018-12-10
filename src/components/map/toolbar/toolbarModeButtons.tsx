@@ -8,22 +8,7 @@ import navigator from '~/routing/navigator';
 import { RadioButton } from '../../controls';
 import * as s from './toolbarModeButtons.scss';
 
-interface IToolbarModeButtons {
-}
-
-export default class ToolbarModeButtons extends React.Component<IToolbarModeButtons> {
-    constructor(props: IToolbarModeButtons) {
-        super(props);
-
-        this.initStores();
-    }
-
-    private initStores() {
-        const editMode = navigator.getPathName() === subSites.network
-            ? EditMode.NETWORK : EditMode.LINE;
-        toolbarStore.setEditMode(editMode);
-    }
-
+export default class ToolbarModeButtons extends React.Component {
     private selectLineMode() {
         toolbarStore.setEditMode(EditMode.LINE);
         const homeViewLink = routeBuilder

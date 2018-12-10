@@ -4,7 +4,11 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { NotificationStore } from '~/stores/notificationStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import ButtonType from '~/enums/buttonType';
+import EditMode from '~/enums/editMode';
+import navigator from '~/routing/navigator';
+import subSites from '~/routing/subSites';
 import NotificationWindow from './NotificationWindow';
 import Button from './controls/Button';
 import Modal from './Modal';
@@ -21,10 +25,11 @@ interface IAppState {
 interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
     mapStore?: MapStore;
+    toolbarStore?: ToolbarStore;
     notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'loginStore', 'notificationStore')
+@inject('mapStore', 'loginStore', 'notificationStore', 'toolbarStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
@@ -33,6 +38,16 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
+    }
+
+    public componentWillMount() {
+        this.initStores();
+    }
+
+    private initStores() {
+        const editMode = navigator.getPathName() === subSites.network
+            ? EditMode.NETWORK : EditMode.LINE;
+        this.props.toolbarStore!.setEditMode(editMode);
     }
 
     public render(): any {
