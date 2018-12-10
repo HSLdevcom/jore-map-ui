@@ -57,9 +57,7 @@ export class ToolbarStore {
             this._selectedTool = null;
             return;
         }
-        const foundTool = _.find(TOOLS, (_tool) => {
-            return _tool.toolType === tool;
-        });
+        const foundTool = TOOLS.find(_tool => _tool.toolType === tool);
         if (!foundTool) {
             throw new Error('Tried to select tool that was not found');
         }

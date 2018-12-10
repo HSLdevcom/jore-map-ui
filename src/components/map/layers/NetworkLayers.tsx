@@ -3,7 +3,6 @@ import { observer, inject } from 'mobx-react';
 import { toJS } from 'mobx';
 import { NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -26,7 +25,6 @@ enum NodeColors {
 }
 
 interface INetworkLayersProps {
-    editNetworkStore?: EditNetworkStore;
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
     toolbarStore?: ToolbarStore;
@@ -38,7 +36,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('editNetworkStore', 'networkStore', 'routePathStore', 'toolbarStore')
+@inject('networkStore', 'routePathStore', 'toolbarStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
     private getLinkStyle = () => {
@@ -153,8 +151,8 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         const nodeSize = this.props.networkStore!.nodeSize;
 
         const selectedTool = this.props.toolbarStore!.selectedTool;
-        let isNetworkNodesInteractive;
-        let onNetworkNodeClick;
+        let isNetworkNodesInteractive: boolean;
+        let onNetworkNodeClick: Function;
         if (selectedTool) {
             isNetworkNodesInteractive = selectedTool.isNetworkNodesInteractive ?
                 selectedTool.isNetworkNodesInteractive() : false;
@@ -184,10 +182,10 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         nodeSize={nodeSize}
-                        onClick={onNetworkNodeClick}
+                        onClick={onNetworkNodeClick!}
                         key={GeoserverLayer.Node}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
-                        interactive={isNetworkNodesInteractive}
+                        interactive={isNetworkNodesInteractive!}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }
