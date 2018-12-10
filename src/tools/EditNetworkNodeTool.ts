@@ -26,7 +26,7 @@ export default class EditNetworkNodeTool implements BaseTool {
     onNetworkNodeClick = async (clickEvent: any) => {
         // tslint:disable-next-line
         console.log('at EditNetworkNodeTools onNetworkNodeClick');
-        // TODO: click handking.
+        // TODO: click handling.
 
         // const properties =  clickEvent.sourceTarget.properties;
 

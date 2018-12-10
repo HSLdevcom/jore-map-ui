@@ -41,9 +41,6 @@ function getGeoServerUrl(layerName: string) {
 @inject('editNetworkStore', 'networkStore', 'routePathStore', 'toolbarStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
-    static defaultProps = {
-        isNetworkNodesInteractive: false,
-    };
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
@@ -162,7 +159,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
             isNetworkNodesInteractive = selectedTool.isNetworkNodesInteractive ?
                 selectedTool.isNetworkNodesInteractive() : false;
             onNetworkNodeClick = selectedTool.onNetworkNodeClick ?
-            selectedTool.onNetworkNodeClick : void 0;
+            selectedTool.onNetworkNodeClick : () => {};
         }
 
         return (

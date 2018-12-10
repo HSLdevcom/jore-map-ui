@@ -19,7 +19,7 @@ export class NetworkStore {
     @observable private _isLinksVisible: boolean;
     @observable private _isNodesVisible: boolean;
     @observable private _isPointsVisible: boolean;
-    @observable private _nodeSize:NodeSize;
+    @observable private _nodeSize: NodeSize;
 
     constructor() {
         this._selectedTransitTypes = TRANSIT_TYPES;

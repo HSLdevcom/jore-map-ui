@@ -25,7 +25,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
 
         const gridLayer = L.vectorGrid.protobuf(url, options);
 
-        gridLayer.on('click', (event: any) => {
+        gridLayer.on('click', (event: L.LeafletEvent) => {
             if (this.props.onClick) {
                 this.props.onClick(event);
             }

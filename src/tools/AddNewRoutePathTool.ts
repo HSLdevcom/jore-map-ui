@@ -16,14 +16,15 @@ export default class AddNewRoutePathTool implements BaseTool {
 
     public isNetworkNodesInteractive() {
         const hasRoutePathLinks =
-        RoutePathStore!.routePath &&
-        RoutePathStore!.routePath!.routePathLinks!.length === 0;
+            RoutePathStore!.routePath &&
+            RoutePathStore!.routePath!.routePathLinks!.length === 0;
 
         return RoutePathStore!.isCreating && hasRoutePathLinks;
     }
 
     public onNetworkNodeClick = async (clickEvent: any) => {
         if (!this.isNetworkNodesInteractive()) return;
+
         const properties =  clickEvent.sourceTarget.properties;
         if (properties.soltyyppi !== NodeType.STOP) return;
 
