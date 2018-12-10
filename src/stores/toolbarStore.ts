@@ -10,7 +10,7 @@ import DivideLinkTool from '~/tools/DivideLinkTool';
 import EditNetworkNodeTool from '~/tools/EditNetworkNodeTool';
 import PrintTool from '~/tools/PrintTool';
 
-const TOOLS = [
+const TOOL_LIST = [
     new AddNetworkNodeTool(),
     new AddNewRoutePathTool(),
     new CopyTool(),
@@ -18,6 +18,11 @@ const TOOLS = [
     new EditNetworkNodeTool(),
     new PrintTool(),
 ];
+
+/* Object with key: ToolbarTool, value: BaseTool*/
+const TOOLS = TOOL_LIST.reduce((acc, c:BaseTool) => {
+    return Object.assign({ [c.toolType]:c }, acc);
+});
 
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool|null;
@@ -56,18 +61,16 @@ export class ToolbarStore {
             this._selectedTool = null;
             return;
         }
-        const foundTool = TOOLS.find(_tool => _tool.toolType === tool);
-        if (!foundTool) {
+        const foundTool = TOOLS[tool];
+        this._selectedTool = foundTool;
+        if (!this._selectedTool) {
             throw new Error('Tried to select tool that was not found');
         }
-        this._selectedTool = foundTool;
         this._selectedTool.activate();
     }
 
     public isSelected(tool: ToolbarTool): boolean {
-        if (!this._selectedTool) return false;
-
-        return Boolean(this._selectedTool.toolType === tool);
+        return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
     }
 
     public isDisabled(tool: ToolbarTool): boolean {

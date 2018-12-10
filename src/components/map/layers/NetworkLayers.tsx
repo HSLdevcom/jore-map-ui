@@ -15,7 +15,7 @@ enum GeoserverLayer {
     Point = 'piste',
 }
 
-// TODO: import these from NodeMarker?
+// TODO: import these from NodeMarker's .scss
 enum NodeColors {
     CROSSROAD_COLOR = '#727272',
     CROSSROAD_FILL_COLOR = '#c6c6c6',

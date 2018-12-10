@@ -31,6 +31,7 @@ export default class ToolbarHelp extends Component {
     }
 
     render() {
+        // TODO: this could need refactoring. Tools should know their own toolHelp texts
         const toolbarHelpContent = this.renderToolbarHelpContent();
         if (!toolbarHelpContent) return null;
 
