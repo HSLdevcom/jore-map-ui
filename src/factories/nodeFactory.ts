@@ -28,7 +28,7 @@ class NodeFactory {
             type,
             coordinates,
             id: externalNode.soltunnus,
-            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : null,
+            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,
             measurementDate: externalNode.mittpvm,
             modifiedOn: externalNode.solviimpvm,
             modifiedBy: externalNode.solkuka,

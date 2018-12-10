@@ -15,10 +15,9 @@ export interface IMultipleRoutesQueryResult {
 }
 
 export default class RouteService {
-    // TODO: refactor undefined to null?
-    public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
+    public static async fetchRoute(routeId: string): Promise<IRoute | null> {
         const route = await RouteService.runFetchRouteQuery(routeId);
-        return route ? route : undefined;
+        return route ? route : null;
     }
 
     public static async fetchMultipleRoutes(routeIds: string[]):

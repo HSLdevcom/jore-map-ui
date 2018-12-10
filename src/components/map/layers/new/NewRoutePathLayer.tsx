@@ -20,8 +20,8 @@ interface IRoutePathLayerProps {
 @observer
 export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathLinks(
-        routePathLinks: IRoutePathLink[]|null,
-        { isNeighbor }: { isNeighbor: boolean }) {
+        { isNeighbor }: { isNeighbor: boolean },
+        routePathLinks?: IRoutePathLink[]) {
         if (!routePathLinks) return;
 
         return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
@@ -51,7 +51,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
             <NodeMarker
                 key={`${key}-${node.id}`}
                 nodeType={nodeType}
-                onClick={isNeighbor ? this.addLinkToRoutePath(routePathLink) : undefined}
+                onClick={isNeighbor ? this.addLinkToRoutePath(routePathLink) : () => {}}
                 latLng={latLng}
             />
         );
@@ -66,7 +66,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
                 color={color}
                 weight={5}
                 opacity={0.8}
-                onClick={isNeighbor ? this.addLinkToRoutePath(routePathLink) : null}
+                onClick={isNeighbor ? this.addLinkToRoutePath(routePathLink) : () => {}}
             />
         );
     }
@@ -130,13 +130,13 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         return (
             <>
                 {this.renderRoutePathLinks(
-                    this.props.routePathStore!.routePath!.routePathLinks, { isNeighbor: false })}
+                    { isNeighbor: false }, this.props.routePathStore!.routePath!.routePathLinks)}
                 {this.props.routePathStore!.routePath!.routePathLinks!.length === 0 &&
                     this.renderFirstNode()
                 }
                 {/* Neighbors should be drawn last */}
                 {this.renderRoutePathLinks(
-                    this.props.routePathStore!.neighborLinks, { isNeighbor: true })};
+                    { isNeighbor: true }, this.props.routePathStore!.neighborLinks)};
                 {this.renderStartMarker()}
             </>
         );
