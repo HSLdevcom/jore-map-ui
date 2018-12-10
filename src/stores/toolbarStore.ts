@@ -4,12 +4,20 @@ import ToolbarTool from '~/enums/toolbarTool';
 import EditMode from '~/enums/editMode';
 
 import BaseTool from '~/tools/BaseTool';
+import AddNetworkNodeTool from '~/tools/AddNetworkNodeTool';
 import AddNewRoutePathTool from '~/tools/AddNewRoutePathTool';
+import CopyTool from '~/tools/CopyTool';
+import DivideLinkTool from '~/tools/DivideLinkTool';
 import EditNetworkNodeTool from '~/tools/EditNetworkNodeTool';
+import PrintTool from '~/tools/PrintTool';
 
 const TOOLS = [
+    new AddNetworkNodeTool(),
     new AddNewRoutePathTool(),
+    new CopyTool(),
+    new DivideLinkTool(),
     new EditNetworkNodeTool(),
+    new PrintTool(),
 ];
 
 // TODO: Rename ToolbarStore -> toolStore?

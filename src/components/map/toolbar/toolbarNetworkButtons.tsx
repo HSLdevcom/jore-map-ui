@@ -37,9 +37,9 @@ export default class ToolbarNetworkButtons extends React.Component {
                 {/* Second toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <MapControlButton
-                        onClick={this.selectTool(ToolbarTool.AddNode)}
-                        isActive={ToolbarStore.isSelected(ToolbarTool.AddNode)}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.AddNode)}
+                        onClick={this.selectTool(ToolbarTool.AddNetworkNode)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkNode)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.AddNetworkNode)}
                         label='Lisää solmu'
                     >
                         <FiPlusSquare />

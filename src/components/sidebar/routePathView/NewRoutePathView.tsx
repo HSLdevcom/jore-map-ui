@@ -7,7 +7,7 @@ import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
 import navigator from '~/routing/navigator';
 import LineService from '~/services/lineService';
-import { NetworkStore } from '~/stores/networkStore';
+import { NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -48,7 +48,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
             };
         }
 
-        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePath);
+        this.initStores();
         if (currentRoutePath) {
             this.setTransitType(currentRoutePath);
         }
@@ -58,6 +58,15 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         const queryParams = navigator.getQueryParamValues();
         // TODO: add transitType to this call (if transitType is routePath's property)
         return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
+    }
+
+    initStores() {
+        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePath);
+        this.props.networkStore!.setNodeSize(NodeSize.large);
+        this.props.networkStore!.setNodeVisibility(true);
+        this.props.networkStore!.setLinkVisibility(true);
+        this.props.routePathStore!.setIsCreating(true);
+        this.props.routeStore!.clearRoutes();
     }
 
     // TODO: transitType could be routePath's property
@@ -73,6 +82,9 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
     componentWillUnmount() {
         this.props.toolbarStore!.selectTool(null);
+        this.props.networkStore!.setNodeSize(NodeSize.normal);
+        this.props.routePathStore!.setIsCreating(false);
+        this.props.routePathStore!.setRoutePath(null);
     }
 
     public onChange = (property: string, value: string) => {

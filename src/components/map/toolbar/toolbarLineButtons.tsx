@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiCopy, FiPlusSquare, FiShare2 } from 'react-icons/fi';
+import { FiCopy, FiShare2 } from 'react-icons/fi';
 import { observer } from 'mobx-react';
 import ToolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -25,6 +25,9 @@ export default class ToolbarLineButtons extends React.Component {
                     >
                         <FiCopy />
                     </MapControlButton>
+                </div>
+                {/* Second toolbar row */}
+                <div className={s.toolbarButtonRow}>
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.DivideLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.DivideLink)}
@@ -32,17 +35,6 @@ export default class ToolbarLineButtons extends React.Component {
                         label='Jaa linkki'
                     >
                         <FiShare2/>
-                    </MapControlButton>
-                </div>
-                {/* Second toolbar row */}
-                <div className={s.toolbarButtonRow}>
-                    <MapControlButton
-                        onClick={this.selectTool(ToolbarTool.AddNode)}
-                        isActive={ToolbarStore.isSelected(ToolbarTool.AddNode)}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.AddNode)}
-                        label='Lisää solmu'
-                    >
-                        <FiPlusSquare />
                     </MapControlButton>
                 </div>
             </div>

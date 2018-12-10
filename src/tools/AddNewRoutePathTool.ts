@@ -1,7 +1,5 @@
-import RouteStore from '~/stores/routeStore';
 import RoutePathStore from '~/stores/routePathStore';
 import NotificationStore from '~/stores/notificationStore';
-import NetworkStore, { NodeSize } from '~/stores/networkStore';
 import NotificationType from '~/enums/notificationType';
 import NodeType from '~/enums/nodeType';
 import RoutePathLinkService from '~/services/routePathLinkService';
@@ -13,19 +11,8 @@ import BaseTool from './BaseTool';
  */
 export default class AddNewRoutePathTool implements BaseTool {
     public toolType = ToolbarTool.AddNewRoutePath;
-
-    public activate() {
-        NetworkStore!.setNodeSize(NodeSize.large);
-        NetworkStore!.setNodeVisibility(true);
-        NetworkStore!.setLinkVisibility(true);
-        RoutePathStore!.setIsCreating(true);
-        RouteStore!.clearRoutes();
-    }
-    public deactivate() {
-        NetworkStore!.setNodeSize(NodeSize.normal);
-        RoutePathStore!.setIsCreating(false);
-        RoutePathStore!.setRoutePath(null);
-    }
+    public activate() {}
+    public deactivate() {}
 
     public isNetworkNodesInteractive() {
         const hasRoutePathLinks =
