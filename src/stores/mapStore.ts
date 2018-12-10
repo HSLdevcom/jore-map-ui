@@ -9,18 +9,12 @@ const INITIAL_COORDINATES = new LatLng(
 );
 const INITIAL_ZOOM = 15;
 
-export enum NodeSize {
-    normal,
-    large,
-}
-
 export class MapStore {
 
     @observable private _coordinates: LatLng;
     @observable private _isMapFullscreen: boolean;
     @observable private _routes: MapRoute[];
     @observable private _displayCoordinateSystem:CoordinateSystem;
-    @observable private _nodeSize:NodeSize;
     @observable private _zoom:number;
     @observable private _selectedNodeId: string|null;
 
@@ -30,7 +24,6 @@ export class MapStore {
         this._isMapFullscreen = false;
         this._routes = [];
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
-        this._nodeSize = NodeSize.normal;
     }
 
     @computed
@@ -65,16 +58,14 @@ export class MapStore {
 
     // TODO: move this out of store
     // Use get coordinates() and get displayCoordinateSystem() instead.
-    @computed get getDisplayCoordinates(): number[] {
+    @computed
+    get getDisplayCoordinates(): number[] {
         return GeometryService.reprojectToCrs(
             this._coordinates.lat, this._coordinates.lng, this._displayCoordinateSystem);
     }
 
-    @computed get nodeSize(): NodeSize {
-        return this._nodeSize;
-    }
-
-    @computed get selectedNodeId() {
+    @computed
+    get selectedNodeId() {
         return this._selectedNodeId;
     }
 
@@ -90,26 +81,15 @@ export class MapStore {
 
     // TODO: move logic out of store? You can setCoordinates() instead
     @action
-    setCoordinatesFromDisplayCoordinateSystem(lat: number, lon: number) {
+    public setCoordinatesFromDisplayCoordinateSystem(lat: number, lon: number) {
         const [wgsLat, wgsLon] = GeometryService.reprojectToCrs(
             lat, lon, CoordinateSystem.EPSG4326, this._displayCoordinateSystem);
         this._coordinates = new LatLng(wgsLat, wgsLon);
     }
 
-    set displayCoordinateSystem(value: CoordinateSystem) {
+    @action
+    public setDisplayCoordinateSystem(value: CoordinateSystem) {
         this._displayCoordinateSystem = value;
-    }
-
-    // TODO: move logic out of store? You can use set displayCoordinates() instead
-    @action
-    public cycleCoordinateSystem() {
-        this._displayCoordinateSystem =
-            GeometryService.nextCoordinateSystem(this._displayCoordinateSystem);
-    }
-
-    @action
-    setNodeSize(nodeSize: NodeSize) {
-        this._nodeSize = nodeSize;
     }
 
     @action

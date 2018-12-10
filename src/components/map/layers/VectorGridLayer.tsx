@@ -3,6 +3,7 @@ import 'leaflet.vectorgrid';
 import _ from 'lodash';
 import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
 import TransitType from '~/enums/transitType';
+import { NodeSize } from '~/stores/networkStore';
 
 declare module 'leaflet' {
     let vectorGrid: any;
@@ -13,6 +14,7 @@ interface IVectorGridLayerProps extends GridLayerProps {
     url: string;
     tms: boolean;
     vectorTileLayerStyles: any;
+    nodeSize?: NodeSize;
     onClick?: Function;
 }
 
@@ -38,7 +40,10 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
 
     updateLeafletElement(fromProps: IVectorGridLayerProps, toProps: IVectorGridLayerProps) {
         super.updateLeafletElement(fromProps, toProps);
-        if (!this.areArraysEqual(fromProps.selectedTransitTypes, toProps.selectedTransitTypes)) {
+        // TODO: consider passing a single value "shouldUpdate" and
+        // redraw layers according to that variable
+        if (!this.areArraysEqual(fromProps.selectedTransitTypes, toProps.selectedTransitTypes)
+        || fromProps.nodeSize !== toProps.nodeSize) {
             this.leafletElement.redraw();
         }
     }

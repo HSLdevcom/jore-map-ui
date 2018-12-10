@@ -6,10 +6,12 @@ import classnames from 'classnames';
 import { SidebarStore } from '~/stores/sidebarStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import EditMode from '~/enums/editMode';
 import hslLogo from '~/assets/hsl-logo.png';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
@@ -50,6 +52,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             this.props.searchStore!.setSearchInput('');
             const homeLink = routeBuilder.to(subSites.home).clear().toLink();
             navigator.goTo(homeLink);
+            ToolbarStore.setEditMode(EditMode.LINE);
         };
 
         return (

@@ -29,7 +29,7 @@ export default class Toolbar extends React.Component {
                         <ToolbarCommonButtons />
                     </div>
                 </div>
-                <ToolbarHelp tool={toolbarStore.activeTool} />
+                <ToolbarHelp />
             </div>
         );
     }

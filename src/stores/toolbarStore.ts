@@ -1,9 +1,20 @@
 import { observable, computed, action } from 'mobx';
+import _ from 'lodash';
 import ToolbarTool from '~/enums/toolbarTool';
 import EditMode from '~/enums/editMode';
 
+import BaseTool from '~/tools/BaseTool';
+import AddNewRoutePathTool from '~/tools/AddNewRoutePathTool';
+import EditNetworkNodeTool from '~/tools/EditNetworkNodeTool';
+
+const TOOLS = [
+    new AddNewRoutePathTool(),
+    new EditNetworkNodeTool(),
+];
+
+// TODO: Rename ToolbarStore -> toolStore?
 export class ToolbarStore {
-    @observable private _activeTool: ToolbarTool;
+    @observable private _selectedTool: BaseTool|null;
     @observable private _disabledTools: ToolbarTool[];
     @observable private _editMode: EditMode;
 
@@ -11,31 +22,48 @@ export class ToolbarStore {
         this._disabledTools = [
             ToolbarTool.Print,
         ];
-        this._activeTool = ToolbarTool.None;
     }
 
     @computed
-    get activeTool(): ToolbarTool {
-        return this._activeTool;
+    get selectedTool(): BaseTool | null {
+        return this._selectedTool;
     }
 
     @action setEditMode(editMode: EditMode) {
         this._editMode = editMode;
+        this.selectTool(null);
     }
 
-    @computed get editMode(): EditMode {
+    @computed
+    get editMode(): EditMode {
         return this._editMode;
     }
 
     @action
-    public toggleTool(tool: ToolbarTool) {
-        if (!this.isDisabled(tool)) {
-            this._activeTool = (this._activeTool === tool) ? ToolbarTool.None : tool;
+    public selectTool(tool: ToolbarTool | null) {
+        if (this._selectedTool) {
+            this._selectedTool.deactivate();
         }
+
+        // deselect current tool
+        if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
+            this._selectedTool = null;
+            return;
+        }
+        const foundTool = _.find(TOOLS, (_tool) => {
+            return _tool.toolType === tool;
+        });
+        if (!foundTool) {
+            throw new Error('Tried to select tool that was not found');
+        }
+        this._selectedTool = foundTool;
+        this._selectedTool.activate();
     }
 
-    public isActive(tool: ToolbarTool): boolean {
-        return this._activeTool === tool;
+    public isSelected(tool: ToolbarTool): boolean {
+        if (!this._selectedTool) return false;
+
+        return Boolean(this._selectedTool.toolType === tool);
     }
 
     public isDisabled(tool: ToolbarTool): boolean {

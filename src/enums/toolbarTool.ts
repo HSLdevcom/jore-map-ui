@@ -1,8 +1,10 @@
+// TODO: rename as tool.ts
 enum ToolbarTool {
+  AddNewRoutePath,
   AddNode,
   Copy,
   DivideLink,
-  Edit,
+  EditNetworkNode,
   None,
   Print,
 }

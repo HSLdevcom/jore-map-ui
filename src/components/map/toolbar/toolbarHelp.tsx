@@ -1,32 +1,37 @@
 import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarStore from '~/stores/toolbarStore';
 import * as s from './toolbarHelp.scss';
 
-interface IToolbarHelpProps {
-    tool: ToolbarTool;
-}
+@observer
+export default class ToolbarHelp extends Component {
+    private renderToolbarHelpContent() {
+        const selectedTool = ToolbarStore!.selectedTool;
+        if (!selectedTool) return null;
 
-export default class ToolbarHelp extends Component<IToolbarHelpProps> {
-
-    private getToolbarHelpContent(tool: ToolbarTool) {
-        const textContainers = {
-            edit: (
+        switch (selectedTool.toolType) {
+        case ToolbarTool.AddNewRoutePath:
+            return (
+                <div>
+                    Muodostaaksesi reitin suunnan, valitse kartalta aloitus-solmu.
+                    Tämän jälkeen jatka reitin suunnan muodostamista valitsemalla seuraavia solmuja.
+                </div>
+            );
+        case ToolbarTool.EditNetworkNode:
+            return (
                 <div>
                     Muokataksesi verkon solmua tai siihen
                     liittyviä linkkejä, valitse solmu kartalta.
                 </div>
-            ),
-        };
-        switch (tool) {
-        case ToolbarTool.Edit:
-            return textContainers.edit;
+            );
         default:
             return null;
         }
     }
 
     render() {
-        const toolbarHelpContent = this.getToolbarHelpContent(this.props.tool);
+        const toolbarHelpContent = this.renderToolbarHelpContent();
         if (!toolbarHelpContent) return null;
 
         return (

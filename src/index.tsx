@@ -17,6 +17,7 @@ import SearchStore from './stores/searchStore';
 import SidebarStore from './stores/sidebarStore';
 import PopupStore from './stores/popupStore';
 import ToolbarStore from './stores/toolbarStore';
+import EditNetworkStore from './stores/editNetworkStore';
 import NetworkStore from './stores/networkStore';
 import GeometryEventStore from './stores/geometryEventStore';
 import apolloClient from './util/ApolloClient';
@@ -39,6 +40,7 @@ const stores = {
     sidebarStore: SidebarStore,
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,
+    editNetworkStore: EditNetworkStore,
     networkStore: NetworkStore,
     geometryEventStore: GeometryEventStore,
 };

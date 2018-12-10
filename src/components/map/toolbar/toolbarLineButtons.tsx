@@ -1,15 +1,15 @@
 import React from 'react';
 import { FiCopy, FiPlusSquare, FiShare2 } from 'react-icons/fi';
 import { observer } from 'mobx-react';
-import toolbarStore from '~/stores/toolbarStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 
 @observer
 export default class ToolbarLineButtons extends React.Component {
-    private toggleTool = (tool: ToolbarTool) => () => {
-        toolbarStore.toggleTool(tool); // TODO: fix importing toolbarStore
+    private selectTool = (tool: ToolbarTool) => () => {
+        ToolbarStore.selectTool(tool);
     }
 
     render() {
@@ -18,17 +18,17 @@ export default class ToolbarLineButtons extends React.Component {
                 {/* First toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <MapControlButton
-                        onClick={this.toggleTool(ToolbarTool.Copy)}
-                        isActive={toolbarStore.isActive(ToolbarTool.Copy)}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTool.Copy)}
+                        onClick={this.selectTool(ToolbarTool.Copy)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.Copy)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.Copy)}
                         label='Kopioi reitti toiseen suuntaan'
                     >
                         <FiCopy />
                     </MapControlButton>
                     <MapControlButton
-                        onClick={this.toggleTool(ToolbarTool.DivideLink)}
-                        isActive={toolbarStore.isActive(ToolbarTool.DivideLink)}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTool.DivideLink)}
+                        onClick={this.selectTool(ToolbarTool.DivideLink)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.DivideLink)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.DivideLink)}
                         label='Jaa linkki'
                     >
                         <FiShare2/>
@@ -37,9 +37,9 @@ export default class ToolbarLineButtons extends React.Component {
                 {/* Second toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <MapControlButton
-                        onClick={this.toggleTool(ToolbarTool.AddNode)}
-                        isActive={toolbarStore.isActive(ToolbarTool.AddNode)}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTool.AddNode)}
+                        onClick={this.selectTool(ToolbarTool.AddNode)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.AddNode)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.AddNode)}
                         label='Lisää solmu'
                     >
                         <FiPlusSquare />

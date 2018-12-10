@@ -4,29 +4,30 @@ import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import ToolbarTool from '~/enums/toolbarTool';
 import navigator from '~/routing/navigator';
 import LineService from '~/services/lineService';
-import { MapStore, NodeSize } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathFactory from '~/factories/routePathFactory';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
 
 interface INewRoutePathViewProps {
-    mapStore?: MapStore;
     routeStore?: RouteStore;
     routePathStore?: RoutePathStore;
     networkStore?: NetworkStore;
+    toolbarStore?:  ToolbarStore;
 }
 
 interface INewRoutePathViewState {
     currentRoutePath: IRoutePath;
 }
 
-@inject('mapStore', 'routeStore', 'routePathStore', 'networkStore')
+@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore')
 @observer
 class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoutePathViewState>{
     constructor(props: any) {
@@ -47,25 +48,16 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
             };
         }
 
-        this.initStores(currentRoutePath);
+        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePath);
+        if (currentRoutePath) {
+            this.setTransitType(currentRoutePath);
+        }
     }
 
     createNewRoutePath() {
         const queryParams = navigator.getQueryParamValues();
         // TODO: add transitType to this call (if transitType is routePath's property)
         return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
-    }
-
-    private initStores(currentRoutePath: IRoutePath|null) {
-        this.props.mapStore!.setNodeSize(NodeSize.large);
-        this.props.networkStore!.setNodeVisibility(true);
-        this.props.networkStore!.setLinkVisibility(true);
-        this.props.routePathStore!.setIsCreating(true);
-        this.props.routeStore!.clearRoutes();
-
-        if (currentRoutePath) {
-            this.setTransitType(currentRoutePath);
-        }
     }
 
     // TODO: transitType could be routePath's property
@@ -79,6 +71,10 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         }
     }
 
+    componentWillUnmount() {
+        this.props.toolbarStore!.selectTool(null);
+    }
+
     public onChange = (property: string, value: string) => {
         this.setState({
             currentRoutePath: { ...this.state.currentRoutePath!, [property]: value },
@@ -87,12 +83,6 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
     public onSave = () => {
         // TODO
-    }
-
-    componentWillUnmount() {
-        this.props.mapStore!.setNodeSize(NodeSize.normal);
-        this.props.routePathStore!.setIsCreating(false);
-        this.props.routePathStore!.setRoutePath(null);
     }
 
     public render(): any {
