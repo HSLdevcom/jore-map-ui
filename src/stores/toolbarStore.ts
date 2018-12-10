@@ -1,5 +1,4 @@
 import { observable, computed, action } from 'mobx';
-import _ from 'lodash';
 import ToolbarTool from '~/enums/toolbarTool';
 import EditMode from '~/enums/editMode';
 
