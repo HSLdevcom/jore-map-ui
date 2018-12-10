@@ -6,21 +6,22 @@ import * as s from './toolbarHelp.scss';
 
 @observer
 export default class ToolbarHelp extends Component {
-    private renderToolbarHelpContent() {
+    render() {
         const selectedTool = ToolbarStore!.selectedTool;
         if (!selectedTool) return null;
 
+        // TODO: this could need refactoring. Tools should know their own toolHelp texts
         switch (selectedTool.toolType) {
         case ToolbarTool.AddNewRoutePath:
             return (
-                <div>
+                <div className={s.toolbarHelp}>
                     Muodostaaksesi reitin suunnan, valitse kartalta aloitus-solmu.
                     Tämän jälkeen jatka reitin suunnan muodostamista valitsemalla seuraavia solmuja.
                 </div>
             );
         case ToolbarTool.EditNetworkNode:
             return (
-                <div>
+                <div className={s.toolbarHelp}>
                     Muokataksesi verkon solmua tai siihen
                     liittyviä linkkejä, valitse solmu kartalta.
                 </div>
@@ -28,19 +29,5 @@ export default class ToolbarHelp extends Component {
         default:
             return null;
         }
-    }
-
-    render() {
-        // TODO: this could need refactoring. Tools should know their own toolHelp texts
-        const toolbarHelpContent = this.renderToolbarHelpContent();
-        if (!toolbarHelpContent) return null;
-
-        return (
-            <div className={s.toolbarHelp}>
-                {
-                    toolbarHelpContent
-                }
-            </div>
-        );
     }
 }
