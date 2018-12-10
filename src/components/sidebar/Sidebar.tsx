@@ -5,12 +5,11 @@ import { Location } from 'history';
 import classnames from 'classnames';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
-import ToolbarStore from '~/stores/toolbarStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import EditMode from '~/enums/editMode';
 import hslLogo from '~/assets/hsl-logo.png';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
@@ -28,6 +27,7 @@ import * as s from './sidebar.scss';
 interface ISidebarProps{
     routeStore?: RouteStore;
     searchStore?: SearchStore;
+    toolbarStore?: ToolbarStore;
     location: Location;
 }
 
@@ -35,7 +35,7 @@ interface ILinelistState {
     searchInput: string;
 }
 
-@inject('routeStore', 'searchStore')
+@inject('routeStore', 'searchStore', 'toolbarStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
 
@@ -46,11 +46,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
 
     public render(): any {
         const goToHomeView = () => {
+            this.props.toolbarStore!.selectTool(null);
             this.props.routeStore!.clearRoutes();
             this.props.searchStore!.setSearchInput('');
             const homeLink = routeBuilder.to(subSites.home).clear().toLink();
             navigator.goTo(homeLink);
-            ToolbarStore.setEditMode(EditMode.LINE);
         };
 
         return (

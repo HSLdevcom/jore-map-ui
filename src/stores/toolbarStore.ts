@@ -1,7 +1,5 @@
-import { observable, computed, action } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import ToolbarTool from '~/enums/toolbarTool';
-import EditMode from '~/enums/editMode';
-
 import BaseTool from '~/tools/BaseTool';
 import AddNetworkNodeTool from '~/tools/AddNetworkNodeTool';
 import AddNewRoutePathTool from '~/tools/AddNewRoutePathTool';
@@ -27,8 +25,6 @@ const TOOLS = TOOL_LIST.reduce((acc, c:BaseTool) => {
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool|null;
     @observable private _disabledTools: ToolbarTool[];
-    @observable private _editMode: EditMode;
-
     constructor() {
         this._disabledTools = [
             ToolbarTool.Print,
@@ -38,16 +34,6 @@ export class ToolbarStore {
     @computed
     get selectedTool(): BaseTool | null {
         return this._selectedTool;
-    }
-
-    @action setEditMode(editMode: EditMode) {
-        this._editMode = editMode;
-        this.selectTool(null);
-    }
-
-    @computed
-    get editMode(): EditMode {
-        return this._editMode;
     }
 
     @action

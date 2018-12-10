@@ -1,16 +1,20 @@
 import React from 'react';
 import classnames from 'classnames';
 import EditMode from '~/enums/editMode';
-import toolbarStore from '~/stores/toolbarStore';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
+import ToolbarStore from '~/stores/toolbarStore';
 import { RadioButton } from '../../controls';
 import * as s from './toolbarModeButtons.scss';
 
-export default class ToolbarModeButtons extends React.Component {
+interface IToolbarModeButtonsProps {
+    editMode: EditMode;
+}
+
+export default class ToolbarModeButtons extends React.Component<IToolbarModeButtonsProps> {
     private selectLineMode() {
-        toolbarStore.setEditMode(EditMode.LINE);
+        ToolbarStore.selectTool(null);
         const homeViewLink = routeBuilder
             .to(subSites.home)
             .clear()
@@ -19,7 +23,7 @@ export default class ToolbarModeButtons extends React.Component {
     }
 
     private selectNetworkMode() {
-        toolbarStore.setEditMode(EditMode.NETWORK);
+        ToolbarStore.selectTool(null);
         const networkViewLink = routeBuilder
             .to(subSites.network)
             .clear()
@@ -28,7 +32,7 @@ export default class ToolbarModeButtons extends React.Component {
     }
 
     render() {
-        const currentMode = toolbarStore.editMode;
+        const currentMode = this.props.editMode;
 
         return (
             <div className={s.toolbarModeButtonsView}>
