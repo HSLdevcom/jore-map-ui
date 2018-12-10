@@ -16,7 +16,6 @@ import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
 import PopupStore from './stores/popupStore';
 import ToolbarStore from './stores/toolbarStore';
-import EditNetworkStore from './stores/editNetworkStore';
 import NetworkStore from './stores/networkStore';
 import GeometryEventStore from './stores/geometryEventStore';
 import apolloClient from './util/ApolloClient';
@@ -38,7 +37,6 @@ const stores = {
     searchStore: SearchStore,
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,
-    editNetworkStore: EditNetworkStore,
     networkStore: NetworkStore,
     geometryEventStore: GeometryEventStore,
 };

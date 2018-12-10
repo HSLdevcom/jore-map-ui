@@ -1,5 +1,4 @@
 import NetworkStore, { NodeSize } from '~/stores/networkStore';
-import EditNetworkStore from '~/stores/editNetworkStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import BaseTool from './BaseTool';
 
@@ -11,16 +10,14 @@ export default class EditNetworkNodeTool implements BaseTool {
     public toolType = ToolbarTool.EditNetworkNode;
 
     public activate() {
-        EditNetworkStore.setIsWaitingForNodeSelection(true);
         NetworkStore.setNodeSize(NodeSize.large);
     }
     public deactivate() {
-        EditNetworkStore.setIsWaitingForNodeSelection(false);
         NetworkStore.setNodeSize(NodeSize.normal);
     }
 
     isNetworkNodesInteractive() {
-        return EditNetworkStore!.isWaitingForNodeSelection;
+        return true; // TODO: add some logic here
     }
 
     onNetworkNodeClick = async (clickEvent: any) => {
