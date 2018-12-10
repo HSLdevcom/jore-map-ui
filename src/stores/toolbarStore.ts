@@ -20,7 +20,6 @@ const TOOLS = [
     new PrintTool(),
 ];
 
-// TODO: Rename ToolbarStore -> toolStore?
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool|null;
     @observable private _disabledTools: ToolbarTool[];

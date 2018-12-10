@@ -1,4 +1,3 @@
-// TODO: rename as Tool (?)
 enum ToolbarTool {
   AddNetworkNode,
   AddNewRoutePath,
