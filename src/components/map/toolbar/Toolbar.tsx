@@ -1,8 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import toolbarStore from '~/stores/toolbarStore';
 import EditMode from '~/enums/editMode';
+import navigator from '~/routing/navigator';
+import subSites from '~/routing/subSites';
 import ToolbarModeButtons from './toolbarModeButtons';
 import ToolbarLineButtons from './toolbarLineButtons';
 import ToolbarNetworkButtons from './toolbarNetworkButtons';
@@ -12,16 +13,20 @@ import * as s from './toolbar.scss';
 
 @observer
 export default class Toolbar extends React.Component {
+    private getEditMode = () => {
+        return navigator.getPathName() === subSites.network
+        ? EditMode.NETWORK : EditMode.LINE;
+    }
     render() {
         return (
             <div className={s.toolbarContainer}>
                 <div className={s.toolbarRow}>
                     <div className={classnames(s.toolbar, s.modeSpecificToolbar)}>
-                        <ToolbarModeButtons />
-                        { toolbarStore.editMode === EditMode.LINE &&
+                        <ToolbarModeButtons editMode={this.getEditMode()} />
+                        { this.getEditMode() === EditMode.LINE &&
                             <ToolbarLineButtons />
                         }
-                        { toolbarStore.editMode === EditMode.NETWORK &&
+                        { this.getEditMode() === EditMode.NETWORK &&
                             <ToolbarNetworkButtons />
                         }
                     </div>
@@ -29,7 +34,7 @@ export default class Toolbar extends React.Component {
                         <ToolbarCommonButtons />
                     </div>
                 </div>
-                <ToolbarHelp tool={toolbarStore.activeTool} />
+                <ToolbarHelp />
             </div>
         );
     }
