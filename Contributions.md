@@ -38,7 +38,8 @@
 * Use decorators
 * Place decorators above functions
 * Use @computed for getters https://mobx.js.org/refguide/computed-decorator.html
-* Use @action for functions that modify state https://mobx.js.org/refguide/action.html
+* Use @action for functions that modify state ( do not use setters) https://mobx.js.org/refguide/action.html
+
 
 Variables order:
 
