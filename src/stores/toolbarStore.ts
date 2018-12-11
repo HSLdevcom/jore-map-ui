@@ -1,12 +1,12 @@
 import { action, computed, observable } from 'mobx';
 import ToolbarTool from '~/enums/toolbarTool';
-import BaseTool from '~/tools/BaseTool';
-import AddNetworkNodeTool from '~/tools/AddNetworkNodeTool';
-import AddNewRoutePathTool from '~/tools/AddNewRoutePathTool';
-import CopyTool from '~/tools/CopyTool';
-import DivideLinkTool from '~/tools/DivideLinkTool';
-import EditNetworkNodeTool from '~/tools/EditNetworkNodeTool';
-import PrintTool from '~/tools/PrintTool';
+import BaseTool from '~/components/map/tools/BaseTool';
+import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
+import AddNewRoutePathTool from '~/components/map/tools/AddNewRoutePathTool';
+import CopyTool from '~/components/map/tools/CopyTool';
+import DivideLinkTool from '~/components/map/tools/DivideLinkTool';
+import EditNetworkNodeTool from '~/components/map/tools/EditNetworkNodeTool';
+import PrintTool from '~/components/map/tools/PrintTool';
 
 const TOOL_LIST = [
     new AddNetworkNodeTool(),
