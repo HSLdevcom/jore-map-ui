@@ -5,6 +5,8 @@
     height:40px;
     background-color: $lightGrey;
     border-bottom: 1.5px solid $mediumLightGrey;
+    border-right: 1.5px solid $mediumLightGrey;
+    border-left: 1.5px solid $mediumLightGrey;
     text-align: center;
     color: $blue;
     font-weight: 500;
@@ -18,17 +20,11 @@
     transform: translateY(50%);
 }
 
-.routePathViewTabButtonsView {
-    border-right: 1.5px solid $mediumLightGrey;
-}
-
-.routePathViewTabButtonsView:last-of-type {
-    border-right: none
-}
-
 .selected {
     background-color: $backgroundlightGrey;
     color: black;
     font-weight: 500;
     border-bottom: none;
+    border-left: none;
+    border-right: none;
 }
