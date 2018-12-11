@@ -15,8 +15,8 @@ const routePathViewTabButtons = (props: IRoutePathViewTabButtonsProps) => {
                 <div
                     key={tab}
                     className={(props.selectedTab === tab) ?
-                    classnames(s.routePathViewTabButtonsView, s.selected) :
-                    s.routePathViewTabButtonsView}
+                        classnames(s.routePathViewTabButtonsView, s.selected) :
+                        s.routePathViewTabButtonsView}
                     onClick={props.onClick(tab)}
                 >
                     <div className={s.tabLabel}>

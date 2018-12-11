@@ -45,7 +45,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
-    public onTabClick = (selectedTab: string) => () => {
+    public selectTab = (selectedTab: string) => () => {
         this.setState({
             selectedTab,
         });
@@ -66,7 +66,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     <RoutePathViewTabButtons
                         tabs={['Reitinsuunta', 'Solmut ja linjat']}
                         selectedTab={this.state.selectedTab}
-                        onClick={this.onTabClick}
+                        onClick={this.selectTab}
                     />
                 </div>
 
