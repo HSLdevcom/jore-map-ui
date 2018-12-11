@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { toJS } from 'mobx';
-import MapStore, { NodeSize } from '~/stores/mapStore';
-import { NetworkStore } from '~/stores/networkStore';
-import { NotificationStore } from '~/stores/notificationStore';
+import { NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import RoutePathLinkService from '~/services/routePathLinkService';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeType from '~/enums/nodeType';
-import NotificationType from '~/enums/notificationType';
 import VectorGridLayer from './VectorGridLayer';
 
 enum GeoserverLayer {
@@ -18,7 +15,7 @@ enum GeoserverLayer {
     Point = 'piste',
 }
 
-// TODO: use .scss for these?
+// TODO: import these from NodeMarker's .scss
 enum NodeColors {
     CROSSROAD_COLOR = '#727272',
     CROSSROAD_FILL_COLOR = '#c6c6c6',
@@ -30,7 +27,7 @@ enum NodeColors {
 interface INetworkLayersProps {
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
-    notificationStore?: NotificationStore;
+    toolbarStore?: ToolbarStore;
 }
 
 function getGeoServerUrl(layerName: string) {
@@ -39,7 +36,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('networkStore', 'routePathStore', 'notificationStore')
+@inject('networkStore', 'routePathStore', 'toolbarStore')
 @observer
 export default class NetworkLayers extends Component<INetworkLayersProps> {
     private getLinkStyle = () => {
@@ -87,18 +84,6 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private getNodeStyle = () => {
-        let radius: any;
-        switch (MapStore.nodeSize) {
-        case NodeSize.normal:
-            radius = 4;
-            break;
-        case NodeSize.large:
-            radius = 6;
-            break;
-        default:
-            throw new Error(`nodeSize not supported ${MapStore.nodeSize}`);
-        }
-
         return {
             // Layer name 'solmu' is directly mirrored from Jore through geoserver
             solmu: (properties: any, zoom: number) => {
@@ -126,6 +111,17 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                     color = NodeColors.MUNICIPALITY_BORDER_COLOR;
                     break;
                 }
+                let radius: any;
+                switch (this.props.networkStore!.nodeSize) {
+                case NodeSize.normal:
+                    radius = 4;
+                    break;
+                case NodeSize.large:
+                    radius = 6;
+                    break;
+                default:
+                    throw new Error(`nodeSize not supported ${this.props.networkStore!.nodeSize}`);
+                }
 
                 return {
                     color,
@@ -150,35 +146,20 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private addNodeFromInitialClickEvent = async (clickEvent: any) => {
-        const properties =  clickEvent.sourceTarget.properties;
-        if (properties.soltyyppi !== NodeType.STOP) return;
-
-        const routePathLinks =
-            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
-                properties.soltunnus);
-        if (routePathLinks.length === 0) {
-            this.props.notificationStore!.addNotification({
-                message:
-                    `Tästä solmusta (soltunnus: ${properties.soltunnus}) alkavaa linkkiä ei löytynyt.`, // tslint:disable
-                type: NotificationType.ERROR,
-            });
-        } else {
-            this.props.routePathStore!.setNeighborRoutePathLinks(routePathLinks);
-        }
-    }
-
-    private isWaitingForNewRoutePathFirstNodeClick = () => {
-        const hasRoutePathLinks =
-        this.props.routePathStore!.routePath &&
-        this.props.routePathStore!.routePath!.routePathLinks!.length === 0;
-
-        return this.props.routePathStore!.isCreating
-            && hasRoutePathLinks;
-    }
-
     render() {
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+        const nodeSize = this.props.networkStore!.nodeSize;
+
+        const selectedTool = this.props.toolbarStore!.selectedTool;
+        let isNetworkNodesInteractive: boolean;
+        let onNetworkNodeClick: Function;
+        if (selectedTool) {
+            isNetworkNodesInteractive = selectedTool.isNetworkNodesInteractive ?
+                selectedTool.isNetworkNodesInteractive() : false;
+            onNetworkNodeClick = selectedTool.onNetworkNodeClick ?
+            selectedTool.onNetworkNodeClick : () => {};
+        }
+
         return (
             <>
                 { this.props.networkStore!.isLinksVisible &&
@@ -200,11 +181,11 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 { (this.props.networkStore!.isNodesVisible) &&
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
-                        onClick={this.isWaitingForNewRoutePathFirstNodeClick() ?
-                            this.addNodeFromInitialClickEvent : null}
+                        nodeSize={nodeSize}
+                        onClick={onNetworkNodeClick!}
                         key={GeoserverLayer.Node}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
-                        interactive={this.isWaitingForNewRoutePathFirstNodeClick()}
+                        interactive={isNetworkNodesInteractive!}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }

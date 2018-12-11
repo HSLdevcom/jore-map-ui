@@ -9,17 +9,24 @@ const TRANSIT_TYPES = [
     TransitType.TRAM,
 ];
 
+export enum NodeSize {
+    normal,
+    large,
+}
+
 export class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isLinksVisible: boolean;
     @observable private _isNodesVisible: boolean;
     @observable private _isPointsVisible: boolean;
+    @observable private _nodeSize: NodeSize;
 
     constructor() {
         this._selectedTransitTypes = TRANSIT_TYPES;
         this._isLinksVisible = false;
         this._isNodesVisible = false;
         this._isPointsVisible = false;
+        this._nodeSize = NodeSize.normal;
     }
 
     @computed
@@ -40,6 +47,11 @@ export class NetworkStore {
     @computed
     get isPointsVisible(): boolean {
         return this._isPointsVisible;
+    }
+
+    @computed
+    get nodeSize(): NodeSize {
+        return this._nodeSize;
     }
 
     @action
@@ -80,6 +92,11 @@ export class NetworkStore {
     @action
     public selectAllTransitTypes() {
         this._selectedTransitTypes = TRANSIT_TYPES;
+    }
+
+    @action
+    setNodeSize(nodeSize: NodeSize) {
+        this._nodeSize = nodeSize;
     }
 
     // TODO rename as toggleSelectedTransitType?
