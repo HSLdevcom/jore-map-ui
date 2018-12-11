@@ -1,32 +1,24 @@
 import * as React from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { match } from 'react-router';
 import { IRoutePath } from '~/models';
 import Loader from '~/components/shared/loader/Loader';
 import RoutePathService from '~/services/routePathService';
-import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathViewTab from './RoutePathViewTab';
+import RoutePathViewTabButtons from './RoutePathViewTabButtons';
 import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     routePath: IRoutePath | null;
     isLoading: boolean;
-    selectedTabIndex: number;
+    selectedTab: string;
 }
 
 interface IRoutePathViewProps {
-    routePathStore?: RoutePathStore;
     match?: match<any>;
 }
 
-const tabs = [
-    'Reitinsuunta',
-    'Solmut ja linjat',
-];
-
-@inject('routePathStore')
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: any) {
@@ -34,7 +26,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.state = {
             routePath: null,
             isLoading: true,
-            selectedTabIndex: 0,
+            selectedTab: 'Reitinsuunta',
         };
     }
 
@@ -53,45 +45,32 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
-    public onTabClick = (selectedTabIndex: number) => () => {
+    public onTabClick = (selectedTab: string) => () => {
         this.setState({
-            selectedTabIndex,
-        });
-    }
-
-    public generateTabs = () => {
-        return tabs.map((tab: string, index) => {
-            return(
-                <div
-                    key={index}
-                    className={(this.state.selectedTabIndex === index) ?
-                    classnames(s.tabButton, s.selected) :
-                    s.tabButton}
-                    onClick={this.onTabClick(index)}
-                >
-                    <div className={s.tabLabel}>
-                        {tab}
-                    </div>
-                </div>
-            );
+            selectedTab,
         });
     }
 
     public render(): any {
-        if (!this.state.routePath) {
+        if (this.state.isLoading) {
             return (
                 <div className={s.routePathView}>
                     <Loader size={Loader.MEDIUM}/>
                 </div>
             );
         }
+        if (!this.state.routePath) return;
         return (
             <div className={s.routePathView}>
                 <div className={s.flexInnerRow}>
-                    {this.generateTabs()}
+                    <RoutePathViewTabButtons
+                        tabs={['Reitinsuunta', 'Solmut ja linjat']}
+                        selectedTab={this.state.selectedTab}
+                        onClick={this.onTabClick}
+                    />
                 </div>
 
-                {(this.state.selectedTabIndex === 0) ?
+                {(this.state.selectedTab === 'Reitinsuunta') ?
                     <RoutePathViewTab
                         routePath={this.state.routePath}
                     /> :

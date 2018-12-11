@@ -32,7 +32,7 @@ interface IRoutePathViewProps {
 
 @inject('routePathStore')
 @observer
-class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
+class RoutePathViewTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: any) {
         super(props);
         this.state = {
@@ -175,4 +175,4 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         );
     }
 }
-export default RoutePathView;
+export default RoutePathViewTab;
