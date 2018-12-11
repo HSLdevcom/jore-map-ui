@@ -5,6 +5,7 @@ import { match } from 'react-router';
 import { IRoutePath } from '~/models';
 import Loader from '~/components/shared/loader/Loader';
 import RoutePathService from '~/services/routePathService';
+import RoutePathViewTabType from '~/enums/routePathViewTabType';
 import RoutePathViewTab from './RoutePathViewTab';
 import RoutePathViewTabButtons from './RoutePathViewTabButtons';
 import * as s from './routePathView.scss';
@@ -26,7 +27,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.state = {
             routePath: null,
             isLoading: true,
-            selectedTab: 'Reitinsuunta',
+            selectedTab: RoutePathViewTabType.ROUTE,
         };
     }
 
@@ -64,13 +65,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             <div className={s.routePathView}>
                 <div className={s.flexInnerRow}>
                     <RoutePathViewTabButtons
-                        tabs={['Reitinsuunta', 'Solmut ja linjat']}
+                        tabs={[RoutePathViewTabType.ROUTE, RoutePathViewTabType.NODES_AND_LINES]}
                         selectedTab={this.state.selectedTab}
                         onClick={this.selectTab}
                     />
                 </div>
 
-                {(this.state.selectedTab === 'Reitinsuunta') ?
+                {(this.state.selectedTab === RoutePathViewTabType.ROUTE) ?
                     <RoutePathViewTab
                         routePath={this.state.routePath}
                     /> :
