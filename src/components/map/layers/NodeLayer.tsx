@@ -6,7 +6,6 @@ import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { MapStore } from '~/stores/mapStore';
-import ToolbarTool from '~/enums/toolbarTool';
 import NodeMarker from './NodeMarker';
 
 interface INodeLayerProps {
@@ -43,14 +42,12 @@ export default class NodeLayer extends Component<INodeLayerProps> {
         } else {
             nodeType = node.type;
         }
-
         return (
             <NodeMarker
                 nodeType={nodeType}
                 isSelected={this.isSelected(node)}
                 latLng={latLng}
                 onContextMenu={openPopup}
-                isDraggable={this.props.toolbarStore!.isActive(ToolbarTool.Edit)}
                 stop={node.stop ? node.stop : undefined}
             />
         );
