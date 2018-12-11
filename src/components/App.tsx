@@ -4,6 +4,7 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { NotificationStore } from '~/stores/notificationStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import ButtonType from '~/enums/buttonType';
 import NotificationWindow from './NotificationWindow';
 import Button from './controls/Button';
@@ -21,10 +22,11 @@ interface IAppState {
 interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
     mapStore?: MapStore;
+    toolbarStore?: ToolbarStore;
     notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'loginStore', 'notificationStore')
+@inject('mapStore', 'loginStore', 'notificationStore', 'toolbarStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
