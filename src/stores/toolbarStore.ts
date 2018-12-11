@@ -1,41 +1,62 @@
-import { observable, computed, action } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import ToolbarTool from '~/enums/toolbarTool';
-import EditMode from '~/enums/editMode';
+import BaseTool from '~/components/map/tools/BaseTool';
+import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
+import AddNewRoutePathTool from '~/components/map/tools/AddNewRoutePathTool';
+import CopyTool from '~/components/map/tools/CopyTool';
+import DivideLinkTool from '~/components/map/tools/DivideLinkTool';
+import EditNetworkNodeTool from '~/components/map/tools/EditNetworkNodeTool';
+import PrintTool from '~/components/map/tools/PrintTool';
+
+const TOOL_LIST = [
+    new AddNetworkNodeTool(),
+    new AddNewRoutePathTool(),
+    new CopyTool(),
+    new DivideLinkTool(),
+    new EditNetworkNodeTool(),
+    new PrintTool(),
+];
+
+/* Object with key: ToolbarTool, value: BaseTool*/
+const TOOLS = TOOL_LIST.reduce((acc, c:BaseTool) => {
+    return Object.assign({ [c.toolType]:c }, acc);
+});
 
 export class ToolbarStore {
-    @observable private _activeTool: ToolbarTool;
+    @observable private _selectedTool: BaseTool|null;
     @observable private _disabledTools: ToolbarTool[];
-    @observable private _editMode: EditMode;
-
     constructor() {
         this._disabledTools = [
             ToolbarTool.Print,
         ];
-        this._activeTool = ToolbarTool.None;
     }
 
     @computed
-    get activeTool(): ToolbarTool {
-        return this._activeTool;
-    }
-
-    @action setEditMode(editMode: EditMode) {
-        this._editMode = editMode;
-    }
-
-    @computed get editMode(): EditMode {
-        return this._editMode;
+    get selectedTool(): BaseTool | null {
+        return this._selectedTool;
     }
 
     @action
-    public toggleTool(tool: ToolbarTool) {
-        if (!this.isDisabled(tool)) {
-            this._activeTool = (this._activeTool === tool) ? ToolbarTool.None : tool;
+    public selectTool(tool: ToolbarTool | null) {
+        if (this._selectedTool) {
+            this._selectedTool.deactivate();
         }
+
+        // deselect current tool
+        if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
+            this._selectedTool = null;
+            return;
+        }
+        const foundTool = TOOLS[tool];
+        this._selectedTool = foundTool;
+        if (!this._selectedTool) {
+            throw new Error('Tried to select tool that was not found');
+        }
+        this._selectedTool.activate();
     }
 
-    public isActive(tool: ToolbarTool): boolean {
-        return this._activeTool === tool;
+    public isSelected(tool: ToolbarTool): boolean {
+        return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
     }
 
     public isDisabled(tool: ToolbarTool): boolean {
