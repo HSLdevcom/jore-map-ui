@@ -102,6 +102,11 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         this.props.routePathStore!.updateRoutePathField(property, value);
     }
 
+    private isSaveDisabled = () => {
+        return !this.props.routePathStore!.routePath
+            || this.props.routePathStore!.routePath!.routePathLinks!.length === 0;
+    }
+
     componentWillUnmount() {
         this.props.mapStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.setIsCreating(false);
@@ -109,7 +114,6 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     }
 
     public render(): any {
-        console.log('updates');
         if (this.state.isLoading) return 'Loading';
         if (!this.props.routePathStore!.routePath) return 'Error';
         const routePath = this.props.routePathStore!.routePath!;
@@ -136,6 +140,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
                     <Button
                         onClick={this.onSave}
                         type={ButtonType.SAVE}
+                        disabled={this.isSaveDisabled()}
                         text={'Tallenna reitinsuunta'}
                     />
                 </div>
