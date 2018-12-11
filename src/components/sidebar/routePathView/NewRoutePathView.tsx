@@ -15,6 +15,7 @@ import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathService from '~/services/routePathService';
 import NotificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
+import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathView.scss';
@@ -116,8 +117,11 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     }
 
     public render(): any {
-        if (this.state.isLoading) return 'Loading';
-        if (!this.props.routePathStore!.routePath) return 'Error';
+        if (this.state.isLoading) {
+            return (
+                <Loader size={Loader.MEDIUM}/>
+            );
+        }
         const routePath = this.props.routePathStore!.routePath!;
         return (
         <div className={classnames(s.routePathView, s.form)}>
