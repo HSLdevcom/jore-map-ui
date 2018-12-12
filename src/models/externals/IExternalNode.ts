@@ -3,6 +3,7 @@ import IExternalStop from './IExternalStop';
 export default interface IExternalNode {
     externalStop?: IExternalStop;
     geojson?: string;
+    transittypes: string;
     geojsonManual: string;
     mittpvm: string;
     solkuka: string;

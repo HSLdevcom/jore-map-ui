@@ -8,7 +8,7 @@ import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
 export default class LinkService {
-    public static async fetchLinksByStartNodeAndEndNode(nodeId: string, transitTypeCode: string)
+    public static async fetchLinksByStartNodeAndEndNode(nodeId: string)
         : Promise<ILink[]> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(

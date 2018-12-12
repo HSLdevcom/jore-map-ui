@@ -152,6 +152,7 @@ const nodeQueryFields = `
     solkirjain,
     geojson,
     geojsonManual,
+    transittypes,
     pysakkiBySoltunnus {
         pyssade,
         pysnimi,

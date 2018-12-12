@@ -38,15 +38,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         const { url, ...options } = props;
         options.tms = true;
 
-        const gridLayer = L.vectorGrid.protobuf(url, options);
-
-        gridLayer.on('click', (event: L.LeafletEvent) => {
-            if (this.props.onClick) {
-                this.props.onClick(event);
-            }
-        });
-
-        return gridLayer;
+        return L.vectorGrid.protobuf(url, options);
     }
 
     private areArraysEqual(array1: string[], array2: string[]) {

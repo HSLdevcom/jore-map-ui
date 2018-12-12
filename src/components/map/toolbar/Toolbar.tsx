@@ -14,7 +14,10 @@ import * as s from './toolbar.scss';
 @observer
 export default class Toolbar extends React.Component {
     private getEditMode = () => {
+        // TODO: Find a proper solution to this. Divide subSites into two spaces:
+        // networkSubsites & lineSubsites?
         return navigator.getPathName() === subSites.network
+            || navigator.getPathName() === subSites.editNetwork
         ? EditMode.NETWORK : EditMode.LINE;
     }
     render() {

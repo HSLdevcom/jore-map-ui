@@ -18,6 +18,7 @@ import HomeView from './homeView/HomeView';
 import RoutePathView from './routePathView/RoutePathView';
 import NewRoutePathView from './routePathView/NewRoutePathView';
 import NetworkView from './networkView/NetworkView';
+import EditNetworkView from './editNetworkView/EditNetworkView';
 import * as s from './sidebar.scss';
 
 // Requiring location to force update on location change
@@ -75,6 +76,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                     <Route exact={true} path={subSites.newRoutePath} component={NewRoutePathView} />
                     <Route exact={true} path={subSites.routePath} component={RoutePathView} />
                     <Route exact={true} path={subSites.network} component={NetworkView} />
+                    <Route exact={true} path={subSites.editNetwork} component={EditNetworkView} />
                 </Switch>
             </div>
         );

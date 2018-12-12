@@ -9,7 +9,7 @@ import BaseTool from './BaseTool';
 /**
  * Tool for creating new routePath
  */
-export default class AddNewRoutePathTool implements BaseTool {
+class AddNewRoutePathTool implements BaseTool {
     public toolType = ToolbarTool.AddNewRoutePath;
     public activate() {}
     public deactivate() {}
@@ -42,3 +42,5 @@ export default class AddNewRoutePathTool implements BaseTool {
         return RoutePathStore!.isCreating && hasRoutePathLinks;
     }
 }
+
+export default AddNewRoutePathTool;
