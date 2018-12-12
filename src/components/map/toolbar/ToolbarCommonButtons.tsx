@@ -1,11 +1,13 @@
 import React from 'react';
 import { FiPrinter, FiExternalLink } from 'react-icons/fi';
+import { IoMdUndo } from 'react-icons/io';
 import { observer } from 'mobx-react';
 import toolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import Navigator from '~/routing/navigator';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
+import UndoTool from '../tools/UndoTool';
 
 @observer
 export default class ToolbarCommonButtons extends React.Component {
@@ -36,6 +38,16 @@ export default class ToolbarCommonButtons extends React.Component {
                         label='Avaa uusi ikkuna'
                     >
                         <FiExternalLink />
+                    </MapControlButton>
+                </div>
+                <div className={s.toolbarButtonRow}>
+                    <MapControlButton
+                        onClick={UndoTool.undo}
+                        isActive={false}
+                        isDisabled={false}
+                        label='Undo'
+                    >
+                        <IoMdUndo />
                     </MapControlButton>
                 </div>
             </div>
