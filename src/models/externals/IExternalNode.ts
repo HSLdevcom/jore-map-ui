@@ -1,7 +1,7 @@
 import IExternalStop from './IExternalStop';
 
 export default interface IExternalNode {
-    externalStop?: IExternalStop;
+    pysakkiBySoltunnus?: IExternalStop;
     geojson?: string;
     transittypes: string;
     geojsonManual: string;

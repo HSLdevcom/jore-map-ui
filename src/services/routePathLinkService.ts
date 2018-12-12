@@ -4,7 +4,6 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
-import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
@@ -36,9 +35,7 @@ export default class RoutePathLinkService {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getRoutePathLinkQuery(), variables: { routeLinkId: id } },
             );
-            const externalRoutePathLink =
-                this.getExternalRoutePathLink(queryResult.data.routePathLink);
-            return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
+            return RoutePathLinkFactory.createRoutePathLink(queryResult.data.routePathLink);
         } catch (error) {
             console.error(error); // tslint:disable-line
             notificationStore.addNotification({
@@ -47,32 +44,5 @@ export default class RoutePathLinkService {
             });
             return null;
         }
-    }
-
-    // TODO: Remove these extra mappings
-    private static getExternalRoutePathLink(externalRoutePathLink: any): IExternalRoutePathLink {
-        externalRoutePathLink.geojson = externalRoutePathLink
-            .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson;
-        externalRoutePathLink.link = externalRoutePathLink
-            .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
-        externalRoutePathLink.startNode = externalRoutePathLink
-            .solmuByLnkalkusolmu;
-        externalRoutePathLink.endNode = externalRoutePathLink
-            .solmuByLnkloppusolmu;
-
-        externalRoutePathLink.startNode.externalStop
-            = externalRoutePathLink.startNode.pysakkiBySoltunnus;
-
-        externalRoutePathLink.endNode.externalStop
-            = externalRoutePathLink.endNode.pysakkiBySoltunnus;
-
-        delete externalRoutePathLink
-            .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
-        delete externalRoutePathLink
-            .solmuByLnkalkusolmu;
-        delete externalRoutePathLink
-            .solmuByLnkloppusolmu;
-
-        return externalRoutePathLink;
     }
 }

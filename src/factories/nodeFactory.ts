@@ -16,7 +16,7 @@ class NodeFactory {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
-        const nodeStop = externalNode.externalStop;
+        const nodeStop = externalNode.pysakkiBySoltunnus;
         const type = getNodeType(externalNode.soltyyppi);
 
         let transitTypes: TransitType[] = [];
