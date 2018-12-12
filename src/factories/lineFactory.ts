@@ -8,13 +8,14 @@ class LineFactory {
         const transitType = TransitTypeHelper
             .convertTransitTypeCodeToTransitType(externalLine.linverkko);
 
-        const routes = externalLine.externalRoutes.map((route: IExternalRoute): ILineRoute => {
-            return {
-                id: route.reitunnus,
-                name: _getRouteName(route),
-                date: route.reiviimpvm,
-            };
-        });
+        const routes = externalLine.reittisByLintunnus.nodes.map(
+            (route: IExternalRoute): ILineRoute => {
+                return {
+                    id: route.reitunnus,
+                    name: _getRouteName(route),
+                    date: route.reiviimpvm,
+                };
+            });
 
         return {
             transitType,
