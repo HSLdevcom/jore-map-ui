@@ -58,11 +58,11 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
 
 // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
-const REACT_APP = /^REACT_APP_/i;
+const JORE_UI = /^JORE_UI_/i;
 
 function getClientEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
-    .filter(key => REACT_APP.test(key))
+    .filter(key => JORE_UI.test(key))
     .reduce(
       (env, key) => {
         env[key] = process.env[key];
@@ -77,6 +77,9 @@ function getClientEnvironment(publicUrl) {
         // This should only be used as an escape hatch. Normally you would put
         // images into the `src` and `import` them in code to get their paths.
         PUBLIC_URL: publicUrl,
+        API_URL: process.env.API_URL,
+        GEOSERVER_URL: process.env.GEOSERVER_URL,
+        BUILD_DATE: process.env.BUILD_DATE,
       }
     );
   // Stringify all values so we can feed into Webpack DefinePlugin
