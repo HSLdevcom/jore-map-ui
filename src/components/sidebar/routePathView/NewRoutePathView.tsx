@@ -100,7 +100,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     public render(): any {
         const currentRoutePath = this.state.currentRoutePath;
         return (
-        <div className={classnames(s.routePathViewTab, s.form)}>
+        <div className={classnames(s.newRoutePathViewTab, s.form)}>
             <div className={s.formSection}>
                 <ViewHeader
                     header='Luo uusi reitinsuunta'

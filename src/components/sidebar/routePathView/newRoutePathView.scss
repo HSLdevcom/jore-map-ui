@@ -2,17 +2,10 @@
 @import '../../shared/styles/flexbox';
 @import '../../shared/styles/form';
 
-.routePathViewTab {
+.newRoutePathViewTab {
     padding: 15px;
     overflow-y: scroll;
     width: $sidebarWide;
-
-    .routeInformationContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding-top:10px;
-    }
 
     .staticInfo {
         margin-top: 5px;
