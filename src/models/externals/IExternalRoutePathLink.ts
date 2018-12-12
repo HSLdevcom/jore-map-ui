@@ -3,9 +3,9 @@ import IExternalNode from './IExternalNode';
 import IExternalLink from './IExternalLink';
 
 export default interface IExternalRoutePathLink {
-    link: IExternalLink;
-    startNode: IExternalNode;
-    endNode: IExternalNode;
+    linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu: IExternalLink;
+    solmuByLnkalkusolmu: IExternalNode;
+    solmuByLnkloppusolmu: IExternalNode;
     ajantaspys: string;
     lnkverkko: string;
     relid: string;

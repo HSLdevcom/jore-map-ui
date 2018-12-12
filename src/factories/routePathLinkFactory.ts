@@ -17,14 +17,14 @@ class RoutePathLinkFactory {
 
     public static createRoutePathLink =
     (externalRoutePathLink: IExternalRoutePathLink): IRoutePathLink => {
-        const startNode = NodeFactory.createNode(externalRoutePathLink.startNode);
-        const endNode = NodeFactory.createNode(externalRoutePathLink.endNode);
+        const startNode = NodeFactory.createNode(externalRoutePathLink.solmuByLnkalkusolmu);
+        const endNode = NodeFactory.createNode(externalRoutePathLink.solmuByLnkloppusolmu);
 
         return {
             startNode,
             endNode,
             positions: RoutePathLinkFactory.getPositions(
-                externalRoutePathLink.link.geojson),
+                externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson),
             id: externalRoutePathLink.relid,
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeType: externalRoutePathLink.relpysakki,
