@@ -14,7 +14,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathFactory from '~/factories/routePathFactory';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './routePathViewTab.scss';
+import * as s from './newRoutePathView.scss';
 
 interface INewRoutePathViewProps {
     routeStore?: RouteStore;
