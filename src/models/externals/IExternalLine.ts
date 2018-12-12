@@ -1,7 +1,8 @@
 import IExternalRoute from './IExternalRoute';
+import IGraphqlList from './graphqlModelHelpers/IGraphqlList';
 
 export default interface IExternalLine {
-    externalRoutes: IExternalRoute[];
+    reittisByLintunnus: IGraphqlList<IExternalRoute>;
     linjoukkollaji: string;
     lintunnus: string;
     linverkko: string;
