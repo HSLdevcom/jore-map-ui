@@ -19,7 +19,7 @@ interface IRoutePathLayerProps {
 @inject('routePathStore')
 @observer
 export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
-    private renderRoutePathLinks() {
+    private renderRoutePathLinks = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks) return;
 
@@ -38,7 +38,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         });
     }
 
-    private renderNode(node: INode, key: number) {
+    private renderNode = (node: INode, key: number) => {
         const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
         return (
             <NodeMarker
@@ -50,7 +50,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         );
     }
 
-    private renderLink(routePathLink: IRoutePathLink) {
+    private renderLink = (routePathLink: IRoutePathLink) => {
         return (
             <Polyline
                 positions={routePathLink.positions}
@@ -63,7 +63,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         );
     }
 
-    private renderRoutePathLinkNeighbors() {
+    private renderRoutePathLinkNeighbors = () => {
         const routePathLinks = this.props.routePathStore!.neighborLinks;
         if (!routePathLinks) return;
 
@@ -78,7 +78,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         });
     }
 
-    private renderNeighborNode(node: INode, routePathLink: IRoutePathLink, key: number) {
+    private renderNeighborNode = (node: INode, routePathLink: IRoutePathLink, key: number) => {
         const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
         return (
             <NodeMarker
@@ -91,7 +91,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         );
     }
 
-    private renderNeighborLink(routePathLink: IRoutePathLink) {
+    private renderNeighborLink = (routePathLink: IRoutePathLink) => {
         return (
             <Polyline
                 positions={routePathLink.positions}
@@ -112,7 +112,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         this.props.routePathStore!.addLink(routePathLink);
     }
 
-    private renderFirstNode() {
+    private renderFirstNode = () => {
         if (this.props.routePathStore!.neighborLinks.length === 0) return null;
 
         const link = this.props.routePathStore!.neighborLinks[0];
@@ -141,7 +141,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         this.props.routePathStore!.setNeighborRoutePathLinks(neighborLinks);
     }
 
-    private renderStartMarker() {
+    private renderStartMarker = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length === 0 || !routePathLinks[0].startNode) {
             return null;

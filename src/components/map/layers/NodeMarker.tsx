@@ -50,7 +50,7 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         return new L.DivIcon(divIconOptions);
     }
 
-    private getMarkerClass() {
+    private getMarkerClass = () => {
         const isSelected = this.props.isSelected;
         const nodeType = this.props.nodeType;
 
