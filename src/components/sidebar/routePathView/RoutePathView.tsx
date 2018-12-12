@@ -1,49 +1,38 @@
 import * as React from 'react';
 import moment from 'moment';
-import { inject, observer } from 'mobx-react';
-import classnames from 'classnames';
-import Moment from 'react-moment';
+import { observer } from 'mobx-react';
 import { match } from 'react-router';
-import ButtonType from '~/enums/buttonType';
-import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
-import RoutePathService from '~/services/routePathService';
 import Loader from '~/components/shared/loader/Loader';
-import { RoutePathStore } from '~/stores/routePathStore';
-import NotificationStore from '~/stores/notificationStore';
-import NotificationType from '~/enums/notificationType';
-import { IValidationResult } from '~/validation/FormValidator';
-import ViewHeader from '../ViewHeader';
-import RoutePathViewForm from './RoutePathViewForm';
+import RoutePathService from '~/services/routePathService';
+import RoutePathViewTabType from '~/enums/routePathViewTabType';
+import RoutePathViewTab from './RoutePathViewTab';
+import RoutePathViewTabButtons from './RoutePathViewTabButtons';
 import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
-    isEditingDisabled: boolean;
-    hasModifications: boolean;
     routePath: IRoutePath | null;
     isLoading: boolean;
-    invalidFieldsMap: object;
+    selectedTab: string;
 }
 
 interface IRoutePathViewProps {
-    routePathStore?: RoutePathStore;
     match?: match<any>;
 }
 
-@inject('routePathStore')
+interface IRoutePathViewTabObject {
+    type: RoutePathViewTabType;
+    component: JSX.Element;
+}
+
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
-    constructor(props: any) {
+    constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
-            isEditingDisabled: true,
-            hasModifications: false,
             routePath: null,
             isLoading: true,
-            invalidFieldsMap: {},
+            selectedTab: RoutePathViewTabType.ROUTE,
         };
     }
 
@@ -62,70 +51,41 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
-    public toggleEditing = () => {
-        const isEditingDisabled = !this.state.isEditingDisabled;
-        this.setState({ isEditingDisabled });
-    }
-
-    public save = async () => {
-        this.setState({ isLoading: true });
-        try {
-            await RoutePathService.saveRoutePath(this.state.routePath!);
-            this.setState({ hasModifications: false });
-            NotificationStore.addNotification({
-                message: 'Tallennus onnistui',
-                type: NotificationType.SUCCESS,
-            });
-        } catch (err) {
-            const errMessage = err.message ? `, (${err.message})` : '';
-            NotificationStore.addNotification({
-                message: `Tallennus epäonnistui${errMessage}`,
-                type: NotificationType.ERROR,
-            });
-        }
-        this.setState({ isLoading: false });
-    }
-
-    private markInvalidFields = (field: string, isValid: boolean) => {
+    public selectTab = (selectedTab: string) => () => {
         this.setState({
-            invalidFieldsMap: {
-                ...this.state.invalidFieldsMap,
-                [field]: isValid,
-            },
+            selectedTab,
         });
     }
 
-    private isFormValid = () => {
-        return !Object.values(this.state.invalidFieldsMap)
-            .some(fieldIsValid => !fieldIsValid);
-    }
-
-    public onChange = (property: string, value: any, validationResult?: IValidationResult) => {
-        this.setState({
-            routePath: { ...this.state.routePath!, [property]: value },
-            hasModifications: true,
+    public getContentComponent = (tabs: IRoutePathViewTabObject[]) => {
+        let content = null;
+        tabs.forEach((tab: IRoutePathViewTabObject) => {
+            if (this.state.selectedTab === tab.type) {
+                content = tab.component;
+            }
         });
-        if (validationResult) {
-            this.markInvalidFields(property, validationResult!.isValid);
-        }
-    }
-
-    private redirectToNewRoutePathView = () => {
-        const routePath = this.state.routePath;
-        if (!routePath) return;
-
-        const newRoutePathLink = routeBuilder
-        .to(subSites.newRoutePath, { routeId: routePath.routeId, lineId: routePath.lineId })
-        .toLink();
-
-        this.props.routePathStore!.setRoutePath(this.state.routePath);
-        navigator.goTo(newRoutePathLink);
-
+        return content;
     }
 
     public render(): any {
-        // tslint:disable-next-line:max-line-length
-        const message = 'Reitin suunnalla tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+        const tabs: IRoutePathViewTabObject[] = [
+            {
+                type: RoutePathViewTabType.ROUTE,
+                component: (
+                    <RoutePathViewTab
+                        routePath={this.state.routePath!}
+                    />
+                ),
+            },
+            {
+                type: RoutePathViewTabType.NODES_AND_LINES,
+                component: (
+                    <div>
+                        Solmut ja linkit
+                    </div>
+                ),
+            },
+        ];
 
         if (this.state.isLoading) {
             return (
@@ -134,71 +94,22 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 </div>
             );
         }
-        if (!this.state.routePath) return 'Error';
+        if (!this.state.routePath) return;
         return (
-        <div className={classnames(s.routePathView, s.form)}>
-            <div className={s.formSection}>
-                <ViewHeader
-                    header={`Reitin suunta`}
-                    closePromptMessage={this.state.hasModifications ? message : undefined}
-                >
-                    <Button
-                        onClick={this.toggleEditing}
-                        type={ButtonType.SQUARE}
-                        text={this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'}
-                    />
-                </ViewHeader>
-            </div>
-            <div className={s.formSection}>
-                <div className={s.topic}>
-                    REITIN OTSIKKOTIEDOT
-                </div>
-                <div className={s.routeInformationContainer}>
-                    <div className={s.flexInnerColumn}>
-                        <div>Reittitunnus</div>
-                        <div>{this.state.routePath.routeId}</div>
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Linja</div>
-                        <div>{this.state.routePath.lineId}</div>
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Päivityspvm</div>
-                        <Moment
-                            date={this.state.routePath.lastModified}
-                            format='DD.MM.YYYY HH:mm'
-                        />
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Päivittäjä</div>
-                        <div>{this.state.routePath.modifiedBy}</div>
-                    </div>
-                </div>
-            </div>
-            <div className={s.formSection}>
-                <RoutePathViewForm
-                    onChange={this.onChange}
-                    isEditingDisabled={this.state.isEditingDisabled}
-                    routePath={this.state.routePath}
-                />
-            </div>
-            <div className={s.formSection}>
-                <div className={s.flexRow}>
-                    <Button
-                        onClick={this.save}
-                        type={ButtonType.SAVE}
-                        text={'Tallenna reitinsuunta'}
-                        disabled={!this.state.hasModifications || !this.isFormValid()}
+            <div className={s.routePathView}>
+                <div className={s.flexInnerRow}>
+                    <RoutePathViewTabButtons
+                        tabs={tabs.map((tab) => {
+                            return tab.type;
+                        })}
+                        selectedTab={this.state.selectedTab}
+                        onClick={this.selectTab}
                     />
                 </div>
+                {this.getContentComponent(tabs)}
             </div>
-            <Button
-                onClick={this.redirectToNewRoutePathView}
-                type={ButtonType.SQUARE}
-                text={`Luo uusi reitin suunta käyttäen tätä pohjana`}
-            />
-        </div>
         );
     }
 }
+
 export default RoutePathView;
