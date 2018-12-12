@@ -3,18 +3,22 @@
 @import '../../shared/styles/form';
 
 .routePathView {
+    padding: 20px;
     padding-bottom: 30px;
-    overflow-y: scroll;
+    overflow-y: auto;
     width: $sidebarWide;
 
-    .routePathViewHeader {
+    .routeInformationContainer {
         display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-top:10px;
     }
 
-    .topic {
-        padding: 10px;
+    .staticInfo {
+        margin-top: 5px;
+        font-size: $smallFontSize;
+        margin-right: 10px;
         font-weight: bold;
-        color: #898989;
-        font-size: 1rem;
     }
 }
