@@ -20,9 +20,14 @@ interface IRoutePathViewProps {
     match?: match<any>;
 }
 
+interface IRoutePathViewTabObject {
+    type: RoutePathViewTabType;
+    component: JSX.Element;
+}
+
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
-    constructor(props: any) {
+    constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
             routePath: null,
@@ -52,7 +57,36 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
+    public getContentComponent = (tabs: IRoutePathViewTabObject[]) => {
+        let content = null;
+        tabs.forEach((tab: IRoutePathViewTabObject) => {
+            if (this.state.selectedTab === tab.type) {
+                content = tab.component;
+            }
+        });
+        return content;
+    }
+
     public render(): any {
+        const tabs: IRoutePathViewTabObject[] = [
+            {
+                type: RoutePathViewTabType.ROUTE,
+                component: (
+                    <RoutePathViewTab
+                        routePath={this.state.routePath!}
+                    />
+                ),
+            },
+            {
+                type: RoutePathViewTabType.NODES_AND_LINES,
+                component: (
+                    <div>
+                        Solmut ja linkit
+                    </div>
+                ),
+            },
+        ];
+
         if (this.state.isLoading) {
             return (
                 <div className={s.routePathView}>
@@ -65,21 +99,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             <div className={s.routePathView}>
                 <div className={s.flexInnerRow}>
                     <RoutePathViewTabButtons
-                        tabs={[RoutePathViewTabType.ROUTE, RoutePathViewTabType.NODES_AND_LINES]}
+                        tabs={tabs.map((tab) => {
+                            return tab.type;
+                        })}
                         selectedTab={this.state.selectedTab}
                         onClick={this.selectTab}
                     />
                 </div>
-
-                {(this.state.selectedTab === RoutePathViewTabType.ROUTE) ?
-                    <RoutePathViewTab
-                        routePath={this.state.routePath}
-                    /> :
-                    <div>
-                        Solmut ja linjat
-                    </div>
-                }
-
+                {this.getContentComponent(tabs)}
             </div>
         );
     }
