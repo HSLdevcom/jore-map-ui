@@ -66,6 +66,8 @@ class LeafletMap extends React.Component<IMapProps> {
             this.getMap().invalidateSize();
         },         1000);
 
+        map.addControl(L.control.scale({ imperial: false }));
+
         // TODO: Convert these as react-components
         map.addControl(new CoordinateControl({ position: 'topright' }));
         // map.addControl(new MeasurementControl({ position: 'topright' }));
