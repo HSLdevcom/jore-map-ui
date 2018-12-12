@@ -1,5 +1,11 @@
 import NetworkStore, { NodeSize } from '~/stores/networkStore';
+import NotificationStore from '~/stores/notificationStore';
+import EditNetworkStore from '~/stores/editNetworkStore';
+import LinkService from '~/services/linkService';
+import NodeService from '~/services/nodeService';
 import ToolbarTool from '~/enums/toolbarTool';
+import ILink from '~/models/ILink';
+import NotificationType from '~/enums/notificationType';
 import BaseTool from './BaseTool';
 
 /**
@@ -14,33 +20,54 @@ export default class EditNetworkNodeTool implements BaseTool {
     }
     public deactivate() {
         NetworkStore.setNodeSize(NodeSize.normal);
+        EditNetworkStore.clear();
     }
 
-    isNetworkNodesInteractive() {
-        return true; // TODO: add some logic here
+    public onNetworkNodeClick = async (clickEvent: any) => {
+        const properties =  clickEvent.sourceTarget.properties;
+        const {
+            transittypes: transitTypeCodesString,
+            soltunnus: nodeId,
+        } = properties;
+        const node = await NodeService.fetchNode(nodeId);
+        if (!node) {
+            NotificationStore.addNotification({
+                message: `Solmua (soltunnus: ${nodeId}) ei löytynyt.`,
+                type: NotificationType.ERROR,
+            });
+            return;
+        }
+        EditNetworkStore.setNode(node);
+
+        if (!transitTypeCodesString) {
+            this.showWarning(nodeId, transitTypeCodesString);
+            return;
+        }
+
+        const links = await this.fetchLinks(nodeId, transitTypeCodesString);
+        if (links.length === 0) {
+            this.showWarning(nodeId, transitTypeCodesString);
+            return;
+        }
+        EditNetworkStore.setLinks(links);
     }
 
-    onNetworkNodeClick = async (clickEvent: any) => {
-        // tslint:disable-next-line
-        console.log('at EditNetworkNodeTools onNetworkNodeClick');
-        // TODO: click handling.
+    private showWarning(nodeId: string, transitTypeCodesString: string) {
+        NotificationStore.addNotification({
+            message: `Tästä solmusta (soltunnus: ${nodeId}) alkavia linkkejä ei löytynyt. TransitType koodi(t): ${transitTypeCodesString}`, // tslint:disable max-line-length
+            type: NotificationType.WARNING,
+        });
+        return;
+    }
 
-        // const properties =  clickEvent.sourceTarget.properties;
-
-        // TODO fetch nodes(?), links with start & endNode
-        // --> add to store
-
-        // const routePathLinks =
-        //     await RoutePathLinkService.fetchLinksWithLinkStartNodeId(properties.soltunnus);
-        // if (routePathLinks.length === 0) {
-        //     this.props.notificationStore!.addNotification({
-        //         message:
-        // `Tästä solmusta (soltunnus:
-        // ${properties.soltunnus}) alkavaa linkkiä ei löytynyt.`, // tslint:disable
-        //         type: NotificationType.ERROR,
-        //     });
-        // } else {
-        //     this.props.routePathStore!.setNeighborRoutePathLinks(routePathLinks);
-        // }
+    private async fetchLinks(nodeId: string, transitTypeCodesString: string): Promise<ILink[]> {
+        const transitTypeCodes = transitTypeCodesString.split(',');
+        return await Promise.all(transitTypeCodes.map((transitTypeCode: string) =>
+            LinkService.fetchLinksByStartNodeAndEndNode(nodeId, transitTypeCode)))
+        .then((linksResult: ILink[][]) => {
+            return linksResult.reduce((a, b) =>
+                a.concat(b),
+            );
+        });
     }
 }

@@ -14,7 +14,7 @@ export default class RoutePathLinkService {
         : Promise<IRoutePathLink[]> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: GraphqlQueries.getLinksQuery(), variables: { nodeId } },
+                { query: GraphqlQueries.getLinksByStartNodeQuery(), variables: { nodeId } },
             );
             return queryResult.data.solmuBySoltunnus.
                 linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>

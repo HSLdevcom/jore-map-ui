@@ -4,7 +4,6 @@ export default interface BaseTool {
     toolType: ToolbarTool;
     activate: Function;
     deactivate: Function;
-    isNetworkNodesInteractive?: Function;
     onNetworkNodeClick?: Function;
     /** TODO:
      * isNetworkLinksInteractive?: Function
