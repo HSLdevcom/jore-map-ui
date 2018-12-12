@@ -60,13 +60,13 @@ class LeafletMap extends React.Component<IMapProps> {
     componentDidMount() {
         const map = this.getMap();
 
-        L.control.scale({ imperial: false }).addTo(map);
-
         // Ugly hack to force map to reload, necessary because map stays gray when app is in docker
         // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
         setTimeout(() => {
             this.getMap().invalidateSize();
         },         1000);
+
+        map.addControl(L.control.scale({ imperial: false }));
 
         // TODO: Convert these as react-components
         map.addControl(new CoordinateControl({ position: 'topright' }));
