@@ -6,7 +6,7 @@ import RoutePathFactory from './routePathFactory';
 class RouteFactory {
     public static createRoute = (externalRoute: IExternalRoute, line?: ILine): IRoute => {
         const routePaths:IRoutePath[]
-            = externalRoute.externalRoutePaths
+            = externalRoute.reitinsuuntasByReitunnus.nodes
                 .map((routePath: IExternalRoutePath) => {
                     return RoutePathFactory.createRoutePath(
                         externalRoute.reitunnus, routePath);

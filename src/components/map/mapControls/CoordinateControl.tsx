@@ -61,7 +61,8 @@ class CoordinateControl extends L.Control {
             }
         };
         this.xButton.onclick = this.yButton.onclick = () => {
-            this.mapStore!.cycleCoordinateSystem();
+            this.mapStore!.setDisplayCoordinateSystem(
+                GeometryService.nextCoordinateSystem(this.mapStore!.displayCoordinateSystem));
         };
         L.DomEvent.disableClickPropagation(container);
         autorun(() => this.updateCoordinates());

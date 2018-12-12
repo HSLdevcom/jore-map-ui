@@ -1,9 +1,9 @@
 enum ToolbarTool {
-  AddNode,
+  AddNetworkNode,
+  AddNewRoutePath,
   Copy,
   DivideLink,
-  Edit,
-  None,
+  EditNetworkNode,
   Print,
 }
 
