@@ -12,8 +12,9 @@ export default class ToolbarCommonButtons extends React.Component {
     private print = () => {
     }
 
-    private newWindowUrl = () => {
-        return Navigator.getPathName() + Navigator.getSearch();
+    private openInNewTab = () => {
+        const path = Navigator.getPathName() + Navigator.getSearch();
+        window.open(path, '_blank');
     }
 
     render() {
@@ -29,17 +30,12 @@ export default class ToolbarCommonButtons extends React.Component {
                         <FiPrinter />
                     </MapControlButton>
                     <MapControlButton
-                        onClick={this.newWindowUrl}
+                        onClick={this.openInNewTab}
                         isActive={false}
                         isDisabled={false}
                         label='Avaa uusi ikkuna'
                     >
-                        <a
-                            href={this.newWindowUrl()}
-                            target='_blank'
-                        >
-                            <FiExternalLink />
-                        </a>
+                        <FiExternalLink />
                     </MapControlButton>
                 </div>
             </div>
