@@ -14,8 +14,7 @@ export default class LineService {
             );
 
             return queryResult.data.allLinjas.nodes.map(((linja: any) => {
-                const externalLine = this.getExternalLine(linja);
-                return LineFactory.createLine(externalLine);
+                return LineFactory.createLine(linja);
             }));
         } catch (error) {
             console.error(error); // tslint:disable-line
@@ -34,8 +33,7 @@ export default class LineService {
                 { query: GraphqlQueries.getLineQuery(), variables: { lineId: lintunnus } },
             );
 
-            const externalLine = this.getExternalLine(queryResult.data.linjaByLintunnus);
-            return LineFactory.createLine(externalLine);
+            return LineFactory.createLine(queryResult.data.linjaByLintunnus);
         } catch (err) {
             NotificationStore.addNotification(
                 { message: 'Linjan haku ei onnistunut.', type: NotificationType.ERROR },
@@ -44,21 +42,5 @@ export default class LineService {
             // at view component if whether query ended up into an error or not
             return null;
         }
-    }
-
-    /**
-     * Converts Apollo's queryResult into:
-     * @return {IExternalLine} externalLine
-     * @return {IExternalRoute[]} externalLine.externalRoutes
-     */
-    private static getExternalLine(line: any) {
-        // externalRoutes might already exist at line (line got from cache)
-        if (line.reittisByLintunnus) {
-            line.externalRoutes = line.reittisByLintunnus.nodes;
-
-            delete line.reittisByLintunnus;
-        }
-
-        return line;
     }
 }

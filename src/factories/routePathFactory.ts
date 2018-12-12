@@ -17,8 +17,8 @@ class RoutePathFactory {
             ].join('-'),
         ).toString();
 
-        const routePathLinks = externalRoutePath.externalRoutePathLinks
-            .map((externalRoutePathLink: IExternalRoutePathLink) => {
+        const routePathLinks = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
+            .nodes.map((externalRoutePathLink: IExternalRoutePathLink) => {
                 return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
             });
 
