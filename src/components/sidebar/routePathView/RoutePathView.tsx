@@ -7,6 +7,7 @@ import Loader from '~/components/shared/loader/Loader';
 import RoutePathService from '~/services/routePathService';
 import RoutePathViewTabType from '~/enums/routePathViewTabType';
 import RoutePathViewTab from './RoutePathViewTab';
+import LinkNodeListViewTab from './LinkNodeListViewTab';
 import RoutePathViewTabButtons from './RoutePathViewTabButtons';
 import * as s from './routePathView.scss';
 
@@ -80,9 +81,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             {
                 type: RoutePathViewTabType.NODES_AND_LINES,
                 component: (
-                    <div>
-                        Solmut ja linkit
-                    </div>
+                    <LinkNodeListViewTab
+                        routePath={this.state.routePath!}
+                    />
                 ),
             },
         ];

@@ -1,0 +1,76 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.linkNodeListViewTabView {
+    height: calc(100% - 42px); // Should just be 100%. Needs fixing
+    display: flex;
+    flex-direction: column;
+
+    .contentWrapper {
+        overflow-y: auto;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .linkNodeListViewItem {
+        border-bottom: 1.5px solid $lightGrey;
+        padding: 15px;
+        font-weight: bold;
+        color: $labelColor;
+        font-size: $mediumFontSize;
+
+
+        .nodeItem {
+            padding-bottom: 10px;
+        }
+
+        .nodeItem:last-of-type {
+            padding-bottom: 0px;
+        }
+
+        .linkItem {
+            display: flex;
+            flex-direction: row;
+            padding-bottom: 10px;
+        }
+
+        .itemId {
+            color: #007ac9;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .nodeAttribute {
+            margin-left: 10px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .editButton {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .editButton:hover {
+            color: #007ac9;
+        }
+
+    }
+    .searchResultButton {
+        padding: 20px;
+        background-color: $saveButtonGreen;
+        color: #FFF;
+        text-align: center;
+        font-size: $mediumFontSize;
+        cursor: pointer;
+    }
+    .searchResultButton:hover {
+        background-color: darken($saveButtonGreen, 10)
+    }
+    .linkNodeListViewItem:hover {
+        border-right: 3px solid #007ac9;
+        border-left: 3px solid #dedede4d;
+        background-color: #dedede4d;
+    }
+}
