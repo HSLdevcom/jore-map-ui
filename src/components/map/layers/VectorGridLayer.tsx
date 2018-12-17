@@ -23,11 +23,15 @@ interface IVectorGridLayerProps extends GridLayerProps {
 class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
     constructor(props: IVectorGridLayerProps) {
         super(props);
+    }
+
+    componentDidMount() {
         reaction(() =>
         [EditNetworkStore.node],
                  this.redrawLayers,
             );
     }
+
     // Hiding network nodes / links need refreshing the whole layer
     // TODO: find a better way to achieve this
     private redrawLayers = () => {
