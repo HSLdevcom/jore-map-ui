@@ -29,6 +29,9 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
         super(props);
 
         this.initStores();
+    }
+
+    componentDidMount() {
         this.fetchNodesAndLinks();
     }
 
@@ -40,7 +43,7 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
         this.props.routeStore!.clearRoutes();
     }
 
-    public componentWillReceiveProps(props: any) {
+    componentWillReceiveProps(props: any) {
         this.fetchNodesAndLinks();
     }
 
