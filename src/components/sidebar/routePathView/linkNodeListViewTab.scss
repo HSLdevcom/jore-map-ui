@@ -41,15 +41,6 @@
                     }
                 }
 
-                .editButton {
-                    margin-left: 5px;
-                    cursor: pointer;
-                }
-
-                .editButton:hover {
-                    color: $blue;
-                }
-
                 .timeAlignment {
                     margin-left: 10px;
                     color: #0dd5cd;
@@ -62,8 +53,6 @@
         .item {
             display: flex;
             flex-direction: row;
-            height: 100%;
-            width: 100%;
             border-bottom: 1.5px solid $lightGrey;
 
             .itemToggle {
@@ -71,9 +60,7 @@
                 cursor: pointer;
                 color: $mediumGrey;
                 transition: .5s;
-                position: relative;
                 padding: 15px;
-                height: 100%;
                 width: 100%;
                 text-align: end;
 
@@ -85,8 +72,7 @@
         }
 
         .item:hover {
-            border-right: 3px solid #007ac9;
-            border-left: 3px solid #dedede4d;
+            border-right: 3px solid $blue;
             background-color: #dedede4d;
         }
     }

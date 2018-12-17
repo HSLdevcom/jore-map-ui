@@ -1,7 +1,6 @@
 
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FiEdit } from 'react-icons/fi';
 import { FaAngleRight } from 'react-icons/fa';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
@@ -73,9 +72,6 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
                                 >
                                     {link.startNode.id}
                                 </div>
-                                <div className={s.editButton}>
-                                    <FiEdit />
-                                </div>
                             </div>
                             <div className={s.type}>
                                 Tyyppi: {this.getType(link.startNodeType)}
@@ -102,9 +98,6 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
                                     onClick={this.onClick}
                                 >
                                     {link.id}
-                                </div>
-                                <div className={s.editButton}>
-                                    <FiEdit />
                                 </div>
                             </div>
                         </div>
