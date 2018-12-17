@@ -5,7 +5,6 @@ import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import { RouteStore } from '~/stores/routeStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
 import NotificationType from '~/enums/notificationType';
 import Navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -19,10 +18,9 @@ interface IEditNetworkViewProps {
     networkStore?: NetworkStore;
     notificationStore?: NotificationStore;
     routeStore?: RouteStore;
-    toolbarStore?: ToolbarStore;
 }
 
-@inject('editNetworkStore', 'networkStore', 'notificationStore', 'routeStore', 'toolbarStore')
+@inject('editNetworkStore', 'networkStore', 'notificationStore', 'routeStore')
 @observer
 class EditNetworkView extends React.Component<IEditNetworkViewProps> {
     constructor(props: IEditNetworkViewProps) {
