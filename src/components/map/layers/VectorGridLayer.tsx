@@ -23,9 +23,6 @@ interface IVectorGridLayerProps extends GridLayerProps {
 class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
     constructor(props: IVectorGridLayerProps) {
         super(props);
-    }
-
-    componentDidMount() {
         reaction(() =>
         [EditNetworkStore.node],
                  this.redrawLayers,
