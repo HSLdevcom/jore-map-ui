@@ -14,6 +14,9 @@ class NodeFactory {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
+        const shortId = externalNode.solkirjain
+            ? externalNode.solkirjain + externalNode.sollistunnus
+            : externalNode.sollistunnus;
         const nodeStop = externalNode.pysakkiBySoltunnus;
         const type = getNodeType(externalNode.soltyyppi);
 
@@ -27,6 +30,7 @@ class NodeFactory {
         return {
             type,
             coordinates,
+            shortId,
             id: externalNode.soltunnus,
             stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,
             measurementDate: externalNode.mittpvm,

@@ -147,6 +147,8 @@ const nodeQueryFields = `
     solx,
     soly,
     soltunnus,
+    sollistunnus,
+    solkirjain,
     soltyyppi,
     solkirjain,
     geojson,

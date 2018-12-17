@@ -7,6 +7,8 @@ export default interface IExternalNode {
     mittpvm: string;
     solkuka: string;
     soltunnus: string;
+    sollistunnus: string;
+    solkirjain: string;
     soltyyppi: string;
     solviimpvm: string;
 }
