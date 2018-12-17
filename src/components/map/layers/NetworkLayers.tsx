@@ -69,15 +69,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private isLinkHidden = (transitType: TransitType, startNodeId: string, endNodeId: string) => {
-        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-        if (!selectedTransitTypes.includes(transitType)) {
-            return true;
-        }
-        const node = this.props.editNetworkStore!.node;
-        if (node && (node.id === startNodeId || node.id === endNodeId)) {
-            return true;
-        }
-        return false;
+        return this.isNetworkElementHidden(transitType, startNodeId, endNodeId);
     }
 
     private getLinkPointStyle = () => {
@@ -104,7 +96,11 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private isLinkPointHidden = (transitType: TransitType, startNodeId: string, endNodeId: string) => { // tslint:disable max-line-length
+    private isLinkPointHidden = (transitType: TransitType, startNodeId: string, endNodeId: string) => { // tslint:disable-line max-line-length
+        return this.isNetworkElementHidden(transitType, startNodeId, endNodeId);
+    }
+
+    private isNetworkElementHidden(transitType: TransitType, startNodeId: string, endNodeId: string) { // tslint:disable-line max-line-length
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         if (!selectedTransitTypes.includes(transitType)) {
             return true;
