@@ -13,7 +13,7 @@ import { RouteStore } from '~/stores/routeStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathService from '~/services/routePathService';
-import NotificationStore from '~/stores/notificationStore';
+import { NotificationStore } from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
@@ -21,8 +21,9 @@ import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathViewTab.scss';
 
 interface INewRoutePathViewProps {
-    routeStore?: RouteStore;
+    notificationStore?: NotificationStore;
     routePathStore?: RoutePathStore;
+    routeStore?: RouteStore;
     networkStore?: NetworkStore;
     toolbarStore?:  ToolbarStore;
 }
@@ -31,7 +32,7 @@ interface INewRoutePathViewState {
     isLoading: boolean;
 }
 
-@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore')
+@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore', 'notificationStore')
 @observer
 class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoutePathViewState>{
     constructor(props: any) {
@@ -86,13 +87,13 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         this.setState({ isLoading: true });
         try {
             await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
-            NotificationStore.addNotification({
+            this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
             });
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
-            NotificationStore.addNotification({
+            this.props.notificationStore!.addNotification({
                 message: `Tallennus epäonnistui${errMessage}`,
                 type: NotificationType.ERROR,
             });
@@ -108,7 +109,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     }
 
     public onChange = (property: string, value: string) => {
-        this.props.routePathStore!.updateRoutePathField(property, value);
+        this.props.routePathStore!.updateRoutePathProperty(property, value);
     }
 
     private isSaveDisabled = () => {
