@@ -5,7 +5,7 @@ import { ICoordinate } from '.';
 
 export default interface INode {
     id: string;
-    stop: IStop|null;
+    stop?: IStop;
     type: NodeType;
     transitTypes: TransitType[];
     coordinates: ICoordinate;

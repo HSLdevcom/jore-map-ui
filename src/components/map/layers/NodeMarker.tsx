@@ -17,6 +17,7 @@ import * as s from './nodeMarker.scss';
 const VERY_HIGH_Z_INDEX = 1000;
 
 interface INodeMarkerProps {
+    mapStore?: MapStore;
     nodeType: NodeType;
     latLng: L.LatLng;
     isSelected?: boolean;
@@ -25,7 +26,7 @@ interface INodeMarkerProps {
     onClick?: Function;
     isDraggable?: boolean;
     stop?: IStop;
-    mapStore?: MapStore;
+    isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
 }
 
 const DEFAULT_RADIUS = 25;
@@ -37,6 +38,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isSelected: false,
         isDraggable: false,
+        isNeighborMarker: false,
     };
 
     private createDivIcon = (html: any) => {
@@ -51,6 +53,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private getMarkerClass = () => {
         const isSelected = this.props.isSelected;
         const nodeType = this.props.nodeType;
+
+        if (this.props.isNeighborMarker) {
+            return s.neighborMarker;
+        }
 
         switch (nodeType) {
         case NodeType.STOP: {
@@ -67,9 +73,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
         case NodeType.TIME_ALIGNMENT: {
             return s.timeAlignmentMarker;
-        }
-        case NodeType.IS_NEIGHBOR: {
-            return s.neighborMarker;
         }
         default: {
             return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;

@@ -9,9 +9,9 @@ import { MapStore } from '~/stores/mapStore';
 import NodeMarker from './NodeMarker';
 
 interface INodeLayerProps {
-    node: INode | null;
     isDisabled: boolean;
     isTimeAlignmentStop: boolean;
+    node?: INode;
     popupStore?: PopupStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
