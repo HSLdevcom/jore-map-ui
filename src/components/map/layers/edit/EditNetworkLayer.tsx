@@ -30,7 +30,6 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
                 color={color}
                 weight={5}
                 opacity={0.8}
-                onClick={void 0}
             />
         );
     }
@@ -43,7 +42,6 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         return (
             <NodeMarker
                 nodeType={node.type}
-                onClick={void 0}
                 latLng={latLng}
                 isDraggable={true}
             />
