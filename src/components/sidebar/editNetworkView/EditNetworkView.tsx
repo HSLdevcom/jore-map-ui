@@ -41,7 +41,7 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
         this.props.routeStore!.clearRoutes();
     }
 
-    componentWillReceiveProps(props: any) {
+    componentWillReceiveProps(props: IEditNetworkViewProps) {
         this.fetchNodesAndLinks();
     }
 
@@ -60,7 +60,7 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
         }
 
         const links = await LinkService.fetchLinksByStartNodeAndEndNode(node.id);
-        if (links.length === 0) {
+        if (!links || links.length === 0) {
             this.props.notificationStore!.addNotification({
                 message: `Tästä solmusta (soltunnus: ${node.id}) alkavia linkkejä ei löytynyt.`,
                 type: NotificationType.WARNING,

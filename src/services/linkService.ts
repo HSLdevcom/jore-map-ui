@@ -9,7 +9,7 @@ import GraphqlQueries from './graphqlQueries';
 
 class LinkService {
     public static async fetchLinksByStartNodeAndEndNode(nodeId: string)
-        : Promise<ILink[]> {
+        : Promise<ILink[] | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getLinksByStartNodeAndEndNodeQuery(),
@@ -28,7 +28,7 @@ class LinkService {
                 message: `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${nodeId} (soltunnus), ei onnistunut.`, // tslint:disable max-line-length
                 type: NotificationType.ERROR,
             });
-            return [];
+            return null;
         }
     }
 }
