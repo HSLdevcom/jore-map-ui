@@ -7,7 +7,7 @@ import LinkFactory from '~/factories/linkFactory';
 import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
-export default class LinkService {
+class LinkService {
     public static async fetchLinksByStartNodeAndEndNode(nodeId: string)
         : Promise<ILink[]> {
         try {
@@ -32,3 +32,5 @@ export default class LinkService {
         }
     }
 }
+
+export default LinkService;

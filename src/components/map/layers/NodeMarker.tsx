@@ -33,7 +33,7 @@ const HASTUS_MIN_ZOOM = 16;
 
 @inject('mapStore')
 @observer
-export default class NodeMarker extends Component<INodeMarkerProps> {
+class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isSelected: false,
         isDraggable: false,
@@ -148,3 +148,5 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 }
+
+export default NodeMarker;

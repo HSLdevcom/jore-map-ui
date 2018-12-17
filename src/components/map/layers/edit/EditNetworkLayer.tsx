@@ -13,7 +13,7 @@ interface IEditNetworkLayerProps {
 
 @inject('editNetworkStore')
 @observer
-export default class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
+class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
     private renderLinks() {
         const links = this.props.editNetworkStore!.links;
         if (!links) return null;
@@ -59,3 +59,5 @@ export default class EditNetworkLayer extends Component<IEditNetworkLayerProps> 
         );
     }
 }
+
+export default EditNetworkLayer;

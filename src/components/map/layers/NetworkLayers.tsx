@@ -41,7 +41,7 @@ function getGeoServerUrl(layerName: string) {
 
 @inject('networkStore', 'editNetworkStore', 'routePathStore', 'toolbarStore')
 @observer
-export default class NetworkLayers extends Component<INetworkLayersProps> {
+class NetworkLayers extends Component<INetworkLayersProps> {
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
@@ -240,3 +240,5 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         );
     }
 }
+
+export default NetworkLayers;

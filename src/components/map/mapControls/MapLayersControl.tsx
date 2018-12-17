@@ -21,7 +21,7 @@ enum option {
 }
 
 @observer
-export default class MapLayersControl extends React.Component
+class MapLayersControl extends React.Component
 <IMapLayersControlProps, IMapLayersControlState> {
     constructor (props: any) {
         super(props);
@@ -111,3 +111,5 @@ export default class MapLayersControl extends React.Component
         );
     }
 }
+
+export default MapLayersControl;

@@ -8,7 +8,7 @@ import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
 // TODO: create two services, RoutePathLinkService and LinkService?
-export default class RoutePathLinkService {
+class RoutePathLinkService {
     public static async fetchAndCreateRoutePathLinksWithStartNodeId(nodeId: string)
         : Promise<IRoutePathLink[]> {
         try {
@@ -46,3 +46,5 @@ export default class RoutePathLinkService {
         }
     }
 }
+
+export default RoutePathLinkService;
