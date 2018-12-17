@@ -1,0 +1,30 @@
+@import '../../shared/styles/common';
+
+.routePathViewTabButtonsView {
+    width:100%;
+    height:40px;
+    background-color: $lightGrey;
+    border-bottom: 1.5px solid $mediumLightGrey;
+    border-right: 1.5px solid $mediumLightGrey;
+    border-left: 1.5px solid $mediumLightGrey;
+    text-align: center;
+    color: $blue;
+    font-weight: 500;
+    top: 50%;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.tabLabel {
+    top: 50%;
+    transform: translateY(50%);
+}
+
+.selected {
+    background-color: $backgroundlightGrey;
+    color: black;
+    font-weight: 500;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+}
