@@ -21,21 +21,22 @@ interface IRoutePathLayerProps {
 export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathLinks = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks) return;
+        if (!routePathLinks || routePathLinks.length < 1) return;
 
-        return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
+        const res = routePathLinks.flatMap((routePathLink: IRoutePathLink, index) => {
             const nodeToRender = routePathLink.startNode;
-            return (
-            <div key={index}>
-                {this.renderNode(nodeToRender, index)}
-                {/* Render last endNode of routePathLinks */}
-                { (index === routePathLinks.length - 1) &&
-                    this.renderNode(routePathLink.endNode, index)
-                }
-                {this.renderLink(routePathLink)}
-            </div>
-            );
+            return [
+                this.renderNode(nodeToRender, index),
+                this.renderLink(routePathLink),
+            ];
         });
+
+        /* Render last endNode of routePathLinks */
+        res.push(this.renderNode(
+            routePathLinks[routePathLinks.length - 1].endNode,
+            routePathLinks.length,
+        ));
+        return res;
     }
 
     private renderNode = (node: INode, key: number) => {
@@ -70,10 +71,10 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
             const nodeToRender = routePathLink.endNode;
             return (
-            <div key={index}>
-                {this.renderNeighborNode(nodeToRender, routePathLink, index)}
-                {this.renderNeighborLink(routePathLink)}
-            </div>
+                [
+                    this.renderNeighborNode(nodeToRender, routePathLink, index),
+                    this.renderNeighborLink(routePathLink),
+                ]
             );
         });
     }
