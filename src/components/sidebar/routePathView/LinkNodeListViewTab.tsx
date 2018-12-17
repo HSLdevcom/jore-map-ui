@@ -2,7 +2,9 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { FiEdit } from 'react-icons/fi';
-import { IRoutePath, IRoutePathLink, INode } from '~/models';
+import { FaAngleRight } from 'react-icons/fa';
+import { IRoutePath, IRoutePathLink } from '~/models';
+import NodeType from '~/enums/nodeType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import s from './linkNodeListViewTab.scss';
 
@@ -24,27 +26,25 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
     public onClick = () => {
     }
 
-    public getNodeItem = (label: string, node: INode) => {
-        return (
-            <div className={s.nodeItem}>
-                {label}
-                <div className={s.nodeAttribute}>
-                    Id:
-                    <div
-                        className={s.itemId}
-                        onClick={this.onClick}
-                    >
-                        {node.id}
-                    </div>
-                    <div className={s.editButton}>
-                        <FiEdit />
-                    </div>
-                </div>
-                <div className={s.nodeAttribute}>
-                    Tyyppi: {node.type}
-                </div>
-            </div>
-        );
+    public getType = (nodeType: string) => {
+        switch (nodeType) {
+        case NodeType.STOP: {
+            return 'Pysäkki';
+        }
+        case NodeType.CROSSROAD: {
+            return 'Risteys';
+        }
+        case NodeType.DISABLED: {
+            return (
+                <span className={s.notInUse}>
+                    Ei käytössä
+                </span>
+            );
+        }
+        default: {
+            return '-';
+        }
+        }
     }
 
     public getContent = () => {
@@ -64,20 +64,56 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
                     key={link.orderNumber}
                     className={s.linkNodeListViewItem}
                 >
-                    {this.getNodeItem('Alkusolmu', link.startNode)}
-                    <div className={s.linkItem}>
-                        Linkki:
-                        <div
-                            className={s.itemId}
-                            onClick={this.onClick}
-                        >
-                            {link.id}
+                    <div className={s.item}>
+                        <div className={s.attributes}>
+                            <div className={s.label}>
+                                Solmu:
+                                <div
+                                    className={s.id}
+                                >
+                                    {link.startNode.id}
+                                </div>
+                                <div className={s.editButton}>
+                                    <FiEdit />
+                                </div>
+                            </div>
+                            <div className={s.type}>
+                                Tyyppi: {this.getType(link.startNodeType)}
+                            </div>
+                            {
+                                link.isStartNodeTimeAlignmentStop &&
+                                <div className={s.timeAlignment}>
+                                    Ajantasauspysäkki
+                                </div>
+                            }
                         </div>
-                        <div className={s.editButton}>
-                            <FiEdit />
+                        <div
+                            className={s.itemToggle}
+                        >
+                            <FaAngleRight />
                         </div>
                     </div>
-                    {this.getNodeItem('Loppusolmu', link.endNode)}
+                    <div className={s.item}>
+                        <div className={s.attributes}>
+                            <div className={s.label}>
+                                Linkki:
+                                <div
+                                    className={s.id}
+                                    onClick={this.onClick}
+                                >
+                                    {link.id}
+                                </div>
+                                <div className={s.editButton}>
+                                    <FiEdit />
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            className={s.itemToggle}
+                        >
+                            <FaAngleRight />
+                        </div>
+                    </div>
                 </div>
             );
         });
@@ -87,7 +123,7 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
 
     public render(): any {
         return (
-            <div className={s.linkNodeListViewTabView}>
+            <div className={s.linkNodeListTabView}>
                 <div className={s.contentWrapper}>
                     {this.getContent()}
                 </div>
