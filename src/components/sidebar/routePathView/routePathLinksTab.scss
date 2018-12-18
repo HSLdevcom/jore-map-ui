@@ -6,47 +6,43 @@
     height: calc(100% - 42px); // Should just be 100%. Needs fixing
     display: flex;
     flex-direction: column;
+    font-weight: bold;
+    color: $labelColor;
+    font-size: $mediumFontSize;
 
     .contentWrapper {
         overflow-y: auto;
-        padding: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
 
+        .attributes {
+            padding: 15px;
+            position: relative;
+            align-self: center;
 
-        .routePathLinksItem {
-            font-weight: bold;
-            color: $labelColor;
-            font-size: $mediumFontSize;
+            .label {
+                display: flex;
+                flex-direction: row;
+            }
 
-            .attributes {
-                padding: 15px;
-                position: relative;
-                align-self: center;
+            .id {
+                color: $blue;
+                font-weight: bold;
+                margin-left: 5px;
+            }
 
-                .label {
-                    display: flex;
-                    flex-direction: row;
+            .type {
+                margin-left: 10px;
+                white-space: nowrap;
+
+                .notInUse {
+                    color: red;
                 }
+            }
 
-                .id {
-                    color: $blue;
-                    font-weight: bold;
-                    margin-left: 5px;
-                }
-
-                .type {
-                    margin-left: 10px;
-                    white-space: nowrap;
-
-                    .notInUse {
-                        color: red;
-                    }
-                }
-
-                .timeAlignment {
-                    margin-left: 10px;
-                    color: #0dd5cd;
-                }
-
+            .timeAlignment {
+                margin-left: 10px;
+                color: #0dd5cd;
             }
 
         }

@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { FaAngleRight } from 'react-icons/fa';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
-import NodeDescription from '~/enums/l10n/nodeDescription';
+import NodeTypeDescription from '~/enums/l10n/nodeTypeDescription';
 import { RoutePathStore } from '~/stores/routePathStore';
 import s from './routePathLinksTab.scss';
 
@@ -26,10 +26,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
     private renderList = (routePathLinks: IRoutePathLink[]) => {
         const result = routePathLinks.map((routePathLink) => {
             return (
-                <div
-                    key={routePathLink.orderNumber}
-                    className={s.routePathLinksItem}
-                >
+                <div key={routePathLink.orderNumber}>
                     {this.renderItem(
                         routePathLink, routePathLink.startNode, routePathLink.startNodeType,
                     )}
@@ -40,10 +37,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
         const lastRoutePathLink = routePathLinks.pop();
         if (lastRoutePathLink) {
             result.push(
-                <div
-                    key={lastRoutePathLink.endNode.id}
-                    className={s.routePathLinksItem}
-                >
+                <div key={lastRoutePathLink.endNode.id}>
                 {
                     this.renderItem(
                     lastRoutePathLink, lastRoutePathLink.endNode, lastRoutePathLink.endNode.type,
@@ -100,16 +94,16 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
         let description;
         switch (nodeType) {
         case NodeType.STOP: {
-            description = NodeDescription.STOP;
+            description = NodeTypeDescription.STOP;
             break;
         }
         case NodeType.CROSSROAD: {
-            description = NodeDescription.CROSSROAD;
+            description = NodeTypeDescription.CROSSROAD;
             break;
         }
         case NodeType.DISABLED: {
             className = s.notInUse;
-            description = NodeDescription.DISABLED;
+            description = NodeTypeDescription.DISABLED;
             break;
         }
         default: {
@@ -126,7 +120,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
         if (!routePathLink.isStartNodeTimeAlignmentStop) return null;
         return (
             <div className={s.timeAlignment}>
-                {NodeDescription.TIME_ALIGNMENT_STOP}
+                {NodeTypeDescription.TIME_ALIGNMENT_STOP}
             </div>
         );
     }
