@@ -24,7 +24,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
     constructor(props: IVectorGridLayerProps) {
         super(props);
         reaction(() =>
-        [EditNetworkStore.node],
+        EditNetworkStore.node,
                  this.redrawLayers,
             );
     }
