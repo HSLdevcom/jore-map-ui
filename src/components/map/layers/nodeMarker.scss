@@ -71,14 +71,6 @@
         width: 20px;
     }
 
-    .hastusIdLabel {
-        position: absolute;
-        left: 20px;
-        top: 3px;
-        font-weight: 600;
-        text-shadow: 0 0 5px white, 0 0 5px white;
-    }
-
     .neighborMarker {
         position: absolute;
         width: 20px;
@@ -101,4 +93,12 @@
     stroke: none;
     fill: $busBlue;
     fill-opacity: 0.3;
+}
+
+.nodeLabel {
+    position: absolute;
+    left: 20px;
+    top: 3px;
+    font-weight: 600;
+    text-shadow: 0 0 5px white, 0 0 5px white;
 }
