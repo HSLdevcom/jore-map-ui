@@ -5,7 +5,7 @@ import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import { MapStore } from '~/stores/mapStore';
+import { MapStore, NodeLabel } from '~/stores/mapStore';
 import NodeMarker from './NodeMarker';
 
 interface INodeLayerProps {
@@ -17,11 +17,38 @@ interface INodeLayerProps {
     mapStore?: MapStore;
 }
 
+const NODE_LABEL_MIN_ZOOM = 14;
+
 @inject('popupStore', 'toolbarStore', 'mapStore')
 @observer
 class NodeLayer extends Component<INodeLayerProps> {
     private isSelected(node: INode) {
         return this.props.mapStore!.selectedNodeId === node.id;
+    }
+
+    private getLabels(): string[] {
+        const node = this.props.node;
+        const visibleNodeLabels = this.props.mapStore!.visibleNodeLabels;
+        const zoom = this.props.mapStore!.zoom;
+
+        if (!node
+            || visibleNodeLabels.length === 0
+            || zoom < NODE_LABEL_MIN_ZOOM) return [];
+
+        const labels: string[] = [];
+        if (visibleNodeLabels.includes(NodeLabel.hastusId)) {
+            if (node.stop && node.stop.hastusId) {
+                labels.push(node.stop.hastusId);
+            }
+        }
+        if (visibleNodeLabels.includes(NodeLabel.longNodeId)) {
+            labels.push(node.id);
+        }
+        if (visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
+            labels.push(node.shortId);
+        }
+
+        return labels;
     }
 
     render() {
@@ -46,6 +73,7 @@ class NodeLayer extends Component<INodeLayerProps> {
             <NodeMarker
                 nodeType={nodeType}
                 isSelected={this.isSelected(node)}
+                labels={this.getLabels()}
                 latLng={latLng}
                 onContextMenu={openPopup}
                 stop={node.stop ? node.stop : undefined}

@@ -26,11 +26,11 @@ interface INodeMarkerProps {
     onClick?: Function;
     isDraggable?: boolean;
     stop?: IStop;
+    labels?: string[];
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
 }
 
 const DEFAULT_RADIUS = 25;
-const HASTUS_MIN_ZOOM = 16;
 
 @inject('mapStore')
 @observer
@@ -81,13 +81,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private renderMarkerLabel = () => {
-        const zoom = this.props.mapStore!.zoom;
-        const hastusId = this.props.stop ? this.props.stop!.hastusId : null;
-        if (!hastusId || zoom < HASTUS_MIN_ZOOM) return null;
-
+        if (!this.props.labels) return null;
         return (
-            <div className={s.hastusIdLabel}>
-                {hastusId}
+            <div className={s.nodeLabel}>
+                {this.props.labels.map((label, index) => {
+                    return (
+                        <div key={index}>{label}</div>
+                    );
+                })}
             </div>
         );
     }
