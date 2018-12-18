@@ -1,7 +1,7 @@
 enum NodeDescription {
-    STOP= 'Pysäkki',
-    CROSSROAD= 'Risteys',
-    DISABLED= 'Ei käytössä',
+    STOP = 'Pysäkki',
+    CROSSROAD = 'Risteys',
+    DISABLED = 'Ei käytössä',
 }
 
 export default NodeDescription;
