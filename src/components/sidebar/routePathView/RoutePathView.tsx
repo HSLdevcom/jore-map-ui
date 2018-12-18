@@ -75,11 +75,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     public render(): any {
-        const routePathViewTabs = [
-            'Reitinsuunta',
-            'Solmut ja linkit',
-        ];
-
         if (this.state.isLoading) {
             return (
                 <div className={s.routePathView}>
@@ -92,8 +87,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             <div className={s.routePathView}>
                 <div className={s.flexInnerRow}>
                     <RoutePathTabButtons
-                        tabs={routePathViewTabs}
-                        selectedTab={routePathViewTabs[this.state.selectedTabIndex]}
+                        selectedTab={this.state.selectedTabIndex}
                         selectTab={this.selectTab}
                     />
                 </div>

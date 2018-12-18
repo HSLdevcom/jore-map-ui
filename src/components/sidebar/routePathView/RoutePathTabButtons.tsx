@@ -3,18 +3,22 @@ import classnames from 'classnames';
 import * as s from './routePathTabButtons.scss';
 
 interface IRoutePathTabButtonsProps {
-    tabs: String[];
-    selectedTab: string;
+    selectedTab: number;
     selectTab: Function;
 }
 
+const routePathViewTabs = [
+    'Reitinsuunta',
+    'Solmut ja linkit',
+];
+
 const routePathTabButtons = (props: IRoutePathTabButtonsProps) => {
     return (
-        <> {props.tabs.map((tab: string, index) => {
+        <> {routePathViewTabs.map((tab: string, index) => {
             return(
                 <div
                     key={tab}
-                    className={(props.selectedTab === tab) ?
+                    className={(props.selectedTab === index) ?
                         classnames(s.routePathTabButtonsView, s.selected) :
                         s.routePathTabButtonsView}
                     onClick={props.selectTab(index)}

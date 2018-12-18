@@ -30,26 +30,39 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
                     key={routePathLink.orderNumber}
                     className={s.routePathLinksItem}
                 >
-                    {this.renderItem(routePathLink, routePathLink.startNode)}
+                    {this.renderItem(
+                        routePathLink, routePathLink.startNode, routePathLink.startNodeType,
+                    )}
                     {this.renderItem(routePathLink)}
                 </div>
             );
         });
         const lastRoutePathLink = routePathLinks.pop();
         if (lastRoutePathLink) {
-            result.push(this.renderItem(lastRoutePathLink, lastRoutePathLink.endNode));
+            result.push(
+                <div
+                    key={lastRoutePathLink.endNode.id}
+                    className={s.routePathLinksItem}
+                >
+                {
+                    this.renderItem(
+                    lastRoutePathLink, lastRoutePathLink.endNode, lastRoutePathLink.endNode.type,
+                    )
+                }
+                </div>,
+            );
         }
         return result;
     }
 
-    private renderItem(routePathLink: IRoutePathLink, node?: INode) {
+    private renderItem(routePathLink: IRoutePathLink, node?: INode, nodeType?: string) {
         return (
             <div className={s.item}>
                 <div className={s.attributes}>
                     { node ?
                         <>
                             {this.renderLabel('Solmu', node.id)}
-                            {this.renderNodeDescription(routePathLink)}
+                            {this.renderNodeDescription(routePathLink, nodeType)}
                         </>
                         :
                             this.renderLabel('Linkki', routePathLink.id)
@@ -73,16 +86,16 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
         );
     }
 
-    private renderNodeDescription = (routePathLink: IRoutePathLink) => {
+    private renderNodeDescription = (routePathLink: IRoutePathLink, nodeType?: string) => {
         return (
             <>
-                {this.renderNodeTypeDescription(routePathLink.startNodeType)}
+                {this.renderNodeTypeDescription(nodeType)}
                 {this.renderTimeAlignmentDescription(routePathLink)}
             </>
         );
     }
 
-    private renderNodeTypeDescription = (nodeType: string) => {
+    private renderNodeTypeDescription = (nodeType?: string) => {
         let className;
         let description;
         switch (nodeType) {
@@ -113,7 +126,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
         if (!routePathLink.isStartNodeTimeAlignmentStop) return null;
         return (
             <div className={s.timeAlignment}>
-                Ajantasauspysäkki
+                {NodeDescription.TIME_ALIGNMENT_STOP}
             </div>
         );
     }
