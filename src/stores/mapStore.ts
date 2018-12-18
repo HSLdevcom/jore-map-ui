@@ -114,7 +114,7 @@ export class MapStore {
     }
 
     @action
-    public toggleVisibleNodeLabel(nodeLabel: NodeLabel) {
+    public toggleNodeLabelVisibility(nodeLabel: NodeLabel) {
         if (this._visibleNodeLabels.includes(nodeLabel)) {
             this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
         } else {

@@ -39,9 +39,8 @@ export default class MapLayersControl extends React.Component
         NetworkStore.toggleMapLayerVisibility(mapLayer);
     }
 
-    // TODO: remame as toggleNodeLabelVisibility
-    public toggleNodeLabel = (nodeLabel: NodeLabel) => () => {
-        MapStore.toggleVisibleNodeLabel(nodeLabel);
+    public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => () => {
+        MapStore.toggleNodeLabelVisibility(nodeLabel);
     }
 
     private toggleMapOption = (option: option) => () => {
@@ -95,21 +94,21 @@ export default class MapLayersControl extends React.Component
                     <div className={s.inputTitle}>SOLMUT</div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
-                                onClick={this.toggleNodeLabel(NodeLabel.hastusId)}
+                                onClick={this.toggleNodeLabelVisibility(NodeLabel.hastusId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.hastusId)}
                                 text={'Hastus id'}
                             />
                         </div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
-                                onClick={this.toggleNodeLabel(NodeLabel.longNodeId)}
+                                onClick={this.toggleNodeLabelVisibility(NodeLabel.longNodeId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.longNodeId)}
                                 text={'Pitkä solmun id'}
                             />
                         </div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
-                                onClick={this.toggleNodeLabel(NodeLabel.shortNodeId)}
+                                onClick={this.toggleNodeLabelVisibility(NodeLabel.shortNodeId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.shortNodeId)}
                                 text={'Lyhyt solmun id'}
                             />
