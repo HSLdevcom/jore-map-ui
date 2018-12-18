@@ -104,14 +104,14 @@ export default class MapLayersControl extends React.Component
                             <Checkbox
                                 onClick={this.toggleNodeLabel(NodeLabel.longNodeId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.longNodeId)}
-                                text={'Pitkä solmun id'}
+                                text={'Pitkä solmun tunnus'}
                             />
                         </div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
                                 onClick={this.toggleNodeLabel(NodeLabel.shortNodeId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.shortNodeId)}
-                                text={'Lyhyt solmun id'}
+                                text={'Lyhyt solmun tunnus'}
                             />
                         </div>
                     <div className={s.sectionDivider} />
