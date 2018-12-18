@@ -4,7 +4,7 @@ import { ICoordinate } from '.';
 
 export default interface INode {
     id: string;
-    stop: IStop|null;
+    stop?: IStop;
     type: NodeType;
     coordinates: ICoordinate;
     measurementDate: string;
