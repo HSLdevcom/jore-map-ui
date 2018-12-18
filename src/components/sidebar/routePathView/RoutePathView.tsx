@@ -5,7 +5,6 @@ import { match } from 'react-router';
 import { IRoutePath } from '~/models';
 import Loader from '~/components/shared/loader/Loader';
 import RoutePathService from '~/services/routePathService';
-import RoutePathViewTabType from '~/enums/routePathViewTabType';
 import RoutePathViewTab from './RoutePathViewTab';
 import LinkNodeListViewTab from './LinkNodeListViewTab';
 import RoutePathViewTabButtons from './RoutePathViewTabButtons';
@@ -14,16 +13,11 @@ import * as s from './routePathView.scss';
 interface IRoutePathViewState {
     routePath: IRoutePath | null;
     isLoading: boolean;
-    selectedTab: string;
+    selectedTabIndex: number;
 }
 
 interface IRoutePathViewProps {
     match?: match<any>;
-}
-
-interface IRoutePathViewTabObject {
-    type: RoutePathViewTabType;
-    component: JSX.Element;
 }
 
 @observer
@@ -33,7 +27,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.state = {
             routePath: null,
             isLoading: true,
-            selectedTab: RoutePathViewTabType.ROUTE,
+            selectedTabIndex: 0,
         };
     }
 
@@ -52,40 +46,38 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
-    public selectTab = (selectedTab: string) => () => {
+    public selectTab = (selectedTabIndex: number) => () => {
         this.setState({
-            selectedTab,
+            selectedTabIndex,
         });
     }
 
-    public getContentComponent = (tabs: IRoutePathViewTabObject[]) => {
-        let content = null;
-        tabs.forEach((tab: IRoutePathViewTabObject) => {
-            if (this.state.selectedTab === tab.type) {
-                content = tab.component;
-            }
-        });
-        return content;
+    public renderTabContent = () => {
+        switch (this.state.selectedTabIndex) {
+        case 0: {
+            return (
+                <RoutePathViewTab
+                    routePath={this.state.routePath!}
+                />
+            );
+        }
+        case 1: {
+            return (
+                <LinkNodeListViewTab
+                    routePath={this.state.routePath!}
+                />
+            );
+        }
+        default: {
+            return;
+        }
+        }
     }
 
     public render(): any {
-        const tabs: IRoutePathViewTabObject[] = [
-            {
-                type: RoutePathViewTabType.ROUTE,
-                component: (
-                    <RoutePathViewTab
-                        routePath={this.state.routePath!}
-                    />
-                ),
-            },
-            {
-                type: RoutePathViewTabType.NODES_AND_LINES,
-                component: (
-                    <LinkNodeListViewTab
-                        routePath={this.state.routePath!}
-                    />
-                ),
-            },
+        const routePathViewTabs = [
+            'Reitinsuunta',
+            'Solmut ja linkit',
         ];
 
         if (this.state.isLoading) {
@@ -100,14 +92,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             <div className={s.routePathView}>
                 <div className={s.flexInnerRow}>
                     <RoutePathViewTabButtons
-                        tabs={tabs.map((tab) => {
-                            return tab.type;
-                        })}
-                        selectedTab={this.state.selectedTab}
-                        onClick={this.selectTab}
+                        tabs={routePathViewTabs}
+                        selectedTab={routePathViewTabs[this.state.selectedTabIndex]}
+                        selectTab={this.selectTab}
                     />
                 </div>
-                {this.getContentComponent(tabs)}
+                {this.renderTabContent()}
             </div>
         );
     }

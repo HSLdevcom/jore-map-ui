@@ -4,6 +4,8 @@ import { inject, observer } from 'mobx-react';
 import { FaAngleRight } from 'react-icons/fa';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
+import NodeDescription from '~/enums/l10n/nodeDescription';
+import CommonType from '~/enums/l10n/commonType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import s from './linkNodeListViewTab.scss';
 
@@ -22,28 +24,105 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
         super(props);
     }
 
-    public onClick = () => {
-    }
-
-    public getType = (nodeType: string) => {
+    public getNodeType = (nodeType?: string) => {
         switch (nodeType) {
         case NodeType.STOP: {
-            return 'Pysäkki';
+            return NodeDescription.STOP;
         }
         case NodeType.CROSSROAD: {
-            return 'Risteys';
+            return NodeDescription.CROSSROAD;
         }
         case NodeType.DISABLED: {
             return (
                 <span className={s.notInUse}>
-                    Ei käytössä
+                    {NodeDescription.DISABLED}
                 </span>
             );
         }
         default: {
-            return '-';
+            return;
         }
         }
+    }
+
+    public getNodeAttributes = (timeAlignment: boolean, nodeType?: string) => {
+        return (
+            <>
+                <div className={s.type}>
+                    Tyyppi: {this.getNodeType(nodeType)}
+                </div>
+                {
+                    timeAlignment &&
+                    <div className={s.timeAlignment}>
+                        Ajantasauspysäkki
+                    </div>
+                }
+            </>
+        );
+    }
+
+    public getItem = (itemType: string, link: IRoutePathLink) => {
+        let label = null;
+        let id = null;
+        let nodeType = undefined;
+        let isStartNodeTimeAlignmentStop = false;
+
+        switch (itemType) {
+        case CommonType.START_NODE: {
+            label = CommonType.NODE;
+            id = link.startNode.id;
+            nodeType = link.startNodeType;
+            isStartNodeTimeAlignmentStop = link.isStartNodeTimeAlignmentStop;
+            break;
+        }
+        case CommonType.END_NODE: {
+            label = CommonType.NODE;
+            id = link.endNode.id;
+            nodeType = link.endNode.type;
+            break;
+        }
+        case CommonType.LINK: {
+            label = CommonType.NODE;
+            id = link.id;
+            break;
+        }
+        }
+        return (
+            <div className={s.item}>
+                <div className={s.attributes}>
+                    <div className={s.label}>
+                        {label}
+                        <div
+                            className={s.id}
+                        >
+                            {id}
+                        </div>
+                    </div>
+                    {(label === CommonType.NODE) ?
+                        this.getNodeAttributes(
+                            isStartNodeTimeAlignmentStop,
+                            nodeType) : ''
+                    }
+                </div>
+                <div
+                    className={s.itemToggle}
+                >
+                    <FaAngleRight />
+                </div>
+            </div>
+        );
+    }
+
+    public getLastNode = (link?: IRoutePathLink) => {
+        if (!link) return;
+        return (
+            <div
+                key={link.endNode.id}
+                className={s.linkNodeListViewItem}
+            >
+                {this.getItem(CommonType.END_NODE, link)}
+            </div>
+        );
     }
 
     public getContent = () => {
@@ -63,54 +142,14 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
                     key={link.orderNumber}
                     className={s.linkNodeListViewItem}
                 >
-                    <div className={s.item}>
-                        <div className={s.attributes}>
-                            <div className={s.label}>
-                                Solmu:
-                                <div
-                                    className={s.id}
-                                >
-                                    {link.startNode.id}
-                                </div>
-                            </div>
-                            <div className={s.type}>
-                                Tyyppi: {this.getType(link.startNodeType)}
-                            </div>
-                            {
-                                link.isStartNodeTimeAlignmentStop &&
-                                <div className={s.timeAlignment}>
-                                    Ajantasauspysäkki
-                                </div>
-                            }
-                        </div>
-                        <div
-                            className={s.itemToggle}
-                        >
-                            <FaAngleRight />
-                        </div>
-                    </div>
-                    <div className={s.item}>
-                        <div className={s.attributes}>
-                            <div className={s.label}>
-                                Linkki:
-                                <div
-                                    className={s.id}
-                                    onClick={this.onClick}
-                                >
-                                    {link.id}
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            className={s.itemToggle}
-                        >
-                            <FaAngleRight />
-                        </div>
-                    </div>
+                    {this.getItem(CommonType.START_NODE, link)}
+                    {this.getItem(CommonType.LINK, link)}
                 </div>
             );
         });
-
+        const lastLink = sortedRoutePathLinks.pop();
+        const lastNode = this.getLastNode(lastLink);
+        if (lastNode) divs.push(lastNode);
         return divs;
     }
 
@@ -122,7 +161,6 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
                 </div>
                 <div
                     className={s.searchResultButton}
-                    onClick={this.onClick}
                 >
                     Tallenna muutokset
                 </div>
