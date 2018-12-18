@@ -96,11 +96,13 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private isLinkPointHidden = (transitType: TransitType, startNodeId: string, endNodeId: string) => { // tslint:disable-line max-line-length
+    private isLinkPointHidden =
+    (transitType: TransitType, startNodeId: string, endNodeId: string) => {
         return this.isNetworkElementHidden(transitType, startNodeId, endNodeId);
     }
 
-    private isNetworkElementHidden(transitType: TransitType, startNodeId: string, endNodeId: string) { // tslint:disable-line max-line-length
+    private isNetworkElementHidden =
+    (transitType: TransitType, startNodeId: string, endNodeId: string) => {
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         if (!selectedTransitTypes.includes(transitType)) {
             return true;
