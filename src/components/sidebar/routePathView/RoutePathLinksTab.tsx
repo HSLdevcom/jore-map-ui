@@ -7,20 +7,20 @@ import NodeType from '~/enums/nodeType';
 import NodeDescription from '~/enums/l10n/nodeDescription';
 import CommonType from '~/enums/l10n/commonType';
 import { RoutePathStore } from '~/stores/routePathStore';
-import s from './linkNodeListViewTab.scss';
+import s from './routePathLinksTab.scss';
 
-interface ILinkNodeListViewState {
+interface IRoutePathLinksTabState {
 }
 
-interface ILinkNodeListViewProps {
+interface IRoutePathLinksTabProps {
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
 }
 
 @inject('routePathStore')
 @observer
-class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNodeListViewState>{
-    constructor(props: ILinkNodeListViewProps) {
+class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRoutePathLinksTabState>{
+    constructor(props: IRoutePathLinksTabProps) {
         super(props);
     }
 
@@ -118,7 +118,7 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
         return (
             <div
                 key={link.endNode.id}
-                className={s.linkNodeListViewItem}
+                className={s.routePathLinksItem}
             >
                 {this.getItem(CommonType.END_NODE, link)}
             </div>
@@ -140,7 +140,7 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
             return (
                 <div
                     key={link.orderNumber}
-                    className={s.linkNodeListViewItem}
+                    className={s.routePathLinksItem}
                 >
                     {this.getItem(CommonType.START_NODE, link)}
                     {this.getItem(CommonType.LINK, link)}
@@ -155,12 +155,12 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
 
     public render(): any {
         return (
-            <div className={s.linkNodeListTabView}>
+            <div className={s.routePathLinksView}>
                 <div className={s.contentWrapper}>
                     {this.getContent()}
                 </div>
                 <div
-                    className={s.searchResultButton}
+                    className={s.saveButton}
                 >
                     Tallenna muutokset
                 </div>
@@ -169,4 +169,4 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
     }
 }
 
-export default LinkNodeListView;
+export default RoutePathLinksTab;

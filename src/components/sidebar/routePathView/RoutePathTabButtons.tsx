@@ -1,22 +1,22 @@
 import * as React from 'react';
 import classnames from 'classnames';
-import * as s from './routePathViewTabButtons.scss';
+import * as s from './routePathTabButtons.scss';
 
-interface IRoutePathViewTabButtonsProps {
+interface IRoutePathTabButtonsProps {
     tabs: String[];
     selectedTab: string;
     selectTab: Function;
 }
 
-const routePathViewTabButtons = (props: IRoutePathViewTabButtonsProps) => {
+const routePathTabButtons = (props: IRoutePathTabButtonsProps) => {
     return (
         <> {props.tabs.map((tab: string, index) => {
             return(
                 <div
                     key={tab}
                     className={(props.selectedTab === tab) ?
-                        classnames(s.routePathViewTabButtonsView, s.selected) :
-                        s.routePathViewTabButtonsView}
+                        classnames(s.routePathTabButtonsView, s.selected) :
+                        s.routePathTabButtonsView}
                     onClick={props.selectTab(index)}
                 >
                     <div className={s.tabLabel}>
@@ -29,4 +29,4 @@ const routePathViewTabButtons = (props: IRoutePathViewTabButtonsProps) => {
     );
 };
 
-export default routePathViewTabButtons;
+export default routePathTabButtons;

@@ -2,7 +2,7 @@
 @import '../../shared/styles/flexbox';
 @import '../../shared/styles/form';
 
-.linkNodeListTabView {
+.routePathLinksView {
     height: calc(100% - 42px); // Should just be 100%. Needs fixing
     display: flex;
     flex-direction: column;
@@ -11,7 +11,8 @@
         overflow-y: auto;
         padding: 10px;
 
-        .linkNodeListViewItem {
+
+        .routePathLinksItem {
             font-weight: bold;
             color: $labelColor;
             font-size: $mediumFontSize;
@@ -78,7 +79,7 @@
         }
     }
 
-    .searchResultButton {
+    .saveButton {
         padding: 20px;
         background-color: $saveButtonGreen;
         color: #FFF;
@@ -87,7 +88,7 @@
         cursor: pointer;
     }
 
-    .searchResultButton:hover {
+    .saveButton:hover {
         background-color: darken($saveButtonGreen, 10)
     }
 
