@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { IoMdMap } from 'react-icons/io';
 import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
 import TransitType from '~/enums/transitType';
-import NetworkStore from '~/stores/networkStore';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import MapStore, { NodeLabel } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
 import * as s from './mapLayersControl.scss';
@@ -35,18 +35,11 @@ export default class MapLayersControl extends React.Component
         NetworkStore.toggleTransitType(type);
     }
 
-    public toggleLinkVisibility = () => {
-        NetworkStore.toggleLinkVisibility();
+    public toggleMapLayerVisibility = (mapLayer: MapLayer) => () => {
+        NetworkStore.toggleMapLayerVisibility(mapLayer);
     }
 
-    public toggleNodeVisibility = () => {
-        NetworkStore.toggleNodeVisibility();
-    }
-
-    public togglePointVisibility = () => {
-        NetworkStore.togglePointVisibility();
-    }
-
+    // TODO: remame as toggleNodeLabelVisibility
     public toggleNodeLabel = (nodeLabel: NodeLabel) => () => {
         MapStore.toggleVisibleNodeLabel(nodeLabel);
     }
@@ -72,22 +65,22 @@ export default class MapLayersControl extends React.Component
                     />
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleLinkVisibility}
-                            checked={NetworkStore.isLinksVisible}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.link)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.link)}
                             text={'Näytä alueen linkit'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.togglePointVisibility}
-                            checked={NetworkStore.isPointsVisible}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.linkPoint)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.linkPoint)}
                             text={'Näytä linkkien pisteet'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleNodeVisibility}
-                            checked={NetworkStore.isNodesVisible}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.node)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.node)}
                             text={'Näytä alueen solmut'}
                         />
                     </div>

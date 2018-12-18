@@ -14,19 +14,21 @@ export enum NodeSize {
     large,
 }
 
+export enum MapLayer {
+    node,
+    link,
+    linkPoint,
+    nodeWithoutLink,
+}
+
 export class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
-    // TODO: Refactor to use a single array: visibleMapLayers, just like NodeLabel[] at mapStore
-    @observable private _isLinksVisible: boolean;
-    @observable private _isNodesVisible: boolean;
-    @observable private _isPointsVisible: boolean;
+    @observable private _visibleMapLayers: MapLayer[];
     @observable private _nodeSize: NodeSize;
 
     constructor() {
         this._selectedTransitTypes = TRANSIT_TYPES;
-        this._isLinksVisible = false;
-        this._isNodesVisible = false;
-        this._isPointsVisible = false;
+        this._visibleMapLayers = [];
         this._nodeSize = NodeSize.normal;
     }
 
@@ -36,53 +38,32 @@ export class NetworkStore {
     }
 
     @computed
-    get isLinksVisible(): boolean {
-        return this._isLinksVisible;
-    }
-
-    @computed
-    get isNodesVisible(): boolean {
-        return this._isNodesVisible;
-    }
-
-    @computed
-    get isPointsVisible(): boolean {
-        return this._isPointsVisible;
-    }
-
-    @computed
     get nodeSize(): NodeSize {
         return this._nodeSize;
     }
 
-    @action
-    public setNodeVisibility(isVisible: boolean) {
-        this._isNodesVisible = isVisible;
+    public isMapLayerVisible(mapLayer: MapLayer) {
+        return this._visibleMapLayers.includes(mapLayer);
     }
 
     @action
-    public setLinkVisibility(isVisible: boolean) {
-        this._isLinksVisible = isVisible;
+    public toggleMapLayerVisibility(mapLayer: MapLayer) {
+        if (this._visibleMapLayers.includes(mapLayer)) {
+            this.hideMapLayer(mapLayer);
+        } else {
+            this.showMapLayer(mapLayer);
+        }
     }
 
     @action
-    public setPointVisibility(isVisible: boolean) {
-        this._isPointsVisible = isVisible;
+    public showMapLayer(mapLayer: MapLayer) {
+        // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+        this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer]);
     }
 
     @action
-    public toggleLinkVisibility() {
-        this._isLinksVisible = !this._isLinksVisible;
-    }
-
-    @action
-    public toggleNodeVisibility() {
-        this._isNodesVisible = !this._isNodesVisible;
-    }
-
-    @action
-    public togglePointVisibility() {
-        this._isPointsVisible = !this._isPointsVisible;
+    public hideMapLayer(mapLayer: MapLayer) {
+        this._visibleMapLayers = this._visibleMapLayers.filter(mL => mL !== mapLayer);
     }
 
     @action
@@ -96,7 +77,7 @@ export class NetworkStore {
     }
 
     @action
-    setNodeSize(nodeSize: NodeSize) {
+    public setNodeSize(nodeSize: NodeSize) {
         this._nodeSize = nodeSize;
     }
 

@@ -7,7 +7,7 @@ import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
 import navigator from '~/routing/navigator';
 import LineService from '~/services/lineService';
-import { NetworkStore, NodeSize } from '~/stores/networkStore';
+import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -63,8 +63,8 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     initStores() {
         this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePath);
         this.props.networkStore!.setNodeSize(NodeSize.large);
-        this.props.networkStore!.setNodeVisibility(true);
-        this.props.networkStore!.setLinkVisibility(true);
+        this.props.networkStore!.showMapLayer(MapLayer.node);
+        this.props.networkStore!.showMapLayer(MapLayer.link);
         this.props.routePathStore!.setIsCreating(true);
         this.props.routeStore!.clearRoutes();
     }
