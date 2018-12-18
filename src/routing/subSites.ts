@@ -1,4 +1,4 @@
-enum SubSites{
+enum SubSites {
     home = '/',
     routes = '/routes/',
     node = '/node/:id',
@@ -6,6 +6,7 @@ enum SubSites{
     routePath = '/routePath/:id',
     newRoutePath = '/routePath/new',
     network = '/network/',
+    editNetwork = '/network/edit/',
     current = '',
 }
 

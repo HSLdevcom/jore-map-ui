@@ -8,12 +8,12 @@ import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
 // TODO: create two services, RoutePathLinkService and LinkService?
-export default class RoutePathLinkService {
+class RoutePathLinkService {
     public static async fetchAndCreateRoutePathLinksWithStartNodeId(nodeId: string)
         : Promise<IRoutePathLink[]> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: GraphqlQueries.getLinksQuery(), variables: { nodeId } },
+                { query: GraphqlQueries.getLinksByStartNodeQuery(), variables: { nodeId } },
             );
             return queryResult.data.solmuBySoltunnus.
                 linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
@@ -46,3 +46,5 @@ export default class RoutePathLinkService {
         }
     }
 }
+
+export default RoutePathLinkService;

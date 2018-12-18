@@ -18,6 +18,7 @@ import PopupStore from './stores/popupStore';
 import ToolbarStore from './stores/toolbarStore';
 import NetworkStore from './stores/networkStore';
 import GeometryEventStore from './stores/geometryEventStore';
+import EditNetworkStore from './stores/editNetworkStore';
 import apolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
 import './index.scss';
@@ -39,6 +40,7 @@ const stores = {
     toolbarStore: ToolbarStore,
     networkStore: NetworkStore,
     geometryEventStore: GeometryEventStore,
+    editNetworkStore: EditNetworkStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());

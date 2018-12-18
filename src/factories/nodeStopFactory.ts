@@ -1,7 +1,7 @@
 import IStop from '~/models/IStop';
 import IExternalStop  from '~/models/externals/IExternalStop';
 
-export default class StopFactory {
+class StopFactory {
     public static createStop = (node: IExternalStop): IStop => {
         return {
             id: node.id,
@@ -12,3 +12,5 @@ export default class StopFactory {
         };
     }
 }
+
+export default StopFactory;

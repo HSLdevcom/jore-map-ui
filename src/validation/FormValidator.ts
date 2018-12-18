@@ -6,7 +6,7 @@ export interface IValidationResult {
     errorMessage?: string;
 }
 
-export default class FormValidator {
+class FormValidator {
     public static validate(value: any, rule: string) : IValidationResult {
         const validator = new Validator(
             {
@@ -27,3 +27,5 @@ export default class FormValidator {
         };
     }
 }
+
+export default FormValidator;
