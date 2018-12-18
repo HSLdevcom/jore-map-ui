@@ -13,6 +13,7 @@ const enum IObjectDidChangeUpdateTypes {
 
 export class GeometryEventStore {
     @observable private _events: IEvent[];
+    private _routePathLinkReactor: Lambda | null = null;
 
     constructor() {
         this._events = [];
@@ -95,6 +96,8 @@ export class GeometryEventStore {
         const routePathLinks = event.preObject as IRoutePathLink[];
 
         RoutePathStore!.setRoutePathLinks(routePathLinks);
+        // Need to re-initiate watcher, since we have replaced the object that was observed
+        this.observeRoutePathLinks();
 
         if (routePathLinks.length > 0) {
             const neighbourLinks =
@@ -108,7 +111,6 @@ export class GeometryEventStore {
     }
 
     private initRoutePathLinkObservable() {
-        let routePathReactor : Lambda | null = null;
         // Creating watcher which will trigger when RoutePathStore is initialized
         // We cannot watch RoutePathStore!.routePath!.routePathLinks!
         // before we know that it is defined
@@ -127,23 +129,31 @@ export class GeometryEventStore {
                     !change['oldValue']
                     && change['newValue']
                 ) {
-                    // Creating watcher for RoutePathStore.routePath.routePathLinks.
-                    // Which is the list that we want to observe.
-                    routePathReactor = observe(
-                        RoutePathStore!.routePath!.routePathLinks!,
-                        (change) => {
-                            this.logRoutePathLinkChanges(
-                                change,
-                                RoutePathStore!.routePath!.routePathLinks!,
-                            );
-                        },
-                    );
+                    // Run when routepath is created
+                    this.observeRoutePathLinks();
                 } else if (
                     !change['newValue']
-                    && routePathReactor !== null
+                    && this._routePathLinkReactor !== null
                 ) {
-                    routePathReactor!();
+                    // Run when routepath is removed
+                    this._routePathLinkReactor!();
                 }
+            },
+        );
+    }
+
+    private observeRoutePathLinks() {
+        // Removing old watcher
+        if (this._routePathLinkReactor) this._routePathLinkReactor();
+        // Creating watcher for RoutePathStore.routePath.routePathLinks.
+        // Which is the list that we want to observe.
+        this._routePathLinkReactor = observe(
+            RoutePathStore!.routePath!.routePathLinks!,
+            (change) => {
+                this.logRoutePathLinkChanges(
+                    change,
+                    RoutePathStore!.routePath!.routePathLinks!,
+                );
             },
         );
     }
