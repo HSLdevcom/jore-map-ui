@@ -2,8 +2,6 @@ import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute, INode } from '~/models';
-import IExternalRoute from '~/models/externals/IExternalRoute';
-import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import LineService from './lineService';
@@ -15,10 +13,9 @@ export interface IMultipleRoutesQueryResult {
 }
 
 export default class RouteService {
-    // TODO: refactor undefined to null?
-    public static async fetchRoute(routeId: string): Promise<IRoute | undefined> {
+    public static async fetchRoute(routeId: string): Promise<IRoute | null> {
         const route = await RouteService.runFetchRouteQuery(routeId);
-        return route ? route : undefined;
+        return route ? route : null;
     }
 
     public static async fetchMultipleRoutes(routeIds: string[]):
@@ -38,8 +35,7 @@ export default class RouteService {
             );
             const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
             if (line !== null) {
-                const externalRoute = this.getExternalRoute(queryResult.data.route);
-                return RouteFactory.createRoute(externalRoute, line);
+                return RouteFactory.createRoute(queryResult.data.route, line);
             }
             return null;
         } catch (error) {
@@ -50,55 +46,5 @@ export default class RouteService {
             });
             return null;
         }
-    }
-
-    /**
-     * Converts Apollo's queryResult into:
-     * @return {IExternalRoute} externalRoute
-     * @return {IExternalRoutePath[]} externalRoute.externalRoutePaths
-     * @return {IExternalRoutePathLink[]} externalRoutePaths.externalRoutePathLinks
-     * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.startNode
-     * @return {IExternalRoutePathLinkNode} externalRoutePathLinks.endNode
-     */
-    private static getExternalRoute(route: any): IExternalRoute {
-        if (route.reitinsuuntasByReitunnus) {
-            route.externalRoutePaths = route.reitinsuuntasByReitunnus.nodes;
-            delete route.reitinsuuntasByReitunnus;
-
-            route.externalRoutePaths.forEach((externalRoutePath: any) => {
-                externalRoutePath.externalRoutePathLinks
-                    = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes;
-                delete externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta;
-
-                externalRoutePath.externalRoutePathLinks.forEach((externalRoutePathLink: any) => {
-                    externalRoutePathLink.link = externalRoutePathLink
-                        .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
-                    externalRoutePathLink.startNode = externalRoutePathLink
-                        .solmuByLnkalkusolmu;
-                    externalRoutePathLink.endNode = externalRoutePathLink
-                        .solmuByLnkloppusolmu;
-
-                    externalRoutePathLink.startNode.externalStop
-                        = externalRoutePathLink.startNode.pysakkiBySoltunnus;
-
-                    externalRoutePathLink.endNode.externalStop
-                        = externalRoutePathLink.endNode.pysakkiBySoltunnus;
-
-                    delete externalRoutePathLink
-                        .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu;
-                    delete externalRoutePathLink
-                        .solmuByLnkalkusolmu;
-                    delete externalRoutePathLink
-                        .solmuByLnkloppusolmu;
-                });
-
-                externalRoutePath.externalRoutePathLinks.sort(
-                    (a: IExternalRoutePathLink, b: IExternalRoutePathLink) => {
-                        return a.reljarjnro - b.reljarjnro;
-                    });
-            });
-        }
-
-        return route;
     }
 }

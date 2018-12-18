@@ -1,7 +1,6 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import { INode } from '~/models';
-import IExternalNode from '~/models/externals/IExternalNode';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import NodeFactory from '~/factories/nodeFactory';
@@ -13,10 +12,7 @@ export default class NodeService {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getNodeQuery(), variables: { nodeId } },
             );
-
-            const externalNode = this.getExternalNode(queryResult.data.node);
-
-            return NodeFactory.createNode(externalNode);
+            return NodeFactory.createNode(queryResult.data.node);
         } catch (error) {
             console.error(error); // tslint:disable-line
             notificationStore.addNotification({
@@ -25,17 +21,5 @@ export default class NodeService {
             });
             return null;
         }
-    }
-
-    private static getExternalNode(node: any): IExternalNode {
-
-        // node.stop might already exist (got from cache)
-        if (node.pysakkiBySoltunnus) {
-            node.externalStop = node.pysakkiBySoltunnus;
-
-            delete node.pysakkiBySoltunnus;
-        }
-
-        return node;
     }
 }

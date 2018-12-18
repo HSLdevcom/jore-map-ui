@@ -14,7 +14,7 @@ class NodeFactory {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
-        const nodeStop = externalNode.externalStop;
+        const nodeStop = externalNode.pysakkiBySoltunnus;
         const type = getNodeType(externalNode.soltyyppi);
 
         // TODO: Change this when creating abstraction layers for reading from postgis
@@ -28,7 +28,7 @@ class NodeFactory {
             type,
             coordinates,
             id: externalNode.soltunnus,
-            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : null,
+            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,
             measurementDate: externalNode.mittpvm,
             modifiedOn: externalNode.solviimpvm,
             modifiedBy: externalNode.solkuka,

@@ -19,54 +19,88 @@ interface IRoutePathLayerProps {
 @inject('routePathStore')
 @observer
 export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
-    private renderRoutePathLinks(
-        routePathLinks: IRoutePathLink[]|null,
-        { isNeighbor }: { isNeighbor: boolean }) {
-        if (!routePathLinks) return;
+    private renderRoutePathLinks = () => {
+        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
+        if (!routePathLinks || routePathLinks.length < 1) return;
 
-        return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
-            const nodeToRender = isNeighbor ? routePathLink.endNode : routePathLink.startNode;
-            return (
-            <div key={index}>
-                {this.renderNode(nodeToRender, routePathLink, { isNeighbor }, index)}
-                {/* Render last endNode of routePathLinks */}
-                { (index === routePathLinks.length - 1 && !isNeighbor) &&
-                    this.renderNode(routePathLink.endNode, routePathLink, { isNeighbor }, index)
-                }
-                {this.renderLink(routePathLink, { isNeighbor })}
-            </div>
-            );
+        const res = routePathLinks.flatMap((routePathLink: IRoutePathLink, index) => {
+            const nodeToRender = routePathLink.startNode;
+            return [
+                this.renderNode(nodeToRender, index),
+                this.renderLink(routePathLink),
+            ];
         });
+
+        /* Render last endNode of routePathLinks */
+        res.push(this.renderNode(
+            routePathLinks[routePathLinks.length - 1].endNode,
+            routePathLinks.length,
+        ));
+        return res;
     }
 
-    private renderNode(
-            node: INode,
-            routePathLink: IRoutePathLink,
-            { isNeighbor } : { isNeighbor: boolean },
-            key: number) {
+    private renderNode = (node: INode, key: number) => {
         const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
-        const nodeType = isNeighbor ? NodeType.IS_NEIGHBOR : node.type;
-
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
-                nodeType={nodeType}
-                onClick={isNeighbor ? this.addLinkToRoutePath(routePathLink) : undefined}
+                nodeType={node.type}
+                onClick={void 0}
                 latLng={latLng}
             />
         );
     }
 
-    private renderLink(routePathLink: IRoutePathLink, { isNeighbor }: any) {
-        const color = isNeighbor ? NEIGHBOR_MARKER_COLOR : MARKER_COLOR;
+    private renderLink = (routePathLink: IRoutePathLink) => {
         return (
             <Polyline
                 positions={routePathLink.positions}
                 key={routePathLink.id}
-                color={color}
+                color={MARKER_COLOR}
                 weight={5}
                 opacity={0.8}
-                onClick={isNeighbor ? this.addLinkToRoutePath(routePathLink) : null}
+                onClick={void 0}
+            />
+        );
+    }
+
+    private renderRoutePathLinkNeighbors = () => {
+        const routePathLinks = this.props.routePathStore!.neighborLinks;
+        if (!routePathLinks) return;
+
+        return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
+            const nodeToRender = routePathLink.endNode;
+            return (
+                [
+                    this.renderNeighborNode(nodeToRender, routePathLink, index),
+                    this.renderNeighborLink(routePathLink),
+                ]
+            );
+        });
+    }
+
+    private renderNeighborNode = (node: INode, routePathLink: IRoutePathLink, key: number) => {
+        const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
+        return (
+            <NodeMarker
+                key={`${key}-${node.id}`}
+                isNeighborMarker={true}
+                nodeType={node.type}
+                onClick={this.addLinkToRoutePath(routePathLink)}
+                latLng={latLng}
+            />
+        );
+    }
+
+    private renderNeighborLink = (routePathLink: IRoutePathLink) => {
+        return (
+            <Polyline
+                positions={routePathLink.positions}
+                key={routePathLink.id}
+                color={NEIGHBOR_MARKER_COLOR}
+                weight={5}
+                opacity={0.8}
+                onClick={this.addLinkToRoutePath(routePathLink)}
             />
         );
     }
@@ -79,12 +113,12 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         this.props.routePathStore!.addLink(routePathLink);
     }
 
-    private renderFirstNode() {
-        if (this.props.routePathStore!.neighborLinks.length === 0) return;
+    private renderFirstNode = () => {
+        if (this.props.routePathStore!.neighborLinks.length === 0) return null;
 
         const link = this.props.routePathStore!.neighborLinks[0];
         const firstNode = link.startNode;
-        return this.renderNode(firstNode, link, { isNeighbor: false }, 0);
+        return this.renderNode(firstNode, 0);
     }
 
     componentDidUpdate() {
@@ -108,7 +142,7 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         this.props.routePathStore!.setNeighborRoutePathLinks(neighborLinks);
     }
 
-    private renderStartMarker() {
+    private renderStartMarker = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length === 0 || !routePathLinks[0].startNode) {
             return null;
@@ -129,14 +163,10 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         if (!this.props.routePathStore!.routePath) return null;
         return (
             <>
-                {this.renderRoutePathLinks(
-                    this.props.routePathStore!.routePath!.routePathLinks, { isNeighbor: false })}
-                {this.props.routePathStore!.routePath!.routePathLinks!.length === 0 &&
-                    this.renderFirstNode()
-                }
+                {this.renderRoutePathLinks()}
+                {this.renderFirstNode()}
                 {/* Neighbors should be drawn last */}
-                {this.renderRoutePathLinks(
-                    this.props.routePathStore!.neighborLinks, { isNeighbor: true })};
+                {this.renderRoutePathLinkNeighbors()};
                 {this.renderStartMarker()}
             </>
         );

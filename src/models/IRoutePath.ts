@@ -4,7 +4,7 @@ export default interface IRoutePath {
     internalId: string;
     routeId: string;
     lineId?: string;
-    routePathLinks: IRoutePathLink[] | null;
+    routePathLinks?: IRoutePathLink[];
     routePathName: string;
     routePathNameSw: string;
     direction: string;
