@@ -7,6 +7,17 @@
     width: 100%;
     height: 100%;
 
+    .checkboxContainer {
+        padding-top: 10px;
+        display: flex;
+    }
+
+    .sectionDivider {
+        margin: 10px 0px 10px 0px;
+        border-bottom: 1px solid rgb(222, 222, 222);
+        text-align: left;
+    }
+
     .mapLayerControlIcon {
         display: flex;
         font-size: $largeFontSize;
@@ -25,19 +36,8 @@
         background-color: white;
         border-radius: 3px;
         box-shadow: 0 0 4px #666666;
-        z-index: 1;
         padding: 20px;
-
-        .networkToggleView {
-            border-bottom: 1px solid rgb(222, 222, 222);
-            text-align: left;
-            padding-bottom: 10px;
-
-            .checkboxContainer {
-                padding-top: 10px;
-                display: flex;
-            }
-        }
+        min-width: 250px;
 
         .inputTitle {
             font-size: 0.8rem;
@@ -46,11 +46,6 @@
             letter-spacing: 0em;
             padding-bottom: 3px;
             display: block;
-        }
-
-        .mapLayerToggleView {
-            padding-top: 10px;
-            text-align: left;
         }
     }
 }
