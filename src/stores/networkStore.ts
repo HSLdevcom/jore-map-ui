@@ -16,6 +16,7 @@ export enum NodeSize {
 
 export class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
+    // TODO: Refactor to use a single array: visibleMapLayers, just like NodeLabel[] at mapStore
     @observable private _isLinksVisible: boolean;
     @observable private _isNodesVisible: boolean;
     @observable private _isPointsVisible: boolean;

@@ -9,6 +9,12 @@ const INITIAL_COORDINATES = new LatLng(
 );
 const INITIAL_ZOOM = 15;
 
+export enum NodeLabel {
+    hastusId,
+    longNodeId,
+    shortNodeId,
+}
+
 export class MapStore {
 
     @observable private _coordinates: LatLng;
@@ -17,6 +23,7 @@ export class MapStore {
     @observable private _displayCoordinateSystem:CoordinateSystem;
     @observable private _zoom:number;
     @observable private _selectedNodeId: string|null;
+    @observable private _visibleNodeLabels: NodeLabel[];
 
     constructor() {
         this._coordinates = INITIAL_COORDINATES;
@@ -24,6 +31,10 @@ export class MapStore {
         this._isMapFullscreen = false;
         this._routes = [];
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
+        this._visibleNodeLabels = [
+            NodeLabel.hastusId,
+            NodeLabel.longNodeId,
+        ];
     }
 
     @computed
@@ -34,11 +45,6 @@ export class MapStore {
     @computed
     get zoom(): number {
         return this._zoom;
-    }
-
-    @action
-    setZoom(zoom: number) {
-        this._zoom = zoom;
     }
 
     @computed
@@ -69,9 +75,19 @@ export class MapStore {
         return this._selectedNodeId;
     }
 
+    @computed
+    get visibleNodeLabels(): NodeLabel[] {
+        return this._visibleNodeLabels;
+    }
+
     @action
     public setCoordinates(lat: number, lon: number) {
         this._coordinates = new LatLng(lat, lon);
+    }
+
+    @action
+    setZoom(zoom: number) {
+        this._zoom = zoom;
     }
 
     @action
@@ -95,6 +111,20 @@ export class MapStore {
     @action
     public setSelectedNodeId(id: string|null) {
         this._selectedNodeId = id;
+    }
+
+    @action
+    public toggleVisibleNodeLabel(nodeLabel: NodeLabel) {
+        if (this._visibleNodeLabels.includes(nodeLabel)) {
+            this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
+        } else {
+            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            this._visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
+        }
+    }
+
+    public isNodeLabelVisible(nodeLabel: NodeLabel) {
+        return this._visibleNodeLabels.includes(nodeLabel);
     }
 
 }
