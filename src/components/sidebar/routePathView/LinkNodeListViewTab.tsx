@@ -82,7 +82,7 @@ class LinkNodeListView extends React.Component<ILinkNodeListViewProps, ILinkNode
             break;
         }
         case CommonType.LINK: {
-            label = CommonType.NODE;
+            label = CommonType.LINK;
             id = link.id;
             break;
         }
