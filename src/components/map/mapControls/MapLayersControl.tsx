@@ -84,6 +84,13 @@ export default class MapLayersControl extends React.Component
                             text={'Näytä alueen solmut'}
                         />
                     </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleMapLayerVisibility(MapLayer.nodeWithoutLink)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)}
+                            text={'Näytä linkittömät solmut'}
+                        />
+                    </div>
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>SOLMUT</div>
                         <div className={s.checkboxContainer}>

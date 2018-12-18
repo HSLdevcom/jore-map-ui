@@ -23,6 +23,7 @@ class NetworkView extends React.Component<INetworkViewProps> {
     private initStores() {
         this.props.networkStore!.selectAllTransitTypes();
         this.props.networkStore!.showMapLayer(MapLayer.node);
+        this.props.networkStore!.showMapLayer(MapLayer.nodeWithoutLink);
         this.props.networkStore!.showMapLayer(MapLayer.link);
         this.props.routeStore!.clearRoutes();
     }

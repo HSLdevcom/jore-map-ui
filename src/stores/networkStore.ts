@@ -42,6 +42,11 @@ export class NetworkStore {
         return this._nodeSize;
     }
 
+    @computed
+    get visibleMapLayers(): MapLayer[] {
+        return this.visibleMapLayers;
+    }
+
     public isMapLayerVisible(mapLayer: MapLayer) {
         return this._visibleMapLayers.includes(mapLayer);
     }

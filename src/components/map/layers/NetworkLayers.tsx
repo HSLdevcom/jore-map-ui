@@ -89,10 +89,17 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
             solmu: (properties: any, zoom: number) => {
                 const { transittypes: transitTypes, soltyyppi: nodeType } = properties;
                 const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
-                if (transitTypes) {
+                if (this.hasNodeLinks(transitTypes)) {
+                    if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
+                        return this.getEmptyStyle();
+                    }
                     const nodeTransitTypes = TransitTypeHelper
                         .convertTransitTypeCodesToTransitTypes(transitTypes.split(','));
                     if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
+                        return this.getEmptyStyle();
+                    }
+                } else {
+                    if (!this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
                         return this.getEmptyStyle();
                     }
                 }
@@ -133,6 +140,10 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                 };
             },
         };
+    }
+
+    private hasNodeLinks(transitTypes: string) {
+        return Boolean(transitTypes);
     }
 
     private getEmptyStyle = () => {
@@ -178,7 +189,8 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         vectorTileLayerStyles={this.getPointStyle()}
                     />
                 }
-                { (this.props.networkStore!.isMapLayerVisible(MapLayer.node)) &&
+                { (this.props.networkStore!.isMapLayerVisible(MapLayer.node)
+                || this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) &&
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         nodeSize={nodeSize}
