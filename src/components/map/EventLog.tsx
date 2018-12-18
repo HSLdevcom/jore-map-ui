@@ -35,9 +35,6 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
                     <div className={classnames(s.eventType)}>
                         {entry.action}
                     </div>
-                    <div className={s.eventContent}>
-                        {entry.entity}
-                    </div>
                 </div>
             );
         });
