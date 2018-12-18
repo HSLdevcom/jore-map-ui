@@ -3,6 +3,7 @@ import IEvent from '~/models/IEvent';
 import eventType from '~/enums/eventType';
 import entityName from '~/enums/entityName';
 import { IRoutePathLink } from '~/models';
+import RoutePathLinkService from '~/services/routePathLinkService';
 import RoutePathStore from './routePathStore';
 import Navigator from '../routing/navigator';
 
@@ -31,29 +32,51 @@ export class GeometryEventStore {
 
     @action
     private pushToEvents(
-        { action, entityName, objectId }
-      : {
-          action: eventType,
-          entityName: entityName,
-          objectId: string,
-      },
-      ) {
-        this._events.push({
-            action,
-            objectId,
-            timestamp: new Date(),
-            entity: entityName,
-        });
+        { action, entityName, preObject }
+        : {
+            preObject: any,
+            action: eventType,
+            entityName: entityName,
+        },
+        ) {
+        this._events.push(
+            {
+                action,
+                preObject,
+                timestamp: new Date(),
+                entity: entityName,
+            });
     }
 
-    private logRoutePathLinkChanges(change: IObjectDidChange) {
+    @action
+    public undo() {
+        const event = this._events.pop();
+        if (event) {
+            switch (event.action) {
+            case eventType.ADD_ROUTEPATH_LINK:
+                this.undoRoutePathLink(event);
+                break;
+            }
+        }
+    }
+
+    @computed get hasEvents(): boolean {
+        return this._events.length !== 0;
+    }
+
+    private logRoutePathLinkChanges(
+        change: IObjectDidChange,
+        routePathLinks: IRoutePathLink[],
+        ) {
         if (change.hasOwnProperty(IObjectDidChangeUpdateTypes.ADDED)) {
             change[IObjectDidChangeUpdateTypes.ADDED].slice()
-                .forEach((routePathLink: IRoutePathLink) => {
+                .forEach(() => {
+                    const preRoutePathList = routePathLinks.slice();
+                    preRoutePathList.splice(change['index'], 1);
                     this.pushToEvents({
-                        action: eventType.ADD,
+                        action: eventType.ADD_ROUTEPATH_LINK,
                         entityName: entityName.ROUTELINK,
-                        objectId: routePathLink.id,
+                        preObject: preRoutePathList,
                     });
                 });
         }
@@ -66,6 +89,22 @@ export class GeometryEventStore {
                 this.clearEvents();
             },
         );
+    }
+
+    public undoRoutePathLink = async (event: IEvent) => {
+        const routePathLinks = event.preObject as IRoutePathLink[];
+
+        RoutePathStore!.setRoutePathLinks(routePathLinks);
+
+        if (routePathLinks.length > 0) {
+            const neighbourLinks =
+                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
+                    routePathLinks[routePathLinks.length - 1].endNode.id,
+                );
+            RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);
+        } else {
+            RoutePathStore!.setNeighborRoutePathLinks([]);
+        }
     }
 
     private initRoutePathLinkObservable() {
@@ -93,7 +132,10 @@ export class GeometryEventStore {
                     routePathReactor = observe(
                         RoutePathStore!.routePath!.routePathLinks!,
                         (change) => {
-                            this.logRoutePathLinkChanges(change);
+                            this.logRoutePathLinkChanges(
+                                change,
+                                RoutePathStore!.routePath!.routePathLinks!,
+                            );
                         },
                     );
                 } else if (

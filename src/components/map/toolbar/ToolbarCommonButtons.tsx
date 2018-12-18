@@ -5,9 +5,9 @@ import { observer } from 'mobx-react';
 import toolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import Navigator from '~/routing/navigator';
+import GeometryEventStore from '~/stores/geometryEventStore';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
-import UndoTool from '../tools/UndoTool';
 
 @observer
 export default class ToolbarCommonButtons extends React.Component {
@@ -17,6 +17,10 @@ export default class ToolbarCommonButtons extends React.Component {
     private openInNewTab = () => {
         const path = Navigator.getPathName() + Navigator.getSearch();
         window.open(path, '_blank');
+    }
+
+    private undo = () => {
+        GeometryEventStore.undo();
     }
 
     render() {
@@ -42,9 +46,9 @@ export default class ToolbarCommonButtons extends React.Component {
                 </div>
                 <div className={s.toolbarButtonRow}>
                     <MapControlButton
-                        onClick={UndoTool.undo}
+                        onClick={this.undo}
                         isActive={false}
-                        isDisabled={false}
+                        isDisabled={!GeometryEventStore.hasEvents}
                         label='Undo'
                     >
                         <IoMdUndo />

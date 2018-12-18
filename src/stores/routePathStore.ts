@@ -50,6 +50,11 @@ export class RoutePathStore {
         this._routePath!.routePathLinks!.push(routePathLink);
     }
 
+    @action
+    setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+        this._routePath!.routePathLinks = routePathLinks;
+    }
+
 }
 
 const observableStoreStore = new RoutePathStore();

@@ -1,7 +1,5 @@
 enum eventType {
-    ADD= 'Lisäys',
-    DELETE= 'Poisto',
-    MOVE= 'Siirto',
+    ADD_ROUTEPATH_LINK,
 }
 
 export default eventType;
