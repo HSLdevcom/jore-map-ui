@@ -1,4 +1,5 @@
 import { action, computed, observable } from 'mobx';
+import { Moment } from 'moment';
 import TransitType from '~/enums/transitType';
 
 const TRANSIT_TYPES = [
@@ -16,12 +17,12 @@ export enum NodeSize {
 
 export class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
+    @observable private _selectedDate: Moment;
     // TODO: Refactor to use a single array: visibleMapLayers, just like NodeLabel[] at mapStore
     @observable private _isLinksVisible: boolean;
     @observable private _isNodesVisible: boolean;
     @observable private _isPointsVisible: boolean;
     @observable private _nodeSize: NodeSize;
-
     constructor() {
         this._selectedTransitTypes = TRANSIT_TYPES;
         this._isLinksVisible = false;
@@ -33,6 +34,16 @@ export class NetworkStore {
     @computed
     get selectedTransitTypes() {
         return this._selectedTransitTypes;
+    }
+
+    @computed
+    get selectedDate(): Moment {
+        return this._selectedDate;
+    }
+
+    @action
+    setSelectedDate(value: Moment) {
+        this._selectedDate = value;
     }
 
     @computed

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { toJS } from 'mobx';
+import Moment from 'moment';
 import { NetworkStore, NodeSize } from '~/stores/networkStore';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -78,13 +79,14 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             piste: (properties: any, zoom: number) => {
                 const {
                     lnkverkko: transitTypeCode,
+                    dateranges: daterangesString,
                     lnkalkusolmu: startNodeId,
                     lnkloppusolmu: endNodeId,
                 } = properties;
                 const transitType = TransitTypeHelper
                     .convertTransitTypeCodeToTransitType(transitTypeCode);
-
-                if (this.isLinkPointHidden(transitType, startNodeId, endNodeId)) {
+                const dateranges = this.parseDaterangesString(daterangesString);
+                if (this.isLinkPointHidden(transitType, startNodeId, endNodeId, dateranges)) {
                     return this.getEmptyStyle();
                 }
 
@@ -96,23 +98,39 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
+    private parseDaterangesString(daterangesString: string) {
+        if (!daterangesString) return undefined;
+        return daterangesString.split(',')
+            .map((dr: string) => dr.split('/').map(date => Moment(date)));
+    }
+
     private isLinkPointHidden =
-    (transitType: TransitType, startNodeId: string, endNodeId: string) => {
-        return this.isNetworkElementHidden(transitType, startNodeId, endNodeId);
+    (transitType: TransitType,
+     startNodeId: string,
+     endNodeId: string,
+     dateranges?: Moment.Moment[][]) => {
+        return this.isNetworkElementHidden(transitType, startNodeId, endNodeId, dateranges);
     }
 
     private isNetworkElementHidden =
-    (transitType: TransitType, startNodeId: string, endNodeId: string) => {
-        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-        if (!selectedTransitTypes.includes(transitType)) {
-            return true;
+        (transitType: TransitType,
+         startNodeId: string,
+         endNodeId: string,
+         dateranges?: Moment.Moment[][]) => {
+            const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+            if (!selectedTransitTypes.includes(transitType)) {
+                return true;
+            }
+            const selectedDate = this.props.networkStore!.selectedDate;
+            if (selectedDate &&
+                (!dateranges ||
+                    !dateranges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]')))
+            ) {
+                return true;
+            }
+            const node = this.props.editNetworkStore!.node;
+            return Boolean((node && (node.id === startNodeId || node.id === endNodeId)));
         }
-        const node = this.props.editNetworkStore!.node;
-        if (node && (node.id === startNodeId || node.id === endNodeId)) {
-            return true;
-        }
-        return false;
-    }
 
     private getNodeStyle = () => {
         return {
