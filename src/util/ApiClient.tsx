@@ -20,7 +20,7 @@ class ApiClient {
         return await this.sendRequest(RequestMethod.POST, entityName, object);
     }
 
-    public async addObject(entityName: entityName, object: any) {
+    public async createObject(entityName: entityName, object: any) {
         return await this.sendRequest(RequestMethod.PUT, entityName, object);
     }
 
