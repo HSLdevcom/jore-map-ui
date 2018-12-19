@@ -1,9 +1,11 @@
 import React from 'react';
 import { FiPrinter, FiExternalLink } from 'react-icons/fi';
+import { IoMdUndo } from 'react-icons/io';
 import { observer } from 'mobx-react';
 import toolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import Navigator from '~/routing/navigator';
+import GeometryEventStore from '~/stores/geometryEventStore';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 
@@ -12,8 +14,13 @@ class ToolbarCommonButtons extends React.Component {
     private print = () => {
     }
 
-    private newWindowUrl = () => {
-        return Navigator.getPathName() + Navigator.getSearch();
+    private openInNewTab = () => {
+        const path = Navigator.getPathName() + Navigator.getSearch();
+        window.open(path, '_blank');
+    }
+
+    private undo = () => {
+        GeometryEventStore.undo();
     }
 
     render() {
@@ -29,17 +36,22 @@ class ToolbarCommonButtons extends React.Component {
                         <FiPrinter />
                     </MapControlButton>
                     <MapControlButton
-                        onClick={this.newWindowUrl}
+                        onClick={this.openInNewTab}
                         isActive={false}
                         isDisabled={false}
                         label='Avaa uusi ikkuna'
                     >
-                        <a
-                            href={this.newWindowUrl()}
-                            target='_blank'
-                        >
-                            <FiExternalLink />
-                        </a>
+                        <FiExternalLink />
+                    </MapControlButton>
+                </div>
+                <div className={s.toolbarButtonRow}>
+                    <MapControlButton
+                        onClick={this.undo}
+                        isActive={false}
+                        isDisabled={!GeometryEventStore.hasEvents}
+                        label='Undo'
+                    >
+                        <IoMdUndo />
                     </MapControlButton>
                 </div>
             </div>

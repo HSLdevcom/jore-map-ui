@@ -3,6 +3,7 @@ import IEvent from '~/models/IEvent';
 import eventType from '~/enums/eventType';
 import entityName from '~/enums/entityName';
 import { IRoutePathLink } from '~/models';
+import RoutePathLinkService from '~/services/routePathLinkService';
 import RoutePathStore from './routePathStore';
 import Navigator from '../routing/navigator';
 
@@ -12,6 +13,7 @@ const enum IObjectDidChangeUpdateTypes {
 
 export class GeometryEventStore {
     @observable private _events: IEvent[];
+    private _routePathLinkReactor: Lambda | null = null;
 
     constructor() {
         this._events = [];
@@ -24,6 +26,10 @@ export class GeometryEventStore {
         return this._events;
     }
 
+    @computed get hasEvents(): boolean {
+        return this._events.length !== 0;
+    }
+
     @action
     private clearEvents() {
         this._events = [];
@@ -31,31 +37,30 @@ export class GeometryEventStore {
 
     @action
     private pushToEvents(
-        { action, entityName, objectId }
-      : {
-          action: eventType,
-          entityName: entityName,
-          objectId: string,
-      },
-      ) {
-        this._events.push({
-            action,
-            objectId,
-            timestamp: new Date(),
-            entity: entityName,
-        });
+        { action, entityName, preObject }
+        : {
+            preObject: any,
+            action: eventType,
+            entityName: entityName,
+        },
+        ) {
+        this._events.push(
+            {
+                action,
+                preObject,
+                entity: entityName,
+            });
     }
 
-    private logRoutePathLinkChanges(change: IObjectDidChange) {
-        if (change.hasOwnProperty(IObjectDidChangeUpdateTypes.ADDED)) {
-            change[IObjectDidChangeUpdateTypes.ADDED].slice()
-                .forEach((routePathLink: IRoutePathLink) => {
-                    this.pushToEvents({
-                        action: eventType.ADD,
-                        entityName: entityName.ROUTELINK,
-                        objectId: routePathLink.id,
-                    });
-                });
+    @action
+    public undo() {
+        const event = this._events.pop();
+        if (event) {
+            switch (event.action) {
+            case eventType.ADD_ROUTEPATH_LINK:
+                this.undoRoutePathLink(event);
+                break;
+            }
         }
     }
 
@@ -68,8 +73,27 @@ export class GeometryEventStore {
         );
     }
 
+    // RoutePath undo. TODO: move this logic to some other place
+    private undoRoutePathLink = async (event: IEvent) => {
+        const routePathLinks = event.preObject as IRoutePathLink[];
+
+        RoutePathStore!.setRoutePathLinks(routePathLinks);
+        // Need to re-initiate watcher, since we have replaced the object that was observed
+        this.observeRoutePathLinks();
+
+        if (routePathLinks.length > 0) {
+            const neighbourLinks =
+                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
+                    routePathLinks[routePathLinks.length - 1].endNode.id,
+                );
+            RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);
+        } else {
+            RoutePathStore!.setNeighborRoutePathLinks([]);
+        }
+    }
+
+    // RoutePath watcher. TODO: move this logic to some other place
     private initRoutePathLinkObservable() {
-        let routePathReactor : Lambda | null = null;
         // Creating watcher which will trigger when RoutePathStore is initialized
         // We cannot watch RoutePathStore!.routePath!.routePathLinks!
         // before we know that it is defined
@@ -88,22 +112,51 @@ export class GeometryEventStore {
                     !change['oldValue']
                     && change['newValue']
                 ) {
-                    // Creating watcher for RoutePathStore.routePath.routePathLinks.
-                    // Which is the list that we want to observe.
-                    routePathReactor = observe(
-                        RoutePathStore!.routePath!.routePathLinks!,
-                        (change) => {
-                            this.logRoutePathLinkChanges(change);
-                        },
-                    );
+                    // Run when routepath is created
+                    this.observeRoutePathLinks();
                 } else if (
                     !change['newValue']
-                    && routePathReactor !== null
+                    && this._routePathLinkReactor !== null
                 ) {
-                    routePathReactor!();
+                    // Run when routepath is removed
+                    this._routePathLinkReactor!();
                 }
             },
         );
+    }
+
+    private observeRoutePathLinks() {
+        // Removing old watcher
+        if (this._routePathLinkReactor) this._routePathLinkReactor();
+        // Creating watcher for RoutePathStore.routePath.routePathLinks.
+        // Which is the list that we want to observe.
+        this._routePathLinkReactor = observe(
+            RoutePathStore!.routePath!.routePathLinks!,
+            (change) => {
+                this.logRoutePathLinkChanges(
+                    change,
+                    RoutePathStore!.routePath!.routePathLinks!,
+                );
+            },
+        );
+    }
+
+    private logRoutePathLinkChanges(
+        change: IObjectDidChange,
+        routePathLinks: IRoutePathLink[],
+        ) {
+        if (change.hasOwnProperty(IObjectDidChangeUpdateTypes.ADDED)) {
+            change[IObjectDidChangeUpdateTypes.ADDED].slice()
+                .forEach(() => {
+                    const preRoutePathList = routePathLinks.slice();
+                    preRoutePathList.splice(change['index'], 1);
+                    this.pushToEvents({
+                        action: eventType.ADD_ROUTEPATH_LINK,
+                        entityName: entityName.ROUTELINK,
+                        preObject: preRoutePathList,
+                    });
+                });
+        }
     }
 }
 
