@@ -3,6 +3,7 @@
 .lineItemView {
     text-decoration: none;
     color: $fontColorDefault;
+
     .lineItem {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -57,7 +58,6 @@
                 padding-bottom: 3px;
                 padding-left: 2px;
                 border-radius: 5px;
-
                 transition: .5s;
             }
 

@@ -1,20 +1,20 @@
 import * as React from 'react';
 import classnames from 'classnames';
-import * as s from './routePathTabButtons.scss';
+import * as s from './routePathTabs.scss';
 
-interface IRoutePathTabButtonsProps {
+interface IRoutePathTabsProps {
     selectedTab: number;
     selectTab: Function;
 }
 
-const routePathViewTabs = [
+const tabs = [
     'Reitinsuunta',
     'Solmut ja linkit',
 ];
 
-const routePathTabButtons = (props: IRoutePathTabButtonsProps) => {
+const routePathTabs = (props: IRoutePathTabsProps) => {
     return (
-        <> {routePathViewTabs.map((tab: string, index) => {
+        <> {tabs.map((tab: string, index) => {
             return(
                 <div
                     key={tab}
@@ -33,4 +33,4 @@ const routePathTabButtons = (props: IRoutePathTabButtonsProps) => {
     );
 };
 
-export default routePathTabButtons;
+export default routePathTabs;
