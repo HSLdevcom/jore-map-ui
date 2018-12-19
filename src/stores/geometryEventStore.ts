@@ -26,6 +26,10 @@ export class GeometryEventStore {
         return this._events;
     }
 
+    @computed get hasEvents(): boolean {
+        return this._events.length !== 0;
+    }
+
     @action
     private clearEvents() {
         this._events = [];
@@ -44,7 +48,6 @@ export class GeometryEventStore {
             {
                 action,
                 preObject,
-                timestamp: new Date(),
                 entity: entityName,
             });
     }
@@ -61,28 +64,6 @@ export class GeometryEventStore {
         }
     }
 
-    @computed get hasEvents(): boolean {
-        return this._events.length !== 0;
-    }
-
-    private logRoutePathLinkChanges(
-        change: IObjectDidChange,
-        routePathLinks: IRoutePathLink[],
-        ) {
-        if (change.hasOwnProperty(IObjectDidChangeUpdateTypes.ADDED)) {
-            change[IObjectDidChangeUpdateTypes.ADDED].slice()
-                .forEach(() => {
-                    const preRoutePathList = routePathLinks.slice();
-                    preRoutePathList.splice(change['index'], 1);
-                    this.pushToEvents({
-                        action: eventType.ADD_ROUTEPATH_LINK,
-                        entityName: entityName.ROUTELINK,
-                        preObject: preRoutePathList,
-                    });
-                });
-        }
-    }
-
     private initClearEventListOnPageChange() {
         observe(
             Navigator!.getStore(),
@@ -92,7 +73,8 @@ export class GeometryEventStore {
         );
     }
 
-    public undoRoutePathLink = async (event: IEvent) => {
+    // RoutePath undo. TODO: move this logic to some other place
+    private undoRoutePathLink = async (event: IEvent) => {
         const routePathLinks = event.preObject as IRoutePathLink[];
 
         RoutePathStore!.setRoutePathLinks(routePathLinks);
@@ -110,6 +92,7 @@ export class GeometryEventStore {
         }
     }
 
+    // RoutePath watcher. TODO: move this logic to some other place
     private initRoutePathLinkObservable() {
         // Creating watcher which will trigger when RoutePathStore is initialized
         // We cannot watch RoutePathStore!.routePath!.routePathLinks!
@@ -156,6 +139,24 @@ export class GeometryEventStore {
                 );
             },
         );
+    }
+
+    private logRoutePathLinkChanges(
+        change: IObjectDidChange,
+        routePathLinks: IRoutePathLink[],
+        ) {
+        if (change.hasOwnProperty(IObjectDidChangeUpdateTypes.ADDED)) {
+            change[IObjectDidChangeUpdateTypes.ADDED].slice()
+                .forEach(() => {
+                    const preRoutePathList = routePathLinks.slice();
+                    preRoutePathList.splice(change['index'], 1);
+                    this.pushToEvents({
+                        action: eventType.ADD_ROUTEPATH_LINK,
+                        entityName: entityName.ROUTELINK,
+                        preObject: preRoutePathList,
+                    });
+                });
+        }
     }
 }
 

@@ -5,5 +5,4 @@ export default interface IEvent {
     entity: entityName;
     action: eventType;
     preObject: object;
-    timestamp: Date;
 }
