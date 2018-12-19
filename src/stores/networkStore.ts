@@ -15,7 +15,7 @@ export enum NodeSize {
     large,
 }
 
-export enum MapLayer {
+export enum MapLayer { // TODO change name to something better
     node,
     link,
     linkPoint,
