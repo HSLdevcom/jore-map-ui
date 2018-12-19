@@ -113,24 +113,21 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private isNetworkElementHidden =
-        (transitType: TransitType,
-         startNodeId: string,
-         endNodeId: string,
-         dateranges?: Moment.Moment[][]) => {
-            const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-            if (!selectedTransitTypes.includes(transitType)) {
-                return true;
-            }
-            const selectedDate = this.props.networkStore!.selectedDate;
-            if (selectedDate &&
+    (transitType: TransitType,
+     startNodeId: string,
+     endNodeId: string,
+     dateranges?: Moment.Moment[][]) => {
+        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+        const selectedDate = this.props.networkStore!.selectedDate;
+        const node = this.props.editNetworkStore!.node;
+        return Boolean(
+            (!selectedTransitTypes.includes(transitType))
+            || (selectedDate &&
                 (!dateranges ||
                     !dateranges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]')))
-            ) {
-                return true;
-            }
-            const node = this.props.editNetworkStore!.node;
-            return Boolean((node && (node.id === startNodeId || node.id === endNodeId)));
-        }
+            )
+            || (node && (node.id === startNodeId || node.id === endNodeId)));
+    }
 
     private getNodeStyle = () => {
         return {
