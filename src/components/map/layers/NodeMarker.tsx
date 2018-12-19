@@ -17,6 +17,7 @@ import * as s from './nodeMarker.scss';
 const VERY_HIGH_Z_INDEX = 1000;
 
 interface INodeMarkerProps {
+    mapStore?: MapStore;
     nodeType: NodeType;
     latLng: L.LatLng;
     isSelected?: boolean;
@@ -25,18 +26,19 @@ interface INodeMarkerProps {
     onClick?: Function;
     isDraggable?: boolean;
     stop?: IStop;
-    mapStore?: MapStore;
+    labels?: string[];
+    isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
 }
 
 const DEFAULT_RADIUS = 25;
-const HASTUS_MIN_ZOOM = 16;
 
 @inject('mapStore')
 @observer
-export default class NodeMarker extends Component<INodeMarkerProps> {
+class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isSelected: false,
         isDraggable: false,
+        isNeighborMarker: false,
     };
 
     private createDivIcon = (html: any) => {
@@ -51,6 +53,10 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
     private getMarkerClass = () => {
         const isSelected = this.props.isSelected;
         const nodeType = this.props.nodeType;
+
+        if (this.props.isNeighborMarker) {
+            return s.neighborMarker;
+        }
 
         switch (nodeType) {
         case NodeType.STOP: {
@@ -68,9 +74,6 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         case NodeType.TIME_ALIGNMENT: {
             return s.timeAlignmentMarker;
         }
-        case NodeType.IS_NEIGHBOR: {
-            return s.neighborMarker;
-        }
         default: {
             return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;
         }
@@ -78,13 +81,14 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private renderMarkerLabel = () => {
-        const zoom = this.props.mapStore!.zoom;
-        const hastusId = this.props.stop ? this.props.stop!.hastusId : null;
-        if (!hastusId || zoom < HASTUS_MIN_ZOOM) return null;
-
+        if (!this.props.labels) return null;
         return (
-            <div className={s.hastusIdLabel}>
-                {hastusId}
+            <div className={s.nodeLabel}>
+                {this.props.labels.map((label, index) => {
+                    return (
+                        <div key={index}>{label}</div>
+                    );
+                })}
             </div>
         );
     }
@@ -148,3 +152,5 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 }
+
+export default NodeMarker;

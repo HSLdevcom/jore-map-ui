@@ -12,7 +12,7 @@ interface IToolbarModeButtonsProps {
     editMode: EditMode;
 }
 
-export default class ToolbarModeButtons extends React.Component<IToolbarModeButtonsProps> {
+class ToolbarModeButtons extends React.Component<IToolbarModeButtonsProps> {
     private selectLineMode() {
         ToolbarStore.selectTool(null);
         const homeViewLink = routeBuilder
@@ -76,3 +76,5 @@ export default class ToolbarModeButtons extends React.Component<IToolbarModeButt
         );
     }
 }
+
+export default ToolbarModeButtons;

@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 // tslint:disable:max-line-length
 
-function getLineQuery() {
+const getLineQuery = () => {
     return (
         gql`query getLineByLintunnus ($lineId: String!) {
             linjaByLintunnus(lintunnus:$lineId) {
@@ -16,9 +16,9 @@ function getLineQuery() {
             }
         }`
     );
-}
+};
 
-function getAllLinesQuery() {
+const getAllLinesQuery = () => {
     return (
         gql`{
             allLinjas {
@@ -35,9 +35,9 @@ function getAllLinesQuery() {
             }
         }`
     );
-}
+};
 
-function getRouteQuery() {
+const getRouteQuery = () => {
     return (
         gql`query getLineDetails($routeId: String!) {
             route: reittiByReitunnus(reitunnus: $routeId) {
@@ -51,9 +51,9 @@ function getRouteQuery() {
             }
         }`
     );
-}
+};
 
-function getRoutePathQuery() {
+const getRoutePathQuery = () => {
     return (
         gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
             routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
@@ -65,9 +65,9 @@ function getRoutePathQuery() {
             }
         }`
     );
-}
+};
 
-function getRoutePathLinkQuery() {
+const getRoutePathLinkQuery = () => {
     return (
         gql`query getRoutePathLink($routeLinkId: Int!) {
             routePathLink: reitinlinkkiByRelid(relid: $routeLinkId) {
@@ -75,29 +75,30 @@ function getRoutePathLinkQuery() {
             }
         }`
     );
-}
+};
 
-function getLinksQuery() {
+const getLinksByStartNodeQuery = () => {
     return (
         gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
-                linkkisByLnkalkusolmu {
-                    nodes {
-                        ${routeLinkQueryFields}
-                        solmuByLnkalkusolmu {
-                            ${startNodeQueryFields}
-                        }
-                        solmuByLnkloppusolmu {
-                            ${endNodeQueryFields}
-                        }
-                    }
-                }
+                ${linksByStartNodeQuery}
             }
         }`
     );
-}
+};
 
-function getNodeQuery() {
+const getLinksByStartNodeAndEndNodeQuery = () => {
+    return (
+        gql`query getNodesWithRoutePathLinkStartNodeAndEndNodeId($nodeId: String!) {
+            solmuBySoltunnus(soltunnus: $nodeId) {
+                ${linksByStartNodeQuery}
+                ${linksByEndNodeQuery}
+            }
+        }`
+    );
+};
+
+const getNodeQuery = () => {
     return (
         gql`
         query getNodeDetails($nodeId: String!) {
@@ -106,7 +107,7 @@ function getNodeQuery() {
             }
         }`
     );
-}
+};
 
 const lineQueryFields = `
     lintunnus
@@ -147,10 +148,13 @@ const nodeQueryFields = `
     solx,
     soly,
     soltunnus,
+    sollistunnus,
+    solkirjain,
     soltyyppi,
     solkirjain,
     geojson,
     geojsonManual,
+    transittypes,
     pysakkiBySoltunnus {
         pyssade,
         pysnimi,
@@ -196,10 +200,36 @@ reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
     }
 }`;
 
-const routeLinkQueryFields = `
+const linkQueryFields = `
     geojson
     lnkverkko
 `;
+
+const linksByStartNodeQuery = `
+linkkisByLnkalkusolmu {
+    nodes {
+        ${linkQueryFields}
+        solmuByLnkalkusolmu {
+            ${startNodeQueryFields}
+        }
+        solmuByLnkloppusolmu {
+            ${endNodeQueryFields}
+        }
+    }
+}`;
+
+const linksByEndNodeQuery = `
+linkkisByLnkloppusolmu {
+    nodes {
+        ${linkQueryFields}
+        solmuByLnkalkusolmu {
+            ${startNodeQueryFields}
+        }
+        solmuByLnkloppusolmu {
+            ${endNodeQueryFields}
+        }
+    }
+}`;
 
 // tslint:enable:max-line-length
 
@@ -208,7 +238,8 @@ export default {
     getAllLinesQuery,
     getRouteQuery,
     getRoutePathQuery,
-    getLinksQuery,
+    getLinksByStartNodeQuery,
+    getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
     getRoutePathLinkQuery,
 };

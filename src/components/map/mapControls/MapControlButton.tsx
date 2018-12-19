@@ -9,7 +9,7 @@ interface MapControlButtonProps {
     isDisabled: boolean;
 }
 
-export default class MapControlButton extends Component<MapControlButtonProps>{
+class MapControlButton extends Component<MapControlButtonProps>{
     render () {
         const classes = classnames(
             s.mapControlButton,
@@ -36,3 +36,5 @@ export default class MapControlButton extends Component<MapControlButtonProps>{
         );
     }
 }
+
+export default MapControlButton;

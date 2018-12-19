@@ -1,6 +1,8 @@
 import { INode, ICoordinate } from '~/models';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import IExternalNode from '~/models/externals/IExternalNode';
+import TransitTypeHelper from '~/util/transitTypeHelper';
 import NodeStopFactory from './nodeStopFactory';
 import NotificationType from '../enums/notificationType';
 import notificationStore from '../stores/notificationStore';
@@ -14,9 +16,17 @@ class NodeFactory {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
+        const shortId = externalNode.solkirjain
+            ? externalNode.solkirjain + externalNode.sollistunnus
+            : externalNode.sollistunnus;
         const nodeStop = externalNode.pysakkiBySoltunnus;
         const type = getNodeType(externalNode.soltyyppi);
 
+        let transitTypes: TransitType[] = [];
+        if (externalNode.transittypes) {
+            transitTypes = externalNode.transittypes.split(',').map(transitTypeCode =>
+                TransitTypeHelper.convertTransitTypeCodeToTransitType(transitTypeCode));
+        }
         // TODO: Change this when creating abstraction layers for reading from postgis
         if (type === NodeType.INVALID) {
             notificationStore.addNotification({
@@ -26,9 +36,11 @@ class NodeFactory {
         }
         return {
             type,
+            transitTypes,
             coordinates,
+            shortId,
             id: externalNode.soltunnus,
-            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : null,
+            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,
             measurementDate: externalNode.mittpvm,
             modifiedOn: externalNode.solviimpvm,
             modifiedBy: externalNode.solkuka,

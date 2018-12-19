@@ -6,7 +6,7 @@ import NotificationStore from '~/stores/notificationStore';
 import { ILine } from '~/models';
 import GraphqlQueries from './graphqlQueries';
 
-export default class LineService {
+class LineService {
     public static async fetchAllLines(): Promise<ILine[] | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
@@ -44,3 +44,5 @@ export default class LineService {
         }
     }
 }
+
+export default LineService;
