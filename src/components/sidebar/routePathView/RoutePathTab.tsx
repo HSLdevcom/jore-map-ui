@@ -6,7 +6,7 @@ import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
-import NotificationStore from '~/stores/notificationStore';
+import { NotificationStore } from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
@@ -15,7 +15,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './routePathViewTab.scss';
+import * as s from './routePathTab.scss';
 
 interface IRoutePathViewState {
     isEditingDisabled: boolean;
@@ -27,12 +27,13 @@ interface IRoutePathViewState {
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
+    notificationStore?: NotificationStore;
     routePath: IRoutePath;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'notificationStore')
 @observer
-class RoutePathViewTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
+class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: any) {
         super(props);
         this.state = {
@@ -52,15 +53,15 @@ class RoutePathViewTab extends React.Component<IRoutePathViewProps, IRoutePathVi
     public save = async () => {
         this.setState({ isLoading: true });
         try {
-            await RoutePathService.saveRoutePath(this.state.routePath!);
+            await RoutePathService.updateRoutePath(this.state.routePath!);
             this.setState({ hasModifications: false });
-            NotificationStore.addNotification({
+            this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
             });
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
-            NotificationStore.addNotification({
+            this.props.notificationStore!.addNotification({
                 message: `Tallennus epäonnistui${errMessage}`,
                 type: NotificationType.ERROR,
             });
@@ -110,7 +111,7 @@ class RoutePathViewTab extends React.Component<IRoutePathViewProps, IRoutePathVi
 
         if (!this.state.routePath) return 'Error';
         return (
-        <div className={classnames(s.routePathViewTab, s.form)}>
+        <div className={classnames(s.routePathTab, s.form)}>
             <div className={s.formSection}>
                 <ViewHeader
                     header={`Reitinsuunta`}
@@ -175,4 +176,4 @@ class RoutePathViewTab extends React.Component<IRoutePathViewProps, IRoutePathVi
         );
     }
 }
-export default RoutePathViewTab;
+export default RoutePathTab;

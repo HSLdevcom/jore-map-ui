@@ -3,9 +3,9 @@
 @import '../../shared/styles/form';
 
 .routePathView {
-    padding-bottom: 30px;
     overflow-y: scroll;
     width: $sidebarWide;
+    height: 100%;
 
     .routePathViewHeader {
         display: flex;

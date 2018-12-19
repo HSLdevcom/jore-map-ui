@@ -15,12 +15,12 @@ export class IRequestError {
 
 const API_URL = process.env.API_URL || 'http://localhost:3040';
 
-export default class ApiClient {
+class ApiClient {
     public async updateObject(entityName: entityName, object: any) {
         return await this.sendRequest(RequestMethod.POST, entityName, object);
     }
 
-    public async addObject(entityName: entityName, object: any) {
+    public async createObject(entityName: entityName, object: any) {
         return await this.sendRequest(RequestMethod.PUT, entityName, object);
     }
 
@@ -65,3 +65,5 @@ export default class ApiClient {
         return `${API_URL}/${entityName}`;
     }
 }
+
+export default ApiClient;

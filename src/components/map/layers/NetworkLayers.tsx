@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { toJS } from 'mobx';
+import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import VectorGridLayer from './VectorGridLayer';
 
 enum GeoserverLayer {
@@ -26,6 +28,7 @@ enum NodeColors {
 
 interface INetworkLayersProps {
     networkStore?: NetworkStore;
+    editNetworkStore?: EditNetworkStore;
     routePathStore?: RoutePathStore;
     toolbarStore?: ToolbarStore;
 }
@@ -36,24 +39,27 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('networkStore', 'routePathStore', 'toolbarStore')
+@inject('networkStore', 'editNetworkStore', 'routePathStore', 'toolbarStore')
 @observer
-export default class NetworkLayers extends Component<INetworkLayersProps> {
+class NetworkLayers extends Component<INetworkLayersProps> {
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
             linkki: (properties: any, zoom: number) => {
-                const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+                const {
+                    lnkverkko: transitTypeCode,
+                    lnkalkusolmu: startNodeId,
+                    lnkloppusolmu: endNodeId,
+                } = properties;
                 const transitType = TransitTypeHelper
-                    .convertTransitTypeCodeToTransitType(properties.lnkverkko);
-                const color = TransitTypeColorHelper.getColor(transitType);
+                    .convertTransitTypeCodeToTransitType(transitTypeCode);
 
-                if (!selectedTransitTypes.includes(transitType)) {
+                if (this.isLinkHidden(transitType, startNodeId, endNodeId)) {
                     return this.getEmptyStyle();
                 }
 
                 return {
-                    color,
+                    color: TransitTypeColorHelper.getColor(transitType),
                     weight: 1,
                     fillOpacity: 1,
                     fill: true,
@@ -62,46 +68,64 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private getPointStyle = () => {
+    private isLinkHidden = (transitType: TransitType, startNodeId: string, endNodeId: string) => {
+        return this.isNetworkElementHidden(transitType, startNodeId, endNodeId);
+    }
+
+    private getLinkPointStyle = () => {
         return {
             // Layer name 'piste' is directly mirrored from Jore through geoserver
             piste: (properties: any, zoom: number) => {
-                const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+                const {
+                    lnkverkko: transitTypeCode,
+                    lnkalkusolmu: startNodeId,
+                    lnkloppusolmu: endNodeId,
+                } = properties;
                 const transitType = TransitTypeHelper
-                    .convertTransitTypeCodeToTransitType(properties.lnkverkko);
-                const color = TransitTypeColorHelper.getColor(transitType);
+                    .convertTransitTypeCodeToTransitType(transitTypeCode);
 
-                if (!selectedTransitTypes.includes(transitType)) {
+                if (this.isLinkPointHidden(transitType, startNodeId, endNodeId)) {
                     return this.getEmptyStyle();
                 }
 
                 return {
-                    color,
+                    color: TransitTypeColorHelper.getColor(transitType),
                     radius: 1,
                 };
             },
         };
     }
 
+    private isLinkPointHidden =
+    (transitType: TransitType, startNodeId: string, endNodeId: string) => {
+        return this.isNetworkElementHidden(transitType, startNodeId, endNodeId);
+    }
+
+    private isNetworkElementHidden =
+    (transitType: TransitType, startNodeId: string, endNodeId: string) => {
+        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+        if (!selectedTransitTypes.includes(transitType)) {
+            return true;
+        }
+        const node = this.props.editNetworkStore!.node;
+        if (node && (node.id === startNodeId || node.id === endNodeId)) {
+            return true;
+        }
+        return false;
+    }
+
     private getNodeStyle = () => {
         return {
             // Layer name 'solmu' is directly mirrored from Jore through geoserver
             solmu: (properties: any, zoom: number) => {
-                const { transittypes: transitTypes, soltyyppi: nodeType } = properties;
-                const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
-                if (this.hasNodeLinks(transitTypes)) {
-                    if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
-                        return this.getEmptyStyle();
-                    }
-                    const nodeTransitTypes = TransitTypeHelper
-                        .convertTransitTypeCodesToTransitTypes(transitTypes.split(','));
-                    if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
-                        return this.getEmptyStyle();
-                    }
-                } else {
-                    if (!this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
-                        return this.getEmptyStyle();
-                    }
+                const {
+                    transittypes: transitTypeCodes,
+                    soltyyppi: nodeType,
+                    soltunnus: nodeId,
+                } = properties;
+
+                if (this.isNodeHidden(nodeId, transitTypeCodes)) {
+                    return this.getEmptyStyle();
                 }
                 let color;
                 let fillColor;
@@ -142,8 +166,32 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         };
     }
 
-    private hasNodeLinks(transitTypes: string) {
-        return Boolean(transitTypes);
+    private isNodeHidden = (nodeId: string, transitTypeCodes: string) => {
+        const node = this.props.editNetworkStore!.node;
+        if (node && node.id === nodeId) {
+            return true;
+        }
+
+        const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
+        if (this.hasNodeLinks(transitTypeCodes)) {
+            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
+                return true;
+            }
+            const nodeTransitTypes = TransitTypeHelper
+                .convertTransitTypeCodesToTransitTypes(transitTypeCodes.split(','));
+            if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
+                return true;
+            }
+        } else {
+            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private hasNodeLinks(transitTypeCodes: string) {
+        return Boolean(transitTypeCodes);
     }
 
     private getEmptyStyle = () => {
@@ -162,11 +210,8 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         const nodeSize = this.props.networkStore!.nodeSize;
 
         const selectedTool = this.props.toolbarStore!.selectedTool;
-        let isNetworkNodesInteractive: boolean;
         let onNetworkNodeClick: Function;
         if (selectedTool) {
-            isNetworkNodesInteractive = selectedTool.isNetworkNodesInteractive ?
-                selectedTool.isNetworkNodesInteractive() : false;
             onNetworkNodeClick = selectedTool.onNetworkNodeClick ?
             selectedTool.onNetworkNodeClick : () => {};
         }
@@ -178,6 +223,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         key={GeoserverLayer.Link}
                         url={getGeoServerUrl(GeoserverLayer.Link)}
+                        interactive={true}
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
                 }
@@ -186,7 +232,8 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         key={GeoserverLayer.Point}
                         url={getGeoServerUrl(GeoserverLayer.Point)}
-                        vectorTileLayerStyles={this.getPointStyle()}
+                        interactive={true}
+                        vectorTileLayerStyles={this.getLinkPointStyle()}
                     />
                 }
                 { (this.props.networkStore!.isMapLayerVisible(MapLayer.node)
@@ -197,7 +244,7 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
                         onClick={onNetworkNodeClick!}
                         key={GeoserverLayer.Node}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
-                        interactive={isNetworkNodesInteractive!}
+                        interactive={true}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
                 }
@@ -205,3 +252,5 @@ export default class NetworkLayers extends Component<INetworkLayersProps> {
         );
     }
 }
+
+export default NetworkLayers;

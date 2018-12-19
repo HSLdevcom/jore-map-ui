@@ -5,6 +5,7 @@ import { reaction } from 'mobx';
 import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
 import TransitType from '~/enums/transitType';
 import NetworkStore, { NodeSize, MapLayer } from '~/stores/networkStore';
+import EditNetworkStore from '~/stores/editNetworkStore';
 
 declare module 'leaflet' {
     let vectorGrid: any;
@@ -24,13 +25,14 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         super(props);
         reaction(() =>
             [NetworkStore.isMapLayerVisible(MapLayer.node),
-                NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)],
+                NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink),
+                EditNetworkStore.node],
                  this.redrawLayers,
         );
     }
 
-     // Hiding network nodes / links need refreshing the whole layer
-     // TODO: find a better way to achieve this
+    // Hiding network nodes / links need refreshing the whole layer
+    // TODO: find a better way to achieve this
     private redrawLayers = () => {
         this.leafletElement.redraw();
     }
@@ -39,15 +41,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         const { url, ...options } = props;
         options.tms = true;
 
-        const gridLayer = L.vectorGrid.protobuf(url, options);
-
-        gridLayer.on('click', (event: L.LeafletEvent) => {
-            if (this.props.onClick) {
-                this.props.onClick(event);
-            }
-        });
-
-        return gridLayer;
+        return L.vectorGrid.protobuf(url, options);
     }
 
     private areArraysEqual(array1: string[], array2: string[]) {

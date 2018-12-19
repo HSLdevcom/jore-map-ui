@@ -23,7 +23,7 @@ interface RoutePathLinkLayerProps {
 
 @inject('popupStore')
 @observer
-export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
+class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
 
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
@@ -75,6 +75,7 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
     private renderStartMarker() {
         const color = this.props.color;
         const routePathLinks = this.props.routePathLinks;
+        if (routePathLinks!.length === 0) return;
         const coordinates = routePathLinks![0].startNode.coordinates;
         const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
@@ -100,3 +101,5 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
         );
     }
 }
+
+export default RoutePathLayer;

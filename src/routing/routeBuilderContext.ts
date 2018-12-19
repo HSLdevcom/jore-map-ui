@@ -2,7 +2,7 @@ import qs from 'qs';
 import SubSites from './subSites';
 import QueryParams from './queryParams';
 
-export default class RouteBuilderContext {
+class RouteBuilderContext {
     private currentLocation: string;
     private target: string;
     private targetId: string;
@@ -67,3 +67,5 @@ export default class RouteBuilderContext {
         return this;
     }
 }
+
+export default RouteBuilderContext;

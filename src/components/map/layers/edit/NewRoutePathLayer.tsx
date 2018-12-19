@@ -18,7 +18,7 @@ interface IRoutePathLayerProps {
 
 @inject('routePathStore')
 @observer
-export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
+class RoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathLinks = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
@@ -172,3 +172,5 @@ export default class RoutePathLayer extends Component<IRoutePathLayerProps> {
         );
     }
 }
+
+export default RoutePathLayer;

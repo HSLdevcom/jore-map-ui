@@ -6,7 +6,7 @@ import NotificationType from '~/enums/notificationType';
 import NodeFactory from '~/factories/nodeFactory';
 import GraphqlQueries from './graphqlQueries';
 
-export default class NodeService {
+class NodeService {
     public static async fetchNode(nodeId: string): Promise<INode | null> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
@@ -23,3 +23,5 @@ export default class NodeService {
         }
     }
 }
+
+export default NodeService;

@@ -1,0 +1,91 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.routePathLinksView {
+    height: calc(100% - 42px); // Should just be 100%. Needs fixing
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    color: $labelColor;
+    font-size: $mediumFontSize;
+
+    .contentWrapper {
+        overflow-y: auto;
+        padding-left: 10px;
+        padding-right: 10px;
+
+        .attributes {
+            padding: 15px;
+            position: relative;
+            align-self: center;
+
+            .label {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .id {
+                color: $blue;
+                font-weight: bold;
+                margin-left: 5px;
+            }
+
+            .type {
+                margin-left: 10px;
+                white-space: nowrap;
+
+                .notInUse {
+                    color: red;
+                }
+            }
+
+            .timeAlignment {
+                margin-left: 10px;
+                color: #0dd5cd;
+            }
+
+        }
+
+        .item {
+            display: flex;
+            flex-direction: row;
+            border-bottom: 1.5px solid $lightGrey;
+            border-right: 3px solid $backgroundlightGrey;
+
+            .itemToggle {
+                font-size: 22px;
+                cursor: pointer;
+                color: $mediumGrey;
+                transition: .5s;
+                padding: 15px;
+                width: 100%;
+                text-align: end;
+
+                :hover {
+                    color: darken($mediumGrey, 10);
+                    transition: .5s;
+                }
+            }
+        }
+
+        .item:hover {
+            border-right: 3px solid $blue;
+            background-color: #dedede4d;
+        }
+    }
+
+    .saveButton {
+        padding: 20px;
+        background-color: $saveButtonGreen;
+        color: #FFF;
+        text-align: center;
+        font-size: $mediumFontSize;
+        cursor: pointer;
+    }
+
+    .saveButton:hover {
+        background-color: darken($saveButtonGreen, 10)
+    }
+
+}

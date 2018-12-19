@@ -12,45 +12,48 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathFactory from '~/factories/routePathFactory';
+import RoutePathService from '~/services/routePathService';
+import { NotificationStore } from '~/stores/notificationStore';
+import NotificationType from '~/enums/notificationType';
+import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './newRoutePathView.scss';
+import * as s from './routePathTab.scss';
 
 interface INewRoutePathViewProps {
-    routeStore?: RouteStore;
+    notificationStore?: NotificationStore;
     routePathStore?: RoutePathStore;
+    routeStore?: RouteStore;
     networkStore?: NetworkStore;
     toolbarStore?:  ToolbarStore;
 }
 
 interface INewRoutePathViewState {
-    currentRoutePath: IRoutePath;
+    isLoading: boolean;
 }
 
-@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore')
+@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore', 'notificationStore')
 @observer
 class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoutePathViewState>{
     constructor(props: any) {
         super(props);
 
-        const routePathStore = this.props.routePathStore;
-        const currentRoutePath = routePathStore ? routePathStore.routePath : null;
-        if (!currentRoutePath) {
-            const newRoutePath = this.createNewRoutePath();
-
-            this.props.routePathStore!.setRoutePath(newRoutePath);
-            this.state = {
-                currentRoutePath: newRoutePath,
-            };
+        const oldRoutePath = this.props.routePathStore!.routePath;
+        let newRoutepath: IRoutePath;
+        if (!oldRoutePath) {
+            newRoutepath = this.createNewRoutePath();
         } else {
-            this.state = {
-                currentRoutePath,
-            };
+            newRoutepath = RoutePathFactory.createNewRoutePathFromOld(oldRoutePath);
         }
+        this.props.routePathStore!.setRoutePath(newRoutepath);
+
+        this.state = {
+            isLoading: false,
+        };
 
         this.initStores();
-        if (currentRoutePath) {
-            this.setTransitType(currentRoutePath);
+        if (newRoutepath) {
+            this.setTransitType(newRoutepath);
         }
     }
 
@@ -71,13 +74,31 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
 
     // TODO: transitType could be routePath's property
     // then we wouldn't need to fetch transitType from line
-    private async setTransitType(currentRoutePath: IRoutePath) {
-        if (currentRoutePath.lineId) {
-            const line = await LineService.fetchLine(currentRoutePath.lineId);
+    private async setTransitType(routePath: IRoutePath) {
+        if (routePath.lineId) {
+            const line = await LineService.fetchLine(routePath.lineId);
             if (line) {
                 this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
             }
         }
+    }
+
+    public onSave = async () => {
+        this.setState({ isLoading: true });
+        try {
+            await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+            this.props.notificationStore!.addNotification({
+                message: 'Tallennus onnistui',
+                type: NotificationType.SUCCESS,
+            });
+        } catch (err) {
+            const errMessage = err.message ? `, (${err.message})` : '';
+            this.props.notificationStore!.addNotification({
+                message: `Tallennus epäonnistui${errMessage}`,
+                type: NotificationType.ERROR,
+            });
+        }
+        this.setState({ isLoading: false });
     }
 
     componentWillUnmount() {
@@ -88,33 +109,37 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     }
 
     public onChange = (property: string, value: string) => {
-        this.setState({
-            currentRoutePath: { ...this.state.currentRoutePath!, [property]: value },
-        });
+        this.props.routePathStore!.updateRoutePathProperty(property, value);
     }
 
-    public onSave = () => {
-        // TODO
+    private isSaveDisabled = () => {
+        return !this.props.routePathStore!.routePath
+            || this.props.routePathStore!.routePath!.routePathLinks!.length === 0;
     }
 
     public render(): any {
-        const currentRoutePath = this.state.currentRoutePath;
+        if (this.state.isLoading) {
+            return (
+                <Loader size={Loader.MEDIUM}/>
+            );
+        }
+        const routePath = this.props.routePathStore!.routePath!;
         return (
-        <div className={classnames(s.newRoutePathViewTab, s.form)}>
+        <div className={classnames(s.routePathTab, s.form)}>
             <div className={s.formSection}>
                 <ViewHeader
                     header='Luo uusi reitinsuunta'
                 />
                 <div className={s.flexInnerRow}>
-                    <div className={s.staticInfo}>LINJA: {currentRoutePath.lineId}</div>
-                    <div className={s.staticInfo}>REITTI: {currentRoutePath.routeId}</div>
+                    <div className={s.staticInfo}>LINJA: {routePath.lineId}</div>
+                    <div className={s.staticInfo}>REITTI: {routePath.routeId}</div>
                 </div>
             </div>
             <div className={s.formSection}>
                 <RoutePathViewForm
                     isEditingDisabled={false}
                     onChange={this.onChange}
-                    routePath={currentRoutePath}
+                    routePath={routePath}
                 />
             </div>
             <div className={s.formSection}>
@@ -122,6 +147,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
                     <Button
                         onClick={this.onSave}
                         type={ButtonType.SAVE}
+                        disabled={this.isSaveDisabled()}
                         text={'Tallenna reitinsuunta'}
                     />
                 </div>
