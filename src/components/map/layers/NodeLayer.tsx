@@ -44,7 +44,7 @@ class NodeLayer extends Component<INodeLayerProps> {
         if (visibleNodeLabels.includes(NodeLabel.longNodeId)) {
             labels.push(node.id);
         }
-        if (visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
+        if (node.shortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
             labels.push(node.shortId);
         }
 
