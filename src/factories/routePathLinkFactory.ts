@@ -28,7 +28,7 @@ class RoutePathLinkFactory {
             id: externalRoutePathLink.relid,
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeType: externalRoutePathLink.relpysakki,
-            isStartNodeTimeAlignmentStop: !!externalRoutePathLink.ajantaspys,
+            isStartNodeTimeAlignmentStop: Boolean((externalRoutePathLink.ajantaspys === '1')),
             routeId: externalRoutePathLink.reitunnus,
             routePathDirection: externalRoutePathLink.suusuunta,
             routePathStartDate: new Date(externalRoutePathLink.suuvoimast),
