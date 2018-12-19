@@ -15,7 +15,7 @@ interface IRouteLayerState {
 }
 
 @observer
-export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
+class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
         super(props);
         this.state = {
@@ -112,3 +112,5 @@ export default class RouteLayer extends Component<RouteLayerProps, IRouteLayerSt
             });
     }
 }
+
+export default RouteLayer;

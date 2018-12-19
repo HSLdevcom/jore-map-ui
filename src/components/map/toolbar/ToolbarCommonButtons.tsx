@@ -10,7 +10,7 @@ import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 
 @observer
-export default class ToolbarCommonButtons extends React.Component {
+class ToolbarCommonButtons extends React.Component {
     private print = () => {
     }
 
@@ -58,3 +58,4 @@ export default class ToolbarCommonButtons extends React.Component {
         );
     }
 }
+export default ToolbarCommonButtons;

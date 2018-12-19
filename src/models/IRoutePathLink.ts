@@ -6,7 +6,7 @@ export default interface IRoutePathLink {
     routePathDirection?: string;
     routePathStartDate?: Date;
     id: string;
-    positions: [[number, number]];
+    positions: [[number, number]]; // TODO: use geojson format instead (?)
     startNode: INode;
     endNode: INode;
     orderNumber: number;

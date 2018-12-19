@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export default class ApiClientHelper {
+class ApiClientHelper {
     private static arrayToObject = (arr: [string, any][]) => {
         const res = {};
         arr.forEach(([key, value]:[string, any]) => {
@@ -24,3 +24,5 @@ export default class ApiClientHelper {
         };
     }
 }
+
+export default ApiClientHelper;

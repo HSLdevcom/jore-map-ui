@@ -16,7 +16,7 @@ interface IEventLogProps {
 }
 
 @observer
-export default class EventLog extends React.Component<IEventLogProps, IEventLogState> {
+class EventLog extends React.Component<IEventLogProps, IEventLogState> {
     scrollRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: IEventLogProps) {
@@ -107,3 +107,5 @@ export default class EventLog extends React.Component<IEventLogProps, IEventLogS
         );
     }
 }
+
+export default EventLog;

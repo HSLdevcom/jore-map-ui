@@ -34,7 +34,7 @@ const DEFAULT_RADIUS = 25;
 
 @inject('mapStore')
 @observer
-export default class NodeMarker extends Component<INodeMarkerProps> {
+class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isSelected: false,
         isDraggable: false,
@@ -152,3 +152,5 @@ export default class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 }
+
+export default NodeMarker;

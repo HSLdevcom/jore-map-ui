@@ -12,7 +12,7 @@ export interface IMultipleRoutesQueryResult {
     nodes: INode[];
 }
 
-export default class RouteService {
+class RouteService {
     public static async fetchRoute(routeId: string): Promise<IRoute | null> {
         const route = await RouteService.runFetchRouteQuery(routeId);
         return route ? route : null;
@@ -48,3 +48,5 @@ export default class RouteService {
         }
     }
 }
+
+export default RouteService;

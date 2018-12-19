@@ -17,7 +17,7 @@ interface RoutePathLayerProps {
 }
 
 @observer
-export default class RoutePathLayer extends Component<RoutePathLayerProps> {
+class RoutePathLayer extends Component<RoutePathLayerProps> {
     private openLinkView = (routePathLinkId: number) => {
         const linkViewLink = routeBuilder
             .to(subSites.link)
@@ -50,3 +50,5 @@ export default class RoutePathLayer extends Component<RoutePathLayerProps> {
             });
     }
 }
+
+export default RoutePathLayer;

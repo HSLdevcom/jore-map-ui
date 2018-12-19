@@ -23,6 +23,7 @@
 * Use async await instead of promises
 * Use arrow functions in components
 * Use render prefix in methods that return JSX or HTML
+* Use export default at the end of file
 
 ### IModels
 
