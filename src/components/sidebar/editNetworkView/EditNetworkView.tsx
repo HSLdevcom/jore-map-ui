@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { match } from 'react-router';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
-import { NetworkStore } from '~/stores/networkStore';
+import { NetworkStore, MapLayer } from '~/stores/networkStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import { RouteStore } from '~/stores/routeStore';
 import NotificationType from '~/enums/notificationType';
@@ -35,9 +35,9 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
 
     private initStores() {
         this.props.networkStore!.selectAllTransitTypes();
-        this.props.networkStore!.setNodeVisibility(true);
-        this.props.networkStore!.setLinkVisibility(true);
-        this.props.networkStore!.setPointVisibility(true);
+        this.props.networkStore!.showMapLayer(MapLayer.node);
+        this.props.networkStore!.showMapLayer(MapLayer.link);
+        this.props.networkStore!.showMapLayer(MapLayer.linkPoint);
         this.props.routeStore!.clearRoutes();
     }
 

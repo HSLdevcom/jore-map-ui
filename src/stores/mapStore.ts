@@ -33,7 +33,6 @@ export class MapStore {
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._visibleNodeLabels = [
             NodeLabel.hastusId,
-            NodeLabel.longNodeId,
         ];
     }
 
@@ -114,7 +113,7 @@ export class MapStore {
     }
 
     @action
-    public toggleVisibleNodeLabel(nodeLabel: NodeLabel) {
+    public toggleNodeLabelVisibility(nodeLabel: NodeLabel) {
         if (this._visibleNodeLabels.includes(nodeLabel)) {
             this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
         } else {
