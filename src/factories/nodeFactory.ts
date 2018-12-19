@@ -16,7 +16,7 @@ class NodeFactory {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
-        let shortId = undefined;
+        let shortId;
         if (externalNode.sollistunnus) {
             shortId = externalNode.solkirjain
             ? externalNode.solkirjain + externalNode.sollistunnus
