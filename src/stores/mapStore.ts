@@ -33,7 +33,6 @@ export class MapStore {
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._visibleNodeLabels = [
             NodeLabel.hastusId,
-            NodeLabel.longNodeId,
         ];
     }
 
