@@ -3,6 +3,7 @@ import 'leaflet.vectorgrid';
 import _ from 'lodash';
 import { reaction } from 'mobx';
 import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
+import { Moment } from 'moment';
 import TransitType from '~/enums/transitType';
 import { NodeSize } from '~/stores/networkStore';
 import EditNetworkStore from '~/stores/editNetworkStore';
@@ -13,6 +14,7 @@ declare module 'leaflet' {
 
 interface IVectorGridLayerProps extends GridLayerProps {
     selectedTransitTypes: TransitType[];
+    selectedDate: Moment;
     url: string;
     tms: boolean;
     vectorTileLayerStyles: any;
@@ -52,7 +54,11 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         // OR even better: pass ref to updateLeafletElement and call from parent
         // redraw layers according to that variable
         if (!this.areArraysEqual(fromProps.selectedTransitTypes, toProps.selectedTransitTypes)
-        || fromProps.nodeSize !== toProps.nodeSize) {
+            || fromProps.nodeSize !== toProps.nodeSize
+            || (!fromProps.selectedDate !== !toProps.selectedDate ||
+                (fromProps.selectedDate
+                && toProps.selectedDate
+                && !fromProps.selectedDate.isSame(toProps.selectedDate)))) {
             this.leafletElement.redraw();
         }
     }

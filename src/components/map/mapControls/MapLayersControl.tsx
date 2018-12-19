@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { ChangeEvent } from 'react';
 import { observer } from 'mobx-react';
 import { IoMdMap } from 'react-icons/io';
 import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
@@ -6,6 +6,7 @@ import TransitType from '~/enums/transitType';
 import NetworkStore from '~/stores/networkStore';
 import MapStore, { NodeLabel } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
+import NetworkDateControl from './NetworkDateControl';
 import * as s from './mapLayersControl.scss';
 
 interface IMapLayersControlState {
@@ -57,6 +58,10 @@ class MapLayersControl extends React.Component
         });
     }
 
+    private selectDate = (e: ChangeEvent<HTMLInputElement>) => {
+        NetworkStore.setSelectedDate(e.target.value);
+    }
+
     render() {
         return (
             <div className={s.mapLayerControlView}>
@@ -70,6 +75,8 @@ class MapLayersControl extends React.Component
                         toggleSelectedTransitType={this.toggleTransitType}
                         selectedTransitTypes={NetworkStore.selectedTransitTypes}
                     />
+                    <NetworkDateControl selectDate={this.selectDate}/>
+                    <div className={s.sectionDivider} />
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleLinkVisibility}
