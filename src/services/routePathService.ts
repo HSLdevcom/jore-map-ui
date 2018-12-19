@@ -9,7 +9,7 @@ import entityName from '~/enums/entityName';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 
-export default class RoutePathService {
+class RoutePathService {
     public static async fetchRoutePath
         (routeId: string, startDate: moment.Moment, direction: string): Promise<IRoutePath | null> {
         try {
@@ -43,3 +43,5 @@ export default class RoutePathService {
         return await apiClient.createObject(entityName.ROUTEPATH, routePath);
     }
 }
+
+export default RoutePathService;

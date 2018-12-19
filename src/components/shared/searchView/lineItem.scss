@@ -3,6 +3,7 @@
 .lineItemView {
     text-decoration: none;
     color: $fontColorDefault;
+
     .lineItem {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -57,15 +58,14 @@
                 padding-bottom: 3px;
                 padding-left: 2px;
                 border-radius: 5px;
-    
                 transition: .5s;
             }
-    
+
             .routeName:hover {
                 background-color: #e6e6e6;
                 transition: .5s;
             }
-    
+
             .routeDate {
                 font-size: $smallFontSize;
                 padding: 5px 2px;

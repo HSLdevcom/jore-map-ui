@@ -5,7 +5,7 @@ import ToolbarStore from '~/stores/toolbarStore';
 import * as s from './toolbarHelp.scss';
 
 @observer
-export default class ToolbarHelp extends Component {
+class ToolbarHelp extends Component {
     render() {
         const selectedTool = ToolbarStore!.selectedTool;
         if (!selectedTool) return null;
@@ -31,3 +31,5 @@ export default class ToolbarHelp extends Component {
         }
     }
 }
+
+export default ToolbarHelp;

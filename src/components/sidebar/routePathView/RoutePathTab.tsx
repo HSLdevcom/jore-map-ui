@@ -15,7 +15,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './routePathViewTab.scss';
+import * as s from './routePathTab.scss';
 
 interface IRoutePathViewState {
     isEditingDisabled: boolean;
@@ -33,7 +33,7 @@ interface IRoutePathViewProps {
 
 @inject('routePathStore', 'notificationStore')
 @observer
-class RoutePathViewTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
+class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: any) {
         super(props);
         this.state = {
@@ -111,7 +111,7 @@ class RoutePathViewTab extends React.Component<IRoutePathViewProps, IRoutePathVi
 
         if (!this.state.routePath) return 'Error';
         return (
-        <div className={classnames(s.routePathViewTab, s.form)}>
+        <div className={classnames(s.routePathTab, s.form)}>
             <div className={s.formSection}>
                 <ViewHeader
                     header={`Reitinsuunta`}
@@ -176,4 +176,4 @@ class RoutePathViewTab extends React.Component<IRoutePathViewProps, IRoutePathVi
         );
     }
 }
-export default RoutePathViewTab;
+export default RoutePathTab;

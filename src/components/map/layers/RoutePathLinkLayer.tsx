@@ -23,7 +23,7 @@ interface RoutePathLinkLayerProps {
 
 @inject('popupStore')
 @observer
-export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
+class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
 
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
@@ -101,3 +101,5 @@ export default class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
         );
     }
 }
+
+export default RoutePathLayer;

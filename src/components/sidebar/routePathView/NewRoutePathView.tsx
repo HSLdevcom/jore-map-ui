@@ -18,7 +18,7 @@ import NotificationType from '~/enums/notificationType';
 import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './newRoutePathView.scss';
+import * as s from './routePathTab.scss';
 
 interface INewRoutePathViewProps {
     notificationStore?: NotificationStore;
@@ -125,7 +125,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         }
         const routePath = this.props.routePathStore!.routePath!;
         return (
-        <div className={classnames(s.newRoutePathViewTab, s.form)}>
+        <div className={classnames(s.routePathTab, s.form)}>
             <div className={s.formSection}>
                 <ViewHeader
                     header='Luo uusi reitinsuunta'

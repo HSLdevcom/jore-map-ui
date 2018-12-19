@@ -1,6 +1,6 @@
 import TransitType from '~/enums/transitType';
 
-export default class TransitTypeHelper {
+class TransitTypeHelper {
     public static convertTransitTypeCodeToTransitType = (type: string) => {
         switch (type) {
         case '1':
@@ -21,3 +21,5 @@ export default class TransitTypeHelper {
         return types.map(t => TransitTypeHelper.convertTransitTypeCodeToTransitType(t));
     }
 }
+
+export default TransitTypeHelper;

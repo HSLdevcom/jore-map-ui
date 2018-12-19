@@ -7,7 +7,7 @@ import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 
 @observer
-export default class ToolbarNetworkButtons extends React.Component {
+class ToolbarNetworkButtons extends React.Component {
     private selectTool = (tool: ToolbarTool) => () => {
         ToolbarStore.selectTool(tool);
     }
@@ -49,3 +49,5 @@ export default class ToolbarNetworkButtons extends React.Component {
         );
     }
 }
+
+export default ToolbarNetworkButtons;

@@ -21,7 +21,7 @@ const NODE_LABEL_MIN_ZOOM = 14;
 
 @inject('popupStore', 'toolbarStore', 'mapStore')
 @observer
-export default class NodeLayer extends Component<INodeLayerProps> {
+class NodeLayer extends Component<INodeLayerProps> {
     private isSelected(node: INode) {
         return this.props.mapStore!.selectedNodeId === node.id;
     }
@@ -81,3 +81,5 @@ export default class NodeLayer extends Component<INodeLayerProps> {
         );
     }
 }
+
+export default NodeLayer;
