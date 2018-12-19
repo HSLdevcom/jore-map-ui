@@ -37,7 +37,7 @@ class Login extends React.Component<ILoginProps> {
     public render(): any {
         return (
         <div className={s.loginView}>
-            <h2>Sisäänkirjautuminen</h2>
+            <h2>Kirjaudu sisään</h2>
             <form>
                 <label className={s.label}>
                     Tunnus
