@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
 import ILogEntry from '~/models/IEvent';
-import eventType from '~/enums/eventType';
 import GeometryEventStore from '../../stores/geometryEventStore';
 import * as s from './eventLog.scss';
 
@@ -31,28 +30,10 @@ class EventLog extends React.Component<IEventLogProps, IEventLogState> {
 
     private renderEvents = (entries: ILogEntry[]) => {
         return entries.map((entry, index) => {
-            let eventTypeClass = '';
-            switch (entry.action) {
-            case eventType.ADD:
-                eventTypeClass = s.eventTypeAdd;
-                break;
-            // Uncomment when we have use case for edit and deletion
-            //
-            // case logActions.DELETE:
-            //     eventTypeClass = s.eventTypeDelete;
-            //     break;
-            // case logActions.MOVE:
-            //     eventTypeClass = s.eventTypeMove;
-            //     break;
-            }
-
             return (
                 <div className={s.event} key={index}>
-                    <div className={classnames(s.eventType, eventTypeClass)}>
+                    <div className={classnames(s.eventType)}>
                         {entry.action}
-                    </div>
-                    <div className={s.eventContent}>
-                        {entry.entity}
                     </div>
                 </div>
             );

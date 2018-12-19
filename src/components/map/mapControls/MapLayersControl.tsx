@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { IoMdMap } from 'react-icons/io';
 import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
 import TransitType from '~/enums/transitType';
-import NetworkStore from '~/stores/networkStore';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import MapStore, { NodeLabel } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
 import NetworkDateControl from './NetworkDateControl';
@@ -36,20 +36,12 @@ class MapLayersControl extends React.Component
         NetworkStore.toggleTransitType(type);
     }
 
-    public toggleLinkVisibility = () => {
-        NetworkStore.toggleLinkVisibility();
+    public toggleMapLayerVisibility = (mapLayer: MapLayer) => () => {
+        NetworkStore.toggleMapLayerVisibility(mapLayer);
     }
 
-    public toggleNodeVisibility = () => {
-        NetworkStore.toggleNodeVisibility();
-    }
-
-    public togglePointVisibility = () => {
-        NetworkStore.togglePointVisibility();
-    }
-
-    public toggleNodeLabel = (nodeLabel: NodeLabel) => () => {
-        MapStore.toggleVisibleNodeLabel(nodeLabel);
+    public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => () => {
+        MapStore.toggleNodeLabelVisibility(nodeLabel);
     }
 
     private toggleMapOption = (option: option) => () => {
@@ -79,46 +71,53 @@ class MapLayersControl extends React.Component
                     <div className={s.sectionDivider} />
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleLinkVisibility}
-                            checked={NetworkStore.isLinksVisible}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.link)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.link)}
                             text={'Näytä alueen linkit'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.togglePointVisibility}
-                            checked={NetworkStore.isPointsVisible}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.linkPoint)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.linkPoint)}
                             text={'Näytä linkkien pisteet'}
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleNodeVisibility}
-                            checked={NetworkStore.isNodesVisible}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.node)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.node)}
                             text={'Näytä alueen solmut'}
+                        />
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleMapLayerVisibility(MapLayer.nodeWithoutLink)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)}
+                            text={'Näytä linkittömät solmut'}
                         />
                     </div>
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>SOLMUT</div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
-                                onClick={this.toggleNodeLabel(NodeLabel.hastusId)}
+                                onClick={this.toggleNodeLabelVisibility(NodeLabel.hastusId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.hastusId)}
                                 text={'Hastus id'}
                             />
                         </div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
-                                onClick={this.toggleNodeLabel(NodeLabel.longNodeId)}
+                                onClick={this.toggleNodeLabelVisibility(NodeLabel.longNodeId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.longNodeId)}
-                                text={'Pitkä solmun tunnus'}
+                                text={'Pitkä solmun id'}
                             />
                         </div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
-                                onClick={this.toggleNodeLabel(NodeLabel.shortNodeId)}
+                                onClick={this.toggleNodeLabelVisibility(NodeLabel.shortNodeId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.shortNodeId)}
-                                text={'Lyhyt solmun tunnus'}
+                                text={'Lyhyt solmun id'}
                             />
                         </div>
                     <div className={s.sectionDivider} />

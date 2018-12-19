@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { toJS } from 'mobx';
 import Moment from 'moment';
-import { NetworkStore, NodeSize } from '~/stores/networkStore';
+import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -190,16 +190,28 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         if (node && node.id === nodeId) {
             return true;
         }
-        if (transitTypeCodes) {
-            const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
+
+        const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
+        if (this.hasNodeLinks(transitTypeCodes)) {
+            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
+                return true;
+            }
             const nodeTransitTypes = TransitTypeHelper
                 .convertTransitTypeCodesToTransitTypes(transitTypeCodes.split(','));
             if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
                 return true;
             }
+        } else {
+            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
+                return true;
+            }
         }
         const selectedDate = this.props.networkStore!.selectedDate;
         return (selectedDate && this.isDateInRanges(selectedDate, dateranges));
+    }
+
+    private hasNodeLinks(transitTypeCodes: string) {
+        return Boolean(transitTypeCodes);
     }
 
     private getEmptyStyle = () => {
@@ -227,7 +239,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
         return (
             <>
-                { this.props.networkStore!.isLinksVisible &&
+                { this.props.networkStore!.isMapLayerVisible(MapLayer.link) &&
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
@@ -237,7 +249,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
                 }
-                { this.props.networkStore!.isPointsVisible &&
+                { this.props.networkStore!.isMapLayerVisible(MapLayer.linkPoint) &&
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
@@ -247,7 +259,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         vectorTileLayerStyles={this.getLinkPointStyle()}
                     />
                 }
-                { (this.props.networkStore!.isNodesVisible) &&
+                { (this.props.networkStore!.isMapLayerVisible(MapLayer.node)
+                || this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) &&
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}

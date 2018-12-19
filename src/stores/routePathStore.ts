@@ -41,6 +41,14 @@ export class RoutePathStore {
     }
 
     @action
+    updateRoutePathProperty(property: string, value: string) {
+        this._routePath = {
+            ...this._routePath!,
+            [property]: value,
+        };
+    }
+
+    @action
     setNeighborRoutePathLinks(routePathLinks: IRoutePathLink[]) {
         this._neighborRoutePathLinks = routePathLinks;
     }
@@ -48,6 +56,11 @@ export class RoutePathStore {
     @action
     addLink(routePathLink: IRoutePathLink) {
         this._routePath!.routePathLinks!.push(routePathLink);
+    }
+
+    @action
+    setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+        this._routePath!.routePathLinks = routePathLinks;
     }
 
 }

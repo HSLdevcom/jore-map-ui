@@ -6,7 +6,7 @@ import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
-import NotificationStore from '~/stores/notificationStore';
+import { NotificationStore } from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
@@ -27,10 +27,11 @@ interface IRoutePathViewState {
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
+    notificationStore?: NotificationStore;
     routePath: IRoutePath;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'notificationStore')
 @observer
 class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: any) {
@@ -52,15 +53,15 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     public save = async () => {
         this.setState({ isLoading: true });
         try {
-            await RoutePathService.saveRoutePath(this.state.routePath!);
+            await RoutePathService.updateRoutePath(this.state.routePath!);
             this.setState({ hasModifications: false });
-            NotificationStore.addNotification({
+            this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
             });
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
-            NotificationStore.addNotification({
+            this.props.notificationStore!.addNotification({
                 message: `Tallennus epäonnistui${errMessage}`,
                 type: NotificationType.ERROR,
             });

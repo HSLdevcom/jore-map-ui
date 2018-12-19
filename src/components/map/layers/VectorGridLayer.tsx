@@ -5,7 +5,7 @@ import { reaction } from 'mobx';
 import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
 import { Moment } from 'moment';
 import TransitType from '~/enums/transitType';
-import { NodeSize } from '~/stores/networkStore';
+import NetworkStore, { NodeSize, MapLayer } from '~/stores/networkStore';
 import EditNetworkStore from '~/stores/editNetworkStore';
 
 declare module 'leaflet' {
@@ -26,9 +26,11 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
     constructor(props: IVectorGridLayerProps) {
         super(props);
         reaction(() =>
-        EditNetworkStore.node,
+            [NetworkStore.isMapLayerVisible(MapLayer.node),
+                NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink),
+                EditNetworkStore.node],
                  this.redrawLayers,
-            );
+        );
     }
 
     // Hiding network nodes / links need refreshing the whole layer

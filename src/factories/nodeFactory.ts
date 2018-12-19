@@ -16,12 +16,14 @@ class NodeFactory {
             lon: coordinateList.coordinates[0],
             lat: coordinateList.coordinates[1],
         };
-        const shortId = externalNode.solkirjain
+        let shortId;
+        if (externalNode.sollistunnus) {
+            shortId = externalNode.solkirjain
             ? externalNode.solkirjain + externalNode.sollistunnus
             : externalNode.sollistunnus;
+        }
         const nodeStop = externalNode.pysakkiBySoltunnus;
         const type = getNodeType(externalNode.soltyyppi);
-
         let transitTypes: TransitType[] = [];
         if (externalNode.transittypes) {
             transitTypes = externalNode.transittypes.split(',').map(transitTypeCode =>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { NetworkStore } from '~/stores/networkStore';
+import { NetworkStore, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { RouteStore } from '~/stores/routeStore';
 import * as s from './networkView.scss';
@@ -22,9 +22,9 @@ class NetworkView extends React.Component<INetworkViewProps> {
 
     private initStores() {
         this.props.networkStore!.selectAllTransitTypes();
-        this.props.networkStore!.setNodeVisibility(true);
-        this.props.networkStore!.setLinkVisibility(true);
-        this.props.networkStore!.setPointVisibility(true);
+        this.props.networkStore!.showMapLayer(MapLayer.node);
+        this.props.networkStore!.showMapLayer(MapLayer.nodeWithoutLink);
+        this.props.networkStore!.showMapLayer(MapLayer.link);
         this.props.routeStore!.clearRoutes();
     }
 
