@@ -19,53 +19,48 @@ interface IRoutePathLinksTabProps {
 @inject('routePathStore')
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRoutePathLinksTabState>{
-    constructor(props: IRoutePathLinksTabProps) {
-        super(props);
-    }
-
     private renderList = (routePathLinks: IRoutePathLink[]) => {
-        const result = routePathLinks.map((routePathLink) => {
+        return routePathLinks.map((routePathLink, index) => {
             return (
                 <div key={routePathLink.orderNumber}>
-                    {this.renderItem(
-                        routePathLink, routePathLink.startNode, routePathLink.startNodeType,
-                    )}
-                    {this.renderItem(routePathLink)}
+                    {this.renderNode(routePathLink.startNode, routePathLink)}
+                    {this.renderRoutePathLink(routePathLink)}
+                    {/* Render last node */}
+                    { index === routePathLinks.length - 1 &&
+                         this.renderNode(routePathLink.endNode, routePathLink)
+                    }
                 </div>
             );
         });
-        const lastRoutePathLink = routePathLinks.pop();
-        if (lastRoutePathLink) {
-            result.push(
-                <div key={lastRoutePathLink.endNode.id}>
-                {
-                    this.renderItem(
-                    lastRoutePathLink, lastRoutePathLink.endNode, lastRoutePathLink.endNode.type,
-                    )
-                }
-                </div>,
-            );
-        }
-        return result;
     }
 
-    private renderItem(routePathLink: IRoutePathLink, node?: INode, nodeType?: string) {
+    private renderListObject(content: JSX.Element) {
         return (
             <div className={s.item}>
                 <div className={s.attributes}>
-                    { node ?
-                        <>
-                            {this.renderLabel('Solmu', node.id)}
-                            {this.renderNodeDescription(routePathLink, nodeType)}
-                        </>
-                        :
-                            this.renderLabel('Linkki', routePathLink.id)
+                    {
+                        content
                     }
                 </div>
                 <div className={s.itemToggle}>
                     <FaAngleRight />
                 </div>
             </div>
+        );
+    }
+
+    private renderRoutePathLink(routePathLink: IRoutePathLink) {
+        return this.renderListObject(
+            this.renderLabel('Linkki', routePathLink.id),
+        );
+    }
+
+    private renderNode(node: INode, routePathLink: IRoutePathLink) {
+        return this.renderListObject(
+            <>
+                {this.renderLabel('Solmu', node.id)}
+                {this.renderNodeDescription(routePathLink, node.type)}
+            </>,
         );
     }
 
@@ -127,14 +122,8 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
 
     public render(): any {
         const routePathLinks = this.props.routePath.routePathLinks;
-        if (!routePathLinks) return;
-        const sortedRoutePathLinks = routePathLinks.sort((a: IRoutePathLink, b: IRoutePathLink) => {
-            const keyA = a.orderNumber;
-            const keyB = b.orderNumber;
-            if (keyA < keyB) return -1;
-            if (keyA > keyB) return 1;
-            return 0;
-        });
+        if (!routePathLinks) return null;
+        const sortedRoutePathLinks = routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
 
         return (
             <div className={s.routePathLinksView}>
