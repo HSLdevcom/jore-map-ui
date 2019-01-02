@@ -39,14 +39,13 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                 <div className={s.flexRow}>
                     <InputContainer
                         label='REITIN NIMI SUOMEKSI'
-                        disabled={isEditingDisabled}
+                        disabled={true}
                         value={routePath.routePathName}
                         onChange={this.onChange('routePathName')}
-                        validatorRule={routePathValidationModel.nameFi}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
-                        disabled={isEditingDisabled}
+                        disabled={true}
                         value={routePath.routePathNameSw}
                         onChange={this.onChange('routePathNameSw')}
                     />
@@ -57,12 +56,14 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         value={routePath.originFi}
                         onChange={this.onChange('originFi')}
+                        validatorRule={routePathValidationModel.source}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={routePath.destinationFi}
                         onChange={this.onChange('destinationFi')}
+                        validatorRule={routePathValidationModel.destination}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -71,12 +72,14 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         value={routePath.originSw}
                         onChange={this.onChange('originSw')}
+                        validatorRule={routePathValidationModel.source}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={routePath.destinationSw}
                         onChange={this.onChange('destinationSw')}
+                        validatorRule={routePathValidationModel.destination}
                     />
                 </div>
                 <div className={s.flexRow}>
