@@ -51,10 +51,10 @@
     }
 }
 
-.mapLayerControlView:hover .mapLayerControlIcon {
+.mapLayerControlView.active .mapLayerControlIcon{
     display: none;
 }
 
-.mapLayerControlView:hover .mapLayersContainer {
+.mapLayerControlView.active .mapLayersContainer{
     display: flex;
 }

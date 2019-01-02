@@ -35,14 +35,14 @@ interface INetworkLayersProps {
 
 interface ILinkProperties {
     lnkverkko: string;
-    dateranges?: string;
+    date_ranges?: string;
     lnkalkusolmu: string;
     lnkloppusolmu: string;
 }
 
 interface INodeProperties {
     transittypes: string;
-    dateranges?: string;
+    date_ranges?: string;
     soltyyppi: string;
     soltunnus: string;
 }
@@ -56,16 +56,16 @@ function getGeoServerUrl(layerName: string) {
 @inject('networkStore', 'editNetworkStore', 'routePathStore', 'toolbarStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
-    private parseDaterangesString(daterangesString?: string) {
-        if (!daterangesString) return undefined;
-        return daterangesString.split(',')
+    private parseDateRangesString(dateRangesString?: string) {
+        if (!dateRangesString) return undefined;
+        return dateRangesString.split(',')
             .map((dr: string) => dr.split('/').map(date => Moment(date)));
     }
 
-    private isDateInRanges(selectedDate: Moment.Moment, dateranges?: Moment.Moment[][]) {
+    private isDateInRanges(selectedDate: Moment.Moment, dateRanges?: Moment.Moment[][]) {
         return (selectedDate &&
-            (!dateranges ||
-                !dateranges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]')))
+            (!dateRanges ||
+                !dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]')))
         );
     }
 
@@ -112,19 +112,19 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     private isNetworkElementHidden =
         ({
              lnkverkko: transitTypeCode,
-             dateranges: daterangesString,
+             date_ranges: dateRangesString,
              lnkalkusolmu: startNodeId,
              lnkloppusolmu: endNodeId,
          }:ILinkProperties) => {
             const transitType = TransitTypeHelper
                 .convertTransitTypeCodeToTransitType(transitTypeCode);
-            const dateranges = this.parseDaterangesString(daterangesString);
+            const dateRanges = this.parseDateRangesString(dateRangesString);
             const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
             const selectedDate = this.props.networkStore!.selectedDate;
             const node = this.props.editNetworkStore!.node;
             return Boolean(
                 (!selectedTransitTypes.includes(transitType))
-                || this.isDateInRanges(selectedDate, dateranges)
+                || this.isDateInRanges(selectedDate, dateRanges)
                 || (node && (node.id === startNodeId || node.id === endNodeId)));
         }
 
@@ -134,12 +134,12 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             solmu: (properties: INodeProperties, zoom: number) => {
                 const {
                     transittypes: transitTypeCodes,
-                    dateranges: daterangesString,
+                    date_ranges: dateRangesString,
                     soltyyppi: nodeType,
                     soltunnus: nodeId,
                 } = properties;
-                const dateranges = this.parseDaterangesString(daterangesString);
-                if (this.isNodeHidden(nodeId, transitTypeCodes, dateranges)) {
+                const dateRanges = this.parseDateRangesString(dateRangesString);
+                if (this.isNodeHidden(nodeId, transitTypeCodes, dateRanges)) {
                     return this.getEmptyStyle();
                 }
                 let color;
@@ -184,7 +184,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     private isNodeHidden = (
         nodeId: string,
         transitTypeCodes: string,
-        dateranges?: Moment.Moment[][],
+        dateRanges?: Moment.Moment[][],
     ) => {
         const node = this.props.editNetworkStore!.node;
         if (node && node.id === nodeId) {
@@ -207,7 +207,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             }
         }
         const selectedDate = this.props.networkStore!.selectedDate;
-        return (selectedDate && this.isDateInRanges(selectedDate, dateranges));
+        return (selectedDate && this.isDateInRanges(selectedDate, dateRanges));
     }
 
     private hasNodeLinks(transitTypeCodes: string) {
