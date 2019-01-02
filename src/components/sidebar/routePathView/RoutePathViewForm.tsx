@@ -88,12 +88,14 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         value={routePath.routePathShortName}
                         onChange={this.onChange('routePathShortName')}
+                        validatorRule={routePathValidationModel.shortName}
                     />
                     <InputContainer
                         label='LYHENNE RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={routePath.routePathShortNameSw}
                         onChange={this.onChange('routePathShortNameSw')}
+                        validatorRule={routePathValidationModel.shortName}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -167,12 +169,12 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         label='PÄIVITYSPVM'
                         value={Moment(routePath.lastModified)
                             .format(datetimeStringDisplayFormat)}
-                        disabled={isEditingDisabled}
+                        disabled={true}
                     />
                     <InputContainer
                         label='PÄIVITTÄJÄ'
                         value={routePath.modifiedBy}
-                        disabled={isEditingDisabled}
+                        disabled={true}
                     />
                 </div>
             </div>
