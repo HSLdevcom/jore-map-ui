@@ -40,6 +40,10 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         this.props.searchStore!.setSearchInput('');
     }
 
+    async componentWillUnmount() {
+        this.props.routeStore!.clearRoutes();
+    }
+
     private async queryRoutes() {
         const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {

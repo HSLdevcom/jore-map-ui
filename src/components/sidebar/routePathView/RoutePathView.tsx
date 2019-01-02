@@ -1,9 +1,9 @@
 import * as React from 'react';
 import moment from 'moment';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
-import { IRoutePath } from '~/models';
 import Loader from '~/components/shared/loader/Loader';
+import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
 import RoutePathTab from './RoutePathTab';
 import RoutePathLinksTab from './RoutePathLinksTab';
@@ -11,21 +11,21 @@ import RoutePathTabs from './RoutePathTabs';
 import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
-    routePath: IRoutePath | null;
     isLoading: boolean;
     selectedTabIndex: number;
 }
 
 interface IRoutePathViewProps {
+    routePathStore?: RoutePathStore;
     match?: match<any>;
 }
 
+@inject('routePathStore')
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
-            routePath: null,
             isLoading: true,
             selectedTabIndex: 0,
         };
@@ -35,13 +35,21 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.fetchRoutePath();
     }
 
+    public componentWillUnmount() {
+        this.props.routePathStore!.setRoutePath(null);
+        this.props.routePathStore!.setNeighborRoutePathLinks([]);
+    }
+
     private async fetchRoutePath() {
+        this.setState({
+            isLoading: true,
+        });
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
         const startTime = moment(startTimeString);
         const routePath =
             await RoutePathService.fetchRoutePath(routeId, startTime, direction);
+        this.props.routePathStore!.setRoutePath(routePath);
         this.setState({
-            routePath,
             isLoading: false,
         });
     }
@@ -57,14 +65,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         case 0: {
             return (
                 <RoutePathTab
-                    routePath={this.state.routePath!}
+                    routePath={this.props.routePathStore!.routePath!}
                 />
             );
         }
         case 1: {
             return (
                 <RoutePathLinksTab
-                    routePath={this.state.routePath!}
+                    routePath={this.props.routePathStore!.routePath!}
                 />
             );
         }
@@ -82,7 +90,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 </div>
             );
         }
-        if (!this.state.routePath) return;
+        if (!this.props.routePathStore!.routePath) return;
         return (
             <div className={s.routePathView}>
                 <div className={s.flexInnerRow}>
