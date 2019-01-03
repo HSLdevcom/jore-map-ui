@@ -4,9 +4,8 @@ import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
-import { IStop } from '~/models';
+import { IStop, INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
-import PinIcon from '~/icons/pin';
 import { MapStore } from '~/stores/mapStore';
 import * as s from './nodeMarker.scss';
 
@@ -14,7 +13,17 @@ import * as s from './nodeMarker.scss';
 // Setting z-index to 2, if other items is 1 wont force it to be on top.
 // Setting z-index to a very high number will however most likely set the item on top.
 // https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
-const VERY_HIGH_Z_INDEX = 1000;
+export const VERY_HIGH_Z_INDEX = 1000;
+
+export const createDivIcon = (html: any) => {
+    const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
+    const divIconOptions : L.DivIconOptions = {
+        html: renderedHtml,
+        className: s.node,
+    };
+
+    return new L.DivIcon(divIconOptions);
+};
 
 interface INodeMarkerProps {
     mapStore?: MapStore;
@@ -28,6 +37,7 @@ interface INodeMarkerProps {
     stop?: IStop;
     labels?: string[];
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
+    node?: INode;
 }
 
 const DEFAULT_RADIUS = 25;
@@ -40,15 +50,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isDraggable: false,
         isNeighborMarker: false,
     };
-
-    private createDivIcon = (html: any) => {
-        const divIconOptions : L.DivIconOptions = {
-            html,
-            className: s.node,
-        };
-
-        return new L.DivIcon(divIconOptions);
-    }
 
     private getMarkerClass = () => {
         const isSelected = this.props.isSelected;
@@ -104,51 +105,41 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
-    private renderStartMarker = () => {
-        const latLng = this.props.latLng;
-        const color = this.props.color;
-        if (!color) {
-            throw new Error('Color should never be falsey when rendering start markers.');
-        }
-
-        const icon = this.createDivIcon(PinIcon.getPin(color));
-        return (
-            <Marker
-                zIndexOffset={VERY_HIGH_Z_INDEX}
-                icon={icon}
-                position={latLng}
-            />
-        );
+    private renderAdditionalLocations(node: INode) {
+        return null;
     }
 
     render() {
         const nodeType = this.props.nodeType;
-        if (nodeType === NodeType.START) {
-            return this.renderStartMarker();
-        }
 
-        const icon = this.createDivIcon(
-            ReactDOMServer.renderToStaticMarkup(
+        const icon = createDivIcon(
                 <div className={classnames(s.nodeBase, this.getMarkerClass())}>
                     {this.renderMarkerLabel()}
                 </div>,
-            ),
         );
         const displayCircle = this.props.isSelected && nodeType === NodeType.STOP;
+        const displayLocations = this.props.isSelected;
         return (
-            <Marker
-                onContextMenu={this.props.onContextMenu}
-                onClick={this.props.onClick}
-                draggable={this.props.isDraggable}
-                icon={icon}
-                position={this.props.latLng}
-            >
-            {
-                (displayCircle) ?
-                    this.renderStopRadiusCircle(this.props.stop!.radius)
-                : null
-            }
-            </Marker>
+            <>
+                <Marker
+                    onContextMenu={this.props.onContextMenu}
+                    onClick={this.props.onClick}
+                    draggable={this.props.isDraggable}
+                    icon={icon}
+                    position={this.props.latLng}
+                >
+                {
+                    displayCircle ?
+                        this.renderStopRadiusCircle(this.props.stop!.radius)
+                    : null
+                }
+                </Marker>
+                {
+                    displayLocations ?
+                        this.renderAdditionalLocations(this.props.node!)
+                        : null
+                }
+            </>
         );
     }
 }

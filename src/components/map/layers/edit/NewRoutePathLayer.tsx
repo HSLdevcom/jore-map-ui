@@ -4,10 +4,10 @@ import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
-import NodeType from '~/enums/nodeType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
-import NodeMarker from '../NodeMarker';
+import NodeMarker from '../objects/NodeMarker';
+import StartMarker from '../objects/StartMarker';
 
 const MARKER_COLOR = '#00df0b';
 const NEIGHBOR_MARKER_COLOR = '#ca00f7';
@@ -151,8 +151,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
         const coordinates = routePathLinks![0].startNode.coordinates;
         const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
-            <NodeMarker
-                nodeType={NodeType.START}
+            <StartMarker
                 latLng={latLng}
                 color={MARKER_COLOR}
             />

@@ -6,7 +6,7 @@ import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import NodeMarker from './NodeMarker';
+import NodeMarker from './objects/NodeMarker';
 
 interface INodeLayerProps {
     isDisabled: boolean;

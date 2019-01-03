@@ -6,7 +6,7 @@ import { IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import NodeLayer from './NodeLayer';
-import NodeMarker from './NodeMarker';
+import StartMarker from './objects/StartMarker';
 
 interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;
@@ -79,8 +79,7 @@ class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
         const coordinates = routePathLinks![0].startNode.coordinates;
         const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
-            <NodeMarker
-                nodeType={NodeType.START}
+            <StartMarker
                 latLng={latLng}
                 color={color}
             />
