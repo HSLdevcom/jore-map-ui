@@ -23,7 +23,7 @@ interface RoutePathLinkLayerProps {
 
 @inject('popupStore')
 @observer
-class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
+class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
@@ -48,28 +48,26 @@ class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
 
     private renderNodes() {
         const routePathLinks = this.props.routePathLinks;
-        return routePathLinks.map((routePathLink, index) => {
-            return (
-                <div key={index}>
+        const nodes = routePathLinks
+            .map((routePathLink, index) => {
+                return (
                     <NodeLayer
-                        key={`${routePathLink.startNode.id}`}
+                        key={`${routePathLink.startNode.id}-${index}`}
                         node={routePathLink.startNode}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
                         isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
                     />
-                    { index === routePathLinks.length - 1 &&
-                        <NodeLayer
-                            key={`${routePathLink.endNode.id}`}
-                            node={routePathLink.endNode}
-                            /* hardcoded because last node doens't have this data */
-                            isDisabled={false}
-                            /* hardcoded because last node doens't have this data */
-                            isTimeAlignmentStop={false}
-                        />
-                    }
-                </div>
-            );
-        });
+                );
+            });
+        nodes.push(
+            <NodeLayer
+                key={`${routePathLinks[routePathLinks.length - 1]
+                    .endNode.id}-${routePathLinks.length}`}
+                node={routePathLinks[routePathLinks.length - 1].endNode}
+                isDisabled={false} // Last node can't be disabled
+                isTimeAlignmentStop={false} // Last node can't be a time alignment stop
+            />);
+        return nodes;
     }
 
     private renderStartMarker() {
@@ -101,4 +99,4 @@ class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
     }
 }
 
-export default RoutePathLayer;
+export default RoutePathLinkLayer;
