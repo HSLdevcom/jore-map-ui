@@ -55,12 +55,14 @@ export class RoutePathStore {
 
     @action
     addLink(routePathLink: IRoutePathLink) {
-        this._routePath!.routePathLinks!.push(routePathLink);
+        this.setRoutePathLinks([...this._routePath!.routePathLinks, routePathLink]);
     }
 
     @action
     setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
-        this._routePath!.routePathLinks = routePathLinks;
+        this._routePath!.routePathLinks =
+            routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
+        this._routePath!.routePathLinks!.forEach(a => console.log(a.orderNumber));
     }
 
 }
