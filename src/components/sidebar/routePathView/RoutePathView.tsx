@@ -5,8 +5,8 @@ import { match } from 'react-router';
 import { IRoutePath } from '~/models';
 import Loader from '~/components/shared/loader/Loader';
 import RoutePathService from '~/services/routePathService';
-import RoutePathTab from './RoutePathTab';
-import RoutePathLinksTab from './RoutePathLinksTab';
+import RoutePathTab from './routePathInfoTab/RoutePathInfoTab';
+import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
 import * as s from './routePathView.scss';
 

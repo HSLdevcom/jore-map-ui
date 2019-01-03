@@ -1,6 +1,6 @@
-@import '../../shared/styles/common';
-@import '../../shared/styles/flexbox';
-@import '../../shared/styles/form';
+@import '../../../shared/styles/common';
+@import '../../../shared/styles/flexbox';
+@import '../../../shared/styles/form';
 
 .routePathLinksView {
     height: calc(100% - 42px); // Should just be 100%. Needs fixing

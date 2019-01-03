@@ -5,7 +5,7 @@ import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import NodeType from '~/enums/nodeType';
 import ButtonType from '~/enums/buttonType';
-import { Dropdown, Button } from '../../controls';
+import { Dropdown, Button } from '../../../controls';
 import * as s from './linkListView.scss';
 
 interface ILinkListViewProps {

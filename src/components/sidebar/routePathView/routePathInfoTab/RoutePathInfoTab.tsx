@@ -13,9 +13,9 @@ import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import ViewHeader from '../ViewHeader';
+import ViewHeader from '../../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './routePathTab.scss';
+import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathViewState {
     isEditingDisabled: boolean;

@@ -3,11 +3,11 @@ import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
-import InputContainer from '../InputContainer';
+import InputContainer from '../../InputContainer';
 import LinkListView from './LinkListView';
-import { Button, Dropdown, Checkbox } from '../../controls';
-import ButtonType from '../../../enums/buttonType';
-import * as s from './routePathView.scss';
+import { Button, Dropdown, Checkbox } from '../../../controls';
+import ButtonType from '../../../../enums/buttonType';
+import * as s from '../routePathView.scss';
 
 interface IRoutePathViewFormProps {
     isEditingDisabled: boolean;
