@@ -71,6 +71,7 @@ class RoutePathListNode
                     this.props.routePathLink,
                     this.props.node.type,
                 )}
+                content={<div>Solmun lisätiedot</div>}
             />
         );
     }

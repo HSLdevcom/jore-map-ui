@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { FaAngleRight } from 'react-icons/fa';
+import classnames from 'classnames';
+import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import * as s from './routePathListObject.scss';
 
 interface IRoutePathListObjectProps {
     headerLabel: string;
     description?: JSX.Element;
     id: string;
-    content?: JSX.Element;
+    content: JSX.Element;
 }
 
 interface IRoutePathListObjectState {
@@ -23,25 +24,45 @@ class RoutePathListObject
         };
     }
 
+    private toggleIsExtended = () => {
+        this.setState({
+            isExtended: !this.state.isExtended,
+        });
+    }
+
     render() {
         return (
             <div className={s.item}>
-                <div className={s.attributes}>
-                    <div className={s.label}>
-                        {this.props.headerLabel}
-                        <div className={s.id}>
-                            {this.props.id}
+                <div
+                    className={
+                        classnames(
+                            s.itemHeader,
+                            this.state.isExtended ? s.itemExtended : null,
+                        )
+                    }
+                    onClick={this.toggleIsExtended}
+                >
+                    <div className={s.attributes}>
+                        <div className={s.label}>
+                            {this.props.headerLabel}
+                            <div className={s.id}>
+                                {this.props.id}
+                            </div>
+                        </div>
+                        <div>
+                            {this.props.description}
                         </div>
                     </div>
-                    <div>
-                        {
-                            this.props.description
-                        }
+                    <div className={s.itemToggle}>
+                        {this.state.isExtended && <FaAngleDown />}
+                        {!this.state.isExtended && <FaAngleRight />}
                     </div>
                 </div>
-                <div className={s.itemToggle}>
-                    <FaAngleRight />
-                </div>
+                { this.state.isExtended &&
+                    <div className={s.itemContent}>
+                        {this.props.content}
+                    </div>
+                }
             </div>
         );
     }

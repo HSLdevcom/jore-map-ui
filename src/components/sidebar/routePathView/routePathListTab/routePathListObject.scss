@@ -33,28 +33,44 @@
 }
 
 .item {
-  display: flex;
-  flex-direction: row;
   border-bottom: 1.5px solid $lightGrey;
-  border-right: 3px solid $backgroundlightGrey;
 
-  .itemToggle {
-      font-size: 22px;
-      cursor: pointer;
-      color: $mediumGrey;
-      transition: .5s;
-      padding: 15px;
-      width: 100%;
-      text-align: end;
 
-      :hover {
-          color: darken($mediumGrey, 10);
-          transition: .5s;
-      }
+  .itemHeader {
+    display: flex;
+    flex-direction: row;
+    border-right: 3px solid $backgroundlightGrey;
+    cursor: pointer;
+  
+  
+    .itemToggle {
+        font-size: 22px;
+        color: $mediumGrey;
+        transition: .5s;
+        padding: 15px;
+        width: 100%;
+        text-align: end;
+  
+        :hover {
+            color: darken($mediumGrey, 10);
+            transition: .5s;
+        }
+    }
   }
-}
 
-.item:hover {
-  border-right: 3px solid $blue;
-  background-color: #dedede4d;
+  .itemExtended {
+      background-color: #cacaca4d;
+  }
+
+  .itemContent {
+      min-height: 200px;
+      text-align: center;
+      border-top: 1px solid $lightGrey;
+      padding: 15px;
+  }
+  
+  .itemHeader:hover {
+    border-right: 3px solid $blue;
+    background-color: #cacaca4d;
+  }
 }
