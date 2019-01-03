@@ -62,7 +62,6 @@ export class RoutePathStore {
     setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
         this._routePath!.routePathLinks =
             routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
-        this._routePath!.routePathLinks!.forEach(a => console.log(a.orderNumber));
     }
 
 }
