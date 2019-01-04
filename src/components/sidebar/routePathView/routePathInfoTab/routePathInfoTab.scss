@@ -5,13 +5,6 @@
 .routePathTab {
     padding: 15px 15px 45px 15px;
 
-    .routeInformationContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding-top:10px;
-    }
-
     .staticInfo {
         margin-top: 5px;
         font-size: $smallFontSize;

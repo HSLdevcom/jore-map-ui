@@ -33,9 +33,6 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         return (
         <div className={s.form}>
             <div className={s.formSection}>
-                <div className={s.topic}>
-                    REITINSUUNNAN TIEDOT
-                </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='REITIN NIMI SUOMEKSI'

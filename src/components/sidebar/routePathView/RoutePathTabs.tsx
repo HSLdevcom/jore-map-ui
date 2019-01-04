@@ -8,7 +8,7 @@ interface IRoutePathTabsProps {
 }
 
 const tabs = [
-    'Reitinsuunta',
+    'Reitinsuunnan tiedot',
     'Solmut ja linkit',
 ];
 

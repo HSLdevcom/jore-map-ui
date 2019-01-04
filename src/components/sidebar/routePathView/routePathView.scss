@@ -11,6 +11,10 @@
         padding: 15px;
     }
 
+    .borderBotton {
+        border-bottom: 1.5px solid $mediumLightGrey;
+    }
+
     .routePathViewHeader {
         display: flex;
     }
@@ -20,6 +24,13 @@
         font-weight: bold;
         color: #898989;
         font-size: 1rem;
+    }
+
+    .routeInformationContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-top:10px;
     }
 
     .staticInfo {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import Moment from 'react-moment';
+import { FiEdit } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
@@ -13,7 +13,6 @@ import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import ViewHeader from '../../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathInfoTab.scss';
 
@@ -106,50 +105,13 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     }
 
     public render(): any {
-        // tslint:disable-next-line:max-line-length
-        const message = 'Reitin suunnalla tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
-
         if (!this.state.routePath) return 'Error';
         return (
         <div className={classnames(s.routePathTab, s.form)}>
-            <div className={s.formSection}>
-                <ViewHeader
-                    header={`Reitinsuunta`}
-                    closePromptMessage={this.state.hasModifications ? message : undefined}
-                >
-                    <Button
-                        onClick={this.toggleEditing}
-                        type={ButtonType.SQUARE}
-                        text={this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'}
-                    />
-                </ViewHeader>
-            </div>
-            <div className={s.formSection}>
-                <div className={s.topic}>
-                    REITIN OTSIKKOTIEDOT
-                </div>
-                <div className={s.routeInformationContainer}>
-                    <div className={s.flexInnerColumn}>
-                        <div>Reittitunnus</div>
-                        <div>{this.state.routePath.routeId}</div>
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Linja</div>
-                        <div>{this.state.routePath.lineId}</div>
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Päivityspvm</div>
-                        <Moment
-                            date={this.state.routePath.lastModified}
-                            format='DD.MM.YYYY HH:mm'
-                        />
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Päivittäjä</div>
-                        <div>{this.state.routePath.modifiedBy}</div>
-                    </div>
-                </div>
-            </div>
+            <FiEdit
+                onClick={this.toggleEditing!}
+                className={this.state.isEditingDisabled ? 'asd' : 'asd'}
+            />
             <div className={s.formSection}>
                 <RoutePathViewForm
                     onChange={this.onChange}

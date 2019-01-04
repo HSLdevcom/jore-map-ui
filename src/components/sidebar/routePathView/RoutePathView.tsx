@@ -9,6 +9,7 @@ import RoutePathTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
 import * as s from './routePathView.scss';
+import RoutePathHeader from './RoutePathHeader';
 
 interface IRoutePathViewState {
     routePath: IRoutePath | null;
@@ -85,6 +86,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         if (!this.state.routePath) return;
         return (
             <div className={s.routePathView}>
+                <RoutePathHeader
+                    routePath={this.state.routePath}
+                />
                 <div className={s.flexInnerRow}>
                     <RoutePathTabs
                         selectedTab={this.state.selectedTabIndex}
