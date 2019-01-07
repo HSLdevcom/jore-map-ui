@@ -1,4 +1,5 @@
 import { action, computed, observable } from 'mobx';
+import Moment from 'moment';
 import TransitType from '~/enums/transitType';
 
 const TRANSIT_TYPES = [
@@ -14,7 +15,7 @@ export enum NodeSize {
     large,
 }
 
-export enum MapLayer {
+export enum MapLayer { // TODO change name to something better
     node,
     link,
     linkPoint,
@@ -23,6 +24,7 @@ export enum MapLayer {
 
 export class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
+    @observable private _selectedDate: Moment.Moment;
     @observable private _visibleMapLayers: MapLayer[];
     @observable private _nodeSize: NodeSize;
 
@@ -35,6 +37,20 @@ export class NetworkStore {
     @computed
     get selectedTransitTypes() {
         return this._selectedTransitTypes;
+    }
+
+    @computed
+    get selectedDate(): Moment.Moment {
+        return this._selectedDate;
+    }
+
+    @action
+    setSelectedDate(value: Moment.Moment|string) {
+        if (typeof value === 'string') {
+            this._selectedDate = Moment(value);
+        } else {
+            this._selectedDate = value;
+        }
     }
 
     @computed
