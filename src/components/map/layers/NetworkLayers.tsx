@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { toJS } from 'mobx';
+import classNames from 'classnames';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
-import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
+import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import TransitTypeHelper from '~/util/transitTypeHelper';
@@ -10,20 +11,12 @@ import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import VectorGridLayer from './VectorGridLayer';
+import * as s from './NetworkLayers.scss';
 
 enum GeoserverLayer {
     Node = 'solmu',
     Link = 'linkki',
     Point = 'piste',
-}
-
-// TODO: import these from NodeMarker's .scss
-enum NodeColors {
-    CROSSROAD_COLOR = '#727272',
-    CROSSROAD_FILL_COLOR = '#c6c6c6',
-    STOP_COLOR = '#3e3c87',
-    STOP_FILL_COLOR = '#FFF',
-    MUNICIPALITY_BORDER_COLOR = '#c900ff',
 }
 
 interface INetworkLayersProps {
@@ -36,7 +29,7 @@ interface INetworkLayersProps {
 function getGeoServerUrl(layerName: string) {
     const GEOSERVER_URL = process.env.GEOSERVER_URL || 'http://localhost:8080/geoserver';
     // tslint:disable-next-line:max-line-length
-    return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
+    return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
 @inject('networkStore', 'editNetworkStore', 'routePathStore', 'toolbarStore')
@@ -108,10 +101,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             return true;
         }
         const node = this.props.editNetworkStore!.node;
-        if (node && (node.id === startNodeId || node.id === endNodeId)) {
-            return true;
-        }
-        return false;
+        return Boolean(node && (node.id === startNodeId || node.id === endNodeId));
     }
 
     private getNodeStyle = () => {
@@ -127,19 +117,16 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 if (this.isNodeHidden(nodeId, transitTypeCodes)) {
                     return this.getEmptyStyle();
                 }
-                let color;
-                let fillColor;
+                let className;
                 switch (nodeType) {
                 case NodeType.STOP:
-                    color = NodeColors.STOP_COLOR;
-                    fillColor = NodeColors.STOP_FILL_COLOR;
+                    className = s.stop;
                     break;
                 case NodeType.CROSSROAD:
-                    color = NodeColors.CROSSROAD_COLOR;
-                    fillColor = NodeColors.CROSSROAD_FILL_COLOR;
+                    className = s.crossroad;
                     break;
                 case NodeType.MUNICIPALITY_BORDER:
-                    color = NodeColors.MUNICIPALITY_BORDER_COLOR;
+                    className = s.border;
                     break;
                 }
                 let radius: any;
@@ -153,14 +140,30 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 default:
                     throw new Error(`nodeSize not supported ${this.props.networkStore!.nodeSize}`);
                 }
+                if (transitTypeCodes && transitTypeCodes.length === 1) {
+                    switch (TransitTypeHelper
+                        .convertTransitTypeCodeToTransitType(transitTypeCodes[0])) {
+                    case TransitType.BUS:
+                            className = classNames(className, s.bus);
+                            break;
+                    case TransitType.TRAM:
+                            className = classNames(className, s.tram);
+                            break;
+                    case TransitType.SUBWAY:
+                            className = classNames(className, s.subway);
+                            break;
+                    case TransitType.TRAIN:
+                            className = classNames(className, s.train);
+                            break;
+                    case TransitType.FERRY:
+                            className = classNames(className, s.ferry);
+                            break;
+                    }
+                }
 
                 return {
-                    color,
+                    className,
                     radius,
-                    fillColor,
-                    opacity: 1,
-                    fillOpacity: 1,
-                    fill: true,
                 };
             },
         };
@@ -195,14 +198,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private getEmptyStyle = () => {
-        return {
-            fillOpacity: 0,
-            stroke: false,
-            fill: false,
-            opacity: 0,
-            weight: 0,
-            radius: 0,
-        };
+        return { className: s.hidden };
     }
 
     render() {
