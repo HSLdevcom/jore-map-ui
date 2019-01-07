@@ -89,7 +89,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 <RoutePathHeader
                     routePath={this.state.routePath}
                 />
-                <div className={s.flexInnerRow}>
+                <div>
                     <RoutePathTabs
                         selectedTab={this.state.selectedTabIndex}
                         selectTab={this.selectTab}

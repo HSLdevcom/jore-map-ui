@@ -65,19 +65,52 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         <img className={s.logo} src={hslLogo} />
                         <h2 className={s.title}>
                             Joukkoliikennerekisteri
-                </h2>
+                        </h2>
                     </div>
                 </div>
-                <Switch>
-                    <Route exact={true} path={subSites.home} component={HomeView} />
-                    <Route exact={true} path={subSites.routes} component={this.renderRoutesView} />
-                    <Route path={subSites.node} component={NodeView} />
-                    <Route exact={true} path={subSites.link} component={LinkView} />
-                    <Route exact={true} path={subSites.newRoutePath} component={NewRoutePathView} />
-                    <Route exact={true} path={subSites.routePath} component={RoutePathView} />
-                    <Route exact={true} path={subSites.network} component={NetworkView} />
-                    <Route exact={true} path={subSites.editNetwork} component={EditNetworkView} />
-                </Switch>
+                <div className={s.content}>
+                    <Switch>
+                        <Route
+                            exact={true}
+                            path={subSites.home}
+                            component={HomeView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.routes}
+                            component={this.renderRoutesView}
+                        />
+                        <Route
+                            path={subSites.node}
+                            component={NodeView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.link}
+                            component={LinkView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.newRoutePath}
+                            component={NewRoutePathView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.routePath}
+                            component={RoutePathView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.network}
+                            component={NetworkView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.editNetwork}
+                            component={EditNetworkView}
+                        />
+                    </Switch>
+                </div>
             </div>
         );
     }

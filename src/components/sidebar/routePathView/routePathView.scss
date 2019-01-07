@@ -3,9 +3,10 @@
 @import '../../shared/styles/form';
 
 .routePathView {
-    overflow-y: scroll;
     width: $sidebarWide;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 
     .content {
         padding: 15px;
@@ -38,5 +39,9 @@
         font-size: $smallFontSize;
         margin-right: 10px;
         font-weight: bold;
+    }
+
+    .tabs {
+        
     }
 }
