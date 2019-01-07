@@ -1,0 +1,64 @@
+@import '../../shared/styles/common.scss';
+// TODO replace hexes with imported colors.
+
+.stop {
+  stroke: #3e3c87;
+  fill: $white;
+  opacity: 1;
+  fill-opacity: 1;
+
+  &.bus {
+    stroke: $busBlue;
+  }
+
+  &.tram {
+    stroke: $tramGreen;
+  }
+
+  &.train {
+    stroke: $trainPurple;
+  }
+
+  &.subway {
+    stroke: $subwayOrange;
+  }
+
+  &.ferry {
+    stroke: $ferryBlue;
+  }
+}
+
+.crossroad {
+  stroke: #727272;
+  fill: #c6c6c6;
+  opacity: 1;
+  fill-opacity: 1;
+
+  &.bus {
+    fill: $busBlue;
+  }
+
+  &.tram {
+    fill: $tramGreen;
+  }
+
+  &.train {
+    fill: $trainPurple;
+  }
+
+  &.subway {
+    fill: $subwayOrange;
+  }
+
+  &.ferry {
+    fill: $ferryBlue;
+  }
+}
+
+.border {
+  stroke: #c900ff;
+}
+
+.hidden {
+  display: none;
+}
