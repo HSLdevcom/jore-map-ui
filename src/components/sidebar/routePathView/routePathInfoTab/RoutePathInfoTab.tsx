@@ -108,47 +108,43 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         if (!this.state.routePath) return 'Error';
         return (
         <div className={classnames(s.routePathTab, s.form)}>
-            <div className={s.routePathTabActions}>
-                <Button
-                    type={ButtonType.ROUND}
-                    onClick={this.toggleEditing!}
-                >
-                    <FiEdit
-                        className={this.state.isEditingDisabled ? 'asd' : 'asd'}
-                    />
-                    { this.state.isEditingDisabled &&
-                        'Muokkaa'
-                    }
-                    { !this.state.isEditingDisabled &&
-                        'Peruuta'
-                    }
-                </Button>
-                <Button
-                    type={ButtonType.ROUND}
-                    onClick={this.redirectToNewRoutePathView!}
-                >
-                    <FiCopy />
-                    Kopio
-                </Button>
-            </div>
-            <div className={s.formSection}>
-                <RoutePathViewForm
-                    onChange={this.onChange}
-                    isEditingDisabled={this.state.isEditingDisabled}
-                    routePath={this.state.routePath}
-                />
-            </div>
-            <div className={s.formSection}>
-                <div className={s.flexRow}>
+            <div className={s.content}>
+                <div className={s.routePathTabActions}>
                     <Button
-                        onClick={this.save}
-                        type={ButtonType.SAVE}
-                        disabled={!this.state.hasModifications || !this.isFormValid()}
+                        type={ButtonType.ROUND}
+                        onClick={this.toggleEditing!}
                     >
-                        Tallenna reitinsuunta
+                        <FiEdit/>
+                        { this.state.isEditingDisabled &&
+                            'Muokkaa'
+                        }
+                        { !this.state.isEditingDisabled &&
+                            'Peruuta'
+                        }
+                    </Button>
+                    <Button
+                        type={ButtonType.ROUND}
+                        onClick={this.redirectToNewRoutePathView!}
+                    >
+                        <FiCopy />
+                        Kopioi
                     </Button>
                 </div>
+                <div className={s.formSection}>
+                    <RoutePathViewForm
+                        onChange={this.onChange}
+                        isEditingDisabled={this.state.isEditingDisabled}
+                        routePath={this.state.routePath}
+                    />
+                </div>
             </div>
+            <Button
+                onClick={this.save}
+                type={ButtonType.SAVE}
+                disabled={!this.state.hasModifications || !this.isFormValid()}
+            >
+                Tallenna muutokset
+            </Button>
         </div>
         );
     }

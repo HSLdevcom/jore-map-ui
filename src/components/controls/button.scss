@@ -52,13 +52,17 @@
 }
 
 .save {
-    background-color: $saveButtonGreen;
+    padding: 20px;
+    background-color: #00ba11;
     color: #fff;
-    border-radius: 20px;
+    text-align: center;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 0;
 }
 
 .save:hover {
-    background-color: darken($saveButtonGreen, 10);
+    background-color: darken($saveButtonGreen, 10)
 }
 
 .disabled {

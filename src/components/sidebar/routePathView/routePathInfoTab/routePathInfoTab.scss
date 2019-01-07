@@ -3,30 +3,35 @@
 @import '../../../shared/styles/form';
 
 .routePathTab {
-    padding: 15px 15px 45px 15px;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
 
-    .staticInfo {
-        margin-top: 5px;
-        font-size: $smallFontSize;
-        margin-right: 10px;
-        font-weight: bold;
-    }
-
-    .routePathTabActions {
+    .content {
+        padding: 15px 15px 45px 15px;
         overflow: auto;
-        display: flex;
-        width: 100%;
 
-        div {
-            font-size: 18px;
-            flex-grow: 1;
-            width: 49%;
-            display: inline-block;
-            box-sizing: border-box;
-
-            svg {
-                margin-right: 10px;
+        .staticInfo {
+            margin-top: 5px;
+            font-size: $smallFontSize;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    
+        .routePathTabActions {
+            overflow: auto;
+            display: flex;
+            width: 100%;
+    
+            div {
+                font-size: 18px;
+                flex-grow: 1;
+                width: 49%;
+                display: inline-block;
+                box-sizing: border-box;
+    
+                svg {
+                    margin-right: 10px;
+                }
             }
         }
     }

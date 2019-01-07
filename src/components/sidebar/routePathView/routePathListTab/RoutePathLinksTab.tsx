@@ -3,6 +3,8 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
+import ButtonType from '~/enums/buttonType';
+import Button from '~/components/controls/Button';
 import s from './routePathLinksTab.scss';
 import RoutePathListNode from './RoutePathListNode';
 import RoutePathListLink from './RoutePathListLink';
@@ -41,6 +43,11 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
         });
     }
 
+    save = () => {
+        console.warn('Not implemented');
+        return;
+    }
+
     public render(): any {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
@@ -51,9 +58,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
                 <div className={s.contentWrapper}>
                     {this.renderList(sortedRoutePathLinks)}
                 </div>
-                <div className={s.saveButton}>
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={true}
+                    onClick={this.save}
+                >
                     Tallenna muutokset
-                </div>
+                </Button>
             </div>
         );
     }
