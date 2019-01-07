@@ -5,7 +5,6 @@ import * as s from './button.scss';
 
 interface IButtonProps {
     type: ButtonType;
-    text: string;
     className?: string;
     disabled?: boolean;
     onClick(event: any): void;
@@ -55,7 +54,7 @@ class Button extends React.Component<IButtonProps, {}> {
                 }
                 onClick={this.onClick}
             >
-                {this.props.text}
+                {this.props.children}
             </div>
         );
     }

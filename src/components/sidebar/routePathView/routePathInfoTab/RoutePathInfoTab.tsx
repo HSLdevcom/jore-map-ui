@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import { FiEdit } from 'react-icons/fi';
+import { FiEdit, FiCopy } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
@@ -108,10 +108,29 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         if (!this.state.routePath) return 'Error';
         return (
         <div className={classnames(s.routePathTab, s.form)}>
-            <FiEdit
-                onClick={this.toggleEditing!}
-                className={this.state.isEditingDisabled ? 'asd' : 'asd'}
-            />
+            <div className={s.routePathTabActions}>
+                <Button
+                    type={ButtonType.ROUND}
+                    onClick={this.toggleEditing!}
+                >
+                    <FiEdit
+                        className={this.state.isEditingDisabled ? 'asd' : 'asd'}
+                    />
+                    { this.state.isEditingDisabled &&
+                        'Muokkaa'
+                    }
+                    { !this.state.isEditingDisabled &&
+                        'Peruuta'
+                    }
+                </Button>
+                <Button
+                    type={ButtonType.ROUND}
+                    onClick={this.redirectToNewRoutePathView!}
+                >
+                    <FiCopy />
+                    Kopio
+                </Button>
+            </div>
             <div className={s.formSection}>
                 <RoutePathViewForm
                     onChange={this.onChange}
@@ -124,16 +143,12 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                     <Button
                         onClick={this.save}
                         type={ButtonType.SAVE}
-                        text={'Tallenna reitinsuunta'}
                         disabled={!this.state.hasModifications || !this.isFormValid()}
-                    />
+                    >
+                        Tallenna reitinsuunta
+                    </Button>
                 </div>
             </div>
-            <Button
-                onClick={this.redirectToNewRoutePathView}
-                type={ButtonType.SQUARE}
-                text={`Luo uusi reitin suunta käyttäen tätä pohjana`}
-            />
         </div>
         );
     }

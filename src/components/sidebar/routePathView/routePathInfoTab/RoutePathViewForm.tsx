@@ -119,8 +119,9 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         <Button
                             onClick={this.onClick}
                             type={ButtonType.ROUND}
-                            text={'Laske'}
-                        />
+                        >
+                            Laske
+                        </Button>
                     </div>
                 </div>
                 <div className={s.flexRow}>
@@ -180,30 +181,35 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Varustelutiedot'}
-                    />
+                    >
+                        Varustelutiedot
+                    </Button>
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Solmu'}
-                    />
+                    >
+                        Solmu
+                    </Button>
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Solmut Exceliin'}
-                    />
+                    >
+                        Solmut Exceliin
+                    </Button>
                 </div>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Linkki'}
-                    />
+                    >
+                        Linkki
+                    </Button>
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Aikataulu'}
-                    />
+                    >
+                        Aikataulu
+                    </Button>
                     <div className={s.flexButtonFiller} />
                 </div>
             </div>
@@ -217,8 +223,9 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                             <Button
                                 onClick={this.onClick}
                                 type={ButtonType.ROUND}
-                                text={'Kartta'}
-                            />
+                            >
+                                Kartta
+                            </Button>
                             <Checkbox
                                 checked={false}
                                 text={'Muotopisteet kartalle'}

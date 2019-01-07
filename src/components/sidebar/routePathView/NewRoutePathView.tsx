@@ -149,8 +149,9 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
                             onClick={this.onSave}
                             type={ButtonType.SAVE}
                             disabled={this.isSaveDisabled()}
-                            text={'Tallenna reitinsuunta'}
-                        />
+                        >
+                            Tallenna reitinsuunta
+                        </Button>
                     </div>
                 </div>
             </div>
