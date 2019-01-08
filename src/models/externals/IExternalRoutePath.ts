@@ -1,10 +1,11 @@
 import IExternalRoutePathLink from './IExternalRoutePathLink';
 import IGraphqlList from './graphqlModelHelpers/IGraphqlList';
+import IExternalLine from './IExternalLine';
 
 export default interface IExternalRoutePath {
     poikkeusreitti: string;
     reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta: IGraphqlList<IExternalRoutePathLink>;
-    lintunnus: string;
+    reittiByReitunnus: IExternalLine;
     suulahpaik: string;
     suunimi: string;
     suunimir: string;

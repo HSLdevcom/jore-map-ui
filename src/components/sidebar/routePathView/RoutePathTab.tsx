@@ -97,7 +97,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         navigator.goTo(newRoutePathLink);
     }
 
-    public render(): any {
+    public render() {
         // tslint:disable-next-line:max-line-length
         const message = 'Reitin suunnalla tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
         const routePath = this.props.routePathStore!.routePath;
