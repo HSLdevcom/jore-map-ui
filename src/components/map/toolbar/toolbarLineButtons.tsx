@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiCopy, FiShare2 } from 'react-icons/fi';
+import { FiCopy, FiShare2, FiDelete } from 'react-icons/fi';
 import { IoMdGitCommit } from 'react-icons/io';
 import { observer } from 'mobx-react';
 import ToolbarStore from '~/stores/toolbarStore';
@@ -44,6 +44,14 @@ class ToolbarLineButtons extends React.Component {
                         label='Jaa linkki'
                     >
                         <FiShare2/>
+                    </MapControlButton>
+                    <MapControlButton
+                        onClick={this.selectTool(ToolbarTool.RemoveLink)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.RemoveLink)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.RemoveLink)}
+                        label='Poistaa linkki'
+                    >
+                        <FiDelete/>
                     </MapControlButton>
                 </div>
             </div>
