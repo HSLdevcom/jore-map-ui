@@ -9,9 +9,6 @@ import s from './routePathLinksTab.scss';
 import RoutePathListNode from './RoutePathListNode';
 import RoutePathListLink from './RoutePathListLink';
 
-interface IRoutePathLinksTabState {
-}
-
 interface IRoutePathLinksTabProps {
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
@@ -19,7 +16,7 @@ interface IRoutePathLinksTabProps {
 
 @inject('routePathStore')
 @observer
-class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRoutePathLinksTabState>{
+class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     private renderList = (routePathLinks: IRoutePathLink[]) => {
         return routePathLinks.map((routePathLink, index) => {
             return (
@@ -44,8 +41,6 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
     }
 
     save = () => {
-        console.warn('Not implemented');
-        return;
     }
 
     public render(): any {

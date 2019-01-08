@@ -46,6 +46,11 @@
     }
 
     .content {
-        height: calc(100vh - 90px);
+        height: calc(100vh - #{$headerHeight});
+
+        > div {
+            height: 100%;
+            box-sizing: border-box;
+        }
     }
 }
