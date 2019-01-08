@@ -1,15 +1,18 @@
-import * as React from 'react';
+import React, { ChangeEvent, MouseEvent } from 'react';
 import { observer } from 'mobx-react';
 import { IoMdMap } from 'react-icons/io';
+import classnames from 'classnames';
 import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
 import TransitType from '~/enums/transitType';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import MapStore, { NodeLabel } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
+import NetworkDateControl from './NetworkDateControl';
 import * as s from './mapLayersControl.scss';
 
 interface IMapLayersControlState {
     selectedMapOption: option;
+    show: boolean;
 }
 
 interface IMapLayersControlProps {
@@ -28,6 +31,7 @@ class MapLayersControl extends React.Component
         super(props);
         this.state = {
             selectedMapOption: option.MAP,
+            show: false,
         };
     }
 
@@ -49,9 +53,22 @@ class MapLayersControl extends React.Component
         });
     }
 
+    private selectDate = (e: ChangeEvent<HTMLInputElement>) => {
+        NetworkStore.setSelectedDate(e.target.value);
+    }
+
     render() {
+        const showControls = (show: boolean) => (e:MouseEvent<HTMLDivElement>) => {
+            // Fixes problem where clicking on anything causes mouse to 'leave' the element.
+            if (!e.relatedTarget['innerHTML']) return;
+            this.setState({ show });
+        };
         return (
-            <div className={s.mapLayerControlView}>
+            <div
+                className={classnames(s.mapLayerControlView, this.state.show ? s.active : null)}
+                onMouseEnter={showControls(true)}
+                onMouseLeave={showControls(false)}
+            >
                 <div className={s.mapLayerControlIcon}>
                     <IoMdMap />
                 </div>
@@ -62,6 +79,8 @@ class MapLayersControl extends React.Component
                         toggleSelectedTransitType={this.toggleTransitType}
                         selectedTransitTypes={NetworkStore.selectedTransitTypes}
                     />
+                    <NetworkDateControl selectDate={this.selectDate}/>
+                    <div className={s.sectionDivider} />
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleMapLayerVisibility(MapLayer.link)}

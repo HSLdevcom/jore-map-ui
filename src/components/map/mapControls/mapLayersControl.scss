@@ -46,14 +46,15 @@
             letter-spacing: 0em;
             padding-bottom: 3px;
             display: block;
+            text-transform: uppercase;
         }
     }
 }
 
-.mapLayerControlView:hover .mapLayerControlIcon {
+.mapLayerControlView.active .mapLayerControlIcon{
     display: none;
 }
 
-.mapLayerControlView:hover .mapLayersContainer {
+.mapLayerControlView.active .mapLayersContainer{
     display: flex;
 }
