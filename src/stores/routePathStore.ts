@@ -63,6 +63,12 @@ export class RoutePathStore {
         this._routePath!.routePathLinks = routePathLinks;
     }
 
+    @action
+    clear() {
+        this._routePath = null;
+        this._neighborRoutePathLinks = [];
+    }
+
 }
 
 const observableStoreStore = new RoutePathStore();

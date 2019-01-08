@@ -35,11 +35,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.fetchRoutePath();
     }
 
-    public componentWillUnmount() {
-        this.props.routePathStore!.setRoutePath(null);
-        this.props.routePathStore!.setNeighborRoutePathLinks([]);
-    }
-
     private async fetchRoutePath() {
         this.setState({
             isLoading: true,
@@ -77,7 +72,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             );
         }
         default: {
-            return;
+            return null;
         }
         }
     }

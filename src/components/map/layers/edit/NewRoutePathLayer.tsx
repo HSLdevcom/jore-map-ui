@@ -125,7 +125,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
         return this.renderNode(firstNode, 0);
     }
 
-    private calculateBounds() {
+    private calculateBounds = () => {
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
         this.props.routePathStore!.routePath!.routePathLinks!.forEach((link) => {
@@ -137,7 +137,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     componentDidUpdate() {
-        const routePathStore = this.props.routePathStore;
+        const routePathStore = this.props.routePathStore!;
 
         if (routePathStore!.routePath
             && routePathStore!.routePath!.routePathLinks!.length > 0
@@ -146,14 +146,11 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
         }
 
         if (
-            routePathStore &&
             routePathStore!.routePath &&
             !this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePath)) {
             const bounds = this.calculateBounds();
             if (bounds.isValid()) {
-                this.props.fitBounds(
-                    this.calculateBounds(),
-                );
+                this.props.fitBounds(bounds);
             }
         }
     }
