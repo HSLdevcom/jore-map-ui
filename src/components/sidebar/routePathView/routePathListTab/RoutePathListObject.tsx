@@ -7,7 +7,6 @@ interface IRoutePathListObjectProps {
     headerLabel: string;
     description?: JSX.Element;
     id: string;
-    content: JSX.Element;
 }
 
 interface IRoutePathListObjectState {
@@ -60,7 +59,7 @@ class RoutePathListObject
                 </div>
                 { this.state.isExtended &&
                     <div className={s.itemContent}>
-                        {this.props.content}
+                        {this.props.children}
                     </div>
                 }
             </div>

@@ -13,8 +13,11 @@ class RoutePathListLink
             <RoutePathListObject
                 headerLabel='Linkki'
                 id={this.props.routePathLink.id}
-                content={<div>Linkin lisätiedot</div>}
-            />
+            >
+                <div>
+                    Linkin lisätiedot
+                </div>
+            </RoutePathListObject>
         );
     }
 }
