@@ -22,7 +22,6 @@ interface IRoutePathViewState {
     hasModifications: boolean;
     invalidFieldsMap: object;
     isLoading: boolean;
-    routePath: IRoutePath;
 }
 
 interface IRoutePathViewProps {
@@ -41,7 +40,6 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
             hasModifications: false,
             invalidFieldsMap: {},
             isLoading: true,
-            routePath: this.props.routePath,
         };
     }
 
@@ -53,7 +51,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     public save = async () => {
         this.setState({ isLoading: true });
         try {
-            await RoutePathService.updateRoutePath(this.state.routePath!);
+            await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             this.setState({ hasModifications: false });
             this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
@@ -84,8 +82,8 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     }
 
     public onChange = (property: string, value: any, validationResult?: IValidationResult) => {
+        this.props.routePathStore!.updateRoutePathProperty(property, value);
         this.setState({
-            routePath: { ...this.state.routePath!, [property]: value },
             hasModifications: true,
         });
         if (validationResult) {
@@ -94,22 +92,22 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     }
 
     private redirectToNewRoutePathView = () => {
-        const routePath = this.state.routePath;
+        const routePath = this.props.routePathStore!.routePath;
         if (!routePath) return;
 
         const newRoutePathLink = routeBuilder
         .to(subSites.newRoutePath, { routeId: routePath.routeId, lineId: routePath.lineId })
         .toLink();
 
-        this.props.routePathStore!.setRoutePath(this.state.routePath);
         navigator.goTo(newRoutePathLink);
     }
 
     public render(): any {
         // tslint:disable-next-line:max-line-length
         const message = 'Reitin suunnalla tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+        const routePath = this.props.routePathStore!.routePath;
 
-        if (!this.state.routePath) return 'Error';
+        if (!routePath) return 'Error';
         return (
         <div className={classnames(s.routePathTab, s.form)}>
             <div className={s.formSection}>
@@ -131,22 +129,22 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                 <div className={s.routeInformationContainer}>
                     <div className={s.flexInnerColumn}>
                         <div>Reittitunnus</div>
-                        <div>{this.state.routePath.routeId}</div>
+                        <div>{routePath.routeId}</div>
                     </div>
                     <div className={s.flexInnerColumn}>
                         <div>Linja</div>
-                        <div>{this.state.routePath.lineId}</div>
+                        <div>{routePath.lineId}</div>
                     </div>
                     <div className={s.flexInnerColumn}>
                         <div>Päivityspvm</div>
                         <Moment
-                            date={this.state.routePath.lastModified}
+                            date={routePath.lastModified}
                             format='DD.MM.YYYY HH:mm'
                         />
                     </div>
                     <div className={s.flexInnerColumn}>
                         <div>Päivittäjä</div>
-                        <div>{this.state.routePath.modifiedBy}</div>
+                        <div>{routePath.modifiedBy}</div>
                     </div>
                 </div>
             </div>
@@ -154,7 +152,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                 <RoutePathViewForm
                     onChange={this.onChange}
                     isEditingDisabled={this.state.isEditingDisabled}
-                    routePath={this.state.routePath}
+                    routePath={routePath}
                 />
             </div>
             <div className={s.formSection}>
