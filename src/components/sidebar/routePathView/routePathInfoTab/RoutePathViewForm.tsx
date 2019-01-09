@@ -53,7 +53,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         value={routePath.originFi}
                         onChange={this.onChange('originFi')}
-                        validatorRule={routePathValidationModel.source}
+                        validatorRule={routePathValidationModel.origin}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA SUOMEKSI'
@@ -69,7 +69,7 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         value={routePath.originSw}
                         onChange={this.onChange('originSw')}
-                        validatorRule={routePathValidationModel.source}
+                        validatorRule={routePathValidationModel.origin}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA RUOTSIKSI'

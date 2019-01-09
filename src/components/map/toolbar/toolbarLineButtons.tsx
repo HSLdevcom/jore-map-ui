@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiCopy, FiShare2 } from 'react-icons/fi';
+import { IoMdGitCommit } from 'react-icons/io';
 import { observer } from 'mobx-react';
 import ToolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -24,6 +25,14 @@ class ToolbarLineButtons extends React.Component {
                         label='Kopioi reitti toiseen suuntaan'
                     >
                         <FiCopy />
+                    </MapControlButton>
+                    <MapControlButton
+                        onClick={this.selectTool(ToolbarTool.AddNewRoutePath)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.AddNewRoutePath)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.AddNewRoutePath)}
+                        label='Extend routepath'
+                    >
+                        <IoMdGitCommit />
                     </MapControlButton>
                 </div>
                 {/* Second toolbar row */}

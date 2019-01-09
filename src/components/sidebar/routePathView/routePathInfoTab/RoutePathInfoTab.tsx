@@ -21,7 +21,6 @@ interface IRoutePathViewState {
     hasModifications: boolean;
     invalidFieldsMap: object;
     isLoading: boolean;
-    routePath: IRoutePath;
 }
 
 interface IRoutePathViewProps {
@@ -40,7 +39,6 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
             hasModifications: false,
             invalidFieldsMap: {},
             isLoading: true,
-            routePath: this.props.routePath,
         };
     }
 
@@ -52,7 +50,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     public save = async () => {
         this.setState({ isLoading: true });
         try {
-            await RoutePathService.updateRoutePath(this.state.routePath!);
+            await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             this.setState({ hasModifications: false });
             this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
@@ -83,8 +81,8 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     }
 
     public onChange = (property: string, value: any, validationResult?: IValidationResult) => {
+        this.props.routePathStore!.updateRoutePathProperty(property, value);
         this.setState({
-            routePath: { ...this.state.routePath!, [property]: value },
             hasModifications: true,
         });
         if (validationResult) {
@@ -93,19 +91,21 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     }
 
     private redirectToNewRoutePathView = () => {
-        const routePath = this.state.routePath;
+        const routePath = this.props.routePathStore!.routePath;
         if (!routePath) return;
 
         const newRoutePathLink = routeBuilder
         .to(subSites.newRoutePath, { routeId: routePath.routeId, lineId: routePath.lineId })
         .toLink();
 
-        this.props.routePathStore!.setRoutePath(this.state.routePath);
         navigator.goTo(newRoutePathLink);
     }
 
     public render(): any {
-        if (!this.state.routePath) return 'Error';
+        // tslint:disable-next-line:max-line-length
+        const routePath = this.props.routePathStore!.routePath;
+
+        if (!routePath) return 'Error';
         return (
         <div className={classnames(s.routePathTab, s.form)}>
             <div className={s.content}>
@@ -115,11 +115,8 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                         onClick={this.toggleEditing!}
                     >
                         <FiEdit/>
-                        { this.state.isEditingDisabled &&
-                            'Muokkaa'
-                        }
-                        { !this.state.isEditingDisabled &&
-                            'Peruuta'
+                        {
+                            this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'
                         }
                     </Button>
                     <Button
@@ -134,7 +131,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                     <RoutePathViewForm
                         onChange={this.onChange}
                         isEditingDisabled={this.state.isEditingDisabled}
-                        routePath={this.state.routePath}
+                        routePath={this.props.routePathStore!.routePath!}
                     />
                 </div>
             </div>

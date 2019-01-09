@@ -3,6 +3,7 @@ import * as React from 'react';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import { NetworkStore } from '~/stores/networkStore';
+import { RoutePathStore } from '~/stores/routePathStore';
 import { IRoute } from '~/models';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -23,9 +24,10 @@ interface IRoutesListProps {
     searchStore?: SearchStore;
     routeStore?: RouteStore;
     networkStore?: NetworkStore;
+    routePathStore?: RoutePathStore;
 }
 
-@inject('searchStore', 'routeStore', 'networkStore')
+@inject('searchStore', 'routeStore', 'networkStore', 'routePathStore')
 @observer
 class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     constructor(props: any) {
@@ -37,6 +39,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     async componentDidMount() {
         await this.queryRoutes();
+        this.props.routePathStore!.clear();
         this.props.searchStore!.setSearchInput('');
     }
 
