@@ -6,7 +6,7 @@ import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import { IStop, INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
-import { MapStore } from '~/stores/mapStore';
+import { MapStore, NodeLabel } from '~/stores/mapStore';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -29,7 +29,6 @@ interface INodeMarkerProps {
     mapStore?: MapStore;
     nodeType: NodeType;
     latLng: L.LatLng;
-    isSelected?: boolean;
     color?: string;
     onContextMenu?: Function;
     onClick?: Function;
@@ -37,10 +36,11 @@ interface INodeMarkerProps {
     stop?: IStop;
     labels?: string[];
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
-    node?: INode;
+    node: INode;
 }
 
 const DEFAULT_RADIUS = 25;
+const NODE_LABEL_MIN_ZOOM = 14;
 
 @inject('mapStore')
 @observer
@@ -51,9 +51,38 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isNeighborMarker: false,
     };
 
+    private isSelected() {
+        return this.props.mapStore!.selectedNodeId === this.props.node.id;
+    }
+
+    private getLabels(): string[] {
+        const node = this.props.node;
+        const visibleNodeLabels = this.props.mapStore!.visibleNodeLabels;
+        const zoom = this.props.mapStore!.zoom;
+
+        if (!node
+            || visibleNodeLabels.length === 0
+            || zoom < NODE_LABEL_MIN_ZOOM) return [];
+
+        const labels: string[] = [];
+        if (visibleNodeLabels.includes(NodeLabel.hastusId)) {
+            if (node.stop && node.stop.hastusId) {
+                labels.push(node.stop.hastusId);
+            }
+        }
+        if (visibleNodeLabels.includes(NodeLabel.longNodeId)) {
+            labels.push(node.id);
+        }
+        if (node.shortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
+            labels.push(node.shortId);
+        }
+
+        return labels;
+    }
+
     private getMarkerClass = () => {
-        const isSelected = this.props.isSelected;
-        const nodeType = this.props.nodeType;
+        const isSelected = this.isSelected();
+        const nodeType = this.props.node.type;
 
         if (this.props.isNeighborMarker) {
             return s.neighborMarker;
@@ -82,10 +111,11 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private renderMarkerLabel = () => {
-        if (!this.props.labels) return null;
+        const labels = this.getLabels();
+        if (labels) return null;
         return (
             <div className={s.nodeLabel}>
-                {this.props.labels.map((label, index) => {
+                {labels.map((label, index) => {
                     return (
                         <div key={index}>{label}</div>
                     );
@@ -117,8 +147,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     {this.renderMarkerLabel()}
                 </div>,
         );
-        const displayCircle = this.props.isSelected && nodeType === NodeType.STOP;
-        const displayLocations = this.props.isSelected;
+        const displayCircle = this.isSelected() && nodeType === NodeType.STOP;
+        const displayLocations = this.isSelected();
         return (
             <>
                 <Marker

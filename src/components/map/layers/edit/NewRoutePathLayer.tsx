@@ -47,6 +47,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
                 nodeType={node.type}
                 onClick={void 0}
                 latLng={latLng}
+                node={node}
             />
         );
     }
@@ -88,6 +89,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
                 nodeType={node.type}
                 onClick={this.addLinkToRoutePath(routePathLink)}
                 latLng={latLng}
+                node={node}
             />
         );
     }

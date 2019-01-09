@@ -44,6 +44,7 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
                 nodeType={node.type}
                 latLng={latLng}
                 isDraggable={true}
+                node={node}
             />
         );
     }

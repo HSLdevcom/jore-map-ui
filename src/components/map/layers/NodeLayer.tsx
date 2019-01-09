@@ -22,9 +22,6 @@ const NODE_LABEL_MIN_ZOOM = 14;
 @inject('popupStore', 'toolbarStore', 'mapStore')
 @observer
 class NodeLayer extends Component<INodeLayerProps> {
-    private isSelected(node: INode) {
-        return this.props.mapStore!.selectedNodeId === node.id;
-    }
 
     private getLabels(): string[] {
         const node = this.props.node;
@@ -72,7 +69,7 @@ class NodeLayer extends Component<INodeLayerProps> {
         return (
             <NodeMarker
                 nodeType={nodeType}
-                isSelected={this.isSelected(node)}
+                node={node}
                 labels={this.getLabels()}
                 latLng={latLng}
                 onContextMenu={openPopup}
