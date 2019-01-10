@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
-import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import ILink from '~/models/ILink';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
@@ -37,12 +36,9 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
     private renderNode() {
         const node = this.props.editNetworkStore!.node;
         if (!node) return null;
-        const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
 
         return (
             <NodeMarker
-                nodeType={node.type}
-                latLng={latLng}
                 isDraggable={true}
                 node={node}
             />

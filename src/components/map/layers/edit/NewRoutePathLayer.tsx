@@ -40,13 +40,10 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderNode = (node: INode, key: number) => {
-        const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
-                nodeType={node.type}
                 onClick={void 0}
-                latLng={latLng}
                 node={node}
             />
         );
@@ -81,14 +78,11 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderNeighborNode = (node: INode, routePathLink: IRoutePathLink, key: number) => {
-        const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
                 isNeighborMarker={true}
-                nodeType={node.type}
                 onClick={this.addLinkToRoutePath(routePathLink)}
-                latLng={latLng}
                 node={node}
             />
         );

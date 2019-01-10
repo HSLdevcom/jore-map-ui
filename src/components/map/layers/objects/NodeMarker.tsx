@@ -7,6 +7,7 @@ import classnames from 'classnames';
 import { IStop, INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
+import GeometryService from '~/services/geometryService';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -27,16 +28,14 @@ export const createDivIcon = (html: any) => {
 
 interface INodeMarkerProps {
     mapStore?: MapStore;
-    nodeType: NodeType;
-    latLng: L.LatLng;
     color?: string;
     onContextMenu?: Function;
     onClick?: Function;
     isDraggable?: boolean;
-    stop?: IStop;
-    labels?: string[];
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
     node: INode;
+    isDisabled?: boolean;
+    isTimeAlignmentStop?: boolean;
 }
 
 const DEFAULT_RADIUS = 25;
@@ -46,7 +45,6 @@ const NODE_LABEL_MIN_ZOOM = 14;
 @observer
 class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
-        isSelected: false,
         isDraggable: false,
         isNeighborMarker: false,
     };
@@ -82,13 +80,17 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     private getMarkerClass = () => {
         const isSelected = this.isSelected();
-        const nodeType = this.props.node.type;
-
         if (this.props.isNeighborMarker) {
             return s.neighborMarker;
         }
+        if (this.props.isDisabled) {
+            return isSelected ? s.disabledMarkerHighlight : s.disabledMarker;
+        }
+        if (this.props.isTimeAlignmentStop) {
+            return s.timeAlignmentMarker;
+        }
 
-        switch (nodeType) {
+        switch (this.props.node.type) {
         case NodeType.STOP: {
             return isSelected ? s.stopMarkerHighlight : s.stopMarker;
         }
@@ -104,15 +106,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
         case NodeType.TIME_ALIGNMENT: {
             return s.timeAlignmentMarker;
         }
-        default: {
-            return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;
         }
-        }
+
+        return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;
     }
 
     private renderMarkerLabel = () => {
         const labels = this.getLabels();
-        if (labels) return null;
+        if (!labels) return null;
         return (
             <div className={s.nodeLabel}>
                 {labels.map((label, index) => {
@@ -125,7 +126,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private renderStopRadiusCircle = (radius: number = DEFAULT_RADIUS) => {
-        const latLng = this.props.latLng;
+        const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
         return (
             <Circle
                 className={s.stopCircle}
@@ -135,12 +136,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
-    private renderAdditionalLocations(node: INode) {
-        return null;
-    }
-
     render() {
-        const nodeType = this.props.nodeType;
+        const nodeType = this.props.node.type;
+        const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
 
         const icon = createDivIcon(
                 <div className={classnames(s.nodeBase, this.getMarkerClass())}>
@@ -148,7 +146,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 </div>,
         );
         const displayCircle = this.isSelected() && nodeType === NodeType.STOP;
-        const displayLocations = this.isSelected();
         return (
             <>
                 <Marker
@@ -156,19 +153,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     onClick={this.props.onClick}
                     draggable={this.props.isDraggable}
                     icon={icon}
-                    position={this.props.latLng}
+                    position={latLng}
                 >
                 {
                     displayCircle ?
-                        this.renderStopRadiusCircle(this.props.stop!.radius)
+                        this.renderStopRadiusCircle(this.props.node.stop!.radius)
                     : null
                 }
                 </Marker>
-                {
-                    displayLocations ?
-                        this.renderAdditionalLocations(this.props.node!)
-                        : null
-                }
             </>
         );
     }

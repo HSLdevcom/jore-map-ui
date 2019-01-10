@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import * as L from 'leaflet';
 import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
-import { IRoutePathLink } from '~/models';
+import { INode, IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
-import NodeLayer from './NodeLayer';
+import NodeMarker from '~/components/map/layers/objects/NodeMarker';
 import StartMarker from './objects/StartMarker';
 
 interface RoutePathLinkLayerProps {
@@ -47,25 +47,30 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     private renderNodes() {
+        const openPopup = (node: INode) => () => {
+            this.props.popupStore!.showPopup(node);
+        };
         const routePathLinks = this.props.routePathLinks;
         const nodes = routePathLinks
             .map((routePathLink, index) => {
                 return (
-                    <NodeLayer
+                    <NodeMarker
                         key={`${routePathLink.startNode.id}-${index}`}
                         node={routePathLink.startNode}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
                         isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
+                        onContextMenu={openPopup(routePathLink.startNode)}
                     />
                 );
             });
         nodes.push(
-            <NodeLayer
+            <NodeMarker
                 key={`${routePathLinks[routePathLinks.length - 1]
                     .endNode.id}-${routePathLinks.length}`}
                 node={routePathLinks[routePathLinks.length - 1].endNode}
                 isDisabled={false} // Last node can't be disabled
                 isTimeAlignmentStop={false} // Last node can't be a time alignment stop
+                onContextMenu={openPopup(routePathLinks[routePathLinks.length - 1].endNode)}
             />);
         return nodes;
     }
