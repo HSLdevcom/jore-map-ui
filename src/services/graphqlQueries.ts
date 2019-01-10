@@ -45,6 +45,7 @@ const getRouteQuery = () => {
                 reitinsuuntasByReitunnus{
                     nodes {
                         ${routePathQueryFields}
+                        ${lineForRoutePathQuery}
                         ${routePathLinksForRoutePathQuery}
                     }
                 }
@@ -58,9 +59,7 @@ const getRoutePathQuery = () => {
         gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
             routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
                 ${routePathQueryFields}
-                reittiByReitunnus {
-                    lintunnus
-                }
+                ${lineForRoutePathQuery}
                 ${routePathLinksForRoutePathQuery}
             }
         }`
@@ -199,6 +198,12 @@ reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
         ${routePathLinkQueryFields}
     }
 }`;
+
+const lineForRoutePathQuery = `
+reittiByReitunnus {
+    lintunnus
+}
+`;
 
 const linkQueryFields = `
     geojson
