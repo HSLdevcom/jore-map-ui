@@ -5,7 +5,7 @@ import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import NodeType from '~/enums/nodeType';
 import ButtonType from '~/enums/buttonType';
-import { Dropdown, Button } from '../../controls';
+import { Dropdown, Button } from '../../../controls';
 import * as s from './linkListView.scss';
 
 interface ILinkListViewProps {
@@ -181,10 +181,11 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
             </div>
             <Button
                 type={ButtonType.SQUARE}
-                text={this.getLinkViewButtonTitle()}
                 disabled={this.noRoutePathLinkSelected()}
                 onClick={this.openLinkView}
-            />
+            >
+                this.getLinkViewButtonTitle()
+            </Button>
         </div>
         );
     }

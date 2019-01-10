@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import Moment from 'react-moment';
+import { FiEdit, FiCopy } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
@@ -13,13 +13,11 @@ import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import ViewHeader from '../ViewHeader';
 import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './routePathTab.scss';
+import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathViewState {
     isEditingDisabled: boolean;
-    hasModifications: boolean;
     invalidFieldsMap: object;
     isLoading: boolean;
 }
@@ -37,7 +35,6 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         super(props);
         this.state = {
             isEditingDisabled: true,
-            hasModifications: false,
             invalidFieldsMap: {},
             isLoading: true,
         };
@@ -52,7 +49,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         this.setState({ isLoading: true });
         try {
             await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
-            this.setState({ hasModifications: false });
+            this.props.routePathStore!.resetHaveLocalModifications();
             this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
@@ -83,9 +80,6 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
 
     public onChange = (property: string, value: any, validationResult?: IValidationResult) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
-        this.setState({
-            hasModifications: true,
-        });
         if (validationResult) {
             this.markInvalidFields(property, validationResult!.isValid);
         }
@@ -102,74 +96,48 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         navigator.goTo(newRoutePathLink);
     }
 
-    public render(): any {
+    public render() {
         // tslint:disable-next-line:max-line-length
-        const message = 'Reitin suunnalla tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
         const routePath = this.props.routePathStore!.routePath;
 
         if (!routePath) return 'Error';
         return (
         <div className={classnames(s.routePathTab, s.form)}>
-            <div className={s.formSection}>
-                <ViewHeader
-                    header={`Reitinsuunta`}
-                    closePromptMessage={this.state.hasModifications ? message : undefined}
-                >
+            <div className={s.content}>
+                <div className={s.routePathTabActions}>
                     <Button
-                        onClick={this.toggleEditing}
-                        type={ButtonType.SQUARE}
-                        text={this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'}
-                    />
-                </ViewHeader>
-            </div>
-            <div className={s.formSection}>
-                <div className={s.topic}>
-                    REITIN OTSIKKOTIEDOT
-                </div>
-                <div className={s.routeInformationContainer}>
-                    <div className={s.flexInnerColumn}>
-                        <div>Reittitunnus</div>
-                        <div>{routePath.routeId}</div>
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Linja</div>
-                        <div>{routePath.lineId}</div>
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Päivityspvm</div>
-                        <Moment
-                            date={routePath.lastModified}
-                            format='DD.MM.YYYY HH:mm'
-                        />
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Päivittäjä</div>
-                        <div>{routePath.modifiedBy}</div>
-                    </div>
-                </div>
-            </div>
-            <div className={s.formSection}>
-                <RoutePathViewForm
-                    onChange={this.onChange}
-                    isEditingDisabled={this.state.isEditingDisabled}
-                    routePath={routePath}
-                />
-            </div>
-            <div className={s.formSection}>
-                <div className={s.flexRow}>
+                        type={ButtonType.ROUND}
+                        onClick={this.toggleEditing!}
+                    >
+                        <FiEdit/>
+                        {
+                            this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'
+                        }
+                    </Button>
                     <Button
-                        onClick={this.save}
-                        type={ButtonType.SAVE}
-                        text={'Tallenna reitinsuunta'}
-                        disabled={!this.state.hasModifications || !this.isFormValid()}
+                        type={ButtonType.ROUND}
+                        onClick={this.redirectToNewRoutePathView!}
+                    >
+                        <FiCopy />
+                        Kopioi
+                    </Button>
+                </div>
+                <div className={s.formSection}>
+                    <RoutePathViewForm
+                        onChange={this.onChange}
+                        isEditingDisabled={this.state.isEditingDisabled}
+                        routePath={this.props.routePathStore!.routePath!}
                     />
                 </div>
             </div>
             <Button
-                onClick={this.redirectToNewRoutePathView}
-                type={ButtonType.SQUARE}
-                text={`Luo uusi reitin suunta käyttäen tätä pohjana`}
-            />
+                onClick={this.save}
+                type={ButtonType.SAVE}
+                disabled={!this.props.routePathStore!.hasUnsavedModifications
+                    || !this.isFormValid()}
+            >
+                Tallenna muutokset
+            </Button>
         </div>
         );
     }

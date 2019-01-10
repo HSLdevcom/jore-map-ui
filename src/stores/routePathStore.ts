@@ -5,11 +5,12 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 export class RoutePathStore {
     @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
-
+    @observable private _hasUnsavedModifications: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
 
     constructor() {
         this._neighborRoutePathLinks = [];
+        this._hasUnsavedModifications = false;
     }
 
     @computed
@@ -25,6 +26,11 @@ export class RoutePathStore {
     @computed
     get neighborLinks(): IRoutePathLink[] {
         return this._neighborRoutePathLinks;
+    }
+
+    @computed
+    get hasUnsavedModifications() {
+        return this._hasUnsavedModifications;
     }
 
     @action
@@ -46,6 +52,7 @@ export class RoutePathStore {
             ...this._routePath!,
             [property]: value,
         };
+        this._hasUnsavedModifications = true;
     }
 
     @action
@@ -56,6 +63,7 @@ export class RoutePathStore {
     @action
     addLink(routePathLink: IRoutePathLink) {
         this._routePath!.routePathLinks!.push(routePathLink);
+        this._hasUnsavedModifications = true;
     }
 
     @action
@@ -75,6 +83,10 @@ export class RoutePathStore {
         this._neighborRoutePathLinks = [];
     }
 
+    @action
+    resetHaveLocalModifications() {
+        this._hasUnsavedModifications = false;
+    }
 }
 
 const observableStoreStore = new RoutePathStore();
