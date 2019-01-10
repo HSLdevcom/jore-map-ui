@@ -60,14 +60,16 @@ class Login extends React.Component<ILoginProps> {
                 <Button
                     onClick={this.closeLoginModal}
                     type={ButtonType.SQUARE}
-                    text={'Kirjaudu'}
-                />
+                >
+                    Kirjaudu
+                </Button>
                 <div className={s.flexFiller} />
                 <Button
                     onClick={this.closeLoginModal}
                     type={ButtonType.SQUARE_SECONDARY}
-                    text={'Peruuta'}
-                />
+                >
+                    Peruuta
+                </Button>
             </div>
         </div>
         );

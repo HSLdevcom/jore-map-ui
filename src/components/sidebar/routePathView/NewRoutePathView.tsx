@@ -17,8 +17,8 @@ import { NotificationStore } from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
-import RoutePathViewForm from './RoutePathViewForm';
-import * as s from './routePathTab.scss';
+import RoutePathViewForm from './routePathInfoTab/RoutePathViewForm';
+import * as s from './routePathView.scss';
 
 interface INewRoutePathViewProps {
     notificationStore?: NotificationStore;
@@ -125,31 +125,34 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         }
         const routePath = this.props.routePathStore!.routePath!;
         return (
-        <div className={classnames(s.routePathTab, s.form)}>
-            <div className={s.formSection}>
-                <ViewHeader
-                    header='Luo uusi reitinsuunta'
-                />
-                <div className={s.flexInnerRow}>
-                    <div className={s.staticInfo}>LINJA: {routePath.lineId}</div>
-                    <div className={s.staticInfo}>REITTI: {routePath.routeId}</div>
-                </div>
-            </div>
-            <div className={s.formSection}>
-                <RoutePathViewForm
-                    isEditingDisabled={false}
-                    onChange={this.onChange}
-                    routePath={routePath}
-                />
-            </div>
-            <div className={s.formSection}>
-                <div className={s.flexRow}>
-                    <Button
-                        onClick={this.onSave}
-                        type={ButtonType.SAVE}
-                        disabled={this.isSaveDisabled()}
-                        text={'Tallenna reitinsuunta'}
+        <div className={s.routePathView}>
+            <div className={classnames(s.content, s.form)}>
+                <div className={s.formSection}>
+                    <ViewHeader
+                        header='Luo uusi reitinsuunta'
                     />
+                    <div className={s.flexInnerRow}>
+                        <div className={s.staticInfo}>LINJA: {routePath.lineId}</div>
+                        <div className={s.staticInfo}>REITTI: {routePath.routeId}</div>
+                    </div>
+                </div>
+                <div className={s.formSection}>
+                    <RoutePathViewForm
+                        isEditingDisabled={false}
+                        onChange={this.onChange}
+                        routePath={routePath}
+                    />
+                </div>
+                <div className={s.formSection}>
+                    <div className={s.flexRow}>
+                        <Button
+                            onClick={this.onSave}
+                            type={ButtonType.SAVE}
+                            disabled={this.isSaveDisabled()}
+                        >
+                            Tallenna reitinsuunta
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

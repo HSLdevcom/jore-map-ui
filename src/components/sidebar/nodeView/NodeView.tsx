@@ -189,8 +189,9 @@ class NodeView extends React.Component
                         <Button
                             onClick={this.doNothing}
                             type={ButtonType.SQUARE}
-                            text={'Poista linkki'}
-                        />
+                        >
+                            Poista linkki
+                        </Button>
                     </div>
                 </div>
             )}

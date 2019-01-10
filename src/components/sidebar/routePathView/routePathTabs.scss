@@ -13,6 +13,9 @@
     top: 50%;
     transition: .2s;
     cursor: pointer;
+    display: inline-block;
+    width: 50%;
+    box-sizing: border-box;
 }
 
 .tabLabel {
