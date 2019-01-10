@@ -5,6 +5,7 @@ export default interface BaseTool {
     activate: Function;
     deactivate: Function;
     onNetworkNodeClick?: Function;
+    onRoutePathLinkClick?: Function;
     /** TODO:
      * isNetworkLinksInteractive?: Function
      * onNetworkLinkClick?: Function

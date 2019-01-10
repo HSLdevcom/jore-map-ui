@@ -56,6 +56,12 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderLink = (routePathLink: IRoutePathLink) => {
+        const onClick = this.props.toolbarStore!.selectedTool ?
+            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick ?
+                this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
+                : undefined
+            : undefined;
+
         return (
             <Polyline
                 positions={routePathLink.positions}
@@ -63,7 +69,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
                 color={MARKER_COLOR}
                 weight={5}
                 opacity={0.8}
-                onClick={void 0}
+                onClick={onClick}
             />
         );
     }
@@ -136,7 +142,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
         return bounds;
     }
 
-    componentDidUpdate() {
+    private refresh() {
         const routePathStore = this.props.routePathStore!;
 
         if (routePathStore!.routePath
@@ -147,7 +153,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
 
         if (
             routePathStore!.routePath &&
-            !this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePath)) {
+            this.props.toolbarStore!.selectedTool === undefined) {
             const bounds = this.calculateBounds();
             if (bounds.isValid()) {
                 this.props.fitBounds(bounds);
@@ -181,6 +187,14 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
                 color={MARKER_COLOR}
             />
         );
+    }
+
+    componentDidUpdate() {
+        this.refresh();
+    }
+
+    componentDidMount() {
+        this.refresh();
     }
 
     render() {

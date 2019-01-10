@@ -231,10 +231,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         const nodeSize = this.props.networkStore!.nodeSize;
 
         const selectedTool = this.props.toolbarStore!.selectedTool;
-        let onNetworkNodeClick: Function;
+        let onNetworkNodeClick: Function | undefined;
         if (selectedTool) {
             onNetworkNodeClick = selectedTool.onNetworkNodeClick ?
-            selectedTool.onNetworkNodeClick : () => {};
+                selectedTool.onNetworkNodeClick : undefined;
         }
 
         return (

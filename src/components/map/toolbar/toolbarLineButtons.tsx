@@ -46,9 +46,9 @@ class ToolbarLineButtons extends React.Component {
                         <FiShare2/>
                     </MapControlButton>
                     <MapControlButton
-                        onClick={this.selectTool(ToolbarTool.RemoveLink)}
-                        isActive={ToolbarStore.isSelected(ToolbarTool.RemoveLink)}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.RemoveLink)}
+                        onClick={this.selectTool(ToolbarTool.RemoveRoutePathLink)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.RemoveRoutePathLink)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.RemoveRoutePathLink)}
                         label='Poistaa linkki'
                     >
                         <FiDelete/>
