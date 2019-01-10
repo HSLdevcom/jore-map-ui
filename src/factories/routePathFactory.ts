@@ -25,7 +25,7 @@ class RoutePathFactory {
         return {
             routeId,
             routePathLinks,
-            lineId: externalRoutePath.lintunnus,
+            lineId: externalRoutePath.reittiByReitunnus.lintunnus,
             internalId: internalRoutePathId,
             routePathName: externalRoutePath.suunimi,
             routePathNameSw: externalRoutePath.suunimir,

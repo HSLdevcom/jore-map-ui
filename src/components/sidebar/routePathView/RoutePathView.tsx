@@ -5,10 +5,11 @@ import { match } from 'react-router';
 import Loader from '~/components/shared/loader/Loader';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
-import RoutePathTab from './RoutePathTab';
-import RoutePathLinksTab from './RoutePathLinksTab';
+import RoutePathTab from './routePathInfoTab/RoutePathInfoTab';
+import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
 import * as s from './routePathView.scss';
+import RoutePathHeader from './RoutePathHeader';
 
 interface IRoutePathViewState {
     isLoading: boolean;
@@ -88,7 +89,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         if (!this.props.routePathStore!.routePath) return;
         return (
             <div className={s.routePathView}>
-                <div className={s.flexInnerRow}>
+                <RoutePathHeader
+                    routePath={this.props.routePathStore!.routePath!}
+                />
+                <div>
                     <RoutePathTabs
                         selectedTab={this.state.selectedTabIndex}
                         selectTab={this.selectTab}

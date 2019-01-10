@@ -418,23 +418,27 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <Button
                     onClick={this.onChange}
                     type={ButtonType.ROUND}
-                    text={'Seuraava'}
-                />
+                >
+                    Seuraava
+                </Button>
                 <Button
                     onClick={this.onChange}
                     type={ButtonType.ROUND}
-                    text={'Edellinen'}
-                />
+                >
+                    Edellinen
+                </Button>
                 <Button
                     onClick={this.onChange}
                     type={ButtonType.ROUND}
-                    text={'Alkusolmu'}
-                />
+                >
+                    Alkusolmu
+                </Button>
                 <Button
                     onClick={this.onChange}
                     type={ButtonType.ROUND}
-                    text={'Loppusolmu'}
-                />
+                >
+                    Loppusolmu
+                </Button>
             </div>
         </div>
         );

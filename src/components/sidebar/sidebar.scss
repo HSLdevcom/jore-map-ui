@@ -1,4 +1,5 @@
 @import '../shared/styles/common.scss';
+@import '../shared/styles/globalLayout.scss';
 
 .sidebarView {
     display: flex;
@@ -10,14 +11,13 @@
     border-right: 1px solid #c5c5c5;
 
     .header {
-        padding: 20px 20px 20px 20px;
-        background-color: $busBlue;
         cursor: pointer;
+        height: $headerHeight;
+        padding-left: 10px;
+        background-color: $busBlue;
 
         .headerContainer {
-            text-align: center;
-            display: table-cell;
-            vertical-align: middle;
+            margin: 10px;
 
             .title {
                 display: inline-block;
@@ -43,6 +43,15 @@
                 text-align: center;
                 vertical-align: middle;
             }
+        }
+    }
+
+    .content {
+        height: calc(100vh - #{$headerHeight});
+
+        > div {
+            height: 100%;
+            box-sizing: border-box;
         }
     }
 }

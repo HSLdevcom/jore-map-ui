@@ -3,9 +3,18 @@
 @import '../../shared/styles/form';
 
 .routePathView {
-    overflow-y: scroll;
     width: $sidebarWide;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .content {
+        padding: 15px;
+    }
+
+    .borderBotton {
+        border-bottom: 1.5px solid $mediumLightGrey;
+    }
 
     .routePathViewHeader {
         display: flex;
@@ -16,5 +25,19 @@
         font-weight: bold;
         color: #898989;
         font-size: 1rem;
+    }
+
+    .routeInformationContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-top:10px;
+    }
+
+    .staticInfo {
+        margin-top: 5px;
+        font-size: $smallFontSize;
+        margin-right: 10px;
+        font-weight: bold;
     }
 }

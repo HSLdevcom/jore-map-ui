@@ -1,0 +1,31 @@
+@import '../../../shared/styles/common';
+@import '../../../shared/styles/flexbox';
+@import '../../../shared/styles/form';
+
+.routePathLinksView {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    color: $labelColor;
+    font-size: $mediumFontSize;
+
+    .contentWrapper {
+        overflow-y: auto;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .saveButton {
+        padding: 20px;
+        background-color: $saveButtonGreen;
+        color: #FFF;
+        text-align: center;
+        font-size: $mediumFontSize;
+        cursor: pointer;
+    }
+
+    .saveButton:hover {
+        background-color: darken($saveButtonGreen, 10)
+    }
+
+}

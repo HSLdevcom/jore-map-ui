@@ -3,11 +3,11 @@ import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
-import InputContainer from '../InputContainer';
+import InputContainer from '../../InputContainer';
 import LinkListView from './LinkListView';
-import { Button, Dropdown, Checkbox } from '../../controls';
-import ButtonType from '../../../enums/buttonType';
-import * as s from './routePathView.scss';
+import { Button, Dropdown, Checkbox } from '../../../controls';
+import ButtonType from '../../../../enums/buttonType';
+import * as s from '../routePathView.scss';
 
 interface IRoutePathViewFormProps {
     isEditingDisabled: boolean;
@@ -33,9 +33,6 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         return (
         <div className={s.form}>
             <div className={s.formSection}>
-                <div className={s.topic}>
-                    REITINSUUNNAN TIEDOT
-                </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='REITIN NIMI SUOMEKSI'
@@ -122,8 +119,9 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         <Button
                             onClick={this.onClick}
                             type={ButtonType.ROUND}
-                            text={'Laske'}
-                        />
+                        >
+                            Laske
+                        </Button>
                     </div>
                 </div>
                 <div className={s.flexRow}>
@@ -183,30 +181,35 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Varustelutiedot'}
-                    />
+                    >
+                        Varustelutiedot
+                    </Button>
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Solmu'}
-                    />
+                    >
+                        Solmu
+                    </Button>
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Solmut Exceliin'}
-                    />
+                    >
+                        Solmut Exceliin
+                    </Button>
                 </div>
                 <div className={s.flexRow}>
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Linkki'}
-                    />
+                    >
+                        Linkki
+                    </Button>
                     <Button
                         onClick={this.onClick}
                         type={ButtonType.ROUND}
-                        text={'Aikataulu'}
-                    />
+                    >
+                        Aikataulu
+                    </Button>
                     <div className={s.flexButtonFiller} />
                 </div>
             </div>
@@ -220,8 +223,9 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                             <Button
                                 onClick={this.onClick}
                                 type={ButtonType.ROUND}
-                                text={'Kartta'}
-                            />
+                            >
+                                Kartta
+                            </Button>
                             <Checkbox
                                 checked={false}
                                 text={'Muotopisteet kartalle'}
