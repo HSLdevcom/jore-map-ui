@@ -20,12 +20,12 @@ class RoutePathFactory {
         const routePathLinks = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
             .nodes.map((externalRoutePathLink: IExternalRoutePathLink) => {
                 return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
-            });
+            }).sort((a, b) => a.orderNumber - b.orderNumber);
 
         return {
             routeId,
             routePathLinks,
-            lineId: externalRoutePath.lintunnus,
+            lineId: externalRoutePath.reittiByReitunnus.lintunnus,
             internalId: internalRoutePathId,
             routePathName: externalRoutePath.suunimi,
             routePathNameSw: externalRoutePath.suunimir,

@@ -35,7 +35,7 @@ interface INewRoutePathViewState {
 @inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore', 'notificationStore')
 @observer
 class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoutePathViewState>{
-    constructor(props: any) {
+    constructor(props: INewRoutePathViewProps) {
         super(props);
 
         const oldRoutePath = this.props.routePathStore!.routePath;

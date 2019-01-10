@@ -19,7 +19,6 @@ import * as s from './routePathTab.scss';
 
 interface IRoutePathViewState {
     isEditingDisabled: boolean;
-    hasModifications: boolean;
     invalidFieldsMap: object;
     isLoading: boolean;
 }
@@ -37,7 +36,6 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         super(props);
         this.state = {
             isEditingDisabled: true,
-            hasModifications: false,
             invalidFieldsMap: {},
             isLoading: true,
         };
@@ -52,7 +50,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         this.setState({ isLoading: true });
         try {
             await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
-            this.setState({ hasModifications: false });
+            this.props.routePathStore!.resetHaveLocalModifications();
             this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
@@ -83,9 +81,6 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
 
     public onChange = (property: string, value: any, validationResult?: IValidationResult) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
-        this.setState({
-            hasModifications: true,
-        });
         if (validationResult) {
             this.markInvalidFields(property, validationResult!.isValid);
         }
@@ -102,7 +97,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         navigator.goTo(newRoutePathLink);
     }
 
-    public render(): any {
+    public render() {
         // tslint:disable-next-line:max-line-length
         const message = 'Reitin suunnalla tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
         const routePath = this.props.routePathStore!.routePath;
@@ -113,7 +108,9 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
             <div className={s.formSection}>
                 <ViewHeader
                     header={`Reitinsuunta`}
-                    closePromptMessage={this.state.hasModifications ? message : undefined}
+                    closePromptMessage={
+                        this.props.routePathStore!.hasUnsavedModifications ? message : undefined
+                    }
                 >
                     <Button
                         onClick={this.toggleEditing}
@@ -161,7 +158,10 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                         onClick={this.save}
                         type={ButtonType.SAVE}
                         text={'Tallenna reitinsuunta'}
-                        disabled={!this.state.hasModifications || !this.isFormValid()}
+                        disabled={
+                            !this.props.routePathStore!.hasUnsavedModifications
+                            || !this.isFormValid()
+                        }
                     />
                 </div>
             </div>
