@@ -4,7 +4,7 @@ import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
-import { IStop, INode } from '~/models/index';
+import { INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import GeometryService from '~/services/geometryService';

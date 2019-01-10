@@ -116,7 +116,13 @@ class LeafletMap extends React.Component<IMapProps> {
         // Problem only in docker containers.
         // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
         this.getMap().invalidateSize();
-        this.getMap().fitBounds(bounds);
+        this.getMap().fitBounds(
+            bounds,
+            {
+                maxZoom: 16,
+                animate: true,
+                padding: [300, 300],
+            });
     }
 
     public render() {
@@ -161,7 +167,9 @@ class LeafletMap extends React.Component<IMapProps> {
                         routes={routes}
                         fitBounds={this.fitBounds}
                     />
-                    <NewRoutePathLayer />
+                    <NewRoutePathLayer
+                        fitBounds={this.fitBounds}
+                    />
                     <EditNetworkLayer />
                     <PopupLayer />
                     <Control position='topleft'>

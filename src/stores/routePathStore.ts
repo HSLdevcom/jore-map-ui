@@ -64,6 +64,12 @@ export class RoutePathStore {
             routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
     }
 
+    @action
+    clear() {
+        this._routePath = null;
+        this._neighborRoutePathLinks = [];
+    }
+
 }
 
 const observableStoreStore = new RoutePathStore();

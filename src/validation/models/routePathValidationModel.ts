@@ -1,7 +1,8 @@
 const routePathValidationModel = {
-    nameFi: 'required|min:1|max:60|string',
-    // TODO: These length limits are only made up
-    length: 'required|numeric|min:1|max:100000',
+    origin: 'required|min:1|max:20|string',
+    destination: 'required|min:1|max:20|string',
+    length: 'required|numeric|min:0|max:99999',
+    shortName: 'required|min:1|max:20|string',
 };
 
 export default routePathValidationModel;

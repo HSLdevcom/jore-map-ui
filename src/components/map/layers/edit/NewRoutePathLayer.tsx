@@ -5,7 +5,9 @@ import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
+import ToolbarTool from '~/enums/toolbarTool';
 import NodeMarker from '../objects/NodeMarker';
 import StartMarker from '../objects/StartMarker';
 
@@ -13,10 +15,12 @@ const MARKER_COLOR = '#00df0b';
 const NEIGHBOR_MARKER_COLOR = '#ca00f7';
 
 interface IRoutePathLayerProps {
+    fitBounds: (bounds: L.LatLngBoundsExpression) => void;
     routePathStore?: RoutePathStore;
+    toolbarStore?:  ToolbarStore;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'toolbarStore')
 @observer
 class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathLinks = () => {
@@ -117,13 +121,33 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         return this.renderNode(firstNode, 0);
     }
 
+    private calculateBounds = () => {
+        const bounds:L.LatLngBounds = new L.LatLngBounds([]);
+
+        this.props.routePathStore!.routePath!.routePathLinks!.forEach((link) => {
+            link.positions
+                .forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+        });
+
+        return bounds;
+    }
+
     componentDidUpdate() {
-        const routePathStore = this.props.routePathStore;
+        const routePathStore = this.props.routePathStore!;
 
         if (routePathStore!.routePath
             && routePathStore!.routePath!.routePathLinks!.length > 0
             && routePathStore!.neighborLinks.length === 0) {
             this.getNeighborsForExistingRoutePath();
+        }
+
+        if (
+            routePathStore!.routePath &&
+            !this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePath)) {
+            const bounds = this.calculateBounds();
+            if (bounds.isValid()) {
+                this.props.fitBounds(bounds);
+            }
         }
     }
 
@@ -161,7 +185,9 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
                 {this.renderRoutePathLinks()}
                 {this.renderFirstNode()}
                 {/* Neighbors should be drawn last */}
-                {this.renderRoutePathLinkNeighbors()};
+                { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePath) &&
+                    this.renderRoutePathLinkNeighbors()
+                }
                 {this.renderStartMarker()}
             </>
         );
