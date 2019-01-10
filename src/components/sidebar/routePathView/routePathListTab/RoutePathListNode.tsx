@@ -43,6 +43,10 @@ class RoutePathListNode
             description = NodeTypeDescription.DISABLED;
             break;
         }
+        case NodeType.MUNICIPALITY_BORDER: {
+            description = NodeTypeDescription.MUNICIPALITY_BORDER;
+            break;
+        }
         default: {
             throw new Error(`Node type not supported: ${nodeType}`);
         }}
