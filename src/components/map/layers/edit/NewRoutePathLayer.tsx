@@ -27,26 +27,22 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
 
-        const res = routePathLinks.flatMap((routePathLink: IRoutePathLink, index) => {
-            const nodeToRender = routePathLink.startNode;
-            return [
-                this.renderNode(nodeToRender, index),
-                this.renderLink(routePathLink),
-            ];
+        const nodes = {};
+        routePathLinks.forEach((rpLink) => {
+            nodes[rpLink.startNode.id] = rpLink.startNode;
+            nodes[rpLink.endNode.id] = rpLink.endNode;
         });
 
-        /* Render last endNode of routePathLinks */
-        res.push(this.renderNode(
-            routePathLinks[routePathLinks.length - 1].endNode,
-            routePathLinks.length,
-        ));
-        return res;
+        return [
+            routePathLinks.flatMap(rpLink => this.renderLink(rpLink)),
+            Object.values(nodes).flatMap((node: INode) => this.renderNode(node)),
+        ];
     }
 
-    private renderNode = (node: INode, key: number) => {
+    private renderNode = (node: INode) => {
         return (
             <NodeMarker
-                key={`${key}-${node.id}`}
+                key={`${node.id}`}
                 onClick={void 0}
                 node={node}
             />
