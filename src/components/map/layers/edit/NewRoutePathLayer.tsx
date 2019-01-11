@@ -40,10 +40,16 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderNode = (node: INode) => {
+        const onNodeClick =
+            this.props.toolbarStore!.selectedTool &&
+            this.props.toolbarStore!.selectedTool!.onNodeClick ?
+                this.props.toolbarStore!.selectedTool!.onNodeClick!(node.id)
+                : undefined;
+
         return (
             <NodeMarker
                 key={`${node.id}`}
-                onClick={void 0}
+                onClick={onNodeClick}
                 node={node}
             />
         );
@@ -186,7 +192,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
             <>
                 {this.renderRoutePathLinks()}
                 {/* Neighbors should be drawn last */}
-                { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePath) &&
+                { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
                     this.renderRoutePathLinkNeighbors()
                 }
                 {this.renderStartMarker()}

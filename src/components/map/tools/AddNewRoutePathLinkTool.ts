@@ -9,10 +9,25 @@ import BaseTool from './BaseTool';
 /**
  * Tool for creating new routePath
  */
-class AddNewRoutePathTool implements BaseTool {
-    public toolType = ToolbarTool.AddNewRoutePath;
+class AddNewRoutePathLinkTool implements BaseTool {
+    public toolType = ToolbarTool.AddNewRoutePathLink;
     public activate() {}
     public deactivate() {}
+
+    private setInteractiveNode = async (nodeId: string) => {
+        const routePathLinks =
+            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
+                nodeId);
+        if (routePathLinks.length === 0) {
+            NotificationStore!.addNotification({
+                message:
+                    `Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`, // tslint:disable
+                type: NotificationType.ERROR,
+            });
+        } else {
+            RoutePathStore!.setNeighborRoutePathLinks(routePathLinks);
+        }
+    }
 
     public onNetworkNodeClick = async (clickEvent: any) => {
         if (!this.isNetworkNodesInteractive()) return;
@@ -20,18 +35,11 @@ class AddNewRoutePathTool implements BaseTool {
         const properties =  clickEvent.sourceTarget.properties;
         if (properties.soltyyppi !== NodeType.STOP) return;
 
-        const routePathLinks =
-            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
-                properties.soltunnus);
-        if (routePathLinks.length === 0) {
-            NotificationStore!.addNotification({
-                message:
-                    `Tästä solmusta (soltunnus: ${properties.soltunnus}) alkavaa linkkiä ei löytynyt.`, // tslint:disable
-                type: NotificationType.ERROR,
-            });
-        } else {
-            RoutePathStore!.setNeighborRoutePathLinks(routePathLinks);
-        }
+        await this.setInteractiveNode(properties.soltyyppi);
+    }
+
+    public onNodeClick = (id: string) => async () => {
+        await this.setInteractiveNode(id);
     }
 
     private isNetworkNodesInteractive() {
@@ -43,4 +51,4 @@ class AddNewRoutePathTool implements BaseTool {
     }
 }
 
-export default AddNewRoutePathTool;
+export default AddNewRoutePathLinkTool;

@@ -27,9 +27,9 @@ class ToolbarLineButtons extends React.Component {
                         <FiCopy />
                     </MapControlButton>
                     <MapControlButton
-                        onClick={this.selectTool(ToolbarTool.AddNewRoutePath)}
-                        isActive={ToolbarStore.isSelected(ToolbarTool.AddNewRoutePath)}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.AddNewRoutePath)}
+                        onClick={this.selectTool(ToolbarTool.AddNewRoutePathLink)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.AddNewRoutePathLink)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.AddNewRoutePathLink)}
                         label='Extend routepath'
                     >
                         <IoMdGitCommit />

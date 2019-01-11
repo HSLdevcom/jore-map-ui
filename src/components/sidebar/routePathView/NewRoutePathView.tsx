@@ -64,7 +64,7 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
     }
 
     initStores() {
-        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePath);
+        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
         this.props.networkStore!.setNodeSize(NodeSize.large);
         this.props.networkStore!.showMapLayer(MapLayer.node);
         this.props.networkStore!.showMapLayer(MapLayer.link);
