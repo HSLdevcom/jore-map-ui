@@ -67,6 +67,12 @@ export class RoutePathStore {
     }
 
     @action
+    removeLink(id: string) {
+        this._routePath!.routePathLinks =
+            this._routePath!.routePathLinks!.filter(link => link.id !== id);
+    }
+
+    @action
     setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
         this._routePath!.routePathLinks = routePathLinks;
     }
