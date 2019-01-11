@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import * as L from 'leaflet';
 import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
-import { IRoutePathLink } from '~/models';
+import { INode, IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
-import NodeLayer from './NodeLayer';
-import NodeMarker from './NodeMarker';
+import NodeMarker from './mapIcons/NodeMarker';
+import StartMarker from './mapIcons/StartMarker';
 
 interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;
@@ -23,10 +23,14 @@ interface RoutePathLinkLayerProps {
 
 @inject('popupStore')
 @observer
-class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
+class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
+    }
+
+    private openPopup = (node: INode) => () => {
+        this.props.popupStore!.showPopup(node);
     }
 
     private renderRoutePathLinks() {
@@ -45,31 +49,30 @@ class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
             );
         });
     }
-
     private renderNodes() {
         const routePathLinks = this.props.routePathLinks;
-        return routePathLinks.map((routePathLink, index) => {
-            return (
-                <div key={index}>
-                    <NodeLayer
+        const nodes = routePathLinks
+            .map((routePathLink) => {
+                return (
+                    <NodeMarker
                         key={`${routePathLink.startNode.id}`}
                         node={routePathLink.startNode}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
                         isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
+                        onContextMenu={this.openPopup(routePathLink.startNode)}
                     />
-                    { index === routePathLinks.length - 1 &&
-                        <NodeLayer
-                            key={`${routePathLink.endNode.id}`}
-                            node={routePathLink.endNode}
-                            /* hardcoded because last node doens't have this data */
-                            isDisabled={false}
-                            /* hardcoded because last node doens't have this data */
-                            isTimeAlignmentStop={false}
-                        />
-                    }
-                </div>
-            );
-        });
+                );
+            });
+        const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
+        nodes.push(
+            <NodeMarker
+                key={lastRoutePathLink.endNode.id}
+                node={lastRoutePathLink.endNode}
+                isDisabled={false} // Last node can't be disabled
+                isTimeAlignmentStop={false} // Last node can't be a time alignment stop
+                onContextMenu={this.openPopup(lastRoutePathLink.endNode)}
+            />);
+        return nodes;
     }
 
     private renderStartMarker() {
@@ -79,8 +82,7 @@ class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
         const coordinates = routePathLinks![0].startNode.coordinates;
         const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
-            <NodeMarker
-                nodeType={NodeType.START}
+            <StartMarker
                 latLng={latLng}
                 color={color}
             />
@@ -102,4 +104,4 @@ class RoutePathLayer extends Component<RoutePathLinkLayerProps> {
     }
 }
 
-export default RoutePathLayer;
+export default RoutePathLinkLayer;

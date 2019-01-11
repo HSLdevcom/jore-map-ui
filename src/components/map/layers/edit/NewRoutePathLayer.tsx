@@ -4,12 +4,12 @@ import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
-import NodeType from '~/enums/nodeType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
-import NodeMarker from '../NodeMarker';
+import NodeMarker from '../mapIcons/NodeMarker';
+import StartMarker from '../mapIcons/StartMarker';
 
 const MARKER_COLOR = '#00df0b';
 const NEIGHBOR_MARKER_COLOR = '#ca00f7';
@@ -22,7 +22,7 @@ interface IRoutePathLayerProps {
 
 @inject('routePathStore', 'toolbarStore')
 @observer
-class RoutePathLayer extends Component<IRoutePathLayerProps> {
+class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathLinks = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
@@ -44,13 +44,11 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderNode = (node: INode, key: number) => {
-        const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
-                nodeType={node.type}
                 onClick={void 0}
-                latLng={latLng}
+                node={node}
             />
         );
     }
@@ -90,14 +88,12 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderNeighborNode = (node: INode, routePathLink: IRoutePathLink, key: number) => {
-        const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
                 isNeighborMarker={true}
-                nodeType={node.type}
                 onClick={this.addLinkToRoutePath(routePathLink)}
-                latLng={latLng}
+                node={node}
             />
         );
     }
@@ -181,8 +177,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
         const coordinates = routePathLinks![0].startNode.coordinates;
         const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
-            <NodeMarker
-                nodeType={NodeType.START}
+            <StartMarker
                 latLng={latLng}
                 color={MARKER_COLOR}
             />
@@ -213,4 +208,4 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 }
 
-export default RoutePathLayer;
+export default NewRoutePathLayer;

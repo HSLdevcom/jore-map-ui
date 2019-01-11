@@ -4,61 +4,93 @@ import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
-import { IStop } from '~/models';
+import { INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
-import PinIcon from '~/icons/pin';
-import { MapStore } from '~/stores/mapStore';
+import { MapStore, NodeLabel } from '~/stores/mapStore';
+import GeometryService from '~/services/geometryService';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
 // Setting z-index to 2, if other items is 1 wont force it to be on top.
 // Setting z-index to a very high number will however most likely set the item on top.
 // https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
-const VERY_HIGH_Z_INDEX = 1000;
+export const VERY_HIGH_Z_INDEX = 1000;
+
+export const createDivIcon = (html: any) => {
+    const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
+    const divIconOptions : L.DivIconOptions = {
+        html: renderedHtml,
+        className: s.node,
+    };
+
+    return new L.DivIcon(divIconOptions);
+};
 
 interface INodeMarkerProps {
     mapStore?: MapStore;
-    nodeType: NodeType;
-    latLng: L.LatLng;
-    isSelected?: boolean;
     color?: string;
     onContextMenu?: Function;
     onClick?: Function;
     isDraggable?: boolean;
-    stop?: IStop;
-    labels?: string[];
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
+    node: INode;
+    isDisabled?: boolean;
+    isTimeAlignmentStop?: boolean;
 }
 
 const DEFAULT_RADIUS = 25;
+const NODE_LABEL_MIN_ZOOM = 14;
 
 @inject('mapStore')
 @observer
 class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
-        isSelected: false,
         isDraggable: false,
         isNeighborMarker: false,
     };
 
-    private createDivIcon = (html: any) => {
-        const divIconOptions : L.DivIconOptions = {
-            html,
-            className: s.node,
-        };
+    private isSelected() {
+        return this.props.mapStore!.selectedNodeId === this.props.node.id;
+    }
 
-        return new L.DivIcon(divIconOptions);
+    private getLabels(): string[] {
+        const node = this.props.node;
+        const visibleNodeLabels = this.props.mapStore!.visibleNodeLabels;
+        const zoom = this.props.mapStore!.zoom;
+
+        if (!node
+            || visibleNodeLabels.length === 0
+            || zoom < NODE_LABEL_MIN_ZOOM) return [];
+
+        const labels: string[] = [];
+        if (visibleNodeLabels.includes(NodeLabel.hastusId)) {
+            if (node.stop && node.stop.hastusId) {
+                labels.push(node.stop.hastusId);
+            }
+        }
+        if (visibleNodeLabels.includes(NodeLabel.longNodeId)) {
+            labels.push(node.id);
+        }
+        if (node.shortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
+            labels.push(node.shortId);
+        }
+
+        return labels;
     }
 
     private getMarkerClass = () => {
-        const isSelected = this.props.isSelected;
-        const nodeType = this.props.nodeType;
-
+        const isSelected = this.isSelected();
         if (this.props.isNeighborMarker) {
             return s.neighborMarker;
         }
+        if (this.props.isDisabled) {
+            return isSelected ? s.disabledMarkerHighlight : s.disabledMarker;
+        }
+        if (this.props.isTimeAlignmentStop) {
+            return s.timeAlignmentMarker;
+        }
 
-        switch (nodeType) {
+        switch (this.props.node.type) {
         case NodeType.STOP: {
             return isSelected ? s.stopMarkerHighlight : s.stopMarker;
         }
@@ -74,17 +106,17 @@ class NodeMarker extends Component<INodeMarkerProps> {
         case NodeType.TIME_ALIGNMENT: {
             return s.timeAlignmentMarker;
         }
-        default: {
-            return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;
         }
-        }
+
+        return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;
     }
 
     private renderMarkerLabel = () => {
-        if (!this.props.labels) return null;
+        const labels = this.getLabels();
+        if (!labels) return null;
         return (
             <div className={s.nodeLabel}>
-                {this.props.labels.map((label, index) => {
+                {labels.map((label, index) => {
                     return (
                         <div key={index}>{label}</div>
                     );
@@ -94,7 +126,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private renderStopRadiusCircle = (radius: number = DEFAULT_RADIUS) => {
-        const latLng = this.props.latLng;
+        const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
         return (
             <Circle
                 className={s.stopCircle}
@@ -104,48 +136,27 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
-    private renderStartMarker = () => {
-        const latLng = this.props.latLng;
-        const color = this.props.color;
-        if (!color) {
-            throw new Error('Color should never be falsey when rendering start markers.');
-        }
-
-        const icon = this.createDivIcon(PinIcon.getPin(color));
-        return (
-            <Marker
-                zIndexOffset={VERY_HIGH_Z_INDEX}
-                icon={icon}
-                position={latLng}
-            />
-        );
-    }
-
     render() {
-        const nodeType = this.props.nodeType;
-        if (nodeType === NodeType.START) {
-            return this.renderStartMarker();
-        }
+        const nodeType = this.props.node.type;
+        const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
 
-        const icon = this.createDivIcon(
-            ReactDOMServer.renderToStaticMarkup(
+        const icon = createDivIcon(
                 <div className={classnames(s.nodeBase, this.getMarkerClass())}>
                     {this.renderMarkerLabel()}
                 </div>,
-            ),
         );
-        const displayCircle = this.props.isSelected && nodeType === NodeType.STOP;
+        const displayCircle = this.isSelected() && nodeType === NodeType.STOP;
         return (
             <Marker
                 onContextMenu={this.props.onContextMenu}
                 onClick={this.props.onClick}
                 draggable={this.props.isDraggable}
                 icon={icon}
-                position={this.props.latLng}
+                position={latLng}
             >
             {
-                (displayCircle) ?
-                    this.renderStopRadiusCircle(this.props.stop!.radius)
+                displayCircle ?
+                    this.renderStopRadiusCircle(this.props.node.stop!.radius)
                 : null
             }
             </Marker>

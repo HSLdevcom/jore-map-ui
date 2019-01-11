@@ -43,11 +43,11 @@ class NodeView extends React.Component
         };
     }
 
-    public componentDidMount() {
+    public async componentDidMount() {
         const selectedNodeId = this.props.match!.params.id;
         if (selectedNodeId) {
             this.props.mapStore!.setSelectedNodeId(selectedNodeId);
-            this.queryNode(selectedNodeId);
+            await this.queryNode(selectedNodeId);
         }
     }
 
