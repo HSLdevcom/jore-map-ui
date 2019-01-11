@@ -29,7 +29,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
 
         const res: JSX.Element[] = [];
         routePathLinks.forEach((rpLink, index) => {
-            if (index === 0 || routePathLinks[index - 1].endNode !== rpLink.startNode) {
+            if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
                 res.push(this.renderNode(rpLink.startNode));
             }
             res.push(this.renderLink(rpLink));
