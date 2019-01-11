@@ -49,7 +49,7 @@ class ToolbarLineButtons extends React.Component {
                         onClick={this.selectTool(ToolbarTool.RemoveRoutePathLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.RemoveRoutePathLink)}
                         isDisabled={ToolbarStore.isDisabled(ToolbarTool.RemoveRoutePathLink)}
-                        label='Poistaa linkki'
+                        label='Poista linkki'
                     >
                         <FiDelete/>
                     </MapControlButton>

@@ -56,11 +56,11 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderLink = (routePathLink: IRoutePathLink) => {
-        const onClick = this.props.toolbarStore!.selectedTool ?
+        const onRoutePathLinkClick =
+            this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick ?
                 this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
-                : undefined
-            : undefined;
+                : undefined;
 
         return (
             <Polyline
@@ -69,7 +69,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
                 color={MARKER_COLOR}
                 weight={5}
                 opacity={0.8}
-                onClick={onClick}
+                onClick={onRoutePathLinkClick}
             />
         );
     }
@@ -142,7 +142,7 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
         return bounds;
     }
 
-    private refresh() {
+    private refresh = () => {
         const routePathStore = this.props.routePathStore!;
 
         if (routePathStore!.routePath
