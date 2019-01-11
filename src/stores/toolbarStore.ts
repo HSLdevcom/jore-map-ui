@@ -7,6 +7,7 @@ import CopyTool from '~/components/map/tools/CopyTool';
 import DivideLinkTool from '~/components/map/tools/DivideLinkTool';
 import EditNetworkNodeTool from '~/components/map/tools/EditNetworkNodeTool';
 import PrintTool from '~/components/map/tools/PrintTool';
+import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkTool';
 
 const TOOL_LIST = [
     new AddNetworkNodeTool(),
@@ -15,6 +16,7 @@ const TOOL_LIST = [
     new DivideLinkTool(),
     new EditNetworkNodeTool(),
     new PrintTool(),
+    new RemoveRoutePathLinkTool(),
 ];
 
 /* Object with key: ToolbarTool, value: BaseTool*/

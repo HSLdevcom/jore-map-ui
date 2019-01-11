@@ -26,6 +26,12 @@ class ToolbarHelp extends Component {
                     liittyviä linkkejä, valitse solmu kartalta.
                 </div>
             );
+        case ToolbarTool.RemoveRoutePathLink:
+            return (
+                <div className={s.toolbarHelp}>
+                    Valitse kartalta ne reitinlinkit joka haluat poistaa.
+                </div>
+            );
         default:
             return null;
         }

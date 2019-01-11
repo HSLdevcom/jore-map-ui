@@ -35,7 +35,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     private renderRoutePathLinks() {
         const routePathLinks = this.props.routePathLinks;
-        return routePathLinks.map((routePathLink, index) => {
+        return routePathLinks.map((routePathLink) => {
             return (
                 <Polyline
                     positions={routePathLink.positions}
