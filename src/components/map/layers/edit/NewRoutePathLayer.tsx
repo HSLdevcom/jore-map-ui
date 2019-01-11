@@ -119,14 +119,6 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         this.props.routePathStore!.addLink(routePathLink);
     }
 
-    private renderFirstNode = () => {
-        if (this.props.routePathStore!.neighborLinks.length === 0) return null;
-
-        const link = this.props.routePathStore!.neighborLinks[0];
-        const firstNode = link.startNode;
-        return this.renderNode(firstNode, 0);
-    }
-
     private calculateBounds = () => {
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
@@ -197,7 +189,6 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         return (
             <>
                 {this.renderRoutePathLinks()}
-                {this.renderFirstNode()}
                 {/* Neighbors should be drawn last */}
                 { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePath) &&
                     this.renderRoutePathLinkNeighbors()
