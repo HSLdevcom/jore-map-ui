@@ -36,15 +36,15 @@ class RoutePathLinkFactory {
     }
 
     public static createNewRoutePathLinkFromExternalLink =
-    (link: IExternalLink): IRoutePathLink => {
+    (link: IExternalLink, orderNumber: number): IRoutePathLink => {
         const startNode = NodeFactory.createNode(link.solmuByLnkalkusolmu);
         return {
             startNode,
+            orderNumber,
             endNode: NodeFactory.createNode(link.solmuByLnkloppusolmu),
             positions: RoutePathLinkFactory.getPositions(link.geojson),
             isStartNodeTimeAlignmentStop: false,
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
-            orderNumber: 0,
             startNodeType: startNode.type,
         };
     }

@@ -62,6 +62,7 @@ export class RoutePathStore {
 
     @action
     addLink(routePathLink: IRoutePathLink) {
+        // TODO: recalculate ordernumbers
         this.setRoutePathLinks([...this._routePath!.routePathLinks, routePathLink]);
         this._hasUnsavedModifications = true;
     }
