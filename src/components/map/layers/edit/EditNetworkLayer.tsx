@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import ILink from '~/models/ILink';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
-import NodeMarker from '../objects/NodeMarker';
+import NodeMarker from '../mapIcons/NodeMarker';
 
 interface IEditNetworkLayerProps {
     editNetworkStore?: EditNetworkStore;

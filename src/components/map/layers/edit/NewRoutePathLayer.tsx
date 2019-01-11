@@ -8,8 +8,8 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
-import NodeMarker from '../objects/NodeMarker';
-import StartMarker from '../objects/StartMarker';
+import NodeMarker from '../mapIcons/NodeMarker';
+import StartMarker from '../mapIcons/StartMarker';
 
 const MARKER_COLOR = '#00df0b';
 const NEIGHBOR_MARKER_COLOR = '#ca00f7';

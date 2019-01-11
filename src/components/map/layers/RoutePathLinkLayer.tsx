@@ -5,8 +5,8 @@ import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
-import NodeMarker from '~/components/map/layers/objects/NodeMarker';
-import StartMarker from './objects/StartMarker';
+import NodeMarker from './mapIcons/NodeMarker';
+import StartMarker from './mapIcons/StartMarker';
 
 interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;
@@ -29,6 +29,10 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         this.props.onContextMenu(routePathLinkId);
     }
 
+    private openPopup = (node: INode) => () => {
+        this.props.popupStore!.showPopup(node);
+    }
+
     private renderRoutePathLinks() {
         const routePathLinks = this.props.routePathLinks;
         return routePathLinks.map((routePathLink, index) => {
@@ -45,32 +49,28 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             );
         });
     }
-
     private renderNodes() {
-        const openPopup = (node: INode) => () => {
-            this.props.popupStore!.showPopup(node);
-        };
         const routePathLinks = this.props.routePathLinks;
         const nodes = routePathLinks
-            .map((routePathLink, index) => {
+            .map((routePathLink) => {
                 return (
                     <NodeMarker
-                        key={`${routePathLink.startNode.id}-${index}`}
+                        key={`${routePathLink.startNode.id}`}
                         node={routePathLink.startNode}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
                         isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
-                        onContextMenu={openPopup(routePathLink.startNode)}
+                        onContextMenu={this.openPopup(routePathLink.startNode)}
                     />
                 );
             });
+        const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
         nodes.push(
             <NodeMarker
-                key={`${routePathLinks[routePathLinks.length - 1]
-                    .endNode.id}-${routePathLinks.length}`}
-                node={routePathLinks[routePathLinks.length - 1].endNode}
+                key={lastRoutePathLink.endNode.id}
+                node={lastRoutePathLink.endNode}
                 isDisabled={false} // Last node can't be disabled
                 isTimeAlignmentStop={false} // Last node can't be a time alignment stop
-                onContextMenu={openPopup(routePathLinks[routePathLinks.length - 1].endNode)}
+                onContextMenu={this.openPopup(lastRoutePathLink.endNode)}
             />);
         return nodes;
     }

@@ -147,21 +147,19 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
         const displayCircle = this.isSelected() && nodeType === NodeType.STOP;
         return (
-            <>
-                <Marker
-                    onContextMenu={this.props.onContextMenu}
-                    onClick={this.props.onClick}
-                    draggable={this.props.isDraggable}
-                    icon={icon}
-                    position={latLng}
-                >
-                {
-                    displayCircle ?
-                        this.renderStopRadiusCircle(this.props.node.stop!.radius)
-                    : null
-                }
-                </Marker>
-            </>
+            <Marker
+                onContextMenu={this.props.onContextMenu}
+                onClick={this.props.onClick}
+                draggable={this.props.isDraggable}
+                icon={icon}
+                position={latLng}
+            >
+            {
+                displayCircle ?
+                    this.renderStopRadiusCircle(this.props.node.stop!.radius)
+                : null
+            }
+            </Marker>
         );
     }
 }
