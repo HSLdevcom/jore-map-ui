@@ -49,7 +49,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isNeighborMarker: false,
     };
 
-    private isSelected() {
+    private isSelected(node?: INode) {
+        if (node) return this.props.mapStore!.selectedNodeId === node.id;
         return this.props.mapStore!.selectedNodeId === this.props.node.id;
     }
 
@@ -136,6 +137,35 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
+    private renderAdditionalLocations = (node: INode, icon: any) => {
+        if (!this.isSelected(node)) {
+            return null;
+        }
+        console.log('Additional markers');
+        const manual = GeometryService.iCoordinateToLatLng(node.coordinatesManual);
+        const projection = GeometryService.iCoordinateToLatLng(node.coordinatesProjection);
+        return (
+            <>
+                <Marker
+                    position={manual}
+                    icon={createDivIcon(
+                        <div className={classnames(s.nodeBase, this.getMarkerClass())}>
+                            Manual
+                        </div>,
+                    )}
+                />
+                <Marker
+                    position={projection}
+                    icon={createDivIcon(
+                        <div className={classnames(s.nodeBase, this.getMarkerClass())}>
+                            Projection
+                        </div>,
+                    )}
+                />
+            </>
+        );
+    }
+
     render() {
         const nodeType = this.props.node.type;
         const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
@@ -161,6 +191,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     : null
                 }
                 </Marker>
+                {this.renderAdditionalLocations(this.props.node!, icon)}
             </>
         );
     }
