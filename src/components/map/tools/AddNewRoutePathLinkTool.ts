@@ -43,7 +43,6 @@ class AddNewRoutePathLinkTool implements BaseTool {
     }
 
     public onNodeClick = (node: INode, previousRPLink: IRoutePathLink) => async () => {
-        console.log(node);
         if (previousRPLink) {
             await this.setInteractiveNode(node.id, previousRPLink!.orderNumber + 1);
         }
