@@ -140,18 +140,30 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
 
     private addLinkToRoutePath = (routePathLink: IRoutePathLink) => async () => {
         this.props.routePathStore!.addLink(routePathLink);
+        this.updateNeighbourLinks(routePathLink);
+    }
+
+    private updateNeighbourLinks = async (routePathLink: IRoutePathLink) =>  {
         const direction = this.props!.routePathStore!.addRoutePathLinkInfo.direction;
 
         const fixedNode =
             direction === AddLinkDirection.AfterNode
             ? routePathLink.endNode
             : routePathLink.startNode;
-        const newRoutePathLinks =
+
+        const isMissingNeighbours =
+            this.props!.routePathStore!.isRoutePathNodeMissingNeighbour(fixedNode);
+
+        if (isMissingNeighbours) {
+            const newRoutePathLinks =
             await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
                 fixedNode.id,
                 this.props.routePathStore!.addRoutePathLinkInfo.direction,
                 routePathLink.orderNumber);
-        this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
+            this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
+        } else {
+            this.props.routePathStore!.setNeighborRoutePathLinks([]);
+        }
     }
 
     private calculateBounds = () => {
