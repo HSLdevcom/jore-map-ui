@@ -83,9 +83,12 @@ export class GeometryEventStore {
 
         if (routePathLinks.length > 0) {
             const previousRPLink = routePathLinks[routePathLinks.length - 1];
+
+            // TODO, this is assuming we want to remove from the end
             const neighbourLinks =
-                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
+                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
                     previousRPLink.endNode.id,
+                    true,
                     previousRPLink.orderNumber + 1,
                 );
             RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);

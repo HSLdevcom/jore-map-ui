@@ -1,5 +1,5 @@
 import { action, computed, observable } from 'mobx';
-import { IRoutePath } from '~/models';
+import { IRoutePath, INode } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
 
 export class RoutePathStore {
@@ -7,6 +7,7 @@ export class RoutePathStore {
     @observable private _routePath: IRoutePath|null;
     @observable private _hasUnsavedModifications: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
+    @observable private _neighborRoutePathLinksAreGoingForward: boolean;
 
     constructor() {
         this._neighborRoutePathLinks = [];
@@ -36,6 +37,16 @@ export class RoutePathStore {
     @action
     setIsCreating(value: boolean) {
         this._isCreating = value;
+    }
+
+    @computed
+    get areNeighborRoutePathLinksGoingForward() {
+        return this._neighborRoutePathLinksAreGoingForward;
+    }
+
+    @action
+    setNeighborRoutePathLinksAreGoingForward(value: boolean) {
+        this._neighborRoutePathLinksAreGoingForward = value;
     }
 
     @action
@@ -72,6 +83,26 @@ export class RoutePathStore {
         this._routePath!.routePathLinks!.forEach((rpLink, index) => {
             rpLink.orderNumber = index;
         });
+    }
+
+    public isRoutePathNodeMissingNeighbour = (node: INode) => {
+        let res = false;
+        this._routePath!.routePathLinks!.forEach((rpLink, index) => {
+            if (rpLink.endNode.id === node.id) {
+                if (this._routePath!.routePathLinks!.length === index + 1) {
+                    res = true;
+                } else if (this._routePath!.routePathLinks![index + 1].startNode.id !== node.id) {
+                    res = true;
+                }
+            } else if (rpLink.startNode.id === node.id) {
+                if (index === 0) {
+                    res = true;
+                } else if (this._routePath!.routePathLinks![index - 1].endNode.id !== node.id) {
+                    res = true;
+                }
+            }
+        });
+        return res;
     }
 
     @action

@@ -10,15 +10,31 @@ import GraphqlQueries from './graphqlQueries';
 // TODO: create two services, RoutePathLinkService and LinkService?
 class RoutePathLinkService {
     public static
-        async fetchAndCreateRoutePathLinksWithStartNodeId(nodeId: string, orderNumber: number)
+        async fetchAndCreateRoutePathLinksWithNodeId
+        (nodeId: string, isAfterNode: boolean, orderNumber: number)
         : Promise<IRoutePathLink[]> {
         try {
+            // If new routePathLinks should be created after the node
+            if (isAfterNode) {
+                const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                    { query: GraphqlQueries.getLinksByStartNodeQuery()
+                    , variables: { nodeId } },
+                );
+                return queryResult.data.solmuBySoltunnus.
+                    linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
+                        RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(
+                            link, orderNumber),
+                );
+            }
+            // If new routePathLinks should be created before the node
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: GraphqlQueries.getLinksByStartNodeQuery(), variables: { nodeId } },
+                { query: GraphqlQueries.getLinksByEndNodeQuery()
+                , variables: { nodeId } },
             );
             return queryResult.data.solmuBySoltunnus.
-                linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
-                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(link, orderNumber),
+                linkkisByLnkloppusolmu.nodes.map((link: IExternalLink) =>
+                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(
+                        link, orderNumber),
             );
         } catch (error) {
             console.error(error); // tslint:disable-line
