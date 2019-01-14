@@ -2,12 +2,23 @@ import { action, computed, observable } from 'mobx';
 import { IRoutePath, INode } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
 
+export enum AddRoutePathLinkState {
+    SetTargetLocation,
+    AddLinks,
+}
+
+export enum AddLinkDirection {
+    BeforeNode,
+    AfterNode,
+}
+
 export class RoutePathStore {
     @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
     @observable private _hasUnsavedModifications: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
-    @observable private _neighborRoutePathLinksAreGoingForward: boolean;
+    @observable private _addRoutePathLinkState: AddRoutePathLinkState;
+    @observable private _addRoutePathLinkDirection: AddLinkDirection;
 
     constructor() {
         this._neighborRoutePathLinks = [];
@@ -30,6 +41,14 @@ export class RoutePathStore {
     }
 
     @computed
+    get addRoutePathLinkInfo(): { state: AddRoutePathLinkState, direction: AddLinkDirection} {
+        return {
+            state: this._addRoutePathLinkState,
+            direction: this._addRoutePathLinkDirection,
+        };
+    }
+
+    @computed
     get hasUnsavedModifications() {
         return this._hasUnsavedModifications;
     }
@@ -39,14 +58,9 @@ export class RoutePathStore {
         this._isCreating = value;
     }
 
-    @computed
-    get areNeighborRoutePathLinksGoingForward() {
-        return this._neighborRoutePathLinksAreGoingForward;
-    }
-
     @action
-    setNeighborRoutePathLinksAreGoingForward(value: boolean) {
-        this._neighborRoutePathLinksAreGoingForward = value;
+    setAddRoutePathLinkDirection(direction: AddLinkDirection) {
+        this._addRoutePathLinkDirection = direction;
     }
 
     @action
@@ -69,12 +83,16 @@ export class RoutePathStore {
     @action
     setNeighborRoutePathLinks(routePathLinks: IRoutePathLink[]) {
         this._neighborRoutePathLinks = routePathLinks;
+        this._addRoutePathLinkState = routePathLinks.length === 0
+            ? AddRoutePathLinkState.SetTargetLocation : AddRoutePathLinkState.AddLinks;
     }
 
     @action
     addLink(routePathLink: IRoutePathLink) {
-        const orderNumber = routePathLink.orderNumber;
-        this._routePath!.routePathLinks!.splice(orderNumber, 0, routePathLink);
+        this._routePath!.routePathLinks!.splice(
+            routePathLink.orderNumber,
+            0,
+            routePathLink);
         this.recalculateOrderNumbers();
         this._hasUnsavedModifications = true;
     }
@@ -109,6 +127,8 @@ export class RoutePathStore {
     removeLink(id: string) {
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.filter(link => link.id !== id);
+        this.recalculateOrderNumbers();
+        this._hasUnsavedModifications = true;
     }
 
     @action

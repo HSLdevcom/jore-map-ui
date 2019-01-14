@@ -4,7 +4,7 @@ import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
-import { RoutePathStore } from '~/stores/routePathStore';
+import { RoutePathStore, AddLinkDirection } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -33,16 +33,20 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
                 index === routePathLinks.length - 1 ? undefined : routePathLinks[index + 1];
 
             if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
-                res.push(this.renderNode(rpLink.startNode, undefined, nextLink));
+                res.push(this.renderNode(rpLink.startNode, index, undefined, rpLink));
             }
             res.push(this.renderLink(rpLink));
-            res.push(this.renderNode(rpLink.endNode, rpLink, nextLink));
+            res.push(this.renderNode(rpLink.endNode, index, rpLink, nextLink));
         });
         return res;
     }
 
     private renderNode = (
-        node: INode, previousRPLink?: IRoutePathLink, nextRPLink?: IRoutePathLink) => {
+        node: INode,
+        index: number,
+        previousRPLink?: IRoutePathLink,
+        nextRPLink?: IRoutePathLink,
+    ) => {
         let onNodeClick =
             this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onNodeClick ?
@@ -65,7 +69,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
 
         return (
             <NodeMarker
-                key={node.id}
+                key={`${node.id}-${index}`}
                 onClick={onNodeClick}
                 node={node}
                 isHighlighted={isHighlighted}
@@ -97,8 +101,9 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         if (!routePathLinks) return;
 
         return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
+            const direction = this.props.routePathStore!.addRoutePathLinkInfo.direction;
             const nodeToRender =
-                this.props.routePathStore!.areNeighborRoutePathLinksGoingForward ?
+                direction === AddLinkDirection.AfterNode ?
                     routePathLink.endNode : routePathLink.startNode;
             return (
                 [
@@ -135,14 +140,17 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
 
     private addLinkToRoutePath = (routePathLink: IRoutePathLink) => async () => {
         this.props.routePathStore!.addLink(routePathLink);
+        const direction = this.props!.routePathStore!.addRoutePathLinkInfo.direction;
 
-        const addingAfter = this.props.routePathStore!.areNeighborRoutePathLinksGoingForward;
-        const newLinksOrderNumber =
-            addingAfter ? routePathLink.orderNumber + 1 : routePathLink.orderNumber;
-        const fixedNode = addingAfter ? routePathLink.endNode : routePathLink.startNode;
+        const fixedNode =
+            direction === AddLinkDirection.AfterNode
+            ? routePathLink.endNode
+            : routePathLink.startNode;
         const newRoutePathLinks =
             await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                fixedNode.id, addingAfter, newLinksOrderNumber);
+                fixedNode.id,
+                this.props.routePathStore!.addRoutePathLinkInfo.direction,
+                routePathLink.orderNumber);
         this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
     }
 
