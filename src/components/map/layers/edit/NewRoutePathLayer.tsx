@@ -191,6 +191,12 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 
     private renderStartMarker = () => {
+        if (this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)) {
+            // Hiding start marker if we set target node adding new links.
+            // Due to the UI otherwise getting messy
+            return null;
+        }
+
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length === 0 || !routePathLinks[0].startNode) {
             return null;
