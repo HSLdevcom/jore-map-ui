@@ -128,9 +128,9 @@ class NewRoutePathView extends React.Component<INewRoutePathViewProps, INewRoute
         <div className={s.routePathView}>
             <div className={classnames(s.content, s.form)}>
                 <div className={s.formSection}>
-                    <ViewHeader
-                        header='Luo uusi reitinsuunta'
-                    />
+                    <ViewHeader>
+                        Luo uusi reitinsuunta
+                    </ViewHeader>
                     <div className={s.flexInnerRow}>
                         <div className={s.staticInfo}>LINJA: {routePath.lineId}</div>
                         <div className={s.staticInfo}>REITTI: {routePath.routeId}</div>
