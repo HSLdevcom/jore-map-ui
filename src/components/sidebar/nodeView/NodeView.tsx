@@ -1,12 +1,13 @@
-import * as React from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
 import TransitType from '~/enums/transitType';
-import { INode } from '~/models';
+import { ICoordinates, INode } from '~/models';
 import NodeMockData from './NodeMockData';
+import NodeCoordinatesView from './NodeCoordinatesListView';
 import Loader from '../../shared/loader/Loader';
 import { ToggleSwitch } from '../../controls';
 import ViewHeader from '../ViewHeader';
@@ -27,6 +28,8 @@ interface INodeViewProps {
     match?: match<any>;
     mapStore?: MapStore;
 }
+
+export type CoordinatesType = 'coordinates' | 'coordinatesManual' | 'coordinatesProjection';
 
 @inject('mapStore')
 @observer
@@ -135,6 +138,10 @@ class NodeView extends React.Component
                     >
                         {node.stop && this.renderToggleStopInUse()}
                     </div>
+                    <NodeCoordinatesView
+                        node={this.state.node!}
+                        onChangeCoordinates={this.onChangeLocations}
+                    />
                     <NodeMockData
                         onMapInformationSourceChange={this.onMapInformationSourceChange}
                         mapInformationSource={this.state.mapInformationSource}
@@ -142,6 +149,12 @@ class NodeView extends React.Component
                 </div>
         );
     }
+
+    private onChangeLocations = (coordinatesType: CoordinatesType) =>
+        (coordinates: ICoordinates) => {
+            const node = { ...this.state.node!, [coordinatesType]:coordinates };
+            this.setState({ node });
+        }
 
     public render() {
         const selectedNodeId = this.props.match!.params.id;

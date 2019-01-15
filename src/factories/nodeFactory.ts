@@ -1,4 +1,4 @@
-import { INode, ICoordinate } from '~/models';
+import { INode, ICoordinates } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IExternalNode from '~/models/externals/IExternalNode';
@@ -17,12 +17,12 @@ class NodeFactory {
     }
     public static createNode = (externalNode: IExternalNode): INode => {
          // Use less accurate location if measured location is missing.
-        const coordinates : ICoordinate =
+        const coordinates : ICoordinates =
             NodeFactory.geojsonToCoordinates(
                 externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual);
-        const coordinatesManual: ICoordinate =
+        const coordinatesManual: ICoordinates =
             NodeFactory.geojsonToCoordinates(externalNode.geojsonManual);
-        const coordinatesProjection: ICoordinate =
+        const coordinatesProjection: ICoordinates =
             NodeFactory.geojsonToCoordinates(externalNode.geojsonProjection);
 
         let shortId;

@@ -28,7 +28,7 @@ $successGreenLight: #DFF2BF;
 $lightGrey: rgb(222,222,222);
 $mediumLightGrey: rgb(190,190,190);
 $mediumGrey: rgb(137, 137, 137);
-$darkGrey: rgb(87,87,87);
+$darkGrey: frgb(87,87,87);
 $disabledGrey: #cccccc;
 
 $backgroundlightGrey: #eef1f3;
@@ -48,3 +48,8 @@ $textareaMaxHeight: 200px;
 
 $buttonPadding: 10px;
 $saveButtonGreen: #00ba11;
+
+$nodeMeasuredColor: rgba(4, 255, 0, 0.5);
+$nodeManualColor: rgba(0, 5, 255, 0.5);
+$nodeProjectionColor: rgba(255, 255, 0, 0.5);
+
