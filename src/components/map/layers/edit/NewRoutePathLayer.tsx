@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { Polyline } from 'react-leaflet';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
@@ -27,7 +27,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
 
-        const res: JSX.Element[] = [];
+        const res: ReactNode[] = [];
         routePathLinks.forEach((rpLink, index) => {
             if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
                 res.push(this.renderNode(rpLink.startNode));
