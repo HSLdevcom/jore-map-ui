@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 import ToolbarTool from '~/enums/toolbarTool';
 import BaseTool from '~/components/map/tools/BaseTool';
 import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
-import AddNewRoutePathTool from '~/components/map/tools/AddNewRoutePathTool';
+import AddNewRoutePathLinkTool from '~/components/map/tools/AddNewRoutePathLinkTool';
 import CopyTool from '~/components/map/tools/CopyTool';
 import DivideLinkTool from '~/components/map/tools/DivideLinkTool';
 import EditNetworkNodeTool from '~/components/map/tools/EditNetworkNodeTool';
@@ -11,7 +11,7 @@ import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkT
 
 const TOOL_LIST = [
     new AddNetworkNodeTool(),
-    new AddNewRoutePathTool(),
+    new AddNewRoutePathLinkTool(),
     new CopyTool(),
     new DivideLinkTool(),
     new EditNetworkNodeTool(),

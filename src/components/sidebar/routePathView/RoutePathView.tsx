@@ -5,6 +5,7 @@ import { match } from 'react-router';
 import Loader from '~/components/shared/loader/Loader';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
+import { RouteStore } from '~/stores/routeStore';
 import RoutePathTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
@@ -18,10 +19,11 @@ interface IRoutePathViewState {
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
+    routeStore?: RouteStore;
     match?: match<any>;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'routeStore')
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
@@ -34,6 +36,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     public componentDidMount() {
         this.fetchRoutePath();
+        this.props.routeStore!.clearRoutes();
     }
 
     private async fetchRoutePath() {
