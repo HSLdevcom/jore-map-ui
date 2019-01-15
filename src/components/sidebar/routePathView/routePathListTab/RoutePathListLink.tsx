@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IRoutePathLink } from '~/models';
-import RoutePathListObject from './RoutePathListObject';
+import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 
 interface IRoutePathListLinkProps {
     routePathLink: IRoutePathLink;
@@ -12,6 +12,7 @@ class RoutePathListLink
         return (
             <RoutePathListObject
                 headerLabel='Linkki'
+                objectType={ListObjectType.Link}
                 id={this.props.routePathLink.id}
             >
                 <div>

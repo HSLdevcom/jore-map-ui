@@ -7,10 +7,14 @@ export class RoutePathStore {
     @observable private _routePath: IRoutePath|null;
     @observable private _hasUnsavedModifications: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
+    @observable private _highlightedNodes: string[];
+    @observable private _highlightedLinks: string[];
 
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
+        this._highlightedLinks = [];
+        this._highlightedNodes = [];
     }
 
     @computed
@@ -31,6 +35,24 @@ export class RoutePathStore {
     @computed
     get hasUnsavedModifications() {
         return this._hasUnsavedModifications;
+    }
+
+    isNodeHighlighted(nodeId: string) {
+        return this._highlightedNodes.some(n => n === nodeId);
+    }
+
+    isLinkHighlighted(linkId: string) {
+        return this._highlightedLinks.some(l => l === linkId);
+    }
+
+    @action
+    setHighlightedNodes(nodeIds: string[]) {
+        this._highlightedNodes = nodeIds;
+    }
+
+    @action
+    setHighlightedLinks(linkIds: string[]) {
+        this._highlightedLinks = linkIds;
     }
 
     @action

@@ -1,18 +1,29 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
+import { inject, observer } from 'mobx-react';
+import { RoutePathStore } from '~/stores/routePathStore';
 import * as s from './routePathListObject.scss';
 
 interface IRoutePathListObjectProps {
+    routePathStore?: RoutePathStore;
     headerLabel: string;
     description?: JSX.Element;
     id: string;
+    objectType: ListObjectType;
 }
 
 interface IRoutePathListObjectState {
     isExtended: boolean;
 }
 
+export enum ListObjectType {
+    Node,
+    Link,
+}
+
+@inject('routePathStore')
+@observer
 class RoutePathListObject
     extends React.Component<IRoutePathListObjectProps, IRoutePathListObjectState> {
     constructor(props: IRoutePathListObjectProps) {
@@ -29,9 +40,30 @@ class RoutePathListObject
         });
     }
 
+    private onMouseEnter = () => {
+        if (!this.state.isExtended) {
+            if (this.props.objectType === ListObjectType.Link) {
+                this.props.routePathStore!.setHighlightedLinks([this.props.id]);
+            } else {
+                this.props.routePathStore!.setHighlightedNodes([this.props.id]);
+            }
+        }
+    }
+
+    private onMouseLeave = () => {
+        if (!this.state.isExtended) {
+            this.props.routePathStore!.setHighlightedLinks([]);
+            this.props.routePathStore!.setHighlightedNodes([]);
+        }
+    }
+
     render() {
         return (
-            <div className={s.item}>
+            <div
+                className={s.item}
+                onMouseEnter={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
+            >
                 <div
                     className={
                         classnames(
