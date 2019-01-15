@@ -58,7 +58,6 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
 
         if (this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)) {
             if (this.props.routePathStore!.neighborLinks.length !== 0) {
-                isHighlighted = false;
                 onNodeClick = () => {};
             } else if (this.props.routePathStore!.isRoutePathNodeMissingNeighbour(node)) {
                 isHighlighted = true;

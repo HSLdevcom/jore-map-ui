@@ -104,23 +104,25 @@ export class RoutePathStore {
     }
 
     public isRoutePathNodeMissingNeighbour = (node: INode) => {
-        let res = false;
+        // A node needs to have an even amount of neighbours
+        let neighbourCount = 0;
         this._routePath!.routePathLinks!.forEach((rpLink, index) => {
             if (rpLink.endNode.id === node.id) {
-                if (this._routePath!.routePathLinks!.length === index + 1) {
-                    res = true;
-                } else if (this._routePath!.routePathLinks![index + 1].startNode.id !== node.id) {
-                    res = true;
+                // If last node
+                if (
+                    this._routePath!.routePathLinks!.length === index + 1
+                    || this._routePath!.routePathLinks![index + 1].startNode.id !== node.id) {
+                    neighbourCount += 1;
                 }
             } else if (rpLink.startNode.id === node.id) {
-                if (index === 0) {
-                    res = true;
-                } else if (this._routePath!.routePathLinks![index - 1].endNode.id !== node.id) {
-                    res = true;
+                // If first node
+                if (index === 0
+                    || this._routePath!.routePathLinks![index - 1].endNode.id !== node.id) {
+                    neighbourCount += 1;
                 }
             }
         });
-        return res;
+        return neighbourCount % 2 !== 0;
     }
 
     @action
