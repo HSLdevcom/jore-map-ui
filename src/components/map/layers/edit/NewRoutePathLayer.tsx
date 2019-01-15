@@ -21,9 +21,21 @@ interface IRoutePathLayerProps {
     toolbarStore?:  ToolbarStore;
 }
 
+interface IRoutePathLayerState {
+    focusedRoutePathId: string;
+}
+
 @inject('routePathStore', 'toolbarStore')
 @observer
-class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
+class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
+    constructor(props: IRoutePathLayerProps) {
+        super(props);
+
+        this.state = {
+            focusedRoutePathId: '',
+        };
+    }
+
     private renderRoutePathLinks = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
@@ -191,16 +203,25 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         return bounds;
     }
 
-    private refresh = () => {
+    private setBounds = () => {
         const routePathStore = this.props.routePathStore!;
 
-        if (
-            routePathStore!.routePath &&
-            this.props.toolbarStore!.selectedTool === undefined) {
-            const bounds = this.calculateBounds();
-            if (bounds.isValid()) {
-                this.props.fitBounds(bounds);
+        if (routePathStore!.routePath) {
+            // Only automatic refocus if user opened new routepath
+            if (routePathStore!.routePath!.internalId !== this.state.focusedRoutePathId) {
+                const bounds = this.calculateBounds();
+                if (bounds.isValid()) {
+                    this.props.fitBounds(bounds);
+                    this.setState({
+                        focusedRoutePathId: routePathStore!.routePath!.internalId,
+                    });
+                }
             }
+        } else if (this.state.focusedRoutePathId) {
+            // Reset focused id if user clears the chosen routepath, if he leaves the routepathview
+            this.setState({
+                focusedRoutePathId: '',
+            });
         }
     }
 
@@ -226,12 +247,12 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         );
     }
 
-    componentDidUpdate() {
-        this.refresh();
+    componentDidMount() {
+        this.setBounds();
     }
 
-    componentDidMount() {
-        this.refresh();
+    componentDidUpdate() {
+        this.setBounds();
     }
 
     render() {
@@ -239,7 +260,6 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         return (
             <>
                 {this.renderRoutePathLinks()}
-                {/* Neighbors should be drawn last */}
                 { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
                     this.renderRoutePathLinkNeighbors()
                 }

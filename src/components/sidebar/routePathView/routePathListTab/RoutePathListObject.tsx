@@ -35,9 +35,24 @@ class RoutePathListObject
     }
 
     private toggleIsExtended = () => {
+        const extending = !this.state.isExtended;
         this.setState({
             isExtended: !this.state.isExtended,
         });
+
+        if (extending) {
+            this.onExtending();
+        } else {
+            this.onCollapsing();
+        }
+    }
+
+    private onExtending = () => {
+
+    }
+
+    private onCollapsing = () => {
+
     }
 
     private onMouseEnter = () => {
