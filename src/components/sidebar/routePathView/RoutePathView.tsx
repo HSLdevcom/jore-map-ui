@@ -5,11 +5,19 @@ import { match } from 'react-router';
 import Loader from '~/components/shared/loader/Loader';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
+import navigator from '~/routing/navigator';
+import { IRoutePath } from '~/models';
+import { RouteStore } from '~/stores/routeStore';
+import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
+import LineService from '~/services/lineService';
+import ToolbarTool from '~/enums/toolbarTool';
+import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
-import * as s from './routePathView.scss';
 import RoutePathHeader from './RoutePathHeader';
+import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     isLoading: boolean;
@@ -18,10 +26,14 @@ interface IRoutePathViewState {
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
+    routeStore?: RouteStore;
+    networkStore?: NetworkStore;
+    toolbarStore?: ToolbarStore;
     match?: match<any>;
+    isAddingNew: boolean;
 }
 
-@inject('routePathStore')
+@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore')
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
@@ -32,22 +44,52 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         };
     }
 
-    public componentDidMount() {
-        this.fetchRoutePath();
+    private initializeAsAddingNew() {
+        const oldRoutePath = this.props.routePathStore!.routePath;
+        let newRoutepath: IRoutePath;
+        if (!oldRoutePath) {
+            newRoutepath = this.createNewRoutePath();
+        } else {
+            newRoutepath = RoutePathFactory.createNewRoutePathFromOld(oldRoutePath);
+        }
+        this.props.routePathStore!.setRoutePath(newRoutepath);
+        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePath);
+        this.props.routePathStore!.setIsCreating(true);
+    }
+
+    private initializeMap() {
+        if (this.props.isAddingNew) {
+            this.props.networkStore!.setNodeSize(NodeSize.large);
+            this.props.networkStore!.showMapLayer(MapLayer.node);
+            this.props.networkStore!.showMapLayer(MapLayer.link);
+        }
+
+        this.setTransitType();
+    }
+
+    private createNewRoutePath() {
+        const queryParams = navigator.getQueryParamValues();
+        // TODO: add transitType to this call (if transitType is routePath's property)
+        return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
+    }
+
+    private async setTransitType() {
+        const routePath = this.props.routePathStore!.routePath;
+        if (routePath && routePath.lineId) {
+            const line = await LineService.fetchLine(routePath.lineId);
+            if (line) {
+                this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
+            }
+        }
     }
 
     private async fetchRoutePath() {
-        this.setState({
-            isLoading: true,
-        });
+        this.setState({ isLoading: true });
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
         const startTime = moment(startTimeString);
         const routePath =
             await RoutePathService.fetchRoutePath(routeId, startTime, direction);
         this.props.routePathStore!.setRoutePath(routePath);
-        this.setState({
-            isLoading: false,
-        });
     }
 
     public selectTab = (selectedTabIndex: number) => () => {
@@ -62,6 +104,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             return (
                 <RoutePathTab
                     routePath={this.props.routePathStore!.routePath!}
+                    isAddingNew={this.props.isAddingNew}
                 />
             );
         }
@@ -78,6 +121,26 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         }
     }
 
+    async componentDidMount() {
+        if (this.props.isAddingNew) {
+            this.initializeAsAddingNew();
+        } else {
+            await this.fetchRoutePath();
+        }
+        this.initializeMap();
+        this.props.routeStore!.clearRoutes();
+        this.setState({
+            isLoading: false,
+        });
+    }
+
+    componentWillUnmount() {
+        this.props.toolbarStore!.selectTool(null);
+        this.props.networkStore!.setNodeSize(NodeSize.normal);
+        this.props.routePathStore!.setIsCreating(false);
+        this.props.routePathStore!.setRoutePath(null);
+    }
+
     public render(): any {
         if (this.state.isLoading) {
             return (
@@ -91,6 +154,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             <div className={s.routePathView}>
                 <RoutePathHeader
                     routePath={this.props.routePathStore!.routePath!}
+                    isAddingNew={this.props.isAddingNew}
                 />
                 <div>
                     <RoutePathTabs

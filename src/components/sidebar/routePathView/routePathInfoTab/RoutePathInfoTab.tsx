@@ -20,12 +20,14 @@ interface IRoutePathViewState {
     isEditingDisabled: boolean;
     invalidFieldsMap: object;
     isLoading: boolean;
+    hasSavedNewRoutePath: boolean;
 }
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
     notificationStore?: NotificationStore;
     routePath: IRoutePath;
+    isAddingNew: boolean;
 }
 
 @inject('routePathStore', 'notificationStore')
@@ -37,7 +39,12 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
             isEditingDisabled: true,
             invalidFieldsMap: {},
             isLoading: true,
+            hasSavedNewRoutePath: false,
         };
+    }
+
+    private routePathIsNew = () => {
+        return this.props.isAddingNew && !this.state.hasSavedNewRoutePath;
     }
 
     public toggleEditing = () => {
@@ -48,7 +55,11 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
     public save = async () => {
         this.setState({ isLoading: true });
         try {
-            await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
+            if (this.routePathIsNew()) {
+                await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+            } else {
+                await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
+            }
             this.props.routePathStore!.resetHaveLocalModifications();
             this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
@@ -136,7 +147,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                 disabled={!this.props.routePathStore!.hasUnsavedModifications
                     || !this.isFormValid()}
             >
-                Tallenna muutokset
+                {this.routePathIsNew() ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
             </Button>
         </div>
         );

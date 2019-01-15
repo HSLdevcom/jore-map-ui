@@ -16,7 +16,6 @@ import NodeView from './nodeView/NodeView';
 import RoutesView from './routesView/RoutesView';
 import HomeView from './homeView/HomeView';
 import RoutePathView from './routePathView/RoutePathView';
-import NewRoutePathView from './routePathView/NewRoutePathView';
 import NetworkView from './networkView/NetworkView';
 import EditNetworkView from './editNetworkView/EditNetworkView';
 import * as s from './sidebar.scss';
@@ -44,6 +43,9 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RoutesView /> : <Redirect to='/' />;
     }
+
+    private renderAddNewRoutePath = (props: any) => <RoutePathView {...props} isAddingNew={true} />;
+    private renderRoutePathView = (props: any) => <RoutePathView {...props} isAddingNew={false} />;
 
     public render(): any {
         const goToHomeView = () => {
@@ -92,12 +94,12 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         <Route
                             exact={true}
                             path={subSites.newRoutePath}
-                            component={NewRoutePathView}
+                            render={this.renderAddNewRoutePath}
                         />
                         <Route
                             exact={true}
                             path={subSites.routePath}
-                            component={RoutePathView}
+                            render={this.renderRoutePathView}
                         />
                         <Route
                             exact={true}
