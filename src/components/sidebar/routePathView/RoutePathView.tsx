@@ -8,6 +8,7 @@ import RoutePathService from '~/services/routePathService';
 import navigator from '~/routing/navigator';
 import { IRoutePath } from '~/models';
 import { RouteStore } from '~/stores/routeStore';
+import RouteService from '~/services/routeService';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import LineService from '~/services/lineService';
@@ -44,17 +45,20 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         };
     }
 
-    private initializeAsAddingNew() {
+    private async initializeAsAddingNew() {
         const oldRoutePath = this.props.routePathStore!.routePath;
-        let newRoutepath: IRoutePath;
+        let newRoutepath: IRoutePath | null;
         if (!oldRoutePath) {
-            newRoutepath = this.createNewRoutePath();
+            newRoutepath = await this.createNewRoutePath();
         } else {
             newRoutepath = RoutePathFactory.createNewRoutePathFromOld(oldRoutePath);
         }
-        this.props.routePathStore!.setRoutePath(newRoutepath);
         this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePath);
         this.props.routePathStore!.setIsCreating(true);
+
+        if (newRoutepath) {
+            this.props.routePathStore!.setRoutePath(newRoutepath);
+        }
     }
 
     private initializeMap() {
@@ -67,10 +71,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setTransitType();
     }
 
-    private createNewRoutePath() {
+    private async createNewRoutePath() {
         const queryParams = navigator.getQueryParamValues();
+        const route = await RouteService.fetchRoute(queryParams.routeId);
         // TODO: add transitType to this call (if transitType is routePath's property)
-        return RoutePathFactory.createNewRoutePath(queryParams.lineId, queryParams.routeId);
+        if (route) {
+            return RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
+        }
+        return null;
     }
 
     private async setTransitType() {
@@ -149,7 +157,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 </div>
             );
         }
-        if (!this.props.routePathStore!.routePath) return;
+        if (!this.props.routePathStore!.routePath) return null;
         return (
             <div className={s.routePathView}>
                 <RoutePathHeader
