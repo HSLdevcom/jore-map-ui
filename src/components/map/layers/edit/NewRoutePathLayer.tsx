@@ -13,6 +13,7 @@ import StartMarker from '../mapIcons/StartMarker';
 
 const MARKER_COLOR = '#00df0b';
 const NEIGHBOR_MARKER_COLOR = '#ca00f7';
+const ROUTE_COLOR = '#007ac9';
 
 interface IRoutePathLayerProps {
     fitBounds: (bounds: L.LatLngBoundsExpression) => void;
@@ -55,7 +56,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
                     node, previousRPLink, nextRPLink)
                 : undefined;
 
-        let isHighlighted = false;
+        let isHighlighted = this.props.routePathStore!.isNodeHighlighted(node.id);
 
         if (
             this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)
@@ -86,14 +87,26 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
                 : undefined;
 
         return (
+            <>
+            { this.props.routePathStore!.isLinkHighlighted(routePathLink.id) &&
+                <Polyline
+                    positions={routePathLink.positions}
+                    key={`${routePathLink.id}-highlight`}
+                    color={ROUTE_COLOR}
+                    weight={25}
+                    opacity={0.5}
+                    onClick={onRoutePathLinkClick}
+                />
+            }
             <Polyline
                 positions={routePathLink.positions}
                 key={routePathLink.id}
-                color={MARKER_COLOR}
+                color={ROUTE_COLOR}
                 weight={5}
                 opacity={0.8}
                 onClick={onRoutePathLinkClick}
             />
+            </>
         );
     }
 
