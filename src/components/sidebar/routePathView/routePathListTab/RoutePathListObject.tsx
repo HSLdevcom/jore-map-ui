@@ -1,8 +1,10 @@
 import * as React from 'react';
 import classnames from 'classnames';
+import * as L from 'leaflet';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import { inject, observer } from 'mobx-react';
 import { RoutePathStore } from '~/stores/routePathStore';
+import MapExposer from '~/components/map/MapExposer';
 import * as s from './routePathListObject.scss';
 
 interface IRoutePathListObjectProps {
@@ -42,26 +44,38 @@ class RoutePathListObject
 
         if (extending) {
             this.onExtending();
-        } else {
-            this.onCollapsing();
         }
     }
 
-    private onExtending = () => {
+    private getBounds = () => {
+        const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
+        if (this.props.objectType === ListObjectType.Link) {
+            const positions = this.props.routePathStore!.getLinkGeom(this.props.id);
+            if (positions) {
+                positions.forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+            }
+        } else {
+            const position = this.props.routePathStore!.getNodeGeom(this.props.id);
+            if (position) {
+                position.forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+            }
+        }
+
+        return bounds;
     }
 
-    private onCollapsing = () => {
-
+    private onExtending = () => {
+        MapExposer.fitBounds(
+            this.getBounds(),
+        );
     }
 
     private onMouseEnter = () => {
-        if (!this.state.isExtended) {
-            if (this.props.objectType === ListObjectType.Link) {
-                this.props.routePathStore!.setHighlightedLinks([this.props.id]);
-            } else {
-                this.props.routePathStore!.setHighlightedNodes([this.props.id]);
-            }
+        if (this.props.objectType === ListObjectType.Link) {
+            this.props.routePathStore!.setHighlightedLinks([this.props.id]);
+        } else {
+            this.props.routePathStore!.setHighlightedNodes([this.props.id]);
         }
     }
 

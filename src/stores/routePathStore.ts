@@ -172,6 +172,25 @@ export class RoutePathStore {
     resetHaveLocalModifications() {
         this._hasUnsavedModifications = false;
     }
+
+    getLinkGeom(linkId: string) {
+        const link = this._routePath!.routePathLinks!.find(l => l.id === linkId);
+        if (link) {
+            return link.positions;
+        }
+        return null;
+    }
+
+    getNodeGeom(nodeId: string) {
+        let node = this._routePath!.routePathLinks!.find(l => l.startNode.id === nodeId);
+        if (!node) {
+            node = this._routePath!.routePathLinks!.find(l => l.endNode.id === nodeId);
+        }
+        if (node) {
+            return node.positions;
+        }
+        return null;
+    }
 }
 
 const observableStoreStore = new RoutePathStore();
