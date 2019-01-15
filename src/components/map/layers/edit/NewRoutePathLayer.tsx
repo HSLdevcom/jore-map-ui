@@ -4,7 +4,7 @@ import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
-import { RoutePathStore, AddLinkDirection } from '~/stores/routePathStore';
+import { RoutePathStore, AddLinkDirection, AddRoutePathLinkState } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -32,6 +32,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
             const nextLink =
                 index === routePathLinks.length - 1 ? undefined : routePathLinks[index + 1];
 
+            // Render node which is lacking preceeding link
             if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
                 res.push(this.renderNode(rpLink.startNode, index, undefined, rpLink));
             }
@@ -56,10 +57,11 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
 
         let isHighlighted = false;
 
-        if (this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)) {
-            if (this.props.routePathStore!.neighborLinks.length !== 0) {
-                onNodeClick = () => {};
-            } else if (this.props.routePathStore!.isRoutePathNodeMissingNeighbour(node)) {
+        if (
+            this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)
+            && this.props.routePathStore!.addRoutePathLinkInfo.state
+            === AddRoutePathLinkState.SetTargetLocation) {
+            if (this.props.routePathStore!.isRoutePathNodeMissingNeighbour(node)) {
                 isHighlighted = true;
             } else {
                 onNodeClick = () => {};

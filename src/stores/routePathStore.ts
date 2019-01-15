@@ -23,6 +23,7 @@ export class RoutePathStore {
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
+        this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
     }
 
     @computed
