@@ -5,8 +5,8 @@ import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
-import NodeMarker from '~/components/map/layers/objects/NodeMarker';
-import StartMarker from './objects/StartMarker';
+import NodeMarker from './mapIcons/NodeMarker';
+import StartMarker from './mapIcons/StartMarker';
 
 interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;
