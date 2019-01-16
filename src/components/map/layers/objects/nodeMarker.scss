@@ -11,6 +11,16 @@
         width: 12px;
         border-width: 3px;
         margin: -3px;
+
+        &.measured {
+            background-color: $nodeMeasuredColor;
+        }
+        &.manual {
+            background-color: $nodeManualColor;
+        }
+        &.projection {
+            background-color: $nodeProjectionColor;
+        }
     }
 
     .crossroadMarker {

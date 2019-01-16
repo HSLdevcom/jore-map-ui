@@ -149,22 +149,29 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 <Marker
                     position={manual}
                     icon={createDivIcon(
-                        <div className={classnames(s.nodeBase, this.getMarkerClass())}>
-                            Manual
-                        </div>,
+                        <div
+                            className={classnames(s.nodeBase, s.manual, this.getMarkerClass())}
+                        />,
                     )}
+                    draggable={this.isInteractive(this.props.node)}
                 />
                 <Marker
                     position={projection}
                     icon={createDivIcon(
-                        <div className={classnames(s.nodeBase, this.getMarkerClass())}>
-                            Projection
-                        </div>,
+                        <div
+                            className={classnames(s.nodeBase, s.projection, this.getMarkerClass())}
+                        />,
                     )}
+                    draggable={this.isInteractive(this.props.node)}
                 />
             </>
         );
     }
+
+    private isInteractive = (node: INode) => (
+        // TODO this should probably check other stuff too...
+        this.isSelected(node)
+    )
 
     render() {
         const nodeType = this.props.node.type;
@@ -181,7 +188,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 <Marker
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.props.onClick}
-                    draggable={this.props.isDraggable}
+                    draggable={this.props.isDraggable || this.isInteractive(this.props.node)}
                     icon={icon}
                     position={latLng}
                 >
