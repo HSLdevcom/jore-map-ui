@@ -12,7 +12,7 @@ class ToolbarHelp extends Component {
 
         // TODO: this could need refactoring. Tools should know their own toolHelp texts
         switch (selectedTool.toolType) {
-        case ToolbarTool.AddNewRoutePath:
+        case ToolbarTool.AddNewRoutePathLink:
             return (
                 <div className={s.toolbarHelp}>
                     Muodostaaksesi reitin suunnan, valitse kartalta aloitus-solmu.

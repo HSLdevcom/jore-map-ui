@@ -53,7 +53,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         } else {
             newRoutepath = RoutePathFactory.createNewRoutePathFromOld(oldRoutePath);
         }
-        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePath);
+        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
         this.props.routePathStore!.setIsCreating(true);
 
         if (newRoutepath) {

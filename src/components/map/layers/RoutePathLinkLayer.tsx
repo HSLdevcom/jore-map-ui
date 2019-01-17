@@ -24,7 +24,6 @@ interface RoutePathLinkLayerProps {
 @inject('popupStore')
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
-
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
     }
