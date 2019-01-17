@@ -48,7 +48,7 @@ export class RoutePathStore {
     }
 
     @action
-    updateRoutePathProperty(property: string, value: string) {
+    updateRoutePathProperty(property: string, value: any) {
         this._routePath = {
             ...this._routePath!,
             [property]: value,
@@ -66,6 +66,7 @@ export class RoutePathStore {
         const orderNumber = routePathLink.orderNumber;
         this._routePath!.routePathLinks!.splice(orderNumber, 0, routePathLink);
         this.recalculateOrderNumbers();
+        this.recalculateLength();
         this._hasUnsavedModifications = true;
     }
 
@@ -79,12 +80,14 @@ export class RoutePathStore {
     removeLink(id: string) {
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.filter(link => link.id !== id);
+        this.recalculateLength();
     }
 
     @action
     setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
         this._routePath!.routePathLinks =
             routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
+        this.recalculateLength();
     }
 
     @action
@@ -100,8 +103,13 @@ export class RoutePathStore {
 
     @action
     recalculateLength() {
-        this._routePath!.length =
-            lengthCalculator.fromRoutePathLinks(this._routePath!.routePathLinks!);
+        this.updateRoutePathProperty(
+            'length',
+            Math.floor(
+                lengthCalculator.fromRoutePathLinks(
+                    this._routePath!.routePathLinks!,
+                )),
+            );
     }
 }
 
