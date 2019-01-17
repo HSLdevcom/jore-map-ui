@@ -1,3 +1,4 @@
+@import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/common';
 
 .timeAlignmentIcon {
@@ -30,7 +31,7 @@
             .label {
                 display: flex;
                 flex-direction: row;
-                margin-left: 50px;
+                margin-left: 30px;
 
                 .labelTypeName {
                     font-size: 14px;
@@ -67,7 +68,8 @@
                 line-height: 25px;
 
                 .headerIcon {
-                    width: 40px;
+                    width: 30px;
+                    height: 30px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -87,9 +89,9 @@
     
                     .linkIcon {
                         display: inline-block;
-                        height: 5px;
+                        height: 90px;
                         background-color: #639fd5;
-                        width: 25px;
+                        width: 5px;
                     }
                 }
             }
@@ -112,9 +114,36 @@
 
     .itemContent {
         min-height: 200px;
-        text-align: center;
-        border-top: 1px solid $lightGrey;
-        padding: 15px;
+        padding: 10px;
+        margin-left: 45px;
+        border-right-style: solid;
+        border-bottom-style: solid;
+        border-color: #0285d0;
+        border-width: 3px;
+        border-bottom-right-radius: 10px;
+
+        .extendedContent {
+            .header {
+                font-size: 20px;
+            }
+        
+            .stopContent {
+                margin-top: 10px;
+            }
+        
+            .nodeContent {
+                margin-top: 10px;
+            }
+        
+            .footer {
+                margin-top: 15px;
+        
+                svg {
+                    position: absolute;
+                    right: 15px;
+                }
+            }
+        }
     }
 
 

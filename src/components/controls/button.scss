@@ -1,9 +1,8 @@
 @import '../shared/styles/common.scss';
 
 .button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
+    position: relative;
     cursor: pointer;
     font-weight: 400;
     line-height: normal;
@@ -13,8 +12,6 @@
     padding: $buttonPadding;
     border: hidden;
     border-radius: 5px;
-    flex-basis: 0px;
-    flex-grow: 1;
     margin-right: 15px;
 }
 

@@ -161,6 +161,7 @@ const nodeQueryFields = `
     solkirjain,
     soltyyppi,
     solkirjain,
+    mittpvm
     geojson,
     geojsonManual,
     transittypes,

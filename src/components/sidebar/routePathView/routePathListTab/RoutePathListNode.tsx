@@ -2,11 +2,14 @@ import * as React from 'react';
 import NodeType from '~/enums/nodeType';
 import classnames from 'classnames';
 import NodeTypeDescription from '~/enums/l10n/nodeTypeDescription';
-import { IRoutePathLink, INode } from '~/models';
+import { IRoutePathLink, INode, IStop } from '~/models';
+import { FiChevronRight } from 'react-icons/fi';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import { Button } from '~/components/controls';
+import ButtonType from '~/enums/buttonType';
 import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 import * as s from './routePathListObject.scss';
-import * as nS from './routePathListNode.scss';
+import InputContainer from '../../InputContainer';
 
 interface IRoutePathListNodeProps {
     node: INode;
@@ -78,6 +81,48 @@ class RoutePathListNode
         return icon;
     }
 
+    private openInNetworkView = () => {
+    }
+
+    private renderStopView = (stop: IStop) => {
+        return (
+            <div className={s.stopContent}>
+                <div className={s.flexRow}>
+                    <InputContainer
+                        label='PYSÄKIN NIMI'
+                        disabled={true}
+                        value={stop.nameFi}
+                    />
+                    <InputContainer
+                        label='PYSÄKIN NIMI RUOTSIKSI'
+                        disabled={true}
+                        value={stop.nameSe}
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    private renderNodeView = (node: INode) => {
+        return (
+            <div className={s.nodeContent}>
+                Solmun tiedot
+                <div className={s.flexRow}>
+                    <InputContainer
+                        label='MITTAUSPÄIVÄMÄÄRÄ'
+                        disabled={true}
+                        value={node.measurementDate}
+                    />
+                    <InputContainer
+                        label='SOLMUN TYYPPI'
+                        disabled={true}
+                        value={node.type}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     render() {
         return (
             <RoutePathListObject
@@ -86,8 +131,25 @@ class RoutePathListNode
                 objectType={ListObjectType.Node}
                 headerTypeName={this.getNodeTypeName(this.props.node.type)}
             >
-                <div className={classnames(nS.routePathListNode)}>
-                    no content
+                <div className={s.extendedContent}>
+                    <div className={s.header}>
+                        {this.getNodeTypeName(this.props.node.type)}
+                    </div>
+                    { !!this.props.node.stop &&
+                        this.renderStopView(this.props.node.stop!)
+                    }
+                    {
+                        this.renderNodeView(this.props.node)
+                    }
+                    <div className={s.footer}>
+                        <Button
+                            onClick={this.openInNetworkView}
+                            type={ButtonType.SQUARE}
+                        >
+                            Avaa solmu verkkonäkymässä
+                            <FiChevronRight />
+                        </Button>
+                    </div>
                 </div>
             </RoutePathListObject>
         );
