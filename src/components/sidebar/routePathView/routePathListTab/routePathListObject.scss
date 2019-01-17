@@ -1,76 +1,132 @@
 @import '../../../shared/styles/common';
 
-.attributes {
-  padding: 15px;
-  position: relative;
-  align-self: center;
-
-  .label {
-      display: flex;
-      flex-direction: row;
-  }
-
-  .id {
-      color: $blue;
-      font-weight: bold;
-      margin-left: 5px;
-  }
-
-  .type {
-      margin-left: 10px;
-      white-space: nowrap;
-
-      .notInUse {
-          color: red;
-      }
-  }
-
-  .description {
-      margin-left: 10px;
-      color: #0dd5cd;
-  }
-
+.timeAlignmentIcon {
+    background: url('~/icons/time.svg');
+    background-color: white;
+    border-style: none;
+    height: 20px;
+    width: 20px;
 }
 
 .item {
-  border-bottom: 1.5px solid $lightGrey;
+    border-bottom: 1.5px solid $lightGrey;
 
+    .shadow {
+        background-color: #80808024;
+    }
 
-  .itemHeader {
-    display: flex;
-    flex-direction: row;
-    border-right: 3px solid $backgroundlightGrey;
-    cursor: pointer;
-  
-  
-    .itemToggle {
-        font-size: 22px;
-        color: $mediumGrey;
-        transition: .5s;
-        padding: 15px;
-        width: 100%;
-        text-align: end;
-  
-        :hover {
-            color: darken($mediumGrey, 10);
+    .itemHeader {
+        display: flex;
+        flex-direction: row;
+        border-right: 3px solid $backgroundlightGrey;
+        cursor: pointer;
+
+        .headerContent {
+            padding: 15px;
+            position: relative;
+            align-self: center;
+            display: flex;
+        
+            .label {
+                display: flex;
+                flex-direction: row;
+                margin-left: 50px;
+
+                .labelTypeName {
+                    font-size: 14px;
+                    height: 14px;
+                    margin-top: 8px;
+                    white-space: nowrap;
+                    width: 80px;
+                }
+        
+                .id {
+                    color: $blue;
+                    font-weight: bold;
+                    margin-left: 5px;
+                    font-size: 22px;
+                }
+            }
+        
+            .headerDescription {
+                margin-left: 10px;
+                color: #0dd5cd;
+
+                .descriptionLabel {
+                    font-size: 10px;
+                }
+
+                .descriptionValue {
+                    font-size: 16px;
+                }
+            }
+        
+            .headerIconContainer {
+                width: 125px;
+                display: flex;
+                line-height: 25px;
+
+                .headerIcon {
+                    width: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .iconBorder {
+                        border-style: solid;
+                        border-radius: 30px;
+                        border-width: 3px;
+                    }
+    
+                    .nodeIcon {
+                        height: 10px;
+                        width: 10px;
+                        border-radius: 5px;
+                        background-color: white;
+                    }
+    
+                    .linkIcon {
+                        display: inline-block;
+                        height: 5px;
+                        background-color: #639fd5;
+                        width: 25px;
+                    }
+                }
+            }
+        }
+    
+        .itemToggle {
+            font-size: 22px;
+            color: $mediumGrey;
             transition: .5s;
+            padding: 15px;
+            width: 100%;
+            text-align: end;
+    
+            :hover {
+                color: darken($mediumGrey, 10);
+                transition: .5s;
+            }
         }
     }
-  }
 
-  .itemExtended {
-      background-color: #cacaca4d;
-  }
+    .itemContent {
+        min-height: 200px;
+        text-align: center;
+        border-top: 1px solid $lightGrey;
+        padding: 15px;
+    }
 
-  .itemContent {
-      min-height: 200px;
-      text-align: center;
-      border-top: 1px solid $lightGrey;
-      padding: 15px;
-  }
-  
-  .itemHeader:hover {
-    border-right: 3px solid $blue;
-    background-color: #cacaca4d;
-  }
+
+    .itemExtended {
+        border-right: 3px solid $blue;
+    }
+
+    .itemHeader:hover {
+        border-right: 3px solid $blue;
+    }
+
+    .disabled {
+        color: red;
+    }
 }

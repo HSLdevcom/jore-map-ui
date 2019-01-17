@@ -9,8 +9,9 @@ import * as s from './routePathListObject.scss';
 
 interface IRoutePathListObjectProps {
     routePathStore?: RoutePathStore;
-    headerLabel: string;
-    description?: JSX.Element;
+    headerDescription?: JSX.Element;
+    headerIcon: JSX.Element;
+    headerTypeName: string;
     id: string;
     objectType: ListObjectType;
 }
@@ -98,19 +99,32 @@ class RoutePathListObject
                         classnames(
                             s.itemHeader,
                             this.state.isExtended ? s.itemExtended : null,
+                            this.props.objectType === ListObjectType.Node ? s.shadow : undefined,
                         )
                     }
                     onClick={this.toggleIsExtended}
                 >
-                    <div className={s.attributes}>
+                    <div className={s.headerContent}>
+                        <div className={s.headerIconContainer}>
+                            <div className={s.headerIcon}>
+                                {this.props.headerIcon}
+                            </div>
+                            {this.props.headerTypeName}
+                        </div>
                         <div className={s.label}>
-                            {this.props.headerLabel}
+                            <div className={s.labelTypeName}>
+                            {
+                                this.props.objectType === ListObjectType.Link
+                                    ? 'Linkin id'
+                                    : 'Solmun id'
+                            }
+                            </div>
                             <div className={s.id}>
                                 {this.props.id}
                             </div>
                         </div>
-                        <div>
-                            {this.props.description}
+                        <div className={s.headerDescription}>
+                            {this.props.headerDescription}
                         </div>
                     </div>
                     <div className={s.itemToggle}>
