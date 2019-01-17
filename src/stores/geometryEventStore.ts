@@ -82,9 +82,11 @@ export class GeometryEventStore {
         this.observeRoutePathLinks();
 
         if (routePathLinks.length > 0) {
+            const previousRPLink = routePathLinks[routePathLinks.length - 1];
             const neighbourLinks =
                 await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
-                    routePathLinks[routePathLinks.length - 1].endNode.id,
+                    previousRPLink.endNode.id,
+                    previousRPLink.orderNumber + 1,
                 );
             RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);
         } else {

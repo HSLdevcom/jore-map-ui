@@ -9,7 +9,8 @@ import GraphqlQueries from './graphqlQueries';
 
 // TODO: create two services, RoutePathLinkService and LinkService?
 class RoutePathLinkService {
-    public static async fetchAndCreateRoutePathLinksWithStartNodeId(nodeId: string)
+    public static
+        async fetchAndCreateRoutePathLinksWithStartNodeId(nodeId: string, orderNumber: number)
         : Promise<IRoutePathLink[]> {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
@@ -17,7 +18,7 @@ class RoutePathLinkService {
             );
             return queryResult.data.solmuBySoltunnus.
                 linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
-                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(link),
+                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(link, orderNumber),
             );
         } catch (error) {
             console.error(error); // tslint:disable-line

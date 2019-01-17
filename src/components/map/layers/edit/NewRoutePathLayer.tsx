@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { Polyline } from 'react-leaflet';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
@@ -27,27 +27,28 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
 
-        const res = routePathLinks.flatMap((routePathLink: IRoutePathLink, index) => {
-            const nodeToRender = routePathLink.startNode;
-            return [
-                this.renderNode(nodeToRender, index),
-                this.renderLink(routePathLink),
-            ];
+        const res: ReactNode[] = [];
+        routePathLinks.forEach((rpLink, index) => {
+            if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
+                res.push(this.renderNode(rpLink.startNode));
+            }
+            res.push(this.renderLink(rpLink));
+            res.push(this.renderNode(rpLink.endNode, rpLink));
         });
-
-        /* Render last endNode of routePathLinks */
-        res.push(this.renderNode(
-            routePathLinks[routePathLinks.length - 1].endNode,
-            routePathLinks.length,
-        ));
         return res;
     }
 
-    private renderNode = (node: INode, key: number) => {
+    private renderNode = (node: INode, previousRPLink?: IRoutePathLink) => {
+        const onNodeClick =
+            this.props.toolbarStore!.selectedTool &&
+            this.props.toolbarStore!.selectedTool!.onNodeClick ?
+                this.props.toolbarStore!.selectedTool!.onNodeClick!(node, previousRPLink)
+                : undefined;
+
         return (
             <NodeMarker
-                key={`${key}-${node.id}`}
-                onClick={void 0}
+                key={node.id}
+                onClick={onNodeClick}
                 node={node}
             />
         );
@@ -114,17 +115,9 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
     private addLinkToRoutePath = (routePathLink: IRoutePathLink) => async () => {
         const newRoutePathLinks =
             await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
-                routePathLink.endNode.id);
+                routePathLink.endNode.id, routePathLink.orderNumber + 1);
         this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
         this.props.routePathStore!.addLink(routePathLink);
-    }
-
-    private renderFirstNode = () => {
-        if (this.props.routePathStore!.neighborLinks.length === 0) return null;
-
-        const link = this.props.routePathStore!.neighborLinks[0];
-        const firstNode = link.startNode;
-        return this.renderNode(firstNode, 0);
     }
 
     private calculateBounds = () => {
@@ -162,9 +155,11 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         if (!routePathLinks) {
             throw new Error('RoutePathLinks not found');
         }
-        const lastNode = routePathLinks[routePathLinks.length - 1].endNode;
+        const lastRPLink = routePathLinks[routePathLinks.length - 1];
         const neighborLinks =
-            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(lastNode.id);
+            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
+                lastRPLink.endNode.id,
+                lastRPLink.orderNumber + 1);
         this.props.routePathStore!.setNeighborRoutePathLinks(neighborLinks);
     }
 
@@ -197,9 +192,8 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps> {
         return (
             <>
                 {this.renderRoutePathLinks()}
-                {this.renderFirstNode()}
                 {/* Neighbors should be drawn last */}
-                { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePath) &&
+                { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
                     this.renderRoutePathLinkNeighbors()
                 }
                 {this.renderStartMarker()}

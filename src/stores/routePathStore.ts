@@ -62,8 +62,16 @@ export class RoutePathStore {
 
     @action
     addLink(routePathLink: IRoutePathLink) {
-        this.setRoutePathLinks([...this._routePath!.routePathLinks, routePathLink]);
+        const orderNumber = routePathLink.orderNumber;
+        this._routePath!.routePathLinks!.splice(orderNumber, 0, routePathLink);
+        this.recalculateOrderNumbers();
         this._hasUnsavedModifications = true;
+    }
+
+    private recalculateOrderNumbers = () => {
+        this._routePath!.routePathLinks!.forEach((rpLink, index) => {
+            rpLink.orderNumber = index;
+        });
     }
 
     @action
