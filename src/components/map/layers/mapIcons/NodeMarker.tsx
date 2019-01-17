@@ -16,7 +16,7 @@ import * as s from './nodeMarker.scss';
 // https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
 export const VERY_HIGH_Z_INDEX = 1000;
 
-export const createDivIcon = (html: any) => {
+export const createDivIcon = (html: React.ReactElement<any>) => {
     const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
     const divIconOptions : L.DivIconOptions = {
         html: renderedHtml,
@@ -24,6 +24,14 @@ export const createDivIcon = (html: any) => {
     };
 
     return new L.DivIcon(divIconOptions);
+};
+
+export const testIcon = () => {
+    return (createDivIcon(
+        <div
+            className={classnames(s.nodeBase, s.projection)}
+        />,
+    ));
 };
 
 interface INodeMarkerProps {
@@ -137,7 +145,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
-    private renderAdditionalLocations = (node: INode, icon: any) => {
+    private renderAdditionalLocations = (node: INode) => {
         if (!this.isSelected(node)) {
             return null;
         }
@@ -188,7 +196,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 <Marker
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.props.onClick}
-                    draggable={this.props.isDraggable || this.isInteractive(this.props.node)}
+                    draggable={this.props.isDraggable}
                     icon={icon}
                     position={latLng}
                 >
@@ -198,7 +206,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     : null
                 }
                 </Marker>
-                {this.renderAdditionalLocations(this.props.node!, icon)}
+                {this.renderAdditionalLocations(this.props.node!)}
             </>
         );
     }

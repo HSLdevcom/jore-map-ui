@@ -17,7 +17,7 @@ class Toolbar extends React.Component {
         // TODO: Find a proper solution to this. Divide subSites into two spaces:
         // networkSubsites & lineSubsites?
         return navigator.getPathName() === subSites.network
-            || navigator.getPathName() === subSites.editNetwork
+            || navigator.getPathName() === subSites.networkNode
         ? EditMode.NETWORK : EditMode.LINE;
     }
     render() {

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Polyline } from 'react-leaflet';
+import { Marker, Polyline } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
 import ILink from '~/models/ILink';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
-import NodeMarker from '../mapIcons/NodeMarker';
+import GeometryService from '~/services/geometryService';
+import NodeMarker, { testIcon } from '../mapIcons/NodeMarker';
 
 interface IEditNetworkLayerProps {
     editNetworkStore?: EditNetworkStore;
@@ -38,10 +39,19 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         if (!node) return null;
 
         return (
+            <>
             <NodeMarker
                 isDraggable={true}
                 node={node}
             />
+                <Marker
+                    position={GeometryService.iCoordinateToLatLng(node.coordinatesProjection)}
+                    icon={testIcon()}
+                    draggable={true}
+                >
+                    Projection
+                </Marker>
+            </>
         );
     }
 

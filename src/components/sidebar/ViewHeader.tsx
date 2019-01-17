@@ -11,7 +11,7 @@ interface IViewHeaderProps {
 
 const viewHeader = (props:IViewHeaderProps) => {
     const closeSidebarView = () => {
-        if (props.closePromptMessage || confirm(props.closePromptMessage)) {
+        if (!props.closePromptMessage || confirm(props.closePromptMessage)) {
             const routesLink = routeBuilder.to(subSites.routes).toLink();
             navigator.goTo(routesLink);
         }

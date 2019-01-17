@@ -25,7 +25,7 @@ class EditNetworkNodeTool implements BaseTool {
     public onNetworkNodeClick = async (clickEvent: any) => {
         const properties =  clickEvent.sourceTarget.properties;
         const editNetworkLink = routeBuilder
-            .to(subSites.editNetwork)
+            .to(subSites.networkNode)
             .set(QueryParams.node, properties.soltunnus)
             .toLink();
         navigator.goTo(editNetworkLink);

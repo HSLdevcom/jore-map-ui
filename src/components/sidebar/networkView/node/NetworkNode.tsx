@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { match } from 'react-router';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
-import { NetworkStore, MapLayer } from '~/stores/networkStore';
+import { NetworkStore } from '~/stores/networkStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import { RouteStore } from '~/stores/routeStore';
 import NotificationType from '~/enums/notificationType';
@@ -10,7 +10,7 @@ import Navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
-import * as s from './editNetworkView.scss';
+import * as s from './networkNode.scss';
 
 interface IEditNetworkViewProps {
     match?: match<any>;
@@ -22,24 +22,24 @@ interface IEditNetworkViewProps {
 
 @inject('editNetworkStore', 'networkStore', 'notificationStore', 'routeStore')
 @observer
-class EditNetworkView extends React.Component<IEditNetworkViewProps> {
+class NetworkNode extends React.Component<IEditNetworkViewProps> {
     constructor(props: IEditNetworkViewProps) {
         super(props);
 
-        this.initStores();
+        // this.initStores();
     }
-
-    componentDidMount() {
-        this.fetchNodesAndLinks();
-    }
-
-    private initStores() {
-        this.props.networkStore!.selectAllTransitTypes();
-        this.props.networkStore!.showMapLayer(MapLayer.node);
-        this.props.networkStore!.showMapLayer(MapLayer.link);
-        this.props.networkStore!.showMapLayer(MapLayer.linkPoint);
-        this.props.routeStore!.clearRoutes();
-    }
+    //
+    // componentDidMount() {
+    //     this.fetchNodesAndLinks();
+    // }
+    //
+    // private initStores() {
+    //     this.props.networkStore!.selectAllTransitTypes();
+    //     this.props.networkStore!.showMapLayer(MapLayer.node);
+    //     this.props.networkStore!.showMapLayer(MapLayer.link);
+    //     // this.props.networkStore!.showMapLayer(MapLayer.linkPoint);
+    //     this.props.routeStore!.clearRoutes();
+    // }
 
     componentWillReceiveProps(props: IEditNetworkViewProps) {
         this.fetchNodesAndLinks();
@@ -90,4 +90,4 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
     }
 }
 
-export default EditNetworkView;
+export default NetworkNode;

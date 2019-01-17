@@ -97,7 +97,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
 
     render() {
         return this.props.routes
-            .map((route, index) => {
+            .map((route) => {
                 return (
                     <RoutePathLayer
                         key={route.id}
