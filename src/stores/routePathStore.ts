@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { IRoutePath } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import lengthCalculator from '~/util/lengthCalculator';
 
 export class RoutePathStore {
     @observable private _isCreating: boolean;
@@ -95,6 +96,12 @@ export class RoutePathStore {
     @action
     resetHaveLocalModifications() {
         this._hasUnsavedModifications = false;
+    }
+
+    @action
+    recalculateLength() {
+        this._routePath!.length =
+            lengthCalculator.fromRoutePathLinks(this._routePath!.routePathLinks!);
     }
 }
 
