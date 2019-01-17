@@ -10,7 +10,6 @@ const fromPositions = (positions: [[number, number]]) => {
     positions.forEach((position, index) => {
         if (index === 0) return;
         length += betweenCoordinates(positions[index - 1], position);
-
     });
     return length;
 };
