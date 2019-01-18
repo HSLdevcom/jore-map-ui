@@ -126,27 +126,13 @@ export class RoutePathStore {
         });
     }
 
-    public isRoutePathNodeMissingNeighbour = (node: INode) => {
+    public isRoutePathNodeMissingNeighbour = (node: INode) => (
         // A node needs to have an even amount of neighbours
-        let neighbourCount = 0;
-        this._routePath!.routePathLinks!.forEach((rpLink, index) => {
-            if (rpLink.endNode.id === node.id) {
-                // If last node
-                if (
-                    this._routePath!.routePathLinks!.length === index + 1
-                    || this._routePath!.routePathLinks![index + 1].startNode.id !== node.id) {
-                    neighbourCount += 1;
-                }
-            } else if (rpLink.startNode.id === node.id) {
-                // If first node
-                if (index === 0
-                    || this._routePath!.routePathLinks![index - 1].endNode.id !== node.id) {
-                    neighbourCount += 1;
-                }
-            }
-        });
-        return neighbourCount % 2 !== 0;
-    }
+            this._routePath!.routePathLinks!
+                .filter(x => x.startNode.id === node.id).length
+            !== this._routePath!.routePathLinks!
+                .filter(x => x.endNode.id === node.id).length
+    )
 
     @action
     removeLink(id: string) {
