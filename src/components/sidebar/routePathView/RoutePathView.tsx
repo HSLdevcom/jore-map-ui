@@ -6,7 +6,6 @@ import Loader from '~/components/shared/loader/Loader';
 import { RoutePathStore } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
 import navigator from '~/routing/navigator';
-import { IRoutePath } from '~/models';
 import { RouteStore } from '~/stores/routeStore';
 import RouteService from '~/services/routeService';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
@@ -46,19 +45,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private async initializeAsAddingNew() {
-        const oldRoutePath = this.props.routePathStore!.routePath;
-        let newRoutepath: IRoutePath | null;
-        if (!oldRoutePath) {
-            newRoutepath = await this.createNewRoutePath();
+        if (!this.props.routePathStore!.routePath) {
+            this.props.routePathStore!.setRoutePath(await this.createNewRoutePath());
         } else {
-            newRoutepath = RoutePathFactory.createNewRoutePathFromOld(oldRoutePath);
+            this.props.routePathStore!.setRoutePath(
+                RoutePathFactory.createNewRoutePathFromOld(this.props.routePathStore!.routePath!));
         }
         this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
         this.props.routePathStore!.setIsCreating(true);
-
-        if (newRoutepath) {
-            this.props.routePathStore!.setRoutePath(newRoutepath);
-        }
     }
 
     private initializeMap() {
