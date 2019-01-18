@@ -86,6 +86,16 @@ const getLinksByStartNodeQuery = () => {
     );
 };
 
+const getLinksByEndNodeQuery = () => {
+    return (
+        gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!) {
+            solmuBySoltunnus(soltunnus: $nodeId) {
+                ${linksByEndNodeQuery}
+            }
+        }`
+    );
+};
+
 const getLinksByStartNodeAndEndNodeQuery = () => {
     return (
         gql`query getNodesWithRoutePathLinkStartNodeAndEndNodeId($nodeId: String!) {
@@ -247,4 +257,5 @@ export default {
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
     getRoutePathLinkQuery,
+    getLinksByEndNodeQuery,
 };
