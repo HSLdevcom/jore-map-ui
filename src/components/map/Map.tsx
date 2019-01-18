@@ -46,11 +46,12 @@ export type LeafletContext = {
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
-    private reactionDisposer: IReactionDisposer;
+    private reactionDisposers: IReactionDisposer[];
 
     constructor(props: IMapProps) {
         super(props);
         this.mapReference = React.createRef();
+        this.reactionDisposers = [];
     }
 
     private getMap() {
@@ -82,15 +83,15 @@ class LeafletMap extends React.Component<IMapProps> {
             this.props.mapStore!.setZoom(map.getZoom());
         });
 
-        this.reactionDisposer = reaction(
+        this.reactionDisposers.push(reaction(
             () => this.props.mapStore!.coordinates,
             this.centerMap,
-        );
+        ));
 
-        this.reactionDisposer = reaction(
+        this.reactionDisposers.push(reaction(
             () => this.props.mapStore!.mapBounds,
             this.fitBounds,
-        );
+        ));
 
         map.setView(
             this.props.mapStore!.coordinates,
@@ -122,7 +123,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     componentWillUnmount() {
-        this.reactionDisposer();
+        this.reactionDisposers.forEach(r => r());
     }
 
     public render() {
