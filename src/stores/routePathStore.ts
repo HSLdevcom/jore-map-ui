@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { IRoutePath, INode } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import { validateRoutePathLinks } from '~/util/geomValidator';
 
 export enum AddRoutePathLinkState {
     SetTargetLocation,
@@ -16,6 +17,7 @@ export class RoutePathStore {
     @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
     @observable private _hasUnsavedModifications: boolean;
+    @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
     @observable private _addRoutePathLinkState: AddRoutePathLinkState;
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
@@ -23,6 +25,7 @@ export class RoutePathStore {
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
+        this._isGeometryValid = true;
         this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
     }
 
@@ -52,6 +55,11 @@ export class RoutePathStore {
     @computed
     get hasUnsavedModifications() {
         return this._hasUnsavedModifications;
+    }
+
+    @computed
+    get isGeometryValid() {
+        return this._isGeometryValid;
     }
 
     @action
@@ -91,17 +99,12 @@ export class RoutePathStore {
     @action
     addLink(routePathLink: IRoutePathLink) {
         this._routePath!.routePathLinks!.splice(
-            routePathLink.orderNumber,
+            // Order numbers start from 1
+            routePathLink.orderNumber - 1,
             0,
             routePathLink);
-        this.recalculateOrderNumbers();
+        this.onRoutePathLinksChanged();
         this._hasUnsavedModifications = true;
-    }
-
-    private recalculateOrderNumbers = () => {
-        this._routePath!.routePathLinks!.forEach((rpLink, index) => {
-            rpLink.orderNumber = index;
-        });
     }
 
     public isRoutePathNodeMissingNeighbour = (node: INode) => (
@@ -116,7 +119,7 @@ export class RoutePathStore {
     removeLink(id: string) {
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.filter(link => link.id !== id);
-        this.recalculateOrderNumbers();
+        this.onRoutePathLinksChanged();
         this._hasUnsavedModifications = true;
     }
 
@@ -135,6 +138,24 @@ export class RoutePathStore {
     @action
     resetHaveLocalModifications() {
         this._hasUnsavedModifications = false;
+    }
+
+    private recalculateOrderNumbers = () => {
+        this._routePath!.routePathLinks!.forEach((rpLink, index) => {
+            // Order numbers start from 1
+            rpLink.orderNumber = index + 1;
+        });
+    }
+
+    private validateRoutePathGeometry = () => {
+        this._isGeometryValid = validateRoutePathLinks(
+            this._routePath!.routePathLinks!,
+        );
+    }
+
+    private onRoutePathLinksChanged = () => {
+        this.recalculateOrderNumbers();
+        this.validateRoutePathGeometry();
     }
 }
 
