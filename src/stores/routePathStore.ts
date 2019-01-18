@@ -1,16 +1,19 @@
 import { action, computed, observable } from 'mobx';
 import { IRoutePath } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import { validateRoutePathLinks } from '~/util/geomValidator';
 
 export class RoutePathStore {
     @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
     @observable private _hasUnsavedModifications: boolean;
+    @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
 
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
+        this._isGeometryValid = true;
     }
 
     @computed
@@ -31,6 +34,11 @@ export class RoutePathStore {
     @computed
     get hasUnsavedModifications() {
         return this._hasUnsavedModifications;
+    }
+
+    @computed
+    get isGeometryValid() {
+        return this._isGeometryValid;
     }
 
     @action
@@ -64,20 +72,15 @@ export class RoutePathStore {
     addLink(routePathLink: IRoutePathLink) {
         const orderNumber = routePathLink.orderNumber;
         this._routePath!.routePathLinks!.splice(orderNumber, 0, routePathLink);
-        this.recalculateOrderNumbers();
+        this.onRoutePathLinksChanged();
         this._hasUnsavedModifications = true;
-    }
-
-    private recalculateOrderNumbers = () => {
-        this._routePath!.routePathLinks!.forEach((rpLink, index) => {
-            rpLink.orderNumber = index;
-        });
     }
 
     @action
     removeLink(id: string) {
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.filter(link => link.id !== id);
+        this.onRoutePathLinksChanged();
     }
 
     @action
@@ -95,6 +98,23 @@ export class RoutePathStore {
     @action
     resetHaveLocalModifications() {
         this._hasUnsavedModifications = false;
+    }
+
+    private recalculateOrderNumbers = () => {
+        this._routePath!.routePathLinks!.forEach((rpLink, index) => {
+            rpLink.orderNumber = index;
+        });
+    }
+
+    private validateRoutePathGeometry = () => {
+        this._isGeometryValid = validateRoutePathLinks(
+            this._routePath!.routePathLinks!,
+        );
+    }
+
+    private onRoutePathLinksChanged = () => {
+        this.recalculateOrderNumbers();
+        this.validateRoutePathGeometry();
     }
 }
 

@@ -133,7 +133,9 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
             <Button
                 onClick={this.save}
                 type={ButtonType.SAVE}
-                disabled={!this.props.routePathStore!.hasUnsavedModifications
+                disabled={
+                    !this.props.routePathStore!.hasUnsavedModifications
+                    || !this.props.routePathStore!.isGeometryValid
                     || !this.isFormValid()}
             >
                 Tallenna muutokset
