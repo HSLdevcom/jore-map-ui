@@ -19,12 +19,16 @@ export class RoutePathStore {
     @observable private _hasUnsavedModifications: boolean;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
+    @observable private _highlightedNodes: string[];
+    @observable private _highlightedLinks: string[];
     @observable private _addRoutePathLinkState: AddRoutePathLinkState;
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
 
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
+        this._highlightedLinks = [];
+        this._highlightedNodes = [];
         this._isGeometryValid = true;
         this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
     }
@@ -60,6 +64,24 @@ export class RoutePathStore {
     @computed
     get isGeometryValid() {
         return this._isGeometryValid;
+    }
+
+    isNodeHighlighted(nodeId: string) {
+        return this._highlightedNodes.some(n => n === nodeId);
+    }
+
+    isLinkHighlighted(linkId: string) {
+        return this._highlightedLinks.some(l => l === linkId);
+    }
+
+    @action
+    setHighlightedNodes(nodeIds: string[]) {
+        this._highlightedNodes = nodeIds;
+    }
+
+    @action
+    setHighlightedLinks(linkIds: string[]) {
+        this._highlightedLinks = linkIds;
     }
 
     @action
@@ -138,6 +160,25 @@ export class RoutePathStore {
     @action
     resetHaveLocalModifications() {
         this._hasUnsavedModifications = false;
+    }
+
+    public getLinkGeom = (linkId: string) => {
+        const link = this._routePath!.routePathLinks!.find(l => l.id === linkId);
+        if (link) {
+            return link.positions;
+        }
+        return null;
+    }
+
+    public getNodeGeom = (nodeId: string) => {
+        let node = this._routePath!.routePathLinks!.find(l => l.startNode.id === nodeId);
+        if (!node) {
+            node = this._routePath!.routePathLinks!.find(l => l.endNode.id === nodeId);
+        }
+        if (node) {
+            return node.positions;
+        }
+        return null;
     }
 
     private recalculateOrderNumbers = () => {

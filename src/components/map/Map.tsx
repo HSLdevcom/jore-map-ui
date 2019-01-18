@@ -46,12 +46,12 @@ export type LeafletContext = {
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
-    private reactionDisposer: IReactionDisposer;
+    private reactionDisposers: IReactionDisposer[];
 
     constructor(props: IMapProps) {
         super(props);
         this.mapReference = React.createRef();
-        this.fitBounds = this.fitBounds.bind(this);
+        this.reactionDisposers = [];
     }
 
     private getMap() {
@@ -83,10 +83,15 @@ class LeafletMap extends React.Component<IMapProps> {
             this.props.mapStore!.setZoom(map.getZoom());
         });
 
-        this.reactionDisposer = reaction(() =>
-        [this.props.mapStore!.coordinates],
-                                         this.centerMap,
-            );
+        this.reactionDisposers.push(reaction(
+            () => this.props.mapStore!.coordinates,
+            this.centerMap,
+        ));
+
+        this.reactionDisposers.push(reaction(
+            () => this.props.mapStore!.mapBounds,
+            this.fitBounds,
+        ));
 
         map.setView(
             this.props.mapStore!.coordinates,
@@ -103,26 +108,22 @@ class LeafletMap extends React.Component<IMapProps> {
         }
     }
 
-    componentDidUpdate() {
-        this.getMap().invalidateSize();
-    }
-
-    componentWillUnmount() {
-        this.reactionDisposer();
-    }
-
-    private fitBounds(bounds: L.LatLngBounds) {
-        // Invalidate size is required to notice screen size on launch.
-        // Problem only in docker containers.
-        // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
-        this.getMap().invalidateSize();
+    private fitBounds = () => {
         this.getMap().fitBounds(
-            bounds,
+            this.props.mapStore!.mapBounds,
             {
                 maxZoom: 16,
                 animate: true,
                 padding: [300, 300],
             });
+    }
+
+    componentDidUpdate() {
+        this.getMap().invalidateSize();
+    }
+
+    componentWillUnmount() {
+        this.reactionDisposers.forEach(r => r());
     }
 
     public render() {
@@ -165,11 +166,8 @@ class LeafletMap extends React.Component<IMapProps> {
                     <NetworkLayers />
                     <RouteLayer
                         routes={routes}
-                        fitBounds={this.fitBounds}
                     />
-                    <NewRoutePathLayer
-                        fitBounds={this.fitBounds}
-                    />
+                    <NewRoutePathLayer />
                     <EditNetworkLayer />
                     <PopupLayer />
                     <Control position='topleft'>

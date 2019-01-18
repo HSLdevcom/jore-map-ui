@@ -3,7 +3,7 @@ import NodeType from '~/enums/nodeType';
 import NodeTypeDescription from '~/enums/l10n/nodeTypeDescription';
 import { IRoutePathLink, INode } from '~/models';
 import * as s from './routePathListObject.scss';
-import RoutePathListObject from './RoutePathListObject';
+import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 
 interface IRoutePathListNodeProps {
     node: INode;
@@ -75,6 +75,7 @@ class RoutePathListNode
                     this.props.routePathLink,
                     this.props.node.type,
                 )}
+                objectType={ListObjectType.Node}
             >
                 <div>Solmun lisätiedot</div>
             </RoutePathListObject>
