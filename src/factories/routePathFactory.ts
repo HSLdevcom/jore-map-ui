@@ -1,4 +1,4 @@
-import { IRoutePath } from '~/models';
+import { IRoutePath, IRoute } from '~/models';
 import HashHelper from '~/util/hashHelper';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
@@ -46,13 +46,13 @@ class RoutePathFactory {
         };
     }
 
-    public static createNewRoutePath(lineId: string, routeId: string): IRoutePath {
+    public static createNewRoutePath(lineId: string, route: IRoute): IRoutePath {
         return {
             lineId,
-            routeId,
+            routeId: route.id,
             internalId: '',
-            routePathName: 'Uusi reitinsuunta',
-            routePathNameSw: 'Ny ruttriktning',
+            routePathName: route.routeName,
+            routePathNameSw: route.routeNameSwedish,
             direction: '1',
             visible: true,
             startTime: new Date,

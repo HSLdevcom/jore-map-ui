@@ -4,7 +4,7 @@ import eventType from '~/enums/eventType';
 import entityName from '~/enums/entityName';
 import { IRoutePathLink } from '~/models';
 import RoutePathLinkService from '~/services/routePathLinkService';
-import RoutePathStore from './routePathStore';
+import RoutePathStore, { AddLinkDirection } from './routePathStore';
 import Navigator from '../routing/navigator';
 
 const enum IObjectDidChangeUpdateTypes {
@@ -82,11 +82,20 @@ export class GeometryEventStore {
         this.observeRoutePathLinks();
 
         if (routePathLinks.length > 0) {
+            // TODO: Don't assume we added in the end
             const previousRPLink = routePathLinks[routePathLinks.length - 1];
+
+            const direction = RoutePathStore.addRoutePathLinkInfo.direction;
+            const orderNumber =
+                direction === AddLinkDirection.AfterNode
+                ? previousRPLink.orderNumber + 1
+                : previousRPLink.orderNumber;
+
             const neighbourLinks =
-                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithStartNodeId(
+                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
                     previousRPLink.endNode.id,
-                    previousRPLink.orderNumber + 1,
+                    direction,
+                    orderNumber,
                 );
             RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);
         } else {

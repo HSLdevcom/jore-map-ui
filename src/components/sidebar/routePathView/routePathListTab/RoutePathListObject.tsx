@@ -1,18 +1,32 @@
 import * as React from 'react';
 import classnames from 'classnames';
+import * as L from 'leaflet';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
+import { inject, observer } from 'mobx-react';
+import { RoutePathStore } from '~/stores/routePathStore';
+import { MapStore } from '~/stores/mapStore';
 import * as s from './routePathListObject.scss';
 
 interface IRoutePathListObjectProps {
+    mapStore?: MapStore;
+    routePathStore?: RoutePathStore;
     headerLabel: string;
     description?: JSX.Element;
     id: string;
+    objectType: ListObjectType;
 }
 
 interface IRoutePathListObjectState {
     isExtended: boolean;
 }
 
+export enum ListObjectType {
+    Node,
+    Link,
+}
+
+@inject('routePathStore', 'mapStore')
+@observer
 class RoutePathListObject
     extends React.Component<IRoutePathListObjectProps, IRoutePathListObjectState> {
     constructor(props: IRoutePathListObjectProps) {
@@ -24,14 +38,62 @@ class RoutePathListObject
     }
 
     private toggleIsExtended = () => {
+        const extending = !this.state.isExtended;
         this.setState({
             isExtended: !this.state.isExtended,
         });
+
+        if (extending) {
+            this.onExtending();
+        }
+    }
+
+    private getBounds = () => {
+        const bounds:L.LatLngBounds = new L.LatLngBounds([]);
+
+        if (this.props.objectType === ListObjectType.Link) {
+            const positions = this.props.routePathStore!.getLinkGeom(this.props.id);
+            if (positions) {
+                positions.forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+            }
+        } else {
+            const position = this.props.routePathStore!.getNodeGeom(this.props.id);
+            if (position) {
+                position.forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+            }
+        }
+
+        return bounds;
+    }
+
+    private onExtending = () => {
+        this.props.mapStore!.setMapBounds(
+            this.getBounds(),
+        );
+    }
+
+    private onMouseEnter = () => {
+        if (this.props.objectType === ListObjectType.Link) {
+            this.props.routePathStore!.setHighlightedLinks([this.props.id]);
+        } else {
+            this.props.routePathStore!.setHighlightedNodes([this.props.id]);
+        }
+    }
+
+    private onMouseLeave = () => {
+        if (!this.state.isExtended) {
+            this.props.routePathStore!.setHighlightedLinks([]);
+            this.props.routePathStore!.setHighlightedNodes([]);
+        }
     }
 
     render() {
         return (
-            <div className={s.item}>
+            <div
+                className={s.item}
+                onMouseEnter={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
+            >
                 <div
                     className={
                         classnames(

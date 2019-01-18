@@ -20,7 +20,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     private renderList = (routePathLinks: IRoutePathLink[]) => {
         return routePathLinks.map((routePathLink, index) => {
             return (
-                <div key={routePathLink.orderNumber}>
+                <div key={`${routePathLink.id}-${index}`}>
                     <RoutePathListNode
                         node={routePathLink.startNode}
                         routePathLink={routePathLink}

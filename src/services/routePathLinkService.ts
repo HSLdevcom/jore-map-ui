@@ -5,20 +5,37 @@ import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import IExternalLink from '~/models/externals/IExternalLink';
+import { AddLinkDirection } from '~/stores/routePathStore';
 import GraphqlQueries from './graphqlQueries';
 
 // TODO: create two services, RoutePathLinkService and LinkService?
 class RoutePathLinkService {
     public static
-        async fetchAndCreateRoutePathLinksWithStartNodeId(nodeId: string, orderNumber: number)
+        async fetchAndCreateRoutePathLinksWithNodeId
+        (nodeId: string, linkDirection: AddLinkDirection, orderNumber: number)
         : Promise<IRoutePathLink[]> {
         try {
+            // If new routePathLinks should be created after the node
+            if (linkDirection === AddLinkDirection.AfterNode) {
+                const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                    { query: GraphqlQueries.getLinksByStartNodeQuery()
+                    , variables: { nodeId } },
+                );
+                return queryResult.data.solmuBySoltunnus.
+                    linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
+                        RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(
+                            link, orderNumber),
+                );
+            }
+            // If new routePathLinks should be created before the node
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: GraphqlQueries.getLinksByStartNodeQuery(), variables: { nodeId } },
+                { query: GraphqlQueries.getLinksByEndNodeQuery()
+                , variables: { nodeId } },
             );
             return queryResult.data.solmuBySoltunnus.
-                linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
-                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(link, orderNumber),
+                linkkisByLnkloppusolmu.nodes.map((link: IExternalLink) =>
+                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(
+                        link, orderNumber),
             );
         } catch (error) {
             console.error(error); // tslint:disable-line
