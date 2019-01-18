@@ -92,7 +92,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private async fetchRoutePath() {
-        this.setState({ isLoading: true });
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
         const startTime = moment(startTimeString);
         const routePath =
