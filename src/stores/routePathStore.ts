@@ -99,7 +99,8 @@ export class RoutePathStore {
     @action
     addLink(routePathLink: IRoutePathLink) {
         this._routePath!.routePathLinks!.splice(
-            routePathLink.orderNumber,
+            // Order numbers start from 1
+            routePathLink.orderNumber - 1,
             0,
             routePathLink);
         this.onRoutePathLinksChanged();
@@ -141,7 +142,8 @@ export class RoutePathStore {
 
     private recalculateOrderNumbers = () => {
         this._routePath!.routePathLinks!.forEach((rpLink, index) => {
-            rpLink.orderNumber = index;
+            // Order numbers start from 1
+            rpLink.orderNumber = index + 1;
         });
     }
 
