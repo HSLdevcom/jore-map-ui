@@ -45,6 +45,7 @@ class AddNewRoutePathLinkTool implements BaseTool {
         const properties =  clickEvent.sourceTarget.properties;
         if (properties.soltyyppi !== NodeType.STOP) return;
 
+        RoutePathStore.setAddRoutePathLinkDirection(AddLinkDirection.AfterNode);
         await this.setInteractiveNode(properties.soltunnus, AddLinkDirection.AfterNode,  0);
     }
 
