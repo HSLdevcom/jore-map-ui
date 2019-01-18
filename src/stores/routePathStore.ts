@@ -48,7 +48,7 @@ export class RoutePathStore {
     }
 
     @action
-    updateRoutePathProperty(property: string, value: any) {
+    updateRoutePathProperty(property: string, value: string|number|Date) {
         this._routePath = {
             ...this._routePath!,
             [property]: value,
