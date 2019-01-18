@@ -1,9 +1,9 @@
-import { LatLng } from 'leaflet';
+import * as L from 'leaflet';
 import { action, computed, observable } from 'mobx';
 import CoordinateSystem from '~/enums/coordinateSystem';
 import GeometryService from '~/services/geometryService';
 
-const INITIAL_COORDINATES = new LatLng(
+const INITIAL_COORDINATES = new L.LatLng(
     60.1699,
     24.9384,
 );
@@ -17,13 +17,14 @@ export enum NodeLabel {
 
 export class MapStore {
 
-    @observable private _coordinates: LatLng;
+    @observable private _coordinates: L.LatLng;
     @observable private _isMapFullscreen: boolean;
     @observable private _routes: MapRoute[];
     @observable private _displayCoordinateSystem:CoordinateSystem;
     @observable private _zoom:number;
     @observable private _selectedNodeId: string|null;
     @observable private _visibleNodeLabels: NodeLabel[];
+    @observable private _mapBounds: L.LatLngBounds;
 
     constructor() {
         this._coordinates = INITIAL_COORDINATES;
@@ -37,7 +38,7 @@ export class MapStore {
     }
 
     @computed
-    get coordinates(): LatLng {
+    get coordinates(): L.LatLng {
         return this._coordinates;
     }
 
@@ -75,13 +76,23 @@ export class MapStore {
     }
 
     @computed
-    get visibleNodeLabels(): NodeLabel[] {
+    get visibleNodeLabels() {
         return this._visibleNodeLabels;
+    }
+
+    @computed
+    get mapBounds() {
+        return this._mapBounds;
+    }
+
+    @action
+    public setMapBounds(bounds: L.LatLngBounds) {
+        this._mapBounds = bounds;
     }
 
     @action
     public setCoordinates(lat: number, lon: number) {
-        this._coordinates = new LatLng(lat, lon);
+        this._coordinates = new L.LatLng(lat, lon);
     }
 
     @action
@@ -99,7 +110,7 @@ export class MapStore {
     public setCoordinatesFromDisplayCoordinateSystem(lat: number, lon: number) {
         const [wgsLat, wgsLon] = GeometryService.reprojectToCrs(
             lat, lon, CoordinateSystem.EPSG4326, this._displayCoordinateSystem);
-        this._coordinates = new LatLng(wgsLat, wgsLon);
+        this._coordinates = new L.LatLng(wgsLat, wgsLon);
     }
 
     @action

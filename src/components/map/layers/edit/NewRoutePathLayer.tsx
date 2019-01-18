@@ -4,6 +4,7 @@ import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
+import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore, AddLinkDirection, AddRoutePathLinkState } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
@@ -16,16 +17,16 @@ const NEIGHBOR_MARKER_COLOR = '#ca00f7';
 const ROUTE_COLOR = '#007ac9';
 
 interface IRoutePathLayerProps {
-    fitBounds: (bounds: L.LatLngBoundsExpression) => void;
     routePathStore?: RoutePathStore;
-    toolbarStore?:  ToolbarStore;
+    toolbarStore?: ToolbarStore;
+    mapStore?: MapStore;
 }
 
 interface IRoutePathLayerState {
     focusedRoutePathId: string;
 }
 
-@inject('routePathStore', 'toolbarStore')
+@inject('routePathStore', 'toolbarStore', 'mapStore')
 @observer
 class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     constructor(props: IRoutePathLayerProps) {
@@ -211,7 +212,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
             if (routePathStore!.routePath!.internalId !== this.state.focusedRoutePathId) {
                 const bounds = this.calculateBounds();
                 if (bounds.isValid()) {
-                    this.props.fitBounds(bounds);
+                    this.props.mapStore!.setMapBounds(bounds);
                     this.setState({
                         focusedRoutePathId: routePathStore!.routePath!.internalId,
                     });

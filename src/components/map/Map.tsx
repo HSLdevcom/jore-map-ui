@@ -20,7 +20,6 @@ import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import * as s from './map.scss';
 import NetworkLayers from './layers/NetworkLayers';
-import MapExposer from './MapExposer';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -60,7 +59,6 @@ class LeafletMap extends React.Component<IMapProps> {
 
     componentDidMount() {
         const map = this.getMap();
-        MapExposer.initialize(map);
 
         // Ugly hack to force map to reload, necessary because map stays gray when app is in docker
         // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
@@ -84,10 +82,15 @@ class LeafletMap extends React.Component<IMapProps> {
             this.props.mapStore!.setZoom(map.getZoom());
         });
 
-        this.reactionDisposer = reaction(() =>
-        [this.props.mapStore!.coordinates],
-                                         this.centerMap,
-            );
+        this.reactionDisposer = reaction(
+            () => this.props.mapStore!.coordinates,
+            this.centerMap,
+        );
+
+        this.reactionDisposer = reaction(
+            () => this.props.mapStore!.mapBounds,
+            this.fitBounds,
+        );
 
         map.setView(
             this.props.mapStore!.coordinates,
@@ -102,6 +105,16 @@ class LeafletMap extends React.Component<IMapProps> {
         if (!L.latLng(storeCoordinates).equals(L.latLng(mapCoordinates))) {
             map.setView(storeCoordinates, map.getZoom());
         }
+    }
+
+    private fitBounds = () => {
+        this.getMap().fitBounds(
+            this.props.mapStore!.mapBounds,
+            {
+                maxZoom: 16,
+                animate: true,
+                padding: [300, 300],
+            });
     }
 
     componentDidUpdate() {
@@ -152,11 +165,8 @@ class LeafletMap extends React.Component<IMapProps> {
                     <NetworkLayers />
                     <RouteLayer
                         routes={routes}
-                        fitBounds={MapExposer.fitBounds}
                     />
-                    <NewRoutePathLayer
-                        fitBounds={MapExposer.fitBounds}
-                    />
+                    <NewRoutePathLayer />
                     <EditNetworkLayer />
                     <PopupLayer />
                     <Control position='topleft'>
