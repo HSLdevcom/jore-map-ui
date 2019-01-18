@@ -69,7 +69,7 @@ class RoutePathListNode
         if (node.type === NodeType.MUNICIPALITY_BORDER) {
             icon = this.addBorder(icon, '#c900ff');
         } else if (node.type === NodeType.DISABLED) {
-            icon = this.addBorder(icon, '#c900ff');
+            icon = this.addBorder(icon, '#353333');
         } else if (node.type === NodeType.STOP) {
             node.transitTypes.forEach((type) => {
                 icon = this.addBorder(icon, TransitTypeColorHelper.getColor(type));

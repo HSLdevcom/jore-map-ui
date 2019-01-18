@@ -28,7 +28,7 @@ class RoutePathListLink
                 Reitinlinkin tiedot
                 <div className={s.flexRow}>
                     <InputContainer
-                        label='JÄRJESTYS NUMERO'
+                        label='JÄRJESTYSNUMERO'
                         disabled={true}
                         value={rpLink.orderNumber.toString()}
                     />
