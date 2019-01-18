@@ -7,9 +7,9 @@ import { FiChevronRight } from 'react-icons/fi';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import InputContainer from '../../InputContainer';
 import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 import * as s from './routePathListObject.scss';
-import InputContainer from '../../InputContainer';
 
 interface IRoutePathListNodeProps {
     node: INode;

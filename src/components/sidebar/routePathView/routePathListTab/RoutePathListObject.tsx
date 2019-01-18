@@ -1,13 +1,14 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import * as L from 'leaflet';
+import { MapStore } from '~/stores/mapStore';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import { inject, observer } from 'mobx-react';
 import { RoutePathStore } from '~/stores/routePathStore';
-import MapExposer from '~/components/map/MapExposer';
 import * as s from './routePathListObject.scss';
 
 interface IRoutePathListObjectProps {
+    mapStore?: MapStore;
     routePathStore?: RoutePathStore;
     headerDescription?: JSX.Element;
     headerIcon: JSX.Element;
@@ -25,7 +26,7 @@ export enum ListObjectType {
     Link,
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'mapStore')
 @observer
 class RoutePathListObject
     extends React.Component<IRoutePathListObjectProps, IRoutePathListObjectState> {
@@ -67,7 +68,7 @@ class RoutePathListObject
     }
 
     private onExtending = () => {
-        MapExposer.fitBounds(
+        this.props.mapStore!.setMapBounds(
             this.getBounds(),
         );
     }
