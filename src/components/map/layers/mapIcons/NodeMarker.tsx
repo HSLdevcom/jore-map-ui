@@ -8,6 +8,7 @@ import { INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import GeometryService from '~/services/geometryService';
+import NodeStyleHelper from '~/util/nodeTypeColorHelper';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -87,42 +88,23 @@ class NodeMarker extends Component<INodeMarkerProps> {
             res.push(s.neighborMarker);
         }
         if (this.props.isDisabled) {
-            res.push(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
+            res.push(
+                NodeStyleHelper.getTypeClass(NodeType.DISABLED, isSelected),
+            );
         }
         if (this.props.isTimeAlignmentStop) {
-            res.push(s.timeAlignmentMarker);
+            res.push(
+                NodeStyleHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected),
+            );
         }
 
         if (this.props.isHighlighted) {
             res.push(s.highlight);
         }
 
-        switch (this.props.node.type) {
-        case NodeType.STOP: {
-            res.push(isSelected ? s.stopMarkerHighlight : s.stopMarker);
-            break;
-        }
-        case NodeType.CROSSROAD: {
-            res.push(isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker);
-            break;
-        }
-        case NodeType.MUNICIPALITY_BORDER: {
-            res.push(isSelected ? s.municipalityMarkerHighlight : s.municipalityMarker);
-            break;
-        }
-        case NodeType.DISABLED: {
-            res.push(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
-            break;
-        }
-        case NodeType.TIME_ALIGNMENT: {
-            res.push(s.timeAlignmentMarker);
-            break;
-        }
-        default: {
-            res.push(isSelected ? s.unknownMarkerHighlight : s.unknownMarker);
-            break;
-        }
-        }
+        res.push(
+            NodeStyleHelper.getTypeClass(this.props.node.type, isSelected),
+        );
 
         return res;
     }

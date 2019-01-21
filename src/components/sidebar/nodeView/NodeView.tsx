@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { MapStore } from '~/stores/mapStore';
+import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeService from '~/services/nodeService';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
@@ -11,7 +12,6 @@ import Loader from '../../shared/loader/Loader';
 import { Button, Dropdown, ToggleSwitch } from '../../controls';
 import ViewHeader from '../ViewHeader';
 import * as s from './nodeView.scss';
-
 interface IMapInformationSource {
     selected: string;
     items: string[];
@@ -143,7 +143,7 @@ class NodeView extends React.Component
                             onClick={this.toggleStopInUse}
                             value={true}
                             type={TransitType.BUS}
-                            color={'#007ac9'}
+                            color={TransitTypeColorHelper.getColor(TransitType.BUS)}
                         />
                     </div>
                     <div className={s.flexRow}>
