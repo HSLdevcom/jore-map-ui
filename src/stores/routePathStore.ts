@@ -19,16 +19,16 @@ export class RoutePathStore {
     @observable private _hasUnsavedModifications: boolean;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
-    @observable private _highlightedNodes: string[];
-    @observable private _highlightedLinks: string[];
+    @observable private _highlightedObjects: string[];
+    @observable private _extendedObjects: string[];
     @observable private _addRoutePathLinkState: AddRoutePathLinkState;
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
 
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
-        this._highlightedLinks = [];
-        this._highlightedNodes = [];
+        this._highlightedObjects = [];
+        this._extendedObjects = [];
         this._isGeometryValid = true;
         this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
     }
@@ -66,22 +66,26 @@ export class RoutePathStore {
         return this._isGeometryValid;
     }
 
-    isNodeHighlighted(nodeId: string) {
-        return this._highlightedNodes.some(n => n === nodeId);
+    isObjectHighlighted(nodeId: string) {
+        return this._highlightedObjects.some(n => n === nodeId);
     }
 
-    isLinkHighlighted(linkId: string) {
-        return this._highlightedLinks.some(l => l === linkId);
-    }
-
-    @action
-    setHighlightedNodes(nodeIds: string[]) {
-        this._highlightedNodes = nodeIds;
+    isObjectExtended(nodeId: string) {
+        return this._extendedObjects.some(n => n === nodeId);
     }
 
     @action
-    setHighlightedLinks(linkIds: string[]) {
-        this._highlightedLinks = linkIds;
+    setHighlightedObjects(ids: string[]) {
+        this._highlightedObjects = ids;
+    }
+
+    @action
+    toggleExtendedObject(id: string) {
+        if (this._extendedObjects.some(o => o === id)) {
+            this._extendedObjects = this._extendedObjects.filter(o => o !== id);
+        } else {
+            this._extendedObjects.push(id);
+        }
     }
 
     @action

@@ -16,10 +16,6 @@ interface IRoutePathListObjectProps {
     objectType: ListObjectType;
 }
 
-interface IRoutePathListObjectState {
-    isExtended: boolean;
-}
-
 export enum ListObjectType {
     Node,
     Link,
@@ -28,23 +24,14 @@ export enum ListObjectType {
 @inject('routePathStore', 'mapStore')
 @observer
 class RoutePathListObject
-    extends React.Component<IRoutePathListObjectProps, IRoutePathListObjectState> {
-    constructor(props: IRoutePathListObjectProps) {
-        super(props);
-
-        this.state = {
-            isExtended: false,
-        };
-    }
-
+    extends React.Component<IRoutePathListObjectProps> {
     private toggleIsExtended = () => {
-        const extending = !this.state.isExtended;
-        this.setState({
-            isExtended: !this.state.isExtended,
-        });
+        this.props.routePathStore!.toggleExtendedObject(this.props.id);
 
-        if (extending) {
-            this.onExtending();
+        if (this.props.routePathStore!.isObjectExtended(this.props.id)) {
+            this.props.mapStore!.setMapBounds(
+                this.getBounds(),
+            );
         }
     }
 
@@ -66,28 +53,20 @@ class RoutePathListObject
         return bounds;
     }
 
-    private onExtending = () => {
-        this.props.mapStore!.setMapBounds(
-            this.getBounds(),
-        );
-    }
-
     private onMouseEnter = () => {
-        if (this.props.objectType === ListObjectType.Link) {
-            this.props.routePathStore!.setHighlightedLinks([this.props.id]);
-        } else {
-            this.props.routePathStore!.setHighlightedNodes([this.props.id]);
-        }
+        this.props.routePathStore!.setHighlightedObjects([this.props.id]);
     }
 
     private onMouseLeave = () => {
-        if (!this.state.isExtended) {
-            this.props.routePathStore!.setHighlightedLinks([]);
-            this.props.routePathStore!.setHighlightedNodes([]);
+        if (!this.props.routePathStore!.isObjectHighlighted(this.props.id)) {
+            this.props.routePathStore!.setHighlightedObjects([]);
         }
     }
 
     render() {
+        const isExtended = this.props.routePathStore!.isObjectExtended(
+            this.props.id,
+        );
         return (
             <div
                 className={s.item}
@@ -98,7 +77,7 @@ class RoutePathListObject
                     className={
                         classnames(
                             s.itemHeader,
-                            this.state.isExtended ? s.itemExtended : null,
+                            isExtended ? s.itemExtended : null,
                         )
                     }
                     onClick={this.toggleIsExtended}
@@ -115,11 +94,11 @@ class RoutePathListObject
                         </div>
                     </div>
                     <div className={s.itemToggle}>
-                        {this.state.isExtended && <FaAngleDown />}
-                        {!this.state.isExtended && <FaAngleRight />}
+                        {isExtended && <FaAngleDown />}
+                        {!isExtended && <FaAngleRight />}
                     </div>
                 </div>
-                { this.state.isExtended &&
+                { isExtended &&
                     <div className={s.itemContent}>
                         {this.props.children}
                     </div>

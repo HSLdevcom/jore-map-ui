@@ -28,13 +28,20 @@ interface IRoutePathLayerState {
 
 @inject('routePathStore', 'toolbarStore', 'mapStore')
 @observer
-class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
+class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     constructor(props: IRoutePathLayerProps) {
         super(props);
 
         this.state = {
             focusedRoutePathId: '',
         };
+    }
+
+    private defaultActionOnObjectClick = (id: string) => {
+        this.props.routePathStore!.setHighlightedObjects([id]);
+        if (!this.props.routePathStore!.isObjectExtended(id)) {
+            this.props.routePathStore!.toggleExtendedObject(id);
+        }
     }
 
     private renderRoutePathLinks = () => {
@@ -69,7 +76,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
                     node, previousRPLink, nextRPLink)
                 : undefined;
 
-        let isHighlighted = this.props.routePathStore!.isNodeHighlighted(node.id);
+        let isHighlighted = this.props.routePathStore!.isObjectHighlighted(node.id);
 
         if (
             this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)
@@ -80,6 +87,11 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
             } else {
                 onNodeClick = () => {};
             }
+        } else if (
+            this.props.toolbarStore!.selectedTool === null &&
+            !onNodeClick
+        ) {
+            onNodeClick = () => this.defaultActionOnObjectClick(node.id);
         }
 
         return (
@@ -93,15 +105,22 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
     }
 
     private renderLink = (routePathLink: IRoutePathLink) => {
-        const onRoutePathLinkClick =
+        let onRoutePathLinkClick =
             this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick ?
                 this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
                 : undefined;
 
+        if (
+            this.props.toolbarStore!.selectedTool === null &&
+            !onRoutePathLinkClick
+        ) {
+            onRoutePathLinkClick = () => this.defaultActionOnObjectClick(routePathLink.id);
+        }
+
         return (
             <>
-            { this.props.routePathStore!.isLinkHighlighted(routePathLink.id) &&
+            { this.props.routePathStore!.isObjectHighlighted(routePathLink.id) &&
                 <Polyline
                     positions={routePathLink.positions}
                     key={`${routePathLink.id}-highlight`}
@@ -270,4 +289,4 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
     }
 }
 
-export default NewRoutePathLayer;
+export default UpsertRoutePathLayer;
