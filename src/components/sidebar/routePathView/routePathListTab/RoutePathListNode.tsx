@@ -135,7 +135,7 @@ class RoutePathListNode
                     <div className={s.header}>
                         {this.getNodeTypeName(this.props.node.type)}
                     </div>
-                    { !!this.props.node.stop &&
+                    { Boolean(this.props.node.stop) &&
                         this.renderStopView(this.props.node.stop!)
                     }
                     {
