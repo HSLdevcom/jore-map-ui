@@ -154,21 +154,21 @@ const routePathQueryFields = `
 `;
 
 const nodeQueryFields = `
-    solx,
-    soly,
-    soltunnus,
-    sollistunnus,
-    solkirjain,
-    soltyyppi,
-    solkirjain,
+    solx
+    soly
+    soltunnus
+    sollistunnus
+    solkirjain
+    soltyyppi
+    solkirjain
     mittpvm
-    geojson,
-    geojsonManual,
-    transittypes,
+    geojson
+    geojsonManual
+    transittypes
     pysakkiBySoltunnus {
-        pyssade,
-        pysnimi,
-        pysnimir,
+        pyssade
+        pysnimi
+        pysnimir
         paitunnus
     }
 `;
