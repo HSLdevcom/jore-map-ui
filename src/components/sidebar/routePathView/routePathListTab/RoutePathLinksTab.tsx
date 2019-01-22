@@ -45,7 +45,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     save = () => {
     }
 
-    public render(): any {
+    public render() {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
         const sortedRoutePathLinks = routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
