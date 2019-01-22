@@ -4,6 +4,7 @@ import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 
 interface IRoutePathListLinkProps {
     routePathLink: IRoutePathLink;
+    reference: any;
 }
 
 class RoutePathListLink
@@ -11,6 +12,7 @@ class RoutePathListLink
     render() {
         return (
             <RoutePathListObject
+                reference={this.props.reference}
                 headerLabel='Linkki'
                 objectType={ListObjectType.Link}
                 id={this.props.routePathLink.id}

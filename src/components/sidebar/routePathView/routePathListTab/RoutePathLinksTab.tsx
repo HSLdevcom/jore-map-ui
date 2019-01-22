@@ -1,6 +1,7 @@
 
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import { IReactionDisposer, reaction } from 'mobx';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import ButtonType from '~/enums/buttonType';
@@ -17,41 +18,90 @@ interface IRoutePathLinksTabProps {
 @inject('routePathStore')
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
+    reactionDisposer: IReactionDisposer;
+    listObjectReferences: any;
+    listReference: any;
+
+    constructor(props: IRoutePathLinksTabProps) {
+        super(props);
+        this.listObjectReferences = {};
+        this.listReference = React.createRef<HTMLDivElement>();
+    }
+
     private renderList = (routePathLinks: IRoutePathLink[]) => {
         return routePathLinks.map((routePathLink, index) => {
-            return (
-                <div key={`${routePathLink.id}-${index}`}>
+            this.listObjectReferences[routePathLink.startNode.id] = React.createRef();
+            this.listObjectReferences[routePathLink.id] = React.createRef();
+
+            const list = [
+                (
                     <RoutePathListNode
+                        key={routePathLink.startNode.id}
+                        reference={this.listObjectReferences[routePathLink.startNode.id]}
                         node={routePathLink.startNode}
                         routePathLink={routePathLink}
                     />
+                ), (
                     <RoutePathListLink
+                        key={routePathLink.id}
+                        reference={this.listObjectReferences[routePathLink.id]}
                         routePathLink={routePathLink}
                     />
-                    {/* Render last node */}
-                    { index === routePathLinks.length - 1 &&
-                        <RoutePathListNode
-                            node={routePathLink.endNode}
-                            routePathLink={routePathLink}
-                        />
-                    }
-                </div>
-            );
+                ),
+            ];
+
+            if (index === routePathLinks.length - 1) {
+                this.listObjectReferences[routePathLink.endNode.id] = React.createRef();
+                list.push(
+                    <RoutePathListNode
+                        key='endnode'
+                        reference={this.listObjectReferences[routePathLink.endNode.id]}
+                        node={routePathLink.endNode}
+                        routePathLink={routePathLink}
+                    />,
+                );
+            }
+
+            return list;
         });
+    }
+
+    private onExtend = () => {
+        const extendedObjects = this.props.routePathStore!.extendedObjects;
+        if (extendedObjects.length === 1) {
+            const id = extendedObjects[0];
+            this.listReference.current.scrollTo({
+                top: this.listObjectReferences[id].current.offsetTop - 500,
+                behavior: 'smooth',
+            });
+        }
     }
 
     save = () => {
     }
 
-    public render(): any {
+    componentDidMount() {
+        this.reactionDisposer = reaction(
+            () => this.props.routePathStore!.extendedObjects,
+            this.onExtend,
+        );
+    }
+
+    componentWillUnmount() {
+        this.reactionDisposer();
+    }
+
+    public render() {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
-        const sortedRoutePathLinks = routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
 
         return (
             <div className={s.routePathLinksView}>
-                <div className={s.contentWrapper}>
-                    {this.renderList(sortedRoutePathLinks)}
+                <div
+                    className={s.contentWrapper}
+                    ref={this.listReference}
+                >
+                    {this.renderList(routePathLinks)}
                 </div>
                 <Button
                     type={ButtonType.SAVE}

@@ -14,6 +14,7 @@ interface IRoutePathListObjectProps {
     description?: JSX.Element;
     id: string;
     objectType: ListObjectType;
+    reference: any;
 }
 
 export enum ListObjectType {
@@ -58,7 +59,7 @@ class RoutePathListObject
     }
 
     private onMouseLeave = () => {
-        if (!this.props.routePathStore!.isObjectHighlighted(this.props.id)) {
+        if (this.props.routePathStore!.isObjectHighlighted(this.props.id)) {
             this.props.routePathStore!.setHighlightedObjects([]);
         }
     }
@@ -69,6 +70,7 @@ class RoutePathListObject
         );
         return (
             <div
+                ref={this.props.reference}
                 className={s.item}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}

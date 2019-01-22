@@ -13,6 +13,11 @@ export enum AddLinkDirection {
     AfterNode,
 }
 
+export enum RoutePathViewTab {
+    Info,
+    List,
+}
+
 export class RoutePathStore {
     @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
@@ -23,6 +28,7 @@ export class RoutePathStore {
     @observable private _extendedObjects: string[];
     @observable private _addRoutePathLinkState: AddRoutePathLinkState;
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
+    @observable private _activeTab: RoutePathViewTab;
 
     constructor() {
         this._neighborRoutePathLinks = [];
@@ -30,6 +36,7 @@ export class RoutePathStore {
         this._highlightedObjects = [];
         this._extendedObjects = [];
         this._isGeometryValid = true;
+        this._activeTab = RoutePathViewTab.Info;
         this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
     }
 
@@ -66,12 +73,36 @@ export class RoutePathStore {
         return this._isGeometryValid;
     }
 
+    @computed
+    get activeTab() {
+        return this._activeTab;
+    }
+
+    @action
+    setActiveTab(tab: RoutePathViewTab) {
+        this._activeTab = tab;
+    }
+
+    @action
+    toggleActiveTab() {
+        if (this._activeTab === RoutePathViewTab.Info) {
+            this._activeTab = RoutePathViewTab.List;
+        } else {
+            this._activeTab = RoutePathViewTab.Info;
+        }
+    }
+
     isObjectHighlighted(nodeId: string) {
         return this._highlightedObjects.some(n => n === nodeId);
     }
 
     isObjectExtended(nodeId: string) {
         return this._extendedObjects.some(n => n === nodeId);
+    }
+
+    @computed
+    get extendedObjects() {
+        return this._extendedObjects;
     }
 
     @action
@@ -86,6 +117,11 @@ export class RoutePathStore {
         } else {
             this._extendedObjects.push(id);
         }
+    }
+
+    @action
+    setExtendedObjects(ids: string[]) {
+        this._extendedObjects = ids;
     }
 
     @action

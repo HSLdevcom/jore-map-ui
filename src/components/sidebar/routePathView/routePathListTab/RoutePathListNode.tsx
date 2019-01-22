@@ -7,6 +7,7 @@ import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 
 interface IRoutePathListNodeProps {
     node: INode;
+    reference: any;
     routePathLink: IRoutePathLink;
 }
 
@@ -69,6 +70,7 @@ class RoutePathListNode
     render() {
         return (
             <RoutePathListObject
+                reference={this.props.reference}
                 headerLabel='Solmu'
                 id={this.props.node.id}
                 description={this.renderNodeDescription(

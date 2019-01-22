@@ -5,7 +5,9 @@ import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
-import { RoutePathStore, AddLinkDirection, AddRoutePathLinkState } from '~/stores/routePathStore';
+import {
+    RoutePathStore, AddLinkDirection, AddRoutePathLinkState, RoutePathViewTab,
+} from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -39,9 +41,8 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
 
     private defaultActionOnObjectClick = (id: string) => {
         this.props.routePathStore!.setHighlightedObjects([id]);
-        if (!this.props.routePathStore!.isObjectExtended(id)) {
-            this.props.routePathStore!.toggleExtendedObject(id);
-        }
+        this.props.routePathStore!.setExtendedObjects([id]);
+        this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
     }
 
     private renderRoutePathLinks = () => {
