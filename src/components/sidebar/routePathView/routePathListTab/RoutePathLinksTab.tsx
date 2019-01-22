@@ -66,10 +66,6 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     private onExtend = () => {
         const extendedObjects = this.props.routePathStore!.extendedObjects;
         if (extendedObjects.length === 1) {
-            console.log('list');
-            console.log(this.listReference);
-            console.log(extendedObjects[0]);
-            console.log(this.listObjectReferences[extendedObjects[0]]);
             const id = extendedObjects[0];
             const item = this.listObjectReferences[id].current;
             const parentHeight = this.listReference.current!.offsetHeight;
