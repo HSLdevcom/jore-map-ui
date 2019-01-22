@@ -19,39 +19,40 @@ interface IRoutePathLinksTabProps {
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     private renderList = (routePathLinks: IRoutePathLink[]) => {
         return routePathLinks.map((routePathLink, index) => {
-            return (
-                <div key={`${routePathLink.id}-${index}`}>
+            return [
+                (
                     <RoutePathListNode
+                        key={`${routePathLink.id}-${index}-startNode`}
                         node={routePathLink.startNode}
                         routePathLink={routePathLink}
                     />
+                ), (
                     <RoutePathListLink
+                        key={`${routePathLink.id}-${index}-link`}
                         routePathLink={routePathLink}
                     />
-                    {/* Render last node */}
-                    { index === routePathLinks.length - 1 &&
-                        <RoutePathListNode
-                            node={routePathLink.endNode}
-                            routePathLink={routePathLink}
-                        />
-                    }
-                </div>
-            );
+                ), index === routePathLinks.length - 1 && (
+                    <RoutePathListNode
+                        key={`${routePathLink.id}-${index}-endNode`}
+                        node={routePathLink.endNode}
+                        routePathLink={routePathLink}
+                    />
+                ),
+            ];
         });
     }
 
     save = () => {
     }
 
-    public render(): any {
+    public render() {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
-        const sortedRoutePathLinks = routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
 
         return (
             <div className={s.routePathLinksView}>
                 <div className={s.contentWrapper}>
-                    {this.renderList(sortedRoutePathLinks)}
+                    {this.renderList(routePathLinks)}
                 </div>
                 <Button
                     type={ButtonType.SAVE}

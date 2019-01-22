@@ -87,8 +87,8 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     private redirectToNewRoutePathView = (route: IRoute) => () => {
         const newRoutePathLink = routeBuilder
-        .to(subSites.newRoutePath, { routeId: route.id, lineId: route.lineId })
-        .toLink();
+            .to(subSites.newRoutePath, { routeId: route.id, lineId: route.lineId })
+            .toLink();
 
         navigator.goTo(newRoutePathLink);
     }

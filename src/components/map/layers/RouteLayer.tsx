@@ -15,8 +15,8 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
-@observer
 @inject('mapStore')
+@observer
 class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
         super(props);

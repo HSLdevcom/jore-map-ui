@@ -18,8 +18,8 @@ interface IRoutePathViewFormProps {
     onChange: Function;
 }
 
-@observer
 @inject('routePathStore')
+@observer
 class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
     public onClick = () => {
         // TODO
