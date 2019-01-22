@@ -40,9 +40,15 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
     }
 
     private defaultActionOnObjectClick = (id: string) => {
-        this.props.routePathStore!.setHighlightedObjects([id]);
-        this.props.routePathStore!.setExtendedObjects([id]);
+        // Switch to info tab
         this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
+        // Close all extended objects, in order to be able to calculate final height of items
+        this.props.routePathStore!.setExtendedObjects([]);
+        // Set extended object, which will trigger automatic scroll
+        this.props.routePathStore!.setExtendedObjects([id]);
+        // Set highlight
+        this.props.routePathStore!.setHighlightedObjects([id]);
+
     }
 
     private renderRoutePathLinks = () => {
