@@ -20,7 +20,7 @@ interface IRoutePathLinksTabProps {
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     reactionDisposer: IReactionDisposer;
     listObjectReferences: any;
-    listReference: any;
+    listReference: React.RefObject<HTMLDivElement>;
 
     constructor(props: IRoutePathLinksTabProps) {
         super(props);
@@ -71,8 +71,8 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
         if (extendedObjects.length === 1) {
             const id = extendedObjects[0];
             const item = this.listObjectReferences[id].current;
-            const parentHeight = this.listReference.current.offsetHeight;
-            this.listReference.current.scrollTo({
+            const parentHeight = this.listReference.current!.offsetHeight;
+            this.listReference.current!.scrollTo({
                 top: item.offsetTop - (parentHeight / 2) - (item.offsetHeight / 2),
                 behavior: 'smooth',
             });
