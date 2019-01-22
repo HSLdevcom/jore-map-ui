@@ -48,12 +48,11 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     public render() {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
-        const sortedRoutePathLinks = routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
 
         return (
             <div className={s.routePathLinksView}>
                 <div className={s.contentWrapper}>
-                    {this.renderList(sortedRoutePathLinks)}
+                    {this.renderList(routePathLinks)}
                 </div>
                 <Button
                     type={ButtonType.SAVE}
