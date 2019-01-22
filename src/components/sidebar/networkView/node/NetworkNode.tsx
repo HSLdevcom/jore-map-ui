@@ -7,7 +7,7 @@ import { NotificationStore } from '~/stores/notificationStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
-import NodeCoordinatesListView from '~/components/sidebar/nodeView/NodeCoordinatesListView';
+import NodeCoordinatesListView from '~/components/sidebar/networkView/node/NodeCoordinatesListView';
 import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import Loader from '~/components/shared/loader/Loader';
 import * as s from './networkNode.scss';

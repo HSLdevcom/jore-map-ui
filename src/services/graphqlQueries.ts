@@ -86,6 +86,16 @@ const getLinksByStartNodeQuery = () => {
     );
 };
 
+const getLinksByEndNodeQuery = () => {
+    return (
+        gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!) {
+            solmuBySoltunnus(soltunnus: $nodeId) {
+                ${linksByEndNodeQuery}
+            }
+        }`
+    );
+};
+
 const getLinksByStartNodeAndEndNodeQuery = () => {
     return (
         gql`query getNodesWithRoutePathLinkStartNodeAndEndNodeId($nodeId: String!) {
@@ -144,21 +154,22 @@ const routePathQueryFields = `
 `;
 
 const nodeQueryFields = `
-    solx,
-    soly,
-    soltunnus,
-    sollistunnus,
-    solkirjain,
-    soltyyppi,
-    solkirjain,
-    geojson,
-    geojsonManual,
-    geojsonProjection,
-    transittypes,
+    solx
+    soly
+    soltunnus
+    sollistunnus
+    solkirjain
+    soltyyppi
+    solkirjain
+    mittpvm
+    geojson
+    geojsonManual
+    geojsonProjection
+    transittypes
     pysakkiBySoltunnus {
-        pyssade,
-        pysnimi,
-        pysnimir,
+        pyssade
+        pysnimi
+        pysnimir
         paitunnus
     }
 `;
@@ -248,4 +259,5 @@ export default {
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
     getRoutePathLinkQuery,
+    getLinksByEndNodeQuery,
 };

@@ -24,7 +24,6 @@ interface RoutePathLinkLayerProps {
 @inject('popupStore')
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
-
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
     }
@@ -55,7 +54,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             .map((routePathLink) => {
                 return (
                     <NodeMarker
-                        key={`${routePathLink.startNode.id}`}
+                        key={routePathLink.orderNumber}
                         node={routePathLink.startNode}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
                         isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
@@ -66,7 +65,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
         nodes.push(
             <NodeMarker
-                key={lastRoutePathLink.endNode.id}
+                key='last-node'
                 node={lastRoutePathLink.endNode}
                 isDisabled={false} // Last node can't be disabled
                 isTimeAlignmentStop={false} // Last node can't be a time alignment stop
@@ -95,7 +94,6 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 routePathInternalId={this.props.internalId}
                 onMouseOver={this.props.onMouseOver}
                 onMouseOut={this.props.onMouseOut}
-                interactive={true}
             >
                 {this.renderRoutePathLinks()}
                 {this.renderNodes()}

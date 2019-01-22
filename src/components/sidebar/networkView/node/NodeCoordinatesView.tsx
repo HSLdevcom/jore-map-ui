@@ -1,6 +1,6 @@
 import React from 'react';
 import { ICoordinates } from '~/models';
-import * as s from '~/components/sidebar/nodeView/nodeCoordinatesView.scss';
+import * as s from '~/components/sidebar/networkView/node/nodeCoordinatesView.scss';
 import InputContainer from '~/components/sidebar/InputContainer';
 
 const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:{

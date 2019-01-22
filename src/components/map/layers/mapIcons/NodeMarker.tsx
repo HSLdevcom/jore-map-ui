@@ -17,7 +17,7 @@ import * as s from './nodeMarker.scss';
 // https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
 export const VERY_HIGH_Z_INDEX = 1000;
 
-export const createDivIcon = (html: React.ReactElement<any>) => {
+export const createDivIcon = (html: any) => {
     const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
     const divIconOptions : L.DivIconOptions = {
         html: renderedHtml,
@@ -27,14 +27,6 @@ export const createDivIcon = (html: React.ReactElement<any>) => {
     return new L.DivIcon(divIconOptions);
 };
 
-export const testIcon = () => {
-    return (createDivIcon(
-        <div
-            className={classnames(s.nodeBase, s.projection)}
-        />,
-    ));
-};
-
 interface INodeMarkerProps {
     mapStore?: MapStore;
     color?: string;
@@ -42,6 +34,7 @@ interface INodeMarkerProps {
     onClick?: Function;
     isDraggable?: boolean;
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
+    isHighlighted?: boolean;
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
@@ -57,6 +50,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isDraggable: false,
         isNeighborMarker: false,
+        isHighlighted: false,
     };
 
     private onMoveMarker = (coordinatesType: CoordinatesType) => (e: L.DragEndEvent) => {
@@ -99,37 +93,51 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return labels;
     }
 
-    private getMarkerClass = () => {
+    private getMarkerClasses = () => {
         const isSelected = this.isSelected();
+        const res : string[] = [];
         if (this.props.isNeighborMarker) {
-            return s.neighborMarker;
+            res.push(s.neighborMarker);
         }
         if (this.props.isDisabled) {
-            return isSelected ? s.disabledMarkerHighlight : s.disabledMarker;
+            res.push(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
         }
         if (this.props.isTimeAlignmentStop) {
-            return s.timeAlignmentMarker;
+            res.push(s.timeAlignmentMarker);
+        }
+
+        if (this.props.isHighlighted) {
+            res.push(s.highlight);
         }
 
         switch (this.props.node.type) {
         case NodeType.STOP: {
-            return isSelected ? s.stopMarkerHighlight : s.stopMarker;
+            res.push(isSelected ? s.stopMarkerHighlight : s.stopMarker);
+            break;
         }
         case NodeType.CROSSROAD: {
-            return isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker;
+            res.push(isSelected ? s.crossroadMarkerHighlight : s.crossroadMarker);
+            break;
         }
         case NodeType.MUNICIPALITY_BORDER: {
-            return isSelected ? s.municipalityMarkerHighlight : s.municipalityMarker;
+            res.push(isSelected ? s.municipalityMarkerHighlight : s.municipalityMarker);
+            break;
         }
         case NodeType.DISABLED: {
-            return isSelected ? s.disabledMarkerHighlight : s.disabledMarker;
+            res.push(isSelected ? s.disabledMarkerHighlight : s.disabledMarker);
+            break;
         }
         case NodeType.TIME_ALIGNMENT: {
-            return s.timeAlignmentMarker;
+            res.push(s.timeAlignmentMarker);
+            break;
+        }
+        default: {
+            res.push(isSelected ? s.unknownMarkerHighlight : s.unknownMarker);
+            break;
         }
         }
 
-        return isSelected ? s.unknownMarkerHighlight : s.unknownMarker;
+        return res;
     }
 
     private renderMarkerLabel = () => {
@@ -166,7 +174,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     position={manual}
                     icon={createDivIcon(
                         <div
-                            className={classnames(s.nodeBase, s.manual, this.getMarkerClass())}
+                            className={
+                                classnames(s.nodeBase, s.manual, ...this.getMarkerClasses())}
                         />,
                     )}
                     draggable={this.isInteractive(this.props.node)}
@@ -177,7 +186,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     position={projection}
                     icon={createDivIcon(
                         <div
-                            className={classnames(s.nodeBase, s.projection, this.getMarkerClass())}
+                            className={
+                                classnames(s.nodeBase, s.projection, ...this.getMarkerClasses())}
                         />,
                     )}
                     draggable={this.isInteractive(this.props.node)}
@@ -198,7 +208,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
 
         const icon = createDivIcon(
-                <div className={classnames(s.nodeBase, this.getMarkerClass())}>
+                <div className={classnames(s.nodeBase, ...this.getMarkerClasses())}>
                     {this.renderMarkerLabel()}
                 </div>,
         );
@@ -208,7 +218,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 <Marker
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.props.onClick}
-                    draggable={this.isInteractive(this.props.node)}
+                    draggable={this.props.isDraggable}
                     icon={icon}
                     position={latLng}
                     onDragEnd={this.props.onMoveMarker

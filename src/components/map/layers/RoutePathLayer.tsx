@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import L from 'leaflet';
 import { observer } from 'mobx-react';
 import { IRoutePath } from '~/models';
 import routeBuilder  from '~/routing/routeBuilder';
@@ -13,7 +12,6 @@ interface RoutePathLayerProps {
     hoverHighlightOff: Function;
     hasHighlight: Function;
     routePaths: IRoutePath[];
-    fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
 
 @observer

@@ -8,6 +8,7 @@ import * as s from './routePathView.scss';
 interface IRoutePathHeaderProps {
     hasModifications?: boolean;
     routePath: IRoutePath;
+    isAddingNew: boolean;
 }
 
 class RoutePathHeader extends React.Component<IRoutePathHeaderProps> {
@@ -20,7 +21,7 @@ class RoutePathHeader extends React.Component<IRoutePathHeaderProps> {
                 <ViewHeader
                     closePromptMessage={this.props.hasModifications ? message : undefined}
                 >
-                    Reitinsuunta
+                    {this.props.isAddingNew ? 'Uusi reitinsuunta' : 'Reitinsuunta'}
                 </ViewHeader>
                 <div className={s.topic}>
                     OTSIKKOTIEDOT

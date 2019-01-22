@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
+import { MapStore } from '~/stores/mapStore';
 import { IRoute, IRoutePathLink } from '~/models';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
+    mapStore?: MapStore;
     routes: IRoute[];
-    fitBounds: (bounds: L.LatLngBoundsExpression) => void;
 }
 
 interface IRouteLayerState {
@@ -14,6 +15,7 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
+@inject('mapStore')
 @observer
 class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
@@ -37,7 +39,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         });
 
         if (bounds.isValid()) {
-            this.props.fitBounds(bounds);
+            this.props.mapStore!.setMapBounds(bounds);
         }
     }
 
@@ -106,7 +108,6 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
                         hoverHighlightOff={this.hoverHighlightOff}
                         hasHighlight={this.hasHighlight}
                         routePaths={route.routePaths}
-                        fitBounds={this.props.fitBounds}
                     />
                 );
             });
