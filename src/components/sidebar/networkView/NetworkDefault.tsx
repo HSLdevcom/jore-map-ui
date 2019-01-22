@@ -1,13 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import * as s from './networkView.scss';
 
-interface INetworkViewProps {
-}
-
-class NetworkDefault extends React.Component<INetworkViewProps> {
-    constructor(props: INetworkViewProps) {
-        super(props);
-    }
+class NetworkDefault extends React.Component {
 
     public render() {
         return (

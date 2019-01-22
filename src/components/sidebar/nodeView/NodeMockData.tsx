@@ -1,8 +1,8 @@
 import React from 'react';
-import * as s from '~/components/sidebar/nodeView/nodeView.scss';
 import { Button, Dropdown } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import { IMapInformationSource } from './NodeView';
+import * as s from './nodeView.scss';
 
 interface INodeMockDataProps {
     onMapInformationSourceChange: (selectedItem: string) => void;

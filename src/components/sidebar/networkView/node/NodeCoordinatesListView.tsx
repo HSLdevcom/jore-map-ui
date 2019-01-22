@@ -4,12 +4,12 @@ import NodeCoordinatesView from './NodeCoordinatesView';
 import { CoordinatesType } from '../../nodeView/NodeView';
 import * as s from './nodeCoordinatesListView.scss';
 
-interface INodeCoordinatesView {
+interface INodeCoordinatesListView {
     node:INode;
     onChangeCoordinates: (coordinatesType: CoordinatesType) => (coordinates: ICoordinates) => void;
 }
 
-const nodeCoordinatesListView = ({ node, onChangeCoordinates }: INodeCoordinatesView) => {
+const nodeCoordinatesListView = ({ node, onChangeCoordinates }: INodeCoordinatesListView) => {
     return (
         <div className={s.nodeCoordinatesListView}>
             <div className={s.measured}>
