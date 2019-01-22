@@ -16,8 +16,8 @@ interface IRoutePathListLinkProps {
     nextNode?: INode;
 }
 
-@observer
 @inject('routePathStore')
+@observer
 class RoutePathListLink
     extends React.Component<IRoutePathListLinkProps> {
     private renderNodeHeaderIcon = () => <div className={s.linkIcon} />;
