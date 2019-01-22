@@ -1,76 +1,66 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { match } from 'react-router';
+import { ICoordinates, INode } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
-import { NetworkStore } from '~/stores/networkStore';
 import { NotificationStore } from '~/stores/notificationStore';
-import { RouteStore } from '~/stores/routeStore';
-import NotificationType from '~/enums/notificationType';
-import Navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
+import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import NodeCoordinatesListView from '~/components/sidebar/nodeView/NodeCoordinatesListView';
+import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import * as s from './networkNode.scss';
 
-interface IEditNetworkViewProps {
+interface INetworkNodeProps {
     match?: match<any>;
     editNetworkStore?: EditNetworkStore;
-    networkStore?: NetworkStore;
     notificationStore?: NotificationStore;
-    routeStore?: RouteStore;
+    mapStore?: MapStore;
 }
 
-@inject('editNetworkStore', 'networkStore', 'notificationStore', 'routeStore')
+@inject('editNetworkStore', 'notificationStore', 'mapStore')
 @observer
-class NetworkNode extends React.Component<IEditNetworkViewProps> {
-    constructor(props: IEditNetworkViewProps) {
+class NetworkNode extends React.Component<INetworkNodeProps> {
+    constructor(props: INetworkNodeProps) {
         super(props);
-
-        // this.initStores();
-    }
-    //
-    // componentDidMount() {
-    //     this.fetchNodesAndLinks();
-    // }
-    //
-    // private initStores() {
-    //     this.props.networkStore!.selectAllTransitTypes();
-    //     this.props.networkStore!.showMapLayer(MapLayer.node);
-    //     this.props.networkStore!.showMapLayer(MapLayer.link);
-    //     // this.props.networkStore!.showMapLayer(MapLayer.linkPoint);
-    //     this.props.routeStore!.clearRoutes();
-    // }
-
-    componentWillReceiveProps(props: IEditNetworkViewProps) {
-        this.fetchNodesAndLinks();
     }
 
-    private async fetchNodesAndLinks() {
-        const queryParamNodeId = Navigator.getQueryParam(QueryParams.node);
-        const currentNode = this.props.editNetworkStore!.node;
-        if (currentNode && currentNode.id === queryParamNodeId) return;
+    async componentDidMount() {
+        const selectedNodeId = this.props.match!.params.id;
 
-        const node = await NodeService.fetchNode(queryParamNodeId);
-        if (!node) {
-            this.props.notificationStore!.addNotification({
-                message: `Solmua (soltunnus: ${queryParamNodeId}) ei löytynyt.`,
-                type: NotificationType.ERROR,
-            });
-            return;
+        this.setState({ isLoading: true });
+        if (selectedNodeId) {
+            this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+            await this.queryNode(selectedNodeId);
         }
+        const node = this.props.editNetworkStore!.node;
+        if (node) {
+            await this.fetchLinksForNode(node!);
+            this.props.mapStore!.setCoordinates(node.coordinates.lat, node.coordinates.lon);
+        }
+        this.setState({ isLoading: false });
+    }
 
+    private async queryNode(nodeId: string) {
+        const node = await NodeService.fetchNode(nodeId);
+        if (node) {
+            this.setState({ node });
+            this.props.editNetworkStore!.setNode(node);
+        }
+    }
+
+    private async fetchLinksForNode(node: INode) {
         const links = await LinkService.fetchLinksByStartNodeAndEndNode(node.id);
-        if (!links || links.length === 0) {
-            this.props.notificationStore!.addNotification({
-                message: `Tästä solmusta (soltunnus: ${node.id}) alkavia linkkejä ei löytynyt.`,
-                type: NotificationType.WARNING,
-            });
-            return;
-        }
-
+        if (!links) return;
         this.props.editNetworkStore!.setNode(node);
         this.props.editNetworkStore!.setLinks(links);
     }
+
+    private onChangeLocations = (coordinatesType: CoordinatesType) =>
+        (coordinates: ICoordinates) => {
+            const node = { ...this.props.editNetworkStore!.node!, [coordinatesType]:coordinates };
+            this.props.editNetworkStore!.setNode(node);
+        }
 
     public render() {
         const node = this.props.editNetworkStore!.node;
@@ -78,6 +68,10 @@ class NetworkNode extends React.Component<IEditNetworkViewProps> {
             return (
                 <div className={s.editNetworkView}>
                    <h2>Solmun {node.id} muokkaus</h2>
+                    <NodeCoordinatesListView
+                        node={this.props.editNetworkStore!.node!}
+                        onChangeCoordinates={this.onChangeLocations}
+                    />
                 </div>
             );
         }

@@ -7,7 +7,7 @@ import NodeService from '~/services/nodeService';
 import TransitType from '~/enums/transitType';
 import { ICoordinates, INode } from '~/models';
 import NodeMockData from './NodeMockData';
-import NodeCoordinatesView from './NodeCoordinatesListView';
+import NodeCoordinatesListView from './NodeCoordinatesListView';
 import Loader from '../../shared/loader/Loader';
 import { ToggleSwitch } from '../../controls';
 import ViewHeader from '../ViewHeader';
@@ -138,7 +138,7 @@ class NodeView extends React.Component
                     >
                         {node.stop && this.renderToggleStopInUse()}
                     </div>
-                    <NodeCoordinatesView
+                    <NodeCoordinatesListView
                         node={this.state.node!}
                         onChangeCoordinates={this.onChangeLocations}
                     />

@@ -49,8 +49,8 @@ class GeometryService {
             .forward([lon, lat]).reverse();
     }
 
-    public static iCoordinateToLatLng = (coordinate: ICoordinates) => {
-        return new LatLng(coordinate.lat, coordinate.lon);
+    public static iCoordinateToLatLng = (coordinates: ICoordinates) => {
+        return new LatLng(coordinates.lat, coordinates.lon);
     }
 }
 

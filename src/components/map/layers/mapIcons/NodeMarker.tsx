@@ -4,10 +4,11 @@ import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
-import { INode } from '~/models/index';
+import { ICoordinates, INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import GeometryService from '~/services/geometryService';
+import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -44,6 +45,7 @@ interface INodeMarkerProps {
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
+    onMoveMarker?: (coordinatesType: CoordinatesType) => (coordinates: ICoordinates) => void;
 }
 
 const DEFAULT_RADIUS = 25;
@@ -56,6 +58,16 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isDraggable: false,
         isNeighborMarker: false,
     };
+
+    private onMoveMarker = (coordinatesType: CoordinatesType) => (e: L.DragEndEvent) => {
+        const coordinates: ICoordinates = {
+            lat:e.target.getLatLng().lat,
+            lon:e.target.getLatLng().lng,
+        };
+        if (this.props.onMoveMarker) {
+            this.props.onMoveMarker(coordinatesType)(coordinates);
+        }
+    }
 
     private isSelected(node?: INode) {
         if (node) return this.props.mapStore!.selectedNodeId === node.id;
@@ -146,10 +158,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private renderAdditionalLocations = (node: INode) => {
-        if (!this.isSelected(node)) {
-            return null;
-        }
-        console.log('Additional markers');
         const manual = GeometryService.iCoordinateToLatLng(node.coordinatesManual);
         const projection = GeometryService.iCoordinateToLatLng(node.coordinatesProjection);
         return (
@@ -162,6 +170,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
                         />,
                     )}
                     draggable={this.isInteractive(this.props.node)}
+                    onDragEnd={this.props.onMoveMarker
+                    && this.onMoveMarker('coordinatesManual')}
                 />
                 <Marker
                     position={projection}
@@ -171,6 +181,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
                         />,
                     )}
                     draggable={this.isInteractive(this.props.node)}
+                    onDragEnd={this.props.onMoveMarker
+                    && this.onMoveMarker('coordinatesProjection')}
                 />
             </>
         );
@@ -178,7 +190,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     private isInteractive = (node: INode) => (
         // TODO this should probably check other stuff too...
-        this.isSelected(node)
+        this.isSelected(node) && this.props.isDraggable
     )
 
     render() {
@@ -196,9 +208,11 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 <Marker
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.props.onClick}
-                    draggable={this.props.isDraggable}
+                    draggable={this.isInteractive(this.props.node)}
                     icon={icon}
                     position={latLng}
+                    onDragEnd={this.props.onMoveMarker
+                    && this.onMoveMarker('coordinates')}
                 >
                 {
                     displayCircle ?
@@ -206,7 +220,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     : null
                 }
                 </Marker>
-                {this.renderAdditionalLocations(this.props.node!)}
+                {this.isSelected(this.props.node)
+                && this.renderAdditionalLocations(this.props.node!)}
             </>
         );
     }
