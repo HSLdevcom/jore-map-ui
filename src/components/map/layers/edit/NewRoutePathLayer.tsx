@@ -41,7 +41,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
 
-        const res: ReactNode[] = [];
+        let res: ReactNode[] = [];
         routePathLinks.forEach((rpLink, index) => {
             const nextLink =
                 index === routePathLinks.length - 1 ? undefined : routePathLinks[index + 1];
@@ -50,7 +50,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
             if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
                 res.push(this.renderNode(rpLink.startNode, index, undefined, rpLink));
             }
-            res.push(this.renderLink(rpLink));
+            res = res.concat(this.renderLink(rpLink));
             res.push(this.renderNode(rpLink.endNode, index, rpLink, nextLink));
         });
         return res;
@@ -99,9 +99,18 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
                 this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
                 : undefined;
 
-        return (
-            <>
-            { this.props.routePathStore!.isLinkHighlighted(routePathLink.id) &&
+        return [
+            (
+                <Polyline
+                    positions={routePathLink.positions}
+                    key={routePathLink.id}
+                    color={ROUTE_COLOR}
+                    weight={5}
+                    opacity={0.8}
+                    onClick={onRoutePathLinkClick}
+                />
+            ), this.props.routePathStore!.isLinkHighlighted(routePathLink.id) &&
+            (
                 <Polyline
                     positions={routePathLink.positions}
                     key={`${routePathLink.id}-highlight`}
@@ -110,17 +119,8 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
                     opacity={0.5}
                     onClick={onRoutePathLinkClick}
                 />
-            }
-            <Polyline
-                positions={routePathLink.positions}
-                key={routePathLink.id}
-                color={ROUTE_COLOR}
-                weight={5}
-                opacity={0.8}
-                onClick={onRoutePathLinkClick}
-            />
-            </>
-        );
+            ),
+        ];
     }
 
     private renderRoutePathLinkNeighbors = () => {
