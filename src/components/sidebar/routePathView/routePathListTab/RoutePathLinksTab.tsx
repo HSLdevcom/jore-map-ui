@@ -32,43 +32,44 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
         return routePathLinks.map((routePathLink, index) => {
             this.listObjectReferences[routePathLink.startNode.id] = React.createRef();
             this.listObjectReferences[routePathLink.id] = React.createRef();
-
-            const list = [
+            const res =  [
                 (
                     <RoutePathListNode
-                        key={routePathLink.startNode.id}
+                        key={`${routePathLink.id}-${index}-startNode`}
                         reference={this.listObjectReferences[routePathLink.startNode.id]}
                         node={routePathLink.startNode}
                         routePathLink={routePathLink}
                     />
                 ), (
                     <RoutePathListLink
-                        key={routePathLink.id}
+                        key={`${routePathLink.id}-${index}-link`}
                         reference={this.listObjectReferences[routePathLink.id]}
                         routePathLink={routePathLink}
                     />
-                ),
-            ];
+                )];
 
             if (index === routePathLinks.length - 1) {
                 this.listObjectReferences[routePathLink.endNode.id] = React.createRef();
-                list.push(
+                res.push(
                     <RoutePathListNode
-                        key='endnode'
+                        key={`${routePathLink.id}-${index}-endNode`}
                         reference={this.listObjectReferences[routePathLink.endNode.id]}
                         node={routePathLink.endNode}
                         routePathLink={routePathLink}
                     />,
                 );
             }
-
-            return list;
+            return res;
         });
     }
 
     private onExtend = () => {
         const extendedObjects = this.props.routePathStore!.extendedObjects;
         if (extendedObjects.length === 1) {
+            console.log('list');
+            console.log(this.listReference);
+            console.log(extendedObjects[0]);
+            console.log(this.listObjectReferences[extendedObjects[0]]);
             const id = extendedObjects[0];
             const item = this.listObjectReferences[id].current;
             const parentHeight = this.listReference.current!.offsetHeight;

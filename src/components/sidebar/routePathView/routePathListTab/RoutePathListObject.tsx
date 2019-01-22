@@ -1,17 +1,18 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import * as L from 'leaflet';
+import { MapStore } from '~/stores/mapStore';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import { inject, observer } from 'mobx-react';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { MapStore } from '~/stores/mapStore';
 import * as s from './routePathListObject.scss';
 
 interface IRoutePathListObjectProps {
     mapStore?: MapStore;
     routePathStore?: RoutePathStore;
-    headerLabel: string;
-    description?: JSX.Element;
+    headerDescription?: JSX.Element;
+    headerIcon: JSX.Element;
+    headerTypeName: string;
     id: string;
     objectType: ListObjectType;
     reference: any;
@@ -80,19 +81,32 @@ class RoutePathListObject
                         classnames(
                             s.itemHeader,
                             isExtended ? s.itemExtended : null,
+                            this.props.objectType === ListObjectType.Node ? s.shadow : undefined,
                         )
                     }
                     onClick={this.toggleIsExtended}
                 >
-                    <div className={s.attributes}>
+                    <div className={s.headerContent}>
+                        <div className={s.headerIconContainer}>
+                            <div className={s.headerIcon}>
+                                {this.props.headerIcon}
+                            </div>
+                            {this.props.headerTypeName}
+                        </div>
                         <div className={s.label}>
-                            {this.props.headerLabel}
+                            <div className={s.labelTypeName}>
+                            {
+                                this.props.objectType === ListObjectType.Link
+                                    ? 'Linkin id'
+                                    : 'Solmun id'
+                            }
+                            </div>
                             <div className={s.id}>
                                 {this.props.id}
                             </div>
                         </div>
-                        <div>
-                            {this.props.description}
+                        <div className={s.headerDescription}>
+                            {this.props.headerDescription}
                         </div>
                     </div>
                     <div className={s.itemToggle}>

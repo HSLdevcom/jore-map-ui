@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { observer, inject } from 'mobx-react';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
+import { RoutePathStore } from '~/stores/routePathStore';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../../InputContainer';
@@ -10,11 +12,14 @@ import ButtonType from '../../../../enums/buttonType';
 import * as s from '../routePathView.scss';
 
 interface IRoutePathViewFormProps {
+    routePathStore?: RoutePathStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     onChange: Function;
 }
 
+@inject('routePathStore')
+@observer
 class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
     public onClick = () => {
         // TODO
@@ -25,7 +30,11 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         this.props.onChange(property, value, validationResult);
     }
 
-    public render(): any {
+    public calculateLength = () => {
+        this.props.routePathStore!.recalculateLength();
+    }
+
+    public render() {
         const isEditingDisabled = this.props.isEditingDisabled;
 
         const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
@@ -112,12 +121,11 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         label='PITUUS'
                         value={routePath.length.toString()}
                         disabled={isEditingDisabled}
-                        onChange={this.onChange('length')}
                         validatorRule={routePathValidationModel.length}
                     />
                     <div className={s.flexInnerRowFlexEnd}>
                         <Button
-                            onClick={this.onClick}
+                            onClick={this.calculateLength}
                             type={ButtonType.ROUND}
                         >
                             Laske

@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { IRoutePath, INode } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import lengthCalculator from '~/util/lengthCalculator';
 import { validateRoutePathLinks } from '~/util/geomValidator';
 
 export enum AddRoutePathLinkState {
@@ -143,7 +144,7 @@ export class RoutePathStore {
     }
 
     @action
-    updateRoutePathProperty(property: string, value: string) {
+    updateRoutePathProperty(property: string, value: string|number|Date) {
         this._routePath = {
             ...this._routePath!,
             [property]: value,
@@ -189,6 +190,7 @@ export class RoutePathStore {
     setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
         this._routePath!.routePathLinks =
             routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
+        this.recalculateLength();
     }
 
     @action
@@ -200,6 +202,17 @@ export class RoutePathStore {
     @action
     resetHaveLocalModifications() {
         this._hasUnsavedModifications = false;
+    }
+
+    @action
+    recalculateLength() {
+        this.updateRoutePathProperty(
+            'length',
+            Math.floor(
+                lengthCalculator.fromRoutePathLinks(
+                    this._routePath!.routePathLinks!,
+                )),
+            );
     }
 
     public getLinkGeom = (linkId: string) => {
@@ -236,6 +249,7 @@ export class RoutePathStore {
 
     private onRoutePathLinksChanged = () => {
         this.recalculateOrderNumbers();
+        this.recalculateLength();
         this.validateRoutePathGeometry();
     }
 }

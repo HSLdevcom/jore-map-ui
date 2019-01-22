@@ -12,8 +12,7 @@ interface ILoginProps {
     loginStore?: LoginStore;
 }
 
-@inject('notificationStore')
-@inject('loginStore')
+@inject('loginStore', 'notificationStore')
 @observer
 class Login extends React.Component<ILoginProps> {
     // TODO Login logic here
