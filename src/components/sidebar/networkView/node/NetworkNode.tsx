@@ -9,6 +9,7 @@ import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import NodeCoordinatesListView from '~/components/sidebar/nodeView/NodeCoordinatesListView';
 import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
+import Loader from '~/components/shared/loader/Loader';
 import * as s from './networkNode.scss';
 
 interface INetworkNodeProps {
@@ -18,11 +19,18 @@ interface INetworkNodeProps {
     mapStore?: MapStore;
 }
 
+interface InetworkNodeState {
+    isLoading: boolean;
+}
+
 @inject('editNetworkStore', 'notificationStore', 'mapStore')
 @observer
-class NetworkNode extends React.Component<INetworkNodeProps> {
+class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> {
     constructor(props: INetworkNodeProps) {
         super(props);
+        this.state = {
+            isLoading: false,
+        };
     }
 
     async componentDidMount() {
@@ -44,7 +52,6 @@ class NetworkNode extends React.Component<INetworkNodeProps> {
     private async queryNode(nodeId: string) {
         const node = await NodeService.fetchNode(nodeId);
         if (node) {
-            this.setState({ node });
             this.props.editNetworkStore!.setNode(node);
         }
     }
@@ -63,6 +70,13 @@ class NetworkNode extends React.Component<INetworkNodeProps> {
         }
 
     public render() {
+        if (this.state.isLoading) {
+            return(
+                <div className={s.editNetworkView}>
+                    <Loader/>
+                </div>
+            );
+        }
         const node = this.props.editNetworkStore!.node;
         if (node && node.id) {
             return (
