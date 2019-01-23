@@ -63,9 +63,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private isSelected(node?: INode) {
-        if (node) return this.props.mapStore!.selectedNodeId === node.id;
-        return this.props.mapStore!.selectedNodeId === this.props.node.id;
+    private isSelected(node: INode) {
+        return this.props.mapStore!.selectedNodeId === node.id;
     }
 
     private getLabels(): string[] {
@@ -94,7 +93,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private getMarkerClasses = () => {
-        const isSelected = this.isSelected();
+        const isSelected = this.isSelected(this.props.node);
         const res : string[] = [];
         if (this.props.isNeighborMarker) {
             res.push(s.neighborMarker);
@@ -212,7 +211,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     {this.renderMarkerLabel()}
                 </div>,
         );
-        const displayCircle = this.isSelected() && nodeType === NodeType.STOP;
+        const displayCircle = this.isSelected(this.props.node) && nodeType === NodeType.STOP;
         return (
             <>
                 <Marker
