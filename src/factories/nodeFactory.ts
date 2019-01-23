@@ -1,4 +1,4 @@
-import { INode, ICoordinate } from '~/models';
+import { INode, ICoordinates } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IExternalNode from '~/models/externals/IExternalNode';
@@ -8,15 +8,25 @@ import NotificationType from '../enums/notificationType';
 import notificationStore from '../stores/notificationStore';
 
 class NodeFactory {
+    private static geojsonToCoordinates = (geojson:string) => {
+        const parsedGeoJson: GeoJSON.Point = JSON.parse(geojson);
+        return {
+            lon: parsedGeoJson.coordinates[0],
+            lat: parsedGeoJson.coordinates[1],
+        };
+    }
     public static createNode = (externalNode: IExternalNode): INode => {
          // Use less accurate location if measured location is missing.
-        const coordinateList =
-            JSON.parse(externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual);
-        const coordinates : ICoordinate = {
-            lon: coordinateList.coordinates[0],
-            lat: coordinateList.coordinates[1],
-        };
+        const coordinates : ICoordinates =
+            NodeFactory.geojsonToCoordinates(
+                externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual);
+        const coordinatesManual: ICoordinates =
+            NodeFactory.geojsonToCoordinates(externalNode.geojsonManual);
+        const coordinatesProjection: ICoordinates =
+            NodeFactory.geojsonToCoordinates(externalNode.geojsonProjection);
+
         let shortId;
+
         if (externalNode.sollistunnus) {
             shortId = externalNode.solkirjain
             ? externalNode.solkirjain + externalNode.sollistunnus
@@ -40,6 +50,8 @@ class NodeFactory {
             type,
             transitTypes,
             coordinates,
+            coordinatesManual,
+            coordinatesProjection,
             shortId,
             id: externalNode.soltunnus,
             stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,

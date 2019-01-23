@@ -36,7 +36,6 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
             focusedRoutePathId: '',
         };
     }
-
     private renderRoutePathLinks = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;

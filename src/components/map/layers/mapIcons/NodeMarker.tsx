@@ -4,10 +4,11 @@ import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
-import { INode } from '~/models/index';
+import { ICoordinates, INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import GeometryService from '~/services/geometryService';
+import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -37,6 +38,7 @@ interface INodeMarkerProps {
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
+    onMoveMarker?: (coordinatesType: CoordinatesType) => (coordinates: ICoordinates) => void;
 }
 
 const DEFAULT_RADIUS = 25;
@@ -51,8 +53,18 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isHighlighted: false,
     };
 
-    private isSelected() {
-        return this.props.mapStore!.selectedNodeId === this.props.node.id;
+    private onMoveMarker = (coordinatesType: CoordinatesType) => (e: L.DragEndEvent) => {
+        const coordinates: ICoordinates = {
+            lat:e.target.getLatLng().lat,
+            lon:e.target.getLatLng().lng,
+        };
+        if (this.props.onMoveMarker) {
+            this.props.onMoveMarker(coordinatesType)(coordinates);
+        }
+    }
+
+    private isSelected(node: INode) {
+        return this.props.mapStore!.selectedNodeId === node.id;
     }
 
     private getLabels(): string[] {
@@ -81,7 +93,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private getMarkerClasses = () => {
-        const isSelected = this.isSelected();
+        const isSelected = this.isSelected(this.props.node);
         const res : string[] = [];
         if (this.props.isNeighborMarker) {
             res.push(s.neighborMarker);
@@ -152,6 +164,44 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
+    private renderAdditionalLocations = (node: INode) => {
+        const manual = GeometryService.iCoordinateToLatLng(node.coordinatesManual);
+        const projection = GeometryService.iCoordinateToLatLng(node.coordinatesProjection);
+        return (
+            <>
+                <Marker
+                    position={manual}
+                    icon={createDivIcon(
+                        <div
+                            className={
+                                classnames(s.nodeBase, s.manual, ...this.getMarkerClasses())}
+                        />,
+                    )}
+                    draggable={this.isInteractive(this.props.node)}
+                    onDragEnd={this.props.onMoveMarker
+                    && this.onMoveMarker('coordinatesManual')}
+                />
+                <Marker
+                    position={projection}
+                    icon={createDivIcon(
+                        <div
+                            className={
+                                classnames(s.nodeBase, s.projection, ...this.getMarkerClasses())}
+                        />,
+                    )}
+                    draggable={this.isInteractive(this.props.node)}
+                    onDragEnd={this.props.onMoveMarker
+                    && this.onMoveMarker('coordinatesProjection')}
+                />
+            </>
+        );
+    }
+
+    private isInteractive = (node: INode) => (
+        // TODO this should probably check other stuff too...
+        this.isSelected(node) && this.props.isDraggable
+    )
+
     render() {
         const nodeType = this.props.node.type;
         const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
@@ -161,21 +211,26 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     {this.renderMarkerLabel()}
                 </div>,
         );
-        const displayCircle = this.isSelected() && nodeType === NodeType.STOP;
+        const displayCircle = this.isSelected(this.props.node) && nodeType === NodeType.STOP;
         return (
-            <Marker
-                onContextMenu={this.props.onContextMenu}
-                onClick={this.props.onClick}
-                draggable={this.props.isDraggable}
-                icon={icon}
-                position={latLng}
-            >
-            {
-                displayCircle ?
-                    this.renderStopRadiusCircle(this.props.node.stop!.radius)
-                : null
-            }
-            </Marker>
+            <>
+                <Marker
+                    onContextMenu={this.props.onContextMenu}
+                    onClick={this.props.onClick}
+                    draggable={this.props.isDraggable}
+                    icon={icon}
+                    position={latLng}
+                    onDragEnd={this.props.onMoveMarker
+                    && this.onMoveMarker('coordinates')}
+                >
+                {
+                    displayCircle
+                    && this.renderStopRadiusCircle(this.props.node.stop!.radius)
+                }
+                </Marker>
+                {this.isSelected(this.props.node)
+                && this.renderAdditionalLocations(this.props.node!)}
+            </>
         );
     }
 }

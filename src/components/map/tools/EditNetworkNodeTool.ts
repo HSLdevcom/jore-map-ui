@@ -4,7 +4,6 @@ import ToolbarTool from '~/enums/toolbarTool';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
 import BaseTool from './BaseTool';
 
 /**
@@ -25,8 +24,8 @@ class EditNetworkNodeTool implements BaseTool {
     public onNetworkNodeClick = async (clickEvent: any) => {
         const properties =  clickEvent.sourceTarget.properties;
         const editNetworkLink = routeBuilder
-            .to(subSites.editNetwork)
-            .set(QueryParams.node, properties.soltunnus)
+            .to(subSites.networkNode)
+            .toTarget(properties.soltunnus)
             .toLink();
         navigator.goTo(editNetworkLink);
     }

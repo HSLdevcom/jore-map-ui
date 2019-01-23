@@ -6,7 +6,7 @@ enum SubSites {
     routePath = '/routePath/:id',
     newRoutePath = '/routePath/new',
     network = '/network/',
-    editNetwork = '/network/edit/',
+    networkNode = '/network/node/:id',
     current = '',
 }
 
