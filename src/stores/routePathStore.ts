@@ -94,11 +94,12 @@ export class RoutePathStore {
     }
 
     isObjectHighlighted(objectId: string) {
-        return this._highlightedObject === objectId;
+        return this._highlightedObject === objectId
+            || (!this._highlightedObject && this.isObjectExtended(objectId));
     }
 
-    isObjectExtended(nodeId: string) {
-        return this._extendedObjects.some(n => n === nodeId);
+    isObjectExtended(objectId: string) {
+        return this._extendedObjects.some(n => n === objectId);
     }
 
     @computed
@@ -107,22 +108,22 @@ export class RoutePathStore {
     }
 
     @action
-    setHighlightedObject(id: string | null) {
-        this._highlightedObject = id;
+    setHighlightedObject(objectId: string | null) {
+        this._highlightedObject = objectId;
     }
 
     @action
-    toggleExtendedObject(id: string) {
-        if (this._extendedObjects.some(o => o === id)) {
-            this._extendedObjects = this._extendedObjects.filter(o => o !== id);
+    toggleExtendedObject(objectId: string) {
+        if (this._extendedObjects.some(o => o === objectId)) {
+            this._extendedObjects = this._extendedObjects.filter(o => o !== objectId);
         } else {
-            this._extendedObjects.push(id);
+            this._extendedObjects.push(objectId);
         }
     }
 
     @action
-    setExtendedObjects(ids: string[]) {
-        this._extendedObjects = ids;
+    setExtendedObjects(objectIds: string[]) {
+        this._extendedObjects = objectIds;
     }
 
     @action
