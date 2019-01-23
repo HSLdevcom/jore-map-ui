@@ -47,7 +47,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         // Set extended object, which will trigger automatic scroll
         this.props.routePathStore!.setExtendedObjects([id]);
         // Set highlight
-        this.props.routePathStore!.setHighlightedObjects([id]);
+        this.props.routePathStore!.setHighlightedObject(id);
 
     }
 

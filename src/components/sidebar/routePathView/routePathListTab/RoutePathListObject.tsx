@@ -56,12 +56,12 @@ class RoutePathListObject
     }
 
     private onMouseEnter = () => {
-        this.props.routePathStore!.setHighlightedObjects([this.props.id]);
+        this.props.routePathStore!.setHighlightedObject(this.props.id);
     }
 
     private onMouseLeave = () => {
         if (this.props.routePathStore!.isObjectHighlighted(this.props.id)) {
-            this.props.routePathStore!.setHighlightedObjects([]);
+            this.props.routePathStore!.setHighlightedObject(null);
         }
     }
 

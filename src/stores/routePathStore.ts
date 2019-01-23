@@ -25,7 +25,7 @@ export class RoutePathStore {
     @observable private _hasUnsavedModifications: boolean;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
-    @observable private _highlightedObjects: string[];
+    @observable private _highlightedObject: string | null;
     @observable private _extendedObjects: string[];
     @observable private _addRoutePathLinkState: AddRoutePathLinkState;
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
@@ -34,7 +34,7 @@ export class RoutePathStore {
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
-        this._highlightedObjects = [];
+        this._highlightedObject = null;
         this._extendedObjects = [];
         this._isGeometryValid = true;
         this._activeTab = RoutePathViewTab.Info;
@@ -93,8 +93,8 @@ export class RoutePathStore {
         }
     }
 
-    isObjectHighlighted(nodeId: string) {
-        return this._highlightedObjects.some(n => n === nodeId);
+    isObjectHighlighted(objectId: string) {
+        return this._highlightedObject === objectId;
     }
 
     isObjectExtended(nodeId: string) {
@@ -107,8 +107,8 @@ export class RoutePathStore {
     }
 
     @action
-    setHighlightedObjects(ids: string[]) {
-        this._highlightedObjects = ids;
+    setHighlightedObject(id: string | null) {
+        this._highlightedObject = id;
     }
 
     @action
