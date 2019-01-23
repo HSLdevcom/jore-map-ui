@@ -18,7 +18,7 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
         }
     }
 
-    public render(): any {
+    render() {
         return (
             <div className={s.viewHeaderView}>
                 <div className={s.topic}>{this.props.header}</div>

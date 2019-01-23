@@ -9,7 +9,6 @@ class FullscreenControl extends React.Component{
         MapStore.toggleMapFullscreen();
     }
     render() {
-
         return (
             <div className={s.fullscreenControlView}>
                 <MapControlButton

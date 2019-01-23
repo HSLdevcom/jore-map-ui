@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FiChevronRight } from 'react-icons/fi';
 import { IRoutePathLink, INode } from '~/models';
@@ -18,8 +18,7 @@ interface IRoutePathListLinkProps {
 
 @inject('routePathStore')
 @observer
-class RoutePathListLink
-    extends React.Component<IRoutePathListLinkProps> {
+class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderNodeHeaderIcon = () => <div className={s.linkIcon} />;
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { FiEdit, FiCopy } from 'react-icons/fi';
@@ -47,12 +47,12 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         return this.props.isAddingNew && !this.state.hasSavedNewRoutePath;
     }
 
-    public toggleEditing = () => {
+    private toggleEditing = () => {
         const isEditingDisabled = !this.state.isEditingDisabled;
         this.setState({ isEditingDisabled });
     }
 
-    public save = async () => {
+    private save = async () => {
         this.setState({ isLoading: true });
         try {
             if (this.routePathIsNew()) {
@@ -89,7 +89,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
             .some(fieldIsValid => !fieldIsValid);
     }
 
-    public onChange = (property: string, value: any, validationResult?: IValidationResult) => {
+    private onChange = (property: string, value: any, validationResult?: IValidationResult) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
         if (validationResult) {
             this.markInvalidFields(property, validationResult!.isValid);
@@ -107,7 +107,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         navigator.goTo(newRoutePathLink);
     }
 
-    public render() {
+    render() {
         // tslint:disable-next-line:max-line-length
         const routePath = this.props.routePathStore!.routePath;
 

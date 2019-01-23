@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
-import s from './inputContainer.scss';
 import FormValidator from '../../validation/FormValidator';
+import * as s from './inputContainer.scss';
 
 interface IInputProps {
     label: string;
@@ -52,7 +52,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         }
     }
 
-    public render(): any {
+    render() {
         return (
             <div className={s.formItem}>
                 <div className={s.inputLabel}>

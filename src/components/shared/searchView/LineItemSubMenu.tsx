@@ -38,16 +38,16 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         this.mounted = false;
     }
 
-    public componentDidMount() {
+    componentDidMount() {
         this.mounted = true;
         this.fetchRoutePaths();
     }
 
-    public componentDidUpdate() {
+    componentDidUpdate() {
         this.fetchRoutePaths();
     }
 
-    private async fetchRoutePaths() {
+    private fetchRoutePaths = async () => {
         if (!this.props.visible || this.state.routePaths) {
             return;
         }
@@ -74,15 +74,15 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         }
     }
 
-    private select(routePathId: string) {
+    private select = (routePathId: string) => {
         this.props.searchStore!.addSubLineItem(this.props.routeId, routePathId);
     }
 
-    private unSelect(routePathId: string) {
+    private unSelect = (routePathId: string) => {
         this.props.searchStore!.removeSubLineItem(this.props.routeId, routePathId);
     }
 
-    private isSelected(routePathId: string) {
+    private isSelected = (routePathId: string) => {
         return this.props.searchStore!.subLineItems.some((subLineItem: {
             routePathId: string;
             routeId: string;
@@ -92,7 +92,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         });
     }
 
-    render () {
+    render() {
         if (!this.props.visible) {
             return null;
         }

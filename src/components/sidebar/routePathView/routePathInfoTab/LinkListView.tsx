@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { IRoutePath, INode, IRoutePathLink } from '~/models';
 import routeBuilder  from '~/routing/routeBuilder';
@@ -34,7 +34,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         };
     }
 
-    public selectRoutePathLink = (id: string) =>
+    private selectRoutePathLink = (id: string) =>
     () => {
         this.setState({
             selectedRoutePathLink: id,
@@ -82,19 +82,19 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         });
     }
 
-    public getHastusId = (routePathLink: IRoutePathLink) => {
+    private getHastusId = (routePathLink: IRoutePathLink) => {
         return (routePathLink.startNode.stop && routePathLink.startNode.stop.hastusId) ?
             routePathLink.startNode.stop.hastusId :
             '-';
     }
 
-    public getNodeName = (node: INode) => {
+    private getNodeName = (node: INode) => {
         return (node.stop) ?
             node.stop.nameFi :
             '-';
     }
 
-    public openLinkView = () => {
+    private openLinkView = () => {
         if (this.state.selectedRoutePathLink) {
             const linkViewLink =
                 routeBuilder
@@ -107,7 +107,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         }
     }
 
-    public getLinkViewButtonTitle = () => {
+    private getLinkViewButtonTitle = () => {
         const routePathLinkId = this.state.selectedRoutePathLink;
         if (routePathLinkId) {
             return `Avaa linkki (id: ${this.state.selectedRoutePathLink})`;
@@ -115,11 +115,11 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         return `Ei valittua linkkiä`;
     }
 
-    public noRoutePathLinkSelected = () => {
+    private noRoutePathLinkSelected = () => {
         return !this.state.selectedRoutePathLink;
     }
 
-    public setLinkTableFilter = (filter: string) => {
+    private setLinkTableFilter = (filter: string) => {
         let filterType = 'P';
         switch (filter) {
         case filterTypes.STOPS: {
@@ -152,7 +152,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         });
     }
 
-    public render(): any {
+    render() {
         return (
         <div className={s.linkListView}>
             <div className={s.dropDownFilter}>
@@ -184,7 +184,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
                 disabled={this.noRoutePathLinkSelected()}
                 onClick={this.openLinkView}
             >
-                this.getLinkViewButtonTitle()
+                {this.getLinkViewButtonTitle()}
             </Button>
         </div>
         );

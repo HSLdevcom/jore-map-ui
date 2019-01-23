@@ -39,7 +39,7 @@ export class ToolbarStore {
     }
 
     @action
-    public selectTool(tool: ToolbarTool | null) {
+    public selectTool = (tool: ToolbarTool | null) => {
         if (this._selectedTool) {
             this._selectedTool.deactivate();
         }
@@ -57,11 +57,13 @@ export class ToolbarStore {
         this._selectedTool.activate();
     }
 
-    public isSelected(tool: ToolbarTool): boolean {
+    @computed
+    public isSelected = (tool: ToolbarTool): boolean => {
         return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
     }
 
-    public isDisabled(tool: ToolbarTool): boolean {
+    @computed
+    public isDisabled = (tool: ToolbarTool): boolean => {
         return this._disabledTools.indexOf(tool) > -1;
     }
 }

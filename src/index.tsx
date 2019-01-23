@@ -1,8 +1,8 @@
 import { configure } from 'mobx';
 import { Provider } from 'mobx-react';
-import * as React from 'react';
+import React from 'react';
 import { ApolloProvider } from 'react-apollo';
-import * as ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import { Router } from 'react-router';

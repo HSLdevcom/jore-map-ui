@@ -13,13 +13,12 @@ export interface IMultipleRoutesQueryResult {
 }
 
 class RouteService {
-    public static async fetchRoute(routeId: string): Promise<IRoute | null> {
+    public static fetchRoute = async (routeId: string): Promise<IRoute | null> => {
         const route = await RouteService.runFetchRouteQuery(routeId);
         return route ? route : null;
     }
 
-    public static async fetchMultipleRoutes(routeIds: string[]):
-        Promise<IRoute[] | null> {
+    public static fetchMultipleRoutes = async (routeIds: string[]): Promise<IRoute[] | null> => {
         const routes = await Promise
             .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
 
@@ -28,7 +27,7 @@ class RouteService {
         return routes.map((res: IRoute) => res!);
     }
 
-    private static async runFetchRouteQuery(routeId: string): Promise<IRoute | null> {
+    private static runFetchRouteQuery = async (routeId: string): Promise<IRoute | null> => {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getRouteQuery(), variables: { routeId } },

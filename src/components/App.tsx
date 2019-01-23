@@ -1,10 +1,9 @@
 import { inject, observer } from 'mobx-react';
-import * as React from 'react';
+import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { NotificationStore } from '~/stores/notificationStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
 import ButtonType from '~/enums/buttonType';
 import NotificationWindow from './NotificationWindow';
 import Button from './controls/Button';
@@ -22,11 +21,10 @@ interface IAppState {
 interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
     mapStore?: MapStore;
-    toolbarStore?: ToolbarStore;
     notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'loginStore', 'notificationStore', 'toolbarStore')
+@inject('mapStore', 'loginStore', 'notificationStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
@@ -37,7 +35,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.props.loginStore!.showLogin = false;
     }
 
-    public render(): any {
+    render() {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         const buildDate = process.env.BUILD_DATE;
         const buildDateInfo = buildDate ? `Date: ${buildDate}` : '';

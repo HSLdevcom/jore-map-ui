@@ -4,7 +4,7 @@ import TransitTypeHelper from '~/util/transitTypeHelper';
 import NodeFactory from './nodeFactory';
 
 class LinkFactory {
-    private static getPositions(geojson: string) {
+    private static getPositions = (geojson: string) => {
         const coordinates = JSON.parse(geojson).coordinates;
         return coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
     }

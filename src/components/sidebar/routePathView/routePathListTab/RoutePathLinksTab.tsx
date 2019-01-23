@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -42,10 +42,10 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
         });
     }
 
-    save = () => {
+    private save = () => {
     }
 
-    public render() {
+    render() {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
 

@@ -67,36 +67,38 @@ export class RoutePathStore {
         return this._isGeometryValid;
     }
 
-    isNodeHighlighted(nodeId: string) {
+    @computed
+    public isNodeHighlighted = (nodeId: string) => {
         return this._highlightedNodes.some(n => n === nodeId);
     }
 
-    isLinkHighlighted(linkId: string) {
+    @computed
+    public isLinkHighlighted = (linkId: string) => {
         return this._highlightedLinks.some(l => l === linkId);
     }
 
     @action
-    setHighlightedNodes(nodeIds: string[]) {
+    public setHighlightedNodes = (nodeIds: string[]) => {
         this._highlightedNodes = nodeIds;
     }
 
     @action
-    setHighlightedLinks(linkIds: string[]) {
+    public setHighlightedLinks = (linkIds: string[]) => {
         this._highlightedLinks = linkIds;
     }
 
     @action
-    setIsCreating(value: boolean) {
+    public setIsCreating = (value: boolean) => {
         this._isCreating = value;
     }
 
     @action
-    setAddRoutePathLinkDirection(direction: AddLinkDirection) {
+    public setAddRoutePathLinkDirection = (direction: AddLinkDirection) => {
         this._addRoutePathLinkDirection = direction;
     }
 
     @action
-    setRoutePath(routePath: IRoutePath|null) {
+    public setRoutePath = (routePath: IRoutePath|null) => {
         this._routePath = routePath;
         if (!routePath) {
             this._neighborRoutePathLinks = [];
@@ -104,7 +106,7 @@ export class RoutePathStore {
     }
 
     @action
-    updateRoutePathProperty(property: string, value: string|number|Date) {
+    public updateRoutePathProperty = (property: string, value: string|number|Date) => {
         this._routePath = {
             ...this._routePath!,
             [property]: value,
@@ -113,14 +115,14 @@ export class RoutePathStore {
     }
 
     @action
-    setNeighborRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+    public setNeighborRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._neighborRoutePathLinks = routePathLinks;
         this._addRoutePathLinkState = routePathLinks.length === 0
             ? AddRoutePathLinkState.SetTargetLocation : AddRoutePathLinkState.AddLinks;
     }
 
     @action
-    addLink(routePathLink: IRoutePathLink) {
+    public addLink = (routePathLink: IRoutePathLink) => {
         this._routePath!.routePathLinks!.splice(
             // Order numbers start from 1
             routePathLink.orderNumber - 1,
@@ -130,6 +132,7 @@ export class RoutePathStore {
         this._hasUnsavedModifications = true;
     }
 
+    @computed
     public isRoutePathNodeMissingNeighbour = (node: INode) => (
         // A node needs to have an even amount of neighbours
             this._routePath!.routePathLinks!
@@ -139,7 +142,7 @@ export class RoutePathStore {
     )
 
     @action
-    removeLink(id: string) {
+    public removeLink = (id: string) => {
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.filter(link => link.id !== id);
         this.onRoutePathLinksChanged();
@@ -147,25 +150,25 @@ export class RoutePathStore {
     }
 
     @action
-    setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._routePath!.routePathLinks =
             routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
         this.recalculateLength();
     }
 
     @action
-    clear() {
+    public clear = () => {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
     }
 
     @action
-    resetHaveLocalModifications() {
+    public resetHaveLocalModifications = () => {
         this._hasUnsavedModifications = false;
     }
 
     @action
-    recalculateLength() {
+    public recalculateLength = () => {
         this.updateRoutePathProperty(
             'length',
             Math.floor(
@@ -175,6 +178,7 @@ export class RoutePathStore {
             );
     }
 
+    @computed
     public getLinkGeom = (linkId: string) => {
         const link = this._routePath!.routePathLinks!.find(l => l.id === linkId);
         if (link) {
@@ -183,6 +187,7 @@ export class RoutePathStore {
         return null;
     }
 
+    @computed
     public getNodeGeom = (nodeId: string) => {
         let node = this._routePath!.routePathLinks!.find(l => l.startNode.id === nodeId);
         if (!node) {

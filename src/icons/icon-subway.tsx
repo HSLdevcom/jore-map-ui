@@ -1,6 +1,6 @@
 /* tslint:disable */
 
-import * as React from 'react'
+import React from 'react'
 
 interface ITrainIconProps {
   height: string

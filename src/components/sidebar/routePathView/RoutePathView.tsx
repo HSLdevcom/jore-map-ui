@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
@@ -44,7 +44,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         };
     }
 
-    private async initializeAsAddingNew() {
+    private initializeAsAddingNew = async () => {
         if (!this.props.routePathStore!.routePath) {
             this.props.routePathStore!.setRoutePath(await this.createNewRoutePath());
         } else {
@@ -55,7 +55,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setIsCreating(true);
     }
 
-    private initializeMap() {
+    private initializeMap = () => {
         if (this.props.isAddingNew) {
             this.props.networkStore!.setNodeSize(NodeSize.large);
             this.props.networkStore!.showMapLayer(MapLayer.node);
@@ -65,7 +65,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.setTransitType();
     }
 
-    private async createNewRoutePath() {
+    private createNewRoutePath = async () => {
         const queryParams = navigator.getQueryParamValues();
         const route = await RouteService.fetchRoute(queryParams.routeId);
         // TODO: add transitType to this call (if transitType is routePath's property)
@@ -75,7 +75,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         return null;
     }
 
-    private async setTransitType() {
+    private setTransitType = async () => {
         const routePath = this.props.routePathStore!.routePath;
         if (routePath && routePath.lineId) {
             const line = await LineService.fetchLine(routePath.lineId);
@@ -85,7 +85,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         }
     }
 
-    private async fetchRoutePath() {
+    private fetchRoutePath = async () => {
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
         const startTime = moment(startTimeString);
         const routePath =
@@ -93,13 +93,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setRoutePath(routePath);
     }
 
-    public selectTab = (selectedTabIndex: number) => () => {
+    private selectTab = (selectedTabIndex: number) => () => {
         this.setState({
             selectedTabIndex,
         });
     }
 
-    public renderTabContent = () => {
+    private renderTabContent = () => {
         switch (this.state.selectedTabIndex) {
         case 0: {
             return (
@@ -142,7 +142,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setRoutePath(null);
     }
 
-    public render(): any {
+    render() {
         if (this.state.isLoading) {
             return (
                 <div className={s.routePathView}>

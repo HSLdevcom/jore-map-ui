@@ -11,7 +11,8 @@ export class RouteStore {
         this.colorScale = new ColorScale();
     }
 
-    @computed get routes(): IRoute[] {
+    @computed
+    get routes(): IRoute[] {
         if (this._routes.length < 1) return [];
         return this._routes;
     }
@@ -33,12 +34,12 @@ export class RouteStore {
     }
 
     @action
-    public addToRoutes(routes: IRoute[]) {
+    public addToRoutes = (routes: IRoute[]) => {
         this._routes.push(...routes);
     }
 
     @action
-    public removeFromRoutes(routeId: string) {
+    public removeFromRoutes = (routeId: string) => {
         for (let i = 0; i < this._routes.length; i += 1) {
             if (this._routes[i].id === routeId) {
                 this._routes[i].routePaths
@@ -49,12 +50,12 @@ export class RouteStore {
     }
 
     @action
-    public clearRoutes() {
+    public clearRoutes = () => {
         this._routes = [];
         this.colorScale = new ColorScale();
     }
 
-    private getRoutePath(internalId: string): IRoutePath | null {
+    private getRoutePath = (internalId: string): IRoutePath | null => {
         let routePathObservable: IRoutePath | null = null;
         this._routes.find((_route) => {
             const found = _route.routePaths.find(_routePath =>
@@ -70,7 +71,7 @@ export class RouteStore {
     }
 
     @action
-    public toggleRoutePathVisibility(internalId: string) {
+    public toggleRoutePathVisibility = (internalId: string) => {
         const routePathObservable = this.getRoutePath(internalId);
         if (routePathObservable) {
             routePathObservable.visible = !routePathObservable.visible;

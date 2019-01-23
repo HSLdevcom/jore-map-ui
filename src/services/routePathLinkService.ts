@@ -11,44 +11,44 @@ import GraphqlQueries from './graphqlQueries';
 // TODO: create two services, RoutePathLinkService and LinkService?
 class RoutePathLinkService {
     public static
-        async fetchAndCreateRoutePathLinksWithNodeId
-        (nodeId: string, linkDirection: AddLinkDirection, orderNumber: number)
-        : Promise<IRoutePathLink[]> {
-        try {
-            // If new routePathLinks should be created after the node
-            if (linkDirection === AddLinkDirection.AfterNode) {
-                const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                    { query: GraphqlQueries.getLinksByStartNodeQuery()
-                    , variables: { nodeId } },
-                );
-                return queryResult.data.solmuBySoltunnus.
-                    linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
-                        RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(
-                            link, orderNumber),
-                );
+        fetchAndCreateRoutePathLinksWithNodeId =
+            async (nodeId: string, linkDirection: AddLinkDirection, orderNumber: number):
+                Promise<IRoutePathLink[]> => {
+                try {
+                    // If new routePathLinks should be created after the node
+                    if (linkDirection === AddLinkDirection.AfterNode) {
+                        const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                            { query: GraphqlQueries.getLinksByStartNodeQuery()
+                            , variables: { nodeId } },
+                        );
+                        return queryResult.data.solmuBySoltunnus.
+                            linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
+                                RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(
+                                    link, orderNumber),
+                        );
+                    }
+                    // If new routePathLinks should be created before the node
+                    const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                        { query: GraphqlQueries.getLinksByEndNodeQuery()
+                        , variables: { nodeId } },
+                    );
+                    return queryResult.data.solmuBySoltunnus.
+                        linkkisByLnkloppusolmu.nodes.map((link: IExternalLink) =>
+                            RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(
+                                link, orderNumber),
+                    );
+                } catch (error) {
+                    console.error(error); // tslint:disable-line
+                    notificationStore.addNotification({
+                        message: `Haku löytää reitin linkkien Lnkalkusolmu solmuja, joilla on
+                            soltunnus ${nodeId}, ei onnistunut.`,
+                        type: NotificationType.ERROR,
+                    });
+                    return [];
+                }
             }
-            // If new routePathLinks should be created before the node
-            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: GraphqlQueries.getLinksByEndNodeQuery()
-                , variables: { nodeId } },
-            );
-            return queryResult.data.solmuBySoltunnus.
-                linkkisByLnkloppusolmu.nodes.map((link: IExternalLink) =>
-                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(
-                        link, orderNumber),
-            );
-        } catch (error) {
-            console.error(error); // tslint:disable-line
-            notificationStore.addNotification({
-                message: `Haku löytää reitin linkkien Lnkalkusolmu solmuja, joilla on
-                    soltunnus ${nodeId}, ei onnistunut.`,
-                type: NotificationType.ERROR,
-            });
-            return [];
-        }
-    }
 
-    public static async fetchRoutePathLink(id: number) : Promise<IRoutePathLink | null> {
+    public static fetchRoutePathLink = async (id: number): Promise<IRoutePathLink | null> => {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getRoutePathLinkQuery(), variables: { routeLinkId: id } },

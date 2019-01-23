@@ -1,5 +1,5 @@
 import { inject, observer } from 'mobx-react';
-import * as React from 'react';
+import React from 'react';
 import { Route, Switch, Redirect } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
@@ -47,7 +47,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     private renderAddNewRoutePath = (props: any) => <RoutePathView {...props} isAddingNew={true} />;
     private renderRoutePathView = (props: any) => <RoutePathView {...props} isAddingNew={false} />;
 
-    public render(): any {
+    render() {
         const goToHomeView = () => {
             this.props.toolbarStore!.selectTool(null);
             this.props.routeStore!.clearRoutes();
@@ -64,7 +64,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             >
                 <div className={s.header}>
                     <div onClick={goToHomeView} className={s.headerContainer}>
-                        <img className={s.logo} src={hslLogo} />
+                        <img className={s.logo} src={hslLogo} alt='HSL Logo'/>
                         <h2 className={s.title}>
                             Joukkoliikennerekisteri
                         </h2>

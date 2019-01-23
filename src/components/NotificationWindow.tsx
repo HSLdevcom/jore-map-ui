@@ -1,5 +1,5 @@
 import { inject, observer } from 'mobx-react';
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import NotificationType from '~/enums/notificationType';
 import { NotificationStore } from '~/stores/notificationStore';
@@ -57,7 +57,7 @@ class NotificationWindow extends React.Component
         return;
     }
 
-    getColorClass = (type: string) => {
+    private getColorClass = (type: string) => {
         switch (type) {
         case NotificationType.ERROR: {
             return s.error;
@@ -74,7 +74,7 @@ class NotificationWindow extends React.Component
         }
     }
 
-    public render(): any {
+    render() {
         return (
           <div className={s.notificationView}>
             {this.props.notifications.map((notification: INotification) => {

@@ -8,19 +8,19 @@ enum FetchStatusCode {
 
 export default FetchStatusCode;
 
-function isOk(statusCode: FetchStatusCode) {
+const isOk = (statusCode: FetchStatusCode) => {
     return statusCode === FetchStatusCode.OK;
 }
 
-function isClientError(statusCode: FetchStatusCode) {
+const isClientError = (statusCode: FetchStatusCode) => {
     return statusCode < 500 && statusCode >= 400;
 }
 
-function isNotFound(statusCode: FetchStatusCode) {
+const isNotFound = (statusCode: FetchStatusCode) => {
     return statusCode === FetchStatusCode.NOT_FOUND;
 }
 
-function isServerError(statusCode: FetchStatusCode) {
+const isServerError = (statusCode: FetchStatusCode) => {
     return statusCode < 600 && statusCode >= 500;
 }
 

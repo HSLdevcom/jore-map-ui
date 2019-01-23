@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { match } from 'react-router';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
@@ -33,7 +33,7 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
         this.fetchNodesAndLinks();
     }
 
-    private initStores() {
+    private initStores = () => {
         this.props.networkStore!.selectAllTransitTypes();
         this.props.networkStore!.showMapLayer(MapLayer.node);
         this.props.networkStore!.showMapLayer(MapLayer.link);
@@ -45,7 +45,7 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
         this.fetchNodesAndLinks();
     }
 
-    private async fetchNodesAndLinks() {
+    private fetchNodesAndLinks = async () => {
         const queryParamNodeId = Navigator.getQueryParam(QueryParams.node);
         const currentNode = this.props.editNetworkStore!.node;
         if (currentNode && currentNode.id === queryParamNodeId) return;
@@ -72,7 +72,7 @@ class EditNetworkView extends React.Component<IEditNetworkViewProps> {
         this.props.editNetworkStore!.setLinks(links);
     }
 
-    public render() {
+    render() {
         const node = this.props.editNetworkStore!.node;
         if (node && node.id) {
             return (

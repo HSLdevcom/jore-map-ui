@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import NodeType from '~/enums/nodeType';
 import classnames from 'classnames';
 import NodeTypeDescription from '~/enums/l10n/nodeTypeDescription';
@@ -20,8 +20,7 @@ interface IRoutePathListNodeState {
     isExtended: boolean;
 }
 
-class RoutePathListNode
-    extends React.Component<IRoutePathListNodeProps, IRoutePathListNodeState> {
+class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRoutePathListNodeState> {
 
     private getNodeTypeName = (nodeType?: NodeType) => {
         if (!nodeType) {

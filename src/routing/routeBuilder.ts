@@ -8,7 +8,7 @@ export class RouteBuilder {
      * @param {string} subSites
      * @param {Object} values - { field: value, ... }
      */
-    public to(subSites: subSites, values?: any) {
+    public to = (subSites: subSites, values?: any) => {
         return new RouteBuilderContext(
             Navigator.getPathName(),
             subSites,

@@ -13,7 +13,7 @@ export class LineStore {
     }
 
     @action
-    public setAllLines(lines: ILine[]) {
+    public setAllLines = (lines: ILine[]) => {
         this._allLines = lines;
     }
 }

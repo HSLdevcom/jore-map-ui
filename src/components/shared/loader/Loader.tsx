@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import * as s from './loader.scss';
 
 interface ILoaderProps {

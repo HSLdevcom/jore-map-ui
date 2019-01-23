@@ -1,5 +1,5 @@
 import { inject, observer } from 'mobx-react';
-import * as React from 'react';
+import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
@@ -43,7 +43,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
         navigator.goTo(closeRouteLink);
     }
 
-    private renderRouteName() {
+    private renderRouteName = () => {
         return (
         <div className={s.routeName}>
             {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
@@ -66,10 +66,10 @@ class RouteShow extends React.Component<IRouteShowProps> {
         );
     }
 
-    private renderRoutePaths() {
+    private renderRoutePaths = () => {
         const routePaths = this.props.route.routePaths;
 
-        return routePaths.map((routePath: IRoutePath, index) => {
+        return routePaths.map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
             };
@@ -137,7 +137,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
         });
     }
 
-    public render(): any {
+    render() {
         return (
             <div className={s.routeShowView}>
                 {this.renderRouteName()}

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import * as L from 'leaflet';
 import { Marker } from 'react-leaflet';
 import PinIcon from '~/icons/PinIcon';
