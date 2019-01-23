@@ -13,7 +13,7 @@ import * as s from './routePathListObject.scss';
 
 interface IRoutePathListNodeProps {
     node: INode;
-    reference: any;
+    reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
 }
 

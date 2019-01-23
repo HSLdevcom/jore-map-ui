@@ -15,7 +15,7 @@ interface IRoutePathListObjectProps {
     headerTypeName: string;
     id: string;
     objectType: ListObjectType;
-    reference: any;
+    reference: React.RefObject<HTMLDivElement>;
 }
 
 export enum ListObjectType {

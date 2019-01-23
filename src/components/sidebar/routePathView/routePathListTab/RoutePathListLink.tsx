@@ -13,7 +13,7 @@ interface IRoutePathListLinkProps {
     routePathStore?: RoutePathStore;
     previousNode?: INode;
     routePathLink: IRoutePathLink;
-    reference: any;
+    reference: React.RefObject<HTMLDivElement>;
     nextNode?: INode;
 }
 
