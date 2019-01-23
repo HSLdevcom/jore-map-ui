@@ -1,4 +1,4 @@
-import RoutePathStore, { AddLinkDirection } from '~/stores/routePathStore';
+import RoutePathStore, { AddLinkDirection, AddRoutePathLinkState } from '~/stores/routePathStore';
 import NotificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import NodeType from '~/enums/nodeType';
@@ -65,6 +65,12 @@ class AddNewRoutePathLinkTool implements BaseTool {
             RoutePathStore!.routePath!.routePathLinks!.length === 0;
 
         return RoutePathStore!.isCreating && hasRoutePathLinks;
+    }
+
+    public isNodeHighlighted = (node: INode) => {
+        return RoutePathStore.addRoutePathLinkInfo.state
+            === AddRoutePathLinkState.SetTargetLocation &&
+            RoutePathStore!.isRoutePathNodeMissingNeighbour(node);
     }
 }
 

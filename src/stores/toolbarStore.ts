@@ -31,6 +31,7 @@ export class ToolbarStore {
         this._disabledTools = [
             ToolbarTool.Print,
         ];
+        this._selectedTool = null;
     }
 
     @computed

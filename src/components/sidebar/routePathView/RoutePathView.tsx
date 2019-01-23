@@ -3,7 +3,7 @@ import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
 import Loader from '~/components/shared/loader/Loader';
-import { RoutePathStore } from '~/stores/routePathStore';
+import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
 import navigator from '~/routing/navigator';
 import { RouteStore } from '~/stores/routeStore';
@@ -21,7 +21,6 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     isLoading: boolean;
-    selectedTabIndex: number;
 }
 
 interface IRoutePathViewProps {
@@ -40,7 +39,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         super(props);
         this.state = {
             isLoading: true,
-            selectedTabIndex: 0,
         };
     }
 
@@ -93,15 +91,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setRoutePath(routePath);
     }
 
-    public selectTab = (selectedTabIndex: number) => () => {
-        this.setState({
-            selectedTabIndex,
-        });
-    }
-
     public renderTabContent = () => {
-        switch (this.state.selectedTabIndex) {
-        case 0: {
+        if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
                 <RoutePathTab
                     routePath={this.props.routePathStore!.routePath!}
@@ -109,17 +100,11 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 />
             );
         }
-        case 1: {
-            return (
-                <RoutePathLinksTab
-                    routePath={this.props.routePathStore!.routePath!}
-                />
-            );
-        }
-        default: {
-            return null;
-        }
-        }
+        return (
+            <RoutePathLinksTab
+                routePath={this.props.routePathStore!.routePath!}
+            />
+        );
     }
 
     async componentDidMount() {
@@ -158,10 +143,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     isAddingNew={this.props.isAddingNew}
                 />
                 <div>
-                    <RoutePathTabs
-                        selectedTab={this.state.selectedTabIndex}
-                        selectTab={this.selectTab}
-                    />
+                    <RoutePathTabs />
                 </div>
                 {this.renderTabContent()}
             </div>
