@@ -1,4 +1,4 @@
-import {ILine, IRoute, IRoutePath} from '~/models';
+import { ILine, IRoute, IRoutePath } from '~/models';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import RoutePathFactory from './routePathFactory';

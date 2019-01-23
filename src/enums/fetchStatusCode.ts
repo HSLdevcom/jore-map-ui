@@ -10,19 +10,19 @@ export default FetchStatusCode;
 
 const isOk = (statusCode: FetchStatusCode) => {
     return statusCode === FetchStatusCode.OK;
-}
+};
 
 const isClientError = (statusCode: FetchStatusCode) => {
     return statusCode < 500 && statusCode >= 400;
-}
+};
 
 const isNotFound = (statusCode: FetchStatusCode) => {
     return statusCode === FetchStatusCode.NOT_FOUND;
-}
+};
 
 const isServerError = (statusCode: FetchStatusCode) => {
     return statusCode < 600 && statusCode >= 500;
-}
+};
 
 export {
   isOk,
