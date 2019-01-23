@@ -7,6 +7,9 @@ import { FiChevronRight } from 'react-icons/fi';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import InputContainer from '../../InputContainer';
 import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 import * as s from './routePathListObject.scss';
@@ -83,6 +86,11 @@ class RoutePathListNode
     }
 
     private openInNetworkView = () => {
+        const editNetworkLink = routeBuilder
+            .to(SubSites.networkNode)
+            .toTarget(this.props.node.id)
+            .toLink();
+        navigator.goTo(editNetworkLink);
     }
 
     private renderStopView = (stop: IStop) => {
