@@ -20,12 +20,10 @@ interface IRoutePathLinksTabProps {
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     reactionDisposer: IReactionDisposer;
     listObjectReferences: { [id: string] : React.RefObject<HTMLDivElement> } = {};
-    listReference: React.RefObject<HTMLDivElement>;
 
     constructor(props: IRoutePathLinksTabProps) {
         super(props);
         this.listObjectReferences = {};
-        this.listReference = React.createRef<HTMLDivElement>();
     }
 
     private renderList = (routePathLinks: IRoutePathLink[]) => {
@@ -68,11 +66,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
         if (extendedObjects.length === 1) {
             const id = extendedObjects[0];
             const item = this.listObjectReferences[id].current!;
-            const parentHeight = this.listReference.current!.offsetHeight;
-            this.listReference.current!.scrollTo({
-                top: item.offsetTop - (parentHeight / 2) - (item.offsetHeight / 2),
-                behavior: 'smooth',
-            });
+            item.scrollIntoView({ block: 'center', behavior: 'smooth' });
         }
     }
 
@@ -98,7 +92,6 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
             <div className={s.routePathLinksView}>
                 <div
                     className={s.contentWrapper}
-                    ref={this.listReference}
                 >
                     {this.renderList(routePathLinks)}
                 </div>
