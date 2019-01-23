@@ -22,11 +22,13 @@ export class GeometryEventStore {
         this.initClearEventListOnPageChange();
     }
 
-    @computed get events(): IEvent[] {
+    @computed
+    get events(): IEvent[] {
         return this._events;
     }
 
-    @computed get hasEvents(): boolean {
+    @computed
+    get hasEvents(): boolean {
         return this._events.length !== 0;
     }
 

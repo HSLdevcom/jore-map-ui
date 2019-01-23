@@ -22,6 +22,7 @@ export class RouteStore {
         this._routes = value;
     }
 
+    @computed
     get visibleRoutePathAmount(): number {
         let visibleRoutePathsTotal = 0;
         this._routes.forEach((route: IRoute) => {

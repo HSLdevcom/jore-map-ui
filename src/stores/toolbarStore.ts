@@ -57,12 +57,10 @@ export class ToolbarStore {
         this._selectedTool.activate();
     }
 
-    @computed
     public isSelected = (tool: ToolbarTool): boolean => {
         return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
     }
 
-    @computed
     public isDisabled = (tool: ToolbarTool): boolean => {
         return this._disabledTools.indexOf(tool) > -1;
     }

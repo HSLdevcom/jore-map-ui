@@ -21,7 +21,8 @@ export class SearchStore {
         ];
     }
 
-    @computed get searchInput(): string {
+    @computed
+    get searchInput(): string {
         return this._searchInput;
     }
 
@@ -51,11 +52,13 @@ export class SearchStore {
         this._subLineItems = [];
     }
 
-    @computed get subLineItems(): any {
+    @computed
+    get subLineItems(): any {
         return this._subLineItems;
     }
 
-    @computed get selectedTransitTypes(): TransitType[] {
+    @computed
+    get selectedTransitTypes(): TransitType[] {
         return this._selectedTransitTypes;
     }
 

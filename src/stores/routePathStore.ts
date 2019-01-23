@@ -67,12 +67,10 @@ export class RoutePathStore {
         return this._isGeometryValid;
     }
 
-    @computed
     public isNodeHighlighted = (nodeId: string) => {
         return this._highlightedNodes.some(n => n === nodeId);
     }
 
-    @computed
     public isLinkHighlighted = (linkId: string) => {
         return this._highlightedLinks.some(l => l === linkId);
     }
@@ -132,7 +130,6 @@ export class RoutePathStore {
         this._hasUnsavedModifications = true;
     }
 
-    @computed
     public isRoutePathNodeMissingNeighbour = (node: INode) => (
         // A node needs to have an even amount of neighbours
             this._routePath!.routePathLinks!
@@ -178,7 +175,6 @@ export class RoutePathStore {
             );
     }
 
-    @computed
     public getLinkGeom = (linkId: string) => {
         const link = this._routePath!.routePathLinks!.find(l => l.id === linkId);
         if (link) {
@@ -187,7 +183,6 @@ export class RoutePathStore {
         return null;
     }
 
-    @computed
     public getNodeGeom = (nodeId: string) => {
         let node = this._routePath!.routePathLinks!.find(l => l.startNode.id === nodeId);
         if (!node) {
