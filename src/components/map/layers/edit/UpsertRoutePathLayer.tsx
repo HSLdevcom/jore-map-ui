@@ -6,7 +6,7 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import {
-    RoutePathStore, AddLinkDirection, AddRoutePathLinkState, RoutePathViewTab,
+    RoutePathStore, AddLinkDirection, RoutePathViewTab,
 } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
@@ -76,54 +76,39 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         previousRPLink?: IRoutePathLink,
         nextRPLink?: IRoutePathLink,
     ) => {
-        let onNodeClick =
+
+        const onNodeClick =
             this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onNodeClick ?
                 this.props.toolbarStore!.selectedTool!.onNodeClick!(
                     node, previousRPLink, nextRPLink)
-                : undefined;
+                // Default
+                : () => this.defaultActionOnObjectClick(node.id);
 
-        let isHighlighted = this.props.routePathStore!.isObjectHighlighted(node.id);
-
-        if (
-            this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)
-            && this.props.routePathStore!.addRoutePathLinkInfo.state
-            === AddRoutePathLinkState.SetTargetLocation) {
-            if (this.props.routePathStore!.isRoutePathNodeMissingNeighbour(node)) {
-                isHighlighted = true;
-            } else {
-                onNodeClick = () => {};
-            }
-        } else if (
-            this.props.toolbarStore!.selectedTool === null &&
-            !onNodeClick
-        ) {
-            onNodeClick = () => this.defaultActionOnObjectClick(node.id);
-        }
+        const isNodeHighlighted =
+            this.props.toolbarStore!.selectedTool &&
+            this.props.toolbarStore!.selectedTool!.isNodeHighlighted ?
+                this.props.toolbarStore!.selectedTool!.isNodeHighlighted!(
+                    node)
+                // Default
+                : this.props.routePathStore!.isObjectHighlighted(node.id);
 
         return (
             <NodeMarker
                 key={`${node.id}-${index}`}
                 onClick={onNodeClick}
                 node={node}
-                isHighlighted={isHighlighted}
+                isHighlighted={isNodeHighlighted}
             />
         );
     }
 
     private renderLink = (routePathLink: IRoutePathLink) => {
-        let onRoutePathLinkClick =
+        const onRoutePathLinkClick =
             this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick ?
                 this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
-                : undefined;
-
-        if (
-            this.props.toolbarStore!.selectedTool === null &&
-            !onRoutePathLinkClick
-        ) {
-            onRoutePathLinkClick = () => this.defaultActionOnObjectClick(routePathLink.id);
-        }
+                : () => this.defaultActionOnObjectClick(routePathLink.id);
 
         return [
             (
