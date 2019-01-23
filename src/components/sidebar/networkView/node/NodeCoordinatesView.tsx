@@ -3,10 +3,14 @@ import { ICoordinates } from '~/models';
 import * as s from '~/components/sidebar/networkView/node/nodeCoordinatesView.scss';
 import InputContainer from '~/components/sidebar/InputContainer';
 
-const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:{
-    label: string,
-    coordinates: ICoordinates,
-    onChangeCoordinates: (coordinates: ICoordinates) => void }) => {
+interface INodeCoordinatesViewProps {
+    label: string;
+    coordinates: ICoordinates;
+    onChangeCoordinates: (coordinates: ICoordinates) => void;
+}
+
+const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:
+                                 INodeCoordinatesViewProps) => {
     const latChange = (v: string) => {
         const lat = Number(v);
         onChangeCoordinates({ ...coordinates, lat });
@@ -22,12 +26,12 @@ const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:{
                     <InputContainer
                         value={coordinates.lat}
                         onChange={latChange}
-                        label={'Lat:'}
+                        label={'Latitude'}
                     />
                     <InputContainer
                         value={coordinates.lon}
                         onChange={lonChange}
-                        label={'Lon:'}
+                        label={'Longitude'}
                     />
             </div>
         </div>
