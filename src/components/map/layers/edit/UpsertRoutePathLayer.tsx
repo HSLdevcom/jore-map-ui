@@ -193,11 +193,17 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             this.props!.routePathStore!.isRoutePathNodeMissingNeighbour(fixedNode);
 
         if (isMissingNeighbours) {
+            const direction = this.props.routePathStore!.addRoutePathLinkInfo.direction;
+            const orderNumber =
+                direction === AddLinkDirection.AfterNode
+                ? routePathLink.orderNumber + 1
+                : routePathLink.orderNumber;
+
             const newRoutePathLinks =
-            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                fixedNode.id,
-                this.props.routePathStore!.addRoutePathLinkInfo.direction,
-                routePathLink.orderNumber);
+                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
+                    fixedNode.id,
+                    this.props.routePathStore!.addRoutePathLinkInfo.direction,
+                    orderNumber);
             this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
         } else {
             this.props.routePathStore!.setNeighborRoutePathLinks([]);
