@@ -4,6 +4,8 @@ import { inject, observer } from 'mobx-react';
 import ILink from '~/models/ILink';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
+import { ICoordinates } from '~/models';
 import NodeMarker from '../mapIcons/NodeMarker';
 
 interface IEditNetworkLayerProps {
@@ -33,6 +35,11 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         );
     }
 
+    private onMoveMarker = (coordinatesType: CoordinatesType) => (coordinates: ICoordinates) => {
+        const node = { ...this.props.editNetworkStore!.node!, [coordinatesType]:coordinates };
+        this.props.editNetworkStore!.setNode(node);
+    }
+
     private renderNode() {
         const node = this.props.editNetworkStore!.node;
         if (!node) return null;
@@ -41,6 +48,7 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
             <NodeMarker
                 isDraggable={true}
                 node={node}
+                onMoveMarker={this.onMoveMarker}
             />
         );
     }

@@ -1,7 +1,7 @@
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IStop from './IStop';
-import { ICoordinate } from '.';
+import { ICoordinates } from '.';
 
 export default interface INode {
     id: string;
@@ -9,7 +9,9 @@ export default interface INode {
     stop?: IStop;
     type: NodeType;
     transitTypes: TransitType[];
-    coordinates: ICoordinate;
+    coordinates: ICoordinates;
+    coordinatesManual: ICoordinates;
+    coordinatesProjection: ICoordinates;
     measurementDate: string;
     modifiedOn: string;
     modifiedBy: string;
