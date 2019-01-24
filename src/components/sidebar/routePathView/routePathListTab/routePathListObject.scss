@@ -32,22 +32,11 @@
                 display: flex;
                 flex-direction: row;
                 margin-left: 30px;
+                color: $blue;
+                font-weight: bold;
+                font-size: 22px;
+                white-space: nowrap;
 
-                .labelTypeName {
-                    font-size: 14px;
-                    height: 14px;
-                    margin-top: 8px;
-                    white-space: nowrap;
-                    width: 80px;
-                }
-        
-                .id {
-                    color: $blue;
-                    font-weight: bold;
-                    margin-left: 5px;
-                    font-size: 22px;
-                    white-space: nowrap;
-                }
             }
         
             .headerDescription {

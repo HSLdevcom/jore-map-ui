@@ -10,12 +10,12 @@ import * as s from './routePathListObject.scss';
 interface IRoutePathListObjectProps {
     mapStore?: MapStore;
     routePathStore?: RoutePathStore;
-    headerDescription?: JSX.Element;
     headerIcon: JSX.Element;
+    headerContent: string | React.ReactElement<HTMLDivElement>;
     headerTypeName: string;
-    id: string;
     objectType: ListObjectType;
     reference: React.RefObject<HTMLDivElement>;
+    id: string;
 }
 
 export enum ListObjectType {
@@ -93,19 +93,8 @@ class RoutePathListObject
                             </div>
                             {this.props.headerTypeName}
                         </div>
-                            {
-                                this.props.objectType === ListObjectType.Node &&
-                                <div className={s.label}>
-                                    <div className={s.labelTypeName}>
-                                        Solmun id
-                                    </div>
-                                    <div className={s.id}>
-                                        {this.props.id}
-                                    </div>
-                                </div>
-                            }
-                        <div className={s.headerDescription}>
-                            {this.props.headerDescription}
+                        <div className={s.label}>
+                            {this.props.headerContent}
                         </div>
                     </div>
                     <div className={s.itemToggle}>
