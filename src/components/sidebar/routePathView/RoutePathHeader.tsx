@@ -20,8 +20,9 @@ class RoutePathHeader extends React.Component<IRoutePathHeaderProps> {
             <div className={classnames(s.formSection, s.content, s.borderBotton)}>
                 <ViewHeader
                     closePromptMessage={this.props.hasModifications ? message : undefined}
-                    header={this.props.isAddingNew ? 'Uusi reitinsuunta' : 'Reitinsuunta'}
-                />
+                >
+                    {this.props.isAddingNew ? 'Uusi reitinsuunta' : 'Reitinsuunta'}
+                </ViewHeader>
                 <div className={s.topic}>
                     OTSIKKOTIEDOT
                 </div>

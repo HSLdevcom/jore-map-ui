@@ -164,6 +164,7 @@ const nodeQueryFields = `
     mittpvm
     geojson
     geojsonManual
+    geojsonProjection
     transittypes
     pysakkiBySoltunnus {
         pyssade

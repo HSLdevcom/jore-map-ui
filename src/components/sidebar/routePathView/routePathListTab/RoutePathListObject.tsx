@@ -15,10 +15,7 @@ interface IRoutePathListObjectProps {
     headerTypeName: string;
     id: string;
     objectType: ListObjectType;
-}
-
-interface IRoutePathListObjectState {
-    isExtended: boolean;
+    reference: React.RefObject<HTMLDivElement>;
 }
 
 export enum ListObjectType {
@@ -29,23 +26,14 @@ export enum ListObjectType {
 @inject('routePathStore', 'mapStore')
 @observer
 class RoutePathListObject
-    extends React.Component<IRoutePathListObjectProps, IRoutePathListObjectState> {
-    constructor(props: IRoutePathListObjectProps) {
-        super(props);
-
-        this.state = {
-            isExtended: false,
-        };
-    }
-
+    extends React.Component<IRoutePathListObjectProps> {
     private toggleIsExtended = () => {
-        const extending = !this.state.isExtended;
-        this.setState({
-            isExtended: !this.state.isExtended,
-        });
+        this.props.routePathStore!.toggleExtendedObject(this.props.id);
 
-        if (extending) {
-            this.onExtending();
+        if (this.props.routePathStore!.isObjectExtended(this.props.id)) {
+            this.props.mapStore!.setMapBounds(
+                this.getBounds(),
+            );
         }
     }
 
@@ -55,42 +43,35 @@ class RoutePathListObject
         if (this.props.objectType === ListObjectType.Link) {
             const positions = this.props.routePathStore!.getLinkGeom(this.props.id);
             if (positions) {
-                positions.forEach(pos => bounds.extend(pos[0]));
+                positions.forEach(pos => bounds.extend(pos));
             }
         } else {
             const position = this.props.routePathStore!.getNodeGeom(this.props.id);
             if (position) {
-                position.forEach(pos => bounds.extend(pos[0]));
+                position.forEach(pos => bounds.extend(pos));
             }
         }
 
         return bounds;
     }
 
-    private onExtending = () => {
-        this.props.mapStore!.setMapBounds(
-            this.getBounds(),
-        );
-    }
-
     private onMouseEnter = () => {
-        if (this.props.objectType === ListObjectType.Link) {
-            this.props.routePathStore!.setHighlightedLinks([this.props.id]);
-        } else {
-            this.props.routePathStore!.setHighlightedNodes([this.props.id]);
-        }
+        this.props.routePathStore!.setHighlightedObject(this.props.id);
     }
 
     private onMouseLeave = () => {
-        if (!this.state.isExtended) {
-            this.props.routePathStore!.setHighlightedLinks([]);
-            this.props.routePathStore!.setHighlightedNodes([]);
+        if (this.props.routePathStore!.isObjectHighlighted(this.props.id)) {
+            this.props.routePathStore!.setHighlightedObject(null);
         }
     }
 
     render() {
+        const isExtended = this.props.routePathStore!.isObjectExtended(
+            this.props.id,
+        );
         return (
             <div
+                ref={this.props.reference}
                 className={s.item}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
@@ -99,7 +80,7 @@ class RoutePathListObject
                     className={
                         classnames(
                             s.itemHeader,
-                            this.state.isExtended ? s.itemExtended : null,
+                            isExtended ? s.itemExtended : null,
                             this.props.objectType === ListObjectType.Node ? s.shadow : undefined,
                         )
                     }
@@ -129,11 +110,11 @@ class RoutePathListObject
                         </div>
                     </div>
                     <div className={s.itemToggle}>
-                        {this.state.isExtended && <FaAngleDown />}
-                        {!this.state.isExtended && <FaAngleRight />}
+                        {isExtended && <FaAngleDown />}
+                        {!isExtended && <FaAngleRight />}
                     </div>
                 </div>
-                { this.state.isExtended &&
+                { isExtended &&
                     <div className={s.itemContent}>
                         {this.props.children}
                     </div>

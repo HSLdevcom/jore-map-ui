@@ -7,12 +7,16 @@ import { FiChevronRight } from 'react-icons/fi';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import InputContainer from '../../InputContainer';
 import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 import * as s from './routePathListObject.scss';
 
 interface IRoutePathListNodeProps {
     node: INode;
+    reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
 }
 
@@ -82,6 +86,11 @@ class RoutePathListNode
     }
 
     private openInNetworkView = () => {
+        const editNetworkLink = routeBuilder
+            .to(SubSites.networkNode)
+            .toTarget(this.props.node.id)
+            .toLink();
+        navigator.goTo(editNetworkLink);
     }
 
     private renderStopView = (stop: IStop) => {
@@ -126,6 +135,7 @@ class RoutePathListNode
     render() {
         return (
             <RoutePathListObject
+                reference={this.props.reference}
                 id={this.props.node.id}
                 headerIcon={this.renderNodeHeaderIcon(this.props.node, this.props.routePathLink)}
                 objectType={ListObjectType.Node}

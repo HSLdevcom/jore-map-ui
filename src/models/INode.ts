@@ -10,6 +10,8 @@ export default interface INode {
     type: NodeType;
     transitTypes: TransitType[];
     coordinates: L.LatLng;
+    coordinatesManual: L.LatLng;
+    coordinatesProjection: L.LatLng;
     measurementDate: string;
     modifiedOn: string;
     modifiedBy: string;

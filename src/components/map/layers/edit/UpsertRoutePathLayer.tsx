@@ -5,7 +5,9 @@ import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
-import { RoutePathStore, AddLinkDirection, AddRoutePathLinkState } from '~/stores/routePathStore';
+import {
+    RoutePathStore, AddLinkDirection, RoutePathViewTab,
+} from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -28,13 +30,25 @@ interface IRoutePathLayerState {
 
 @inject('routePathStore', 'toolbarStore', 'mapStore')
 @observer
-class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
+class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     constructor(props: IRoutePathLayerProps) {
         super(props);
 
         this.state = {
             focusedRoutePathId: '',
         };
+    }
+
+    private defaultActionOnObjectClick = (id: string) => {
+        // Switch to info tab
+        this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
+        // Close all extended objects, in order to be able to calculate final height of items
+        this.props.routePathStore!.setExtendedObjects([]);
+        // Set extended object, which will trigger automatic scroll
+        this.props.routePathStore!.setExtendedObjects([id]);
+        // Set highlight
+        this.props.routePathStore!.setHighlightedObject(id);
+
     }
 
     private renderRoutePathLinks = () => {
@@ -62,32 +76,29 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
         previousRPLink?: IRoutePathLink,
         nextRPLink?: IRoutePathLink,
     ) => {
-        let onNodeClick =
+
+        const onNodeClick =
             this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onNodeClick ?
                 this.props.toolbarStore!.selectedTool!.onNodeClick!(
                     node, previousRPLink, nextRPLink)
-                : undefined;
+                // Default
+                : () => this.defaultActionOnObjectClick(node.id);
 
-        let isHighlighted = this.props.routePathStore!.isNodeHighlighted(node.id);
-
-        if (
-            this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)
-            && this.props.routePathStore!.addRoutePathLinkInfo.state
-            === AddRoutePathLinkState.SetTargetLocation) {
-            if (this.props.routePathStore!.isRoutePathNodeMissingNeighbour(node)) {
-                isHighlighted = true;
-            } else {
-                onNodeClick = () => {};
-            }
-        }
+        const isNodeHighlighted =
+            this.props.toolbarStore!.selectedTool &&
+            this.props.toolbarStore!.selectedTool!.isNodeHighlighted ?
+                this.props.toolbarStore!.selectedTool!.isNodeHighlighted!(
+                    node)
+                // Default
+                : this.props.routePathStore!.isObjectHighlighted(node.id);
 
         return (
             <NodeMarker
                 key={`${node.id}-${index}`}
                 onClick={onNodeClick}
                 node={node}
-                isHighlighted={isHighlighted}
+                isHighlighted={isNodeHighlighted}
             />
         );
     }
@@ -97,7 +108,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
             this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick ?
                 this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
-                : undefined;
+                : () => this.defaultActionOnObjectClick(routePathLink.id);
 
         return [
             (
@@ -109,7 +120,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
                     opacity={0.8}
                     onClick={onRoutePathLinkClick}
                 />
-            ), this.props.routePathStore!.isLinkHighlighted(routePathLink.id) &&
+            ), this.props.routePathStore!.isObjectHighlighted(routePathLink.id) &&
             (
                 <Polyline
                     positions={routePathLink.geometry}
@@ -182,11 +193,17 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
             this.props!.routePathStore!.isRoutePathNodeMissingNeighbour(fixedNode);
 
         if (isMissingNeighbours) {
+            const direction = this.props.routePathStore!.addRoutePathLinkInfo.direction;
+            const orderNumber =
+                direction === AddLinkDirection.AfterNode
+                ? routePathLink.orderNumber + 1
+                : routePathLink.orderNumber;
+
             const newRoutePathLinks =
-            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                fixedNode.id,
-                this.props.routePathStore!.addRoutePathLinkInfo.direction,
-                routePathLink.orderNumber);
+                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
+                    fixedNode.id,
+                    this.props.routePathStore!.addRoutePathLinkInfo.direction,
+                    orderNumber);
             this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
         } else {
             this.props.routePathStore!.setNeighborRoutePathLinks([]);
@@ -268,4 +285,4 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
     }
 }
 
-export default NewRoutePathLayer;
+export default UpsertRoutePathLayer;
