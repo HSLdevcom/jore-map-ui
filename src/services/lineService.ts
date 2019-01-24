@@ -7,7 +7,7 @@ import { ILine } from '~/models';
 import GraphqlQueries from './graphqlQueries';
 
 class LineService {
-    public static async fetchAllLines(): Promise<ILine[] | null> {
+    public static fetchAllLines = async (): Promise<ILine[] | null> => {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getAllLinesQuery() },
@@ -27,7 +27,7 @@ class LineService {
         }
     }
 
-    public static async fetchLine(lintunnus: string): Promise<ILine | null> {
+    public static fetchLine = async (lintunnus: string): Promise<ILine | null> => {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getLineQuery(), variables: { lineId: lintunnus } },

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import ButtonType from '~/enums/buttonType';
 import * as s from './button.scss';

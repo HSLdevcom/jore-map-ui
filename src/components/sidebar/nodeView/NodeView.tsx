@@ -46,7 +46,7 @@ class NodeView extends React.Component
         };
     }
 
-    public async componentDidMount() {
+    async componentDidMount() {
         const selectedNodeId = this.props.match!.params.id;
         if (selectedNodeId) {
             this.props.mapStore!.setSelectedNodeId(selectedNodeId);
@@ -54,7 +54,7 @@ class NodeView extends React.Component
         }
     }
 
-    public componentWillReceiveProps(props: INodeViewProps) {
+    componentWillReceiveProps(props: INodeViewProps) {
         const nodeId = props.match!.params.id;
         if (nodeId) {
             this.props.mapStore!.setSelectedNodeId(nodeId);
@@ -62,11 +62,11 @@ class NodeView extends React.Component
         }
     }
 
-    public componentWillUnmount() {
+    componentWillUnmount() {
         this.props.mapStore!.setSelectedNodeId(null);
     }
 
-    private async queryNode(nodeId: string) {
+    private queryNode = async (nodeId: string) => {
         this.setState({ isLoading: true });
 
         const node = await NodeService.fetchNode(nodeId);
@@ -77,7 +77,7 @@ class NodeView extends React.Component
         this.setState({ isLoading: false });
     }
 
-    private toggleStopInUse() {
+    private toggleStopInUse = () => {
         // Todo
     }
 
@@ -90,12 +90,12 @@ class NodeView extends React.Component
         });
     }
 
-    private capitalizeFirstLetter(input: string|null) {
+    private capitalizeFirstLetter = (input: string|null) => {
         if (!input) return '';
         return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
     }
 
-    private renderNodeName(node: INode) {
+    private renderNodeName = (node: INode) => {
         let nodeName = null;
         if (node.stop && (node.stop.nameFi || node.stop.nameSe)) {
             if (node.stop.nameFi) nodeName = node.stop.nameFi;
@@ -156,7 +156,7 @@ class NodeView extends React.Component
             this.setState({ node });
         }
 
-    public render() {
+    render() {
         const selectedNodeId = this.props.match!.params.id;
         return (
             <div className={s.nodeView}>

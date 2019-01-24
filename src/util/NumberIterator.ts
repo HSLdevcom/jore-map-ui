@@ -3,11 +3,11 @@ const initialValue = 0;
 class NumberIterator {
     num = initialValue;
 
-    public getNumber() {
+    public getNumber = () => {
         return this.num += 1;
     }
 
-    public reset() {
+    public reset = () => {
         this.num = initialValue;
     }
 }

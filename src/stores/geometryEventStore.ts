@@ -22,28 +22,30 @@ export class GeometryEventStore {
         this.initClearEventListOnPageChange();
     }
 
-    @computed get events(): IEvent[] {
+    @computed
+    get events(): IEvent[] {
         return this._events;
     }
 
-    @computed get hasEvents(): boolean {
+    @computed
+    get hasEvents(): boolean {
         return this._events.length !== 0;
     }
 
     @action
-    private clearEvents() {
+    private clearEvents = () => {
         this._events = [];
     }
 
     @action
-    private pushToEvents(
+    private pushToEvents = (
         { action, entityName, preObject }
         : {
             preObject: any,
             action: eventType,
             entityName: entityName,
         },
-        ) {
+        ) => {
         this._events.push(
             {
                 action,
@@ -53,7 +55,7 @@ export class GeometryEventStore {
     }
 
     @action
-    public undo() {
+    public undo = () => {
         const event = this._events.pop();
         if (event) {
             switch (event.action) {
@@ -64,7 +66,7 @@ export class GeometryEventStore {
         }
     }
 
-    private initClearEventListOnPageChange() {
+    private initClearEventListOnPageChange = () => {
         observe(
             Navigator!.getStore(),
             () => {
@@ -104,7 +106,7 @@ export class GeometryEventStore {
     }
 
     // RoutePath watcher. TODO: move this logic to some other place
-    private initRoutePathLinkObservable() {
+    private initRoutePathLinkObservable = () => {
         // Creating watcher which will trigger when RoutePathStore is initialized
         // We cannot watch RoutePathStore!.routePath!.routePathLinks!
         // before we know that it is defined
@@ -136,7 +138,7 @@ export class GeometryEventStore {
         );
     }
 
-    private observeRoutePathLinks() {
+    private observeRoutePathLinks = () => {
         // Removing old watcher
         if (this._routePathLinkReactor) this._routePathLinkReactor();
         // Creating watcher for RoutePathStore.routePath.routePathLinks.
@@ -152,10 +154,10 @@ export class GeometryEventStore {
         );
     }
 
-    private logRoutePathLinkChanges(
+    private logRoutePathLinkChanges = (
         change: IObjectDidChange,
         routePathLinks: IRoutePathLink[],
-        ) {
+        ) => {
         if (change.hasOwnProperty(IObjectDidChangeUpdateTypes.ADDED)) {
             change[IObjectDidChangeUpdateTypes.ADDED].slice()
                 .forEach(() => {

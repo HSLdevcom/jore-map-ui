@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router';
 import { RouteStore } from '~/stores/routeStore';
@@ -22,18 +22,18 @@ interface IRoutesViewProps{
 @inject('routeStore', 'searchStore')
 @observer
 class RoutesView extends React.Component<IRoutesViewProps> {
-    public toggleTransitType = (type: TransitType) => {
+    private toggleTransitType = (type: TransitType) => {
         this.props.searchStore!.toggleTransitType(type);
     }
 
-    public componentDidUpdate() {
+    componentDidUpdate() {
         if (!navigator.getQueryParam(QueryParams.routes)) {
             const homeLink = routeBuilder.to(subSites.home).toLink();
             navigator.goTo(homeLink);
         }
     }
 
-    public render() {
+    render() {
         return (
             <div className={s.routesView}>
                 <LineSearch/>

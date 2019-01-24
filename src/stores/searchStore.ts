@@ -21,17 +21,18 @@ export class SearchStore {
         ];
     }
 
-    @computed get searchInput(): string {
+    @computed
+    get searchInput(): string {
         return this._searchInput;
     }
 
     @action
-    public setSearchInput(input: string) {
+    public setSearchInput = (input: string) => {
         this._searchInput = input;
     }
 
     @action
-    public addSubLineItem(routeId: string, routePathId: string) {
+    public addSubLineItem = (routeId: string, routePathId: string) => {
         this._subLineItems.push({
             routeId,
             routePathId,
@@ -39,7 +40,7 @@ export class SearchStore {
     }
 
     @action
-    public removeSubLineItem(routeId: string, routePathId: string) {
+    public removeSubLineItem = (routeId: string, routePathId: string) => {
         this._subLineItems = this._subLineItems.filter((subLineItem) =>  {
             return !(subLineItem.routeId === routeId
                 && subLineItem.routePathId === routePathId);
@@ -47,20 +48,22 @@ export class SearchStore {
     }
 
     @action
-    public removeAllSubLineItems() {
+    public removeAllSubLineItems = () => {
         this._subLineItems = [];
     }
 
-    @computed get subLineItems(): any {
+    @computed
+    get subLineItems(): any {
         return this._subLineItems;
     }
 
-    @computed get selectedTransitTypes(): TransitType[] {
+    @computed
+    get selectedTransitTypes(): TransitType[] {
         return this._selectedTransitTypes;
     }
 
     @action
-    public toggleTransitType(type: TransitType) {
+    public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
             this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {

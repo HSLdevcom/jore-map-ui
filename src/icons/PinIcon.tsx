@@ -1,5 +1,5 @@
 //tslint:disable
-import * as React from 'react';
+import React from 'react';
 import {CSSProperties} from 'react';
 
 const pinIcon = ({color}: {color: string}) => {

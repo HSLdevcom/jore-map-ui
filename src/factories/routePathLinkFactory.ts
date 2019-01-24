@@ -7,7 +7,7 @@ import { NEW_OBJECT_TAG } from '~/constants';
 import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {
-    private static getTemporaryRoutePathLinkId() {
+    private static getTemporaryRoutePathLinkId = () => {
         return `${NEW_OBJECT_TAG}-${NumberIterator.getNumber()}`;
     }
 

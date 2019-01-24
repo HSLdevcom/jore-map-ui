@@ -20,17 +20,17 @@ export class EditNetworkStore {
     }
 
     @action
-    setLinks(links: ILink[]) {
+    public setLinks = (links: ILink[]) => {
         this._links = links;
     }
 
     @action
-    setNode(node: INode) {
+    public setNode = (node: INode) => {
         this._node = node;
     }
 
     @action
-    clear() {
+    public clear = () => {
         this._links = [];
         this._node = null;
     }

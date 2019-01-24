@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { SearchStore } from '~/stores/searchStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -24,7 +24,7 @@ class HomeView extends React.Component<IHomeViewProps> {
         this.props.routePathStore!.clear();
     }
 
-    public render() {
+    render() {
         return (
             <div className={s.homeView}>
                 <LineSearch/>

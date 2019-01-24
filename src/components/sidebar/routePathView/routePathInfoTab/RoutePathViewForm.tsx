@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { observer, inject } from 'mobx-react';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
@@ -21,20 +21,20 @@ interface IRoutePathViewFormProps {
 @inject('routePathStore')
 @observer
 class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
-    public onClick = () => {
+    private onClick = () => {
         // TODO
     }
 
-    public onChange = (property: string) =>
+    private onChange = (property: string) =>
     (value: string, validationResult: IValidationResult) => {
         this.props.onChange(property, value, validationResult);
     }
 
-    public calculateLength = () => {
+    private calculateLength = () => {
         this.props.routePathStore!.recalculateLength();
     }
 
-    public render() {
+    render() {
         const isEditingDisabled = this.props.isEditingDisabled;
 
         const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';

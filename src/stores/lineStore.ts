@@ -8,12 +8,13 @@ export class LineStore {
         this._allLines = [];
     }
 
-    @computed get allLines(): ILine[] {
+    @computed
+    get allLines(): ILine[] {
         return this._allLines;
     }
 
     @action
-    public setAllLines(lines: ILine[]) {
+    public setAllLines = (lines: ILine[]) => {
         this._allLines = lines;
     }
 }
