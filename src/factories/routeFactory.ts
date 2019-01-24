@@ -1,4 +1,4 @@
-import { IRoute, IRoutePath, ILine } from '~/models';
+import { ILine, IRoute, IRoutePath } from '~/models';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import RoutePathFactory from './routePathFactory';
@@ -12,7 +12,7 @@ class RouteFactory {
                         externalRoute.reitunnus, routePath);
                 });
 
-        const route = {
+        return {
             line,
             routePaths: routePaths
                 .sort((a, b) => b.endTime.getTime() - a.endTime.getTime()),
@@ -21,8 +21,6 @@ class RouteFactory {
             lineId: externalRoute.lintunnus,
             id: externalRoute.reitunnus,
         };
-
-        return route;
     }
 }
 

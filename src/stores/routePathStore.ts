@@ -80,12 +80,12 @@ export class RoutePathStore {
     }
 
     @action
-    setActiveTab(tab: RoutePathViewTab) {
+    public setActiveTab = (tab: RoutePathViewTab) => {
         this._activeTab = tab;
     }
 
     @action
-    toggleActiveTab() {
+    public toggleActiveTab = () => {
         if (this._activeTab === RoutePathViewTab.Info) {
             this._activeTab = RoutePathViewTab.List;
         } else {
@@ -93,12 +93,12 @@ export class RoutePathStore {
         }
     }
 
-    isObjectHighlighted(objectId: string) {
+    public isObjectHighlighted = (objectId: string) => {
         return this._highlightedObject === objectId
             || (!this._highlightedObject && this.isObjectExtended(objectId));
     }
 
-    isObjectExtended(objectId: string) {
+    public isObjectExtended = (objectId: string) => {
         return this._extendedObjects.some(n => n === objectId);
     }
 
@@ -108,12 +108,12 @@ export class RoutePathStore {
     }
 
     @action
-    setHighlightedObject(objectId: string | null) {
+    public setHighlightedObject = (objectId: string | null) => {
         this._highlightedObject = objectId;
     }
 
     @action
-    toggleExtendedObject(objectId: string) {
+    public toggleExtendedObject = (objectId: string) => {
         if (this._extendedObjects.some(o => o === objectId)) {
             this._extendedObjects = this._extendedObjects.filter(o => o !== objectId);
         } else {
@@ -122,22 +122,22 @@ export class RoutePathStore {
     }
 
     @action
-    setExtendedObjects(objectIds: string[]) {
+    public setExtendedObjects = (objectIds: string[]) => {
         this._extendedObjects = objectIds;
     }
 
     @action
-    setIsCreating(value: boolean) {
+    public setIsCreating = (value: boolean) => {
         this._isCreating = value;
     }
 
     @action
-    setAddRoutePathLinkDirection(direction: AddLinkDirection) {
+    public setAddRoutePathLinkDirection = (direction: AddLinkDirection) => {
         this._addRoutePathLinkDirection = direction;
     }
 
     @action
-    setRoutePath(routePath: IRoutePath|null) {
+    public setRoutePath = (routePath: IRoutePath|null) => {
         this._routePath = routePath;
         if (!routePath) {
             this._neighborRoutePathLinks = [];
@@ -145,7 +145,7 @@ export class RoutePathStore {
     }
 
     @action
-    updateRoutePathProperty(property: string, value: string|number|Date) {
+    public updateRoutePathProperty = (property: string, value: string|number|Date) => {
         this._routePath = {
             ...this._routePath!,
             [property]: value,
@@ -154,14 +154,14 @@ export class RoutePathStore {
     }
 
     @action
-    setNeighborRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+    public setNeighborRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._neighborRoutePathLinks = routePathLinks;
         this._addRoutePathLinkState = routePathLinks.length === 0
             ? AddRoutePathLinkState.SetTargetLocation : AddRoutePathLinkState.AddLinks;
     }
 
     @action
-    addLink(routePathLink: IRoutePathLink) {
+    public addLink = (routePathLink: IRoutePathLink) => {
         this._routePath!.routePathLinks!.splice(
             // Order numbers start from 1
             routePathLink.orderNumber - 1,
@@ -180,7 +180,7 @@ export class RoutePathStore {
     )
 
     @action
-    removeLink(id: string) {
+    public removeLink = (id: string) => {
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.filter(link => link.id !== id);
         this.onRoutePathLinksChanged();
@@ -188,25 +188,25 @@ export class RoutePathStore {
     }
 
     @action
-    setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._routePath!.routePathLinks =
             routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
         this.recalculateLength();
     }
 
     @action
-    clear() {
+    public clear = () => {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
     }
 
     @action
-    resetHaveLocalModifications() {
+    public resetHaveLocalModifications = () => {
         this._hasUnsavedModifications = false;
     }
 
     @action
-    recalculateLength() {
+    public recalculateLength = () => {
         this.updateRoutePathProperty(
             'length',
             Math.floor(

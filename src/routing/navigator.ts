@@ -9,35 +9,35 @@ class Navigator {
         this.store = new RouterStore();
     }
 
-    public getStore() {
+    public getStore = () => {
         return this.store;
     }
 
-    public goTo(url: string) {
+    public goTo = (url: string) => {
         this.store.history.push(url);
     }
 
     /**
      * @return {String} for example /routePath/new
      */
-    public getPathName() {
+    public getPathName = () => {
         return this.store.location.pathname;
     }
 
     /**
      * @return {String} for example ?routes=0033
      */
-    public getSearch() {
+    public getSearch = () => {
         return this.store.location.search;
     }
 
     // TODO, rename
-    public getQueryParam(param: QueryParams) {
+    public getQueryParam = (param: QueryParams) => {
         return this.getQueryParamValues()[param];
     }
 
     // TODO, rename
-    public getQueryParamValues() {
+    public getQueryParamValues = () => {
         return qs.parse(
             this.store.location.search,
             { ignoreQueryPrefix: true },

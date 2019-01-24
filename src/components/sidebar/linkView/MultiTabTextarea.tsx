@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import * as React from 'react';
+import React from 'react';
 import * as s from './multiTabTextarea.scss';
 
 interface IMultiTabInputProps {
@@ -19,13 +19,13 @@ class MultiTabTextarea extends React.Component<IMultiTabInputProps, IMultiTabInp
 
     }
 
-    public onTabClick = (selectedTabIndex: number) => () => {
+    private onTabClick = (selectedTabIndex: number) => () => {
         this.setState({
             selectedTabIndex,
         });
     }
 
-    public generateTabs = () => {
+    private generateTabs = () => {
         return this.props.tabs.map((tab: string, index) => {
             const classname = classnames(s.tabButton, s.tabButtonPiece);
             return(
@@ -44,7 +44,7 @@ class MultiTabTextarea extends React.Component<IMultiTabInputProps, IMultiTabInp
         });
     }
 
-    public render(): any {
+    render() {
         return (
              <div className={s.tabsInputContainer}>
                 <div className={s.flexRow}>

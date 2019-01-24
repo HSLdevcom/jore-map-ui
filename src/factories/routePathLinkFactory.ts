@@ -6,12 +6,12 @@ import { NEW_OBJECT_TAG } from '~/constants';
 import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {
-    private static getPositions(geojson: string) {
+    private static getPositions = (geojson: string) => {
         const coordinates = JSON.parse(geojson).coordinates;
         return coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
     }
 
-    private static getTemporaryRoutePathLinkId() {
+    private static getTemporaryRoutePathLinkId = () => {
         return `${NEW_OBJECT_TAG}-${NumberIterator.getNumber()}`;
     }
 

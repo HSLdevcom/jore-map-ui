@@ -45,7 +45,7 @@ export class NetworkStore {
     }
 
     @action
-    setSelectedDate(value: Moment.Moment|string) {
+    public setSelectedDate = (value: Moment.Moment|string) => {
         if (typeof value === 'string') {
             this._selectedDate = Moment(value);
         } else {
@@ -63,12 +63,12 @@ export class NetworkStore {
         return this.visibleMapLayers;
     }
 
-    public isMapLayerVisible(mapLayer: MapLayer) {
+    public isMapLayerVisible = (mapLayer: MapLayer) => {
         return this._visibleMapLayers.includes(mapLayer);
     }
 
     @action
-    public toggleMapLayerVisibility(mapLayer: MapLayer) {
+    public toggleMapLayerVisibility = (mapLayer: MapLayer) => {
         if (this._visibleMapLayers.includes(mapLayer)) {
             this.hideMapLayer(mapLayer);
         } else {
@@ -77,34 +77,34 @@ export class NetworkStore {
     }
 
     @action
-    public showMapLayer(mapLayer: MapLayer) {
+    public showMapLayer = (mapLayer: MapLayer) => {
         // Need to do concat (instead of push) to trigger ReactionDisposer watcher
         this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer]);
     }
 
     @action
-    public hideMapLayer(mapLayer: MapLayer) {
+    public hideMapLayer = (mapLayer: MapLayer) => {
         this._visibleMapLayers = this._visibleMapLayers.filter(mL => mL !== mapLayer);
     }
 
     @action
-    public setSelectedTransitTypes(types: TransitType[]) {
+    public setSelectedTransitTypes = (types: TransitType[]) => {
         this._selectedTransitTypes = types;
     }
 
     @action
-    public selectAllTransitTypes() {
+    public selectAllTransitTypes = () => {
         this._selectedTransitTypes = TRANSIT_TYPES;
     }
 
     @action
-    public setNodeSize(nodeSize: NodeSize) {
+    public setNodeSize = (nodeSize: NodeSize) => {
         this._nodeSize = nodeSize;
     }
 
     // TODO rename as toggleSelectedTransitType?
     @action
-    public toggleTransitType(type: TransitType) {
+    public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
             this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {

@@ -7,7 +7,7 @@ export interface IValidationResult {
 }
 
 class FormValidator {
-    public static validate(value: any, rule: string) : IValidationResult {
+    public static validate = (value: any, rule: string) : IValidationResult => {
         const validator = new Validator(
             {
                 value,

@@ -16,19 +16,19 @@ export class IRequestError {
 const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 class ApiClient {
-    public async updateObject(entityName: entityName, object: any) {
+    public updateObject = async (entityName: entityName, object: any) => {
         return await this.sendRequest(RequestMethod.POST, entityName, object);
     }
 
-    public async createObject(entityName: entityName, object: any) {
+    public createObject = async (entityName: entityName, object: any) => {
         return await this.sendRequest(RequestMethod.PUT, entityName, object);
     }
 
-    public async deleteObject(entityName: entityName, object: any) {
+    public deleteObject = async (entityName: entityName, object: any) => {
         return await this.sendRequest(RequestMethod.DELETE, entityName, object);
     }
 
-    private async sendRequest(method: RequestMethod, entityName: entityName, object: any) {
+    private sendRequest = async (method: RequestMethod, entityName: entityName, object: any) => {
         const formattedObject = ApiClientHelper.format(object);
         let error : (IRequestError | null) = null;
 
@@ -61,7 +61,7 @@ class ApiClient {
         }
     }
 
-    private getUrl(entityName: entityName) {
+    private getUrl = (entityName: entityName) => {
         return `${API_URL}/${entityName}`;
     }
 }

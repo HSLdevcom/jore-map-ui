@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
-import * as React from 'react';
+import React from 'react';
 import { LineStore } from '~/stores/lineStore';
 import { ILine, ILineRoute } from '~/models';
 import TransitType from '~/enums/transitType';
@@ -56,7 +56,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.reactionDisposer();
     }
 
-    async queryAllLines() {
+    private queryAllLines = async () => {
         this.setState({ isLoading: true });
         const lines = await LineService.fetchAllLines();
         if (lines !== null) {
@@ -65,7 +65,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.setState({ isLoading: false });
     }
 
-    public filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
+    private filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
         const searchTerm = this.props.searchStore!.searchInput.toLowerCase();
 
         // Filter by transitType
@@ -142,7 +142,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.paginatedDiv.current!.scrollTo(0, 0);
     }
 
-    public render(): any {
+    render() {
         if (this.state.isLoading) {
             return (
                 <div className={s.searchResultsView}>

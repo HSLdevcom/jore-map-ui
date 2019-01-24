@@ -26,7 +26,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         };
     }
 
-    calculateBounds() {
+    private calculateBounds() {
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
         this.props.routes.forEach((route) => {

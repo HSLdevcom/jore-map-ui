@@ -19,21 +19,21 @@ export class NotificationStore {
     }
 
     @action
-    public addNotification(notification: INotification) {
+    public addNotification = (notification: INotification) => {
         if (!this._notifications.some(n => n.message === notification.message)) {
             this._notifications.push(notification);
         }
     }
 
     @action
-    public closeNotification(message: string) {
+    public closeNotification = (message: string) => {
         this._notifications = this._notifications.filter((notification: INotification) => {
             return (notification.message !== message);
         });
     }
 
     @action
-    public removeNotifications() {
+    public removeNotifications = () => {
         this._notifications = [];
     }
 }

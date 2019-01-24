@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import { observer, inject } from 'mobx-react';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
