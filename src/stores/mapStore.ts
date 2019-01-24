@@ -91,8 +91,8 @@ export class MapStore {
     }
 
     @action
-    public setCoordinates = (lat: number, lon: number) => {
-        this._coordinates = new L.LatLng(lat, lon);
+    public setCoordinates = (location: L.LatLng) => {
+        this._coordinates = location;
     }
 
     @action

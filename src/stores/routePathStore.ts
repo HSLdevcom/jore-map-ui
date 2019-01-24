@@ -219,7 +219,7 @@ export class RoutePathStore {
     public getLinkGeom = (linkId: string) => {
         const link = this._routePath!.routePathLinks!.find(l => l.id === linkId);
         if (link) {
-            return link.positions;
+            return link.geometry;
         }
         return null;
     }
@@ -230,7 +230,7 @@ export class RoutePathStore {
             node = this._routePath!.routePathLinks!.find(l => l.endNode.id === nodeId);
         }
         if (node) {
-            return node.positions;
+            return node.geometry;
         }
         return null;
     }

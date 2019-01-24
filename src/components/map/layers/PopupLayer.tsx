@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import { Popup, withLeaflet } from 'react-leaflet';
 import { PopupStore } from '~/stores/popupStore';
@@ -27,10 +26,9 @@ class PopupLayer extends Component<PopupLayerProps> {
             const node = this.props.popupStore!.popupNode as INode;
 
             const openNode = () => {
-                const latLng = L.latLng(node.coordinates.lat, node.coordinates.lon);
                 const map = this.props.leaflet.map;
 
-                map!.setView(latLng, map!.getZoom());
+                map!.setView(node.coordinates, map!.getZoom());
                 this.onClose();
                 const nodeLink = routeBuilder.to(subSites.node).toTarget(`${node.id}`).toLink();
                 navigator.goTo(nodeLink);
@@ -38,7 +36,7 @@ class PopupLayer extends Component<PopupLayerProps> {
 
             return (
                 <Popup
-                    position={[node.coordinates.lat, node.coordinates.lon]}
+                    position={node.coordinates}
                     className={s.leafletPopup}
                     closeButton={false}
                     onClose={this.onClose}

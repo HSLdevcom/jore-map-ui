@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { match } from 'react-router';
-import { ICoordinates, INode } from '~/models';
+import { INode } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import { MapStore } from '~/stores/mapStore';
@@ -44,7 +44,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         const node = this.props.editNetworkStore!.node;
         if (node) {
             await this.fetchLinksForNode(node!);
-            this.props.mapStore!.setCoordinates(node.coordinates.lat, node.coordinates.lon);
+            this.props.mapStore!.setCoordinates(node.coordinates);
         }
         this.setState({ isLoading: false });
     }
@@ -64,7 +64,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     }
 
     private onChangeLocations = (coordinatesType: CoordinatesType) =>
-        (coordinates: ICoordinates) => {
+        (coordinates: L.LatLng) => {
             const node = { ...this.props.editNetworkStore!.node!, [coordinatesType]:coordinates };
             this.props.editNetworkStore!.setNode(node);
         }

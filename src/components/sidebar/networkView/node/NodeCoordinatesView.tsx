@@ -1,23 +1,23 @@
 import React from 'react';
-import { ICoordinates } from '~/models';
+import * as L from 'leaflet';
 import * as s from '~/components/sidebar/networkView/node/nodeCoordinatesView.scss';
 import InputContainer from '~/components/sidebar/InputContainer';
 
 interface INodeCoordinatesViewProps {
     label: string;
-    coordinates: ICoordinates;
-    onChangeCoordinates: (coordinates: ICoordinates) => void;
+    coordinates: L.LatLng;
+    onChangeCoordinates: (coordinates: L.LatLng) => void;
 }
 
 const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:
                                  INodeCoordinatesViewProps) => {
     const latChange = (v: string) => {
         const lat = Number(v);
-        onChangeCoordinates({ ...coordinates, lat });
+        onChangeCoordinates(new L.LatLng(lat, coordinates.lng));
     };
     const lonChange = (v: string) => {
         const lon = Number(v);
-        onChangeCoordinates({ ...coordinates, lon });
+        onChangeCoordinates(new L.LatLng(coordinates.lat, lon));
     };
     return (
         <div className={s.nodeCoordinatesView}>
@@ -29,7 +29,7 @@ const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:
                         label={'Latitude'}
                     />
                     <InputContainer
-                        value={coordinates.lon}
+                        value={coordinates.lng}
                         onChange={lonChange}
                         label={'Longitude'}
                     />

@@ -1,9 +1,10 @@
+import * as L from 'leaflet';
 import TransitType from '~/enums/transitType';
 import INode from './INode';
 
 export default interface ILink {
     transitType: TransitType;
-    positions: [[number, number]]; // TODO: use geojson format instead (?)
+    geometry: L.LatLng[];
     startNode: INode;
     endNode: INode;
 }

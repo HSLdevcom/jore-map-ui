@@ -1,7 +1,5 @@
 import proj4 from 'proj4';
 import CoordinateSystem from '~/enums/coordinateSystem';
-import { ICoordinates } from '~/models';
-import { LatLng } from 'leaflet';
 
 class GeometryService {
     private static projections = {
@@ -48,10 +46,6 @@ class GeometryService {
         return proj4(GeometryService.projections[fromCoordSys],
                      GeometryService.projections[toCoordSys])
             .forward([lon, lat]).reverse();
-    }
-
-    public static iCoordinateToLatLng = (coordinates: ICoordinates) => {
-        return new LatLng(coordinates.lat, coordinates.lon);
     }
 }
 

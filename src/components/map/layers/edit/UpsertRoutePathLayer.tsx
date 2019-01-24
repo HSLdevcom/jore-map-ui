@@ -113,7 +113,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         return [
             (
                 <Polyline
-                    positions={routePathLink.positions}
+                    positions={routePathLink.geometry}
                     key={routePathLink.id}
                     color={ROUTE_COLOR}
                     weight={5}
@@ -123,7 +123,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             ), this.props.routePathStore!.isObjectHighlighted(routePathLink.id) &&
             (
                 <Polyline
-                    positions={routePathLink.positions}
+                    positions={routePathLink.geometry}
                     key={`${routePathLink.id}-highlight`}
                     color={ROUTE_COLOR}
                     weight={25}
@@ -166,7 +166,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
     private renderNeighborLink = (routePathLink: IRoutePathLink) => {
         return (
             <Polyline
-                positions={routePathLink.positions}
+                positions={routePathLink.geometry}
                 key={routePathLink.id}
                 color={NEIGHBOR_MARKER_COLOR}
                 weight={5}
@@ -214,8 +214,8 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
         this.props.routePathStore!.routePath!.routePathLinks!.forEach((link) => {
-            link.positions
-                .forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+            link.geometry
+                .forEach(pos => bounds.extend(pos));
         });
 
         return bounds;
@@ -255,11 +255,9 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             return null;
         }
 
-        const coordinates = routePathLinks![0].startNode.coordinates;
-        const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
             <StartMarker
-                latLng={latLng}
+                latLng={routePathLinks![0].startNode.coordinates}
                 color={MARKER_COLOR}
             />
         );

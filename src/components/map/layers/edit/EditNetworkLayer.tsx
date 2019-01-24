@@ -5,7 +5,6 @@ import ILink from '~/models/ILink';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
-import { ICoordinates } from '~/models';
 import NodeMarker from '../mapIcons/NodeMarker';
 
 interface IEditNetworkLayerProps {
@@ -27,7 +26,7 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         return (
             <Polyline
                 key={key}
-                positions={link.positions}
+                positions={link.geometry}
                 color={color}
                 weight={5}
                 opacity={0.8}
@@ -35,7 +34,7 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         );
     }
 
-    private onMoveMarker = (coordinatesType: CoordinatesType) => (coordinates: ICoordinates) => {
+    private onMoveMarker = (coordinatesType: CoordinatesType) => (coordinates: L.LatLng) => {
         const node = { ...this.props.editNetworkStore!.node!, [coordinatesType]:coordinates };
         this.props.editNetworkStore!.setNode(node);
     }

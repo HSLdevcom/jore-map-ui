@@ -74,8 +74,7 @@ class LeafletMap extends React.Component<IMapProps> {
         // map.addControl(new MeasurementControl({ position: 'topright' }));
         map.on('moveend', () => {
             this.props.mapStore!.setCoordinates(
-                map.getCenter().lat,
-                map.getCenter().lng,
+                map.getCenter(),
             );
         });
 

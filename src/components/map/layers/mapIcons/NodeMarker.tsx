@@ -4,10 +4,9 @@ import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
-import { ICoordinates, INode } from '~/models/index';
+import { INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import GeometryService from '~/services/geometryService';
 import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import * as s from './nodeMarker.scss';
 
@@ -38,7 +37,7 @@ interface INodeMarkerProps {
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
-    onMoveMarker?: (coordinatesType: CoordinatesType) => (coordinates: ICoordinates) => void;
+    onMoveMarker?: (coordinatesType: CoordinatesType) => (coordinates: L.LatLng) => void;
 }
 
 const DEFAULT_RADIUS = 25;
@@ -54,12 +53,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     private onMoveMarker = (coordinatesType: CoordinatesType) => (e: L.DragEndEvent) => {
-        const coordinates: ICoordinates = {
-            lat:e.target.getLatLng().lat,
-            lon:e.target.getLatLng().lng,
-        };
         if (this.props.onMoveMarker) {
-            this.props.onMoveMarker(coordinatesType)(coordinates);
+            this.props.onMoveMarker(coordinatesType)(e.target.getLatLng());
         }
     }
 
@@ -154,23 +149,20 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private renderStopRadiusCircle = (radius: number = DEFAULT_RADIUS) => {
-        const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
         return (
             <Circle
                 className={s.stopCircle}
-                center={latLng}
+                center={this.props.node.coordinates}
                 radius={radius}
             />
         );
     }
 
     private renderAdditionalLocations = (node: INode) => {
-        const manual = GeometryService.iCoordinateToLatLng(node.coordinatesManual);
-        const projection = GeometryService.iCoordinateToLatLng(node.coordinatesProjection);
         return (
             <>
                 <Marker
-                    position={manual}
+                    position={node.coordinatesManual}
                     icon={createDivIcon(
                         <div
                             className={
@@ -182,7 +174,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     && this.onMoveMarker('coordinatesManual')}
                 />
                 <Marker
-                    position={projection}
+                    position={node.coordinatesProjection}
                     icon={createDivIcon(
                         <div
                             className={
@@ -204,7 +196,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     render() {
         const nodeType = this.props.node.type;
-        const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
 
         const icon = createDivIcon(
                 <div className={classnames(s.nodeBase, ...this.getMarkerClasses())}>
@@ -219,7 +210,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     onClick={this.props.onClick}
                     draggable={this.props.isDraggable}
                     icon={icon}
-                    position={latLng}
+                    position={this.props.node.coordinates}
                     onDragEnd={this.props.onMoveMarker
                     && this.onMoveMarker('coordinates')}
                 >
