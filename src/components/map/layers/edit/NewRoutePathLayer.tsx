@@ -238,11 +238,9 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
             return null;
         }
 
-        const coordinates = routePathLinks![0].startNode.coordinates;
-        const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
             <StartMarker
-                latLng={latLng}
+                latLng={routePathLinks![0].startNode.coordinates}
                 color={MARKER_COLOR}
             />
         );

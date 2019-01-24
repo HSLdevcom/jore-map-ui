@@ -1,4 +1,5 @@
-import { INode, ICoordinate } from '~/models';
+import * as L from 'leaflet';
+import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IExternalNode from '~/models/externals/IExternalNode';
@@ -12,10 +13,10 @@ class NodeFactory {
          // Use less accurate location if measured location is missing.
         const coordinateList =
             JSON.parse(externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual);
-        const coordinates : ICoordinate = {
-            lon: coordinateList.coordinates[0],
-            lat: coordinateList.coordinates[1],
-        };
+        const coordinates = new L.LatLng(
+            coordinateList.coordinates[1],
+            coordinateList.coordinates[0],
+        );
         let shortId;
         if (externalNode.sollistunnus) {
             shortId = externalNode.solkirjain

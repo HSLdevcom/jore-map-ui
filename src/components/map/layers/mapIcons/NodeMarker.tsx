@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import { INode } from '~/models/index';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import GeometryService from '~/services/geometryService';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -142,11 +141,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private renderStopRadiusCircle = (radius: number = DEFAULT_RADIUS) => {
-        const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
         return (
             <Circle
                 className={s.stopCircle}
-                center={latLng}
+                center={this.props.node.coordinates}
                 radius={radius}
             />
         );
@@ -154,7 +152,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     render() {
         const nodeType = this.props.node.type;
-        const latLng = GeometryService.iCoordinateToLatLng(this.props.node.coordinates);
 
         const icon = createDivIcon(
                 <div className={classnames(s.nodeBase, ...this.getMarkerClasses())}>
@@ -168,7 +165,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 onClick={this.props.onClick}
                 draggable={this.props.isDraggable}
                 icon={icon}
-                position={latLng}
+                position={this.props.node.coordinates}
             >
             {
                 displayCircle ?

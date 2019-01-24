@@ -1,7 +1,7 @@
+import * as L from 'leaflet';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IStop from './IStop';
-import { ICoordinate } from '.';
 
 export default interface INode {
     id: string;
@@ -9,7 +9,7 @@ export default interface INode {
     stop?: IStop;
     type: NodeType;
     transitTypes: TransitType[];
-    coordinates: ICoordinate;
+    coordinates: L.LatLng;
     measurementDate: string;
     modifiedOn: string;
     modifiedBy: string;
