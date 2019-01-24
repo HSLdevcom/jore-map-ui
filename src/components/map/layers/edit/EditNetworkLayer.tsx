@@ -25,7 +25,7 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         return (
             <Polyline
                 key={key}
-                positions={link.positions}
+                positions={link.geometry}
                 color={color}
                 weight={5}
                 opacity={0.8}

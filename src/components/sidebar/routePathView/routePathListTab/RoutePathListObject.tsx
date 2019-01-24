@@ -55,12 +55,12 @@ class RoutePathListObject
         if (this.props.objectType === ListObjectType.Link) {
             const positions = this.props.routePathStore!.getLinkGeom(this.props.id);
             if (positions) {
-                positions.forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+                positions.forEach(pos => bounds.extend(pos[0]));
             }
         } else {
             const position = this.props.routePathStore!.getNodeGeom(this.props.id);
             if (position) {
-                position.forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+                position.forEach(pos => bounds.extend(pos[0]));
             }
         }
 

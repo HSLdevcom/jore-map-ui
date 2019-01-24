@@ -102,7 +102,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
         return [
             (
                 <Polyline
-                    positions={routePathLink.positions}
+                    positions={routePathLink.geometry}
                     key={routePathLink.id}
                     color={ROUTE_COLOR}
                     weight={5}
@@ -112,7 +112,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
             ), this.props.routePathStore!.isLinkHighlighted(routePathLink.id) &&
             (
                 <Polyline
-                    positions={routePathLink.positions}
+                    positions={routePathLink.geometry}
                     key={`${routePathLink.id}-highlight`}
                     color={ROUTE_COLOR}
                     weight={25}
@@ -155,7 +155,7 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
     private renderNeighborLink = (routePathLink: IRoutePathLink) => {
         return (
             <Polyline
-                positions={routePathLink.positions}
+                positions={routePathLink.geometry}
                 key={routePathLink.id}
                 color={NEIGHBOR_MARKER_COLOR}
                 weight={5}
@@ -197,8 +197,8 @@ class NewRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerS
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
         this.props.routePathStore!.routePath!.routePathLinks!.forEach((link) => {
-            link.positions
-                .forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+            link.geometry
+                .forEach(pos => bounds.extend(pos));
         });
 
         return bounds;
