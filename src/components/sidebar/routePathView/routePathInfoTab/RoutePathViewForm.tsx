@@ -30,9 +30,12 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         this.props.onChange(property, value, validationResult);
     }
 
-    private calculateLength = () => {
-        this.props.routePathStore!.recalculateLength();
-    }
+    // private useCalculateLength = () => (
+    //     this.props.routePathStore!.updateRoutePathProperty(
+    //         'length',
+    //         this.props.routePathStore!.getCalculatedLength(),
+    //     )
+    // )
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
@@ -123,14 +126,19 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         disabled={isEditingDisabled}
                         validatorRule={routePathValidationModel.length}
                     />
-                    <div className={s.flexInnerRowFlexEnd}>
-                        <Button
-                            onClick={this.calculateLength}
-                            type={ButtonType.ROUND}
-                        >
-                            Laske
-                        </Button>
-                    </div>
+                    <InputContainer
+                        label={'Laskettu'}
+                        value={this.props.routePathStore!.getCalculatedLength()}
+                        disabled={true}
+                    />
+                    {/*<div className={s.flexInnerRowFlexEnd}>*/}
+                        {/*<Button*/}
+                            {/*onClick={this.useCalculateLength}*/}
+                            {/*type={ButtonType.ROUND}*/}
+                        {/*>*/}
+                            {/*Laske*/}
+                        {/*</Button>*/}
+                    {/*</div>*/}
                 </div>
                 <div className={s.flexRow}>
                     <Dropdown

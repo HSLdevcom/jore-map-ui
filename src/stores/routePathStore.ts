@@ -191,7 +191,6 @@ export class RoutePathStore {
     public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._routePath!.routePathLinks =
             routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
-        this.recalculateLength();
     }
 
     @action
@@ -204,16 +203,11 @@ export class RoutePathStore {
     public resetHaveLocalModifications = () => {
         this._hasUnsavedModifications = false;
     }
-
-    @action
-    public recalculateLength = () => {
-        this.updateRoutePathProperty(
-            'length',
-            Math.floor(
-                lengthCalculator.fromRoutePathLinks(
-                    this._routePath!.routePathLinks!,
-                )),
-            );
+    public getCalculatedLength = () => {
+        if (this.routePath && this.routePath.routePathLinks) {
+            return Math.floor(lengthCalculator.fromRoutePathLinks(this.routePath!.routePathLinks!));
+        }
+        return 0;
     }
 
     public getLinkGeom = (linkId: string) => {
@@ -250,7 +244,6 @@ export class RoutePathStore {
 
     private onRoutePathLinksChanged = () => {
         this.recalculateOrderNumbers();
-        this.recalculateLength();
         this.validateRoutePathGeometry();
     }
 }

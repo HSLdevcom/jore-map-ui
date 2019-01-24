@@ -19,6 +19,7 @@ $labelColor: $mediumGrey;
 
 .inputLabel {
     font-weight: bold;
+    text-transform: uppercase;
     color: $labelColor;
     font-size: $smallFontSize;
     white-space: nowrap;

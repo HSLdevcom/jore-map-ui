@@ -58,19 +58,27 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 <div className={s.inputLabel}>
                     {this.props.label}
                 </div>
-                <input
-                    placeholder={this.props.disabled ? '' : this.props.placeholder}
-                    type={typeof this.props.value === 'number' ? 'number' : 'text'}
-                    className={
-                        classnames(
-                            this.props.className,
-                            this.props.disabled ? s.disabled : null,
-                            !this.state.isValid ? s.invalidInput : null)
-                    }
-                    disabled={this.props.disabled}
-                    value={this.props.value!}
-                    onChange={this.onChange}
-                />
+                {this.props.disabled ?
+                    (
+                        <div>
+                            {this.props.value!}
+                        </div>
+                    )
+                    :
+                    (<input
+                        placeholder={this.props.disabled ? '' : this.props.placeholder}
+                        type={typeof this.props.value === 'number' ? 'number' : 'text'}
+                        className={
+                            classnames(
+                                this.props.className,
+                                this.props.disabled ? s.disabled : null,
+                                !this.state.isValid ? s.invalidInput : null)
+                        }
+                        disabled={this.props.disabled}
+                        value={this.props.value!}
+                        onChange={this.onChange}
+                    />)
+                }
                 { this.state.errorMessage &&
                     <div className={s.errorMessage}>
                         {this.state.errorMessage}
