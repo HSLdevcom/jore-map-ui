@@ -13,6 +13,7 @@ interface IRoutePathListLinkProps {
     routePathStore?: RoutePathStore;
     previousNode?: INode;
     routePathLink: IRoutePathLink;
+    reference: React.RefObject<HTMLDivElement>;
     nextNode?: INode;
 }
 
@@ -47,6 +48,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     render() {
         return (
             <RoutePathListObject
+                reference={this.props.reference}
                 objectType={ListObjectType.Link}
                 id={this.props.routePathLink.id}
                 headerIcon={this.renderNodeHeaderIcon()}

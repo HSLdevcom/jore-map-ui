@@ -126,9 +126,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
         return (
         <div className={classnames(s.linkView, s.form)}>
-            <ViewHeader
-                header={`Reitinlinkki ${this.state.routePathLink!.id}`}
-            />
+            <ViewHeader>
+                Reitinlinkki ${this.state.routePathLink!.id}
+            </ViewHeader>
             <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT
             </div>

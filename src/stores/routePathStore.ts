@@ -14,23 +14,30 @@ export enum AddLinkDirection {
     AfterNode,
 }
 
+export enum RoutePathViewTab {
+    Info,
+    List,
+}
+
 export class RoutePathStore {
     @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
     @observable private _hasUnsavedModifications: boolean;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
-    @observable private _highlightedNodes: string[];
-    @observable private _highlightedLinks: string[];
+    @observable private _highlightedObject: string | null;
+    @observable private _extendedObjects: string[];
     @observable private _addRoutePathLinkState: AddRoutePathLinkState;
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
+    @observable private _activeTab: RoutePathViewTab;
 
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
-        this._highlightedLinks = [];
-        this._highlightedNodes = [];
+        this._highlightedObject = null;
+        this._extendedObjects = [];
         this._isGeometryValid = true;
+        this._activeTab = RoutePathViewTab.Info;
         this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
     }
 
@@ -67,22 +74,56 @@ export class RoutePathStore {
         return this._isGeometryValid;
     }
 
-    public isNodeHighlighted = (nodeId: string) => {
-        return this._highlightedNodes.some(n => n === nodeId);
-    }
-
-    public isLinkHighlighted = (linkId: string) => {
-        return this._highlightedLinks.some(l => l === linkId);
+    @computed
+    get activeTab() {
+        return this._activeTab;
     }
 
     @action
-    public setHighlightedNodes = (nodeIds: string[]) => {
-        this._highlightedNodes = nodeIds;
+    public setActiveTab = (tab: RoutePathViewTab) => {
+        this._activeTab = tab;
     }
 
     @action
-    public setHighlightedLinks = (linkIds: string[]) => {
-        this._highlightedLinks = linkIds;
+    public toggleActiveTab = () => {
+        if (this._activeTab === RoutePathViewTab.Info) {
+            this._activeTab = RoutePathViewTab.List;
+        } else {
+            this._activeTab = RoutePathViewTab.Info;
+        }
+    }
+
+    public isObjectHighlighted = (objectId: string) => {
+        return this._highlightedObject === objectId
+            || (!this._highlightedObject && this.isObjectExtended(objectId));
+    }
+
+    public isObjectExtended = (objectId: string) => {
+        return this._extendedObjects.some(n => n === objectId);
+    }
+
+    @computed
+    get extendedObjects() {
+        return this._extendedObjects;
+    }
+
+    @action
+    public setHighlightedObject = (objectId: string | null) => {
+        this._highlightedObject = objectId;
+    }
+
+    @action
+    public toggleExtendedObject = (objectId: string) => {
+        if (this._extendedObjects.some(o => o === objectId)) {
+            this._extendedObjects = this._extendedObjects.filter(o => o !== objectId);
+        } else {
+            this._extendedObjects.push(objectId);
+        }
+    }
+
+    @action
+    public setExtendedObjects = (objectIds: string[]) => {
+        this._extendedObjects = objectIds;
     }
 
     @action

@@ -3,7 +3,7 @@ import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
 import Loader from '~/components/shared/loader/Loader';
-import { RoutePathStore } from '~/stores/routePathStore';
+import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
 import navigator from '~/routing/navigator';
 import { RouteStore } from '~/stores/routeStore';
@@ -21,7 +21,6 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     isLoading: boolean;
-    selectedTabIndex: number;
 }
 
 interface IRoutePathViewProps {
@@ -40,7 +39,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         super(props);
         this.state = {
             isLoading: true,
-            selectedTabIndex: 0,
         };
     }
 
@@ -55,14 +53,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setIsCreating(true);
     }
 
-    private initializeMap = () => {
+    private initializeMap = async () => {
         if (this.props.isAddingNew) {
             this.props.networkStore!.setNodeSize(NodeSize.large);
             this.props.networkStore!.showMapLayer(MapLayer.node);
             this.props.networkStore!.showMapLayer(MapLayer.link);
         }
 
-        this.setTransitType();
+        await this.setTransitType();
     }
 
     private createNewRoutePath = async () => {
@@ -93,15 +91,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setRoutePath(routePath);
     }
 
-    private selectTab = (selectedTabIndex: number) => () => {
-        this.setState({
-            selectedTabIndex,
-        });
-    }
-
-    private renderTabContent = () => {
-        switch (this.state.selectedTabIndex) {
-        case 0: {
+    public renderTabContent = () => {
+        if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
                 <RoutePathTab
                     routePath={this.props.routePathStore!.routePath!}
@@ -109,26 +100,20 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 />
             );
         }
-        case 1: {
-            return (
-                <RoutePathLinksTab
-                    routePath={this.props.routePathStore!.routePath!}
-                />
-            );
-        }
-        default: {
-            return null;
-        }
-        }
+        return (
+            <RoutePathLinksTab
+                routePath={this.props.routePathStore!.routePath!}
+            />
+        );
     }
 
     async componentDidMount() {
         if (this.props.isAddingNew) {
-            this.initializeAsAddingNew();
+            await this.initializeAsAddingNew();
         } else {
             await this.fetchRoutePath();
         }
-        this.initializeMap();
+        await this.initializeMap();
         this.props.routeStore!.clearRoutes();
         this.setState({
             isLoading: false,
@@ -158,10 +143,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     isAddingNew={this.props.isAddingNew}
                 />
                 <div>
-                    <RoutePathTabs
-                        selectedTab={this.state.selectedTabIndex}
-                        selectTab={this.selectTab}
-                    />
+                    <RoutePathTabs />
                 </div>
                 {this.renderTabContent()}
             </div>

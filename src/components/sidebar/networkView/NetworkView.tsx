@@ -1,9 +1,13 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { Route, Switch } from 'react-router';
 import { NetworkStore, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { RouteStore } from '~/stores/routeStore';
+import subSites from '~/routing/subSites';
+import NetworkNode from './node/NetworkNode';
 import * as s from './networkView.scss';
+import NetworkDefault from './NetworkDefault';
 
 interface INetworkViewProps {
     networkStore?: NetworkStore;
@@ -32,6 +36,18 @@ class NetworkView extends React.Component<INetworkViewProps> {
         return (
             <div className={s.networkView}>
                <h2>Verkon muokkaus</h2>
+                <Switch>
+                    <Route
+                        exact={true}
+                        path={subSites.networkNode}
+                        component={NetworkNode}
+                    />
+                    <Route
+                        exact={false}
+                        path={subSites.network}
+                        component={NetworkDefault}
+                    />
+                </Switch>
             </div>
         );
     }
