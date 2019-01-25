@@ -127,7 +127,7 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
         return (
         <div className={classnames(s.linkView, s.form)}>
             <ViewHeader>
-                Reitinlinkki ${this.state.routePathLink!.id}
+                Reitinlinkki {this.state.routePathLink!.id}
             </ViewHeader>
             <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT

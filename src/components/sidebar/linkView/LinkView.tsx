@@ -2,7 +2,6 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
-import moment from 'moment';
 import ButtonType from '~/enums/buttonType';
 import RouteService from '~/services/routeService';
 import { IRoutePathLink, IRoute } from '~/models';
@@ -58,19 +57,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         }
     }
 
-    private getRoutePath = () => {
-        if (this.state.route && this.state.routePathLink) {
-            return this.state.route.routePaths
-                .find(p =>
-                    p.routeId === this.state.routePathLink!.routeId &&
-                    p.direction === this.state.routePathLink!.routePathDirection &&
-                    p.startTime.getTime()
-                    === this.state.routePathLink!.routePathStartDate!.getTime(),
-                );
-        }
-        return;
-    }
-
     private fetchRoutePathLink = async (id: string) => {
         this.setState({ isLoading: true });
 
@@ -122,70 +108,12 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         const startNode = this.state.routePathLink!.startNode;
         const endNode = this.state.routePathLink!.endNode;
         const route = this.state.route;
-        const routePath = this.getRoutePath();
 
         return (
         <div className={classnames(s.linkView, s.form)}>
             <ViewHeader>
-                Reitinlinkki ${this.state.routePathLink!.id}
+                Linkki {this.state.routePathLink!.id}
             </ViewHeader>
-            <div className={s.topic}>
-                REITIN SUUNNAN TIEDOT
-            </div>
-            <div className={classnames(s.flexRow, s.formSection)}>
-                <div className={s.column}>
-                    <div className={s.flexInnerRow}>
-                        <InputContainer
-                            label='REITTITUNNUS'
-                            disabled={true}
-                            value={this.state.routePathLink!.routeId}
-                        />
-                        <InputContainer
-                            label='SUUNTA'
-                            disabled={true}
-                            value={`Suunta ${routePath ? routePath.direction : '?'}`}
-                        />
-                    </div>
-                    <div className={s.flexInnerRow}>
-                        <InputContainer
-                            label='VOIM. AST'
-                            disabled={true}
-                            value={
-                                routePath ? moment(
-                                    routePath.startTime,
-                                ).format('DD.MM.YYYY') : ''}
-                        />
-                        <InputContainer
-                            label='VIIM. VOIM'
-                            disabled={true}
-                            value={
-                                routePath ? moment(
-                                    routePath.endTime,
-                                ).format('DD.MM.YYYY') : ''}
-                        />
-                    </div>
-                    <InputContainer
-                        label='NIMI'
-                        disabled={true}
-                        value={route ? route.routeName : ''}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <div className={s.flexInnerRow}>
-                        <div className={s.formItem}>
-                            <div className={s.inputLabel}>
-                                TIEDOT
-                            </div>
-                            <input
-                                placeholder=''
-                                type='text'
-                                className={s.textArea}
-                                readOnly={true}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <div className={s.topic}>
