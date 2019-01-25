@@ -87,7 +87,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         />
                         <Route
                             exact={true}
-                            path={subSites.link}
+                            path={subSites.routelink}
                             component={LinkView}
                         />
                         <Route
