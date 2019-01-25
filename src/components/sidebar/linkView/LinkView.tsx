@@ -7,6 +7,9 @@ import ButtonType from '~/enums/buttonType';
 import { ILink } from '~/models';
 import LinkService from '~/services/linkService';
 import NodeType from '~/enums/nodeType';
+import SubSites from '~/routing/subSites';
+import routeBuilder from '~/routing/routeBuilder';
+import navigator from '~/routing/navigator';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
 import MultiTabTextarea from '../routeLinkView/MultiTabTextarea';
@@ -87,6 +90,14 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     private onChange = () => {
     }
 
+    private navigateToNode = (nodeId: string) => () => {
+        const editNetworkLink = routeBuilder
+            .to(SubSites.networkNode)
+            .toTarget(nodeId)
+            .toLink();
+        navigator.goTo(editNetworkLink);
+    }
+
     render() {
         if (this.state.isLoading || !this.state.link) {
             return (
@@ -106,11 +117,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 Linkki
             </ViewHeader>
             <div className={s.formSection}>
-                <div className={s.flexRow}>
-                    <div className={s.topic}>
-                        LINKKI
-                    </div>
-                </div>
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
@@ -291,13 +297,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             />
             <div className={s.buttonBar}>
                 <Button
-                    onClick={this.onChange}
+                    onClick={this.navigateToNode(this.state.link.startNode.id)}
                     type={ButtonType.ROUND}
                 >
                     Alkusolmu
                 </Button>
                 <Button
-                    onClick={this.onChange}
+                    onClick={this.navigateToNode(this.state.link.endNode.id)}
                     type={ButtonType.ROUND}
                 >
                     Loppusolmu
