@@ -5,6 +5,9 @@ import { IRoutePathLink, INode } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 import InputContainer from '../../InputContainer';
 import * as s from './routePathListObject.scss';
@@ -43,6 +46,11 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     }
 
     private openInNetworkView = () => {
+        const editNetworkLink = routeBuilder
+            .to(SubSites.link)
+            .toTarget(this.props.routePathLink.id)
+            .toLink();
+        navigator.goTo(editNetworkLink);
     }
 
     render() {
