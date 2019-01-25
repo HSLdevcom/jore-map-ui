@@ -13,15 +13,15 @@ import InputContainer from '../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
 import Loader from '../../shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
-import * as s from './linkView.scss';
+import * as s from './routeLinkView.scss';
 
-interface ILinkViewState {
+interface IRouteLinkViewState {
     routePathLink: IRoutePathLink | null;
     route: IRoute | null;
     isLoading: boolean;
 }
 
-interface ILinkViewProps {
+interface IRouteLinkViewProps {
     match?: match<any>;
 }
 
@@ -34,8 +34,8 @@ const nodeDescriptions = {
 };
 
 @observer
-class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
-    constructor(props: ILinkViewProps) {
+class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewState> {
+    constructor(props: IRouteLinkViewProps) {
         super(props);
         this.state = {
             routePathLink: null,
@@ -51,7 +51,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         }
     }
 
-    componentWillReceiveProps(props: ILinkViewProps) {
+    componentWillReceiveProps(props: IRouteLinkViewProps) {
         const routeLinkId = props.match!.params.id;
         if (routeLinkId) {
             this.fetchRoutePathLink(routeLinkId);
@@ -441,4 +441,4 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         );
     }
 }
-export default LinkView;
+export default RouteLinkView;
