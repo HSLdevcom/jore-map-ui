@@ -93,18 +93,17 @@ class RoutePathListObject
                             </div>
                             {this.props.headerTypeName}
                         </div>
-                        <div className={s.label}>
-                            <div className={s.labelTypeName}>
                             {
-                                this.props.objectType === ListObjectType.Link
-                                    ? 'Linkin id'
-                                    : 'Solmun id'
+                                this.props.objectType === ListObjectType.Node &&
+                                <div className={s.label}>
+                                    <div className={s.labelTypeName}>
+                                        Solmun id
+                                    </div>
+                                    <div className={s.id}>
+                                        {this.props.id}
+                                    </div>
+                                </div>
                             }
-                            </div>
-                            <div className={s.id}>
-                                {this.props.id}
-                            </div>
-                        </div>
                         <div className={s.headerDescription}>
                             {this.props.headerDescription}
                         </div>
