@@ -4,7 +4,7 @@ enum municipality {
     Vantaa = '3',
     Kirkkonummi = '4',
     Sipoo = '5',
-    // Replace with correct values
+    // TODO: Replace with correct values
 }
 
 export default municipality;
