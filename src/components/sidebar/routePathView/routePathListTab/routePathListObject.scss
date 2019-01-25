@@ -37,6 +37,12 @@
                 font-size: 22px;
                 white-space: nowrap;
 
+                .headerContentDescription {
+                    > span {
+                        margin-left: 10px;
+                        font-size: 14px;
+                    }
+                }
             }
         
             .headerDescription {
