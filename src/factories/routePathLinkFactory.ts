@@ -2,6 +2,7 @@ import * as L from 'leaflet';
 import { IRoutePathLink } from '~/models';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import NumberIterator from '~/util/NumberIterator';
+import TransitTypeHelper from '~/util/transitTypeHelper';
 import IExternalLink from '~/models/externals/IExternalLink';
 import { NEW_OBJECT_TAG } from '~/constants';
 import NodeFactory from './nodeFactory';
@@ -31,6 +32,9 @@ class RoutePathLinkFactory {
             routeId: externalRoutePathLink.reitunnus,
             routePathDirection: externalRoutePathLink.suusuunta,
             routePathStartDate: new Date(externalRoutePathLink.suuvoimast),
+            transitType: TransitTypeHelper.convertTransitTypeCodeToTransitType(
+                externalRoutePathLink.lnkverkko,
+            ),
         };
     }
 
@@ -49,6 +53,9 @@ class RoutePathLinkFactory {
             isStartNodeTimeAlignmentStop: false,
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             startNodeType: startNode.type,
+            transitType: TransitTypeHelper.convertTransitTypeCodeToTransitType(
+                link.lnkverkko,
+            ),
         };
     }
 }
