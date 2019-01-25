@@ -120,13 +120,14 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
-                            label='ALKU'
+                            label='ALKUSOLMU'
                             disabled={true}
                             value={startNode ? startNode.id : '-'}
                         />
                         <Dropdown
                             onChange={this.onChange}
                             items={Object.values(nodeDescriptions)}
+                            disabled={true}
                             selected={
                                 startNode
                                     ? this.getNodeDescription(startNode.type)
@@ -143,13 +144,14 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRowFlexEnd}>
                         <InputContainer
-                            label='LOPPU'
+                            label='LOPPUSOLMU'
                             disabled={true}
                             value={endNode ? endNode.id : '-'}
                         />
                         <Dropdown
                             onChange={this.onChange}
                             items={Object.values(nodeDescriptions)}
+                            disabled={true}
                             selected={
                                 endNode
                                     ? this.getNodeDescription(endNode.type)
