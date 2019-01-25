@@ -57,7 +57,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     }
 
     private async fetchLinksForNode(node: INode) {
-        const links = await LinkService.fetchLinksByStartNodeAndEndNode(node.id);
+        const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         if (!links) return;
         this.props.editNetworkStore!.setNode(node);
         this.props.editNetworkStore!.setLinks(links);
