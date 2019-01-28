@@ -134,9 +134,11 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRouteP
     private renderNodeHeaderContent = (node: INode) => {
         return (
             <div className={s.headerContentDescription}>
-                {node.shortId ? node.shortId : '-'}
+                <div>
+                    {node.shortId ? node.shortId : '?'}
+                </div>
                 <span>
-                    ({node.id})
+                    {node.id}
                 </span>
             </div>
         );

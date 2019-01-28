@@ -29,8 +29,6 @@
             display: flex;
         
             .label {
-                display: flex;
-                flex-direction: row;
                 margin-left: 30px;
                 color: $blue;
                 font-weight: bold;
@@ -38,6 +36,10 @@
                 white-space: nowrap;
 
                 .headerContentDescription {
+                    > div {
+                        display: inline-block;
+                        width: 80px;
+                    }
                     > span {
                         margin-left: 10px;
                         font-size: 14px;
