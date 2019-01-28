@@ -61,7 +61,10 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 <div className={s.inputLabel}>
                     {this.props.label}
                     {!this.props.disabled && this.props.icon && this.props.onIconClick &&
-                    <div className={s.inline} onClick={this.props.onIconClick!}>
+                    <div
+                        className={classnames(s.inline, s.pointer)}
+                        onClick={this.props.onIconClick!}
+                    >
                         {this.props.icon}
                     </div>
                     }
