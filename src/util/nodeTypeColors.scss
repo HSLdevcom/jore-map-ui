@@ -1,0 +1,52 @@
+.crossroadMarker {
+  border-color: #727272;
+  background-color: #FFF;
+}
+
+.crossroadMarkerHighlight {
+  border-color: #727272;
+  background-color: #727272;
+}
+
+.stopMarker {
+  border-color: #007ac9;
+  background-color: #FFF;
+}
+
+.stopMarkerHighlight {
+  border-color: #007ac9;
+  background-color: #007ac9
+}
+
+.municipalityMarker {
+  border-color: #c900ff;
+  background-color: #FFF;
+}
+
+.municipalityMarkerHighlight {
+  border-color: #FF00F0;
+  background-color: #FF5555;
+}
+
+.unknownMarker {
+  border-color: #ff0000;
+  background-color: #000;
+}
+
+.disabledMarker {
+  border-color: #353333;
+  background-color: #615e5e;
+}
+
+.disabledMarkerHighlight {
+  border-color: #353333;
+  background-color: #615e5e;
+}
+
+.timeAlignmentMarker {
+  background: url('~/icons/time.svg');
+  background-color: white;
+  border-style: none;
+  height: 20px;
+  width: 20px;
+}
