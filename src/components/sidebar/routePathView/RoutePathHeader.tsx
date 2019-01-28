@@ -21,31 +21,21 @@ class RoutePathHeader extends React.Component<IRoutePathHeaderProps> {
                 <ViewHeader
                     closePromptMessage={this.props.hasModifications ? message : undefined}
                 >
-                    {this.props.isAddingNew ? 'Uusi reitinsuunta' : 'Reitinsuunta'}
+                    {this.props.isAddingNew ? 'Uusi reitinsuunta' :
+                        `${this.props.routePath.lineId} > ${this.props.routePath.routeId}`}
                 </ViewHeader>
                 <div className={s.topic}>
-                    OTSIKKOTIEDOT
-                </div>
-                <div className={s.routeInformationContainer}>
-                    <div className={s.flexInnerColumn}>
-                        <div>Reittitunnus</div>
-                        <div>{this.props.routePath.routeId}</div>
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Linja</div>
-                        <div>{this.props.routePath.lineId}</div>
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Päivityspvm</div>
-                        <Moment
-                            date={this.props.routePath.lastModified}
-                            format='DD.MM.YYYY HH:mm'
-                        />
-                    </div>
-                    <div className={s.flexInnerColumn}>
-                        <div>Päivittäjä</div>
-                        <div>{this.props.routePath.modifiedBy}</div>
-                    </div>
+                    <Moment
+                        date={this.props.routePath.startTime}
+                        format='DD.MM.YYYY'
+                    /> - &nbsp;
+                    <Moment
+                        date={this.props.routePath.endTime}
+                        format='DD.MM.YYYY'
+                    />
+                    <br/>
+                    Suunta {this.props.routePath.direction}:&nbsp;
+                    {this.props.routePath.originFi} - {this.props.routePath.destinationFi}
                 </div>
             </div>
         );
