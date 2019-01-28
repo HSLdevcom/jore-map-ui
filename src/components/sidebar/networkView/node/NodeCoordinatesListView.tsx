@@ -14,16 +14,19 @@ const nodeCoordinatesListView = ({ node, onChangeCoordinates }: INodeCoordinates
     return (
         <div className={s.nodeCoordinatesListView}>
             <NodeCoordinatesView
-                locationType={NodeLocationType.Manual}
+                nodeType={node.type}
+                locationType={NodeLocationType.Measured}
                 coordinates={node.coordinates}
                 onChangeCoordinates={onChangeCoordinates('coordinates')}
             />
             <NodeCoordinatesView
-                locationType={NodeLocationType.Measured}
+                nodeType={node.type}
+                locationType={NodeLocationType.Manual}
                 coordinates={node.coordinatesManual}
                 onChangeCoordinates={onChangeCoordinates('coordinatesManual')}
             />
             <NodeCoordinatesView
+                nodeType={node.type}
                 locationType={NodeLocationType.Projected}
                 coordinates={node.coordinatesProjection}
                 onChangeCoordinates={onChangeCoordinates('coordinatesProjection')}

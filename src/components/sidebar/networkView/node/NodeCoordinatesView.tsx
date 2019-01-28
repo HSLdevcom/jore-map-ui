@@ -2,16 +2,19 @@ import React from 'react';
 import classnames from 'classnames';
 import InputContainer from '~/components/sidebar/InputContainer';
 import NodeLocationType from '~/enums/nodeLocationType';
+import NodeType from '~/enums/nodeType';
+import NodeTypeColorHelper from '~/util/nodeTypeColorHelper';
 import * as L from 'leaflet';
 import * as s from '~/components/sidebar/networkView/node/nodeCoordinatesView.scss';
 
 interface INodeCoordinatesViewProps {
+    nodeType: NodeType;
     locationType: NodeLocationType;
     coordinates: L.LatLng;
     onChangeCoordinates: (coordinates: L.LatLng) => void;
 }
 
-const nodeCoordinatesView = ({ locationType, coordinates, onChangeCoordinates }:
+const nodeCoordinatesView = ({ nodeType, locationType, coordinates, onChangeCoordinates }:
                                  INodeCoordinatesViewProps) => {
     const latChange = (v: string) => {
         const lat = Number(v);
@@ -26,11 +29,11 @@ const nodeCoordinatesView = ({ locationType, coordinates, onChangeCoordinates }:
         let className: string = '';
 
         switch (locationType) {
+        case NodeLocationType.Measured:
+            className = NodeTypeColorHelper.getTypeClass(nodeType, true);
+            break;
         case NodeLocationType.Manual:
             className = s.manual;
-            break;
-        case NodeLocationType.Measured:
-            className = s.measured;
             break;
         case NodeLocationType.Projected:
             className = s.projected;
