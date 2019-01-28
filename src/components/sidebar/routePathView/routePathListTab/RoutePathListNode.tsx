@@ -131,14 +131,28 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRouteP
         );
     }
 
+    private renderNodeHeaderContent = (node: INode) => {
+        return (
+            <div className={s.headerContentDescription}>
+                <div>
+                    {node.shortId ? node.shortId : '?'}
+                </div>
+                <span>
+                    {node.id}
+                </span>
+            </div>
+        );
+    }
+
     render() {
         return (
             <RoutePathListObject
                 reference={this.props.reference}
-                id={this.props.node.id}
-                headerIcon={this.renderNodeHeaderIcon(this.props.node, this.props.routePathLink)}
                 objectType={ListObjectType.Node}
+                headerContent={this.renderNodeHeaderContent(this.props.node)}
+                headerIcon={this.renderNodeHeaderIcon(this.props.node, this.props.routePathLink)}
                 headerTypeName={this.getNodeTypeName(this.props.node.type)}
+                id={this.props.node.id}
             >
                 <div className={s.extendedContent}>
                     <div className={s.header}>

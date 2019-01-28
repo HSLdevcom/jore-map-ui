@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import Moment from 'moment';
+import { FiRefreshCw } from 'react-icons/fi';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
@@ -30,9 +31,12 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         this.props.onChange(property, value, validationResult);
     }
 
-    private calculateLength = () => {
-        this.props.routePathStore!.recalculateLength();
-    }
+    private updateLength = ():void => (
+        this.props.routePathStore!.updateRoutePathProperty(
+            'length',
+            this.props.routePathStore!.getCalculatedLength(),
+        )
+    )
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
@@ -122,15 +126,14 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                         value={routePath.length.toString()}
                         disabled={isEditingDisabled}
                         validatorRule={routePathValidationModel.length}
+                        icon={<FiRefreshCw/>}
+                        onIconClick={this.updateLength}
                     />
-                    <div className={s.flexInnerRowFlexEnd}>
-                        <Button
-                            onClick={this.calculateLength}
-                            type={ButtonType.ROUND}
-                        >
-                            Laske
-                        </Button>
-                    </div>
+                    <InputContainer
+                        label={'Laskettu'}
+                        value={this.props.routePathStore!.getCalculatedLength()}
+                        disabled={true}
+                    />
                 </div>
                 <div className={s.flexRow}>
                     <Dropdown

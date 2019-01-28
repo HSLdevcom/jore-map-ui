@@ -1,2 +1,11 @@
 @import '../shared/styles/common';
 @import '../shared/styles/form';
+
+div.inline{
+  display:inline-block;
+  margin-left: 5px;
+}
+
+div.pointer {
+  cursor: pointer;
+}
