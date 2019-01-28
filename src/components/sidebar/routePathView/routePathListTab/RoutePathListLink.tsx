@@ -50,9 +50,10 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
             <RoutePathListObject
                 reference={this.props.reference}
                 objectType={ListObjectType.Link}
-                id={this.props.routePathLink.id}
                 headerIcon={this.renderNodeHeaderIcon()}
                 headerTypeName='Reitinlinkki'
+                headerContent={''}
+                id={this.props.routePathLink.id}
             >
                 <div className={s.extendedContent}>
                     <div className={s.header}>
