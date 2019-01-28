@@ -20,7 +20,6 @@ export enum RoutePathViewTab {
 }
 
 export class RoutePathStore {
-    @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
     @observable private _hasUnsavedModifications: boolean;
     @observable private _isGeometryValid: boolean;
@@ -39,11 +38,6 @@ export class RoutePathStore {
         this._isGeometryValid = true;
         this._activeTab = RoutePathViewTab.Info;
         this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
-    }
-
-    @computed
-    get isCreating(): boolean {
-        return this._isCreating;
     }
 
     @computed
@@ -124,11 +118,6 @@ export class RoutePathStore {
     @action
     public setExtendedObjects = (objectIds: string[]) => {
         this._extendedObjects = objectIds;
-    }
-
-    @action
-    public setIsCreating = (value: boolean) => {
-        this._isCreating = value;
     }
 
     @action

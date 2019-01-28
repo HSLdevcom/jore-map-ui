@@ -60,11 +60,8 @@ class AddNewRoutePathLinkTool implements BaseTool {
     }
 
     private isNetworkNodesInteractive() {
-        const hasRoutePathLinks =
-            RoutePathStore!.routePath &&
+        return RoutePathStore!.routePath &&
             RoutePathStore!.routePath!.routePathLinks!.length === 0;
-
-        return RoutePathStore!.isCreating && hasRoutePathLinks;
     }
 
     public isNodeHighlighted = (node: INode) => {
