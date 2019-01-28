@@ -1,5 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
 import * as L from 'leaflet';
 import * as s from '~/components/sidebar/networkView/node/nodeCoordinatesView.scss';
 import InputContainer from '~/components/sidebar/InputContainer';
@@ -22,7 +21,7 @@ const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:
     };
 
     return (
-        <div className={classnames(s.nodeCoordinatesView, s.formSection)}>
+        <div className={s.nodeCoordinatesView}>
             <label>{label}</label>
             <div className={s.coordinatesInputs}>
                 <InputContainer

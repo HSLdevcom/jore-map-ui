@@ -12,27 +12,21 @@ interface INodeCoordinatesListView {
 const nodeCoordinatesListView = ({ node, onChangeCoordinates }: INodeCoordinatesListView) => {
     return (
         <div className={s.nodeCoordinatesListView}>
-            <div className={s.measured}>
-                <NodeCoordinatesView
-                    label={'Mitattu'}
-                    coordinates={node.coordinates}
-                    onChangeCoordinates={onChangeCoordinates('coordinates')}
-                />
-            </div>
-            <div className={s.manual}>
-                <NodeCoordinatesView
-                    label={'Sovitettu'}
-                    coordinates={node.coordinatesManual}
-                    onChangeCoordinates={onChangeCoordinates('coordinatesManual')}
-                />
-            </div>
-            <div className={s.projection}>
-                <NodeCoordinatesView
-                    label={'Projektio'}
-                    coordinates={node.coordinatesProjection}
-                    onChangeCoordinates={onChangeCoordinates('coordinatesProjection')}
-                />
-            </div>
+            <NodeCoordinatesView
+                label={'Mitattu'}
+                coordinates={node.coordinates}
+                onChangeCoordinates={onChangeCoordinates('coordinates')}
+            />
+            <NodeCoordinatesView
+                label={'Sovitettu'}
+                coordinates={node.coordinatesManual}
+                onChangeCoordinates={onChangeCoordinates('coordinatesManual')}
+            />
+            <NodeCoordinatesView
+                label={'Projektio'}
+                coordinates={node.coordinatesProjection}
+                onChangeCoordinates={onChangeCoordinates('coordinatesProjection')}
+            />
         </div>
     );
 };
