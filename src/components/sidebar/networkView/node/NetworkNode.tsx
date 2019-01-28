@@ -85,10 +85,14 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                 >
                     Solmu {node.id}
                 </ViewHeader>
-                <NodeCoordinatesListView
-                    node={this.props.editNetworkStore!.node!}
-                    onChangeCoordinates={this.onChangeLocations}
-                />
+                <div className={s.form}>
+                    <div className={s.formSection}>
+                        <NodeCoordinatesListView
+                            node={this.props.editNetworkStore!.node!}
+                            onChangeCoordinates={this.onChangeLocations}
+                        />
+                    </div>
+                </div>
             </div>
         );
     }
