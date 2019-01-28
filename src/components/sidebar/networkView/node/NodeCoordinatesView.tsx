@@ -1,15 +1,17 @@
 import React from 'react';
+import classnames from 'classnames';
+import InputContainer from '~/components/sidebar/InputContainer';
+import NodeLocationType from '~/enums/nodeLocationType';
 import * as L from 'leaflet';
 import * as s from '~/components/sidebar/networkView/node/nodeCoordinatesView.scss';
-import InputContainer from '~/components/sidebar/InputContainer';
 
 interface INodeCoordinatesViewProps {
-    label: string;
+    locationType: NodeLocationType;
     coordinates: L.LatLng;
     onChangeCoordinates: (coordinates: L.LatLng) => void;
 }
 
-const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:
+const nodeCoordinatesView = ({ locationType, coordinates, onChangeCoordinates }:
                                  INodeCoordinatesViewProps) => {
     const latChange = (v: string) => {
         const lat = Number(v);
@@ -20,9 +22,30 @@ const nodeCoordinatesView = ({ label, coordinates, onChangeCoordinates }:
         onChangeCoordinates(new L.LatLng(coordinates.lat, lon));
     };
 
+    const getIcon = (locationType: NodeLocationType) => {
+        let className: string = '';
+
+        switch (locationType) {
+        case NodeLocationType.Manual:
+            className = s.manual;
+            break;
+        case NodeLocationType.Measured:
+            className = s.measured;
+            break;
+        case NodeLocationType.Projected:
+            className = s.projected;
+            break;
+        }
+
+        return className;
+    };
+
     return (
         <div className={s.nodeCoordinatesView}>
-            <label>{label}</label>
+            <div className={s.nodeCoordinatesHeader}>
+                {locationType.toString()}
+                <div className={classnames(s.labelIcon, getIcon(locationType))}/>
+            </div>
             <div className={s.coordinatesInputs}>
                 <InputContainer
                     value={coordinates.lat}

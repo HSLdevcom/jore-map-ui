@@ -1,5 +1,6 @@
 import React from 'react';
 import { INode } from '~/models';
+import NodeLocationType from '~/enums/nodeLocationType';
 import NodeCoordinatesView from './NodeCoordinatesView';
 import { CoordinatesType } from '../../nodeView/NodeView';
 import * as s from './nodeCoordinatesListView.scss';
@@ -13,17 +14,17 @@ const nodeCoordinatesListView = ({ node, onChangeCoordinates }: INodeCoordinates
     return (
         <div className={s.nodeCoordinatesListView}>
             <NodeCoordinatesView
-                label={'Mitattu'}
+                locationType={NodeLocationType.Manual}
                 coordinates={node.coordinates}
                 onChangeCoordinates={onChangeCoordinates('coordinates')}
             />
             <NodeCoordinatesView
-                label={'Sovitettu'}
+                locationType={NodeLocationType.Measured}
                 coordinates={node.coordinatesManual}
                 onChangeCoordinates={onChangeCoordinates('coordinatesManual')}
             />
             <NodeCoordinatesView
-                label={'Projektio'}
+                locationType={NodeLocationType.Projected}
                 coordinates={node.coordinatesProjection}
                 onChangeCoordinates={onChangeCoordinates('coordinatesProjection')}
             />

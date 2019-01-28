@@ -1,3 +1,5 @@
+@import '../../../shared/styles/common';
+
 .nodeCoordinatesView {
   padding-bottom: 10px;
   input[type=number]::-webkit-inner-spin-button,
@@ -7,8 +9,33 @@
     appearance: none;
     margin: 0;
   }
-  >label {
+  .nodeCoordinatesHeader {
     font-weight: bold;
+
+    .labelIcon {
+        height: 12px;
+        margin: 2px 14px;
+        width: 12px;
+        border-style: solid;
+        border-color: #3786cb;
+        border-width: 3px;
+        border-radius: 12px;
+        background-color: #ace2c2;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .manual {
+        background-color: $nodeManualColor;
+    }
+
+    .projected {
+        background-color: $nodeProjectionColor;
+    }
+
+    .measured {
+        background-color: $nodeMeasuredColor;
+    }
   }
   .coordinatesInputs {
     display: flex;
