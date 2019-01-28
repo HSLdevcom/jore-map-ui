@@ -11,6 +11,9 @@ interface IInputProps {
     onChange?: Function;
     value?: string|number;
     validatorRule?: string;
+    icon?: React.ReactNode;
+    onIconClick?: () => void;
+
 }
 
 interface IInputState {
@@ -57,13 +60,16 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
             <div className={s.formItem}>
                 <div className={s.inputLabel}>
                     {this.props.label}
+                    {!this.props.disabled && this.props.icon && this.props.onIconClick &&
+                    <div className={s.inline} onClick={this.props.onIconClick!}>
+                        {this.props.icon}
+                    </div>
+                    }
                 </div>
                 {this.props.disabled ?
-                    (
-                        <div>
-                            {this.props.value!}
-                        </div>
-                    )
+                    (<div>
+                        {this.props.value!}
+                    </div>)
                     :
                     (<input
                         placeholder={this.props.disabled ? '' : this.props.placeholder}
