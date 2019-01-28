@@ -2,25 +2,6 @@ import NodeType from '~/enums/nodeType';
 import * as s from './nodeTypeColors.scss';
 
 class NodeTypeColorHelper {
-    public static getColor = (type: NodeType) => {
-        switch (type) {
-        case NodeType.STOP:
-            return '#007ac9';
-        case NodeType.CROSSROAD:
-            return '#727272';
-        case NodeType.MUNICIPALITY_BORDER:
-            return '#c900ff';
-        case NodeType.DISABLED:
-            return '#353333';
-        case NodeType.TIME_ALIGNMENT:
-            return '#007ac9';
-        case NodeType.INVALID:
-            return '#ff0000';
-        default:
-            throw new Error(`TransitType not supported: ${type}`);
-        }
-    }
-
     public static getTypeClass = (type: NodeType, highlight?: boolean) => {
         switch (type) {
         case NodeType.STOP:
