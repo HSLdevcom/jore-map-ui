@@ -11,6 +11,9 @@ interface IInputProps {
     onChange?: Function;
     value?: string|number;
     validatorRule?: string;
+    icon?: React.ReactNode;
+    onIconClick?: () => void;
+
 }
 
 interface IInputState {
@@ -57,20 +60,34 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
             <div className={s.formItem}>
                 <div className={s.inputLabel}>
                     {this.props.label}
-                </div>
-                <input
-                    placeholder={this.props.disabled ? '' : this.props.placeholder}
-                    type={typeof this.props.value === 'number' ? 'number' : 'text'}
-                    className={
-                        classnames(
-                            this.props.className,
-                            this.props.disabled ? s.disabled : null,
-                            !this.state.isValid ? s.invalidInput : null)
+                    {!this.props.disabled && this.props.icon && this.props.onIconClick &&
+                    <div
+                        className={classnames(s.inline, s.pointer)}
+                        onClick={this.props.onIconClick!}
+                    >
+                        {this.props.icon}
+                    </div>
                     }
-                    disabled={this.props.disabled}
-                    value={this.props.value!}
-                    onChange={this.onChange}
-                />
+                </div>
+                {this.props.disabled ?
+                    (<div>
+                        {this.props.value!}
+                    </div>)
+                    :
+                    (<input
+                        placeholder={this.props.disabled ? '' : this.props.placeholder}
+                        type={typeof this.props.value === 'number' ? 'number' : 'text'}
+                        className={
+                            classnames(
+                                this.props.className,
+                                this.props.disabled ? s.disabled : null,
+                                !this.state.isValid ? s.invalidInput : null)
+                        }
+                        disabled={this.props.disabled}
+                        value={this.props.value!}
+                        onChange={this.onChange}
+                    />)
+                }
                 { this.state.errorMessage &&
                     <div className={s.errorMessage}>
                         {this.state.errorMessage}
