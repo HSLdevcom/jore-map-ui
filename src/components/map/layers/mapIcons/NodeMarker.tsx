@@ -68,9 +68,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
         const visibleNodeLabels = this.props.mapStore!.visibleNodeLabels;
         const zoom = this.props.mapStore!.zoom;
 
-        if (!node
-            || visibleNodeLabels.length === 0
-            || zoom < NODE_LABEL_MIN_ZOOM) return [];
+        if (!this.props.isNeighborMarker &&
+            (visibleNodeLabels.length === 0
+            || zoom < NODE_LABEL_MIN_ZOOM)) return [];
 
         const labels: string[] = [];
         if (visibleNodeLabels.includes(NodeLabel.hastusId)) {
@@ -78,7 +78,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 labels.push(node.stop.hastusId);
             }
         }
-        if (visibleNodeLabels.includes(NodeLabel.longNodeId)) {
+        if (visibleNodeLabels.includes(NodeLabel.longNodeId) || this.props.isNeighborMarker) {
             labels.push(node.id);
         }
         if (node.shortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
