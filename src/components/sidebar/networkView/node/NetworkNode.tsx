@@ -5,12 +5,15 @@ import { INode } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
+import { Dropdown } from '~/components/controls';
+import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
 import NodeCoordinatesListView from '~/components/sidebar/networkView/node/NodeCoordinatesListView';
 import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../../ViewHeader';
 import * as s from './networkNode.scss';
+import InputContainer from '../../InputContainer';
 
 interface INetworkNodeProps {
     match?: match<any>;
@@ -20,6 +23,7 @@ interface INetworkNodeProps {
 
 interface InetworkNodeState {
     isLoading: boolean;
+    isEditDisabled: boolean;
 }
 
 @inject('editNetworkStore', 'mapStore')
@@ -29,6 +33,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         super(props);
         this.state = {
             isLoading: false,
+            isEditDisabled: false,
         };
     }
 
@@ -68,8 +73,11 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
             this.props.editNetworkStore!.setNode(node);
         }
 
+    private onChange = (name: string) => () => {};
+
     public render() {
         const node = this.props.editNetworkStore!.node;
+        const isEditingDisabled = this.state.isEditDisabled;
 
         if (this.state.isLoading || !node || !node.id) {
             return(
@@ -86,6 +94,23 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                     Solmu {node.id}
                 </ViewHeader>
                 <div className={s.form}>
+                    <div className={s.formSection}>
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                label='LYHYT ID'
+                                disabled={isEditingDisabled}
+                                value={node.shortId}
+                                onChange={this.onChange('routePathShortName')}
+                            />
+                            <Dropdown
+                                label='TYYPPI'
+                                onChange={this.onChange}
+                                items={['Pysäkki', 'Risteys']}
+                                // TODO: Add other alternatives, and remove hardcoding
+                                selected={node.type === NodeType.STOP ? 'Pysäkki' : 'Risteys'}
+                            />
+                        </div>
+                    </div>
                     <div className={s.formSection}>
                         <NodeCoordinatesListView
                             node={this.props.editNetworkStore!.node!}
