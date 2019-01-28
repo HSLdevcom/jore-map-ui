@@ -15,8 +15,8 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
-@observer
 @inject('mapStore')
+@observer
 class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
         super(props);
@@ -26,14 +26,14 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         };
     }
 
-    calculateBounds() {
+    private calculateBounds() {
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
         this.props.routes.forEach((route) => {
             route.routePaths.forEach((routePath) => {
                 routePath.routePathLinks!.forEach((routePathLink) => {
-                    routePathLink.positions
-                        .forEach(pos => bounds.extend(new L.LatLng(pos[0], pos[1])));
+                    routePathLink.geometry
+                        .forEach(pos => bounds.extend(pos));
                 });
             });
         });

@@ -5,6 +5,7 @@ export default interface IExternalNode {
     geojson?: string;
     transittypes: string;
     geojsonManual: string;
+    geojsonProjection: string;
     mittpvm: string;
     solkuka: string;
     soltunnus: string;

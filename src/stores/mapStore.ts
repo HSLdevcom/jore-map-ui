@@ -86,17 +86,17 @@ export class MapStore {
     }
 
     @action
-    public setMapBounds(bounds: L.LatLngBounds) {
+    public setMapBounds = (bounds: L.LatLngBounds) => {
         this._mapBounds = bounds;
     }
 
     @action
-    public setCoordinates(lat: number, lon: number) {
-        this._coordinates = new L.LatLng(lat, lon);
+    public setCoordinates = (location: L.LatLng) => {
+        this._coordinates = location;
     }
 
     @action
-    setZoom(zoom: number) {
+    public setZoom = (zoom: number) => {
         this._zoom = zoom;
     }
 
@@ -107,24 +107,24 @@ export class MapStore {
 
     // TODO: move logic out of store? You can setCoordinates() instead
     @action
-    public setCoordinatesFromDisplayCoordinateSystem(lat: number, lon: number) {
+    public setCoordinatesFromDisplayCoordinateSystem = (lat: number, lon: number) => {
         const [wgsLat, wgsLon] = GeometryService.reprojectToCrs(
             lat, lon, CoordinateSystem.EPSG4326, this._displayCoordinateSystem);
         this._coordinates = new L.LatLng(wgsLat, wgsLon);
     }
 
     @action
-    public setDisplayCoordinateSystem(value: CoordinateSystem) {
+    public setDisplayCoordinateSystem = (value: CoordinateSystem) => {
         this._displayCoordinateSystem = value;
     }
 
     @action
-    public setSelectedNodeId(id: string|null) {
+    public setSelectedNodeId = (id: string|null) => {
         this._selectedNodeId = id;
     }
 
     @action
-    public toggleNodeLabelVisibility(nodeLabel: NodeLabel) {
+    public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => {
         if (this._visibleNodeLabels.includes(nodeLabel)) {
             this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
         } else {
@@ -133,7 +133,7 @@ export class MapStore {
         }
     }
 
-    public isNodeLabelVisible(nodeLabel: NodeLabel) {
+    public isNodeLabelVisible = (nodeLabel: NodeLabel) => {
         return this._visibleNodeLabels.includes(nodeLabel);
     }
 

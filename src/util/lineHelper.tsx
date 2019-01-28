@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import BusIcon from '~/icons/icon-bus';
 import FerryIcon from '~/icons/icon-ferry';
 import SubwayIcon from '~/icons/icon-subway';

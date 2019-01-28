@@ -35,15 +35,15 @@ class MapLayersControl extends React.Component
         };
     }
 
-    public toggleTransitType = (type: TransitType) => {
+    private toggleTransitType = (type: TransitType) => {
         NetworkStore.toggleTransitType(type);
     }
 
-    public toggleMapLayerVisibility = (mapLayer: MapLayer) => () => {
+    private toggleMapLayerVisibility = (mapLayer: MapLayer) => () => {
         NetworkStore.toggleMapLayerVisibility(mapLayer);
     }
 
-    public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => () => {
+    private toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => () => {
         MapStore.toggleNodeLabelVisibility(nodeLabel);
     }
 
@@ -56,18 +56,17 @@ class MapLayersControl extends React.Component
     private selectDate = (e: ChangeEvent<HTMLInputElement>) => {
         NetworkStore.setSelectedDate(e.target.value);
     }
-
+    private showControls = (show: boolean) => (e:MouseEvent<HTMLDivElement>) => {
+        // Fixes problem where clicking on anything causes mouse to 'leave' the element.
+        if (!e.relatedTarget['innerHTML']) return;
+        this.setState({ show });
+    }
     render() {
-        const showControls = (show: boolean) => (e:MouseEvent<HTMLDivElement>) => {
-            // Fixes problem where clicking on anything causes mouse to 'leave' the element.
-            if (!e.relatedTarget['innerHTML']) return;
-            this.setState({ show });
-        };
         return (
             <div
                 className={classnames(s.mapLayerControlView, this.state.show ? s.active : null)}
-                onMouseEnter={showControls(true)}
-                onMouseLeave={showControls(false)}
+                onMouseEnter={this.showControls(true)}
+                onMouseLeave={this.showControls(false)}
             >
                 <div className={s.mapLayerControlIcon}>
                     <IoMdMap />

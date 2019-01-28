@@ -2,7 +2,7 @@ import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction, toJS } from 'mobx';
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
@@ -11,7 +11,7 @@ import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import RouteLayer from './layers/RouteLayer';
-import NewRoutePathLayer from './layers/edit/NewRoutePathLayer';
+import UpsertRoutePathLayer from './layers/edit/UpsertRoutePathLayer';
 import EditNetworkLayer from './layers/edit/EditNetworkLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
@@ -74,8 +74,7 @@ class LeafletMap extends React.Component<IMapProps> {
         // map.addControl(new MeasurementControl({ position: 'topright' }));
         map.on('moveend', () => {
             this.props.mapStore!.setCoordinates(
-                map.getCenter().lat,
-                map.getCenter().lng,
+                map.getCenter(),
             );
         });
 
@@ -126,7 +125,7 @@ class LeafletMap extends React.Component<IMapProps> {
         this.reactionDisposers.forEach(r => r());
     }
 
-    public render() {
+    render() {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
@@ -167,7 +166,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <RouteLayer
                         routes={routes}
                     />
-                    <NewRoutePathLayer />
+                    <UpsertRoutePathLayer />
                     <EditNetworkLayer />
                     <PopupLayer />
                     <Control position='topleft'>

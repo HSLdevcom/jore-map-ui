@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import TransitType from '~/enums/transitType';
 import * as s from './toggleSwitch.scss';
 

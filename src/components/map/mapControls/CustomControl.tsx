@@ -41,7 +41,7 @@ class Control extends MapControl<IControlProps>{
         super.componentWillUnmount!();
     }
 
-    renderContent() {
+    private renderContent() {
         const container = this.leafletElement.getContainer();
         if (container && this.props.children) {
             const { children, ...rest } = this.props;

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
@@ -44,21 +44,21 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         };
     }
 
-    public componentDidMount() {
+    componentDidMount() {
         const routeLinkId = this.props.match!.params.id;
         if (routeLinkId) {
             this.fetchRoutePathLink(routeLinkId);
         }
     }
 
-    public componentWillReceiveProps(props: ILinkViewProps) {
+    componentWillReceiveProps(props: ILinkViewProps) {
         const routeLinkId = props.match!.params.id;
         if (routeLinkId) {
             this.fetchRoutePathLink(routeLinkId);
         }
     }
 
-    private getRoutePath() {
+    private getRoutePath = () => {
         if (this.state.route && this.state.routePathLink) {
             return this.state.route.routePaths
                 .find(p =>
@@ -71,7 +71,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         return;
     }
 
-    private async fetchRoutePathLink(id: string) {
+    private fetchRoutePathLink = async (id: string) => {
         this.setState({ isLoading: true });
 
         const routePathLinkId = parseInt(id, 10);
@@ -91,7 +91,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.setState({ isLoading: false });
     }
 
-    private getNodeDescription(nodeType: NodeType) {
+    private getNodeDescription = (nodeType: NodeType) => {
         switch (nodeType) {
         case NodeType.STOP:
             return nodeDescriptions.stop;
@@ -106,14 +106,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         }
     }
 
-    public toggleEditing = () => {
-    }
-
     // TODO
-    public onChange = () => {
+    private onChange = () => {
     }
 
-    public render() {
+    render() {
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.linkView, s.form)}>
@@ -129,9 +126,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
         return (
         <div className={classnames(s.linkView, s.form)}>
-            <ViewHeader
-                header={`Reitinlinkki ${this.state.routePathLink!.id}`}
-            />
+            <ViewHeader>
+                Reitinlinkki ${this.state.routePathLink!.id}
+            </ViewHeader>
             <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT
             </div>

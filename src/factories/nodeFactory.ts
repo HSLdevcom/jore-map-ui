@@ -1,4 +1,5 @@
-import { INode, ICoordinate } from '~/models';
+import * as L from 'leaflet';
+import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IExternalNode from '~/models/externals/IExternalNode';
@@ -9,14 +10,17 @@ import notificationStore from '../stores/notificationStore';
 
 class NodeFactory {
     public static createNode = (externalNode: IExternalNode): INode => {
-         // Use less accurate location if measured location is missing.
-        const coordinateList =
-            JSON.parse(externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual);
-        const coordinates : ICoordinate = {
-            lon: coordinateList.coordinates[0],
-            lat: coordinateList.coordinates[1],
-        };
+        // Use less accurate location if measured location is missing.
+        const coordinates = L.GeoJSON.coordsToLatLng((JSON.parse(
+            externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual,
+        )).coordinates);
+        const coordinatesManual =
+            L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonManual)).coordinates);
+        const coordinatesProjection =
+            L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonProjection)).coordinates);
+
         let shortId;
+
         if (externalNode.sollistunnus) {
             shortId = externalNode.solkirjain
             ? externalNode.solkirjain + externalNode.sollistunnus
@@ -40,6 +44,8 @@ class NodeFactory {
             type,
             transitTypes,
             coordinates,
+            coordinatesManual,
+            coordinatesProjection,
             shortId,
             id: externalNode.soltunnus,
             stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,

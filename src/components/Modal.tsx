@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import * as s from './modal.scss';
 
 interface IModalProps {
@@ -14,18 +14,18 @@ class Modal extends React.Component<IModalProps> {
         }
     }
 
-    public render(): any {
+    render() {
         if (!this.props.isVisible) return (null);
 
         return (
-        <div
-            className={s.modalView}
-            onClick={this.closeModal}
-        >
-            <div className={s.wrapper}>
-                {this.props.children}
+            <div
+                className={s.modalView}
+                onClick={this.closeModal}
+            >
+                <div className={s.wrapper}>
+                    {this.props.children}
+                </div>
             </div>
-        </div>
         );
     }
 }

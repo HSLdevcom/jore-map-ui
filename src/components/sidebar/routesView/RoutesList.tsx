@@ -1,5 +1,5 @@
 import { inject, observer } from 'mobx-react';
-import * as React from 'react';
+import React from 'react';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import { NetworkStore } from '~/stores/networkStore';
@@ -43,7 +43,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         this.props.searchStore!.setSearchInput('');
     }
 
-    private async queryRoutes() {
+    private queryRoutes = async () => {
         const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
             this.setState({ isLoading: true });
@@ -61,7 +61,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         }
     }
 
-    public renderRouteList() {
+    private renderRouteList = () => {
         const routes = this.props.routeStore!.routes;
 
         if (routes.length < 1) return null;
@@ -87,13 +87,13 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
 
     private redirectToNewRoutePathView = (route: IRoute) => () => {
         const newRoutePathLink = routeBuilder
-        .to(subSites.newRoutePath, { routeId: route.id, lineId: route.lineId })
-        .toLink();
+            .to(subSites.newRoutePath, { routeId: route.id, lineId: route.lineId })
+            .toLink();
 
         navigator.goTo(newRoutePathLink);
     }
 
-    public render(): any {
+    render() {
         if (this.state.isLoading) {
             return(
                 <div className={s.routesListView}>

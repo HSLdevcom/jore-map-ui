@@ -25,14 +25,14 @@ class ColorScale {
         this.colorStack = ColorScale.allColors.slice();
     }
 
-    public reserveColor() {
+    public reserveColor = () => {
         if (this.colorStack.length < 1) {
             return '#007ac9';
         }
         return this.colorStack.pop();
     }
 
-    public releaseColor(color: string) {
+    public releaseColor = (color: string) => {
         if (ColorScale.allColors.includes(color)) {
             this.colorStack.push(color);
         }

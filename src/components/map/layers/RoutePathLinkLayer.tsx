@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as L from 'leaflet';
 import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
@@ -37,7 +36,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         return routePathLinks.map((routePathLink) => {
             return (
                 <Polyline
-                    positions={routePathLink.positions}
+                    positions={routePathLink.geometry}
                     key={routePathLink.id}
                     color={this.props.color}
                     weight={this.props.weight}
@@ -78,11 +77,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         const color = this.props.color;
         const routePathLinks = this.props.routePathLinks;
         if (routePathLinks!.length === 0) return;
-        const coordinates = routePathLinks![0].startNode.coordinates;
-        const latLng = L.latLng(coordinates.lat, coordinates.lon);
         return (
             <StartMarker
-                latLng={latLng}
+                latLng={routePathLinks![0].startNode.coordinates}
                 color={color}
             />
         );

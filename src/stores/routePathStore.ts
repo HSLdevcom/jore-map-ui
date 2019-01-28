@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { IRoutePath, INode } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import lengthCalculator from '~/util/lengthCalculator';
 import { validateRoutePathLinks } from '~/util/geomValidator';
 
 export enum AddRoutePathLinkState {
@@ -13,23 +14,30 @@ export enum AddLinkDirection {
     AfterNode,
 }
 
+export enum RoutePathViewTab {
+    Info,
+    List,
+}
+
 export class RoutePathStore {
     @observable private _isCreating: boolean;
     @observable private _routePath: IRoutePath|null;
     @observable private _hasUnsavedModifications: boolean;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
-    @observable private _highlightedNodes: string[];
-    @observable private _highlightedLinks: string[];
+    @observable private _highlightedObject: string | null;
+    @observable private _extendedObjects: string[];
     @observable private _addRoutePathLinkState: AddRoutePathLinkState;
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
+    @observable private _activeTab: RoutePathViewTab;
 
     constructor() {
         this._neighborRoutePathLinks = [];
         this._hasUnsavedModifications = false;
-        this._highlightedLinks = [];
-        this._highlightedNodes = [];
+        this._highlightedObject = null;
+        this._extendedObjects = [];
         this._isGeometryValid = true;
+        this._activeTab = RoutePathViewTab.Info;
         this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
     }
 
@@ -66,36 +74,70 @@ export class RoutePathStore {
         return this._isGeometryValid;
     }
 
-    isNodeHighlighted(nodeId: string) {
-        return this._highlightedNodes.some(n => n === nodeId);
-    }
-
-    isLinkHighlighted(linkId: string) {
-        return this._highlightedLinks.some(l => l === linkId);
+    @computed
+    get activeTab() {
+        return this._activeTab;
     }
 
     @action
-    setHighlightedNodes(nodeIds: string[]) {
-        this._highlightedNodes = nodeIds;
+    public setActiveTab = (tab: RoutePathViewTab) => {
+        this._activeTab = tab;
     }
 
     @action
-    setHighlightedLinks(linkIds: string[]) {
-        this._highlightedLinks = linkIds;
+    public toggleActiveTab = () => {
+        if (this._activeTab === RoutePathViewTab.Info) {
+            this._activeTab = RoutePathViewTab.List;
+        } else {
+            this._activeTab = RoutePathViewTab.Info;
+        }
+    }
+
+    public isObjectHighlighted = (objectId: string) => {
+        return this._highlightedObject === objectId
+            || (!this._highlightedObject && this.isObjectExtended(objectId));
+    }
+
+    public isObjectExtended = (objectId: string) => {
+        return this._extendedObjects.some(n => n === objectId);
+    }
+
+    @computed
+    get extendedObjects() {
+        return this._extendedObjects;
     }
 
     @action
-    setIsCreating(value: boolean) {
+    public setHighlightedObject = (objectId: string | null) => {
+        this._highlightedObject = objectId;
+    }
+
+    @action
+    public toggleExtendedObject = (objectId: string) => {
+        if (this._extendedObjects.some(o => o === objectId)) {
+            this._extendedObjects = this._extendedObjects.filter(o => o !== objectId);
+        } else {
+            this._extendedObjects.push(objectId);
+        }
+    }
+
+    @action
+    public setExtendedObjects = (objectIds: string[]) => {
+        this._extendedObjects = objectIds;
+    }
+
+    @action
+    public setIsCreating = (value: boolean) => {
         this._isCreating = value;
     }
 
     @action
-    setAddRoutePathLinkDirection(direction: AddLinkDirection) {
+    public setAddRoutePathLinkDirection = (direction: AddLinkDirection) => {
         this._addRoutePathLinkDirection = direction;
     }
 
     @action
-    setRoutePath(routePath: IRoutePath|null) {
+    public setRoutePath = (routePath: IRoutePath|null) => {
         this._routePath = routePath;
         if (!routePath) {
             this._neighborRoutePathLinks = [];
@@ -103,7 +145,7 @@ export class RoutePathStore {
     }
 
     @action
-    updateRoutePathProperty(property: string, value: string) {
+    public updateRoutePathProperty = (property: string, value: string|number|Date) => {
         this._routePath = {
             ...this._routePath!,
             [property]: value,
@@ -112,14 +154,14 @@ export class RoutePathStore {
     }
 
     @action
-    setNeighborRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+    public setNeighborRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._neighborRoutePathLinks = routePathLinks;
         this._addRoutePathLinkState = routePathLinks.length === 0
             ? AddRoutePathLinkState.SetTargetLocation : AddRoutePathLinkState.AddLinks;
     }
 
     @action
-    addLink(routePathLink: IRoutePathLink) {
+    public addLink = (routePathLink: IRoutePathLink) => {
         this._routePath!.routePathLinks!.splice(
             // Order numbers start from 1
             routePathLink.orderNumber - 1,
@@ -138,7 +180,7 @@ export class RoutePathStore {
     )
 
     @action
-    removeLink(id: string) {
+    public removeLink = (id: string) => {
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.filter(link => link.id !== id);
         this.onRoutePathLinksChanged();
@@ -146,26 +188,38 @@ export class RoutePathStore {
     }
 
     @action
-    setRoutePathLinks(routePathLinks: IRoutePathLink[]) {
+    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._routePath!.routePathLinks =
             routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
+        this.recalculateLength();
     }
 
     @action
-    clear() {
+    public clear = () => {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
     }
 
     @action
-    resetHaveLocalModifications() {
+    public resetHaveLocalModifications = () => {
         this._hasUnsavedModifications = false;
+    }
+
+    @action
+    public recalculateLength = () => {
+        this.updateRoutePathProperty(
+            'length',
+            Math.floor(
+                lengthCalculator.fromRoutePathLinks(
+                    this._routePath!.routePathLinks!,
+                )),
+            );
     }
 
     public getLinkGeom = (linkId: string) => {
         const link = this._routePath!.routePathLinks!.find(l => l.id === linkId);
         if (link) {
-            return link.positions;
+            return link.geometry;
         }
         return null;
     }
@@ -176,7 +230,7 @@ export class RoutePathStore {
             node = this._routePath!.routePathLinks!.find(l => l.endNode.id === nodeId);
         }
         if (node) {
-            return node.positions;
+            return node.geometry;
         }
         return null;
     }
@@ -196,6 +250,7 @@ export class RoutePathStore {
 
     private onRoutePathLinksChanged = () => {
         this.recalculateOrderNumbers();
+        this.recalculateLength();
         this.validateRoutePathGeometry();
     }
 }

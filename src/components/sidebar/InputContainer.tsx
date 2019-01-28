@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
-import s from './inputContainer.scss';
 import FormValidator from '../../validation/FormValidator';
+import * as s from './inputContainer.scss';
 
 interface IInputProps {
     label: string;
@@ -9,7 +9,7 @@ interface IInputProps {
     className?: string;
     disabled?: boolean;
     onChange?: Function;
-    value?: string;
+    value?: string|number;
     validatorRule?: string;
 }
 
@@ -52,7 +52,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         }
     }
 
-    public render(): any {
+    render() {
         return (
             <div className={s.formItem}>
                 <div className={s.inputLabel}>
@@ -60,7 +60,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 </div>
                 <input
                     placeholder={this.props.disabled ? '' : this.props.placeholder}
-                    type='text'
+                    type={typeof this.props.value === 'number' ? 'number' : 'text'}
                     className={
                         classnames(
                             this.props.className,

@@ -1,36 +1,54 @@
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
+import { observer, inject } from 'mobx-react';
+import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import * as s from './routePathTabs.scss';
 
 interface IRoutePathTabsProps {
-    selectedTab: number;
-    selectTab: Function;
+    routePathStore?: RoutePathStore;
 }
 
-const tabs = [
-    'Reitinsuunnan tiedot',
-    'Solmut ja linkit',
-];
+@inject('routePathStore')
+@observer
+class RoutePathTabs extends React.Component<IRoutePathTabsProps> {
+    private openTab = (tab: RoutePathViewTab) => () => {
+        this.props.routePathStore!.setActiveTab(tab);
+    }
 
-const routePathTabs = (props: IRoutePathTabsProps) => {
-    return (
-        <> {tabs.map((tab: string, index) => {
-            return(
+    render() {
+        return (
+            <>
                 <div
-                    key={tab}
-                    className={(props.selectedTab === index) ?
-                        classnames(s.routePathTabButtonsView, s.selected) :
-                        s.routePathTabButtonsView}
-                    onClick={props.selectTab(index)}
+                    className={
+                        classnames(
+                            s.routePathTabButtonsView,
+                            this.props.routePathStore!.activeTab === RoutePathViewTab.Info ?
+                                s.selected : undefined,
+                        )
+                    }
+                    onClick={this.openTab(RoutePathViewTab.Info)}
                 >
                     <div className={s.tabLabel}>
-                        {tab}
+                        Reitinsuunnan tiedot
                     </div>
                 </div>
-            );
-        })}
-        </>
-    );
-};
+                <div
+                    className={
+                        classnames(
+                            s.routePathTabButtonsView,
+                            this.props.routePathStore!.activeTab === RoutePathViewTab.List ?
+                                s.selected : undefined,
+                        )
+                    }
+                    onClick={this.openTab(RoutePathViewTab.List)}
+                >
+                    <div className={s.tabLabel}>
+                        Solmut ja linkit
+                    </div>
+                </div>
+            </>
+        );
+    }
+}
 
-export default routePathTabs;
+export default RoutePathTabs;

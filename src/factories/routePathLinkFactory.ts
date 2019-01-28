@@ -1,3 +1,4 @@
+import * as L from 'leaflet';
 import { IRoutePathLink } from '~/models';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import NumberIterator from '~/util/NumberIterator';
@@ -6,12 +7,7 @@ import { NEW_OBJECT_TAG } from '~/constants';
 import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {
-    private static getPositions(geojson: string) {
-        const coordinates = JSON.parse(geojson).coordinates;
-        return coordinates.map((coor: [number, number]) => [coor[1], coor[0]]);
-    }
-
-    private static getTemporaryRoutePathLinkId() {
+    private static getTemporaryRoutePathLinkId = () => {
         return `${NEW_OBJECT_TAG}-${NumberIterator.getNumber()}`;
     }
 
@@ -19,12 +15,15 @@ class RoutePathLinkFactory {
     (externalRoutePathLink: IExternalRoutePathLink): IRoutePathLink => {
         const startNode = NodeFactory.createNode(externalRoutePathLink.solmuByLnkalkusolmu);
         const endNode = NodeFactory.createNode(externalRoutePathLink.solmuByLnkloppusolmu);
+        const geoJson =
+            JSON.parse(
+                externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson,
+            );
 
         return {
             startNode,
             endNode,
-            positions: RoutePathLinkFactory.getPositions(
-                externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson),
+            geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
             id: externalRoutePathLink.relid,
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeType: externalRoutePathLink.relpysakki,
@@ -38,11 +37,15 @@ class RoutePathLinkFactory {
     public static createNewRoutePathLinkFromExternalLink =
     (link: IExternalLink, orderNumber: number): IRoutePathLink => {
         const startNode = NodeFactory.createNode(link.solmuByLnkalkusolmu);
+        const geoJson = JSON.parse(
+            link.geojson,
+        );
+
         return {
             startNode,
             orderNumber,
             endNode: NodeFactory.createNode(link.solmuByLnkloppusolmu),
-            positions: RoutePathLinkFactory.getPositions(link.geojson),
+            geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
             isStartNodeTimeAlignmentStop: false,
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             startNodeType: startNode.type,

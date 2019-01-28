@@ -1,3 +1,4 @@
+import * as L from 'leaflet';
 import NodeType from '~/enums/nodeType';
 import INode from './INode';
 
@@ -6,7 +7,7 @@ export default interface IRoutePathLink {
     routePathDirection?: string;
     routePathStartDate?: Date;
     id: string;
-    positions: [[number, number]]; // TODO: use geojson format instead (?)
+    geometry: L.LatLng[];
     startNode: INode;
     endNode: INode;
     orderNumber: number;

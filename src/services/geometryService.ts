@@ -1,7 +1,5 @@
 import proj4 from 'proj4';
 import CoordinateSystem from '~/enums/coordinateSystem';
-import { ICoordinate } from '~/models';
-import { LatLng } from 'leaflet';
 
 class GeometryService {
     private static projections = {
@@ -15,7 +13,7 @@ class GeometryService {
             ' +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
     };
 
-    public static coordinateNames(coordSys: CoordinateSystem) {
+    public static coordinateNames = (coordSys: CoordinateSystem) => {
         switch (coordSys) {
         case CoordinateSystem.EPSG4326:
             return { x: 'Lat', y: 'Lon' };
@@ -26,7 +24,7 @@ class GeometryService {
         }
     }
 
-    public static nextCoordinateSystem(coordSys: CoordinateSystem) {
+    public static nextCoordinateSystem = (coordSys: CoordinateSystem) => {
         switch (coordSys) {
         case CoordinateSystem.EPSG4326:
             return CoordinateSystem.EPSG3879;
@@ -37,20 +35,17 @@ class GeometryService {
         }
     }
 
-    public static reprojectToCrs(
+    public static reprojectToCrs = (
         lat: number,
         lon: number,
         toCoordSys: CoordinateSystem,
-        fromCoordSys: CoordinateSystem = CoordinateSystem.EPSG4326): number[] {
+        fromCoordSys: CoordinateSystem = CoordinateSystem.EPSG4326) => {
         if (fromCoordSys === toCoordSys) {
             return [lat, lon];
         }
-        return proj4(this.projections[fromCoordSys], this.projections[toCoordSys])
+        return proj4(GeometryService.projections[fromCoordSys],
+                     GeometryService.projections[toCoordSys])
             .forward([lon, lat]).reverse();
-    }
-
-    public static iCoordinateToLatLng = (coordinate: ICoordinate) => {
-        return new LatLng(coordinate.lat, coordinate.lon);
     }
 }
 

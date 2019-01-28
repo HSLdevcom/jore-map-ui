@@ -7,7 +7,7 @@ import NodeFactory from '~/factories/nodeFactory';
 import GraphqlQueries from './graphqlQueries';
 
 class NodeService {
-    public static async fetchNode(nodeId: string): Promise<INode | null> {
+    public static fetchNode = async (nodeId: string): Promise<INode | null> => {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getNodeQuery(), variables: { nodeId } },
