@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { match } from 'react-router';
 import { INode } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
-import { NotificationStore } from '~/stores/notificationStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
@@ -15,7 +14,6 @@ import * as s from './networkNode.scss';
 interface INetworkNodeProps {
     match?: match<any>;
     editNetworkStore?: EditNetworkStore;
-    notificationStore?: NotificationStore;
     mapStore?: MapStore;
 }
 
@@ -23,7 +21,7 @@ interface InetworkNodeState {
     isLoading: boolean;
 }
 
-@inject('editNetworkStore', 'notificationStore', 'mapStore')
+@inject('editNetworkStore', 'mapStore')
 @observer
 class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> {
     constructor(props: INetworkNodeProps) {
@@ -58,9 +56,9 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
 
     private async fetchLinksForNode(node: INode) {
         const links = await LinkService.fetchLinksByStartNodeAndEndNode(node.id);
-        if (!links) return;
-        this.props.editNetworkStore!.setNode(node);
-        this.props.editNetworkStore!.setLinks(links);
+        if (links) {
+            this.props.editNetworkStore!.setLinks(links);
+        }
     }
 
     private onChangeLocations = (coordinatesType: CoordinatesType) =>
@@ -70,29 +68,22 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         }
 
     public render() {
-        if (this.state.isLoading) {
+        const node = this.props.editNetworkStore!.node;
+
+        if (this.state.isLoading || !node || node.id) {
             return(
                 <div className={s.editNetworkView}>
                     <Loader/>
                 </div>
             );
         }
-        const node = this.props.editNetworkStore!.node;
-        if (node && node.id) {
-            return (
-                <div className={s.editNetworkView}>
-                   <h2>Solmun {node.id} muokkaus</h2>
-                    <NodeCoordinatesListView
-                        node={this.props.editNetworkStore!.node!}
-                        onChangeCoordinates={this.onChangeLocations}
-                    />
-                </div>
-            );
-        }
-
         return (
             <div className={s.editNetworkView}>
-               <h2>Solmun muokkaus</h2>
+                <h2>Solmun {node.id} muokkaus</h2>
+                <NodeCoordinatesListView
+                    node={this.props.editNetworkStore!.node!}
+                    onChangeCoordinates={this.onChangeLocations}
+                />
             </div>
         );
     }
