@@ -9,6 +9,7 @@ import NodeService from '~/services/nodeService';
 import NodeCoordinatesListView from '~/components/sidebar/networkView/node/NodeCoordinatesListView';
 import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import Loader from '~/components/shared/loader/Loader';
+import ViewHeader from '../../ViewHeader';
 import * as s from './networkNode.scss';
 
 interface INetworkNodeProps {
@@ -70,7 +71,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     public render() {
         const node = this.props.editNetworkStore!.node;
 
-        if (this.state.isLoading || !node || node.id) {
+        if (this.state.isLoading || !node || !node.id) {
             return(
                 <div className={s.editNetworkView}>
                     <Loader/>
@@ -79,7 +80,11 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         }
         return (
             <div className={s.editNetworkView}>
-                <h2>Solmun {node.id} muokkaus</h2>
+                <ViewHeader
+                    closePromptMessage={undefined}
+                >
+                    Solmu {node.id}
+                </ViewHeader>
                 <NodeCoordinatesListView
                     node={this.props.editNetworkStore!.node!}
                     onChangeCoordinates={this.onChangeLocations}
