@@ -125,6 +125,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             value={startNode ? startNode.id : '-'}
                         />
                         <Dropdown
+                            label='TYYPPI'
                             onChange={this.onChange}
                             items={Object.values(nodeDescriptions)}
                             disabled={true}
@@ -134,7 +135,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                                     : nodeDescriptions.unknown}
                         />
                         <InputContainer
-                            label=''
+                            label='NIMI'
                             disabled={true}
                             value={
                                 startNode && startNode.stop ? startNode.stop!.nameFi : '-'}
@@ -149,6 +150,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             value={endNode ? endNode.id : '-'}
                         />
                         <Dropdown
+                            label='TYYPPI'
                             onChange={this.onChange}
                             items={Object.values(nodeDescriptions)}
                             disabled={true}
@@ -158,7 +160,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                                     : nodeDescriptions.unknown}
                         />
                         <InputContainer
-                            label=''
+                            label='NIMI'
                             disabled={true}
                             value={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
                         />

@@ -39,12 +39,9 @@ class Dropdown extends React.Component
                         </div>
                     }
                     {this.props.disabled &&
-                        <input
-                            type='text'
-                            className={s.disabled}
-                            disabled={true}
-                            value={this.state.selectedValue}
-                        />
+                        <div>
+                            {this.state.selectedValue}
+                        </div>
                     }
                     {!this.props.disabled &&
                         <select
