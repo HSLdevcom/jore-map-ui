@@ -9,11 +9,48 @@
     width: 20px;
 }
 
+.shadow {
+    background-color: #80808024;
+}
+
 .item {
     border-bottom: 1.5px solid $lightGrey;
+    position: relative;
 
-    .shadow {
-        background-color: #80808024;
+    .headerIcon {
+        width: 30px;
+        position: absolute;
+        height: 30px;
+        left: 5px;
+        top: 50%;
+        margin-top: -15px;
+
+        .iconBorder {
+            border-style: solid;
+            border-radius: 30px;
+            display: inline-block;
+            border-width: 3px;
+            margin: 7px;
+        }
+
+        .nodeIcon {
+            height: 10px;
+            width: 10px;
+            border-radius: 5px;
+            background-color: white;
+        }
+
+        .linkIcon {
+            display: block;
+            height: 90px;
+            background-color: #639fd5;
+            width: 5px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -2.5px;
+            margin-top: -45px;
+        }
     }
 
     .itemHeader {
@@ -27,6 +64,7 @@
             position: relative;
             align-self: center;
             display: flex;
+            padding-left: 40px;
         
             .label {
                 margin-left: 30px;
@@ -64,34 +102,6 @@
                 width: 125px;
                 display: flex;
                 line-height: 25px;
-
-                .headerIcon {
-                    width: 30px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-
-                    .iconBorder {
-                        border-style: solid;
-                        border-radius: 30px;
-                        border-width: 3px;
-                    }
-    
-                    .nodeIcon {
-                        height: 10px;
-                        width: 10px;
-                        border-radius: 5px;
-                        background-color: white;
-                    }
-    
-                    .linkIcon {
-                        display: inline-block;
-                        height: 90px;
-                        background-color: #639fd5;
-                        width: 5px;
-                    }
-                }
             }
         }
     
@@ -115,10 +125,8 @@
         padding: 10px;
         margin-left: 45px;
         border-right-style: solid;
-        border-bottom-style: solid;
         border-color: #0285d0;
         border-width: 3px;
-        border-bottom-right-radius: 10px;
 
         .extendedContent {
             .header {
