@@ -120,7 +120,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                     </div>
                     { node.type === NodeType.STOP &&
                         <StopForm
-                            isEditingDisabled={false}
+                            isEditingDisabled={true}
                             onChange={this.onChange('')}
                             stop={node.stop!}
                         />
