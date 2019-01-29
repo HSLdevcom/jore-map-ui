@@ -12,6 +12,7 @@ import NodeCoordinatesListView from '~/components/sidebar/networkView/node/NodeC
 import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../../ViewHeader';
+import StopForm from './StopForm';
 import * as s from './networkNode.scss';
 import InputContainer from '../../InputContainer';
 
@@ -117,6 +118,13 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                             onChangeCoordinates={this.onChangeLocations}
                         />
                     </div>
+                    { node.type === NodeType.STOP &&
+                        <StopForm
+                            isEditingDisabled={false}
+                            onChange={this.onChange('')}
+                            stop={node.stop!}
+                        />
+                    }
                 </div>
             </div>
         );
