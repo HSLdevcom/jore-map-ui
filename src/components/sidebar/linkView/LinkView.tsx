@@ -12,7 +12,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
-import MultiTabTextarea from '../routeLinkView/MultiTabTextarea';
+import MultiTabTextarea from './MultiTabTextarea';
 import Loader from '../../shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
