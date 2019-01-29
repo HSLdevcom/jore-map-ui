@@ -43,7 +43,7 @@ class LinkService {
         } catch (error) {
             console.error(error); // tslint:disable-line
             notificationStore.addNotification({
-                message: `Haku löytää linkki, joilla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`, // tslint:disable max-line-length
+                message: `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`, // tslint:disable max-line-length
                 type: NotificationType.ERROR,
             });
             return null;
