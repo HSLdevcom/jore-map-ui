@@ -1,7 +1,33 @@
 export default interface IExternalStop {
-    id: number;
+    soltunnus: string;
+    pyskunta: string;
     pysnimi: string;
     pysnimir: string;
+    pyspaikannimi: string;
+    pyspaikannimir: string;
+    pysosoite: string;
+    pysosoiter: string;
+    pysvaihtopys: string;
+    pyskuka: string;
+    pysviimpvm: string;
+    pyslaituri: string;
+    pyskatos: string;
+    pystyyppi: string;
     pyssade: number;
+    pyssuunta: string;
     paitunnus: string;
+    terminaali: string;
+    kutsuplus: string;
+    kutsuplusvyo: string;
+    kulkusuunta: string;
+    kutsuplusprior: string;
+    id: number;
+    pysalueid: string;
+    tariffi: string;
+    elynumero: string;
+    pysnimipitka: string;
+    pysnimipitkar: string;
+    nimiviimpvm: string;
+    vyohyke: string;
+    postinro: string;
 }

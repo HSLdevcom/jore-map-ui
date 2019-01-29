@@ -153,6 +153,40 @@ const routePathQueryFields = `
     poikkeusreitti
 `;
 
+const stopQueryFields = `
+    soltunnus
+    pyskunta
+    pysnimi
+    pysnimir
+    pyspaikannimi
+    pyspaikannimir
+    pysosoite
+    pysosoiter
+    pysvaihtopys
+    pyskuka
+    pysviimpvm
+    pyslaituri
+    pyskatos
+    pystyyppi
+    pyssade
+    pyssuunta
+    paitunnus
+    terminaali
+    kutsuplus
+    kutsuplusvyo
+    kulkusuunta
+    kutsuplusprior
+    id
+    pysalueid
+    tariffi
+    elynumero
+    pysnimipitka
+    pysnimipitkar
+    nimiviimpvm
+    vyohyke
+    postinro
+`;
+
 const nodeQueryFields = `
     solx
     soly
@@ -167,10 +201,7 @@ const nodeQueryFields = `
     geojsonProjection
     transittypes
     pysakkiBySoltunnus {
-        pyssade
-        pysnimi
-        pysnimir
-        paitunnus
+        ${stopQueryFields}
     }
 `;
 

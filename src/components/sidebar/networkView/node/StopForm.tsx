@@ -41,13 +41,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='PITKÄ NIMI'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.nameLongFi}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='PITKÄ NIMI RUOTSIKSI'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.nameLongSe}
                       onChange={onChange}
                   />
               </div>
@@ -60,13 +60,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='PAIKAN NIMI'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.placeNameFi}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='PAIKAN NIMI RUOTSIKSI'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.placeNameSe}
                       onChange={onChange}
                   />
               </div>
@@ -74,13 +74,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='OSOITE'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.addressFi}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='OSOITE RUOTSIKSI'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.addressSe}
                       onChange={onChange}
                   />
               </div>
@@ -88,7 +88,7 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='POSTINUMERO'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.postalNumber}
                       onChange={onChange}
                   />
                   <Dropdown
@@ -108,13 +108,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='VAIHTOPYSÄKKI'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.exchangeStop}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='LAITURI'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.platform}
                       onChange={onChange}
                   />
               </div>
@@ -128,7 +128,7 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='TYYPPI'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.type}
                       onChange={onChange}
                   />
               </div>
@@ -136,13 +136,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='SÄDE'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.radius}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='SUUNTA'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.direction}
                       onChange={onChange}
                   />
               </div>
@@ -150,13 +150,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='PAITUNNUS'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.hastusId}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='TERMINAALI'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.terminal}
                       onChange={onChange}
                   />
               </div>
@@ -164,13 +164,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='KUTSUPLUS'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.kutsuplus}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='KUTSUPLUS VYÖHYKE'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.kutsuplusSection}
                       onChange={onChange}
                   />
               </div>
@@ -178,13 +178,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='KUTSUPLUS PRIORITEETTI'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.kutsuplusPriority}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='KULKUSUUNTA'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.courseDirection}
                       onChange={onChange}
                   />
               </div>
@@ -192,13 +192,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='PYSÄKKIALUE'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.areaId}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='ELYNUMERO'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.elyNumber}
                       onChange={onChange}
                   />
               </div>
@@ -206,13 +206,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                   <InputContainer
                       label='VYÖHYKE'
                       disabled={isEditingDisabled}
-                      value={stop.nameFi}
+                      value={stop.section}
                       onChange={onChange}
                   />
                   <InputContainer
                       label='TARIFFI'
                       disabled={isEditingDisabled}
-                      value={stop.nameSe}
+                      value={stop.rate}
                       onChange={onChange}
                   />
               </div>
