@@ -1,4 +1,4 @@
-enum municipality {
+enum Municipality {
     Helsinki = '1',
     Espoo = '2',
     Vantaa = '3',
@@ -7,4 +7,4 @@ enum municipality {
     // TODO: Replace with correct values
 }
 
-export default municipality;
+export default Municipality;

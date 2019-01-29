@@ -18,7 +18,7 @@ import ViewHeader from '../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
-    link: ILink | null;
+    link?: ILink;
     isLoading: boolean;
 }
 
@@ -39,7 +39,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
-            link: null,
             isLoading: true,
         };
     }
