@@ -44,22 +44,22 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     componentDidMount() {
-        const routeLinkId = this.props.match!.params.id;
-        if (routeLinkId) {
-            this.fetchLink();
-        }
+        this.initUsingUrlParams(this.props.match!.params);
     }
 
     componentWillReceiveProps(props: ILinkViewProps) {
-        const routeLinkId = props.match!.params.id;
-        if (routeLinkId) {
-            this.fetchLink();
+        this.initUsingUrlParams(props.match!.params);
+    }
+
+    private initUsingUrlParams = async (props: any) => {
+        const [startNodeId, endNodeId, transitTypeCode] = props.match!.params.id.split(',');
+        if (startNodeId && endNodeId && transitTypeCode) {
+            this.fetchLink(startNodeId, endNodeId, transitTypeCode);
         }
     }
 
-    private fetchLink = async () => {
+    private fetchLink = async (startNodeId: string, endNodeId: string, transitTypeCode: string) => {
         this.setState({ isLoading: true });
-        const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
 
         const link =
             await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
