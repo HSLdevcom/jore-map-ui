@@ -50,7 +50,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 RoutePathFactory.createNewRoutePathFromOld(this.props.routePathStore!.routePath!));
         }
         this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
-        this.props.routePathStore!.setIsCreating(true);
     }
 
     private initializeMap = async () => {
@@ -123,7 +122,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     componentWillUnmount() {
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
-        this.props.routePathStore!.setIsCreating(false);
         this.props.routePathStore!.setRoutePath(null);
     }
 
