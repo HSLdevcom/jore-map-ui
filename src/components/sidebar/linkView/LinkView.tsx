@@ -2,10 +2,10 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
-import moment from 'moment';
 import ButtonType from '~/enums/buttonType';
 import RouteService from '~/services/routeService';
 import { IRoutePathLink, IRoute } from '~/models';
+import { dateToDateString } from '~/util/dateFormatHelper';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import NodeType from '~/enums/nodeType';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
@@ -151,17 +151,15 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             label='VOIM. AST'
                             disabled={true}
                             value={
-                                routePath ? moment(
-                                    routePath.startTime,
-                                ).format('DD.MM.YYYY') : ''}
+                                routePath ? dateToDateString(routePath.startTime) : ''
+                            }
                         />
                         <InputContainer
                             label='VIIM. VOIM'
                             disabled={true}
                             value={
-                                routePath ? moment(
-                                    routePath.endTime,
-                                ).format('DD.MM.YYYY') : ''}
+                                routePath ? dateToDateString(routePath.endTime) : ''
+                            }
                         />
                     </div>
                     <InputContainer

@@ -2,11 +2,32 @@
 @import '../../shared/styles/flexbox';
 
 .routeShowView {
+    .groupedRoutes {
+        margin-left: -10px;
+        margin-right: -10px;
+        padding: 10px 10px;
+
+        .groupedRoutesDate {
+            color: rgb(102, 102, 102);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .groupedRoutesContent {
+            padding-left: 25px;
+        }
+    }
+
+    .shadow {
+        background-color: white;
+    }
+
     .routeName {
         display: flex;
         align-items: center;
         padding-top: 20px;
         overflow: hidden;
+        margin-bottom: 30px;
 
         .label {
             font-size: $largeFontSize;
@@ -41,7 +62,7 @@
         flex-direction: row;
         -ms-flex-align: center;
         align-items: center;
-        padding-top: 15px;
+        padding-top: 5px;
 
         .routePathInfo {
             &.highlight {
