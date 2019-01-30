@@ -10,6 +10,7 @@ import NodeType from '~/enums/nodeType';
 import SubSites from '~/routing/subSites';
 import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
+import MunicipalityDropdown from '~/components/controls/MunicipalityDropdown';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
@@ -210,6 +211,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <InputContainer
                         label='KATUOSAN OS. NRO'
                         value={this.state.link.streetNumber}
+                    />
+                    <MunicipalityDropdown
+                        onChange={this.onChange}
+                        value={this.state.link.municipalityCode}
                     />
                 </div>
                 <div className={s.flexRow}>
