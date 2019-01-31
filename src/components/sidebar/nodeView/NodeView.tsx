@@ -5,6 +5,7 @@ import { match } from 'react-router';
 import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
 import { INode } from '~/models';
+import NodeLocationType from '~/types/NodeLocationType';
 import NodeMockData from './NodeMockData';
 import NodeCoordinatesListView from '../networkView/node/NodeCoordinatesListView';
 import Loader from '../../shared/loader/Loader';
@@ -27,8 +28,6 @@ interface INodeViewProps {
     match?: match<any>;
     mapStore?: MapStore;
 }
-
-export type CoordinatesType = 'coordinates' | 'coordinatesManual' | 'coordinatesProjection';
 
 @inject('mapStore')
 @observer
@@ -148,11 +147,10 @@ class NodeView extends React.Component
         );
     }
 
-    private onChangeLocations = (coordinatesType: CoordinatesType) =>
-        (coordinates: L.LatLng) => {
-            const node = { ...this.state.node!, [coordinatesType]:coordinates };
-            this.setState({ node });
-        }
+    private onChangeLocations = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
+        const node = { ...this.state.node!, [coordinatesType]:coordinates };
+        this.setState({ node });
+    }
 
     render() {
         const selectedNodeId = this.props.match!.params.id;
