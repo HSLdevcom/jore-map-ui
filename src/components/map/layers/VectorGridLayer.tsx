@@ -28,7 +28,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         reaction(() =>
             [NetworkStore.isMapLayerVisible(MapLayer.node),
                 NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink),
-                EditNetworkStore.node],
+                EditNetworkStore.nodes],
                  this.redrawLayers,
         );
     }
