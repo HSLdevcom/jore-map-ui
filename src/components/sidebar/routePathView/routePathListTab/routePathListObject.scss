@@ -46,15 +46,14 @@
         }
 
         .linkIcon {
-            display: block;
             height: 90px;
             background-color: #639fd5;
             width: 5px;
             position: absolute;
             top: 50%;
             left: 50%;
-            margin-left: -2.5px;
-            margin-top: -45px;
+            margin: 0;
+            transform: translate(-50%, -50%)
         }
     }
 
