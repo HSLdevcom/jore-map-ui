@@ -18,7 +18,7 @@ interface RoutePathLayerProps {
 class RoutePathLayer extends Component<RoutePathLayerProps> {
     private openLinkView = (routePathLinkId: number) => {
         const linkViewLink = routeBuilder
-            .to(subSites.link)
+            .to(subSites.routelink)
             .toTarget(routePathLinkId.toString())
             .toLink();
         navigator.goTo(linkViewLink);
