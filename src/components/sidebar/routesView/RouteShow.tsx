@@ -139,7 +139,6 @@ class RouteShow extends React.Component<IRouteShowProps, IRouteShowState> {
                         <ToggleSwitch
                             onClick={toggleRoutePathVisibility}
                             value={routePath.visible}
-                            type={this.props.route.line!.transitType}
                             color={routePath.visible ? routePath.color! : '#898989'}
                         />
                         <div

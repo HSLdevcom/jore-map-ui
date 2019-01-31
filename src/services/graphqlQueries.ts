@@ -45,8 +45,8 @@ const getRouteQuery = () => {
                 reitinsuuntasByReitunnus{
                     nodes {
                         ${routePathQueryFields}
-                        ${lineForRoutePathQuery}
                         ${routePathLinksForRoutePathQuery}
+                        ${routeForRoutePathQuery}
                     }
                 }
             }
@@ -59,7 +59,7 @@ const getRoutePathQuery = () => {
         gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
             routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
                 ${routePathQueryFields}
-                ${lineForRoutePathQuery}
+                ${routeForRoutePathQuery}
                 ${routePathLinksForRoutePathQuery}
             }
         }`
@@ -81,6 +81,16 @@ const getLinksByStartNodeQuery = () => {
         gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksByStartNodeQuery}
+            }
+        }`
+    );
+};
+
+const getLinkQuery = () => {
+    return (
+        gql`query getLink($startNodeId: String!, $endNodeId: String!, $transitType:String!) {
+            link: linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu(lnkverkko: $transitType, lnkalkusolmu: $startNodeId, lnkloppusolmu: $endNodeId) {
+                ${linkQueryFields}
             }
         }`
     );
@@ -153,6 +163,40 @@ const routePathQueryFields = `
     poikkeusreitti
 `;
 
+const stopQueryFields = `
+    soltunnus
+    pyskunta
+    pysnimi
+    pysnimir
+    pyspaikannimi
+    pyspaikannimir
+    pysosoite
+    pysosoiter
+    pysvaihtopys
+    pyskuka
+    pysviimpvm
+    pyslaituri
+    pyskatos
+    pystyyppi
+    pyssade
+    pyssuunta
+    paitunnus
+    terminaali
+    kutsuplus
+    kutsuplusvyo
+    kulkusuunta
+    kutsuplusprior
+    id
+    pysalueid
+    tariffi
+    elynumero
+    pysnimipitka
+    pysnimipitkar
+    nimiviimpvm
+    vyohyke
+    postinro
+`;
+
 const nodeQueryFields = `
     solx
     soly
@@ -167,10 +211,7 @@ const nodeQueryFields = `
     geojsonProjection
     transittypes
     pysakkiBySoltunnus {
-        pyssade
-        pysnimi
-        pysnimir
-        paitunnus
+        ${stopQueryFields}
     }
 `;
 
@@ -212,14 +253,34 @@ reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
 }`;
 
 const lineForRoutePathQuery = `
-reittiByReitunnus {
+linjaByLintunnus {
     lintunnus
+    linverkko
+}
+`;
+
+const routeForRoutePathQuery = `
+reittiByReitunnus {
+    ${lineForRoutePathQuery}
 }
 `;
 
 const linkQueryFields = `
     geojson
     lnkverkko
+    lnkalkusolmu
+    lnkloppusolmu
+    lnkmitpituus
+    lnkpituus
+    katnimi
+    katkunta
+    kaoosnro
+    solmuByLnkalkusolmu {
+        ${startNodeQueryFields}
+    }
+    solmuByLnkloppusolmu {
+        ${endNodeQueryFields}
+    }
 `;
 
 const linksByStartNodeQuery = `
@@ -251,6 +312,7 @@ linkkisByLnkloppusolmu {
 // tslint:enable:max-line-length
 
 export default {
+    getLinkQuery,
     getLineQuery,
     getAllLinesQuery,
     getRouteQuery,

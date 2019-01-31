@@ -7,6 +7,7 @@ import * as s from './viewHeader.scss';
 interface IViewHeaderProps {
     children: ReactNode;
     closePromptMessage?: string;
+    hideCloseButton?: boolean;
 }
 
 const viewHeader = (props:IViewHeaderProps) => {
@@ -19,10 +20,12 @@ const viewHeader = (props:IViewHeaderProps) => {
     return (
         <div className={s.viewHeaderView}>
             <div className={s.topic}>{props.children}</div>
-            <div
-                className={s.closeButton}
-                onClick={closeSidebarView}
-            />
+            { !props.hideCloseButton &&
+                <div
+                    className={s.closeButton}
+                    onClick={closeSidebarView}
+                />
+            }
         </div>
     );
 };

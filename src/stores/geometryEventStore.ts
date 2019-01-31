@@ -98,6 +98,7 @@ export class GeometryEventStore {
                     previousRPLink.endNode.id,
                     direction,
                     orderNumber,
+                    RoutePathStore.routePath!.transitType,
                 );
             RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);
         } else {

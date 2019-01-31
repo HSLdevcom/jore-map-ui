@@ -9,6 +9,7 @@ interface IDropdownProps {
     label?: string;
     selected: string;
     items: string[];
+    disabled?: boolean;
     onChange(selectedItem: string): void;
 }
 
@@ -37,24 +38,30 @@ class Dropdown extends React.Component
                             {this.props.label}
                         </div>
                     }
-                    <select
-                        className={s.dropdown}
-                        value={this.state.selectedValue}
-                        onChange={this.onChange}
-                    >
-                    {
-                        this.props.items.map((item) => {
-                            return (
-                                <option
-                                    key={item}
-                                    value={item}
-                                >
-                                    {item}
-                                </option>
-                            );
-                        })
+                    {this.props.disabled ?
+                        <div>
+                            {this.state.selectedValue}
+                        </div>
+                    :
+                        <select
+                            className={s.dropdown}
+                            value={this.state.selectedValue}
+                            onChange={this.onChange}
+                        >
+                        {
+                            this.props.items.map((item) => {
+                                return (
+                                    <option
+                                        key={item}
+                                        value={item}
+                                    >
+                                        {item}
+                                    </option>
+                                );
+                            })
+                        }
+                        </select>
                     }
-                    </select>
                 </div>
             </div>
         );

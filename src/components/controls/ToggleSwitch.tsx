@@ -1,5 +1,4 @@
 import React from 'react';
-import TransitType from '~/enums/transitType';
 import * as s from './toggleSwitch.scss';
 
 interface IToggleSwitchState {
@@ -7,17 +6,12 @@ interface IToggleSwitchState {
 }
 
 interface IToggleSwitchProps {
-    type: TransitType; // TODO: use this variable.
     value: boolean;
     color: string;
     onClick(event: any): void;
 }
 
 class ToggleSwitch extends React.Component<IToggleSwitchProps, IToggleSwitchState> {
-    constructor (props: IToggleSwitchProps) {
-        super(props);
-    }
-
     private doNothing() {
         // Empty function
         // Needed because input field wants an onChange function if its checked field is changed

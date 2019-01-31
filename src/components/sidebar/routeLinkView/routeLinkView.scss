@@ -1,0 +1,48 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.linkView {
+    padding: 20px;
+    overflow-y: auto;
+    width: $sidebarExtraWide;
+    overflow-x: hidden;
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        padding-top: 10px;
+        padding-right: 10px;
+    }
+
+    .textArea {
+        padding-bottom: 151px; /* TODO: fix this hack */
+    }
+
+    .mediumSmallInput {
+        width: 70px;
+        margin-right: 10px;
+    }
+
+    .smallInput {
+        width: 35px;
+        height: 35px;
+        text-align: center;
+        margin-top: 0px;
+        margin-right: 5px;
+        padding-right: 1px;
+        padding-left: 1px;
+    }
+
+    .transitButtonBar {
+        padding-top: 10px;
+        width: 50%;
+    }
+
+    .buttonBar {
+        display: flex;
+        flex-direction: row;
+        padding-top: 10px;
+        justify-content: space-between;
+    }
+}
