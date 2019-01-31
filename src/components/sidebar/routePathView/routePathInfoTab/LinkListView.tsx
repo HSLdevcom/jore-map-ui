@@ -98,7 +98,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         if (this.state.selectedRoutePathLink) {
             const linkViewLink =
                 routeBuilder
-                    .to(subSites.link)
+                    .to(subSites.routelink)
                     .toTarget(
                         this.state.selectedRoutePathLink,
                     )
