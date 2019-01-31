@@ -27,7 +27,8 @@ class AddNewRoutePathLinkTool implements BaseTool {
                 await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
                     nodeId,
                     direction,
-                    orderNumber);
+                    orderNumber,
+                    RoutePathStore.routePath!.transitType);
             if (routePathLinks.length === 0) {
                 NotificationStore!.addNotification({
                     message:

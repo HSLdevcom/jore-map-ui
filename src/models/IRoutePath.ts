@@ -1,9 +1,11 @@
+import TransitType from '~/enums/transitType';
 import IRoutePathLink from './IRoutePathLink';
 
 export default interface IRoutePath {
     internalId: string;
     routeId: string;
-    lineId?: string;
+    lineId: string;
+    transitType: TransitType;
     routePathLinks?: IRoutePathLink[];
     routePathName: string;
     routePathNameSw: string;
