@@ -14,6 +14,7 @@ import hslLogo from '~/assets/hsl-logo.png';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
 import RoutesView from './routesView/RoutesView';
+import RouteLinkView from './routeLinkView/RouteLinkView';
 import HomeView from './homeView/HomeView';
 import RoutePathView from './routePathView/RoutePathView';
 import NetworkView from './networkView/NetworkView';
@@ -83,6 +84,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         <Route
                             path={subSites.node}
                             component={NodeView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.routelink}
+                            component={RouteLinkView}
                         />
                         <Route
                             exact={true}
