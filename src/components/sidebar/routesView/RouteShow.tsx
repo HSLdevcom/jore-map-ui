@@ -69,8 +69,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]) => {
         const res = {};
         routePaths.forEach((rp) => {
-            // tslint:disable-next-line:max-line-length
-            const identifier = `${rp.startTime.toLocaleDateString()}-${rp.endTime.toLocaleDateString()}`;
+            const identifier = rp.startTime.toLocaleDateString() + rp.endTime.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
 
@@ -149,7 +148,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
                     className={
                         classNames(
                             s.groupedRoutes,
-                            index % 2 ? s.shadow : undefined,
+                            index % 2 ? undefined : s.shadow,
                         )
                     }
                 >
