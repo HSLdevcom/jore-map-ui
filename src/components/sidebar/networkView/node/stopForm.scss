@@ -2,6 +2,10 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/form';
 
-.editNetworkView {
-    padding: 10px;
+.stopView {
+  margin-top: 15px;
+  
+  .sectionHeader {
+    margin-top: 15px;
+  }  
 }

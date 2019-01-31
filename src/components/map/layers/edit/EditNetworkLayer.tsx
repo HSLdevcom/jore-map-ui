@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
 import ILink from '~/models/ILink';
+import NodeLocationType from '~/types/NodeLocationType';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
-import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import NodeMarker from '../mapIcons/NodeMarker';
 
 interface IEditNetworkLayerProps {
@@ -34,7 +34,7 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         );
     }
 
-    private onMoveMarker = (coordinatesType: CoordinatesType) => (coordinates: L.LatLng) => {
+    private onMoveMarker = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
         const node = { ...this.props.editNetworkStore!.node!, [coordinatesType]:coordinates };
         this.props.editNetworkStore!.setNode(node);
     }

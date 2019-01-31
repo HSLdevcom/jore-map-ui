@@ -38,7 +38,6 @@ interface ILinelistState {
 @inject('routeStore', 'searchStore', 'toolbarStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
-
     private renderRoutesView = () => {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RoutesView /> : <Redirect to='/' />;
