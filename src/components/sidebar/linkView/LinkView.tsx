@@ -215,6 +215,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <MunicipalityDropdown
                         onChange={this.onChange}
                         value={this.state.link.municipalityCode}
+                        label='KUNTA'
                     />
                 </div>
                 <div className={s.flexRow}>

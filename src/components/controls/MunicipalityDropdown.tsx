@@ -6,9 +6,10 @@ interface IMunicipalityDropdownProps {
     value: string;
     onChange: (val: string) => void;
     disabled?: boolean;
+    label: string;
 }
 
-const municipalityDropdown = ({ value, onChange, disabled }: IMunicipalityDropdownProps) => (
+const municipalityDropdown = ({ value, onChange, disabled, label }: IMunicipalityDropdownProps) => (
     <Dropdown
         disabled={disabled}
         items={
@@ -21,7 +22,7 @@ const municipalityDropdown = ({ value, onChange, disabled }: IMunicipalityDropdo
                 }),
             )
         }
-        label='Kunta'
+        label={label}
         selected={municipalities[value]}
         onChange={onChange}
     />
