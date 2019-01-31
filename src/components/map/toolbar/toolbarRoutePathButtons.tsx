@@ -34,9 +34,6 @@ class ToolbarLineButtons extends React.Component {
                     >
                         <IoMdGitCommit />
                     </MapControlButton>
-                </div>
-                {/* Second toolbar row */}
-                <div className={s.toolbarButtonRow}>
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.DivideLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.DivideLink)}
