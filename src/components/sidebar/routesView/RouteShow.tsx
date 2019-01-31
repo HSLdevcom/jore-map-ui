@@ -3,10 +3,10 @@ import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
-import ReactMoment from 'react-moment';
 import Moment from 'moment';
 import { RouteStore } from '~/stores/routeStore';
 import LineHelper from '~/util/lineHelper';
+import { dateToDateString } from '~/util/dateFormatHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
@@ -66,9 +66,21 @@ class RouteShow extends React.Component<IRouteShowProps> {
         );
     }
 
-    private renderRoutePaths = () => {
-        const routePaths = this.props.route.routePaths;
+    private groupRoutePathsOnDates = (routePaths: IRoutePath[]) => {
+        const res = {};
+        routePaths.forEach((rp) => {
+            const identifier = rp.startTime.toLocaleDateString() + rp.endTime.toLocaleDateString();
+            (res[identifier] = res[identifier] || []).push(rp);
+        });
 
+        const list = Object.values(res);
+        list.sort((a: IRoutePath[], b: IRoutePath[]) =>
+            b[0].startTime.getTime() - a[0].startTime.getTime());
+
+        return list;
+    }
+
+    private renderRoutePathList = (routePaths: IRoutePath[]) => {
         return routePaths.map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
@@ -102,21 +114,6 @@ class RouteShow extends React.Component<IRouteShowProps> {
                         <div>
                             {`${routePath.originFi}-${routePath.destinationFi}`}
                         </div>
-                        <div>
-                            <div className={s.routePathDate}>
-                                <ReactMoment
-                                    date={routePath.startTime}
-                                    format='DD.MM.YYYY'
-                                />
-                                <div className={s.dateDeltaSeparator}>
-                                    -
-                                </div>
-                                <ReactMoment
-                                    date={routePath.endTime}
-                                    format='DD.MM.YYYY'
-                                />
-                            </div>
-                        </div>
                     </div>
                     <div className={s.routePathControls}>
                         <ToggleSwitch
@@ -136,11 +133,41 @@ class RouteShow extends React.Component<IRouteShowProps> {
         });
     }
 
+    private renderList = () => {
+        const routePaths = this.props.route.routePaths;
+        const groupedRoutePaths = this.groupRoutePathsOnDates(routePaths);
+
+        return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
+            const first = routePaths[0];
+            const header =
+                `${dateToDateString(first.startTime)} - ${dateToDateString(first.endTime)}`;
+
+            return (
+                <div
+                    key={header}
+                    className={
+                        classNames(
+                            s.groupedRoutes,
+                            index % 2 ? undefined : s.shadow,
+                        )
+                    }
+                >
+                    <div className={s.groupedRoutesDate}>
+                        {header}
+                    </div>
+                    <div className={s.groupedRoutesContent}>
+                        {this.renderRoutePathList(routePaths)}
+                    </div>
+                </div>
+            );
+        });
+    }
+
     render() {
         return (
             <div className={s.routeShowView}>
                 {this.renderRouteName()}
-                {this.renderRoutePaths()}
+                {this.renderList()}
             </div>
         );
     }
