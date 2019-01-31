@@ -95,6 +95,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRouteP
     private renderStopView = (stop: IStop) => {
         return (
             <div className={s.stopContent}>
+                Pysäkin tiedot
                 <div className={s.flexRow}>
                     <InputContainer
                         label='PYSÄKIN NIMI'
@@ -155,9 +156,6 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRouteP
                 id={this.props.node.id}
             >
                 <div className={s.extendedContent}>
-                    <div className={s.header}>
-                        {this.getNodeTypeName(this.props.node.type)}
-                    </div>
                     { Boolean(this.props.node.stop) &&
                         this.renderStopView(this.props.node.stop!)
                     }
