@@ -72,25 +72,27 @@ class RoutePathListObject
         return (
             <div
                 ref={this.props.reference}
-                className={s.item}
+                className={classnames(
+                    s.item,
+                    this.props.objectType === ListObjectType.Node ? s.shadow : undefined,
+                )}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
+                <div className={s.headerIcon}>
+                    {this.props.headerIcon}
+                </div>
                 <div
                     className={
                         classnames(
                             s.itemHeader,
                             isExtended ? s.itemExtended : null,
-                            this.props.objectType === ListObjectType.Node ? s.shadow : undefined,
                         )
                     }
                     onClick={this.toggleIsExtended}
                 >
                     <div className={s.headerContent}>
                         <div className={s.headerIconContainer}>
-                            <div className={s.headerIcon}>
-                                {this.props.headerIcon}
-                            </div>
                             {this.props.headerTypeName}
                         </div>
                         <div className={s.label}>
