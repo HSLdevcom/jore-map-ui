@@ -1,8 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 import InputContainer from '~/components/sidebar/InputContainer';
-import NodeLocationType from '~/enums/nodeLocationType';
 import NodeType from '~/enums/nodeType';
+import NodeLocationType from '~/types/NodeLocationType';
 import NodeTypeColorHelper from '~/util/nodeTypeColorHelper';
 import * as L from 'leaflet';
 import * as s from '~/components/sidebar/networkView/node/nodeCoordinatesView.scss';
@@ -11,31 +11,31 @@ interface INodeCoordinatesViewProps {
     nodeType: NodeType;
     locationType: NodeLocationType;
     coordinates: L.LatLng;
-    onChangeCoordinates: (coordinates: L.LatLng) => void;
+    onChangeCoordinates: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
 }
 
 const nodeCoordinatesView = ({ nodeType, locationType, coordinates, onChangeCoordinates }:
                                  INodeCoordinatesViewProps) => {
     const latChange = (v: string) => {
         const lat = Number(v);
-        onChangeCoordinates(new L.LatLng(lat, coordinates.lng));
+        onChangeCoordinates(locationType, new L.LatLng(lat, coordinates.lng));
     };
     const lonChange = (v: string) => {
         const lon = Number(v);
-        onChangeCoordinates(new L.LatLng(coordinates.lat, lon));
+        onChangeCoordinates(locationType, new L.LatLng(coordinates.lat, lon));
     };
 
     const getIcon = (locationType: NodeLocationType) => {
         let className: string = '';
 
         switch (locationType) {
-        case NodeLocationType.Measured:
+        case 'coordinates':
             className = NodeTypeColorHelper.getTypeClass(nodeType, true);
             break;
-        case NodeLocationType.Manual:
+        case 'coordinatesManual':
             className = s.manual;
             break;
-        case NodeLocationType.Projected:
+        case 'coordinatesProjection':
             className = s.projected;
             break;
         }

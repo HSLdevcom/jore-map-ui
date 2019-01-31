@@ -5,10 +5,10 @@ import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import { INode } from '~/models/index';
+import NodeLocationType from '~/types/NodeLocationType';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import NodeStyleHelper from '~/util/nodeTypeColorHelper';
-import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -38,7 +38,7 @@ interface INodeMarkerProps {
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
-    onMoveMarker?: (coordinatesType: CoordinatesType) => (coordinates: L.LatLng) => void;
+    onMoveMarker?: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
 }
 
 const DEFAULT_RADIUS = 25;
@@ -53,9 +53,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isHighlighted: false,
     };
 
-    private onMoveMarker = (coordinatesType: CoordinatesType) => (e: L.DragEndEvent) => {
+    private onMoveMarker = (coordinatesType: NodeLocationType, e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
-            this.props.onMoveMarker(coordinatesType)(e.target.getLatLng());
+            this.props.onMoveMarker(coordinatesType, e.target.getLatLng());
         }
     }
 

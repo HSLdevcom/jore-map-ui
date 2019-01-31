@@ -8,8 +8,8 @@ import LinkService from '~/services/linkService';
 import { Dropdown } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
+import NodeLocationType from '~/types/NodeLocationType';
 import NodeCoordinatesListView from '~/components/sidebar/networkView/node/NodeCoordinatesListView';
-import { CoordinatesType } from '~/components/sidebar/nodeView/NodeView';
 import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../../ViewHeader';
 import StopForm from './StopForm';
@@ -68,11 +68,10 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         }
     }
 
-    private onChangeLocations = (coordinatesType: CoordinatesType) =>
-        (coordinates: L.LatLng) => {
-            const node = { ...this.props.editNetworkStore!.node!, [coordinatesType]:coordinates };
-            this.props.editNetworkStore!.setNode(node);
-        }
+    private onChangeLocations = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
+        const node = { ...this.props.editNetworkStore!.node!, [coordinatesType]:coordinates };
+        this.props.editNetworkStore!.setNode(node);
+    }
 
     private onChange = (name: string) => () => {};
 
