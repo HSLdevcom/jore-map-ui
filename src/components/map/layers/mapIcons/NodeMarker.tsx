@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { Marker, Circle } from 'react-leaflet';
+import { Marker, Circle, Tooltip } from 'react-leaflet';
 import * as L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
@@ -9,6 +9,7 @@ import NodeLocationType from '~/types/NodeLocationType';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import NodeStyleHelper from '~/util/nodeTypeColorHelper';
+import NeighbourNodeInfo from './NeighbourNodeInfo';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -200,9 +201,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     displayCircle
                     && this.renderStopRadiusCircle(this.props.node.stop!.radius)
                 }
+                { this.props.isNeighborMarker &&
+                    <Tooltip>
+                        <NeighbourNodeInfo node={this.props.node} />
+                    </Tooltip>
+                }
                 </Marker>
-                {this.isSelected(this.props.node)
-                && this.renderAdditionalLocations(this.props.node!)}
+                {this.isSelected(this.props.node) &&
+                    this.renderAdditionalLocations(this.props.node!)}
             </>
         );
     }
