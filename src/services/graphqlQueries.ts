@@ -86,6 +86,16 @@ const getLinksByStartNodeQuery = () => {
     );
 };
 
+const getLinkQuery = () => {
+    return (
+        gql`query getLink($startNodeId: String!, $endNodeId: String!, $transitType:String!) {
+            link: linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu(lnkverkko: $transitType, lnkalkusolmu: $startNodeId, lnkloppusolmu: $endNodeId) {
+                ${linkQueryFields}
+            }
+        }`
+    );
+};
+
 const getLinksByEndNodeQuery = () => {
     return (
         gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!) {
@@ -220,6 +230,19 @@ reittiByReitunnus {
 const linkQueryFields = `
     geojson
     lnkverkko
+    lnkalkusolmu
+    lnkloppusolmu
+    lnkmitpituus
+    lnkpituus
+    katnimi
+    katkunta
+    kaoosnro
+    solmuByLnkalkusolmu {
+        ${startNodeQueryFields}
+    }
+    solmuByLnkloppusolmu {
+        ${endNodeQueryFields}
+    }
 `;
 
 const linksByStartNodeQuery = `
@@ -251,6 +274,7 @@ linkkisByLnkloppusolmu {
 // tslint:enable:max-line-length
 
 export default {
+    getLinkQuery,
     getLineQuery,
     getAllLinesQuery,
     getRouteQuery,
