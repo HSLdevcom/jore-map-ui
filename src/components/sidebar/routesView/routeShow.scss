@@ -11,6 +11,14 @@
             color: rgb(102, 102, 102);
             font-weight: 500;
             font-size: 16px;
+            position: relative;
+
+            svg {
+                font-size: 18px;
+                cursor: pointer;
+                right: 0;
+                position: absolute;
+            }
         }
 
         .groupedRoutesContent {
@@ -20,6 +28,23 @@
 
     .shadow {
         background-color: white;
+    }
+
+    .copyMarker {
+        background-color: #d9ffd9;
+    }
+
+    .copyButton {
+        display: none;
+    }
+
+    .groupedRoutes:hover {
+        .copyButton {
+            margin-left: 8px;
+            font-size: 13px;
+            display: inline;
+            cursor: pointer;
+        }
     }
 
     .routeName {
