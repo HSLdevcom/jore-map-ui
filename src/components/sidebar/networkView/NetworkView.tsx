@@ -35,7 +35,6 @@ class NetworkView extends React.Component<INetworkViewProps> {
     render() {
         return (
             <div className={s.networkView}>
-               <h2>Verkon muokkaus</h2>
                 <Switch>
                     <Route
                         exact={true}
