@@ -43,8 +43,6 @@ class ToolbarCommonButtons extends React.Component {
                     >
                         <FiExternalLink />
                     </MapControlButton>
-                </div>
-                <div className={s.toolbarButtonRow}>
                     <MapControlButton
                         onClick={this.undo}
                         isActive={false}
