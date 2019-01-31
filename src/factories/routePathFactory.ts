@@ -2,6 +2,7 @@ import { IRoutePath, IRoute } from '~/models';
 import HashHelper from '~/util/hashHelper';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
+import TransitTypeHelper from '~/util/transitTypeHelper';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
@@ -26,6 +27,9 @@ class RoutePathFactory {
             routeId,
             routePathLinks,
             lineId: externalRoutePath.reittiByReitunnus.lintunnus,
+            transitType: TransitTypeHelper.convertTransitTypeCodeToTransitType(
+                externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
+            ),
             internalId: internalRoutePathId,
             routePathName: externalRoutePath.suunimi,
             routePathNameSw: externalRoutePath.suunimir,
@@ -49,6 +53,7 @@ class RoutePathFactory {
     public static createNewRoutePath(lineId: string, route: IRoute): IRoutePath {
         return {
             lineId,
+            transitType: route.line!.transitType,
             routeId: route.id,
             internalId: '',
             routePathName: route.routeName,
