@@ -2,6 +2,7 @@ import * as L from 'leaflet';
 import { ILink } from '~/models';
 import IExternalLink from '~/models/externals/IExternalLink';
 import TransitTypeHelper from '~/util/transitTypeHelper';
+import municipality from '~/enums/municipality';
 import NodeFactory from './nodeFactory';
 
 class LinkFactory {
@@ -16,6 +17,13 @@ class LinkFactory {
             startNode: NodeFactory.createNode(externalLink.solmuByLnkalkusolmu),
             endNode: NodeFactory.createNode(externalLink.solmuByLnkloppusolmu),
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
+            length: externalLink.lnkpituus,
+            measuredLength: externalLink.lnkmitpituus,
+            municipality: municipality.Helsinki, // TODO, no hardcoded, externalLink.katkunta,
+            streetName: externalLink.katnimi,
+            streetNumber: externalLink.kaoosnro,
+            modifiedBy: externalLink.lnkkuka,
+            modifiedOn: new Date(externalLink.lnkviimpvm),
         };
     }
 }

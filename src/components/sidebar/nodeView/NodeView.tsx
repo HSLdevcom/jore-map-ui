@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { match } from 'react-router';
 import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
-import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
 import NodeMockData from './NodeMockData';
 import NodeCoordinatesListView from '../networkView/node/NodeCoordinatesListView';
@@ -118,7 +117,6 @@ class NodeView extends React.Component
         <ToggleSwitch
             onClick={this.toggleStopInUse}
             value={true}
-            type={TransitType.BUS}
             color={'#007ac9'}
         />
         </>
