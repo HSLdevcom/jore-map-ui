@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FiChevronRight } from 'react-icons/fi';
-import { IRoutePathLink, INode } from '~/models';
+import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
@@ -15,10 +15,8 @@ import * as s from './routePathListObject.scss';
 
 interface IRoutePathListLinkProps {
     routePathStore?: RoutePathStore;
-    previousNode?: INode;
     routePathLink: IRoutePathLink;
     reference: React.RefObject<HTMLDivElement>;
-    nextNode?: INode;
 }
 
 @inject('routePathStore')
@@ -30,6 +28,18 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         return (
             <div className={s.nodeContent}>
                 Reitinlinkin tiedot
+                <div className={s.flexRow}>
+                    <InputContainer
+                        label='ALKUSOLMU'
+                        disabled={true}
+                        value={rpLink.startNode.id}
+                    />
+                    <InputContainer
+                        label='LOPPUSOLMU'
+                        disabled={true}
+                        value={rpLink.endNode.id}
+                    />
+                </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='JÄRJESTYSNUMERO'
@@ -72,9 +82,6 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 id={this.props.routePathLink.id}
             >
                 <div className={s.extendedContent}>
-                    <div className={s.header}>
-                        Reitinlinkki
-                    </div>
                     {
                         this.renderRoutePathLinkView(this.props.routePathLink)
                     }
