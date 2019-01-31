@@ -13,8 +13,8 @@ import NodeCoordinatesListView from '~/components/sidebar/networkView/node/NodeC
 import Loader from '~/components/shared/loader/Loader';
 import ViewHeader from '../../ViewHeader';
 import StopForm from './StopForm';
-import * as s from './networkNode.scss';
 import InputContainer from '../../InputContainer';
+import * as s from './networkNode.scss';
 
 interface INetworkNodeProps {
     match?: match<any>;
