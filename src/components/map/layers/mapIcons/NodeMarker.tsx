@@ -53,7 +53,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isHighlighted: false,
     };
 
-    private onMoveMarker = (coordinatesType: NodeLocationType, e: L.DragEndEvent) => {
+    private onMoveMarker = (coordinatesType: NodeLocationType) => (e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
             this.props.onMoveMarker(coordinatesType, e.target.getLatLng());
         }
