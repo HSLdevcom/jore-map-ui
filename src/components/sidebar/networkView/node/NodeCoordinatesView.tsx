@@ -14,6 +14,28 @@ interface INodeCoordinatesViewProps {
     onChangeCoordinates: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
 }
 
+const getCoordinateSpecificData = (locationType: NodeLocationType, nodeType: NodeType) => {
+    let iconClassName = '';
+    let label = '';
+
+    switch (locationType) {
+    case 'coordinates':
+        iconClassName = NodeTypeColorHelper.getTypeClass(nodeType, true);
+        label = 'Mitattu piste';
+        break;
+    case 'coordinatesManual':
+        iconClassName = s.manual;
+        label = 'Sovitettu piste';
+        break;
+    case 'coordinatesProjection':
+        iconClassName = s.projected;
+        label = 'Projektoitu piste';
+        break;
+    }
+
+    return { iconClassName, label };
+};
+
 const nodeCoordinatesView = ({ nodeType, locationType, coordinates, onChangeCoordinates }:
                                  INodeCoordinatesViewProps) => {
     const latChange = (v: string) => {
@@ -25,29 +47,13 @@ const nodeCoordinatesView = ({ nodeType, locationType, coordinates, onChangeCoor
         onChangeCoordinates(locationType, new L.LatLng(coordinates.lat, lon));
     };
 
-    const getIcon = (locationType: NodeLocationType) => {
-        let className: string = '';
-
-        switch (locationType) {
-        case 'coordinates':
-            className = NodeTypeColorHelper.getTypeClass(nodeType, true);
-            break;
-        case 'coordinatesManual':
-            className = s.manual;
-            break;
-        case 'coordinatesProjection':
-            className = s.projected;
-            break;
-        }
-
-        return className;
-    };
+    const { iconClassName, label } = getCoordinateSpecificData(locationType, nodeType);
 
     return (
         <div className={s.nodeCoordinatesView}>
             <div className={s.nodeCoordinatesHeader}>
-                {locationType.toString()}
-                <div className={classnames(s.labelIcon, getIcon(locationType))}/>
+                {label}
+                <div className={classnames(s.labelIcon, iconClassName)}/>
             </div>
             <div className={s.coordinatesInputs}>
                 <InputContainer
