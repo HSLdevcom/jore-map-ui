@@ -13,13 +13,8 @@ const municipalityDropdown = ({ value, onChange, disabled, label }: IMunicipalit
     <Dropdown
         disabled={disabled}
         items={
-            Object.keys(
-                municipalities,
-            ).map(
-                key => ({
-                    key,
-                    value: municipalities[key],
-                }),
+            Object.keys(municipalities).map(
+                key => ({ key, value: municipalities[key] }),
             )
         }
         label={label}
