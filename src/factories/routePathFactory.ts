@@ -26,7 +26,7 @@ class RoutePathFactory {
         return {
             routeId,
             routePathLinks,
-            lineId: externalRoutePath.reittiByReitunnus.lintunnus,
+            lineId: externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
             transitType: TransitTypeHelper.convertTransitTypeCodeToTransitType(
                 externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
             ),

@@ -145,7 +145,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     render() {
         if (this.state.isLoading) {
             return (
-                <div className={s.searchResultsView}>
+                <div className={s.loaderContainer}>
                     <Loader/>
                 </div>
             );
