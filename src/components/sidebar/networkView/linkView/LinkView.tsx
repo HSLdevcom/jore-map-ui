@@ -11,6 +11,7 @@ import NodeType from '~/enums/nodeType';
 import SubSites from '~/routing/subSites';
 import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
+import MunicipalityDropdown from '~/components/controls/MunicipalityDropdown';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
@@ -231,6 +232,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <InputContainer
                         label='KATUOSAN OS. NRO'
                         value={this.state.link.streetNumber}
+                    />
+                    <MunicipalityDropdown
+                        onChange={this.onChange}
+                        value={this.state.link.municipalityCode}
+                        label='KUNTA'
                     />
                 </div>
                 <div className={s.flexRow}>

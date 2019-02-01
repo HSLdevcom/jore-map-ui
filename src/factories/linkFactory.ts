@@ -2,7 +2,6 @@ import * as L from 'leaflet';
 import { ILink } from '~/models';
 import IExternalLink from '~/models/externals/IExternalLink';
 import TransitTypeHelper from '~/util/transitTypeHelper';
-import municipality from '~/enums/municipality';
 import NodeFactory from './nodeFactory';
 
 class LinkFactory {
@@ -19,7 +18,7 @@ class LinkFactory {
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
             length: externalLink.lnkpituus,
             measuredLength: externalLink.lnkmitpituus,
-            municipality: municipality.Helsinki, // TODO, no hardcoded, externalLink.katkunta,
+            municipalityCode: externalLink.katkunta,
             streetName: externalLink.katnimi,
             streetNumber: externalLink.kaoosnro,
             modifiedBy: externalLink.lnkkuka,
