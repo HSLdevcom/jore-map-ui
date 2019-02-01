@@ -7,7 +7,7 @@ import { NotificationStore } from '~/stores/notificationStore';
 import { SearchStore } from '~/stores/searchStore';
 import NotificationType from '~/enums/notificationType';
 import { Checkbox } from '../../controls';
-import Loader from '../loader/Loader';
+import Loader, { LoaderSize } from '../loader/Loader';
 import * as s from './lineItemSubMenu.scss';
 
 interface LineItemSubMenuProps {
@@ -98,7 +98,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         }
         if (this.state.routePaths === null) {
             return (
-                <Loader size={Loader.SMALL}/>
+                <Loader size={LoaderSize.SMALL}/>
             );
         }
         return (
