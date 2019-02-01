@@ -9,7 +9,19 @@
   }
 
   .content {
-    min-width: 200px;
-    min-height: 300px;
+    max-height: 400px;
+
+    .header {
+      font-weight: 600;
+    }
+
+    .item {
+      display: flex;
+      flex-direction: row;
+
+      > div {
+        margin-right: 20px;
+      }
+    }
   }
 }
