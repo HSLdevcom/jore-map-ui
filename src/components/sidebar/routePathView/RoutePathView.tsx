@@ -1,8 +1,9 @@
 import React from 'react';
 import moment from 'moment';
+import classnames from 'classnames';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
-import Loader from '~/components/shared/loader/Loader';
+import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
 import navigator from '~/routing/navigator';
@@ -128,8 +129,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     render() {
         if (this.state.isLoading) {
             return (
-                <div className={s.routePathView}>
-                    <Loader size={Loader.MEDIUM}/>
+                <div className={classnames(s.routePathView, s.loaderContainer)}>
+                    <Loader size={LoaderSize.MEDIUM}/>
                 </div>
             );
         }

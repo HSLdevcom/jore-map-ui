@@ -1,4 +1,5 @@
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 import React from 'react';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
@@ -96,7 +97,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     render() {
         if (this.state.isLoading) {
             return(
-                <div className={s.routesListView}>
+                <div className={classnames(s.routesListView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );
