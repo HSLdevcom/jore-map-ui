@@ -66,7 +66,7 @@ class Dropdown extends React.Component
                                 return (
                                     <option
                                         key={item.key}
-                                        value={item.value}
+                                        value={item.key}
                                     >
                                         {item.value}
                                     </option>
