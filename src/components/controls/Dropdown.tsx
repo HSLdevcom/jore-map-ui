@@ -5,10 +5,15 @@ interface IDropdownState {
     selectedValue?: string;
 }
 
+export interface IDropdownItem {
+    key: string;
+    value: string;
+}
+
 interface IDropdownProps {
     label?: string;
     selected: string;
-    items: string[];
+    items: string[] | IDropdownItem[];
     disabled?: boolean;
     onChange(selectedItem: string): void;
 }
@@ -29,7 +34,15 @@ class Dropdown extends React.Component
         this.props.onChange(event.target.value);
     }
 
-    public render(): any {
+    public render() {
+        const items = this.props.items;
+        let selectionDictionary: IDropdownItem[];
+        if (items.length > 0 && typeof items[0] === 'string') {
+            selectionDictionary = (items as string[]).map((i: string) => ({ key: i, value: i }));
+        } else {
+            selectionDictionary = items as IDropdownItem[];
+        }
+
         return (
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
@@ -49,13 +62,13 @@ class Dropdown extends React.Component
                             onChange={this.onChange}
                         >
                         {
-                            this.props.items.map((item) => {
+                            selectionDictionary.map((item) => {
                                 return (
                                     <option
-                                        key={item}
-                                        value={item}
+                                        key={item.key}
+                                        value={item.key}
                                     >
-                                        {item}
+                                        {item.value}
                                     </option>
                                 );
                             })

@@ -1,5 +1,4 @@
 import * as L from 'leaflet';
-import municipality from '~/enums/municipality';
 import TransitType from '~/enums/transitType';
 import INode from './INode';
 
@@ -8,7 +7,7 @@ export default interface ILink {
     geometry: L.LatLng[];
     startNode: INode;
     endNode: INode;
-    municipality: municipality;
+    municipalityCode: string;
     streetName: string;
     length: number;
     measuredLength: number;
