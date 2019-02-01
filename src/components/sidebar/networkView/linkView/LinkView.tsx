@@ -1,21 +1,25 @@
 import React from 'react';
 import Moment from 'moment';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
+import L from 'leaflet';
 import ButtonType from '~/enums/buttonType';
-import { ILink } from '~/models';
+import { ILink, INode } from '~/models';
 import LinkService from '~/services/linkService';
 import NodeType from '~/enums/nodeType';
 import SubSites from '~/routing/subSites';
 import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
 import MunicipalityDropdown from '~/components/controls/MunicipalityDropdown';
-import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
-import InputContainer from '../InputContainer';
+import { EditNetworkStore } from '~/stores/editNetworkStore';
+import { MapStore } from '~/stores/mapStore';
+import NodeService from '~/services/nodeService';
+import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
+import InputContainer from '../../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
-import Loader from '../../shared/loader/Loader';
-import ViewHeader from '../ViewHeader';
+import Loader from '../../../shared/loader/Loader';
+import ViewHeader from '../../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
@@ -25,6 +29,8 @@ interface ILinkViewState {
 
 interface ILinkViewProps {
     match?: match<any>;
+    editNetworkStore?: EditNetworkStore;
+    mapStore?: MapStore;
 }
 
 const nodeDescriptions = {
@@ -35,6 +41,7 @@ const nodeDescriptions = {
     unknown: 'Tyhjä',
 };
 
+@inject('editNetworkStore', 'mapStore')
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
@@ -44,8 +51,12 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         };
     }
 
-    componentDidMount() {
-        this.initUsingUrlParams(this.props);
+    async componentDidMount() {
+        await this.initUsingUrlParams(this.props);
+        if (this.state.link) {
+            const bounds = L.latLngBounds(this.state.link.geometry);
+            this.props.mapStore!.setMapBounds(bounds);
+        }
     }
 
     componentWillReceiveProps(props: ILinkViewProps) {
@@ -53,22 +64,28 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     private initUsingUrlParams = async (props: ILinkViewProps) => {
+        this.setState({ isLoading: true });
         const [startNodeId, endNodeId, transitTypeCode] = props.match!.params.id.split(',');
         if (startNodeId && endNodeId && transitTypeCode) {
-            this.fetchLink(startNodeId, endNodeId, transitTypeCode);
+            await this.fetchLink(startNodeId, endNodeId, transitTypeCode);
         }
+        this.fetchNodes([this.state.link!.startNode.id, this.state.link!.endNode.id]);
+        this.setState({ isLoading: false });
     }
 
     private fetchLink = async (startNodeId: string, endNodeId: string, transitTypeCode: string) => {
-        this.setState({ isLoading: true });
-
         const link =
             await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
 
         if (link) {
             this.setState({ link });
+            this.props.editNetworkStore!.setLinks([link]);
         }
-        this.setState({ isLoading: false });
+    }
+
+    private fetchNodes = async (nodeIds: string[]) => {
+        const nodes = await Promise.all(nodeIds.map(id => NodeService.fetchNode(id)));
+        this.props.editNetworkStore!.setNodes(nodes.filter(n => Boolean(n)) as INode[]);
     }
 
     private getNodeDescription = (nodeType: NodeType) => {
@@ -96,6 +113,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             .toTarget(nodeId)
             .toLink();
         navigator.goTo(editNetworkLink);
+    }
+
+    componentWillUnmount() {
+        this.props.editNetworkStore!.clear();
     }
 
     render() {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
-import ILink from '~/models/ILink';
+import { INode, ILink } from '~/models';
 import NodeLocationType from '~/types/NodeLocationType';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -34,20 +34,26 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         );
     }
 
-    private onMoveMarker = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-        const node = { ...this.props.editNetworkStore!.node!, [coordinatesType]:coordinates };
-        this.props.editNetworkStore!.setNode(node);
+    private onMoveMarker = (node: INode) =>
+        (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
+            const newNode = { ...node, [coordinatesType]:coordinates };
+            this.props.editNetworkStore!.updateNode(newNode);
+        }
+
+    private renderNodes() {
+        const nodes = this.props.editNetworkStore!.nodes;
+        return nodes.map(n => this.renderNode(n));
     }
 
-    private renderNode() {
-        const node = this.props.editNetworkStore!.node;
+    private renderNode(node: INode) {
         if (!node) return null;
 
         return (
             <NodeMarker
+                key={node.id}
                 isDraggable={true}
                 node={node}
-                onMoveMarker={this.onMoveMarker}
+                onMoveMarker={this.onMoveMarker(node)}
             />
         );
     }
@@ -56,7 +62,7 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         return (
             <>
                 {this.renderLinks()}
-                {this.renderNode()}
+                {this.renderNodes()}
             </>
         );
     }

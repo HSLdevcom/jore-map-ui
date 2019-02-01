@@ -11,7 +11,7 @@ import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import hslLogo from '~/assets/hsl-logo.png';
-import LinkView from './linkView/LinkView';
+import LinkView from './networkView/linkView/LinkView';
 import NodeView from './nodeView/NodeView';
 import RoutesView from './routesView/RoutesView';
 import RouteLinkView from './routeLinkView/RouteLinkView';

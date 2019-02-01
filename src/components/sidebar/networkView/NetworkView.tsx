@@ -5,7 +5,7 @@ import { NetworkStore, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { RouteStore } from '~/stores/routeStore';
 import subSites from '~/routing/subSites';
-import NetworkNode from './node/NetworkNode';
+import NetworkNode from './nodeView/NetworkNode';
 import * as s from './networkView.scss';
 import NetworkDefault from './NetworkDefault';
 

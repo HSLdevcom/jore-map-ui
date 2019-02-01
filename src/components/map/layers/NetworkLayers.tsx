@@ -115,11 +115,11 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             const dateRanges = this.parseDateRangesString(dateRangesString);
             const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
             const selectedDate = this.props.networkStore!.selectedDate;
-            const node = this.props.editNetworkStore!.node;
+            const nodes = this.props.editNetworkStore!.nodes;
             return Boolean(
                 (!selectedTransitTypes.includes(transitType))
                 || this.isDateInRanges(selectedDate, dateRanges)
-                || (node && (node.id === startNodeId || node.id === endNodeId)));
+                || (nodes && (nodes.some(n => n.id === startNodeId || n.id === endNodeId))));
         }
 
     private getNodeStyle = () => {
@@ -193,8 +193,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         transitTypeCodes: string,
         dateRanges?: Moment.Moment[][],
     ) => {
-        const node = this.props.editNetworkStore!.node;
-        if (node && node.id === nodeId) {
+        const nodes = this.props.editNetworkStore!.nodes;
+        if (nodes && nodes.some(n => n.id === nodeId)) {
             return true;
         }
 
