@@ -7,7 +7,7 @@ import NodeService from '~/services/nodeService';
 import { INode } from '~/models';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeMockData from './NodeMockData';
-import NodeCoordinatesListView from '../networkView/node/NodeCoordinatesListView';
+import NodeCoordinatesListView from '../networkView/nodeView/NodeCoordinatesListView';
 import Loader from '../../shared/loader/Loader';
 import { ToggleSwitch } from '../../controls';
 import ViewHeader from '../ViewHeader';

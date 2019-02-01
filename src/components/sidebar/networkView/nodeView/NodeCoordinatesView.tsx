@@ -5,7 +5,7 @@ import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeTypeColorHelper from '~/util/nodeTypeColorHelper';
 import * as L from 'leaflet';
-import * as s from '~/components/sidebar/networkView/node/nodeCoordinatesView.scss';
+import * as s from '~/components/sidebar/networkView/nodeView/nodeCoordinatesView.scss';
 
 interface INodeCoordinatesViewProps {
     nodeType: NodeType;

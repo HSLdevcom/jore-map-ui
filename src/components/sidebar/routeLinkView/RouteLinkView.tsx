@@ -10,7 +10,7 @@ import RoutePathLinkService from '~/services/routePathLinkService';
 import NodeType from '~/enums/nodeType';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
-import MultiTabTextarea from '../linkView/MultiTabTextarea';
+import MultiTabTextarea from '../networkView/linkView/MultiTabTextarea';
 import Loader from '../../shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
 import * as s from './routeLinkView.scss';
