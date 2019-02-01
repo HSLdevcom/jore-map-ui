@@ -202,7 +202,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     && this.renderStopRadiusCircle(this.props.node.stop!.radius)
                 }
                 { this.props.isNeighborMarker &&
-                    <Tooltip>
+                    <Tooltip
+                        direction='right'
+                    >
                         <NeighbourNodeInfo node={this.props.node} />
                     </Tooltip>
                 }

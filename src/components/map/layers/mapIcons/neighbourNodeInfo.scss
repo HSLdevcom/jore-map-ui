@@ -1,4 +1,13 @@
 .neighbourNodeInfoView {
+  min-width: 21px;
+
+  .loaderContainer > div {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    margin-left: -10px;
+  }
+
   .content {
     min-width: 200px;
     min-height: 300px;

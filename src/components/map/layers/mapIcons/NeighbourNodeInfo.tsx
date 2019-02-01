@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { INode } from '~/models';
-import Loader from '~/components/shared/loader/Loader';
+import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import * as s from './neighbourNodeInfo.scss';
 
 interface INeighbourNodeInfoProps {
@@ -53,7 +53,9 @@ class NeighbourNodeInfo extends Component<INeighbourNodeInfoProps, INeighbourNod
                         {this.renderListObjects()}
                     </ul>
                     :
-                    <Loader />
+                    <div className={s.loaderContainer}>
+                        <Loader size={LoaderSize.TINY}/>
+                    </div>
                 }
 
             </div>
