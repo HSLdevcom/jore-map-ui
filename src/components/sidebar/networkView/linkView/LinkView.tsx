@@ -122,7 +122,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     render() {
         if (this.state.isLoading || !this.state.link) {
             return (
-                <div className={classnames(s.linkView, s.form)}>
+                <div className={classnames(s.linkView, s.loaderContainer)}>
                     <Loader />
                 </div>
             );
@@ -133,7 +133,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
 
         return (
-        <div className={classnames(s.linkView, s.form)}>
+        <div className={classnames(s.linkView)}>
             <ViewHeader>
                 Linkki
             </ViewHeader>

@@ -4,4 +4,8 @@
 
 .editNetworkView {
     padding: 10px;
+
+    &.loaderContainer > div {
+        margin: 30px auto;
+    }
 }

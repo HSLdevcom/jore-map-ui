@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 import { match } from 'react-router';
 import { INode } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
@@ -85,7 +86,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
 
         if (this.state.isLoading || !node || !node.id) {
             return(
-                <div className={s.editNetworkView}>
+                <div className={classnames(s.editNetworkView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );

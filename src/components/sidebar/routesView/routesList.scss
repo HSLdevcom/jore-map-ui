@@ -36,7 +36,7 @@
         display: flex;
     }
 
-    &.loaderContainer {
-        margin-top: 20px;
+    &.loaderContainer > div {
+        margin: 30px auto;
     }
 }
