@@ -75,7 +75,11 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
 
     private onChange = (name: string) => () => {};
 
-    public render() {
+    componentWillUnmount() {
+        this.props.editNetworkStore!.clear();
+    }
+
+    render() {
         const node = this.props.editNetworkStore!.nodes[0];
         const isEditingDisabled = this.state.isEditDisabled;
 

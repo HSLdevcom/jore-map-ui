@@ -114,6 +114,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         navigator.goTo(editNetworkLink);
     }
 
+    componentWillUnmount() {
+        this.props.editNetworkStore!.clear();
+    }
+
     render() {
         if (this.state.isLoading || !this.state.link) {
             return (
