@@ -1,5 +1,4 @@
 import { inject, observer } from 'mobx-react';
-import classnames from 'classnames';
 import { IReactionDisposer, reaction } from 'mobx';
 import React from 'react';
 import { LineStore } from '~/stores/lineStore';
@@ -146,7 +145,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     render() {
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.searchResultsView, s.loaderContainer)}>
+                <div className={s.loaderContainer}>
                     <Loader/>
                 </div>
             );
