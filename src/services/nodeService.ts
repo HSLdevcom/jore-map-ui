@@ -1,13 +1,12 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
-import { INode } from '~/models';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import NodeFactory from '~/factories/nodeFactory';
 import GraphqlQueries from './graphqlQueries';
 
 class NodeService {
-    public static fetchNode = async (nodeId: string): Promise<INode | null> => {
+    public static fetchNode = async (nodeId: string) => {
         try {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getNodeQuery(), variables: { nodeId } },
