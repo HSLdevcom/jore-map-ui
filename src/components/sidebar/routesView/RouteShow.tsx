@@ -1,6 +1,5 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { FaTimes } from 'react-icons/fa';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
 import Moment from 'moment';
@@ -11,9 +10,9 @@ import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
 import { IRoutePath, IRoute } from '~/models';
 import ToggleSwitch from '../../controls/ToggleSwitch';
+import ViewHeader from '../ViewHeader';
 import * as s from './routeShow.scss';
 
 interface IRouteShowProps {
@@ -33,36 +32,23 @@ class RouteShow extends React.Component<IRouteShowProps> {
         });
     }
 
-    private closeRoute = () => {
-        // TODO: Move actual logic somwhere else, so this function only navigates to new url
-        this.props.routeStore!.removeFromRoutes(this.props.route.id);
-        const closeRouteLink = routeBuilder
-            .to(subSites.current)
-            .remove(QueryParams.routes, this.props.route.id)
-            .toLink();
-        navigator.goTo(closeRouteLink);
-    }
-
     private renderRouteName = () => {
         return (
-        <div className={s.routeName}>
-            {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
-            <div
-                className={classNames(
-                    s.label,
-                    TransitTypeColorHelper.getColorClass(this.props.route.line!.transitType),
-                )}
-            >
-                {this.props.route.id}
-            </div>
-            {this.props.route.routeName}
-            <div
-                onClick={this.closeRoute}
-                className={s.closeView}
-            >
-                <FaTimes className={s.close}/>
-            </div>
-        </div>
+            <ViewHeader>
+                <div className={s.routeName}>
+                    {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
+                    <div
+                        className={classNames(
+                            s.label,
+                            TransitTypeColorHelper.getColorClass(
+                                this.props.route.line!.transitType),
+                        )}
+                    >
+                        {this.props.route.id}
+                    </div>
+                    {this.props.route.routeName}
+                </div>
+            </ViewHeader>
         );
     }
 

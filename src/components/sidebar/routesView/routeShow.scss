@@ -24,7 +24,8 @@
         display: flex;
         align-items: center;
         overflow: hidden;
-        margin-bottom: 30px;
+        font-size: 16px;
+        font-weight: normal;
 
         .label {
             font-size: $largeFontSize;
