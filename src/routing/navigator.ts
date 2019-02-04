@@ -44,11 +44,11 @@ class Navigator {
         );
     }
 
-    /* not used yet
-
     public goBack() {
-        this._store.goBack();
+        this.store.goBack();
     }
+
+    /* not used yet
 
     public goForward() {
         this._store.goForward();

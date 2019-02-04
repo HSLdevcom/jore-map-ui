@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
-import routeBuilder  from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
+import { FaTimes } from 'react-icons/fa';
 import navigator from '~/routing/navigator';
 import * as s from './viewHeader.scss';
 
@@ -13,15 +12,14 @@ interface IViewHeaderProps {
 const viewHeader = (props:IViewHeaderProps) => {
     const closeSidebarView = () => {
         if (!props.closePromptMessage || confirm(props.closePromptMessage)) {
-            const routesLink = routeBuilder.to(subSites.routes).toLink();
-            navigator.goTo(routesLink);
+            navigator.goBack();
         }
     };
     return (
         <div className={s.viewHeaderView}>
             <div className={s.topic}>{props.children}</div>
             { !props.hideCloseButton &&
-                <div
+                <FaTimes
                     className={s.closeButton}
                     onClick={closeSidebarView}
                 />
