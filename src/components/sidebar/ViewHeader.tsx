@@ -10,7 +10,7 @@ interface IViewHeaderProps {
 }
 
 const viewHeader = (props:IViewHeaderProps) => {
-    const closeSidebarView = () => {
+    const goBack = () => {
         if (!props.closePromptMessage || confirm(props.closePromptMessage)) {
             navigator.goBack();
         }
@@ -21,7 +21,7 @@ const viewHeader = (props:IViewHeaderProps) => {
             { !props.hideCloseButton &&
                 <FaTimes
                     className={s.closeButton}
-                    onClick={closeSidebarView}
+                    onClick={goBack}
                 />
             }
         </div>
