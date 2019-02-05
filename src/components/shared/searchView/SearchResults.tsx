@@ -46,9 +46,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     async componentDidMount() {
         this.showMore();
         await this.queryAllLines();
-        this.reactionDisposer = reaction(() =>
-        [this.props.searchStore!.searchInput, this.props.searchStore!.selectedTransitTypes],
-                                         this.resetShow,
+        this.reactionDisposer = reaction(
+            () =>
+                [
+                    this.props.searchStore!.searchInput,
+                    this.props.searchStore!.selectedTransitTypes,
+                ],
+            this.resetShow,
             );
     }
 
