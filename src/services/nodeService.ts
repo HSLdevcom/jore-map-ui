@@ -2,6 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
+import INodeBase from '~/models/baseModels/INodeBase';
 import IExternalNode from '~/models/externals/IExternalNode';
 import NodeFactory from '~/factories/nodeFactory';
 import GraphqlQueries from './graphqlQueries';
@@ -31,7 +32,7 @@ class NodeService {
             return queryResult.data.allNodes.nodes
                 .map((node: IExternalNode) =>
                 NodeFactory.createNodeBase(node),
-            );
+            ) as INodeBase[];
         } catch (error) {
             console.error(error); // tslint:disable-line
             notificationStore.addNotification({

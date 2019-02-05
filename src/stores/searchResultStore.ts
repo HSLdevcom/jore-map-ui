@@ -1,9 +1,10 @@
 import { action, computed, observable } from 'mobx';
-import { ILine, INode } from '~/models';
+import { ILine } from '~/models';
+import INodeBase from '~/models/baseModels/INodeBase';
 
 export class SearchResultStore {
     @observable private _allLines: ILine[];
-    @observable private _allNodes: INode[];
+    @observable private _allNodes: INodeBase[];
 
     constructor() {
         this._allLines = [];
@@ -16,7 +17,7 @@ export class SearchResultStore {
     }
 
     @computed
-    get allNodes(): INode[] {
+    get allNodes(): INodeBase[] {
         return this._allNodes;
     }
 
@@ -26,7 +27,7 @@ export class SearchResultStore {
     }
 
     @action
-    public setAllNodes = (nodes: INode[]) => {
+    public setAllNodes = (nodes: INodeBase[]) => {
         this._allNodes = nodes;
     }
 }

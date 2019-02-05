@@ -78,7 +78,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     private queryAllNodes = async () => {
         const nodes = await NodeService.fetchAllNodes();
-        console.log(nodes);
         if (nodes !== null) {
             this.props.searchResultStore!.setAllNodes(nodes);
         }
