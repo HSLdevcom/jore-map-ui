@@ -2,16 +2,17 @@ import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import React from 'react';
 import { SearchResultStore } from '~/stores/searchResultStore';
-import { ILine, ILineRoute } from '~/models';
-import TransitType from '~/enums/transitType';
+import { ILine } from '~/models';
 import LineService from '~/services/lineService';
 import NodeService from '~/services/nodeService';
 import { SearchStore } from '~/stores/searchStore';
+import INodeBase from '~/models/baseModels/INodeBase';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
 import LineItem from './LineItem';
 import Loader from '../loader/Loader';
 import * as s from './searchResults.scss';
+import NodeItem from './NodeItem';
 
 interface ISearchResultsProps{
     searchResultStore?: SearchResultStore;
@@ -83,28 +84,11 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
     }
 
-    private filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
-        const searchTerm = this.props.searchStore!.searchInput.toLowerCase();
-
-        // Filter by transitType
-        if (!this.props.searchStore!.selectedTransitTypes.includes(transitType)) {
-            return false;
-        }
-
-        // Filter by line.id
-        if (lineId.indexOf(searchTerm) > -1) return true;
-
-        // Filter by route.name
-        return routes
-            .map(route => route.name.toLowerCase())
-            .some(name => name.indexOf(searchTerm) > -1);
-    }
-
-    private filteredLines = () => {
-        return this.props.searchResultStore!.allLines
-            .filter(line =>
-                this.filterLines(line.routes, line.id, line.transitType))
-            .splice(0, this.state.showLimit);
+    private getFilteredItems = () => {
+        return this.props.searchResultStore!.getFilteredItems(
+            this.props.searchStore!.searchInput.toLowerCase(),
+            this.props.searchStore!.selectedTransitTypes,
+        ).splice(0, this.state.showLimit);
     }
 
     private renderSearchResultButton() {
@@ -160,6 +144,16 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.paginatedDiv.current!.scrollTo(0, 0);
     }
 
+    private isLine(item: INodeBase | ILine): item is ILine {
+        return (
+            (item as ILine).routes !== undefined ||
+            (item as ILine).transitType !== undefined
+        ) && (
+            (item as INodeBase).shortId === undefined ||
+            (item as INodeBase).type === undefined
+        );
+    }
+
     render() {
         if (this.state.isLoading) {
             return (
@@ -168,7 +162,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 </div>
             );
         }
-        const filteredLines = this.filteredLines();
+        const filteredItems = this.getFilteredItems();
         return (
             <div className={s.searchResultsView}>
                 <div
@@ -177,17 +171,25 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                     ref={this.paginatedDiv}
                 >
                 {
-                    filteredLines.length === 0 ?
+                    filteredItems.length === 0 ?
                         <div className={s.noResults}>
                             Ei hakutuloksia.
                         </div>
                         :
-                        filteredLines
-                            .map((line: ILine) => {
+                        filteredItems
+                            .map((item: ILine | INodeBase) => {
+                                if (this.isLine(item)) {
+                                    return (
+                                        <LineItem
+                                            key={item.id}
+                                            line={item}
+                                        />
+                                    );
+                                }
                                 return (
-                                    <LineItem
-                                        key={line.id}
-                                        line={line}
+                                    <NodeItem
+                                        key={item.id}
+                                        node={item}
                                     />
                                 );
                             })

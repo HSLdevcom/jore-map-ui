@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { ILine } from '~/models';
 import INodeBase from '~/models/baseModels/INodeBase';
+import TransitType from '~/enums/transitType';
 
 export class SearchResultStore {
     @observable private _allLines: ILine[];
@@ -30,6 +31,47 @@ export class SearchResultStore {
     public setAllNodes = (nodes: INodeBase[]) => {
         this._allNodes = nodes;
     }
+
+    private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
+        return this._allLines.filter((line) => {
+            // Filter by transitType
+            if (!transitTypes.includes(line.transitType)) {
+                return false;
+            }
+
+            // Filter by line.id
+            if (line.id.indexOf(searchInput) > -1) return true;
+
+            // Filter by route.name
+            return line.routes
+                .map(route => route.name.toLowerCase())
+                .some(name => name.indexOf(searchInput) > -1);
+        });
+    }
+
+    private getFilteredNodes = (searchInput: string) => {
+        return this._allNodes.filter((node) => {
+            return node.id.indexOf(searchInput) > -1
+                || (
+                    Boolean(node.shortId)
+                    && node.shortId!.indexOf(searchInput) > -1
+                );
+        });
+    }
+
+    public getFilteredItems =
+        (searchInput: string, transitTypes: TransitType[]): (INodeBase | ILine)[] => {
+            const lines = this.getFilteredLines(searchInput, transitTypes);
+            const nodes = this.getFilteredNodes(searchInput);
+            let list = [
+                ...lines,
+                ...nodes,
+            ];
+
+            list = list.sort((a, b) => a.id > b.id ? -1 : 1);
+
+            return list;
+        }
 }
 
 const observableLineStore = new SearchResultStore();
