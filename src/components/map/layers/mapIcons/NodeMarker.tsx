@@ -8,7 +8,7 @@ import { INode } from '~/models/index';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import NodeStyleHelper from '~/util/nodeTypeColorHelper';
+import NodeTypeHelper from '~/util/nodeTypeHelper';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -96,12 +96,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
         if (this.props.isDisabled) {
             res.push(
-                NodeStyleHelper.getTypeClass(NodeType.DISABLED, isSelected),
+                NodeTypeHelper.getTypeClass(NodeType.DISABLED, isSelected),
             );
         }
         if (this.props.isTimeAlignmentStop) {
             res.push(
-                NodeStyleHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected),
+                NodeTypeHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected),
             );
         }
 
@@ -110,7 +110,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
 
         res.push(
-            NodeStyleHelper.getTypeClass(this.props.node.type, isSelected),
+            NodeTypeHelper.getTypeClass(this.props.node.type, isSelected),
         );
 
         return res;
