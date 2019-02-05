@@ -11,8 +11,8 @@ import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
 import LineItem from './LineItem';
 import Loader from '../loader/Loader';
-import * as s from './searchResults.scss';
 import NodeItem from './NodeItem';
+import * as s from './searchResults.scss';
 
 interface ISearchResultsProps{
     searchResultStore?: SearchResultStore;
