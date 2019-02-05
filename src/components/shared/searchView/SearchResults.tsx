@@ -88,6 +88,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         return this.props.searchResultStore!.getFilteredItems(
             this.props.searchStore!.searchInput.toLowerCase(),
             this.props.searchStore!.selectedTransitTypes,
+            this.props.searchStore!.isSearchingForLines,
+            this.props.searchStore!.isSearchingForNodes,
         ).splice(0, this.state.showLimit);
     }
 

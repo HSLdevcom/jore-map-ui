@@ -60,13 +60,27 @@ export class SearchResultStore {
     }
 
     public getFilteredItems =
-        (searchInput: string, transitTypes: TransitType[]): (INodeBase | ILine)[] => {
-            const lines = this.getFilteredLines(searchInput, transitTypes);
-            const nodes = this.getFilteredNodes(searchInput);
-            let list = [
-                ...lines,
-                ...nodes,
-            ];
+        (
+            searchInput: string,
+            transitTypes: TransitType[],
+            includeLines: boolean,
+            includeNodes: boolean,
+            ): (INodeBase | ILine)[] => {
+            let list: (INodeBase | ILine)[] = [];
+            if (includeLines) {
+                const lines = this.getFilteredLines(searchInput, transitTypes);
+                list = [
+                    ...list,
+                    ...lines,
+                ];
+            }
+            if (includeNodes) {
+                const nodes = this.getFilteredNodes(searchInput);
+                list = [
+                    ...list,
+                    ...nodes,
+                ];
+            }
 
             list = list.sort((a, b) => a.id > b.id ? -1 : 1);
 
