@@ -20,16 +20,13 @@
     display: flex;
 
     > span {
-      width: 100px;
+      width: 150px;
     }
 
     > div {
       font-size: 14px;
       color: #898989;
-
-      > p {
-        margin: 0;
-      }
+      margin: auto;
     }
   }
 }

@@ -29,11 +29,10 @@ class NodeItem extends React.Component<INodeItemProps> {
                 <IoMdLocate />
                 <div>
                     <span>
-                        {this.props.node.shortId}
+                        {this.props.node.id}
                     </span>
                     <div>
-                        <p>{this.props.node.id}</p>
-                        <p>{NodeTypeHelper.getNodeTypeName(this.props.node.type)}</p>
+                        {NodeTypeHelper.getNodeTypeName(this.props.node.type)}
                     </div>
                 </div>
             </div>
