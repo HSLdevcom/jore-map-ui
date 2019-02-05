@@ -1,5 +1,6 @@
 import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
+import 'leaflet-editable';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction, toJS } from 'mobx';
 import React from 'react';
@@ -33,6 +34,7 @@ interface IMapPropReference {
     zoom: number;
     zoomControl: false;
     id: string;
+    editable: boolean;
 }
 
 export type LeafletContext = {
@@ -142,6 +144,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     ref={this.mapReference}
                     zoomControl={false}
                     id={s.mapLeaflet}
+                    editable={true}
                 >
                     <TileLayer
                         // tslint:disable:max-line-length
