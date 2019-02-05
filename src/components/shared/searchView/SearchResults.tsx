@@ -5,6 +5,7 @@ import { SearchResultStore } from '~/stores/searchResultStore';
 import { ILine, ILineRoute } from '~/models';
 import TransitType from '~/enums/transitType';
 import LineService from '~/services/lineService';
+import NodeService from '~/services/nodeService';
 import { SearchStore } from '~/stores/searchStore';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
@@ -45,7 +46,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     async componentDidMount() {
         this.showMore();
-        await this.queryAllLines();
+        this.fetchAll();
         this.reactionDisposer = reaction(
             () =>
                 [
@@ -60,13 +61,27 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.reactionDisposer();
     }
 
-    private queryAllLines = async () => {
+    private fetchAll = async () => {
         this.setState({ isLoading: true });
+        return Promise.all([
+            this.queryAllLines(),
+            this.queryAllNodes(),
+        ]).then(() => this.setState({ isLoading: false }));
+    }
+
+    private queryAllLines = async () => {
         const lines = await LineService.fetchAllLines();
         if (lines !== null) {
             this.props.searchResultStore!.setAllLines(lines);
         }
-        this.setState({ isLoading: false });
+    }
+
+    private queryAllNodes = async () => {
+        const nodes = await NodeService.fetchAllNodes();
+        console.log(nodes);
+        if (nodes !== null) {
+            this.props.searchResultStore!.setAllNodes(nodes);
+        }
     }
 
     private filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
