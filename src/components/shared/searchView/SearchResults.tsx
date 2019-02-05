@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import React from 'react';
-import { LineStore } from '~/stores/lineStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import { ILine, ILineRoute } from '~/models';
 import TransitType from '~/enums/transitType';
 import LineService from '~/services/lineService';
@@ -13,7 +13,7 @@ import Loader from '../loader/Loader';
 import * as s from './searchResults.scss';
 
 interface ISearchResultsProps{
-    lineStore?: LineStore;
+    searchResultStore?: SearchResultStore;
     searchStore?: SearchStore;
 }
 
@@ -26,7 +26,7 @@ const SHOW_LIMIT_DEFAULT = 20;
 const INCREASE_SHOW_LIMIT = 10;
 const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half way down
 
-@inject('lineStore', 'searchStore')
+@inject('searchResultStore', 'searchStore')
 @observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
     private paginatedDiv: React.RefObject<HTMLDivElement>;
@@ -64,7 +64,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.setState({ isLoading: true });
         const lines = await LineService.fetchAllLines();
         if (lines !== null) {
-            this.props.lineStore!.setAllLines(lines);
+            this.props.searchResultStore!.setAllLines(lines);
         }
         this.setState({ isLoading: false });
     }
@@ -87,7 +87,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
 
     private filteredLines = () => {
-        return this.props.lineStore!.allLines
+        return this.props.searchResultStore!.allLines
             .filter(line =>
                 this.filterLines(line.routes, line.id, line.transitType))
             .splice(0, this.state.showLimit);
