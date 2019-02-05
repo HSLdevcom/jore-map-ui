@@ -2,6 +2,7 @@ import React from 'react';
 import { IoMdLocate } from 'react-icons/io';
 import INodeBase from '~/models/baseModels/INodeBase';
 import routeBuilder from '~/routing/routeBuilder';
+import NodeTypeHelper from '~/util/nodeTypeHelper';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import * as s from './nodeItem.scss';
@@ -27,9 +28,13 @@ class NodeItem extends React.Component<INodeItemProps> {
             >
                 <IoMdLocate />
                 <div>
-                    {this.props.node.shortId}
-                    {this.props.node.id}
-                    {this.props.node.type}
+                    <span>
+                        {this.props.node.shortId}
+                    </span>
+                    <div>
+                        <p>{this.props.node.id}</p>
+                        <p>{NodeTypeHelper.getNodeTypeName(this.props.node.type)}</p>
+                    </div>
                 </div>
             </div>
         );
