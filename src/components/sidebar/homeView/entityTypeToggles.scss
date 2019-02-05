@@ -9,29 +9,29 @@
     flex: 0 0 50%;
 
     .button {
-      color: $busBlue;
+      color: #eef1f3;
       font-size: 15px;
       text-align: center;
-      width: 120px;
       margin: 0 auto;
       cursor: pointer;
-      border-width: 2px;
-      border-style: solid;
       border-radius: 4px;
-      border-color: transparent;
+      background-color: #575757;
+      display: flex;
+      padding: 4px 2px;
+      width: 175px;
+      transition: .5s;
   
       > svg {
         font-size: 30px;
       }
-    }
 
-    .button:hover {
-      border-color: #027ac954;
+      > div {
+        margin: auto;
+      }
     }
 
     .active {
       background-color: #027ac9;
-      color: #eef1f3;
     }
   }
 }
