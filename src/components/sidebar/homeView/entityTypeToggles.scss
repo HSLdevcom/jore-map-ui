@@ -1,3 +1,36 @@
+@import '../../shared/styles/common.scss';
+
 .entityTypeTogglesView {
-  font-size: 40px;
+  flex-direction: row;
+  display: flex;
+  margin-bottom: 16px;
+
+  .buttonContainer {
+    flex: 0 0 50%;
+
+    .button {
+      color: $busBlue;
+      font-size: 15px;
+      text-align: center;
+      width: 120px;
+      margin: 0 auto;
+      cursor: pointer;
+      border-width: 2px;
+      border-style: solid;
+      border-radius: 4px;
+      border-color: transparent;
+  
+      > svg {
+        font-size: 30px;
+      }
+    }
+
+    .button:hover {
+      border-color: #027ac954;
+    }
+
+    .active {
+      border-color: $busBlue;
+    }
+  }
 }
