@@ -1,3 +1,26 @@
+@import '../../shared/styles/common.scss';
+
 .nodeItem {
-    padding: 1px;
+  display: flex;
+  color: $trainPurple;
+  cursor: pointer;
+  margin: 3px 0;
+  padding: 3px 0;
+  border-radius: 4px;
+
+  > svg {
+    font-size: 24px;
+  }
+
+  > div {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-right: 12px;
+    margin-left: 8px;
+  }
+}
+
+.nodeItem:hover {
+  background-color: #e6e6e6;
+  transition: .5s;
 }
