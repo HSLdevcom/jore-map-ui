@@ -17,10 +17,6 @@ interface IControlProps extends MapControlProps {
 }
 
 class Control extends MapControl<IControlProps>{
-    constructor(props: IControlProps) {
-        super(props);
-    }
-
     createLeafletElement({ position } : { position: any }) {
         this.leafletElement = new DivControl({ position });
         return this.leafletElement;
