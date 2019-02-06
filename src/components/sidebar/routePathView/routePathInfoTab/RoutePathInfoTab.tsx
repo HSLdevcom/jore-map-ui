@@ -16,14 +16,14 @@ import subSites from '~/routing/subSites';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathInfoTab.scss';
 
-interface IRoutePathViewState {
+interface IRoutePathInfoTabState {
     isEditingDisabled: boolean;
     invalidFieldsMap: object;
     isLoading: boolean;
     hasSavedNewRoutePath: boolean;
 }
 
-interface IRoutePathViewProps {
+interface IRoutePathInfoTabProps {
     routePathStore?: RoutePathStore;
     notificationStore?: NotificationStore;
     routePath: IRoutePath;
@@ -32,7 +32,7 @@ interface IRoutePathViewProps {
 
 @inject('routePathStore', 'notificationStore')
 @observer
-class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
+class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState>{
     constructor(props: any) {
         super(props);
         this.state = {
@@ -113,7 +113,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
 
         if (!routePath) return 'Error';
         return (
-        <div className={classnames(s.routePathTab, s.form)}>
+        <div className={classnames(s.routePathInfoTabView, s.form)}>
             <div className={s.content}>
                 <div className={s.routePathTabActions}>
                     <Button
@@ -155,4 +155,4 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         );
     }
 }
-export default RoutePathTab;
+export default RoutePathInfoTab;

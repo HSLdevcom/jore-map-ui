@@ -89,7 +89,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
         if (!routePathLinks) return null;
 
         return (
-            <div className={s.routePathLinksView}>
+            <div className={s.RoutePathLinksTabView}>
                 <div
                     className={s.contentWrapper}
                 >

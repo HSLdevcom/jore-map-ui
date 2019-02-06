@@ -14,7 +14,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
-import RoutePathTab from './routePathInfoTab/RoutePathInfoTab';
+import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
 import RoutePathHeader from './RoutePathHeader';
@@ -94,7 +94,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     public renderTabContent = () => {
         if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
-                <RoutePathTab
+                <RoutePathInfoTab
                     routePath={this.props.routePathStore!.routePath!}
                     isAddingNew={this.props.isAddingNew}
                 />
