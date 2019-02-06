@@ -7,12 +7,13 @@ interface IViewHeaderProps {
     children: ReactNode;
     closePromptMessage?: string;
     hideCloseButton?: boolean;
+    onCloseButtonClick?: () => void;
 }
 
 const viewHeader = (props:IViewHeaderProps) => {
     const goBack = () => {
         if (!props.closePromptMessage || confirm(props.closePromptMessage)) {
-            navigator.goBack();
+            props.onCloseButtonClick ? props.onCloseButtonClick() : navigator.goBack();
         }
     };
     return (

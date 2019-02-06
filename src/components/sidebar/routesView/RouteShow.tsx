@@ -8,6 +8,7 @@ import LineHelper from '~/util/lineHelper';
 import { dateToDateString } from '~/util/dateFormatHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import routeBuilder from '~/routing/routeBuilder';
+import QueryParams from '~/routing/queryParams';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import { IRoutePath, IRoute } from '~/models';
@@ -32,9 +33,20 @@ class RouteShow extends React.Component<IRouteShowProps> {
         });
     }
 
+    private closeRoute = () => {
+        this.props.routeStore!.removeFromRoutes(this.props.route.id);
+        const closeRouteLink = routeBuilder
+            .to(subSites.current)
+            .remove(QueryParams.routes, this.props.route.id)
+            .toLink();
+        navigator.goTo(closeRouteLink);
+    }
+
     private renderRouteName = () => {
         return (
-            <ViewHeader>
+            <ViewHeader
+                onCloseButton={this.closeRoute}
+            >
                 <div className={s.routeName}>
                     {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
                     <div
