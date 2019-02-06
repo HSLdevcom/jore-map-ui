@@ -54,7 +54,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         if (!isLinkView || !links || !map) return;
 
         this.removeOldLinks();
-        links.map((link: ILink, index) => this.drawEditableLinkToMap(link, index));
+        links.map((link: ILink) => this.drawEditableLinkToMap(link));
 
         map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
@@ -65,24 +65,20 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         });
     }
 
-    private drawEditableLinkToMap = (link: ILink, key: number) => {
+    private drawEditableLinkToMap = (link: ILink) => {
         const map = this.props.leaflet.map;
         if (map) {
             const editableLink = L.polyline([link.geometry]).addTo(map);
             editableLink.enableEdit();
-            const linkLatLngs = [editableLink.getLatLngs()];
-
-            // Hide first and last vertex from editableLink
-            linkLatLngs.forEach((_linkLatLng: any) => {
-                _linkLatLng.forEach((coords: any) => {
-                    const coordsToDisable = [coords[0], coords[coords.length - 1]];
-                    coordsToDisable.forEach((coordToDisable: any) => {
-                        const vertexMarker = coordToDisable.__vertex;
-                        vertexMarker.dragging.disable();
-                        vertexMarker.setOpacity(0);
-                    });
-                });
+            const latLngs = editableLink.getLatLngs() as L.LatLng[][];
+            const coords = latLngs[0];
+            const coordsToDisable = [coords[0], coords[coords.length - 1]];
+            coordsToDisable.forEach((coordToDisable: any) => {
+                const vertexMarker = coordToDisable.__vertex;
+                vertexMarker.dragging.disable();
+                vertexMarker.setOpacity(0);
             });
+
             this.editableLinks.push(editableLink);
         }
     }
