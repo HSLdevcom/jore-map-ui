@@ -3,7 +3,7 @@
 .entityTypeTogglesView {
     flex-direction: row;
     display: flex;
-    margin-bottom: 16px;
+    border-bottom: 1px solid black;
 
     .buttonContainer {
         flex: 0 0 50%;
@@ -12,13 +12,10 @@
             color: #eef1f3;
             font-size: 15px;
             text-align: center;
-            margin: 0 auto;
             cursor: pointer;
-            border-radius: 4px;
             background-color: #575757;
             display: flex;
-            padding: 4px 2px;
-            width: 175px;
+            padding: 5px 20px 5px 20px;
             transition: .5s;
 
             > svg {
@@ -32,6 +29,12 @@
 
         .active {
             background-color: #027ac9;
+        }
+    }
+
+    .buttonContainer:first-child {
+        .button {
+            border-right: 1px solid black;
         }
     }
 }

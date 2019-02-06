@@ -36,7 +36,7 @@ class TransitToggleButton extends React.Component
         return (
             <button
                 className={classNames(
-                    s.toggle,
+                    s.button,
                     this.getToggledButtonClass(this.props.type, this.props.toggled),
                 )}
                 onClick={this.toggleActivity}
