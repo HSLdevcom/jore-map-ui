@@ -30,7 +30,8 @@ class PopupLayer extends Component<PopupLayerProps> {
 
                 map!.setView(node.coordinates, map!.getZoom());
                 this.onClose();
-                const nodeLink = routeBuilder.to(subSites.node).toTarget(`${node.id}`).toLink();
+                const nodeLink = routeBuilder
+                    .to(subSites.networkNode).toTarget(`${node.id}`).toLink();
                 navigator.goTo(nodeLink);
             };
 
