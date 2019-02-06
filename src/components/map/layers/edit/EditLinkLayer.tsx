@@ -19,19 +19,19 @@ interface IEditLinkLayerProps {
 @inject('editNetworkStore')
 @observer
 class EditLinkLayer extends Component<IEditLinkLayerProps> {
-    private reactionDisposers: IReactionDisposer[] = [];
+    private reactionDisposer: IReactionDisposer;
     private editableLinks: L.Polyline[] = [];
 
     componentDidMount() {
-        this.reactionDisposers.push(reaction(
-            () => this.props.editNetworkStore!.links,
-            () => {
-                const links = this.props.editNetworkStore!.links;
-                if (links.length === 0) {
-                    this.removeOldLinks();
-                }
-            },
-        ));
+        this.reactionDisposer = reaction(() =>
+        this.props.editNetworkStore!.links,
+                                         () => {
+                                             const links = this.props.editNetworkStore!.links;
+                                             if (links.length === 0) {
+                                                 this.removeOldLinks();
+                                             }
+                                         },
+            );
     }
 
     private removeOldLinks = () => {
@@ -44,7 +44,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     }
 
     componentWillUnmount() {
-        this.reactionDisposers.forEach(r => r());
+        this.reactionDisposer();
     }
 
     private drawEditableLinks = () => {

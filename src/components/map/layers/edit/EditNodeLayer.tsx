@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Polyline, withLeaflet } from 'react-leaflet';
+import { Polyline } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import navigator from '~/routing/navigator';
@@ -8,11 +8,9 @@ import { INode, ILink } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeMarker from '../mapIcons/NodeMarker';
-import { LeafletContext } from '../../Map';
 
 interface IEditNodeLayerProps {
     editNetworkStore?: EditNetworkStore;
-    leaflet: LeafletContext;
 }
 
 @inject('editNetworkStore')
@@ -70,4 +68,4 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     }
 }
 
-export default withLeaflet(EditNodeLayer);
+export default EditNodeLayer;
