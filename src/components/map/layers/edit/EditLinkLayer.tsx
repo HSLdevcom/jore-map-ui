@@ -1,24 +1,23 @@
 import React, { Component } from 'react';
 import * as L from 'leaflet';
-import { Polyline, withLeaflet } from 'react-leaflet';
+import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
-import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeMarker from '../mapIcons/NodeMarker';
 import { LeafletContext } from '../../Map';
 
-interface IEditNetworkLayerProps {
+interface IEditLinkLayerProps {
     editNetworkStore?: EditNetworkStore;
     leaflet: LeafletContext;
 }
 
 @inject('editNetworkStore')
 @observer
-class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
+class EditLinkLayer extends Component<IEditLinkLayerProps> {
     editableLinks: L.Polyline[] = [];
 
     private drawEditableLinks() {
@@ -66,27 +65,6 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         }
     }
 
-    private renderLinks() {
-        const links = this.props.editNetworkStore!.links;
-        const isLinkView = Boolean(matchPath(navigator.getPathName(), SubSites.link));
-
-        if (isLinkView || !links) return null;
-        return links.map((link: ILink, index) => this.renderLink(link, index));
-    }
-
-    private renderLink(link: ILink, key: number) {
-        const color = TransitTypeColorHelper.getColor(link.transitType);
-        return (
-            <Polyline
-                key={key}
-                positions={link.geometry}
-                color={color}
-                weight={5}
-                opacity={0.8}
-            />
-        );
-    }
-
     private renderNodes() {
         const nodes = this.props.editNetworkStore!.nodes;
         return nodes.map(n => this.renderNode(n));
@@ -105,14 +83,15 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
     }
 
     render() {
+        const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
+        if (!isLinkViewVisible) return null;
+
         this.drawEditableLinks();
+
         return (
-            <>
-                {this.renderLinks()}
-                {this.renderNodes()}
-            </>
+            this.renderNodes()
         );
     }
 }
 
-export default withLeaflet(EditNetworkLayer);
+export default withLeaflet(EditLinkLayer);

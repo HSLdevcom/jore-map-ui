@@ -13,14 +13,14 @@ import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import RouteLayer from './layers/RouteLayer';
 import UpsertRoutePathLayer from './layers/edit/UpsertRoutePathLayer';
-import EditNetworkLayer from './layers/edit/EditNetworkLayer';
+import EditLinkLayer from './layers/edit/EditLinkLayer';
+import EditNodeLayer from './layers/edit/EditNodeLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
 import EventLog from './EventLog';
 import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import * as s from './map.scss';
-import NetworkLayers from './layers/NetworkLayers';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -165,12 +165,12 @@ class LeafletMap extends React.Component<IMapProps> {
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
-                    <NetworkLayers />
+                    <EditNodeLayer />
+                    <EditLinkLayer />
                     <RouteLayer
                         routes={routes}
                     />
                     <UpsertRoutePathLayer />
-                    <EditNetworkLayer />
                     <PopupLayer />
                     <Control position='topleft'>
                         <Toolbar />
