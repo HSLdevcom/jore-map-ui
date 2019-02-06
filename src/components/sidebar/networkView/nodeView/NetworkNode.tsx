@@ -6,10 +6,11 @@ import { INode } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
-import { Dropdown } from '~/components/controls';
+import { Dropdown, Button } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
 import NodeLocationType from '~/types/NodeLocationType';
+import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
 import ViewHeader from '../../ViewHeader';
@@ -76,6 +77,8 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
 
     private onChange = (name: string) => () => {};
 
+    private save = () => () => {};
+
     componentWillUnmount() {
         this.props.editNetworkStore!.clear();
     }
@@ -130,6 +133,13 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                         />
                     }
                 </div>
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={true}
+                    onClick={this.save}
+                >
+                    Tallenna muutokset
+                </Button>
             </div>
         );
     }
