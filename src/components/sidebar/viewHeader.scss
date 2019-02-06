@@ -5,6 +5,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 8px;
+
 
     .topic {
         font-size: $largeFontSize;
@@ -12,27 +14,12 @@
     }
 
     .closeButton {
-        position: relative;
-        width: 28px;
-        height: 28px;
+        font-size: 28px;
         opacity: 0.8;
         cursor: pointer;
     }
+
     .closeButton:hover {
         opacity: 1;
-    }
-    .closeButton:before, .closeButton:after {
-        position: absolute;
-        left: 15px;
-        content: ' ';
-        height: 28px;
-        width: 3px;
-        background-color: $busBlue;
-    }
-    .closeButton:before {
-        transform: rotate(45deg);
-    }
-    .closeButton:after {
-        transform: rotate(-45deg);
     }
 }
