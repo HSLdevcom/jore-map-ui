@@ -11,7 +11,7 @@ interface IViewHeaderProps {
 }
 
 const viewHeader = (props:IViewHeaderProps) => {
-    const goBack = () => {
+    const onCloseButtonClick = () => {
         if (!props.closePromptMessage || confirm(props.closePromptMessage)) {
             props.onCloseButtonClick ? props.onCloseButtonClick() : navigator.goBack();
         }
@@ -22,7 +22,7 @@ const viewHeader = (props:IViewHeaderProps) => {
             { !props.hideCloseButton &&
                 <FaTimes
                     className={s.closeButton}
-                    onClick={goBack}
+                    onClick={onCloseButtonClick}
                 />
             }
         </div>
