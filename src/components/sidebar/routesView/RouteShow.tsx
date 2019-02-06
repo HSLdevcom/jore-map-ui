@@ -45,7 +45,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
     private renderRouteName = () => {
         return (
             <ViewHeader
-                onCloseButton={this.closeRoute}
+                onCloseButtonClick={this.closeRoute}
             >
                 <div className={s.routeName}>
                     {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
