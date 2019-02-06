@@ -6,8 +6,9 @@ import { INode } from '~/models';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
-import { Dropdown, Button } from '~/components/controls';
+import { Button } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
+import NodeTypeDropdown from '~/components/controls/NodeTypeDropdown';
 import NodeService from '~/services/nodeService';
 import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
@@ -111,12 +112,11 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                                     value={node.shortId}
                                     onChange={this.onChange('routePathShortName')}
                                 />
-                                <Dropdown
+                                <NodeTypeDropdown
                                     label='TYYPPI'
                                     onChange={this.onChange}
-                                    items={['Pysäkki', 'Risteys']}
-                                    // TODO: Add other alternatives, and remove hardcoding
-                                    selected={node.type === NodeType.STOP ? 'Pysäkki' : 'Risteys'}
+                                    disabled={isEditingDisabled}
+                                    value={node.type}
                                 />
                             </div>
                         </div>
