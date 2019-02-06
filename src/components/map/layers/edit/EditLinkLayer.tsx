@@ -23,15 +23,15 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private editableLinks: L.Polyline[] = [];
 
     componentDidMount() {
-        this.reactionDisposer = reaction(() =>
-        this.props.editNetworkStore!.links,
-                                         () => {
-                                             const links = this.props.editNetworkStore!.links;
-                                             if (links.length === 0) {
-                                                 this.removeOldLinks();
-                                             }
-                                         },
-            );
+        this.reactionDisposer = reaction(
+            () => this.props.editNetworkStore!.links,
+            () => {
+                const links = this.props.editNetworkStore!.links;
+                if (links.length === 0) {
+                    this.removeOldLinks();
+                }
+            },
+        );
     }
 
     private removeOldLinks = () => {
@@ -47,7 +47,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         this.reactionDisposer();
     }
 
-    private drawEditableLinks = () => {
+    private drawEditableLink = () => {
         const links = this.props.editNetworkStore!.links;
         const map = this.props.leaflet.map;
         const isLinkView = Boolean(matchPath(navigator.getPathName(), SubSites.link));
@@ -104,7 +104,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
         if (!isLinkViewVisible) return null;
 
-        this.drawEditableLinks();
+        this.drawEditableLink();
 
         return (
             this.renderNodes()

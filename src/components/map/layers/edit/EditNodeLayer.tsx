@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
+import NodeLocationType from '~/types/NodeLocationType';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeMarker from '../mapIcons/NodeMarker';
@@ -51,8 +52,15 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 key={node.id}
                 isDraggable={true}
                 node={node}
+                onMoveMarker={this.onMoveMarker(node)}
             />
         );
+    }
+
+    private onMoveMarker = (node: INode) =>
+    (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
+        const newNode = { ...node, [coordinatesType]:coordinates };
+        this.props.editNetworkStore!.updateNode(newNode);
     }
 
     render() {
