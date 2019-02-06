@@ -7,7 +7,7 @@ import * as s from './stopForm.scss';
 
 interface IStopFormProps {
     stop: IStop;
-    onChange: () => void;
+    onChange: (property: string) => (value: any) => void;
     isEditingDisabled: boolean;
 }
 
@@ -28,13 +28,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='NIMI'
                         disabled={isEditingDisabled}
                         value={stop.nameFi}
-                        onChange={onChange}
+                        onChange={onChange('nameFi')}
                     />
                     <InputContainer
                         label='NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.nameSe}
-                        onChange={onChange}
+                        onChange={onChange('nameSe')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -42,13 +42,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='PITKÄ NIMI'
                         disabled={isEditingDisabled}
                         value={stop.nameLongFi}
-                        onChange={onChange}
+                        onChange={onChange('nameLongFi')}
                     />
                     <InputContainer
                         label='PITKÄ NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.nameLongSe}
-                        onChange={onChange}
+                        onChange={onChange('nameLongSe')}
                     />
                 </div>
                 </div>
@@ -61,13 +61,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='PAIKAN NIMI'
                         disabled={isEditingDisabled}
                         value={stop.placeNameFi}
-                        onChange={onChange}
+                        onChange={onChange('placeNameFi')}
                     />
                     <InputContainer
                         label='PAIKAN NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.placeNameSe}
-                        onChange={onChange}
+                        onChange={onChange('placeNameSe')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -75,13 +75,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='OSOITE'
                         disabled={isEditingDisabled}
                         value={stop.addressFi}
-                        onChange={onChange}
+                        onChange={onChange('addressFi')}
                     />
                     <InputContainer
                         label='OSOITE RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.addressSe}
-                        onChange={onChange}
+                        onChange={onChange('addressSe')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -89,12 +89,12 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='POSTINUMERO'
                         disabled={isEditingDisabled}
                         value={stop.postalNumber}
-                        onChange={onChange}
+                        onChange={onChange('postalNumber')}
                     />
                     <MunicipalityDropdown
                         disabled={isEditingDisabled}
                         value={stop.municipality}
-                        onChange={onChange}
+                        onChange={onChange('municipality')}
                         label='KUNTA'
                     />
                 </div>
@@ -108,27 +108,27 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='VAIHTOPYSÄKKI'
                         disabled={isEditingDisabled}
                         value={stop.exchangeStop}
-                        onChange={onChange}
+                        onChange={onChange('exchangeStop')}
                     />
                     <InputContainer
                         label='LAITURI'
                         disabled={isEditingDisabled}
                         value={stop.platform}
-                        onChange={onChange}
+                        onChange={onChange('platform')}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='KATOS'
                         disabled={isEditingDisabled}
-                        value={stop.nameFi}
-                        onChange={onChange}
+                        value={stop.roof}
+                        onChange={onChange('roof')}
                     />
                     <InputContainer
                         label='TYYPPI'
                         disabled={isEditingDisabled}
                         value={stop.type}
-                        onChange={onChange}
+                        onChange={onChange('type')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -136,13 +136,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='SÄDE'
                         disabled={isEditingDisabled}
                         value={stop.radius}
-                        onChange={onChange}
+                        onChange={onChange('radius')}
                     />
                     <InputContainer
                         label='SUUNTA'
                         disabled={isEditingDisabled}
                         value={stop.direction}
-                        onChange={onChange}
+                        onChange={onChange('direction')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -150,13 +150,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='PAITUNNUS'
                         disabled={isEditingDisabled}
                         value={stop.hastusId}
-                        onChange={onChange}
+                        onChange={onChange('hastusId')}
                     />
                     <InputContainer
                         label='TERMINAALI'
                         disabled={isEditingDisabled}
                         value={stop.terminal}
-                        onChange={onChange}
+                        onChange={onChange('terminal')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -164,13 +164,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='KUTSUPLUS'
                         disabled={isEditingDisabled}
                         value={stop.kutsuplus}
-                        onChange={onChange}
+                        onChange={onChange('kutsuplus')}
                     />
                     <InputContainer
                         label='KUTSUPLUS VYÖHYKE'
                         disabled={isEditingDisabled}
                         value={stop.kutsuplusSection}
-                        onChange={onChange}
+                        onChange={onChange('kutsuplusSection')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -178,13 +178,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='KUTSUPLUS PRIORITEETTI'
                         disabled={isEditingDisabled}
                         value={stop.kutsuplusPriority}
-                        onChange={onChange}
+                        onChange={onChange('kutsuplusPriority')}
                     />
                     <InputContainer
                         label='KULKUSUUNTA'
                         disabled={isEditingDisabled}
                         value={stop.courseDirection}
-                        onChange={onChange}
+                        onChange={onChange('courseDirection')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -192,13 +192,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='PYSÄKKIALUE'
                         disabled={isEditingDisabled}
                         value={stop.areaId}
-                        onChange={onChange}
+                        onChange={onChange('areaId')}
                     />
                     <InputContainer
                         label='ELYNUMERO'
                         disabled={isEditingDisabled}
                         value={stop.elyNumber}
-                        onChange={onChange}
+                        onChange={onChange('elyNumber')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -206,13 +206,13 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         label='VYÖHYKE'
                         disabled={isEditingDisabled}
                         value={stop.section}
-                        onChange={onChange}
+                        onChange={onChange('section')}
                     />
                     <InputContainer
                         label='TARIFFI'
                         disabled={isEditingDisabled}
                         value={stop.rate}
-                        onChange={onChange}
+                        onChange={onChange('rate')}
                     />
                 </div>
             </div>

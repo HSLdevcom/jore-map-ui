@@ -76,7 +76,9 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         this.props.editNetworkStore!.setNodes(node);
     }
 
-    private onChange = (name: string) => () => {};
+    private onChange = (property: string) => (value: any) => {
+        return;
+    }
 
     private save = () => () => {};
 
@@ -114,7 +116,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                                 />
                                 <NodeTypeDropdown
                                     label='TYYPPI'
-                                    onChange={this.onChange}
+                                    onChange={this.onChange('type')}
                                     disabled={isEditingDisabled}
                                     value={node.type}
                                 />
@@ -129,7 +131,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                         { node.type === NodeType.STOP &&
                             <StopForm
                                 isEditingDisabled={false}
-                                onChange={this.onChange('')}
+                                onChange={this.onChange}
                                 stop={node.stop!}
                             />
                         }
