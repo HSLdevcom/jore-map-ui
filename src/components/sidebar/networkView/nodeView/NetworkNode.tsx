@@ -89,49 +89,51 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
 
         if (this.state.isLoading || !node || !node.id) {
             return(
-                <div className={classnames(s.editNetworkView, s.loaderContainer)}>
+                <div className={classnames(s.networkNodeView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );
         }
         return (
-            <div className={s.editNetworkView}>
-                <ViewHeader
-                    closePromptMessage={undefined}
-                >
-                    Solmu {node.id}
-                </ViewHeader>
-                <div className={s.form}>
-                    <div className={s.formSection}>
-                        <div className={s.flexRow}>
-                            <InputContainer
-                                label='LYHYT ID'
-                                disabled={isEditingDisabled}
-                                value={node.shortId}
-                                onChange={this.onChange('routePathShortName')}
-                            />
-                            <Dropdown
-                                label='TYYPPI'
-                                onChange={this.onChange}
-                                items={['Pysäkki', 'Risteys']}
-                                // TODO: Add other alternatives, and remove hardcoding
-                                selected={node.type === NodeType.STOP ? 'Pysäkki' : 'Risteys'}
+            <div className={s.networkNodeView}>
+                <div className={s.content}>
+                    <ViewHeader
+                        closePromptMessage={undefined}
+                    >
+                        Solmu {node.id}
+                    </ViewHeader>
+                    <div className={s.form}>
+                        <div className={s.formSection}>
+                            <div className={s.flexRow}>
+                                <InputContainer
+                                    label='LYHYT ID'
+                                    disabled={isEditingDisabled}
+                                    value={node.shortId}
+                                    onChange={this.onChange('routePathShortName')}
+                                />
+                                <Dropdown
+                                    label='TYYPPI'
+                                    onChange={this.onChange}
+                                    items={['Pysäkki', 'Risteys']}
+                                    // TODO: Add other alternatives, and remove hardcoding
+                                    selected={node.type === NodeType.STOP ? 'Pysäkki' : 'Risteys'}
+                                />
+                            </div>
+                        </div>
+                        <div className={s.formSection}>
+                            <NodeCoordinatesListView
+                                node={this.props.editNetworkStore!.nodes![0]}
+                                onChangeCoordinates={this.onChangeLocations}
                             />
                         </div>
+                        { node.type === NodeType.STOP &&
+                            <StopForm
+                                isEditingDisabled={false}
+                                onChange={this.onChange('')}
+                                stop={node.stop!}
+                            />
+                        }
                     </div>
-                    <div className={s.formSection}>
-                        <NodeCoordinatesListView
-                            node={this.props.editNetworkStore!.nodes![0]}
-                            onChangeCoordinates={this.onChangeLocations}
-                        />
-                    </div>
-                    { node.type === NodeType.STOP &&
-                        <StopForm
-                            isEditingDisabled={false}
-                            onChange={this.onChange('')}
-                            stop={node.stop!}
-                        />
-                    }
                 </div>
                 <Button
                     type={ButtonType.SAVE}
