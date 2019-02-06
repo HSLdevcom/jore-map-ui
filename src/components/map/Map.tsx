@@ -1,5 +1,6 @@
 import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import * as L from 'leaflet';
+import 'leaflet-editable';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction, toJS } from 'mobx';
 import React from 'react';
@@ -12,14 +13,14 @@ import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import RouteLayer from './layers/RouteLayer';
 import UpsertRoutePathLayer from './layers/edit/UpsertRoutePathLayer';
-import EditNetworkLayer from './layers/edit/EditNetworkLayer';
+import EditLinkLayer from './layers/edit/EditLinkLayer';
+import EditNodeLayer from './layers/edit/EditNodeLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import Toolbar from './toolbar/Toolbar';
 import EventLog from './EventLog';
 import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import * as s from './map.scss';
-import NetworkLayers from './layers/NetworkLayers';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -33,6 +34,7 @@ interface IMapPropReference {
     zoom: number;
     zoomControl: false;
     id: string;
+    editable: boolean;
 }
 
 export type LeafletContext = {
@@ -142,6 +144,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     ref={this.mapReference}
                     zoomControl={false}
                     id={s.mapLeaflet}
+                    editable={true}
                 >
                     <TileLayer
                         // tslint:disable:max-line-length
@@ -162,12 +165,12 @@ class LeafletMap extends React.Component<IMapProps> {
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
-                    <NetworkLayers />
+                    <EditNodeLayer />
+                    <EditLinkLayer />
                     <RouteLayer
                         routes={routes}
                     />
                     <UpsertRoutePathLayer />
-                    <EditNetworkLayer />
                     <PopupLayer />
                     <Control position='topleft'>
                         <Toolbar />

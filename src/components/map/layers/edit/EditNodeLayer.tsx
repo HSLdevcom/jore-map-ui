@@ -1,23 +1,28 @@
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
+import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
+import navigator from '~/routing/navigator';
+import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
 import NodeLocationType from '~/types/NodeLocationType';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeMarker from '../mapIcons/NodeMarker';
 
-interface IEditNetworkLayerProps {
+interface IEditNodeLayerProps {
     editNetworkStore?: EditNetworkStore;
 }
 
 @inject('editNetworkStore')
 @observer
-class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
+class EditNodeLayer extends Component<IEditNodeLayerProps> {
+
     private renderLinks() {
         const links = this.props.editNetworkStore!.links;
-        if (!links) return null;
+        const isLinkView = Boolean(matchPath(navigator.getPathName(), SubSites.link));
 
+        if (isLinkView || !links) return null;
         return links.map((link: ILink, index) => this.renderLink(link, index));
     }
 
@@ -33,12 +38,6 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
             />
         );
     }
-
-    private onMoveMarker = (node: INode) =>
-        (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-            const newNode = { ...node, [coordinatesType]:coordinates };
-            this.props.editNetworkStore!.updateNode(newNode);
-        }
 
     private renderNodes() {
         const nodes = this.props.editNetworkStore!.nodes;
@@ -58,7 +57,16 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
         );
     }
 
+    private onMoveMarker = (node: INode) =>
+    (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
+        const newNode = { ...node, [coordinatesType]:coordinates };
+        this.props.editNetworkStore!.updateNode(newNode);
+    }
+
     render() {
+        const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.networkNode));
+        if (!isNodeViewVisible) return null;
+
         return (
             <>
                 {this.renderLinks()}
@@ -68,4 +76,4 @@ class EditNetworkLayer extends Component<IEditNetworkLayerProps> {
     }
 }
 
-export default EditNetworkLayer;
+export default EditNodeLayer;
