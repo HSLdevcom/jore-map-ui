@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { INode } from '~/models';
-import { EditNetworkStore } from '~/stores/editNetworkStore';
+import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import { Button } from '~/components/controls';
@@ -21,7 +21,7 @@ import * as s from './networkNode.scss';
 
 interface INetworkNodeProps {
     match?: match<any>;
-    editNetworkStore?: EditNetworkStore;
+    nodeStore?: NodeStore;
     mapStore?: MapStore;
 }
 
@@ -30,7 +30,7 @@ interface InetworkNodeState {
     isEditDisabled: boolean;
 }
 
-@inject('editNetworkStore', 'mapStore')
+@inject('nodeStore', 'mapStore')
 @observer
 class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> {
     constructor(props: INetworkNodeProps) {
@@ -49,10 +49,10 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
             this.props.mapStore!.setSelectedNodeId(selectedNodeId);
             await this.queryNode(selectedNodeId);
         }
-        const nodes = this.props.editNetworkStore!.nodes;
-        if (nodes && nodes.length === 1) {
-            await this.fetchLinksForNodes(nodes[0]);
-            this.props.mapStore!.setCoordinates(nodes[0].coordinates);
+        const node = this.props.nodeStore!.node;
+        if (node) {
+            await this.fetchLinksForNodes(node);
+            this.props.mapStore!.setCoordinates(node.coordinates);
         }
         this.setState({ isLoading: false });
     }
@@ -60,20 +60,20 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     private async queryNode(nodeId: string) {
         const node = await NodeService.fetchNode(nodeId);
         if (node) {
-            this.props.editNetworkStore!.setNodes([node]);
+            this.props.nodeStore!.setNode(node);
         }
     }
 
     private async fetchLinksForNodes(node: INode) {
         const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         if (links) {
-            this.props.editNetworkStore!.setLinks(links);
+            this.props.nodeStore!.setLinks(links);
         }
     }
 
     private onChangeLocations = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-        const node = { ...this.props.editNetworkStore!.nodes!, [coordinatesType]:coordinates };
-        this.props.editNetworkStore!.setNodes(node);
+        const node = { ...this.props.nodeStore!.node, [coordinatesType]:coordinates };
+        this.props.nodeStore!.setNode(node);
     }
 
     private onChange = (property: string) => (value: any) => {
@@ -83,11 +83,11 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     private save = () => () => {};
 
     componentWillUnmount() {
-        this.props.editNetworkStore!.clear();
+        this.props.nodeStore!.clear();
     }
 
     render() {
-        const node = this.props.editNetworkStore!.nodes[0];
+        const node = this.props.nodeStore!.node;
         const isEditingDisabled = this.state.isEditDisabled;
 
         if (this.state.isLoading || !node || !node.id) {
@@ -124,7 +124,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                         </div>
                         <div className={s.formSection}>
                             <NodeCoordinatesListView
-                                node={this.props.editNetworkStore!.nodes![0]}
+                                node={this.props.nodeStore!.node}
                                 onChangeCoordinates={this.onChangeLocations}
                             />
                         </div>

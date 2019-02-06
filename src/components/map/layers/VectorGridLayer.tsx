@@ -5,8 +5,7 @@ import { reaction } from 'mobx';
 import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
 import { Moment } from 'moment';
 import TransitType from '~/enums/transitType';
-import NetworkStore, { NodeSize, MapLayer } from '~/stores/networkStore';
-import EditNetworkStore from '~/stores/editNetworkStore';
+import NetworkStore, { NodeSize } from '~/stores/networkStore';
 
 declare module 'leaflet' {
     let vectorGrid: any;
@@ -25,11 +24,9 @@ interface IVectorGridLayerProps extends GridLayerProps {
 class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
     constructor(props: IVectorGridLayerProps) {
         super(props);
-        reaction(() =>
-            [NetworkStore.isMapLayerVisible(MapLayer.node),
-                NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink),
-                EditNetworkStore.nodes],
-                 this.redrawLayers,
+        reaction(
+            () => NetworkStore.visibleMapLayers,
+            this.redrawLayers,
         );
     }
 

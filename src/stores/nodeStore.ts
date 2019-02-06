@@ -10,12 +10,12 @@ export class NodeStore {
     }
 
     @computed
-    get links(): ILink[] {
+    get links() {
         return this._links;
     }
 
     @computed
-    get node(): INode {
+    get node() {
         return this._node!;
     }
 
