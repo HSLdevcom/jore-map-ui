@@ -1,37 +1,37 @@
 @import '../../shared/styles/common.scss';
 
 .entityTypeTogglesView {
-  flex-direction: row;
-  display: flex;
-  margin-bottom: 16px;
+    flex-direction: row;
+    display: flex;
+    margin-bottom: 16px;
 
-  .buttonContainer {
-    flex: 0 0 50%;
+    .buttonContainer {
+        flex: 0 0 50%;
 
-    .button {
-      color: #eef1f3;
-      font-size: 15px;
-      text-align: center;
-      margin: 0 auto;
-      cursor: pointer;
-      border-radius: 4px;
-      background-color: #575757;
-      display: flex;
-      padding: 4px 2px;
-      width: 175px;
-      transition: .5s;
-  
-      > svg {
-        font-size: 30px;
-      }
+        .button {
+            color: #eef1f3;
+            font-size: 15px;
+            text-align: center;
+            margin: 0 auto;
+            cursor: pointer;
+            border-radius: 4px;
+            background-color: #575757;
+            display: flex;
+            padding: 4px 2px;
+            width: 175px;
+            transition: .5s;
 
-      > div {
-        margin: auto;
-      }
+            > svg {
+                font-size: 30px;
+            }
+
+            > div {
+                margin: auto;
+            }
+        }
+
+        .active {
+            background-color: #027ac9;
+        }
     }
-
-    .active {
-      background-color: #027ac9;
-    }
-  }
 }

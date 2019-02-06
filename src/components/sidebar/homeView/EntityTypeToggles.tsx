@@ -22,36 +22,36 @@ class EntityTypeToggles extends React.Component<IEntityTypeToggleProps> {
 
     render() {
         return (
-          <div className={s.entityTypeTogglesView}>
-            <div className={s.buttonContainer}>
-              <div
-                  className={classnames(
-                      s.button,
-                      this.props.searchStore!.isSearchingForLines ? s.active : null,
-                  )}
-                  onClick={this.toggleSearchingLines}
-              >
-              <IoMdAnalytics />
-                <div>
-                Linjat ja Reitit
+            <div className={s.entityTypeTogglesView}>
+                <div className={s.buttonContainer}>
+                    <div
+                        className={classnames(
+                            s.button,
+                            this.props.searchStore!.isSearchingForLines ? s.active : null,
+                        )}
+                        onClick={this.toggleSearchingLines}
+                    >
+                        <IoMdAnalytics />
+                        <div>
+                            Linjat ja Reitit
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div className={s.buttonContainer}>
-              <div
-                className={classnames(
-                    s.button,
-                    this.props.searchStore!.isSearchingForNodes ? s.active : null,
-                )}
-                onClick={this.toggleSearchingNodes}
-              >
-                <IoMdLocate />
-                <div>
-                  Solmut
+                <div className={s.buttonContainer}>
+                    <div
+                        className={classnames(
+                            s.button,
+                            this.props.searchStore!.isSearchingForNodes ? s.active : null,
+                        )}
+                        onClick={this.toggleSearchingNodes}
+                    >
+                        <IoMdLocate />
+                        <div>
+                            Solmut
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         );
     }
 }
