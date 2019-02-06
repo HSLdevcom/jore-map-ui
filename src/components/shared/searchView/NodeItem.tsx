@@ -27,7 +27,7 @@ class NodeItem extends React.Component<INodeItemProps> {
                 onClick={this.openNode}
             >
                 <IoMdLocate />
-                <div>
+                <div className={s.nodeItemTextContainer}>
                     <span>
                         {this.props.node.id}
                     </span>
