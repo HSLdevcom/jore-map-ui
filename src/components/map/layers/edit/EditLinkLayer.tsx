@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
+import { IReactionDisposer, reaction } from 'mobx';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
@@ -18,20 +19,41 @@ interface IEditLinkLayerProps {
 @inject('editNetworkStore')
 @observer
 class EditLinkLayer extends Component<IEditLinkLayerProps> {
-    editableLinks: L.Polyline[] = [];
+    private reactionDisposers: IReactionDisposer[] = [];
+    private editableLinks: L.Polyline[] = [];
 
-    private drawEditableLinks() {
+    componentDidMount() {
+        this.reactionDisposers.push(reaction(
+            () => this.props.editNetworkStore!.links,
+            () => {
+                const links = this.props.editNetworkStore!.links;
+                if (links.length === 0) {
+                    this.removeOldLinks();
+                }
+            },
+        ));
+    }
+
+    private removeOldLinks = () => {
+        const map = this.props.leaflet.map;
+        // Remove (possible) previously drawn links from map
+        this.editableLinks.forEach((editableLink) => {
+            map!.removeLayer(editableLink);
+        });
+        this.editableLinks = [];
+    }
+
+    componentWillUnmount() {
+        this.reactionDisposers.forEach(r => r());
+    }
+
+    private drawEditableLinks = () => {
         const links = this.props.editNetworkStore!.links;
         const map = this.props.leaflet.map;
         const isLinkView = Boolean(matchPath(navigator.getPathName(), SubSites.link));
         if (!isLinkView || !links || !map) return;
 
-        // Remove (possible) previously drawn links from map
-        this.editableLinks.forEach((editableLink) => {
-            map.removeLayer(editableLink);
-        });
-        this.editableLinks = [];
-
+        this.removeOldLinks();
         links.map((link: ILink, index) => this.drawEditableLinkToMap(link, index));
 
         map.off('editable:vertex:dragend');
@@ -43,7 +65,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         });
     }
 
-    private drawEditableLinkToMap(link: ILink, key: number) {
+    private drawEditableLinkToMap = (link: ILink, key: number) => {
         const map = this.props.leaflet.map;
         if (map) {
             const editableLink = L.polyline([link.geometry]).addTo(map);
@@ -65,12 +87,12 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         }
     }
 
-    private renderNodes() {
+    private renderNodes = () => {
         const nodes = this.props.editNetworkStore!.nodes;
         return nodes.map(n => this.renderNode(n));
     }
 
-    private renderNode(node: INode) {
+    private renderNode = (node: INode) => {
         if (!node) return null;
 
         return (
