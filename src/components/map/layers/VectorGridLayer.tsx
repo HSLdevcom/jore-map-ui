@@ -6,8 +6,6 @@ import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
 import { Moment } from 'moment';
 import TransitType from '~/enums/transitType';
 import NetworkStore, { NodeSize, MapLayer } from '~/stores/networkStore';
-import NodeStore from '~/stores/nodeStore';
-import LinkStore from '~/stores/linkStore';
 
 declare module 'leaflet' {
     let vectorGrid: any;
@@ -33,8 +31,6 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
                     NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink),
                     NetworkStore.isMapLayerVisible(MapLayer.link),
                     NetworkStore.isMapLayerVisible(MapLayer.linkPoint),
-                    NodeStore.node!,
-                    LinkStore.link!,
                 ],
             this.redrawLayers,
         );

@@ -4,9 +4,11 @@ import { ILink, INode } from '~/models';
 export class NodeStore {
     @observable private _links: ILink[];
     @observable private _node?: INode;
+    @observable private _hasUnsavedModifications: boolean;
 
     constructor() {
         this._links = [];
+        this._hasUnsavedModifications = false;
     }
 
     @computed
@@ -17,6 +19,11 @@ export class NodeStore {
     @computed
     get node() {
         return this._node!;
+    }
+
+    @computed
+    get hasUnsavedModifications() {
+        return this._hasUnsavedModifications!;
     }
 
     @action
@@ -30,9 +37,32 @@ export class NodeStore {
     }
 
     @action
+    public updateNode = (property: string, value: string|number|Date) => {
+        this._node = {
+            ...this._node!,
+            [property]: value,
+        };
+        this._hasUnsavedModifications = true;
+    }
+
+    @action
+    public updateStop = (property: string, value: string|number|Date) => {
+        this._node!.stop = {
+            ...this._node!.stop!,
+            [property]: value,
+        };
+        this._hasUnsavedModifications = true;
+    }
+
+    @action
     public clear = () => {
         this._links = [];
         this._node = undefined;
+    }
+
+    @action
+    public resetHaveLocalModifications = () => {
+        this._hasUnsavedModifications = false;
     }
 }
 

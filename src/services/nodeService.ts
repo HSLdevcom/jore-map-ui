@@ -3,6 +3,9 @@ import apolloClient from '~/util/ApolloClient';
 import notificationStore from '~/stores/notificationStore';
 import NotificationType from '~/enums/notificationType';
 import NodeFactory from '~/factories/nodeFactory';
+import { INode } from '~/models';
+import ApiClient from '~/util/ApiClient';
+import entityName from '~/enums/entityName';
 import GraphqlQueries from './graphqlQueries';
 
 class NodeService {
@@ -20,6 +23,12 @@ class NodeService {
             });
             return null;
         }
+    }
+
+    public static updateNode = async (node: INode) => {
+        const apiClient = new ApiClient();
+        await apiClient.updateObject(entityName.NODE, node);
+        await apolloClient.clearStore();
     }
 }
 

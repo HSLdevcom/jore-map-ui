@@ -7,9 +7,11 @@ import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import { Button } from '~/components/controls';
+import NotificationType from '~/enums/notificationType';
 import NodeType from '~/enums/nodeType';
 import NodeTypeDropdown from '~/components/controls/NodeTypeDropdown';
 import NodeService from '~/services/nodeService';
+import { NotificationStore } from '~/stores/notificationStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -23,6 +25,7 @@ interface INetworkNodeProps {
     match?: match<any>;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
+    notificationStore?: NotificationStore;
 }
 
 interface InetworkNodeState {
@@ -30,7 +33,7 @@ interface InetworkNodeState {
     isEditDisabled: boolean;
 }
 
-@inject('nodeStore', 'mapStore')
+@inject('nodeStore', 'mapStore', 'notificationStore')
 @observer
 class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> {
     constructor(props: INetworkNodeProps) {
@@ -76,11 +79,33 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         this.props.nodeStore!.setNode(node);
     }
 
-    private onChange = (property: string) => (value: any) => {
-        return;
+    private save = async () => {
+        this.setState({ isLoading: true });
+        try {
+            await NodeService.updateNode(this.props.nodeStore!.node);
+
+            this.props.nodeStore!.resetHaveLocalModifications();
+            this.props.notificationStore!.addNotification({
+                message: 'Tallennus onnistui',
+                type: NotificationType.SUCCESS,
+            });
+        } catch (err) {
+            const errMessage = err.message ? `, (${err.message})` : '';
+            this.props.notificationStore!.addNotification({
+                message: `Tallennus epäonnistui${errMessage}`,
+                type: NotificationType.ERROR,
+            });
+        }
+        this.setState({ isLoading: false });
     }
 
-    private save = () => () => {};
+    private onChange = (property: string) => (value: any) => {
+        this.props.nodeStore!.updateNode(property, value);
+    }
+
+    private onStopChange = (property: string) => (value: any) => {
+        this.props.nodeStore!.updateStop(property, value);
+    }
 
     componentWillUnmount() {
         this.props.nodeStore!.clear();
@@ -89,6 +114,8 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     render() {
         const node = this.props.nodeStore!.node;
         const isEditingDisabled = this.state.isEditDisabled;
+        // tslint:disable-next-line:max-line-length
+        const message = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
         if (this.state.isLoading || !node || !node.id) {
             return(
@@ -101,7 +128,8 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
             <div className={s.networkNodeView}>
                 <div className={s.content}>
                     <ViewHeader
-                        closePromptMessage={undefined}
+                        closePromptMessage={
+                            this.props.nodeStore!.hasUnsavedModifications ? message : undefined}
                     >
                         Solmu {node.id}
                     </ViewHeader>
@@ -131,7 +159,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                         { node.type === NodeType.STOP &&
                             <StopForm
                                 isEditingDisabled={false}
-                                onChange={this.onChange}
+                                onChange={this.onStopChange}
                                 stop={node.stop!}
                             />
                         }
@@ -139,7 +167,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                 </div>
                 <Button
                     type={ButtonType.SAVE}
-                    disabled={true}
+                    disabled={!this.props.nodeStore!.hasUnsavedModifications}
                     onClick={this.save}
                 >
                     Tallenna muutokset

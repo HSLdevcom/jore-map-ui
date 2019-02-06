@@ -192,6 +192,7 @@ export class RoutePathStore {
     public resetHaveLocalModifications = () => {
         this._hasUnsavedModifications = false;
     }
+
     public getCalculatedLength = () => {
         if (this.routePath && this.routePath.routePathLinks) {
             return Math.floor(lengthCalculator.fromRoutePathLinks(this.routePath!.routePathLinks!));
