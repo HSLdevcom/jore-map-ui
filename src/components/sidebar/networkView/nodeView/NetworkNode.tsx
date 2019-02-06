@@ -70,8 +70,8 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     }
 
     private onChangeLocations = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-        const node = { ...this.props.editNetworkStore!.nodes!, [coordinatesType]:coordinates };
-        this.props.editNetworkStore!.setNodes(node);
+        const node = { ...this.props.editNetworkStore!.nodes![0], [coordinatesType]:coordinates };
+        this.props.editNetworkStore!.updateNode(node);
     }
 
     private onChange = (name: string) => () => {};
