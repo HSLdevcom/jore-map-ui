@@ -33,6 +33,7 @@ class HomeView extends React.Component<IHomeViewProps> {
                 <TransitToggleButtonBar
                     toggleSelectedTransitType={this.toggleTransitType}
                     selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
+                    disabled={!this.props.searchStore!.isSearchingForLines}
                 />
                 <SearchResults />
             </div>

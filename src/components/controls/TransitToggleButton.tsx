@@ -17,10 +17,6 @@ interface ITransitToggleButtonState {
 
 class TransitToggleButton extends React.Component
   <ITransitToggleButtonProps, ITransitToggleButtonState> {
-    constructor(props: ITransitToggleButtonProps) {
-        super(props);
-    }
-
     public toggleActivity = () => {
         this.props.toggleActivity(this.props.type);
     }
@@ -32,7 +28,7 @@ class TransitToggleButton extends React.Component
         return s.toggled;
     }
 
-    public render(): any {
+    public render() {
         return (
             <button
                 className={classNames(
