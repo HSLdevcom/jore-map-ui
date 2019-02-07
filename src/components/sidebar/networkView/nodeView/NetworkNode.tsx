@@ -81,7 +81,8 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     }
 
     render() {
-        const node = this.props.editNetworkStore!.nodes[0];
+        const node = this.props.editNetworkStore!.nodes.length > 0
+            ? this.props.editNetworkStore!.nodes[0] : null;
         const isEditingDisabled = this.state.isEditDisabled;
 
         if (this.state.isLoading || !node || !node.id) {
