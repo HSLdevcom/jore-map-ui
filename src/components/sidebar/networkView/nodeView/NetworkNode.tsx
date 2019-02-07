@@ -6,10 +6,10 @@ import { INode } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
-import { Button } from '~/components/controls';
+import { Button, Dropdown } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
-import NodeTypeDropdown from '~/components/controls/NodeTypeDropdown';
 import NodeService from '~/services/nodeService';
+import nodeTypesDictionary from '~/dictionaries/nodeTypes';
 import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -114,11 +114,12 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                                     value={node.shortId}
                                     onChange={this.onChange('routePathShortName')}
                                 />
-                                <NodeTypeDropdown
+                                <Dropdown
                                     label='TYYPPI'
                                     onChange={this.onChange('type')}
                                     disabled={isEditingDisabled}
-                                    value={node.type}
+                                    selected={node.type}
+                                    itemDictionary={nodeTypesDictionary}
                                 />
                             </div>
                         </div>

@@ -10,16 +10,32 @@ export interface IDropdownItem {
     value: string;
 }
 
-interface IDropdownProps {
+interface IDropdownBaseProps {
     label?: string;
     selected: string;
-    items: string[] | IDropdownItem[];
     disabled?: boolean;
     onChange(selectedItem: string): void;
 }
 
+interface IDropdownProps extends IDropdownBaseProps {
+    items: string[] | IDropdownItem[];
+}
+
+interface IDropdownDictatedProps extends IDropdownBaseProps {
+    itemDictionary: any;
+}
+
+const  usesDictionary = (
+    item: IDropdownProps | IDropdownDictatedProps): item is IDropdownDictatedProps => {
+    return (
+        (item as IDropdownDictatedProps).itemDictionary !== undefined
+    ) && (
+        (item as IDropdownProps).items === undefined
+    );
+};
+
 class Dropdown extends React.Component
-<IDropdownProps, IDropdownState> {
+<IDropdownProps | IDropdownDictatedProps, IDropdownState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -35,12 +51,21 @@ class Dropdown extends React.Component
     }
 
     public render() {
-        const items = this.props.items;
         let selectionDictionary: IDropdownItem[];
-        if (items.length > 0 && typeof items[0] === 'string') {
-            selectionDictionary = (items as string[]).map((i: string) => ({ key: i, value: i }));
+
+        if (usesDictionary(this.props)) {
+            const dictionary = this.props.itemDictionary;
+            selectionDictionary = Object.keys(dictionary).map(
+                key => ({ key, value: dictionary[key] }),
+            );
         } else {
-            selectionDictionary = items as IDropdownItem[];
+            const items = this.props.items;
+            if (items.length > 0 && typeof items[0] === 'string') {
+                selectionDictionary =
+                    (items as string[]).map((i: string) => ({ key: i, value: i }));
+            } else {
+                selectionDictionary = items as IDropdownItem[];
+            }
         }
 
         return (

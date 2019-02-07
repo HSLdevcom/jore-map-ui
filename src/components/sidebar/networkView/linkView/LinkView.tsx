@@ -10,8 +10,8 @@ import LinkService from '~/services/linkService';
 import NodeType from '~/enums/nodeType';
 import SubSites from '~/routing/subSites';
 import routeBuilder from '~/routing/routeBuilder';
+import municipalityDictionary from '~/dictionaries/municipalities';
 import navigator from '~/routing/navigator';
-import MunicipalityDropdown from '~/components/controls/MunicipalityDropdown';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
@@ -227,9 +227,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         label='KATUOSAN OS. NRO'
                         value={this.state.link.streetNumber}
                     />
-                    <MunicipalityDropdown
+                    <Dropdown
                         onChange={this.onChange}
-                        value={this.state.link.municipalityCode}
+                        itemDictionary={municipalityDictionary}
+                        selected={this.state.link.municipalityCode}
                         label='KUNTA'
                     />
                 </div>
