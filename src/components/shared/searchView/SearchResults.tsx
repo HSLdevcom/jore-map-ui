@@ -1,19 +1,21 @@
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import React from 'react';
-import { LineStore } from '~/stores/lineStore';
-import { ILine, ILineRoute } from '~/models';
-import TransitType from '~/enums/transitType';
+import { SearchResultStore } from '~/stores/searchResultStore';
+import { ILine } from '~/models';
 import LineService from '~/services/lineService';
+import NodeService from '~/services/nodeService';
 import { SearchStore } from '~/stores/searchStore';
+import INodeBase from '~/models/baseModels/INodeBase';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
 import LineItem from './LineItem';
 import Loader from '../loader/Loader';
+import NodeItem from './NodeItem';
 import * as s from './searchResults.scss';
 
 interface ISearchResultsProps{
-    lineStore?: LineStore;
+    searchResultStore?: SearchResultStore;
     searchStore?: SearchStore;
 }
 
@@ -22,11 +24,11 @@ interface ISearchResultsState {
     showLimit: number;
 }
 
-const SHOW_LIMIT_DEFAULT = 20;
+const SHOW_LIMIT_DEFAULT = 50;
 const INCREASE_SHOW_LIMIT = 10;
 const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half way down
 
-@inject('lineStore', 'searchStore')
+@inject('searchResultStore', 'searchStore')
 @observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
     private paginatedDiv: React.RefObject<HTMLDivElement>;
@@ -44,11 +46,15 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
 
     async componentDidMount() {
-        this.showMore();
-        await this.queryAllLines();
-        this.reactionDisposer = reaction(() =>
-        [this.props.searchStore!.searchInput, this.props.searchStore!.selectedTransitTypes],
-                                         this.resetShow,
+        this.showMoreResults();
+        this.fetchAll();
+        this.reactionDisposer = reaction(
+            () =>
+                [
+                    this.props.searchStore!.searchInput,
+                    this.props.searchStore!.selectedTransitTypes,
+                ],
+            this.scrollToBeginning,
             );
     }
 
@@ -56,36 +62,31 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.reactionDisposer();
     }
 
-    private queryAllLines = async () => {
+    private fetchAll = async () => {
         this.setState({ isLoading: true });
+        return Promise.all([
+            this.fetchAllLines(),
+            this.fetchAllNodes(),
+        ]).then(() => this.setState({ isLoading: false }));
+    }
+
+    private fetchAllLines = async () => {
         const lines = await LineService.fetchAllLines();
         if (lines !== null) {
-            this.props.lineStore!.setAllLines(lines);
+            this.props.searchResultStore!.setAllLines(lines);
         }
-        this.setState({ isLoading: false });
     }
 
-    private filterLines = (routes: ILineRoute[], lineId: string, transitType: TransitType) => {
-        const searchTerm = this.props.searchStore!.searchInput.toLowerCase();
-
-        // Filter by transitType
-        if (!this.props.searchStore!.selectedTransitTypes.includes(transitType)) {
-            return false;
+    private fetchAllNodes = async () => {
+        const nodes = await NodeService.fetchAllNodes();
+        if (nodes !== null) {
+            this.props.searchResultStore!.setAllNodes(nodes);
         }
-
-        // Filter by line.id
-        if (lineId.indexOf(searchTerm) > -1) return true;
-
-        // Filter by route.name
-        return routes
-            .map(route => route.name.toLowerCase())
-            .some(name => name.indexOf(searchTerm) > -1);
     }
 
-    private filteredLines = () => {
-        return this.props.lineStore!.allLines
-            .filter(line =>
-                this.filterLines(line.routes, line.id, line.transitType))
+    private getFilteredItems = () => {
+        return this.props.searchResultStore!
+            .getFilteredItems()
             .splice(0, this.state.showLimit);
     }
 
@@ -127,7 +128,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     private closeSearchResults = () => {
         this.props.searchStore!.setSearchInput('');
     }
-    private showMore = () => {
+    private showMoreResults = () => {
         if (this.paginatedDiv.current &&
             this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight
             >= this.paginatedDiv.current.scrollHeight / SCROLL_PAGINATION_TRIGGER_POINT) {
@@ -135,11 +136,21 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
     }
 
-    private resetShow = () => {
+    private scrollToBeginning = () => {
         this.setState({
             showLimit: SHOW_LIMIT_DEFAULT,
         });
         this.paginatedDiv.current!.scrollTo(0, 0);
+    }
+
+    private isLine(item: INodeBase | ILine): item is ILine {
+        return (
+            (item as ILine).routes !== undefined ||
+            (item as ILine).transitType !== undefined
+        ) && (
+            (item as INodeBase).shortId === undefined ||
+            (item as INodeBase).type === undefined
+        );
     }
 
     render() {
@@ -150,26 +161,34 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 </div>
             );
         }
-        const filteredLines = this.filteredLines();
+        const filteredItems = this.getFilteredItems();
         return (
             <div className={s.searchResultsView}>
                 <div
                     className={s.searchResultsWrapper}
-                    onScroll={this.showMore}
+                    onScroll={this.showMoreResults}
                     ref={this.paginatedDiv}
                 >
                 {
-                    filteredLines.length === 0 ?
+                    filteredItems.length === 0 ?
                         <div className={s.noResults}>
                             Ei hakutuloksia.
                         </div>
                         :
-                        filteredLines
-                            .map((line: ILine) => {
+                        filteredItems
+                            .map((item: ILine | INodeBase) => {
+                                if (this.isLine(item)) {
+                                    return (
+                                        <LineItem
+                                            key={item.id}
+                                            line={item}
+                                        />
+                                    );
+                                }
                                 return (
-                                    <LineItem
-                                        key={line.id}
-                                        line={line}
+                                    <NodeItem
+                                        key={item.id}
+                                        node={item}
                                     />
                                 );
                             })

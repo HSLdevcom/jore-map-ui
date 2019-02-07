@@ -7,17 +7,18 @@ import * as s from './transitToggleButtonBar.scss';
 interface ITtransitToggleButtonBarProps {
     selectedTransitTypes: TransitType[];
     toggleSelectedTransitType?: (type: TransitType) => void;
+    disabled?: boolean;
 }
 
 @observer
 class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarProps> {
     toggleType = (type: TransitType) => {
-        if (this.props.toggleSelectedTransitType) {
+        if (this.props.toggleSelectedTransitType && !this.props.disabled) {
             this.props.toggleSelectedTransitType(type);
         }
     }
 
-    public render(): any {
+    public render() {
         return (
             <div className={s.transitToggleButtonBarView}>
                 <TransitToggleButton
@@ -45,6 +46,9 @@ class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarPro
                     toggled={this.props.selectedTransitTypes.includes(TransitType.FERRY)}
                     type={TransitType.FERRY}
                 />
+                { this.props.disabled &&
+                    <div className={s.disabledOverlay} />
+                }
             </div>
         );
     }
