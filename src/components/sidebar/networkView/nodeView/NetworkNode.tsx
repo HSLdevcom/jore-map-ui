@@ -51,7 +51,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         }
         const node = this.props.nodeStore!.node;
         if (node) {
-            await this.fetchLinksForNodes(node);
+            await this.fetchLinksForNode(node);
             this.props.mapStore!.setCoordinates(node.coordinates);
         }
         this.setState({ isLoading: false });
@@ -64,7 +64,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         }
     }
 
-    private async fetchLinksForNodes(node: INode) {
+    private async fetchLinksForNode(node: INode) {
         const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         if (links) {
             this.props.nodeStore!.setLinks(links);
