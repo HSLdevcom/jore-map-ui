@@ -1,12 +1,12 @@
 @import '../../shared/styles/common.scss';
 
 .entityTypeTogglesView {
-    flex-direction: row;
-    display: flex;
+    display: block;
     border-bottom: 1px solid black;
 
     .buttonContainer {
-        flex: 0 0 50%;
+        display: inline-block;
+        width: 50%;
 
         .button {
             color: #eef1f3;
