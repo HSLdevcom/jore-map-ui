@@ -46,7 +46,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
 
     async componentDidMount() {
-        this.showMore();
+        this.showMoreResults();
         this.fetchAll();
         this.reactionDisposer = reaction(
             () =>
@@ -54,7 +54,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                     this.props.searchStore!.searchInput,
                     this.props.searchStore!.selectedTransitTypes,
                 ],
-            this.resetShow,
+            this.resetShowLimitAndScrollToBeginning,
             );
     }
 
@@ -65,19 +65,19 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     private fetchAll = async () => {
         this.setState({ isLoading: true });
         return Promise.all([
-            this.queryAllLines(),
-            this.queryAllNodes(),
+            this.fetchAllLines(),
+            this.fetchAllNodes(),
         ]).then(() => this.setState({ isLoading: false }));
     }
 
-    private queryAllLines = async () => {
+    private fetchAllLines = async () => {
         const lines = await LineService.fetchAllLines();
         if (lines !== null) {
             this.props.searchResultStore!.setAllLines(lines);
         }
     }
 
-    private queryAllNodes = async () => {
+    private fetchAllNodes = async () => {
         const nodes = await NodeService.fetchAllNodes();
         if (nodes !== null) {
             this.props.searchResultStore!.setAllNodes(nodes);
@@ -131,7 +131,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     private closeSearchResults = () => {
         this.props.searchStore!.setSearchInput('');
     }
-    private showMore = () => {
+    private showMoreResults = () => {
         if (this.paginatedDiv.current &&
             this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight
             >= this.paginatedDiv.current.scrollHeight / SCROLL_PAGINATION_TRIGGER_POINT) {
@@ -139,7 +139,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
     }
 
-    private resetShow = () => {
+    private resetShowLimitAndScrollToBeginning = () => {
         this.setState({
             showLimit: SHOW_LIMIT_DEFAULT,
         });
@@ -169,7 +169,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             <div className={s.searchResultsView}>
                 <div
                     className={s.searchResultsWrapper}
-                    onScroll={this.showMore}
+                    onScroll={this.showMoreResults}
                     ref={this.paginatedDiv}
                 >
                 {
