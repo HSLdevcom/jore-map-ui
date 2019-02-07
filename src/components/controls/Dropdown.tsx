@@ -21,21 +21,21 @@ interface IDropdownProps extends IDropdownBaseProps {
     items: string[] | IDropdownItem[];
 }
 
-interface IDropdownDictatedProps extends IDropdownBaseProps {
-    itemDictionary: any;
+interface IDropdownWithCodeListProps extends IDropdownBaseProps {
+    codeList: any;
 }
 
 const  usesDictionary = (
-    item: IDropdownProps | IDropdownDictatedProps): item is IDropdownDictatedProps => {
+    item: IDropdownProps | IDropdownWithCodeListProps): item is IDropdownWithCodeListProps => {
     return (
-        (item as IDropdownDictatedProps).itemDictionary !== undefined
+        (item as IDropdownWithCodeListProps).codeList !== undefined
     ) && (
         (item as IDropdownProps).items === undefined
     );
 };
 
 class Dropdown extends React.Component
-<IDropdownProps | IDropdownDictatedProps, IDropdownState> {
+<IDropdownProps | IDropdownWithCodeListProps, IDropdownState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -54,7 +54,7 @@ class Dropdown extends React.Component
         let selectionDictionary: IDropdownItem[];
 
         if (usesDictionary(this.props)) {
-            const dictionary = this.props.itemDictionary;
+            const dictionary = this.props.codeList;
             selectionDictionary = Object.keys(dictionary).map(
                 key => ({ key, value: dictionary[key] }),
             );

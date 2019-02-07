@@ -10,7 +10,7 @@ import LinkService from '~/services/linkService';
 import NodeType from '~/enums/nodeType';
 import SubSites from '~/routing/subSites';
 import routeBuilder from '~/routing/routeBuilder';
-import municipalityDictionary from '~/dictionaries/municipalities';
+import municipalityCodeList from '~/codeLists/municipalitiesCodeList';
 import navigator from '~/routing/navigator';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -229,7 +229,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     />
                     <Dropdown
                         onChange={this.onChange}
-                        itemDictionary={municipalityDictionary}
+                        codeList={municipalityCodeList}
                         selected={this.state.link.municipalityCode}
                         label='KUNTA'
                     />

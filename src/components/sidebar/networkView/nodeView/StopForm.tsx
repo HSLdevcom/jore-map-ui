@@ -1,7 +1,7 @@
 import React from 'react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
-import municipalityDictionary from '~/dictionaries/municipalities';
+import municipalityCodeList from '~/codeLists/municipalitiesCodeList';
 import { Dropdown } from '~/components/controls';
 import ViewHeader from '../../ViewHeader';
 import * as s from './stopForm.scss';
@@ -94,7 +94,7 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                     />
                     <Dropdown
                         onChange={onChange('municipality')}
-                        itemDictionary={municipalityDictionary}
+                        codeList={municipalityCodeList}
                         selected={stop.municipality}
                         label='KUNTA'
                     />

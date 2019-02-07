@@ -1,8 +1,8 @@
-const nodeTypesDictionary = {
+const nodeTypesCodeList = {
     ['P']: 'Pysäkki',
     ['X']: 'Risteys',
     ['-']: 'Kuntaraja',
     ['E']: 'Pois käytöstä',
 };
 
-export default nodeTypesDictionary;
+export default nodeTypesCodeList;

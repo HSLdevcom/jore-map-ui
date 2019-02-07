@@ -9,7 +9,7 @@ import LinkService from '~/services/linkService';
 import { Button, Dropdown } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
-import nodeTypesDictionary from '~/dictionaries/nodeTypes';
+import nodeTypesCodeList from '~/codeLists/nodeTypesCodeList';
 import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -119,7 +119,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                                     onChange={this.onChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
-                                    itemDictionary={nodeTypesDictionary}
+                                    codeList={nodeTypesCodeList}
                                 />
                             </div>
                         </div>
