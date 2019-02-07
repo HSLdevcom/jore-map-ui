@@ -21,7 +21,7 @@ class RoutePathTabs extends React.Component<IRoutePathTabsProps> {
                 <div
                     className={
                         classnames(
-                            s.routePathTabButtonsView,
+                            s.routePathTabButton,
                             this.props.routePathStore!.activeTab === RoutePathViewTab.Info ?
                                 s.selected : undefined,
                         )
@@ -35,7 +35,7 @@ class RoutePathTabs extends React.Component<IRoutePathTabsProps> {
                 <div
                     className={
                         classnames(
-                            s.routePathTabButtonsView,
+                            s.routePathTabButton,
                             this.props.routePathStore!.activeTab === RoutePathViewTab.List ?
                                 s.selected : undefined,
                         )

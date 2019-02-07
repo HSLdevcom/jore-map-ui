@@ -5,9 +5,11 @@ import { FiEdit, FiCopy } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
-import RoutePathService from '~/services/routePathService';
+// TODO: Move this code to parent
+// import RoutePathService from '~/services/routePathService';
 import { NotificationStore } from '~/stores/notificationStore';
-import NotificationType from '~/enums/notificationType';
+// TODO: Move this code to parent
+// import NotificationType from '~/enums/notificationType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
@@ -43,15 +45,18 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         };
     }
 
+    /* TODO: Move this code to parent
     private routePathIsNew = () => {
         return this.props.isAddingNew && !this.state.hasSavedNewRoutePath;
     }
+    */
 
     private toggleEditing = () => {
         const isEditingDisabled = !this.state.isEditingDisabled;
         this.setState({ isEditingDisabled });
     }
 
+    /* TODO: Move this code to parent
     private save = async () => {
         this.setState({ isLoading: true });
         try {
@@ -74,6 +79,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         }
         this.setState({ isLoading: false });
     }
+    */
 
     private markInvalidFields = (field: string, isValid: boolean) => {
         this.setState({
@@ -84,10 +90,12 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         });
     }
 
+    /* TODO: Move this code to parent
     private isFormValid = () => {
         return !Object.values(this.state.invalidFieldsMap)
             .some(fieldIsValid => !fieldIsValid);
     }
+    */
 
     private onChange = (property: string, value: any, validationResult?: IValidationResult) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
@@ -141,6 +149,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                     />
                 </div>
             </div>
+            {/*
+            TODO: Move this code to parent
             <Button
                 onClick={this.save}
                 type={ButtonType.SAVE}
@@ -150,7 +160,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                     || !this.isFormValid()}
             >
                 {this.routePathIsNew() ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-            </Button>
+            </Button>*/}
         </div>
         );
     }
