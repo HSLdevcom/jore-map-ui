@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { NotificationStore } from '~/stores/notificationStore';
 import { LoginStore } from '~/stores/loginStore';
 import ButtonType from '~/enums/buttonType';
-import NotificationType from '~/enums/notificationType';
 import Button from '../controls/Button';
 import * as s from './login.scss';
 
@@ -27,10 +26,7 @@ class Login extends React.Component<ILoginProps> {
 
     public closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
-        this.props.notificationStore!.addNotification({
-            message: 'Kirjautuminen ei käytössä.',
-            type: NotificationType.WARNING,
-        });
+        throw new Error('Login Modal is not in use');
     }
 
     public render(): any {

@@ -15,6 +15,7 @@ import RouteStore from './stores/routeStore';
 import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
 import PopupStore from './stores/popupStore';
+import ErrorStore from './stores/errorStore';
 import ToolbarStore from './stores/toolbarStore';
 import NetworkStore from './stores/networkStore';
 import GeometryEventStore from './stores/geometryEventStore';
@@ -29,6 +30,7 @@ const browserHistory = createBrowserHistory();
 
 // Observable stores
 const stores = {
+    errorStore: ErrorStore,
     mapStore: MapStore,
     notificationStore: NotificationStore,
     searchResultStore: SearchResultStore,
@@ -44,6 +46,11 @@ const stores = {
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());
+
+window.onerror = (msg, url, lineNo, columnNo, error) => {
+    ErrorStore.error = `${error}`;
+    return true;
+};
 
 ReactDOM.render(
     <Provider {...stores}>

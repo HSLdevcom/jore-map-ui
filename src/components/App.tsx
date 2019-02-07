@@ -3,6 +3,7 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import ButtonType from '~/enums/buttonType';
 import NotificationWindow from './NotificationWindow';
@@ -20,11 +21,12 @@ interface IAppState {
 
 interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
+    errorStore?: ErrorStore;
     mapStore?: MapStore;
     notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'loginStore', 'notificationStore')
+@inject('mapStore', 'loginStore', 'notificationStore', 'errorStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
@@ -55,7 +57,13 @@ class App extends React.Component<IAppProps, IAppState> {
                         location={this.props.location}
                     />
                 </div>
-                <Map/>
+                <Map>
+                    { !!this.props.errorStore!.error &&
+                        <div className={s.errorBar}>
+                            {this.props.errorStore!.error}
+                        </div>
+                    }
+                </Map>
                 <Button
                   onClick={this.openLoginForm}
                   className={s.loginButton}
