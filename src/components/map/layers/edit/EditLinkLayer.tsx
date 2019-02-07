@@ -25,7 +25,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     componentDidMount() {
         this.reactionDisposer = reaction(
             () => this.props.linkStore!.link,
-            () => this.props.linkStore!.link === undefined && this.removeOldLinks(),
+            () => this.props.linkStore!.link === null && this.removeOldLinks(),
         );
     }
 

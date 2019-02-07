@@ -3,10 +3,11 @@ import { ILink, INode } from '~/models';
 
 export class NodeStore {
     @observable private _links: ILink[];
-    @observable private _node?: INode;
+    @observable private _node: INode | null;
 
     constructor() {
         this._links = [];
+        this._node = null;
     }
 
     @computed
@@ -32,7 +33,7 @@ export class NodeStore {
     @action
     public clear = () => {
         this._links = [];
-        this._node = undefined;
+        this._node = null;
     }
 }
 
