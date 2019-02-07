@@ -2,6 +2,7 @@ import { action, computed, observable } from 'mobx';
 import { ILine } from '~/models';
 import INodeBase from '~/models/baseModels/INodeBase';
 import TransitType from '~/enums/transitType';
+import SearchStore from './searchStore';
 
 export class SearchResultStore {
     @observable private _allLines: ILine[];
@@ -59,33 +60,32 @@ export class SearchResultStore {
         });
     }
 
-    public getFilteredItems =
-        (
-            searchInput: string,
-            transitTypes: TransitType[],
-            includeLines: boolean,
-            includeNodes: boolean,
-            ): (INodeBase | ILine)[] => {
-            let list: (INodeBase | ILine)[] = [];
-            if (includeLines) {
-                const lines = this.getFilteredLines(searchInput, transitTypes);
-                list = [
-                    ...list,
-                    ...lines,
-                ];
-            }
-            if (includeNodes) {
-                const nodes = this.getFilteredNodes(searchInput);
-                list = [
-                    ...list,
-                    ...nodes,
-                ];
-            }
+    public getFilteredItems = (): (INodeBase | ILine)[] => {
+        const searchInput = SearchStore.searchInput;
 
-            list = list.sort((a, b) => a.id > b.id ? 1 : -1);
-
-            return list;
+        let list: (INodeBase | ILine)[] = [];
+        if (SearchStore.isSearchingForLines) {
+            const lines = this.getFilteredLines(
+                searchInput,
+                SearchStore.selectedTransitTypes,
+            );
+            list = [
+                ...list,
+                ...lines,
+            ];
         }
+        if (SearchStore.isSearchingForNodes) {
+            const nodes = this.getFilteredNodes(searchInput);
+            list = [
+                ...list,
+                ...nodes,
+            ];
+        }
+
+        list = list.sort((a, b) => a.id > b.id ? 1 : -1);
+
+        return list;
+    }
 }
 
 const observableLineStore = new SearchResultStore();
