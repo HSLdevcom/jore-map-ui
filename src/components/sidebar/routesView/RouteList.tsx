@@ -13,15 +13,15 @@ import navigator from '~/routing/navigator';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import RouteService from '~/services/routeService';
-import RouteShow from './RouteShow';
+import RouteItem from './RouteItem';
 import Loader from '../../shared/loader/Loader';
-import * as s from './routesList.scss';
+import * as s from './routeList.scss';
 
-interface IRoutesListState {
+interface IRouteListState {
     isLoading: boolean;
 }
 
-interface IRoutesListProps {
+interface IRouteListProps {
     searchStore?: SearchStore;
     routeStore?: RouteStore;
     networkStore?: NetworkStore;
@@ -30,7 +30,7 @@ interface IRoutesListProps {
 
 @inject('searchStore', 'routeStore', 'networkStore', 'routePathStore')
 @observer
-class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
+class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -70,7 +70,7 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
         return routes.map((route: IRoute) => {
             return (
                 <div key={route.id}>
-                    <RouteShow
+                    <RouteItem
                         key={route.id}
                         route={route}
                     />
@@ -97,13 +97,13 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     render() {
         if (this.state.isLoading) {
             return(
-                <div className={classnames(s.routesListView, s.loaderContainer)}>
+                <div className={classnames(s.routeListView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );
         }
         return (
-            <div className={s.routesListView}>
+            <div className={s.routeListView}>
                 <div className={s.routeList}>
                     {
                         this.renderRouteList()
@@ -114,4 +114,4 @@ class RoutesList extends React.Component<IRoutesListProps, IRoutesListState> {
     }
 }
 
-export default RoutesList;
+export default RouteList;
