@@ -24,7 +24,7 @@ interface ISearchResultsState {
     showLimit: number;
 }
 
-const SHOW_LIMIT_DEFAULT = 20;
+const SHOW_LIMIT_DEFAULT = 50;
 const INCREASE_SHOW_LIMIT = 10;
 const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half way down
 
