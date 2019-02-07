@@ -7,13 +7,15 @@ import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
-import RoutePathService from '~/services/routePathService';
 import navigator from '~/routing/navigator';
 import { RouteStore } from '~/stores/routeStore';
-import RouteService from '~/services/routeService';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
+import { NotificationStore } from '~/stores/notificationStore';
+import RouteService from '~/services/routeService';
+import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
+import NotificationType from '~/enums/notificationType';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
@@ -24,29 +26,32 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     isLoading: boolean;
+    invalidFieldsMap: object;
 }
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
     routeStore?: RouteStore;
     networkStore?: NetworkStore;
+    notificationStore?: NotificationStore;
     toolbarStore?: ToolbarStore;
     match?: match<any>;
-    isAddingNew: boolean;
+    isNewRoutePath: boolean;
 }
 
-@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore')
+@inject('routeStore', 'routePathStore', 'networkStore', 'notificationStore', 'toolbarStore')
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
             isLoading: true,
+            invalidFieldsMap: {},
         };
     }
 
     async componentDidMount() {
-        if (this.props.isAddingNew) {
+        if (this.props.isNewRoutePath) {
             await this.initializeAsAddingNew();
         } else {
             await this.fetchRoutePath();
@@ -75,7 +80,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private initializeMap = async () => {
-        if (this.props.isAddingNew) {
+        if (this.props.isNewRoutePath) {
             this.props.networkStore!.setNodeSize(NodeSize.large);
             this.props.networkStore!.showMapLayer(MapLayer.node);
             this.props.networkStore!.showMapLayer(MapLayer.link);
@@ -112,12 +117,21 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setRoutePath(routePath);
     }
 
+    private markInvalidFields = (field: string, isValid: boolean) => {
+        this.setState({
+            invalidFieldsMap: {
+                ...this.state.invalidFieldsMap,
+                [field]: isValid,
+            },
+        });
+    }
+
     public renderTabContent = () => {
         if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
                 <RoutePathInfoTab
                     routePath={this.props.routePathStore!.routePath!}
-                    isAddingNew={this.props.isAddingNew}
+                    markInvalidFields={this.markInvalidFields}
                 />
             );
         }
@@ -128,8 +142,36 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         );
     }
 
-    private save = () => {
-        // TODO
+    private isFormValid = () => {
+        return !Object.values(this.state.invalidFieldsMap)
+            .some(fieldIsValid => !fieldIsValid);
+    }
+
+    private save = async () => {
+        this.setState({ isLoading: true });
+        try {
+            if (this.routePathIsNew()) {
+                await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+            } else {
+                await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
+            }
+            this.props.routePathStore!.resetHaveLocalModifications();
+            this.props.notificationStore!.addNotification({
+                message: 'Tallennus onnistui',
+                type: NotificationType.SUCCESS,
+            });
+        } catch (err) {
+            const errMessage = err.message ? `, (${err.message})` : '';
+            this.props.notificationStore!.addNotification({
+                message: `Tallennus epäonnistui${errMessage}`,
+                type: NotificationType.ERROR,
+            });
+        }
+        this.setState({ isLoading: false });
+    }
+
+    private routePathIsNew = () => {
+        return this.props.isNewRoutePath;
     }
 
     render() {
@@ -145,18 +187,21 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             <div className={s.routePathView}>
                 <RoutePathHeader
                     routePath={this.props.routePathStore!.routePath!}
-                    isAddingNew={this.props.isAddingNew}
+                    isNewRoutePath={this.props.isNewRoutePath}
                 />
                 <div>
                     <RoutePathTabs />
                 </div>
                 {this.renderTabContent()}
-                {/* TODO: make save button work */}
                 <Button
-                    type={ButtonType.SAVE}
                     onClick={this.save}
+                    type={ButtonType.SAVE}
+                    disabled={
+                        !this.props.routePathStore!.hasUnsavedModifications
+                        || !this.props.routePathStore!.isGeometryValid
+                        || !this.isFormValid()}
                 >
-                    Tallenna muutokset
+                    {this.routePathIsNew() ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
                 </Button>
             </div>
         );

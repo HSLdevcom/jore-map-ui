@@ -42,9 +42,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RoutesView /> : <Redirect to='/' />;
     }
-
-    private renderAddNewRoutePath = (props: any) => <RoutePathView {...props} isAddingNew={true} />;
-    private renderRoutePathView = (props: any) => <RoutePathView {...props} isAddingNew={false} />;
+    private renderAddNewRoutePath = (props: any) =>
+        <RoutePathView {...props} isNewRoutePath={true} />
+    private renderRoutePathView = (props: any) =>
+        <RoutePathView {...props} isNewRoutePath={false} />
 
     render() {
         const goToHomeView = () => {
