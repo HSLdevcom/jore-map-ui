@@ -51,20 +51,20 @@ class Dropdown extends React.Component
     }
 
     public render() {
-        let selectionDictionary: IDropdownItem[];
+        let dropDownItemList: IDropdownItem[];
 
         if (usesDictionary(this.props)) {
             const dictionary = this.props.codeList;
-            selectionDictionary = Object.keys(dictionary).map(
+            dropDownItemList = Object.keys(dictionary).map(
                 key => ({ key, value: dictionary[key] }),
             );
         } else {
             const items = this.props.items;
             if (items.length > 0 && typeof items[0] === 'string') {
-                selectionDictionary =
+                dropDownItemList =
                     (items as string[]).map((i: string) => ({ key: i, value: i }));
             } else {
-                selectionDictionary = items as IDropdownItem[];
+                dropDownItemList = items as IDropdownItem[];
             }
         }
 
@@ -87,7 +87,7 @@ class Dropdown extends React.Component
                             onChange={this.onChange}
                         >
                         {
-                            selectionDictionary.map((item) => {
+                            dropDownItemList.map((item) => {
                                 return (
                                     <option
                                         key={item.key}
