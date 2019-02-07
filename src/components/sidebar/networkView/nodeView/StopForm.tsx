@@ -1,7 +1,8 @@
 import React from 'react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
-import MunicipalityDropdown from '~/components/controls/MunicipalityDropdown';
+import municipalityCodeList from '~/codeLists/municipalitiesCodeList';
+import { Dropdown } from '~/components/controls';
 import ViewHeader from '../../ViewHeader';
 import * as s from './stopForm.scss';
 
@@ -91,10 +92,10 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         value={stop.postalNumber}
                         onChange={onChange('postalNumber')}
                     />
-                    <MunicipalityDropdown
-                        disabled={isEditingDisabled}
-                        value={stop.municipality}
+                    <Dropdown
                         onChange={onChange('municipality')}
+                        codeList={municipalityCodeList}
+                        selected={stop.municipality}
                         label='KUNTA'
                     />
                 </div>

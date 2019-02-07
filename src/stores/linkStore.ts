@@ -2,11 +2,12 @@ import { action, computed, observable } from 'mobx';
 import { ILink, INode } from '~/models';
 
 export class LinkStore {
-    @observable private _link?: ILink;
+    @observable private _link: ILink | null;
     @observable private _nodes: INode[];
 
     constructor() {
         this._nodes = [];
+        this._link = null;
     }
 
     @computed
@@ -31,7 +32,7 @@ export class LinkStore {
 
     @action
     public clear = () => {
-        this._link = undefined;
+        this._link = null;
         this._nodes = [];
     }
 }

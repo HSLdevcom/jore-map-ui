@@ -10,16 +10,32 @@ export interface IDropdownItem {
     value: string;
 }
 
-interface IDropdownProps {
+interface IDropdownBaseProps {
     label?: string;
     selected: string;
-    items: string[] | IDropdownItem[];
     disabled?: boolean;
     onChange(selectedItem: string): void;
 }
 
+interface IDropdownProps extends IDropdownBaseProps {
+    items: string[] | IDropdownItem[];
+}
+
+interface IDropdownWithCodeListProps extends IDropdownBaseProps {
+    codeList: any;
+}
+
+const  usesDictionary = (
+    item: IDropdownProps | IDropdownWithCodeListProps): item is IDropdownWithCodeListProps => {
+    return (
+        (item as IDropdownWithCodeListProps).codeList !== undefined
+    ) && (
+        (item as IDropdownProps).items === undefined
+    );
+};
+
 class Dropdown extends React.Component
-<IDropdownProps, IDropdownState> {
+<IDropdownProps | IDropdownWithCodeListProps, IDropdownState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -35,12 +51,21 @@ class Dropdown extends React.Component
     }
 
     public render() {
-        const items = this.props.items;
-        let selectionDictionary: IDropdownItem[];
-        if (items.length > 0 && typeof items[0] === 'string') {
-            selectionDictionary = (items as string[]).map((i: string) => ({ key: i, value: i }));
+        let dropDownItemList: IDropdownItem[];
+
+        if (usesDictionary(this.props)) {
+            const dictionary = this.props.codeList;
+            dropDownItemList = Object.keys(dictionary).map(
+                key => ({ key, value: dictionary[key] }),
+            );
         } else {
-            selectionDictionary = items as IDropdownItem[];
+            const items = this.props.items;
+            if (items.length > 0 && typeof items[0] === 'string') {
+                dropDownItemList =
+                    (items as string[]).map((i: string) => ({ key: i, value: i }));
+            } else {
+                dropDownItemList = items as IDropdownItem[];
+            }
         }
 
         return (
@@ -62,7 +87,7 @@ class Dropdown extends React.Component
                             onChange={this.onChange}
                         >
                         {
-                            selectionDictionary.map((item) => {
+                            dropDownItemList.map((item) => {
                                 return (
                                     <option
                                         key={item.key}

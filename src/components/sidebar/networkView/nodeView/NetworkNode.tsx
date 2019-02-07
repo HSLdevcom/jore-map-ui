@@ -6,12 +6,12 @@ import { INode } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
-import { Button } from '~/components/controls';
 import NotificationType from '~/enums/notificationType';
+import { Button, Dropdown } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
-import NodeTypeDropdown from '~/components/controls/NodeTypeDropdown';
 import NodeService from '~/services/nodeService';
 import { NotificationStore } from '~/stores/notificationStore';
+import nodeTypesCodeList from '~/codeLists/nodeTypesCodeList';
 import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -54,7 +54,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         }
         const node = this.props.nodeStore!.node;
         if (node) {
-            await this.fetchLinksForNodes(node);
+            await this.fetchLinksForNode(node);
             this.props.mapStore!.setCoordinates(node.coordinates);
         }
         this.setState({ isLoading: false });
@@ -67,7 +67,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         }
     }
 
-    private async fetchLinksForNodes(node: INode) {
+    private async fetchLinksForNode(node: INode) {
         const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         if (links) {
             this.props.nodeStore!.setLinks(links);
@@ -142,11 +142,12 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                                     value={node.shortId}
                                     onChange={this.onChange('routePathShortName')}
                                 />
-                                <NodeTypeDropdown
+                                <Dropdown
                                     label='TYYPPI'
                                     onChange={this.onChange('type')}
                                     disabled={isEditingDisabled}
-                                    value={node.type}
+                                    selected={node.type}
+                                    codeList={nodeTypesCodeList}
                                 />
                             </div>
                         </div>
