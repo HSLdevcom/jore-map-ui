@@ -54,7 +54,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                     this.props.searchStore!.searchInput,
                     this.props.searchStore!.selectedTransitTypes,
                 ],
-            this.resetShowLimitAndScrollToBeginning,
+            this.scrollToBeginning,
             );
     }
 
@@ -136,7 +136,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
     }
 
-    private resetShowLimitAndScrollToBeginning = () => {
+    private scrollToBeginning = () => {
         this.setState({
             showLimit: SHOW_LIMIT_DEFAULT,
         });
