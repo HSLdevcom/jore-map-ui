@@ -140,6 +140,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 <RoutePathHeader
                     routePath={this.props.routePathStore!.routePath!}
                     isAddingNew={this.props.isAddingNew}
+                    hasModifications={this.props.routePathStore!.hasUnsavedModifications}
                 />
                 <div>
                     <RoutePathTabs />
