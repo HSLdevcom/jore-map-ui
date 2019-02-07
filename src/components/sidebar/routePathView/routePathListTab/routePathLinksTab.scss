@@ -2,15 +2,16 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/form';
 
-.routePathLinksView {
+.RoutePathLinksTabView {
     display: flex;
     flex-direction: column;
+    height: 100%;
     font-weight: bold;
     color: $labelColor;
     font-size: $mediumFontSize;
+    overflow-y: auto;
 
     .contentWrapper {
-        overflow-y: auto;
         padding-left: 10px;
         padding-right: 10px;
     }

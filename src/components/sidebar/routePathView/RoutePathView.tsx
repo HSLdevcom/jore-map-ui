@@ -3,6 +3,8 @@ import moment from 'moment';
 import classnames from 'classnames';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
+import ButtonType from '~/enums/buttonType';
+import Button from '~/components/controls/Button';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import RoutePathService from '~/services/routePathService';
@@ -14,7 +16,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
-import RoutePathTab from './routePathInfoTab/RoutePathInfoTab';
+import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
 import RoutePathHeader from './RoutePathHeader';
@@ -41,6 +43,25 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.state = {
             isLoading: true,
         };
+    }
+
+    async componentDidMount() {
+        if (this.props.isAddingNew) {
+            await this.initializeAsAddingNew();
+        } else {
+            await this.fetchRoutePath();
+        }
+        await this.initializeMap();
+        this.props.routeStore!.clearRoutes();
+        this.setState({
+            isLoading: false,
+        });
+    }
+
+    componentWillUnmount() {
+        this.props.toolbarStore!.selectTool(null);
+        this.props.networkStore!.setNodeSize(NodeSize.normal);
+        this.props.routePathStore!.setRoutePath(null);
     }
 
     private initializeAsAddingNew = async () => {
@@ -94,7 +115,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     public renderTabContent = () => {
         if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
-                <RoutePathTab
+                <RoutePathInfoTab
                     routePath={this.props.routePathStore!.routePath!}
                     isAddingNew={this.props.isAddingNew}
                 />
@@ -107,23 +128,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         );
     }
 
-    async componentDidMount() {
-        if (this.props.isAddingNew) {
-            await this.initializeAsAddingNew();
-        } else {
-            await this.fetchRoutePath();
-        }
-        await this.initializeMap();
-        this.props.routeStore!.clearRoutes();
-        this.setState({
-            isLoading: false,
-        });
-    }
-
-    componentWillUnmount() {
-        this.props.toolbarStore!.selectTool(null);
-        this.props.networkStore!.setNodeSize(NodeSize.normal);
-        this.props.routePathStore!.setRoutePath(null);
+    private save = () => {
+        // TODO
     }
 
     render() {
@@ -145,6 +151,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     <RoutePathTabs />
                 </div>
                 {this.renderTabContent()}
+                {/* TODO: make save button work */}
+                <Button
+                    type={ButtonType.SAVE}
+                    onClick={this.save}
+                >
+                    Tallenna muutokset
+                </Button>
             </div>
         );
     }

@@ -5,9 +5,11 @@ import { FiEdit, FiCopy } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
-import RoutePathService from '~/services/routePathService';
+// TODO: Move this code to parent
+// import RoutePathService from '~/services/routePathService';
 import { NotificationStore } from '~/stores/notificationStore';
-import NotificationType from '~/enums/notificationType';
+// TODO: Move this code to parent
+// import NotificationType from '~/enums/notificationType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
@@ -16,14 +18,14 @@ import subSites from '~/routing/subSites';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathInfoTab.scss';
 
-interface IRoutePathViewState {
+interface IRoutePathInfoTabState {
     isEditingDisabled: boolean;
     invalidFieldsMap: object;
     isLoading: boolean;
     hasSavedNewRoutePath: boolean;
 }
 
-interface IRoutePathViewProps {
+interface IRoutePathInfoTabProps {
     routePathStore?: RoutePathStore;
     notificationStore?: NotificationStore;
     routePath: IRoutePath;
@@ -32,7 +34,7 @@ interface IRoutePathViewProps {
 
 @inject('routePathStore', 'notificationStore')
 @observer
-class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
+class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState>{
     constructor(props: any) {
         super(props);
         this.state = {
@@ -43,15 +45,18 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         };
     }
 
+    /* TODO: Move this code to parent
     private routePathIsNew = () => {
         return this.props.isAddingNew && !this.state.hasSavedNewRoutePath;
     }
+    */
 
     private toggleEditing = () => {
         const isEditingDisabled = !this.state.isEditingDisabled;
         this.setState({ isEditingDisabled });
     }
 
+    /* TODO: Move this code to parent
     private save = async () => {
         this.setState({ isLoading: true });
         try {
@@ -74,6 +79,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         }
         this.setState({ isLoading: false });
     }
+    */
 
     private markInvalidFields = (field: string, isValid: boolean) => {
         this.setState({
@@ -84,10 +90,12 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         });
     }
 
+    /* TODO: Move this code to parent
     private isFormValid = () => {
         return !Object.values(this.state.invalidFieldsMap)
             .some(fieldIsValid => !fieldIsValid);
     }
+    */
 
     private onChange = (property: string, value: any, validationResult?: IValidationResult) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
@@ -113,7 +121,7 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
 
         if (!routePath) return 'Error';
         return (
-        <div className={classnames(s.routePathTab, s.form)}>
+        <div className={classnames(s.routePathInfoTabView, s.form)}>
             <div className={s.content}>
                 <div className={s.routePathTabActions}>
                     <Button
@@ -141,6 +149,8 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                     />
                 </div>
             </div>
+            {/*
+            TODO: Move this code to parent
             <Button
                 onClick={this.save}
                 type={ButtonType.SAVE}
@@ -150,9 +160,9 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                     || !this.isFormValid()}
             >
                 {this.routePathIsNew() ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-            </Button>
+            </Button>*/}
         </div>
         );
     }
 }
-export default RoutePathTab;
+export default RoutePathInfoTab;
