@@ -66,7 +66,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     componentWillUnmount() {
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
-        this.props.routePathStore!.setRoutePath(null);
+        this.props.routePathStore!.clear();
     }
 
     private initializeAsAddingNew = async () => {
@@ -93,10 +93,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const queryParams = navigator.getQueryParamValues();
         const route = await RouteService.fetchRoute(queryParams.routeId);
         // TODO: add transitType to this call (if transitType is routePath's property)
-        if (route) {
-            return RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
-        }
-        return null;
+        if (!route) throw new Error(`Route not found, routeId: ${queryParams.routeId}`);
+
+        return RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
     }
 
     private setTransitType = async () => {
@@ -114,6 +113,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const startTime = moment(startTimeString);
         const routePath =
             await RoutePathService.fetchRoutePath(routeId, startTime, direction);
+        if (!routePath) throw new Error(`RoutePath not found, routeId: ${routeId} startTime: ${startTime} direction: ${direction}`); /* tslint:disable max-line-length */
         this.props.routePathStore!.setRoutePath(routePath);
     }
 
@@ -155,7 +155,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             } else {
                 await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             }
-            this.props.routePathStore!.resetHaveLocalModifications();
+            this.props.routePathStore!.setRoutePath(this.props.routePathStore!.routePath!);
+
             this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
@@ -197,7 +198,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     onClick={this.save}
                     type={ButtonType.SAVE}
                     disabled={
-                        !this.props.routePathStore!.hasUnsavedModifications
+                        !this.props.routePathStore!.isDirty
                         || !this.props.routePathStore!.isGeometryValid
                         || !this.isFormValid()}
                 >
