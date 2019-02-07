@@ -7,20 +7,9 @@ interface ILineSearchProps {
     searchStore?: SearchStore;
 }
 
-interface ILineSearchState {
-    lineItems: any;
-}
-
 @inject('searchStore')
 @observer
-class LineSearch extends React.Component<ILineSearchProps, ILineSearchState> {
-    constructor(props: ILineSearchProps) {
-        super(props);
-        this.state = {
-            lineItems: '',
-        };
-    }
-
+class LineSearch extends React.Component<ILineSearchProps> {
     private handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
         this.props.searchStore!.setSearchInput(newValue);

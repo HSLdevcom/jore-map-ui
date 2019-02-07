@@ -1,7 +1,6 @@
 import React from 'react';
 import NodeType from '~/enums/nodeType';
 import classnames from 'classnames';
-import NodeTypeDescription from '~/enums/l10n/nodeTypeDescription';
 import { IRoutePathLink, INode, IStop } from '~/models';
 import { FiChevronRight } from 'react-icons/fi';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -9,6 +8,7 @@ import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import NodeTypeHelper from '~/util/nodeTypeHelper';
 import navigator from '~/routing/navigator';
 import InputContainer from '../../InputContainer';
 import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
@@ -25,29 +25,6 @@ interface IRoutePathListNodeState {
 }
 
 class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRoutePathListNodeState> {
-
-    private getNodeTypeName = (nodeType?: NodeType) => {
-        if (!nodeType) {
-            return 'Tyhjä';
-        }
-        switch (nodeType) {
-        case NodeType.STOP: {
-            return NodeTypeDescription.STOP.toString();
-        }
-        case NodeType.CROSSROAD: {
-            return NodeTypeDescription.CROSSROAD.toString();
-        }
-        case NodeType.DISABLED: {
-            return NodeTypeDescription.DISABLED.toString();
-        }
-        case NodeType.MUNICIPALITY_BORDER: {
-            return NodeTypeDescription.MUNICIPALITY_BORDER.toString();
-        }
-        default: {
-            return nodeType.toString();
-        }}
-    }
-
     private addBorder = (icon: React.ReactNode, color: string) => {
         return (
             <div className={s.iconBorder} style={{ borderColor: color }}>
@@ -152,7 +129,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRouteP
                 objectType={ListObjectType.Node}
                 headerContent={this.renderNodeHeaderContent(this.props.node)}
                 headerIcon={this.renderNodeHeaderIcon(this.props.node, this.props.routePathLink)}
-                headerTypeName={this.getNodeTypeName(this.props.node.type)}
+                headerTypeName={NodeTypeHelper.getNodeTypeName(this.props.node.type)}
                 id={this.props.node.id}
             >
                 <div className={s.extendedContent}>

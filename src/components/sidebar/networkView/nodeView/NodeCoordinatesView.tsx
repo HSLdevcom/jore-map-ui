@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import InputContainer from '~/components/sidebar/InputContainer';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
-import NodeTypeColorHelper from '~/util/nodeTypeColorHelper';
+import NodeTypeHelper from '~/util/nodeTypeHelper';
 import * as L from 'leaflet';
 import * as s from '~/components/sidebar/networkView/nodeView/nodeCoordinatesView.scss';
 
@@ -20,7 +20,7 @@ const getCoordinateSpecificData = (locationType: NodeLocationType, nodeType: Nod
 
     switch (locationType) {
     case 'coordinates':
-        iconClassName = NodeTypeColorHelper.getTypeClass(nodeType, true);
+        iconClassName = NodeTypeHelper.getTypeClass(nodeType, true);
         label = 'Mitattu piste';
         break;
     case 'coordinatesManual':
