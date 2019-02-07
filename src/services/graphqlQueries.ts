@@ -117,6 +117,22 @@ const getLinksByStartNodeAndEndNodeQuery = () => {
     );
 };
 
+const getAllNodesQuery = () => {
+    return (
+        gql`
+            query getAllNodes {
+                allNodes: allSolmus{
+                    nodes {
+                    soltunnus
+                    soltyyppi
+                        sollistunnus
+                    }
+                }
+            }
+        `
+    );
+};
+
 const getNodeQuery = () => {
     return (
         gql`
@@ -320,6 +336,7 @@ export default {
     getLinksByStartNodeQuery,
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
+    getAllNodesQuery,
     getRoutePathLinkQuery,
     getLinksByEndNodeQuery,
 };

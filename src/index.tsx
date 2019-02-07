@@ -10,7 +10,7 @@ import App from './components/App';
 import NotificationStore from './stores/notificationStore';
 import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
-import LineStore from './stores/lineStore';
+import SearchResultStore from './stores/searchResultStore';
 import RouteStore from './stores/routeStore';
 import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
@@ -31,7 +31,7 @@ const browserHistory = createBrowserHistory();
 const stores = {
     mapStore: MapStore,
     notificationStore: NotificationStore,
-    lineStore: LineStore,
+    searchResultStore: SearchResultStore,
     loginStore: LoginStore,
     routeStore: RouteStore,
     routePathStore: RoutePathStore,
