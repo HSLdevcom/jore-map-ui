@@ -5,9 +5,6 @@ import { FiEdit, FiCopy } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
-import RoutePathService from '~/services/routePathService';
-import { NotificationStore } from '~/stores/notificationStore';
-import NotificationType from '~/enums/notificationType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
@@ -16,83 +13,32 @@ import subSites from '~/routing/subSites';
 import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathInfoTab.scss';
 
-interface IRoutePathViewState {
-    isEditingDisabled: boolean;
-    invalidFieldsMap: object;
+interface IRoutePathInfoTabState {
     isLoading: boolean;
-    hasSavedNewRoutePath: boolean;
 }
 
-interface IRoutePathViewProps {
+interface IRoutePathInfoTabProps {
+    isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
-    notificationStore?: NotificationStore;
     routePath: IRoutePath;
-    isAddingNew: boolean;
+    markInvalidFields: Function;
+    toggleIsEditingDisabled: Function;
 }
 
-@inject('routePathStore', 'notificationStore')
+@inject('routePathStore')
 @observer
-class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
+class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState>{
     constructor(props: any) {
         super(props);
         this.state = {
-            isEditingDisabled: true,
-            invalidFieldsMap: {},
             isLoading: true,
-            hasSavedNewRoutePath: false,
         };
-    }
-
-    private routePathIsNew = () => {
-        return this.props.isAddingNew && !this.state.hasSavedNewRoutePath;
-    }
-
-    private toggleEditing = () => {
-        const isEditingDisabled = !this.state.isEditingDisabled;
-        this.setState({ isEditingDisabled });
-    }
-
-    private save = async () => {
-        this.setState({ isLoading: true });
-        try {
-            if (this.routePathIsNew()) {
-                await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
-            } else {
-                await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
-            }
-            this.props.routePathStore!.resetHaveLocalModifications();
-            this.props.notificationStore!.addNotification({
-                message: 'Tallennus onnistui',
-                type: NotificationType.SUCCESS,
-            });
-        } catch (err) {
-            const errMessage = err.message ? `, (${err.message})` : '';
-            this.props.notificationStore!.addNotification({
-                message: `Tallennus epäonnistui${errMessage}`,
-                type: NotificationType.ERROR,
-            });
-        }
-        this.setState({ isLoading: false });
-    }
-
-    private markInvalidFields = (field: string, isValid: boolean) => {
-        this.setState({
-            invalidFieldsMap: {
-                ...this.state.invalidFieldsMap,
-                [field]: isValid,
-            },
-        });
-    }
-
-    private isFormValid = () => {
-        return !Object.values(this.state.invalidFieldsMap)
-            .some(fieldIsValid => !fieldIsValid);
     }
 
     private onChange = (property: string, value: any, validationResult?: IValidationResult) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
         if (validationResult) {
-            this.markInvalidFields(property, validationResult!.isValid);
+            this.props.markInvalidFields(property, validationResult!.isValid);
         }
     }
 
@@ -107,22 +53,26 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
         navigator.goTo(newRoutePathLink);
     }
 
+    private toggleIsEditingDisabled = () => {
+        this.props.toggleIsEditingDisabled();
+    }
+
     render() {
         // tslint:disable-next-line:max-line-length
         const routePath = this.props.routePathStore!.routePath;
 
         if (!routePath) return 'Error';
         return (
-        <div className={classnames(s.routePathTab, s.form)}>
+        <div className={classnames(s.routePathInfoTabView, s.form)}>
             <div className={s.content}>
                 <div className={s.routePathTabActions}>
                     <Button
                         type={ButtonType.ROUND}
-                        onClick={this.toggleEditing!}
+                        onClick={this.toggleIsEditingDisabled}
                     >
                         <FiEdit/>
                         {
-                            this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'
+                            this.props.isEditingDisabled ? 'Muokkaa' : 'Peruuta'
                         }
                     </Button>
                     <Button
@@ -136,23 +86,13 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                 <div className={s.formSection}>
                     <RoutePathViewForm
                         onChange={this.onChange}
-                        isEditingDisabled={this.state.isEditingDisabled}
+                        isEditingDisabled={this.props.isEditingDisabled}
                         routePath={this.props.routePathStore!.routePath!}
                     />
                 </div>
             </div>
-            <Button
-                onClick={this.save}
-                type={ButtonType.SAVE}
-                disabled={
-                    !this.props.routePathStore!.hasUnsavedModifications
-                    || !this.props.routePathStore!.isGeometryValid
-                    || !this.isFormValid()}
-            >
-                {this.routePathIsNew() ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-            </Button>
         </div>
         );
     }
 }
-export default RoutePathTab;
+export default RoutePathInfoTab;

@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import FormValidator, { IValidationResult } from '../../validation/FormValidator';
+import FormValidator, { IValidationResult } from '../../validation/FormValidator';
 import * as s from './inputContainer.scss';
 
 interface IInputProps {
@@ -13,7 +13,6 @@ interface IInputProps {
     validatorRule?: string;
     icon?: React.ReactNode;
     onIconClick?: () => void;
-
 }
 
 interface IInputState {
@@ -30,28 +29,38 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         };
     }
 
-    private validate = (value: string) => {
-        const validatorResult = FormValidator.validate(value, this.props.validatorRule!);
-        this.setState({
-            isValid: validatorResult.isValid,
-            errorMessage: validatorResult.errorMessage,
-        });
-        return validatorResult;
+    componentDidMount() {
+        this.validate(this.props.value, this.props.value);
     }
 
-    private shouldUpdate = () => {
-        return (!this.props.disabled && this.props.onChange);
+    componentWillReceiveProps(nextProps: IInputProps) {
+        const forceUpdate = this.props.disabled !== nextProps.disabled;
+        this.validate(this.props.value, nextProps.value, forceUpdate);
+    }
+
+    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
+        if (!this.props.onChange || !this.props.validatorRule) return;
+        if ((oldValue === newValue) && !forceUpdate) return;
+
+        const wasValid = this.state.isValid;
+        const validatorResult: IValidationResult
+            = FormValidator.validate(newValue, this.props.validatorRule);
+        const hasChanges = (oldValue !== newValue || wasValid !== validatorResult.isValid);
+        if (forceUpdate || hasChanges) {
+            this.setState({
+                isValid: validatorResult.isValid,
+                errorMessage: validatorResult.errorMessage,
+            });
+            this.props.onChange!(newValue, validatorResult);
+        }
     }
 
     private onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
-        if (this.shouldUpdate()) {
-            if (this.props.validatorRule) {
-                const validationResult = this.validate(value);
-                this.props.onChange!(value, validationResult);
-            } else {
-                this.props.onChange!(value);
-            }
+        if (this.props.validatorRule) {
+            this.validate(this.props.value, value);
+        } else {
+            this.props.onChange!(value);
         }
     }
 
@@ -88,7 +97,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                         onChange={this.onChange}
                     />)
                 }
-                { this.state.errorMessage &&
+                { this.state.errorMessage && !this.props.disabled &&
                     <div className={s.errorMessage}>
                         {this.state.errorMessage}
                     </div>

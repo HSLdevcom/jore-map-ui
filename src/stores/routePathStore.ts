@@ -1,4 +1,5 @@
 import { action, computed, observable } from 'mobx';
+import _ from 'lodash';
 import { IRoutePath, INode } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import lengthCalculator from '~/util/lengthCalculator';
@@ -21,7 +22,7 @@ export enum RoutePathViewTab {
 
 export class RoutePathStore {
     @observable private _routePath: IRoutePath|null;
-    @observable private _hasUnsavedModifications: boolean;
+    @observable private _oldRoutePath: IRoutePath|null;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
     @observable private _highlightedObject: string | null;
@@ -32,7 +33,6 @@ export class RoutePathStore {
 
     constructor() {
         this._neighborRoutePathLinks = [];
-        this._hasUnsavedModifications = false;
         this._highlightedObject = null;
         this._extendedObjects = [];
         this._isGeometryValid = true;
@@ -59,13 +59,13 @@ export class RoutePathStore {
     }
 
     @computed
-    get hasUnsavedModifications() {
-        return this._hasUnsavedModifications;
+    get isGeometryValid() {
+        return this._isGeometryValid;
     }
 
     @computed
-    get isGeometryValid() {
-        return this._isGeometryValid;
+    get isDirty() {
+        return !_.isEqual(this.routePath, this._oldRoutePath);
     }
 
     @computed
@@ -126,8 +126,9 @@ export class RoutePathStore {
     }
 
     @action
-    public setRoutePath = (routePath: IRoutePath|null) => {
+    public setRoutePath = (routePath: IRoutePath) => {
         this._routePath = routePath;
+        this._oldRoutePath = routePath;
         if (!routePath) {
             this._neighborRoutePathLinks = [];
         }
@@ -139,7 +140,6 @@ export class RoutePathStore {
             ...this._routePath!,
             [property]: value,
         };
-        this._hasUnsavedModifications = true;
     }
 
     @action
@@ -157,7 +157,6 @@ export class RoutePathStore {
             0,
             routePathLink);
         this.onRoutePathLinksChanged();
-        this._hasUnsavedModifications = true;
     }
 
     public isRoutePathNodeMissingNeighbour = (node: INode) => (
@@ -173,7 +172,6 @@ export class RoutePathStore {
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.filter(link => link.id !== id);
         this.onRoutePathLinksChanged();
-        this._hasUnsavedModifications = true;
     }
 
     @action
@@ -183,15 +181,18 @@ export class RoutePathStore {
     }
 
     @action
+    public undoChanges = () => {
+        if (this._oldRoutePath) {
+            this.setRoutePath(this._oldRoutePath);
+        }
+    }
+
+    @action
     public clear = () => {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
     }
 
-    @action
-    public resetHaveLocalModifications = () => {
-        this._hasUnsavedModifications = false;
-    }
     public getCalculatedLength = () => {
         if (this.routePath && this.routePath.routePathLinks) {
             return Math.floor(lengthCalculator.fromRoutePathLinks(this.routePath!.routePathLinks!));

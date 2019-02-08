@@ -14,16 +14,16 @@ import navigator from '~/routing/navigator';
 import { IRoutePath, IRoute } from '~/models';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import ViewHeader from '../ViewHeader';
-import * as s from './routeShow.scss';
+import * as s from './routeItem.scss';
 
-interface IRouteShowProps {
+interface IRouteItemProps {
     routeStore?: RouteStore;
     route: IRoute;
 }
 
 @inject('routeStore')
 @observer
-class RouteShow extends React.Component<IRouteShowProps> {
+class RouteItem extends React.Component<IRouteItemProps> {
     async componentDidMount() {
         this.props.route.routePaths.forEach((routePath, index) => {
             // Make two first route paths visible by default
@@ -163,7 +163,7 @@ class RouteShow extends React.Component<IRouteShowProps> {
 
     render() {
         return (
-            <div className={s.routeShowView}>
+            <div className={s.routeItemView}>
                 {this.renderRouteName()}
                 {this.renderList()}
             </div>
@@ -171,4 +171,4 @@ class RouteShow extends React.Component<IRouteShowProps> {
     }
 }
 
-export default RouteShow;
+export default RouteItem;

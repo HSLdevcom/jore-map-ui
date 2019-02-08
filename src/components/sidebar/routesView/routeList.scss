@@ -1,10 +1,10 @@
 @import '../../shared/styles/common.scss';
-.routesListView {
+.routeListView {
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 
     .routeList {
-        overflow-y: auto;
         border-top: 1px solid rgb(222, 222, 222);
 
         .createRoutePathButton {
