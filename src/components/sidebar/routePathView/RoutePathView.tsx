@@ -27,6 +27,7 @@ import * as s from './routePathView.scss';
 interface IRoutePathViewState {
     isLoading: boolean;
     invalidFieldsMap: object;
+    isEditingDisabled: boolean;
 }
 
 interface IRoutePathViewProps {
@@ -47,6 +48,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.state = {
             isLoading: true,
             invalidFieldsMap: {},
+            isEditingDisabled: true,
         };
     }
 
@@ -118,11 +120,21 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private markInvalidFields = (field: string, isValid: boolean) => {
+        const invalidFieldsMap = this.state.invalidFieldsMap;
+        invalidFieldsMap[field] = isValid;
         this.setState({
-            invalidFieldsMap: {
-                ...this.state.invalidFieldsMap,
-                [field]: isValid,
-            },
+            invalidFieldsMap,
+        });
+    }
+
+    private toggleIsEditingDisabled = () => {
+        if (!this.state.isEditingDisabled) {
+            this.props.routePathStore!.undoChanges();
+        }
+        const isEditingDisabled = !this.state.isEditingDisabled;
+        this.setState({
+            isEditingDisabled,
+            invalidFieldsMap: {},
         });
     }
 
@@ -130,8 +142,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
                 <RoutePathInfoTab
+                    isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
                     markInvalidFields={this.markInvalidFields}
+                    toggleIsEditingDisabled={this.toggleIsEditingDisabled}
                 />
             );
         }
@@ -168,7 +182,11 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 type: NotificationType.ERROR,
             });
         }
-        this.setState({ isLoading: false });
+        this.setState({
+            isEditingDisabled: true,
+            invalidFieldsMap: {},
+            isLoading: false,
+        });
     }
 
     private routePathIsNew = () => {
@@ -184,6 +202,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             );
         }
         if (!this.props.routePathStore!.routePath) return null;
+
+        const isSaveButtonDisabled = this.state.isEditingDisabled
+        || !this.props.routePathStore!.isDirty
+        || !this.props.routePathStore!.isGeometryValid
+        || !this.isFormValid();
+
         return (
             <div className={s.routePathView}>
                 <RoutePathHeader
@@ -197,10 +221,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 <Button
                     onClick={this.save}
                     type={ButtonType.SAVE}
-                    disabled={
-                        !this.props.routePathStore!.isDirty
-                        || !this.props.routePathStore!.isGeometryValid
-                        || !this.isFormValid()}
+                    disabled={isSaveButtonDisabled}
                 >
                     {this.routePathIsNew() ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
                 </Button>

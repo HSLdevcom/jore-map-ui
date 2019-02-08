@@ -14,14 +14,15 @@ import RoutePathViewForm from './RoutePathViewForm';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabState {
-    isEditingDisabled: boolean;
     isLoading: boolean;
 }
 
 interface IRoutePathInfoTabProps {
+    isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
     markInvalidFields: Function;
+    toggleIsEditingDisabled: Function;
 }
 
 @inject('routePathStore')
@@ -30,14 +31,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
     constructor(props: any) {
         super(props);
         this.state = {
-            isEditingDisabled: true,
             isLoading: true,
         };
-    }
-
-    private toggleEditing = () => {
-        const isEditingDisabled = !this.state.isEditingDisabled;
-        this.setState({ isEditingDisabled });
     }
 
     private onChange = (property: string, value: any, validationResult?: IValidationResult) => {
@@ -58,6 +53,10 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         navigator.goTo(newRoutePathLink);
     }
 
+    private toggleIsEditingDisabled = () => {
+        this.props.toggleIsEditingDisabled();
+    }
+
     render() {
         // tslint:disable-next-line:max-line-length
         const routePath = this.props.routePathStore!.routePath;
@@ -69,11 +68,11 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                 <div className={s.routePathTabActions}>
                     <Button
                         type={ButtonType.ROUND}
-                        onClick={this.toggleEditing!}
+                        onClick={this.toggleIsEditingDisabled}
                     >
                         <FiEdit/>
                         {
-                            this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'
+                            this.props.isEditingDisabled ? 'Muokkaa' : 'Peruuta'
                         }
                     </Button>
                     <Button
@@ -87,7 +86,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                 <div className={s.formSection}>
                     <RoutePathViewForm
                         onChange={this.onChange}
-                        isEditingDisabled={this.state.isEditingDisabled}
+                        isEditingDisabled={this.props.isEditingDisabled}
                         routePath={this.props.routePathStore!.routePath!}
                     />
                 </div>

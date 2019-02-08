@@ -181,6 +181,13 @@ export class RoutePathStore {
     }
 
     @action
+    public undoChanges = () => {
+        if (this._oldRoutePath) {
+            this.setRoutePath(this._oldRoutePath);
+        }
+    }
+
+    @action
     public clear = () => {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
