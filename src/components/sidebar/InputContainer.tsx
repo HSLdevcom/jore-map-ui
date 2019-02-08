@@ -93,7 +93,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                                 !this.state.isValid ? s.invalidInput : null)
                         }
                         disabled={this.props.disabled}
-                        value={this.props.value!}
+                        value={this.props.value ? this.props.value : ''}
                         onChange={this.onChange}
                     />)
                 }
