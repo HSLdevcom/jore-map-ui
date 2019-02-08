@@ -19,7 +19,7 @@ interface IRoutePathViewFormProps {
     routePathStore?: RoutePathStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
-    onChange: Function;
+    onChange: (property: string, value: any, validationResult: IValidationResult) => void;
 }
 
 @inject('routePathStore')
@@ -30,9 +30,9 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
     }
 
     private onChange = (property: string) =>
-    (value: string, validationResult: IValidationResult) => {
-        this.props.onChange(property, value, validationResult);
-    }
+        (value: string, validationResult: IValidationResult) => {
+            this.props.onChange(property, value, validationResult);
+        }
 
     private updateLength = ():void => (
         this.props.routePathStore!.updateRoutePathProperty(

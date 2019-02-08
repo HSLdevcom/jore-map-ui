@@ -145,7 +145,7 @@ class RoutePathView extends FormBase<IRoutePathViewProps, IRoutePathViewState>{
             } else {
                 await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             }
-            this.props.routePathStore!.setRoutePath(this.props.routePathStore!.routePath!);
+            this.props.routePathStore!.setOldRoutePath(this.props.routePathStore!.routePath!);
 
             this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',

@@ -7,6 +7,7 @@ import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import NotificationType from '~/enums/notificationType';
+import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
 import FormBase from '~/components/shared/inheritedComponents/FormBase';
 import NodeType from '~/enums/nodeType';
@@ -87,7 +88,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
         try {
             await NodeService.updateNode(this.props.nodeStore!.node);
 
-            this.props.nodeStore!.resetHaveLocalModifications();
+            this.props.nodeStore!.setOldNode(this.props.nodeStore!.node);
             this.props.notificationStore!.addNotification({
                 message: 'Tallennus onnistui',
                 type: NotificationType.SUCCESS,
@@ -102,13 +103,20 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
         this.setState({ isLoading: false });
     }
 
-    private onChange = (property: string) => (value: any) => {
+    private onChange = (property: string) => (value: any, validationResult?: IValidationResult) => {
         this.props.nodeStore!.updateNode(property, value);
+        if (validationResult) {
+            this.markInvalidFields(property, validationResult!.isValid);
+        }
     }
 
-    private onStopChange = (property: string) => (value: any) => {
-        this.props.nodeStore!.updateStop(property, value);
-    }
+    private onStopChange =
+        (property: string) => (value: any, validationResult?: IValidationResult) => {
+            this.props.nodeStore!.updateStop(property, value);
+            if (validationResult) {
+                this.markInvalidFields(property, validationResult!.isValid);
+            }
+        }
 
     private onEditButtonClick = () => {
         this.toggleIsEditingDisabled(
@@ -119,9 +127,15 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
     componentWillUnmount() {
         this.props.nodeStore!.clear();
     }
+
     render() {
         const node = this.props.nodeStore!.node;
         const isEditingDisabled = this.state.isEditingDisabled;
+
+        const isSaveButtonDisabled = this.state.isEditingDisabled
+            || !this.props.nodeStore!.isDirty
+            || !this.isFormValid();
+
         // tslint:disable-next-line:max-line-length
         const message = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
@@ -137,7 +151,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
                 <div className={s.content}>
                     <ViewHeader
                         closePromptMessage={
-                            this.props.nodeStore!.hasUnsavedModifications ? message : undefined
+                            this.props.nodeStore!.isDirty ? message : undefined
                         }
                         showEditButton={true}
                         isEditing={!isEditingDisabled}
@@ -181,7 +195,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
                 </div>
                 <Button
                     type={ButtonType.SAVE}
-                    disabled={!this.props.nodeStore!.hasUnsavedModifications}
+                    disabled={isSaveButtonDisabled}
                     onClick={this.save}
                 >
                     Tallenna muutokset

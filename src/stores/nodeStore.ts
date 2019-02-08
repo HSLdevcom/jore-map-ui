@@ -1,15 +1,14 @@
 import { action, computed, observable } from 'mobx';
+import _ from 'lodash';
 import { ILink, INode } from '~/models';
 
 export class NodeStore {
     @observable private _links: ILink[];
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
-    @observable private _hasUnsavedModifications: boolean;
 
     constructor() {
         this._links = [];
-        this._hasUnsavedModifications = false;
         this._node = null;
         this._oldNode = null;
     }
@@ -24,11 +23,6 @@ export class NodeStore {
         return this._node!;
     }
 
-    @computed
-    get hasUnsavedModifications() {
-        return this._hasUnsavedModifications!;
-    }
-
     @action
     public setLinks = (links: ILink[]) => {
         this._links = links;
@@ -37,6 +31,12 @@ export class NodeStore {
     @action
     public setNode = (node: INode) => {
         this._node = node;
+        this.setOldNode(node);
+    }
+
+    @action
+    public setOldNode = (node: INode) => {
+        this._oldNode = node;
     }
 
     @action
@@ -45,7 +45,6 @@ export class NodeStore {
             ...this._node!,
             [property]: value,
         };
-        this._hasUnsavedModifications = true;
     }
 
     @action
@@ -54,7 +53,11 @@ export class NodeStore {
             ...this._node!.stop!,
             [property]: value,
         };
-        this._hasUnsavedModifications = true;
+    }
+
+    @computed
+    get isDirty() {
+        return !_.isEqual(this.node, this._oldNode);
     }
 
     @action
@@ -68,11 +71,6 @@ export class NodeStore {
         if (this._oldNode) {
             this.setNode(this._oldNode);
         }
-    }
-
-    @action
-    public resetHaveLocalModifications = () => {
-        this._hasUnsavedModifications = false;
     }
 }
 

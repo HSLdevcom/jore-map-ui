@@ -1,6 +1,8 @@
 import React from 'react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
+import nodeValidationModel from '~/validation/models/nodeValidationModel';
+import { IValidationResult } from '~/validation/FormValidator';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import { Dropdown } from '~/components/controls';
 import ViewHeader from '../../ViewHeader';
@@ -8,11 +10,15 @@ import * as s from './stopForm.scss';
 
 interface IStopFormProps {
     stop: IStop;
-    onChange: (property: string) => (value: any) => void;
+    onChange: (property: string) => (value: any, validationResult?: IValidationResult) => void;
     isEditingDisabled: boolean;
 }
 
-const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
+const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
+    const onDropDownChange = (property: string) => (value: any) => {
+        onChange(property)(value);
+    };
+
     return (
         <div className={s.stopView}>
             <ViewHeader
@@ -30,12 +36,14 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         disabled={isEditingDisabled}
                         value={stop.nameFi}
                         onChange={onChange('nameFi')}
+                        validatorRule={nodeValidationModel.name}
                     />
                     <InputContainer
                         label='NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.nameSe}
                         onChange={onChange('nameSe')}
+                        validatorRule={nodeValidationModel.name}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -44,12 +52,14 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         disabled={isEditingDisabled}
                         value={stop.nameLongFi}
                         onChange={onChange('nameLongFi')}
+                        validatorRule={nodeValidationModel.longName}
                     />
                     <InputContainer
                         label='PITKÄ NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.nameLongSe}
                         onChange={onChange('nameLongSe')}
+                        validatorRule={nodeValidationModel.longName}
                     />
                 </div>
                 </div>
@@ -93,7 +103,7 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         onChange={onChange('postalNumber')}
                     />
                     <Dropdown
-                        onChange={onChange('municipality')}
+                        onChange={onDropDownChange('municipality')}
                         codeList={municipalityCodeList}
                         selected={stop.municipality}
                         disabled={isEditingDisabled}
