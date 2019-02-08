@@ -1,10 +1,8 @@
 import { inject, observer } from 'mobx-react';
-import { IoMdClose } from 'react-icons/io';
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
-import { ErrorStore } from '~/stores/errorStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import ButtonType from '~/enums/buttonType';
 import NotificationWindow from './NotificationWindow';
@@ -15,6 +13,7 @@ import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import packageVersion from '../project/version.json';
 import * as s from './app.scss';
+import ErrorBar from './ErrorBar';
 
 interface IAppState {
     showLogin: boolean;
@@ -22,12 +21,11 @@ interface IAppState {
 
 interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
-    errorStore?: ErrorStore;
     mapStore?: MapStore;
     notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'loginStore', 'notificationStore', 'errorStore')
+@inject('mapStore', 'loginStore', 'notificationStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
@@ -36,10 +34,6 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
-    }
-
-    private popError = () => {
-        this.props.errorStore!.pop();
     }
 
     render() {
@@ -63,17 +57,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     />
                 </div>
                 <Map>
-                    { this.props.errorStore!.latestError !== null &&
-                        <div className={s.errorBar}>
-                            {this.props.errorStore!.latestError}
-                            {this.props.errorStore!.errorCount > 1 &&
-                                (
-                                    ` (${this.props.errorStore!.errorCount})`
-                                )
-                            }
-                            <IoMdClose onClick={this.popError}/>
-                        </div>
-                    }
+                    <ErrorBar />
                 </Map>
                 <Button
                   onClick={this.openLoginForm}
