@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Route, Switch } from 'react-router';
-import { NetworkStore, MapLayer } from '~/stores/networkStore';
+import { NetworkStore } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { RouteStore } from '~/stores/routeStore';
 import subSites from '~/routing/subSites';
@@ -25,10 +25,6 @@ class NetworkView extends React.Component<INetworkViewProps> {
     }
 
     private initStores = () => {
-        this.props.networkStore!.selectAllTransitTypes();
-        this.props.networkStore!.showMapLayer(MapLayer.node);
-        this.props.networkStore!.showMapLayer(MapLayer.nodeWithoutLink);
-        this.props.networkStore!.showMapLayer(MapLayer.link);
         this.props.routeStore!.clearRoutes();
     }
 
