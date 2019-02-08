@@ -164,7 +164,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private save = async () => {
         this.setState({ isLoading: true });
         try {
-            if (this.routePathIsNew()) {
+            if (this.props.isNewRoutePath) {
                 await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
             } else {
                 await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
@@ -189,10 +189,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     }
 
-    private routePathIsNew = () => {
-        return this.props.isNewRoutePath;
-    }
-
     render() {
         if (this.state.isLoading) {
             return (
@@ -204,9 +200,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         if (!this.props.routePathStore!.routePath) return null;
 
         const isSaveButtonDisabled = this.state.isEditingDisabled
-        || !this.props.routePathStore!.isDirty
-        || !this.props.routePathStore!.isGeometryValid
-        || !this.isFormValid();
+            || !this.props.routePathStore!.isDirty
+            || !this.props.routePathStore!.isGeometryValid
+            || !this.isFormValid();
 
         return (
             <div className={s.routePathView}>
@@ -224,7 +220,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
                 >
-                    {this.routePathIsNew() ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
+                    {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
                 </Button>
             </div>
         );
