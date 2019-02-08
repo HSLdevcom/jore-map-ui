@@ -13,7 +13,7 @@ import FormBase from '~/components/shared/inheritedComponents/FormBase';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
 import { NotificationStore } from '~/stores/notificationStore';
-import nodeTypeCodeList from '~/codeLists/nodeTypesCodeList';
+import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
