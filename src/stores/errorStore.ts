@@ -1,22 +1,34 @@
-import { computed, observable } from 'mobx';
+import { computed, observable, action } from 'mobx';
 
 export class ErrorStore {
-    @observable private _error: string | null;
+    @observable private _errors: string[];
 
     constructor() {
-        this._error = null;
+        this._errors = [];
     }
 
     @computed
-    get error() {
-        return this._error;
+    get latestError() {
+        const length = this._errors.length;
+        return length > 0 ?
+            this._errors[length - 1] :
+            null;
     }
 
-    set error(error: string | null) {
-        this._error = error;
-        setTimeout(() => {
-            this.error = null;
-        },         10000);
+    @computed
+    get errorCount() {
+        return this._errors.length;
+    }
+
+    @action
+    public push(error: string) {
+        this._errors.push(error);
+    }
+
+    @action
+    public pop() {
+        return this._errors.length > 0 &&
+            this._errors.pop();
     }
 }
 

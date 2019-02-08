@@ -1,4 +1,5 @@
 import { inject, observer } from 'mobx-react';
+import { IoMdClose } from 'react-icons/io';
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
@@ -37,6 +38,10 @@ class App extends React.Component<IAppProps, IAppState> {
         this.props.loginStore!.showLogin = false;
     }
 
+    private popError = () => {
+        this.props.errorStore!.pop();
+    }
+
     render() {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         const buildDate = process.env.BUILD_DATE;
@@ -58,9 +63,15 @@ class App extends React.Component<IAppProps, IAppState> {
                     />
                 </div>
                 <Map>
-                    { !!this.props.errorStore!.error &&
+                    { this.props.errorStore!.latestError !== null &&
                         <div className={s.errorBar}>
-                            {this.props.errorStore!.error}
+                            {this.props.errorStore!.latestError}
+                            {this.props.errorStore!.errorCount > 1 &&
+                                (
+                                    ` (${this.props.errorStore!.errorCount})`
+                                )
+                            }
+                            <IoMdClose onClick={this.popError}/>
                         </div>
                     }
                 </Map>

@@ -25,5 +25,12 @@
         height: 35px;
         background-color: #f77676;
         line-height: 35px;
+
+        > svg {
+            float: right;
+            margin-right: 30px;
+            font-size: 33px;
+            cursor: pointer;
+        }
     }
 }

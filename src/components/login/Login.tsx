@@ -29,7 +29,7 @@ class Login extends React.Component<ILoginProps> {
         throw new Error('Login Modal is not in use');
     }
 
-    public render(): any {
+    public render() {
         return (
         <div className={s.loginView}>
             <h2>Kirjaudu sisään</h2>
