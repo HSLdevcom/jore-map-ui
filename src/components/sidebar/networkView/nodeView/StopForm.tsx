@@ -96,6 +96,7 @@ const stopForm = ({ stop, onChange, isEditingDisabled }: IStopFormProps) => {
                         onChange={onChange('municipality')}
                         codeList={municipalityCodeList}
                         selected={stop.municipality}
+                        disabled={isEditingDisabled}
                         label='KUNTA'
                     />
                 </div>

@@ -42,7 +42,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: false,
+            isEditingDisabled: true,
             invalidFieldsMap: {},
         };
     }
@@ -110,10 +110,15 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
         this.props.nodeStore!.updateStop(property, value);
     }
 
+    private onEditButtonClick = () => {
+        this.toggleIsEditingDisabled(
+            this.props.nodeStore!.undoChanges,
+        );
+    }
+
     componentWillUnmount() {
         this.props.nodeStore!.clear();
     }
-
     render() {
         const node = this.props.nodeStore!.node;
         const isEditingDisabled = this.state.isEditingDisabled;
@@ -132,7 +137,11 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
                 <div className={s.content}>
                     <ViewHeader
                         closePromptMessage={
-                            this.props.nodeStore!.hasUnsavedModifications ? message : undefined}
+                            this.props.nodeStore!.hasUnsavedModifications ? message : undefined
+                        }
+                        showEditButton={true}
+                        isEditing={!isEditingDisabled}
+                        onEditButtonClick={this.onEditButtonClick}
                     >
                         Solmu {node.id}
                     </ViewHeader>
@@ -158,6 +167,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
                             <NodeCoordinatesListView
                                 node={this.props.nodeStore!.node}
                                 onChangeCoordinates={this.onChangeLocations}
+                                isEditingDisabled={isEditingDisabled}
                             />
                         </div>
                         { node.type === NodeType.STOP &&

@@ -11,6 +11,7 @@ interface INodeCoordinatesViewProps {
     nodeType: NodeType;
     locationType: NodeLocationType;
     coordinates: L.LatLng;
+    isEditingDisabled: boolean;
     onChangeCoordinates: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
 }
 
@@ -36,18 +37,17 @@ const getCoordinateSpecificData = (locationType: NodeLocationType, nodeType: Nod
     return { iconClassName, label };
 };
 
-const nodeCoordinatesView = ({ nodeType, locationType, coordinates, onChangeCoordinates }:
-                                 INodeCoordinatesViewProps) => {
+const nodeCoordinatesView = (props: INodeCoordinatesViewProps) => {
     const latChange = (v: string) => {
         const lat = Number(v);
-        onChangeCoordinates(locationType, new L.LatLng(lat, coordinates.lng));
+        props.onChangeCoordinates(props.locationType, new L.LatLng(lat, props.coordinates.lng));
     };
     const lonChange = (v: string) => {
         const lon = Number(v);
-        onChangeCoordinates(locationType, new L.LatLng(coordinates.lat, lon));
+        props.onChangeCoordinates(props.locationType, new L.LatLng(props.coordinates.lat, lon));
     };
 
-    const { iconClassName, label } = getCoordinateSpecificData(locationType, nodeType);
+    const { iconClassName, label } = getCoordinateSpecificData(props.locationType, props.nodeType);
 
     return (
         <div className={s.nodeCoordinatesView}>
@@ -57,14 +57,16 @@ const nodeCoordinatesView = ({ nodeType, locationType, coordinates, onChangeCoor
             </div>
             <div className={s.coordinatesInputs}>
                 <InputContainer
-                    value={coordinates.lat}
+                    value={props.coordinates.lat}
                     onChange={latChange}
                     label={'Latitude'}
+                    disabled={props.isEditingDisabled}
                 />
                 <InputContainer
-                    value={coordinates.lng}
+                    value={props.coordinates.lng}
                     onChange={lonChange}
                     label={'Longitude'}
+                    disabled={props.isEditingDisabled}
                 />
             </div>
         </div>
