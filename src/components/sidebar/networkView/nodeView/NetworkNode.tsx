@@ -2,12 +2,14 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
+import { FiEdit } from 'react-icons/fi';
 import { INode } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import NotificationType from '~/enums/notificationType';
 import { Button, Dropdown } from '~/components/controls';
+import FormBase from '~/components/shared/inheritedComponents/FormBase';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
 import { NotificationStore } from '~/stores/notificationStore';
@@ -28,19 +30,21 @@ interface INetworkNodeProps {
     notificationStore?: NotificationStore;
 }
 
-interface InetworkNodeState {
+interface INetworkNodeState {
     isLoading: boolean;
-    isEditDisabled: boolean;
+    isEditingDisabled: boolean;
+    invalidFieldsMap: object;
 }
 
 @inject('nodeStore', 'mapStore', 'notificationStore')
 @observer
-class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> {
+class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
     constructor(props: INetworkNodeProps) {
         super(props);
         this.state = {
             isLoading: false,
-            isEditDisabled: false,
+            isEditingDisabled: false,
+            invalidFieldsMap: {},
         };
     }
 
@@ -113,7 +117,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
 
     render() {
         const node = this.props.nodeStore!.node;
-        const isEditingDisabled = this.state.isEditDisabled;
+        const isEditingDisabled = this.state.isEditingDisabled;
         // tslint:disable-next-line:max-line-length
         const message = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
@@ -134,6 +138,17 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                         Solmu {node.id}
                     </ViewHeader>
                     <div className={s.form}>
+                        <Button
+                            type={ButtonType.ROUND}
+                            onClick={this.toggleIsEditingDisabled(
+                                this.props.nodeStore!.undoChanges,
+                            )}
+                        >
+                            <FiEdit/>
+                            {
+                                this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'
+                            }
+                        </Button>
                         <div className={s.formSection}>
                             <div className={s.flexRow}>
                                 <InputContainer

@@ -4,12 +4,14 @@ import { ILink, INode } from '~/models';
 export class NodeStore {
     @observable private _links: ILink[];
     @observable private _node: INode | null;
+    @observable private _oldNode: INode | null;
     @observable private _hasUnsavedModifications: boolean;
 
     constructor() {
         this._links = [];
         this._hasUnsavedModifications = false;
         this._node = null;
+        this._oldNode = null;
     }
 
     @computed
@@ -59,6 +61,13 @@ export class NodeStore {
     public clear = () => {
         this._links = [];
         this._node = null;
+    }
+
+    @action
+    public undoChanges = () => {
+        if (this._oldNode) {
+            this.setNode(this._oldNode);
+        }
     }
 
     @action
