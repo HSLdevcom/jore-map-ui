@@ -1,0 +1,40 @@
+@import '../../shared/styles/common.scss';
+
+.entityTypeTogglesView {
+    display: block;
+    border-bottom: 1px solid black;
+
+    .buttonContainer {
+        display: inline-block;
+        width: 50%;
+
+        .button {
+            color: #eef1f3;
+            font-size: 15px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #575757;
+            display: flex;
+            padding: 5px 20px 5px 20px;
+            transition: .5s;
+
+            > svg {
+                font-size: 30px;
+            }
+
+            > div {
+                margin: auto;
+            }
+        }
+
+        .active {
+            background-color: #027ac9;
+        }
+    }
+
+    .buttonContainer:first-child {
+        .button {
+            border-right: 1px solid black;
+        }
+    }
+}

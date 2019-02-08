@@ -4,6 +4,7 @@ import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IExternalNode from '~/models/externals/IExternalNode';
 import TransitTypeHelper from '~/util/transitTypeHelper';
+import INodeBase from '~/models/baseModels/INodeBase';
 import NodeStopFactory from './nodeStopFactory';
 import NotificationType from '../enums/notificationType';
 import notificationStore from '../stores/notificationStore';
@@ -19,6 +20,27 @@ class NodeFactory {
         const coordinatesProjection =
             L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonProjection)).coordinates);
 
+        const nodeStop = externalNode.pysakkiBySoltunnus;
+        let transitTypes: TransitType[] = [];
+        if (externalNode.transittypes) {
+            transitTypes = externalNode.transittypes.split(',').map(transitTypeCode =>
+                TransitTypeHelper.convertTransitTypeCodeToTransitType(transitTypeCode));
+        }
+
+        return {
+            ...NodeFactory.createNodeBase(externalNode),
+            transitTypes,
+            coordinates,
+            coordinatesManual,
+            coordinatesProjection,
+            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,
+            measurementDate: externalNode.mittpvm,
+            modifiedOn: externalNode.solviimpvm,
+            modifiedBy: externalNode.solkuka,
+        };
+    }
+
+    public static createNodeBase = (externalNode: IExternalNode): INodeBase => {
         let shortId;
 
         if (externalNode.sollistunnus) {
@@ -26,13 +48,8 @@ class NodeFactory {
             ? externalNode.solkirjain + externalNode.sollistunnus
             : externalNode.sollistunnus;
         }
-        const nodeStop = externalNode.pysakkiBySoltunnus;
+
         const type = getNodeType(externalNode.soltyyppi);
-        let transitTypes: TransitType[] = [];
-        if (externalNode.transittypes) {
-            transitTypes = externalNode.transittypes.split(',').map(transitTypeCode =>
-                TransitTypeHelper.convertTransitTypeCodeToTransitType(transitTypeCode));
-        }
         // TODO: Change this when creating abstraction layers for reading from postgis
         if (type === NodeType.INVALID) {
             notificationStore.addNotification({
@@ -40,18 +57,11 @@ class NodeFactory {
                 type: NotificationType.WARNING,
             });
         }
+
         return {
-            type,
-            transitTypes,
-            coordinates,
-            coordinatesManual,
-            coordinatesProjection,
             shortId,
+            type,
             id: externalNode.soltunnus,
-            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,
-            measurementDate: externalNode.mittpvm,
-            modifiedOn: externalNode.solviimpvm,
-            modifiedBy: externalNode.solkuka,
         };
     }
 }

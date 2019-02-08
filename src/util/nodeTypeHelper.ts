@@ -1,7 +1,7 @@
 import NodeType from '~/enums/nodeType';
 import * as s from './nodeTypeColors.scss';
 
-class NodeTypeColorHelper {
+class NodeTypeHelper {
     public static getTypeClass = (type: NodeType, highlight?: boolean) => {
         switch (type) {
         case NodeType.STOP:
@@ -20,6 +20,28 @@ class NodeTypeColorHelper {
             throw new Error(`TransitType not supported: ${type}`);
         }
     }
+
+    public static getNodeTypeName = (nodeType?: NodeType) => {
+        if (!nodeType) {
+            return 'Tyhjä';
+        }
+        switch (nodeType) {
+        case NodeType.STOP: {
+            return 'Pysäkki';
+        }
+        case NodeType.CROSSROAD: {
+            return 'Risteys';
+        }
+        case NodeType.DISABLED: {
+            return 'Ei käytössä';
+        }
+        case NodeType.MUNICIPALITY_BORDER: {
+            return 'Kuntaraja';
+        }
+        default: {
+            return nodeType.toString();
+        }}
+    }
 }
 
-export default NodeTypeColorHelper;
+export default NodeTypeHelper;
