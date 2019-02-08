@@ -5,16 +5,15 @@ import classnames from 'classnames';
 import { match } from 'react-router';
 import L from 'leaflet';
 import ButtonType from '~/enums/buttonType';
-import { ILink, INode } from '~/models';
+import { ILink } from '~/models';
 import LinkService from '~/services/linkService';
 import NodeType from '~/enums/nodeType';
 import SubSites from '~/routing/subSites';
 import routeBuilder from '~/routing/routeBuilder';
+import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import navigator from '~/routing/navigator';
-import MunicipalityDropdown from '~/components/controls/MunicipalityDropdown';
-import { EditNetworkStore } from '~/stores/editNetworkStore';
+import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
-import NodeService from '~/services/nodeService';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
@@ -29,7 +28,7 @@ interface ILinkViewState {
 
 interface ILinkViewProps {
     match?: match<any>;
-    editNetworkStore?: EditNetworkStore;
+    linkStore?: LinkStore;
     mapStore?: MapStore;
 }
 
@@ -41,7 +40,7 @@ const nodeDescriptions = {
     unknown: 'Tyhjä',
 };
 
-@inject('editNetworkStore', 'mapStore')
+@inject('linkStore', 'mapStore')
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
@@ -69,7 +68,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         if (startNodeId && endNodeId && transitTypeCode) {
             await this.fetchLink(startNodeId, endNodeId, transitTypeCode);
         }
-        this.fetchNodes([this.state.link!.startNode.id, this.state.link!.endNode.id]);
         this.setState({ isLoading: false });
     }
 
@@ -79,13 +77,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
         if (link) {
             this.setState({ link });
-            this.props.editNetworkStore!.setLinks([link]);
+            this.props.linkStore!.setLink(link);
+            this.props.linkStore!.setNodes([link.startNode, link.endNode]);
         }
-    }
-
-    private fetchNodes = async (nodeIds: string[]) => {
-        const nodes = await Promise.all(nodeIds.map(id => NodeService.fetchNode(id)));
-        this.props.editNetworkStore!.setNodes(nodes.filter(n => Boolean(n)) as INode[]);
     }
 
     private getNodeDescription = (nodeType: NodeType) => {
@@ -116,7 +110,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     componentWillUnmount() {
-        this.props.editNetworkStore!.clear();
+        this.props.linkStore!.clear();
     }
 
     render() {
@@ -233,9 +227,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         label='KATUOSAN OS. NRO'
                         value={this.state.link.streetNumber}
                     />
-                    <MunicipalityDropdown
+                    <Dropdown
                         onChange={this.onChange}
-                        value={this.state.link.municipalityCode}
+                        codeList={municipalityCodeList}
+                        selected={this.state.link.municipalityCode}
                         label='KUNTA'
                     />
                 </div>

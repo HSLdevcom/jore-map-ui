@@ -12,7 +12,6 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import hslLogo from '~/assets/hsl-logo.png';
 import LinkView from './networkView/linkView/LinkView';
-import NodeView from './nodeView/NodeView';
 import RoutesView from './routesView/RoutesView';
 import RouteLinkView from './routeLinkView/RouteLinkView';
 import HomeView from './homeView/HomeView';
@@ -81,10 +80,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             exact={true}
                             path={subSites.routes}
                             component={this.renderRoutesView}
-                        />
-                        <Route
-                            path={subSites.node}
-                            component={NodeView}
                         />
                         <Route
                             exact={true}

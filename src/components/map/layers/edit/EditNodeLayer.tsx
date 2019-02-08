@@ -6,20 +6,19 @@ import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
 import NodeLocationType from '~/types/NodeLocationType';
-import { EditNetworkStore } from '~/stores/editNetworkStore';
+import { NodeStore } from '~/stores/nodeStore';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import NodeMarker from '../mapIcons/NodeMarker';
 
 interface IEditNodeLayerProps {
-    editNetworkStore?: EditNetworkStore;
+    nodeStore?: NodeStore;
 }
 
-@inject('editNetworkStore')
+@inject('nodeStore')
 @observer
 class EditNodeLayer extends Component<IEditNodeLayerProps> {
-
     private renderLinks() {
-        const links = this.props.editNetworkStore!.links;
+        const links = this.props.nodeStore!.links;
         const isLinkView = Boolean(matchPath(navigator.getPathName(), SubSites.link));
 
         if (isLinkView || !links) return null;
@@ -39,12 +38,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         );
     }
 
-    private renderNodes() {
-        const nodes = this.props.editNetworkStore!.nodes;
-        return nodes.map(n => this.renderNode(n));
-    }
-
-    private renderNode(node: INode) {
+    private renderNode() {
+        const node = this.props.nodeStore!.node;
         if (!node) return null;
 
         return (
@@ -58,10 +53,10 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     }
 
     private onMoveMarker = (node: INode) =>
-    (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-        const newNode = { ...node, [coordinatesType]:coordinates };
-        this.props.editNetworkStore!.updateNode(newNode);
-    }
+        (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
+            const newNode = { ...node, [coordinatesType]:coordinates };
+            this.props.nodeStore!.setNode(newNode);
+        }
 
     render() {
         const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.networkNode));
@@ -70,7 +65,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         return (
             <>
                 {this.renderLinks()}
-                {this.renderNodes()}
+                {this.renderNode()}
             </>
         );
     }

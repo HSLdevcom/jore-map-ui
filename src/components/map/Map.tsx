@@ -20,6 +20,7 @@ import Toolbar from './toolbar/Toolbar';
 import EventLog from './EventLog';
 import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
+import NetworkLayers from './layers/NetworkLayers';
 import * as s from './map.scss';
 
 interface IMapProps {
@@ -165,6 +166,7 @@ class LeafletMap extends React.Component<IMapProps> {
                         zoomOffset={-1}
                         // tslint:enable:max-line-length
                     />
+                    <NetworkLayers />
                     <EditNodeLayer />
                     <EditLinkLayer />
                     <RouteLayer

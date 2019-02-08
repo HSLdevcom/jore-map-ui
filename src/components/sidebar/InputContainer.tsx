@@ -8,7 +8,7 @@ interface IInputProps {
     placeholder?: string;
     className?: string;
     disabled?: boolean;
-    onChange?: Function;
+    onChange?: (value: any, validationResult?: IValidationResult) => void;
     value?: string|number;
     validatorRule?: string;
     icon?: React.ReactNode;
