@@ -2,10 +2,17 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/form';
 
-.editNetworkView {
-    padding: 10px;
+.networkNodeView {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
     &.loaderContainer > div {
         margin: 30px auto;
+    }
+    
+    .content {
+        padding: 20px;
+        overflow: scroll;
     }
 }

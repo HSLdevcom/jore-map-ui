@@ -7,16 +7,16 @@ import { IReactionDisposer, reaction } from 'mobx';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
-import { EditNetworkStore } from '~/stores/editNetworkStore';
+import { LinkStore } from '~/stores/linkStore';
 import NodeMarker from '../mapIcons/NodeMarker';
 import { LeafletContext } from '../../Map';
 
 interface IEditLinkLayerProps {
-    editNetworkStore?: EditNetworkStore;
+    linkStore?: LinkStore;
     leaflet: LeafletContext;
 }
 
-@inject('editNetworkStore')
+@inject('linkStore')
 @observer
 class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private reactionDisposer: IReactionDisposer;
@@ -24,13 +24,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     componentDidMount() {
         this.reactionDisposer = reaction(
-            () => this.props.editNetworkStore!.links,
-            () => {
-                const links = this.props.editNetworkStore!.links;
-                if (links.length === 0) {
-                    this.removeOldLinks();
-                }
-            },
+            () => this.props.linkStore!.link,
+            () => this.props.linkStore!.link === null && this.removeOldLinks(),
         );
     }
 
@@ -48,20 +43,20 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     }
 
     private drawEditableLink = () => {
-        const links = this.props.editNetworkStore!.links;
+        const link = this.props.linkStore!.link;
         const map = this.props.leaflet.map;
         const isLinkView = Boolean(matchPath(navigator.getPathName(), SubSites.link));
-        if (!isLinkView || !links || !map) return;
+        if (!isLinkView || !link || !map) return;
 
         this.removeOldLinks();
-        links.map((link: ILink) => this.drawEditableLinkToMap(link));
+        this.drawEditableLinkToMap(link);
 
         map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
-            const currentLinks = this.props.editNetworkStore!.links.map(link => ({ ...link }));
+            const linkCopy = Object.assign({}, this.props.linkStore!.link);
             const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
-            currentLinks[0].geometry = latlngs;
-            this.props.editNetworkStore!.setLinks(currentLinks);
+            linkCopy.geometry = latlngs;
+            this.props.linkStore!.setLink(linkCopy);
         });
     }
 
@@ -84,7 +79,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     }
 
     private renderNodes = () => {
-        const nodes = this.props.editNetworkStore!.nodes;
+        const nodes = this.props.linkStore!.nodes;
         return nodes.map(n => this.renderNode(n));
     }
 

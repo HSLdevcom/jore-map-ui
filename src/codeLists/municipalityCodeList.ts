@@ -1,4 +1,4 @@
-const municipalityDictionary = {
+const municipalityCodeList = {
     ['999']: 'Muu',
     ['753']: 'Sipoo',
     ['858']: 'Tuusula',
@@ -14,4 +14,4 @@ const municipalityDictionary = {
     ['049']: 'Espoo',
 };
 
-export default municipalityDictionary;
+export default municipalityCodeList;
