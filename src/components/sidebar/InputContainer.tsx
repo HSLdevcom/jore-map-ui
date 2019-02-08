@@ -30,17 +30,17 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     }
 
     componentDidMount() {
-        this.validate(String(this.props.value), String(this.props.value));
+        this.validate(this.props.value, this.props.value);
     }
 
     componentWillReceiveProps(nextProps: IInputProps) {
         const forceUpdate = this.props.disabled !== nextProps.disabled;
-        this.validate(String(this.props.value), String(nextProps.value), forceUpdate);
+        this.validate(this.props.value, nextProps.value, forceUpdate);
     }
 
-    private validate = (oldValue: string, newValue: string, forceUpdate?: boolean) => {
+    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
         if (!this.props.onChange || !this.props.validatorRule) return;
-        if ((oldValue === newValue) || forceUpdate) return;
+        if ((oldValue === newValue) && !forceUpdate) return;
 
         const wasValid = this.state.isValid;
         const validatorResult: IValidationResult
@@ -58,7 +58,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     private onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
         if (this.props.validatorRule) {
-            this.validate(String(this.props.value), value);
+            this.validate(this.props.value, value);
         } else {
             this.props.onChange!(value);
         }
