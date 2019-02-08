@@ -50,10 +50,10 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private renderNodes() {
         const routePathLinks = this.props.routePathLinks;
         const nodes = routePathLinks
-            .map((routePathLink) => {
+            .map((routePathLink, index) => {
                 return (
                     <NodeMarker
-                        key={routePathLink.orderNumber}
+                        key={`${routePathLink.orderNumber}-${index}`}
                         node={routePathLink.startNode}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
                         isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
