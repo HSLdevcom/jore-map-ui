@@ -1,7 +1,7 @@
 import React from 'react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
-import municipalityCodeList from '~/codeLists/municipalitiesCodeList';
+import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import { Dropdown } from '~/components/controls';
 import ViewHeader from '../../ViewHeader';
 import * as s from './stopForm.scss';

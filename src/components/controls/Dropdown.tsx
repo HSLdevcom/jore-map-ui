@@ -25,7 +25,7 @@ interface IDropdownWithCodeListProps extends IDropdownBaseProps {
     codeList: any;
 }
 
-const  usesDictionary = (
+const usesCodeList = (
     item: IDropdownProps | IDropdownWithCodeListProps): item is IDropdownWithCodeListProps => {
     return (
         (item as IDropdownWithCodeListProps).codeList !== undefined
@@ -53,10 +53,10 @@ class Dropdown extends React.Component
     public render() {
         let dropDownItemList: IDropdownItem[];
 
-        if (usesDictionary(this.props)) {
-            const dictionary = this.props.codeList;
-            dropDownItemList = Object.keys(dictionary).map(
-                key => ({ key, value: dictionary[key] }),
+        if (usesCodeList(this.props)) {
+            const codeList = this.props.codeList;
+            dropDownItemList = Object.keys(codeList).map(
+                key => ({ key, value: codeList[key] }),
             );
         } else {
             const items = this.props.items;
