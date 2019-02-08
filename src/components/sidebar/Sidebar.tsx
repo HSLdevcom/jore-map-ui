@@ -23,7 +23,7 @@ import * as s from './sidebar.scss';
 // This is due to blocked updates issue
 // tslint:disable-next-line
 // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
-interface ISidebarProps{
+interface ISidebarProps {
     routeStore?: RouteStore;
     searchStore?: SearchStore;
     toolbarStore?: ToolbarStore;
@@ -41,9 +41,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RoutesView /> : <Redirect to='/' />;
     }
-
-    private renderAddNewRoutePath = (props: any) => <RoutePathView {...props} isAddingNew={true} />;
-    private renderRoutePathView = (props: any) => <RoutePathView {...props} isAddingNew={false} />;
+    private renderAddNewRoutePath = (props: any) =>
+        <RoutePathView {...props} isNewRoutePath={true} />
+    private renderRoutePathView = (props: any) =>
+        <RoutePathView {...props} isNewRoutePath={false} />
 
     render() {
         const goToHomeView = () => {
