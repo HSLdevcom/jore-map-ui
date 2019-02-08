@@ -22,12 +22,14 @@ class ErrorBar extends Component<IErrorBarProps> {
 
         return (
             <div className={s.errorBarView}>
-                {this.props.errorStore!.latestError}
-                {this.props.errorStore!.errorCount > 1 &&
-                    (
-                        ` (${this.props.errorStore!.errorCount})`
-                    )
-                }
+                <div>
+                    {this.props.errorStore!.latestError}
+                    {this.props.errorStore!.errorCount > 1 &&
+                        (
+                            ` (${this.props.errorStore!.errorCount})`
+                        )
+                    }
+                </div>
                 <IoMdClose onClick={this.popError}/>
             </div>
         );
