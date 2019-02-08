@@ -4,6 +4,9 @@ import Moment from 'moment';
 import { FiRefreshCw } from 'react-icons/fi';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../../InputContainer';
@@ -37,6 +40,17 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
             this.props.routePathStore!.getCalculatedLength(),
         )
     )
+
+    private redirectToNewRoutePathView = () => {
+        const routePath = this.props.routePathStore!.routePath;
+        if (!routePath) return;
+
+        const newRoutePathLink = routeBuilder
+            .to(SubSites.newRoutePath, { routeId: routePath.routeId, lineId: routePath.lineId })
+            .toLink();
+
+        navigator.goTo(newRoutePathLink);
+    }
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
@@ -221,7 +235,12 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     >
                         Aikataulu
                     </Button>
-                    <div className={s.flexButtonFiller} />
+                    <Button
+                        type={ButtonType.ROUND}
+                        onClick={this.redirectToNewRoutePathView!}
+                    >
+                        Kopioi
+                    </Button>
                 </div>
             </div>
             <div className={s.formSection}>

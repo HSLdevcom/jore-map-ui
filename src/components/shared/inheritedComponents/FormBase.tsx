@@ -20,7 +20,7 @@ class FormBase<Props, State extends IFormBaseState> extends Component<Props, Sta
         });
     }
 
-    protected toggleIsEditingDisabled = (undoChange: () => void) => () => {
+    protected toggleIsEditingDisabled = (undoChange: () => void) => {
         if (!this.state.isEditingDisabled) {
             undoChange();
         }

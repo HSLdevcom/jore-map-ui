@@ -9,6 +9,8 @@ interface IRoutePathHeaderProps {
     hasModifications?: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
+    isEditing: boolean;
+    onEditButtonClick: () => void;
 }
 
 class RoutePathHeader extends React.Component<IRoutePathHeaderProps> {
@@ -20,6 +22,9 @@ class RoutePathHeader extends React.Component<IRoutePathHeaderProps> {
             <div className={classnames(s.formSection, s.content, s.borderBotton)}>
                 <ViewHeader
                     closePromptMessage={this.props.hasModifications ? message : undefined}
+                    showEditButton={true}
+                    onEditButtonClick={this.props.onEditButtonClick}
+                    isEditing={this.props.isEditing}
                 >
                     {this.props.isNewRoutePath ? 'Uusi reitinsuunta' :
                         `${this.props.routePath.lineId} > ${this.props.routePath.routeId}`}

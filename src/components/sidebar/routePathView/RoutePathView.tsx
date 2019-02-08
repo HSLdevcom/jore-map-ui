@@ -127,11 +127,6 @@ class RoutePathView extends FormBase<IRoutePathViewProps, IRoutePathViewState>{
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
                     markInvalidFields={this.markInvalidFields}
-                    toggleIsEditingDisabled={
-                        this.toggleIsEditingDisabled(
-                            this.props.routePathStore!.undoChanges,
-                        )
-                    }
                 />
             );
         }
@@ -170,6 +165,12 @@ class RoutePathView extends FormBase<IRoutePathViewProps, IRoutePathViewState>{
         });
     }
 
+    private toggleIsEditing = () => {
+        this.toggleIsEditingDisabled(
+            this.props.routePathStore!.undoChanges,
+        );
+    }
+
     render() {
         if (this.state.isLoading) {
             return (
@@ -191,6 +192,8 @@ class RoutePathView extends FormBase<IRoutePathViewProps, IRoutePathViewState>{
                     hasModifications={this.props.routePathStore!.isDirty}
                     routePath={this.props.routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
+                    isEditing={!this.state.isEditingDisabled}
+                    onEditButtonClick={this.toggleIsEditing}
                 />
                 <div>
                     <RoutePathTabs />

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
-import { FiEdit } from 'react-icons/fi';
 import { INode } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
@@ -138,17 +137,6 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
                         Solmu {node.id}
                     </ViewHeader>
                     <div className={s.form}>
-                        <Button
-                            type={ButtonType.ROUND}
-                            onClick={this.toggleIsEditingDisabled(
-                                this.props.nodeStore!.undoChanges,
-                            )}
-                        >
-                            <FiEdit/>
-                            {
-                                this.state.isEditingDisabled ? 'Muokkaa' : 'Peruuta'
-                            }
-                        </Button>
                         <div className={s.formSection}>
                             <div className={s.flexRow}>
                                 <InputContainer
