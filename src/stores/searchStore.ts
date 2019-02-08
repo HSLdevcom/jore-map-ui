@@ -8,6 +8,8 @@ export class SearchStore {
         routeId: string;
     }[];
     @observable private _selectedTransitTypes: TransitType[];
+    @observable private _isSearchingForLines: boolean;
+    @observable private _isSearchingForNodes: boolean;
 
     constructor() {
         this._searchInput = '';
@@ -19,6 +21,8 @@ export class SearchStore {
             TransitType.TRAIN,
             TransitType.TRAM,
         ];
+        this._isSearchingForLines = true;
+        this._isSearchingForNodes = true;
     }
 
     @computed
@@ -60,6 +64,26 @@ export class SearchStore {
     @computed
     get selectedTransitTypes(): TransitType[] {
         return this._selectedTransitTypes;
+    }
+
+    @computed
+    get isSearchingForLines() {
+        return this._isSearchingForLines;
+    }
+
+    @computed
+    get isSearchingForNodes() {
+        return this._isSearchingForNodes;
+    }
+
+    @action
+    public toggleIsSearchingForLines() {
+        this._isSearchingForLines = !this._isSearchingForLines;
+    }
+
+    @action
+    public toggleIsSearchingForNodes() {
+        this._isSearchingForNodes = !this.isSearchingForNodes;
     }
 
     @action

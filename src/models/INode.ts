@@ -1,13 +1,10 @@
 import * as L from 'leaflet';
-import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IStop from './IStop';
+import INodeBase from './baseModels/INodeBase';
 
-export default interface INode {
-    id: string;
-    shortId?: string;
+export default interface INode extends INodeBase {
     stop?: IStop;
-    type: NodeType;
     transitTypes: TransitType[];
     coordinates: L.LatLng;
     coordinatesManual: L.LatLng;

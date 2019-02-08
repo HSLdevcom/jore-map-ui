@@ -11,7 +11,7 @@ import { Button, Dropdown } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
 import { NotificationStore } from '~/stores/notificationStore';
-import nodeTypesCodeList from '~/codeLists/nodeTypesCodeList';
+import nodeTypeCodeList from '~/codeLists/nodeTypesCodeList';
 import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -147,7 +147,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                                     onChange={this.onChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
-                                    codeList={nodeTypesCodeList}
+                                    codeList={nodeTypeCodeList}
                                 />
                             </div>
                         </div>
@@ -159,7 +159,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                         </div>
                         { node.type === NodeType.STOP &&
                             <StopForm
-                                isEditingDisabled={false}
+                                isEditingDisabled={isEditingDisabled}
                                 onChange={this.onStopChange}
                                 stop={node.stop!}
                             />
