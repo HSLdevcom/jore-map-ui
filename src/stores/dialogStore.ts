@@ -21,9 +21,10 @@ export class DialogStore {
     @action
     public setFadeMessage = (message: string) => {
         this._message = message;
-        setTimeout(() => {
-            this.close();
-        },         Constants.FADE_DIALOG_TIMEOUT);
+        setTimeout(
+            () => { this.close(); },
+            Constants.FADE_DIALOG_TIMEOUT,
+        );
     }
 
     @action
