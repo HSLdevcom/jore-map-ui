@@ -185,28 +185,26 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             || !this.isFormValid();
 
         return (
-            <ViewFormBase>
-                <div className={s.routePathView}>
-                    <RoutePathHeader
-                        hasModifications={this.props.routePathStore!.isDirty}
-                        routePath={this.props.routePathStore!.routePath!}
-                        isNewRoutePath={this.props.isNewRoutePath}
-                        isEditing={!this.state.isEditingDisabled}
-                        onEditButtonClick={this.toggleIsEditing}
-                    />
-                    <div>
-                        <RoutePathTabs />
-                    </div>
-                    {this.renderTabContent()}
-                    <Button
-                        onClick={this.save}
-                        type={ButtonType.SAVE}
-                        disabled={isSaveButtonDisabled}
-                    >
-                        {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-                    </Button>
+            <div className={s.routePathView}>
+                <RoutePathHeader
+                    hasModifications={this.props.routePathStore!.isDirty}
+                    routePath={this.props.routePathStore!.routePath!}
+                    isNewRoutePath={this.props.isNewRoutePath}
+                    isEditing={!this.state.isEditingDisabled}
+                    onEditButtonClick={this.toggleIsEditing}
+                />
+                <div>
+                    <RoutePathTabs />
                 </div>
-            </ViewFormBase>
+                {this.renderTabContent()}
+                <Button
+                    onClick={this.save}
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                >
+                    {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
+                </Button>
+            </div>
         );
     }
 }
