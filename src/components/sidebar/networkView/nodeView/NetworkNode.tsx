@@ -166,7 +166,7 @@ class NetworkNode extends ViewFormBase<INetworkNodeProps, INetworkNodeState> {
                                     label='LYHYT ID'
                                     disabled={isEditingDisabled}
                                     value={node.shortId}
-                                    onChange={this.onChange('routePathShortName')}
+                                    onChange={this.onChange('shortId')}
                                 />
                                 <Dropdown
                                     label='TYYPPI'
