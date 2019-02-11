@@ -6,6 +6,7 @@ import { MapStore } from '~/stores/mapStore';
 import { NotificationStore } from '~/stores/notificationStore';
 import ButtonType from '~/enums/buttonType';
 import NotificationWindow from './NotificationWindow';
+import Dialog from './Dialog';
 import Button from './controls/Button';
 import Modal from './Modal';
 import Login from './login/Login';
@@ -66,6 +67,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 <NotificationWindow
                     notifications={this.props.notificationStore!.notifications}
                 />
+                <Dialog />
             </div>
         );
     }
