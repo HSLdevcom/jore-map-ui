@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import Moment from 'moment';
 import { NodeStore } from '~/stores/nodeStore';
 import { LinkStore } from '~/stores/linkStore';
+import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -22,6 +23,7 @@ enum GeoserverLayer {
 }
 
 interface INetworkLayersProps {
+    mapStore?: MapStore;
     networkStore?: NetworkStore;
     nodeStore?: NodeStore;
     linkStore?: LinkStore;
@@ -49,7 +51,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('networkStore', 'nodeStore', 'linkStore', 'routePathStore', 'toolbarStore')
+@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'routePathStore', 'toolbarStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
     private parseDateRangesString(dateRangesString?: string) {
@@ -236,6 +238,11 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     render() {
+        const mapZoomLevel = this.props.mapStore!.zoom;
+        if (mapZoomLevel < 16) { // TODO: move to constants MAP_LAYERS_MIN_ZOOM_LEVEL: 15
+            return null;
+        }
+
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;
         const nodeSize = this.props.networkStore!.nodeSize;
