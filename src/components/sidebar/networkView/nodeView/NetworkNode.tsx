@@ -117,7 +117,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
             }
         }
 
-    private onEditButtonClick = () => {
+    private toggleIsEditingEnabled = () => {
         this.toggleIsEditingDisabled(
             this.props.nodeStore!.undoChanges,
         );
@@ -155,7 +155,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
                         }
                         showEditButton={true}
                         isEditing={!isEditingDisabled}
-                        onEditButtonClick={this.onEditButtonClick}
+                        onEditButtonClick={this.toggleIsEditingEnabled}
                     >
                         Solmu {node.id}
                     </ViewHeader>

@@ -52,14 +52,12 @@ const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
                         disabled={isEditingDisabled}
                         value={stop.nameLongFi}
                         onChange={onChange('nameLongFi')}
-                        validatorRule={nodeValidationModel.longName}
                     />
                     <InputContainer
                         label='PITKÄ NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.nameLongSe}
                         onChange={onChange('nameLongSe')}
-                        validatorRule={nodeValidationModel.longName}
                     />
                 </div>
                 </div>
@@ -145,7 +143,7 @@ const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
-                        label='SÄDE'
+                        label='SÄDE (m)'
                         disabled={isEditingDisabled}
                         value={stop.radius}
                         onChange={onChange('radius')}
