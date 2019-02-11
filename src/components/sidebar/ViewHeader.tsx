@@ -8,7 +8,7 @@ interface IViewHeaderProps {
     children: ReactNode;
     closePromptMessage?: string;
     hideCloseButton?: boolean;
-    showEditButton?: boolean;
+    isEditButtonVisible?: boolean;
     isEditing?: boolean;
     onEditButtonClick?: () => void;
     onCloseButtonClick?: () => void;
@@ -29,7 +29,7 @@ const viewHeader = (props:IViewHeaderProps) => {
         <div className={s.viewHeaderView}>
             <div className={s.topic}>{props.children}</div>
             <div>
-                { props.showEditButton &&
+                { props.isEditButtonVisible &&
                     <FiEdit3
                         onClick={onEditButtonClick}
                         className={

@@ -1,12 +1,12 @@
 import { Component } from 'react';
 
-interface IFormBaseState {
+interface IViewFormBaseState {
     isLoading: boolean;
     invalidFieldsMap: object;
     isEditingDisabled: boolean;
 }
 
-class FormBase<Props, State extends IFormBaseState> extends Component<Props, State> {
+class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Props, State> {
     protected isFormValid = () => {
         return !Object.values(this.state.invalidFieldsMap)
             .some(fieldIsValid => !fieldIsValid);
@@ -32,4 +32,4 @@ class FormBase<Props, State extends IFormBaseState> extends Component<Props, Sta
     }
 }
 
-export default FormBase;
+export default ViewFormBase;

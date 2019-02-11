@@ -9,7 +9,7 @@ import LinkService from '~/services/linkService';
 import NotificationType from '~/enums/notificationType';
 import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
-import FormBase from '~/components/shared/inheritedComponents/FormBase';
+import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
 import { NotificationStore } from '~/stores/notificationStore';
@@ -38,7 +38,7 @@ interface INetworkNodeState {
 
 @inject('nodeStore', 'mapStore', 'notificationStore')
 @observer
-class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
+class NetworkNode extends ViewFormBase<INetworkNodeProps, INetworkNodeState> {
     constructor(props: INetworkNodeProps) {
         super(props);
         this.state = {
@@ -137,7 +137,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
             || !this.isFormValid();
 
         // tslint:disable-next-line:max-line-length
-        const message = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+        const closePromptMessage = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
         if (this.state.isLoading || !node || !node.id) {
             return(
@@ -151,9 +151,9 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
                 <div className={s.content}>
                     <ViewHeader
                         closePromptMessage={
-                            this.props.nodeStore!.isDirty ? message : undefined
+                            this.props.nodeStore!.isDirty ? closePromptMessage : undefined
                         }
-                        showEditButton={true}
+                        isEditButtonVisible={true}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={this.toggleIsEditingEnabled}
                     >

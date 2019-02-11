@@ -15,10 +15,6 @@ interface IStopFormProps {
 }
 
 const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
-    const onDropDownChange = (property: string) => (value: any) => {
-        onChange(property)(value);
-    };
-
     return (
         <div className={s.stopView}>
             <ViewHeader
@@ -101,7 +97,7 @@ const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
                         onChange={onChange('postalNumber')}
                     />
                     <Dropdown
-                        onChange={onDropDownChange('municipality')}
+                        onChange={onChange('municipality')}
                         codeList={municipalityCodeList}
                         selected={stop.municipality}
                         disabled={isEditingDisabled}

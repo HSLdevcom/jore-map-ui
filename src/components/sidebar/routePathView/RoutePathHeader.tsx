@@ -22,7 +22,7 @@ class RoutePathHeader extends React.Component<IRoutePathHeaderProps> {
             <div className={classnames(s.formSection, s.content, s.borderBotton)}>
                 <ViewHeader
                     closePromptMessage={this.props.hasModifications ? message : undefined}
-                    showEditButton={true}
+                    isEditButtonVisible={true}
                     onEditButtonClick={this.props.onEditButtonClick}
                     isEditing={this.props.isEditing}
                 >

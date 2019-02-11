@@ -11,7 +11,7 @@ import navigator from '~/routing/navigator';
 import { RouteStore } from '~/stores/routeStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import FormBase from '~/components/shared/inheritedComponents/FormBase';
+import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import { NotificationStore } from '~/stores/notificationStore';
 import DialogStore from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
@@ -44,7 +44,7 @@ interface IRoutePathViewProps {
 
 @inject('routeStore', 'routePathStore', 'networkStore', 'notificationStore', 'toolbarStore')
 @observer
-class RoutePathView extends FormBase<IRoutePathViewProps, IRoutePathViewState>{
+class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
@@ -185,26 +185,28 @@ class RoutePathView extends FormBase<IRoutePathViewProps, IRoutePathViewState>{
             || !this.isFormValid();
 
         return (
-            <div className={s.routePathView}>
-                <RoutePathHeader
-                    hasModifications={this.props.routePathStore!.isDirty}
-                    routePath={this.props.routePathStore!.routePath!}
-                    isNewRoutePath={this.props.isNewRoutePath}
-                    isEditing={!this.state.isEditingDisabled}
-                    onEditButtonClick={this.toggleIsEditing}
-                />
-                <div>
-                    <RoutePathTabs />
+            <ViewFormBase>
+                <div className={s.routePathView}>
+                    <RoutePathHeader
+                        hasModifications={this.props.routePathStore!.isDirty}
+                        routePath={this.props.routePathStore!.routePath!}
+                        isNewRoutePath={this.props.isNewRoutePath}
+                        isEditing={!this.state.isEditingDisabled}
+                        onEditButtonClick={this.toggleIsEditing}
+                    />
+                    <div>
+                        <RoutePathTabs />
+                    </div>
+                    {this.renderTabContent()}
+                    <Button
+                        onClick={this.save}
+                        type={ButtonType.SAVE}
+                        disabled={isSaveButtonDisabled}
+                    >
+                        {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
+                    </Button>
                 </div>
-                {this.renderTabContent()}
-                <Button
-                    onClick={this.save}
-                    type={ButtonType.SAVE}
-                    disabled={isSaveButtonDisabled}
-                >
-                    {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-                </Button>
-            </div>
+            </ViewFormBase>
         );
     }
 }
