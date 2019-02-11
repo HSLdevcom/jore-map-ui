@@ -4,6 +4,7 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import ButtonType from '~/enums/buttonType';
+import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Button from './controls/Button';
 import Modal from './Modal';
@@ -12,7 +13,6 @@ import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import packageVersion from '../project/version.json';
 import * as s from './app.scss';
-import ErrorBar from './ErrorBar';
 
 interface IAppState {
     showLogin: boolean;

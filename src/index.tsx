@@ -49,14 +49,6 @@ const stores = {
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());
 
-window.onerror = (msg, url, lineNo, columnNo, error) => {
-    if (error && !error['_suppressLogging']) {
-        ErrorStore.push(error.message);
-        return true;
-    }
-    return true;
-};
-
 ReactDOM.render(
     <Provider {...stores}>
         <ApolloProvider client={apolloClient}>

@@ -7,7 +7,6 @@ import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
-import { ErrorStore } from '~/stores/errorStore';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
@@ -21,13 +20,12 @@ interface IRoutePathInfoTabState {
 interface IRoutePathInfoTabProps {
     isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
-    errorStore?: ErrorStore;
     routePath: IRoutePath;
     markInvalidFields: Function;
     toggleIsEditingDisabled: Function;
 }
 
-@inject('routePathStore', 'errorStore')
+@inject('routePathStore')
 @observer
 class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState>{
     constructor(props: any) {
