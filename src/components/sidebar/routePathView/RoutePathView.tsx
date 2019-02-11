@@ -12,6 +12,7 @@ import { RouteStore } from '~/stores/routeStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { NotificationStore } from '~/stores/notificationStore';
+import DialogStore from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
@@ -171,10 +172,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             }
             this.props.routePathStore!.setRoutePath(this.props.routePathStore!.routePath!);
 
-            this.props.notificationStore!.addNotification({
-                message: 'Tallennus onnistui',
-                type: NotificationType.SUCCESS,
-            });
+            DialogStore.setFadeMessage('Tallennettu!');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
             this.props.notificationStore!.addNotification({
