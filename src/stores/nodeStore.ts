@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
 import { ILink, INode } from '~/models';
+import { LatLng } from 'leaflet';
 
 export class NodeStore {
     @observable private _links: ILink[];
@@ -36,11 +37,11 @@ export class NodeStore {
 
     @action
     public setOldNode = (node: INode) => {
-        this._oldNode = node;
+        this._oldNode = _.cloneDeep(node);
     }
 
     @action
-    public updateNode = (property: string, value: string|number|Date) => {
+    public updateNode = (property: string, value: string|number|Date|LatLng) => {
         this._node = {
             ...this._node!,
             [property]: value,
@@ -57,7 +58,7 @@ export class NodeStore {
 
     @computed
     get isDirty() {
-        return !_.isEqual(this.node, this._oldNode);
+        return !_.isEqual(this._node, this._oldNode);
     }
 
     @action

@@ -79,8 +79,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
     }
 
     private onChangeLocations = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-        const node = { ...this.props.nodeStore!.node, [coordinatesType]:coordinates };
-        this.props.nodeStore!.setNode(node);
+        this.props.nodeStore!.updateNode(coordinatesType, coordinates);
     }
 
     private save = async () => {
