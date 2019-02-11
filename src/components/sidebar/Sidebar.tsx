@@ -12,7 +12,6 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import hslLogo from '~/assets/hsl-logo.png';
 import LinkView from './networkView/linkView/LinkView';
-import NodeView from './nodeView/NodeView';
 import RoutesView from './routesView/RoutesView';
 import RouteLinkView from './routeLinkView/RouteLinkView';
 import HomeView from './homeView/HomeView';
@@ -24,7 +23,7 @@ import * as s from './sidebar.scss';
 // This is due to blocked updates issue
 // tslint:disable-next-line
 // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
-interface ISidebarProps{
+interface ISidebarProps {
     routeStore?: RouteStore;
     searchStore?: SearchStore;
     toolbarStore?: ToolbarStore;
@@ -42,9 +41,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RoutesView /> : <Redirect to='/' />;
     }
-
-    private renderAddNewRoutePath = (props: any) => <RoutePathView {...props} isAddingNew={true} />;
-    private renderRoutePathView = (props: any) => <RoutePathView {...props} isAddingNew={false} />;
+    private renderAddNewRoutePath = (props: any) =>
+        <RoutePathView {...props} isNewRoutePath={true} />
+    private renderRoutePathView = (props: any) =>
+        <RoutePathView {...props} isNewRoutePath={false} />
 
     render() {
         const goToHomeView = () => {
@@ -80,10 +80,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             exact={true}
                             path={subSites.routes}
                             component={this.renderRoutesView}
-                        />
-                        <Route
-                            path={subSites.node}
-                            component={NodeView}
                         />
                         <Route
                             exact={true}

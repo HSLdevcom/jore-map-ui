@@ -3,14 +3,16 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { INode } from '~/models';
-import { EditNetworkStore } from '~/stores/editNetworkStore';
+import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
-import { Dropdown } from '~/components/controls';
+import { Button, Dropdown } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
 import NodeService from '~/services/nodeService';
+import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import NodeLocationType from '~/types/NodeLocationType';
+import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
 import ViewHeader from '../../ViewHeader';
@@ -20,7 +22,7 @@ import * as s from './networkNode.scss';
 
 interface INetworkNodeProps {
     match?: match<any>;
-    editNetworkStore?: EditNetworkStore;
+    nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
 }
@@ -30,7 +32,7 @@ interface InetworkNodeState {
     isEditDisabled: boolean;
 }
 
-@inject('editNetworkStore', 'mapStore', 'errorStore')
+@inject('nodeStore', 'mapStore', 'errorStore')
 @observer
 class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> {
     constructor(props: INetworkNodeProps) {
@@ -49,10 +51,10 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
             this.props.mapStore!.setSelectedNodeId(selectedNodeId);
             await this.queryNode(selectedNodeId);
         }
-        const nodes = this.props.editNetworkStore!.nodes;
-        if (nodes && nodes.length === 1) {
-            await this.fetchLinksForNodes(nodes[0]);
-            this.props.mapStore!.setCoordinates(nodes[0].coordinates);
+        const node = this.props.nodeStore!.node;
+        if (node) {
+            await this.fetchLinksForNode(node);
+            this.props.mapStore!.setCoordinates(node.coordinates);
         }
         this.setState({ isLoading: false });
     }
@@ -60,16 +62,16 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     private async queryNode(nodeId: string) {
         try {
             const node = await NodeService.fetchNode(nodeId);
-            this.props.editNetworkStore!.setNodes([node]);
+            this.props.nodeStore!.setNode(node);
         } catch (ex) {
             this.props.errorStore!.push('Solmun haku ei onnistunut');
         }
     }
 
-    private async fetchLinksForNodes(node: INode) {
+    private async fetchLinksForNode(node: INode) {
         try {
             const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
-            this.props.editNetworkStore!.setLinks(links);
+            this.props.nodeStore!.setLinks(links);
         } catch (ex) {
             this.props.errorStore!.push(
                 // tslint:disable-next-line:max-line-length
@@ -79,66 +81,79 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     }
 
     private onChangeLocations = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-        const node = { ...this.props.editNetworkStore!.nodes![0], [coordinatesType]:coordinates };
-        this.props.editNetworkStore!.updateNode(node);
+        const node = { ...this.props.nodeStore!.node, [coordinatesType]:coordinates };
+        this.props.nodeStore!.setNode(node);
     }
 
-    private onChange = (name: string) => () => {};
+    private onChange = (property: string) => (value: any) => {
+        return;
+    }
+
+    private save = () => () => {};
 
     componentWillUnmount() {
-        this.props.editNetworkStore!.clear();
+        this.props.nodeStore!.clear();
     }
 
     render() {
-        const node = this.props.editNetworkStore!.nodes[0];
+        const node = this.props.nodeStore!.node;
         const isEditingDisabled = this.state.isEditDisabled;
 
         if (this.state.isLoading || !node || !node.id) {
             return(
-                <div className={classnames(s.editNetworkView, s.loaderContainer)}>
+                <div className={classnames(s.networkNodeView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );
         }
         return (
-            <div className={s.editNetworkView}>
-                <ViewHeader
-                    closePromptMessage={undefined}
-                >
-                    Solmu {node.id}
-                </ViewHeader>
-                <div className={s.form}>
-                    <div className={s.formSection}>
-                        <div className={s.flexRow}>
-                            <InputContainer
-                                label='LYHYT ID'
-                                disabled={isEditingDisabled}
-                                value={node.shortId}
-                                onChange={this.onChange('routePathShortName')}
-                            />
-                            <Dropdown
-                                label='TYYPPI'
-                                onChange={this.onChange}
-                                items={['Pysäkki', 'Risteys']}
-                                // TODO: Add other alternatives, and remove hardcoding
-                                selected={node.type === NodeType.STOP ? 'Pysäkki' : 'Risteys'}
+            <div className={s.networkNodeView}>
+                <div className={s.content}>
+                    <ViewHeader
+                        closePromptMessage={undefined}
+                    >
+                        Solmu {node.id}
+                    </ViewHeader>
+                    <div className={s.form}>
+                        <div className={s.formSection}>
+                            <div className={s.flexRow}>
+                                <InputContainer
+                                    label='LYHYT ID'
+                                    disabled={isEditingDisabled}
+                                    value={node.shortId}
+                                    onChange={this.onChange('routePathShortName')}
+                                />
+                                <Dropdown
+                                    label='TYYPPI'
+                                    onChange={this.onChange('type')}
+                                    disabled={isEditingDisabled}
+                                    selected={node.type}
+                                    codeList={nodeTypeCodeList}
+                                />
+                            </div>
+                        </div>
+                        <div className={s.formSection}>
+                            <NodeCoordinatesListView
+                                node={this.props.nodeStore!.node}
+                                onChangeCoordinates={this.onChangeLocations}
                             />
                         </div>
+                        { node.type === NodeType.STOP &&
+                            <StopForm
+                                isEditingDisabled={false}
+                                onChange={this.onChange}
+                                stop={node.stop!}
+                            />
+                        }
                     </div>
-                    <div className={s.formSection}>
-                        <NodeCoordinatesListView
-                            node={this.props.editNetworkStore!.nodes![0]}
-                            onChangeCoordinates={this.onChangeLocations}
-                        />
-                    </div>
-                    { node.type === NodeType.STOP &&
-                        <StopForm
-                            isEditingDisabled={false}
-                            onChange={this.onChange('')}
-                            stop={node.stop!}
-                        />
-                    }
                 </div>
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={true}
+                    onClick={this.save}
+                >
+                    Tallenna muutokset
+                </Button>
             </div>
         );
     }

@@ -1,7 +1,7 @@
 @import '../../shared/styles/common';
 @import '../../shared/styles/flexbox';
 
-.routeShowView {
+.routeItemView {
     .groupedRoutes {
         padding: 10px 15px;
 
@@ -110,7 +110,7 @@
     }
 }
 
-.routeShowView:first-of-type {
+.routeItemView:first-of-type {
     .routeName {
         padding: 15px;
     }

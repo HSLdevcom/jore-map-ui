@@ -4,6 +4,7 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import ButtonType from '~/enums/buttonType';
+import Dialog from './Dialog';
 import Button from './controls/Button';
 import Modal from './Modal';
 import Login from './login/Login';
@@ -63,6 +64,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 >
                     Kirjaudu
                 </Button>
+                <Dialog />
             </div>
         );
     }

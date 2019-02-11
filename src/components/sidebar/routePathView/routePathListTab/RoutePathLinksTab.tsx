@@ -4,8 +4,6 @@ import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
-import ButtonType from '~/enums/buttonType';
-import Button from '~/components/controls/Button';
 import s from './routePathLinksTab.scss';
 import RoutePathListNode from './RoutePathListNode';
 import RoutePathListLink from './RoutePathListLink';
@@ -70,9 +68,6 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
         }
     }
 
-    private save = () => {
-    }
-
     componentDidMount() {
         this.reactionDisposer = reaction(
             () => this.props.routePathStore!.extendedObjects,
@@ -89,19 +84,12 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
         if (!routePathLinks) return null;
 
         return (
-            <div className={s.routePathLinksView}>
+            <div className={s.RoutePathLinksTabView}>
                 <div
                     className={s.contentWrapper}
                 >
                     {this.renderList(routePathLinks)}
                 </div>
-                <Button
-                    type={ButtonType.SAVE}
-                    disabled={true}
-                    onClick={this.save}
-                >
-                    Tallenna muutokset
-                </Button>
             </div>
         );
     }

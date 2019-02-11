@@ -3,7 +3,8 @@ import { inject, observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import classNames from 'classnames';
 import Moment from 'moment';
-import { EditNetworkStore } from '~/stores/editNetworkStore';
+import { NodeStore } from '~/stores/nodeStore';
+import { LinkStore } from '~/stores/linkStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -22,7 +23,8 @@ enum GeoserverLayer {
 
 interface INetworkLayersProps {
     networkStore?: NetworkStore;
-    editNetworkStore?: EditNetworkStore;
+    nodeStore?: NodeStore;
+    linkStore?: LinkStore;
     routePathStore?: RoutePathStore;
     toolbarStore?: ToolbarStore;
 }
@@ -47,7 +49,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('networkStore', 'editNetworkStore', 'routePathStore', 'toolbarStore')
+@inject('networkStore', 'nodeStore', 'linkStore', 'routePathStore', 'toolbarStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
     private parseDateRangesString(dateRangesString?: string) {
@@ -115,11 +117,19 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             const dateRanges = this.parseDateRangesString(dateRangesString);
             const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
             const selectedDate = this.props.networkStore!.selectedDate;
-            const nodes = this.props.editNetworkStore!.nodes;
+            const link = !!this.props.linkStore && !!this.props.linkStore!.link ?
+                this.props.linkStore!.link! : undefined;
+
             return Boolean(
                 (!selectedTransitTypes.includes(transitType))
                 || this.isDateInRanges(selectedDate, dateRanges)
-                || (nodes && (nodes.some(n => n.id === startNodeId || n.id === endNodeId))));
+                || (
+                    !!link &&
+                    link.startNode.id === startNodeId &&
+                    link.endNode.id === endNodeId &&
+                    link.transitType === transitTypeCode
+                ),
+            );
         }
 
     private getNodeStyle = () => {
@@ -193,8 +203,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         transitTypeCodes: string,
         dateRanges?: Moment.Moment[][],
     ) => {
-        const nodes = this.props.editNetworkStore!.nodes;
-        if (nodes && nodes.some(n => n.id === nodeId)) {
+        const node = this.props.nodeStore!.node;
+        if (node && node.id === nodeId) {
             return true;
         }
 

@@ -18,7 +18,9 @@ import ErrorStore from './stores/errorStore';
 import ToolbarStore from './stores/toolbarStore';
 import NetworkStore from './stores/networkStore';
 import GeometryEventStore from './stores/geometryEventStore';
-import EditNetworkStore from './stores/editNetworkStore';
+import NodeStore from './stores/nodeStore';
+import LinkStore from './stores/linkStore';
+import DialogStore from './stores/dialogStore';
 import apolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
 import './index.scss';
@@ -40,7 +42,9 @@ const stores = {
     toolbarStore: ToolbarStore,
     networkStore: NetworkStore,
     geometryEventStore: GeometryEventStore,
-    editNetworkStore: EditNetworkStore,
+    nodeStore: NodeStore,
+    linkStore: LinkStore,
+    dialogStore: DialogStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());
