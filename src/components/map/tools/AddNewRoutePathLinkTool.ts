@@ -31,14 +31,13 @@ class AddNewRoutePathLinkTool implements BaseTool {
                     RoutePathStore.routePath!.transitType);
             if (routePathLinks.length === 0) {
                 NotificationStore!.addNotification({
-                    message:
-                        `Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`, // tslint:disable
+                    message: `Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`,
                     type: NotificationType.ERROR,
                 });
             } else {
                 RoutePathStore!.setNeighborRoutePathLinks(routePathLinks);
             }
-    }
+        }
 
     public onNetworkNodeClick = async (clickEvent: any) => {
         if (!this.isNetworkNodesInteractive()) return;
@@ -50,8 +49,15 @@ class AddNewRoutePathLinkTool implements BaseTool {
         await this.setInteractiveNode(properties.soltunnus, AddLinkDirection.AfterNode,  1);
     }
 
-    public onNodeClick = (node: INode, previousRPLink?: IRoutePathLink, nextRPLink?: IRoutePathLink) => async () => {
-        const linkDirection = previousRPLink ? AddLinkDirection.AfterNode : AddLinkDirection.BeforeNode;
+    public onNodeClick = (
+        node: INode,
+        previousRPLink?: IRoutePathLink,
+        nextRPLink?: IRoutePathLink,
+    ) => async () => {
+        const linkDirection =
+            previousRPLink ?
+            AddLinkDirection.AfterNode :
+            AddLinkDirection.BeforeNode;
         RoutePathStore.setAddRoutePathLinkDirection(linkDirection);
         const newOrderNumber =
             linkDirection === AddLinkDirection.AfterNode
