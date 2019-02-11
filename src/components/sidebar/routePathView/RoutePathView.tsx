@@ -13,6 +13,7 @@ import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import FormBase from '~/components/shared/inheritedComponents/FormBase';
 import { NotificationStore } from '~/stores/notificationStore';
+import DialogStore from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
@@ -147,10 +148,7 @@ class RoutePathView extends FormBase<IRoutePathViewProps, IRoutePathViewState>{
             }
             this.props.routePathStore!.setOldRoutePath(this.props.routePathStore!.routePath!);
 
-            this.props.notificationStore!.addNotification({
-                message: 'Tallennus onnistui',
-                type: NotificationType.SUCCESS,
-            });
+            DialogStore.setFadeMessage('Tallennettu!');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
             this.props.notificationStore!.addNotification({
