@@ -5,6 +5,7 @@ import { match } from 'react-router';
 import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
 import { INode } from '~/models';
+import { ErrorStore } from '~/stores/errorStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeMockData from './NodeMockData';
 import NodeCoordinatesListView from '../networkView/nodeView/NodeCoordinatesListView';
@@ -26,10 +27,11 @@ interface INodeViewState {
 
 interface INodeViewProps {
     match?: match<any>;
+    errorStore?: ErrorStore;
     mapStore?: MapStore;
 }
 
-@inject('mapStore')
+@inject('mapStore', 'errorStore')
 @observer
 class NodeView extends React.Component
 <INodeViewProps, INodeViewState> {
@@ -66,12 +68,12 @@ class NodeView extends React.Component
 
     private queryNode = async (nodeId: string) => {
         this.setState({ isLoading: true });
-
-        const node = await NodeService.fetchNode(nodeId);
-        if (node) {
+        try {
+            const node = await NodeService.fetchNode(nodeId);
             this.setState({ node });
+        } catch (ex) {
+            this.props.errorStore!.push('Solmun haku ei onnistunut');
         }
-
         this.setState({ isLoading: false });
     }
 

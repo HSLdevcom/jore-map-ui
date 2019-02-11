@@ -3,9 +3,7 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
-import { NotificationStore } from '~/stores/notificationStore';
 import ButtonType from '~/enums/buttonType';
-import NotificationWindow from './NotificationWindow';
 import Button from './controls/Button';
 import Modal from './Modal';
 import Login from './login/Login';
@@ -22,10 +20,9 @@ interface IAppState {
 interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
     mapStore?: MapStore;
-    notificationStore?: NotificationStore;
 }
 
-@inject('mapStore', 'loginStore', 'notificationStore')
+@inject('mapStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
@@ -66,9 +63,6 @@ class App extends React.Component<IAppProps, IAppState> {
                 >
                     Kirjaudu
                 </Button>
-                <NotificationWindow
-                    notifications={this.props.notificationStore!.notifications}
-                />
             </div>
         );
     }

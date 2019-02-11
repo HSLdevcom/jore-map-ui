@@ -1,17 +1,17 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { NotificationStore } from '~/stores/notificationStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import ButtonType from '~/enums/buttonType';
 import Button from '../controls/Button';
 import * as s from './login.scss';
 
 interface ILoginProps {
-    notificationStore?: NotificationStore;
+    errorStore?: ErrorStore;
     loginStore?: LoginStore;
 }
 
-@inject('loginStore', 'notificationStore')
+@inject('loginStore', 'errorStore')
 @observer
 class Login extends React.Component<ILoginProps> {
     // TODO Login logic here
@@ -26,7 +26,7 @@ class Login extends React.Component<ILoginProps> {
 
     public closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
-        throw new Error('Login Modal is not in use');
+        this.props.errorStore!.push('Login Modal is not in use');
     }
 
     public render() {

@@ -6,10 +6,9 @@ import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import { IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
-import { NotificationStore } from '~/stores/notificationStore';
-import NotificationType from '~/enums/notificationType';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
+import { ErrorStore } from '~/stores/errorStore';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
@@ -25,12 +24,12 @@ interface IRoutePathViewState {
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
-    notificationStore?: NotificationStore;
+    errorStore?: ErrorStore;
     routePath: IRoutePath;
     isAddingNew: boolean;
 }
 
-@inject('routePathStore', 'notificationStore')
+@inject('routePathStore', 'errorStore')
 @observer
 class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: any) {
@@ -61,16 +60,10 @@ class RoutePathTab extends React.Component<IRoutePathViewProps, IRoutePathViewSt
                 await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             }
             this.props.routePathStore!.resetHaveLocalModifications();
-            this.props.notificationStore!.addNotification({
-                message: 'Tallennus onnistui',
-                type: NotificationType.SUCCESS,
-            });
+            // TODO: on save
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
-            this.props.notificationStore!.addNotification({
-                message: `Tallennus epäonnistui${errMessage}`,
-                type: NotificationType.ERROR,
-            });
+            this.props.errorStore!.push(`Tallennus epäonnistui${errMessage}`);
         }
         this.setState({ isLoading: false });
     }

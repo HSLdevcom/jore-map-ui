@@ -8,6 +8,7 @@ import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import { Dropdown } from '~/components/controls';
 import NodeType from '~/enums/nodeType';
+import { ErrorStore } from '~/stores/errorStore';
 import NodeService from '~/services/nodeService';
 import NodeLocationType from '~/types/NodeLocationType';
 import Loader from '~/components/shared/loader/Loader';
@@ -21,6 +22,7 @@ interface INetworkNodeProps {
     match?: match<any>;
     editNetworkStore?: EditNetworkStore;
     mapStore?: MapStore;
+    errorStore?: ErrorStore;
 }
 
 interface InetworkNodeState {
@@ -28,7 +30,7 @@ interface InetworkNodeState {
     isEditDisabled: boolean;
 }
 
-@inject('editNetworkStore', 'mapStore')
+@inject('editNetworkStore', 'mapStore', 'errorStore')
 @observer
 class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> {
     constructor(props: INetworkNodeProps) {
@@ -56,16 +58,23 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     }
 
     private async queryNode(nodeId: string) {
-        const node = await NodeService.fetchNode(nodeId);
-        if (node) {
+        try {
+            const node = await NodeService.fetchNode(nodeId);
             this.props.editNetworkStore!.setNodes([node]);
+        } catch (ex) {
+            this.props.errorStore!.push('Solmun haku ei onnistunut');
         }
     }
 
     private async fetchLinksForNodes(node: INode) {
-        const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
-        if (links) {
+        try {
+            const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
             this.props.editNetworkStore!.setLinks(links);
+        } catch (ex) {
+            this.props.errorStore!.push(
+                // tslint:disable-next-line:max-line-length
+                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
+            );
         }
     }
 

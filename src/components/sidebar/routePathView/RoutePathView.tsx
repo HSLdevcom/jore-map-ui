@@ -12,6 +12,7 @@ import RouteService from '~/services/routeService';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import LineService from '~/services/lineService';
+import { ErrorStore } from '~/stores/errorStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathTab from './routePathInfoTab/RoutePathInfoTab';
@@ -25,6 +26,7 @@ interface IRoutePathViewState {
 }
 
 interface IRoutePathViewProps {
+    errorStore?: ErrorStore;
     routePathStore?: RoutePathStore;
     routeStore?: RouteStore;
     networkStore?: NetworkStore;
@@ -33,7 +35,7 @@ interface IRoutePathViewProps {
     isAddingNew: boolean;
 }
 
-@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore')
+@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore', 'errorStore')
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
@@ -44,13 +46,20 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private initializeAsAddingNew = async () => {
-        if (!this.props.routePathStore!.routePath) {
-            this.props.routePathStore!.setRoutePath(await this.createNewRoutePath());
-        } else {
-            this.props.routePathStore!.setRoutePath(
-                RoutePathFactory.createNewRoutePathFromOld(this.props.routePathStore!.routePath!));
+        try {
+            if (!this.props.routePathStore!.routePath) {
+                this.props.routePathStore!.setRoutePath(await this.createNewRoutePath());
+            } else {
+                this.props.routePathStore!.setRoutePath(
+                    RoutePathFactory.createNewRoutePathFromOld(
+                        this.props.routePathStore!.routePath!,
+                    ),
+                );
+            }
+            this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
+        } catch (ex) {
+            this.props.errorStore!.push('Reittisuunnan uuden luonti epäonnistui');
         }
-        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
     }
 
     private initializeMap = async () => {
@@ -67,18 +76,18 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const queryParams = navigator.getQueryParamValues();
         const route = await RouteService.fetchRoute(queryParams.routeId);
         // TODO: add transitType to this call (if transitType is routePath's property)
-        if (route) {
-            return RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
-        }
-        return null;
+
+        return RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
     }
 
     private setTransitType = async () => {
         const routePath = this.props.routePathStore!.routePath;
         if (routePath && routePath.lineId) {
-            const line = await LineService.fetchLine(routePath.lineId);
-            if (line) {
+            try {
+                const line = await LineService.fetchLine(routePath.lineId);
                 this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
+            } catch (ex) {
+                this.props.errorStore!.push('Linja haku ei onnistunut');
             }
         }
     }
@@ -86,9 +95,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private fetchRoutePath = async () => {
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
         const startTime = moment(startTimeString);
-        const routePath =
-            await RoutePathService.fetchRoutePath(routeId, startTime, direction);
-        this.props.routePathStore!.setRoutePath(routePath);
+        try {
+            const routePath =
+                await RoutePathService.fetchRoutePath(routeId, startTime, direction);
+            this.props.routePathStore!.setRoutePath(routePath);
+        } catch (ex) {
+            this.props.errorStore!.push('Reitinsuunnan haku ei onnistunut.');
+        }
     }
 
     public renderTabContent = () => {

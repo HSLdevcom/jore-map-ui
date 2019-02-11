@@ -8,6 +8,7 @@ import { MapStore } from '~/stores/mapStore';
 import {
     RoutePathStore, AddLinkDirection, RoutePathViewTab,
 } from '~/stores/routePathStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -22,13 +23,14 @@ interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
+    errorStore?: ErrorStore;
 }
 
 interface IRoutePathLayerState {
     focusedRoutePathId: string;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore')
+@inject('routePathStore', 'toolbarStore', 'mapStore', 'errorStore')
 @observer
 class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     constructor(props: IRoutePathLayerProps) {
@@ -199,13 +201,17 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 ? routePathLink.orderNumber + 1
                 : routePathLink.orderNumber;
 
-            const newRoutePathLinks =
+            try {
+                const newRoutePathLinks =
                 await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
                     fixedNode.id,
                     this.props.routePathStore!.addRoutePathLinkInfo.direction,
                     orderNumber,
                     this.props.routePathStore!.routePath!.transitType);
-            this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
+                this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
+            } catch (ex) {
+                this.props.errorStore!.push('Haku löytää sopivia naapurisolmuja epäonnistui');
+            }
         } else {
             this.props.routePathStore!.setNeighborRoutePathLinks([]);
         }

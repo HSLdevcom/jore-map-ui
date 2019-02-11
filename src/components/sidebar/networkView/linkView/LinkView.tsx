@@ -15,6 +15,7 @@ import MunicipalityDropdown from '~/components/controls/MunicipalityDropdown';
 import { EditNetworkStore } from '~/stores/editNetworkStore';
 import { MapStore } from '~/stores/mapStore';
 import NodeService from '~/services/nodeService';
+import { ErrorStore } from '~/stores/errorStore';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
@@ -29,6 +30,7 @@ interface ILinkViewState {
 
 interface ILinkViewProps {
     match?: match<any>;
+    errorStore?: ErrorStore;
     editNetworkStore?: EditNetworkStore;
     mapStore?: MapStore;
 }
@@ -41,7 +43,7 @@ const nodeDescriptions = {
     unknown: 'Tyhjä',
 };
 
-@inject('editNetworkStore', 'mapStore')
+@inject('editNetworkStore', 'mapStore', 'errorStore')
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
@@ -74,18 +76,25 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     private fetchLink = async (startNodeId: string, endNodeId: string, transitTypeCode: string) => {
-        const link =
-            await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-
-        if (link) {
+        try {
+            const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
             this.setState({ link });
             this.props.editNetworkStore!.setLinks([link]);
+        } catch (ex) {
+            this.props.errorStore!.push(
+                // tslint:disable-next-line:max-line-length
+                `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
+            );
         }
     }
 
     private fetchNodes = async (nodeIds: string[]) => {
-        const nodes = await Promise.all(nodeIds.map(id => NodeService.fetchNode(id)));
-        this.props.editNetworkStore!.setNodes(nodes.filter(n => Boolean(n)) as INode[]);
+        try {
+            const nodes = await Promise.all(nodeIds.map(id => NodeService.fetchNode(id)));
+            this.props.editNetworkStore!.setNodes(nodes.filter(n => Boolean(n)) as INode[]);
+        } catch (ex) {
+            this.props.errorStore!.push('Haku löytää linkin solmut ei onnistunut');
+        }
     }
 
     private getNodeDescription = (nodeType: NodeType) => {
