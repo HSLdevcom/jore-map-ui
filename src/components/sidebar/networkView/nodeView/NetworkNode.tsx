@@ -54,7 +54,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
         this.setState({ isLoading: true });
         if (selectedNodeId) {
             this.props.mapStore!.setSelectedNodeId(selectedNodeId);
-            await this.queryNode(selectedNodeId);
+            await this.fetchNode(selectedNodeId);
         }
         const node = this.props.nodeStore!.node;
         if (node) {
@@ -64,7 +64,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
         this.setState({ isLoading: false });
     }
 
-    private async queryNode(nodeId: string) {
+    private async fetchNode(nodeId: string) {
         const node = await NodeService.fetchNode(nodeId);
         if (node) {
             this.props.nodeStore!.setNode(node);
@@ -125,6 +125,7 @@ class NetworkNode extends FormBase<INetworkNodeProps, INetworkNodeState> {
 
     componentWillUnmount() {
         this.props.nodeStore!.clear();
+        this.props.mapStore!.setSelectedNodeId(null);
     }
 
     render() {

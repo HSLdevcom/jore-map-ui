@@ -65,6 +65,7 @@ export class NodeStore {
     public clear = () => {
         this._links = [];
         this._node = null;
+        this._oldNode = null;
     }
 
     @action
