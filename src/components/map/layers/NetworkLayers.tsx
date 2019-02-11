@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import classNames from 'classnames';
 import Moment from 'moment';
+import Constants from '~/constants/';
 import { NodeStore } from '~/stores/nodeStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -239,7 +240,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     render() {
         const mapZoomLevel = this.props.mapStore!.zoom;
-        if (mapZoomLevel < 16) { // TODO: move to constants MAP_LAYERS_MIN_ZOOM_LEVEL: 15
+        if (mapZoomLevel <= Constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
             return null;
         }
 
