@@ -37,6 +37,42 @@ class StopFactory {
             courseDirection: node.kulkusuunta,
         };
     }
+
+    public static createNewStop = (): IStop => {
+        return {
+            id: -1,
+            nameFi: '',
+            nameSe: '',
+            radius: 10,
+            hastusId: '',
+            addressFi: '',
+            addressSe: '',
+            areaId: '',
+            direction: '1',
+            elyNumber: '',
+            exchangeStop: '',
+            kutsuplus: '',
+            kutsuplusPriority: '',
+            kutsuplusSection: '',
+            modifiedBy: '',
+            modifiedOn: new Date(),
+            municipality: '',
+            nameLongFi: '',
+            nameLongSe: '',
+            nameModifiedOn: new Date(),
+            nodeId: '',
+            placeNameFi: '',
+            placeNameSe: '',
+            platform: '',
+            postalNumber: '',
+            rate: '',
+            roof: '',
+            section: '',
+            terminal: '',
+            type: '',
+            courseDirection: '',
+        };
+    }
 }
 
 export default StopFactory;

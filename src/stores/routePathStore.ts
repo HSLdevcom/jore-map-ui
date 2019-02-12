@@ -128,10 +128,15 @@ export class RoutePathStore {
     @action
     public setRoutePath = (routePath: IRoutePath) => {
         this._routePath = routePath;
-        this._oldRoutePath = routePath;
+        this.setOldRoutePath(routePath);
         if (!routePath) {
             this._neighborRoutePathLinks = [];
         }
+    }
+
+    @action
+    public setOldRoutePath = (routePath: IRoutePath) => {
+        this._oldRoutePath = routePath;
     }
 
     @action

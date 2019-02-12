@@ -103,7 +103,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     private navigateToNode = (nodeId: string) => () => {
         const editNetworkLink = routeBuilder
-            .to(SubSites.networkNode)
+            .to(SubSites.node)
             .toTarget(nodeId)
             .toLink();
         navigator.goTo(editNetworkLink);

@@ -16,6 +16,7 @@ import RoutesView from './routesView/RoutesView';
 import RouteLinkView from './routeLinkView/RouteLinkView';
 import HomeView from './homeView/HomeView';
 import RoutePathView from './routePathView/RoutePathView';
+import NodeView from './networkView/nodeView/NodeView';
 import NetworkView from './networkView/NetworkView';
 import * as s from './sidebar.scss';
 
@@ -90,6 +91,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             exact={true}
                             path={subSites.link}
                             component={LinkView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.node}
+                            component={NodeView}
                         />
                         <Route
                             exact={true}

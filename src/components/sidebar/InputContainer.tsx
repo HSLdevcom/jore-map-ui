@@ -30,7 +30,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     }
 
     componentDidMount() {
-        this.validate(this.props.value, this.props.value);
+        this.validate(null, this.props.value);
     }
 
     componentWillReceiveProps(nextProps: IInputProps) {

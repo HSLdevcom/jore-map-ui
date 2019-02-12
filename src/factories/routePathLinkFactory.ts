@@ -4,7 +4,7 @@ import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import NumberIterator from '~/util/NumberIterator';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import IExternalLink from '~/models/externals/IExternalLink';
-import Constants from '~/constants';
+import Constants from '~/constants/constants';
 import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {

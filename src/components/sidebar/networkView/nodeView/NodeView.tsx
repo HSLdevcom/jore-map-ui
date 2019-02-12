@@ -3,41 +3,49 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { INode } from '~/models';
+import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
+import NotificationType from '~/enums/notificationType';
+import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
+import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
+import { NotificationStore } from '~/stores/notificationStore';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
-import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
 import ViewHeader from '../../ViewHeader';
 import StopForm from './StopForm';
 import InputContainer from '../../InputContainer';
-import * as s from './networkNode.scss';
+import * as s from './nodeView.scss';
 
-interface INetworkNodeProps {
+interface INodeViewProps {
     match?: match<any>;
+    dialogStore?: DialogStore;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
+    notificationStore?: NotificationStore;
 }
 
-interface InetworkNodeState {
+interface INodeViewState {
     isLoading: boolean;
-    isEditDisabled: boolean;
+    isEditingDisabled: boolean;
+    invalidFieldsMap: object;
 }
 
-@inject('nodeStore', 'mapStore')
+@inject('dialogStore', 'nodeStore', 'mapStore', 'notificationStore')
 @observer
-class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> {
-    constructor(props: INetworkNodeProps) {
+class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
+    constructor(props: INodeViewProps) {
         super(props);
         this.state = {
             isLoading: false,
-            isEditDisabled: false,
+            isEditingDisabled: true,
+            invalidFieldsMap: {},
         };
     }
 
@@ -47,7 +55,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         this.setState({ isLoading: true });
         if (selectedNodeId) {
             this.props.mapStore!.setSelectedNodeId(selectedNodeId);
-            await this.queryNode(selectedNodeId);
+            await this.fetchNode(selectedNodeId);
         }
         const node = this.props.nodeStore!.node;
         if (node) {
@@ -57,7 +65,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         this.setState({ isLoading: false });
     }
 
-    private async queryNode(nodeId: string) {
+    private async fetchNode(nodeId: string) {
         const node = await NodeService.fetchNode(nodeId);
         if (node) {
             this.props.nodeStore!.setNode(node);
@@ -71,37 +79,78 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
         }
     }
 
-    private onChangeLocations = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-        const node = { ...this.props.nodeStore!.node, [coordinatesType]:coordinates };
-        this.props.nodeStore!.setNode(node);
+    private save = async () => {
+        this.setState({ isLoading: true });
+        try {
+            await NodeService.updateNode(this.props.nodeStore!.node);
+
+            this.props.nodeStore!.setOldNode(this.props.nodeStore!.node);
+            this.props.dialogStore!.setFadeMessage('Tallennettu!');
+        } catch (err) {
+            const errMessage = err.message ? `, (${err.message})` : '';
+            this.props.notificationStore!.addNotification({
+                message: `Tallennus epäonnistui${errMessage}`,
+                type: NotificationType.ERROR,
+            });
+        }
+        this.setState({ isLoading: false });
     }
 
-    private onChange = (property: string) => (value: any) => {
-        return;
-    }
+    private onNodeChange =
+        (property: string) => (value: any, validationResult?: IValidationResult) => {
+            this.props.nodeStore!.updateNode(property, value);
+            if (validationResult) {
+                this.markInvalidFields(property, validationResult!.isValid);
+            }
+        }
 
-    private save = () => () => {};
+    private onStopChange =
+        (property: string) => (value: any, validationResult?: IValidationResult) => {
+            this.props.nodeStore!.updateStop(property, value);
+            if (validationResult) {
+                this.markInvalidFields(property, validationResult!.isValid);
+            }
+        }
+
+    private toggleIsEditingEnabled = () => {
+        this.toggleIsEditingDisabled(
+            this.props.nodeStore!.undoChanges,
+        );
+    }
 
     componentWillUnmount() {
         this.props.nodeStore!.clear();
+        this.props.mapStore!.setSelectedNodeId(null);
     }
 
     render() {
         const node = this.props.nodeStore!.node;
-        const isEditingDisabled = this.state.isEditDisabled;
+        const isEditingDisabled = this.state.isEditingDisabled;
+
+        const isSaveButtonDisabled = this.state.isEditingDisabled
+            || !this.props.nodeStore!.isDirty
+            || !this.isFormValid();
+
+        // tslint:disable-next-line:max-line-length
+        const closePromptMessage = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
         if (this.state.isLoading || !node || !node.id) {
             return(
-                <div className={classnames(s.networkNodeView, s.loaderContainer)}>
+                <div className={classnames(s.nodeView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );
         }
         return (
-            <div className={s.networkNodeView}>
+            <div className={s.nodeView}>
                 <div className={s.content}>
                     <ViewHeader
-                        closePromptMessage={undefined}
+                        closePromptMessage={
+                            this.props.nodeStore!.isDirty ? closePromptMessage : undefined
+                        }
+                        isEditButtonVisible={true}
+                        isEditing={!isEditingDisabled}
+                        onEditButtonClick={this.toggleIsEditingEnabled}
                     >
                         Solmu {node.id}
                     </ViewHeader>
@@ -112,11 +161,11 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                                     label='LYHYT ID'
                                     disabled={isEditingDisabled}
                                     value={node.shortId}
-                                    onChange={this.onChange('routePathShortName')}
+                                    onChange={this.onNodeChange('shortId')}
                                 />
                                 <Dropdown
                                     label='TYYPPI'
-                                    onChange={this.onChange('type')}
+                                    onChange={this.onNodeChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
                                     codeList={nodeTypeCodeList}
@@ -126,13 +175,14 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                         <div className={s.formSection}>
                             <NodeCoordinatesListView
                                 node={this.props.nodeStore!.node}
-                                onChangeCoordinates={this.onChangeLocations}
+                                onChangeCoordinates={this.onNodeChange}
+                                isEditingDisabled={isEditingDisabled}
                             />
                         </div>
                         { node.type === NodeType.STOP &&
                             <StopForm
-                                isEditingDisabled={false}
-                                onChange={this.onChange}
+                                isEditingDisabled={isEditingDisabled}
+                                onChange={this.onStopChange}
                                 stop={node.stop!}
                             />
                         }
@@ -140,7 +190,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
                 </div>
                 <Button
                     type={ButtonType.SAVE}
-                    disabled={true}
+                    disabled={isSaveButtonDisabled}
                     onClick={this.save}
                 >
                     Tallenna muutokset
@@ -150,4 +200,4 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
     }
 }
 
-export default NetworkNode;
+export default NodeView;

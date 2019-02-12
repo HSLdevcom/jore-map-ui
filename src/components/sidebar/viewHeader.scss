@@ -13,13 +13,23 @@
         font-weight: bold;
     }
 
-    .closeButton {
-        font-size: 28px;
+    .icon {
+        font-size: 30px;
         opacity: 0.8;
+        border-radius: 4px;
+        padding: 2px;
         cursor: pointer;
+        margin: 3px;
+        transition: .5s;
     }
 
-    .closeButton:hover {
+
+    .icon:hover {
         opacity: 1;
+    }
+
+    .active {
+        color: white;
+        background-color: $busBlue;
     }
 }

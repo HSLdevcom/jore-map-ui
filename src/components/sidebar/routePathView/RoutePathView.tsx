@@ -11,6 +11,7 @@ import navigator from '~/routing/navigator';
 import { RouteStore } from '~/stores/routeStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
+import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import { NotificationStore } from '~/stores/notificationStore';
 import DialogStore from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
@@ -43,7 +44,7 @@ interface IRoutePathViewProps {
 
 @inject('routeStore', 'routePathStore', 'networkStore', 'notificationStore', 'toolbarStore')
 @observer
-class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState>{
+class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
@@ -120,25 +121,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setRoutePath(routePath);
     }
 
-    private markInvalidFields = (field: string, isValid: boolean) => {
-        const invalidFieldsMap = this.state.invalidFieldsMap;
-        invalidFieldsMap[field] = isValid;
-        this.setState({
-            invalidFieldsMap,
-        });
-    }
-
-    private toggleIsEditingDisabled = () => {
-        if (!this.state.isEditingDisabled) {
-            this.props.routePathStore!.undoChanges();
-        }
-        const isEditingDisabled = !this.state.isEditingDisabled;
-        this.setState({
-            isEditingDisabled,
-            invalidFieldsMap: {},
-        });
-    }
-
     public renderTabContent = () => {
         if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
@@ -146,7 +128,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
                     markInvalidFields={this.markInvalidFields}
-                    toggleIsEditingDisabled={this.toggleIsEditingDisabled}
                 />
             );
         }
@@ -157,11 +138,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         );
     }
 
-    private isFormValid = () => {
-        return !Object.values(this.state.invalidFieldsMap)
-            .some(fieldIsValid => !fieldIsValid);
-    }
-
     private save = async () => {
         this.setState({ isLoading: true });
         try {
@@ -170,7 +146,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             } else {
                 await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             }
-            this.props.routePathStore!.setRoutePath(this.props.routePathStore!.routePath!);
+            this.props.routePathStore!.setOldRoutePath(this.props.routePathStore!.routePath!);
 
             DialogStore.setFadeMessage('Tallennettu!');
         } catch (err) {
@@ -185,6 +161,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             invalidFieldsMap: {},
             isLoading: false,
         });
+    }
+
+    private toggleIsEditing = () => {
+        this.toggleIsEditingDisabled(
+            this.props.routePathStore!.undoChanges,
+        );
     }
 
     render() {
@@ -208,6 +190,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     hasModifications={this.props.routePathStore!.isDirty}
                     routePath={this.props.routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
+                    isEditing={!this.state.isEditingDisabled}
+                    onEditButtonClick={this.toggleIsEditing}
                 />
                 <div>
                     <RoutePathTabs />
