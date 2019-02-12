@@ -1,10 +1,6 @@
 import React from 'react';
 import * as s from './dropdown.scss';
 
-interface IDropdownState {
-    selectedValue?: string;
-}
-
 export interface IDropdownItem {
     key: string;
     value: string;
@@ -35,18 +31,8 @@ const usesCodeList = (
 };
 
 class Dropdown extends React.Component
-<IDropdownProps | IDropdownWithCodeListProps, IDropdownState> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            selectedValue: this.props.selected,
-        };
-    }
-
+<IDropdownProps | IDropdownWithCodeListProps> {
     onChange = (event: any) => {
-        this.setState({
-            selectedValue: event.target.value,
-        });
         this.props.onChange(event.target.value);
     }
 
@@ -78,12 +64,12 @@ class Dropdown extends React.Component
                     }
                     {this.props.disabled ?
                         <div>
-                            {this.state.selectedValue}
+                            {this.props.selected}
                         </div>
                     :
                         <select
                             className={s.dropdown}
-                            value={this.state.selectedValue}
+                            value={this.props.selected}
                             onChange={this.onChange}
                         >
                         {
