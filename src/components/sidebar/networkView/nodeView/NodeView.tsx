@@ -21,16 +21,16 @@ import NodeCoordinatesListView from './NodeCoordinatesListView';
 import ViewHeader from '../../ViewHeader';
 import StopForm from './StopForm';
 import InputContainer from '../../InputContainer';
-import * as s from './networkNode.scss';
+import * as s from './nodeView.scss';
 
-interface INetworkNodeProps {
+interface INodeViewProps {
     match?: match<any>;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     notificationStore?: NotificationStore;
 }
 
-interface INetworkNodeState {
+interface INodeViewState {
     isLoading: boolean;
     isEditingDisabled: boolean;
     invalidFieldsMap: object;
@@ -38,8 +38,8 @@ interface INetworkNodeState {
 
 @inject('nodeStore', 'mapStore', 'notificationStore')
 @observer
-class NetworkNode extends ViewFormBase<INetworkNodeProps, INetworkNodeState> {
-    constructor(props: INetworkNodeProps) {
+class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
+    constructor(props: INodeViewProps) {
         super(props);
         this.state = {
             isLoading: false,
@@ -141,13 +141,13 @@ class NetworkNode extends ViewFormBase<INetworkNodeProps, INetworkNodeState> {
 
         if (this.state.isLoading || !node || !node.id) {
             return(
-                <div className={classnames(s.networkNodeView, s.loaderContainer)}>
+                <div className={classnames(s.nodeView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );
         }
         return (
-            <div className={s.networkNodeView}>
+            <div className={s.nodeView}>
                 <div className={s.content}>
                     <ViewHeader
                         closePromptMessage={
@@ -205,4 +205,4 @@ class NetworkNode extends ViewFormBase<INetworkNodeProps, INetworkNodeState> {
     }
 }
 
-export default NetworkNode;
+export default NodeView;

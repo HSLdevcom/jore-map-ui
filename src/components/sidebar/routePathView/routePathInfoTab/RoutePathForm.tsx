@@ -15,7 +15,7 @@ import { Button, Dropdown, Checkbox } from '../../../controls';
 import ButtonType from '../../../../enums/buttonType';
 import * as s from '../routePathView.scss';
 
-interface IRoutePathViewFormProps {
+interface IRoutePathFormProps {
     routePathStore?: RoutePathStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
@@ -24,7 +24,7 @@ interface IRoutePathViewFormProps {
 
 @inject('routePathStore')
 @observer
-class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
+class RoutePathForm extends React.Component<IRoutePathFormProps>{
     private onClick = () => {
         // TODO
     }
@@ -288,4 +288,4 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         );
     }
 }
-export default RoutePathViewForm;
+export default RoutePathForm;
