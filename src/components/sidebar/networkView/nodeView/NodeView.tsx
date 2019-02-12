@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { INode } from '~/models';
+import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
@@ -24,6 +25,7 @@ import * as s from './nodeView.scss';
 
 interface INodeViewProps {
     match?: match<any>;
+    dialogStore?: DialogStore;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     notificationStore?: NotificationStore;
@@ -35,7 +37,7 @@ interface INodeViewState {
     invalidFieldsMap: object;
 }
 
-@inject('nodeStore', 'mapStore', 'notificationStore')
+@inject('dialogStore', 'nodeStore', 'mapStore', 'notificationStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
@@ -83,10 +85,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             await NodeService.updateNode(this.props.nodeStore!.node);
 
             this.props.nodeStore!.setOldNode(this.props.nodeStore!.node);
-            this.props.notificationStore!.addNotification({
-                message: 'Tallennus onnistui',
-                type: NotificationType.SUCCESS,
-            });
+            this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
             this.props.notificationStore!.addNotification({
