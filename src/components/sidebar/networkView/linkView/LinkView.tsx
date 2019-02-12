@@ -7,7 +7,7 @@ import L from 'leaflet';
 import ButtonType from '~/enums/buttonType';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import LinkService from '~/services/linkService';
-import NodeType from '~/enums/nodeType';
+import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import SubSites from '~/routing/subSites';
 import routeBuilder from '~/routing/routeBuilder';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
@@ -32,14 +32,6 @@ interface ILinkViewProps {
     linkStore?: LinkStore;
     mapStore?: MapStore;
 }
-
-const nodeDescriptions = {
-    stop: 'Pysäkki',
-    stopNotInUse: 'Pysäkki - Ei käytössä',
-    crossroad: 'Risteys',
-    border: 'Raja',
-    unknown: 'Tyhjä',
-};
 
 @inject('linkStore', 'mapStore')
 @observer
@@ -69,22 +61,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.setState({ isLoading: false });
     }
 
-    private getNodeDescription = (nodeType: NodeType) => {
-        switch (nodeType) {
-        case NodeType.STOP:
-            return nodeDescriptions.stop;
-        case NodeType.DISABLED:
-            return nodeDescriptions.stopNotInUse;
-        case NodeType.MUNICIPALITY_BORDER:
-            return nodeDescriptions.border;
-        case NodeType.CROSSROAD:
-            return nodeDescriptions.crossroad;
-        default:
-            return nodeDescriptions.unknown;
-        }
-    }
-
-    // TODO
     private onChange = () => {
     }
 
@@ -129,13 +105,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             label='TYYPPI'
-                            onChange={this.onChange}
-                            items={Object.values(nodeDescriptions)}
                             disabled={true}
-                            selected={
-                                startNode
-                                    ? this.getNodeDescription(startNode.type)
-                                    : nodeDescriptions.unknown}
+                            selected={startNode.type}
+                            codeList={nodeTypeCodeList}
                         />
                         <InputContainer
                             label='NIMI'
@@ -154,13 +126,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         />
                         <Dropdown
                             label='TYYPPI'
-                            onChange={this.onChange}
-                            items={Object.values(nodeDescriptions)}
                             disabled={true}
-                            selected={
-                                endNode
-                                    ? this.getNodeDescription(endNode.type)
-                                    : nodeDescriptions.unknown}
+                            selected={endNode.type}
+                            codeList={nodeTypeCodeList}
                         />
                         <InputContainer
                             label='NIMI'
