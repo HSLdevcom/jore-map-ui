@@ -14,7 +14,6 @@ import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
 import { NotificationStore } from '~/stores/notificationStore';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
-import NodeLocationType from '~/types/NodeLocationType';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
@@ -78,10 +77,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         }
     }
 
-    private onChangeLocations = (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-        this.props.nodeStore!.updateNode(coordinatesType, coordinates);
-    }
-
     private save = async () => {
         this.setState({ isLoading: true });
         try {
@@ -102,12 +97,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.setState({ isLoading: false });
     }
 
-    private onChange = (property: string) => (value: any, validationResult?: IValidationResult) => {
-        this.props.nodeStore!.updateNode(property, value);
-        if (validationResult) {
-            this.markInvalidFields(property, validationResult!.isValid);
+    private onNodeChange =
+        (property: string) => (value: any, validationResult?: IValidationResult) => {
+            this.props.nodeStore!.updateNode(property, value);
+            if (validationResult) {
+                this.markInvalidFields(property, validationResult!.isValid);
+            }
         }
-    }
 
     private onStopChange =
         (property: string) => (value: any, validationResult?: IValidationResult) => {
@@ -166,11 +162,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     label='LYHYT ID'
                                     disabled={isEditingDisabled}
                                     value={node.shortId}
-                                    onChange={this.onChange('shortId')}
+                                    onChange={this.onNodeChange('shortId')}
                                 />
                                 <Dropdown
                                     label='TYYPPI'
-                                    onChange={this.onChange('type')}
+                                    onChange={this.onNodeChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
                                     codeList={nodeTypeCodeList}
@@ -180,7 +176,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         <div className={s.formSection}>
                             <NodeCoordinatesListView
                                 node={this.props.nodeStore!.node}
-                                onChangeCoordinates={this.onChangeLocations}
+                                onChangeCoordinates={this.onNodeChange}
                                 isEditingDisabled={isEditingDisabled}
                             />
                         </div>

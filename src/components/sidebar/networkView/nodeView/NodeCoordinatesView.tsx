@@ -12,7 +12,7 @@ interface INodeCoordinatesViewProps {
     locationType: NodeLocationType;
     coordinates: L.LatLng;
     isEditingDisabled: boolean;
-    onChangeCoordinates: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
+    onChangeCoordinates: (coordinates: L.LatLng) => void;
 }
 
 const getCoordinateSpecificData = (locationType: NodeLocationType, nodeType: NodeType) => {
@@ -40,11 +40,11 @@ const getCoordinateSpecificData = (locationType: NodeLocationType, nodeType: Nod
 const nodeCoordinatesView = (props: INodeCoordinatesViewProps) => {
     const latChange = (v: string) => {
         const lat = Number(v);
-        props.onChangeCoordinates(props.locationType, new L.LatLng(lat, props.coordinates.lng));
+        props.onChangeCoordinates(new L.LatLng(lat, props.coordinates.lng));
     };
     const lonChange = (v: string) => {
         const lon = Number(v);
-        props.onChangeCoordinates(props.locationType, new L.LatLng(props.coordinates.lat, lon));
+        props.onChangeCoordinates(new L.LatLng(props.coordinates.lat, lon));
     };
 
     const { iconClassName, label } = getCoordinateSpecificData(props.locationType, props.nodeType);

@@ -7,7 +7,7 @@ import * as s from './nodeCoordinatesListView.scss';
 interface INodeCoordinatesListView {
     node: INode;
     isEditingDisabled: boolean;
-    onChangeCoordinates: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
+    onChangeCoordinates: (coordinatesType: NodeLocationType) => (coordinates: L.LatLng) => void;
 }
 
 const nodeCoordinatesListView = (props: INodeCoordinatesListView) => {
@@ -17,21 +17,21 @@ const nodeCoordinatesListView = (props: INodeCoordinatesListView) => {
                 nodeType={props.node.type}
                 locationType='coordinates'
                 coordinates={props.node.coordinates}
-                onChangeCoordinates={props.onChangeCoordinates}
+                onChangeCoordinates={props.onChangeCoordinates('coordinates')}
                 isEditingDisabled={props.isEditingDisabled}
             />
             <NodeCoordinatesView
                 nodeType={props.node.type}
                 locationType='coordinatesManual'
                 coordinates={props.node.coordinatesManual}
-                onChangeCoordinates={props.onChangeCoordinates}
+                onChangeCoordinates={props.onChangeCoordinates('coordinatesManual')}
                 isEditingDisabled={props.isEditingDisabled}
             />
             <NodeCoordinatesView
                 nodeType={props.node.type}
                 locationType='coordinatesProjection'
                 coordinates={props.node.coordinatesProjection}
-                onChangeCoordinates={props.onChangeCoordinates}
+                onChangeCoordinates={props.onChangeCoordinates('coordinatesProjection')}
                 isEditingDisabled={props.isEditingDisabled}
             />
         </div>
