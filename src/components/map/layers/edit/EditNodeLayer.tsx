@@ -58,7 +58,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         }
 
     render() {
-        const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.networkNode));
+        const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.node));
         if (!isNodeViewVisible) return null;
 
         return (

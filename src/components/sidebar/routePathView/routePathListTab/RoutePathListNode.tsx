@@ -63,7 +63,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRouteP
 
     private openInNetworkView = () => {
         const editNetworkLink = routeBuilder
-            .to(SubSites.networkNode)
+            .to(SubSites.node)
             .toTarget(this.props.node.id)
             .toLink();
         navigator.goTo(editNetworkLink);

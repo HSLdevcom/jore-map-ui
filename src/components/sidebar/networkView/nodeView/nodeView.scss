@@ -6,6 +6,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    width: 500px;
+    overflow-y: auto;
 
     &.loaderContainer > div {
         margin: 30px auto;

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
-import RoutePathViewForm from './RoutePathViewForm';
+import RoutePathForm from './RoutePathForm';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabState {
@@ -43,7 +43,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         <div className={classnames(s.routePathInfoTabView, s.form)}>
             <div className={s.content}>
                 <div className={s.formSection}>
-                    <RoutePathViewForm
+                    <RoutePathForm
                         onChange={this.onChange}
                         isEditingDisabled={this.props.isEditingDisabled}
                         routePath={this.props.routePathStore!.routePath!}

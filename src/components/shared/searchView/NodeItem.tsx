@@ -14,7 +14,7 @@ interface INodeItemProps {
 class NodeItem extends React.Component<INodeItemProps> {
     private openNode = () => {
         const nodeLink = routeBuilder
-            .to(SubSites.networkNode)
+            .to(SubSites.node)
             .toTarget(this.props.node.id)
             .toLink();
         navigator.goTo(nodeLink);
