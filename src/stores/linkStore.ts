@@ -1,13 +1,16 @@
 import { action, computed, observable } from 'mobx';
+import _ from 'lodash';
 import { ILink, INode } from '~/models';
 
 export class LinkStore {
     @observable private _link: ILink | null;
+    @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
 
     constructor() {
         this._nodes = [];
         this._link = null;
+        this._oldLink = null;
     }
 
     @computed
@@ -34,6 +37,11 @@ export class LinkStore {
     public clear = () => {
         this._link = null;
         this._nodes = [];
+    }
+
+    @computed
+    get isDirty() {
+        return !_.isEqual(this._link, this._oldLink);
     }
 }
 

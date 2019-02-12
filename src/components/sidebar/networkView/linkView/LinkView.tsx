@@ -9,6 +9,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import LinkService from '~/services/linkService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import SubSites from '~/routing/subSites';
+import directionCodeList from '~/codeLists/directionCodeList';
 import routeBuilder from '~/routing/routeBuilder';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import navigator from '~/routing/navigator';
@@ -76,6 +77,12 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.props.linkStore!.clear();
     }
 
+    private toggleIsEditingEnabled = () => {
+        this.toggleIsEditingDisabled(
+            () => {},
+        );
+    }
+
     render() {
         const link = this.props.linkStore!.link;
         if (this.state.isLoading || !link) {
@@ -86,13 +93,24 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             );
         }
 
+        // tslint:disable-next-line:max-line-length
+        const closePromptMessage = 'Linkilla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+
+        const isEditingDisabled = this.state.isEditingDisabled;
         const startNode = link!.startNode;
         const endNode = link!.endNode;
         const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
 
         return (
         <div className={classnames(s.linkView)}>
-            <ViewHeader>
+            <ViewHeader
+                closePromptMessage={
+                    this.props.linkStore!.isDirty ? closePromptMessage : undefined
+                }
+                isEditButtonVisible={true}
+                isEditing={!isEditingDisabled}
+                onEditButtonClick={this.toggleIsEditingEnabled}
+            >
                 Linkki
             </ViewHeader>
             <div className={s.formSection}>
@@ -138,51 +156,47 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                     </div>
                 </div>
                 <div className={s.flexRow}>
-                    <Dropdown
-                        label='KUTSU-/JÄTTÖ-/OTTOP'
-                        onChange={this.onChange}
-                        items={['Ei', 'Kyllä']}
-                        selected={'0 - Ei'}
-                    />
-                    <div className={s.formItem} />
-                </div>
-                <div className={s.flexRow}>
                     <div className={s.formItem}>
                         <div className={s.inputLabel}>
                             VERKKO
                         </div>
-                        <div className={s.transitButtonBar}>
-                            <TransitToggleButtonBar
-                                selectedTransitTypes={[link!.transitType]}
-                            />
-                        </div>
+                        <TransitToggleButtonBar
+                            selectedTransitTypes={[link!.transitType]}
+                        />
                     </div>
                 </div>
                 <div className={s.flexRow}>
-                    <InputContainer
+                    <Dropdown
                         label='SUUNTA'
-                        placeholder='Suunta 1'
+                        disabled={isEditingDisabled}
+                        selected={link.direction}
+                        codeList={directionCodeList}
                     />
                     <InputContainer
                         label='OS. NRO'
-                        placeholder='2 B'
+                        disabled={isEditingDisabled}
+                        value={link.osNumber}
                     />
                     <InputContainer
-                        label='LINKIN PITUUS'
+                        label='LINKIN PITUUS (m)'
+                        disabled={isEditingDisabled}
                         value={link.length}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='KATU'
+                        disabled={isEditingDisabled}
                         value={link.streetName}
                     />
                     <InputContainer
                         label='KATUOSAN OS. NRO'
+                        disabled={isEditingDisabled}
                         value={link.streetNumber}
                     />
                     <Dropdown
                         onChange={this.onChange}
+                        disabled={isEditingDisabled}
                         codeList={municipalityCodeList}
                         selected={link.municipalityCode}
                         label='KUNTA'
