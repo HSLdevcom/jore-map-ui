@@ -54,8 +54,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
 
     private onMoveMarker = (node: INode) =>
         (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-            const newNode = { ...node, [coordinatesType]:coordinates };
-            this.props.nodeStore!.setNode(newNode);
+            this.props.nodeStore!.updateNode(coordinatesType, coordinates);
         }
 
     render() {
