@@ -63,6 +63,11 @@ export class NetworkStore {
         return this.visibleMapLayers;
     }
 
+    @computed
+    get isMapLayersVisible(): boolean {
+        return this._visibleMapLayers.length !== 0;
+    }
+
     public isMapLayerVisible = (mapLayer: MapLayer) => {
         return this._visibleMapLayers.includes(mapLayer);
     }

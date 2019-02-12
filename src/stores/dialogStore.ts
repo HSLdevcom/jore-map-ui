@@ -1,5 +1,5 @@
 import { action, computed, observable } from 'mobx';
-import Constants from '../constants/constants';
+import Constants from '~/constants/constants';
 
 export class DialogStore {
     @observable private _message: string|null;
