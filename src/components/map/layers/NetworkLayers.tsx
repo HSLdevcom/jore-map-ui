@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import classNames from 'classnames';
 import Moment from 'moment';
-import Constants from '~/constants/';
+import Constants from '~/constants/constants';
 import { NodeStore } from '~/stores/nodeStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';

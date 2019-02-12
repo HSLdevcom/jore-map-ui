@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { FaExclamationCircle } from 'react-icons/fa';
-import Constants from '~/constants/';
+import Constants from '~/constants/constants';
 import mapStore from '~/stores/mapStore';
 import networkStore from '~/stores/networkStore';
 import * as s from './mapLayersZoomHint.scss';
