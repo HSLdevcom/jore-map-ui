@@ -64,7 +64,7 @@ class Dropdown extends React.Component
                     }
                     {this.props.disabled ?
                         <div>
-                            {this.props.selected}
+                            {dropDownItemList.find(item => item.key === this.props.selected)!.value}
                         </div>
                     :
                         <select
