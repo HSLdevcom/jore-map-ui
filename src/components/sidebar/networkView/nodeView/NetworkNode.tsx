@@ -137,7 +137,7 @@ class NetworkNode extends ViewFormBase<INetworkNodeProps, INetworkNodeState> {
             || !this.isFormValid();
 
         // tslint:disable-next-line:max-line-length
-        const closePromptMessage = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+        const closePromptMessage = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
         if (this.state.isLoading || !node || !node.id) {
             return(
