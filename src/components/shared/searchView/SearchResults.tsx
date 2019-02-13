@@ -146,8 +146,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.setState({
             showLimit: SHOW_LIMIT_DEFAULT,
         });
-        if (this.paginatedDiv) {
-            this.paginatedDiv.current!.scrollTo(0, 0);
+        if (this.paginatedDiv && this.paginatedDiv.current) {
+            this.paginatedDiv.current.scrollTo(0, 0);
         }
     }
 

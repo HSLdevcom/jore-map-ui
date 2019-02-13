@@ -137,13 +137,15 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         // tslint:disable-next-line:max-line-length
         const closePromptMessage = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
-        if (this.state.isLoading || !node || !node.id) {
+        if (this.state.isLoading) {
             return(
                 <div className={classnames(s.nodeView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );
         }
+        if (!node) return null;
+
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
