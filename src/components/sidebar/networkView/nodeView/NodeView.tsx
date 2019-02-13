@@ -144,6 +144,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                 </div>
             );
         }
+        // TODO: show some indicator to user of an empty page
         if (!node) return null;
 
         return (

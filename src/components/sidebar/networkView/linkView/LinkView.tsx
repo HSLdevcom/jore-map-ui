@@ -117,13 +117,15 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     render() {
         const link = this.props.linkStore!.link;
-        if (this.state.isLoading || !link) {
+        if (this.state.isLoading) {
             return (
                 <div className={classnames(s.linkView, s.loaderContainer)}>
                     <Loader />
                 </div>
             );
         }
+        // TODO: show some indicator to user of an empty page
+        if (!link) return null;
 
         const startNode = link.startNode;
         const endNode = link!.endNode;
