@@ -53,10 +53,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
         map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
-            const linkCopy = Object.assign({}, this.props.linkStore!.link);
             const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
-            linkCopy.geometry = latlngs;
-            this.props.linkStore!.setLink(linkCopy);
+            this.props.linkStore!.updateLink('geometry', latlngs);
         });
     }
 
