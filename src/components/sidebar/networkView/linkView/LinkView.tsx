@@ -118,8 +118,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             // || !this.isFormValid();
 
         return (
-        <div className={classnames(s.linkView)}>
-            <div>
+        <div className={s.linkView}>
+            <div className={s.content}>
                 <ViewHeader
                     closePromptMessage={
                         this.props.linkStore!.isDirty ? closePromptMessage : undefined
@@ -301,7 +301,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             .format(datetimeStringDisplayFormat)}
                         />
                     </div>
-                </div>;; ;
+                </div>
                 <MultiTabTextarea
                     tabs={['Tariffialueet', 'Määränpäät', 'Ajoajat']}
                 />
@@ -318,7 +318,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                     >
                         Loppusolmu
                     </Button>
-                </div>;
+                </div>
             </div >
             <Button
                 type={ButtonType.SAVE}
@@ -326,7 +326,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 onClick={this.save}
             >
                 Tallenna muutokset
-            </Button>;
+            </Button>
         </div >
         );
     }

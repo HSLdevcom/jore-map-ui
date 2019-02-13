@@ -3,12 +3,14 @@
 @import '../../../shared/styles/form';
 
 .linkView {
-    width: $sidebarExtraWide;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
 
     .content {
         padding: 20px;
         overflow-y: scroll;
+        flex-grow: 1;
 
         .column {
             display: flex;
