@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { match } from 'react-router';
 import L from 'leaflet';
 import ButtonType from '~/enums/buttonType';
+import { IValidationResult } from '~/validation/FormValidator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import LinkService from '~/services/linkService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
@@ -68,7 +69,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.setState({ isLoading: false });
     }
 
-    private onChange = () => {
+    private onChange = (property: string) => (value: any, validationResult?: IValidationResult) => {
+        this.props.linkStore!.updateLink(property, value);
+        if (validationResult) {
+            this.markInvalidFields(property, validationResult!.isValid);
+        }
     }
 
     private save = async () => {
@@ -90,7 +95,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private toggleIsEditingEnabled = () => {
         this.toggleIsEditingDisabled(
-            () => {},
+            this.props.linkStore!.undoChanges,
         );
     }
 
@@ -187,17 +192,20 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             label='SUUNTA'
                             disabled={isEditingDisabled}
                             selected={link.direction}
+                            onChange={this.onChange('direction')}
                             codeList={directionCodeList}
                         />
                         <InputContainer
                             label='OS. NRO'
                             disabled={isEditingDisabled}
                             value={link.osNumber}
+                            onChange={this.onChange('osNumber')}
                         />
                         <InputContainer
                             label='LINKIN PITUUS (m)'
                             disabled={isEditingDisabled}
                             value={link.length}
+                            onChange={this.onChange('length')}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -205,14 +213,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             label='KATU'
                             disabled={isEditingDisabled}
                             value={link.streetName}
+                            onChange={this.onChange('streetName')}
                         />
                         <InputContainer
                             label='KATUOSAN OS. NRO'
                             disabled={isEditingDisabled}
                             value={link.streetNumber}
+                            onChange={this.onChange('streetNumber')}
                         />
                         <Dropdown
-                            onChange={this.onChange}
+                            onChange={this.onChange('municipalityCode')}
                             disabled={isEditingDisabled}
                             codeList={municipalityCodeList}
                             selected={link.municipalityCode}
