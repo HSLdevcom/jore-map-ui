@@ -54,12 +54,11 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
 
     private onMoveMarker = (node: INode) =>
         (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-            const newNode = { ...node, [coordinatesType]:coordinates };
-            this.props.nodeStore!.setNode(newNode);
+            this.props.nodeStore!.updateNode(coordinatesType, coordinates);
         }
 
     render() {
-        const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.networkNode));
+        const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.node));
         if (!isNodeViewVisible) return null;
 
         return (

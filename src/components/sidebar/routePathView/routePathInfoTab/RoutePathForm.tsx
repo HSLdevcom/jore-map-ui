@@ -4,6 +4,9 @@ import Moment from 'moment';
 import { FiRefreshCw } from 'react-icons/fi';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../../InputContainer';
@@ -12,24 +15,24 @@ import { Button, Dropdown, Checkbox } from '../../../controls';
 import ButtonType from '../../../../enums/buttonType';
 import * as s from '../routePathView.scss';
 
-interface IRoutePathViewFormProps {
+interface IRoutePathFormProps {
     routePathStore?: RoutePathStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
-    onChange: Function;
+    onChange: (property: string, value: any, validationResult: IValidationResult) => void;
 }
 
 @inject('routePathStore')
 @observer
-class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
+class RoutePathForm extends React.Component<IRoutePathFormProps>{
     private onClick = () => {
         // TODO
     }
 
     private onChange = (property: string) =>
-    (value: string, validationResult: IValidationResult) => {
-        this.props.onChange(property, value, validationResult);
-    }
+        (value: string, validationResult: IValidationResult) => {
+            this.props.onChange(property, value, validationResult);
+        }
 
     private updateLength = ():void => (
         this.props.routePathStore!.updateRoutePathProperty(
@@ -37,6 +40,17 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
             this.props.routePathStore!.getCalculatedLength(),
         )
     )
+
+    private redirectToNewRoutePathView = () => {
+        const routePath = this.props.routePathStore!.routePath;
+        if (!routePath) return;
+
+        const newRoutePathLink = routeBuilder
+            .to(SubSites.newRoutePath, { routeId: routePath.routeId, lineId: routePath.lineId })
+            .toLink();
+
+        navigator.goTo(newRoutePathLink);
+    }
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
@@ -221,7 +235,12 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
                     >
                         Aikataulu
                     </Button>
-                    <div className={s.flexButtonFiller} />
+                    <Button
+                        type={ButtonType.ROUND}
+                        onClick={this.redirectToNewRoutePathView!}
+                    >
+                        Kopioi
+                    </Button>
                 </div>
             </div>
             <div className={s.formSection}>
@@ -269,4 +288,4 @@ class RoutePathViewForm extends React.Component<IRoutePathViewFormProps>{
         );
     }
 }
-export default RoutePathViewForm;
+export default RoutePathForm;

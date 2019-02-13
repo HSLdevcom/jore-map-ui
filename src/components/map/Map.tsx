@@ -17,6 +17,7 @@ import UpsertRoutePathLayer from './layers/edit/UpsertRoutePathLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
+import MapLayersZoomHint from './mapControls/MapLayersZoomHint';
 import Toolbar from './toolbar/Toolbar';
 import EventLog from './EventLog';
 import PopupLayer from './layers/PopupLayer';
@@ -163,7 +164,7 @@ class LeafletMap extends React.Component<IMapProps> {
                             `
                         }
                         baseLayer={true}
-                        maxZoom={19}
+                        maxZoom={21}
                         minZoom={8}
                         detectRetina={true}
                         tileSize={512}
@@ -191,7 +192,10 @@ class LeafletMap extends React.Component<IMapProps> {
                     </Control>
 
                     <Control position='bottomleft'>
-                        <MapLayersControl />
+                        <div className={s.mapLayersContainer}>
+                            <MapLayersControl />
+                            <MapLayersZoomHint />
+                        </div>
                     </Control>
 
                     <Control position='bottomright'>

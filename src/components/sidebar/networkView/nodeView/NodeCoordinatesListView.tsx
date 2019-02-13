@@ -5,30 +5,34 @@ import NodeCoordinatesView from './NodeCoordinatesView';
 import * as s from './nodeCoordinatesListView.scss';
 
 interface INodeCoordinatesListView {
-    node:INode;
-    onChangeCoordinates: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
+    node: INode;
+    isEditingDisabled: boolean;
+    onChangeCoordinates: (coordinatesType: NodeLocationType) => (coordinates: L.LatLng) => void;
 }
 
-const nodeCoordinatesListView = ({ node, onChangeCoordinates }: INodeCoordinatesListView) => {
+const nodeCoordinatesListView = (props: INodeCoordinatesListView) => {
     return (
         <div className={s.nodeCoordinatesListView}>
             <NodeCoordinatesView
-                nodeType={node.type}
+                nodeType={props.node.type}
                 locationType='coordinates'
-                coordinates={node.coordinates}
-                onChangeCoordinates={onChangeCoordinates}
+                coordinates={props.node.coordinates}
+                onChangeCoordinates={props.onChangeCoordinates('coordinates')}
+                isEditingDisabled={props.isEditingDisabled}
             />
             <NodeCoordinatesView
-                nodeType={node.type}
+                nodeType={props.node.type}
                 locationType='coordinatesManual'
-                coordinates={node.coordinatesManual}
-                onChangeCoordinates={onChangeCoordinates}
+                coordinates={props.node.coordinatesManual}
+                onChangeCoordinates={props.onChangeCoordinates('coordinatesManual')}
+                isEditingDisabled={props.isEditingDisabled}
             />
             <NodeCoordinatesView
-                nodeType={node.type}
+                nodeType={props.node.type}
                 locationType='coordinatesProjection'
-                coordinates={node.coordinatesProjection}
-                onChangeCoordinates={onChangeCoordinates}
+                coordinates={props.node.coordinatesProjection}
+                onChangeCoordinates={props.onChangeCoordinates('coordinatesProjection')}
+                isEditingDisabled={props.isEditingDisabled}
             />
         </div>
     );
