@@ -65,9 +65,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     private async fetchNode(nodeId: string) {
-        const node = await NodeService.fetchNode(nodeId);
-        if (node) {
+        try {
+            const node = await NodeService.fetchNode(nodeId);
             this.props.nodeStore!.setNode(node);
+        } catch (ex) {
+            this.props.errorStore!.addError('Solmun haku ei onnistunut');
         }
     }
 
