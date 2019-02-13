@@ -49,8 +49,8 @@ class AddNewRoutePathLinkTool implements BaseTool {
             RoutePathStore.setAddRoutePathLinkDirection(AddLinkDirection.AfterNode);
             await this.setInteractiveNode(properties.soltunnus, AddLinkDirection.AfterNode,  1);
 
-        } catch (e) {
-            ErrorStore.addError((e as Error).message);
+        } catch (ex) {
+            ErrorStore.addError((ex as Error).message);
         }
     }
 
