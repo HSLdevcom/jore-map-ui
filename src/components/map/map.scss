@@ -1,26 +1,19 @@
 @import '../shared/styles/common.scss';
 .mapView {
     transition: .5s;
-    width: 100%;
     position: relative;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 
     #mapLeaflet {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
+        position: relative;
         z-index: 10;
+        flex-grow: 1;
         background-color: #b2b2b2;
     }
 
     .mapLayersContainer {
         display: flex;
-    }
-}
-
-.shrinkMap {
-    #mapLeaflet {
-        top: 35px;
     }
 }

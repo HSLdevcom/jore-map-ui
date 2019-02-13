@@ -1,20 +1,18 @@
 .errorBarView {
-    height: 35px;
     background-color: #f77676;
-    line-height: 35px;
     display: flex;
     justify-content: center;
     align-items: center;
 
     div {
-        display: flex;
-        flex-grow: 1;
+        line-height: 30px;
         justify-content: center;
+        padding: 15px;
     }
 
     > svg {
-        font-size: 33px;
         cursor: pointer;
         margin-right: 20px;
+        font-size: 30px;
     }
 }

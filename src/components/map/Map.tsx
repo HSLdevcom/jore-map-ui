@@ -8,7 +8,6 @@ import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
-import { ErrorStore } from '~/stores/errorStore';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
@@ -28,7 +27,6 @@ import * as s from './map.scss';
 interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
-    errorStore?: ErrorStore;
 }
 
 interface IMapPropReference {
@@ -48,7 +46,7 @@ export type LeafletContext = {
     popupContainer?: L.Layer,
 };
 
-@inject('mapStore', 'routeStore', 'errorStore')
+@inject('mapStore', 'routeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -142,7 +140,6 @@ class LeafletMap extends React.Component<IMapProps> {
                 className={classnames(
                     s.mapView,
                     fullScreenMapViewClass,
-                    this.props.errorStore!.errorCount > 0 && s.shrinkMap,
                 )}
             >
                 {this.props.children}
