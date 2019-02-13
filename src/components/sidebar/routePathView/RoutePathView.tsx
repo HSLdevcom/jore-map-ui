@@ -127,8 +127,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 await RoutePathService.fetchRoutePath(routeId, startTime, direction);
             this.props.routePathStore!.setRoutePath(routePath);
         } catch (ex) {
-            // tslint:disable-next-line:max-line-length
-            this.props.errorStore!.addError(`RoutePath not found, routeId: ${routeId} startTime: ${startTime} direction: ${direction}`);
+            this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.');
         }
     }
 
