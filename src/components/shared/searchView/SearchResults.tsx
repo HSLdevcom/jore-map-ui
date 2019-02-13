@@ -146,7 +146,9 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.setState({
             showLimit: SHOW_LIMIT_DEFAULT,
         });
-        this.paginatedDiv.current!.scrollTo(0, 0);
+        if (this.paginatedDiv) {
+            this.paginatedDiv.current!.scrollTo(0, 0);
+        }
     }
 
     private isLine(item: INodeBase | ILine): item is ILine {
