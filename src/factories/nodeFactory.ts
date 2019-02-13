@@ -6,8 +6,6 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import INodeBase from '~/models/baseModels/INodeBase';
 import NodeStopFactory from './nodeStopFactory';
-import NotificationType from '../enums/notificationType';
-import notificationStore from '../stores/notificationStore';
 
 class NodeFactory {
     public static createNode = (externalNode: IExternalNode): INode => {
@@ -52,10 +50,7 @@ class NodeFactory {
         const type = getNodeType(externalNode.soltyyppi);
         // TODO: Change this when creating abstraction layers for reading from postgis
         if (type === NodeType.INVALID) {
-            notificationStore.addNotification({
-                message: `Solmun (id: '${externalNode.soltunnus}') tyyppi on virheellinen`,
-                type: NotificationType.WARNING,
-            });
+            throw new Error(`Solmun (id: '${externalNode.soltunnus}') tyyppi on virheellinen`);
         }
 
         return {

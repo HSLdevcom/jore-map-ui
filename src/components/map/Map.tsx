@@ -142,6 +142,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     fullScreenMapViewClass,
                 )}
             >
+                {this.props.children}
                 <Map
                     ref={this.mapReference}
                     zoomControl={false}

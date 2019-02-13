@@ -15,6 +15,7 @@ import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import navigator from '~/routing/navigator';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
@@ -30,11 +31,12 @@ interface ILinkViewState {
 
 interface ILinkViewProps {
     match?: match<any>;
+    errorStore?: ErrorStore;
     linkStore?: LinkStore;
     mapStore?: MapStore;
 }
 
-@inject('linkStore', 'mapStore')
+@inject('linkStore', 'mapStore', 'errorStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
@@ -49,15 +51,19 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     async componentDidMount() {
         this.setState({ isLoading: true });
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
-        if (startNodeId && endNodeId && transitTypeCode) {
-            const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-
-            if (link) {
+        try {
+            if (startNodeId && endNodeId && transitTypeCode) {
+                const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
                 this.props.linkStore!.setLink(link);
                 this.props.linkStore!.setNodes([link.startNode, link.endNode]);
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
             }
+        } catch (ex) {
+            this.props.errorStore!.addError(
+                // tslint:disable-next-line:max-line-length
+                `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
+            );
         }
         this.setState({ isLoading: false });
     }
@@ -90,13 +96,15 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     render() {
         const link = this.props.linkStore!.link;
-        if (this.state.isLoading || !link) {
+        if (this.state.isLoading) {
             return (
                 <div className={classnames(s.linkView, s.loaderContainer)}>
                     <Loader />
                 </div>
             );
         }
+        // TODO: show some indicator to user of an empty page
+        if (!link) return null;
 
         // tslint:disable-next-line:max-line-length
         const closePromptMessage = 'Linkilla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
@@ -293,7 +301,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             .format(datetimeStringDisplayFormat)}
                         />
                     </div>
-                </div>
+                </div>;; ;
                 <MultiTabTextarea
                     tabs={['Tariffialueet', 'Määränpäät', 'Ajoajat']}
                 />
@@ -310,16 +318,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                     >
                         Loppusolmu
                     </Button>
-                </div>
-            </div>
+                </div>;
+            </div >
             <Button
                 type={ButtonType.SAVE}
                 disabled={isSaveButtonDisabled}
                 onClick={this.save}
             >
                 Tallenna muutokset
-            </Button>
-        </div>
+            </Button>;
+        </div >
         );
     }
 }

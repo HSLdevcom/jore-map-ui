@@ -12,12 +12,11 @@ import { RouteStore } from '~/stores/routeStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import { NotificationStore } from '~/stores/notificationStore';
 import DialogStore from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
-import NotificationType from '~/enums/notificationType';
+import { ErrorStore } from '~/stores/errorStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
@@ -33,16 +32,16 @@ interface IRoutePathViewState {
 }
 
 interface IRoutePathViewProps {
+    errorStore?: ErrorStore;
     routePathStore?: RoutePathStore;
     routeStore?: RouteStore;
     networkStore?: NetworkStore;
-    notificationStore?: NotificationStore;
     toolbarStore?: ToolbarStore;
     match?: match<any>;
     isNewRoutePath: boolean;
 }
 
-@inject('routeStore', 'routePathStore', 'networkStore', 'notificationStore', 'toolbarStore')
+@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore', 'errorStore')
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
@@ -74,13 +73,20 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     private initializeAsAddingNew = async () => {
-        if (!this.props.routePathStore!.routePath) {
-            this.props.routePathStore!.setRoutePath(await this.createNewRoutePath());
-        } else {
-            this.props.routePathStore!.setRoutePath(
-                RoutePathFactory.createNewRoutePathFromOld(this.props.routePathStore!.routePath!));
+        try {
+            if (!this.props.routePathStore!.routePath) {
+                this.props.routePathStore!.setRoutePath(await this.createNewRoutePath());
+            } else {
+                this.props.routePathStore!.setRoutePath(
+                    RoutePathFactory.createNewRoutePathFromOld(
+                        this.props.routePathStore!.routePath!,
+                    ),
+                );
+            }
+            this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
+        } catch (ex) {
+            this.props.errorStore!.addError('Reittisuunnan uuden luonti epäonnistui');
         }
-        this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
     }
 
     private initializeMap = async () => {
@@ -97,7 +103,6 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         const queryParams = navigator.getQueryParamValues();
         const route = await RouteService.fetchRoute(queryParams.routeId);
         // TODO: add transitType to this call (if transitType is routePath's property)
-        if (!route) throw new Error(`Route not found, routeId: ${queryParams.routeId}`);
 
         return RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
     }
@@ -105,9 +110,11 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     private setTransitType = async () => {
         const routePath = this.props.routePathStore!.routePath;
         if (routePath && routePath.lineId) {
-            const line = await LineService.fetchLine(routePath.lineId);
-            if (line) {
+            try {
+                const line = await LineService.fetchLine(routePath.lineId);
                 this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
+            } catch (ex) {
+                this.props.errorStore!.addError('Linjan haku ei onnistunut');
             }
         }
     }
@@ -115,10 +122,14 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     private fetchRoutePath = async () => {
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
         const startTime = moment(startTimeString);
-        const routePath =
-            await RoutePathService.fetchRoutePath(routeId, startTime, direction);
-        if (!routePath) throw new Error(`RoutePath not found, routeId: ${routeId} startTime: ${startTime} direction: ${direction}`); /* tslint:disable max-line-length */
-        this.props.routePathStore!.setRoutePath(routePath);
+        try {
+            const routePath =
+                await RoutePathService.fetchRoutePath(routeId, startTime, direction);
+            this.props.routePathStore!.setRoutePath(routePath);
+        } catch (ex) {
+            // tslint:disable-next-line:max-line-length
+            this.props.errorStore!.addError(`RoutePath not found, routeId: ${routeId} startTime: ${startTime} direction: ${direction}`);
+        }
     }
 
     public renderTabContent = () => {
@@ -151,10 +162,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             DialogStore.setFadeMessage('Tallennettu!');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
-            this.props.notificationStore!.addNotification({
-                message: `Tallennus epäonnistui${errMessage}`,
-                type: NotificationType.ERROR,
-            });
+            this.props.errorStore!.addError(`Tallennus epäonnistui${errMessage}`);
         }
         this.setState({
             isEditingDisabled: true,

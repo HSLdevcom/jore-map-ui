@@ -1,18 +1,17 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { NotificationStore } from '~/stores/notificationStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import ButtonType from '~/enums/buttonType';
-import NotificationType from '~/enums/notificationType';
 import Button from '../controls/Button';
 import * as s from './login.scss';
 
 interface ILoginProps {
-    notificationStore?: NotificationStore;
+    errorStore?: ErrorStore;
     loginStore?: LoginStore;
 }
 
-@inject('loginStore', 'notificationStore')
+@inject('loginStore', 'errorStore')
 @observer
 class Login extends React.Component<ILoginProps> {
     // TODO Login logic here
@@ -27,13 +26,10 @@ class Login extends React.Component<ILoginProps> {
 
     public closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
-        this.props.notificationStore!.addNotification({
-            message: 'Kirjautuminen ei käytössä.',
-            type: NotificationType.WARNING,
-        });
+        this.props.errorStore!.addError('Login Modal is not in use');
     }
 
-    public render(): any {
+    public render() {
         return (
         <div className={s.loginView}>
             <h2>Kirjaudu sisään</h2>

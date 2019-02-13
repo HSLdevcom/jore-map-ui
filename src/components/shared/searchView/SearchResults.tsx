@@ -5,6 +5,7 @@ import { SearchResultStore } from '~/stores/searchResultStore';
 import { ILine } from '~/models';
 import LineService from '~/services/lineService';
 import NodeService from '~/services/nodeService';
+import { ErrorStore } from '~/stores/errorStore';
 import { SearchStore } from '~/stores/searchStore';
 import INodeBase from '~/models/baseModels/INodeBase';
 import Navigator from '~/routing/navigator';
@@ -17,6 +18,7 @@ import * as s from './searchResults.scss';
 interface ISearchResultsProps{
     searchResultStore?: SearchResultStore;
     searchStore?: SearchStore;
+    errorStore?: ErrorStore;
 }
 
 interface ISearchResultsState {
@@ -28,7 +30,7 @@ const SHOW_LIMIT_DEFAULT = 50;
 const INCREASE_SHOW_LIMIT = 10;
 const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half way down
 
-@inject('searchResultStore', 'searchStore')
+@inject('searchResultStore', 'searchStore', 'errorStore')
 @observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
     private paginatedDiv: React.RefObject<HTMLDivElement>;
@@ -71,16 +73,20 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
 
     private fetchAllLines = async () => {
-        const lines = await LineService.fetchAllLines();
-        if (lines !== null) {
+        try {
+            const lines = await LineService.fetchAllLines();
             this.props.searchResultStore!.setAllLines(lines);
+        } catch (ex) {
+            this.props.errorStore!.addError('Linjojen haku ei onnistunut.');
         }
     }
 
     private fetchAllNodes = async () => {
-        const nodes = await NodeService.fetchAllNodes();
-        if (nodes !== null) {
+        try {
+            const nodes = await NodeService.fetchAllNodes();
             this.props.searchResultStore!.setAllNodes(nodes);
+        } catch (ex) {
+            this.props.errorStore!.addError('Solmujen haku ei onnistunut');
         }
     }
 
@@ -140,7 +146,9 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.setState({
             showLimit: SHOW_LIMIT_DEFAULT,
         });
-        this.paginatedDiv.current!.scrollTo(0, 0);
+        if (this.paginatedDiv && this.paginatedDiv.current) {
+            this.paginatedDiv.current.scrollTo(0, 0);
+        }
     }
 
     private isLine(item: INodeBase | ILine): item is ILine {

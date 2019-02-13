@@ -10,6 +10,7 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
+import { ErrorStore } from '~/stores/errorStore';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import RouteService from '~/services/routeService';
@@ -22,13 +23,14 @@ interface IRouteListState {
 }
 
 interface IRouteListProps {
+    errorStore?: ErrorStore;
     searchStore?: SearchStore;
     routeStore?: RouteStore;
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
 }
 
-@inject('searchStore', 'routeStore', 'networkStore', 'routePathStore')
+@inject('searchStore', 'routeStore', 'networkStore', 'routePathStore', 'errorStore')
 @observer
 class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     constructor(props: any) {
@@ -54,9 +56,13 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                 .filter(id => !routeIds.includes(id))
                 .forEach(id => this.props.routeStore!.removeFromRoutes(id));
 
-            const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
-            if (routes) {
+            try {
+                const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
                 this.props.routeStore!.addToRoutes(routes);
+            } catch (ex) {
+                this.props.errorStore!.addError(
+                    `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
+                );
             }
             this.setState({ isLoading: false });
         }

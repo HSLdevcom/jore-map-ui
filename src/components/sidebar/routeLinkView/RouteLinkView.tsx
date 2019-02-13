@@ -1,11 +1,12 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import moment from 'moment';
 import ButtonType from '~/enums/buttonType';
 import RouteService from '~/services/routeService';
 import { IRoutePathLink, IRoute } from '~/models';
+import { ErrorStore } from '~/stores/errorStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import NodeType from '~/enums/nodeType';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
@@ -23,6 +24,7 @@ interface IRouteLinkViewState {
 
 interface IRouteLinkViewProps {
     match?: match<any>;
+    errorStore?: ErrorStore;
 }
 
 const nodeDescriptions = {
@@ -33,6 +35,7 @@ const nodeDescriptions = {
     unknown: 'Tyhjä',
 };
 
+@inject('errorStore')
 @observer
 class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewState> {
     constructor(props: IRouteLinkViewProps) {
@@ -74,20 +77,21 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
     private fetchRoutePathLink = async (id: string) => {
         this.setState({ isLoading: true });
 
-        const routePathLinkId = parseInt(id, 10);
-        const routePathLink =
-            await RoutePathLinkService.fetchRoutePathLink(routePathLinkId);
+        try {
+            const routePathLinkId = parseInt(id, 10);
+            const routePathLink =
+                await RoutePathLinkService.fetchRoutePathLink(routePathLinkId);
 
-        if (routePathLink) {
             this.setState({ routePathLink });
 
             if (routePathLink.routeId) {
                 const route = await RouteService.fetchRoute(routePathLink.routeId!);
-                if (route) {
-                    this.setState({ route });
-                }
+                this.setState({ route });
             }
+        } catch (ex) {
+            this.props.errorStore!.addError('Reitinsuunnan linkin haku epäonnistui');
         }
+
         this.setState({ isLoading: false });
     }
 

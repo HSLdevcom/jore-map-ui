@@ -6,14 +6,14 @@ import { INode } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
-import NotificationType from '~/enums/notificationType';
 import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import NodeService from '~/services/nodeService';
-import { NotificationStore } from '~/stores/notificationStore';
+import { DialogStore } from '~/stores/dialogStore';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
+import { ErrorStore } from '~/stores/errorStore';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
@@ -26,7 +26,8 @@ interface INodeViewProps {
     match?: match<any>;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
-    notificationStore?: NotificationStore;
+    errorStore?: ErrorStore;
+    dialogStore?: DialogStore;
 }
 
 interface INodeViewState {
@@ -35,7 +36,7 @@ interface INodeViewState {
     invalidFieldsMap: object;
 }
 
-@inject('nodeStore', 'mapStore', 'notificationStore')
+@inject('nodeStore', 'mapStore', 'errorStore', 'dialogStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
@@ -83,16 +84,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             await NodeService.updateNode(this.props.nodeStore!.node);
 
             this.props.nodeStore!.setOldNode(this.props.nodeStore!.node);
-            this.props.notificationStore!.addNotification({
-                message: 'Tallennus onnistui',
-                type: NotificationType.SUCCESS,
-            });
+            this.props.dialogStore!.setFadeMessage('Tallennus onnistui');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
-            this.props.notificationStore!.addNotification({
-                message: `Tallennus epäonnistui${errMessage}`,
-                type: NotificationType.ERROR,
-            });
+            this.props.errorStore!.addError(`Tallennus epäonnistui${errMessage}`);
         }
         this.setState({ isLoading: false });
     }
