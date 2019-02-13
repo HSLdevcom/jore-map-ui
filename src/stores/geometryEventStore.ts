@@ -104,7 +104,7 @@ export class GeometryEventStore {
                 );
                 RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);
             } catch (ex) {
-                ErrorStore.push('Haku löytää sopivia naapurisolmuja epäonnistui');
+                ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
             }
         } else {
             RoutePathStore!.setNeighborRoutePathLinks([]);

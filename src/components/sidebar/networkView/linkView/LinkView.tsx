@@ -77,7 +77,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             this.props.linkStore!.setLink(link);
             this.props.linkStore!.setNodes([link.startNode, link.endNode]);
         } catch (ex) {
-            this.props.errorStore!.push(
+            this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
             );

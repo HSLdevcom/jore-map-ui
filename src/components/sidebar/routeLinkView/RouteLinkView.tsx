@@ -89,7 +89,7 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                 this.setState({ route });
             }
         } catch (ex) {
-            this.props.errorStore!.push('Reitinsuunnan linkin haku epäonnistui');
+            this.props.errorStore!.addError('Reitinsuunnan linkin haku epäonnistui');
         }
 
         this.setState({ isLoading: false });

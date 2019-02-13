@@ -64,7 +64,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
             const node = await NodeService.fetchNode(nodeId);
             this.props.nodeStore!.setNode(node);
         } catch (ex) {
-            this.props.errorStore!.push('Solmun haku ei onnistunut');
+            this.props.errorStore!.addError('Solmun haku ei onnistunut');
         }
     }
 
@@ -73,7 +73,7 @@ class NetworkNode extends React.Component<INetworkNodeProps, InetworkNodeState> 
             const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
             this.props.nodeStore!.setLinks(links);
         } catch (ex) {
-            this.props.errorStore!.push(
+            this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
             );

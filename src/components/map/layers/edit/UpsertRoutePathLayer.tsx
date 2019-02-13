@@ -210,7 +210,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                     this.props.routePathStore!.routePath!.transitType);
                 this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
             } catch (ex) {
-                this.props.errorStore!.push('Haku löytää sopivia naapurisolmuja epäonnistui');
+                this.props.errorStore!.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
             }
         } else {
             this.props.routePathStore!.setNeighborRoutePathLinks([]);

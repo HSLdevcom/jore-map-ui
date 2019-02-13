@@ -26,7 +26,7 @@ class Login extends React.Component<ILoginProps> {
 
     public closeLoginModal = () => {
         this.props.loginStore!.showLogin = false;
-        this.props.errorStore!.push('Login Modal is not in use');
+        this.props.errorStore!.addError('Login Modal is not in use');
     }
 
     public render() {

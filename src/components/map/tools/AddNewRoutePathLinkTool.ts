@@ -31,12 +31,12 @@ class AddNewRoutePathLinkTool implements BaseTool {
                     RoutePathStore.routePath!.transitType);
                 if (routePathLinks.length === 0) {
                     // tslint:disable-next-line:max-line-length
-                    ErrorStore.push(`Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`);
+                    ErrorStore.addError(`Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`);
                 } else {
                     RoutePathStore!.setNeighborRoutePathLinks(routePathLinks);
                 }
             } catch (ex) {
-                ErrorStore.push('Haku löytää sopivia naapurisolmuja epäonnistui');
+                ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
             }
         }
 
@@ -50,7 +50,7 @@ class AddNewRoutePathLinkTool implements BaseTool {
             await this.setInteractiveNode(properties.soltunnus, AddLinkDirection.AfterNode,  1);
 
         } catch (e) {
-            ErrorStore.push((e as Error).message);
+            ErrorStore.addError((e as Error).message);
         }
     }
 

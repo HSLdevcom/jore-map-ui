@@ -21,7 +21,7 @@ export class ErrorStore {
     }
 
     @action
-    public push(error: string) {
+    public addError(error: string) {
         this._errors.push(error);
     }
 
