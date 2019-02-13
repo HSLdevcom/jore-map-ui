@@ -113,7 +113,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 const line = await LineService.fetchLine(routePath.lineId);
                 this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
             } catch (ex) {
-                this.props.errorStore!.addError('Linja haku ei onnistunut');
+                this.props.errorStore!.addError('Linjan haku ei onnistunut');
             }
         }
     }
