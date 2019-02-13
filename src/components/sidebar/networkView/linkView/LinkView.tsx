@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { match } from 'react-router';
 import L from 'leaflet';
 import ButtonType from '~/enums/buttonType';
-import { ILink } from '~/models';
 import LinkService from '~/services/linkService';
 import NodeType from '~/enums/nodeType';
 import SubSites from '~/routing/subSites';
@@ -14,6 +13,7 @@ import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import navigator from '~/routing/navigator';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../InputContainer';
 import MultiTabTextarea from './MultiTabTextarea';
@@ -22,12 +22,12 @@ import ViewHeader from '../../ViewHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
-    link?: ILink;
     isLoading: boolean;
 }
 
 interface ILinkViewProps {
     match?: match<any>;
+    errorStore?: ErrorStore;
     linkStore?: LinkStore;
     mapStore?: MapStore;
 }
@@ -40,7 +40,7 @@ const nodeDescriptions = {
     unknown: 'Tyhjä',
 };
 
-@inject('linkStore', 'mapStore')
+@inject('linkStore', 'mapStore', 'errorStore')
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
@@ -52,8 +52,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     async componentDidMount() {
         await this.initUsingUrlParams(this.props);
-        if (this.state.link) {
-            const bounds = L.latLngBounds(this.state.link.geometry);
+        if (this.props.linkStore!.link) {
+            const bounds = L.latLngBounds(this.props.linkStore!.link!.geometry);
             this.props.mapStore!.setMapBounds(bounds);
         }
     }
@@ -72,13 +72,15 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     private fetchLink = async (startNodeId: string, endNodeId: string, transitTypeCode: string) => {
-        const link =
-            await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-
-        if (link) {
-            this.setState({ link });
+        try {
+            const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
             this.props.linkStore!.setLink(link);
             this.props.linkStore!.setNodes([link.startNode, link.endNode]);
+        } catch (ex) {
+            this.props.errorStore!.addError(
+                // tslint:disable-next-line:max-line-length
+                `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
+            );
         }
     }
 
@@ -114,16 +116,19 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     render() {
-        if (this.state.isLoading || !this.state.link) {
+        const link = this.props.linkStore!.link;
+        if (this.state.isLoading) {
             return (
                 <div className={classnames(s.linkView, s.loaderContainer)}>
                     <Loader />
                 </div>
             );
         }
+        // TODO: show some indicator to user of an empty page
+        if (!link) return null;
 
-        const startNode = this.state.link!.startNode;
-        const endNode = this.state.link!.endNode;
+        const startNode = link.startNode;
+        const endNode = link!.endNode;
         const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
 
         return (
@@ -198,7 +203,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         <div className={s.transitButtonBar}>
                             <TransitToggleButtonBar
                                 selectedTransitTypes={
-                                  this.state.link ? [this.state.link!.transitType] : []
+                                    link ? [link!.transitType] : []
                                 }
                             />
                         </div>
@@ -215,22 +220,22 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     />
                     <InputContainer
                         label='LINKIN PITUUS'
-                        value={this.state.link.length}
+                        value={link.length}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='KATU'
-                        value={this.state.link.streetName}
+                        value={link.streetName}
                     />
                     <InputContainer
                         label='KATUOSAN OS. NRO'
-                        value={this.state.link.streetNumber}
+                        value={link.streetNumber}
                     />
                     <Dropdown
                         onChange={this.onChange}
                         codeList={municipalityCodeList}
-                        selected={this.state.link.municipalityCode}
+                        selected={link.municipalityCode}
                         label='KUNTA'
                     />
                 </div>
@@ -308,11 +313,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <div className={s.flexRow}>
                     <InputContainer
                         label='PÄIVITTÄJÄ'
-                        value={this.state.link.modifiedBy}
+                        value={link.modifiedBy}
                     />
                     <InputContainer
                         label='PÄIVITYSPVM'
-                        value={Moment(this.state.link.modifiedOn)
+                        value={Moment(link.modifiedOn)
                           .format(datetimeStringDisplayFormat)}
                     />
                 </div>
@@ -322,13 +327,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             />
             <div className={s.buttonBar}>
                 <Button
-                    onClick={this.navigateToNode(this.state.link.startNode.id)}
+                    onClick={this.navigateToNode(link.startNode.id)}
                     type={ButtonType.ROUND}
                 >
                     Alkusolmu
                 </Button>
                 <Button
-                    onClick={this.navigateToNode(this.state.link.endNode.id)}
+                    onClick={this.navigateToNode(link.endNode.id)}
                     type={ButtonType.ROUND}
                 >
                     Loppusolmu

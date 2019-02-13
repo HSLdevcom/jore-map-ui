@@ -3,15 +3,14 @@ import ReactMoment from 'react-moment';
 import { observer, inject } from 'mobx-react';
 import { IRoutePath } from '~/models';
 import RouteService from '~/services/routeService';
-import { NotificationStore } from '~/stores/notificationStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { SearchStore } from '~/stores/searchStore';
-import NotificationType from '~/enums/notificationType';
 import { Checkbox } from '../../controls';
 import Loader, { LoaderSize } from '../loader/Loader';
 import * as s from './lineItemSubMenu.scss';
 
 interface LineItemSubMenuProps {
-    notificationStore?: NotificationStore;
+    errorStore?: ErrorStore;
     searchStore?: SearchStore;
     routeId: string;
     lineId: string;
@@ -22,7 +21,7 @@ interface LineItemSubMenuState {
     routePaths: IRoutePath[] | null;
 }
 
-@inject('notificationStore', 'searchStore')
+@inject('errorStore', 'searchStore')
 @observer
 class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuState> {
     private mounted: boolean;
@@ -59,10 +58,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
                 });
             }
         } catch {
-            this.props.notificationStore!.addNotification({
-                message: 'Reitinsuuntien haussa tapahtui virhe.',
-                type: NotificationType.ERROR,
-            });
+            this.props.errorStore!.addError('Reitinsuuntien haussa tapahtui virhe.');
         }
     }
 

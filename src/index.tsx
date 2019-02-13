@@ -7,7 +7,6 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import { Router } from 'react-router';
 import App from './components/App';
-import NotificationStore from './stores/notificationStore';
 import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
 import SearchResultStore from './stores/searchResultStore';
@@ -15,6 +14,7 @@ import RouteStore from './stores/routeStore';
 import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
 import PopupStore from './stores/popupStore';
+import ErrorStore from './stores/errorStore';
 import ToolbarStore from './stores/toolbarStore';
 import NetworkStore from './stores/networkStore';
 import GeometryEventStore from './stores/geometryEventStore';
@@ -31,8 +31,8 @@ const browserHistory = createBrowserHistory();
 
 // Observable stores
 const stores = {
+    errorStore: ErrorStore,
     mapStore: MapStore,
-    notificationStore: NotificationStore,
     searchResultStore: SearchResultStore,
     loginStore: LoginStore,
     routeStore: RouteStore,

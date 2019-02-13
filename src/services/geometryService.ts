@@ -1,7 +1,7 @@
 import proj4 from 'proj4';
 import CoordinateSystem from '~/enums/coordinateSystem';
 
-class GeometryService {
+class GeometryService { // TODO: Move out of /services
     private static projections = {
         KKJ:
             '+proj=tmerc +lat_0=0 +lon_0=24 +k=1 +x_0=2500000 +y_0=0 +ellps=intl' +

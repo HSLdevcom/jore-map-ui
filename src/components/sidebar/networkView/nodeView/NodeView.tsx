@@ -7,13 +7,12 @@ import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
-import NotificationType from '~/enums/notificationType';
 import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
+import { ErrorStore } from '~/stores/errorStore';
 import NodeService from '~/services/nodeService';
-import { NotificationStore } from '~/stores/notificationStore';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -28,7 +27,7 @@ interface INodeViewProps {
     dialogStore?: DialogStore;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
-    notificationStore?: NotificationStore;
+    errorStore?: ErrorStore;
 }
 
 interface INodeViewState {
@@ -37,7 +36,7 @@ interface INodeViewState {
     invalidFieldsMap: object;
 }
 
-@inject('dialogStore', 'nodeStore', 'mapStore', 'notificationStore')
+@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
@@ -66,16 +65,23 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     private async fetchNode(nodeId: string) {
-        const node = await NodeService.fetchNode(nodeId);
-        if (node) {
+        try {
+            const node = await NodeService.fetchNode(nodeId);
             this.props.nodeStore!.setNode(node);
+        } catch (ex) {
+            this.props.errorStore!.addError('Solmun haku ei onnistunut');
         }
     }
 
     private async fetchLinksForNode(node: INode) {
-        const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
-        if (links) {
+        try {
+            const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
             this.props.nodeStore!.setLinks(links);
+        } catch (ex) {
+            this.props.errorStore!.addError(
+                // tslint:disable-next-line:max-line-length
+                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
+            );
         }
     }
 
@@ -88,10 +94,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
-            this.props.notificationStore!.addNotification({
-                message: `Tallennus epäonnistui${errMessage}`,
-                type: NotificationType.ERROR,
-            });
+            this.props.errorStore!.addError(`Tallennus epäonnistui${errMessage}`);
         }
         this.setState({ isLoading: false });
     }
@@ -134,13 +137,16 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         // tslint:disable-next-line:max-line-length
         const closePromptMessage = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 
-        if (this.state.isLoading || !node || !node.id) {
+        if (this.state.isLoading) {
             return(
                 <div className={classnames(s.nodeView, s.loaderContainer)}>
                     <Loader/>
                 </div>
             );
         }
+        // TODO: show some indicator to user of an empty page
+        if (!node) return null;
+
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>

@@ -5,6 +5,7 @@ import entityName from '~/enums/entityName';
 import { IRoutePathLink } from '~/models';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import RoutePathStore, { AddLinkDirection } from './routePathStore';
+import ErrorStore from './errorStore';
 import Navigator from '../routing/navigator';
 
 const enum IObjectDidChangeUpdateTypes {
@@ -93,14 +94,18 @@ export class GeometryEventStore {
                 ? previousRPLink.orderNumber + 1
                 : previousRPLink.orderNumber;
 
-            const neighbourLinks =
+            try {
+                const neighbourLinks =
                 await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
                     previousRPLink.endNode.id,
                     direction,
                     orderNumber,
                     RoutePathStore.routePath!.transitType,
                 );
-            RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);
+                RoutePathStore!.setNeighborRoutePathLinks(neighbourLinks);
+            } catch (ex) {
+                ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
+            }
         } else {
             RoutePathStore!.setNeighborRoutePathLinks([]);
         }
