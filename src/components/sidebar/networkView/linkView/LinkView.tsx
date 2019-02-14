@@ -210,6 +210,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             label='OS. NRO'
                             disabled={isEditingDisabled}
                             value={link.osNumber}
+                            type='number'
                             onChange={this.onChange('osNumber')}
                             validatorRule={linkValidationModel.osNumber}
                         />
@@ -217,6 +218,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             label='LINKIN PITUUS (m)'
                             disabled={isEditingDisabled}
                             value={link.length}
+                            type='number'
                             onChange={this.onChange('length')}
                             validatorRule={linkValidationModel.length}
                         />
@@ -232,6 +234,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             label='KATUOSAN OS. NRO'
                             disabled={isEditingDisabled}
                             value={link.streetNumber}
+                            type='number'
                             onChange={this.onChange('streetNumber')}
                             validatorRule={linkValidationModel.streetNumber}
                         />

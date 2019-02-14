@@ -13,6 +13,7 @@ interface IInputProps {
     validatorRule?: string;
     icon?: React.ReactNode;
     onIconClick?: () => void;
+    type?: 'text' | 'number';
 }
 
 interface IInputState {
@@ -65,6 +66,8 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     }
 
     render() {
+        const type = this.props.type || 'text';
+
         return (
             <div className={s.formItem}>
                 <div className={s.inputLabel}>
@@ -85,7 +88,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                     :
                     (<input
                         placeholder={this.props.disabled ? '' : this.props.placeholder}
-                        type={typeof this.props.value === 'number' ? 'number' : 'text'}
+                        type={type}
                         className={
                             classnames(
                                 this.props.className,

@@ -143,6 +143,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         disabled={isEditingDisabled}
                         validatorRule={routePathValidationModel.length}
                         icon={<FiRefreshCw/>}
+                        type='number'
                         onIconClick={this.updateLength}
                         onChange={this.onChange('length')}
                     />
