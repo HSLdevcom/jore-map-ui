@@ -111,6 +111,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 vertexMarker.dragging.disable();
                 vertexMarker._events.click = {};
                 vertexMarker.setOpacity(0);
+                vertexMarker.setZIndexOffset(-1000);
             });
             this.editableLinks.push(editableLink);
         }
