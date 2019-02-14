@@ -1,5 +1,4 @@
 import moment from 'moment';
-import { toJS } from 'mobx';
 
 class ApiClientHelper {
     private static arrayToObject = (arr: [string, any][]) => {
@@ -12,9 +11,7 @@ class ApiClientHelper {
 
     public static format = (obj: object) => {
         // Formats the object to include dates as formatted strings, instead of Date objects
-        const entries = Object.entries(
-            toJS(obj),
-        );
+        const entries = Object.entries(obj);
         const dates = entries
             .filter(([key, value]: [string, any]) => value instanceof Date)
             .map(
