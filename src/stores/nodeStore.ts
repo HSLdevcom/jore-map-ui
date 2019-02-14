@@ -27,6 +27,11 @@ export class NodeStore {
     }
 
     @action
+    public changeLinkGeometry = (latLngs: L.LatLng[], index: number) => {
+        this._links[index].geometry = latLngs;
+    }
+
+    @action
     public setLinks = (links: ILink[]) => {
         this._links = links;
     }
@@ -49,10 +54,19 @@ export class NodeStore {
             [property]: value,
         };
 
-        if (
-            this._node.type === NodeType.STOP &&
-            !this._node.stop
-        ) {
+        const links = this._links;
+        // Update the first link geometry of startNodes to coordinatesProjection
+        links
+            .filter(link => link.startNode.id === this._node!.id)
+            .map(link => link.geometry[0] = this._node!.coordinatesProjection);
+        // Update the last link geometry of endNodes to coordinatesProjection
+        links
+            .filter(link => link.endNode.id === this._node!.id)
+            .map(link => link.geometry[link.geometry.length - 1]
+                = this._node!.coordinatesProjection);
+        this.setLinks(links);
+
+        if (this._node.type === NodeType.STOP && !this._node.stop) {
             this._node.stop = StopFactory.createNewStop();
         }
     }

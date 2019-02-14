@@ -29,17 +29,16 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         );
     }
 
-    private removeOldLinks = () => {
-        const map = this.props.leaflet.map;
-        // Remove (possible) previously drawn links from map
-        this.editableLinks.forEach((editableLink) => {
-            map!.removeLayer(editableLink);
-        });
-        this.editableLinks = [];
-    }
-
     componentWillUnmount() {
         this.reactionDisposer();
+    }
+
+    private removeOldLinks = () => {
+        // Remove (possible) previously drawn links from map
+        this.editableLinks.forEach((editableLink) => {
+            editableLink.remove();
+        });
+        this.editableLinks = [];
     }
 
     private drawEditableLink = () => {
@@ -53,17 +52,27 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
         map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
-            const linkCopy = Object.assign({}, this.props.linkStore!.link);
-            const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
-            linkCopy.geometry = latlngs;
-            this.props.linkStore!.setLink(linkCopy);
+            this.refreshEditableLink();
         });
+
+        map!.off('editable:vertex:deleted');
+        map!.on('editable:vertex:deleted', (data: any) => {
+            this.refreshEditableLink();
+        });
+    }
+
+    private refreshEditableLink() {
+        const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
+        this.props.linkStore!.changeLinkGeometry(latlngs);
     }
 
     private drawEditableLinkToMap = (link: ILink) => {
         const map = this.props.leaflet.map;
         if (map) {
-            const editableLink = L.polyline([link.geometry]).addTo(map);
+            const editableLink = L.polyline(
+                [link.geometry],
+                { interactive: false },
+            ).addTo(map);
             editableLink.enableEdit();
             const latLngs = editableLink.getLatLngs() as L.LatLng[][];
             const coords = latLngs[0];
@@ -71,6 +80,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             coordsToDisable.forEach((coordToDisable: any) => {
                 const vertexMarker = coordToDisable.__vertex;
                 vertexMarker.dragging.disable();
+                vertexMarker._events.click = {};
                 vertexMarker.setOpacity(0);
             });
 
