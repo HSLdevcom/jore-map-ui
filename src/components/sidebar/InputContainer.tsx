@@ -82,9 +82,11 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                     }
                 </div>
                 {this.props.disabled ?
-                    (<div>
-                        {this.props.value!}
-                    </div>)
+                    (
+                        <div className={s.editingDisabled}>
+                            {this.props.value!}
+                        </div>
+                    )
                     :
                     (<input
                         placeholder={this.props.disabled ? '' : this.props.placeholder}
