@@ -3,7 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { FiChevronRight } from 'react-icons/fi';
 import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { Button } from '~/components/controls';
+import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
@@ -12,6 +12,7 @@ import TransitTypeHelper from '~/util/transitTypeHelper';
 import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 import InputContainer from '../../InputContainer';
 import * as s from './routePathListObject.scss';
+import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
 
 interface IRoutePathListLinkProps {
     routePathStore?: RoutePathStore;
@@ -22,6 +23,8 @@ interface IRoutePathListLinkProps {
 @inject('routePathStore')
 @observer
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
+    private onChange = () => {};
+
     private renderNodeHeaderIcon = () => <div className={s.linkIcon} />;
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
@@ -52,6 +55,79 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         value={rpLink.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'ei'}
                     />
                 </div>
+                <div className={s.flexRow}>
+                    <div className={s.inputLabel}>
+                        ALKUSOLMUN SARAKE NRO
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika kirja-aikat.'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika nettiaikat.'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.inputLabel}>
+                        VIIM. LINKIN LOPPUSOLMU SARAKE NRO
+                    </div>
+                </div>
+                <div className={s.flexRow}>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika nettiaikat.'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+                    <div className={s.flexInnerRow}>
+                        <input
+                            placeholder='1'
+                            type='text'
+                            className={s.smallInput}
+                        />
+                        <Checkbox
+                            checked={false}
+                            text={'Ohitusaika kirja-aikat.'}
+                            onClick={this.onChange}
+                        />
+                    </div>
+
+                </div>
+                <div className={s.flexRow}>
+                    <Dropdown
+                        label='SOLMU HASTUS-PAIKKANA'
+                        items={['Kyllä', 'Ei']}
+                        selected={'Kyllä'}
+                    />
+                </div>
+                <MultiTabTextarea
+                    tabs={['Tariffialueet', 'Määränpäät']}
+                />
             </div>
         );
     }

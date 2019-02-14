@@ -1,5 +1,6 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/common';
+@import '../../../shared/styles/form';
 
 .timeAlignmentIcon {
     background: url('~/icons/time.svg');
@@ -152,6 +153,16 @@
                     position: absolute;
                     right: 15px;
                 }
+            }
+
+            .smallInput {
+                width: 35px;
+                height: 35px;
+                text-align: center;
+                margin-top: 0px;
+                margin-right: 5px;
+                padding-right: 1px;
+                padding-left: 1px;
             }
         }
     }

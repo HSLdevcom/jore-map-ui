@@ -17,9 +17,8 @@ import navigator from '~/routing/navigator';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { ErrorStore } from '~/stores/errorStore';
-import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
+import { Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../InputContainer';
-import MultiTabTextarea from './MultiTabTextarea';
 import Loader from '../../../shared/loader/Loader';
 import ViewHeader from '../../ViewHeader';
 import * as s from './linkView.scss';
@@ -230,77 +229,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <div className={s.inputLabel}>
-                            ALKUSOLMUN SARAKE NRO
-                        </div>
-                        <div className={s.inputLabel}>
-                            VIIM. LINKIN LOPPUSOLMU SARAKE NRO
-                        </div>
-                    </div>
-                    <div className={s.flexRow}>
-                        <div className={s.flexInnerRow}>
-                            <input
-                                placeholder='1'
-                                type='text'
-                                className={s.smallInput}
-                            />
-                            <Checkbox
-                                checked={false}
-                                text={'Ohitusaika kirja-aikat.'}
-                                onClick={this.onChange}
-                            />
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <input
-                                placeholder='1'
-                                type='text'
-                                className={s.smallInput}
-                            />
-                            <Checkbox
-                                checked={false}
-                                text={'Ohitusaika kirja-aikat.'}
-                                onClick={this.onChange}
-                            />
-                        </div>
-                    </div>
-                    <div className={s.flexRow}>
-                        <div className={s.flexInnerRow}>
-                            <input
-                                placeholder='1'
-                                type='text'
-                                className={s.smallInput}
-                            />
-                            <Checkbox
-                                checked={false}
-                                text={'Ohitusaika nettiaikat.'}
-                                onClick={this.onChange}
-                            />
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <input
-                                placeholder='1'
-                                type='text'
-                                className={s.smallInput}
-                            />
-                            <Checkbox
-                                checked={false}
-                                text={'Ohitusaika nettiaikat.'}
-                                onClick={this.onChange}
-                            />
-                        </div>
-                    </div>
-                    <div className={s.flexRow}>
-                        <div className={s.flexGrow}>
-                            <Dropdown
-                                label='SOLMU HASTUS-PAIKKANA'
-                                onChange={this.onChange}
-                                items={['Kyllä', 'Ei']}
-                                selected={'Kyllä'}
-                            />
-                        </div>
-                        <div className={s.flexFiller} />
-                    </div>
-                    <div className={s.flexRow}>
                         <InputContainer
                             label='PÄIVITTÄJÄ'
                             value={link.modifiedBy}
@@ -312,9 +240,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         />
                     </div>
                 </div>
-                <MultiTabTextarea
-                    tabs={['Tariffialueet', 'Määränpäät', 'Ajoajat']}
-                />
                 <div className={s.buttonBar}>
                     <Button
                         onClick={this.navigateToNode(link.startNode.id)}

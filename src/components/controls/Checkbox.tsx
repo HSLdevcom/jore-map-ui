@@ -4,31 +4,27 @@ import * as s from './checkbox.scss';
 interface ICheckboxProps {
     checked: boolean;
     text: string;
-    onClick(event: any): void;
+    onClick(): void;
 }
 
 class Checkbox extends React.Component<ICheckboxProps, {}> {
-    private doNothing() {
-        // Empty
+    private onClick = (event: React.MouseEvent<HTMLElement>) => {
+        this.props.onClick();
+        event.stopPropagation();
+        event.preventDefault();
     }
 
-    public render(): any {
-        const onClick = (event: React.MouseEvent<HTMLElement>) => {
-            this.props.onClick(event);
-            event.stopPropagation();
-            event.preventDefault();
-        };
-
+    public render() {
         return (
             <label
-                onClick={onClick}
+                onClick={this.onClick}
                 className={s.container}
             >
                 {this.props.text}
                 <input
-                    type={'checkbox'}
+                    type='checkbox'
                     checked={this.props.checked}
-                    onChange={this.doNothing}
+                    onClick={this.onClick}
                 />
                 <span className={s.checkmark} />
             </label>
