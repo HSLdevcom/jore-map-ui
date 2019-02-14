@@ -9,6 +9,7 @@ import { IValidationResult } from '~/validation/FormValidator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import LinkService from '~/services/linkService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
+import linkValidationModel from '~/validation/models/linkValidationModel';
 import SubSites from '~/routing/subSites';
 import directionCodeList from '~/codeLists/directionCodeList';
 import { DialogStore } from '~/stores/dialogStore';
@@ -210,12 +211,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={isEditingDisabled}
                             value={link.osNumber}
                             onChange={this.onChange('osNumber')}
+                            validatorRule={linkValidationModel.osNumber}
                         />
                         <InputContainer
                             label='LINKIN PITUUS (m)'
                             disabled={isEditingDisabled}
                             value={link.length}
                             onChange={this.onChange('length')}
+                            validatorRule={linkValidationModel.length}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -230,6 +233,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={isEditingDisabled}
                             value={link.streetNumber}
                             onChange={this.onChange('streetNumber')}
+                            validatorRule={linkValidationModel.streetNumber}
                         />
                         <Dropdown
                             onChange={this.onChange('municipalityCode')}
@@ -243,11 +247,13 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         <InputContainer
                             label='PÄIVITTÄJÄ'
                             value={link.modifiedBy}
+                            disabled={true}
                         />
                         <InputContainer
                             label='PÄIVITYSPVM'
                             value={Moment(link.modifiedOn)
-                            .format(datetimeStringDisplayFormat)}
+                                .format(datetimeStringDisplayFormat)}
+                            disabled={true}
                         />
                     </div>
                 </div>
