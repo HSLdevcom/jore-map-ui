@@ -30,12 +30,13 @@ class ApiClient {
 
     private sendRequest = async (method: RequestMethod, entityName: entityName, object: any) => {
         const formattedObject = ApiClientHelper.format(object);
+        const stringified = ApiClientHelper.stringify(formattedObject);
         let error : (IRequestError | null) = null;
 
         try {
             const response = await fetch(this.getUrl(entityName), {
                 method,
-                body: JSON.stringify(formattedObject),
+                body: stringified,
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -50,6 +51,7 @@ class ApiClient {
                 message: response.statusText,
             };
         } catch (err) {
+            console.error(err);
             error = {
                 errorCode: FetchStatusCode.CONNECTION_ERROR,
                 message: 'Yhteysongelma',

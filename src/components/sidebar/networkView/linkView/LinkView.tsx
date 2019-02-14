@@ -11,6 +11,7 @@ import LinkService from '~/services/linkService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import SubSites from '~/routing/subSites';
 import directionCodeList from '~/codeLists/directionCodeList';
+import { DialogStore } from '~/stores/dialogStore';
 import routeBuilder from '~/routing/routeBuilder';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import navigator from '~/routing/navigator';
@@ -34,9 +35,10 @@ interface ILinkViewProps {
     errorStore?: ErrorStore;
     linkStore?: LinkStore;
     mapStore?: MapStore;
+    dialogStore?: DialogStore;
 }
 
-@inject('linkStore', 'mapStore', 'errorStore')
+@inject('linkStore', 'mapStore', 'errorStore', 'dialogStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
@@ -77,6 +79,15 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private save = async () => {
         this.setState({ isLoading: true });
+        try {
+            await LinkService.updateLink(this.props.linkStore!.link);
+
+            this.props.linkStore!.setOldLink(this.props.linkStore!.link);
+            this.props.dialogStore!.setFadeMessage('Tallennettu!');
+        } catch (err) {
+            const errMessage = err.message ? `, (${err.message})` : '';
+            this.props.errorStore!.addError(`Tallennus epäonnistui${errMessage}`);
+        }
         this.setState({ isLoading: false });
     }
 

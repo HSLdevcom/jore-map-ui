@@ -16,7 +16,7 @@ export class LinkStore {
 
     @computed
     get link() {
-        return this._link;
+        return this._link!;
     }
 
     @computed
