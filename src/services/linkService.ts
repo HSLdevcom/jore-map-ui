@@ -2,6 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import ILink from '~/models/ILink';
 import ApiClient from '~/util/ApiClient';
+import { LatLng } from 'leaflet';
 import entityName from '~/enums/entityName';
 import LinkFactory from '~/factories/linkFactory';
 import IExternalLink from '~/models/externals/IExternalLink';
@@ -33,8 +34,11 @@ class LinkService {
 
     public static updateLink = async (link: ILink) => {
         const apiClient = new ApiClient();
-        console.log(link);
-        await apiClient.updateObject(entityName.LINK, link);
+        const simplifiedLink = {
+            ...link,
+            geometry: link.geometry.map(coor => new LatLng(coor.lat, coor.lng)),
+        };
+        await apiClient.updateObject(entityName.LINK, simplifiedLink);
         await apolloClient.clearStore();
     }
 }
