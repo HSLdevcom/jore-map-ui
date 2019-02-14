@@ -130,8 +130,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const endNode = link!.endNode;
         const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
         const isSaveButtonDisabled = this.state.isEditingDisabled
-            || !this.props.linkStore!.isDirty;
-            // || !this.isFormValid();
+            || !this.props.linkStore!.isDirty
+            || !this.isFormValid();
 
         return (
         <div className={s.linkView}>
