@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as L from 'leaflet';
+import _ from 'lodash';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
@@ -70,7 +71,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         const map = this.props.leaflet.map;
         if (map) {
             const editableLink = L.polyline(
-                [link.geometry],
+                [_.cloneDeep(link.geometry)],
                 { interactive: false },
             ).addTo(map);
             editableLink.enableEdit();
