@@ -128,12 +128,14 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         value={Moment(routePath.startTime)
                             .format(datetimeStringDisplayFormat)}
                         disabled={isEditingDisabled}
+                        onChange={this.onChange('startTime')}
                     />
                     <InputContainer
                         label='VIIM.VOIM.OLO'
                         value={Moment(routePath.endTime)
                             .format(datetimeStringDisplayFormat)}
                         disabled={isEditingDisabled}
+                        onChange={this.onChange('endTime')}
                     />
                     <InputContainer
                         label='PITUUS'
@@ -142,6 +144,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         validatorRule={routePathValidationModel.length}
                         icon={<FiRefreshCw/>}
                         onIconClick={this.updateLength}
+                        onChange={this.onChange('length')}
                     />
                     <InputContainer
                         label={'Laskettu'}
