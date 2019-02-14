@@ -9,10 +9,10 @@ import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import TransitTypeHelper from '~/util/transitTypeHelper';
+import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
 import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
 import InputContainer from '../../InputContainer';
 import * as s from './routePathListObject.scss';
-import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
 
 interface IRoutePathListLinkProps {
     routePathStore?: RoutePathStore;
