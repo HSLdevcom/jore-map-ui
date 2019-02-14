@@ -55,7 +55,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
 
-        const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
+        const dateStringDisplayFormat = 'DD.MM.YYYY';
         const routePath = this.props.routePath;
         return (
         <div className={s.form}>
@@ -126,14 +126,14 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                     <InputContainer
                         label='VOIM. AST'
                         value={Moment(routePath.startTime)
-                            .format(datetimeStringDisplayFormat)}
+                            .format(dateStringDisplayFormat)}
                         disabled={isEditingDisabled}
                         onChange={this.onChange('startTime')}
                     />
                     <InputContainer
                         label='VIIM.VOIM.OLO'
                         value={Moment(routePath.endTime)
-                            .format(datetimeStringDisplayFormat)}
+                            .format(dateStringDisplayFormat)}
                         disabled={isEditingDisabled}
                         onChange={this.onChange('endTime')}
                     />
@@ -195,7 +195,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                     <InputContainer
                         label='PÄIVITYSPVM'
                         value={Moment(routePath.lastModified)
-                            .format(datetimeStringDisplayFormat)}
+                            .format(dateStringDisplayFormat)}
                         disabled={true}
                     />
                     <InputContainer
