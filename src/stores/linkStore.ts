@@ -57,7 +57,15 @@ export class LinkStore {
 
     @computed
     get isDirty() {
-        return !_.isEqual(this._link, this._oldLink);
+        return this._link && !_.isEqual(
+            {
+                ...this.link,
+                // Remapping geometry since edit initialization has added handlers
+                geometry: this.link!.geometry
+                    .map(coor => new LatLng(coor.lat, coor.lng)),
+            },
+            this._oldLink,
+        );
     }
 
     @action
