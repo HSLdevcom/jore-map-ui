@@ -100,10 +100,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         if (map) {
             const editableLink = L.polyline(
                 [link.geometry],
-                {
-                    bubblingMouseEvents: true,
-                    interactive: false,
-                },
+                { interactive: false },
             ).addTo(map);
             editableLink.enableEdit();
             const latLngs = editableLink.getLatLngs() as L.LatLng[][];
