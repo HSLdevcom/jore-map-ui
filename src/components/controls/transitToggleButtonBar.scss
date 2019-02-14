@@ -1,6 +1,9 @@
 .transitToggleButtonBarView {
-    height: 40px;
     position: relative;
+    height: 40px;
+    flex-shrink: 0;
+    flex-direction: row;
+    display: flex;
 }
 
 .disabledOverlay {

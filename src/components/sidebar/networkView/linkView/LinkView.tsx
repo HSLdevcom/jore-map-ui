@@ -195,6 +195,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             </div>
                             <TransitToggleButtonBar
                                 selectedTransitTypes={[link!.transitType]}
+                                disabled={true}
                             />
                         </div>
                     </div>

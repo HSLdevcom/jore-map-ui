@@ -1,11 +1,16 @@
 @import '../shared/styles/common.scss';
 
 .button {
-    width: 20%;
-    height: 40px;
+    flex-grow: 1;
     border: hidden;
-    cursor: pointer;
     transition: .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active {
+    cursor: pointer;
 }
 
 .toggled {
