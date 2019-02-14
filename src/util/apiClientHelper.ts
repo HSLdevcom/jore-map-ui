@@ -27,8 +27,10 @@ class ApiClientHelper {
         };
     }
 
+    // Logic found from: https://stackoverflow.com/a/11616993
     public static stringify = (obj: object) => {
         let cache: any = [];
+        // Removing circular references
         const res = JSON.stringify(obj, (key, value) => {
             if (typeof value === 'object' && value !== null) {
                 if (cache.indexOf(value) !== -1) {
