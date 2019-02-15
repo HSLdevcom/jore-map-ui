@@ -129,6 +129,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         value={routePath.startTime}
                         onChange={this.onChange('startTime')}
                         disabled={isEditingDisabled}
+                        validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
                         label='VIIM.VOIM.OLO'
@@ -136,6 +137,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         value={routePath.endTime}
                         onChange={this.onChange('endTime')}
                         disabled={isEditingDisabled}
+                        validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
                         label='PITUUS'
