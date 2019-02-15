@@ -32,6 +32,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     componentWillUnmount() {
         this.reactionDisposer();
+
+        const map = this.props.leaflet.map;
+        map!.off('editable:vertex:dragend');
+        map!.off('editable:vertex:deleted');
     }
 
     private removeOldLinks = () => {
