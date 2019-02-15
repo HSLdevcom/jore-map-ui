@@ -154,11 +154,10 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={true}
                             value={startNode ? startNode.id : '-'}
                         />
-                        <Dropdown
+                        <InputContainer
                             label='TYYPPI'
                             disabled={true}
-                            selected={startNode.type}
-                            codeList={nodeTypeCodeList}
+                            value={nodeTypeCodeList[startNode.type]}
                         />
                         <InputContainer
                             label='NIMI'
@@ -173,11 +172,10 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={true}
                             value={endNode ? endNode.id : '-'}
                         />
-                        <Dropdown
+                        <InputContainer
                             label='TYYPPI'
                             disabled={true}
-                            selected={endNode.type}
-                            codeList={nodeTypeCodeList}
+                            value={nodeTypeCodeList[endNode.type]}
                         />
                         <InputContainer
                             label='NIMI'

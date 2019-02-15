@@ -123,6 +123,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         label='SOLMU HASTUS-PAIKKANA'
                         items={['Kyllä', 'Ei']}
                         selected={'Kyllä'}
+                        onChange={this.onChange}
                     />
                 </div>
                 <MultiTabTextarea
