@@ -33,7 +33,7 @@ const usesCodeList = (
 class Dropdown extends React.Component
 <IDropdownProps | IDropdownWithCodeListProps> {
     onChange = (event: any) => {
-        this.props.onChange && this.props.onChange(event.target.value);
+        this.props.onChange(event.target.value);
     }
 
     public render() {

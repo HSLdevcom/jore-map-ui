@@ -53,7 +53,7 @@ class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarPro
                     disabled={this.props.disabled}
                 />
                 { this.props.blurred &&
-                    <div className={s.disabledOverlay} />
+                    <div className={s.blurredOverlay} />
                 }
             </div>
         );
