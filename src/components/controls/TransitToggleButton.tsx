@@ -19,7 +19,7 @@ interface ITransitToggleButtonState {
 class TransitToggleButton extends React.Component
   <ITransitToggleButtonProps, ITransitToggleButtonState> {
     public toggleActivity = () => {
-        !this.props.disabled && this.props.toggleActivity(this.props.type);
+        this.props.toggleActivity(this.props.type);
     }
 
     private getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
@@ -37,7 +37,7 @@ class TransitToggleButton extends React.Component
                     this.getToggledButtonClass(this.props.type, this.props.toggled),
                     this.props.disabled ? s.disabled : undefined,
                 )}
-                onClick={this.toggleActivity}
+                onClick={!this.props.disabled ? this.toggleActivity : void 0}
             >
                 {lineHelper.getTransitIcon(this.props.type, true)}
             </div>
