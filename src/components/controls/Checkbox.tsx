@@ -8,11 +8,7 @@ interface ICheckboxProps {
 }
 
 class Checkbox extends React.Component<ICheckboxProps, {}> {
-    private onClick = (event: React.ChangeEvent<HTMLElement>) => {
-        this.props.onClick();
-        event.stopPropagation();
-        event.preventDefault();
-    }
+    private doNothing = () => {};
 
     private onChange = (event: React.MouseEvent<HTMLElement>) => {
         this.props.onClick();
@@ -30,7 +26,7 @@ class Checkbox extends React.Component<ICheckboxProps, {}> {
                 <input
                     type='checkbox'
                     checked={this.props.checked}
-                    onChange={this.onClick}
+                    onChange={this.doNothing}
                 />
                 <span className={s.checkmark} />
             </label>
