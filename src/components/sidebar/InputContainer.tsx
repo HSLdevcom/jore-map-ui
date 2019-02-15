@@ -1,9 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 import moment from 'moment';
-import { IoMdCalendar, IoMdClose } from 'react-icons/io';
-import DatePicker from 'react-date-picker';
 import FormValidator, { IValidationResult } from '../../validation/FormValidator';
+import DatePicker from '../controls/DatePicker';
 import * as s from './inputContainer.scss';
 
 interface IInputProps {
@@ -68,10 +67,6 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         }
     }
 
-    private onDatePickerChange = (date: Date) => {
-        this.props.onChange!(date);
-    }
-
     render() {
         const type = this.props.type || 'text';
         const dateStringDisplayFormat = 'DD.MM.YYYY';
@@ -97,18 +92,13 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                     </div>)
                     : type === 'date' ?
                     (
-                        <div className={s.datepickerContainer}>
-                            <DatePicker
-                                value={(this.props.value as Date)}
-                                onChange={this.onDatePickerChange}
-                                locale='fi-FI'
-                                calendarIcon={<IoMdCalendar />}
-                                clearIcon={<IoMdClose />}
-                            />
-                        </div>
+                        <DatePicker
+                            value={(this.props.value! as Date)}
+                            onChange={this.props.onChange!}
+                        />
                     ) : (
                         <input
-                            placeholder={this.props.disabled ? '' : this.props.placeholder}
+                            placeholder={this .props.disabled ? '' : this.props.placeholder}
                             type={typeof this.props.value === 'number' ? 'number' : 'text'}
                             className={
                                 classnames(
