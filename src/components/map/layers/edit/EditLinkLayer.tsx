@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as L from 'leaflet';
+import _ from 'lodash';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
@@ -29,17 +30,20 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         );
     }
 
-    private removeOldLinks = () => {
-        const map = this.props.leaflet.map;
-        // Remove (possible) previously drawn links from map
-        this.editableLinks.forEach((editableLink) => {
-            map!.removeLayer(editableLink);
-        });
-        this.editableLinks = [];
-    }
-
     componentWillUnmount() {
         this.reactionDisposer();
+
+        const map = this.props.leaflet.map;
+        map!.off('editable:vertex:dragend');
+        map!.off('editable:vertex:deleted');
+    }
+
+    private removeOldLinks = () => {
+        // Remove (possible) previously drawn links from map
+        this.editableLinks.forEach((editableLink) => {
+            editableLink.remove();
+        });
+        this.editableLinks = [];
     }
 
     private drawEditableLink = () => {
@@ -53,15 +57,27 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
         map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
-            const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
-            this.props.linkStore!.updateLink('geometry', latlngs);
+            this.refreshEditableLink();
         });
+
+        map!.off('editable:vertex:deleted');
+        map!.on('editable:vertex:deleted', (data: any) => {
+            this.refreshEditableLink();
+        });
+    }
+
+    private refreshEditableLink() {
+        const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
+        this.props.linkStore!.updateLink('geometry', latlngs);
     }
 
     private drawEditableLinkToMap = (link: ILink) => {
         const map = this.props.leaflet.map;
         if (map) {
-            const editableLink = L.polyline([link.geometry]).addTo(map);
+            const editableLink = L.polyline(
+                [_.cloneDeep(link.geometry)],
+                { interactive: false },
+            ).addTo(map);
             editableLink.enableEdit();
             const latLngs = editableLink.getLatLngs() as L.LatLng[][];
             const coords = latLngs[0];
@@ -69,7 +85,11 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             coordsToDisable.forEach((coordToDisable: any) => {
                 const vertexMarker = coordToDisable.__vertex;
                 vertexMarker.dragging.disable();
+                vertexMarker._events.click = {};
                 vertexMarker.setOpacity(0);
+                // Put vertex marker z-index low so that it
+                // would be below other layers that needs to be clickable
+                vertexMarker.setZIndexOffset(-1000);
             });
 
             this.editableLinks.push(editableLink);
