@@ -21,6 +21,11 @@ export class LinkStore {
     }
 
     @action
+    public changeLinkGeometry = (latLngs: L.LatLng[]) => {
+        this._link!.geometry = latLngs;
+    }
+
+    @action
     public setLink = (link: ILink) => {
         this._link = link;
     }
