@@ -9,3 +9,35 @@ div.inline{
 div.pointer {
   cursor: pointer;
 }
+
+.datepickerContainer {
+    > div {
+        padding: 9px;
+        border: 1px solid #bebebe;
+        border-radius: 5px;
+        outline: none;
+        box-sizing: border-box;
+        cursor: pointer;
+        font-family: Gotham Rounded SSm A, Gotham Rounded SSm B, Arial, Georgia, Serif;
+        color: #3e3e3e;
+        background-color: white;
+        font-size: 11px;
+
+        > div {
+            border: 0;
+
+            input:focus {
+                border: 0;
+            }
+
+            > button {
+                padding: 0;
+
+                svg {
+                    color: #474747;
+                    font-size: 21px;
+                }
+            }
+        }
+    }
+}
