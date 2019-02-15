@@ -83,6 +83,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 vertexMarker.dragging.disable();
                 vertexMarker._events.click = {};
                 vertexMarker.setOpacity(0);
+                // Put vertex marker z-index low so that it
+                // would be below other layers that needs to be clickable
                 vertexMarker.setZIndexOffset(-1000);
             });
 

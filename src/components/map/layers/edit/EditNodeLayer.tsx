@@ -65,8 +65,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     private drawEditableLinks = () => {
         this.removeOldLinks();
 
-        const links = this.props.nodeStore!.links;
-        links.forEach(link => this.drawEditableLink(link));
+        this.props.nodeStore!.links.forEach(
+            link => this.drawEditableLink(link));
 
         const map = this.props.leaflet.map;
 
@@ -82,7 +82,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
 
     private refreshEditableLink(leafletId: number) {
         const editableLink =
-        this.editableLinks.find((link: any) => link._leaflet_id === leafletId);
+            this.editableLinks.find((link: any) => link._leaflet_id === leafletId);
         const latlngs = editableLink!.getLatLngs()[0] as L.LatLng[];
         const editableLinkIndex =
             this.editableLinks.findIndex((link: any) => link._leaflet_id === leafletId);
@@ -112,6 +112,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 vertexMarker.dragging.disable();
                 vertexMarker._events.click = {};
                 vertexMarker.setOpacity(0);
+                // Put vertex marker z-index low so that it
+                // would be below other layers that needs to be clickable
                 vertexMarker.setZIndexOffset(-1000);
             });
             this.editableLinks.push(editableLink);
