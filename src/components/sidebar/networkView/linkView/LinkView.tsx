@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import L from 'leaflet';
+import { FiChevronRight, FiChevronLeft } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import { IValidationResult } from '~/validation/FormValidator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
@@ -257,21 +258,42 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         />
                     </div>
                 </div>
-                <div className={s.buttonBar}>
-                    <Button
-                        onClick={this.navigateToNode(link.startNode.id)}
-                        type={ButtonType.ROUND}
-                    >
-                        Alkusolmu
-                    </Button>
-                    <Button
-                        onClick={this.navigateToNode(link.endNode.id)}
-                        type={ButtonType.ROUND}
-                    >
-                        Loppusolmu
-                    </Button>
-                </div>
+
             </div >
+            <div className={s.buttonBar}>
+                <Button
+                    onClick={this.navigateToNode(link.startNode.id)}
+                    type={ButtonType.SQUARE}
+                >
+                    <div className={s.buttonContent}>
+                        <FiChevronLeft
+                            className={s.startNodeButton}
+                        />
+                        <div className={s.contentText}>
+                            Alkusolmu
+                            <p>
+                                {startNode.id}
+                            </p>
+                        </div>
+                    </div>
+                </Button>
+                <Button
+                    onClick={this.navigateToNode(link.endNode.id)}
+                    type={ButtonType.SQUARE}
+                >
+                    <div className={s.buttonContent}>
+                        <div className={s.contentText}>
+                            Loppusolmu
+                            <p>
+                                {endNode.id}
+                            </p>
+                        </div>
+                        <FiChevronRight
+                            className={s.endNodeButton}
+                        />
+                    </div>
+                </Button>
+            </div>
             <Button
                 type={ButtonType.SAVE}
                 disabled={isSaveButtonDisabled}

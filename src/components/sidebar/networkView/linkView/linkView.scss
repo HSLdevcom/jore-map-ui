@@ -18,12 +18,56 @@
             padding-top: 10px;
             padding-right: 10px;
         }
-    
-        .buttonBar {
+    }
+
+    .buttonBar {
+        display: flex;
+        flex-direction: row;
+        padding-top: 10px;
+
+        .buttonContent {
             display: flex;
-            flex-direction: row;
-            padding-top: 10px;
-            justify-content: space-between;
+
+            .contentText {
+                flex-grow: 1;
+
+                p {
+                    font-size: 13px;
+                    margin: 4px;
+                }
+            }
+
+            svg {
+                position: absolute;
+                top: 19px;
+                font-size: 20px;
+            }
+
+            .endNodeButton {
+                right: 15px;
+            }
+
+            .startNodeButton {
+                left: 15px;
+            } 
+        }
+
+        > div {
+            flex-grow: 1;
+            margin: 0;
+            border-radius: 0;
+            border-left-style: solid;
+            border-right-style: solid;
+            border-color:#f0f3f5;
+            border-width: 1px;
+        }
+
+        > div:first-of-type {
+            border-left: none;
+        }
+
+        > div:last-of-type {
+            border-right: none;
         }
     }
 
