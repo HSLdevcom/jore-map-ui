@@ -10,7 +10,7 @@ interface ICheckboxProps {
 class Checkbox extends React.Component<ICheckboxProps, {}> {
     private doNothing = () => {};
 
-    private onChange = (event: React.MouseEvent<HTMLElement>) => {
+    private onClick = (event: React.MouseEvent<HTMLElement>) => {
         this.props.onClick();
         event.stopPropagation();
         event.preventDefault();
@@ -19,7 +19,7 @@ class Checkbox extends React.Component<ICheckboxProps, {}> {
     public render() {
         return (
             <label
-                onClick={this.onChange}
+                onClick={this.onClick}
                 className={s.container}
             >
                 {this.props.text}
