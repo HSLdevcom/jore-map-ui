@@ -35,7 +35,7 @@ class TransitToggleButton extends React.Component
                 className={classNames(
                     s.button,
                     this.getToggledButtonClass(this.props.type, this.props.toggled),
-                    !this.props.disabled ? s.active : undefined,
+                    this.props.disabled ? s.disabled : undefined,
                 )}
                 onClick={this.toggleActivity}
             >
