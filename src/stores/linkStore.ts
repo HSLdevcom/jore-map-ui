@@ -73,9 +73,8 @@ export class LinkStore {
         this._oldLink = _.cloneDeep(link);
     }
 
-    // TODO: rename as updateLinkProperty?
     @action
-    public updateLink = (property: string, value: string|number|Date|LatLng[]) => {
+    public updateLinkProperty = (property: string, value: string|number|Date|LatLng[]) => {
         this._link = {
             ...this._link!,
             [property]: value,

@@ -89,7 +89,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     private onChange = (property: string) => (value: any, validationResult?: IValidationResult) => {
-        this.props.linkStore!.updateLink(property, value);
+        this.props.linkStore!.updateLinkProperty(property, value);
         if (validationResult) {
             this.markInvalidFields(property, validationResult!.isValid);
         }
