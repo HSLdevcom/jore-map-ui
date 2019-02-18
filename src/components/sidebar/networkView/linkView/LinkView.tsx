@@ -149,6 +149,17 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 </ViewHeader>
                 <div className={s.formSection}>
                     <div className={s.flexRow}>
+                        <div className={s.formItem}>
+                            <div className={s.inputLabel}>
+                                VERKKO
+                            </div>
+                            <TransitToggleButtonBar
+                                selectedTransitTypes={[link!.transitType]}
+                                disabled={true}
+                            />
+                        </div>
+                    </div>
+                    <div className={s.flexRow}>
                         <InputContainer
                             label='ALKUSOLMU'
                             disabled={true}
@@ -182,17 +193,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={true}
                             value={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
                         />
-                    </div>
-                    <div className={s.flexRow}>
-                        <div className={s.formItem}>
-                            <div className={s.inputLabel}>
-                                VERKKO
-                            </div>
-                            <TransitToggleButtonBar
-                                selectedTransitTypes={[link!.transitType]}
-                                disabled={true}
-                            />
-                        </div>
                     </div>
                     <div className={s.flexRow}>
                         <Dropdown
