@@ -9,3 +9,9 @@ div.inline{
 div.pointer {
   cursor: pointer;
 }
+
+.editingDisabled {
+  white-space: nowrap;
+  height: 43px;
+  line-height: 43px;
+}

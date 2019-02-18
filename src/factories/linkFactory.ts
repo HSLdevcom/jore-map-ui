@@ -23,6 +23,8 @@ class LinkFactory {
             streetNumber: externalLink.kaoosnro,
             modifiedBy: externalLink.lnkkuka,
             modifiedOn: new Date(externalLink.lnkviimpvm),
+            direction: externalLink.lnksuunta,
+            osNumber: externalLink.lnkosnro,
         };
     }
 }

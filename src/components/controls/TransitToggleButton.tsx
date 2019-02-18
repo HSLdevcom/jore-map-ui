@@ -8,6 +8,7 @@ import * as s from './transitToggleButton.scss';
 interface ITransitToggleButtonProps {
     type: TransitType;
     toggled: boolean;
+    disabled?: boolean;
     toggleActivity(event: TransitType): void;
 }
 
@@ -30,15 +31,16 @@ class TransitToggleButton extends React.Component
 
     public render() {
         return (
-            <button
+            <div
                 className={classNames(
                     s.button,
                     this.getToggledButtonClass(this.props.type, this.props.toggled),
+                    this.props.disabled ? s.disabled : undefined,
                 )}
-                onClick={this.toggleActivity}
+                onClick={!this.props.disabled ? this.toggleActivity : void 0}
             >
                 {lineHelper.getTransitIcon(this.props.type, true)}
-            </button>
+            </div>
         );
     }
 }

@@ -3,47 +3,72 @@
 @import '../../../shared/styles/form';
 
 .linkView {
-    padding: 20px;
-    overflow-y: auto;
-    width: $sidebarExtraWide;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
 
-    .column {
-        display: flex;
-        flex-direction: column;
-        padding-top: 10px;
-        padding-right: 10px;
-    }
+    .content {
+        padding: 20px;
+        overflow-y: auto;
+        flex-grow: 1;
 
-    .textArea {
-        padding-bottom: 151px; /* TODO: fix this hack */
-    }
-
-    .mediumSmallInput {
-        width: 70px;
-        margin-right: 10px;
-    }
-
-    .smallInput {
-        width: 35px;
-        height: 35px;
-        text-align: center;
-        margin-top: 0px;
-        margin-right: 5px;
-        padding-right: 1px;
-        padding-left: 1px;
-    }
-
-    .transitButtonBar {
-        padding-top: 10px;
-        width: 50%;
+        .column {
+            display: flex;
+            flex-direction: column;
+            padding-top: 10px;
+            padding-right: 10px;
+        }
     }
 
     .buttonBar {
         display: flex;
         flex-direction: row;
         padding-top: 10px;
-        justify-content: space-between;
+
+        .buttonContent {
+            display: flex;
+
+            .contentText {
+                flex-grow: 1;
+
+                p {
+                    font-size: 13px;
+                    margin: 4px;
+                }
+            }
+
+            svg {
+                position: absolute;
+                top: 19px;
+                font-size: 20px;
+            }
+
+            .endNodeButton {
+                right: 15px;
+            }
+
+            .startNodeButton {
+                left: 15px;
+            }
+        }
+
+        > div {
+            flex-grow: 1;
+            margin: 0;
+            border-radius: 0;
+            border-left-style: solid;
+            border-right-style: solid;
+            border-color:#f0f3f5;
+            border-width: 1px;
+        }
+
+        > div:first-of-type {
+            border-left: none;
+        }
+
+        > div:last-of-type {
+            border-right: none;
+        }
     }
 
     &.loaderContainer > div {
