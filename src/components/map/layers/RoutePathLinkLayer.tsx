@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import { Polyline, FeatureGroup } from 'react-leaflet';
+import 'leaflet-polylinedecorator';
+import { Polyline, FeatureGroup, withLeaflet } from 'react-leaflet';
+import { PolylineDecorator, Symbol } from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import NodeMarker from './mapIcons/NodeMarker';
 import StartMarker from './mapIcons/StartMarker';
+import { LeafletContext } from '../Map';
 
 interface RoutePathLinkLayerProps {
+    leaflet: LeafletContext;
     popupStore?: PopupStore;
     internalId: string;
     routePathLinks: IRoutePathLink[];
@@ -23,6 +28,14 @@ interface RoutePathLinkLayerProps {
 @inject('popupStore')
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
+    private decorators: PolylineDecorator[] = [];
+    private layerRef: any;
+
+    constructor(props: RoutePathLinkLayerProps) {
+        super(props);
+        this.layerRef = React.createRef();
+    }
+
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
     }
@@ -41,7 +54,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     color={this.props.color}
                     weight={this.props.weight}
                     opacity={this.props.opacity}
-                    onClick={this.props.onClick}
+                    onClick={this.props.onClick(this.layerRef)}
                     onContextMenu={this.onContextMenu(routePathLink.id)}
                 />
             );
@@ -85,14 +98,59 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         );
     }
 
+    private renderDirectionDecoration() {
+        this.removeOldDecorators();
+        const routePathLinks = this.props.routePathLinks;
+
+        const map = this.props.leaflet.map!;
+        const geoms = routePathLinks
+            .map(routePathLink => routePathLink.geometry);
+
+        createCoherentLinesFromPolylines(geoms).map((geom) => {
+            const decorator = new PolylineDecorator(geom, {
+                patterns: [
+                    { repeat: 120, symbol: Symbol.arrowHead(
+                        {
+                            pixelSize: 15,
+                            pathOptions: {
+                                color: this.props.color,
+                                fillColor: '#FFF',
+                                fillOpacity: 1,
+                                opacity: 1,
+                            },
+                        }),
+                    },
+                ],
+            });
+            decorator.on('mouseover', this.props.onMouseOver(this.layerRef));
+            decorator.on('mouseout', this.props.onMouseOut(this.layerRef));
+            decorator.on('click', this.props.onClick(this.layerRef));
+            this.decorators.push(decorator);
+            decorator.addTo(map);
+        });
+    }
+
+    private removeOldDecorators() {
+        this.decorators.forEach((editableLink: any) => {
+            editableLink.remove();
+        });
+        this.decorators = [];
+    }
+
+    componentWillUnmount() {
+        this.removeOldDecorators();
+    }
+
     render() {
         return (
             <FeatureGroup
                 routePathInternalId={this.props.internalId}
-                onMouseOver={this.props.onMouseOver}
-                onMouseOut={this.props.onMouseOut}
+                onMouseOver={this.props.onMouseOver(this.layerRef)}
+                onMouseOut={this.props.onMouseOut(this.layerRef)}
+                ref={this.layerRef}
             >
                 {this.renderRoutePathLinks()}
+                {this.renderDirectionDecoration()}
                 {this.renderNodes()}
                 {this.renderStartMarker()}
             </FeatureGroup>
@@ -100,4 +158,4 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 }
 
-export default RoutePathLinkLayer;
+export default withLeaflet(RoutePathLinkLayer);

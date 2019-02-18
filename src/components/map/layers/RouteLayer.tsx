@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import { MapStore } from '~/stores/mapStore';
-import { IRoute, IRoutePathLink } from '~/models';
+import { IRoute } from '~/models';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
@@ -58,8 +58,10 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         }
     }
 
-    private toggleHighlight = (internalId: string, links: IRoutePathLink[]) =>
-    (e: L.LeafletMouseEvent) => {
+    private toggleHighlight =
+    (internalId: string) =>
+    (target: any) =>
+    () => {
         let selectedPolylines = this.state.selectedPolylines;
 
         if (selectedPolylines.includes(internalId)) {
@@ -72,7 +74,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         this.setState({
             selectedPolylines,
         });
-        e.target.bringToFront();
+        target.current.leafletElement.bringToFront();
     }
 
     private hasHighlight = (internalId: string) => {
@@ -80,22 +82,26 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
             this.state.hoveredPolylines.includes(internalId);
     }
 
-    private hoverHighlight = (internalId: string, links: IRoutePathLink[]) =>
-    (e: L.LeafletMouseEvent) => {
-        this.setState({
-            hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
-        });
-        e.target.bringToFront();
-    }
-
-    private hoverHighlightOff = (e: L.LeafletMouseEvent) => {
-        this.setState({
-            hoveredPolylines: [],
-        });
-        if (!this.hasHighlight(e['sourceTarget'].options.routePathInternalId)) {
-            e.target.bringToBack();
+    private hoverHighlight =
+        (internalId: string) =>
+        (target: any) =>
+        () => {
+            if (!this.state.hoveredPolylines.includes(internalId)) {
+                this.setState({
+                    hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
+                });
+                target.current.leafletElement.bringToFront();
+            }
         }
-    }
+
+    private hoverHighlightOff =
+        (target: any) =>
+        () => {
+            this.setState({
+                hoveredPolylines: [],
+            });
+            target.current.leafletElement.bringToBack();
+        }
 
     render() {
         return this.props.routes
