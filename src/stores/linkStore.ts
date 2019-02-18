@@ -3,15 +3,23 @@ import _ from 'lodash';
 import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 
+export interface UndoObject {
+    link: ILink;
+}
+
 export class LinkStore {
     @observable private _link: ILink | null;
     @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
+    @observable private _undoObjects: UndoObject[];
+    @observable private _undoIndex: number;
 
     constructor() {
         this._nodes = [];
         this._link = null;
         this._oldLink = null;
+        this._undoObjects = [];
+        this._undoIndex = 0;
     }
 
     @computed
@@ -27,7 +35,32 @@ export class LinkStore {
     @action
     public setLink = (link: ILink) => {
         this._link = link;
+        this._undoObjects = [{
+            link,
+        }];
+        this._undoIndex = 0;
         this.setOldLink(link);
+    }
+
+    @action
+    public updateLinkGeometry = (latLngs: L.LatLng[]) => {
+        if (!this._link) return;
+
+        const updatedLink = _.cloneDeep(this._link);
+        updatedLink.geometry = latLngs;
+
+        const currentUndoObject = {
+            link: updatedLink,
+        };
+
+        // Remove the history of undo's because current state is changed
+        this._undoObjects.splice(this._undoIndex + 1);
+
+        // Insert current undoObject to the pile
+        this._undoObjects = this._undoObjects.concat([currentUndoObject]);
+        this._undoIndex += 1;
+
+        this._link = updatedLink;
     }
 
     @action
@@ -40,6 +73,7 @@ export class LinkStore {
         this._oldLink = _.cloneDeep(link);
     }
 
+    // TODO: rename as updateLinkProperty?
     @action
     public updateLink = (property: string, value: string|number|Date|LatLng[]) => {
         this._link = {
@@ -73,6 +107,28 @@ export class LinkStore {
         if (this._oldLink) {
             this.setLink(this._oldLink);
         }
+    }
+
+    @action
+    public undo = () => {
+        if (!this._link || this._undoIndex <= 0) {
+            return;
+        }
+        const previousUndoObject = this._undoObjects[this._undoIndex - 1];
+        this._link.geometry = _.cloneDeep(previousUndoObject.link.geometry);
+        this._undoIndex -= 1;
+    }
+
+    @action
+    public redo = () => {
+        if (!this._link
+            || this._undoObjects.length <= 1
+            || this._undoIndex >= this._undoObjects.length - 1) {
+            return;
+        }
+        const nextUndoObject = this._undoObjects[this._undoIndex + 1];
+        this._link.geometry = _.cloneDeep(nextUndoObject.link.geometry);
+        this._undoIndex += 1;
     }
 }
 

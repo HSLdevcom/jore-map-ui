@@ -1,7 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
-import { IRoutePath, INode } from '~/models';
-import IRoutePathLink from '~/models/IRoutePathLink';
+import { IRoutePath, IRoutePathLink, INode } from '~/models';
 import lengthCalculator from '~/util/lengthCalculator';
 import { validateRoutePathLinks } from '~/util/geomValidator';
 
@@ -20,16 +19,25 @@ export enum RoutePathViewTab {
     List,
 }
 
+export interface UndoObject {
+    routePathLinks: IRoutePathLink[];
+}
+
 export class RoutePathStore {
     @observable private _routePath: IRoutePath|null;
     @observable private _oldRoutePath: IRoutePath|null;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
+    // TODO: Move out of store to state, rename as highlightedMapObject
     @observable private _highlightedObject: string | null;
+    // TODO: Move out of store to state, rename as extendedListItems:
     @observable private _extendedObjects: string[];
     @observable private _addRoutePathLinkState: AddRoutePathLinkState;
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
+    // TODO: Move out of store:
     @observable private _activeTab: RoutePathViewTab;
+    @observable private _undoObjects: UndoObject[];
+    @observable private _undoIndex: number;
 
     constructor() {
         this._neighborRoutePathLinks = [];
@@ -38,6 +46,8 @@ export class RoutePathStore {
         this._isGeometryValid = true;
         this._activeTab = RoutePathViewTab.Info;
         this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
+        this._undoObjects = [];
+        this._undoIndex = 0;
     }
 
     @computed
@@ -102,6 +112,53 @@ export class RoutePathStore {
     }
 
     @action
+    public undo() {
+        if (this._undoIndex <= 0) return;
+
+        this._neighborRoutePathLinks = [];
+
+        const previousUndoObject = this._undoObjects[this._undoIndex - 1];
+        this._routePath!.routePathLinks = _.cloneDeep(previousUndoObject.routePathLinks);
+        this._undoIndex -= 1;
+    }
+
+    @action
+    public redo() {
+        if (this._undoObjects.length <= 1 || this._undoIndex >= this._undoObjects.length - 1) {
+            return;
+        }
+        this._neighborRoutePathLinks = [];
+
+        const nextUndoObject = this._undoObjects[this._undoIndex + 1];
+        this._routePath!.routePathLinks = _.cloneDeep(nextUndoObject.routePathLinks);
+        this._undoIndex += 1;
+    }
+
+    @action
+    public onRoutePathLinksChanged() {
+        this.recalculateOrderNumbers();
+        this.validateRoutePathGeometry();
+    }
+
+    @action
+    public resetUndoObjects() {
+        this._neighborRoutePathLinks = [];
+
+        const routePathLinks = this._routePath && this._routePath.routePathLinks ?
+            this._routePath.routePathLinks : [];
+        const currentUndoObject: UndoObject = {
+            routePathLinks: _.cloneDeep(routePathLinks),
+        };
+
+        // Remove the history of undo's because current state is changed
+        this._undoObjects.splice(this._undoIndex + 1);
+
+         // Insert current undoObject to the pile
+        this._undoObjects = this._undoObjects.concat([currentUndoObject]);
+        this._undoIndex += 1;
+    }
+
+    @action
     public setHighlightedObject = (objectId: string | null) => {
         this._highlightedObject = objectId;
     }
@@ -128,10 +185,12 @@ export class RoutePathStore {
     @action
     public setRoutePath = (routePath: IRoutePath) => {
         this._routePath = routePath;
+        const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
+        this._undoObjects = [{
+            routePathLinks,
+        }];
+        this._undoIndex = 0;
         this.setOldRoutePath(routePath);
-        if (!routePath) {
-            this._neighborRoutePathLinks = [];
-        }
     }
 
     @action
@@ -161,7 +220,8 @@ export class RoutePathStore {
             routePathLink.orderNumber - 1,
             0,
             routePathLink);
-        this.onRoutePathLinksChanged();
+
+        this.resetUndoObjects();
     }
 
     public isRoutePathNodeMissingNeighbour = (node: INode) => (
@@ -174,9 +234,12 @@ export class RoutePathStore {
 
     @action
     public removeLink = (id: string) => {
-        this._routePath!.routePathLinks =
-            this._routePath!.routePathLinks!.filter(link => link.id !== id);
-        this.onRoutePathLinksChanged();
+        // Need to do splice to trigger ReactionDisposer watcher
+        const linkToRemoveIndex =
+            this._routePath!.routePathLinks!.findIndex(link => link.id === id);
+        this._routePath!.routePathLinks!.splice(linkToRemoveIndex, 1);
+
+        this.resetUndoObjects();
     }
 
     @action
@@ -235,11 +298,6 @@ export class RoutePathStore {
         this._isGeometryValid = validateRoutePathLinks(
             this._routePath!.routePathLinks!,
         );
-    }
-
-    private onRoutePathLinksChanged = () => {
-        this.recalculateOrderNumbers();
-        this.validateRoutePathGeometry();
     }
 }
 

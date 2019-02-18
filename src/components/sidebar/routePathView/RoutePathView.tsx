@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import classnames from 'classnames';
+import { observe } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
 import ButtonType from '~/enums/buttonType';
@@ -18,6 +19,7 @@ import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
 import { ErrorStore } from '~/stores/errorStore';
 import ToolbarTool from '~/enums/toolbarTool';
+import EventManager from '~/util/EventManager';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
@@ -61,6 +63,14 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
         await this.initializeMap();
         this.props.routeStore!.clearRoutes();
+        EventManager.on('undo', () => this.props.routePathStore!.undo());
+        EventManager.on('redo', () => this.props.routePathStore!.redo());
+        observe(
+            this.props.routePathStore!.routePath!.routePathLinks!,
+            () => {
+                this.props.routePathStore!.onRoutePathLinksChanged();
+            },
+        );
         this.setState({
             isLoading: false,
         });
@@ -70,6 +80,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
+        EventManager.off('undo', () => this.props.routePathStore!.undo());
+        EventManager.off('redo', () => this.props.routePathStore!.redo());
     }
 
     private initializeAsAddingNew = async () => {

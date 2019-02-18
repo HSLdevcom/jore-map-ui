@@ -1,11 +1,13 @@
 import React from 'react';
 import { FiPrinter, FiExternalLink } from 'react-icons/fi';
-import { IoMdUndo } from 'react-icons/io';
+import { IoMdUndo, IoMdRedo } from 'react-icons/io';
 import { observer } from 'mobx-react';
 import toolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import Navigator from '~/routing/navigator';
-import GeometryEventStore from '~/stores/geometryEventStore';
+// TODO: Remove this:
+// import GeometryEventStore from '~/stores/geometryEventStore';
+import EventManager from '~/util/EventManager';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 
@@ -20,7 +22,11 @@ class ToolbarCommonButtons extends React.Component {
     }
 
     private undo = () => {
-        GeometryEventStore.undo();
+        EventManager.trigger('undo');
+    }
+
+    private redo = () => {
+        EventManager.trigger('redo');
     }
 
     render() {
@@ -46,10 +52,18 @@ class ToolbarCommonButtons extends React.Component {
                     <MapControlButton
                         onClick={this.undo}
                         isActive={false}
-                        isDisabled={!GeometryEventStore.hasEvents}
-                        label='Undo'
+                        isDisabled={false}
+                        label='Kumoa'
                     >
                         <IoMdUndo />
+                    </MapControlButton>
+                    <MapControlButton
+                        onClick={this.redo}
+                        isActive={false}
+                        isDisabled={false}
+                        label='Tee uudestaan'
+                    >
+                        <IoMdRedo />
                     </MapControlButton>
                 </div>
             </div>
