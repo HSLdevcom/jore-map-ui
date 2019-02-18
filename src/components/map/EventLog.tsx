@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { FaTimes, FaExclamation } from 'react-icons/fa';
 import { FiClipboard } from 'react-icons/fi';
 import ILogEntry from '~/models/IEvent';
-import GeometryEventStore from '../../stores/geometryEventStore';
 import * as s from './eventLog.scss';
 
 interface IEventLogState {
@@ -75,7 +74,7 @@ class EventLog extends React.Component<IEventLogProps, IEventLogState> {
             </div>
             <div className={s.eventLogArea}>
                 {
-                    this.renderEvents(GeometryEventStore.events)
+                    this.renderEvents([])
                 }
                 <div ref={this.scrollRef} />
             </div>

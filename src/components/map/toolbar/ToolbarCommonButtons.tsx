@@ -5,8 +5,6 @@ import { observer } from 'mobx-react';
 import toolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import Navigator from '~/routing/navigator';
-// TODO: Remove this:
-// import GeometryEventStore from '~/stores/geometryEventStore';
 import EventManager from '~/util/EventManager';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
