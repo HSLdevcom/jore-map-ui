@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'leaflet-polylinedecorator';
-import { Polyline, FeatureGroup, withLeaflet } from 'react-leaflet';
+import { Polyline, withLeaflet, FeatureGroup } from 'react-leaflet';
 import { PolylineDecorator, Symbol } from 'leaflet';
 import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
@@ -29,11 +29,11 @@ interface RoutePathLinkLayerProps {
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private decorators: PolylineDecorator[] = [];
-    private layerRef: any;
+    private layerRef: React.Ref<any>;
 
     constructor(props: RoutePathLinkLayerProps) {
         super(props);
-        this.layerRef = React.createRef();
+        this.layerRef = React.createRef<any>();
     }
 
     private onContextMenu = (routePathLinkId: string) => () => {
@@ -131,7 +131,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     private removeOldDecorators() {
-        this.decorators.forEach((editableLink: any) => {
+        this.decorators.forEach((editableLink) => {
             editableLink.remove();
         });
         this.decorators = [];
@@ -142,15 +142,14 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     render() {
+        this.renderDirectionDecoration();
         return (
             <FeatureGroup
-                routePathInternalId={this.props.internalId}
                 onMouseOver={this.props.onMouseOver(this.layerRef)}
                 onMouseOut={this.props.onMouseOut(this.layerRef)}
                 ref={this.layerRef}
             >
                 {this.renderRoutePathLinks()}
-                {this.renderDirectionDecoration()}
                 {this.renderNodes()}
                 {this.renderStartMarker()}
             </FeatureGroup>
