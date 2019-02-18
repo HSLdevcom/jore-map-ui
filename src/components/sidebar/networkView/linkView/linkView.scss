@@ -9,7 +9,7 @@
 
     .content {
         padding: 20px;
-        overflow-y: scroll;
+        overflow-y: auto;
         flex-grow: 1;
 
         .column {
@@ -49,7 +49,7 @@
 
             .startNodeButton {
                 left: 15px;
-            } 
+            }
         }
 
         > div {
