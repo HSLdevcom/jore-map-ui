@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'leaflet-polylinedecorator';
-import { Polyline, withLeaflet, FeatureGroup } from 'react-leaflet';
-import { PolylineDecorator, Symbol } from 'leaflet';
+import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
@@ -9,10 +8,9 @@ import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import NodeMarker from './mapIcons/NodeMarker';
 import StartMarker from './mapIcons/StartMarker';
-import { LeafletContext } from '../Map';
+import ArrowDecorator from './ArrowDecorator';
 
 interface RoutePathLinkLayerProps {
-    leaflet: LeafletContext;
     popupStore?: PopupStore;
     internalId: string;
     routePathLinks: IRoutePathLink[];
@@ -28,7 +26,6 @@ interface RoutePathLinkLayerProps {
 @inject('popupStore')
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
-    private decorators: PolylineDecorator[] = [];
     private layerRef: React.Ref<any>;
 
     constructor(props: RoutePathLinkLayerProps) {
@@ -99,57 +96,32 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     private renderDirectionDecoration() {
-        this.removeOldDecorators();
         const routePathLinks = this.props.routePathLinks;
 
-        const map = this.props.leaflet.map!;
         const geoms = routePathLinks
             .map(routePathLink => routePathLink.geometry);
 
-        createCoherentLinesFromPolylines(geoms).map((geom) => {
-            const decorator = new PolylineDecorator(geom, {
-                patterns: [
-                    { repeat: 120, symbol: Symbol.arrowHead(
-                        {
-                            pixelSize: 15,
-                            pathOptions: {
-                                color: this.props.color,
-                                fillColor: '#FFF',
-                                fillOpacity: 1,
-                                opacity: 1,
-                            },
-                        }),
-                    },
-                ],
-            });
-            decorator.on('mouseover', this.props.onMouseOver(this.layerRef));
-            decorator.on('mouseout', this.props.onMouseOut(this.layerRef));
-            decorator.on('click', this.props.onClick(this.layerRef));
-            this.decorators.push(decorator);
-            decorator.addTo(map);
-        });
-    }
-
-    private removeOldDecorators() {
-        this.decorators.forEach((editableLink) => {
-            editableLink.remove();
-        });
-        this.decorators = [];
-    }
-
-    componentWillUnmount() {
-        this.removeOldDecorators();
+        return createCoherentLinesFromPolylines(geoms)
+            .map(geom => (
+                <ArrowDecorator
+                    key={geom[0].toString()}
+                    color={this.props.color}
+                    geometry={geom}
+                />
+            ),
+        );
     }
 
     render() {
-        this.renderDirectionDecoration();
         return (
             <FeatureGroup
                 onMouseOver={this.props.onMouseOver(this.layerRef)}
                 onMouseOut={this.props.onMouseOut(this.layerRef)}
+
                 ref={this.layerRef}
             >
                 {this.renderRoutePathLinks()}
+                {this.renderDirectionDecoration()}
                 {this.renderNodes()}
                 {this.renderStartMarker()}
             </FeatureGroup>
@@ -157,4 +129,4 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 }
 
-export default withLeaflet(RoutePathLinkLayer);
+export default RoutePathLinkLayer;
