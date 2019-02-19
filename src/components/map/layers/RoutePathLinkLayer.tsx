@@ -14,10 +14,10 @@ interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;
     internalId: string;
     routePathLinks: IRoutePathLink[];
-    onClick: Function;
-    onContextMenu: Function;
-    onMouseOver: Function;
-    onMouseOut: Function;
+    onClick: (target: any) => () => void;
+    onContextMenu: (routePathLinkId: string) => void;
+    onMouseOver: (target: any) => () => void;
+    onMouseOut: (target: any) => () => void;
     color: string;
     opacity: number;
     weight: number;
@@ -107,6 +107,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     key={geom[0].toString()}
                     color={this.props.color}
                     geometry={geom}
+                    onClick={this.props.onClick(this.layerRef)}
                 />
             ),
         );
@@ -117,7 +118,6 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             <FeatureGroup
                 onMouseOver={this.props.onMouseOver(this.layerRef)}
                 onMouseOut={this.props.onMouseOut(this.layerRef)}
-
                 ref={this.layerRef}
             >
                 {this.renderRoutePathLinks()}

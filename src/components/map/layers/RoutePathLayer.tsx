@@ -7,19 +7,19 @@ import navigator from '~/routing/navigator';
 import RoutePathLinkLayer from './RoutePathLinkLayer';
 
 interface RoutePathLayerProps {
-    toggleHighlight: Function;
-    hoverHighlight: Function;
-    hoverHighlightOff: Function;
+    toggleHighlight: (internalId: string) => (target: any) => () => void;
+    hoverHighlight: (internalId: string) => (target: any) => () => void;
+    hoverHighlightOff: (target: any) => () => void;
     hasHighlight: Function;
     routePaths: IRoutePath[];
 }
 
 @observer
 class RoutePathLayer extends Component<RoutePathLayerProps> {
-    private openLinkView = (routePathLinkId: number) => {
+    private openLinkView = (routePathLinkId: string) => {
         const linkViewLink = routeBuilder
             .to(subSites.routelink)
-            .toTarget(routePathLinkId.toString())
+            .toTarget(routePathLinkId)
             .toLink();
         navigator.goTo(linkViewLink);
     }
