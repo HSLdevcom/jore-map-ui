@@ -69,7 +69,6 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
 
     render() {
         const type = this.props.type || 'text';
-        const dateStringDisplayFormat = 'DD.MM.YYYY';
 
         return (
             <div className={s.formItem}>
@@ -87,7 +86,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 {this.props.disabled ?
                     (<div>
                         {type === 'date'
-                            ? moment(this.props.value!).format(dateStringDisplayFormat)
+                            ? moment(this.props.value!).format('DD.MM.YYYY')
                             : this.props.value!}
                     </div>)
                     : type === 'date' ?
