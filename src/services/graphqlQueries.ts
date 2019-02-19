@@ -289,6 +289,8 @@ const linkQueryFields = `
     lnkmitpituus
     lnkpituus
     katnimi
+    lnksuunta
+    lnkosnro
     katkunta
     kaoosnro
     solmuByLnkalkusolmu {

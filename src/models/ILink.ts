@@ -12,6 +12,8 @@ export default interface ILink {
     length: number;
     measuredLength: number;
     streetNumber: string;
+    osNumber: string;
+    direction: string;
     modifiedBy: string;
     modifiedOn: Date;
 }

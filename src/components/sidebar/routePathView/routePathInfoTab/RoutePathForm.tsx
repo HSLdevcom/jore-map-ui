@@ -1,6 +1,5 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import Moment from 'moment';
 import { FiRefreshCw } from 'react-icons/fi';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -55,7 +54,6 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
 
-        const dateStringDisplayFormat = 'YYYY-MM-DD';
         const routePath = this.props.routePath;
         return (
         <div className={s.form}>
@@ -145,7 +143,9 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         disabled={isEditingDisabled}
                         validatorRule={routePathValidationModel.length}
                         icon={<FiRefreshCw/>}
+                        type='number'
                         onIconClick={this.updateLength}
+                        onChange={this.onChange('length')}
                     />
                     <InputContainer
                         label={'Laskettu'}
@@ -194,8 +194,8 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                 <div className={s.flexRow}>
                     <InputContainer
                         label='PÄIVITYSPVM'
-                        value={Moment(routePath.lastModified)
-                            .format(dateStringDisplayFormat)}
+                        type='date'
+                        value={routePath.lastModified}
                         disabled={true}
                     />
                     <InputContainer

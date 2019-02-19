@@ -1,18 +1,22 @@
 import { action, computed, observable } from 'mobx';
+import _ from 'lodash';
 import { ILink, INode } from '~/models';
+import { LatLng } from 'leaflet';
 
 export class LinkStore {
     @observable private _link: ILink | null;
+    @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
 
     constructor() {
         this._nodes = [];
         this._link = null;
+        this._oldLink = null;
     }
 
     @computed
     get link() {
-        return this._link;
+        return this._link!;
     }
 
     @computed
@@ -21,13 +25,9 @@ export class LinkStore {
     }
 
     @action
-    public changeLinkGeometry = (latLngs: L.LatLng[]) => {
-        this._link!.geometry = latLngs;
-    }
-
-    @action
     public setLink = (link: ILink) => {
         this._link = link;
+        this.setOldLink(link);
     }
 
     @action
@@ -36,9 +36,43 @@ export class LinkStore {
     }
 
     @action
+    public setOldLink = (link: ILink) => {
+        this._oldLink = _.cloneDeep(link);
+    }
+
+    @action
+    public updateLink = (property: string, value: string|number|Date|LatLng[]) => {
+        this._link = {
+            ...this._link!,
+            [property]: value,
+        };
+    }
+
+    @action
     public clear = () => {
         this._link = null;
         this._nodes = [];
+        this._oldLink = null;
+    }
+
+    @computed
+    get isDirty() {
+        return this._link && !_.isEqual(
+            {
+                ...this.link,
+                // Remapping geometry since edit initialization has added handlers
+                geometry: this.link!.geometry
+                    .map(coor => new LatLng(coor.lat, coor.lng)),
+            },
+            this._oldLink,
+        );
+    }
+
+    @action
+    public undoChanges = () => {
+        if (this._oldLink) {
+            this.setLink(this._oldLink);
+        }
     }
 }
 

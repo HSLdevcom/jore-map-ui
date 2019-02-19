@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDatePicker from 'react-date-picker';
-import { IoMdCalendar, IoMdClose } from 'react-icons/io';
+import { IoMdCalendar } from 'react-icons/io';
 import * as s from './datePicker.scss';
 
 interface IDatePickerProps {
@@ -15,7 +15,7 @@ const datePicker = (props: IDatePickerProps) => (
             onChange={props.onChange}
             locale='fi-FI'
             calendarIcon={<IoMdCalendar />}
-            clearIcon={<IoMdClose />}
+            clearIcon={null}
         />
   </div>
 );
