@@ -23,9 +23,10 @@
 /* Create a custom checkbox */
 .checkmark {
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 0;
     height: 18px;
+    margin-top: -10px;
     width: 18px;
     border: 1px solid $busBlue;
     border-radius: 5px;

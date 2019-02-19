@@ -1,6 +1,9 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import ILink from '~/models/ILink';
+import ApiClient from '~/util/ApiClient';
+import { LatLng } from 'leaflet';
+import entityName from '~/enums/entityName';
 import LinkFactory from '~/factories/linkFactory';
 import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
@@ -27,6 +30,16 @@ class LinkService {
                 variables: { startNodeId, endNodeId, transitType: transitTypeCode } },
         );
         return LinkFactory.createLinkFromExternalLink(queryResult.data.link);
+    }
+
+    public static updateLink = async (link: ILink) => {
+        const apiClient = new ApiClient();
+        const simplifiedLink = {
+            ...link,
+            geometry: link.geometry.map(coor => new LatLng(coor.lat, coor.lng)),
+        };
+        await apiClient.updateObject(entityName.LINK, simplifiedLink);
+        await apolloClient.clearStore();
     }
 }
 
