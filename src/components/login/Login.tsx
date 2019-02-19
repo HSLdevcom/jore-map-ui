@@ -18,10 +18,6 @@ interface ILoginProps {
 @inject('loginStore', 'errorStore')
 @observer
 class Login extends React.Component<ILoginProps> {
-    constructor(props: ILoginProps) {
-        super(props);
-    }
-
     public login = () => {
         AuthService.authenticate((success: boolean) => {
             if (success) {
