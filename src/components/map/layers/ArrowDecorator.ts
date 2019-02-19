@@ -15,7 +15,7 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
     createLeafletElement(props: IArrowDecoratorProps) {
         const decorator = new PolylineDecorator(this.props.geometry, {
             patterns: [
-                { offset: 50, repeat: 120, symbol: L.Symbol.arrowHead(
+                { repeat: 120, offset: 20, endOffset: 30, symbol: L.Symbol.arrowHead(
                     {
                         pixelSize: 15,
                         pathOptions: {
@@ -48,13 +48,11 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
     }
 
     updateLeafletElement(fromProps: IArrowDecoratorProps, toProps: IArrowDecoratorProps) {
-        if (fromProps.geometry !== toProps.geometry) {
-            this.leafletElement.removeFrom(toProps.leaflet.map!);
-            this.leafletElement = this.createLeafletElement(toProps);
-            this.layerContainer.addLayer(
-                this.leafletElement,
-            );
-        }
+        this.leafletElement.removeFrom(toProps.leaflet.map!);
+        this.leafletElement = this.createLeafletElement(toProps);
+        this.layerContainer.addLayer(
+            this.leafletElement,
+        );
     }
 
     componentWillUnmount() {
