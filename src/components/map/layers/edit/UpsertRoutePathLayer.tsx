@@ -3,6 +3,7 @@ import { Polyline } from 'react-leaflet';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import {
@@ -14,6 +15,7 @@ import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
 import NodeMarker from '../mapIcons/NodeMarker';
 import StartMarker from '../mapIcons/StartMarker';
+import ArrowDecorator from '../ArrowDecorator';
 
 const MARKER_COLOR = '#00df0b';
 const NEIGHBOR_MARKER_COLOR = '#ca00f7';
@@ -270,6 +272,19 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         );
     }
 
+    private renderLinkDecorator = () => {
+        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks!;
+        const coherentPolylines = createCoherentLinesFromPolylines(
+            routePathLinks.map(rpLink => rpLink.geometry),
+        );
+        return coherentPolylines.map(polyline => (
+            <ArrowDecorator
+                color={ROUTE_COLOR}
+                geometry={polyline}
+            />
+        ));
+    }
+
     componentDidMount() {
         this.setBounds();
     }
@@ -283,6 +298,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         return (
             <>
                 {this.renderRoutePathLinks()}
+                {this.renderLinkDecorator()}
                 { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
                     this.renderRoutePathLinkNeighbors()
                 }
