@@ -5,6 +5,8 @@ import FormValidator, { IValidationResult } from '../../validation/FormValidato
 import DatePicker from '../controls/DatePicker';
 import * as s from './inputContainer.scss';
 
+type inputType = 'text' | 'number' | 'date';
+
 interface IInputProps {
     label: string;
     placeholder?: string;
@@ -14,7 +16,7 @@ interface IInputProps {
     value?: string|number|Date;
     validatorRule?: string;
     icon?: React.ReactNode;
-    type?: 'text' | 'number' | 'date';
+    type?: inputType;
     onIconClick?: () => void;
 }
 
@@ -67,6 +69,44 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         }
     }
 
+    private renderDisabledContent = (type: inputType) => {
+        return (
+            <div>
+                {
+                    type === 'date' ?
+                        moment(this.props.value!).format('DD.MM.YYYY') :
+                        this.props.value!
+                }
+            </div>
+        );
+    }
+
+    private renderEditableContent = (type: inputType) => {
+        if (type === 'date') {
+            return (
+                <DatePicker
+                    value={(this.props.value! as Date)}
+                    onChange={this.props.onChange!}
+                />
+            );
+        }
+        return (
+            <input
+                placeholder={this .props.disabled ? '' : this.props.placeholder}
+                type={typeof this.props.value === 'number' ? 'number' : 'text'}
+                className={
+                    classnames(
+                        this.props.className,
+                        this.props.disabled ? s.disabled : null,
+                        !this.state.isValid ? s.invalidInput : null)
+                }
+                disabled={this.props.disabled}
+                value={this.props.value ? (this.props.value as string | number) : ''}
+                onChange={this.onChange}
+            />
+        );
+    }
+
     render() {
         const type = this.props.type || 'text';
 
@@ -83,33 +123,10 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                     </div>
                     }
                 </div>
-                {this.props.disabled ?
-                    (<div>
-                        {type === 'date'
-                            ? moment(this.props.value!).format('DD.MM.YYYY')
-                            : this.props.value!}
-                    </div>)
-                    : type === 'date' ?
-                    (
-                        <DatePicker
-                            value={(this.props.value! as Date)}
-                            onChange={this.props.onChange!}
-                        />
-                    ) : (
-                        <input
-                            placeholder={this .props.disabled ? '' : this.props.placeholder}
-                            type={typeof this.props.value === 'number' ? 'number' : 'text'}
-                            className={
-                                classnames(
-                                    this.props.className,
-                                    this.props.disabled ? s.disabled : null,
-                                    !this.state.isValid ? s.invalidInput : null)
-                            }
-                            disabled={this.props.disabled}
-                            value={this.props.value ? (this.props.value as string | number) : ''}
-                            onChange={this.onChange}
-                        />
-                    )
+                {
+                    this.props.disabled ?
+                        this.renderDisabledContent(type) :
+                        this.renderEditableContent(type)
                 }
                 { this.state.errorMessage && !this.props.disabled &&
                     <div className={s.errorMessage}>
