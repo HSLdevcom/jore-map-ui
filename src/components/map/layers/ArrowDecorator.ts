@@ -54,6 +54,7 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
         if (this.props.disableOnEventName) {
             this.props.leaflet.map!.off(this.props.disableOnEventName);
         }
+        this.leafletElement.removeFrom(this.props.leaflet.map!);
     }
 }
 
