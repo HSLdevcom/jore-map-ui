@@ -12,6 +12,7 @@ import NodeLocationType from '~/types/NodeLocationType';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeMarker from '../mapIcons/NodeMarker';
 import { LeafletContext } from '../../Map';
+import ArrowDecorator from '../ArrowDecorator';
 
 interface IEditNodeLayerProps {
     nodeStore?: NodeStore;
@@ -74,11 +75,9 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
 
         const map = this.props.leaflet.map;
 
-        map!.off('editable:vertex:dragend');
         map!.on('editable:vertex:dragend', (data: any) => {
             this.refreshEditableLink(data.layer._leaflet_id);
         });
-        map!.off('editable:vertex:deleted');
         map!.on('editable:vertex:deleted', (data: any) => {
             this.refreshEditableLink(data.layer._leaflet_id);
         });
@@ -87,10 +86,12 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     private refreshEditableLink(leafletId: number) {
         const editableLink =
             this.editableLinks.find((link: any) => link._leaflet_id === leafletId);
-        const latlngs = editableLink!.getLatLngs()[0] as L.LatLng[];
-        const editableLinkIndex =
-            this.editableLinks.findIndex((link: any) => link._leaflet_id === leafletId);
-        this.props.nodeStore!.changeLinkGeometry(latlngs, editableLinkIndex);
+        if (editableLink) {
+            const latlngs = editableLink!.getLatLngs()[0] as L.LatLng[];
+            const editableLinkIndex =
+                this.editableLinks.findIndex((link: any) => link._leaflet_id === leafletId);
+            this.props.nodeStore!.changeLinkGeometry(latlngs, editableLinkIndex);
+        }
     }
 
     private drawEditableLink = (link: ILink) => {
@@ -124,6 +125,18 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         }
     }
 
+    private renderLinkDecorators = () => {
+        return this.props.nodeStore!.links.map(
+            link => (
+                <ArrowDecorator
+                    color='#4f93f8'
+                    geometry={link!.geometry}
+                    disableOnEventName='editable:vertex:drag'
+                    enableOnEventName='editable:vertex:dragend'
+                />
+            ));
+    }
+
     render() {
         const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.node));
         if (!isNodeViewVisible) return null;
@@ -132,6 +145,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         return (
             <>
                 {this.renderNode()}
+                {this.renderLinkDecorators()}
             </>
         );
     }

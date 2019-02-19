@@ -8,13 +8,14 @@ interface IArrowDecoratorProps extends PathProps {
     onClick?: () => void;
     color: string;
     disableOnEventName?: string;
+    enableOnEventName?: string;
 }
 
 class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
     createLeafletElement(props: IArrowDecoratorProps) {
         const decorator = new PolylineDecorator(this.props.geometry, {
             patterns: [
-                { repeat: 120, symbol: L.Symbol.arrowHead(
+                { offset: 50, repeat: 120, symbol: L.Symbol.arrowHead(
                     {
                         pixelSize: 15,
                         pathOptions: {
@@ -37,6 +38,12 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
                 () => this.leafletElement.removeFrom(props.leaflet.map!),
             );
         }
+        if (props.enableOnEventName) {
+            this.props.leaflet.map!.on(
+                props.enableOnEventName,
+                () => this.leafletElement.addTo(props.leaflet.map!),
+            );
+        }
         return decorator;
     }
 
@@ -53,6 +60,9 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
     componentWillUnmount() {
         if (this.props.disableOnEventName) {
             this.props.leaflet.map!.off(this.props.disableOnEventName);
+        }
+        if (this.props.enableOnEventName) {
+            this.props.leaflet.map!.off(this.props.enableOnEventName);
         }
         this.leafletElement.removeFrom(this.props.leaflet.map!);
     }

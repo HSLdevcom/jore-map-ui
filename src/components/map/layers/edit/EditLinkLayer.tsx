@@ -122,6 +122,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 color='#4f93f8'
                 geometry={link!.geometry}
                 disableOnEventName='editable:vertex:drag'
+                enableOnEventName='editable:vertex:dragend'
             />
         );
     }
