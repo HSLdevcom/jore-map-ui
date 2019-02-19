@@ -18,6 +18,7 @@ interface IRoutePathFormProps {
     routePathStore?: RoutePathStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
+    isNewRoutePath: boolean;
     onChange: (property: string, value: any, validationResult: IValidationResult) => void;
 }
 
@@ -126,7 +127,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         type='date'
                         value={routePath.startTime}
                         onChange={this.onChange('startTime')}
-                        disabled={isEditingDisabled}
+                        disabled={!this.props.isNewRoutePath || this.props.isEditingDisabled}
                         validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
@@ -134,7 +135,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         type='date'
                         value={routePath.endTime}
                         onChange={this.onChange('endTime')}
-                        disabled={isEditingDisabled}
+                        disabled={this.props.isEditingDisabled}
                         validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
