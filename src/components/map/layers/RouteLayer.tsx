@@ -74,7 +74,9 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         this.setState({
             selectedPolylines,
         });
-        target.current.leafletElement.bringToFront();
+        if (target.current.leafletElement.parent) {
+            target.current.leafletElement.bringToFront();
+        }
     }
 
     private hasHighlight = (internalId: string) => {
@@ -90,7 +92,9 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
                 this.setState({
                     hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
                 });
-                target.current.leafletElement.bringToFront();
+                if (target.current.leafletElement.parent) {
+                    target.current.leafletElement.bringToFront();
+                }
             }
         }
 
@@ -100,7 +104,9 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
             this.setState({
                 hoveredPolylines: [],
             });
-            target.current.leafletElement.bringToBack();
+            if (target.current.leafletElement.parent) {
+                target.current.leafletElement.bringToBack();
+            }
         }
 
     render() {
