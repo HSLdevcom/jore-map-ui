@@ -1,20 +1,22 @@
 import { LatLng } from 'leaflet';
 
 const createCoherentLinesFromPolylines = (polylines: LatLng[][]) => {
-    const res: LatLng[][] = [];
-    let workbench: LatLng[] = [];
+    const result: LatLng[][] = [];
+    let polylineBuilder: LatLng[] = [];
     polylines.forEach((line) => {
-        if (workbench.length === 0 || workbench[workbench.length - 1].equals(line[0])) {
-            workbench = workbench.concat(line);
+        if (
+            polylineBuilder.length === 0
+            || polylineBuilder[polylineBuilder.length - 1].equals(line[0])) {
+            polylineBuilder = polylineBuilder.concat(line);
         } else {
-            res.push(workbench);
-            workbench = [];
+            result.push(polylineBuilder);
+            polylineBuilder = [];
         }
     });
-    if (workbench.length > 0) {
-        res.push(workbench);
+    if (polylineBuilder.length > 0) {
+        result.push(polylineBuilder);
     }
-    return res;
+    return result;
 };
 
 export {
