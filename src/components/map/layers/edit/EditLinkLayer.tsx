@@ -5,6 +5,7 @@ import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
+import EventManager from '~/util/EventManager';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
@@ -28,6 +29,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             () => this.props.linkStore!.link,
             () => this.props.linkStore!.link === null && this.removeOldLinks(),
         );
+        EventManager.on('undo', () => this.props.linkStore!.undo());
+        EventManager.on('redo', () => this.props.linkStore!.redo());
     }
 
     componentWillUnmount() {
@@ -36,6 +39,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         const map = this.props.leaflet.map;
         map!.off('editable:vertex:dragend');
         map!.off('editable:vertex:deleted');
+        EventManager.off('undo', () => this.props.linkStore!.undo());
+        EventManager.off('redo', () => this.props.linkStore!.redo());
     }
 
     private removeOldLinks = () => {
@@ -68,7 +73,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     private refreshEditableLink() {
         const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
-        this.props.linkStore!.updateLink('geometry', latlngs);
+        this.props.linkStore!.updateLinkGeometry(latlngs);
     }
 
     private drawEditableLinkToMap = (link: ILink) => {

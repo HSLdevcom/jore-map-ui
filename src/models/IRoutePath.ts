@@ -6,7 +6,7 @@ export default interface IRoutePath {
     routeId: string;
     lineId: string;
     transitType: TransitType;
-    routePathLinks?: IRoutePathLink[];
+    routePathLinks?: IRoutePathLink[]; // TODO: change to be never undefined
     routePathName: string;
     routePathNameSw: string;
     direction: string;
