@@ -4,7 +4,6 @@ import LoginStore from '~/stores/loginStore';
 
 type RouteComponent = React.FunctionComponent<RouteComponentProps<{}>> | React.ComponentClass<any>;
 
-/* tslint:disable:variable-name */
 const PrivateRoute: React.FunctionComponent<RouteProps> = ({ component, ...rest }) => {
     const renderFn = (Component?: RouteComponent) => (props: any) => {
         if (!Component) {
@@ -27,6 +26,5 @@ const PrivateRoute: React.FunctionComponent<RouteProps> = ({ component, ...rest 
 
     return <Route {...rest} render={renderFn(component)} />;
 };
-/* tslint:enable:variable-name */
 
 export default PrivateRoute;
