@@ -1,10 +1,11 @@
 import { action, computed, observable } from 'mobx';
+import Constants from '~/constants/constants';
 
 export class LoginStore {
     @observable private _isAuthenticated: boolean;
 
     constructor() {
-        this._isAuthenticated = false;
+        this._isAuthenticated = !Constants.isLoginRequired;
     }
 
     @computed
