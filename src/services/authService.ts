@@ -1,11 +1,11 @@
 class AuthService {
-    public static authenticate(cb: any) {
+    public static authenticate(callback: Function) {
         // TODO: authentication call with username & password
-        setTimeout(cb(true), 100); // fake async
+        setTimeout(callback(true), 100); // fake async
     }
-    public static signout = (cb: any) => {
+    public static signout = (callback: Function) => {
         // TODO: signout call
-        setTimeout(cb(false), 100); // fake async
+        setTimeout(callback(false), 100); // fake async
     }
 }
 
