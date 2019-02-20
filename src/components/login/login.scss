@@ -84,17 +84,12 @@ $formWidth: 225px;
         .button {
             display: flex;
             flex-basis: 40px;
+            margin-top: 20px;
             justify-content: center;
             flex-direction: column;
             user-select: none;
             width: $formWidth;
-            position: relative;
-            margin-top: 20px;
             cursor: pointer;
-            font-weight: 400;
-            white-space: nowrap;
-            font-size: $mediumFontSize;
-            border: hidden;
             border-radius: 2px;
             background-color: #ffffffe6;
             color: $fontColorDefault;

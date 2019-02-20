@@ -57,13 +57,13 @@ class Login extends React.Component<ILoginProps> {
                         <input className={s.checkbox} type='checkbox'/>
                         Muista minut
                     </label>
+                    <div
+                        className={s.button}
+                        onClick={this.login}
+                    >
+                        Kirjaudu
+                    </div>
                 </form>
-                <div
-                    className={s.button}
-                    onClick={this.login}
-                >
-                    Kirjaudu
-                </div>
             </div>
         </div>
         );
