@@ -28,10 +28,13 @@ interface IRoutePathListNodeProps {
 @observer
 class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
+        const node = this.props.node;
+        const stopName = node.stop ? node.stop.nameFi : '';
         const id = this.props.node.id;
         const isExtended = this.props.routePathStore!.isObjectExtended(
             id,
         );
+        const nodeTypeName = NodeTypeHelper.getNodeTypeName(this.props.node.type);
         return (
             <div
                 className={
@@ -42,31 +45,24 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 }
             >
                 <div className={s.headerContent}>
-                    <div className={s.headerIconContainer}>
-                        {NodeTypeHelper.getNodeTypeName(this.props.node.type)}
+                    <div className={s.headerNodeTypeContainer}>
+                        <div>{stopName ? stopName : nodeTypeName}</div>
                     </div>
                     <div className={s.label}>
-                        {this.renderNodeHeaderContent()}
+                        <div className={s.headerContentDescription}>
+                            <div className={s.longId}>
+                                {node.id}
+                            </div>
+                            <div className={s.shortId}>
+                                {node.shortId ? node.shortId : '?'}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className={s.itemToggle}>
                     {isExtended && <FaAngleDown />}
                     {!isExtended && <FaAngleRight />}
                 </div>
-            </div>
-        );
-    }
-
-    private renderNodeHeaderContent = () => {
-        const node = this.props.node;
-        return (
-            <div className={s.headerContentDescription}>
-                <div>
-                    {node.shortId ? node.shortId : '?'}
-                </div>
-                <span>
-                    {node.id}
-                </span>
             </div>
         );
     }
@@ -179,13 +175,23 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     }
 
+    private getShadowClass() {
+        let shadowClass;
+        if (this.props.node!.stop) {
+            shadowClass = s.shadowStop;
+        } else {
+            shadowClass = s.shadow;
+        }
+        return shadowClass;
+    }
+
     render() {
         return (
             <RoutePathListItem
                 reference={this.props.reference}
                 id={this.props.node.id}
                 getGeometry={this.props.routePathStore!.getNodeGeom}
-                hasShadow={true}
+                shadowClass={this.getShadowClass()}
                 header={this.renderHeader()}
                 body={this.renderBody()}
                 listIcon={this.renderListIcon()}

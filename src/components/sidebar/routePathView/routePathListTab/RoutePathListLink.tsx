@@ -40,7 +40,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 }
             >
                 <div className={s.headerContent}>
-                    <div className={s.headerIconContainer}>
+                    <div className={s.headerNodeTypeContainer}>
                         Reitinlinkki
                     </div>
                     <div className={s.label} />
@@ -204,7 +204,6 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 reference={this.props.reference}
                 id={this.props.routePathLink.id}
                 getGeometry={this.props.routePathStore!.getLinkGeom}
-                hasShadow={false}
                 header={this.renderHeader()}
                 body={this.renderBody()}
                 listIcon={this.renderListIcon()}

@@ -11,7 +11,7 @@ interface IRoutePathListItemProps {
     routePathStore?: RoutePathStore;
     id: string;
     getGeometry: Function;
-    hasShadow: boolean;
+    shadowClass?: string;
     header: JSX.Element;
     body: JSX.Element;
     listIcon: JSX.Element;
@@ -65,7 +65,7 @@ class RoutePathListItem
                 ref={this.props.reference}
                 className={classnames(
                     s.item,
-                    this.props.hasShadow ? s.shadow : undefined,
+                    this.props.shadowClass,
                 )}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
