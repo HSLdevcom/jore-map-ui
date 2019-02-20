@@ -1,20 +1,20 @@
 
+type eventName = 'undo' | 'redo';
+
 class EventManager {
 
-    public trigger(eventName: string) {
+    public trigger(eventName: eventName) {
         const event = new Event(eventName);
         document.dispatchEvent(event);
     }
 
-    // TODO: use eventName: type
-    public on(eventName: string, callback: Function) {
+    public on(eventName: eventName, callback: Function) {
         document.addEventListener(eventName, () => {
             callback();
         });
     }
 
-    // TODO: use eventName: type
-    public off(eventName: string, callback: Function) {
+    public off(eventName: eventName, callback: Function) {
         document.removeEventListener(eventName, () => {
             callback();
         });

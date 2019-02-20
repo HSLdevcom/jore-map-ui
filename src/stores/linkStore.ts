@@ -49,7 +49,7 @@ export class LinkStore {
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = latLngs;
 
-        const currentUndoObject = {
+        const currentUndoObject: UndoObject = {
             link: updatedLink,
         };
 

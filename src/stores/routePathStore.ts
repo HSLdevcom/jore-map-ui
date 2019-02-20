@@ -28,7 +28,7 @@ export class RoutePathStore {
     @observable private _oldRoutePath: IRoutePath|null;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
-    // TODO: Move out of store to state, rename as highlightedMapObject
+    // TODO: Move out of store to state, rename as highlightedMapItems
     @observable private _highlightedObject: string | null;
     // TODO: Move out of store to state, rename as extendedListItems:
     @observable private _extendedObjects: string[];
