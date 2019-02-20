@@ -14,8 +14,8 @@ import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import NodeTypeHelper from '~/util/nodeTypeHelper';
 import navigator from '~/routing/navigator';
 import InputContainer from '../../InputContainer';
-import RoutePathListObject from './RoutePathListObject';
-import * as s from './routePathListObject.scss';
+import RoutePathListItem from './RoutePathListItem';
+import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
     routePathStore?: RoutePathStore;
@@ -181,7 +181,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
 
     render() {
         return (
-            <RoutePathListObject
+            <RoutePathListItem
                 reference={this.props.reference}
                 id={this.props.node.id}
                 getGeometry={this.props.routePathStore!.getNodeGeom}

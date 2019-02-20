@@ -4,9 +4,9 @@ import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import * as s from './routePathListObject.scss';
+import * as s from './routePathListItem.scss';
 
-interface IRoutePathListObjectProps {
+interface IRoutePathListItemProps {
     mapStore?: MapStore;
     routePathStore?: RoutePathStore;
     id: string;
@@ -25,8 +25,8 @@ export enum ListObjectType {
 
 @inject('routePathStore', 'mapStore')
 @observer
-class RoutePathListObject
-    extends React.Component<IRoutePathListObjectProps> {
+class RoutePathListItem
+    extends React.Component<IRoutePathListItemProps> {
     private toggleIsExtended = () => {
         this.props.routePathStore!.toggleExtendedObject(this.props.id);
 
@@ -70,7 +70,7 @@ class RoutePathListObject
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
-                <div className={s.headerIcon}>
+                <div className={s.listIcon}>
                     {this.props.listIcon}
                 </div>
                 <div onClick={this.toggleIsExtended}>
@@ -86,4 +86,4 @@ class RoutePathListObject
     }
 }
 
-export default RoutePathListObject;
+export default RoutePathListItem;

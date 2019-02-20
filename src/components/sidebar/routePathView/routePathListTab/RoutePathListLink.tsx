@@ -12,9 +12,9 @@ import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
-import RoutePathListObject from './RoutePathListObject';
+import RoutePathListItem from './RoutePathListItem';
 import InputContainer from '../../InputContainer';
-import * as s from './routePathListObject.scss';
+import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
     routePathStore?: RoutePathStore;
@@ -200,7 +200,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
 
     render() {
         return (
-            <RoutePathListObject
+            <RoutePathListItem
                 reference={this.props.reference}
                 id={this.props.routePathLink.id}
                 getGeometry={this.props.routePathStore!.getLinkGeom}
