@@ -1,6 +1,5 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import Moment from 'moment';
 import { FiRefreshCw } from 'react-icons/fi';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -19,6 +18,7 @@ interface IRoutePathFormProps {
     routePathStore?: RoutePathStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
+    isNewRoutePath: boolean;
     onChange: (property: string, value: any, validationResult: IValidationResult) => void;
 }
 
@@ -55,7 +55,6 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
 
-        const dateStringDisplayFormat = 'DD.MM.YYYY';
         const routePath = this.props.routePath;
         return (
         <div className={s.form}>
@@ -125,17 +124,19 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                 <div className={s.flexRow}>
                     <InputContainer
                         label='VOIM. AST'
-                        value={Moment(routePath.startTime)
-                            .format(dateStringDisplayFormat)}
-                        disabled={isEditingDisabled}
+                        type='date'
+                        value={routePath.startTime}
                         onChange={this.onChange('startTime')}
+                        disabled={!this.props.isNewRoutePath || this.props.isEditingDisabled}
+                        validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
                         label='VIIM.VOIM.OLO'
-                        value={Moment(routePath.endTime)
-                            .format(dateStringDisplayFormat)}
-                        disabled={isEditingDisabled}
+                        type='date'
+                        value={routePath.endTime}
                         onChange={this.onChange('endTime')}
+                        disabled={this.props.isEditingDisabled}
+                        validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
                         label='PITUUS'
@@ -194,8 +195,8 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                 <div className={s.flexRow}>
                     <InputContainer
                         label='PÄIVITYSPVM'
-                        value={Moment(routePath.lastModified)
-                            .format(dateStringDisplayFormat)}
+                        type='date'
+                        value={routePath.lastModified}
                         disabled={true}
                     />
                     <InputContainer
