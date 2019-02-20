@@ -1,21 +1,21 @@
 import React from 'react';
 import classnames from 'classnames';
 import * as L from 'leaflet';
-import { MapStore } from '~/stores/mapStore';
-import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import { inject, observer } from 'mobx-react';
+import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import * as s from './routePathListObject.scss';
 
 interface IRoutePathListObjectProps {
     mapStore?: MapStore;
     routePathStore?: RoutePathStore;
-    headerIcon: JSX.Element;
-    headerContent: string | React.ReactElement<HTMLDivElement>;
-    headerTypeName: string;
-    objectType: ListObjectType;
-    reference: React.RefObject<HTMLDivElement>;
     id: string;
+    getGeometry: Function;
+    hasShadow: boolean;
+    header: JSX.Element;
+    body: JSX.Element;
+    listIcon: JSX.Element;
+    reference: React.RefObject<HTMLDivElement>;
 }
 
 export enum ListObjectType {
@@ -39,19 +39,10 @@ class RoutePathListObject
 
     private getBounds = () => {
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
-
-        if (this.props.objectType === ListObjectType.Link) {
-            const positions = this.props.routePathStore!.getLinkGeom(this.props.id);
-            if (positions) {
-                positions.forEach(pos => bounds.extend(pos));
-            }
-        } else {
-            const position = this.props.routePathStore!.getNodeGeom(this.props.id);
-            if (position) {
-                position.forEach(pos => bounds.extend(pos));
-            }
+        const positions = this.props.getGeometry(this.props.id);
+        if (positions) {
+            positions.forEach((pos: any) => bounds.extend(pos));
         }
-
         return bounds;
     }
 
@@ -74,39 +65,20 @@ class RoutePathListObject
                 ref={this.props.reference}
                 className={classnames(
                     s.item,
-                    this.props.objectType === ListObjectType.Node ? s.shadow : undefined,
+                    this.props.hasShadow ? s.shadow : undefined,
                 )}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
                 <div className={s.headerIcon}>
-                    {this.props.headerIcon}
+                    {this.props.listIcon}
                 </div>
-                <div
-                    className={
-                        classnames(
-                            s.itemHeader,
-                            isExtended ? s.itemExtended : null,
-                        )
-                    }
-                    onClick={this.toggleIsExtended}
-                >
-                    <div className={s.headerContent}>
-                        <div className={s.headerIconContainer}>
-                            {this.props.headerTypeName}
-                        </div>
-                        <div className={s.label}>
-                            {this.props.headerContent}
-                        </div>
-                    </div>
-                    <div className={s.itemToggle}>
-                        {isExtended && <FaAngleDown />}
-                        {!isExtended && <FaAngleRight />}
-                    </div>
+                <div onClick={this.toggleIsExtended}>
+                    {this.props.header}
                 </div>
                 { isExtended &&
                     <div className={s.itemContent}>
-                        {this.props.children}
+                        {this.props.body}
                     </div>
                 }
             </div>
