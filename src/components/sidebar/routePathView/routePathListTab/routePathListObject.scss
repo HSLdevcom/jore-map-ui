@@ -70,7 +70,7 @@
             align-self: center;
             display: flex;
             padding-left: 40px;
-        
+
             .label {
                 margin-left: 30px;
                 color: $blue;
@@ -89,7 +89,7 @@
                     }
                 }
             }
-        
+
             .headerDescription {
                 margin-left: 10px;
                 color: #0dd5cd;
@@ -102,14 +102,14 @@
                     font-size: 16px;
                 }
             }
-        
+
             .headerIconContainer {
                 width: 125px;
                 display: flex;
                 line-height: 25px;
             }
         }
-    
+
         .itemToggle {
             font-size: 22px;
             color: $mediumGrey;
@@ -117,7 +117,7 @@
             padding: 15px;
             width: 100%;
             text-align: end;
-    
+
             :hover {
                 color: darken($mediumGrey, 10);
                 transition: .5s;
@@ -137,18 +137,18 @@
             .header {
                 font-size: 20px;
             }
-        
+
             .stopContent {
                 margin-top: 10px;
             }
-        
+
             .nodeContent {
                 margin-top: 10px;
             }
-        
+
             .footer {
                 margin-top: 15px;
-        
+
                 svg {
                     position: absolute;
                     right: 15px;

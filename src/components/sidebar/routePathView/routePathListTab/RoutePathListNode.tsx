@@ -20,11 +20,7 @@ interface IRoutePathListNodeProps {
     routePathLink: IRoutePathLink;
 }
 
-interface IRoutePathListNodeState {
-    isExtended: boolean;
-}
-
-class RoutePathListNode extends React.Component<IRoutePathListNodeProps, IRoutePathListNodeState> {
+class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private addBorder = (icon: React.ReactNode, color: string) => {
         return (
             <div className={s.iconBorder} style={{ borderColor: color }}>
