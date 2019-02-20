@@ -18,7 +18,6 @@ import EditNodeLayer from './layers/edit/EditNodeLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
 import MapLayersZoomHint from './mapControls/MapLayersZoomHint';
 import Toolbar from './toolbar/Toolbar';
-import EventLog from './EventLog';
 import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import NetworkLayers from './layers/NetworkLayers';
@@ -178,10 +177,6 @@ class LeafletMap extends React.Component<IMapProps> {
                     <PopupLayer />
                     <Control position='topleft'>
                         <Toolbar />
-                    </Control>
-
-                    <Control position='topleft'>
-                        <EventLog />
                     </Control>
 
                     <Control position='topright'>

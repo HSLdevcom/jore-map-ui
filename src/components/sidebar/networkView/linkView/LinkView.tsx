@@ -53,6 +53,22 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     async componentDidMount() {
+        await this.initUsingUrlParams(this.props);
+        if (this.props.linkStore!.link) {
+            const bounds = L.latLngBounds(this.props.linkStore!.link!.geometry);
+            this.props.mapStore!.setMapBounds(bounds);
+        }
+    }
+
+    componentWillUnmount() {
+        this.props.linkStore!.clear();
+    }
+
+    componentWillReceiveProps(props: ILinkViewProps) {
+        this.initUsingUrlParams(props);
+    }
+
+    private initUsingUrlParams = async (props: ILinkViewProps) => {
         this.setState({ isLoading: true });
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
         try {
@@ -73,7 +89,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     private onChange = (property: string) => (value: any, validationResult?: IValidationResult) => {
-        this.props.linkStore!.updateLink(property, value);
+        this.props.linkStore!.updateLinkProperty(property, value);
         if (validationResult) {
             this.markInvalidFields(property, validationResult!.isValid);
         }
@@ -99,10 +115,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             .toTarget(nodeId)
             .toLink();
         navigator.goTo(editNetworkLink);
-    }
-
-    componentWillUnmount() {
-        this.props.linkStore!.clear();
     }
 
     private toggleIsEditingEnabled = () => {
