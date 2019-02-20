@@ -1,8 +1,8 @@
 import eventType from '~/enums/eventType';
-import entityName from '~/enums/entityName';
+import endpoints from '~/enums/endpoints';
 
 export default interface IEvent {
-    entity: entityName;
+    entity: endpoints;
     action: eventType;
     preObject: object;
 }

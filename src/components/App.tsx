@@ -27,7 +27,10 @@ interface IAppProps extends RouteComponentProps<any> {
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     private openLoginForm = () => {
-        this.props.loginStore!.showLogin = true;
+        window.location.replace(
+            // tslint:disable-next-line
+            'https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=http://localhost:3000/after_login&response_type=code&scope=email'
+        );
     }
 
     private closeLoginModal = () => {

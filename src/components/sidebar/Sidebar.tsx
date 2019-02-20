@@ -8,6 +8,7 @@ import { SearchStore } from '~/stores/searchStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
+import authService from '~/services/authService';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import hslLogo from '~/assets/hsl-logo.png';
@@ -47,6 +48,16 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     private renderRoutePathView = (props: any) =>
         <RoutePathView {...props} isNewRoutePath={false} />
 
+    private afterLogin = () => {
+        const code = navigator.getQueryParam(QueryParams.code);
+        if (code) {
+            authService.grantAuthorization(code, () => {
+                window.location.replace('/');
+            });
+        }
+        return (<div>Logging in</div>);
+    }
+
     render() {
         const goToHomeView = () => {
             this.props.toolbarStore!.selectTool(null);
@@ -72,6 +83,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 </div>
                 <div className={s.content}>
                     <Switch>
+                        <Route
+                            exact={true}
+                            path={subSites.afterLogin}
+                            render={this.afterLogin}
+                        />
                         <Route
                             exact={true}
                             path={subSites.home}
