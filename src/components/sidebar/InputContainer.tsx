@@ -16,7 +16,7 @@ interface IInputProps {
     value?: string|number|Date;
     validatorRule?: string;
     icon?: React.ReactNode;
-    type?: inputType;
+    type?: inputType; // Defaults to text
     onIconClick?: () => void;
 }
 
@@ -107,22 +107,26 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         );
     }
 
+    private renderInputLabel = () => (
+        <div className={s.inputLabel}>
+            {this.props.label}
+            {!this.props.disabled && this.props.icon && this.props.onIconClick &&
+            <div
+                className={classnames(s.inline, s.pointer)}
+                onClick={this.props.onIconClick!}
+            >
+                {this.props.icon}
+            </div>
+            }
+        </div>
+    )
+
     render() {
         const type = this.props.type || 'text';
 
         return (
             <div className={s.formItem}>
-                <div className={s.inputLabel}>
-                    {this.props.label}
-                    {!this.props.disabled && this.props.icon && this.props.onIconClick &&
-                    <div
-                        className={classnames(s.inline, s.pointer)}
-                        onClick={this.props.onIconClick!}
-                    >
-                        {this.props.icon}
-                    </div>
-                    }
-                </div>
+                {this.renderInputLabel()}
                 {
                     this.props.disabled ?
                         this.renderDisabledContent(type) :
