@@ -12,6 +12,9 @@ $formWidth: 225px;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
+    background-image: url('../../assets/loginBackground.jpg');
+    background-size: cover;
+    background-position: center;
 
     .backgroundImage {
         position: absolute;
@@ -44,68 +47,65 @@ $formWidth: 225px;
             h2 {
                 margin-top: 10px 0px 10px 0px;
             }
-        }
 
-        .form {
-            display: flex;
-            flex-direction: column;
-            width: $formWidth;
-            font-size: $mediumFontSize;
-
-            input {
-                height: 20px;
-                margin: 10px 0px 10px 0px;
-                padding: 15px;
-                border: 1px solid #FFF;
-                background: transparent;
-                color: #FFF;
-                border-radius: 2px;
-            }
-
-            ::placeholder {
-                color: #FFF;
-            }
-
-            .checkboxContainer {
-                display: flex;
-                align-items: center;
-                cursor: pointer;
-                user-select: none;
-
-                .checkbox {
-                    position: relative;
-                    top: 2px;
-                    width: 15px;
-                    margin: 0px 10px 0px 0px;
-                }
+            .logo {
+                display: inline-block;
+                height: 80px;
+                text-align: center;
+                vertical-align: middle;
             }
         }
 
-        .button {
+        input {
+            height: 20px;
+            margin: 10px 0px 10px 0px;
+            padding: 15px;
+            border: 1px solid #FFF;
+            background: transparent;
+            color: #FFF;
+            border-radius: 2px;
+        }
+
+        .loginButton {
             display: flex;
-            flex-basis: 40px;
-            margin-top: 20px;
+            flex-basis: 50px;
             justify-content: center;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: center;
             user-select: none;
             width: $formWidth;
             cursor: pointer;
             border-radius: 2px;
             background-color: #ffffffe6;
             color: $fontColorDefault;
+
+            .loginText {
+                margin-left: 8px;
+            }
         }
 
-        .button:hover {
+        .loginButton:hover {
             background-color: #FFF;
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 3px 14px rgba(0, 0, 0, 0.4);
         }
 
-        .logo {
-            display: inline-block;
-            height: 80px;
-            text-align: center;
-            vertical-align: middle;
+        ::placeholder {
+            color: #FFF;
         }
 
+        .checkboxContainer {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+
+            .checkbox {
+                position: relative;
+                top: 2px;
+                width: 15px;
+                margin: 0px 10px 0px 0px;
+            }
+        }
     }
 }
