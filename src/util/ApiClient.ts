@@ -50,7 +50,6 @@ class ApiClient {
                 message: response.statusText,
             };
         } catch (err) {
-            console.error(err);
             error = {
                 errorCode: FetchStatusCode.CONNECTION_ERROR,
                 message: 'Yhteysongelma',

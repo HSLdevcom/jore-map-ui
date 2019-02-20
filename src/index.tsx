@@ -17,7 +17,6 @@ import PopupStore from './stores/popupStore';
 import ErrorStore from './stores/errorStore';
 import ToolbarStore from './stores/toolbarStore';
 import NetworkStore from './stores/networkStore';
-import GeometryEventStore from './stores/geometryEventStore';
 import NodeStore from './stores/nodeStore';
 import LinkStore from './stores/linkStore';
 import DialogStore from './stores/dialogStore';
@@ -41,7 +40,6 @@ const stores = {
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,
     networkStore: NetworkStore,
-    geometryEventStore: GeometryEventStore,
     nodeStore: NodeStore,
     linkStore: LinkStore,
     dialogStore: DialogStore,
