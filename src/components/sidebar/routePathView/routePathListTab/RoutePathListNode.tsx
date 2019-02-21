@@ -1,5 +1,4 @@
 import React from 'react';
-import NodeType from '~/enums/nodeType';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { IRoutePathLink, INode, IStop } from '~/models';
