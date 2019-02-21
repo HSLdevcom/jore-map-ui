@@ -5,11 +5,13 @@ const commonConstants = {
 
 const developmentConstants = {
     ...commonConstants,
+    isLoginRequired: false,
     FADE_DIALOG_TIMEOUT: 500, // milliseconds
 };
 
 const productionConstants = {
     ...commonConstants,
+    isLoginRequired: true,
     FADE_DIALOG_TIMEOUT: 2500, // milliseconds
 };
 
