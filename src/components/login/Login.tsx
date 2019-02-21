@@ -20,7 +20,7 @@ class Login extends React.Component<ILoginProps> {
     private openLoginForm = () => {
         window.location.replace(
             // tslint:disable-next-line
-            'https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=http://localhost:3000/after_login&response_type=code&scope=email'
+            'https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=http://localhost:3000/afterLogin&response_type=code&scope=email'
         );
     }
 

@@ -58,7 +58,7 @@ class App extends React.Component<IAppProps, IAppState> {
         },
         () => {
             // On error
-            navigator.goTo(SubSites.home);
+            navigator.goTo(SubSites.loginError);
         });
         return (<div>Logging in</div>);
     }
