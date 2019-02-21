@@ -9,7 +9,7 @@ import RoutePathLinkLayer from './RoutePathLinkLayer';
 interface RoutePathLayerProps {
     toggleHighlight: (internalId: string) => (target: any) => () => void;
     hoverHighlight: (internalId: string) => (target: any) => () => void;
-    hoverHighlightOff: (target: any) => () => void;
+    hoverHighlightOff: (internalId: string) => (target: any) => () => void;
     hasHighlight: Function;
     routePaths: IRoutePath[];
 }
@@ -36,11 +36,11 @@ class RoutePathLayer extends Component<RoutePathLayerProps> {
                         onClick={this.props.toggleHighlight(internalId)}
                         onContextMenu={this.openLinkView}
                         onMouseOver={this.props.hoverHighlight(internalId)}
-                        onMouseOut={this.props.hoverHighlightOff}
+                        onMouseOut={this.props.hoverHighlightOff(internalId)}
                         routePathLinks={routePath.routePathLinks!}
                         color={routePath.color!}
                         opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}
-                        weight={this.props.hasHighlight(internalId) ? 8 : 7}
+                        weight={this.props.hasHighlight(internalId) ? 8 : 6}
                     />
                 );
             });

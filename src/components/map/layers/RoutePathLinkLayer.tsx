@@ -116,9 +116,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     render() {
         return (
             <FeatureGroup
+                ref={this.layerRef}
                 onMouseOver={this.props.onMouseOver(this.layerRef)}
                 onMouseOut={this.props.onMouseOut(this.layerRef)}
-                ref={this.layerRef}
             >
                 {this.renderRoutePathLinks()}
                 {this.renderDirectionDecoration()}
