@@ -127,8 +127,9 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
 
     private renderLinkDecorators = () => {
         return this.props.nodeStore!.links.map(
-            link => (
+            (link, index) => (
                 <ArrowDecorator
+                    key={index}
                     color='#4f93f8'
                     geometry={link!.geometry}
                     disableOnEventName='editable:vertex:drag'

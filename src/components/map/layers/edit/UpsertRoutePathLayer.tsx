@@ -277,8 +277,9 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         const coherentPolylines = createCoherentLinesFromPolylines(
             routePathLinks.map(rpLink => rpLink.geometry),
         );
-        return coherentPolylines.map(polyline => (
+        return coherentPolylines.map((polyline, index) => (
             <ArrowDecorator
+                key={index}
                 color={ROUTE_COLOR}
                 geometry={polyline}
             />

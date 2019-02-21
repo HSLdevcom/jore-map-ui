@@ -102,9 +102,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             .map(routePathLink => routePathLink.geometry);
 
         return createCoherentLinesFromPolylines(geoms)
-            .map(geom => (
+            .map((geom, index) => (
                 <ArrowDecorator
-                    key={geom[0].toString()}
+                    key={index}
                     color={this.props.color}
                     geometry={geom}
                     onClick={this.props.onClick(this.layerRef)}
