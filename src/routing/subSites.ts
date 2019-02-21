@@ -8,6 +8,7 @@ enum SubSites {
     network = '/network/',
     node = '/node/:id',
     afterLogin = '/after_login',
+    loginError = '/loginError',
     current = '',
 }
 

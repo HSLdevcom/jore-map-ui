@@ -12,12 +12,13 @@ class AuthService {
     public static async authenticate(onSuccess: () => void, onError: () => void) {
         const code = navigator.getQueryParam(QueryParams.code);
         const client = new ApiClient();
-        const response = (await client.authorizeGrant(code)) as IAuthorizationResponse;
+        const response = (await client.authorizeUsingCode(code)) as IAuthorizationResponse;
 
         if (response.ok) {
             LoginStore.setIsAuthenticated(true, response.email!);
             onSuccess();
         } else {
+            LoginStore.setIsAuthenticated(false);
             onError();
         }
     }

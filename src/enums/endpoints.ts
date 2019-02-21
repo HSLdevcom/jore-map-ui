@@ -3,7 +3,7 @@ enum endpoints {
     ROUTELINK = 'routeLink',
     NODE = 'node',
     LINK = 'link',
-    AUTHORIZATIONGRANT = 'authorizationGrant',
+    AUTH = 'auth',
 }
 
 export default endpoints;

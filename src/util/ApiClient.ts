@@ -32,10 +32,10 @@ class ApiClient {
         return await this.sendRequest(RequestMethod.DELETE, entityName, object);
     }
 
-    public authorizeGrant = async (code: string) => {
+    public authorizeUsingCode = async (code: string) => {
         const requestBody: IAuthorizationRequest = { code };
         return await this.sendRequest(
-            RequestMethod.POST, endpoints.AUTHORIZATIONGRANT, requestBody);
+            RequestMethod.POST, endpoints.AUTH, requestBody);
     }
 
     private sendRequest = async (method: RequestMethod, endpoint: endpoints, object: any) => {

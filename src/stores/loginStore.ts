@@ -3,11 +3,10 @@ import Constants from '~/constants/constants';
 
 export class LoginStore {
     @observable private _isAuthenticated: boolean;
-    @observable private _userEmail: string;
+    @observable private _userEmail?: string;
 
     constructor() {
         this._isAuthenticated = !Constants.isLoginRequired;
-        this._userEmail = '';
     }
 
     @computed
@@ -21,7 +20,7 @@ export class LoginStore {
     }
 
     @action
-    public setIsAuthenticated(isAuthenticated: boolean, userEmail: string) {
+    public setIsAuthenticated(isAuthenticated: boolean, userEmail?: string) {
         this._isAuthenticated = isAuthenticated;
         this._userEmail = userEmail;
     }
