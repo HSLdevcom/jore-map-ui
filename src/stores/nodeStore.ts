@@ -67,10 +67,15 @@ export class NodeStore {
             [property]: value,
         };
 
-        if (property === 'coordinatesProjection') {
-            const updatedLinks = this.updateLinkGeometries(this._links);
-            this.setLinks(updatedLinks);
+        if (this._node.type !== NodeType.STOP) {
+            if (property === 'coordinates' || property === 'type') {
+                this._node.coordinatesProjection = this._node.coordinates;
+                this._node.coordinatesManual = this._node.coordinates;
+            }
         }
+
+        const updatedLinks = this.updateLinkGeometries(this._links);
+        this.setLinks(updatedLinks);
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
             this._node.stop = StopFactory.createNewStop();
