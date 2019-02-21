@@ -2,6 +2,7 @@ import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
 import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
+import UndoStore from '~/stores/undoStore';
 
 export interface UndoObject {
     link: ILink;
@@ -11,15 +12,13 @@ export class LinkStore {
     @observable private _link: ILink | null;
     @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
-    @observable private _undoObjects: UndoObject[];
-    @observable private _undoIndex: number;
+    private _undoStore: UndoStore;
 
     constructor() {
         this._nodes = [];
         this._link = null;
         this._oldLink = null;
-        this._undoObjects = [];
-        this._undoIndex = 0;
+        this._undoStore = new UndoStore();
     }
 
     @computed
@@ -35,10 +34,11 @@ export class LinkStore {
     @action
     public setLink = (link: ILink) => {
         this._link = link;
-        this._undoObjects = [{
+        const undoObject: UndoObject = {
             link,
-        }];
-        this._undoIndex = 0;
+        };
+        this._undoStore.addUndoObject(undoObject);
+
         this.setOldLink(link);
     }
 
@@ -48,19 +48,13 @@ export class LinkStore {
 
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = latLngs;
+        this._link = updatedLink;
 
-        const currentUndoObject: UndoObject = {
+        const undoObject: UndoObject = {
             link: updatedLink,
         };
+        this._undoStore.addUndoObject(undoObject);
 
-        // Remove the history of undo's because current state is changed
-        this._undoObjects.splice(this._undoIndex + 1);
-
-        // Insert current undoObject to the pile
-        this._undoObjects = this._undoObjects.concat([currentUndoObject]);
-        this._undoIndex += 1;
-
-        this._link = updatedLink;
     }
 
     @action
@@ -110,24 +104,16 @@ export class LinkStore {
 
     @action
     public undo = () => {
-        if (!this._link || this._undoIndex <= 0) {
-            return;
-        }
-        const previousUndoObject = this._undoObjects[this._undoIndex - 1];
-        this._link.geometry = _.cloneDeep(previousUndoObject.link.geometry);
-        this._undoIndex -= 1;
+        this._undoStore.undo((undoObject: UndoObject) => {
+            this._link!.geometry = undoObject.link.geometry;
+        });
     }
 
     @action
     public redo = () => {
-        if (!this._link
-            || this._undoObjects.length <= 1
-            || this._undoIndex >= this._undoObjects.length - 1) {
-            return;
-        }
-        const nextUndoObject = this._undoObjects[this._undoIndex + 1];
-        this._link.geometry = _.cloneDeep(nextUndoObject.link.geometry);
-        this._undoIndex += 1;
+        this._undoStore.redo((undoObject: UndoObject) => {
+            this._link!.geometry = undoObject.link.geometry;
+        });
     }
 }
 
