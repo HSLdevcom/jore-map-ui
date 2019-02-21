@@ -199,11 +199,12 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderListIcon = () => <div className={s.linkIcon} />;
 
     render() {
+        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
         return (
             <RoutePathListItem
                 reference={this.props.reference}
                 id={this.props.routePathLink.id}
-                getGeometry={this.props.routePathStore!.getLinkGeom}
+                geometry={geometry}
                 header={this.renderHeader()}
                 body={this.renderBody()}
                 listIcon={this.renderListIcon()}

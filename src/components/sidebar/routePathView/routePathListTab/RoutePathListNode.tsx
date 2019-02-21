@@ -186,11 +186,12 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     }
 
     render() {
+        const geometry = this.props.routePathStore!.getNodeGeom(this.props.node.id);
         return (
             <RoutePathListItem
                 reference={this.props.reference}
                 id={this.props.node.id}
-                getGeometry={this.props.routePathStore!.getNodeGeom}
+                geometry={geometry}
                 shadowClass={this.getShadowClass()}
                 header={this.renderHeader()}
                 body={this.renderBody()}

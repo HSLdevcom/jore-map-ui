@@ -10,7 +10,7 @@ interface IRoutePathListItemProps {
     mapStore?: MapStore;
     routePathStore?: RoutePathStore;
     id: string;
-    getGeometry: Function;
+    geometry: L.LatLng[];
     shadowClass?: string;
     header: JSX.Element;
     body: JSX.Element;
@@ -39,10 +39,7 @@ class RoutePathListItem
 
     private getBounds = () => {
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
-        const positions = this.props.getGeometry(this.props.id);
-        if (positions) {
-            positions.forEach((pos: any) => bounds.extend(pos));
-        }
+        this.props.geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
         return bounds;
     }
 
