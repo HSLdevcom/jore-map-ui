@@ -5,7 +5,7 @@ const commonConstants = {
 
 const developmentConstants = {
     ...commonConstants,
-    isLoginRequired: true,
+    isLoginRequired: false,
     FADE_DIALOG_TIMEOUT: 500, // milliseconds
 };
 
