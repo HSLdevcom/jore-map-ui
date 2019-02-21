@@ -1,70 +1,59 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { Redirect } from 'react-router-dom';
+import { FaLock } from 'react-icons/fa';
+import { Location } from 'history';
+import hslLogo from '~/assets/hsl-logo.png';
+import AuthService from '~/services/authService';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
-import ButtonType from '~/enums/buttonType';
-import Button from '../controls/Button';
 import * as s from './login.scss';
 
 interface ILoginProps {
     errorStore?: ErrorStore;
     loginStore?: LoginStore;
+    location?: Location;
 }
 
 @inject('loginStore', 'errorStore')
 @observer
 class Login extends React.Component<ILoginProps> {
-    // TODO Login logic here
-    public handleUserNameOnChange = (event: React.FormEvent<HTMLInputElement>) => {
-        global.console.log(event.currentTarget.value);
-    }
-
-    // TODO Login logic here
-    public handlePasswordOnChange = (event: React.FormEvent<HTMLInputElement>) => {
-        global.console.log(event.currentTarget.value);
-    }
-
-    public closeLoginModal = () => {
-        this.props.loginStore!.showLogin = false;
-        this.props.errorStore!.addError('Login Modal is not in use');
+    public login = () => {
+        AuthService.authenticate((success: boolean) => {
+            if (success) {
+                this.props.loginStore!.setIsAuthenticated(true);
+            } else {
+                // TODO: this message should be visible to user
+                this.props.errorStore!
+                    .addError('Kirjautuminen epäonnistui. Väärä käyttäjätunnus tai salasana.');
+            }
+        });
     }
 
     public render() {
+        const { from } = this.props.location!.state || { from: { pathname: '/' } };
+        if (this.props.loginStore!.isAuthenticated) {
+            return <Redirect to={from} />;
+        }
+
         return (
         <div className={s.loginView}>
-            <h2>Kirjaudu sisään</h2>
-            <form>
-                <label className={s.label}>
-                    Tunnus
-                <br/>
-                    <input
-                        type='text'
-                        onChange={this.handleUserNameOnChange}
-                    />
-                </label>
-                <label className={s.label}>
-                    Salasana
-                <br/>
-                    <input
-                        type='text'
-                        onChange={this.handlePasswordOnChange}
-                    />
-                </label>
-            </form>
-            <div className={s.modalButtonBar}>
-                <Button
-                    onClick={this.closeLoginModal}
-                    type={ButtonType.SQUARE}
+            <div className={s.wrapper}>
+                <div className={s.header}>
+                    <img className={s.logo} src={hslLogo} alt='HSL Logo'/>
+                    <h2>Joukkoliikennerekisteri</h2>
+                </div>
+                <div
+                    className={s.loginButton}
+                    onClick={this.login}
                 >
-                    Kirjaudu
-                </Button>
-                <div className={s.flexFiller} />
-                <Button
-                    onClick={this.closeLoginModal}
-                    type={ButtonType.SQUARE_SECONDARY}
-                >
-                    Peruuta
-                </Button>
+                    <FaLock />
+                    <div className={s.loginText}>Kirjaudu (HSL ID)</div>
+                </div>
+                <label className={s.checkboxContainer}>
+                    <input className={s.checkbox} type='checkbox'/>
+                    Muista minut
+                </label>
             </div>
         </div>
         );
