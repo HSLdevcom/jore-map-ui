@@ -1,12 +1,10 @@
-export interface UndoObject {}
 
-export class UndoStore {
+export class UndoStore<UndoObject> {
     private _undoObjects: UndoObject[];
     private _undoIndex: number;
 
     constructor() {
-        this._undoObjects = [];
-        this._undoIndex = -1;
+        this.clear();
     }
 
     public addUndoObject = (undoObject: UndoObject) => {
@@ -33,6 +31,11 @@ export class UndoStore {
 
         const nextUndoObject = this._undoObjects[this._undoIndex];
         undoCallback(nextUndoObject);
+    }
+
+    public clear = () => {
+        this._undoObjects = [];
+        this._undoIndex = -1;
     }
 }
 

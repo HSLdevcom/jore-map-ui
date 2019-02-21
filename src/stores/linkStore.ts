@@ -12,7 +12,7 @@ export class LinkStore {
     @observable private _link: ILink | null;
     @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
-    private _undoStore: UndoStore;
+    private _undoStore: UndoStore<UndoObject>;
 
     constructor() {
         this._nodes = [];
@@ -80,6 +80,7 @@ export class LinkStore {
         this._link = null;
         this._nodes = [];
         this._oldLink = null;
+        this._undoStore.clear();
     }
 
     @computed
