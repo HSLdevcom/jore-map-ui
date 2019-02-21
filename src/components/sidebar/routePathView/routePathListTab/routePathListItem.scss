@@ -14,11 +14,15 @@
     background-color: #80808024;
 }
 
+.shadowStop {
+    background-color: rgba(0, 122, 201, 0.1);
+}
+
 .item {
     border-bottom: 1.5px solid $lightGrey;
     position: relative;
 
-    .headerIcon {
+    .listIcon {
         width: 30px;
         position: absolute;
         height: 30px;
@@ -67,57 +71,55 @@
         .headerContent {
             padding: 15px;
             position: relative;
-            align-self: center;
             display: flex;
             padding-left: 40px;
-        
+            align-items: center;
+            width: 100%;
+            justify-content: space-between;
+
             .label {
-                margin-left: 30px;
                 color: $blue;
                 font-weight: bold;
-                font-size: 22px;
-                white-space: nowrap;
 
                 .headerContentDescription {
-                    > div {
-                        display: inline-block;
-                        width: 80px;
-                    }
-                    > span {
+                    display: flex;
+                    align-items: center;
+                    .shortId {
+                        font-size: $largeFontSize;
                         margin-left: 10px;
-                        font-size: 14px;
+                    }
+                    .longId {
+                        font-size: $smallFontSize;
                     }
                 }
             }
-        
+
             .headerDescription {
                 margin-left: 10px;
                 color: #0dd5cd;
-
-                .descriptionLabel {
-                    font-size: 10px;
-                }
-
-                .descriptionValue {
-                    font-size: 16px;
-                }
             }
-        
-            .headerIconContainer {
-                width: 125px;
+
+            .headerNodeTypeContainer {
                 display: flex;
                 line-height: 25px;
+                flex-direction: column;
+                white-space: nowrap;
+
+                .description {
+                    font-size: $smallFontSize;
+                    white-space: nowrap;
+                }
             }
         }
-    
+
         .itemToggle {
             font-size: 22px;
             color: $mediumGrey;
             transition: .5s;
             padding: 15px;
-            width: 100%;
             text-align: end;
-    
+            align-self: center;
+
             :hover {
                 color: darken($mediumGrey, 10);
                 transition: .5s;
@@ -137,18 +139,18 @@
             .header {
                 font-size: 20px;
             }
-        
+
             .stopContent {
                 margin-top: 10px;
             }
-        
+
             .nodeContent {
                 margin-top: 10px;
             }
-        
+
             .footer {
                 margin-top: 15px;
-        
+
                 svg {
                     position: absolute;
                     right: 15px;
