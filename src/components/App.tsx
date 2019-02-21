@@ -6,6 +6,7 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import SubSites from '~/routing/subSites';
 import AuthService from '~/services/authService';
+import navigator from '~/routing/navigator';
 import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Map from './map/Map';
@@ -52,12 +53,12 @@ class App extends React.Component<IAppProps, IAppState> {
     private renderAfterLogin = () => {
         AuthService.authenticate(
         () => {
-            // On success
-            window.location.replace('/');
+            // on success
+            navigator.goTo(SubSites.home);
         },
         () => {
             // On error
-            window.location.replace('/loginError');
+            navigator.goTo(SubSites.home);
         });
         return (<div>Logging in</div>);
     }
