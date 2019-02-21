@@ -23,6 +23,8 @@ export class LoginStore {
     public setIsAuthenticated(isAuthenticated: boolean, userEmail?: string) {
         this._isAuthenticated = isAuthenticated;
         this._userEmail = userEmail;
+        // tslint:disable-next-line:no-console
+        console.log(`User: ${userEmail} is now authenticated`); // TODO: this is only temporary
     }
 }
 
