@@ -53,7 +53,7 @@ class ApiClient {
             });
 
             if (response.status >= 200 && response.status < 300) {
-                return;
+                return await response.json();
             }
             error = {
                 errorCode: response.status,
