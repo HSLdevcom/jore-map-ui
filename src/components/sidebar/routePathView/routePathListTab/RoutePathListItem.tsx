@@ -18,11 +18,6 @@ interface IRoutePathListItemProps {
     reference: React.RefObject<HTMLDivElement>;
 }
 
-export enum ListObjectType {
-    Node,
-    Link,
-}
-
 @inject('routePathStore', 'mapStore')
 @observer
 class RoutePathListItem
