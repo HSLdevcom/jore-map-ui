@@ -268,15 +268,15 @@ export class RoutePathStore {
         return 0;
     }
 
-    public getLinkGeom = (linkId: string) => {
+    public getLinkGeom = (linkId: string): L.LatLng[] => {
         const link = this._routePath!.routePathLinks!.find(l => l.id === linkId);
         if (link) {
             return link.geometry;
         }
-        return null;
+        return [];
     }
 
-    public getNodeGeom = (nodeId: string) => {
+    public getNodeGeom = (nodeId: string): L.LatLng[] => {
         let node = this._routePath!.routePathLinks!.find(l => l.startNode.id === nodeId);
         if (!node) {
             node = this._routePath!.routePathLinks!.find(l => l.endNode.id === nodeId);
@@ -284,7 +284,7 @@ export class RoutePathStore {
         if (node) {
             return node.geometry;
         }
-        return null;
+        return [];
     }
 
     private recalculateOrderNumbers = () => {
