@@ -7,6 +7,7 @@ import { FiChevronRight } from 'react-icons/fi';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import NodeType from '~/enums/nodeType';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -46,7 +47,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             >
                 <div className={s.headerContent}>
                     <div className={s.headerNodeTypeContainer}>
-                        <div>{stopName ? stopName : nodeTypeName}</div>
+                        <div>{node.type === NodeType.STOP ? stopName : nodeTypeName}</div>
                     </div>
                     <div className={s.label}>
                         <div className={s.headerContentDescription}>
