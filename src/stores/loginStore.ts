@@ -1,19 +1,29 @@
-import { computed, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
+import Constants from '~/constants/constants';
 
 export class LoginStore {
-    @observable private _showLogin: boolean;
+    @observable private _isAuthenticated: boolean;
+    @observable private _userEmail: string;
 
     constructor() {
-        this._showLogin = false;
+        this._isAuthenticated = !Constants.isLoginRequired;
+        this._userEmail = '';
     }
 
     @computed
-    get showLogin(): boolean {
-        return this._showLogin;
+    get isAuthenticated() {
+        return this._isAuthenticated;
     }
 
-    set showLogin(showLogin: boolean) {
-        this._showLogin = showLogin;
+    @computed
+    get userEmail() {
+        return this._userEmail;
+    }
+
+    @action
+    public setIsAuthenticated(isAuthenticated: boolean, userEmail: string) {
+        this._isAuthenticated = isAuthenticated;
+        this._userEmail = userEmail;
     }
 }
 

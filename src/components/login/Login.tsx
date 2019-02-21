@@ -1,70 +1,53 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { Redirect } from 'react-router-dom';
+import { FaLock } from 'react-icons/fa';
+import { Location } from 'history';
+import hslLogo from '~/assets/hsl-logo.png';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
-import ButtonType from '~/enums/buttonType';
-import Button from '../controls/Button';
 import * as s from './login.scss';
 
 interface ILoginProps {
     errorStore?: ErrorStore;
     loginStore?: LoginStore;
+    location?: Location;
 }
 
 @inject('loginStore', 'errorStore')
 @observer
 class Login extends React.Component<ILoginProps> {
-    // TODO Login logic here
-    public handleUserNameOnChange = (event: React.FormEvent<HTMLInputElement>) => {
-        global.console.log(event.currentTarget.value);
-    }
-
-    // TODO Login logic here
-    public handlePasswordOnChange = (event: React.FormEvent<HTMLInputElement>) => {
-        global.console.log(event.currentTarget.value);
-    }
-
-    public closeLoginModal = () => {
-        this.props.loginStore!.showLogin = false;
-        this.props.errorStore!.addError('Login Modal is not in use');
+    private openLoginForm = () => {
+        window.location.replace(
+            // tslint:disable-next-line
+            'https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=http://localhost:3000/after_login&response_type=code&scope=email'
+        );
     }
 
     public render() {
+        const { from } = this.props.location!.state || { from: { pathname: '/' } };
+        if (this.props.loginStore!.isAuthenticated) {
+            return <Redirect to={from} />;
+        }
+
         return (
         <div className={s.loginView}>
-            <h2>Kirjaudu sisään</h2>
-            <form>
-                <label className={s.label}>
-                    Tunnus
-                <br/>
-                    <input
-                        type='text'
-                        onChange={this.handleUserNameOnChange}
-                    />
-                </label>
-                <label className={s.label}>
-                    Salasana
-                <br/>
-                    <input
-                        type='text'
-                        onChange={this.handlePasswordOnChange}
-                    />
-                </label>
-            </form>
-            <div className={s.modalButtonBar}>
-                <Button
-                    onClick={this.closeLoginModal}
-                    type={ButtonType.SQUARE}
+            <div className={s.wrapper}>
+                <div className={s.header}>
+                    <img className={s.logo} src={hslLogo} alt='HSL Logo'/>
+                    <h2>Joukkoliikennerekisteri</h2>
+                </div>
+                <div
+                    className={s.loginButton}
+                    onClick={this.openLoginForm}
                 >
-                    Kirjaudu
-                </Button>
-                <div className={s.flexFiller} />
-                <Button
-                    onClick={this.closeLoginModal}
-                    type={ButtonType.SQUARE_SECONDARY}
-                >
-                    Peruuta
-                </Button>
+                    <FaLock />
+                    <div className={s.loginText}>Kirjaudu (HSL ID)</div>
+                </div>
+                <label className={s.checkboxContainer}>
+                    <input className={s.checkbox} type='checkbox'/>
+                    Muista minut
+                </label>
             </div>
         </div>
         );

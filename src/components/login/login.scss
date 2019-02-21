@@ -1,25 +1,111 @@
 @import '../shared/styles/common.scss';
 @import '../shared/styles/flexbox';
 
+$formWidth: 225px;
+
 .loginView {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    background-image: url('../../assets/loginBackground.jpg');
+    background-size: cover;
+    background-position: center;
 
-    .modalButtonBar {
-        display: flex;
-        justify-content: space-between;
-        padding-top: 10px;
+    .backgroundImage {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
     }
 
-    .label {
+    .wrapper {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        padding: 30px 90px;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 3px 14px rgba(0, 0, 0, .4);
+        border-radius: 2px;
+        text-align: center;
+        overflow-y: auto;
         display: flex;
+        justify-content: center;
         flex-direction: column;
-        padding-top: 10px;
-    }
+        align-items: center;
+        color: #FFF;
+        background-color: #007ac9a6;
 
-    input {
-        width: calc(100% - 10px);
-        height: 20px;
-        padding: 5px;
+        .header {
+            padding: 10px 0px 10px 0px;
+            user-select: none;
+
+            h2 {
+                margin-top: 10px 0px 10px 0px;
+            }
+
+            .logo {
+                display: inline-block;
+                height: 80px;
+                text-align: center;
+                vertical-align: middle;
+            }
+        }
+
+        input {
+            height: 20px;
+            margin: 10px 0px 10px 0px;
+            padding: 15px;
+            border: 1px solid #FFF;
+            background: transparent;
+            color: #FFF;
+            border-radius: 2px;
+        }
+
+        .loginButton {
+            display: flex;
+            flex-basis: 50px;
+            justify-content: center;
+            flex-direction: row;
+            align-items: center;
+            user-select: none;
+            width: $formWidth;
+            cursor: pointer;
+            border-radius: 2px;
+            background-color: #ffffffe6;
+            color: $fontColorDefault;
+
+            .loginText {
+                margin-left: 8px;
+            }
+        }
+
+        .loginButton:hover {
+            background-color: #FFF;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 3px 14px rgba(0, 0, 0, 0.4);
+        }
+
+        ::placeholder {
+            color: #FFF;
+        }
+
+        .checkboxContainer {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+
+            .checkbox {
+                position: relative;
+                top: 2px;
+                width: 15px;
+                margin: 0px 10px 0px 0px;
+            }
+        }
     }
 }
