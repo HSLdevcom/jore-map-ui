@@ -47,14 +47,7 @@ export class NodeStore {
         this._oldNode = _.cloneDeep(node);
     }
 
-    @action
-    public updateNode = (property: string, value: string|number|Date|LatLng) => {
-        this._node = {
-            ...this._node!,
-            [property]: value,
-        };
-
-        const links = this._links;
+    public updateLinkGeometries = (links: ILink[]) => {
         // Update the first link geometry of startNodes to coordinatesProjection
         links
             .filter(link => link.startNode.id === this._node!.id)
@@ -64,7 +57,20 @@ export class NodeStore {
             .filter(link => link.endNode.id === this._node!.id)
             .map(link => link.geometry[link.geometry.length - 1]
                 = this._node!.coordinatesProjection);
-        this.setLinks(links);
+        return links;
+    }
+
+    @action
+    public updateNode = (property: string, value: string|number|Date|LatLng) => {
+        this._node = {
+            ...this._node!,
+            [property]: value,
+        };
+
+        if (property === 'coordinatesProjection') {
+            const updatedLinks = this.updateLinkGeometries(this._links);
+            this.setLinks(updatedLinks);
+        }
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
             this._node.stop = StopFactory.createNewStop();
