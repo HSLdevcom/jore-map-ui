@@ -1,6 +1,7 @@
 import React from 'react';
 import { INode } from '~/models';
 import NodeLocationType from '~/types/NodeLocationType';
+import NodeType from '~/enums/nodeType';
 import NodeCoordinatesView from './NodeCoordinatesView';
 import * as s from './nodeCoordinatesListView.scss';
 
@@ -20,20 +21,24 @@ const nodeCoordinatesListView = (props: INodeCoordinatesListView) => {
                 onChangeCoordinates={props.onChangeCoordinates('coordinates')}
                 isEditingDisabled={props.isEditingDisabled}
             />
-            <NodeCoordinatesView
-                nodeType={props.node.type}
-                locationType='coordinatesManual'
-                coordinates={props.node.coordinatesManual}
-                onChangeCoordinates={props.onChangeCoordinates('coordinatesManual')}
-                isEditingDisabled={props.isEditingDisabled}
-            />
-            <NodeCoordinatesView
-                nodeType={props.node.type}
-                locationType='coordinatesProjection'
-                coordinates={props.node.coordinatesProjection}
-                onChangeCoordinates={props.onChangeCoordinates('coordinatesProjection')}
-                isEditingDisabled={props.isEditingDisabled}
-            />
+            { props.node.type === NodeType.STOP &&
+                <>
+                    <NodeCoordinatesView
+                        nodeType={props.node.type}
+                        locationType='coordinatesManual'
+                        coordinates={props.node.coordinatesManual}
+                        onChangeCoordinates={props.onChangeCoordinates('coordinatesManual')}
+                        isEditingDisabled={props.isEditingDisabled}
+                    />
+                    <NodeCoordinatesView
+                        nodeType={props.node.type}
+                        locationType='coordinatesProjection'
+                        coordinates={props.node.coordinatesProjection}
+                        onChangeCoordinates={props.onChangeCoordinates('coordinatesProjection')}
+                        isEditingDisabled={props.isEditingDisabled}
+                    />
+                </>
+            }
         </div>
     );
 };
