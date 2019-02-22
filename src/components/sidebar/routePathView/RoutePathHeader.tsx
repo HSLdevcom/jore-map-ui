@@ -19,7 +19,7 @@ const RoutePathHeader = (props: IRoutePathHeaderProps) => (
             isEditButtonVisible={true}
             onEditButtonClick={props.onEditButtonClick}
             isEditing={props.isEditing}
-            preventFromReseting={props.hasModifications!}
+            shouldShowClosePromptMessage={props.hasModifications!}
         >
             {props.isNewRoutePath ? 'Uusi reitinsuunta' :
                 `${props.routePath.lineId} > ${props.routePath.routeId}`}

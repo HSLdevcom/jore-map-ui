@@ -149,7 +149,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 <ViewHeader
                     isEditButtonVisible={true}
                     isEditing={!isEditingDisabled}
-                    preventFromReseting={this.props.linkStore!.isDirty!}
+                    shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
                     onEditButtonClick={this.toggleIsEditingEnabled}
                 >
                     Linkki

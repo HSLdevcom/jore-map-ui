@@ -10,7 +10,7 @@ interface IViewHeaderProps {
     hideCloseButton?: boolean;
     isEditButtonVisible?: boolean;
     isEditing?: boolean;
-    preventFromReseting?: boolean;
+    shouldShowClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onCloseButtonClick?: () => void;
 }
@@ -22,14 +22,14 @@ const ViewHeader = (props:IViewHeaderProps) => {
     // tslint:enable:max-line-length
 
     const onCloseButtonClick = () => {
-        if (!props.preventFromReseting || confirm(closePromptMessage)) {
+        if (!props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
             props.onCloseButtonClick ? props.onCloseButtonClick() : navigator.goBack();
         }
     };
 
     const onEditButtonClick = () => {
         if (props.isEditing!) {
-            if (!props.preventFromReseting || confirm(revertPromptMessage)) {
+            if (!props.shouldShowClosePromptMessage || confirm(revertPromptMessage)) {
                 props.onEditButtonClick!();
             }
         } else {
