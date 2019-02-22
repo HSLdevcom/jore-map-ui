@@ -149,7 +149,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                 <div className={s.content}>
                     <ViewHeader
                         isEditButtonVisible={true}
-                        preventFromReseting={this.props.nodeStore!.isDirty}
+                        shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={this.toggleIsEditingEnabled}
                     >
