@@ -4,9 +4,6 @@ import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
-import { matchPath } from 'react-router';
-import navigator from '~/routing/navigator';
-import SubSites from '~/routing/subSites';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import NodeMarker from './mapIcons/NodeMarker';
@@ -100,7 +97,6 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     private renderDirectionDecoration() {
         const routePathLinks = this.props.routePathLinks;
-        const isRoutesView = Boolean(matchPath(navigator.getPathName(), SubSites.routes));
 
         const geoms = routePathLinks
             .map(routePathLink => routePathLink.geometry);
@@ -112,7 +108,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     color={this.props.color}
                     geometry={geom}
                     onClick={this.props.onClick(this.layerRef)}
-                    isUpdatePrevented={isRoutesView}
+                    isUpdatePrevented={true}
                 />
             ),
         );
