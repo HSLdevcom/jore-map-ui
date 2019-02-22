@@ -4,17 +4,17 @@ import QueryParams from '~/routing/queryParams';
 import LoginStore from '~/stores/loginStore';
 
 interface IAuthorizationResponse {
-    ok: boolean;
+    isOk: boolean;
     email?: string;
 }
 
 class AuthService {
     public static async authenticate(onSuccess: () => void, onError: () => void) {
         const code = navigator.getQueryParam(QueryParams.code);
-        const client = new ApiClient();
-        const response = (await client.authorizeUsingCode(code)) as IAuthorizationResponse;
+        const apiClient = new ApiClient();
+        const response = (await apiClient.authorizeUsingCode(code)) as IAuthorizationResponse;
 
-        if (response.ok) {
+        if (response.isOk) {
             LoginStore.setIsAuthenticated(true, response.email!);
             onSuccess();
         } else {
