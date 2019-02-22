@@ -34,7 +34,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
             this.props.onChange(property, value, validationResult);
         }
 
-    private updateLength = ():void => (
+    private updateLength = () => (
         this.props.routePathStore!.updateRoutePathProperty(
             'length',
             this.props.routePathStore!.getCalculatedLength(),
