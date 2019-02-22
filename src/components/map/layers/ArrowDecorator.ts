@@ -9,6 +9,7 @@ interface IArrowDecoratorProps extends PathProps {
     color: string;
     disableOnEventName?: string;
     enableOnEventName?: string;
+    isUpdatePrevented?: boolean;
 }
 
 class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
@@ -48,6 +49,13 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
     }
 
     updateLeafletElement(fromProps: IArrowDecoratorProps, toProps: IArrowDecoratorProps) {
+        /**
+         * Need to prevent updating in certain situations or else leaflet throws an error
+         * For example when highlighting route on/off, this.leafletElement.removeFrom causes
+         * leaflet error. That is why this takes an early exit.
+        */
+        if (this.props.isUpdatePrevented) return;
+
         this.leafletElement.removeFrom(toProps.leaflet.map!);
         this.leafletElement = this.createLeafletElement(toProps);
         this.layerContainer.addLayer(
