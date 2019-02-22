@@ -140,7 +140,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                     />
                     <InputContainer
                         label='PITUUS'
-                        value={routePath.length.toString()}
+                        value={routePath.length}
                         disabled={isEditingDisabled}
                         validatorRule={routePathValidationModel.length}
                         icon={<FiRefreshCw/>}

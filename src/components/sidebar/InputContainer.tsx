@@ -53,7 +53,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
 
     private validateAndUpdate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
         if (!this.props.onChange || !this.props.validatorRule) return;
-        if ((oldValue === newValue) && !forceUpdate) return;
+        if ((oldValue === newValue || isNaN(newValue)) && !forceUpdate) return;
 
         const wasValid = this.state.isValid;
         const validatorResult: IValidationResult
@@ -100,8 +100,8 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         }
         return (
             <input
-                placeholder={this .props.disabled ? '' : this.props.placeholder}
-                type={typeof this.props.value === 'number' ? 'number' : 'text'}
+                placeholder={this.props.disabled ? '' : this.props.placeholder}
+                type={this.props.type === 'number' ? 'number' : 'text'}
                 className={
                     classnames(
                         this.props.className,
