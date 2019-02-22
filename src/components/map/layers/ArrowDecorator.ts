@@ -36,13 +36,13 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
         if (props.showOnEventName) {
             this.props.leaflet.map!.on(
                 props.showOnEventName,
-                () => this.leafletElement.removeFrom(props.leaflet.map!),
+                () => this.leafletElement.addTo(props.leaflet.map!),
             );
         }
         if (props.hideOnEventName) {
             this.props.leaflet.map!.on(
                 props.hideOnEventName,
-                () => this.leafletElement.addTo(props.leaflet.map!),
+                () => this.leafletElement.removeFrom(props.leaflet.map!),
             );
         }
         return decorator;
