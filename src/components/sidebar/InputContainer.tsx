@@ -52,19 +52,15 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     }
 
     private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
-        if (!this.props.onChange || !this.props.validatorRule) return;
-        if ((oldValue === newValue || isNaN(newValue)) && !forceUpdate) return;
+        if (!this.props.validatorRule) return;
+        if (!forceUpdate && oldValue === newValue) return;
 
-        const wasValid = this.state.isValid;
         const validatorResult: IValidationResult
             = FormValidator.validate(newValue, this.props.validatorRule);
-        const hasChanges = (oldValue !== newValue || wasValid !== validatorResult.isValid);
-        if (forceUpdate || hasChanges) {
-            this.setState({
-                isValid: validatorResult.isValid,
-                errorMessage: validatorResult.errorMessage,
-            });
-        }
+        this.setState({
+            isValid: validatorResult.isValid,
+            errorMessage: validatorResult.errorMessage,
+        });
     }
 
     private onChange = (e: React.FormEvent<HTMLInputElement>) => {
