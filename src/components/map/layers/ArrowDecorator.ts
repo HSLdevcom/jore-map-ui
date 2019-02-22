@@ -18,7 +18,7 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
             patterns: [
                 { repeat: 120, offset: 20, endOffset: 30, symbol: L.Symbol.arrowHead(
                     {
-                        pixelSize: 15,
+                        pixelSize: 12,
                         pathOptions: {
                             color: props.color,
                             fillOpacity: 1,
