@@ -17,8 +17,8 @@ interface IViewHeaderProps {
 
 const ViewHeader = (props:IViewHeaderProps) => {
     // tslint:disable:max-line-length
-    const closePromptMessage = 'Tietueella on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
-    const revertPromptMessage = 'Tietueella on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
+    const closePromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+    const revertPromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
     // tslint:enable:max-line-length
 
     const onCloseButtonClick = () => {
