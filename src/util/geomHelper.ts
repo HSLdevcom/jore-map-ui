@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 
-const createCoherentLinesFromPolylines = (polylines: LatLng[][]) => {
+const createCoherentLinesFromPolylines = (polylines: LatLng[][]): LatLng[][] => {
     const result: LatLng[][] = [];
     let polylineBuilder: LatLng[] = [];
     polylines.forEach((line) => {

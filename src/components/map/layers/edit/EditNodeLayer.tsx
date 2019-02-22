@@ -132,8 +132,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                     key={index}
                     color='#4f93f8'
                     geometry={link!.geometry}
-                    disableOnEventName='editable:vertex:drag'
-                    enableOnEventName='editable:vertex:dragend'
+                    hideOnEventName='editable:vertex:drag'
+                    showOnEventName='editable:vertex:dragend'
                 />
             ));
     }

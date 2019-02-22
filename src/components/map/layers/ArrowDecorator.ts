@@ -7,8 +7,8 @@ interface IArrowDecoratorProps extends PathProps {
     geometry: LatLng[];
     onClick?: () => void;
     color: string;
-    disableOnEventName?: string;
-    enableOnEventName?: string;
+    showOnEventName: string;
+    hideOnEventName: string;
     isUpdatePrevented?: boolean;
 }
 
@@ -33,15 +33,15 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
         if (this.props.onClick) {
             decorator.on('click', this.props.onClick);
         }
-        if (props.disableOnEventName) {
+        if (props.showOnEventName) {
             this.props.leaflet.map!.on(
-                props.disableOnEventName,
+                props.showOnEventName,
                 () => this.leafletElement.removeFrom(props.leaflet.map!),
             );
         }
-        if (props.enableOnEventName) {
+        if (props.hideOnEventName) {
             this.props.leaflet.map!.on(
-                props.enableOnEventName,
+                props.hideOnEventName,
                 () => this.leafletElement.addTo(props.leaflet.map!),
             );
         }
@@ -64,11 +64,11 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
     }
 
     componentWillUnmount() {
-        if (this.props.disableOnEventName) {
-            this.props.leaflet.map!.off(this.props.disableOnEventName);
+        if (this.props.showOnEventName) {
+            this.props.leaflet.map!.off(this.props.showOnEventName);
         }
-        if (this.props.enableOnEventName) {
-            this.props.leaflet.map!.off(this.props.enableOnEventName);
+        if (this.props.hideOnEventName) {
+            this.props.leaflet.map!.off(this.props.hideOnEventName);
         }
         this.leafletElement.removeFrom(this.props.leaflet.map!);
     }

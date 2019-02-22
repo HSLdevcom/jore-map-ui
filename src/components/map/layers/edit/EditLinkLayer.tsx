@@ -126,8 +126,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             <ArrowDecorator
                 color='#4f93f8'
                 geometry={link!.geometry}
-                disableOnEventName='editable:vertex:drag'
-                enableOnEventName='editable:vertex:dragend'
+                hideOnEventName='editable:vertex:drag'
+                showOnEventName='editable:vertex:dragend'
             />
         );
     }
