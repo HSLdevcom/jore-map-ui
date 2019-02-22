@@ -7,19 +7,19 @@ import navigator from '~/routing/navigator';
 import RoutePathLinkLayer from './RoutePathLinkLayer';
 
 interface RoutePathLayerProps {
-    toggleHighlight: Function;
-    hoverHighlight: Function;
-    hoverHighlightOff: Function;
+    toggleHighlight: (internalId: string) => (target: any) => () => void;
+    hoverHighlight: (internalId: string) => (target: any) => () => void;
+    hoverHighlightOff: (internalId: string) => (target: any) => () => void;
     hasHighlight: Function;
     routePaths: IRoutePath[];
 }
 
 @observer
 class RoutePathLayer extends Component<RoutePathLayerProps> {
-    private openLinkView = (routePathLinkId: number) => {
+    private openLinkView = (routePathLinkId: string) => {
         const linkViewLink = routeBuilder
             .to(subSites.routelink)
-            .toTarget(routePathLinkId.toString())
+            .toTarget(routePathLinkId)
             .toLink();
         navigator.goTo(linkViewLink);
     }
@@ -33,16 +33,14 @@ class RoutePathLayer extends Component<RoutePathLayerProps> {
                     <RoutePathLinkLayer
                         key={routePath.internalId}
                         internalId={internalId}
-                        onClick={this.props.toggleHighlight(internalId, routePath.routePathLinks)}
+                        onClick={this.props.toggleHighlight(internalId)}
                         onContextMenu={this.openLinkView}
-                        onMouseOver={
-                            this.props.hoverHighlight(internalId, routePath.routePathLinks)
-                        }
-                        onMouseOut={this.props.hoverHighlightOff}
+                        onMouseOver={this.props.hoverHighlight(internalId)}
+                        onMouseOut={this.props.hoverHighlightOff(internalId)}
                         routePathLinks={routePath.routePathLinks!}
                         color={routePath.color!}
                         opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}
-                        weight={this.props.hasHighlight(internalId) ? 8 : 7}
+                        weight={this.props.hasHighlight(internalId) ? 8 : 6}
                     />
                 );
             });
