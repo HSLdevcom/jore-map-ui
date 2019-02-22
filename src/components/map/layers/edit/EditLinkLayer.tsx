@@ -12,6 +12,7 @@ import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import NodeMarker from '../mapIcons/NodeMarker';
 import { LeafletContext } from '../../Map';
+import ArrowDecorator from '../ArrowDecorator';
 
 interface IEditLinkLayerProps {
     linkStore?: LinkStore;
@@ -118,6 +119,19 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         );
     }
 
+    private renderLinkDecorator = () => {
+        const link = this.props.linkStore!.link;
+        if (!link) return null;
+        return (
+            <ArrowDecorator
+                color='#4f93f8'
+                geometry={link!.geometry}
+                hideOnEventName='editable:vertex:drag'
+                showOnEventName='editable:vertex:dragend'
+            />
+        );
+    }
+
     render() {
         const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
         if (!isLinkViewVisible) return null;
@@ -125,7 +139,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         this.drawEditableLink();
 
         return (
-            this.renderNodes()
+            <>
+                {this.renderLinkDecorator()}
+                {this.renderNodes()}
+            </>
         );
     }
 }

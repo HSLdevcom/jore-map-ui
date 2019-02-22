@@ -5,6 +5,7 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.9
 
+import 'leaflet-polylinedecorator';
 import * as L from 'leaflet';
 
 declare module 'leaflet' {
