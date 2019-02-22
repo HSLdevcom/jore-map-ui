@@ -201,8 +201,11 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     && this.renderStopRadiusCircle(this.props.node.stop!.radius)
                 }
                 </Marker>
-                {this.isSelected(this.props.node)
-                && this.renderAdditionalLocations(this.props.node!)}
+                {
+                    (
+                        this.isSelected(this.props.node) &&
+                        this.props.node.type === NodeType.STOP
+                    ) && this.renderAdditionalLocations(this.props.node!)}
             </>
         );
     }
