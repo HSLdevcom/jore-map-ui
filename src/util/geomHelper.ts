@@ -1,5 +1,8 @@
 import { LatLng } from 'leaflet';
-
+/*
+    Tries to merge polylines where they connect,
+    and returns a set of coherent polylines.
+*/
 const createCoherentLinesFromPolylines = (polylines: LatLng[][]): LatLng[][] => {
     const result: LatLng[][] = [];
     let polylineBuilder: LatLng[] = [];
