@@ -35,15 +35,23 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     }
 
     componentDidMount() {
-        this.validate(null, this.props.value);
+        this.validateAndUpdate(null, this.props.value);
     }
 
     componentWillReceiveProps(nextProps: IInputProps) {
         const forceUpdate = this.props.disabled !== nextProps.disabled;
-        this.validate(this.props.value, nextProps.value, forceUpdate);
+        this.validateAndUpdate(this.props.value, nextProps.value, forceUpdate);
     }
 
-    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
+    private updateValue = (value: any, validatorResult?: IValidationResult) => {
+        if (this.props.type === 'number') {
+            this.props.onChange!(parseFloat(value), validatorResult);
+        } else {
+            this.props.onChange!(value, validatorResult);
+        }
+    }
+
+    private validateAndUpdate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
         if (!this.props.onChange || !this.props.validatorRule) return;
         if ((oldValue === newValue) && !forceUpdate) return;
 
@@ -56,16 +64,16 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 isValid: validatorResult.isValid,
                 errorMessage: validatorResult.errorMessage,
             });
-            this.props.onChange!(newValue, validatorResult);
+            this.updateValue(newValue, validatorResult);
         }
     }
 
     private onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
         if (this.props.validatorRule) {
-            this.validate(this.props.value, value);
+            this.validateAndUpdate(this.props.value, value);
         } else {
-            this.props.onChange!(value);
+            this.updateValue(value);
         }
     }
 
