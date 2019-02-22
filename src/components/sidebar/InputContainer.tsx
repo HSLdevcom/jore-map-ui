@@ -35,12 +35,12 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
     }
 
     componentDidMount() {
-        this.validateAndUpdate(null, this.props.value);
+        this.validate(null, this.props.value);
     }
 
     componentWillReceiveProps(nextProps: IInputProps) {
         const forceUpdate = this.props.disabled !== nextProps.disabled;
-        this.validateAndUpdate(this.props.value, nextProps.value, forceUpdate);
+        this.validate(this.props.value, nextProps.value, forceUpdate);
     }
 
     private updateValue = (value: any, validatorResult?: IValidationResult) => {
@@ -51,7 +51,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         }
     }
 
-    private validateAndUpdate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
+    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
         if (!this.props.onChange || !this.props.validatorRule) return;
         if ((oldValue === newValue || isNaN(newValue)) && !forceUpdate) return;
 
@@ -64,17 +64,15 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 isValid: validatorResult.isValid,
                 errorMessage: validatorResult.errorMessage,
             });
-            this.updateValue(newValue, validatorResult);
         }
     }
 
     private onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
         if (this.props.validatorRule) {
-            this.validateAndUpdate(this.props.value, value);
-        } else {
-            this.updateValue(value);
+            this.validate(this.props.value, value);
         }
+        this.updateValue(value);
     }
 
     private renderDisabledContent = (type: inputType) => {
