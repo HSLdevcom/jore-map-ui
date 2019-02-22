@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
+import 'leaflet-polylinedecorator';
 import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import NodeMarker from './mapIcons/NodeMarker';
 import StartMarker from './mapIcons/StartMarker';
+import ArrowDecorator from './ArrowDecorator';
 
 interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;
     internalId: string;
     routePathLinks: IRoutePathLink[];
-    onClick: Function;
-    onContextMenu: Function;
-    onMouseOver: Function;
-    onMouseOut: Function;
+    onClick: (target: any) => () => void;
+    onContextMenu: (routePathLinkId: string) => void;
+    onMouseOver: (target: any) => () => void;
+    onMouseOut: (target: any) => () => void;
     color: string;
     opacity: number;
     weight: number;
@@ -23,6 +26,13 @@ interface RoutePathLinkLayerProps {
 @inject('popupStore')
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
+    private layerRef: React.Ref<any>;
+
+    constructor(props: RoutePathLinkLayerProps) {
+        super(props);
+        this.layerRef = React.createRef<any>();
+    }
+
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
     }
@@ -41,7 +51,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     color={this.props.color}
                     weight={this.props.weight}
                     opacity={this.props.opacity}
-                    onClick={this.props.onClick}
+                    onClick={this.props.onClick(this.layerRef)}
                     onContextMenu={this.onContextMenu(routePathLink.id)}
                 />
             );
@@ -85,14 +95,34 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         );
     }
 
+    private renderDirectionDecoration() {
+        const routePathLinks = this.props.routePathLinks;
+
+        const geoms = routePathLinks
+            .map(routePathLink => routePathLink.geometry);
+
+        return createCoherentLinesFromPolylines(geoms)
+            .map((geom, index) => (
+                <ArrowDecorator
+                    key={index}
+                    color={this.props.color}
+                    geometry={geom}
+                    onClick={this.props.onClick(this.layerRef)}
+                    isUpdatePrevented={true}
+                />
+            ),
+        );
+    }
+
     render() {
         return (
             <FeatureGroup
-                routePathInternalId={this.props.internalId}
-                onMouseOver={this.props.onMouseOver}
-                onMouseOut={this.props.onMouseOut}
+                ref={this.layerRef}
+                onMouseOver={this.props.onMouseOver(this.layerRef)}
+                onMouseOut={this.props.onMouseOut(this.layerRef)}
             >
                 {this.renderRoutePathLinks()}
+                {this.renderDirectionDecoration()}
                 {this.renderNodes()}
                 {this.renderStartMarker()}
             </FeatureGroup>

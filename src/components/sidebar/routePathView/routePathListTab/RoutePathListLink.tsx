@@ -1,18 +1,20 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FiChevronRight } from 'react-icons/fi';
+import classnames from 'classnames';
 import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import TransitTypeHelper from '~/util/transitTypeHelper';
 import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
-import RoutePathListObject, { ListObjectType } from './RoutePathListObject';
+import RoutePathListItem from './RoutePathListItem';
 import InputContainer from '../../InputContainer';
-import * as s from './routePathListObject.scss';
+import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
     routePathStore?: RoutePathStore;
@@ -23,9 +25,52 @@ interface IRoutePathListLinkProps {
 @inject('routePathStore')
 @observer
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
-    private onChange = () => {};
+    private renderHeader = () => {
+        const id = this.props.routePathLink.id;
+        const isExtended = this.props.routePathStore!.isObjectExtended(
+            id,
+        );
+        return (
+            <div
+                className={
+                    classnames(
+                        s.itemHeader,
+                        isExtended ? s.itemExtended : null,
+                    )
+                }
+            >
+                <div className={s.headerContent}>
+                    <div className={s.headerNodeTypeContainer}>
+                        Reitinlinkki
+                    </div>
+                    <div className={s.label} />
+                    </div>
+                    <div className={s.itemToggle}>
+                        {isExtended && <FaAngleDown />}
+                        {!isExtended && <FaAngleRight />}
+                </div>
+            </div>
+        );
+    }
 
-    private renderNodeHeaderIcon = () => <div className={s.linkIcon} />;
+    private renderBody = () => {
+        return (
+            <div className={s.extendedContent}>
+                {
+                    this.renderRoutePathLinkView(this.props.routePathLink)
+                }
+                <div className={s.footer}>
+                    <Button
+                        onClick={this.openInNetworkView}
+                        type={ButtonType.SQUARE}
+                    >
+                        Avaa linkki verkkonäkymässä
+                        <FiChevronRight />
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
         return (
@@ -133,6 +178,9 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         );
     }
 
+    // TODO:
+    private onChange = () => {};
+
     private openInNetworkView = () => {
         const routeLink = this.props.routePathLink;
         const routeLinkViewLink = routeBuilder
@@ -148,31 +196,19 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         navigator.goTo(routeLinkViewLink);
     }
 
+    private renderListIcon = () => <div className={s.linkIcon} />;
+
     render() {
+        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
         return (
-            <RoutePathListObject
+            <RoutePathListItem
                 reference={this.props.reference}
-                objectType={ListObjectType.Link}
-                headerIcon={this.renderNodeHeaderIcon()}
-                headerTypeName='Reitinlinkki'
-                headerContent={''}
                 id={this.props.routePathLink.id}
-            >
-                <div className={s.extendedContent}>
-                    {
-                        this.renderRoutePathLinkView(this.props.routePathLink)
-                    }
-                    <div className={s.footer}>
-                        <Button
-                            onClick={this.openInNetworkView}
-                            type={ButtonType.SQUARE}
-                        >
-                            Avaa linkki verkkonäkymässä
-                            <FiChevronRight />
-                        </Button>
-                    </div>
-                </div>
-            </RoutePathListObject>
+                geometry={geometry}
+                header={this.renderHeader()}
+                body={this.renderBody()}
+                listIcon={this.renderListIcon()}
+            />
         );
     }
 }
