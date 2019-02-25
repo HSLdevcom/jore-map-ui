@@ -16,12 +16,14 @@ export class NodeStore {
     @observable private _links: ILink[];
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
+    @observable private _oldLinks: ILink[];
     private _undoStore: UndoStore<UndoObject>;
 
     constructor() {
         this._links = [];
         this._node = null;
         this._oldNode = null;
+        this._oldLinks = [];
         this._undoStore = new UndoStore();
     }
 
@@ -37,31 +39,25 @@ export class NodeStore {
 
     @action
     public init = (node: INode, links: ILink[]) => {
-        if (!node) return;
-        this.setNode(node);
-        this._links = links;
+        const newNode = _.cloneDeep(node);
+        const newLinks = _.cloneDeep(links);
 
+        this._undoStore.clear();
         const undoObject: UndoObject = {
-            links,
-            node,
+            links: newLinks,
+            node: newNode,
         };
         this._undoStore.addUndoObject(undoObject);
-    }
 
-    @action
-    public setNode = (node: INode) => {
-        this._node = node;
-        this.setOldNode(node);
-    }
-
-    @action
-    public setOldNode = (node: INode) => {
-        this._oldNode = _.cloneDeep(node);
+        this._node = newNode;
+        this._oldNode = newNode;
+        this._links = newLinks;
+        this._oldLinks = newLinks;
     }
 
     @action
     public changeLinkGeometry = (latLngs: L.LatLng[], index: number) => {
-        if (!this._node) return;
+        if (!this._node) throw new Error('Node was null'); // Sanity check
 
         const newLinks = _.cloneDeep(this._links);
         newLinks[index].geometry = latLngs;
@@ -76,7 +72,7 @@ export class NodeStore {
 
     @action
     public updateNodeGeometry = (nodeLocationType: NodeLocationType, newCoordinates: LatLng) => {
-        if (!this._node) return;
+        if (!this._node) throw new Error('Node was null'); // Sanity check
 
         const newNode = _.cloneDeep(this._node);
         const newLinks = _.cloneDeep(this._links);
@@ -129,7 +125,7 @@ export class NodeStore {
 
     @computed
     get isDirty() {
-        return !_.isEqual(this._node, this._oldNode);
+        return !_.isEqual(this._node, this._oldNode) || !_.isEqual(this._links, this._oldLinks);
     }
 
     @action
@@ -140,9 +136,9 @@ export class NodeStore {
     }
 
     @action
-    public undoChanges = () => {
+    public resetChanges = () => {
         if (this._oldNode) {
-            this.setNode(this._oldNode);
+            this.init(this._oldNode, this._oldLinks);
         }
     }
 

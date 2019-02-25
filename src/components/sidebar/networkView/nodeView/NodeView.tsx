@@ -92,7 +92,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         try {
             await NodeService.updateNode(this.props.nodeStore!.node);
 
-            this.props.nodeStore!.setOldNode(this.props.nodeStore!.node);
+            this.props.nodeStore!.resetChanges();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
@@ -119,7 +119,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private toggleIsEditingEnabled = () => {
         this.toggleIsEditingDisabled(
-            this.props.nodeStore!.undoChanges,
+            this.props.nodeStore!.resetChanges,
         );
     }
 
