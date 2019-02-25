@@ -1,7 +1,7 @@
 import React from 'react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
-import nodeValidationModel from '~/validation/models/nodeValidationModel';
+import stopValidationModel from '~/validation/models/stopValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import { Dropdown } from '~/components/controls';
@@ -32,14 +32,14 @@ const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
                         disabled={isEditingDisabled}
                         value={stop.nameFi}
                         onChange={onChange('nameFi')}
-                        validatorRule={nodeValidationModel.name}
+                        validatorRule={stopValidationModel.name}
                     />
                     <InputContainer
                         label='NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.nameSe}
                         onChange={onChange('nameSe')}
-                        validatorRule={nodeValidationModel.name}
+                        validatorRule={stopValidationModel.name}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -143,6 +143,7 @@ const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
                         disabled={isEditingDisabled}
                         value={stop.radius}
                         onChange={onChange('radius')}
+                        validatorRule={stopValidationModel.radius}
                     />
                     <InputContainer
                         label='SUUNTA'

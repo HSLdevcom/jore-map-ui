@@ -197,7 +197,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     && this.onMoveMarker('coordinates')}
                 >
                 {
-                    displayCircle
+                    displayCircle && Boolean(this.props.node.stop!.radius)
                     && this.renderStopRadiusCircle(this.props.node.stop!.radius)
                 }
                 </Marker>
