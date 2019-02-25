@@ -61,14 +61,16 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
             isValid: validatorResult.isValid,
             errorMessage: validatorResult.errorMessage,
         });
+        return validatorResult;
     }
 
     private onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
+        let validatorResult: IValidationResult | undefined = undefined;
         if (this.props.validatorRule) {
-            this.validate(this.props.value, value);
+            validatorResult = this.validate(this.props.value, value);
         }
-        this.updateValue(value);
+        this.updateValue(value, validatorResult);
     }
 
     private renderDisabledContent = (type: inputType) => {
