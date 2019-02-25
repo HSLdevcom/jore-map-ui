@@ -3,7 +3,7 @@ import moment from 'moment';
 import apolloClient from '~/util/ApolloClient';
 import { IRoutePath } from '~/models';
 import ApiClient from '~/util/ApiClient';
-import entityName from '~/enums/entityName';
+import endpoints from '~/enums/endpoints';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 
@@ -25,13 +25,13 @@ class RoutePathService {
 
     public static updateRoutePath = async (routePath: IRoutePath) => {
         const apiClient = new ApiClient();
-        await apiClient.updateObject(entityName.ROUTEPATH, routePath);
+        await apiClient.updateObject(endpoints.ROUTEPATH, routePath);
         await apolloClient.clearStore();
     }
 
     public static createRoutePath = async (routePath: IRoutePath) => {
         const apiClient = new ApiClient();
-        await apiClient.createObject(entityName.ROUTEPATH, routePath);
+        await apiClient.createObject(endpoints.ROUTEPATH, routePath);
         await apolloClient.clearStore();
     }
 }
