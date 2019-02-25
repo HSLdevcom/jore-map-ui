@@ -84,6 +84,13 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
 
+"@types/leaflet-polylinedecorator@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@types/leaflet-polylinedecorator/-/leaflet-polylinedecorator-1.1.3.tgz#1c7e9b2c456b4ed81169eb37a07cb0292541f5b7"
+  integrity sha512-qrjhtrREceckCshTepGDIxmVyEVlOyzdNtF2sBwg3Dve+nwHwELs2D5bFJflCQGpj4YcOpeXOOiRqhjP8ijU8A==
+  dependencies:
+    "@types/leaflet" "*"
+
 "@types/leaflet@*", "@types/leaflet@^1.2.7":
   version "1.2.14"
   resolved "https://registry.yarnpkg.com/@types/leaflet/-/leaflet-1.2.14.tgz#912bcacdc2cfa62787573a27ca617ffb67f89614"
@@ -5713,6 +5720,18 @@ leaflet-editable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/leaflet-editable/-/leaflet-editable-1.2.0.tgz#a3a01001764ba58ea923381ee6a1c814708a0b84"
   integrity sha512-wG11JwpL8zqIbypTop6xCRGagMuWw68ihYu4uqrqc5Ep0wnEJeyob7NB2Rt5t74Oih4rwJ3OfwaGbzdowOGfYQ==
+
+leaflet-polylinedecorator@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/leaflet-polylinedecorator/-/leaflet-polylinedecorator-1.6.0.tgz#9ef79fd1b5302d67b72efe959a8ecd2553f27266"
+  integrity sha1-nvef0bUwLWe3Lv6Vmo7NJVPycmY=
+  dependencies:
+    leaflet-rotatedmarker "^0.2.0"
+
+leaflet-rotatedmarker@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/leaflet-rotatedmarker/-/leaflet-rotatedmarker-0.2.0.tgz#4467f49f98d1bfd56959bd9c6705203dd2601277"
+  integrity sha1-RGf0n5jRv9VpWb2cZwUgPdJgEnc=
 
 "leaflet.vectorgrid@github:chriszrc/Leaflet.VectorGrid#6bdad6d07290db04ff02ebf44830b85bcfe6c020":
   version "1.3.0"
