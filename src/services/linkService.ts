@@ -3,7 +3,7 @@ import apolloClient from '~/util/ApolloClient';
 import ILink from '~/models/ILink';
 import ApiClient from '~/util/ApiClient';
 import { LatLng } from 'leaflet';
-import entityName from '~/enums/entityName';
+import endpoints from '~/enums/endpoints';
 import LinkFactory from '~/factories/linkFactory';
 import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
@@ -38,7 +38,7 @@ class LinkService {
             ...link,
             geometry: link.geometry.map(coor => new LatLng(coor.lat, coor.lng)),
         };
-        await apiClient.updateObject(entityName.LINK, simplifiedLink);
+        await apiClient.updateObject(endpoints.LINK, simplifiedLink);
         await apolloClient.clearStore();
     }
 }

@@ -1,4 +1,4 @@
-import entityName from '~/enums/entityName';
+import endpoints from '~/enums/endpoints';
 import FetchStatusCode from '~/enums/fetchStatusCode';
 import ApiClientHelper from './apiClientHelper';
 
@@ -6,6 +6,10 @@ enum RequestMethod {
     POST= 'POST',
     PUT= 'PUT',
     DELETE= 'DELETE',
+}
+
+interface IAuthorizationRequest {
+    code: string;
 }
 
 export class IRequestError {
@@ -16,24 +20,30 @@ export class IRequestError {
 const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 class ApiClient {
-    public updateObject = async (entityName: entityName, object: any) => {
+    public updateObject = async (entityName: endpoints, object: any) => {
         return await this.sendRequest(RequestMethod.POST, entityName, object);
     }
 
-    public createObject = async (entityName: entityName, object: any) => {
+    public createObject = async (entityName: endpoints, object: any) => {
         return await this.sendRequest(RequestMethod.PUT, entityName, object);
     }
 
-    public deleteObject = async (entityName: entityName, object: any) => {
+    public deleteObject = async (entityName: endpoints, object: any) => {
         return await this.sendRequest(RequestMethod.DELETE, entityName, object);
     }
 
-    private sendRequest = async (method: RequestMethod, entityName: entityName, object: any) => {
+    public authorizeUsingCode = async (code: string) => {
+        const requestBody: IAuthorizationRequest = { code };
+        return await this.sendRequest(
+            RequestMethod.POST, endpoints.AUTH, requestBody);
+    }
+
+    private sendRequest = async (method: RequestMethod, endpoint: endpoints, object: any) => {
         const formattedObject = ApiClientHelper.format(object);
         let error : (IRequestError | null) = null;
 
         try {
-            const response = await fetch(this.getUrl(entityName), {
+            const response = await fetch(this.getUrl(endpoint), {
                 method,
                 body: JSON.stringify(formattedObject),
                 headers: {
@@ -43,7 +53,7 @@ class ApiClient {
             });
 
             if (response.status >= 200 && response.status < 300) {
-                return;
+                return await response.json();
             }
             error = {
                 errorCode: response.status,
@@ -61,7 +71,7 @@ class ApiClient {
         }
     }
 
-    private getUrl = (entityName: entityName) => {
+    private getUrl = (entityName: endpoints) => {
         return `${API_URL}/${entityName}`;
     }
 }
