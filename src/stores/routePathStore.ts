@@ -20,7 +20,7 @@ export enum RoutePathViewTab {
     List,
 }
 
-export interface UndoObject {
+export interface UndoState {
     routePathLinks: IRoutePathLink[];
 }
 
@@ -37,7 +37,7 @@ export class RoutePathStore {
     @observable private _addRoutePathLinkDirection: AddLinkDirection;
     // TODO: Move out of store:
     @observable private _activeTab: RoutePathViewTab;
-    private _undoStore: UndoStore<UndoObject>;
+    private _undoStore: UndoStore<UndoState>;
 
     constructor() {
         this._neighborRoutePathLinks = [];
@@ -112,17 +112,17 @@ export class RoutePathStore {
 
     @action
     public undo() {
-        this._undoStore.undo((undoObject: UndoObject) => {
+        this._undoStore.undo((nextUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
-            this._routePath!.routePathLinks = undoObject.routePathLinks;
+            this._routePath!.routePathLinks = nextUndoState.routePathLinks;
         });
     }
 
     @action
     public redo() {
-        this._undoStore.redo((undoObject: UndoObject) => {
+        this._undoStore.redo((previousUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
-            this._routePath!.routePathLinks = undoObject.routePathLinks;
+            this._routePath!.routePathLinks = previousUndoState.routePathLinks;
         });
     }
 
@@ -133,15 +133,15 @@ export class RoutePathStore {
     }
 
     @action
-    public resetUndoObjects() {
+    public resetUndoState() {
         this._neighborRoutePathLinks = [];
 
         const routePathLinks = this._routePath && this._routePath.routePathLinks ?
             this._routePath.routePathLinks : [];
-        const undoObject: UndoObject = {
+        const currentUndoState: UndoState = {
             routePathLinks: _.cloneDeep(routePathLinks),
         };
-        this._undoStore.addUndoObject(undoObject);
+        this._undoStore.addItem(currentUndoState);
     }
 
     @action
@@ -172,10 +172,10 @@ export class RoutePathStore {
     public setRoutePath = (routePath: IRoutePath) => {
         this._routePath = routePath;
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
-        const undoObject: UndoObject = {
+        const currentUndoState: UndoState = {
             routePathLinks,
         };
-        this._undoStore.addUndoObject(undoObject);
+        this._undoStore.addItem(currentUndoState);
 
         this.setOldRoutePath(routePath);
     }
@@ -208,7 +208,7 @@ export class RoutePathStore {
             0,
             routePathLink);
 
-        this.resetUndoObjects();
+        this.resetUndoState();
     }
 
     public isRoutePathNodeMissingNeighbour = (node: INode) => (
@@ -226,7 +226,7 @@ export class RoutePathStore {
             this._routePath!.routePathLinks!.findIndex(link => link.id === id);
         this._routePath!.routePathLinks!.splice(linkToRemoveIndex, 1);
 
-        this.resetUndoObjects();
+        this.resetUndoState();
     }
 
     @action

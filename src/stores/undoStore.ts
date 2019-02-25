@@ -1,5 +1,4 @@
-
-export class UndoStore<UndoObject> {
+class UndoStore<UndoObject> {
     private _undoObjects: UndoObject[];
     private _undoIndex: number;
 
@@ -7,16 +6,16 @@ export class UndoStore<UndoObject> {
         this.clear();
     }
 
-    public addUndoObject = (undoObject: UndoObject) => {
+    public addItem = (undoObject: UndoObject) => {
         // Remove the history of undo's because current state is changed
         this._undoObjects.splice(this._undoIndex + 1);
 
-        // Insert current undoObject to the pile
+        // Insert current undoObject to the stack
         this._undoObjects = this._undoObjects.concat([undoObject]);
         this._undoIndex += 1;
     }
 
-    public undo = (undoCallback: Function) => {
+    public undo = (undoCallback: (undoObject: UndoObject) => void) => {
         if (this._undoIndex <= 0) return;
         this._undoIndex -= 1;
 
@@ -24,7 +23,7 @@ export class UndoStore<UndoObject> {
         undoCallback(previousUndoObject);
     }
 
-    public redo = (undoCallback: Function): any => {
+    public redo = (undoCallback: (undoObject: UndoObject) => void): any => {
         if (this._undoObjects.length <= 1 ||
             this._undoIndex >= this._undoObjects.length - 1) return;
         this._undoIndex += 1;

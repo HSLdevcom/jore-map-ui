@@ -4,7 +4,7 @@ import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 import UndoStore from '~/stores/undoStore';
 
-export interface UndoObject {
+export interface UndoState {
     link: ILink;
 }
 
@@ -12,7 +12,7 @@ export class LinkStore {
     @observable private _link: ILink | null;
     @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
-    private _undoStore: UndoStore<UndoObject>;
+    private _undoStore: UndoStore<UndoState>;
 
     constructor() {
         this._nodes = [];
@@ -34,10 +34,10 @@ export class LinkStore {
     @action
     public setLink = (link: ILink) => {
         this._link = link;
-        const undoObject: UndoObject = {
+        const currentUndoState: UndoState = {
             link,
         };
-        this._undoStore.addUndoObject(undoObject);
+        this._undoStore.addItem(currentUndoState);
 
         this.setOldLink(link);
     }
@@ -50,10 +50,10 @@ export class LinkStore {
         updatedLink.geometry = latLngs;
         this._link = updatedLink;
 
-        const undoObject: UndoObject = {
+        const currentUndoState: UndoState = {
             link: updatedLink,
         };
-        this._undoStore.addUndoObject(undoObject);
+        this._undoStore.addItem(currentUndoState);
 
     }
 
@@ -105,15 +105,15 @@ export class LinkStore {
 
     @action
     public undo = () => {
-        this._undoStore.undo((undoObject: UndoObject) => {
-            this._link!.geometry = undoObject.link.geometry;
+        this._undoStore.undo((previousUndoState: UndoState) => {
+            this._link!.geometry = previousUndoState.link.geometry;
         });
     }
 
     @action
     public redo = () => {
-        this._undoStore.redo((undoObject: UndoObject) => {
-            this._link!.geometry = undoObject.link.geometry;
+        this._undoStore.redo((nextUndoState: UndoState) => {
+            this._link!.geometry = nextUndoState.link.geometry;
         });
     }
 }

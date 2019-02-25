@@ -7,7 +7,7 @@ import NodeLocationType from '~/types/NodeLocationType';
 import StopFactory from '~/factories/nodeStopFactory';
 import UndoStore from '~/stores/undoStore';
 
-export interface UndoObject {
+export interface UndoState {
     links: ILink[];
     node: INode;
 }
@@ -17,7 +17,7 @@ export class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
-    private _undoStore: UndoStore<UndoObject>;
+    private _undoStore: UndoStore<UndoState>;
 
     constructor() {
         this._links = [];
@@ -43,11 +43,11 @@ export class NodeStore {
         const newLinks = _.cloneDeep(links);
 
         this._undoStore.clear();
-        const undoObject: UndoObject = {
+        const currentUndoState: UndoState = {
             links: newLinks,
             node: newNode,
         };
-        this._undoStore.addUndoObject(undoObject);
+        this._undoStore.addItem(currentUndoState);
 
         this._node = newNode;
         this._oldNode = newNode;
@@ -57,22 +57,22 @@ export class NodeStore {
 
     @action
     public changeLinkGeometry = (latLngs: L.LatLng[], index: number) => {
-        if (!this._node) throw new Error('Node was null'); // Sanity check
+        if (!this._node) throw new Error('Node was null.'); // Should not occur
 
         const newLinks = _.cloneDeep(this._links);
         newLinks[index].geometry = latLngs;
-        const undoObject: UndoObject = {
+        const currentUndoState: UndoState = {
             links: newLinks,
             node: this._node,
         };
-        this._undoStore.addUndoObject(undoObject);
+        this._undoStore.addItem(currentUndoState);
 
         this._links = newLinks;
     }
 
     @action
     public updateNodeGeometry = (nodeLocationType: NodeLocationType, newCoordinates: LatLng) => {
-        if (!this._node) throw new Error('Node was null'); // Sanity check
+        if (!this._node) throw new Error('Node was null.'); // Should not occur
 
         const newNode = _.cloneDeep(this._node);
         const newLinks = _.cloneDeep(this._links);
@@ -93,11 +93,11 @@ export class NodeStore {
             .filter(link => link.endNode.id === newNode!.id)
             .map(link => link.geometry[link.geometry.length - 1] = coordinatesProjection);
 
-        const undoObject: UndoObject = {
+        const currentUndoState: UndoState = {
             links: newLinks,
             node: newNode,
         };
-        this._undoStore.addUndoObject(undoObject);
+        this._undoStore.addItem(currentUndoState);
 
         this._links = newLinks;
         this._node = newNode;
@@ -144,21 +144,21 @@ export class NodeStore {
 
     @action
     public undo = () => {
-        this._undoStore.undo((undoObject: UndoObject) => {
-            this._links! = undoObject.links;
-            this._node!.coordinates = undoObject.node.coordinates;
-            this._node!.coordinatesManual = undoObject.node.coordinatesManual;
-            this._node!.coordinatesProjection = undoObject.node.coordinatesProjection;
+        this._undoStore.undo((previousUndoState: UndoState) => {
+            this._links! = previousUndoState.links;
+            this._node!.coordinates = previousUndoState.node.coordinates;
+            this._node!.coordinatesManual = previousUndoState.node.coordinatesManual;
+            this._node!.coordinatesProjection = previousUndoState.node.coordinatesProjection;
         });
     }
 
     @action
     public redo = () => {
-        this._undoStore.redo((undoObject: UndoObject) => {
-            this._links! = undoObject.links;
-            this._node!.coordinates = undoObject.node.coordinates;
-            this._node!.coordinatesManual = undoObject.node.coordinatesManual;
-            this._node!.coordinatesProjection = undoObject.node.coordinatesProjection;
+        this._undoStore.redo((nextUndoState: UndoState) => {
+            this._links! = nextUndoState.links;
+            this._node!.coordinates = nextUndoState.node.coordinates;
+            this._node!.coordinatesManual = nextUndoState.node.coordinatesManual;
+            this._node!.coordinatesProjection = nextUndoState.node.coordinatesProjection;
         });
     }
 }
