@@ -26,4 +26,4 @@ class KeyEventHandler {
     }
 }
 
-export default new KeyEventHandler();
+new KeyEventHandler();
