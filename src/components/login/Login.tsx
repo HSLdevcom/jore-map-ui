@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa';
 import { Location } from 'history';
 import hslLogo from '~/assets/hsl-logo.png';
-import AuthService from '~/services/authService';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import * as s from './login.scss';
@@ -18,16 +17,11 @@ interface ILoginProps {
 @inject('loginStore', 'errorStore')
 @observer
 class Login extends React.Component<ILoginProps> {
-    public login = () => {
-        AuthService.authenticate((success: boolean) => {
-            if (success) {
-                this.props.loginStore!.setIsAuthenticated(true);
-            } else {
-                // TODO: this message should be visible to user
-                this.props.errorStore!
-                    .addError('Kirjautuminen epäonnistui. Väärä käyttäjätunnus tai salasana.');
-            }
-        });
+    private openLoginForm = () => {
+        window.location.replace(
+            // tslint:disable-next-line
+            'https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=http://localhost:3000/afterLogin&response_type=code&scope=email'
+        );
     }
 
     public render() {
@@ -45,7 +39,7 @@ class Login extends React.Component<ILoginProps> {
                 </div>
                 <div
                     className={s.loginButton}
-                    onClick={this.login}
+                    onClick={this.openLoginForm}
                 >
                     <FaLock />
                     <div className={s.loginText}>Kirjaudu (HSL ID)</div>

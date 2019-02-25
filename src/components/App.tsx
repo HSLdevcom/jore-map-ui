@@ -4,6 +4,9 @@ import { Route, RouteComponentProps } from 'react-router-dom';
 import { withRouter, Switch } from 'react-router';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
+import SubSites from '~/routing/subSites';
+import AuthService from '~/services/authService';
+import navigator from '~/routing/navigator';
 import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Map from './map/Map';
@@ -25,7 +28,6 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
-
     private renderApp = () => {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
         const buildDate = process.env.BUILD_DATE;
@@ -48,10 +50,28 @@ class App extends React.Component<IAppProps, IAppState> {
         );
     }
 
+    private renderAfterLogin = () => {
+        AuthService.authenticate(
+        () => {
+            // on success
+            navigator.goTo(SubSites.home);
+        },
+        () => {
+            // On error
+            navigator.goTo(SubSites.loginError);
+        });
+        return (<div>Logging in</div>);
+    }
+
     render() {
         return (
             <div className={s.appView}>
                 <Switch>
+                    <Route
+                        exact={true}
+                        path={SubSites.afterLogin}
+                        render={this.renderAfterLogin}
+                    />
                     <Route
                         path='/login'
                         component={Login}

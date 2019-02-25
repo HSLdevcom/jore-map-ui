@@ -5,6 +5,7 @@ enum QueryParams {
     startTime = 'startTime',
     direction = 'direction',
     node = 'node',
+    code = 'code',
 }
 
 export default QueryParams;
