@@ -3,17 +3,26 @@ import _ from 'lodash';
 import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 import NodeType from '~/enums/nodeType';
+import NodeLocationType from '~/types/NodeLocationType';
 import StopFactory from '~/factories/nodeStopFactory';
+import UndoStore from '~/stores/undoStore';
+
+export interface UndoObject {
+    links: ILink[];
+    node: INode;
+}
 
 export class NodeStore {
     @observable private _links: ILink[];
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
+    private _undoStore: UndoStore<UndoObject>;
 
     constructor() {
         this._links = [];
         this._node = null;
         this._oldNode = null;
+        this._undoStore = new UndoStore();
     }
 
     @computed
@@ -27,13 +36,16 @@ export class NodeStore {
     }
 
     @action
-    public changeLinkGeometry = (latLngs: L.LatLng[], index: number) => {
-        this._links[index].geometry = latLngs;
-    }
-
-    @action
-    public setLinks = (links: ILink[]) => {
+    public init = (node: INode, links: ILink[]) => {
+        if (!node) return;
+        this.setNode(node);
         this._links = links;
+
+        const undoObject: UndoObject = {
+            links,
+            node,
+        };
+        this._undoStore.addUndoObject(undoObject);
     }
 
     @action
@@ -47,17 +59,52 @@ export class NodeStore {
         this._oldNode = _.cloneDeep(node);
     }
 
-    public updateLinkGeometries = (links: ILink[]) => {
+    @action
+    public changeLinkGeometry = (latLngs: L.LatLng[], index: number) => {
+        if (!this._node) return;
+
+        const newLinks = _.cloneDeep(this._links);
+        newLinks[index].geometry = latLngs;
+        const undoObject: UndoObject = {
+            links: newLinks,
+            node: this._node,
+        };
+        this._undoStore.addUndoObject(undoObject);
+
+        this._links = newLinks;
+    }
+
+    @action
+    public updateNodeGeometry = (nodeLocationType: NodeLocationType, newCoordinates: LatLng) => {
+        if (!this._node) return;
+
+        const newNode = _.cloneDeep(this._node);
+        const newLinks = _.cloneDeep(this._links);
+
+        newNode[nodeLocationType] = newCoordinates;
+        if (newNode.type !== NodeType.STOP && nodeLocationType === 'coordinates') {
+            newNode.coordinatesProjection = newNode.coordinates;
+            newNode.coordinatesManual = newNode.coordinates;
+        }
+
+        const coordinatesProjection = newNode.coordinatesProjection;
         // Update the first link geometry of startNodes to coordinatesProjection
-        links
-            .filter(link => link.startNode.id === this._node!.id)
-            .map(link => link.geometry[0] = this._node!.coordinatesProjection);
+        newLinks
+            .filter(link => link.startNode.id === newNode!.id)
+            .map(link => link.geometry[0] = coordinatesProjection);
         // Update the last link geometry of endNodes to coordinatesProjection
-        links
-            .filter(link => link.endNode.id === this._node!.id)
-            .map(link => link.geometry[link.geometry.length - 1]
-                = this._node!.coordinatesProjection);
-        return links;
+        newLinks
+            .filter(link => link.endNode.id === newNode!.id)
+            .map(link => link.geometry[link.geometry.length - 1] = coordinatesProjection);
+
+        const undoObject: UndoObject = {
+            links: newLinks,
+            node: newNode,
+        };
+        this._undoStore.addUndoObject(undoObject);
+
+        this._links = newLinks;
+        this._node = newNode;
     }
 
     @action
@@ -66,16 +113,6 @@ export class NodeStore {
             ...this._node!,
             [property]: value,
         };
-
-        if (this._node.type !== NodeType.STOP) {
-            if (property === 'coordinates' || property === 'type') {
-                this._node.coordinatesProjection = this._node.coordinates;
-                this._node.coordinatesManual = this._node.coordinates;
-            }
-        }
-
-        const updatedLinks = this.updateLinkGeometries(this._links);
-        this.setLinks(updatedLinks);
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
             this._node.stop = StopFactory.createNewStop();
@@ -107,6 +144,26 @@ export class NodeStore {
         if (this._oldNode) {
             this.setNode(this._oldNode);
         }
+    }
+
+    @action
+    public undo = () => {
+        this._undoStore.undo((undoObject: UndoObject) => {
+            this._links! = undoObject.links;
+            this._node!.coordinates = undoObject.node.coordinates;
+            this._node!.coordinatesManual = undoObject.node.coordinatesManual;
+            this._node!.coordinatesProjection = undoObject.node.coordinatesProjection;
+        });
+    }
+
+    @action
+    public redo = () => {
+        this._undoStore.redo((undoObject: UndoObject) => {
+            this._links! = undoObject.links;
+            this._node!.coordinates = undoObject.node.coordinates;
+            this._node!.coordinatesManual = undoObject.node.coordinatesManual;
+            this._node!.coordinatesProjection = undoObject.node.coordinatesProjection;
+        });
     }
 }
 
