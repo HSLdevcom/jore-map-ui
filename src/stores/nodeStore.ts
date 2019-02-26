@@ -56,6 +56,12 @@ export class NodeStore {
     }
 
     @action
+    public setCurrentStateAsOld = () => {
+        this._oldLinks = _.cloneDeep(this._links);
+        this._oldNode = _.cloneDeep(this.node);
+    }
+
+    @action
     public changeLinkGeometry = (latLngs: L.LatLng[], index: number) => {
         if (!this._node) throw new Error('Node was null.'); // Should not occur
 
