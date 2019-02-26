@@ -74,7 +74,7 @@ export class RoutePathStore {
 
     @computed
     get isDirty() {
-        return !_.isEqual(this.routePath, this._oldRoutePath);
+        return !_.isEqual(this._routePath, this._oldRoutePath);
     }
 
     @computed

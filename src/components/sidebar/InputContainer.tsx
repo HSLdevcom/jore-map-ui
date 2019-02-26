@@ -43,30 +43,34 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         this.validate(this.props.value, nextProps.value, forceUpdate);
     }
 
-    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
-        if (!this.props.onChange || !this.props.validatorRule) return;
-        if ((oldValue === newValue) && !forceUpdate) return;
+    private updateValue = (value: any, validatorResult?: IValidationResult) => {
+        if (this.props.type === 'number') {
+            this.props.onChange!(parseFloat(value), validatorResult);
+        } else {
+            this.props.onChange!(value, validatorResult);
+        }
+    }
 
-        const wasValid = this.state.isValid;
+    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
+        if (!this.props.validatorRule) return;
+        if (!forceUpdate && oldValue === newValue) return;
+
         const validatorResult: IValidationResult
             = FormValidator.validate(newValue, this.props.validatorRule);
-        const hasChanges = (oldValue !== newValue || wasValid !== validatorResult.isValid);
-        if (forceUpdate || hasChanges) {
-            this.setState({
-                isValid: validatorResult.isValid,
-                errorMessage: validatorResult.errorMessage,
-            });
-            this.props.onChange!(newValue, validatorResult);
-        }
+        this.setState({
+            isValid: validatorResult.isValid,
+            errorMessage: validatorResult.errorMessage,
+        });
+        return validatorResult;
     }
 
     private onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
+        let validatorResult: IValidationResult | undefined = undefined;
         if (this.props.validatorRule) {
-            this.validate(this.props.value, value);
-        } else {
-            this.props.onChange!(value);
+            validatorResult = this.validate(this.props.value, value);
         }
+        this.updateValue(value, validatorResult);
     }
 
     private renderDisabledContent = (type: inputType) => {
@@ -92,8 +96,8 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         }
         return (
             <input
-                placeholder={this .props.disabled ? '' : this.props.placeholder}
-                type={typeof this.props.value === 'number' ? 'number' : 'text'}
+                placeholder={this.props.disabled ? '' : this.props.placeholder}
+                type={this.props.type === 'number' ? 'number' : 'text'}
                 className={
                     classnames(
                         this.props.className,
