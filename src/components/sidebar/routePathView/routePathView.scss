@@ -31,7 +31,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        padding-top:10px;
+        padding-top: 10px;
     }
 
     .staticInfo {
@@ -43,5 +43,15 @@
 
     &.loaderContainer > div {
         margin: 30px auto;
+    }
+
+    .buttonBar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        div {
+            margin: 10px 0px 0px 0px;
+        }
     }
 }

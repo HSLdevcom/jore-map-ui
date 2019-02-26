@@ -10,7 +10,7 @@ interface IDropdownBaseProps {
     label?: string;
     selected: string;
     disabled?: boolean;
-    onChange(selectedItem: string): void;
+    onChange: (value: any) => void;
 }
 
 interface IDropdownProps extends IDropdownBaseProps {

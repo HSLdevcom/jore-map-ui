@@ -23,5 +23,5 @@ export default interface IRoutePath {
     modifiedBy: string;
     color?: string;
     length: number;
-    alternativePath: boolean;
+    exceptionPath: string;
 }

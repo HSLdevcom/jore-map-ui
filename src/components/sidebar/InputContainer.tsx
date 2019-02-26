@@ -73,19 +73,33 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         this.updateValue(value, validatorResult);
     }
 
-    private renderDisabledContent = (type: inputType) => {
-        return (
-            <div>
-                {
-                    type === 'date' ?
-                        moment(this.props.value!).format('DD.MM.YYYY') :
-                        this.props.value!
-                }
-            </div>
-        );
+    private renderDisabledContent = () => {
+        const type = this.props.type || 'text';
+
+        if (type === 'text' || type === 'number') {
+            return (
+                <div className={s.editingDisabled}>
+                    {this.props.value!}
+                </div>
+            );
+        }
+        if (type === 'date') {
+            return (
+                <div>
+                    {
+                        type === 'date' ?
+                            moment(this.props.value!).format('DD.MM.YYYY') :
+                            this.props.value!
+                    }
+                </div>
+            );
+        }
+        throw new Error(`inputContainer type not supported: ${type}`);
     }
 
-    private renderEditableContent = (type: inputType) => {
+    private renderEditableContent = () => {
+        const type = this.props.type || 'text';
+
         if (type === 'date') {
             return (
                 <DatePicker
@@ -111,30 +125,31 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         );
     }
 
-    private renderInputLabel = () => (
-        <div className={s.inputLabel}>
-            {this.props.label}
-            {!this.props.disabled && this.props.icon && this.props.onIconClick &&
-            <div
-                className={classnames(s.inline, s.pointer)}
-                onClick={this.props.onIconClick!}
-            >
-                {this.props.icon}
+    private renderInputLabel = () => {
+        const isIconVisible = !this.props.disabled && this.props.icon && this.props.onIconClick;
+        return (
+            <div className={s.inputLabel}>
+                {this.props.label}
+                {isIconVisible &&
+                <div
+                    className={classnames(s.inline, s.pointer)}
+                    onClick={this.props.onIconClick!}
+                >
+                    {this.props.icon}
+                </div>
+                }
             </div>
-            }
-        </div>
-    )
+        );
+    }
 
     render() {
-        const type = this.props.type || 'text';
-
         return (
             <div className={s.formItem}>
                 {this.renderInputLabel()}
                 {
                     this.props.disabled ?
-                        this.renderDisabledContent(type) :
-                        this.renderEditableContent(type)
+                        this.renderDisabledContent() :
+                        this.renderEditableContent()
                 }
                 { this.state.errorMessage && !this.props.disabled &&
                     <div className={s.errorMessage}>
