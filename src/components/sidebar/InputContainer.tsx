@@ -8,16 +8,14 @@ import * as s from './inputContainer.scss';
 type inputType = 'text' | 'number' | 'date';
 
 interface IInputProps {
-    label: string;
+    label: string|JSX.Element;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
     onChange?: (value: any, validationResult?: IValidationResult) => void;
     value?: string|number|Date;
     validatorRule?: string;
-    icon?: React.ReactNode;
     type?: inputType; // Defaults to text
-    onIconClick?: () => void;
 }
 
 interface IInputState {
@@ -125,27 +123,12 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         );
     }
 
-    private renderInputLabel = () => {
-        const isIconVisible = !this.props.disabled && this.props.icon && this.props.onIconClick;
-        return (
-            <div className={s.inputLabel}>
-                {this.props.label}
-                {isIconVisible &&
-                <div
-                    className={classnames(s.inline, s.pointer)}
-                    onClick={this.props.onIconClick!}
-                >
-                    {this.props.icon}
-                </div>
-                }
-            </div>
-        );
-    }
-
     render() {
         return (
             <div className={s.formItem}>
-                {this.renderInputLabel()}
+                <div className={s.inputLabel}>
+                    {this.props.label}
+                </div>
                 {
                     this.props.disabled ?
                         this.renderDisabledContent() :

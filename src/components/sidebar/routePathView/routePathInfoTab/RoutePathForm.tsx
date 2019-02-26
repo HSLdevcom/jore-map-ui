@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FiRefreshCw } from 'react-icons/fi';
+import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import booleanCodeList from '~/codeLists/booleanCodeList';
@@ -13,7 +14,7 @@ import InputContainer from '../../InputContainer';
 import LinkListView from './LinkListView';
 import { Button, Dropdown } from '../../../controls';
 import ButtonType from '../../../../enums/buttonType';
-import * as s from '../routePathView.scss';
+import * as s from './routePathForm.scss';
 
 interface IRoutePathFormProps {
     routePathStore?: RoutePathStore;
@@ -37,13 +38,6 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
             }
         }
 
-    private updateLength = () => (
-        this.props.routePathStore!.updateRoutePathProperty(
-            'length',
-            this.props.routePathStore!.getCalculatedLength(),
-        )
-    )
-
     private redirectToNewRoutePathView = () => {
         const routePath = this.props.routePathStore!.routePath;
         if (!routePath) return;
@@ -59,12 +53,33 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
         window.alert('Toteutuksen suunnittelu kesken.');
     }
 
+    private renderLengthLabel = () => {
+        const isEditingDisabled = this.props.isEditingDisabled;
+        const updateLength = () => {
+            this.props.routePathStore!.updateRoutePathProperty(
+                'length',
+                this.props.routePathStore!.getCalculatedLength(),
+            );
+        };
+        return (
+            <>
+                PITUUS
+                <div
+                    className={classnames(s.lengthIcon, isEditingDisabled ? s.disabled : '')}
+                    onClick={updateLength}
+                >
+                    <FiRefreshCw/>
+                </div>
+            </>
+        );
+    }
+
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
 
         const routePath = this.props.routePath;
         return (
-        <div className={s.form}>
+        <div className={classnames(s.form, s.routePathForm)}>
             <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <InputContainer
@@ -146,13 +161,11 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
-                        label='PITUUS'
+                        label={this.renderLengthLabel()}
                         value={routePath.length}
                         disabled={isEditingDisabled}
                         validatorRule={routePathValidationModel.length}
-                        icon={<FiRefreshCw/>}
                         type='number'
-                        onIconClick={this.updateLength}
                         onChange={this.onChange('length')}
                     />
                     <InputContainer
