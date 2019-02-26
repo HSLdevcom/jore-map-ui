@@ -10,19 +10,31 @@ interface IViewHeaderProps {
     hideCloseButton?: boolean;
     isEditButtonVisible?: boolean;
     isEditing?: boolean;
+    shouldShowClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onCloseButtonClick?: () => void;
 }
 
-const viewHeader = (props:IViewHeaderProps) => {
+const ViewHeader = (props:IViewHeaderProps) => {
+    // tslint:disable:max-line-length
+    const closePromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+    const revertPromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
+    // tslint:enable:max-line-length
+
     const onCloseButtonClick = () => {
-        if (!props.closePromptMessage || confirm(props.closePromptMessage)) {
+        if (!props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
             props.onCloseButtonClick ? props.onCloseButtonClick() : navigator.goBack();
         }
     };
 
     const onEditButtonClick = () => {
-        props.onEditButtonClick && props.onEditButtonClick();
+        if (props.isEditing!) {
+            if (!props.shouldShowClosePromptMessage || confirm(revertPromptMessage)) {
+                props.onEditButtonClick!();
+            }
+        } else {
+            props.onEditButtonClick!();
+        }
     };
 
     return (
@@ -50,4 +62,4 @@ const viewHeader = (props:IViewHeaderProps) => {
         </div>
     );
 };
-export default viewHeader;
+export default ViewHeader;

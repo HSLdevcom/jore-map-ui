@@ -134,9 +134,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             || !this.props.nodeStore!.isDirty
             || !this.isFormValid();
 
-        // tslint:disable-next-line:max-line-length
-        const closePromptMessage = 'Solmulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
-
         if (this.state.isLoading) {
             return(
                 <div className={classnames(s.nodeView, s.loaderContainer)}>
@@ -151,10 +148,8 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             <div className={s.nodeView}>
                 <div className={s.content}>
                     <ViewHeader
-                        closePromptMessage={
-                            this.props.nodeStore!.isDirty ? closePromptMessage : undefined
-                        }
                         isEditButtonVisible={true}
+                        shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={this.toggleIsEditingEnabled}
                     >
