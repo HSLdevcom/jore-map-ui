@@ -51,7 +51,7 @@ class ToolbarCommonButtons extends React.Component {
                         onClick={this.undo}
                         isActive={false}
                         isDisabled={false}
-                        label='Kumoa'
+                        label='Kumoa (ctrl+z)'
                     >
                         <IoMdUndo />
                     </MapControlButton>
@@ -59,7 +59,7 @@ class ToolbarCommonButtons extends React.Component {
                         onClick={this.redo}
                         isActive={false}
                         isDisabled={false}
-                        label='Tee uudestaan'
+                        label='Tee uudestaan (ctrl+y)'
                     >
                         <IoMdRedo />
                     </MapControlButton>

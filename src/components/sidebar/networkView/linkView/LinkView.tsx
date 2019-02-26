@@ -135,9 +135,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         // TODO: show some indicator to user of an empty page
         if (!link) return null;
 
-        // tslint:disable-next-line:max-line-length
-        const closePromptMessage = 'Linkilla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
-
         const isEditingDisabled = this.state.isEditingDisabled;
         const startNode = link!.startNode;
         const endNode = link!.endNode;
@@ -150,11 +147,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         <div className={s.linkView}>
             <div className={s.content}>
                 <ViewHeader
-                    closePromptMessage={
-                        this.props.linkStore!.isDirty ? closePromptMessage : undefined
-                    }
                     isEditButtonVisible={true}
                     isEditing={!isEditingDisabled}
+                    shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
                     onEditButtonClick={this.toggleIsEditingEnabled}
                 >
                     Linkki
