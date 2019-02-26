@@ -1,0 +1,35 @@
+@import './shared/styles/common.scss';
+
+.navigationBarView {
+    background-color: $blue;
+    flex-basis: 50px;
+
+    .header {
+        cursor: pointer;
+        margin-left: 12px;
+        .title {
+            display: inline-block;
+            font-size: 17px;
+            color: #fff;
+            padding-left: 10px;
+        }
+
+        .title a {
+            text-decoration: none;
+            color: $white;
+        }
+
+        .logo {
+            display: inline-block;
+            height: 26px;
+            text-align: center;
+            vertical-align: middle;
+        }
+    }
+}
+
+.buildInfo {
+  position: fixed;
+  font-size: 12px;
+  margin: 2px;
+}

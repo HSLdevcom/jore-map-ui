@@ -12,9 +12,9 @@ import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
-import packageVersion from '../project/version.json';
 import PrivateRoute from './PrivateRoute';
 import Login from './login/Login';
+import NavigationBar from './NavigationBar';
 import * as s from './app.scss';
 
 interface IAppState {
@@ -31,21 +31,19 @@ interface IAppProps extends RouteComponentProps<any> {
 class App extends React.Component<IAppProps, IAppState> {
     private renderApp = () => {
         const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
-        const buildDate = process.env.BUILD_DATE;
-        const buildDateInfo = buildDate ? `Date: ${buildDate}` : '';
         return (
             <>
-                <div className={s.buildInfo}>
-                    {`Build: ${packageVersion.version} ${buildDateInfo}`}
+                <NavigationBar />
+                <div className={s.appContent}>
+                    <div className={sidebarHiddenClass}>
+                        <Sidebar
+                            location={this.props.location}
+                        />
+                    </div>
+                    <Map>
+                        <ErrorBar />
+                    </Map>
                 </div>
-                <div className={sidebarHiddenClass}>
-                    <Sidebar
-                        location={this.props.location}
-                    />
-                </div>
-                <Map>
-                    <ErrorBar />
-                </Map>
                 <Dialog />
             </>
         );
