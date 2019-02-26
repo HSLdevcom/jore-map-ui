@@ -143,6 +143,7 @@ const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
                         disabled={isEditingDisabled}
                         value={stop.radius}
                         onChange={onChange('radius')}
+                        type='number'
                         validatorRule={stopValidationModel.radius}
                     />
                     <InputContainer
