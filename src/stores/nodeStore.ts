@@ -116,6 +116,11 @@ export class NodeStore {
             [property]: value,
         };
 
+        if (property === 'type' && this._node.type !== NodeType.STOP) {
+            this._node.coordinatesProjection = this._node.coordinates;
+            this._node.coordinatesManual = this._node.coordinates;
+        }
+
         if (this._node.type === NodeType.STOP && !this._node.stop) {
             this._node.stop = StopFactory.createNewStop();
         }
