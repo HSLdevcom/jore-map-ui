@@ -6,12 +6,12 @@ const KEYCODES = {
 };
 
 class KeyEventHandler {
-
     constructor() {
         document.addEventListener('keydown', this.handleKeyDownEvent);
     }
 
     handleKeyDownEvent = (event: KeyboardEvent) => {
+        // Windows
         if (event.ctrlKey) {
             switch (event.code) {
             case KEYCODES.Z: {
@@ -22,6 +22,13 @@ class KeyEventHandler {
                 EventManager.trigger('redo');
                 break;
             }}
+        // Macbook
+        } else if (event.metaKey && event.code === KEYCODES.Z) {
+            if (event.shiftKey) {
+                EventManager.trigger('redo');
+            } else {
+                EventManager.trigger('undo');
+            }
         }
     }
 }
