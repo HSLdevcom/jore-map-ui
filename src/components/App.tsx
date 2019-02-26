@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Route, RouteComponentProps } from 'react-router-dom';
 import { withRouter, Switch } from 'react-router';
+import '~/util/KeyEventHandler';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import SubSites from '~/routing/subSites';
