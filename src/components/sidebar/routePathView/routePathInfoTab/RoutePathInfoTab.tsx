@@ -14,7 +14,7 @@ interface IRoutePathInfoTabProps {
     isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
-    markInvalidFields: (field: string, isValid: boolean) => void;
+    markInvalidProperties: (property: string, isValid: boolean) => void;
     isNewRoutePath: boolean;
 }
 
@@ -37,7 +37,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
             <div className={s.content}>
                 <div className={s.formSection}>
                     <RoutePathForm
-                        markInvalidFields={this.props.markInvalidFields}
+                        markInvalidProperties={this.props.markInvalidProperties}
                         isEditingDisabled={this.props.isEditingDisabled}
                         routePath={this.props.routePathStore!.routePath!}
                         isNewRoutePath={this.props.isNewRoutePath}

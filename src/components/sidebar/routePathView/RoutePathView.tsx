@@ -29,7 +29,7 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewState {
     isLoading: boolean;
-    invalidFieldsMap: object;
+    invalidPropertiesMap: object;
     isEditingDisabled: boolean;
 }
 
@@ -50,7 +50,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         super(props);
         this.state = {
             isLoading: true,
-            invalidFieldsMap: {},
+            invalidPropertiesMap: {},
             isEditingDisabled: true,
         };
     }
@@ -149,7 +149,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 <RoutePathInfoTab
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
-                    markInvalidFields={this.markInvalidFields}
+                    markInvalidProperties={this.markInvalidProperties}
                     isNewRoutePath={this.props.isNewRoutePath}
                 />
             );
@@ -178,7 +178,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
         this.setState({
             isEditingDisabled: true,
-            invalidFieldsMap: {},
+            invalidPropertiesMap: {},
             isLoading: false,
         });
     }

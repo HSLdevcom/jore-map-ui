@@ -20,7 +20,7 @@ interface IRoutePathFormProps {
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    markInvalidFields: (field: string, isValid: boolean) => void;
+    markInvalidProperties: (property: string, isValid: boolean) => void;
 }
 
 @inject('routePathStore')
@@ -29,12 +29,13 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
     private onClick = () => {
         // TODO
     }
-    private onChange = (property: string) => (value: any, validationResult?: IValidationResult) => {
-        this.props.routePathStore!.updateRoutePathProperty(property, value);
-        if (validationResult) {
-            this.props.markInvalidFields(property, validationResult.isValid);
+    private onChange = (property: string) =>
+        (value: any, validationResult?: IValidationResult) => {
+            this.props.routePathStore!.updateRoutePathProperty(property, value);
+            if (validationResult) {
+                this.props.markInvalidProperties(property, validationResult.isValid);
+            }
         }
-    }
 
     private updateLength = () => (
         this.props.routePathStore!.updateRoutePathProperty(

@@ -33,7 +33,7 @@ interface INodeViewProps {
 interface INodeViewState {
     isLoading: boolean;
     isEditingDisabled: boolean;
-    invalidFieldsMap: object;
+    invalidPropertiesMap: object;
 }
 
 @inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore')
@@ -44,7 +44,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.state = {
             isLoading: false,
             isEditingDisabled: true,
-            invalidFieldsMap: {},
+            invalidPropertiesMap: {},
         };
     }
 
@@ -105,7 +105,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         (property: string) => (value: any, validationResult?: IValidationResult) => {
             this.props.nodeStore!.updateNode(property, value);
             if (validationResult) {
-                this.markInvalidFields(property, validationResult!.isValid);
+                this.markInvalidProperties(property, validationResult!.isValid);
             }
         }
 
@@ -113,7 +113,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         (property: string) => (value: any, validationResult?: IValidationResult) => {
             this.props.nodeStore!.updateStop(property, value);
             if (validationResult) {
-                this.markInvalidFields(property, validationResult!.isValid);
+                this.markInvalidProperties(property, validationResult!.isValid);
             }
         }
 
