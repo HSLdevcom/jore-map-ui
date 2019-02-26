@@ -3,17 +3,28 @@ import _ from 'lodash';
 import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 import NodeType from '~/enums/nodeType';
+import NodeLocationType from '~/types/NodeLocationType';
 import StopFactory from '~/factories/nodeStopFactory';
+import UndoStore from '~/stores/undoStore';
+
+export interface UndoState {
+    links: ILink[];
+    node: INode;
+}
 
 export class NodeStore {
     @observable private _links: ILink[];
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
+    @observable private _oldLinks: ILink[];
+    private _undoStore: UndoStore<UndoState>;
 
     constructor() {
         this._links = [];
         this._node = null;
         this._oldNode = null;
+        this._oldLinks = [];
+        this._undoStore = new UndoStore();
     }
 
     @computed
@@ -27,37 +38,69 @@ export class NodeStore {
     }
 
     @action
+    public init = (node: INode, links: ILink[]) => {
+        const newNode = _.cloneDeep(node);
+        const newLinks = _.cloneDeep(links);
+
+        this._undoStore.clear();
+        const currentUndoState: UndoState = {
+            links: newLinks,
+            node: newNode,
+        };
+        this._undoStore.addItem(currentUndoState);
+
+        this._node = newNode;
+        this._oldNode = newNode;
+        this._links = newLinks;
+        this._oldLinks = newLinks;
+    }
+
+    @action
     public changeLinkGeometry = (latLngs: L.LatLng[], index: number) => {
-        this._links[index].geometry = latLngs;
+        if (!this._node) throw new Error('Node was null.'); // Should not occur
+
+        const newLinks = _.cloneDeep(this._links);
+        newLinks[index].geometry = latLngs;
+        const currentUndoState: UndoState = {
+            links: newLinks,
+            node: this._node,
+        };
+        this._undoStore.addItem(currentUndoState);
+
+        this._links = newLinks;
     }
 
     @action
-    public setLinks = (links: ILink[]) => {
-        this._links = links;
-    }
+    public updateNodeGeometry = (nodeLocationType: NodeLocationType, newCoordinates: LatLng) => {
+        if (!this._node) throw new Error('Node was null.'); // Should not occur
 
-    @action
-    public setNode = (node: INode) => {
-        this._node = node;
-        this.setOldNode(node);
-    }
+        const newNode = _.cloneDeep(this._node);
+        const newLinks = _.cloneDeep(this._links);
 
-    @action
-    public setOldNode = (node: INode) => {
-        this._oldNode = _.cloneDeep(node);
-    }
+        newNode[nodeLocationType] = newCoordinates;
+        if (newNode.type !== NodeType.STOP && nodeLocationType === 'coordinates') {
+            newNode.coordinatesProjection = newNode.coordinates;
+            newNode.coordinatesManual = newNode.coordinates;
+        }
 
-    public updateLinkGeometries = (links: ILink[]) => {
+        const coordinatesProjection = newNode.coordinatesProjection;
         // Update the first link geometry of startNodes to coordinatesProjection
-        links
-            .filter(link => link.startNode.id === this._node!.id)
-            .map(link => link.geometry[0] = this._node!.coordinatesProjection);
+        newLinks
+            .filter(link => link.startNode.id === newNode!.id)
+            .map(link => link.geometry[0] = coordinatesProjection);
         // Update the last link geometry of endNodes to coordinatesProjection
-        links
-            .filter(link => link.endNode.id === this._node!.id)
-            .map(link => link.geometry[link.geometry.length - 1]
-                = this._node!.coordinatesProjection);
-        return links;
+        newLinks
+            .filter(link => link.endNode.id === newNode!.id)
+            .map(link => link.geometry[link.geometry.length - 1] = coordinatesProjection);
+
+        const currentUndoState: UndoState = {
+            links: newLinks,
+            node: newNode,
+        };
+        this._undoStore.addItem(currentUndoState);
+
+        this._links = newLinks;
+        this._node = newNode;
     }
 
     @action
@@ -66,16 +109,6 @@ export class NodeStore {
             ...this._node!,
             [property]: value,
         };
-
-        if (this._node.type !== NodeType.STOP) {
-            if (property === 'coordinates' || property === 'type') {
-                this._node.coordinatesProjection = this._node.coordinates;
-                this._node.coordinatesManual = this._node.coordinates;
-            }
-        }
-
-        const updatedLinks = this.updateLinkGeometries(this._links);
-        this.setLinks(updatedLinks);
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
             this._node.stop = StopFactory.createNewStop();
@@ -92,7 +125,7 @@ export class NodeStore {
 
     @computed
     get isDirty() {
-        return !_.isEqual(this._node, this._oldNode);
+        return !_.isEqual(this._node, this._oldNode) || !_.isEqual(this._links, this._oldLinks);
     }
 
     @action
@@ -103,10 +136,30 @@ export class NodeStore {
     }
 
     @action
-    public undoChanges = () => {
+    public resetChanges = () => {
         if (this._oldNode) {
-            this.setNode(this._oldNode);
+            this.init(this._oldNode, this._oldLinks);
         }
+    }
+
+    @action
+    public undo = () => {
+        this._undoStore.undo((previousUndoState: UndoState) => {
+            this._links! = previousUndoState.links;
+            this._node!.coordinates = previousUndoState.node.coordinates;
+            this._node!.coordinatesManual = previousUndoState.node.coordinatesManual;
+            this._node!.coordinatesProjection = previousUndoState.node.coordinatesProjection;
+        });
+    }
+
+    @action
+    public redo = () => {
+        this._undoStore.redo((nextUndoState: UndoState) => {
+            this._links! = nextUndoState.links;
+            this._node!.coordinates = nextUndoState.node.coordinates;
+            this._node!.coordinatesManual = nextUndoState.node.coordinatesManual;
+            this._node!.coordinatesProjection = nextUndoState.node.coordinatesProjection;
+        });
     }
 }
 
