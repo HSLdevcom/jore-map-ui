@@ -14,7 +14,7 @@ interface IRoutePathInfoTabProps {
     isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
-    markInvalidFields: Function;
+    markInvalidFields: (field: string, isValid: boolean) => void;
     isNewRoutePath: boolean;
 }
 

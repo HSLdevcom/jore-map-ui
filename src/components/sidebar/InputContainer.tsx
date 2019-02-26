@@ -94,7 +94,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 </div>
             );
         }
-        throw new Error(`inputContainer type not supported: ${type}`);
+        throw new Error(`inputContainer type not supported: ${type}`); // Should not occur
     }
 
     private renderEditableContent = () => {
