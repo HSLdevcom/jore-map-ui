@@ -50,38 +50,40 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     async componentDidMount() {
         const selectedNodeId = this.props.match!.params.id;
+        if (!selectedNodeId) return;
 
         this.setState({ isLoading: true });
-        if (selectedNodeId) {
-            this.props.mapStore!.setSelectedNodeId(selectedNodeId);
-            await this.fetchNode(selectedNodeId);
-        }
-        const node = this.props.nodeStore!.node;
+        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+
+        const node = await this.fetchNode(selectedNodeId);
         if (node) {
-            await this.fetchLinksForNode(node);
-            this.props.mapStore!.setCoordinates(node.coordinates);
+            const links = await this.fetchLinksForNode(node);
+            if (links) {
+                this.props.mapStore!.setCoordinates(node.coordinates);
+                this.props.nodeStore!.init(node, links);
+            }
         }
         this.setState({ isLoading: false });
     }
 
     private async fetchNode(nodeId: string) {
         try {
-            const node = await NodeService.fetchNode(nodeId);
-            this.props.nodeStore!.setNode(node);
+            return await NodeService.fetchNode(nodeId);
         } catch (ex) {
             this.props.errorStore!.addError('Solmun haku ei onnistunut');
+            return null;
         }
     }
 
     private async fetchLinksForNode(node: INode) {
         try {
-            const links = await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
-            this.props.nodeStore!.setLinks(links);
+            return await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         } catch (ex) {
             this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
             );
+            return null;
         }
     }
 
@@ -90,7 +92,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         try {
             await NodeService.updateNode(this.props.nodeStore!.node);
 
-            this.props.nodeStore!.setOldNode(this.props.nodeStore!.node);
+            this.props.nodeStore!.resetChanges();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
@@ -117,7 +119,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private toggleIsEditingEnabled = () => {
         this.toggleIsEditingDisabled(
-            this.props.nodeStore!.undoChanges,
+            this.props.nodeStore!.resetChanges,
         );
     }
 

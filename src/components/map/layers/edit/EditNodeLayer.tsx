@@ -8,6 +8,7 @@ import { IReactionDisposer, reaction } from 'mobx';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { ILink } from '~/models';
+import EventManager from '~/util/EventManager';
 import NodeLocationType from '~/types/NodeLocationType';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeMarker from '../mapIcons/NodeMarker';
@@ -30,6 +31,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
             () => this.props.nodeStore!.node,
             () => this.props.nodeStore!.node === null && this.removeOldLinks(),
         );
+        EventManager.on('undo', () => this.props.nodeStore!.undo());
+        EventManager.on('redo', () => this.props.nodeStore!.redo());
     }
 
     componentWillUnmount() {
@@ -38,6 +41,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         const map = this.props.leaflet.map;
         map!.off('editable:vertex:dragend');
         map!.off('editable:vertex:deleted');
+        EventManager.off('undo', () => this.props.nodeStore!.undo());
+        EventManager.off('redo', () => this.props.nodeStore!.redo());
     }
 
     private removeOldLinks = () => {
@@ -62,10 +67,9 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         );
     }
 
-    private onMoveMarker = () =>
-        (coordinatesType: NodeLocationType, coordinates: L.LatLng) => {
-            this.props.nodeStore!.updateNode(coordinatesType, coordinates);
-        }
+    private onMoveMarker = () => (nodeLocationType: NodeLocationType, coordinates: L.LatLng) => {
+        this.props.nodeStore!.updateNodeGeometry(nodeLocationType, coordinates);
+    }
 
     private drawEditableLinks = () => {
         this.removeOldLinks();
