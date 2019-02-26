@@ -58,7 +58,7 @@ export class NodeStore {
     @action
     public setCurrentStateAsOld = () => {
         this._oldLinks = _.cloneDeep(this._links);
-        this._oldNode = _.cloneDeep(this.node);
+        this._oldNode = _.cloneDeep(this._node);
     }
 
     @action
