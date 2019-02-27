@@ -43,7 +43,11 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
 
     private updateValue = (value: any, validatorResult?: IValidationResult) => {
         if (this.props.type === 'number') {
-            this.props.onChange!(parseFloat(value), validatorResult);
+            const parsedValue = parseFloat(value);
+            this.props.onChange!(
+                !isNaN(parsedValue) ? parsedValue : null,
+                validatorResult,
+            );
         } else {
             this.props.onChange!(value, validatorResult);
         }
@@ -117,7 +121,7 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                         !this.state.isValid ? s.invalidInput : null)
                 }
                 disabled={this.props.disabled}
-                value={this.props.value ? (this.props.value as string | number) : ''}
+                value={this.props.value !== null ? (this.props.value as string | number) : ''}
                 onChange={this.onChange}
             />
         );
