@@ -53,20 +53,22 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
         window.alert('Toteutuksen suunnittelu kesken.');
     }
 
+    private updateLength = () => {
+        this.props.routePathStore!.updateRoutePathProperty(
+            'length',
+            this.props.routePathStore!.getCalculatedLength(),
+        );
+    }
+
     private renderLengthLabel = () => {
         const isEditingDisabled = this.props.isEditingDisabled;
-        const updateLength = () => {
-            this.props.routePathStore!.updateRoutePathProperty(
-                'length',
-                this.props.routePathStore!.getCalculatedLength(),
-            );
-        };
+
         return (
             <>
                 PITUUS
                 <div
                     className={classnames(s.lengthIcon, isEditingDisabled ? s.disabled : '')}
-                    onClick={updateLength}
+                    onClick={this.updateLength}
                 >
                     <FiRefreshCw/>
                 </div>
