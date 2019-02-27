@@ -56,6 +56,12 @@ export class NodeStore {
     }
 
     @action
+    public setCurrentStateAsOld = () => {
+        this._oldLinks = _.cloneDeep(this._links);
+        this._oldNode = _.cloneDeep(this._node);
+    }
+
+    @action
     public changeLinkGeometry = (latLngs: L.LatLng[], index: number) => {
         if (!this._node) throw new Error('Node was null.'); // Should not occur
 
@@ -78,10 +84,8 @@ export class NodeStore {
         const newLinks = _.cloneDeep(this._links);
 
         newNode[nodeLocationType] = newCoordinates;
-        if (newNode.type !== NodeType.STOP && nodeLocationType === 'coordinates') {
-            newNode.coordinatesProjection = newNode.coordinates;
-            newNode.coordinatesManual = newNode.coordinates;
-        }
+
+        if (nodeLocationType === 'coordinates') this.mirrorCoordinates(newNode);
 
         const coordinatesProjection = newNode.coordinatesProjection;
         // Update the first link geometry of startNodes to coordinatesProjection
@@ -104,11 +108,21 @@ export class NodeStore {
     }
 
     @action
+    public mirrorCoordinates = (node: INode) => {
+        if (node.type !== NodeType.STOP) {
+            node.coordinatesProjection = node.coordinates;
+            node.coordinatesManual = node.coordinates;
+        }
+    }
+
+    @action
     public updateNode = (property: string, value: string|number|Date|LatLng) => {
         this._node = {
             ...this._node!,
             [property]: value,
         };
+
+        if (property === 'type') this.mirrorCoordinates(this._node);
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
             this._node.stop = StopFactory.createNewStop();

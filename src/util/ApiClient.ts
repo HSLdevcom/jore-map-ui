@@ -53,7 +53,11 @@ class ApiClient {
             });
 
             if (response.status >= 200 && response.status < 300) {
-                return await response.json();
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.indexOf('application/json') !== -1) {
+                    return await response.json();
+                }
+                return await response.text();
             }
             error = {
                 errorCode: response.status,

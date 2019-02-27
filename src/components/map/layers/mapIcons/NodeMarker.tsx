@@ -41,7 +41,6 @@ interface INodeMarkerProps {
     onMoveMarker?: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
 }
 
-const DEFAULT_RADIUS = 25;
 const NODE_LABEL_MIN_ZOOM = 14;
 
 @inject('mapStore')
@@ -130,12 +129,19 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
-    private renderStopRadiusCircle = (radius: number = DEFAULT_RADIUS) => {
+    private renderStopRadiusCircle = () => {
+        const nodeType = this.props.node.type;
+
+        if (!(this.isSelected(this.props.node)
+            && nodeType === NodeType.STOP
+            && this.props.node.stop!.radius)) {
+            return null;
+        }
         return (
             <Circle
                 className={s.stopCircle}
                 center={this.props.node.coordinates}
-                radius={radius}
+                radius={this.props.node.stop!.radius}
             />
         );
     }
@@ -177,14 +183,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
     )
 
     render() {
-        const nodeType = this.props.node.type;
 
         const icon = createDivIcon(
                 <div className={classnames(s.nodeBase, ...this.getMarkerClasses())}>
                     {this.renderMarkerLabel()}
                 </div>,
         );
-        const displayCircle = this.isSelected(this.props.node) && nodeType === NodeType.STOP;
         return (
             <>
                 <Marker
@@ -196,10 +200,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     onDragEnd={this.props.onMoveMarker
                     && this.onMoveMarker('coordinates')}
                 >
-                {
-                    displayCircle
-                    && this.renderStopRadiusCircle(this.props.node.stop!.radius)
-                }
+                    {this.renderStopRadiusCircle()}
                 </Marker>
                 {
                     (
