@@ -1,0 +1,26 @@
+@import '../routePathView.scss';
+
+.routePathForm {
+    .lengthIcon {
+        display:inline-block;
+        margin-left: 5px;
+        cursor: pointer;
+    }
+
+    .routeInformationContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-top: 10px;
+    }
+
+    .buttonBar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        div {
+            margin: 10px 0px 0px 0px;
+        }
+    }
+}

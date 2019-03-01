@@ -1,8 +1,10 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FiRefreshCw } from 'react-icons/fi';
+import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
+import booleanCodeList from '~/codeLists/booleanCodeList';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -10,36 +12,28 @@ import routePathValidationModel from '~/validation/models/routePathValidationMod
 import { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../../InputContainer';
 import LinkListView from './LinkListView';
-import { Button, Dropdown, Checkbox } from '../../../controls';
+import { Button, Dropdown } from '../../../controls';
 import ButtonType from '../../../../enums/buttonType';
-import * as s from '../routePathView.scss';
+import * as s from './routePathForm.scss';
 
 interface IRoutePathFormProps {
     routePathStore?: RoutePathStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    onChange: (property: string, value: any, validationResult: IValidationResult) => void;
+    markInvalidProperties: (property: string, isValid: boolean) => void;
 }
 
 @inject('routePathStore')
 @observer
 class RoutePathForm extends React.Component<IRoutePathFormProps>{
-    private onClick = () => {
-        // TODO
-    }
-
     private onChange = (property: string) =>
-        (value: string, validationResult: IValidationResult) => {
-            this.props.onChange(property, value, validationResult);
+        (value: any, validationResult?: IValidationResult) => {
+            this.props.routePathStore!.updateRoutePathProperty(property, value);
+            if (validationResult) {
+                this.props.markInvalidProperties(property, validationResult.isValid);
+            }
         }
-
-    private updateLength = () => (
-        this.props.routePathStore!.updateRoutePathProperty(
-            'length',
-            this.props.routePathStore!.getCalculatedLength(),
-        )
-    )
 
     private redirectToNewRoutePathView = () => {
         const routePath = this.props.routePathStore!.routePath;
@@ -52,25 +46,51 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
         navigator.goTo(newRoutePathLink);
     }
 
+    private showAlertPlanningInProgress = () => {
+        window.alert('Toteutuksen suunnittelu kesken.');
+    }
+
+    private updateLength = () => {
+        this.props.routePathStore!.updateRoutePathProperty(
+            'length',
+            this.props.routePathStore!.getCalculatedLength(),
+        );
+    }
+
+    private renderLengthLabel = () => {
+        const isEditingDisabled = this.props.isEditingDisabled;
+
+        return (
+            <>
+                PITUUS
+                <div
+                    className={classnames(s.lengthIcon, isEditingDisabled ? s.disabled : '')}
+                    onClick={this.updateLength}
+                >
+                    <FiRefreshCw/>
+                </div>
+            </>
+        );
+    }
+
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
+        const disabledIfUpdating = !this.props.isNewRoutePath || this.props.isEditingDisabled;
 
         const routePath = this.props.routePath;
         return (
-        <div className={s.form}>
+        <div className={classnames(s.form, s.routePathForm)}>
             <div className={s.formSection}>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='REITIN NIMI SUOMEKSI'
                         disabled={true}
                         value={routePath.routePathName}
-                        onChange={this.onChange('routePathName')}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
                         disabled={true}
                         value={routePath.routePathNameSw}
-                        onChange={this.onChange('routePathNameSw')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -127,7 +147,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         type='date'
                         value={routePath.startTime}
                         onChange={this.onChange('startTime')}
-                        disabled={!this.props.isNewRoutePath || this.props.isEditingDisabled}
+                        disabled={disabledIfUpdating}
                         validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
@@ -139,13 +159,11 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
-                        label='PITUUS'
+                        label={this.renderLengthLabel()}
                         value={routePath.length}
                         disabled={isEditingDisabled}
                         validatorRule={routePathValidationModel.length}
-                        icon={<FiRefreshCw/>}
                         type='number'
-                        onIconClick={this.updateLength}
                         onChange={this.onChange('length')}
                     />
                     <InputContainer
@@ -157,40 +175,18 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                 <div className={s.flexRow}>
                     <Dropdown
                         label='SUUNTA'
-                        onChange={this.onChange}
-                        items={['1', '2', '3']}
+                        disabled={disabledIfUpdating}
+                        onChange={this.onChange('direction')}
+                        items={['1', '2']}
                         selected={this.props.routePath.direction}
                     />
-                    <div className={s.formItem}>
-                        <div className={s.inputLabel}>
-                            POIKKEUSREITTI
-                        </div>
-                        <div className={s.flexInnerRow}>
-                            <Checkbox
-                                checked={!routePath.alternativePath}
-                                text={'Ei'}
-                                onClick={this.onClick}
-                            />
-                            <div className={s.flexFiller} />
-                            <Checkbox
-                                checked={routePath.alternativePath}
-                                text={'Kyllä'}
-                                onClick={this.onClick}
-                            />
-                            <div className={s.flexFiller} />
-                        </div>
-                    </div>
-                </div>
-                <div className={s.flexRow}>
-                    <div className={s.flexGrow}>
-                        <Dropdown // TODO: what is this field?
-                            onChange={this.onClick}
-                            items={['Kaikki solmut']}
-                            selected={'Kaikki solmut'}
-                            label='SOLMUTYYPIT'
-                        />
-                    </div>
-                    <div className={s.flexFiller} />
+                    <Dropdown
+                        label='POIKKEUSREITTI'
+                        disabled={isEditingDisabled}
+                        selected={this.props.routePath.exceptionPath}
+                        onChange={this.onChange('exceptionPath')}
+                        codeList={booleanCodeList}
+                    />
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
@@ -207,35 +203,21 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                 </div>
             </div>
             <div className={s.formSection}>
-                <div className={s.flexRow}>
+                <div className={s.buttonBar}>
                     <Button
-                        onClick={this.onClick}
+                        onClick={this.showAlertPlanningInProgress}
                         type={ButtonType.ROUND}
                     >
                         Varustelutiedot
                     </Button>
                     <Button
-                        onClick={this.onClick}
-                        type={ButtonType.ROUND}
-                    >
-                        Solmu
-                    </Button>
-                    <Button
-                        onClick={this.onClick}
+                        onClick={this.showAlertPlanningInProgress}
                         type={ButtonType.ROUND}
                     >
                         Solmut Exceliin
                     </Button>
-                </div>
-                <div className={s.flexRow}>
                     <Button
-                        onClick={this.onClick}
-                        type={ButtonType.ROUND}
-                    >
-                        Linkki
-                    </Button>
-                    <Button
-                        onClick={this.onClick}
+                        onClick={this.showAlertPlanningInProgress}
                         type={ButtonType.ROUND}
                     >
                         Aikataulu
@@ -250,45 +232,34 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
             </div>
             <div className={s.formSection}>
                 <div className={s.formItem}>
-                    <div className={s.topic}>
-                        KARTTA
-                    </div>
-                    <div className={s.formItem}>
-                        <div className={s.flexInnerRow}>
-                            <Button
-                                onClick={this.onClick}
-                                type={ButtonType.ROUND}
-                            >
-                                Kartta
-                            </Button>
-                            <Checkbox
-                                checked={false}
-                                text={'Muotopisteet kartalle'}
-                                onClick={this.onClick}
-                            />
-                            <div className={s.flexButtonFiller} />
-                        </div>
-                    </div>
+                    KARTTA
                 </div>
                 <div className={s.formItem}>
                     Esitettävien ajoaikojen kausi ja aikajakso
+                    (Toteutus / suunnittelu kesken)
                     <div className={s.flexInnerRow}>
+                        {/* TODO */}
                         <Dropdown
                             onChange={this.onChange}
-                            items={['Suunta 2']}
+                            disabled={isEditingDisabled}
+                            items={['Suunta 1']}
                             selected={'Suunta 1'}
                         />
+                        {/* TODO */}
                         <Dropdown
-                            onChange={this.onClick}
+                            onChange={this.onChange}
+                            disabled={isEditingDisabled}
                             items={['Suunta 2']}
-                            selected={'Suunta 1'}
+                            selected={'Suunta 2'}
                         />
                     </div>
                 </div>
             </div>
-            <LinkListView
-                routePath={this.props.routePath}
-            />
+            <div className={s.formSection}>
+                <LinkListView
+                    routePath={this.props.routePath}
+                />
+            </div>
         </div>
         );
     }

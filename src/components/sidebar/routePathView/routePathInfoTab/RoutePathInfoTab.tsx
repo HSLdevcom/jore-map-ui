@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { IValidationResult } from '~/validation/FormValidator';
 import RoutePathForm from './RoutePathForm';
 import * as s from './routePathInfoTab.scss';
 
@@ -15,7 +14,7 @@ interface IRoutePathInfoTabProps {
     isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
-    markInvalidFields: Function;
+    markInvalidProperties: (property: string, isValid: boolean) => void;
     isNewRoutePath: boolean;
 }
 
@@ -29,13 +28,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         };
     }
 
-    private onChange = (property: string, value: any, validationResult?: IValidationResult) => {
-        this.props.routePathStore!.updateRoutePathProperty(property, value);
-        if (validationResult) {
-            this.props.markInvalidFields(property, validationResult!.isValid);
-        }
-    }
-
     render() {
         const routePath = this.props.routePathStore!.routePath;
 
@@ -45,7 +37,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
             <div className={s.content}>
                 <div className={s.formSection}>
                     <RoutePathForm
-                        onChange={this.onChange}
+                        markInvalidProperties={this.props.markInvalidProperties}
                         isEditingDisabled={this.props.isEditingDisabled}
                         routePath={this.props.routePathStore!.routePath!}
                         isNewRoutePath={this.props.isNewRoutePath}
