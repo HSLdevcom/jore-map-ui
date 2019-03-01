@@ -27,9 +27,6 @@ interface IRoutePathFormProps {
 @inject('routePathStore')
 @observer
 class RoutePathForm extends React.Component<IRoutePathFormProps>{
-    private onClick = () => {
-        // TODO
-    }
     private onChange = (property: string) =>
         (value: any, validationResult?: IValidationResult) => {
             this.props.routePathStore!.updateRoutePathProperty(property, value);
@@ -250,7 +247,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         />
                         {/* TODO */}
                         <Dropdown
-                            onChange={this.onClick}
+                            onChange={this.onChange}
                             disabled={isEditingDisabled}
                             items={['Suunta 2']}
                             selected={'Suunta 2'}
