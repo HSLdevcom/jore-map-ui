@@ -11,6 +11,9 @@
     border-right: 1px solid #c5c5c5;
 
     .content {
+        overflow-y: scroll;
+        flex-grow: 1;
+
         > div {
             height: 100%;
             box-sizing: border-box;

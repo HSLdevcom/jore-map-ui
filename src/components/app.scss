@@ -1,6 +1,7 @@
 .appView {
     display: flex;
     flex-direction: column;
+    height: 100vh;
 
     .hidden {
         display: none;

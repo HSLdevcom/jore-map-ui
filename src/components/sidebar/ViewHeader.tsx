@@ -10,6 +10,7 @@ interface IViewHeaderProps {
     hideCloseButton?: boolean;
     isEditButtonVisible?: boolean;
     isEditing?: boolean;
+    userHasWriteAccess?: boolean;
     shouldShowClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onCloseButtonClick?: () => void;
@@ -41,7 +42,7 @@ const ViewHeader = (props:IViewHeaderProps) => {
         <div className={s.viewHeaderView}>
             <div className={s.topic}>{props.children}</div>
             <div>
-                { props.isEditButtonVisible &&
+                { props.isEditButtonVisible && props.userHasWriteAccess &&
                     <FiEdit3
                         onClick={onEditButtonClick}
                         className={
