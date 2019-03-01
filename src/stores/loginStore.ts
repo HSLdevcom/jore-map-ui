@@ -1,8 +1,11 @@
 import { action, computed, observable } from 'mobx';
 import Constants from '~/constants/constants';
 
+import { IAuthorizationResponse } from '~/services/authService';
+
 export class LoginStore {
     @observable private _isAuthenticated: boolean;
+    @observable private _hasWriteAccess: boolean;
     @observable private _userEmail?: string;
 
     constructor() {
@@ -15,16 +18,24 @@ export class LoginStore {
     }
 
     @computed
+    get hasWriteAccess() {
+        return this._hasWriteAccess;
+    }
+
+    @computed
     get userEmail() {
         return this._userEmail;
     }
 
     @action
-    public setIsAuthenticated(isAuthenticated: boolean, userEmail?: string) {
-        this._isAuthenticated = isAuthenticated;
-        this._userEmail = userEmail;
+    public setAuthenticationInfo(authRespose: IAuthorizationResponse) {
+        this._isAuthenticated = authRespose.isOk;
+        this._hasWriteAccess = authRespose.hasWriteAccess;
+        this._userEmail = authRespose.email;
+
+        // TODO: this is only temporary:
         // tslint:disable-next-line:no-console
-        console.log(`User: ${userEmail} is now authenticated`); // TODO: this is only temporary
+        console.log(`User: ${authRespose.email} is now authenticated`);
     }
 }
 

@@ -8,16 +8,14 @@ import * as s from './inputContainer.scss';
 type inputType = 'text' | 'number' | 'date';
 
 interface IInputProps {
-    label: string;
+    label: string|JSX.Element;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
     onChange?: (value: any, validationResult?: IValidationResult) => void;
     value?: string|number|Date;
     validatorRule?: string;
-    icon?: React.ReactNode;
     type?: inputType; // Defaults to text
-    onIconClick?: () => void;
 }
 
 interface IInputState {
@@ -45,7 +43,11 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
 
     private updateValue = (value: any, validatorResult?: IValidationResult) => {
         if (this.props.type === 'number') {
-            this.props.onChange!(parseFloat(value), validatorResult);
+            const parsedValue = parseFloat(value);
+            this.props.onChange!(
+                !isNaN(parsedValue) ? parsedValue : null,
+                validatorResult,
+            );
         } else {
             this.props.onChange!(value, validatorResult);
         }
@@ -73,19 +75,33 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         this.updateValue(value, validatorResult);
     }
 
-    private renderDisabledContent = (type: inputType) => {
-        return (
-            <div>
-                {
-                    type === 'date' ?
-                        moment(this.props.value!).format('DD.MM.YYYY') :
-                        this.props.value!
-                }
-            </div>
-        );
+    private renderDisabledContent = () => {
+        const type = this.props.type || 'text';
+
+        if (type === 'text' || type === 'number') {
+            return (
+                <div className={s.editingDisabled}>
+                    {this.props.value!}
+                </div>
+            );
+        }
+        if (type === 'date') {
+            return (
+                <div>
+                    {
+                        type === 'date' ?
+                            moment(this.props.value!).format('DD.MM.YYYY') :
+                            this.props.value!
+                    }
+                </div>
+            );
+        }
+        throw new Error(`inputContainer type not supported: ${type}`); // Should not occur
     }
 
-    private renderEditableContent = (type: inputType) => {
+    private renderEditableContent = () => {
+        const type = this.props.type || 'text';
+
         if (type === 'date') {
             return (
                 <DatePicker
@@ -105,36 +121,22 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                         !this.state.isValid ? s.invalidInput : null)
                 }
                 disabled={this.props.disabled}
-                value={this.props.value ? (this.props.value as string | number) : ''}
+                value={this.props.value !== null ? (this.props.value as string | number) : ''}
                 onChange={this.onChange}
             />
         );
     }
 
-    private renderInputLabel = () => (
-        <div className={s.inputLabel}>
-            {this.props.label}
-            {!this.props.disabled && this.props.icon && this.props.onIconClick &&
-            <div
-                className={classnames(s.inline, s.pointer)}
-                onClick={this.props.onIconClick!}
-            >
-                {this.props.icon}
-            </div>
-            }
-        </div>
-    )
-
     render() {
-        const type = this.props.type || 'text';
-
         return (
             <div className={s.formItem}>
-                {this.renderInputLabel()}
+                <div className={s.inputLabel}>
+                    {this.props.label}
+                </div>
                 {
                     this.props.disabled ?
-                        this.renderDisabledContent(type) :
-                        this.renderEditableContent(type)
+                        this.renderDisabledContent() :
+                        this.renderEditableContent()
                 }
                 { this.state.errorMessage && !this.props.disabled &&
                     <div className={s.errorMessage}>

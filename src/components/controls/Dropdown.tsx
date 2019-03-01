@@ -10,7 +10,7 @@ interface IDropdownBaseProps {
     label?: string;
     selected: string;
     disabled?: boolean;
-    onChange(selectedItem: string): void;
+    onChange: (value: any) => void;
 }
 
 interface IDropdownProps extends IDropdownBaseProps {
@@ -54,6 +54,8 @@ class Dropdown extends React.Component
             }
         }
 
+        const selectedItem = dropDownItemList.find(item => item.key === this.props.selected);
+
         return (
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
@@ -64,7 +66,7 @@ class Dropdown extends React.Component
                     }
                     {this.props.disabled ?
                         <div className={s.disableEditing}>
-                            {dropDownItemList.find(item => item.key === this.props.selected)!.value}
+                            {Boolean(selectedItem) ? selectedItem!.value : ''}
                         </div>
                     :
                         <select

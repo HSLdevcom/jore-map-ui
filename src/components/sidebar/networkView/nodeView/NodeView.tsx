@@ -33,7 +33,7 @@ interface INodeViewProps {
 interface INodeViewState {
     isLoading: boolean;
     isEditingDisabled: boolean;
-    invalidFieldsMap: object;
+    invalidPropertiesMap: object;
 }
 
 @inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore')
@@ -44,7 +44,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.state = {
             isLoading: false,
             isEditingDisabled: true,
-            invalidFieldsMap: {},
+            invalidPropertiesMap: {},
         };
     }
 
@@ -91,8 +91,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.setState({ isLoading: true });
         try {
             await NodeService.updateNode(this.props.nodeStore!.node);
-
-            this.props.nodeStore!.resetChanges();
+            this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
             const errMessage = err.message ? `, (${err.message})` : '';
@@ -105,7 +104,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         (property: string) => (value: any, validationResult?: IValidationResult) => {
             this.props.nodeStore!.updateNode(property, value);
             if (validationResult) {
-                this.markInvalidFields(property, validationResult!.isValid);
+                this.markInvalidProperties(property, validationResult!.isValid);
             }
         }
 
@@ -113,7 +112,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         (property: string) => (value: any, validationResult?: IValidationResult) => {
             this.props.nodeStore!.updateStop(property, value);
             if (validationResult) {
-                this.markInvalidFields(property, validationResult!.isValid);
+                this.markInvalidProperties(property, validationResult!.isValid);
             }
         }
 

@@ -46,6 +46,8 @@ class ApiClient {
             const response = await fetch(this.getUrl(endpoint), {
                 method,
                 body: JSON.stringify(formattedObject),
+                // To keep the same express session information with each request
+                credentials: 'include',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -53,7 +55,11 @@ class ApiClient {
             });
 
             if (response.status >= 200 && response.status < 300) {
-                return await response.json();
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.indexOf('application/json') !== -1) {
+                    return await response.json();
+                }
+                return await response.text();
             }
             error = {
                 errorCode: response.status,
