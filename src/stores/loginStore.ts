@@ -37,6 +37,13 @@ export class LoginStore {
         // tslint:disable-next-line:no-console
         console.log(`User: ${authRespose.email} is now authenticated`);
     }
+
+    @action
+    public clear() {
+        this._isAuthenticated = false;
+        this._userEmail = undefined;
+        this._hasWriteAccess = false;
+    }
 }
 
 const observableLoginStore = new LoginStore();

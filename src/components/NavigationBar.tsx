@@ -1,13 +1,30 @@
 import React, { Component } from 'react';
+import { IoMdContact } from 'react-icons/io';
 import hslLogo from '~/assets/hsl-logo.png';
 import routeBuilder from '~/routing/routeBuilder';
+import { observer, inject } from 'mobx-react';
+import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
+import ButtonType from '~/enums/buttonType';
+import { Button } from './controls/index';
 import packageVersion from '../project/version.json';
 import * as s from './navigationBar.scss';
 
-class NavigationBar extends Component {
+interface INavigationBarProps {
+    loginStore?: LoginStore;
+}
+
+@inject('loginStore')
+@observer
+class NavigationBar extends Component<INavigationBarProps> {
     private goToHomeView = () => {
+        const homeLink = routeBuilder.to(SubSites.home).clear().toLink();
+        navigator.goTo(homeLink);
+    }
+
+    private logout = () => {
+        this.props.loginStore!.clear();
         const homeLink = routeBuilder.to(SubSites.home).clear().toLink();
         navigator.goTo(homeLink);
     }
@@ -26,6 +43,24 @@ class NavigationBar extends Component {
                     <p className={s.title}>
                         Joukkoliikennerekisteri
                     </p>
+                </div>
+                <div className={s.authSection}>
+                    <div className={s.authInfo}>
+                        <IoMdContact />
+                        <div>
+                            {this.props.loginStore!.userEmail}
+                            <br/>
+                            { this.props.loginStore!.hasWriteAccess ?
+                                'Kirjoitusoikeuksia' : 'Lukuoikeuksia'
+                            }
+                        </div>
+                    </div>
+                    <Button
+                        className={s.logoutButton}
+                        type={ButtonType.SAVE}
+                        onClick={this.logout}
+                    >Log out
+                    </Button>
                 </div>
             </div>
         );

@@ -3,6 +3,9 @@
 .navigationBarView {
     background-color: $blue;
     flex-basis: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 
     .header {
         cursor: pointer;
@@ -24,6 +27,34 @@
             height: 26px;
             text-align: center;
             vertical-align: middle;
+        }
+    }
+
+    .authSection {
+        display: flex;
+
+        .authInfo {
+            font-size: 14px;
+            display: flex;
+            flex-direction: row;
+            color: white;
+            padding: 8px;
+
+            svg {
+                font-size: 32px;
+                margin-right: 6px;
+            }
+        }
+
+        .logoutButton {
+            height: 50px;
+            line-height: 50px;
+            padding: 0px 20px;
+            background-color: #ff7c7c;
+        }
+
+        .logoutButton:hover {
+            background-color: #ce6767;
         }
     }
 }
