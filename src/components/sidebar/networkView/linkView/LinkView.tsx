@@ -29,7 +29,7 @@ import * as s from './linkView.scss';
 interface ILinkViewState {
     isLoading: boolean;
     isEditingDisabled: boolean;
-    invalidFieldsMap: object;
+    invalidPropertiesMap: object;
 }
 
 interface ILinkViewProps {
@@ -48,7 +48,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.state = {
             isLoading: false,
             isEditingDisabled: true,
-            invalidFieldsMap: {},
+            invalidPropertiesMap: {},
         };
     }
 
@@ -88,12 +88,13 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.setState({ isLoading: false });
     }
 
-    private onChange = (property: string) => (value: any, validationResult?: IValidationResult) => {
-        this.props.linkStore!.updateLinkProperty(property, value);
-        if (validationResult) {
-            this.markInvalidFields(property, validationResult!.isValid);
+    private onChange = (property: string) =>
+        (value: any, validationResult?: IValidationResult) => {
+            this.props.linkStore!.updateLinkProperty(property, value);
+            if (validationResult) {
+                this.markInvalidProperties(property, validationResult!.isValid);
+            }
         }
-    }
 
     private save = async () => {
         this.setState({ isLoading: true });

@@ -27,13 +27,6 @@
         font-size: 1rem;
     }
 
-    .routeInformationContainer {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding-top:10px;
-    }
-
     .staticInfo {
         margin-top: 5px;
         font-size: $smallFontSize;
@@ -44,4 +37,5 @@
     &.loaderContainer > div {
         margin: 30px auto;
     }
+
 }

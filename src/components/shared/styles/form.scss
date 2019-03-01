@@ -61,3 +61,7 @@ $labelColor: $mediumGrey;
     box-shadow: 0 0 2px $errorRed;
     border-color: $errorRed;
 }
+
+.disabled {
+    pointer-events: none;
+}
