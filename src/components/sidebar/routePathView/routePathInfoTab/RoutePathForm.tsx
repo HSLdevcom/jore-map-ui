@@ -78,6 +78,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
+        const disabledIfUpdating = !this.props.isNewRoutePath || this.props.isEditingDisabled;
 
         const routePath = this.props.routePath;
         return (
@@ -88,13 +89,11 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         label='REITIN NIMI SUOMEKSI'
                         disabled={true}
                         value={routePath.routePathName}
-                        onChange={this.onChange('routePathName')}
                     />
                     <InputContainer
                         label='REITIN NIMI RUOTSIKSI'
                         disabled={true}
                         value={routePath.routePathNameSw}
-                        onChange={this.onChange('routePathNameSw')}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -151,7 +150,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         type='date'
                         value={routePath.startTime}
                         onChange={this.onChange('startTime')}
-                        disabled={!this.props.isNewRoutePath || this.props.isEditingDisabled}
+                        disabled={disabledIfUpdating}
                         validatorRule={routePathValidationModel.date}
                     />
                     <InputContainer
@@ -179,7 +178,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                 <div className={s.flexRow}>
                     <Dropdown
                         label='SUUNTA'
-                        disabled={isEditingDisabled}
+                        disabled={disabledIfUpdating}
                         onChange={this.onChange('direction')}
                         items={['1', '2']}
                         selected={this.props.routePath.direction}
