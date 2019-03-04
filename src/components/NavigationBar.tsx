@@ -40,9 +40,9 @@ class NavigationBar extends Component<INavigationBarProps> {
                 </div>
                 <div onClick={this.goToHomeView} className={s.header}>
                     <img className={s.logo} src={hslLogo} alt='HSL Logo'/>
-                    <p className={s.title}>
+                    <div className={s.title}>
                         Joukkoliikennerekisteri
-                    </p>
+                    </div>
                 </div>
                 <div className={s.authSection}>
                     <div className={s.authInfo}>
@@ -59,7 +59,7 @@ class NavigationBar extends Component<INavigationBarProps> {
                         className={s.logoutButton}
                         type={ButtonType.SAVE}
                         onClick={this.logout}
-                    >Log out
+                    >Kirjaudu ulos
                     </Button>
                 </div>
             </div>
