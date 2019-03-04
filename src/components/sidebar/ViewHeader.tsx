@@ -25,13 +25,13 @@ const revertPromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma
 @inject('loginStore')
 @observer
 class ViewHeader extends React.Component<IViewHeaderProps> {
-    onCloseButtonClick() {
+    onCloseButtonClick = () => {
         if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
             this.props.onCloseButtonClick ? this.props.onCloseButtonClick() : navigator.goBack();
         }
     }
 
-    onEditButtonClick() {
+    onEditButtonClick = () => {
         if (this.props.isEditing!) {
             if (!this.props.shouldShowClosePromptMessage
                 || confirm(revertPromptMessage)) {
@@ -51,7 +51,7 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
                         this.props.isEditButtonVisible &&
                         this.props.loginStore!.hasWriteAccess &&
                         <FiEdit3
-                            onClick={this.props.onEditButtonClick}
+                            onClick={this.onEditButtonClick}
                             className={
                                 classnames(
                                     s.icon,
@@ -63,7 +63,7 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
                     { !this.props.hideCloseButton &&
                         <FiXCircle
                             className={s.icon}
-                            onClick={this.props.onCloseButtonClick}
+                            onClick={this.onCloseButtonClick}
                         />
                     }
                 </div>
