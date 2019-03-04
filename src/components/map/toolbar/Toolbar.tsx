@@ -4,6 +4,7 @@ import { matchPath } from 'react-router';
 import classnames from 'classnames';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
+import LoginStore from '~/stores/loginStore';
 import RoutePathButtons from './toolbarRoutePathButtons';
 import ToolbarCommonButtons from './ToolbarCommonButtons';
 import ToolbarHelp from './toolbarHelp';
@@ -12,6 +13,7 @@ import * as s from './toolbar.scss';
 @observer
 class Toolbar extends React.Component {
     private renderObjectSpecificTools = () => {
+        if (!LoginStore!.hasWriteAccess) return null;
         if (matchPath(navigator.getPathName(), SubSites.routePath)) {
             return <RoutePathButtons />;
         }
@@ -26,7 +28,9 @@ class Toolbar extends React.Component {
                         {this.renderObjectSpecificTools()}
                     </div>
                     <div className={s.toolbar}>
-                        <ToolbarCommonButtons />
+                        <ToolbarCommonButtons
+                            userHasWriteAccess={LoginStore!.hasWriteAccess}
+                        />
                     </div>
                 </div>
                 <ToolbarHelp />

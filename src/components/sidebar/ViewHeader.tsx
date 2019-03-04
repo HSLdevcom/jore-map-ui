@@ -1,66 +1,75 @@
 import React, { ReactNode } from 'react';
+import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { FiXCircle, FiEdit3 } from 'react-icons/fi';
+import { LoginStore } from '~/stores/loginStore';
 import navigator from '~/routing/navigator';
 import * as s from './viewHeader.scss';
 
 interface IViewHeaderProps {
     children: ReactNode;
-    closePromptMessage?: string;
     hideCloseButton?: boolean;
     isEditButtonVisible?: boolean;
+    loginStore?: LoginStore;
     isEditing?: boolean;
-    userHasWriteAccess?: boolean;
     shouldShowClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onCloseButtonClick?: () => void;
 }
 
-const ViewHeader = (props:IViewHeaderProps) => {
-    // tslint:disable:max-line-length
-    const closePromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
-    const revertPromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
-    // tslint:enable:max-line-length
+// tslint:disable:max-line-length
+const closePromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+const revertPromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
+// tslint:enable:max-line-length
 
-    const onCloseButtonClick = () => {
-        if (!props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
-            props.onCloseButtonClick ? props.onCloseButtonClick() : navigator.goBack();
+@inject('loginStore')
+@observer
+class ViewHeader extends React.Component<IViewHeaderProps> {
+    onCloseButtonClick() {
+        if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
+            this.props.onCloseButtonClick ? this.props.onCloseButtonClick() : navigator.goBack();
         }
-    };
+    }
 
-    const onEditButtonClick = () => {
-        if (props.isEditing!) {
-            if (!props.shouldShowClosePromptMessage || confirm(revertPromptMessage)) {
-                props.onEditButtonClick!();
+    onEditButtonClick() {
+        if (this.props.isEditing!) {
+            if (!this.props.shouldShowClosePromptMessage
+                || confirm(revertPromptMessage)) {
+                this.props.onEditButtonClick!();
             }
         } else {
-            props.onEditButtonClick!();
+            this.props.onEditButtonClick!();
         }
-    };
+    }
 
-    return (
-        <div className={s.viewHeaderView}>
-            <div className={s.topic}>{props.children}</div>
-            <div>
-                { props.isEditButtonVisible && props.userHasWriteAccess &&
-                    <FiEdit3
-                        onClick={onEditButtonClick}
-                        className={
-                            classnames(
-                                s.icon,
-                                props.isEditing && s.active,
-                            )
-                        }
-                    />
-                }
-                { !props.hideCloseButton &&
-                    <FiXCircle
-                        className={s.icon}
-                        onClick={onCloseButtonClick}
-                    />
-                }
+    render() {
+        return (
+            <div className={s.viewHeaderView}>
+                <div className={s.topic}>{this.props.children}</div>
+                <div>
+                    {
+                        this.props.isEditButtonVisible &&
+                        this.props.loginStore!.hasWriteAccess &&
+                        <FiEdit3
+                            onClick={this.props.onEditButtonClick}
+                            className={
+                                classnames(
+                                    s.icon,
+                                    this.props.isEditing && s.active,
+                                )
+                            }
+                        />
+                    }
+                    { !this.props.hideCloseButton &&
+                        <FiXCircle
+                            className={s.icon}
+                            onClick={this.props.onCloseButtonClick}
+                        />
+                    }
+                </div>
             </div>
-        </div>
-    );
-};
+        );
+    }
+
+}
 export default ViewHeader;

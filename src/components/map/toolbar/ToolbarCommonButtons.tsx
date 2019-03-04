@@ -9,8 +9,12 @@ import EventManager from '~/util/EventManager';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 
+interface IToolbarCommonButtonsProps {
+    userHasWriteAccess: boolean;
+}
+
 @observer
-class ToolbarCommonButtons extends React.Component {
+class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
     private print = () => {
     }
 
@@ -47,22 +51,26 @@ class ToolbarCommonButtons extends React.Component {
                     >
                         <FiExternalLink />
                     </MapControlButton>
-                    <MapControlButton
-                        onClick={this.undo}
-                        isActive={false}
-                        isDisabled={false}
-                        label='Kumoa (ctrl+z)'
-                    >
-                        <IoMdUndo />
-                    </MapControlButton>
-                    <MapControlButton
-                        onClick={this.redo}
-                        isActive={false}
-                        isDisabled={false}
-                        label='Tee uudestaan (ctrl+y)'
-                    >
-                        <IoMdRedo />
-                    </MapControlButton>
+                    { this.props.userHasWriteAccess &&
+                        <>
+                            <MapControlButton
+                                onClick={this.undo}
+                                isActive={false}
+                                isDisabled={false}
+                                label='Kumoa (ctrl+z)'
+                            >
+                                <IoMdUndo />
+                            </MapControlButton>
+                            <MapControlButton
+                                onClick={this.redo}
+                                isActive={false}
+                                isDisabled={false}
+                                label='Tee uudestaan (ctrl+y)'
+                            >
+                                <IoMdRedo />
+                            </MapControlButton>
+                        </>
+                    }
                 </div>
             </div>
         );

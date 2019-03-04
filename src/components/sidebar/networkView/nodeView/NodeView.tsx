@@ -12,7 +12,6 @@ import { Button, Dropdown } from '~/components/controls';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
-import { LoginStore } from '~/stores/loginStore';
 import NodeService from '~/services/nodeService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
@@ -29,7 +28,6 @@ interface INodeViewProps {
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
-    loginStore?: LoginStore;
 }
 
 interface INodeViewState {
@@ -38,7 +36,7 @@ interface INodeViewState {
     invalidPropertiesMap: object;
 }
 
-@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore', 'loginStore')
+@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
@@ -154,7 +152,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         isEditButtonVisible={true}
                         shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
-                        userHasWriteAccess={this.props.loginStore!.hasWriteAccess}
                         onEditButtonClick={this.toggleIsEditingEnabled}
                     >
                         Solmu {node.id}
@@ -193,15 +190,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         }
                     </div>
                 </div>
-                { this.props.loginStore!.hasWriteAccess &&
-                    <Button
-                        type={ButtonType.SAVE}
-                        disabled={isSaveButtonDisabled}
-                        onClick={this.save}
-                    >
-                        Tallenna muutokset
-                    </Button>
-                }
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                    onClick={this.save}
+                >
+                    Tallenna muutokset
+                </Button>
             </div>
         );
     }
