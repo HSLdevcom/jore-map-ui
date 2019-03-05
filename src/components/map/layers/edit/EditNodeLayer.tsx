@@ -6,6 +6,7 @@ import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import navigator from '~/routing/navigator';
+import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
 import { ILink } from '~/models';
 import EventManager from '~/util/EventManager';
@@ -17,10 +18,11 @@ import ArrowDecorator from '../ArrowDecorator';
 
 interface IEditNodeLayerProps {
     nodeStore?: NodeStore;
+    loginStore?: LoginStore;
     leaflet: LeafletContext;
 }
 
-@inject('nodeStore')
+@inject('nodeStore', 'loginStore')
 @observer
 class EditNodeLayer extends Component<IEditNodeLayerProps> {
     private reactionDisposer: IReactionDisposer;
@@ -60,7 +62,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         return (
             <NodeMarker
                 key={node.id}
-                isDraggable={true}
+                isDraggable={this.props.loginStore!.hasWriteAccess}
                 node={node}
                 onMoveMarker={this.onMoveMarker()}
             />
@@ -112,6 +114,10 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 [_.cloneDeep(link.geometry)],
                 { interactive: false },
             ).addTo(map);
+
+            // Disabling editing when user doesn't have write access
+            if (!this.props.loginStore!.hasWriteAccess) return;
+
             editableLink.enableEdit();
             const latLngs = editableLink.getLatLngs() as L.LatLng[][];
             const coords = latLngs[0];

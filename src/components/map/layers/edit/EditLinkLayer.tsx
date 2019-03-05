@@ -6,6 +6,7 @@ import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import EventManager from '~/util/EventManager';
+import { LoginStore } from '~/stores/loginStore';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
@@ -17,9 +18,10 @@ import ArrowDecorator from '../ArrowDecorator';
 interface IEditLinkLayerProps {
     linkStore?: LinkStore;
     leaflet: LeafletContext;
+    loginStore?: LoginStore;
 }
 
-@inject('linkStore')
+@inject('linkStore', 'loginStore')
 @observer
 class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private reactionDisposer: IReactionDisposer;
@@ -84,6 +86,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 [_.cloneDeep(link.geometry)],
                 { interactive: false },
             ).addTo(map);
+
+            // Disabling editing when user doesn't have write access
+            if (!this.props.loginStore!.hasWriteAccess) return;
+
             editableLink.enableEdit();
             const latLngs = editableLink.getLatLngs() as L.LatLng[][];
             const coords = latLngs[0];
