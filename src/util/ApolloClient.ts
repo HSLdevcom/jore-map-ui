@@ -8,7 +8,11 @@ const cache = new InMemoryCache();
 
 const client = new ApolloClient({
     cache,
-    link: new BatchHttpLink({ uri: `${API_URL}/graphql` }),
+    link: new BatchHttpLink({
+        uri: `${API_URL}/graphql`,
+        // To keep the same express session information with each request
+        credentials: 'include',
+    }),
 });
 
 export default client;

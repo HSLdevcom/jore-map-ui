@@ -46,6 +46,8 @@ class ApiClient {
             const response = await fetch(this.getUrl(endpoint), {
                 method,
                 body: JSON.stringify(formattedObject),
+                // To keep the same express session information with each request
+                credentials: 'include',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
