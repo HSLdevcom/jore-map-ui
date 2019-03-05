@@ -19,8 +19,9 @@ interface ILoginProps {
 class Login extends React.Component<ILoginProps> {
     private openLoginForm = () => {
         window.location.replace(
+            // TODO: split into parts & move into constants
             // tslint:disable-next-line
-            'https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=http://localhost:3000/afterLogin&response_type=code&scope=email'
+            'https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=http://localhost:3000/afterLogin&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly'
         );
     }
 
