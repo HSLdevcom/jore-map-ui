@@ -10,16 +10,18 @@ import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
+import { MapStore, MapFilter } from '~/stores/mapStore';
 import NodeMarker from '../mapIcons/NodeMarker';
 import { LeafletContext } from '../../Map';
 import ArrowDecorator from '../ArrowDecorator';
 
 interface IEditLinkLayerProps {
     linkStore?: LinkStore;
+    mapStore?: MapStore;
     leaflet: LeafletContext;
 }
 
-@inject('linkStore')
+@inject('linkStore', 'mapStore')
 @observer
 class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private reactionDisposer: IReactionDisposer;
@@ -120,8 +122,11 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     }
 
     private renderLinkDecorator = () => {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+
         const link = this.props.linkStore!.link;
         if (!link) return null;
+
         return (
             <ArrowDecorator
                 color='#4f93f8'

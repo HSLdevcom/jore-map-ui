@@ -6,12 +6,14 @@ import { INode, IRoutePathLink } from '~/models';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
+import { MapStore, MapFilter } from '~/stores/mapStore';
 import NodeMarker from './mapIcons/NodeMarker';
 import StartMarker from './mapIcons/StartMarker';
 import ArrowDecorator from './ArrowDecorator';
 
 interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;
+    mapStore?: MapStore;
     internalId: string;
     routePathLinks: IRoutePathLink[];
     onClick: (target: any) => () => void;
@@ -23,7 +25,7 @@ interface RoutePathLinkLayerProps {
     weight: number;
 }
 
-@inject('popupStore')
+@inject('popupStore', 'mapStore')
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private layerRef: React.Ref<any>;
@@ -96,6 +98,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     private renderDirectionDecoration() {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+
         const routePathLinks = this.props.routePathLinks;
 
         const geoms = routePathLinks
