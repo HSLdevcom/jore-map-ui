@@ -11,6 +11,7 @@ import RoutePathLinkService from '~/services/routePathLinkService';
 import NodeType from '~/enums/nodeType';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
+import TextContainer from '../TextContainer';
 import MultiTabTextarea from '../networkView/linkView/MultiTabTextarea';
 import Loader from '../../shared/loader/Loader';
 import ViewHeader from '../ViewHeader';
@@ -139,38 +140,33 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
             <div className={classnames(s.flexRow, s.formSection)}>
                 <div className={s.column}>
                     <div className={s.flexInnerRow}>
-                        <InputContainer
+                        <TextContainer
                             label='REITTITUNNUS'
-                            disabled={true}
                             value={this.state.routePathLink!.routeId}
                         />
-                        <InputContainer
+                        <TextContainer
                             label='SUUNTA'
-                            disabled={true}
                             value={`Suunta ${routePath ? routePath.direction : '?'}`}
                         />
                     </div>
                     <div className={s.flexInnerRow}>
-                        <InputContainer
+                        <TextContainer
                             label='VOIM. AST'
-                            disabled={true}
                             value={
                                 routePath ? moment(
                                     routePath.startTime,
                                 ).format('DD.MM.YYYY') : ''}
                         />
-                        <InputContainer
+                        <TextContainer
                             label='VIIM. VOIM'
-                            disabled={true}
                             value={
                                 routePath ? moment(
                                     routePath.endTime,
                                 ).format('DD.MM.YYYY') : ''}
                         />
                     </div>
-                    <InputContainer
+                    <TextContainer
                         label='NIMI'
-                        disabled={true}
                         value={route ? route.routeName : ''}
                     />
                 </div>
@@ -198,9 +194,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRowFlexEnd}>
-                        <InputContainer
+                        <TextContainer
                             label='ALKU'
-                            disabled={true}
                             value={startNode ? startNode.id : '-'}
                         />
                         <Dropdown
@@ -211,9 +206,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                                     ? this.getNodeDescription(startNode.type)
                                     : nodeDescriptions.unknown}
                         />
-                        <InputContainer
+                        <TextContainer
                             label=''
-                            disabled={true}
                             value={
                                 startNode && startNode.stop ? startNode.stop!.nameFi : '-'}
                         />
@@ -221,9 +215,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRowFlexEnd}>
-                        <InputContainer
+                        <TextContainer
                             label='LOPPU'
-                            disabled={true}
                             value={endNode ? endNode.id : '-'}
                         />
                         <Dropdown
@@ -234,9 +227,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                                     ? this.getNodeDescription(endNode.type)
                                     : nodeDescriptions.unknown}
                         />
-                        <InputContainer
+                        <TextContainer
                             label=''
-                            disabled={true}
                             value={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
                         />
                     </div>
@@ -274,24 +266,29 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                     <InputContainer
                         label='SUUNTA'
                         placeholder='Suunta 1'
+                        onChange={this.onChange}
                     />
                     <InputContainer
                         label='OS. NRO'
                         placeholder='2 B'
+                        onChange={this.onChange}
                     />
                     <InputContainer
                         label='LINKIN PITUUS'
                         placeholder='2'
+                        onChange={this.onChange}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='KATU'
                         placeholder='Rautatientori'
+                        onChange={this.onChange}
                     />
                     <InputContainer
                         label='KATUOSAN OS. NRO'
                         placeholder='1'
+                        onChange={this.onChange}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -402,13 +399,13 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                     <div className={s.flexFiller} />
                 </div>
                 <div className={s.flexRow}>
-                    <InputContainer
+                    <TextContainer
                         label='PÄIVITTÄJÄ'
-                        placeholder='Vuori Tuomas'
+                        value='Vuori Tuomas (hard coded)'
                     />
-                    <InputContainer
+                    <TextContainer
                         label='PÄIVITYSPVM'
-                        placeholder='23.08.2017'
+                        value='23.08.2017 (hard coded)'
                     />
                 </div>
             </div>

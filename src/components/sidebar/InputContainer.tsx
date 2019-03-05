@@ -9,10 +9,10 @@ type inputType = 'text' | 'number' | 'date';
 
 interface IInputProps {
     label: string|JSX.Element;
+    onChange: (value: any, validationResult?: IValidationResult) => void;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
-    onChange?: (value: any, validationResult?: IValidationResult) => void;
     value?: string|number|Date;
     validatorRule?: string;
     type?: inputType; // Defaults to text
@@ -41,7 +41,26 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         this.validate(this.props.value, nextProps.value, forceUpdate);
     }
 
-    private updateValue = (value: any, validatorResult?: IValidationResult) => {
+    private onChange = (e: React.FormEvent<HTMLInputElement>) => {
+        this.validate(this.props.value, e.currentTarget.value);
+    }
+
+    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
+        if (!forceUpdate && oldValue === newValue) return;
+        if (!this.props.validatorRule) {
+            this.updateParent(newValue);
+            return;
+        }
+        const validatorResult: IValidationResult
+            = FormValidator.validate(newValue, this.props.validatorRule);
+        this.setState({
+            isValid: validatorResult.isValid,
+            errorMessage: validatorResult.errorMessage,
+        });
+        this.updateParent(newValue, validatorResult);
+    }
+
+    private updateParent = (value: any, validatorResult?: IValidationResult) => {
         if (this.props.type === 'number') {
             const parsedValue = parseFloat(value);
             this.props.onChange!(
@@ -51,28 +70,6 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         } else {
             this.props.onChange!(value, validatorResult);
         }
-    }
-
-    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
-        if (!this.props.validatorRule) return;
-        if (!forceUpdate && oldValue === newValue) return;
-
-        const validatorResult: IValidationResult
-            = FormValidator.validate(newValue, this.props.validatorRule);
-        this.setState({
-            isValid: validatorResult.isValid,
-            errorMessage: validatorResult.errorMessage,
-        });
-        return validatorResult;
-    }
-
-    private onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        const value = e.currentTarget.value;
-        let validatorResult: IValidationResult | undefined = undefined;
-        if (this.props.validatorRule) {
-            validatorResult = this.validate(this.props.value, value);
-        }
-        this.updateValue(value, validatorResult);
     }
 
     private renderDisabledContent = () => {
