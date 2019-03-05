@@ -1,9 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
-import moment from 'moment';
 import FormValidator, { IValidationResult } from '../../validation/FormValidator';
 import DatePicker from '../controls/DatePicker';
 import * as s from './inputContainer.scss';
+import TextContainer from './TextContainer';
 
 type inputType = 'text' | 'number' | 'date';
 
@@ -72,30 +72,6 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
         }
     }
 
-    private renderDisabledContent = () => {
-        const type = this.props.type || 'text';
-
-        if (type === 'text' || type === 'number') {
-            return (
-                <div className={s.editingDisabled}>
-                    {this.props.value!}
-                </div>
-            );
-        }
-        if (type === 'date') {
-            return (
-                <div>
-                    {
-                        type === 'date' ?
-                            moment(this.props.value!).format('DD.MM.YYYY') :
-                            this.props.value!
-                    }
-                </div>
-            );
-        }
-        throw new Error(`inputContainer type not supported: ${type}`); // Should not occur
-    }
-
     private renderEditableContent = () => {
         const type = this.props.type || 'text';
 
@@ -107,6 +83,10 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 />
             );
         }
+        const value = (typeof this.props.value === 'string'
+            || typeof this.props.value === 'number') ?
+            this.props.value : '';
+
         return (
             <input
                 placeholder={this.props.disabled ? '' : this.props.placeholder}
@@ -117,23 +97,29 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                         this.props.disabled ? s.disabled : null,
                         !this.state.isValid ? s.invalidInput : null)
                 }
-                disabled={this.props.disabled}
-                value={this.props.value !== null ? (this.props.value as string | number) : ''}
+                value={value}
                 onChange={this.onChange}
             />
         );
     }
 
     render() {
+        if (this.props.disabled) {
+            return (
+                <TextContainer
+                    label={this.props.label}
+                    value={this.props.value}
+                />
+            );
+        }
+
         return (
             <div className={s.formItem}>
                 <div className={s.inputLabel}>
                     {this.props.label}
                 </div>
                 {
-                    this.props.disabled ?
-                        this.renderDisabledContent() :
-                        this.renderEditableContent()
+                    this.renderEditableContent()
                 }
                 { this.state.errorMessage && !this.props.disabled &&
                     <div className={s.errorMessage}>
