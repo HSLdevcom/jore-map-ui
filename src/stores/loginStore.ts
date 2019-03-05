@@ -9,17 +9,17 @@ export class LoginStore {
     @observable private _userEmail?: string;
 
     constructor() {
-        this._isAuthenticated = !Constants.isLoginRequired;
+        this.clear();
     }
 
     @computed
     get isAuthenticated() {
-        return this._isAuthenticated;
+        return this._isAuthenticated || !Constants.isLoginRequired;
     }
 
     @computed
     get hasWriteAccess() {
-        return this._hasWriteAccess;
+        return this._hasWriteAccess || !Constants.isLoginRequired;
     }
 
     @computed
@@ -32,10 +32,6 @@ export class LoginStore {
         this._isAuthenticated = authRespose.isOk;
         this._hasWriteAccess = authRespose.hasWriteAccess;
         this._userEmail = authRespose.email;
-
-        // TODO: this is only temporary:
-        // tslint:disable-next-line:no-console
-        console.log(`User: ${authRespose.email} is now authenticated`);
     }
 
     @action
