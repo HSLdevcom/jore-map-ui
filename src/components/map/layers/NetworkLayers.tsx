@@ -10,7 +10,6 @@ import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import TransitTypeHelper from '~/util/transitTypeHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import TransitType from '~/enums/transitType';
 import NodeType from '~/enums/nodeType';
@@ -33,7 +32,7 @@ interface INetworkLayersProps {
 }
 
 interface ILinkProperties {
-    lnkverkko: string;
+    lnkverkko: TransitType;
     date_ranges?: string;
     lnkalkusolmu: string;
     lnkloppusolmu: string;
@@ -72,16 +71,12 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
             linkki: (properties: ILinkProperties) => {
-                const { lnkverkko: transitTypeCode } = properties;
-                const transitType = TransitTypeHelper
-                    .convertTransitTypeCodeToTransitType(transitTypeCode);
-
                 if (this.isNetworkElementHidden(properties)) {
                     return this.getEmptyStyle();
                 }
 
                 return {
-                    color: TransitTypeColorHelper.getColor(transitType),
+                    color: TransitTypeColorHelper.getColor(properties.lnkverkko),
                     weight: 1,
                     fillOpacity: 1,
                     fill: true,
@@ -98,10 +93,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     return this.getEmptyStyle();
                 }
                 const { lnkverkko: transitTypeCode } = properties;
-                const transitType = TransitTypeHelper
-                    .convertTransitTypeCodeToTransitType(transitTypeCode);
                 return {
-                    color: TransitTypeColorHelper.getColor(transitType),
+                    color: TransitTypeColorHelper.getColor(transitTypeCode),
                     radius: 1,
                 };
             },
@@ -115,8 +108,6 @@ class NetworkLayers extends Component<INetworkLayersProps> {
              lnkalkusolmu: startNodeId,
              lnkloppusolmu: endNodeId,
          }:ILinkProperties) => {
-            const transitType = TransitTypeHelper
-                .convertTransitTypeCodeToTransitType(transitTypeCode);
             const dateRanges = this.parseDateRangesString(dateRangesString);
             const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
             const selectedDate = this.props.networkStore!.selectedDate;
@@ -124,7 +115,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 this.props.linkStore!.link! : undefined;
 
             return Boolean(
-                (!selectedTransitTypes.includes(transitType))
+                (!selectedTransitTypes.includes(transitTypeCode))
                 || this.isDateInRanges(selectedDate, dateRanges)
                 || (
                     !!link &&
@@ -173,23 +164,22 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     throw new Error(`nodeSize not supported ${this.props.networkStore!.nodeSize}`);
                 }
                 if (transitTypeCodes && transitTypeCodes.length === 1) {
-                    switch (TransitTypeHelper
-                        .convertTransitTypeCodeToTransitType(transitTypeCodes[0])) {
+                    switch (transitTypeCodes[0]) {
                     case TransitType.BUS:
-                            className = classNames(className, s.bus);
-                            break;
+                        className = classNames(className, s.bus);
+                        break;
                     case TransitType.TRAM:
-                            className = classNames(className, s.tram);
-                            break;
+                        className = classNames(className, s.tram);
+                        break;
                     case TransitType.SUBWAY:
-                            className = classNames(className, s.subway);
-                            break;
+                        className = classNames(className, s.subway);
+                        break;
                     case TransitType.TRAIN:
-                            className = classNames(className, s.train);
-                            break;
+                        className = classNames(className, s.train);
+                        break;
                     case TransitType.FERRY:
-                            className = classNames(className, s.ferry);
-                            break;
+                        className = classNames(className, s.ferry);
+                        break;
                     }
                 }
 
@@ -216,8 +206,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
                 return true;
             }
-            const nodeTransitTypes = TransitTypeHelper
-                .convertTransitTypeCodesToTransitTypes(transitTypeCodes.split(','));
+            const nodeTransitTypes = transitTypeCodes.split(',');
             if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
                 return true;
             }

@@ -3,7 +3,6 @@ import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IExternalNode from '~/models/externals/IExternalNode';
-import TransitTypeHelper from '~/util/transitTypeHelper';
 import INodeBase from '~/models/baseModels/INodeBase';
 import NodeStopFactory from './nodeStopFactory';
 
@@ -21,8 +20,7 @@ class NodeFactory {
         const nodeStop = externalNode.pysakkiBySoltunnus;
         let transitTypes: TransitType[] = [];
         if (externalNode.transittypes) {
-            transitTypes = externalNode.transittypes.split(',').map(transitTypeCode =>
-                TransitTypeHelper.convertTransitTypeCodeToTransitType(transitTypeCode));
+            transitTypes = externalNode.transittypes.split(',') as TransitType[];
         }
 
         return {
