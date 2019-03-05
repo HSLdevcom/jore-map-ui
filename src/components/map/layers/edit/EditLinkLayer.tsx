@@ -87,24 +87,23 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 { interactive: false },
             ).addTo(map);
 
-            // Disabling editing when user doesn't have write access
-            if (!this.props.loginStore!.hasWriteAccess) return;
+            if (this.props.loginStore!.hasWriteAccess) {
+                editableLink.enableEdit();
+                const latLngs = editableLink.getLatLngs() as L.LatLng[][];
+                const coords = latLngs[0];
+                const coordsToDisable = [coords[0], coords[coords.length - 1]];
+                coordsToDisable.forEach((coordToDisable: any) => {
+                    const vertexMarker = coordToDisable.__vertex;
+                    vertexMarker.dragging.disable();
+                    vertexMarker._events.click = {};
+                    vertexMarker.setOpacity(0);
+                    // Put vertex marker z-index low so that it
+                    // would be below other layers that needs to be clickable
+                    vertexMarker.setZIndexOffset(-1000);
+                });
 
-            editableLink.enableEdit();
-            const latLngs = editableLink.getLatLngs() as L.LatLng[][];
-            const coords = latLngs[0];
-            const coordsToDisable = [coords[0], coords[coords.length - 1]];
-            coordsToDisable.forEach((coordToDisable: any) => {
-                const vertexMarker = coordToDisable.__vertex;
-                vertexMarker.dragging.disable();
-                vertexMarker._events.click = {};
-                vertexMarker.setOpacity(0);
-                // Put vertex marker z-index low so that it
-                // would be below other layers that needs to be clickable
-                vertexMarker.setZIndexOffset(-1000);
-            });
-
-            this.editableLinks.push(editableLink);
+                this.editableLinks.push(editableLink);
+            }
         }
     }
 

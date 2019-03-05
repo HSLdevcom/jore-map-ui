@@ -29,25 +29,22 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
-    private renderApp = () => {
-        const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
-        return (
-            <>
-                <NavigationBar />
-                <div className={s.appContent}>
-                    <div className={sidebarHiddenClass}>
-                        <Sidebar
-                            location={this.props.location}
-                        />
-                    </div>
-                    <Map>
-                        <ErrorBar />
-                    </Map>
+    private renderApp = () => (
+        <>
+            <NavigationBar />
+            <div className={s.appContent}>
+                <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
+                    <Sidebar
+                        location={this.props.location}
+                    />
                 </div>
-                <Dialog />
-            </>
-        );
-    }
+                <Map>
+                    <ErrorBar />
+                </Map>
+            </div>
+            <Dialog />
+        </>
+    )
 
     private renderAfterLogin = () => {
         AuthService.authenticate(
