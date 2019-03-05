@@ -46,7 +46,7 @@ class RoutePathFactory {
             routePathShortName: externalRoutePath.suunimilyh,
             routePathShortNameSw: externalRoutePath.suunimilyhr,
             length: externalRoutePath.suupituus,
-            alternativePath: externalRoutePath.poikkeusreitti === '1',
+            exceptionPath: externalRoutePath.poikkeusreitti,
         };
     }
 
@@ -72,7 +72,7 @@ class RoutePathFactory {
             routePathShortNameSw: '',
             modifiedBy: '',
             length: 0,
-            alternativePath: false,
+            exceptionPath: '0',
         };
     }
 

@@ -1,27 +1,30 @@
 import TransitType from '~/enums/transitType';
 import IRoutePathLink from './IRoutePathLink';
 
-export default interface IRoutePath {
+interface IViewOnlyProperties {
     internalId: string;
+    color?: string;
+    lastModified: Date;
+    visible: boolean;
+    transitType: TransitType;
+    modifiedBy: string;
+}
+
+export default interface IRoutePath extends IViewOnlyProperties {
     routeId: string;
     lineId: string;
-    transitType: TransitType;
     routePathLinks?: IRoutePathLink[]; // TODO: change to be never undefined
     routePathName: string;
     routePathNameSw: string;
     direction: string;
-    visible: boolean;
     startTime: Date;
     endTime: Date;
-    lastModified: Date;
     originFi: string;
     originSw: string;
     destinationFi: string;
     destinationSw: string;
     routePathShortName: string;
     routePathShortNameSw: string;
-    modifiedBy: string;
-    color?: string;
     length: number;
-    alternativePath: boolean;
+    exceptionPath: string;
 }

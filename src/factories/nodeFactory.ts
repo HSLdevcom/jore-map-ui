@@ -50,7 +50,8 @@ class NodeFactory {
         const type = getNodeType(externalNode.soltyyppi);
         // TODO: Change this when creating abstraction layers for reading from postgis
         if (type === NodeType.INVALID) {
-            throw new Error(`Solmun (id: '${externalNode.soltunnus}') tyyppi on virheellinen`);
+            throw new Error(`Solmun (id: '${externalNode.soltunnus}') tyyppi on
+            virheellinen: ${externalNode.soltyyppi}`);
         }
 
         return {

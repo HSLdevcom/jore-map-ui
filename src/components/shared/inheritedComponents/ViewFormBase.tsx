@@ -2,21 +2,21 @@ import { Component } from 'react';
 
 interface IViewFormBaseState {
     isLoading: boolean;
-    invalidFieldsMap: object;
+    invalidPropertiesMap: object;
     isEditingDisabled: boolean;
 }
 
 class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Props, State> {
     protected isFormValid = () => {
-        return !Object.values(this.state.invalidFieldsMap)
+        return !Object.values(this.state.invalidPropertiesMap)
             .some(fieldIsValid => !fieldIsValid);
     }
 
-    protected markInvalidFields = (field: string, isValid: boolean) => {
-        const invalidFieldsMap = this.state.invalidFieldsMap;
-        invalidFieldsMap[field] = isValid;
+    protected markInvalidProperties = (property: string, isValid: boolean) => {
+        const invalidPropertiesMap = this.state.invalidPropertiesMap;
+        invalidPropertiesMap[property] = isValid;
         this.setState({
-            invalidFieldsMap,
+            invalidPropertiesMap,
         });
     }
 
@@ -27,7 +27,7 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
         const isEditingDisabled = !this.state.isEditingDisabled;
         this.setState({
             isEditingDisabled,
-            invalidFieldsMap: {},
+            invalidPropertiesMap: {},
         });
     }
 }
