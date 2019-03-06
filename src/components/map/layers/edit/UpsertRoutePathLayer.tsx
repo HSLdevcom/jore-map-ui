@@ -43,6 +43,14 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         };
     }
 
+    componentDidMount() {
+        this.setBounds();
+    }
+
+    componentDidUpdate() {
+        this.setBounds();
+    }
+
     private defaultActionOnObjectClick = (id: string) => {
         // Switch to info tab
         this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
@@ -77,15 +85,15 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
     private renderNode = (
         node: INode,
         index: number,
-        previousRPLink?: IRoutePathLink,
-        nextRPLink?: IRoutePathLink,
+        previousLink?: IRoutePathLink,
+        nextLink?: IRoutePathLink,
     ) => {
 
         const onNodeClick =
             this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onNodeClick ?
                 this.props.toolbarStore!.selectedTool!.onNodeClick!(
-                    node, previousRPLink, nextRPLink)
+                    node, previousLink, nextLink)
                 // Default
                 : () => this.defaultActionOnObjectClick(node.id);
 
@@ -284,14 +292,6 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 geometry={polyline}
             />
         ));
-    }
-
-    componentDidMount() {
-        this.setBounds();
-    }
-
-    componentDidUpdate() {
-        this.setBounds();
     }
 
     render() {
