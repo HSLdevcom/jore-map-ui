@@ -89,21 +89,16 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         nextLink?: IRoutePathLink,
     ) => {
 
-        const onNodeClick =
-            this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool!.onNodeClick ?
-                this.props.toolbarStore!.selectedTool!.onNodeClick!(
-                    node, previousLink, nextLink)
-                // Default
-                : () => this.defaultActionOnObjectClick(node.id);
+        const selectedTool = this.props.toolbarStore!.selectedTool;
+        const onNodeClick = selectedTool && selectedTool.onNodeClick ?
+            selectedTool.onNodeClick(node, previousLink, nextLink)
+            // Default
+            : () => this.defaultActionOnObjectClick(node.id);
 
-        const isNodeHighlighted =
-            this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool!.isNodeHighlighted ?
-                this.props.toolbarStore!.selectedTool!.isNodeHighlighted!(
-                    node)
-                // Default
-                : this.props.routePathStore!.isObjectHighlighted(node.id);
+        const isNodeHighlighted = selectedTool && selectedTool.isNodeHighlighted ?
+            selectedTool.isNodeHighlighted!(node)
+            // Default
+            : this.props.routePathStore!.isObjectHighlighted(node.id);
 
         return (
             <NodeMarker
