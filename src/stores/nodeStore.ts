@@ -33,6 +33,23 @@ export class NodeStore {
     }
 
     @computed
+    get dirtyLinks() {
+        return this._links.filter((link) => {
+            const oldLink = this._oldLinks.find(oldLink =>
+                oldLink.transitType === link.transitType &&
+                oldLink.startNode.id === link.startNode.id &&
+                oldLink.endNode.id === link.endNode.id,
+            );
+            return !_.isEqual(link, oldLink) ||
+                // All links are dirty if the node coordinate has changed
+                !_.isEqual(
+                    this._node!.coordinatesProjection,
+                    this._oldNode!.coordinatesProjection,
+                );
+        });
+    }
+
+    @computed
     get node() {
         return this._node!;
     }
