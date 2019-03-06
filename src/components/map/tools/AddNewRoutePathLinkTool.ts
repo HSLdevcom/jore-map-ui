@@ -20,25 +20,25 @@ class AddNewRoutePathLinkTool implements BaseTool {
         RoutePathStore.setNeighborRoutePathLinks([]);
     }
 
-    private setInteractiveNode =
-        async (nodeId: string, direction: AddLinkDirection, orderNumber: number) => {
-            try {
-                const routePathLinks =
-                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                    nodeId,
-                    direction,
-                    orderNumber,
-                    RoutePathStore.routePath!.transitType);
-                if (routePathLinks.length === 0) {
-                    // tslint:disable-next-line:max-line-length
-                    ErrorStore.addError(`Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`);
-                } else {
-                    RoutePathStore!.setNeighborRoutePathLinks(routePathLinks);
-                }
-            } catch (ex) {
-                ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
+    private queryNeighborRoutePathLinks = async (
+        nodeId: string, direction: AddLinkDirection, orderNumber: number) => {
+        try {
+            const routePathLinks =
+            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
+                nodeId,
+                direction,
+                orderNumber,
+                RoutePathStore.routePath!.transitType);
+            if (routePathLinks.length === 0) {
+                // tslint:disable-next-line:max-line-length
+                ErrorStore.addError(`Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`);
+            } else {
+                RoutePathStore!.setNeighborRoutePathLinks(routePathLinks);
             }
+        } catch (ex) {
+            ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
         }
+    }
 
     public onNetworkNodeClick = async (clickEvent: any) => {
         try {
@@ -47,7 +47,8 @@ class AddNewRoutePathLinkTool implements BaseTool {
             const properties =  clickEvent.sourceTarget.properties;
             if (properties.soltyyppi !== NodeType.STOP) return;
             RoutePathStore.setAddRoutePathLinkDirection(AddLinkDirection.AfterNode);
-            await this.setInteractiveNode(properties.soltunnus, AddLinkDirection.AfterNode,  1);
+            await this.queryNeighborRoutePathLinks(
+                properties.soltunnus, AddLinkDirection.AfterNode,  1);
 
         } catch (ex) {
             ErrorStore.addError((ex as Error).message);
@@ -56,19 +57,19 @@ class AddNewRoutePathLinkTool implements BaseTool {
 
     public onNodeClick = (
         node: INode,
-        previousRPLink?: IRoutePathLink,
-        nextRPLink?: IRoutePathLink,
+        previousLink?: IRoutePathLink,
+        nextLink?: IRoutePathLink,
     ) => async () => {
         const linkDirection =
-            previousRPLink ?
+            previousLink ?
             AddLinkDirection.AfterNode :
             AddLinkDirection.BeforeNode;
         RoutePathStore.setAddRoutePathLinkDirection(linkDirection);
         const newOrderNumber =
             linkDirection === AddLinkDirection.AfterNode
-            ? previousRPLink!.orderNumber + 1
-            : nextRPLink!.orderNumber;
-        await this.setInteractiveNode(node.id, linkDirection, newOrderNumber);
+            ? previousLink!.orderNumber + 1
+            : nextLink!.orderNumber;
+        await this.queryNeighborRoutePathLinks(node.id, linkDirection, newOrderNumber);
     }
 
     private isNetworkNodesInteractive() {
