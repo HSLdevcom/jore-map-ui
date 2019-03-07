@@ -21,7 +21,7 @@ const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 class ApiClient {
     public updateObject = async (entityName: endpoints, object: any) => {
-        return await this.sendRequest(RequestMethod.POST, entityName, object);
+        return this.postRequest(entityName, object);
     }
 
     public createObject = async (entityName: endpoints, object: any) => {
@@ -36,6 +36,11 @@ class ApiClient {
         const requestBody: IAuthorizationRequest = { code };
         return await this.sendRequest(
             RequestMethod.POST, endpoints.AUTH, requestBody);
+    }
+
+    public postRequest = async (endpoint: endpoints, object: any) => {
+        return await this.sendRequest(
+            RequestMethod.POST, endpoint, object);
     }
 
     private sendRequest = async (method: RequestMethod, endpoint: endpoints, object: any) => {
