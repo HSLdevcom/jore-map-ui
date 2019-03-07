@@ -11,7 +11,7 @@
     border-right: 1px solid #c5c5c5;
 
     .content {
-        overflow-y: scroll;
+        overflow-y: auto;
         flex-grow: 1;
 
         > div {

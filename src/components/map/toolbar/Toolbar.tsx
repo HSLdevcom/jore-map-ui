@@ -29,7 +29,7 @@ class Toolbar extends React.Component {
                     </div>
                     <div className={s.toolbar}>
                         <ToolbarCommonButtons
-                            userHasWriteAccess={LoginStore!.hasWriteAccess}
+                            hasWriteAccess={LoginStore!.hasWriteAccess}
                         />
                     </div>
                 </div>

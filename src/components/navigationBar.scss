@@ -37,7 +37,8 @@
             display: flex;
             flex-direction: row;
             color: white;
-            padding: 8px;
+            margin-right: 8px;
+            align-items: center;
 
             svg {
                 font-size: 32px;
@@ -46,11 +47,12 @@
         }
 
         .logoutButton {
-            height: 50px;
             font-size: 14px;
-            line-height: 50px;
             padding: 0px 20px;
             background-color: #004c7d;
+            height: 100%;
+            display: flex;
+            align-items: center;
         }
 
         .logoutButton:hover {

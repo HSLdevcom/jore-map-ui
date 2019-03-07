@@ -10,7 +10,7 @@ import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 
 interface IToolbarCommonButtonsProps {
-    userHasWriteAccess: boolean;
+    hasWriteAccess: boolean;
 }
 
 @observer
@@ -51,7 +51,7 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                     >
                         <FiExternalLink />
                     </MapControlButton>
-                    { this.props.userHasWriteAccess &&
+                    { this.props.hasWriteAccess &&
                         <>
                             <MapControlButton
                                 onClick={this.undo}

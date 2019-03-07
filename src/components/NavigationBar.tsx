@@ -53,7 +53,7 @@ class NavigationBar extends Component<INavigationBarProps> {
                             {this.props.loginStore!.userEmail}
                             <br/>
                             { this.props.loginStore!.hasWriteAccess ?
-                                'Kirjoitusoikeuksia' : 'Lukuoikeuksia'
+                                'Pääkäyttäjä' : 'Selauskäyttäjä'
                             }
                         </div>
                     </div>
