@@ -13,7 +13,7 @@ import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import { IRoutePath, IRoute } from '~/models';
 import ToggleSwitch from '../../controls/ToggleSwitch';
-import ViewHeader from '../ViewHeader';
+import SidebarHeader from '../SidebarHeader';
 import * as s from './routeItem.scss';
 
 interface IRouteItemProps {
@@ -44,7 +44,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
 
     private renderRouteName = () => {
         return (
-            <ViewHeader
+            <SidebarHeader
                 onCloseButtonClick={this.closeRoute}
             >
                 <div className={s.routeName}>
@@ -60,7 +60,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
                     </div>
                     {this.props.route.routeName}
                 </div>
-            </ViewHeader>
+            </SidebarHeader>
         );
     }
 

@@ -5,7 +5,7 @@ import stopValidationModel from '~/validation/models/stopValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import { Dropdown } from '~/components/controls';
-import ViewHeader from '../../ViewHeader';
+import SidebarHeader from '../../SidebarHeader';
 import * as s from './stopForm.scss';
 
 interface IStopFormProps {
@@ -17,11 +17,11 @@ interface IStopFormProps {
 const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
     return (
         <div className={s.stopView}>
-            <ViewHeader
+            <SidebarHeader
                 hideCloseButton={true}
             >
                 Pysäkkitiedot
-            </ViewHeader>
+            </SidebarHeader>
             <div className={s.formSection}>
                 <div className={s.sectionHeader}>
                     Nimitiedot

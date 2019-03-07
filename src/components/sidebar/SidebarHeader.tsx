@@ -4,9 +4,9 @@ import classnames from 'classnames';
 import { FiXCircle, FiEdit3 } from 'react-icons/fi';
 import { LoginStore } from '~/stores/loginStore';
 import navigator from '~/routing/navigator';
-import * as s from './viewHeader.scss';
+import * as s from './sidebarHeader.scss';
 
-interface IViewHeaderProps {
+interface ISidebarHeaderProps {
     children: ReactNode;
     hideCloseButton?: boolean;
     isEditButtonVisible?: boolean;
@@ -24,7 +24,7 @@ const revertPromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma
 
 @inject('loginStore')
 @observer
-class ViewHeader extends React.Component<IViewHeaderProps> {
+class SidebarHeader extends React.Component<ISidebarHeaderProps> {
     onCloseButtonClick = () => {
         if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
             this.props.onCloseButtonClick ? this.props.onCloseButtonClick() : navigator.goBack();
@@ -44,7 +44,7 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
 
     render() {
         return (
-            <div className={s.viewHeaderView}>
+            <div className={s.sidebarHeader}>
                 <div className={s.topic}>{this.props.children}</div>
                 <div>
                     {
@@ -72,4 +72,4 @@ class ViewHeader extends React.Component<IViewHeaderProps> {
     }
 
 }
-export default ViewHeader;
+export default SidebarHeader;

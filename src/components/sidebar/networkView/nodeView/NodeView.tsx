@@ -17,7 +17,7 @@ import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
-import ViewHeader from '../../ViewHeader';
+import SidebarHeader from '../../SidebarHeader';
 import StopForm from './StopForm';
 import InputContainer from '../../InputContainer';
 import * as s from './nodeView.scss';
@@ -148,14 +148,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
-                    <ViewHeader
+                    <SidebarHeader
                         isEditButtonVisible={true}
                         shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={this.toggleIsEditingEnabled}
                     >
                         Solmu {node.id}
-                    </ViewHeader>
+                    </SidebarHeader>
                     <div className={s.form}>
                         <div className={s.formSection}>
                             <div className={s.flexRow}>
