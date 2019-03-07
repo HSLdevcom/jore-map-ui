@@ -85,17 +85,26 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
 
     private renderNode = (node: INode, linkOrderNumber: number, index: number) => {
         const selectedTool = this.props.toolbarStore!.selectedTool;
-        const onNodeClick = selectedTool
-            && selectedTool.onNodeClick ?
-            selectedTool.onNodeClick(node, linkOrderNumber)
-            // Default
-            : () => this.defaultActionOnObjectClick(node.id);
 
-        const isNodeHighlighted = selectedTool
+        let onNodeClick;
+        let isNodeHighlighted;
+        // Check if AddNewRoutePathLink is active
+        if (selectedTool
+            && selectedTool.onNodeClick
             && selectedTool.toolType === ToolbarTool.AddNewRoutePathLink
-            && this.props.routePathStore!.neighborLinks.length === 0 ?
-                this.hasNodeOddAmountOfNeighbors(node)
-                : this.props.routePathStore!.isMapItemHighlighted(node.id);
+            && this.props.routePathStore!.neighborLinks.length === 0) {
+            isNodeHighlighted = this.hasNodeOddAmountOfNeighbors(node);
+            // Allow click event for highlighted nodes only
+            if (isNodeHighlighted) {
+                onNodeClick = selectedTool.onNodeClick(node, linkOrderNumber);
+            }
+        } else {
+            // Prevent default click if there are neighbors on map
+            if (this.props.routePathStore!.neighborLinks.length === 0) {
+                onNodeClick = () => this.defaultActionOnObjectClick(node.id);
+                isNodeHighlighted = this.props.routePathStore!.isMapItemHighlighted(node.id);
+            }
+        }
         return (
             <NodeMarker
                 key={`${node.id}-${index}`}
