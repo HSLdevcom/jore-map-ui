@@ -4,10 +4,10 @@ import * as s from './inputContainer.scss';
 
 interface IInputProps {
     label: string|JSX.Element;
-    value?: string|number|undefined|null|Date;
+    value?: string|number|null|Date;
 }
 
-const x = (props: IInputProps) => (
+const TextContainer = (props: IInputProps) => (
     <div className={s.formItem}>
         <div className={s.inputLabel}>
             {props.label}
@@ -15,10 +15,9 @@ const x = (props: IInputProps) => (
         {
             props.value instanceof Date ?
                 moment(props.value!).format('DD.MM.YYYY') :
-                props.value ?
-                    props.value : ''
+                props.value ? props.value : ''
         }
     </div>
 );
 
-export default x;
+export default TextContainer;

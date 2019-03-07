@@ -2,8 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 import FormValidator, { IValidationResult } from '../../validation/FormValidator';
 import DatePicker from '../controls/DatePicker';
-import * as s from './inputContainer.scss';
 import TextContainer from './TextContainer';
+import * as s from './inputContainer.scss';
 
 type inputType = 'text' | 'number' | 'date';
 
@@ -83,9 +83,6 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                 />
             );
         }
-        const value = (typeof this.props.value === 'string'
-            || typeof this.props.value === 'number') ?
-            this.props.value : '';
 
         return (
             <input
@@ -97,7 +94,8 @@ class InputContainer extends React.Component<IInputProps, IInputState> {
                         this.props.disabled ? s.disabled : null,
                         !this.state.isValid ? s.invalidInput : null)
                 }
-                value={value}
+                value={this.props.value !== null && this.props.value !== undefined ?
+                    (this.props.value as string | number) : ''}
                 onChange={this.onChange}
             />
         );
