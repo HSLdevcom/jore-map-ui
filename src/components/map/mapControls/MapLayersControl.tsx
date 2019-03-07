@@ -108,7 +108,7 @@ class MapLayersControl extends React.Component
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(MapLayer.nodeWithoutLink)} // tslint:disable
+                            onClick={this.toggleMapLayerVisibility(MapLayer.nodeWithoutLink)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)}
                             text={'Linkittömät solmut'}
                         />
