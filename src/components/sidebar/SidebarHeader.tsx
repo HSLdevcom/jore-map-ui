@@ -44,7 +44,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
 
     render() {
         return (
-            <div className={s.sidebarHeader}>
+            <div className={s.sidebarHeaderView}>
                 <div className={s.topic}>{this.props.children}</div>
                 <div>
                     {
