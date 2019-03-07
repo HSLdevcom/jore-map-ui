@@ -2,8 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 import FormValidator, { IValidationResult } from '../../validation/FormValidator';
 import DatePicker from '../controls/DatePicker';
-import * as s from './inputContainer.scss';
 import TextContainer from './TextContainer';
+import * as s from './inputContainer.scss';
 
 type inputType = 'text' | 'number' | 'date';
 
