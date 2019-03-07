@@ -16,7 +16,7 @@ interface IRoutePathHeaderProps {
 const RoutePathHeader = (props: IRoutePathHeaderProps) => (
     <div className={classnames(s.formSection, s.content, s.borderBotton)}>
         <ViewHeader
-            isEditButtonVisible={true}
+            isEditButtonVisible={!props.isNewRoutePath}
             onEditButtonClick={props.onEditButtonClick}
             isEditing={props.isEditing}
             shouldShowClosePromptMessage={props.hasModifications!}

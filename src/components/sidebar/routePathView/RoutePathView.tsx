@@ -51,7 +51,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.state = {
             isLoading: true,
             invalidPropertiesMap: {},
-            isEditingDisabled: true,
+            isEditingDisabled: !props.isNewRoutePath,
         };
     }
 
