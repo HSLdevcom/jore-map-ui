@@ -6,11 +6,9 @@ import classnames from 'classnames';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import hslLogo from '~/assets/hsl-logo.png';
 import LinkView from './networkView/linkView/LinkView';
 import RoutesView from './routesView/RoutesView';
 import RouteLinkView from './routeLinkView/RouteLinkView';
@@ -48,28 +46,12 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         <RoutePathView {...props} isNewRoutePath={false} />
 
     render() {
-        const goToHomeView = () => {
-            this.props.toolbarStore!.selectTool(null);
-            this.props.routeStore!.clearRoutes();
-            this.props.searchStore!.setSearchInput('');
-            const homeLink = routeBuilder.to(subSites.home).clear().toLink();
-            navigator.goTo(homeLink);
-        };
-
         return (
             <div
                 className={classnames(
                     s.sidebarView,
                 )}
             >
-                <div className={s.header}>
-                    <div onClick={goToHomeView} className={s.headerContainer}>
-                        <img className={s.logo} src={hslLogo} alt='HSL Logo'/>
-                        <h2 className={s.title}>
-                            Joukkoliikennerekisteri
-                        </h2>
-                    </div>
-                </div>
                 <div className={s.content}>
                     <Switch>
                         <Route

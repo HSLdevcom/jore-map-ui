@@ -1,16 +1,15 @@
-@import './shared/styles/common.scss';
 .appView {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     height: 100vh;
 
     .hidden {
         display: none;
     }
 
-    .buildInfo {
-        position: fixed;
-        font-size: 12px;
-        margin: 2px;
+    .appContent {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
     }
 }

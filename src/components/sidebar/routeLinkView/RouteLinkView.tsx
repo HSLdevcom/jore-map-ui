@@ -14,7 +14,7 @@ import InputContainer from '../InputContainer';
 import TextContainer from '../TextContainer';
 import MultiTabTextarea from '../networkView/linkView/MultiTabTextarea';
 import Loader from '../../shared/loader/Loader';
-import ViewHeader from '../ViewHeader';
+import SidebarHeader from '../SidebarHeader';
 import * as s from './routeLinkView.scss';
 
 interface IRouteLinkViewState {
@@ -131,9 +131,9 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
 
         return (
         <div className={classnames(s.linkView, s.form)}>
-            <ViewHeader>
+            <SidebarHeader>
                 Reitinlinkki {this.state.routePathLink!.id}
-            </ViewHeader>
+            </SidebarHeader>
             <div className={s.topic}>
                 REITIN SUUNNAN TIEDOT
             </div>
