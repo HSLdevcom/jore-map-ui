@@ -59,7 +59,7 @@ class RoutePathLinkService {
         const endNodeCount = routePathLinks!.filter(link => link.endNode.id === nodeId).length;
         let neighborToAddType;
         let orderNumber;
-        if (startNodeCount < endNodeCount) {
+        if (startNodeCount <= endNodeCount) {
             neighborToAddType = NeighborToAddType.StartNode;
             orderNumber = linkOrderNumber + 1;
         } else {
