@@ -194,7 +194,8 @@ export class RoutePathStore {
             routePathLink.orderNumber - 1,
             0,
             routePathLink);
-        this.sortRoutePathLinks();
+
+        this.recalculateOrderNumbers();
 
         this.resetUndoState();
     }
@@ -206,7 +207,7 @@ export class RoutePathStore {
             this._routePath!.routePathLinks!.findIndex(link => link.id === id);
         this._routePath!.routePathLinks!.splice(linkToRemoveIndex, 1);
 
-        this.sortRoutePathLinks();
+        this.recalculateOrderNumbers();
 
         this.resetUndoState();
     }
@@ -214,12 +215,13 @@ export class RoutePathStore {
     @action
     public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._routePath!.routePathLinks = routePathLinks;
+        this.recalculateOrderNumbers();
+
         this.sortRoutePathLinks();
     }
 
     @action
     public sortRoutePathLinks = () => {
-        this.recalculateOrderNumbers();
         this._routePath!.routePathLinks =
             this._routePath!.routePathLinks!.slice().sort((a, b) => a.orderNumber - b.orderNumber);
     }
