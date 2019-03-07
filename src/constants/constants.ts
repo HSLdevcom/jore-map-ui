@@ -5,7 +5,7 @@ const commonConstants = {
 
 const developmentConstants = {
     ...commonConstants,
-    isLoginRequired: true,
+    isLoginRequired: false,
     AFTER_LOGIN_URL: 'http://localhost:3000/afterLogin',
     FADE_DIALOG_TIMEOUT: 500, // milliseconds
 };
