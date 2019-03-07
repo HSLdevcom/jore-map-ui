@@ -31,10 +31,9 @@ interface IAppProps extends RouteComponentProps<any> {
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     async componentWillMount() {
-        const apiClient = new ApiClient();
         const pathName = navigator.getPathName();
         if (!pathName.includes(SubSites.afterLogin)) {
-            const response = (await apiClient
+            const response = (await ApiClient
                 .postRequest(endpoints.EXISTING_SESSION, {}) as IAuthorizationResponse);
             const { history } = this.props;
             if (response.isOk) {

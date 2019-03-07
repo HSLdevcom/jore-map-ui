@@ -27,8 +27,7 @@ class NodeService {
     }
 
     public static updateNode = async (node: INode) => {
-        const apiClient = new ApiClient();
-        await apiClient.updateObject(endpoints.NODE, node);
+        await ApiClient.updateObject(endpoints.NODE, node);
         await apolloClient.clearStore();
     }
 }

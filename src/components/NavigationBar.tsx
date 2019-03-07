@@ -28,8 +28,7 @@ class NavigationBar extends Component<INavigationBarProps> {
     private logout = async () => {
         // TODO: Implement full logout clearing session in backend
         // https://github.com/HSLdevcom/jore-map-ui/issues/669
-        const apiClient = new ApiClient();
-        await apiClient.postRequest(endpoints.LOGOUT, {});
+        await ApiClient.postRequest(endpoints.LOGOUT, {});
         this.props.loginStore!.clear();
         const loginLink = routeBuilder.to(SubSites.login).clear().toLink();
         navigator.goTo(loginLink);
