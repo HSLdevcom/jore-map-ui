@@ -1,8 +1,8 @@
-import RoutePathStore, { AddLinkDirection, AddRoutePathLinkState } from '~/stores/routePathStore';
+import RoutePathStore from '~/stores/routePathStore';
 import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
 import ErrorStore from '~/stores/errorStore';
-import { INode, IRoutePathLink } from '~/models';
+import { INode } from '~/models';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import BaseTool from './BaseTool';
 
@@ -20,67 +20,42 @@ class AddNewRoutePathLinkTool implements BaseTool {
         RoutePathStore.setNeighborRoutePathLinks([]);
     }
 
-    private queryNeighborRoutePathLinks = async (
-        nodeId: string, direction: AddLinkDirection, orderNumber: number) => {
-        try {
-            const routePathLinks =
-            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                nodeId,
-                direction,
-                orderNumber,
-                RoutePathStore.routePath!.transitType);
-            if (routePathLinks.length === 0) {
-                // tslint:disable-next-line:max-line-length
-                ErrorStore.addError(`Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`);
-            } else {
-                RoutePathStore!.setNeighborRoutePathLinks(routePathLinks);
-            }
-        } catch (ex) {
-            ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
-        }
-    }
-
     public onNetworkNodeClick = async (clickEvent: any) => {
         try {
             if (!this.isNetworkNodesInteractive()) return;
 
             const properties =  clickEvent.sourceTarget.properties;
             if (properties.soltyyppi !== NodeType.STOP) return;
-            RoutePathStore.setAddRoutePathLinkDirection(AddLinkDirection.AfterNode);
-            await this.queryNeighborRoutePathLinks(
-                properties.soltunnus, AddLinkDirection.AfterNode,  1);
+            const queryResult =
+                await RoutePathLinkService.fetchNeighborRoutePathLinks(
+                    properties.soltunnus,
+                    1,
+                    RoutePathStore!.routePath!.transitType,
+                    RoutePathStore!.routePath!.routePathLinks,
+                );
+            RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
+            RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
 
         } catch (ex) {
             ErrorStore.addError((ex as Error).message);
         }
     }
 
-    public onNodeClick = (
-        node: INode,
-        previousLink?: IRoutePathLink,
-        nextLink?: IRoutePathLink,
-    ) => async () => {
-        const linkDirection =
-            previousLink ?
-            AddLinkDirection.AfterNode :
-            AddLinkDirection.BeforeNode;
-        RoutePathStore.setAddRoutePathLinkDirection(linkDirection);
-        const newOrderNumber =
-            linkDirection === AddLinkDirection.AfterNode
-            ? previousLink!.orderNumber + 1
-            : nextLink!.orderNumber;
-        await this.queryNeighborRoutePathLinks(node.id, linkDirection, newOrderNumber);
+    public onNodeClick = (node: INode, linkOrderNumber: number) => async () => {
+        const queryResult =
+            await RoutePathLinkService.fetchNeighborRoutePathLinks(
+                node.id,
+                linkOrderNumber,
+                RoutePathStore!.routePath!.transitType,
+                RoutePathStore!.routePath!.routePathLinks,
+            );
+        RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
+        RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
     }
 
     private isNetworkNodesInteractive() {
         return RoutePathStore!.routePath &&
             RoutePathStore!.routePath!.routePathLinks!.length === 0;
-    }
-
-    public isNodeHighlighted = (node: INode) => {
-        return RoutePathStore.addRoutePathLinkInfo.state
-            === AddRoutePathLinkState.SetTargetLocation &&
-            RoutePathStore!.isRoutePathNodeMissingNeighbour(node);
     }
 }
 

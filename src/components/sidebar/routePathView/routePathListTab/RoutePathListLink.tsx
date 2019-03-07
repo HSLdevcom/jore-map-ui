@@ -27,7 +27,7 @@ interface IRoutePathListLinkProps {
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
-        const isExtended = this.props.routePathStore!.isObjectExtended(
+        const isExtended = this.props.routePathStore!.isListItemExtended(
             id,
         );
         return (
