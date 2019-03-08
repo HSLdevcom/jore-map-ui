@@ -28,6 +28,7 @@ interface INodeViewProps {
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
+    isNewNode: boolean;
 }
 
 interface INodeViewState {
@@ -43,7 +44,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: true,
+            isEditingDisabled: !props.isNewNode,
             invalidPropertiesMap: {},
         };
     }
@@ -90,7 +91,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private save = async () => {
         this.setState({ isLoading: true });
         try {
-            await NodeService.updateNode(this.props.nodeStore!.node);
+            if (this.props.isNewNode) {
+                await NodeService.createNode(this.props.nodeStore!.node);
+            } else {
+                await NodeService.updateNode(this.props.nodeStore!.node);
+            }
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
@@ -149,7 +154,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             <div className={s.nodeView}>
                 <div className={s.content}>
                     <SidebarHeader
-                        isEditButtonVisible={true}
+                        isEditButtonVisible={!this.props.isNewNode}
                         shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={this.toggleIsEditingEnabled}

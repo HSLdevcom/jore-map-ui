@@ -4,7 +4,7 @@ import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
-import StopFactory from '~/factories/nodeStopFactory';
+import NodeStopFactory from '~/factories/nodeStopFactory';
 import UndoStore from '~/stores/undoStore';
 
 export interface UndoState {
@@ -125,7 +125,7 @@ export class NodeStore {
         if (property === 'type') this.mirrorCoordinates(this._node);
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
-            this._node.stop = StopFactory.createNewStop();
+            this._node.stop = NodeStopFactory.createNewStop();
         }
     }
 

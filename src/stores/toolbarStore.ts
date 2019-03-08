@@ -9,18 +9,16 @@ import PrintTool from '~/components/map/tools/PrintTool';
 import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkTool';
 
 const TOOL_LIST = [
-    new AddNetworkNodeTool(),
     new AddNewRoutePathLinkTool(),
+    new AddNetworkNodeTool(),
     new CopyTool(),
     new DivideLinkTool(),
-    new PrintTool(),
     new RemoveRoutePathLinkTool(),
+    new PrintTool(),
 ];
 
-/* Object with key: ToolbarTool, value: BaseTool*/
-const TOOLS = TOOL_LIST.reduce((acc, c:BaseTool) => {
-    return Object.assign({ [c.toolType]:c }, acc);
-});
+const TOOLS = {};
+TOOL_LIST.map((tool: BaseTool) => TOOLS[tool.toolType] = tool);
 
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool|null;

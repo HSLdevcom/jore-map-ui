@@ -7,6 +7,7 @@ enum SubSites {
     newRoutePath = '/routePath/new',
     network = '/network/',
     node = '/node/:id',
+    newNode = '/node/new',
     afterLogin = '/afterLogin',
     loginError = '/loginError',
     current = '',

@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
+import EventManager from '~/util/EventManager';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
@@ -99,6 +100,9 @@ class LeafletMap extends React.Component<IMapProps> {
             this.props.mapStore!.coordinates,
             this.props.mapStore!.zoom,
         );
+        map.on('click', (e: L.LeafletEvent) => {
+            EventManager.trigger('mapClick', e);
+        });
     }
 
     private centerMap = () => {

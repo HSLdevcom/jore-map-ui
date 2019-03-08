@@ -19,13 +19,14 @@ class ToolbarHelp extends Component {
                     Tämän jälkeen jatka reitin suunnan muodostamista valitsemalla seuraavia solmuja.
                 </div>
             );
-        case ToolbarTool.EditNetworkNode:
-            return (
-                <div className={s.toolbarHelp}>
-                    Muokataksesi verkon solmua tai siihen
-                    liittyviä linkkejä, valitse solmu kartalta.
-                </div>
-            );
+        // TODO:
+        // case ToolbarTool.EditNetworkNode:
+        //     return (
+        //         <div className={s.toolbarHelp}>
+        //             Muokataksesi verkon solmua tai siihen
+        //             liittyviä linkkejä, valitse solmu kartalta.
+        //         </div>
+        //     );
         case ToolbarTool.RemoveRoutePathLink:
             return (
                 <div className={s.toolbarHelp}>
