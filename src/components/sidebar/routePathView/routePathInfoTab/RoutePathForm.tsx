@@ -11,6 +11,7 @@ import navigator from '~/routing/navigator';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../../InputContainer';
+import TextContainer from '../../TextContainer';
 import LinkListView from './LinkListView';
 import { Button, Dropdown } from '../../../controls';
 import ButtonType from '../../../../enums/buttonType';
@@ -82,14 +83,12 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
         <div className={classnames(s.form, s.routePathForm)}>
             <div className={s.formSection}>
                 <div className={s.flexRow}>
-                    <InputContainer
+                    <TextContainer
                         label='REITIN NIMI SUOMEKSI'
-                        disabled={true}
                         value={routePath.routePathName}
                     />
-                    <InputContainer
+                    <TextContainer
                         label='REITIN NIMI RUOTSIKSI'
-                        disabled={true}
                         value={routePath.routePathNameSw}
                     />
                 </div>
@@ -166,10 +165,9 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         type='number'
                         onChange={this.onChange('length')}
                     />
-                    <InputContainer
+                    <TextContainer
                         label={'Laskettu'}
                         value={this.props.routePathStore!.getCalculatedLength()}
-                        disabled={true}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -189,16 +187,13 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                     />
                 </div>
                 <div className={s.flexRow}>
-                    <InputContainer
+                    <TextContainer
                         label='PÄIVITYSPVM'
-                        type='date'
                         value={routePath.lastModified}
-                        disabled={true}
                     />
-                    <InputContainer
+                    <TextContainer
                         label='PÄIVITTÄJÄ'
                         value={routePath.modifiedBy}
-                        disabled={true}
                     />
                 </div>
             </div>

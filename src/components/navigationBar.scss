@@ -1,0 +1,68 @@
+@import './shared/styles/common.scss';
+
+.navigationBarView {
+    background-color: $blue;
+    flex-basis: 50px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .header {
+        cursor: pointer;
+        margin-left: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .title {
+            display: inline-block;
+            font-size: 20px;
+            color: #fff;
+            padding-left: 10px;
+        }
+
+        .logo {
+            height: 26px;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    .authSection {
+        display: flex;
+
+        .authInfo {
+            font-size: 14px;
+            display: flex;
+            flex-direction: row;
+            color: white;
+            margin-right: 8px;
+            align-items: center;
+
+            svg {
+                font-size: 32px;
+                margin-right: 6px;
+            }
+        }
+
+        .logoutButton {
+            font-size: 14px;
+            padding: 0px 20px;
+            background-color: #004c7d;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .logoutButton:hover {
+            background-color: #575757;
+        }
+    }
+}
+
+.buildInfo {
+  position: fixed;
+  font-size: 8px;
+  margin: 2px;
+}

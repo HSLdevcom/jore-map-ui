@@ -12,7 +12,7 @@ import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
 import RoutePathListItem from './RoutePathListItem';
-import InputContainer from '../../InputContainer';
+import TextContainer from '../../TextContainer';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
@@ -76,26 +76,22 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
             <div className={s.nodeContent}>
                 Reitinlinkin tiedot
                 <div className={s.flexRow}>
-                    <InputContainer
+                    <TextContainer
                         label='ALKUSOLMU'
-                        disabled={true}
                         value={rpLink.startNode.id}
                     />
-                    <InputContainer
+                    <TextContainer
                         label='LOPPUSOLMU'
-                        disabled={true}
                         value={rpLink.endNode.id}
                     />
                 </div>
                 <div className={s.flexRow}>
-                    <InputContainer
+                    <TextContainer
                         label='JÄRJESTYSNUMERO'
-                        disabled={true}
                         value={rpLink.orderNumber.toString()}
                     />
-                    <InputContainer
+                    <TextContainer
                         label='AJANTASAUSPYSÄKKI'
-                        disabled={true}
                         value={rpLink.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'ei'}
                     />
                 </div>

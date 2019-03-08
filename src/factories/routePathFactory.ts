@@ -21,10 +21,12 @@ class RoutePathFactory {
             .nodes.map((externalRoutePathLink: IExternalRoutePathLink) => {
                 return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
             }).sort((a, b) => a.orderNumber - b.orderNumber);
-
+        const exceptionPath =
+            externalRoutePath.poikkeusreitti ? externalRoutePath.poikkeusreitti : '0';
         return {
             routeId,
             routePathLinks,
+            exceptionPath,
             lineId: externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
             transitType: externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
             internalId: internalRoutePathId,
@@ -43,7 +45,6 @@ class RoutePathFactory {
             routePathShortName: externalRoutePath.suunimilyh,
             routePathShortNameSw: externalRoutePath.suunimilyhr,
             length: externalRoutePath.suupituus,
-            exceptionPath: externalRoutePath.poikkeusreitti,
         };
     }
 
