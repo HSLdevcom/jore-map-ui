@@ -12,9 +12,9 @@ import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
-import packageVersion from '../project/version.json';
 import PrivateRoute from './PrivateRoute';
 import Login from './login/Login';
+import NavigationBar from './NavigationBar';
 import * as s from './app.scss';
 
 interface IAppState {
@@ -29,16 +29,11 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
-    private renderApp = () => {
-        const sidebarHiddenClass = this.props.mapStore!.isMapFullscreen ? s.hidden : '';
-        const buildDate = process.env.BUILD_DATE;
-        const buildDateInfo = buildDate ? `Date: ${buildDate}` : '';
-        return (
-            <>
-                <div className={s.buildInfo}>
-                    {`Build: ${packageVersion.version} ${buildDateInfo}`}
-                </div>
-                <div className={sidebarHiddenClass}>
+    private renderApp = () => (
+        <>
+            <NavigationBar />
+            <div className={s.appContent}>
+                <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
                     <Sidebar
                         location={this.props.location}
                     />
@@ -46,10 +41,10 @@ class App extends React.Component<IAppProps, IAppState> {
                 <Map>
                     <ErrorBar />
                 </Map>
-                <Dialog />
-            </>
-        );
-    }
+            </div>
+            <Dialog />
+        </>
+    )
 
     private renderAfterLogin = () => {
         AuthService.authenticate(

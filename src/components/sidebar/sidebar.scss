@@ -1,5 +1,4 @@
 @import '../shared/styles/common.scss';
-@import '../shared/styles/globalLayout.scss';
 
 .sidebarView {
     display: flex;
@@ -11,44 +10,9 @@
     z-index: 9;
     border-right: 1px solid #c5c5c5;
 
-    .header {
-        cursor: pointer;
-        height: $headerHeight;
-        padding-left: 10px;
-        background-color: $busBlue;
-
-        .headerContainer {
-            margin: 10px;
-
-            .title {
-                display: inline-block;
-                font-size: $largeFontSize;
-                -webkit-margin-before: 0.83em;
-                -webkit-margin-after: 0.83em;
-                -webkit-margin-start: 0px;
-                -webkit-margin-end: 0px;
-                color: #fff;
-                font-weight: normal;
-                vertical-align: middle;
-                padding-left: 10px;
-            }
-
-            .title a {
-                text-decoration: none;
-                color: $white;
-            }
-
-            .logo {
-                display: inline-block;
-                height: 40px;
-                text-align: center;
-                vertical-align: middle;
-            }
-        }
-    }
-
     .content {
-        height: calc(100vh - #{$headerHeight});
+        overflow-y: auto;
+        flex-grow: 1;
 
         > div {
             height: 100%;

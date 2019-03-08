@@ -13,7 +13,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import NodeTypeHelper from '~/util/nodeTypeHelper';
 import navigator from '~/routing/navigator';
-import InputContainer from '../../InputContainer';
+import TextContainer from '../../TextContainer';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
@@ -102,14 +102,12 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             <div className={s.stopContent}>
                 Pysäkin tiedot
                 <div className={s.flexRow}>
-                    <InputContainer
+                    <TextContainer
                         label='PYSÄKIN NIMI'
-                        disabled={true}
                         value={stop.nameFi}
                     />
-                    <InputContainer
+                    <TextContainer
                         label='PYSÄKIN NIMI RUOTSIKSI'
-                        disabled={true}
                         value={stop.nameSe}
                     />
                 </div>
@@ -122,14 +120,12 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             <div className={s.nodeContent}>
                 Solmun tiedot
                 <div className={s.flexRow}>
-                    <InputContainer
+                    <TextContainer
                         label='MITTAUSPÄIVÄMÄÄRÄ'
-                        disabled={true}
                         value={node.measurementDate}
                     />
-                    <InputContainer
+                    <TextContainer
                         label='SOLMUN TYYPPI'
-                        disabled={true}
                         value={node.type}
                     />
                 </div>
