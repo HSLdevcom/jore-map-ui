@@ -24,7 +24,7 @@ class ExtendRoutePathTool implements BaseTool {
         try {
             if (!this.isNetworkNodesInteractive()) return;
 
-            const properties =  clickEvent.sourceTarget.properties;
+            const properties = clickEvent.sourceTarget.properties;
             if (properties.soltyyppi !== NodeType.STOP) return;
             const queryResult =
                 await RoutePathLinkService.fetchNeighborRoutePathLinks(

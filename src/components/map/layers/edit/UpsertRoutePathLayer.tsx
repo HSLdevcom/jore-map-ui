@@ -92,7 +92,8 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         if (selectedTool
             && selectedTool.onNodeClick
             && selectedTool.toolType === ToolbarTool.AddNewRoutePathLink
-            && this.props.routePathStore!.neighborLinks.length === 0) {
+            && this.props.routePathStore!.neighborLinks.length === 0
+        ) {
             isNodeHighlighted = this.hasNodeOddAmountOfNeighbors(node);
             // Allow click event for highlighted nodes only
             if (isNodeHighlighted) {
