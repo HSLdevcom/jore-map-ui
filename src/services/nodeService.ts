@@ -32,13 +32,13 @@ class NodeService {
     }
 
     public static updateNode = async (node: INode, links: ILink[]) => {
-        const request: INodeSavingModel = {
+        const requestBody: INodeSavingModel = {
             node,
             links,
         };
 
         const apiClient = new ApiClient();
-        await apiClient.updateObject(endpoints.NODE, request);
+        await apiClient.updateObject(endpoints.NODE, requestBody);
         await apolloClient.clearStore();
     }
 }

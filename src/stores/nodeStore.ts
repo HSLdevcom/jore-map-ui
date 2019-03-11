@@ -34,18 +34,20 @@ export class NodeStore {
 
     @computed
     get dirtyLinks() {
+        // All links are dirty if the node coordinate has changed
+        if (!_.isEqual(
+            this._node!.coordinatesProjection,
+            this._oldNode!.coordinatesProjection,
+        )) {
+            return this._links;
+        }
         return this._links.filter((link) => {
             const oldLink = this._oldLinks.find(oldLink =>
                 oldLink.transitType === link.transitType &&
                 oldLink.startNode.id === link.startNode.id &&
                 oldLink.endNode.id === link.endNode.id,
             );
-            return !_.isEqual(link, oldLink) ||
-                // All links are dirty if the node coordinate has changed
-                !_.isEqual(
-                    this._node!.coordinatesProjection,
-                    this._oldNode!.coordinatesProjection,
-                );
+            return !_.isEqual(link, oldLink);
         });
     }
 
