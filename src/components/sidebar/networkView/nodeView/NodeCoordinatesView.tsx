@@ -4,9 +4,9 @@ import InputContainer from '~/components/sidebar/InputContainer';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeTypeHelper from '~/util/nodeTypeHelper';
+import { roundLatLng } from '~/util/geomHelper';
 import * as L from 'leaflet';
 import * as s from '~/components/sidebar/networkView/nodeView/nodeCoordinatesView.scss';
-import { roundLatLng } from '~/util/geomHelper';
 
 interface INodeCoordinatesViewProps {
     nodeType: NodeType;
