@@ -6,6 +6,7 @@ import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import navigator from '~/routing/navigator';
+import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
 import { ILink } from '~/models';
 import EventManager from '~/util/EventManager';
@@ -19,10 +20,11 @@ import ArrowDecorator from '../ArrowDecorator';
 interface IEditNodeLayerProps {
     nodeStore?: NodeStore;
     mapStore?: MapStore;
+    loginStore?: LoginStore;
     leaflet: LeafletContext;
 }
 
-@inject('nodeStore', 'mapStore')
+@inject('mapStore', 'nodeStore', 'loginStore')
 @observer
 class EditNodeLayer extends Component<IEditNodeLayerProps> {
     private reactionDisposer: IReactionDisposer;
@@ -62,7 +64,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         return (
             <NodeMarker
                 key={node.id}
-                isDraggable={true}
+                isDraggable={this.props.loginStore!.hasWriteAccess}
                 node={node}
                 onMoveMarker={this.onMoveMarker()}
             />
@@ -114,20 +116,23 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 [_.cloneDeep(link.geometry)],
                 { interactive: false },
             ).addTo(map);
-            editableLink.enableEdit();
-            const latLngs = editableLink.getLatLngs() as L.LatLng[][];
-            const coords = latLngs[0];
-            const coordsToDisable = [coords[0], coords[coords.length - 1]];
-            coordsToDisable.forEach((coordToDisable: any) => {
-                const vertexMarker = coordToDisable.__vertex;
-                vertexMarker.dragging.disable();
-                vertexMarker._events.click = {};
-                vertexMarker.setOpacity(0);
-                // Put vertex marker z-index low so that it
-                // would be below other layers that needs to be clickable
-                vertexMarker.setZIndexOffset(-1000);
-            });
-            this.editableLinks.push(editableLink);
+
+            if (this.props.loginStore!.hasWriteAccess) {
+                editableLink.enableEdit();
+                const latLngs = editableLink.getLatLngs() as L.LatLng[][];
+                const coords = latLngs[0];
+                const coordsToDisable = [coords[0], coords[coords.length - 1]];
+                coordsToDisable.forEach((coordToDisable: any) => {
+                    const vertexMarker = coordToDisable.__vertex;
+                    vertexMarker.dragging.disable();
+                    vertexMarker._events.click = {};
+                    vertexMarker.setOpacity(0);
+                    // Put vertex marker z-index low so that it
+                    // would be below other layers that needs to be clickable
+                    vertexMarker.setZIndexOffset(-1000);
+                });
+                this.editableLinks.push(editableLink);
+            }
         }
     }
 

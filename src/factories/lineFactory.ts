@@ -1,13 +1,9 @@
 import { ILine, ILineRoute } from '~/models';
 import IExternalLine  from '~/models/externals/IExternalLine.ts';
 import IExternalRoute  from '~/models/externals/IExternalRoute.ts';
-import TransitTypeHelper from '~/util/transitTypeHelper';
 
 class LineFactory {
     public static createLine = (externalLine: IExternalLine): ILine => {
-        const transitType = TransitTypeHelper
-            .convertTransitTypeCodeToTransitType(externalLine.linverkko);
-
         const routes = externalLine.reittisByLintunnus.nodes.map(
             (route: IExternalRoute): ILineRoute => {
                 return {
@@ -18,8 +14,8 @@ class LineFactory {
             });
 
         return {
-            transitType,
             routes,
+            transitType: externalLine.linverkko,
             id: externalLine.lintunnus,
         };
     }

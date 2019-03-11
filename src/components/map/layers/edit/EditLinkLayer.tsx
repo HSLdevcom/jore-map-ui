@@ -6,6 +6,7 @@ import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import EventManager from '~/util/EventManager';
+import { LoginStore } from '~/stores/loginStore';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
@@ -19,9 +20,10 @@ interface IEditLinkLayerProps {
     linkStore?: LinkStore;
     mapStore?: MapStore;
     leaflet: LeafletContext;
+    loginStore?: LoginStore;
 }
 
-@inject('linkStore', 'mapStore')
+@inject('linkStore', 'mapStore', 'loginStore')
 @observer
 class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private reactionDisposer: IReactionDisposer;
@@ -86,21 +88,24 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 [_.cloneDeep(link.geometry)],
                 { interactive: false },
             ).addTo(map);
-            editableLink.enableEdit();
-            const latLngs = editableLink.getLatLngs() as L.LatLng[][];
-            const coords = latLngs[0];
-            const coordsToDisable = [coords[0], coords[coords.length - 1]];
-            coordsToDisable.forEach((coordToDisable: any) => {
-                const vertexMarker = coordToDisable.__vertex;
-                vertexMarker.dragging.disable();
-                vertexMarker._events.click = {};
-                vertexMarker.setOpacity(0);
-                // Put vertex marker z-index low so that it
-                // would be below other layers that needs to be clickable
-                vertexMarker.setZIndexOffset(-1000);
-            });
 
-            this.editableLinks.push(editableLink);
+            if (this.props.loginStore!.hasWriteAccess) {
+                editableLink.enableEdit();
+                const latLngs = editableLink.getLatLngs() as L.LatLng[][];
+                const coords = latLngs[0];
+                const coordsToDisable = [coords[0], coords[coords.length - 1]];
+                coordsToDisable.forEach((coordToDisable: any) => {
+                    const vertexMarker = coordToDisable.__vertex;
+                    vertexMarker.dragging.disable();
+                    vertexMarker._events.click = {};
+                    vertexMarker.setOpacity(0);
+                    // Put vertex marker z-index low so that it
+                    // would be below other layers that needs to be clickable
+                    vertexMarker.setZIndexOffset(-1000);
+                });
+
+                this.editableLinks.push(editableLink);
+            }
         }
     }
 

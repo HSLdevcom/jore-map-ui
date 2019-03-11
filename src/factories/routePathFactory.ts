@@ -2,7 +2,6 @@ import { IRoutePath, IRoute } from '~/models';
 import HashHelper from '~/util/hashHelper';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
-import TransitTypeHelper from '~/util/transitTypeHelper';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
@@ -29,9 +28,7 @@ class RoutePathFactory {
             routePathLinks,
             exceptionPath,
             lineId: externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
-            transitType: TransitTypeHelper.convertTransitTypeCodeToTransitType(
-                externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
-            ),
+            transitType: externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
             internalId: internalRoutePathId,
             routePathName: externalRoutePath.suunimi,
             routePathNameSw: externalRoutePath.suunimir,

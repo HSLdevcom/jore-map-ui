@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import Moment from 'react-moment';
 import { IRoutePath } from '~/models';
-import ViewHeader from '../ViewHeader';
+import SidebarHeader from '../SidebarHeader';
 import * as s from './routePathView.scss';
 
 interface IRoutePathHeaderProps {
@@ -15,7 +15,7 @@ interface IRoutePathHeaderProps {
 
 const RoutePathHeader = (props: IRoutePathHeaderProps) => (
     <div className={classnames(s.formSection, s.content, s.borderBotton)}>
-        <ViewHeader
+        <SidebarHeader
             isEditButtonVisible={!props.isNewRoutePath}
             onEditButtonClick={props.onEditButtonClick}
             isEditing={props.isEditing}
@@ -23,7 +23,7 @@ const RoutePathHeader = (props: IRoutePathHeaderProps) => (
         >
             {props.isNewRoutePath ? 'Uusi reitinsuunta' :
                 `${props.routePath.lineId} > ${props.routePath.routeId}`}
-        </ViewHeader>
+        </SidebarHeader>
         <div className={s.topic}>
             <Moment
                 date={props.routePath.startTime}

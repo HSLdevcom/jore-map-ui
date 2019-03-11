@@ -24,7 +24,7 @@ import { Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../InputContainer';
 import TextContainer from '../../TextContainer';
 import Loader from '../../../shared/loader/Loader';
-import ViewHeader from '../../ViewHeader';
+import SidebarHeader from '../../SidebarHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {
@@ -148,14 +148,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         return (
         <div className={s.linkView}>
             <div className={s.content}>
-                <ViewHeader
+                <SidebarHeader
                     isEditButtonVisible={true}
                     isEditing={!isEditingDisabled}
                     shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
                     onEditButtonClick={this.toggleIsEditingEnabled}
                 >
                     Linkki
-                </ViewHeader>
+                </SidebarHeader>
                 <div className={s.formSection}>
                     <div className={s.flexRow}>
                         <div className={s.formItem}>
