@@ -112,6 +112,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     color={this.props.color}
                     geometry={geom}
                     onClick={this.props.onClick(this.layerRef)}
+                    onMouseOver={this.props.onMouseOver(this.layerRef)}
+                    onMouseOut={this.props.onMouseOut(this.layerRef)}
                     isUpdatePrevented={true}
                 />
             ),
@@ -120,16 +122,20 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     render() {
         return (
-            <FeatureGroup
-                ref={this.layerRef}
-                onMouseOver={this.props.onMouseOver(this.layerRef)}
-                onMouseOut={this.props.onMouseOut(this.layerRef)}
-            >
-                {this.renderRoutePathLinks()}
-                {this.renderDirectionDecoration()}
-                {this.renderNodes()}
-                {this.renderStartMarker()}
-            </FeatureGroup>
+            <>
+                <FeatureGroup
+                    ref={this.layerRef}
+                    onMouseOver={this.props.onMouseOver(this.layerRef)}
+                    onMouseOut={this.props.onMouseOut(this.layerRef)}
+                >
+                    {this.renderRoutePathLinks()}
+                    {this.renderNodes()}
+                    {this.renderStartMarker()}
+                </FeatureGroup>
+                <FeatureGroup>
+                    {this.renderDirectionDecoration()}
+                </FeatureGroup>
+            </>
         );
     }
 }
