@@ -9,6 +9,7 @@ import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
+import NodeLocationType from '~/types/NodeLocationType';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
@@ -100,13 +101,28 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.setState({ isLoading: false });
     }
 
-    private onNodeChange =
-        (property: string) => (value: any, validationResult?: IValidationResult) => {
-            this.props.nodeStore!.updateNode(property, value);
-            if (validationResult) {
-                this.markInvalidProperties(property, validationResult!.isValid);
-            }
+    private onNodeChange = (
+        property: string,
+    ) => (
+        value: any,
+        validationResult?: IValidationResult,
+    ) => {
+        this.props.nodeStore!.updateNode(property, value);
+        if (validationResult) {
+            this.markInvalidProperties(property, validationResult!.isValid);
         }
+    }
+
+    private onNodeGeometryChange = (
+        property: NodeLocationType,
+    ) => (
+        value: any, validationResult?: IValidationResult,
+    ) => {
+        this.props.nodeStore!.updateNodeGeometry(property, value);
+        if (validationResult) {
+            this.markInvalidProperties(property, validationResult!.isValid);
+        }
+    }
 
     private onStopChange =
         (property: string) => (value: any, validationResult?: IValidationResult) => {
@@ -177,7 +193,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         <div className={s.formSection}>
                             <NodeCoordinatesListView
                                 node={this.props.nodeStore!.node}
-                                onChangeCoordinates={this.onNodeChange}
+                                onChangeCoordinates={this.onNodeGeometryChange}
                                 isEditingDisabled={isEditingDisabled}
                             />
                         </div>
