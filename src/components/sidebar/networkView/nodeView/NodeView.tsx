@@ -104,7 +104,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.setState({ isLoading: false });
     }
 
-    private onNodeChange = (
+    private onNodePropertiesChange = (
         property: string,
     ) => (
         value: any,
@@ -182,11 +182,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     label='LYHYT ID'
                                     disabled={isEditingDisabled}
                                     value={node.shortId}
-                                    onChange={this.onNodeChange('shortId')}
+                                    onChange={this.onNodePropertiesChange('shortId')}
                                 />
                                 <Dropdown
                                     label='TYYPPI'
-                                    onChange={this.onNodeChange('type')}
+                                    onChange={this.onNodePropertiesChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
                                     codeList={nodeTypeCodeList}
