@@ -91,7 +91,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private save = async () => {
         this.setState({ isLoading: true });
         try {
-            await NodeService.updateNode(this.props.nodeStore!.node);
+            await NodeService.updateNode(
+                this.props.nodeStore!.node,
+                this.props.nodeStore!.dirtyLinks,
+            );
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {

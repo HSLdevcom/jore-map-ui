@@ -1,4 +1,5 @@
 const commonConstants = {
+    DECIMALS_IN_GEOMETRIES: 5,
     MAP_LAYERS_MIN_ZOOM_LEVEL: 15,
     NEW_OBJECT_TAG: 'new',
 };

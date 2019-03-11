@@ -2,27 +2,26 @@ import * as L from 'leaflet';
 import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
+import { roundLatLng } from '~/util/geomHelper';
 import IExternalNode from '~/models/externals/IExternalNode';
-import TransitTypeHelper from '~/util/transitTypeHelper';
 import INodeBase from '~/models/baseModels/INodeBase';
 import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {
     public static createNode = (externalNode: IExternalNode): INode => {
         // Use less accurate location if measured location is missing.
-        const coordinates = L.GeoJSON.coordsToLatLng((JSON.parse(
-            externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual,
-        )).coordinates);
-        const coordinatesManual =
-            L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonManual)).coordinates);
-        const coordinatesProjection =
-            L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonProjection)).coordinates);
-
+        const coordinates = roundLatLng(
+                L.GeoJSON.coordsToLatLng((JSON.parse(
+                    externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual,
+                )).coordinates));
+        const coordinatesManual = roundLatLng(
+                L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonManual)).coordinates));
+        const coordinatesProjection = roundLatLng(
+                L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonProjection)).coordinates));
         const nodeStop = externalNode.pysakkiBySoltunnus;
         let transitTypes: TransitType[] = [];
         if (externalNode.transittypes) {
-            transitTypes = externalNode.transittypes.split(',').map(transitTypeCode =>
-                TransitTypeHelper.convertTransitTypeCodeToTransitType(transitTypeCode));
+            transitTypes = externalNode.transittypes.split(',') as TransitType[];
         }
 
         return {
