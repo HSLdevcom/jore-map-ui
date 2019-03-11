@@ -10,7 +10,6 @@ import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import TransitTypeHelper from '~/util/transitTypeHelper';
 import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
 import RoutePathListItem from './RoutePathListItem';
 import TextContainer from '../../TextContainer';
@@ -184,9 +183,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
             .toTarget([
                 routeLink.startNode.id,
                 routeLink.endNode.id,
-                TransitTypeHelper.convertTransitTypeToTransitTypeCode(
-                    routeLink.transitType,
-                ),
+                routeLink.transitType,
             ].join(','))
             .toLink();
         navigator.goTo(routeLinkViewLink);

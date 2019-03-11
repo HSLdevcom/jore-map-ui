@@ -1,10 +1,9 @@
 enum TransitType {
-    BUS = 'bus',
-    TRAIN = 'train',
-    SUBWAY = 'subway',
-    FERRY = 'ferry',
-    TRAM = 'tram',
-    NOT_FOUND = 'not_found',
+    BUS = '1',
+    SUBWAY = '2',
+    TRAM = '3',
+    TRAIN = '4',
+    FERRY = '7',
 }
 
 export default TransitType;
