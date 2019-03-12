@@ -94,8 +94,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             if (this.props.isNewNode) {
                 await NodeService.createNode(this.props.nodeStore!.node);
             } else {
-                await NodeService.updateNode(this.props.nodeStore!.node);
+                await NodeService.updateNode(
+                    this.props.nodeStore!.node,
+                    this.props.nodeStore!.dirtyLinks,
+                );
             }
+
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {

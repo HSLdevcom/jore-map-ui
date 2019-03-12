@@ -14,8 +14,6 @@ class TransitTypeColorHelper {
             return '#00985f';
         case TransitType.TRAIN:
             return '#8c4799';
-        case TransitType.NOT_FOUND:
-            return '#666666';
         default:
             throw new Error(`TransitType not supported: ${type}`);
         }
@@ -33,8 +31,6 @@ class TransitTypeColorHelper {
             return s.tram;
         case TransitType.TRAIN:
             return s.train;
-        case TransitType.NOT_FOUND:
-            return s.notFound;
         default:
             throw new Error(`TransitType not supported: ${type}`);
         }
@@ -52,8 +48,6 @@ class TransitTypeColorHelper {
             return s.tramBg;
         case TransitType.TRAIN:
             return s.trainBg;
-        case TransitType.NOT_FOUND:
-            return s.notFound;
         default:
             throw new Error(`TransitType not supported: ${type}`);
         }
