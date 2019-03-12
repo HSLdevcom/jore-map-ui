@@ -4,7 +4,6 @@ import InputContainer from '~/components/sidebar/InputContainer';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeTypeHelper from '~/util/nodeTypeHelper';
-import { roundLatLng } from '~/util/geomHelper';
 import * as L from 'leaflet';
 import * as s from '~/components/sidebar/networkView/nodeView/nodeCoordinatesView.scss';
 
@@ -42,11 +41,9 @@ class NodeCoordinatesView extends React.Component<INodeCoordinatesViewProps> {
     latChange = (v: string) => {
         const lat = Number(v);
         this.props.onChangeCoordinates(
-            roundLatLng(
-                new L.LatLng(
-                    lat,
-                    this.props.coordinates.lng,
-                ),
+            new L.LatLng(
+                lat,
+                this.props.coordinates.lng,
             ),
         );
     }
@@ -54,11 +51,9 @@ class NodeCoordinatesView extends React.Component<INodeCoordinatesViewProps> {
     lonChange = (v: string) => {
         const lon = Number(v);
         this.props.onChangeCoordinates(
-            roundLatLng(
-                new L.LatLng(
-                    this.props.coordinates.lat,
-                    lon,
-                ),
+            new L.LatLng(
+                this.props.coordinates.lat,
+                lon,
             ),
         );
     }
