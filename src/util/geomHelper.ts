@@ -15,7 +15,7 @@ const createCoherentLinesFromPolylines = (polylines: LatLng[][]): LatLng[][] => 
             polylineBuilder = polylineBuilder.concat(line);
         } else {
             result.push(polylineBuilder);
-            polylineBuilder = [];
+            polylineBuilder = line;
         }
     });
     if (polylineBuilder.length > 0) {
