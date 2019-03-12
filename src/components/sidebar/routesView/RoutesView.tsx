@@ -8,6 +8,7 @@ import navigator from '~/routing/navigator';
 import { SearchStore } from '~/stores/searchStore';
 import QueryParams from '~/routing/queryParams';
 import TransitType from '~/enums/transitType';
+import EntityTypeToggles from '../homeView/EntityTypeToggles';
 import LineSearch from '../../shared/searchView/LineSearch';
 import RouteList from './RouteList';
 import SearchResults from '../../shared/searchView/SearchResults';
@@ -41,6 +42,7 @@ class RoutesView extends React.Component<IRoutesViewProps> {
                     <Route component={RouteList} />
                 ) : (
                     <>
+                        <EntityTypeToggles />
                         <TransitToggleButtonBar
                             toggleSelectedTransitType={this.toggleTransitType}
                             selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
