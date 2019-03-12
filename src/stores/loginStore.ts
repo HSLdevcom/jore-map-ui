@@ -14,12 +14,12 @@ export class LoginStore {
 
     @computed
     get isAuthenticated() {
-        return this._isAuthenticated || !Constants.isLoginRequired;
+        return this._isAuthenticated || !Constants.IS_LOGIN_REQUIRED;
     }
 
     @computed
     get hasWriteAccess() {
-        return this._hasWriteAccess || !Constants.isLoginRequired;
+        return this._hasWriteAccess  || !Constants.IS_LOGIN_REQUIRED;
     }
 
     @computed
