@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
+import { withLeaflet } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { MapStore } from '~/stores/mapStore';
 import { IRoute } from '~/models';
 import RoutePathLayer from './RoutePathLayer';
+import { LeafletContext } from '../Map';
 
 interface RouteLayerProps {
     mapStore?: MapStore;
     routes: IRoute[];
+    leaflet: LeafletContext;
 }
 
 interface IRouteLayerState {
@@ -72,6 +75,10 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
             selectedPolylines,
         });
         target.current.leafletElement.bringToFront();
+
+        // This moves (magically) ArrowDecorators on top of routePathLinks
+        const map = this.props.leaflet.map;
+        map!.setView(map!.getCenter(), map!.getZoom());
     }
 
     private hasHighlight = (internalId: string) => {
@@ -85,6 +92,10 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
                 hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
             });
             target.current.leafletElement.bringToFront();
+
+            // This moves (magically) ArrowDecorators on top of routePathLinks
+            const map = this.props.leaflet.map;
+            map!.setView(map!.getCenter(), map!.getZoom());
         }
     }
 
@@ -94,6 +105,10 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         });
         if (!this.state.selectedPolylines.includes(internalId)) {
             target.current.leafletElement.bringToBack();
+
+            // This moves (magically) ArrowDecorators on top of routePathLinks
+            const map = this.props.leaflet.map;
+            map!.setView(map!.getCenter(), map!.getZoom());
         }
     }
 
@@ -114,4 +129,4 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     }
 }
 
-export default RouteLayer;
+export default withLeaflet(RouteLayer);

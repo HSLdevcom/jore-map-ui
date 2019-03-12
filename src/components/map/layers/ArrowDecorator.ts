@@ -6,6 +6,8 @@ interface IArrowDecoratorProps extends PathProps {
     leaflet: LeafletContext;
     geometry: LatLng[];
     onClick?: () => void;
+    onMouseOver?: () => void;
+    onMouseOut?: () => void;
     color: string;
     showOnEventName: string;
     hideOnEventName: string;
@@ -32,6 +34,12 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator>{
         });
         if (this.props.onClick) {
             decorator.on('click', this.props.onClick);
+        }
+        if (this.props.onMouseOver) {
+            decorator.on('mouseover', this.props.onMouseOver);
+        }
+        if (this.props.onMouseOut) {
+            decorator.on('mouseout', this.props.onMouseOut);
         }
         if (props.showOnEventName) {
             this.props.leaflet.map!.on(

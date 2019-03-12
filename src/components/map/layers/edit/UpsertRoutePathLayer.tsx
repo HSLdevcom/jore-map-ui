@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import INode from '~/models/INode';
-import { MapStore } from '~/stores/mapStore';
+import { MapStore, MapFilter } from '~/stores/mapStore';
 import {
     RoutePathStore, AddLinkDirection, RoutePathViewTab,
 } from '~/stores/routePathStore';
@@ -273,6 +273,8 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
     }
 
     private renderLinkDecorator = () => {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks!;
         const coherentPolylines = createCoherentLinesFromPolylines(
             routePathLinks.map(rpLink => rpLink.geometry),
