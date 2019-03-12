@@ -155,6 +155,8 @@ export class RoutePathStore {
     @action
     public setRoutePath = (routePath: IRoutePath) => {
         this._routePath = routePath;
+        // Need to recalculate orderNumbers to ensure that they are correct
+        this.recalculateOrderNumbers();
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
         const currentUndoState: UndoState = {
             routePathLinks,
