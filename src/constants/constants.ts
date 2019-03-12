@@ -8,7 +8,7 @@ const developmentConstants = {
     ...commonConstants,
     AFTER_LOGIN_URL: 'http://localhost:3000/afterLogin',
     FADE_DIALOG_TIMEOUT: 500, // milliseconds
-    IS_LOGIN_REQUIRED: true,
+    IS_LOGIN_REQUIRED: false,
 };
 
 const productionConstants = {
