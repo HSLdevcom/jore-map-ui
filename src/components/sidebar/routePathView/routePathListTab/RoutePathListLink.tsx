@@ -109,7 +109,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text='Ohitusaika kirja-aikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -121,7 +121,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika nettiaikat.'}
+                            text='Ohitusaika nettiaikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -140,7 +140,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika nettiaikat.'}
+                            text='Ohitusaika nettiaikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -152,7 +152,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text='Ohitusaika kirja-aikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -162,7 +162,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                     <Dropdown
                         label='SOLMU HASTUS-PAIKKANA'
                         items={['Kyllä', 'Ei']}
-                        selected={'Kyllä'}
+                        selected='Kyllä'
                         onChange={this.onChange}
                     />
                 </div>

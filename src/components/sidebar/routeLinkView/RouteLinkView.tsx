@@ -238,7 +238,7 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                         label='KUTSU-/JÄTTÖ-/OTTOP'
                         onChange={this.onChange}
                         items={['Ei', 'Kyllä']}
-                        selected={'0 - Ei'}
+                        selected='0 - Ei'
                     />
                     <Dropdown
                         label='AJANTASAUSPYSÄKKI'
@@ -308,7 +308,7 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text='Ohitusaika kirja-aikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -320,7 +320,7 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text='Ohitusaika kirja-aikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -334,7 +334,7 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika nettiaikat.'}
+                            text='Ohitusaika nettiaikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -346,7 +346,7 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika nettiaikat.'}
+                            text='Ohitusaika nettiaikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -393,7 +393,7 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                             label='SOLMU HASTUS-PAIKKANA'
                             onChange={this.onChange}
                             items={['Kyllä', 'Ei']}
-                            selected={'Kyllä'}
+                            selected='Kyllä'
                         />
                     </div>
                     <div className={s.flexFiller} />
