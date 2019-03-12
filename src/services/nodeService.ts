@@ -37,8 +37,7 @@ class NodeService {
             links,
         };
 
-        const apiClient = new ApiClient();
-        await apiClient.updateObject(endpoints.NODE, requestBody);
+        await ApiClient.updateObject(endpoints.NODE, requestBody);
         await apolloClient.clearStore();
     }
 }
