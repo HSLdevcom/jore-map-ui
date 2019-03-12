@@ -7,16 +7,9 @@ export class LoginStore {
     @observable private _isAuthenticated: boolean;
     @observable private _hasWriteAccess: boolean;
     @observable private _userEmail?: string;
-    @observable private _loginInProgress: boolean;
 
     constructor() {
         this.clear();
-        this._loginInProgress = true;
-    }
-
-    @computed
-    get isLoginInProgress() {
-        return this._loginInProgress;
     }
 
     @computed
@@ -42,13 +35,7 @@ export class LoginStore {
     }
 
     @action
-    public setIsLoginInProgress(loginInProgress: boolean) {
-        this._loginInProgress = loginInProgress;
-    }
-
-    @action
     public clear() {
-        this._loginInProgress = false;
         this._isAuthenticated = false;
         this._userEmail = undefined;
         this._hasWriteAccess = false;

@@ -19,7 +19,7 @@ import NavigationBar from './NavigationBar';
 import * as s from './app.scss';
 
 interface IAppState {
-    showLogin: boolean;
+    isLoginInProgress: boolean;
 }
 
 interface IAppProps extends RouteComponentProps<any> {
@@ -30,6 +30,12 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
+    constructor(props: IAppProps) {
+        super(props);
+        this.state = {
+            isLoginInProgress: true,
+        };
+    }
     componentWillMount() {
         this.redirectToLogin();
     }
@@ -38,16 +44,17 @@ class App extends React.Component<IAppProps, IAppState> {
         if (!isAfterLogin) {
             const response = (await ApiClient
                 .getRequest(endpoints.EXISTING_SESSION) as IAuthorizationResponse);
-            const { history } = this.props;
             if (response.isOk) {
                 // Auth was ok, keep the current site as it is
                 this.props.loginStore!.setAuthenticationInfo(response);
             } else {
                 // Redirect to login
-                history.push(SubSites.login);
+                navigator.goTo(SubSites.login);
             }
         }
-        this.props.loginStore!.setIsLoginInProgress(false);
+        this.setState({
+            isLoginInProgress: false,
+        });
     }
 
     private renderApp = () => (
@@ -82,7 +89,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     render() {
-        if (this.props.loginStore!.isLoginInProgress) return <div>Ladataan sovellusta...</div>;
+        if (this.state.isLoginInProgress) return <div>Ladataan sovellusta...</div>;
 
         return (
             <div className={s.appView}>
