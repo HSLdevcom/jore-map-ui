@@ -162,6 +162,7 @@ export class RoutePathStore {
             routePathLinks,
         };
         this._undoStore.addItem(currentUndoState);
+        this._isGeometryValid = validateRoutePathLinks(routePathLinks);
 
         this.setOldRoutePath(routePath);
     }
