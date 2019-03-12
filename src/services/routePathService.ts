@@ -24,14 +24,12 @@ class RoutePathService {
         }
 
     public static updateRoutePath = async (routePath: IRoutePath) => {
-        const apiClient = new ApiClient();
-        await apiClient.updateObject(endpoints.ROUTEPATH, routePath);
+        await ApiClient.updateObject(endpoints.ROUTEPATH, routePath);
         await apolloClient.clearStore();
     }
 
     public static createRoutePath = async (routePath: IRoutePath) => {
-        const apiClient = new ApiClient();
-        await apiClient.createObject(endpoints.ROUTEPATH, routePath);
+        await ApiClient.createObject(endpoints.ROUTEPATH, routePath);
         await apolloClient.clearStore();
     }
 }
