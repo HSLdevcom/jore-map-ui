@@ -77,14 +77,14 @@ class NodeCoordinatesView extends React.Component<INodeCoordinatesViewProps> {
                     <InputContainer
                         value={this.props.coordinates.lat}
                         onChange={this.latChange}
-                        label={'Latitude'}
+                        label='Latitude'
                         type='number'
                         disabled={this.props.isEditingDisabled}
                     />
                     <InputContainer
                         value={this.props.coordinates.lng}
                         onChange={this.lonChange}
-                        label={'Longitude'}
+                        label='Longitude'
                         type='number'
                         disabled={this.props.isEditingDisabled}
                     />

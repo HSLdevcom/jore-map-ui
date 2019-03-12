@@ -5,10 +5,8 @@ import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import INode from '~/models/INode';
-import { MapStore } from '~/stores/mapStore';
-import {
-    RoutePathStore, AddLinkDirection, RoutePathViewTab,
-} from '~/stores/routePathStore';
+import { RoutePathStore, RoutePathViewTab, NeighborToAddType } from '~/stores/routePathStore';
+import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
@@ -43,6 +41,14 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         };
     }
 
+    componentDidMount() {
+        this.setBounds();
+    }
+
+    componentDidUpdate() {
+        this.setBounds();
+    }
+
     private defaultActionOnObjectClick = (id: string) => {
         // Switch to info tab
         this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
@@ -61,42 +67,45 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
 
         let res: ReactNode[] = [];
         routePathLinks.forEach((rpLink, index) => {
-            const nextLink =
-                index === routePathLinks.length - 1 ? undefined : routePathLinks[index + 1];
-
             // Render node which is lacking preceeding link
             if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
-                res.push(this.renderNode(rpLink.startNode, index, undefined, rpLink));
+                res.push(this.renderNode(rpLink.startNode, rpLink.orderNumber, index));
             }
             res = res.concat(this.renderLink(rpLink));
-            res.push(this.renderNode(rpLink.endNode, index, rpLink, nextLink));
+            res.push(this.renderNode(rpLink.endNode, rpLink.orderNumber, index));
         });
         return res;
     }
 
-    private renderNode = (
-        node: INode,
-        index: number,
-        previousRPLink?: IRoutePathLink,
-        nextRPLink?: IRoutePathLink,
-    ) => {
+    public hasNodeOddAmountOfNeighbors = (node: INode) => {
+        const routePath = this.props.routePathStore!.routePath;
+        return routePath!.routePathLinks!.filter(x => x.startNode.id === node.id).length
+            !== routePath!.routePathLinks!.filter(x => x.endNode.id === node.id).length;
+    }
 
-        const onNodeClick =
-            this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool!.onNodeClick ?
-                this.props.toolbarStore!.selectedTool!.onNodeClick!(
-                    node, previousRPLink, nextRPLink)
-                // Default
-                : () => this.defaultActionOnObjectClick(node.id);
+    private renderNode = (node: INode, linkOrderNumber: number, index: number) => {
+        const selectedTool = this.props.toolbarStore!.selectedTool;
 
-        const isNodeHighlighted =
-            this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool!.isNodeHighlighted ?
-                this.props.toolbarStore!.selectedTool!.isNodeHighlighted!(
-                    node)
-                // Default
-                : this.props.routePathStore!.isObjectHighlighted(node.id);
-
+        let onNodeClick;
+        let isNodeHighlighted;
+        // Check if AddNewRoutePathLink is active
+        if (selectedTool
+            && selectedTool.onNodeClick
+            && selectedTool.toolType === ToolbarTool.AddNewRoutePathLink
+            && this.props.routePathStore!.neighborLinks.length === 0
+        ) {
+            isNodeHighlighted = this.hasNodeOddAmountOfNeighbors(node);
+            // Allow click event for highlighted nodes only
+            if (isNodeHighlighted) {
+                onNodeClick = selectedTool.onNodeClick(node, linkOrderNumber);
+            }
+        } else {
+            // Prevent default click if there are neighbors on map
+            if (this.props.routePathStore!.neighborLinks.length === 0) {
+                onNodeClick = () => this.defaultActionOnObjectClick(node.id);
+                isNodeHighlighted = this.props.routePathStore!.isMapItemHighlighted(node.id);
+            }
+        }
         return (
             <NodeMarker
                 key={`${node.id}-${index}`}
@@ -124,7 +133,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                     opacity={0.8}
                     onClick={onRoutePathLinkClick}
                 />
-            ), this.props.routePathStore!.isObjectHighlighted(routePathLink.id) &&
+            ), this.props.routePathStore!.isMapItemHighlighted(routePathLink.id) &&
             (
                 <Polyline
                     positions={routePathLink.geometry}
@@ -141,12 +150,10 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
     private renderRoutePathLinkNeighbors = () => {
         const routePathLinks = this.props.routePathStore!.neighborLinks;
         if (!routePathLinks) return;
-
         return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
-            const direction = this.props.routePathStore!.addRoutePathLinkInfo.direction;
-            const nodeToRender =
-                direction === AddLinkDirection.AfterNode ?
-                    routePathLink.endNode : routePathLink.startNode;
+            const neighborToAddType = this.props.routePathStore!.neighborToAddType;
+            const nodeToRender = neighborToAddType === NeighborToAddType.AfterNode ?
+                routePathLink.endNode : routePathLink.startNode;
             return (
                 [
                     this.renderNeighborNode(nodeToRender, routePathLink, index),
@@ -161,7 +168,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             <NodeMarker
                 key={`${key}-${node.id}`}
                 isNeighborMarker={true}
-                onClick={this.addLinkToRoutePath(routePathLink)}
+                onClick={this.addNeighborLinkToRoutePath(routePathLink)}
                 node={node}
             />
         );
@@ -175,47 +182,25 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 color={NEIGHBOR_MARKER_COLOR}
                 weight={5}
                 opacity={0.8}
-                onClick={this.addLinkToRoutePath(routePathLink)}
+                onClick={this.addNeighborLinkToRoutePath(routePathLink)}
             />
         );
     }
 
-    private addLinkToRoutePath = (routePathLink: IRoutePathLink) => async () => {
+    private addNeighborLinkToRoutePath = (routePathLink: IRoutePathLink) => async () => {
         this.props.routePathStore!.addLink(routePathLink);
-        this.updateNeighbourLinks(routePathLink);
-    }
-
-    private updateNeighbourLinks = async (routePathLink: IRoutePathLink) =>  {
-        const direction = this.props!.routePathStore!.addRoutePathLinkInfo.direction;
-
-        const fixedNode =
-            direction === AddLinkDirection.AfterNode
-            ? routePathLink.endNode
-            : routePathLink.startNode;
-
-        const isMissingNeighbours =
-            this.props!.routePathStore!.isRoutePathNodeMissingNeighbour(fixedNode);
-
-        if (isMissingNeighbours) {
-            const direction = this.props.routePathStore!.addRoutePathLinkInfo.direction;
-            const orderNumber =
-                direction === AddLinkDirection.AfterNode
-                ? routePathLink.orderNumber + 1
-                : routePathLink.orderNumber;
-
-            try {
-                const newRoutePathLinks =
-                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                    fixedNode.id,
-                    this.props.routePathStore!.addRoutePathLinkInfo.direction,
-                    orderNumber,
-                    this.props.routePathStore!.routePath!.transitType);
-                this.props.routePathStore!.setNeighborRoutePathLinks(newRoutePathLinks);
-            } catch (ex) {
-                this.props.errorStore!.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
-            }
-        } else {
-            this.props.routePathStore!.setNeighborRoutePathLinks([]);
+        const neighborToAddType = this.props.routePathStore!.neighborToAddType;
+        const nodeToFetch = neighborToAddType === NeighborToAddType.AfterNode ?
+            routePathLink.endNode : routePathLink.startNode;
+        if (this.hasNodeOddAmountOfNeighbors(nodeToFetch)) {
+            const queryResult = await RoutePathLinkService.fetchNeighborRoutePathLinks(
+                nodeToFetch.id,
+                routePathLink.orderNumber,
+                this.props.routePathStore!.routePath!.transitType,
+                this.props.routePathStore!.routePath!.routePathLinks,
+            );
+            this.props.routePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
+            this.props.routePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
         }
     }
 
@@ -273,6 +258,8 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
     }
 
     private renderLinkDecorator = () => {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks!;
         const coherentPolylines = createCoherentLinesFromPolylines(
             routePathLinks.map(rpLink => rpLink.geometry),
@@ -284,14 +271,6 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 geometry={polyline}
             />
         ));
-    }
-
-    componentDidMount() {
-        this.setBounds();
-    }
-
-    componentDidUpdate() {
-        this.setBounds();
     }
 
     render() {

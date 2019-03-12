@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
 import TransitType from '~/enums/transitType';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import MapStore, { NodeLabel } from '~/stores/mapStore';
+import MapStore, { NodeLabel, MapFilter } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
 import NetworkDateControl from './NetworkDateControl';
 import * as s from './mapLayersControl.scss';
@@ -41,6 +41,10 @@ class MapLayersControl extends React.Component
 
     private toggleMapLayerVisibility = (mapLayer: MapLayer) => () => {
         NetworkStore.toggleMapLayerVisibility(mapLayer);
+    }
+
+    private toggleMapFilter = (mapFilter: MapFilter) => () => {
+        MapStore.toggleMapFilter(mapFilter);
     }
 
     private toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => () => {
@@ -80,32 +84,33 @@ class MapLayersControl extends React.Component
                     />
                     <NetworkDateControl selectDate={this.selectDate}/>
                     <div className={s.sectionDivider} />
+                    <div className={s.inputTitle}>GEOMETRIAT</div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleMapLayerVisibility(MapLayer.link)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.link)}
-                            text={'Näytä alueen linkit'}
+                            text='Alueen linkit'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleMapLayerVisibility(MapLayer.linkPoint)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.linkPoint)}
-                            text={'Näytä linkkien pisteet'}
+                            text='Linkkien pisteet'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleMapLayerVisibility(MapLayer.node)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.node)}
-                            text={'Näytä alueen solmut'}
+                            text='Alueen solmut'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleMapLayerVisibility(MapLayer.nodeWithoutLink)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)}
-                            text={'Näytä linkittömät solmut'}
+                            text='Linkittömät solmut'
                         />
                     </div>
                     <div className={s.sectionDivider} />
@@ -114,23 +119,32 @@ class MapLayersControl extends React.Component
                             <Checkbox
                                 onClick={this.toggleNodeLabelVisibility(NodeLabel.hastusId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.hastusId)}
-                                text={'Hastus id'}
+                                text='Hastus id'
                             />
                         </div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
                                 onClick={this.toggleNodeLabelVisibility(NodeLabel.longNodeId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.longNodeId)}
-                                text={'Pitkä solmun id'}
+                                text='Pitkä solmun id'
                             />
                         </div>
                         <div className={s.checkboxContainer}>
                             <Checkbox
                                 onClick={this.toggleNodeLabelVisibility(NodeLabel.shortNodeId)}
                                 checked={MapStore.isNodeLabelVisible(NodeLabel.shortNodeId)}
-                                text={'Lyhyt solmun id'}
+                                text='Lyhyt solmun id'
                             />
                         </div>
+                    <div className={s.sectionDivider} />
+                    <div className={s.inputTitle}>LINKIT</div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleMapFilter(MapFilter.arrowDecorator)}
+                            checked={MapStore.isMapFilterEnabled(MapFilter.arrowDecorator)}
+                            text='Linkkien suuntanuolet'
+                        />
+                    </div>
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>KARTTA</div>
                     <RadioButton

@@ -1,24 +1,25 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Route, RouteComponentProps } from 'react-router-dom';
-import { withRouter, Switch } from 'react-router';
+import { matchPath, withRouter, Switch } from 'react-router';
 import '~/util/KeyEventHandler';
+import endpoints from '~/enums/endpoints';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import SubSites from '~/routing/subSites';
-import AuthService from '~/services/authService';
+import AuthService, { IAuthorizationResponse } from '~/services/authService';
+import ApiClient from '~/util/ApiClient';
 import navigator from '~/routing/navigator';
 import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
-import PrivateRoute from './PrivateRoute';
 import Login from './login/Login';
 import NavigationBar from './NavigationBar';
 import * as s from './app.scss';
 
 interface IAppState {
-    showLogin: boolean;
+    isLoginInProgress: boolean;
 }
 
 interface IAppProps extends RouteComponentProps<any> {
@@ -29,6 +30,33 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
+    constructor(props: IAppProps) {
+        super(props);
+        this.state = {
+            isLoginInProgress: true,
+        };
+    }
+    componentWillMount() {
+        this.redirectToLogin();
+    }
+    private redirectToLogin = async () => {
+        const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
+        if (!isAfterLogin) {
+            const response = (await ApiClient
+                .getRequest(endpoints.EXISTING_SESSION) as IAuthorizationResponse);
+            if (response.isOk) {
+                // Auth was ok, keep the current site as it is
+                this.props.loginStore!.setAuthenticationInfo(response);
+            } else {
+                // Redirect to login
+                navigator.goTo(SubSites.login);
+            }
+        }
+        this.setState({
+            isLoginInProgress: false,
+        });
+    }
+
     private renderApp = () => (
         <>
             <NavigationBar />
@@ -49,6 +77,7 @@ class App extends React.Component<IAppProps, IAppState> {
     private renderAfterLogin = () => {
         AuthService.authenticate(
         () => {
+            // TODO: possibly redirect to the url before user tried to access /login
             // on success
             navigator.goTo(SubSites.home);
         },
@@ -60,6 +89,8 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     render() {
+        if (this.state.isLoginInProgress) return <div>Ladataan sovellusta...</div>;
+
         return (
             <div className={s.appView}>
                 <Switch>
@@ -72,7 +103,7 @@ class App extends React.Component<IAppProps, IAppState> {
                         path='/login'
                         component={Login}
                     />
-                    <PrivateRoute
+                    <Route
                         path='/'
                         component={this.renderApp}
                     />

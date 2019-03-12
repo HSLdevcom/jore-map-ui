@@ -3,6 +3,8 @@ import { IoMdContact } from 'react-icons/io';
 import hslLogo from '~/assets/hsl-logo.png';
 import routeBuilder from '~/routing/routeBuilder';
 import { observer, inject } from 'mobx-react';
+import ApiClient from '~/util/ApiClient';
+import endpoints from '~/enums/endpoints';
 import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -23,12 +25,13 @@ class NavigationBar extends Component<INavigationBarProps> {
         navigator.goTo(homeLink);
     }
 
-    private logout = () => {
+    private logout = async () => {
         // TODO: Implement full logout clearing session in backend
         // https://github.com/HSLdevcom/jore-map-ui/issues/669
+        await ApiClient.postRequest(endpoints.LOGOUT, {});
         this.props.loginStore!.clear();
-        const homeLink = routeBuilder.to(SubSites.home).clear().toLink();
-        navigator.goTo(homeLink);
+        const loginLink = routeBuilder.to(SubSites.login).clear().toLink();
+        navigator.goTo(loginLink);
     }
 
     render () {

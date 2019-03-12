@@ -166,7 +166,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         onChange={this.onChange('length')}
                     />
                     <TextContainer
-                        label={'Laskettu'}
+                        label='Laskettu'
                         value={this.props.routePathStore!.getCalculatedLength()}
                     />
                 </div>
@@ -238,14 +238,14 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                             onChange={this.onChange}
                             disabled={isEditingDisabled}
                             items={['Suunta 1']}
-                            selected={'Suunta 1'}
+                            selected='Suunta 1'
                         />
                         {/* TODO */}
                         <Dropdown
                             onChange={this.onChange}
                             disabled={isEditingDisabled}
                             items={['Suunta 2']}
-                            selected={'Suunta 2'}
+                            selected='Suunta 2'
                         />
                     </div>
                 </div>
