@@ -33,6 +33,17 @@ export class SearchResultStore {
         this._allNodes = nodes;
     }
 
+    private matchWildcard(text: string, rule: string) {
+        return new RegExp(`^${rule.split('*').join('.*')}$`).test(text);
+    }
+
+    private matchText(text: string, rule: string) {
+        if (rule.includes('*')) {
+            return this.matchWildcard(text, rule);
+        }
+        return text.includes(rule);
+    }
+
     private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
         return this._allLines.filter((line) => {
             // Filter by transitType
@@ -41,21 +52,21 @@ export class SearchResultStore {
             }
 
             // Filter by line.id
-            if (line.id.indexOf(searchInput) > -1) return true;
+            if (this.matchText(line.id, searchInput)) return true;
 
             // Filter by route.name
             return line.routes
                 .map(route => route.name.toLowerCase())
-                .some(name => name.indexOf(searchInput) > -1);
+                .some(name => this.matchText(name, searchInput.toLowerCase()));
         });
     }
 
     private getFilteredNodes = (searchInput: string) => {
         return this._allNodes.filter((node) => {
-            return node.id.indexOf(searchInput) > -1
+            return this.matchText(node.id, searchInput)
                 || (
                     Boolean(node.shortId)
-                    && node.shortId!.indexOf(searchInput) > -1
+                        && this.matchText(node.shortId!, searchInput)
                 );
         });
     }
