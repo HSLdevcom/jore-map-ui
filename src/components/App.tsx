@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Route, RouteComponentProps } from 'react-router-dom';
-import { withRouter, Switch } from 'react-router';
+import { matchPath, withRouter, Switch } from 'react-router';
 import '~/util/KeyEventHandler';
 import endpoints from '~/enums/endpoints';
 import { LoginStore } from '~/stores/loginStore';
@@ -30,20 +30,26 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
-    async componentWillMount() {
-        const pathName = navigator.getPathName();
-        if (!pathName.includes(SubSites.afterLogin)) {
+    componentWillMount() {
+        this.redirectToLogin();
+    }
+    private redirectToLogin = async () => {
+        const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
+        if (!isAfterLogin) {
             const response = (await ApiClient
-                .postRequest(endpoints.EXISTING_SESSION, {}) as IAuthorizationResponse);
+                .getRequest(endpoints.EXISTING_SESSION) as IAuthorizationResponse);
             const { history } = this.props;
             if (response.isOk) {
+                // Auth was ok, keep the current site as it is
                 this.props.loginStore!.setAuthenticationInfo(response);
             } else {
+                // Redirect to login
                 history.push(SubSites.login);
             }
         }
         this.props.loginStore!.setIsLoginInProgress(false);
     }
+
     private renderApp = () => (
         <>
             <NavigationBar />

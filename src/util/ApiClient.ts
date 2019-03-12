@@ -3,9 +3,10 @@ import FetchStatusCode from '~/enums/fetchStatusCode';
 import ApiClientHelper from './apiClientHelper';
 
 enum RequestMethod {
-    POST= 'POST',
-    PUT= 'PUT',
-    DELETE= 'DELETE',
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE',
 }
 
 interface IAuthorizationRequest {
@@ -38,9 +39,14 @@ class ApiClient {
             RequestMethod.POST, endpoints.AUTH, requestBody);
     }
 
-    public postRequest = async (endpoint: endpoints, object: any) => {
+    public getRequest = async (endpoint: endpoints) => {
         return await this.sendRequest(
-            RequestMethod.POST, endpoint, object);
+            RequestMethod.GET, endpoint, {});
+    }
+
+    public postRequest = async (endpoint: endpoints, requestBody: any) => {
+        return await this.sendRequest(
+            RequestMethod.POST, endpoint, requestBody);
     }
 
     private sendRequest = async (method: RequestMethod, endpoint: endpoints, object: any) => {
@@ -50,7 +56,7 @@ class ApiClient {
         try {
             const response = await fetch(this.getUrl(endpoint), {
                 method,
-                body: JSON.stringify(formattedObject),
+                body: method === RequestMethod.GET ? undefined : JSON.stringify(formattedObject),
                 // To keep the same express session information with each request
                 credentials: 'include',
                 headers: {
@@ -71,6 +77,7 @@ class ApiClient {
                 message: response.statusText,
             };
         } catch (err) {
+            console.log(err); // tslint:disable-line no-console
             error = {
                 errorCode: FetchStatusCode.CONNECTION_ERROR,
                 message: 'Yhteysongelma',
