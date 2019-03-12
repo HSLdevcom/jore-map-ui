@@ -1,7 +1,7 @@
 @import '../../shared/styles/common.scss';
 #coordinateControl {
     border: 0px;
-    width: 304px;
+    width: 133px;
     div {
         height: 29px;
         width: 130px;
@@ -9,8 +9,8 @@
         border: 1px solid black;
         background-color: $lightGrey;
     }
-    div:first-of-type{
-        margin-right: 40px;
+    div:nth-of-type(2){
+        margin-top: 5px;
     }
     div>button {
         font-family: $hslFont;
