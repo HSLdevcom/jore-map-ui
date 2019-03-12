@@ -7,8 +7,8 @@ import UndoStore from '~/stores/undoStore';
 
 // Is the neighbor to add either startNode or endNode
 export enum NeighborToAddType {
-    StartNode,
-    EndNode,
+    AfterNode,
+    BeforeNode,
 }
 
 export enum RoutePathViewTab {

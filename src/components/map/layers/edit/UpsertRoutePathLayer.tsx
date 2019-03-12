@@ -152,7 +152,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         if (!routePathLinks) return;
         return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
             const neighborToAddType = this.props.routePathStore!.neighborToAddType;
-            const nodeToRender = neighborToAddType === NeighborToAddType.StartNode ?
+            const nodeToRender = neighborToAddType === NeighborToAddType.AfterNode ?
                 routePathLink.endNode : routePathLink.startNode;
             return (
                 [
@@ -190,7 +190,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
     private addNeighborLinkToRoutePath = (routePathLink: IRoutePathLink) => async () => {
         this.props.routePathStore!.addLink(routePathLink);
         const neighborToAddType = this.props.routePathStore!.neighborToAddType;
-        const nodeToFetch = neighborToAddType === NeighborToAddType.StartNode ?
+        const nodeToFetch = neighborToAddType === NeighborToAddType.AfterNode ?
             routePathLink.endNode : routePathLink.startNode;
         if (this.hasNodeOddAmountOfNeighbors(nodeToFetch)) {
             const queryResult = await RoutePathLinkService.fetchNeighborRoutePathLinks(

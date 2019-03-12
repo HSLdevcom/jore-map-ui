@@ -17,7 +17,7 @@ class RoutePathLinkService {
     ): Promise<IRoutePathLink[]> => {
         let res: IRoutePathLink[] = [];
         // If new routePathLinks should be created after the node
-        if (neighborToAddType === NeighborToAddType.StartNode) {
+        if (neighborToAddType === NeighborToAddType.AfterNode) {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getLinksByStartNodeQuery()
                 , variables: { nodeId } },
@@ -26,8 +26,8 @@ class RoutePathLinkService {
                 linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
                     RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(link, orderNumber),
             );
-        } else if (neighborToAddType === NeighborToAddType.EndNode) {
-            // If new routePathLinks should be created before the node
+        // If new routePathLinks should be created before the node
+        } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getLinksByEndNodeQuery()
                 , variables: { nodeId } },
@@ -60,10 +60,10 @@ class RoutePathLinkService {
         let neighborToAddType;
         let orderNumber;
         if (startNodeCount <= endNodeCount) {
-            neighborToAddType = NeighborToAddType.StartNode;
+            neighborToAddType = NeighborToAddType.AfterNode;
             orderNumber = linkOrderNumber + 1;
         } else {
-            neighborToAddType = NeighborToAddType.EndNode;
+            neighborToAddType = NeighborToAddType.BeforeNode;
             orderNumber = linkOrderNumber;
         }
 
