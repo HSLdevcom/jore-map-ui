@@ -8,7 +8,7 @@ import { MapStore } from '~/stores/mapStore';
 import SubSites from '~/routing/subSites';
 import AuthService from '~/services/authService';
 import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
+import * as localStorageHelper from '~/util/localStorageHelper';
 import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Map from './map/Map';
@@ -50,10 +50,11 @@ class App extends React.Component<IAppProps, IAppState> {
     private renderAfterLogin = () => {
         AuthService.authenticate(
         () => {
-            const a = navigator.getQueryParam(QueryParams.state);
-            const b = a.replace('$', '=');
-            // on success
-            navigator.goTo(b);
+            // On success: Redirecting user to where she left off.
+            const originUrl = localStorageHelper.getOriginUrl();
+            const destination = originUrl ? originUrl : SubSites.home;
+            localStorageHelper.clearOriginUrl();
+            navigator.goTo(destination);
         },
         () => {
             // On error

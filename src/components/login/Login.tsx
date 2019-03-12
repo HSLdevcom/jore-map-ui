@@ -5,6 +5,7 @@ import { FaLock } from 'react-icons/fa';
 import { Location } from 'history';
 import constants from '~/constants/constants';
 import hslLogo from '~/assets/hsl-logo.png';
+import * as localStorageHelper from '~/util/localStorageHelper';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import * as s from './login.scss';
@@ -19,12 +20,11 @@ interface ILoginProps {
 @observer
 class Login extends React.Component<ILoginProps> {
     private openLoginForm = (from: string) => () => {
-        const f = from.replace('=', '$');
-
+        localStorageHelper.setOriginUrl(from);
         window.location.replace(
             // TODO: split into parts & move into constants
             // tslint:disable-next-line
-            `https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=${constants.AFTER_LOGIN_URL}&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly&state=${f}`
+            `https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=${constants.AFTER_LOGIN_URL}&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly`
         );
     }
 
