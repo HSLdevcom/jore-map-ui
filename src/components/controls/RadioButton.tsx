@@ -26,7 +26,7 @@ class RadioButton extends React.Component<IRadioButtonProps, {}> {
             >
                 {this.props.text}
                 <input
-                    type={'radio'}
+                    type='radio'
                     checked={this.props.checked}
                     onChange={this.doNothing}
                 />

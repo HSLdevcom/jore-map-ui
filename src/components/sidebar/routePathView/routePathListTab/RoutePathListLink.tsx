@@ -10,7 +10,6 @@ import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import TransitTypeHelper from '~/util/transitTypeHelper';
 import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
 import RoutePathListItem from './RoutePathListItem';
 import TextContainer from '../../TextContainer';
@@ -110,7 +109,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text='Ohitusaika kirja-aikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -122,7 +121,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika nettiaikat.'}
+                            text='Ohitusaika nettiaikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -141,7 +140,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika nettiaikat.'}
+                            text='Ohitusaika nettiaikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -153,7 +152,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text={'Ohitusaika kirja-aikat.'}
+                            text='Ohitusaika kirja-aikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -163,7 +162,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                     <Dropdown
                         label='SOLMU HASTUS-PAIKKANA'
                         items={['Kyllä', 'Ei']}
-                        selected={'Kyllä'}
+                        selected='Kyllä'
                         onChange={this.onChange}
                     />
                 </div>
@@ -184,9 +183,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
             .toTarget([
                 routeLink.startNode.id,
                 routeLink.endNode.id,
-                TransitTypeHelper.convertTransitTypeToTransitTypeCode(
-                    routeLink.transitType,
-                ),
+                routeLink.transitType,
             ].join(','))
             .toLink();
         navigator.goTo(routeLinkViewLink);

@@ -1,7 +1,8 @@
+import TransitType from '~/enums/transitType';
 import IExternalNode from './IExternalNode';
 
 export default interface IExternalLink {
-    lnkverkko: string;
+    lnkverkko: TransitType;
     geojson: string;
     solmuByLnkalkusolmu: IExternalNode;
     solmuByLnkloppusolmu: IExternalNode;

@@ -3,10 +3,15 @@ import apolloClient from '~/util/ApolloClient';
 import INodeBase from '~/models/baseModels/INodeBase';
 import IExternalNode from '~/models/externals/IExternalNode';
 import NodeFactory from '~/factories/nodeFactory';
-import { INode } from '~/models';
+import { INode, ILink } from '~/models';
 import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
 import GraphqlQueries from './graphqlQueries';
+
+interface INodeSavingModel {
+    node: INode;
+    links: ILink[];
+}
 
 class NodeService {
     public static fetchNode = async (nodeId: string) => {
@@ -26,8 +31,13 @@ class NodeService {
         ) as INodeBase[];
     }
 
-    public static updateNode = async (node: INode) => {
-        await ApiClient.updateObject(endpoints.NODE, node);
+    public static updateNode = async (node: INode, links: ILink[]) => {
+        const requestBody: INodeSavingModel = {
+            node,
+            links,
+        };
+
+        await ApiClient.updateObject(endpoints.NODE, requestBody);
         await apolloClient.clearStore();
     }
 }

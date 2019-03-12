@@ -59,14 +59,14 @@ const nodeCoordinatesView = (props: INodeCoordinatesViewProps) => {
                 <InputContainer
                     value={props.coordinates.lat}
                     onChange={latChange}
-                    label={'Latitude'}
+                    label='Latitude'
                     type='number'
                     disabled={props.isEditingDisabled}
                 />
                 <InputContainer
                     value={props.coordinates.lng}
                     onChange={lonChange}
-                    label={'Longitude'}
+                    label='Longitude'
                     type='number'
                     disabled={props.isEditingDisabled}
                 />

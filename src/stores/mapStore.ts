@@ -15,6 +15,10 @@ export enum NodeLabel {
     shortNodeId,
 }
 
+export enum MapFilter {
+    arrowDecorator,
+}
+
 export class MapStore {
 
     @observable private _coordinates: L.LatLng;
@@ -24,6 +28,7 @@ export class MapStore {
     @observable private _zoom:number;
     @observable private _selectedNodeId: string|null;
     @observable private _visibleNodeLabels: NodeLabel[];
+    @observable private _mapFilters: MapFilter[];
     @observable private _mapBounds: L.LatLngBounds;
 
     constructor() {
@@ -32,9 +37,8 @@ export class MapStore {
         this._isMapFullscreen = false;
         this._routes = [];
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
-        this._visibleNodeLabels = [
-            NodeLabel.hastusId,
-        ];
+        this._visibleNodeLabels = [NodeLabel.hastusId];
+        this._mapFilters = [MapFilter.arrowDecorator];
     }
 
     @computed
@@ -85,6 +89,10 @@ export class MapStore {
         return this._mapBounds;
     }
 
+    public isMapFilterEnabled = (mapFilter: MapFilter) => {
+        return this._mapFilters.includes(mapFilter);
+    }
+
     @action
     public setMapBounds = (bounds: L.LatLngBounds) => {
         this._mapBounds = bounds;
@@ -130,6 +138,16 @@ export class MapStore {
         } else {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
             this._visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
+        }
+    }
+
+    @action
+    public toggleMapFilter = (mapFilter: MapFilter) => {
+        if (this._mapFilters.includes(mapFilter)) {
+            this._mapFilters = this._mapFilters.filter(mF => mF !== mapFilter);
+        } else {
+            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            this._mapFilters = this._mapFilters.concat([mapFilter]);
         }
     }
 
