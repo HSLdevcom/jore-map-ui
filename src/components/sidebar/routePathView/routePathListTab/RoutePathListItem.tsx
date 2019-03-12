@@ -23,9 +23,9 @@ interface IRoutePathListItemProps {
 class RoutePathListItem
     extends React.Component<IRoutePathListItemProps> {
     private toggleIsExtended = () => {
-        this.props.routePathStore!.toggleExtendedObject(this.props.id);
+        this.props.routePathStore!.toggleExtendedListItem(this.props.id);
 
-        if (this.props.routePathStore!.isObjectExtended(this.props.id)) {
+        if (this.props.routePathStore!.isListItemExtended(this.props.id)) {
             this.props.mapStore!.setMapBounds(
                 this.getBounds(),
             );
@@ -43,13 +43,13 @@ class RoutePathListItem
     }
 
     private onMouseLeave = () => {
-        if (this.props.routePathStore!.isObjectHighlighted(this.props.id)) {
+        if (this.props.routePathStore!.isMapItemHighlighted(this.props.id)) {
             this.props.routePathStore!.setHighlightedObject(null);
         }
     }
 
     render() {
-        const isExtended = this.props.routePathStore!.isObjectExtended(
+        const isExtended = this.props.routePathStore!.isListItemExtended(
             this.props.id,
         );
         return (
