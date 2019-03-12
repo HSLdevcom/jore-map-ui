@@ -18,16 +18,18 @@ interface ILoginProps {
 @inject('loginStore', 'errorStore')
 @observer
 class Login extends React.Component<ILoginProps> {
-    private openLoginForm = () => {
+    private openLoginForm = (from: string) => () => {
+        const f = from.replace('=', '$');
+
         window.location.replace(
             // TODO: split into parts & move into constants
             // tslint:disable-next-line
-            `https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=${constants.AFTER_LOGIN_URL}&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly`
+            `https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=${constants.AFTER_LOGIN_URL}&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly&state=${f}`
         );
     }
 
     public render() {
-        const { from } = this.props.location!.state || { from: { pathname: '/' } };
+        const { from } = this.props.location!.state || { from: '/' };
         if (this.props.loginStore!.isAuthenticated) {
             return <Redirect to={from} />;
         }
@@ -41,7 +43,7 @@ class Login extends React.Component<ILoginProps> {
                 </div>
                 <div
                     className={s.loginButton}
-                    onClick={this.openLoginForm}
+                    onClick={this.openLoginForm(from)}
                 >
                     <FaLock />
                     <div className={s.loginText}>Kirjaudu (HSL ID)</div>

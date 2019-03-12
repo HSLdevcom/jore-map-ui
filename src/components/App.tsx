@@ -8,6 +8,7 @@ import { MapStore } from '~/stores/mapStore';
 import SubSites from '~/routing/subSites';
 import AuthService from '~/services/authService';
 import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Map from './map/Map';
@@ -49,8 +50,10 @@ class App extends React.Component<IAppProps, IAppState> {
     private renderAfterLogin = () => {
         AuthService.authenticate(
         () => {
+            const a = navigator.getQueryParam(QueryParams.state);
+            const b = a.replace('$', '=');
             // on success
-            navigator.goTo(SubSites.home);
+            navigator.goTo(b);
         },
         () => {
             // On error
