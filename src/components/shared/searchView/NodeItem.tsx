@@ -34,6 +34,9 @@ class NodeItem extends React.Component<INodeItemProps> {
                     <div>
                         {NodeTypeHelper.getNodeTypeName(this.props.node.type)}
                     </div>
+                    <div>
+                        {this.props.node.shortId}
+                    </div>
                 </div>
             </div>
         );
