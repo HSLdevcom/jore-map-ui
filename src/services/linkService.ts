@@ -33,12 +33,11 @@ class LinkService {
     }
 
     public static updateLink = async (link: ILink) => {
-        const apiClient = new ApiClient();
         const simplifiedLink = {
             ...link,
             geometry: link.geometry.map(coor => new LatLng(coor.lat, coor.lng)),
         };
-        await apiClient.updateObject(endpoints.LINK, simplifiedLink);
+        await ApiClient.updateObject(endpoints.LINK, simplifiedLink);
         await apolloClient.clearStore();
     }
 }

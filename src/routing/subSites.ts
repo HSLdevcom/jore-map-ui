@@ -1,4 +1,5 @@
 enum SubSites {
+    current = '',
     home = '/',
     routes = '/routes/',
     routelink = '/routeLink/:id',
@@ -8,9 +9,9 @@ enum SubSites {
     network = '/network/',
     node = '/node/:id',
     newNode = '/node/new',
+    login = '/login',
     afterLogin = '/afterLogin',
     loginError = '/loginError',
-    current = '',
 }
 
 export default SubSites;

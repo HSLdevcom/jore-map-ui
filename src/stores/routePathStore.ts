@@ -1,18 +1,14 @@
 import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
-import { IRoutePath, IRoutePathLink, INode } from '~/models';
+import { IRoutePath, IRoutePathLink } from '~/models';
 import lengthCalculator from '~/util/lengthCalculator';
 import { validateRoutePathLinks } from '~/util/geomValidator';
 import UndoStore from '~/stores/undoStore';
 
-export enum AddRoutePathLinkState {
-    SetTargetLocation,
-    AddLinks,
-}
-
-export enum AddLinkDirection {
-    BeforeNode,
+// Is the neighbor to add either startNode or endNode
+export enum NeighborToAddType {
     AfterNode,
+    BeforeNode,
 }
 
 export enum RoutePathViewTab {
@@ -29,23 +25,19 @@ export class RoutePathStore {
     @observable private _oldRoutePath: IRoutePath|null;
     @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
-    // TODO: Move out of store to state, rename as highlightedMapItems
-    @observable private _highlightedObject: string | null;
-    // TODO: Move out of store to state, rename as extendedListItems:
-    @observable private _extendedObjects: string[];
-    @observable private _addRoutePathLinkState: AddRoutePathLinkState;
-    @observable private _addRoutePathLinkDirection: AddLinkDirection;
+    @observable private _neighborToAddType: NeighborToAddType;
+    @observable private _highlightedMapItem: string | null;
+    @observable private _extendedListItems: string[];
     // TODO: Move out of store:
     @observable private _activeTab: RoutePathViewTab;
     private _undoStore: UndoStore<UndoState>;
 
     constructor() {
         this._neighborRoutePathLinks = [];
-        this._highlightedObject = null;
-        this._extendedObjects = [];
+        this._highlightedMapItem = null;
+        this._extendedListItems = [];
         this._isGeometryValid = true;
         this._activeTab = RoutePathViewTab.Info;
-        this._addRoutePathLinkState = AddRoutePathLinkState.SetTargetLocation;
         this._undoStore = new UndoStore();
     }
 
@@ -60,11 +52,8 @@ export class RoutePathStore {
     }
 
     @computed
-    get addRoutePathLinkInfo(): { state: AddRoutePathLinkState, direction: AddLinkDirection} {
-        return {
-            state: this._addRoutePathLinkState,
-            direction: this._addRoutePathLinkDirection,
-        };
+    get neighborToAddType(): NeighborToAddType {
+        return this._neighborToAddType;
     }
 
     @computed
@@ -96,18 +85,18 @@ export class RoutePathStore {
         }
     }
 
-    public isObjectHighlighted = (objectId: string) => {
-        return this._highlightedObject === objectId
-            || (!this._highlightedObject && this.isObjectExtended(objectId));
+    public isMapItemHighlighted = (objectId: string) => {
+        return this._highlightedMapItem === objectId
+            || (!this._highlightedMapItem && this.isListItemExtended(objectId));
     }
 
-    public isObjectExtended = (objectId: string) => {
-        return this._extendedObjects.some(n => n === objectId);
+    public isListItemExtended = (objectId: string) => {
+        return this._extendedListItems.some(n => n === objectId);
     }
 
     @computed
     get extendedObjects() {
-        return this._extendedObjects;
+        return this._extendedListItems;
     }
 
     @action
@@ -146,31 +135,28 @@ export class RoutePathStore {
 
     @action
     public setHighlightedObject = (objectId: string | null) => {
-        this._highlightedObject = objectId;
+        this._highlightedMapItem = objectId;
     }
 
     @action
-    public toggleExtendedObject = (objectId: string) => {
-        if (this._extendedObjects.some(o => o === objectId)) {
-            this._extendedObjects = this._extendedObjects.filter(o => o !== objectId);
+    public toggleExtendedListItem = (objectId: string) => {
+        if (this._extendedListItems.some(o => o === objectId)) {
+            this._extendedListItems = this._extendedListItems.filter(o => o !== objectId);
         } else {
-            this._extendedObjects.push(objectId);
+            this._extendedListItems.push(objectId);
         }
     }
 
     @action
     public setExtendedObjects = (objectIds: string[]) => {
-        this._extendedObjects = objectIds;
-    }
-
-    @action
-    public setAddRoutePathLinkDirection = (direction: AddLinkDirection) => {
-        this._addRoutePathLinkDirection = direction;
+        this._extendedListItems = objectIds;
     }
 
     @action
     public setRoutePath = (routePath: IRoutePath) => {
         this._routePath = routePath;
+        // Need to recalculate orderNumbers to ensure that they are correct
+        this.recalculateOrderNumbers();
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
         const currentUndoState: UndoState = {
             routePathLinks,
@@ -196,8 +182,11 @@ export class RoutePathStore {
     @action
     public setNeighborRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._neighborRoutePathLinks = routePathLinks;
-        this._addRoutePathLinkState = routePathLinks.length === 0
-            ? AddRoutePathLinkState.SetTargetLocation : AddRoutePathLinkState.AddLinks;
+    }
+
+    @action
+    public setNeighborToAddType = (neighborToAddType: NeighborToAddType) => {
+        this._neighborToAddType = neighborToAddType;
     }
 
     @action
@@ -208,16 +197,10 @@ export class RoutePathStore {
             0,
             routePathLink);
 
+        this.recalculateOrderNumbers();
+
         this.resetUndoState();
     }
-
-    public isRoutePathNodeMissingNeighbour = (node: INode) => (
-        // A node needs to have an even amount of neighbours
-            this._routePath!.routePathLinks!
-                .filter(x => x.startNode.id === node.id).length
-            !== this._routePath!.routePathLinks!
-                .filter(x => x.endNode.id === node.id).length
-    )
 
     @action
     public removeLink = (id: string) => {
@@ -226,13 +209,23 @@ export class RoutePathStore {
             this._routePath!.routePathLinks!.findIndex(link => link.id === id);
         this._routePath!.routePathLinks!.splice(linkToRemoveIndex, 1);
 
+        this.recalculateOrderNumbers();
+
         this.resetUndoState();
     }
 
     @action
     public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
+        this._routePath!.routePathLinks = routePathLinks;
+        this.recalculateOrderNumbers();
+
+        this.sortRoutePathLinks();
+    }
+
+    @action
+    public sortRoutePathLinks = () => {
         this._routePath!.routePathLinks =
-            routePathLinks.sort((a, b) => a.orderNumber - b.orderNumber);
+            this._routePath!.routePathLinks!.slice().sort((a, b) => a.orderNumber - b.orderNumber);
     }
 
     @action
