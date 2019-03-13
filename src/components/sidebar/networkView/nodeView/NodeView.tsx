@@ -61,7 +61,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         if (node) {
             const links = await this.fetchLinksForNode(node);
             if (links) {
-                this.props.mapStore!.setCoordinates(node.coordinates);
                 this.props.nodeStore!.init(node, links);
             }
         }

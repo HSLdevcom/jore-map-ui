@@ -8,7 +8,7 @@ import { IReactionDisposer, reaction } from 'mobx';
 import navigator from '~/routing/navigator';
 import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
-import { ILink } from '~/models';
+import { INode, ILink } from '~/models';
 import EventManager from '~/util/EventManager';
 import NodeLocationType from '~/types/NodeLocationType';
 import { NodeStore } from '~/stores/nodeStore';
@@ -32,8 +32,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
 
     componentDidMount() {
         this.reactionDisposer = reaction(
-            () => this.props.nodeStore!.node,
-            () => this.props.nodeStore!.node === null && this.removeOldLinks(),
+            () => this.props.nodeStore!.node, this.onChangeNode,
         );
         EventManager.on('undo', () => this.props.nodeStore!.undo());
         EventManager.on('redo', () => this.props.nodeStore!.redo());
@@ -49,12 +48,26 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         EventManager.off('redo', () => this.props.nodeStore!.redo());
     }
 
+    private onChangeNode = () => {
+        const node = this.props.nodeStore!.node;
+        if (!node) {
+            this.removeOldLinks();
+        }
+        if (node) {
+            this.centerNode(node);
+        }
+    }
+
     private removeOldLinks = () => {
         // Remove (possible) previously drawn links from map
         this.editableLinks.forEach((editableLink: any) => {
             editableLink.remove();
         });
         this.editableLinks = [];
+    }
+
+    private centerNode = (node: INode) => {
+        this.props.mapStore!.setCoordinates(node.coordinates);
     }
 
     private renderNode() {
