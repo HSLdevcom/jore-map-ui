@@ -10,16 +10,12 @@ class EventManager {
         });
         document.dispatchEvent(event);
     }
-    public on(eventName: eventName, callback: Function) {
-        document.addEventListener(eventName, () => {
-            callback();
-        });
+    public on(eventName: eventName, callback: (event: CustomEvent) => void) {
+        document.addEventListener(eventName, callback);
     }
 
-    public off(eventName: eventName, callback: Function) {
-        document.removeEventListener(eventName, () => {
-            callback();
-        });
+    public off(eventName: eventName, callback: (event: CustomEvent) => void) {
+        document.removeEventListener(eventName, callback);
     }
 
 }

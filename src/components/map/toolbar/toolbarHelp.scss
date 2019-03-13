@@ -1,13 +1,18 @@
 @import '../../shared/styles/common.scss';
 
 .toolbarHelp {
-  display: flex;
-  background-color: $white;
-  border-radius: 3px;
-  box-shadow: 0 0 4px $grey;
-  min-height: 50px;
-  padding: 10px;
-  max-width: 254px;
-  font-size: 1rem;
-  margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: $white;
+    border-radius: 3px;
+    box-shadow: 0 0 4px $grey;
+    padding: 10px;
+    max-width: 284px;
+    font-size: 1rem;
+    margin-top: 10px;
+
+    .toolbarHelpHeader {
+        padding: 2px 0px 2px 0px;
+        font-weight: bold;
+    }
 }

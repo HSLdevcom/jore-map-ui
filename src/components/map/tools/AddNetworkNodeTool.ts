@@ -1,6 +1,7 @@
 import ToolbarTool from '~/enums/toolbarTool';
 import NodeFactory from '~/factories/nodeFactory';
 import navigator from '~/routing/navigator';
+import EventManager from '~/util/EventManager';
 import SubSites from '~/routing/subSites';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
@@ -9,14 +10,15 @@ import BaseTool from './BaseTool';
 
 class AddNetworkNodeTool implements BaseTool {
     public toolType = ToolbarTool.AddNetworkNode;
+    public toolHelpHeader = 'Luo uusi solmu';
+    public toolHelpText = 'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.'; // tslint:disable-line max-line-length
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
-
-        document.addEventListener('mapClick', this.onMapClick);
+        EventManager.on('mapClick', this.onMapClick);
     }
     public deactivate() {
-        document.removeEventListener('mapClick', this.onMapClick);
+        EventManager.off('mapClick', this.onMapClick);
     }
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);
