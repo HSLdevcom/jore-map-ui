@@ -5,6 +5,7 @@ import { FaLock } from 'react-icons/fa';
 import { Location } from 'history';
 import constants from '~/constants/constants';
 import hslLogo from '~/assets/hsl-logo.png';
+import SubSites from '~/routing/subSites';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import * as s from './login.scss';
@@ -27,9 +28,8 @@ class Login extends React.Component<ILoginProps> {
     }
 
     public render() {
-        const { from } = this.props.location!.state || { from: { pathname: '/' } };
         if (this.props.loginStore!.isAuthenticated) {
-            return <Redirect to={from} />;
+            return <Redirect to={SubSites.home} />;
         }
 
         return (

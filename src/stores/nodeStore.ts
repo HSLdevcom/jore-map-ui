@@ -6,6 +6,7 @@ import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import UndoStore from '~/stores/undoStore';
+import { roundLatLng } from '~/util/geomHelper';
 
 export interface UndoState {
     links: ILink[];
@@ -102,7 +103,7 @@ export class NodeStore {
         const newNode = _.cloneDeep(this._node);
         const newLinks = _.cloneDeep(this._links);
 
-        newNode[nodeLocationType] = newCoordinates;
+        newNode[nodeLocationType] = roundLatLng(newCoordinates);
 
         if (nodeLocationType === 'coordinates') this.mirrorCoordinates(newNode);
 
