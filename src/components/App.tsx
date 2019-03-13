@@ -10,6 +10,8 @@ import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
 import ApiClient from '~/util/ApiClient';
 import navigator from '~/routing/navigator';
+import constants from '~/constants/constants';
+import * as localStorageHelper from '~/util/localStorageHelper';
 import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
 import Map from './map/Map';
@@ -36,12 +38,14 @@ class App extends React.Component<IAppProps, IAppState> {
             isLoginInProgress: true,
         };
     }
+
     componentWillMount() {
         this.redirectToLogin();
     }
+
     private redirectToLogin = async () => {
         const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
-        if (!isAfterLogin) {
+        if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
             const response = (await ApiClient
                 .getRequest(endpoints.EXISTING_SESSION) as IAuthorizationResponse);
             if (response.isOk) {
@@ -49,6 +53,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 this.props.loginStore!.setAuthenticationInfo(response);
             } else {
                 // Redirect to login
+                localStorageHelper.setItem('origin_url', navigator.getFullPath());
                 navigator.goTo(SubSites.login);
             }
         }
@@ -77,9 +82,11 @@ class App extends React.Component<IAppProps, IAppState> {
     private renderAfterLogin = () => {
         AuthService.authenticate(
         () => {
-            // TODO: possibly redirect to the url before user tried to access /login
-            // on success
-            navigator.goTo(SubSites.home);
+            // On success: Redirecting user to where she left off.
+            const originUrl = localStorageHelper.getItem('origin_url');
+            const destination = originUrl ? originUrl : SubSites.home;
+            localStorageHelper.clearItem('origin_url');
+            navigator.goTo(destination);
         },
         () => {
             // On error
