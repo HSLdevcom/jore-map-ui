@@ -31,6 +31,13 @@ class Navigator {
         return this.store.location.search;
     }
 
+    /**
+     * @return {String} for example /routePath/new?routes=0033
+     */
+    public getFullPath = () => {
+        return `${this.store.location.pathname}${this.store.location.search}`;
+    }
+
     // TODO, rename
     public getQueryParam = (param: QueryParams) => {
         return this.getQueryParamValues()[param];
