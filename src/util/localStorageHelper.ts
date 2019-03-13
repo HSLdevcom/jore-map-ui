@@ -1,19 +1,19 @@
-const ORIGIN_URL_NAME = 'origin_url';
+type itemNames = 'origin_url';
 
-const setOriginUrl = (url: string) => {
-    localStorage.setItem(ORIGIN_URL_NAME, url);
+const setItem = (name: itemNames, value: any) => {
+    localStorage.setItem(name, value);
 };
 
-const clearOriginUrl = () => {
-    localStorage.removeItem(ORIGIN_URL_NAME);
+const clearItem = (name: itemNames) => {
+    localStorage.removeItem(name);
 };
 
-const getOriginUrl = () => {
-    return localStorage.getItem(ORIGIN_URL_NAME);
+const getItem = (name: itemNames) => {
+    return localStorage.getItem(name);
 };
 
 export {
-    setOriginUrl,
-    getOriginUrl,
-    clearOriginUrl,
+    setItem,
+    clearItem,
+    getItem,
 };

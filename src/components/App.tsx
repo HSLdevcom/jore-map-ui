@@ -53,7 +53,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 this.props.loginStore!.setAuthenticationInfo(response);
             } else {
                 // Redirect to login
-                localStorageHelper.setOriginUrl(navigator.getFullPath());
+                localStorageHelper.setItem('origin_url', navigator.getFullPath());
                 navigator.goTo(SubSites.login);
             }
         }
@@ -83,9 +83,9 @@ class App extends React.Component<IAppProps, IAppState> {
         AuthService.authenticate(
         () => {
             // On success: Redirecting user to where she left off.
-            const originUrl = localStorageHelper.getOriginUrl();
+            const originUrl = localStorageHelper.getItem('origin_url');
             const destination = originUrl ? originUrl : SubSites.home;
-            localStorageHelper.clearOriginUrl();
+            localStorageHelper.clearItem('origin_url');
             navigator.goTo(destination);
         },
         () => {
