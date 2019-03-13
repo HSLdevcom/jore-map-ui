@@ -61,10 +61,12 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         const node = this.props.nodeStore!.node;
         if (!node) return null;
 
+        const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
         return (
             <NodeMarker
                 key={node.id}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
+                isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
                 node={node}
                 onMoveMarker={this.onMoveMarker()}
             />

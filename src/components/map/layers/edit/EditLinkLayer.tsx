@@ -120,6 +120,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         return (
             <NodeMarker
                 key={node.id}
+                isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDraggable={false}
                 node={node}
             />
