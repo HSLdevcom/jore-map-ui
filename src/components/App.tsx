@@ -10,6 +10,7 @@ import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
 import ApiClient from '~/util/ApiClient';
 import navigator from '~/routing/navigator';
+import constants from '~/constants/constants';
 import * as localStorageHelper from '~/util/localStorageHelper';
 import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
@@ -44,7 +45,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private redirectToLogin = async () => {
         const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
-        if (!isAfterLogin) {
+        if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
             const response = (await ApiClient
                 .getRequest(endpoints.EXISTING_SESSION) as IAuthorizationResponse);
             if (response.isOk) {
