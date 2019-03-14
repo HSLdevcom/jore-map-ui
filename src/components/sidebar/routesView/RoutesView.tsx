@@ -9,7 +9,7 @@ import { SearchStore } from '~/stores/searchStore';
 import QueryParams from '~/routing/queryParams';
 import TransitType from '~/enums/transitType';
 import EntityTypeToggles from '../homeView/EntityTypeToggles';
-import LineSearch from '../../shared/searchView/LineSearch';
+import SearchInput from '../../shared/searchView/SearchInput';
 import RouteList from './RouteList';
 import SearchResults from '../../shared/searchView/SearchResults';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
@@ -37,7 +37,7 @@ class RoutesView extends React.Component<IRoutesViewProps> {
     render() {
         return (
             <div className={s.routesView}>
-                <LineSearch/>
+                <SearchInput/>
                 { this.props.searchStore!.searchInput === '' ? (
                     <Route component={RouteList} />
                 ) : (
