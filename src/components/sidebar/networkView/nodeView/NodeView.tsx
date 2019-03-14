@@ -15,7 +15,6 @@ import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
 import NodeService from '~/services/nodeService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
-import { showError } from '~/util/requestErrorHelper';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
@@ -99,7 +98,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
-            showError(err);
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
         }
         this.setState({ isLoading: false });
     }

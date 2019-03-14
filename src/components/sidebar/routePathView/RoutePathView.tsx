@@ -9,7 +9,6 @@ import Button from '~/components/controls/Button';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import navigator from '~/routing/navigator';
-import { showError } from '~/util/requestErrorHelper';
 import { RouteStore } from '~/stores/routeStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -174,7 +173,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
 
             DialogStore.setFadeMessage('Tallennettu!');
         } catch (err) {
-            showError(err);
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
         }
         this.setState({
             isEditingDisabled: true,

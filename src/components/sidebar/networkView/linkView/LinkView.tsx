@@ -12,7 +12,6 @@ import LinkService from '~/services/linkService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import linkValidationModel from '~/validation/models/linkValidationModel';
 import SubSites from '~/routing/subSites';
-import { showError } from '~/util/requestErrorHelper';
 import directionCodeList from '~/codeLists/directionCodeList';
 import { DialogStore } from '~/stores/dialogStore';
 import routeBuilder from '~/routing/routeBuilder';
@@ -106,7 +105,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.props.linkStore!.setOldLink(this.props.linkStore!.link);
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
-            showError(err);
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
         }
         this.setState({ isLoading: false });
     }
