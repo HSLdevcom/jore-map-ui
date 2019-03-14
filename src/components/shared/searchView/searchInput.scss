@@ -2,6 +2,13 @@
 
     .inputContainer {
         padding: 10px;
+        position: relative;
+
+        .loader {
+            position: absolute;
+            right: 25px;
+            top: 20px;
+        }
     }
 
     .searchResultsContainer {

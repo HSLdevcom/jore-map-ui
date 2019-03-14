@@ -8,12 +8,14 @@ export class SearchResultStore {
     @observable private _allLines: ILine[];
     @observable private _allNodes: INodeBase[];
     @observable private _filteredItems: (INodeBase | ILine)[];
+    @observable private _isSearching: boolean;
     private delayTimer: NodeJS.Timeout;
 
     constructor() {
         this._allLines = [];
         this._allNodes = [];
         this._filteredItems = [];
+        this._isSearching = false;
 
         reaction(
             () => SearchStore.searchInput,
@@ -33,6 +35,11 @@ export class SearchResultStore {
     @computed
     get allNodes(): INodeBase[] {
         return this._allNodes;
+    }
+
+    @computed
+    get isSearching(): boolean {
+        return this._isSearching;
     }
 
     @computed
@@ -61,7 +68,9 @@ export class SearchResultStore {
         return text.includes(rule);
     }
 
+    @action
     private startUpdateTimer = () => {
+        this._isSearching = true;
         clearTimeout(this.delayTimer);
         this.delayTimer = setTimeout(
             () => {
@@ -72,7 +81,19 @@ export class SearchResultStore {
     }
 
     @action
-    public search = () => {
+    private setIsSearching = (isSearching: boolean) => {
+        this._isSearching = isSearching;
+    }
+
+    @action
+    public search = async () => {
+        this.setIsSearching(true);
+        await this.searchAsync();
+        this.setIsSearching(false);
+    }
+
+    @action
+    private searchAsync = async () => {
         const searchInput = SearchStore.searchInput;
 
         let list: (INodeBase | ILine)[] = [];
