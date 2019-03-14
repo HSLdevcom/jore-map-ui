@@ -85,7 +85,6 @@ export class SearchResultStore {
         this._isSearching = isSearching;
     }
 
-    @action
     public search = async () => {
         this.setIsSearching(true);
         await this.searchAsync();
