@@ -7,6 +7,8 @@ import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
+import SubSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
 import NodeLocationType from '~/types/NodeLocationType';
@@ -90,9 +92,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private save = async () => {
         this.setState({ isLoading: true });
+        let preventSetState = false;
         try {
             if (this.props.isNewNode) {
                 await NodeService.createNode(this.props.nodeStore!.node);
+                preventSetState = true;
+
+                // TODO: remove this, should redirect to node/id instead
+                navigator.goTo(SubSites.home);
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,
@@ -106,6 +113,8 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             const errMessage = err.message ? `, (${err.message})` : '';
             this.props.errorStore!.addError(`Tallennus epäonnistui${errMessage}`);
         }
+
+        if (preventSetState) return;
         this.setState({ isLoading: false });
     }
 
