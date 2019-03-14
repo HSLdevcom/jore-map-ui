@@ -4,11 +4,10 @@ import _ from 'lodash';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
 import navigator from '~/routing/navigator';
 import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
-import { INode, ILink } from '~/models';
+import { ILink } from '~/models';
 import EventManager from '~/util/EventManager';
 import NodeLocationType from '~/types/NodeLocationType';
 import { NodeStore } from '~/stores/nodeStore';
@@ -27,35 +26,25 @@ interface IEditNodeLayerProps {
 @inject('mapStore', 'nodeStore', 'loginStore')
 @observer
 class EditNodeLayer extends Component<IEditNodeLayerProps> {
-    private reactionDisposer: IReactionDisposer;
     private editableLinks: L.Polyline[] = [];
 
+    componentWillMount() {
+        this.centerNode();
+    }
+
     componentDidMount() {
-        this.reactionDisposer = reaction(
-            () => this.props.nodeStore!.node, this.onChangeNode,
-        );
         EventManager.on('undo', () => this.props.nodeStore!.undo());
         EventManager.on('redo', () => this.props.nodeStore!.redo());
     }
 
     componentWillUnmount() {
-        this.reactionDisposer();
+        this.removeOldLinks();
 
         const map = this.props.leaflet.map;
         map!.off('editable:vertex:dragend');
         map!.off('editable:vertex:deleted');
         EventManager.off('undo', () => this.props.nodeStore!.undo());
         EventManager.off('redo', () => this.props.nodeStore!.redo());
-    }
-
-    private onChangeNode = () => {
-        const node = this.props.nodeStore!.node;
-        if (!node) {
-            this.removeOldLinks();
-        }
-        if (node) {
-            this.centerNode(node);
-        }
     }
 
     private removeOldLinks = () => {
@@ -66,7 +55,10 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         this.editableLinks = [];
     }
 
-    private centerNode = (node: INode) => {
+    private centerNode = () => {
+        const node = this.props.nodeStore!.node;
+        if (!node) return;
+
         this.props.mapStore!.setCoordinates(node.coordinates);
     }
 

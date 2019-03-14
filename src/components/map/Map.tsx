@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
+import { NodeStore } from '~/stores/nodeStore';
 import EventManager from '~/util/EventManager';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
@@ -27,6 +28,7 @@ import * as s from './map.scss';
 interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
+    nodeStore?: NodeStore;
 }
 
 interface IMapPropReference {
@@ -46,7 +48,7 @@ export type LeafletContext = {
     popupContainer?: L.Layer,
 };
 
-@inject('mapStore', 'routeStore')
+@inject('mapStore', 'routeStore', 'nodeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -133,6 +135,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     render() {
+        const node = this.props.nodeStore!.node;
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
@@ -172,7 +175,9 @@ class LeafletMap extends React.Component<IMapProps> {
                         // tslint:enable:max-line-length
                     />
                     <NetworkLayers />
-                    <EditNodeLayer />
+                    { node &&
+                        <EditNodeLayer />
+                    }
                     <EditLinkLayer />
                     <RouteLayer
                         routes={routes}
