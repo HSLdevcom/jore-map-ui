@@ -125,29 +125,28 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
 
-        const stopToggle: ToggleItem = {
-            icon: <IoIosRadioButtonOn />,
-            text: 'Pysäkit',
-            isActive: !this.state.listFilters.includes(ListFilter.stop),
-            onClick: () => this.toggleFilter(ListFilter.stop),
-        };
-        const otherNodesToggle: ToggleItem = {
-            icon: <IoIosRadioButtonOn />,
-            text: 'Muut solmut',
-            isActive: !this.state.listFilters.includes(ListFilter.otherNodes),
-            onClick: () => this.toggleFilter(ListFilter.otherNodes),
-        };
-        const linkToggle: ToggleItem = {
-            icon: <TiLink />,
-            text: 'Linkit',
-            isActive: !this.state.listFilters.includes(ListFilter.link),
-            onClick: () => this.toggleFilter(ListFilter.link),
-        };
         return (
             <div className={s.RoutePathLinksTabView}>
-                <ToggleView
-                    toggles={[stopToggle, otherNodesToggle, linkToggle]}
-                />
+                <ToggleView>
+                    <ToggleItem
+                        icon={<IoIosRadioButtonOn />}
+                        text='Pysäkit'
+                        isActive={!this.state.listFilters.includes(ListFilter.stop)}
+                        onClick={this.toggleFilter.bind(this, ListFilter.stop)}
+                    />
+                    <ToggleItem
+                        icon={<IoIosRadioButtonOn />}
+                        text='Muut solmut'
+                        isActive={!this.state.listFilters.includes(ListFilter.otherNodes)}
+                        onClick={this.toggleFilter.bind(this, ListFilter.otherNodes)}
+                    />
+                    <ToggleItem
+                        icon={<TiLink />}
+                        text='Linkit'
+                        isActive={!this.state.listFilters.includes(ListFilter.link)}
+                        onClick={this.toggleFilter.bind(this, ListFilter.link)}
+                    />
+                </ToggleView>
                 <div
                     className={s.list}
                 >

@@ -20,26 +20,21 @@ class EntityTypeToggles extends React.Component<IEntityTypeToggleProps> {
     }
 
     render() {
-        const lineToggle: ToggleItem = {
-            icon: <IoMdAnalytics />,
-            text: 'Linjat ja Reitit',
-            isActive: this.props.searchStore!.isSearchingForLines,
-            onClick: this.toggleSearchingLines,
-        };
-        const nodeToggle: ToggleItem = {
-            icon: <IoIosRadioButtonOn />,
-            text: 'Solmut',
-            isActive: this.props.searchStore!.isSearchingForNodes,
-            onClick: this.toggleSearchingNodes,
-        };
-
         return (
-            <ToggleView
-                toggles={[
-                    lineToggle,
-                    nodeToggle,
-                ]}
-            />
+            <ToggleView>
+                <ToggleItem
+                    icon={<IoMdAnalytics />}
+                    text='Linjat ja Reitit'
+                    isActive={this.props.searchStore!.isSearchingForLines}
+                    onClick={this.toggleSearchingLines}
+                />
+                <ToggleItem
+                    icon={<IoIosRadioButtonOn />}
+                    text='Solmut'
+                    isActive={this.props.searchStore!.isSearchingForNodes}
+                    onClick={this.toggleSearchingNodes}
+                />
+            </ToggleView>
         );
     }
 }
