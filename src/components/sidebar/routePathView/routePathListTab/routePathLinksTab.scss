@@ -3,30 +3,31 @@
 @import '../../../shared/styles/form';
 
 .RoutePathLinksTabView {
-    display: flex;
-    flex-direction: column;
     height: 100%;
-    font-weight: bold;
-    color: $labelColor;
-    font-size: $mediumFontSize;
+    flex-direction: column;
+    display: flex;
     overflow-y: auto;
-
-    .contentWrapper {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
-    .saveButton {
-        padding: 20px;
-        background-color: $saveButtonGreen;
-        color: #FFF;
-        text-align: center;
+    .list {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        font-weight: bold;
+        color: $labelColor;
         font-size: $mediumFontSize;
-        cursor: pointer;
-    }
+        overflow-y: auto;
 
-    .saveButton:hover {
-        background-color: darken($saveButtonGreen, 10)
-    }
+        .saveButton {
+            padding: 20px;
+            background-color: $saveButtonGreen;
+            color: #FFF;
+            text-align: center;
+            font-size: $mediumFontSize;
+            cursor: pointer;
+        }
 
+        .saveButton:hover {
+            background-color: darken($saveButtonGreen, 10)
+        }
+
+    }
 }

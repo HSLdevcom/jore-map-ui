@@ -1,5 +1,5 @@
 import React from 'react';
-import { IoMdLocate } from 'react-icons/io';
+import { IoIosRadioButtonOn } from 'react-icons/io';
 import INodeBase from '~/models/baseModels/INodeBase';
 import routeBuilder from '~/routing/routeBuilder';
 import NodeTypeHelper from '~/util/nodeTypeHelper';
@@ -26,7 +26,7 @@ class NodeItem extends React.Component<INodeItemProps> {
                 className={s.nodeItem}
                 onClick={this.openNode}
             >
-                <IoMdLocate />
+                <IoIosRadioButtonOn />
                 <div className={s.nodeItemTextContainer}>
                     <span>
                         {this.props.node.id}
