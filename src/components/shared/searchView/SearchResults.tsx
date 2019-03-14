@@ -100,7 +100,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const subLineItemsLength = this.props.searchStore!.subLineItems.length;
 
         const isSearchResultButtonVisible = subLineItemsLength > 0 ||
-        (Navigator.getPathName() !== subSites.home && subLineItemsLength === 0);
+            (Navigator.getPathName() !== subSites.home && subLineItemsLength === 0);
         if (!isSearchResultButtonVisible) {
             return;
         }

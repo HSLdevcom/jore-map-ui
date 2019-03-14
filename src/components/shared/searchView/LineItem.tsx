@@ -129,7 +129,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                     </div>
                 </div>
                 {this.props.line.routes
-                    .sort((a, b) => b.date.getTime() - a.date.getTime())
+                    .slice().sort((a, b) => a.id < b.id ? -1 : 1)
                     .map(route =>
                     this.renderRoute(route),
                 )}
