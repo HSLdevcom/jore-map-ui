@@ -22,7 +22,7 @@ export class ErrorStore {
     }
 
     @action
-    public addError(message: string, error?: object) {
+    public addError(message: string, error?: Error) {
         let msg = message;
         if (
             error &&
@@ -30,6 +30,11 @@ export class ErrorStore {
             httpStatusDescriptionCodeList[error['errorCode']]
         ) {
             msg += `, ${httpStatusDescriptionCodeList[error['errorCode']]}`;
+        } else if (
+            error &&
+            error.message
+        ) {
+            msg += `, ${error.message}`;
         }
         this._errors.push(msg);
         // tslint:disable-next-line:no-console
