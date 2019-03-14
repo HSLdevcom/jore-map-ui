@@ -3,6 +3,7 @@ import NodeFactory from '~/factories/nodeFactory';
 import navigator from '~/routing/navigator';
 import EventManager from '~/util/EventManager';
 import SubSites from '~/routing/subSites';
+import RoutePathStore from '~/stores/routePathStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
 import ToolbarStore from '~/stores/toolbarStore';
@@ -22,6 +23,7 @@ class AddNetworkNodeTool implements BaseTool {
     }
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);
+        RoutePathStore.clear();
         const newNode = NodeFactory.createNewNode(clickEvent.detail.latlng);
         NodeStore.init(newNode, []);
         navigator.goTo(SubSites.newNode);
