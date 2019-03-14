@@ -162,12 +162,12 @@ export class RoutePathStore {
         };
         this._undoStore.addItem(currentUndoState);
 
-        this.setOldRoutePath(_.cloneDeep(this._routePath));
+        this.setOldRoutePath(this._routePath);
     }
 
     @action
     public setOldRoutePath = (routePath: IRoutePath) => {
-        this._oldRoutePath = routePath;
+        this._oldRoutePath = _.cloneDeep(routePath);
     }
 
     @action
