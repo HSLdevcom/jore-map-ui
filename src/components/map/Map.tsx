@@ -102,9 +102,7 @@ class LeafletMap extends React.Component<IMapProps> {
             this.props.mapStore!.coordinates,
             this.props.mapStore!.zoom,
         );
-        map.on('click', (e: L.LeafletEvent) => {
-            EventManager.trigger('mapClick', e);
-        });
+        map.on('click', (e: L.LeafletEvent) => EventManager.trigger('mapClick', e));
     }
 
     private centerMap = () => {

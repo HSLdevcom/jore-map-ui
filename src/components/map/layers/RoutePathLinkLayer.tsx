@@ -76,7 +76,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 );
             });
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
-        const node = lastRoutePathLink.startNode;
+        const node = lastRoutePathLink.endNode;
         nodes.push(
             <NodeMarker
                 key='last-node'
