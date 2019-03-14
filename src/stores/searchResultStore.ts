@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import { ILine } from '~/models';
 import INodeBase from '~/models/baseModels/INodeBase';
 import TransitType from '~/enums/transitType';
@@ -7,10 +7,22 @@ import SearchStore from './searchStore';
 export class SearchResultStore {
     @observable private _allLines: ILine[];
     @observable private _allNodes: INodeBase[];
+    @observable private _filteredItems: (INodeBase | ILine)[];
+    private delayTimer: NodeJS.Timeout;
 
     constructor() {
         this._allLines = [];
         this._allNodes = [];
+        this._filteredItems = [];
+
+        reaction(
+            () => SearchStore.searchInput,
+            this.startUpdateTimer,
+        );
+        reaction(
+            () => SearchStore.selectedTransitTypes,
+            this.startUpdateTimer,
+        );
     }
 
     @computed
@@ -21,6 +33,11 @@ export class SearchResultStore {
     @computed
     get allNodes(): INodeBase[] {
         return this._allNodes;
+    }
+
+    @computed
+    get filteredItems(): (INodeBase | ILine)[] {
+        return this._filteredItems;
     }
 
     @action
@@ -42,6 +59,42 @@ export class SearchResultStore {
             return this.matchWildcard(text, rule);
         }
         return text.includes(rule);
+    }
+
+    private startUpdateTimer = () => {
+        clearTimeout(this.delayTimer);
+        this.delayTimer = setTimeout(
+            () => {
+                this.search();
+            },
+            500,
+        );
+    }
+
+    @action
+    public search = () => {
+        const searchInput = SearchStore.searchInput;
+
+        let list: (INodeBase | ILine)[] = [];
+        if (SearchStore.isSearchingForLines) {
+            const lines = this.getFilteredLines(
+                searchInput,
+                SearchStore.selectedTransitTypes,
+            );
+            list = [
+                ...list,
+                ...lines,
+            ];
+        }
+        if (SearchStore.isSearchingForNodes) {
+            const nodes = this.getFilteredNodes(searchInput);
+            list = [
+                ...list,
+                ...nodes,
+            ];
+        }
+
+        this._filteredItems = list.sort((a, b) => a.id > b.id ? 1 : -1);
     }
 
     private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
@@ -69,33 +122,6 @@ export class SearchResultStore {
                         && this.matchText(node.shortId!, searchInput)
                 );
         });
-    }
-
-    public getFilteredItems = (): (INodeBase | ILine)[] => {
-        const searchInput = SearchStore.searchInput;
-
-        let list: (INodeBase | ILine)[] = [];
-        if (SearchStore.isSearchingForLines) {
-            const lines = this.getFilteredLines(
-                searchInput,
-                SearchStore.selectedTransitTypes,
-            );
-            list = [
-                ...list,
-                ...lines,
-            ];
-        }
-        if (SearchStore.isSearchingForNodes) {
-            const nodes = this.getFilteredNodes(searchInput);
-            list = [
-                ...list,
-                ...nodes,
-            ];
-        }
-
-        list = list.sort((a, b) => a.id > b.id ? 1 : -1);
-
-        return list;
     }
 }
 
