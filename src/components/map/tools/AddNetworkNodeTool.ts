@@ -23,10 +23,10 @@ class AddNetworkNodeTool implements BaseTool {
     }
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);
+        navigator.goTo(SubSites.newNode);
         RoutePathStore.clear();
         const newNode = NodeFactory.createNewNode(clickEvent.detail.latlng);
         NodeStore.init(newNode, []);
-        navigator.goTo(SubSites.newNode);
     }
 }
 
