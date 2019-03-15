@@ -2,14 +2,15 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
-import { IRoutePath, IRoutePathLink, INode } from '~/models';
 import { TiLink } from 'react-icons/ti';
 import { IoIosRadioButtonOn } from 'react-icons/io';
+import NodeType from '~/enums/nodeType';
+import { IRoutePath, IRoutePathLink, INode } from '~/models';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
 import { RoutePathStore } from '~/stores/routePathStore';
-import s from './routePathLinksTab.scss';
 import RoutePathListNode from './RoutePathListNode';
 import RoutePathListLink from './RoutePathListLink';
+import s from './routePathLinksTab.scss';
 
 interface IRoutePathLinksTabProps {
     routePathStore?: RoutePathStore;
@@ -91,9 +92,10 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
     }
 
     private isNodeVisible = (node: INode) => {
-        if (node.stop && this.state.listFilters.includes(ListFilter.stop)) return false;
-        if (!node.stop && this.state.listFilters.includes(ListFilter.otherNodes)) return false;
-        return true;
+        if (node.type === NodeType.STOP) {
+            return !this.state.listFilters.includes(ListFilter.stop);
+        }
+        return !this.state.listFilters.includes(ListFilter.otherNodes);
     }
 
     private isLinksVisible = () => {
