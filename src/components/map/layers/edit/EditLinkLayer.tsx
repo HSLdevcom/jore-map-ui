@@ -86,7 +86,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         if (map) {
             const editableLink = L.polyline(
                 [_.cloneDeep(link.geometry)],
-                { interactive: false },
+                { interactive: false, color: '#000' },
             ).addTo(map);
 
             if (this.props.loginStore!.hasWriteAccess) {
@@ -135,7 +135,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
         return (
             <ArrowDecorator
-                color='#4f93f8'
+                color='#000'
                 geometry={link!.geometry}
                 hideOnEventName='editable:vertex:drag'
                 showOnEventName='editable:vertex:dragend'
