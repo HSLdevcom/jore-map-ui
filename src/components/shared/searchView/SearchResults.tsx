@@ -69,7 +69,12 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         return Promise.all([
             this.fetchAllLines(),
             this.fetchAllNodes(),
-        ]).then(() => this.setState({ isLoading: false }));
+        ]).then(
+            () => {
+                this.setState({ isLoading: false });
+                this.props.searchResultStore!.search();
+            },
+    );
     }
 
     private fetchAllLines = async () => {
@@ -92,7 +97,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     private getFilteredItems = () => {
         return this.props.searchResultStore!
-            .getFilteredItems()
+            .filteredItems
+            .slice()
             .splice(0, this.state.showLimit);
     }
 
@@ -100,7 +106,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const subLineItemsLength = this.props.searchStore!.subLineItems.length;
 
         const isSearchResultButtonVisible = subLineItemsLength > 0 ||
-        (Navigator.getPathName() !== subSites.home && subLineItemsLength === 0);
+            (Navigator.getPathName() !== subSites.home && subLineItemsLength === 0);
         if (!isSearchResultButtonVisible) {
             return;
         }

@@ -9,7 +9,7 @@ class LineFactory {
                 return {
                     id: route.reitunnus,
                     name: _getRouteName(route),
-                    date: route.reiviimpvm,
+                    date: new Date(route.reiviimpvm),
                 };
             });
 

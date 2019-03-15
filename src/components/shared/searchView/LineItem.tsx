@@ -112,7 +112,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         );
     }
 
-    public render(): any {
+    public render() {
         return (
             <div className={s.lineItemView}>
                 <div className={s.lineItem}>
@@ -128,7 +128,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         {this.props.line.id}
                     </div>
                 </div>
-                {this.props.line.routes.map(route =>
+                {this.props.line.routes
+                    .slice().sort((a, b) => a.id < b.id ? -1 : 1)
+                    .map(route =>
                     this.renderRoute(route),
                 )}
             </div>
