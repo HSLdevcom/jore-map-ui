@@ -57,7 +57,7 @@ export class SearchStore {
     }
 
     @computed
-    get subLineItems(): any {
+    get subLineItems() {
         return this._subLineItems;
     }
 

@@ -123,9 +123,10 @@ const getAllNodesQuery = () => {
             query getAllNodes {
                 allNodes: allSolmus{
                     nodes {
-                    soltunnus
-                    soltyyppi
+                        soltunnus
+                        soltyyppi
                         sollistunnus
+                        solkirjain
                     }
                 }
             }

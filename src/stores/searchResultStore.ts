@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import { ILine } from '~/models';
 import INodeBase from '~/models/baseModels/INodeBase';
 import TransitType from '~/enums/transitType';
@@ -7,10 +7,25 @@ import SearchStore from './searchStore';
 export class SearchResultStore {
     @observable private _allLines: ILine[];
     @observable private _allNodes: INodeBase[];
+    @observable private _filteredItems: (INodeBase | ILine)[];
+    @observable private _isSearching: boolean;
+    private delayTimer: NodeJS.Timeout;
 
     constructor() {
         this._allLines = [];
         this._allNodes = [];
+        this._filteredItems = [];
+        this._isSearching = false;
+
+        reaction(
+            () => [
+                SearchStore.searchInput,
+                SearchStore.selectedTransitTypes,
+                SearchStore.isSearchingForLines,
+                SearchStore.isSearchingForNodes,
+            ],
+            this.startUpdateTimer,
+        );
     }
 
     @computed
@@ -23,6 +38,16 @@ export class SearchResultStore {
         return this._allNodes;
     }
 
+    @computed
+    get isSearching(): boolean {
+        return this._isSearching;
+    }
+
+    @computed
+    get filteredItems(): (INodeBase | ILine)[] {
+        return this._filteredItems;
+    }
+
     @action
     public setAllLines = (lines: ILine[]) => {
         this._allLines = lines;
@@ -33,35 +58,38 @@ export class SearchResultStore {
         this._allNodes = nodes;
     }
 
-    private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
-        return this._allLines.filter((line) => {
-            // Filter by transitType
-            if (!transitTypes.includes(line.transitType)) {
-                return false;
-            }
-
-            // Filter by line.id
-            if (line.id.indexOf(searchInput) > -1) return true;
-
-            // Filter by route.name
-            return line.routes
-                .map(route => route.name.toLowerCase())
-                .some(name => name.indexOf(searchInput) > -1);
-        });
+    private matchWildcard(text: string, rule: string) {
+        return new RegExp(`^${rule.split('*').join('.*')}$`).test(text);
     }
 
-    private getFilteredNodes = (searchInput: string) => {
-        return this._allNodes.filter((node) => {
-            return node.id.indexOf(searchInput) > -1
-                || (
-                    Boolean(node.shortId)
-                    && node.shortId!.indexOf(searchInput) > -1
-                );
-        });
+    private matchText(text: string, searchInput: string) {
+        if (searchInput.includes('*')) {
+            return this.matchWildcard(text, searchInput);
+        }
+        return text.includes(searchInput);
     }
 
-    public getFilteredItems = (): (INodeBase | ILine)[] => {
-        const searchInput = SearchStore.searchInput;
+    @action
+    private startUpdateTimer = () => {
+        this._isSearching = true;
+        clearTimeout(this.delayTimer);
+        this.delayTimer = setTimeout(
+            () => {
+                this.search();
+            },
+            500,
+        );
+    }
+
+    @action
+    private setIsSearching = (isSearching: boolean) => {
+        this._isSearching = isSearching;
+    }
+
+    @action
+    public search = async () => {
+        this.setIsSearching(true);
+        const searchInput = SearchStore.searchInput.trim();
 
         let list: (INodeBase | ILine)[] = [];
         if (SearchStore.isSearchingForLines) {
@@ -82,9 +110,35 @@ export class SearchResultStore {
             ];
         }
 
-        list = list.sort((a, b) => a.id > b.id ? 1 : -1);
+        this._filteredItems = list.sort((a, b) => a.id > b.id ? 1 : -1);
+        this.setIsSearching(false);
+    }
 
-        return list;
+    private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
+        return this._allLines.filter((line) => {
+            // Filter by transitType
+            if (!transitTypes.includes(line.transitType)) {
+                return false;
+            }
+
+            // Filter by line.id
+            if (this.matchText(line.id, searchInput)) return true;
+
+            // Filter by route.name
+            return line.routes
+                .map(route => route.name.toLowerCase())
+                .some(name => this.matchText(name, searchInput.toLowerCase()));
+        });
+    }
+
+    private getFilteredNodes = (searchInput: string) => {
+        return this._allNodes.filter((node) => {
+            return this.matchText(node.id, searchInput)
+                || (
+                    Boolean(node.shortId)
+                        && this.matchText(node.shortId!, searchInput)
+                );
+        });
     }
 }
 
