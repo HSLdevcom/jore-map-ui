@@ -7,6 +7,8 @@ import BaseTool from './BaseTool';
  */
 class RemoveRoutePathLinkTool implements BaseTool {
     public toolType = ToolbarTool.RemoveRoutePathLink;
+    public toolHelpHeader = 'Poista reitin linkki';
+    public toolHelpText = 'Poista reitin linkki klikkaamalla sitä kartalta.';
     public activate() {}
     public deactivate() {}
 

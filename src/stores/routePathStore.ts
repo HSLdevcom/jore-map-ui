@@ -27,7 +27,6 @@ export class RoutePathStore {
     @observable private _neighborToAddType: NeighborToAddType;
     @observable private _highlightedMapItem: string | null;
     @observable private _extendedListItems: string[];
-    // TODO: Move out of store:
     @observable private _activeTab: RoutePathViewTab;
     private _undoStore: UndoStore<UndoState>;
 

@@ -63,10 +63,12 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         const routePathLinks = this.props.routePathLinks;
         const nodes = routePathLinks
             .map((routePathLink, index) => {
+                const node = routePathLink.startNode;
                 return (
                     <NodeMarker
                         key={`${routePathLink.orderNumber}-${index}`}
-                        node={routePathLink.startNode}
+                        node={node}
+                        isSelected={this.props.mapStore!.selectedNodeId === node.id}
                         isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
                         isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
                         onContextMenu={this.openPopup(routePathLink.startNode)}
@@ -74,10 +76,12 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 );
             });
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
+        const node = lastRoutePathLink.endNode;
         nodes.push(
             <NodeMarker
                 key='last-node'
-                node={lastRoutePathLink.endNode}
+                node={node}
+                isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDisabled={false} // Last node can't be disabled
                 isTimeAlignmentStop={false} // Last node can't be a time alignment stop
                 onContextMenu={this.openPopup(lastRoutePathLink.endNode)}

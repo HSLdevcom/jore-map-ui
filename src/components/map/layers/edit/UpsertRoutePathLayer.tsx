@@ -109,6 +109,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         return (
             <NodeMarker
                 key={`${node.id}-${index}`}
+                isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 onClick={onNodeClick}
                 node={node}
                 isHighlighted={isNodeHighlighted}
@@ -167,6 +168,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
+                isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isNeighborMarker={true}
                 onClick={this.addNeighborLinkToRoutePath(routePathLink)}
                 node={node}

@@ -59,6 +59,22 @@ class NodeFactory {
             id: externalNode.soltunnus,
         };
     }
+
+    public static createNewNode(coordinates: L.LatLng): INode {
+        const newStop = NodeStopFactory.createNewStop();
+        return {
+            coordinates,
+            id: '',
+            stop: newStop,
+            type: NodeType.STOP,
+            transitTypes: [],
+            coordinatesManual: coordinates,
+            coordinatesProjection: coordinates,
+            measurementDate: '',
+            modifiedOn: '',
+            modifiedBy: '',
+        };
+    }
 }
 
 const getNodeType = (type:any) => {

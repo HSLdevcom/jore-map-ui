@@ -29,6 +29,7 @@ export const createDivIcon = (html: any) => {
 
 interface INodeMarkerProps {
     mapStore?: MapStore;
+    isSelected: boolean;
     color?: string;
     onContextMenu?: Function;
     onClick?: Function;
@@ -58,10 +59,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private isSelected(node: INode) {
-        return this.props.mapStore!.selectedNodeId === node.id;
-    }
-
     private getLabels(): string[] {
         const node = this.props.node;
         const visibleNodeLabels = this.props.mapStore!.visibleNodeLabels;
@@ -88,7 +85,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private getMarkerClasses = () => {
-        const isSelected = this.isSelected(this.props.node);
+        const isSelected = this.props.isSelected;
         const res : string[] = [];
         if (this.props.isNeighborMarker) {
             res.push(s.neighborMarker);
@@ -132,7 +129,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private renderStopRadiusCircle = () => {
         const nodeType = this.props.node.type;
 
-        if (!(this.isSelected(this.props.node)
+        if (!(this.props.isSelected
             && nodeType === NodeType.STOP
             && this.props.node.stop!.radius)) {
             return null;
@@ -157,7 +154,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                                 classnames(s.nodeBase, s.manual, ...this.getMarkerClasses())}
                         />,
                     )}
-                    draggable={this.isInteractive(this.props.node)}
+                    draggable={this.isInteractive()}
                     onDragEnd={this.props.onMoveMarker
                     && this.onMoveMarker('coordinatesManual')}
                 />
@@ -169,7 +166,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                                 classnames(s.nodeBase, s.projection, ...this.getMarkerClasses())}
                         />,
                     )}
-                    draggable={this.isInteractive(this.props.node)}
+                    draggable={this.isInteractive()}
                     onDragEnd={this.props.onMoveMarker
                     && this.onMoveMarker('coordinatesProjection')}
                 />
@@ -177,9 +174,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
-    private isInteractive = (node: INode) => (
+    private isInteractive = () => (
         // TODO this should probably check other stuff too...
-        this.isSelected(node) && this.props.isDraggable
+        this.props.isSelected && this.props.isDraggable
     )
 
     render() {
@@ -204,7 +201,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 </Marker>
                 {
                     (
-                        this.isSelected(this.props.node) &&
+                        this.props.isSelected &&
                         this.props.node.type === NodeType.STOP
                     ) && this.renderAdditionalLocations(this.props.node!)}
             </>

@@ -4,6 +4,8 @@ export default interface BaseTool {
     toolType: ToolbarTool;
     activate: Function;
     deactivate: Function;
+    toolHelpHeader?: string;
+    toolHelpText?: string;
     onNetworkNodeClick?: Function;
     onRoutePathLinkClick?: Function;
     onNodeClick?: Function;
