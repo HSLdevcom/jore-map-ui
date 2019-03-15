@@ -1,25 +1,29 @@
-@import '../../shared/styles/common.scss';
+@import './styles/common.scss';
 
-.entityTypeTogglesView {
-    display: block;
+.toggleView {
+    display: flex;
     border-bottom: 1px solid black;
 
     .buttonContainer {
-        display: inline-block;
-        width: 50%;
+        display: flex;
+        flex-grow: 1;
+        width: 100%;
 
         .button {
+            display: flex;
+            width: 100%;
             color: #eef1f3;
             font-size: 15px;
             text-align: center;
+            align-items: center;
             cursor: pointer;
             background-color: #575757;
-            display: flex;
-            padding: 5px 20px 5px 20px;
+            padding: 5px 10px 5px 10px;
             transition: .5s;
+            line-height: 30px;
 
             > svg {
-                font-size: 30px;
+                font-size: 25px;
             }
 
             > div {

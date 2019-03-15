@@ -99,7 +99,7 @@ export class RoutePathStore {
     }
 
     @action
-    public undo() {
+    public undo = () => {
         this._undoStore.undo((nextUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
             this._routePath!.routePathLinks = nextUndoState.routePathLinks;
@@ -107,7 +107,7 @@ export class RoutePathStore {
     }
 
     @action
-    public redo() {
+    public redo = () => {
         this._undoStore.redo((previousUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
             this._routePath!.routePathLinks = previousUndoState.routePathLinks;

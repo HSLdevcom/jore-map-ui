@@ -11,7 +11,7 @@
 }
 
 .shadow {
-    background-color: #80808024;
+    background-color: #c2c2c224;
 }
 
 .shadowStop {
@@ -65,7 +65,7 @@
     .itemHeader {
         display: flex;
         flex-direction: row;
-        border-right: 3px solid $backgroundlightGrey;
+        border-right: 3px solid rgba(255,255,255, 0);
         cursor: pointer;
 
         .headerContent {

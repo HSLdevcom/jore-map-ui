@@ -44,9 +44,6 @@ interface IRoutePathViewProps {
 @inject('routePathStore', 'networkStore', 'toolbarStore', 'errorStore')
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState>{
-    private undoFunction = this.props.routePathStore!.undo.bind(this.props.routePathStore);
-    private redoFunction = this.props.routePathStore!.redo.bind(this.props.routePathStore);
-
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
@@ -57,8 +54,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     componentDidMount() {
-        EventManager.on('undo', this.undoFunction);
-        EventManager.on('redo', this.redoFunction);
+        EventManager.on('undo', this.props.routePathStore!.undo);
+        EventManager.on('redo', this.props.routePathStore!.redo);
         this.initialize();
     }
 
@@ -66,8 +63,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
-        EventManager.off('undo', this.undoFunction);
-        EventManager.off('redo', this.redoFunction);
+        EventManager.off('undo', this.props.routePathStore!.undo);
+        EventManager.off('redo', this.props.routePathStore!.redo);
     }
 
     private initialize = async () => {
