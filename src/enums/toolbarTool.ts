@@ -6,6 +6,7 @@ enum ToolbarTool {
     RemoveRoutePathLink,
     EditNetworkNode,
     Print,
+    SelectNetworkEntity,
 }
 
 export default ToolbarTool;

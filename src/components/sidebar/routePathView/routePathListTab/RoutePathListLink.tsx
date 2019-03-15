@@ -8,7 +8,7 @@ import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import routeBuilder from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
+import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import RoutePathListItem from './RoutePathListItem';
 import MultiTabTextarea from '../../linkView/MultiTabTextarea';
@@ -179,7 +179,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private openInNetworkView = () => {
         const routeLink = this.props.routePathLink;
         const routeLinkViewLink = routeBuilder
-            .to(subSites.link)
+            .to(SubSites.link)
             .toTarget([
                 routeLink.startNode.id,
                 routeLink.endNode.id,

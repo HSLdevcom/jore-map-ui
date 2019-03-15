@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router';
+import { Route, Switch, Redirect, withRouter } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
 import { RouteStore } from '~/stores/routeStore';
@@ -80,12 +80,12 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         <Route
                             exact={true}
                             path={subSites.newNode}
-                            component={this.renderAddNewNodeView}
+                            omponent={withRouter(this.renderAddNewNodeView)}
                         />
                         <Route
                             exact={true}
                             path={subSites.node}
-                            component={this.renderNodeView}
+                            component={withRouter(this.renderNodeView)}
                         />
                         <Route
                             exact={true}

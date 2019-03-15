@@ -7,6 +7,7 @@ export default interface BaseTool {
     toolHelpHeader?: string;
     toolHelpText?: string;
     onNetworkNodeClick?: Function;
+    onNetworkLinkClick?: Function;
     onRoutePathLinkClick?: Function;
     onNodeClick?: Function;
     /** TODO:

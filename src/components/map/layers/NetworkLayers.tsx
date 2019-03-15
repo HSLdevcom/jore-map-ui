@@ -77,7 +77,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
                 return {
                     color: TransitTypeColorHelper.getColor(properties.lnkverkko),
-                    weight: 1,
+                    weight: 3,
                     fillOpacity: 1,
                     fill: true,
                 };
@@ -239,9 +239,12 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
         const selectedTool = this.props.toolbarStore!.selectedTool;
         let onNetworkNodeClick: Function | undefined;
+        let onNetworkLinkClick: Function | undefined;
         if (selectedTool) {
             onNetworkNodeClick = selectedTool.onNetworkNodeClick ?
                 selectedTool.onNetworkNodeClick : undefined;
+            onNetworkLinkClick = selectedTool.onNetworkLinkClick ?
+                selectedTool.onNetworkLinkClick : undefined;
         }
 
         return (
@@ -250,6 +253,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
+                        onClick={onNetworkLinkClick!}
                         key={GeoserverLayer.Link}
                         url={getGeoServerUrl(GeoserverLayer.Link)}
                         interactive={true}

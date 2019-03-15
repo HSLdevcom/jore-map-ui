@@ -52,7 +52,16 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        this.initUsingUrlParams();
+    }
+
+    componentWillUnmount() {
+        this.props.nodeStore!.clear();
+        this.props.mapStore!.setSelectedNodeId(null);
+    }
+
+    private initUsingUrlParams = async () => {
         const selectedNodeId = this.props.match!.params.id;
         if (!selectedNodeId) return;
 
@@ -152,11 +161,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.toggleIsEditingDisabled(
             this.props.nodeStore!.resetChanges,
         );
-    }
-
-    componentWillUnmount() {
-        this.props.nodeStore!.clear();
-        this.props.mapStore!.setSelectedNodeId(null);
     }
 
     render() {
