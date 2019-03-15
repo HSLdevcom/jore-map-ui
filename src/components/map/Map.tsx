@@ -98,6 +98,11 @@ class LeafletMap extends React.Component<IMapProps> {
             this.fitBounds,
         ));
 
+        this.reactionDisposers.push(reaction(
+            () => this.props.mapStore!.mapCursor,
+            this.setMapCursor,
+        ));
+
         map.setView(
             this.props.mapStore!.coordinates,
             this.props.mapStore!.zoom,
@@ -122,6 +127,13 @@ class LeafletMap extends React.Component<IMapProps> {
                 animate: true,
                 padding: [300, 300],
             });
+    }
+
+    private setMapCursor = () => {
+        const mapElement = document.getElementById(s.mapLeaflet);
+        if (mapElement) {
+            mapElement.style.cursor = this.props.mapStore!.mapCursor;
+        }
     }
 
     componentDidUpdate() {

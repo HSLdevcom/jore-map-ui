@@ -4,6 +4,7 @@ import navigator from '~/routing/navigator';
 import EventManager from '~/util/EventManager';
 import SubSites from '~/routing/subSites';
 import RoutePathStore from '~/stores/routePathStore';
+import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
 import ToolbarStore from '~/stores/toolbarStore';
@@ -17,9 +18,11 @@ class AddNetworkNodeTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventManager.on('mapClick', this.onMapClick);
+        MapStore.setMapCursor('crosshair');
     }
     public deactivate() {
         EventManager.off('mapClick', this.onMapClick);
+        MapStore.setMapCursor('');
     }
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);
