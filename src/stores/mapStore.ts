@@ -19,6 +19,8 @@ export enum MapFilter {
     arrowDecorator,
 }
 
+export type MapCursor = '' | 'crosshair';
+
 export class MapStore {
 
     @observable private _coordinates: L.LatLng;
@@ -30,6 +32,7 @@ export class MapStore {
     @observable private _visibleNodeLabels: NodeLabel[];
     @observable private _mapFilters: MapFilter[];
     @observable private _mapBounds: L.LatLngBounds;
+    @observable private _mapCursor: MapCursor;
 
     constructor() {
         this._coordinates = INITIAL_COORDINATES;
@@ -39,6 +42,7 @@ export class MapStore {
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._visibleNodeLabels = [NodeLabel.hastusId];
         this._mapFilters = [MapFilter.arrowDecorator];
+        this._mapCursor = '';
     }
 
     @computed
@@ -87,6 +91,11 @@ export class MapStore {
     @computed
     get mapBounds() {
         return this._mapBounds;
+    }
+
+    @computed
+    get mapCursor() {
+        return this._mapCursor;
     }
 
     public isMapFilterEnabled = (mapFilter: MapFilter) => {
@@ -149,6 +158,11 @@ export class MapStore {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
             this._mapFilters = this._mapFilters.concat([mapFilter]);
         }
+    }
+
+    @action
+    public setMapCursor = (mapCursor: MapCursor) => {
+        this._mapCursor = mapCursor;
     }
 
     public isNodeLabelVisible = (nodeLabel: NodeLabel) => {

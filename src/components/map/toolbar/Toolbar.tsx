@@ -15,7 +15,11 @@ class Toolbar extends React.Component {
     private renderObjectSpecificTools = () => {
         if (!LoginStore!.hasWriteAccess) return null;
         if (matchPath(navigator.getPathName(), SubSites.routePath)) {
-            return <RoutePathButtons />;
+            return (
+                <div className={classnames(s.toolbar, s.modeSpecificToolbar)}>
+                    <RoutePathButtons />
+                </div>
+            );
         }
         return null;
     }
@@ -24,9 +28,7 @@ class Toolbar extends React.Component {
         return (
             <div className={s.toolbarContainer}>
                 <div className={s.toolbarRow}>
-                    <div className={classnames(s.toolbar, s.modeSpecificToolbar)}>
-                        {this.renderObjectSpecificTools()}
-                    </div>
+                    {this.renderObjectSpecificTools()}
                     <div className={s.toolbar}>
                         <ToolbarCommonButtons
                             hasWriteAccess={LoginStore!.hasWriteAccess}

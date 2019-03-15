@@ -4,7 +4,6 @@ import _ from 'lodash';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
 import navigator from '~/routing/navigator';
 import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
@@ -27,26 +26,25 @@ interface IEditNodeLayerProps {
 @inject('mapStore', 'nodeStore', 'loginStore')
 @observer
 class EditNodeLayer extends Component<IEditNodeLayerProps> {
-    private reactionDisposer: IReactionDisposer;
     private editableLinks: L.Polyline[] = [];
 
+    componentWillMount() {
+        this.centerNode();
+    }
+
     componentDidMount() {
-        this.reactionDisposer = reaction(
-            () => this.props.nodeStore!.node,
-            () => this.props.nodeStore!.node === null && this.removeOldLinks(),
-        );
-        EventManager.on('undo', () => this.props.nodeStore!.undo());
-        EventManager.on('redo', () => this.props.nodeStore!.redo());
+        EventManager.on('undo', this.props.nodeStore!.undo);
+        EventManager.on('redo', this.props.nodeStore!.redo);
     }
 
     componentWillUnmount() {
-        this.reactionDisposer();
+        this.removeOldLinks();
 
         const map = this.props.leaflet.map;
         map!.off('editable:vertex:dragend');
         map!.off('editable:vertex:deleted');
-        EventManager.off('undo', () => this.props.nodeStore!.undo());
-        EventManager.off('redo', () => this.props.nodeStore!.redo());
+        EventManager.off('undo', this.props.nodeStore!.undo);
+        EventManager.off('redo', this.props.nodeStore!.redo);
     }
 
     private removeOldLinks = () => {
@@ -57,14 +55,20 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         this.editableLinks = [];
     }
 
+    private centerNode = () => {
+        const node = this.props.nodeStore!.node;
+        this.props.mapStore!.setCoordinates(node.coordinates);
+    }
+
     private renderNode() {
         const node = this.props.nodeStore!.node;
-        if (!node) return null;
 
+        const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
         return (
             <NodeMarker
                 key={node.id}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
+                isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
                 node={node}
                 onMoveMarker={this.onMoveMarker()}
             />

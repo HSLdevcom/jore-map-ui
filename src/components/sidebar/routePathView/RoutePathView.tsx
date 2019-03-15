@@ -9,7 +9,6 @@ import Button from '~/components/controls/Button';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import navigator from '~/routing/navigator';
-import { RouteStore } from '~/stores/routeStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
@@ -36,16 +35,18 @@ interface IRoutePathViewState {
 interface IRoutePathViewProps {
     errorStore?: ErrorStore;
     routePathStore?: RoutePathStore;
-    routeStore?: RouteStore;
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
     match?: match<any>;
     isNewRoutePath: boolean;
 }
 
-@inject('routeStore', 'routePathStore', 'networkStore', 'toolbarStore', 'errorStore')
+@inject('routePathStore', 'networkStore', 'toolbarStore', 'errorStore')
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState>{
+    private undoFunction = this.props.routePathStore!.undo.bind(this.props.routePathStore);
+    private redoFunction = this.props.routePathStore!.redo.bind(this.props.routePathStore);
+
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
@@ -55,16 +56,27 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        EventManager.on('undo', this.undoFunction);
+        EventManager.on('redo', this.redoFunction);
+        this.initialize();
+    }
+
+    componentWillUnmount() {
+        this.props.toolbarStore!.selectTool(null);
+        this.props.networkStore!.setNodeSize(NodeSize.normal);
+        this.props.routePathStore!.clear();
+        EventManager.off('undo', this.undoFunction);
+        EventManager.off('redo', this.redoFunction);
+    }
+
+    private initialize = async () => {
         if (this.props.isNewRoutePath) {
-            await this.initializeAsAddingNew();
+            await this.createNewRoutePath();
         } else {
             await this.fetchRoutePath();
         }
         await this.initializeMap();
-        this.props.routeStore!.clearRoutes();
-        EventManager.on('undo', () => this.props.routePathStore!.undo());
-        EventManager.on('redo', () => this.props.routePathStore!.redo());
         observe(
             this.props.routePathStore!.routePath!.routePathLinks!,
             () => {
@@ -76,18 +88,14 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         });
     }
 
-    componentWillUnmount() {
-        this.props.toolbarStore!.selectTool(null);
-        this.props.networkStore!.setNodeSize(NodeSize.normal);
-        this.props.routePathStore!.clear();
-        EventManager.off('undo', () => this.props.routePathStore!.undo());
-        EventManager.off('redo', () => this.props.routePathStore!.redo());
-    }
-
-    private initializeAsAddingNew = async () => {
+    private createNewRoutePath = async () => {
         try {
             if (!this.props.routePathStore!.routePath) {
-                this.props.routePathStore!.setRoutePath(await this.createNewRoutePath());
+                const queryParams = navigator.getQueryParamValues();
+                const route = await RouteService.fetchRoute(queryParams.routeId);
+                // TODO: add transitType to this call (if transitType is routePath's property)
+                const newRoutePath = RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
+                this.props.routePathStore!.setRoutePath(newRoutePath);
             } else {
                 this.props.routePathStore!.setRoutePath(
                     RoutePathFactory.createNewRoutePathFromOld(
@@ -109,14 +117,6 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
 
         await this.setTransitType();
-    }
-
-    private createNewRoutePath = async () => {
-        const queryParams = navigator.getQueryParamValues();
-        const route = await RouteService.fetchRoute(queryParams.routeId);
-        // TODO: add transitType to this call (if transitType is routePath's property)
-
-        return RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
     }
 
     private setTransitType = async () => {

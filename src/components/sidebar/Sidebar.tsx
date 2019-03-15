@@ -39,7 +39,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RoutesView /> : <Redirect to='/' />;
     }
-    private renderAddNewRoutePath = (props: any) =>
+    private renderAddNewNodeView = (props: any) =>
+        <NodeView {...props} isNewNode={true} />
+    private renderNodeView = (props: any) =>
+        <NodeView {...props} isNewNode={false} />
+    private renderAddNewRoutePathView = (props: any) =>
         <RoutePathView {...props} isNewRoutePath={true} />
     private renderRoutePathView = (props: any) =>
         <RoutePathView {...props} isNewRoutePath={false} />
@@ -75,13 +79,18 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         />
                         <Route
                             exact={true}
+                            path={subSites.newNode}
+                            component={this.renderAddNewNodeView}
+                        />
+                        <Route
+                            exact={true}
                             path={subSites.node}
-                            component={NodeView}
+                            component={this.renderNodeView}
                         />
                         <Route
                             exact={true}
                             path={subSites.newRoutePath}
-                            render={this.renderAddNewRoutePath}
+                            render={this.renderAddNewRoutePathView}
                         />
                         <Route
                             exact={true}

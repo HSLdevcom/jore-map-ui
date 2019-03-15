@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiCopy, FiShare2, FiDelete } from 'react-icons/fi';
+import { FiDelete } from 'react-icons/fi';
 import { IoMdGitCommit } from 'react-icons/io';
 import { observer } from 'mobx-react';
 import ToolbarStore from '~/stores/toolbarStore';
@@ -18,6 +18,7 @@ class ToolbarLineButtons extends React.Component {
             <div className={s.toolbarToolButtonsView}>
                 {/* First toolbar row */}
                 <div className={s.toolbarButtonRow}>
+                {/*
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.Copy)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.Copy)}
@@ -26,6 +27,7 @@ class ToolbarLineButtons extends React.Component {
                     >
                         <FiCopy />
                     </MapControlButton>
+                    */}
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.AddNewRoutePathLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.AddNewRoutePathLink)}
@@ -34,6 +36,7 @@ class ToolbarLineButtons extends React.Component {
                     >
                         <IoMdGitCommit />
                     </MapControlButton>
+                    {/*
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.DivideLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.DivideLink)}
@@ -42,6 +45,7 @@ class ToolbarLineButtons extends React.Component {
                     >
                         <FiShare2/>
                     </MapControlButton>
+                    */}
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.RemoveRoutePathLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.RemoveRoutePathLink)}

@@ -38,8 +38,9 @@ class NodeCoordinatesView extends React.Component<INodeCoordinatesViewProps> {
         return { iconClassName, label };
     }
 
-    latChange = (v: string) => {
-        const lat = Number(v);
+    latChange = (value: string) => {
+        const lat = Number(value);
+        if (lat === this.props.coordinates.lat) return;
         this.props.onChangeCoordinates(
             new L.LatLng(
                 lat,
@@ -48,12 +49,13 @@ class NodeCoordinatesView extends React.Component<INodeCoordinatesViewProps> {
         );
     }
 
-    lonChange = (v: string) => {
-        const lon = Number(v);
+    lngChange = (value: string) => {
+        const lng = Number(value);
+        if (lng === this.props.coordinates.lng) return;
         this.props.onChangeCoordinates(
             new L.LatLng(
                 this.props.coordinates.lat,
-                lon,
+                lng,
             ),
         );
     }
@@ -78,7 +80,7 @@ class NodeCoordinatesView extends React.Component<INodeCoordinatesViewProps> {
                     />
                     <InputContainer
                         value={this.props.coordinates.lng}
-                        onChange={this.lonChange}
+                        onChange={this.lngChange}
                         label='Longitude'
                         type='number'
                         disabled={this.props.isEditingDisabled}

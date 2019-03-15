@@ -13,14 +13,12 @@ const TOOL_LIST = [
     new ExtendRoutePathTool(),
     new CopyTool(),
     new DivideLinkTool(),
-    new PrintTool(),
     new RemoveRoutePathLinkTool(),
+    new PrintTool(),
 ];
 
-/* Object with key: ToolbarTool, value: BaseTool*/
-const TOOLS = TOOL_LIST.reduce((acc, c:BaseTool) => {
-    return Object.assign({ [c.toolType]:c }, acc);
-});
+const TOOLS = {};
+TOOL_LIST.map((tool: BaseTool) => TOOLS[tool.toolType] = tool);
 
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool|null;

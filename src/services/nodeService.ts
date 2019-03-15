@@ -40,6 +40,11 @@ class NodeService {
         await ApiClient.updateObject(endpoints.NODE, requestBody);
         await apolloClient.clearStore();
     }
+
+    public static createNode = async (node: INode) => {
+        await ApiClient.createObject(endpoints.NODE, node);
+        await apolloClient.clearStore();
+    }
 }
 
 export default NodeService;
