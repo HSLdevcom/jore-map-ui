@@ -110,8 +110,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
-            const errMessage = err.message ? `, (${err.message})` : '';
-            this.props.errorStore!.addError(`Tallennus epäonnistui${errMessage}`);
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
         }
 
         if (preventSetState) return;

@@ -105,8 +105,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.props.linkStore!.setOldLink(this.props.linkStore!.link);
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
-            const errMessage = err.message ? `, (${err.message})` : '';
-            this.props.errorStore!.addError(`Tallennus epäonnistui${errMessage}`);
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
         }
         this.setState({ isLoading: false });
     }

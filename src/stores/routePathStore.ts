@@ -23,7 +23,6 @@ export interface UndoState {
 export class RoutePathStore {
     @observable private _routePath: IRoutePath|null;
     @observable private _oldRoutePath: IRoutePath|null;
-    @observable private _isGeometryValid: boolean;
     @observable private _neighborRoutePathLinks: IRoutePathLink[];
     @observable private _neighborToAddType: NeighborToAddType;
     @observable private _highlightedMapItem: string | null;
@@ -36,7 +35,6 @@ export class RoutePathStore {
         this._neighborRoutePathLinks = [];
         this._highlightedMapItem = null;
         this._extendedListItems = [];
-        this._isGeometryValid = true;
         this._activeTab = RoutePathViewTab.Info;
         this._undoStore = new UndoStore();
     }
@@ -57,13 +55,15 @@ export class RoutePathStore {
     }
 
     @computed
-    get isGeometryValid() {
-        return this._isGeometryValid;
+    get isDirty() {
+        return !_.isEqual(this._routePath, this._oldRoutePath);
     }
 
     @computed
-    get isDirty() {
-        return !_.isEqual(this._routePath, this._oldRoutePath);
+    get isGeometryValid() {
+        return validateRoutePathLinks(
+            this._routePath!.routePathLinks!,
+        );
     }
 
     @computed
@@ -118,7 +118,6 @@ export class RoutePathStore {
     @action
     public onRoutePathLinksChanged() {
         this.recalculateOrderNumbers();
-        this.validateRoutePathGeometry();
     }
 
     @action
@@ -163,12 +162,12 @@ export class RoutePathStore {
         };
         this._undoStore.addItem(currentUndoState);
 
-        this.setOldRoutePath(routePath);
+        this.setOldRoutePath(this._routePath);
     }
 
     @action
     public setOldRoutePath = (routePath: IRoutePath) => {
-        this._oldRoutePath = routePath;
+        this._oldRoutePath = _.cloneDeep(routePath);
     }
 
     @action
@@ -198,7 +197,6 @@ export class RoutePathStore {
             routePathLink);
 
         this.recalculateOrderNumbers();
-
         this.resetUndoState();
     }
 
@@ -210,7 +208,6 @@ export class RoutePathStore {
         this._routePath!.routePathLinks!.splice(linkToRemoveIndex, 1);
 
         this.recalculateOrderNumbers();
-
         this.resetUndoState();
     }
 
@@ -218,7 +215,6 @@ export class RoutePathStore {
     public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._routePath!.routePathLinks = routePathLinks;
         this.recalculateOrderNumbers();
-
         this.sortRoutePathLinks();
     }
 
@@ -273,12 +269,6 @@ export class RoutePathStore {
             // Order numbers start from 1
             rpLink.orderNumber = index + 1;
         });
-    }
-
-    private validateRoutePathGeometry = () => {
-        this._isGeometryValid = validateRoutePathLinks(
-            this._routePath!.routePathLinks!,
-        );
     }
 }
 

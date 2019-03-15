@@ -173,8 +173,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
 
             DialogStore.setFadeMessage('Tallennettu!');
         } catch (err) {
-            const errMessage = err.message ? `, (${err.message})` : '';
-            this.props.errorStore!.addError(`Tallennus epäonnistui${errMessage}`);
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
         }
         this.setState({
             isEditingDisabled: true,
