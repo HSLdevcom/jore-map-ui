@@ -21,10 +21,10 @@ import navigator from '~/routing/navigator';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { ErrorStore } from '~/stores/errorStore';
-import { Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
-import InputContainer from '../../InputContainer';
-import TextContainer from '../../TextContainer';
-import SidebarHeader from '../../SidebarHeader';
+import { Dropdown, Button, TransitToggleButtonBar } from '../../controls';
+import InputContainer from '../InputContainer';
+import TextContainer from '../TextContainer';
+import SidebarHeader from '../SidebarHeader';
 import * as s from './linkView.scss';
 
 interface ILinkViewState {

@@ -1,11 +1,11 @@
 import React from 'react';
+import * as L from 'leaflet';
 import classnames from 'classnames';
 import InputContainer from '~/components/sidebar/InputContainer';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeTypeHelper from '~/util/nodeTypeHelper';
-import * as L from 'leaflet';
-import * as s from '~/components/sidebar/networkView/nodeView/nodeCoordinatesView.scss';
+import * as s from './nodeCoordinatesView.scss';
 
 interface INodeCoordinatesViewProps {
     nodeType: NodeType;

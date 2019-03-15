@@ -20,9 +20,9 @@ import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
-import SidebarHeader from '../../SidebarHeader';
+import SidebarHeader from '../SidebarHeader';
 import StopForm from './StopForm';
-import InputContainer from '../../InputContainer';
+import InputContainer from '../InputContainer';
 import * as s from './nodeView.scss';
 
 interface INodeViewProps {

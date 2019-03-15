@@ -5,7 +5,7 @@ import stopValidationModel from '~/validation/models/stopValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import { Dropdown } from '~/components/controls';
-import SidebarHeader from '../../SidebarHeader';
+import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
 
 interface IStopFormProps {

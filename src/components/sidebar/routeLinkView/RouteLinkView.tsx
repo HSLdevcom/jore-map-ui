@@ -12,9 +12,9 @@ import NodeType from '~/enums/nodeType';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
 import TextContainer from '../TextContainer';
-import MultiTabTextarea from '../networkView/linkView/MultiTabTextarea';
 import Loader from '../../shared/loader/Loader';
 import SidebarHeader from '../SidebarHeader';
+import MultiTabTextarea from '../linkView/MultiTabTextarea';
 import * as s from './routeLinkView.scss';
 
 interface IRouteLinkViewState {
