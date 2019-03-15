@@ -7,6 +7,8 @@ import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
+import SubSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
 import NodeLocationType from '~/types/NodeLocationType';
@@ -29,6 +31,7 @@ interface INodeViewProps {
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
+    isNewNode: boolean;
 }
 
 interface INodeViewState {
@@ -44,7 +47,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: true,
+            isEditingDisabled: !props.isNewNode,
             invalidPropertiesMap: {},
         };
     }
@@ -60,7 +63,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         if (node) {
             const links = await this.fetchLinksForNode(node);
             if (links) {
-                this.props.mapStore!.setCoordinates(node.coordinates);
                 this.props.nodeStore!.init(node, links);
             }
         }
@@ -90,16 +92,28 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private save = async () => {
         this.setState({ isLoading: true });
+        let preventSetState = false;
         try {
-            await NodeService.updateNode(
-                this.props.nodeStore!.node,
-                this.props.nodeStore!.dirtyLinks,
-            );
+            if (this.props.isNewNode) {
+                await NodeService.createNode(this.props.nodeStore!.node);
+                preventSetState = true;
+
+                // TODO: remove this, should redirect to node/id instead
+                navigator.goTo(SubSites.home);
+            } else {
+                await NodeService.updateNode(
+                    this.props.nodeStore!.node,
+                    this.props.nodeStore!.dirtyLinks,
+                );
+            }
+
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (err) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
         }
+
+        if (preventSetState) return;
         this.setState({ isLoading: false });
     }
 
@@ -167,7 +181,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             <div className={s.nodeView}>
                 <div className={s.content}>
                     <SidebarHeader
-                        isEditButtonVisible={true}
+                        isEditButtonVisible={!this.props.isNewNode}
                         shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={this.toggleIsEditingEnabled}

@@ -1,8 +1,8 @@
 import React from 'react';
-import { FiPrinter, FiExternalLink } from 'react-icons/fi';
+import { FiPrinter, FiExternalLink, FiPlus } from 'react-icons/fi';
 import { IoMdUndo, IoMdRedo } from 'react-icons/io';
 import { observer } from 'mobx-react';
-import toolbarStore from '~/stores/toolbarStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import Navigator from '~/routing/navigator';
 import EventManager from '~/util/EventManager';
@@ -23,6 +23,10 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
         window.open(path, '_blank');
     }
 
+    private selectTool = (tool: ToolbarTool) => () => {
+        ToolbarStore.selectTool(tool);
+    }
+
     private undo = () => {
         EventManager.trigger('undo');
     }
@@ -38,7 +42,7 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                     <MapControlButton
                         onClick={this.print}
                         isActive={false}
-                        isDisabled={toolbarStore.isDisabled(ToolbarTool.Print)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.Print)}
                         label='Tulosta kartta'
                     >
                         <FiPrinter />
@@ -53,6 +57,14 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                     </MapControlButton>
                     { this.props.hasWriteAccess &&
                         <>
+                            <MapControlButton
+                                onClick={this.selectTool(ToolbarTool.AddNetworkNode)}
+                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkNode)}
+                                isDisabled={false}
+                                label='Lisää solmu'
+                            >
+                                <FiPlus />
+                            </MapControlButton>
                             <MapControlButton
                                 onClick={this.undo}
                                 isActive={false}

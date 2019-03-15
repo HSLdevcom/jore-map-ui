@@ -34,6 +34,10 @@ class RoutesView extends React.Component<IRoutesViewProps> {
         }
     }
 
+    componentWillUnmount() {
+        this.props.routeStore!.clearRoutes();
+    }
+
     render() {
         return (
             <div className={s.routesView}>
