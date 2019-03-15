@@ -9,13 +9,12 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import LinkView from './networkView/linkView/LinkView';
+import LinkView from './linkView/LinkView';
 import RoutesView from './routesView/RoutesView';
 import RouteLinkView from './routeLinkView/RouteLinkView';
 import HomeView from './homeView/HomeView';
 import RoutePathView from './routePathView/RoutePathView';
-import NodeView from './networkView/nodeView/NodeView';
-import NetworkView from './networkView/NetworkView';
+import NodeView from './nodeView/NodeView';
 import * as s from './sidebar.scss';
 
 // Requiring location to force update on location change
@@ -88,11 +87,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             exact={true}
                             path={subSites.routePath}
                             render={this.renderRoutePathView}
-                        />
-                        <Route
-                            exact={false}
-                            path={subSites.network}
-                            component={NetworkView}
                         />
                     </Switch>
                 </div>

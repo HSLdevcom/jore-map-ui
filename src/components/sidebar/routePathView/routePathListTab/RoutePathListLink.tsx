@@ -10,8 +10,8 @@ import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import MultiTabTextarea from '../../networkView/linkView/MultiTabTextarea';
 import RoutePathListItem from './RoutePathListItem';
+import MultiTabTextarea from '../../linkView/MultiTabTextarea';
 import TextContainer from '../../TextContainer';
 import * as s from './routePathListItem.scss';
 
