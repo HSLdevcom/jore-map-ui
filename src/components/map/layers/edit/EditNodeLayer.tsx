@@ -33,8 +33,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     }
 
     componentDidMount() {
-        EventManager.on('undo', () => this.props.nodeStore!.undo());
-        EventManager.on('redo', () => this.props.nodeStore!.redo());
+        EventManager.on('undo', this.props.nodeStore!.undo);
+        EventManager.on('redo', this.props.nodeStore!.redo);
     }
 
     componentWillUnmount() {
@@ -43,8 +43,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         const map = this.props.leaflet.map;
         map!.off('editable:vertex:dragend');
         map!.off('editable:vertex:deleted');
-        EventManager.off('undo', () => this.props.nodeStore!.undo());
-        EventManager.off('redo', () => this.props.nodeStore!.redo());
+        EventManager.off('undo', this.props.nodeStore!.undo);
+        EventManager.off('redo', this.props.nodeStore!.redo);
     }
 
     private removeOldLinks = () => {
