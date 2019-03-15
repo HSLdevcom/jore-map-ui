@@ -18,11 +18,12 @@ export class SearchResultStore {
         this._isSearching = false;
 
         reaction(
-            () => SearchStore.searchInput,
-            this.startUpdateTimer,
-        );
-        reaction(
-            () => SearchStore.selectedTransitTypes,
+            () => [
+                SearchStore.searchInput,
+                SearchStore.selectedTransitTypes,
+                SearchStore.isSearchingForLines,
+                SearchStore.isSearchingForNodes,
+            ],
             this.startUpdateTimer,
         );
     }
