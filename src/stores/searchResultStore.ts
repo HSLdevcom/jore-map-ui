@@ -61,11 +61,11 @@ export class SearchResultStore {
         return new RegExp(`^${rule.split('*').join('.*')}$`).test(text);
     }
 
-    private matchText(text: string, rule: string) {
-        if (rule.includes('*')) {
-            return this.matchWildcard(text, rule);
+    private matchText(text: string, searchInput: string) {
+        if (searchInput.includes('*')) {
+            return this.matchWildcard(text, searchInput);
         }
-        return text.includes(rule);
+        return text.includes(searchInput);
     }
 
     @action
@@ -85,14 +85,9 @@ export class SearchResultStore {
         this._isSearching = isSearching;
     }
 
+    @action
     public search = async () => {
         this.setIsSearching(true);
-        await this.searchAsync();
-        this.setIsSearching(false);
-    }
-
-    @action
-    private searchAsync = async () => {
         const searchInput = SearchStore.searchInput;
 
         let list: (INodeBase | ILine)[] = [];
@@ -115,6 +110,7 @@ export class SearchResultStore {
         }
 
         this._filteredItems = list.sort((a, b) => a.id > b.id ? 1 : -1);
+        this.setIsSearching(false);
     }
 
     private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
