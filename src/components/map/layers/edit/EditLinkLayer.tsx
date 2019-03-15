@@ -34,8 +34,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             () => this.props.linkStore!.link,
             () => this.props.linkStore!.link === null && this.removeOldLinks(),
         );
-        EventManager.on('undo', () => this.props.linkStore!.undo());
-        EventManager.on('redo', () => this.props.linkStore!.redo());
+        EventManager.on('undo', this.props.linkStore!.undo);
+        EventManager.on('redo', this.props.linkStore!.redo);
     }
 
     componentWillUnmount() {
@@ -44,8 +44,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         const map = this.props.leaflet.map;
         map!.off('editable:vertex:dragend');
         map!.off('editable:vertex:deleted');
-        EventManager.off('undo', () => this.props.linkStore!.undo());
-        EventManager.off('redo', () => this.props.linkStore!.redo());
+        EventManager.off('undo', this.props.linkStore!.undo);
+        EventManager.off('redo', this.props.linkStore!.redo);
     }
 
     private removeOldLinks = () => {
@@ -120,6 +120,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         return (
             <NodeMarker
                 key={node.id}
+                isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDraggable={false}
                 node={node}
             />

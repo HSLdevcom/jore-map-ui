@@ -4,7 +4,7 @@ import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
-import StopFactory from '~/factories/nodeStopFactory';
+import NodeStopFactory from '~/factories/nodeStopFactory';
 import UndoStore from '~/stores/undoStore';
 import { roundLatLng } from '~/util/geomHelper';
 
@@ -62,7 +62,7 @@ export class NodeStore {
         const newNode = _.cloneDeep(node);
         const newLinks = _.cloneDeep(links);
 
-        this._undoStore.clear();
+        this.clear();
         const currentUndoState: UndoState = {
             links: newLinks,
             node: newNode,
@@ -137,20 +137,21 @@ export class NodeStore {
 
     @action
     public updateNode = (property: string, value: string|number|Date|LatLng) => {
-        this._node = {
-            ...this._node!,
-            [property]: value,
-        };
+        if (!this._node) return;
+
+        this._node[property] = value;
 
         if (property === 'type') this.mirrorCoordinates(this._node);
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
-            this._node.stop = StopFactory.createNewStop();
+            this._node.stop = NodeStopFactory.createNewStop();
         }
     }
 
     @action
     public updateStop = (property: string, value: string|number|Date) => {
+        if (!this.node) return;
+
         this._node!.stop = {
             ...this._node!.stop!,
             [property]: value,
@@ -167,6 +168,7 @@ export class NodeStore {
         this._links = [];
         this._node = null;
         this._oldNode = null;
+        this._undoStore.clear();
     }
 
     @action
