@@ -8,6 +8,7 @@ import { FiChevronRight, FiChevronLeft } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import { IValidationResult } from '~/validation/FormValidator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
+import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import linkValidationModel from '~/validation/models/linkValidationModel';
@@ -23,7 +24,6 @@ import { ErrorStore } from '~/stores/errorStore';
 import { Dropdown, Button, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../InputContainer';
 import TextContainer from '../../TextContainer';
-import Loader from '../../../shared/loader/Loader';
 import SidebarHeader from '../../SidebarHeader';
 import * as s from './linkView.scss';
 

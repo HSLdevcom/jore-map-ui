@@ -17,13 +17,17 @@
 ## Code conventions
 
 * Indent 4 whitespaces
-* In a component, first div's className should be {*componentName*}View
-* Always use ```<div>``` instead of ```<span>``` (only use span if there is a reason to use it)
-* Use classnames if there are multiple classes
 * Use async await instead of promises
+
+### React
+
+* Always use ```<div>``` instead of ```<span>``` (only use span if there is a reason to use it)
+* In a component, first div's className should be {*componentName*}View
+* Use classnames if there are multiple classes
 * Use arrow functions in components
 * Use render prefix in methods that return JSX or HTML
 * Use export default at the end of file
+* Put lifecycle methods on top of components after constructor
 
 ### IModels
 
