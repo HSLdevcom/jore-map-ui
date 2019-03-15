@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { SearchStore } from '~/stores/searchStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import TransitType from '~/enums/transitType';
-import LineSearch from '../../shared/searchView/LineSearch';
+import SearchInput from '../../shared/searchView/SearchInput';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import SearchResults from '../../shared/searchView/SearchResults';
 import EntityTypeToggles from './EntityTypeToggles';
@@ -28,7 +28,7 @@ class HomeView extends React.Component<IHomeViewProps> {
     render() {
         return (
             <div className={s.homeView}>
-                <LineSearch/>
+                <SearchInput/>
                 <EntityTypeToggles />
                 <TransitToggleButtonBar
                     toggleSelectedTransitType={this.toggleTransitType}
