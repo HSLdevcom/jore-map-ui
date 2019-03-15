@@ -77,7 +77,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
                 return {
                     color: TransitTypeColorHelper.getColor(properties.lnkverkko),
-                    weight: 3,
+                    weight: 2,
                     fillOpacity: 1,
                     fill: true,
                 };
