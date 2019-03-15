@@ -89,7 +89,7 @@ export class SearchResultStore {
     @action
     public search = async () => {
         this.setIsSearching(true);
-        const searchInput = SearchStore.searchInput;
+        const searchInput = SearchStore.searchInput.trim();
 
         let list: (INodeBase | ILine)[] = [];
         if (SearchStore.isSearchingForLines) {
