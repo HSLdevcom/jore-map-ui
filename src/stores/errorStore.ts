@@ -1,4 +1,5 @@
 import { computed, observable, action } from 'mobx';
+import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 
 export class ErrorStore {
     @observable private _errors: string[];
@@ -21,8 +22,23 @@ export class ErrorStore {
     }
 
     @action
-    public addError(error: string) {
-        this._errors.push(error);
+    public addError(message: string, error?: Error) {
+        let msg = message;
+        if (
+            error &&
+            error['errorCode'] &&
+            httpStatusDescriptionCodeList[error['errorCode']]
+        ) {
+            msg += `, ${httpStatusDescriptionCodeList[error['errorCode']]}`;
+        } else if (
+            error &&
+            error.message
+        ) {
+            msg += `, ${error.message}`;
+        }
+        this._errors.push(msg);
+        // tslint:disable-next-line:no-console
+        if (error) console.error(error);
     }
 
     @action
