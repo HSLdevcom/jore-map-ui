@@ -130,7 +130,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                     positions={routePathLink.geometry}
                     key={routePathLink.id}
                     color={ROUTE_COLOR}
-                    weight={8}
+                    weight={5}
                     opacity={0.8}
                     onClick={onRoutePathLinkClick}
                 />
