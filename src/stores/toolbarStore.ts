@@ -7,8 +7,12 @@ import CopyTool from '~/components/map/tools/CopyTool';
 import DivideLinkTool from '~/components/map/tools/DivideLinkTool';
 import PrintTool from '~/components/map/tools/PrintTool';
 import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkTool';
+import SelectNetworkEntityTool from '~/components/map/tools/SelectNetworkEntityTool';
+
+const defaultTool = new SelectNetworkEntityTool();
 
 const TOOL_LIST = [
+    defaultTool,
     new AddNetworkNodeTool(),
     new ExtendRoutePathTool(),
     new CopyTool(),
@@ -27,7 +31,7 @@ export class ToolbarStore {
         this._disabledTools = [
             ToolbarTool.Print,
         ];
-        this._selectedTool = null;
+        this._selectedTool = defaultTool;
     }
 
     @computed
@@ -43,7 +47,7 @@ export class ToolbarStore {
 
         // deselect current tool
         if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
-            this._selectedTool = null;
+            this._selectedTool = defaultTool;
             return;
         }
         const foundTool = TOOLS[tool];

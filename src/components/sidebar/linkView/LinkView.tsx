@@ -2,7 +2,7 @@ import React from 'react';
 import Moment from 'moment';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import { match } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 import L from 'leaflet';
 import { FiChevronRight, FiChevronLeft } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
@@ -33,8 +33,7 @@ interface ILinkViewState {
     invalidPropertiesMap: object;
 }
 
-interface ILinkViewProps {
-    match?: match<any>;
+interface ILinkViewProps extends RouteComponentProps<any> {
     errorStore?: ErrorStore;
     linkStore?: LinkStore;
     mapStore?: MapStore;
@@ -54,10 +53,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     async componentDidMount() {
-        await this.initUsingUrlParams(this.props);
+        await this.initUsingUrlParams();
         if (this.props.linkStore!.link) {
             const bounds = L.latLngBounds(this.props.linkStore!.link!.geometry);
             this.props.mapStore!.setMapBounds(bounds);
+        }
+    }
+
+    componentDidUpdate(prevProps: ILinkViewProps) {
+        if (this.props.location.pathname !== prevProps.location.pathname) {
+            this.initUsingUrlParams();
         }
     }
 
@@ -65,11 +70,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.props.linkStore!.clear();
     }
 
-    componentWillReceiveProps(props: ILinkViewProps) {
-        this.initUsingUrlParams(props);
-    }
-
-    private initUsingUrlParams = async (props: ILinkViewProps) => {
+    private initUsingUrlParams = async () => {
         this.setState({ isLoading: true });
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
         try {

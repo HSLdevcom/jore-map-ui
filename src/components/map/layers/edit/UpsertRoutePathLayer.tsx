@@ -17,7 +17,7 @@ import ArrowDecorator from '../ArrowDecorator';
 
 const MARKER_COLOR = '#00df0b';
 const NEIGHBOR_MARKER_COLOR = '#ca00f7';
-const ROUTE_COLOR = '#007ac9';
+const ROUTE_COLOR = '#000';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
