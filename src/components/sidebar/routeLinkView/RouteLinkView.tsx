@@ -6,9 +6,10 @@ import moment from 'moment';
 import ButtonType from '~/enums/buttonType';
 import RouteService from '~/services/routeService';
 import { IRoutePathLink, IRoute } from '~/models';
+import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
+import booleanCodeList from '~/codeLists/booleanCodeList';
 import { ErrorStore } from '~/stores/errorStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
-import NodeType from '~/enums/nodeType';
 import { Checkbox, Dropdown, Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../InputContainer';
 import TextContainer from '../TextContainer';
@@ -27,14 +28,6 @@ interface IRouteLinkViewProps {
     match?: match<any>;
     errorStore?: ErrorStore;
 }
-
-const nodeDescriptions = {
-    stop: 'Pysäkki',
-    stopNotInUse: 'Pysäkki - Ei käytössä',
-    crossroad: 'Risteys',
-    border: 'Raja',
-    unknown: 'Tyhjä',
-};
 
 @inject('errorStore')
 @observer
@@ -96,23 +89,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
         this.setState({ isLoading: false });
     }
 
-    private getNodeDescription = (nodeType: NodeType) => {
-        switch (nodeType) {
-        case NodeType.STOP:
-            return nodeDescriptions.stop;
-        case NodeType.DISABLED:
-            return nodeDescriptions.stopNotInUse;
-        case NodeType.MUNICIPALITY_BORDER:
-            return nodeDescriptions.border;
-        case NodeType.CROSSROAD:
-            return nodeDescriptions.crossroad;
-        default:
-            return nodeDescriptions.unknown;
-        }
-    }
-
     // TODO
-    private onChange = () => {
+    private onChange = (value?: any) => {
     }
 
     render() {
@@ -200,11 +178,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={Object.values(nodeDescriptions)}
-                            selected={
-                                startNode
-                                    ? this.getNodeDescription(startNode.type)
-                                    : nodeDescriptions.unknown}
+                            codeList={nodeTypeCodeList}
+                            selected={startNode.type}
                         />
                         <TextContainer
                             label=''
@@ -221,11 +196,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                         />
                         <Dropdown
                             onChange={this.onChange}
-                            items={Object.values(nodeDescriptions)}
-                            selected={
-                                endNode
-                                    ? this.getNodeDescription(endNode.type)
-                                    : nodeDescriptions.unknown}
+                            codeList={nodeTypeCodeList}
+                            selected={endNode.type}
                         />
                         <TextContainer
                             label=''
@@ -237,16 +209,14 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                     <Dropdown
                         label='KUTSU-/JÄTTÖ-/OTTOP'
                         onChange={this.onChange}
-                        items={['Ei', 'Kyllä']}
-                        selected='0 - Ei'
+                        codeList={booleanCodeList}
+                        selected='0'
                     />
                     <Dropdown
                         label='AJANTASAUSPYSÄKKI'
                         onChange={this.onChange}
-                        items={['Kyllä', 'Ei']}
-                        selected={
-                            this.state.routePathLink!.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'Ei'
-                        }
+                        codeList={booleanCodeList}
+                        selected={'0'}
                     />
                     <div className={s.formItem} />
                 </div>
@@ -392,8 +362,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                         <Dropdown
                             label='SOLMU HASTUS-PAIKKANA'
                             onChange={this.onChange}
-                            items={['Kyllä', 'Ei']}
-                            selected='Kyllä'
+                            codeList={booleanCodeList}
+                            selected='0'
                         />
                     </div>
                     <div className={s.flexFiller} />

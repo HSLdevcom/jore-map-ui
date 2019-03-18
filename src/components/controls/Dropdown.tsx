@@ -14,7 +14,7 @@ interface IDropdownBaseProps {
 }
 
 interface IDropdownProps extends IDropdownBaseProps {
-    items: string[] | IDropdownItem[];
+    items: IDropdownItem[];
 }
 
 interface IDropdownWithCodeListProps extends IDropdownBaseProps {
@@ -30,8 +30,7 @@ const usesCodeList = (
     );
 };
 
-class Dropdown extends React.Component
-<IDropdownProps | IDropdownWithCodeListProps> {
+class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListProps> {
     onChange = (event: any) => {
         this.props.onChange(event.target.value);
     }
@@ -45,13 +44,7 @@ class Dropdown extends React.Component
                 key => ({ key, value: codeList[key] }),
             );
         } else {
-            const items = this.props.items;
-            if (items.length > 0 && typeof items[0] === 'string') {
-                dropDownItemList =
-                    (items as string[]).map((i: string) => ({ key: i, value: i }));
-            } else {
-                dropDownItemList = items as IDropdownItem[];
-            }
+            dropDownItemList = this.props.items;
         }
 
         const selectedItem = dropDownItemList.find(item => item.key === this.props.selected);

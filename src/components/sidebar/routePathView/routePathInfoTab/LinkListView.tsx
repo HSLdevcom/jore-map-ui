@@ -4,6 +4,7 @@ import { IRoutePath, INode, IRoutePathLink } from '~/models';
 import routeBuilder  from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import NodeType from '~/enums/nodeType';
+import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import { Dropdown, Button } from '../../../controls';
 import * as s from './linkListView.scss';
@@ -14,28 +15,17 @@ interface ILinkListViewProps {
 
 interface ILinkListViewState {
     selectedRoutePathLink?: string;
-    linkTableFilter: string;
+    linkTableFilter?: NodeType;
 }
-
-const filterTypes = {
-    STOPS: 'Pysäkki',
-    DISABLED: 'Pysäkki, joka ei ole käytössä',
-    CROSSROAD: 'Risteys',
-    BORDER: 'Raja',
-    ALL: 'Näytä kaikki',
-};
 
 @observer
 class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewState>{
     constructor(props: ILinkListViewProps) {
         super(props);
-        this.state = {
-            linkTableFilter:  NodeType.STOP,
-        };
+        this.state = {};
     }
 
-    private selectRoutePathLink = (id: string) =>
-    () => {
+    private selectRoutePathLink = (id: string) => () => {
         this.setState({
             selectedRoutePathLink: id,
         });
@@ -46,7 +36,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         if (!routePathLinks) return;
         return routePathLinks.map((routePathLink) => {
             if (routePathLink.startNodeType === this.state.linkTableFilter ||
-                this.state.linkTableFilter === filterTypes.ALL) {
+                !this.state.linkTableFilter) {
                 return(
                     <div
                         key={routePathLink.id}
@@ -119,36 +109,9 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         return !this.state.selectedRoutePathLink;
     }
 
-    private setLinkTableFilter = (filter: string) => {
-        let filterType = 'P';
-        switch (filter) {
-        case filterTypes.STOPS: {
-            filterType = NodeType.STOP;
-            break;
-        }
-        case filterTypes.DISABLED: {
-            filterType = NodeType.DISABLED;
-            break;
-        }
-        case filterTypes.CROSSROAD: {
-            filterType = NodeType.CROSSROAD;
-            break;
-        }
-        case filterTypes.BORDER: {
-            filterType = NodeType.MUNICIPALITY_BORDER;
-            break;
-        }
-        case filterTypes.ALL: {
-            filterType = filterTypes.ALL;
-            break;
-        }
-        default: {
-            filterType = filterTypes.ALL;
-            break;
-        }
-        }
+    private setLinkTableFilter = (filter: NodeType) => {
         this.setState({
-            linkTableFilter: filterType,
+            linkTableFilter: filter,
         });
     }
 
@@ -158,14 +121,8 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
             <div className={s.dropDownFilter}>
                 <Dropdown
                     label='Alkusolmutyyppi'
-                    selected='Pysäkki'
-                    items={[
-                        filterTypes.STOPS,
-                        filterTypes.DISABLED,
-                        filterTypes.CROSSROAD,
-                        filterTypes.BORDER,
-                        filterTypes.ALL,
-                    ]}
+                    selected={this.state.linkTableFilter || '-'}
+                    codeList={nodeTypeCodeList}
                     onChange={this.setLinkTableFilter}
                 />
             </div>
