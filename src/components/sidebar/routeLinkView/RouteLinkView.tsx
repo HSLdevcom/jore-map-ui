@@ -29,6 +29,10 @@ interface IRouteLinkViewProps {
     errorStore?: ErrorStore;
 }
 
+// This is basically not used,
+// it is possible to open it using routepath link list,
+// however, we should probable remove it
+// https://github.com/HSLdevcom/jore-map-ui/issues/725
 @inject('errorStore')
 @observer
 class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewState> {
