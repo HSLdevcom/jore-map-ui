@@ -86,7 +86,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         if (map) {
             const editableLink = L.polyline(
                 [_.cloneDeep(link.geometry)],
-                { interactive: false, color: '#000' },
+                {
+                    interactive: false,
+                    color: '#000',
+                },
             ).addTo(map);
 
             if (this.props.loginStore!.hasWriteAccess) {
