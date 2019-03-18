@@ -121,9 +121,10 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
             <div className={s.dropDownFilter}>
                 <Dropdown
                     label='Alkusolmutyyppi'
-                    selected={this.state.linkTableFilter || '-'}
+                    selected={this.state.linkTableFilter}
                     codeList={nodeTypeCodeList}
                     onChange={this.setLinkTableFilter}
+                    allowEmpty={true}
                 />
             </div>
             <div className={s.columnTitleRow}>

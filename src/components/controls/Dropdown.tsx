@@ -8,8 +8,9 @@ export interface IDropdownItem {
 
 interface IDropdownBaseProps {
     label?: string;
-    selected: string;
+    selected?: string;
     disabled?: boolean;
+    allowEmpty?: boolean;
     onChange: (value: any) => void;
 }
 
@@ -36,15 +37,16 @@ class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListPro
     }
 
     public render() {
-        let dropDownItemList: IDropdownItem[];
+        let dropDownItemList: IDropdownItem[] =
+            this.props.allowEmpty ? [{ key: '', value: '-' }] : [];
 
         if (usesCodeList(this.props)) {
             const codeList = this.props.codeList;
-            dropDownItemList = Object.keys(codeList).map(
+            dropDownItemList = dropDownItemList.concat(Object.keys(codeList).map(
                 key => ({ key, value: codeList[key] }),
-            );
+            ));
         } else {
-            dropDownItemList = this.props.items;
+            dropDownItemList = dropDownItemList.concat(this.props.items);
         }
 
         const selectedItem = dropDownItemList.find(item => item.key === this.props.selected);
