@@ -114,16 +114,24 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             const link = !!this.props.linkStore && !!this.props.linkStore!.link ?
                 this.props.linkStore!.link! : undefined;
 
-            return Boolean(
-                (!selectedTransitTypes.includes(transitTypeCode))
+            const node = !!this.props.nodeStore && !!this.props.nodeStore!.node ?
+                this.props.nodeStore!.node! : undefined;
+
+            const linkIsOpen = !!link &&
+                link.startNode.id === startNodeId &&
+                link.endNode.id === endNodeId &&
+                link.transitType === transitTypeCode;
+
+            const linkHasNodeThatIsOpen = !!node &&
+                (
+                    node.id === startNodeId
+                    || node.id === endNodeId
+                );
+
+            return (!selectedTransitTypes.includes(transitTypeCode))
                 || this.isDateInRanges(selectedDate, dateRanges)
-                || (
-                    !!link &&
-                    link.startNode.id === startNodeId &&
-                    link.endNode.id === endNodeId &&
-                    link.transitType === transitTypeCode
-                ),
-            );
+                || linkIsOpen
+                || linkHasNodeThatIsOpen;
         }
 
     private getNodeStyle = () => {
