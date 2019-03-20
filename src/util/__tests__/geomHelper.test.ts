@@ -14,7 +14,7 @@ test('Concatenates leaflet lines to new coherent line', () => {
         [
             new LatLng(1, 1),
             new LatLng(1, 2),
-            new LatLng(2, 3),
+            new LatLng(2, 2),
         ],
     ];
     expect(GeomHelper.createCoherentLinesFromPolylines([line1, line2]))
