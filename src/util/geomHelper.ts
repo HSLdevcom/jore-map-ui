@@ -9,10 +9,10 @@ const createCoherentLinesFromPolylines = (polylines: LatLng[][]): LatLng[][] => 
     const result: LatLng[][] = [];
     let polylineBuilder: LatLng[] = [];
     polylines.forEach((line) => {
-        if (
-            polylineBuilder.length === 0
-            || polylineBuilder[polylineBuilder.length - 1].equals(line[0])) {
-            polylineBuilder = polylineBuilder.concat(line);
+        if (polylineBuilder.length === 0) {
+            polylineBuilder = line;
+        } else if (polylineBuilder[polylineBuilder.length - 1].equals(line[0])) {
+            polylineBuilder = polylineBuilder.concat(line.slice(1, line.length));
         } else {
             result.push(polylineBuilder);
             polylineBuilder = line;
