@@ -163,7 +163,7 @@
     ],
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "/Users/jkro/Projects/ClientProjects/HSL/jore-map-ui/tsconfig.test.json"
+        "tsConfigFile": "<rootDir>/tsconfig.test.json"
       }
     }
   },
