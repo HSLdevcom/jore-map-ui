@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 import UndoStore from '~/stores/undoStore';
+import TransitType from '~/enums/transitType';
 
 export interface UndoState {
     link: ILink;
@@ -12,12 +13,17 @@ export class LinkStore {
     @observable private _link: ILink | null;
     @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
+    // properties for new links:
+    @observable private _startMarkerCoordinates: LatLng | null;
+    @observable private _existingTransitTypes: TransitType[];
     private _undoStore: UndoStore<UndoState>;
 
     constructor() {
         this._nodes = [];
         this._link = null;
         this._oldLink = null;
+        this._startMarkerCoordinates = null;
+        this._existingTransitTypes = [];
         this._undoStore = new UndoStore();
     }
 
@@ -29,6 +35,22 @@ export class LinkStore {
     @computed
     get nodes() {
         return this._nodes;
+    }
+
+    @computed
+    get startMarkerCoordinates() {
+        return this._startMarkerCoordinates;
+    }
+
+    @computed
+    get existingTransitTypes() {
+        return this._existingTransitTypes;
+    }
+
+    @action
+    public init = (link: ILink, nodes: INode[]) => {
+        this.setLink(link);
+        this.setNodes(nodes);
     }
 
     @action
@@ -76,10 +98,21 @@ export class LinkStore {
     }
 
     @action
+    public setStartMarkerCoordinates = (startMarkerCoordinates: LatLng | null) => {
+        this._startMarkerCoordinates = startMarkerCoordinates;
+    }
+
+    @action
+    public setExistingTransitTypes = (usedTransitTypes: TransitType[]) => {
+        this._existingTransitTypes = usedTransitTypes;
+    }
+
+    @action
     public clear = () => {
         this._link = null;
         this._nodes = [];
         this._oldLink = null;
+        this._startMarkerCoordinates = null;
         this._undoStore.clear();
     }
 

@@ -26,12 +26,12 @@ import InputContainer from '../InputContainer';
 import * as s from './nodeView.scss';
 
 interface INodeViewProps {
+    isNewNode: boolean;
     match?: match<any>;
     dialogStore?: DialogStore;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
-    isNewNode: boolean;
 }
 
 interface INodeViewState {

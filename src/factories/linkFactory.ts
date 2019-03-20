@@ -1,11 +1,11 @@
 import * as L from 'leaflet';
-import { ILink } from '~/models';
+import { ILink, INode } from '~/models';
+import TransitType from '~/enums/transitType';
 import IExternalLink from '~/models/externals/IExternalLink';
 import NodeFactory from './nodeFactory';
 
 class LinkFactory {
-    public static createLinkFromExternalLink =
-    (externalLink: IExternalLink): ILink => {
+    public static createLinkFromExternalLink = (externalLink: IExternalLink): ILink => {
         const geoJson = JSON.parse(externalLink.geojson);
 
         return {
@@ -22,6 +22,25 @@ class LinkFactory {
             modifiedOn: new Date(externalLink.lnkviimpvm),
             direction: externalLink.lnksuunta,
             osNumber: externalLink.lnkosnro,
+        };
+    }
+
+    public static createNewLink = (startNode: INode, endNode: INode): ILink => {
+        const geometry = [startNode.coordinates, endNode.coordinates];
+        return {
+            geometry,
+            startNode,
+            endNode,
+            transitType: TransitType.BUS,
+            length: 0,
+            measuredLength: 0,
+            municipalityCode: '',
+            streetName: '',
+            streetNumber: '',
+            modifiedBy: '',
+            modifiedOn: new Date,
+            direction: '0',
+            osNumber: '',
         };
     }
 }

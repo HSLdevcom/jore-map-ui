@@ -4,6 +4,7 @@ enum SubSites {
     routes = '/routes/',
     routelink = '/routeLink/:id',
     link = '/link/:id',
+    newLink = '/link/new',
     routePath = '/routePath/:id',
     newRoutePath = '/routePath/new',
     node = '/node/:id',

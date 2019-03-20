@@ -2,6 +2,7 @@ import { action, computed, observable } from 'mobx';
 import ToolbarTool from '~/enums/toolbarTool';
 import BaseTool from '~/components/map/tools/BaseTool';
 import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
+import AddNetworkLinkTool from '~/components/map/tools/AddNetworkLinkTool';
 import ExtendRoutePathTool from '~/components/map/tools/ExtendRoutePathTool';
 import CopyTool from '~/components/map/tools/CopyTool';
 import DivideLinkTool from '~/components/map/tools/DivideLinkTool';
@@ -14,6 +15,7 @@ const defaultTool = new SelectNetworkEntityTool();
 const TOOL_LIST = [
     defaultTool,
     new AddNetworkNodeTool(),
+    new AddNetworkLinkTool(),
     new ExtendRoutePathTool(),
     new CopyTool(),
     new DivideLinkTool(),
