@@ -8,4 +8,6 @@ services: docker
 
 language: C
 
-script: ./travis-build.sh
+script:
+    yarn test
+    ./travis-build.sh
