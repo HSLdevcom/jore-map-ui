@@ -21,7 +21,9 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
     }
-    public deactivate() {}
+    public deactivate() {
+        this.resetTool();
+    }
     public onNetworkNodeClick = async (clickEvent: any) => {
         const nodeId = clickEvent.sourceTarget.properties.soltunnus;
         if (!this.startNode) {
@@ -32,8 +34,7 @@ class AddNetworkLinkTool implements BaseTool {
             try {
                 const endNode = await NodeService.fetchNode(endNodeId);
                 this.createNewLink(this.startNode, endNode);
-                this.startNode = null;
-                LinkStore.setStartMarkerCoordinates(null);
+                this.resetTool();
             } catch (ex) {
                 ErrorStore.addError(`Alkusolmun ${this.startNode!.id} tai loppusolmun ${endNodeId} haku epäonnistui`); // tslint:disable-line max-line-length
                 return;
@@ -50,6 +51,11 @@ class AddNetworkLinkTool implements BaseTool {
         RoutePathStore.clear();
         const link = LinkFactory.createNewLink(startNode, endNode);
         LinkStore.init(link, [startNode, endNode]);
+    }
+
+    private resetTool = () => {
+        this.startNode = null;
+        LinkStore.setStartMarkerCoordinates(null);
     }
 }
 
