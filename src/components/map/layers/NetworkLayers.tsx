@@ -111,27 +111,28 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             const dateRanges = this.parseDateRangesString(dateRangesString);
             const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
             const selectedDate = this.props.networkStore!.selectedDate;
-            const link = !!this.props.linkStore && !!this.props.linkStore!.link ?
-                this.props.linkStore!.link! : undefined;
 
-            const node = !!this.props.nodeStore && !!this.props.nodeStore!.node ?
-                this.props.nodeStore!.node! : undefined;
+            const link = this.props.linkStore!.link;
 
-            const linkIsOpen = !!link &&
-                link.startNode.id === startNodeId &&
-                link.endNode.id === endNodeId &&
-                link.transitType === transitTypeCode;
+            const node = this.props.nodeStore!.node;
 
-            const linkHasNodeThatIsOpen = !!node &&
-                (
+            // the element is related to an opened link
+            const isLinkOpen = link
+                && link.startNode.id === startNodeId
+                && link.endNode.id === endNodeId
+                && link.transitType === transitTypeCode;
+
+            // the element is related to a link that is related to an opened node
+            const isLinkRelatedToOpenedNode = node
+                && (
                     node.id === startNodeId
                     || node.id === endNodeId
                 );
 
             return (!selectedTransitTypes.includes(transitTypeCode))
                 || this.isDateInRanges(selectedDate, dateRanges)
-                || linkIsOpen
-                || linkHasNodeThatIsOpen;
+                || isLinkOpen
+                || isLinkRelatedToOpenedNode;
         }
 
     private getNodeStyle = () => {
