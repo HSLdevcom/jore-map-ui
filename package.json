@@ -74,6 +74,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
+    "test:ci": "CI=true node scripts/test.js --env=jsdom",
     "test-coverage": "node scripts/test.js --env=jsdom --coverage",
     "lint": "tslint --project tsconfig.json --format codeFrame",
     "lint-fix": "tslint --fix --project tsconfig.json --format codeFrame 'src/**/*.ts'",
