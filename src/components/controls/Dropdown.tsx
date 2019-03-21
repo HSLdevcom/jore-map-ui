@@ -10,7 +10,7 @@ interface IDropdownBaseProps {
     label?: string;
     selected?: string;
     disabled?: boolean;
-    allowEmpty?: boolean;
+    isEmptyAllowed?: boolean;
     onChange: (value: any) => void;
 }
 
@@ -38,7 +38,7 @@ class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListPro
 
     public render() {
         let dropDownItemList: IDropdownItem[] =
-            this.props.allowEmpty ? [{ key: '', value: '-' }] : [];
+            this.props.isEmptyAllowed ? [{ key: '', value: '-' }] : [];
 
         if (usesCodeList(this.props)) {
             const codeList = this.props.codeList;

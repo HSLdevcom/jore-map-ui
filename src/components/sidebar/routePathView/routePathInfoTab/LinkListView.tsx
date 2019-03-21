@@ -124,7 +124,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
                     selected={this.state.linkTableFilter}
                     codeList={nodeTypeCodeList}
                     onChange={this.setLinkTableFilter}
-                    allowEmpty={true}
+                    isEmptyAllowed={true}
                 />
             </div>
             <div className={s.columnTitleRow}>
