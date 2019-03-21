@@ -49,6 +49,9 @@ class RoutePathFactory {
     }
 
     public static createNewRoutePath(lineId: string, route: IRoute): IRoutePath {
+        const defaultDate = new Date();
+        defaultDate.setHours(0, 0, 0, 0);
+
         return {
             lineId,
             transitType: route.line!.transitType,
@@ -58,8 +61,8 @@ class RoutePathFactory {
             routePathNameSw: route.routeNameSwedish,
             direction: '1',
             visible: true,
-            startTime: new Date,
-            endTime: new Date,
+            startTime: new Date(defaultDate.getTime()),
+            endTime: new Date(defaultDate.getTime()),
             lastModified: new Date,
             routePathLinks: [],
             originFi: '',
