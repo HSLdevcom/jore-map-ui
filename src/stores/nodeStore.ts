@@ -124,7 +124,10 @@ export class NodeStore {
         this._undoStore.addItem(currentUndoState);
 
         this._links = newLinks;
-        this._node = newNode;
+        const geometryVariables: NodeLocationType[] =
+            ['coordinates', 'coordinatesManual', 'coordinatesProjection'];
+        geometryVariables.forEach(
+            coordinateName => this._node![coordinateName] = newNode[coordinateName]);
     }
 
     @action
@@ -151,11 +154,7 @@ export class NodeStore {
     @action
     public updateStop = (property: string, value: string|number|Date) => {
         if (!this.node) return;
-
-        this._node!.stop = {
-            ...this._node!.stop!,
-            [property]: value,
-        };
+        this._node!.stop![property] = value;
     }
 
     @computed

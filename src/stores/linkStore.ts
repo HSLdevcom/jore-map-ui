@@ -48,7 +48,7 @@ export class LinkStore {
 
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = latLngs;
-        this._link = updatedLink;
+        this._link.geometry = latLngs;
 
         const currentUndoState: UndoState = {
             link: updatedLink,
@@ -69,10 +69,7 @@ export class LinkStore {
 
     @action
     public updateLinkProperty = (property: string, value: string|number|Date|LatLng[]) => {
-        this._link = {
-            ...this._link!,
-            [property]: value,
-        };
+        this._link![property] = value;
     }
 
     @action
