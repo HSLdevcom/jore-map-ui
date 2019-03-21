@@ -7,6 +7,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import booleanCodeList from '~/codeLists/booleanCodeList';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import directionCodeList from '~/codeLists/directionCodeList';
 import navigator from '~/routing/navigator';
 import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
@@ -175,7 +176,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         label='SUUNTA'
                         disabled={disabledIfUpdating}
                         onChange={this.onChange('direction')}
-                        items={['1', '2']}
+                        codeList={directionCodeList}
                         selected={this.props.routePath.direction}
                     />
                     <Dropdown
@@ -237,14 +238,14 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         <Dropdown
                             onChange={this.onChange}
                             disabled={isEditingDisabled}
-                            items={['Suunta 1']}
+                            codeList={directionCodeList}
                             selected='Suunta 1'
                         />
                         {/* TODO */}
                         <Dropdown
                             onChange={this.onChange}
                             disabled={isEditingDisabled}
-                            items={['Suunta 2']}
+                            codeList={directionCodeList}
                             selected='Suunta 2'
                         />
                     </div>
