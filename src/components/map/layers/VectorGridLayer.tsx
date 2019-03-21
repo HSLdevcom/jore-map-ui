@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import 'leaflet.vectorgrid';
 import _ from 'lodash';
-import { reaction } from 'mobx';
+import { IReactionDisposer, reaction } from 'mobx';
 import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
 import { Moment } from 'moment';
 import TransitType from '~/enums/transitType';
@@ -21,23 +21,27 @@ interface IVectorGridLayerProps extends GridLayerProps {
     vectorTileLayerStyles: any;
     nodeSize?: NodeSize;
     onClick?: Function;
+    recreateReaction: (reaction: IReactionDisposer) => void;
 }
 
 class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
     constructor(props: IVectorGridLayerProps) {
         super(props);
-        reaction(
+        const reactionDisposer = reaction(
             () =>
                 [
                     NetworkStore.isMapLayerVisible(MapLayer.node),
                     NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink),
                     NetworkStore.isMapLayerVisible(MapLayer.link),
                     NetworkStore.isMapLayerVisible(MapLayer.linkPoint),
-                    NodeStore.node!,
-                    LinkStore.link!,
+                    NodeStore.node! && NodeStore.node!.id,
+                    LinkStore.link! && LinkStore.link.startNode.id,
+                    LinkStore.link! && LinkStore.link.endNode.id,
+                    LinkStore.link! && LinkStore.link.transitType,
                 ],
             this.redrawLayers,
         );
+        props.recreateReaction(reactionDisposer);
     }
 
     // Hiding network nodes / links need refreshing the whole layer
