@@ -61,17 +61,22 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     private getMap() {
-        return this.mapReference.current!.leafletElement;
+        return this.mapReference.current ? this.mapReference.current.leafletElement : null;
     }
 
     componentDidMount() {
         const map = this.getMap();
+        if (!map) throw 'Map was not loaded.';
 
         // Ugly hack to force map to reload, necessary because map stays gray when app is in docker
         // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
-        setTimeout(() => {
-            this.getMap().invalidateSize();
-        },         1000);
+        setTimeout(
+            () => {
+                const map = this.getMap();
+                map && map.invalidateSize();
+            },
+            1000,
+        );
 
         map.addControl(L.control.scale({ imperial: false }));
 
@@ -112,15 +117,18 @@ class LeafletMap extends React.Component<IMapProps> {
 
     private centerMap = () => {
         const map = this.getMap();
-        const storeCoordinates = this.props.mapStore!.coordinates;
-        const mapCoordinates = map.getCenter();
-        if (!L.latLng(storeCoordinates).equals(L.latLng(mapCoordinates))) {
-            map.setView(storeCoordinates, map.getZoom());
+        if (map) {
+            const storeCoordinates = this.props.mapStore!.coordinates;
+            const mapCoordinates = map.getCenter();
+            if (!L.latLng(storeCoordinates).equals(L.latLng(mapCoordinates))) {
+                map.setView(storeCoordinates, map.getZoom());
+            }
         }
     }
 
     private fitBounds = () => {
-        this.getMap().fitBounds(
+        const map = this.getMap();
+        map && map.fitBounds(
             this.props.mapStore!.mapBounds,
             {
                 maxZoom: 16,
@@ -137,7 +145,8 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     componentDidUpdate() {
-        this.getMap().invalidateSize();
+        const map = this.getMap();
+        map && map.invalidateSize();
     }
 
     componentWillUnmount() {
