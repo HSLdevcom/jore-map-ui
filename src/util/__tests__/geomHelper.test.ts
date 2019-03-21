@@ -4,6 +4,23 @@ import * as GeomHelper from '../geomHelper';
 
 describe('geomHelper.createCoherentLinesFromPolylines', () => {
 
+    it('Concatenates 1 line into 1 line', () => {
+        const line1: LatLng[] = [
+            new LatLng(1, 1),
+            new LatLng(1, 2),
+            new LatLng(2, 3),
+        ];
+        const expectedResult: LatLng[][] = [
+            [
+                new LatLng(1, 1),
+                new LatLng(1, 2),
+                new LatLng(2, 3),
+            ],
+        ];
+        expect(GeomHelper.createCoherentLinesFromPolylines([line1]))
+            .toEqual(expectedResult);
+    });
+
     it('Concatenates 2 lines into 1 line', () => {
         const line1: LatLng[] = [
             new LatLng(1, 1),
@@ -12,12 +29,14 @@ describe('geomHelper.createCoherentLinesFromPolylines', () => {
         const line2: LatLng[] = [
             new LatLng(1, 2),
             new LatLng(2, 2),
+            new LatLng(2, 3),
         ];
         const expectedResult: LatLng[][] = [
             [
                 new LatLng(1, 1),
                 new LatLng(1, 2),
                 new LatLng(2, 2),
+                new LatLng(2, 3),
             ],
         ];
         expect(GeomHelper.createCoherentLinesFromPolylines([line1, line2]))
