@@ -62,11 +62,11 @@ class App extends React.Component<IAppProps, IAppState> {
         });
     }
 
-    private renderApp = () => (
+    private renderApp = (isFullscreen: boolean) => () => (
         <>
             <NavigationBar />
             <div className={s.appContent}>
-                <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
+                <div className={isFullscreen ? s.hidden : ''}>
                     <Sidebar
                         location={this.props.location}
                     />
@@ -111,8 +111,7 @@ class App extends React.Component<IAppProps, IAppState> {
                         component={Login}
                     />
                     <Route
-                        path='/'
-                        component={this.renderApp}
+                        component={this.renderApp(this.props.mapStore!.isMapFullscreen)}
                     />
                 </Switch>
             </div>
