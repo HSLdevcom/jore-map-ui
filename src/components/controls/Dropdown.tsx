@@ -2,7 +2,7 @@ import React from 'react';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
-    value: string|undefined|number;
+    value: string|number;
     label: string;
 }
 

@@ -13,16 +13,21 @@ interface ILinkListViewProps {
     routePath: IRoutePath;
 }
 
+type EmptyFilterType = '-';
+const EMPTY_FILTER_VALUE: EmptyFilterType = '-';
+
 interface ILinkListViewState {
     selectedRoutePathLink?: string;
-    linkTableFilter?: NodeType;
+    linkTableFilter?: NodeType | EmptyFilterType;
 }
 
 @observer
 class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewState>{
     constructor(props: ILinkListViewProps) {
         super(props);
-        this.state = {};
+        this.state = {
+            linkTableFilter: EMPTY_FILTER_VALUE,
+        };
     }
 
     private selectRoutePathLink = (id: string) => () => {
@@ -36,7 +41,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         if (!routePathLinks) return;
         return routePathLinks.map((routePathLink) => {
             if (routePathLink.startNodeType === this.state.linkTableFilter ||
-                !this.state.linkTableFilter) {
+                this.state.linkTableFilter === EMPTY_FILTER_VALUE) {
                 return(
                     <div
                         key={routePathLink.id}
@@ -109,7 +114,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
         return !this.state.selectedRoutePathLink;
     }
 
-    private setLinkTableFilter = (filter: NodeType) => {
+    private setLinkTableFilter = (filter: NodeType | EmptyFilterType) => {
         this.setState({
             linkTableFilter: filter,
         });
@@ -122,7 +127,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
                 <Dropdown
                     label='Alkusolmutyyppi'
                     selected={this.state.linkTableFilter}
-                    emptyItem={{ value: undefined, label: 'Näytä kaikki' }}
+                    emptyItem={{ value: EMPTY_FILTER_VALUE, label: 'Näytä kaikki' }}
                     codeList={nodeTypeCodeList}
                     onChange={this.setLinkTableFilter}
                 />
