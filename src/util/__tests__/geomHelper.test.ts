@@ -4,7 +4,7 @@ import * as GeomHelper from '../geomHelper';
 
 describe('geomHelper.createCoherentLinesFromPolylines', () => {
 
-    it('Concatenates leaflet lines to new coherent line', () => {
+    it('Concatenates 2 lines into 1 line', () => {
         const line1: LatLng[] = [
             new LatLng(1, 1),
             new LatLng(1, 2),
@@ -24,7 +24,7 @@ describe('geomHelper.createCoherentLinesFromPolylines', () => {
             .toEqual(expectedResult);
     });
 
-    it('Concatenates leaflet lines to a couple of coherent lines', () => {
+    it('Concatenates multiple lines into 2 lines', () => {
         const line1: LatLng[] = [
             new LatLng(1, 1),
             new LatLng(1, 2),
