@@ -2,7 +2,7 @@ export default interface IStop {
     nodeId: string;
     municipality: string;
     nameFi: string;
-    nameSe: string;
+    nameSe: string; // TODO: rename as nameSw
     placeNameFi: string;
     placeNameSe: string;
     addressFi: string;

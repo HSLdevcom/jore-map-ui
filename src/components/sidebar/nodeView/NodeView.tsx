@@ -6,10 +6,10 @@ import { INode } from '~/models';
 import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
+import stopValidatorModel from '~/validation/models/stopValidatorModel';
 import LinkService from '~/services/linkService';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import { IValidationResult } from '~/validation/FormValidator';
 import { Button, Dropdown } from '~/components/controls';
 import NodeLocationType from '~/types/NodeLocationType';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
@@ -53,7 +53,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
-        this.initUsingUrlParams();
+        const selectedNodeId = this.props.match!.params.id;
+
+        if (selectedNodeId) {
+            this.initExistingNode(selectedNodeId);
+        } else {
+            const node = this.props.nodeStore!.node;
+            this._validateAllProperties(node.type);
+        }
     }
 
     componentWillUnmount() {
@@ -61,10 +68,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.mapStore!.setSelectedNodeId(null);
     }
 
-    private initUsingUrlParams = async () => {
-        const selectedNodeId = this.props.match!.params.id;
-        if (!selectedNodeId) return;
-
+    private initExistingNode = async (selectedNodeId: string) => {
         this.setState({ isLoading: true });
         this.props.mapStore!.setSelectedNodeId(selectedNodeId);
 
@@ -74,6 +78,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             if (links) {
                 this.props.nodeStore!.init(node, links);
             }
+            this._validateAllProperties(node.type);
         }
         this.setState({ isLoading: false });
     }
@@ -126,46 +131,43 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.setState({ isLoading: false });
     }
 
-    private onNodePropertiesChange = (
-        property: string,
-    ) => (
-        value: any,
-        validationResult?: IValidationResult,
-    ) => {
-        this.props.nodeStore!.updateNode(property, value);
-        if (validationResult) {
-            this.markInvalidProperties(property, validationResult!.isValid);
-        }
-    }
-
-    private onNodeGeometryChange = (
-        property: NodeLocationType,
-    ) => (
-        value: any, validationResult?: IValidationResult,
-    ) => {
-        this.props.nodeStore!.updateNodeGeometry(property, value);
-        if (validationResult) {
-            this.markInvalidProperties(property, validationResult!.isValid);
-        }
-    }
-
-    private onStopChange =
-        (property: string) => (value: any, validationResult?: IValidationResult) => {
-            this.props.nodeStore!.updateStop(property, value);
-            if (validationResult) {
-                this.markInvalidProperties(property, validationResult!.isValid);
-            }
-        }
-
     private toggleIsEditingEnabled = () => {
         this.toggleIsEditingDisabled(
             this.props.nodeStore!.resetChanges,
         );
     }
 
+    private _validateAllProperties = (nodeType: NodeType) => {
+        const node = this.props.nodeStore!.node;
+        if (nodeType === NodeType.STOP) {
+            this.validateAllProperties(stopValidatorModel, node.stop);
+        } else {
+            this.validateAllProperties({}, node);
+        }
+    }
+
+    private onNodeGeometryChange = (property: NodeLocationType) => (value: any) => {
+        this.props.nodeStore!.updateNodeGeometry(property, value);
+        this.validateProperty({}, property, value);
+    }
+
+    private onNodePropertiesChange = (property: string) => (value: any) => {
+        this.props.nodeStore!.updateNode(property, value);
+        this.validateProperty({}, property, value);
+        if (property === 'type') {
+            this._validateAllProperties(value);
+        }
+    }
+
+    private onStopPropertiesChange = (property: string) => (value: any) => {
+        this.props.nodeStore!.updateStop(property, value);
+        this.validateProperty(stopValidatorModel, property, value);
+    }
+
     render() {
         const node = this.props.nodeStore!.node;
         const isEditingDisabled = this.state.isEditingDisabled;
+        const invalidPropertiesMap = this.state.invalidPropertiesMap;
 
         const isSaveButtonDisabled = this.state.isEditingDisabled
             || !this.props.nodeStore!.isDirty
@@ -200,6 +202,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     disabled={isEditingDisabled}
                                     value={node.shortId}
                                     onChange={this.onNodePropertiesChange('shortId')}
+                                    validationResult={invalidPropertiesMap['length']}
                                 />
                                 <Dropdown
                                     label='TYYPPI'
@@ -220,8 +223,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         { node.type === NodeType.STOP &&
                             <StopForm
                                 isEditingDisabled={isEditingDisabled}
-                                onChange={this.onStopChange}
                                 stop={node.stop!}
+                                onChange={this.onStopPropertiesChange}
+                                invalidPropertiesMap={invalidPropertiesMap}
                             />
                         }
                     </div>
