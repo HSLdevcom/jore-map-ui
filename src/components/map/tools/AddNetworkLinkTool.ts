@@ -19,6 +19,7 @@ class AddNetworkLinkTool implements BaseTool {
     public toolHelpText = 'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.'; // tslint:disable-line max-line-length
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
+        NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
         NetworkStore.showMapLayer(MapLayer.link);
     }
     public deactivate() {
