@@ -5,7 +5,7 @@ import * as GeomHelper from '../geomHelper';
 describe('geomHelper.createCoherentLinesFromPolylines', () => {
 
     it('Concatenates 1 line into 1 line', () => {
-        const line1: LatLng[] = [
+        const line: LatLng[] = [
             new LatLng(1, 1),
             new LatLng(1, 2),
             new LatLng(2, 3),
@@ -17,7 +17,7 @@ describe('geomHelper.createCoherentLinesFromPolylines', () => {
                 new LatLng(2, 3),
             ],
         ];
-        expect(GeomHelper.createCoherentLinesFromPolylines([line1]))
+        expect(GeomHelper.createCoherentLinesFromPolylines([line]))
             .toEqual(expectedResult);
     });
 
