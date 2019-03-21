@@ -39,13 +39,6 @@ class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListPro
     public render() {
         let dropDownItemList: IDropdownItem[] = [];
 
-        if (this.props.emptyItem) {
-            dropDownItemList = [
-                this.props.emptyItem,
-                ...dropDownItemList,
-            ];
-        }
-
         if (usesCodeList(this.props)) {
             const codeList = this.props.codeList;
             dropDownItemList = dropDownItemList.concat(Object.keys(codeList).map(
@@ -53,6 +46,10 @@ class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListPro
             ));
         } else {
             dropDownItemList = dropDownItemList.concat(this.props.items);
+        }
+
+        if (this.props.emptyItem) {
+            dropDownItemList.unshift(this.props.emptyItem);
         }
 
         const selectedItem = dropDownItemList.find(item => item.value === this.props.selected);
