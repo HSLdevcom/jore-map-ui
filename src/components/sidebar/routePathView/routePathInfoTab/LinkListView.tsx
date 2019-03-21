@@ -13,8 +13,8 @@ interface ILinkListViewProps {
     routePath: IRoutePath;
 }
 
-type EmptyFilterType = '-';
-const EMPTY_FILTER_VALUE: EmptyFilterType = '-';
+type EmptyFilterType = '';
+const EMPTY_FILTER_VALUE: EmptyFilterType = '';
 
 interface ILinkListViewState {
     selectedRoutePathLink?: string;
