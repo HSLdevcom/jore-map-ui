@@ -122,9 +122,9 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
                 <Dropdown
                     label='Alkusolmutyyppi'
                     selected={this.state.linkTableFilter}
+                    emptyItem={{ value: undefined, label: 'Näytä kaikki' }}
                     codeList={nodeTypeCodeList}
                     onChange={this.setLinkTableFilter}
-                    isEmptyAllowed={true}
                 />
             </div>
             <div className={s.columnTitleRow}>

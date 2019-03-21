@@ -2,15 +2,15 @@ import React from 'react';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
-    key: string;
-    value: string;
+    value: string|undefined|number;
+    label: string;
 }
 
 interface IDropdownBaseProps {
     label?: string;
     selected?: string;
     disabled?: boolean;
-    isEmptyAllowed?: boolean;
+    emptyItem?: IDropdownItem;
     onChange: (value: any) => void;
 }
 
@@ -37,19 +37,25 @@ class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListPro
     }
 
     public render() {
-        let dropDownItemList: IDropdownItem[] =
-            this.props.isEmptyAllowed ? [{ key: '', value: '-' }] : [];
+        let dropDownItemList: IDropdownItem[] = [];
+
+        if (this.props.emptyItem) {
+            dropDownItemList = [
+                this.props.emptyItem,
+                ...dropDownItemList,
+            ];
+        }
 
         if (usesCodeList(this.props)) {
             const codeList = this.props.codeList;
             dropDownItemList = dropDownItemList.concat(Object.keys(codeList).map(
-                key => ({ key, value: codeList[key] }),
+                value => ({ value, label: codeList[value] }),
             ));
         } else {
             dropDownItemList = dropDownItemList.concat(this.props.items);
         }
 
-        const selectedItem = dropDownItemList.find(item => item.key === this.props.selected);
+        const selectedItem = dropDownItemList.find(item => item.value === this.props.selected);
 
         return (
             <div className={s.formItem}>
@@ -73,10 +79,10 @@ class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListPro
                             dropDownItemList.map((item) => {
                                 return (
                                     <option
-                                        key={item.key}
-                                        value={item.key}
+                                        key={item.value ? item.value : 'empty'}
+                                        value={item.value}
                                     >
-                                        {item.value}
+                                        {item.label}
                                     </option>
                                 );
                             })
