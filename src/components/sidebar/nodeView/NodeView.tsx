@@ -148,12 +148,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private onNodeGeometryChange = (property: NodeLocationType) => (value: any) => {
         this.props.nodeStore!.updateNodeGeometry(property, value);
-        this.validateProperty({}, property, value);
+        this.validateProperty('', property, value);
     }
 
     private onNodePropertiesChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
-        this.validateProperty({}, property, value);
+        this.validateProperty('', property, value);
         if (property === 'type') {
             this._validateAllProperties(value);
         }
@@ -161,7 +161,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private onStopPropertiesChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateStop(property, value);
-        this.validateProperty(stopValidatorModel, property, value);
+        this.validateProperty(stopValidatorModel[property], property, value);
     }
 
     render() {

@@ -145,7 +145,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
 
     private onChange = (property: string) => (value: any) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
-        this.validateProperty(routePathValidationModel, property, value);
+        this.validateProperty(routePathValidationModel[property], property, value);
     }
 
     public renderTabContent = () => {

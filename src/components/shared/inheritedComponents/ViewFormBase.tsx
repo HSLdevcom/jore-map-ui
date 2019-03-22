@@ -18,17 +18,16 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
             invalidPropertiesMap: {},
         });
 
-        for (const property of Object.keys(validationModel)) {
+        Object.entries(validationModel).forEach(([property, validatorRule]) => {
             this.validateProperty(
-                validationModel,
+                validatorRule,
                 property,
                 validationEntity[property],
             );
-        }
+        });
     }
 
-    protected validateProperty = (validationModel: object, property: string, value: any) => {
-        const validatorRule = validationModel[property];
+    protected validateProperty = (validatorRule: string, property: string, value: any) => {
         if (!validatorRule) return;
 
         const validatorResult: IValidationResult

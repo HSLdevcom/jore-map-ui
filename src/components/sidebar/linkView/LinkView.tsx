@@ -186,7 +186,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private onChange = (property: string) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
-        this.validateProperty(linkValidationModel, property, value);
+        this.validateProperty(linkValidationModel[property], property, value);
     }
 
     render() {
