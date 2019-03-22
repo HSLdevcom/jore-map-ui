@@ -74,6 +74,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
+    "test:ci": "CI=true node scripts/test.js --env=jsdom",
+    "test-coverage": "node scripts/test.js --env=jsdom --coverage",
     "lint": "tslint --project tsconfig.json --format codeFrame",
     "lint-fix": "tslint --fix --project tsconfig.json --format codeFrame 'src/**/*.ts'",
     "release-patch": "bumped release patch",
@@ -120,6 +122,10 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}"
     ],
+    "coveragePathIgnorePatterns": [
+      ".*\\.d\\.ts",
+      "<rootDir>/node_modules/"
+    ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js"
     ],
@@ -139,7 +145,8 @@
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|ts|tsx)$"
     ],
     "moduleNameMapper": {
-      "^react-native$": "react-native-web"
+      "^react-native$": "react-native-web",
+      "~/(.*)": "<rootDir>/src/$1"
     },
     "moduleFileExtensions": [
       "web.ts",
@@ -156,7 +163,7 @@
     ],
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "/Users/jkro/Projects/ClientProjects/HSL/jore-map-ui/tsconfig.test.json"
+        "tsConfigFile": "tsconfig.test.json"
       }
     }
   },
