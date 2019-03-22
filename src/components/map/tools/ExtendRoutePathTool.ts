@@ -39,7 +39,8 @@ class ExtendRoutePathTool implements BaseTool {
             RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
 
         } catch (ex) {
-            ErrorStore.addError((ex as Error).message);
+            ErrorStore.addError(
+                'Unable to process network node click using ExtendRoutePathTool', ex);
         }
     }
 

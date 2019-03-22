@@ -102,7 +102,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             }
             this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
         } catch (ex) {
-            this.props.errorStore!.addError('Reittisuunnan uuden luonti epäonnistui');
+            this.props.errorStore!.addError('Reittisuunnan uuden luonti epäonnistui', ex);
         }
     }
 
@@ -123,7 +123,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 const line = await LineService.fetchLine(routePath.lineId);
                 this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
             } catch (ex) {
-                this.props.errorStore!.addError('Linjan haku ei onnistunut');
+                this.props.errorStore!.addError('Linjan haku ei onnistunut', ex);
             }
         }
     }
@@ -136,7 +136,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 await RoutePathService.fetchRoutePath(routeId, startTime, direction);
             this.props.routePathStore!.setRoutePath(routePath);
         } catch (ex) {
-            this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.');
+            this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.', ex);
         }
     }
 
@@ -169,8 +169,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             this.props.routePathStore!.setOldRoutePath(this.props.routePathStore!.routePath!);
 
             DialogStore.setFadeMessage('Tallennettu!');
-        } catch (err) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
+        } catch (ex) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, ex);
         }
         this.setState({
             isEditingDisabled: true,

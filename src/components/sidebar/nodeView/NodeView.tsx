@@ -82,7 +82,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         try {
             return await NodeService.fetchNode(nodeId);
         } catch (ex) {
-            this.props.errorStore!.addError('Solmun haku ei onnistunut');
+            this.props.errorStore!.addError('Solmun haku ei onnistunut', ex);
             return null;
         }
     }
@@ -94,6 +94,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
+                ex,
             );
             return null;
         }
@@ -118,8 +119,8 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
-        } catch (err) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
+        } catch (ex) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, ex);
         }
 
         if (preventSetState) return;

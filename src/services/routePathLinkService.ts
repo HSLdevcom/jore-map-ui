@@ -84,7 +84,7 @@ class RoutePathLinkService {
                 };
             }
         } catch (ex) {
-            ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui');
+            ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui', ex);
         }
         return null;
     }

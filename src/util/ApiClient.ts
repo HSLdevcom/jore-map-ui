@@ -77,7 +77,6 @@ class ApiClient {
                 message: response.statusText,
             };
         } catch (err) {
-            console.log(err); // tslint:disable-line no-console
             error = {
                 errorCode: FetchStatusCode.CONNECTION_ERROR,
                 message: 'Yhteysongelma',

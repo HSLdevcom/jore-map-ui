@@ -57,8 +57,8 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
                     routePaths: route.routePaths,
                 });
             }
-        } catch {
-            this.props.errorStore!.addError('Reitinsuuntien haussa tapahtui virhe.');
+        } catch (ex) {
+            this.props.errorStore!.addError('Reitinsuuntien haussa tapahtui virhe.', ex);
         }
     }
 

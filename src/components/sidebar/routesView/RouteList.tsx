@@ -62,6 +62,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             } catch (ex) {
                 this.props.errorStore!.addError(
                     `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
+                    ex,
                 );
             }
             this.setState({ isLoading: false });
