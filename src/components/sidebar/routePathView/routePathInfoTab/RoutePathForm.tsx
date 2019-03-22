@@ -21,7 +21,7 @@ interface IRoutePathFormProps {
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    onChange: Function;
+    onChange: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
 }
 

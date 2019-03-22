@@ -9,7 +9,7 @@ import * as s from './stopForm.scss';
 interface IStopFormProps {
     stop: IStop;
     isEditingDisabled: boolean;
-    onChange: Function;
+    onChange: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
 }
 

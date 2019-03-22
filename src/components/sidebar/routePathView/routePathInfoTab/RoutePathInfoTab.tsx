@@ -15,7 +15,7 @@ interface IRoutePathInfoTabProps {
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    onChange: Function;
+    onChange: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
 }
 
