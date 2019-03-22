@@ -9,6 +9,7 @@ import ButtonType from '~/enums/buttonType';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import booleanCodeList from '~/codeLists/booleanCodeList';
 import navigator from '~/routing/navigator';
 import RoutePathListItem from './RoutePathListItem';
 import MultiTabTextarea from '../../linkView/MultiTabTextarea';
@@ -161,7 +162,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 <div className={s.flexRow}>
                     <Dropdown
                         label='SOLMU HASTUS-PAIKKANA'
-                        items={['Kyllä', 'Ei']}
+                        codeList={booleanCodeList}
                         selected='Kyllä'
                         onChange={this.onChange}
                     />
