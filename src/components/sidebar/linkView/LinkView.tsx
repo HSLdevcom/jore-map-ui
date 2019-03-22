@@ -7,7 +7,6 @@ import L from 'leaflet';
 import { FiChevronRight, FiChevronLeft } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
-import { IValidationResult } from '~/validation/FormValidator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
@@ -70,6 +69,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         if (this.props.linkStore!.link) {
             const bounds = L.latLngBounds(this.props.linkStore!.link!.geometry);
             this.props.mapStore!.setMapBounds(bounds);
+            this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
         }
     }
 
@@ -125,14 +125,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
         this.setState({ isLoading: false });
     }
-
-    private onChange = (property: string) =>
-        (value: any, validationResult?: IValidationResult) => {
-            this.props.linkStore!.updateLinkProperty(property, value);
-            if (validationResult) {
-                this.markInvalidProperties(property, validationResult!.isValid);
-            }
-        }
 
     private save = async () => {
         this.setState({ isLoading: true });
@@ -192,8 +184,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         return this.props.linkStore!.existingTransitTypes.includes(transitType);
     }
 
+    private onChange = (property: string) => (value: any) => {
+        this.props.linkStore!.updateLinkProperty(property, value);
+        this.validateProperty(linkValidationModel[property], property, value);
+    }
+
     render() {
         const link = this.props.linkStore!.link;
+        const invalidPropertiesMap = this.state.invalidPropertiesMap;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.linkView, s.loaderContainer)}>
@@ -280,16 +278,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={isEditingDisabled}
                             value={link.osNumber}
                             type='number'
+                            validationResult={invalidPropertiesMap['osNumber']}
                             onChange={this.onChange('osNumber')}
-                            validatorRule={linkValidationModel.osNumber}
                         />
                         <InputContainer
                             label='LINKIN PITUUS (m)'
                             disabled={isEditingDisabled}
                             value={link.length}
                             type='number'
+                            validationResult={invalidPropertiesMap['length']}
                             onChange={this.onChange('length')}
-                            validatorRule={linkValidationModel.length}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -297,6 +295,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             label='KATU'
                             disabled={isEditingDisabled}
                             value={link.streetName}
+                            validationResult={invalidPropertiesMap['streetName']}
                             onChange={this.onChange('streetName')}
                         />
                         <InputContainer
@@ -304,8 +303,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={isEditingDisabled}
                             value={link.streetNumber}
                             type='number'
+                            validationResult={invalidPropertiesMap['streetNumber']}
                             onChange={this.onChange('streetNumber')}
-                            validatorRule={linkValidationModel.streetNumber}
                         />
                         <Dropdown
                             onChange={this.onChange('municipalityCode')}

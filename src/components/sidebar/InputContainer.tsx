@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import FormValidator, { IValidationResult } from '../../validation/FormValidator';
+import { IValidationResult } from '~/validation/FormValidator';
 import DatePicker from '../controls/DatePicker';
 import TextContainer from './TextContainer';
 import * as s from './inputContainer.scss';
@@ -9,7 +9,8 @@ type inputType = 'text' | 'number' | 'date';
 
 interface IInputProps {
     label: string|JSX.Element;
-    onChange: (value: any, validationResult?: IValidationResult) => void;
+    onChange: (value: any) => void;
+    validationResult?: IValidationResult;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
@@ -18,115 +19,74 @@ interface IInputProps {
     type?: inputType; // Defaults to text
 }
 
-interface IInputState {
-    isValid: boolean;
-    errorMessage?: string;
-}
-
-class InputContainer extends React.Component<IInputProps, IInputState> {
-    constructor(props: IInputProps) {
-        super(props);
-        this.state = {
-            isValid: true,
-            errorMessage: '',
-        };
-    }
-
-    componentDidMount() {
-        this.validate(null, this.props.value, true);
-    }
-
-    componentWillReceiveProps(nextProps: IInputProps) {
-        const forceUpdate = this.props.disabled !== nextProps.disabled;
-        this.validate(this.props.value, nextProps.value, forceUpdate);
-    }
-
-    private onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        this.validate(this.props.value, e.currentTarget.value);
-    }
-
-    private validate = (oldValue: any, newValue: any, forceUpdate?: boolean) => {
-        if (!forceUpdate && oldValue === newValue) return;
-        if (!this.props.validatorRule) {
-            this.updateParent(newValue);
-            return;
-        }
-        const validatorResult: IValidationResult
-            = FormValidator.validate(newValue, this.props.validatorRule);
-        this.setState({
-            isValid: validatorResult.isValid,
-            errorMessage: validatorResult.errorMessage,
-        });
-        this.updateParent(newValue, validatorResult);
-    }
-
-    private updateParent = (value: any, validatorResult?: IValidationResult) => {
-        if (this.props.type === 'number') {
+const renderEditableContent = (props: IInputProps) => {
+    const type = props.type || 'text';
+    const validationResult = props.validationResult;
+    const onChange = (e: React.FormEvent<HTMLInputElement>) => {
+        const value = e.currentTarget.value;
+        if (props.type === 'number') {
             const parsedValue = parseFloat(value);
-            this.props.onChange!(
+            props.onChange!(
                 !isNaN(parsedValue) ? parsedValue : null,
-                validatorResult,
             );
         } else {
-            this.props.onChange!(value, validatorResult);
+            props.onChange!(value);
         }
-    }
+    };
 
-    private renderEditableContent = () => {
-        const type = this.props.type || 'text';
-
-        if (type === 'date') {
-            return (
-                <DatePicker
-                    value={(this.props.value! as Date)}
-                    onChange={this.props.onChange!}
-                />
-            );
-        }
-
+    if (type === 'date') {
         return (
-            <input
-                placeholder={this.props.disabled ? '' : this.props.placeholder}
-                type={this.props.type === 'number' ? 'number' : 'text'}
-                className={
-                    classnames(
-                        this.props.className,
-                        this.props.disabled ? s.disabled : null,
-                        !this.state.isValid ? s.invalidInput : null)
-                }
-                value={this.props.value !== null && this.props.value !== undefined ?
-                    (this.props.value as string | number) : ''}
-                onChange={this.onChange}
+            <DatePicker
+                value={(props.value! as Date)}
+                onChange={props.onChange!}
             />
         );
     }
 
-    render() {
-        if (this.props.disabled) {
-            return (
-                <TextContainer
-                    label={this.props.label}
-                    value={this.props.value}
-                />
-            );
-        }
+    return (
+        <input
+            placeholder={props.disabled ? '' : props.placeholder}
+            type={props.type === 'number' ? 'number' : 'text'}
+            className={
+                classnames(
+                    props.className,
+                    props.disabled ? s.disabled : null,
+                    (validationResult && !validationResult.isValid) ? s.invalidInput : null)
+            }
+            value={props.value !== null && props.value !== undefined ?
+                (props.value as string | number) : ''}
+            onChange={onChange}
+        />
+    );
+};
 
+const InputContainer = (props: IInputProps) => {
+    const validationResult = props.validationResult;
+
+    if (props.disabled) {
         return (
-            <div className={s.formItem}>
-                <div className={s.inputLabel}>
-                    {this.props.label}
-                </div>
-                {
-                    this.renderEditableContent()
-                }
-                { this.state.errorMessage && !this.props.disabled &&
-                    <div className={s.errorMessage}>
-                        {this.state.errorMessage}
-                    </div>
-                }
-            </div>
+            <TextContainer
+                label={props.label}
+                value={props.value}
+            />
         );
     }
-}
+
+    return (
+        <div className={s.formItem}>
+            <div className={s.inputLabel}>
+                {props.label}
+            </div>
+            {
+                renderEditableContent(props)
+            }
+            { validationResult && validationResult.errorMessage && !props.disabled &&
+                <div className={s.errorMessage}>
+                    {validationResult.errorMessage}
+                </div>
+            }
+        </div>
+    );
+};
 
 export default InputContainer;
