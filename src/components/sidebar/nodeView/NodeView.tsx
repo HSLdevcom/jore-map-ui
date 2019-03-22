@@ -6,7 +6,7 @@ import { INode } from '~/models';
 import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
-import stopValidatorModel from '~/validation/models/stopValidatorModel';
+import stopValidationModel from '~/validation/models/stopValidationModel';
 import LinkService from '~/services/linkService';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -140,7 +140,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private _validateAllProperties = (nodeType: NodeType) => {
         const node = this.props.nodeStore!.node;
         if (nodeType === NodeType.STOP) {
-            this.validateAllProperties(stopValidatorModel, node.stop);
+            this.validateAllProperties(stopValidationModel, node.stop);
         } else {
             this.validateAllProperties({}, node);
         }
@@ -163,7 +163,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private onStopPropertyChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateStop(property, value);
-        this.validateProperty(stopValidatorModel[property], property, value);
+        this.validateProperty(stopValidationModel[property], property, value);
     }
 
     render() {
