@@ -152,7 +152,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.validateProperty('', property, value);
     }
 
-    private onNodePropertiesChange = (property: string) => (value: any) => {
+    private onNodePropertyChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
         // TODO: add nodeValidationModel. Move stop's invalidPropertiesMap into stopFrom?
         this.validateProperty('', property, value);
@@ -161,7 +161,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         }
     }
 
-    private onStopPropertiesChange = (property: string) => (value: any) => {
+    private onStopPropertyChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateStop(property, value);
         this.validateProperty(stopValidatorModel[property], property, value);
     }
@@ -203,12 +203,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     label='LYHYT ID'
                                     disabled={isEditingDisabled}
                                     value={node.shortId}
-                                    onChange={this.onNodePropertiesChange('shortId')}
+                                    onChange={this.onNodePropertyChange('shortId')}
                                     validationResult={invalidPropertiesMap['length']}
                                 />
                                 <Dropdown
                                     label='TYYPPI'
-                                    onChange={this.onNodePropertiesChange('type')}
+                                    onChange={this.onNodePropertyChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
                                     codeList={nodeTypeCodeList}
@@ -226,7 +226,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             <StopForm
                                 isEditingDisabled={isEditingDisabled}
                                 stop={node.stop!}
-                                onChange={this.onStopPropertiesChange}
+                                onChange={this.onStopPropertyChange}
                                 invalidPropertiesMap={invalidPropertiesMap}
                             />
                         }
