@@ -148,11 +148,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private onNodeGeometryChange = (property: NodeLocationType) => (value: any) => {
         this.props.nodeStore!.updateNodeGeometry(property, value);
+        // TODO: add nodeValidationModel. Move stop's invalidPropertiesMap into stopFrom?
         this.validateProperty('', property, value);
     }
 
     private onNodePropertiesChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
+        // TODO: add nodeValidationModel. Move stop's invalidPropertiesMap into stopFrom?
         this.validateProperty('', property, value);
         if (property === 'type') {
             this._validateAllProperties(value);
