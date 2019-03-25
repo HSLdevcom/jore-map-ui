@@ -81,10 +81,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
             }
-        } catch (ex) {
+        } catch (e) {
             this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
+                e,
             );
         }
         this.setState({ isLoading: false });
@@ -105,8 +106,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
             this.props.linkStore!.setOldLink(this.props.linkStore!.link);
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
-        } catch (err) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
         this.setState({ isLoading: false });
     }
