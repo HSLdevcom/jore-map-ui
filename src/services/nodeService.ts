@@ -13,6 +13,10 @@ interface INodeSavingModel {
     links: ILink[];
 }
 
+interface INewNodeResponse {
+    nodeId: string;
+}
+
 class NodeService {
     public static fetchNode = async (nodeId: string) => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query(
@@ -42,8 +46,10 @@ class NodeService {
     }
 
     public static createNode = async (node: INode) => {
-        await ApiClient.createObject(endpoints.NODE, node);
+        const newNodeResponse =
+            await ApiClient.createObject(endpoints.NODE, node) as INewNodeResponse;
         await apolloClient.clearStore();
+        return newNodeResponse.nodeId;
     }
 }
 
