@@ -15,7 +15,7 @@ import NodeMarker from '../mapIcons/NodeMarker';
 import StartMarker from '../mapIcons/StartMarker';
 import ArrowDecorator from '../ArrowDecorator';
 
-const MARKER_COLOR = '#00df0b';
+const START_MARKER_COLOR = '#00df0b';
 const NEIGHBOR_MARKER_COLOR = '#ca00f7';
 const ROUTE_COLOR = '#000';
 
@@ -254,7 +254,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         return (
             <StartMarker
                 latLng={routePathLinks![0].startNode.coordinates}
-                color={MARKER_COLOR}
+                color={START_MARKER_COLOR}
             />
         );
     }

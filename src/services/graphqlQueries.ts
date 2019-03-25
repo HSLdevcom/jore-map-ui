@@ -96,6 +96,18 @@ const getLinkQuery = () => {
     );
 };
 
+const getLinksQuery = () => {
+    return (
+        gql`query getLinks($startNodeId: String!, $endNodeId: String!) {
+            getLinks(startnodeid: $startNodeId, endnodeid: $endNodeId) {
+                nodes {
+                    ${linkQueryFields}
+                }
+            }
+        }`
+    );
+};
+
 const getLinksByEndNodeQuery = () => {
     return (
         gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!) {
@@ -332,6 +344,7 @@ linkkisByLnkloppusolmu {
 
 export default {
     getLinkQuery,
+    getLinksQuery,
     getLineQuery,
     getAllLinesQuery,
     getRouteQuery,

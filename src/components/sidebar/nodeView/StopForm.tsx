@@ -1,8 +1,6 @@
 import React from 'react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
-import stopValidationModel from '~/validation/models/stopValidationModel';
-import { IValidationResult } from '~/validation/FormValidator';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import { Dropdown } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
@@ -10,11 +8,12 @@ import * as s from './stopForm.scss';
 
 interface IStopFormProps {
     stop: IStop;
-    onChange: (property: string) => (value: any, validationResult?: IValidationResult) => void;
     isEditingDisabled: boolean;
+    onChange: (property: string) => (value: any) => void;
+    invalidPropertiesMap: object;
 }
 
-const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
+const stopForm = ({ stop, isEditingDisabled, onChange, invalidPropertiesMap }: IStopFormProps) => {
     return (
         <div className={s.stopView}>
             <SidebarHeader
@@ -32,14 +31,14 @@ const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
                         disabled={isEditingDisabled}
                         value={stop.nameFi}
                         onChange={onChange('nameFi')}
-                        validatorRule={stopValidationModel.name}
+                        validationResult={invalidPropertiesMap['nameFi']}
                     />
                     <InputContainer
                         label='NIMI RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={stop.nameSe}
                         onChange={onChange('nameSe')}
-                        validatorRule={stopValidationModel.name}
+                        validationResult={invalidPropertiesMap['nameSe']}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -142,9 +141,9 @@ const stopForm = ({ stop, isEditingDisabled, onChange }: IStopFormProps) => {
                         label='SÄDE (m)'
                         disabled={isEditingDisabled}
                         value={stop.radius}
-                        onChange={onChange('radius')}
                         type='number'
-                        validatorRule={stopValidationModel.radius}
+                        onChange={onChange('radius')}
+                        validationResult={invalidPropertiesMap['radius']}
                     />
                     <InputContainer
                         label='SUUNTA'
