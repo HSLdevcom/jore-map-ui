@@ -131,9 +131,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const link = this.props.linkStore!.link;
         const existingLinks = await LinkService.fetchLinks(link.startNode.id, link.endNode.id);
         if (existingLinks.length > 0) {
-            const existingTransitTypes = existingLinks
+            this.existingTransitTypes = existingLinks
                 .map(link => link.transitType!);
-            this.existingTransitTypes = existingTransitTypes;
         }
 
         this.setState({ isLoading: false });
