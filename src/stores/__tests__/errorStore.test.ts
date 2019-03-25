@@ -35,17 +35,16 @@ describe('errorStore.addError', () => {
 
         const errorStore = new ErrorStore;
         const errorMessage = 'This is a test error';
-        const exceptionMessage = 'This is a test exception message';
-        const errorException: Error = {
-            message: exceptionMessage,
+        const exception: Error = {
+            message: 'This is a test exception message',
             name: 'Test exception',
         };
 
-        errorStore.addError(errorMessage, errorException);
+        errorStore.addError(errorMessage, exception);
 
         expect(errorStore.errorCount).toEqual(1);
         expect(errorStore.latestError).toContain(errorMessage);
-        expect(errorStore.latestError).toContain(exceptionMessage);
+        expect(errorStore.latestError).toContain(exception.message);
         expect(console.error).toBeCalled();
         // Clean up console.error to be back to normal
         console.error = consoleError;
