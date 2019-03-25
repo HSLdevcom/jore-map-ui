@@ -35,9 +35,10 @@ class ExtendRoutePathTool implements BaseTool {
                     RoutePathStore!.routePath!.transitType,
                     RoutePathStore!.routePath!.routePathLinks,
                 );
-            RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
-            RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
-
+            if (queryResult) {
+                RoutePathStore!.setNeighborRoutePathLinks(queryResult.routePathLinks);
+                RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
+            }
         } catch (ex) {
             ErrorStore.addError((ex as Error).message);
         }
@@ -51,8 +52,10 @@ class ExtendRoutePathTool implements BaseTool {
                 RoutePathStore!.routePath!.transitType,
                 RoutePathStore!.routePath!.routePathLinks,
             );
-        RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
-        RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
+        if (queryResult) {
+            RoutePathStore!.setNeighborRoutePathLinks(queryResult.routePathLinks);
+            RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
+        }
     }
 
     private isNetworkNodesInteractive() {
