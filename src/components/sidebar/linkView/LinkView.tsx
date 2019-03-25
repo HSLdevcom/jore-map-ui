@@ -133,7 +133,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
         const existingLinks = await LinkService.fetchLinks(link.startNode.id, link.endNode.id);
         if (existingLinks.length > 0) {
-            const existingTransitTypes = existingLinks.map(link => link.transitType);
+            const existingTransitTypes = existingLinks
+                .map(link => link.transitType!);
             this.props.linkStore!.setExistingTransitTypes(existingTransitTypes);
         }
 
@@ -225,11 +226,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const startNode = link!.startNode;
         const endNode = link!.endNode;
         const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
-        const isSaveButtonDisabled = this.state.isEditingDisabled
+
+        const transitType = this.props.linkStore!.link.transitType;
+
+        const isSaveButtonDisabled = !transitType
+            || this.state.isEditingDisabled
             || !this.props.linkStore!.isDirty
             || (this.props.isNewLink
-                && this.transitTypeAlreadyExists(this.props.linkStore!.link.transitType))
+                && this.transitTypeAlreadyExists(transitType))
             || !this.isFormValid();
+        const selectedTransitTypes = link!.transitType ? [link!.transitType!] : [];
 
         return (
         <div className={s.linkView}>
@@ -249,7 +255,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 VERKKO
                             </div>
                             <TransitToggleButtonBar
-                                selectedTransitTypes={[link!.transitType]}
+                                selectedTransitTypes={selectedTransitTypes}
                                 toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLink}
                             />

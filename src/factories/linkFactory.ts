@@ -1,6 +1,5 @@
 import * as L from 'leaflet';
 import { ILink, INode } from '~/models';
-import TransitType from '~/enums/transitType';
 import IExternalLink from '~/models/externals/IExternalLink';
 import NodeFactory from './nodeFactory';
 
@@ -31,7 +30,6 @@ class LinkFactory {
             geometry,
             startNode,
             endNode,
-            transitType: TransitType.BUS,
             length: 0,
             measuredLength: 0,
             municipalityCode: '',
