@@ -10,12 +10,15 @@ import TransitType from '~/enums/transitType';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
+import NodeService from '~/services/nodeService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
+import { INode } from '~/models';
 import linkValidationModel from '~/validation/models/linkValidationModel';
 import SubSites from '~/routing/subSites';
 import directionCodeList from '~/codeLists/directionCodeList';
 import { DialogStore } from '~/stores/dialogStore';
 import routeBuilder from '~/routing/routeBuilder';
+import LinkFactory from '~/factories/linkFactory';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import navigator from '~/routing/navigator';
 import { LinkStore } from '~/stores/linkStore';
@@ -109,13 +112,24 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     private initNewLink = async () => {
+        this.setState({ isLoading: true });
+        this.props.linkStore!.clear();
+
+        const [startNodeId, endNodeId] = this.props.match!.params.id.split(',');
+        try {
+            const startNode = await NodeService.fetchNode(startNodeId);
+            const endNode = await NodeService.fetchNode(endNodeId);
+            this.createNewLink(startNode, endNode);
+        } catch (ex) {
+            this.props.errorStore!.addError(`Alkusolmun ${startNodeId} tai loppusolmun ${endNodeId} haku epäonnistui`); // tslint:disable-line max-line-length
+            return;
+        }
+
         const link = this.props.linkStore!.link;
         if (!link || !link.geometry || !link.startNode || !link.endNode) {
             navigator.goTo(SubSites.home);
             return;
         }
-
-        this.setState({ isLoading: true });
 
         const existingLinks = await LinkService.fetchLinks(link.startNode.id, link.endNode.id);
         if (existingLinks.length > 0) {
@@ -124,6 +138,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         }
 
         this.setState({ isLoading: false });
+    }
+
+    private createNewLink = (startNode: INode, endNode: INode) => {
+        const link = LinkFactory.createNewLink(startNode, endNode);
+        this.props.linkStore!.init(link, [startNode, endNode]);
     }
 
     private save = async () => {

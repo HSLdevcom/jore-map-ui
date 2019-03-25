@@ -1,19 +1,16 @@
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import { INode } from '~/models';
 import ToolbarTool from '~/enums/toolbarTool';
 import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
-import RoutePathStore from '~/stores/routePathStore';
-import LinkFactory from '~/factories/linkFactory';
 import LinkStore from '~/stores/linkStore';
 import BaseTool from './BaseTool';
 
 class AddNetworkLinkTool implements BaseTool {
-    private startNode: INode | null;
+    private startNodeId: string | null = null;
     public toolType = ToolbarTool.AddNetworkLink;
     public toolHelpHeader = 'Luo uusi linkki';
     public toolHelpText = 'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.'; // tslint:disable-line max-line-length
@@ -27,35 +24,33 @@ class AddNetworkLinkTool implements BaseTool {
     }
     public onNetworkNodeClick = async (clickEvent: any) => {
         const nodeId = clickEvent.sourceTarget.properties.soltunnus;
-        if (!this.startNode) {
-            this.startNode = await NodeService.fetchNode(nodeId);
-            LinkStore.setStartMarkerCoordinates(this.startNode.coordinates);
-        } else {
-            const endNodeId = nodeId;
+        if (!this.startNodeId) {
+            this.startNodeId = nodeId;
             try {
-                const endNode = await NodeService.fetchNode(endNodeId);
-                this.createNewLink(this.startNode, endNode);
-                this.resetTool();
-            } catch (ex) {
-                ErrorStore.addError(`Alkusolmun ${this.startNode!.id} tai loppusolmun ${endNodeId} haku epäonnistui`); // tslint:disable-line max-line-length
-                return;
+                const startNode = await NodeService.fetchNode(nodeId);
+                LinkStore.setStartMarkerCoordinates(startNode.coordinates);
+            } catch (e) {
+                ErrorStore.addError(`Alkusolmun ${nodeId} haku epäonnistui`);
             }
+        } else {
+            const startNodeId = this.startNodeId;
+            const endNodeId = nodeId;
+
             const newLinkViewLink = routeBuilder
                 .to(SubSites.newLink)
+                .toTarget([
+                    startNodeId,
+                    endNodeId,
+                ].join(','))
                 .toLink();
             navigator.goTo(newLinkViewLink);
+
+            ToolbarStore.selectTool(null);
         }
     }
 
-    private createNewLink = (startNode: INode, endNode: INode) => {
-        ToolbarStore.selectTool(null);
-        RoutePathStore.clear();
-        const link = LinkFactory.createNewLink(startNode, endNode);
-        LinkStore.init(link, [startNode, endNode]);
-    }
-
     private resetTool = () => {
-        this.startNode = null;
+        this.startNodeId = null;
         LinkStore.setStartMarkerCoordinates(null);
     }
 }
