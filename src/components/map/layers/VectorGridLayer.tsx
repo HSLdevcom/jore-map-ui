@@ -37,9 +37,6 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
                     LinkStore.link!,
                 ],
             this.redrawLayers,
-            {
-                delay: 100,
-            },
         );
     }
 

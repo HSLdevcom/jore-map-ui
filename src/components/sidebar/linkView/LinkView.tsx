@@ -53,6 +53,8 @@ interface ILinkViewState {
 @inject('linkStore', 'mapStore', 'errorStore', 'dialogStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
+    private existingTransitTypes: TransitType[] = [];
+
     constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
@@ -102,10 +104,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
             }
-        } catch (ex) {
+        } catch (e) {
             this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
+                e,
             );
         }
         this.setState({ isLoading: false });
@@ -126,16 +129,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         }
 
         const link = this.props.linkStore!.link;
-        if (!link || !link.geometry || !link.startNode || !link.endNode) {
-            navigator.goTo(SubSites.home);
-            return;
-        }
-
         const existingLinks = await LinkService.fetchLinks(link.startNode.id, link.endNode.id);
         if (existingLinks.length > 0) {
             const existingTransitTypes = existingLinks
                 .map(link => link.transitType!);
-            this.props.linkStore!.setExistingTransitTypes(existingTransitTypes);
+            this.existingTransitTypes = existingTransitTypes;
         }
 
         this.setState({ isLoading: false });
@@ -156,8 +154,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
             }
             await this.props.dialogStore!.setFadeMessage('Tallennettu!');
-        } catch (err) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
 
         if (this.props.isNewLink) {
@@ -201,7 +199,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     private transitTypeAlreadyExists = (transitType: TransitType) => {
         if (!this.props.isNewLink) return false;
 
-        return this.props.linkStore!.existingTransitTypes.includes(transitType);
+        return this.existingTransitTypes.includes(transitType);
     }
 
     private onChange = (property: string) => (value: any) => {
