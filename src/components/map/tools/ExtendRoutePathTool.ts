@@ -1,7 +1,6 @@
 import RoutePathStore from '~/stores/routePathStore';
 import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
-import ErrorStore from '~/stores/errorStore';
 import { INode } from '~/models';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import BaseTool from './BaseTool';
@@ -23,25 +22,19 @@ class ExtendRoutePathTool implements BaseTool {
     }
 
     public onNetworkNodeClick = async (clickEvent: any) => {
-        try {
-            if (!this.isNetworkNodesInteractive()) return;
+        if (!this.isNetworkNodesInteractive()) return;
 
-            const properties = clickEvent.sourceTarget.properties;
-            if (properties.soltyyppi !== NodeType.STOP) return;
-            const queryResult =
-                await RoutePathLinkService.fetchNeighborRoutePathLinks(
-                    properties.soltunnus,
-                    1,
-                    RoutePathStore!.routePath!.transitType,
-                    RoutePathStore!.routePath!.routePathLinks,
-                );
-            RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
-            RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
-
-        } catch (ex) {
-            ErrorStore.addError(
-                'Unable to process network node click using ExtendRoutePathTool', ex);
-        }
+        const properties = clickEvent.sourceTarget.properties;
+        if (properties.soltyyppi !== NodeType.STOP) return;
+        const queryResult =
+            await RoutePathLinkService.fetchNeighborRoutePathLinks(
+                properties.soltunnus,
+                1,
+                RoutePathStore!.routePath!.transitType,
+                RoutePathStore!.routePath!.routePathLinks,
+            );
+        RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
+        RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
     }
 
     public onNodeClick = (node: INode, linkOrderNumber: number) => async () => {

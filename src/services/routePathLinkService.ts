@@ -83,8 +83,8 @@ class RoutePathLinkService {
                     neighborToAddType,
                 };
             }
-        } catch (ex) {
-            ErrorStore.addError('Haku löytää sopivia naapurisolmuja epäonnistui', ex);
+        } catch (e) {
+            ErrorStore.addError('Haku löytää naapurisolmuja epäonnistui', e);
         }
         return null;
     }
