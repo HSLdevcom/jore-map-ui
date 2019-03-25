@@ -59,10 +59,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             try {
                 const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
                 this.props.routeStore!.addToRoutes(routes);
-            } catch (ex) {
+            } catch (e) {
                 this.props.errorStore!.addError(
                     `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
-                    ex,
+                    e,
                 );
             }
             this.setState({ isLoading: false });

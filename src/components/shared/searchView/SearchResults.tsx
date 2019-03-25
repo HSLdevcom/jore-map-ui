@@ -81,8 +81,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         try {
             const lines = await LineService.fetchAllLines();
             this.props.searchResultStore!.setAllLines(lines);
-        } catch (ex) {
-            this.props.errorStore!.addError('Linjojen haku ei onnistunut', ex);
+        } catch (e) {
+            this.props.errorStore!.addError('Linjojen haku ei onnistunut', e);
         }
     }
 
@@ -90,8 +90,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         try {
             const nodes = await NodeService.fetchAllNodes();
             this.props.searchResultStore!.setAllNodes(nodes);
-        } catch (ex) {
-            this.props.errorStore!.addError('Solmujen haku ei onnistunut', ex);
+        } catch (e) {
+            this.props.errorStore!.addError('Solmujen haku ei onnistunut', e);
         }
     }
 

@@ -73,7 +73,7 @@ class ApiClient {
                 errorCode: response.status,
                 message: response.statusText,
             };
-        } catch (err) {
+        } catch {
             error = {
                 name: 'Connectivity error',
                 errorCode: FetchStatusCode.CONNECTION_ERROR,

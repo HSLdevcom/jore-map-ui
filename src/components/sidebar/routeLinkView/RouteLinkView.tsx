@@ -86,8 +86,8 @@ class RouteLinkView extends React.Component<IRouteLinkViewProps, IRouteLinkViewS
                 const route = await RouteService.fetchRoute(routePathLink.routeId!);
                 this.setState({ route });
             }
-        } catch (ex) {
-            this.props.errorStore!.addError('Reitinsuunnan linkin haku epäonnistui', ex);
+        } catch (e) {
+            this.props.errorStore!.addError('Reitinsuunnan linkin haku epäonnistui', e);
         }
 
         this.setState({ isLoading: false });

@@ -81,8 +81,8 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private async fetchNode(nodeId: string) {
         try {
             return await NodeService.fetchNode(nodeId);
-        } catch (ex) {
-            this.props.errorStore!.addError('Solmun haku ei onnistunut', ex);
+        } catch (e) {
+            this.props.errorStore!.addError('Solmun haku ei onnistunut', e);
             return null;
         }
     }
@@ -90,11 +90,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private async fetchLinksForNode(node: INode) {
         try {
             return await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
-        } catch (ex) {
+        } catch (e) {
             this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
-                ex,
+                e,
             );
             return null;
         }
@@ -119,8 +119,8 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
-        } catch (ex) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, ex);
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
 
         if (preventSetState) return;
