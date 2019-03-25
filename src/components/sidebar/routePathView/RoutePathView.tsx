@@ -162,7 +162,9 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.setState({ isLoading: true });
         try {
             if (this.props.isNewRoutePath) {
-                await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+                const routePathKey =
+                    await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+                console.log(routePathKey); //tslint:disable-line
             } else {
                 await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             }
