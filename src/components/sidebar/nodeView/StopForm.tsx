@@ -1,7 +1,7 @@
 import React from 'react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
-import stopValidationModel from '~/validation/models/stopValidationModel';
+import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import { Dropdown } from '~/components/controls';
