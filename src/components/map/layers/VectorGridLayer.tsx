@@ -21,7 +21,7 @@ interface IVectorGridLayerProps extends GridLayerProps {
     vectorTileLayerStyles: any;
     nodeSize?: NodeSize;
     onClick?: Function;
-    recreateReaction: (reaction: IReactionDisposer) => void;
+    setVectorgridLayerReaction: (reaction: IReactionDisposer) => void;
 }
 
 class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
@@ -41,7 +41,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
                 ],
             this.redrawLayers,
         );
-        props.recreateReaction(reactionDisposer);
+        props.setVectorgridLayerReaction(reactionDisposer);
     }
 
     // Hiding network nodes / links need refreshing the whole layer
