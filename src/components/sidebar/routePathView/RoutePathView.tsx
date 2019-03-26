@@ -12,6 +12,7 @@ import navigator from '~/routing/navigator';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
+import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import DialogStore from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
 import RoutePathService from '~/services/routePathService';
@@ -26,12 +27,6 @@ import RoutePathTabs from './RoutePathTabs';
 import RoutePathHeader from './RoutePathHeader';
 import * as s from './routePathView.scss';
 
-interface IRoutePathViewState {
-    isLoading: boolean;
-    invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
-}
-
 interface IRoutePathViewProps {
     errorStore?: ErrorStore;
     routePathStore?: RoutePathStore;
@@ -39,6 +34,12 @@ interface IRoutePathViewProps {
     toolbarStore?: ToolbarStore;
     match?: match<any>;
     isNewRoutePath: boolean;
+}
+
+interface IRoutePathViewState {
+    isLoading: boolean;
+    invalidPropertiesMap: object;
+    isEditingDisabled: boolean;
 }
 
 @inject('routePathStore', 'networkStore', 'toolbarStore', 'errorStore')
@@ -80,6 +81,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 this.props.routePathStore!.onRoutePathLinksChanged();
             },
         );
+        this.validateAllProperties(routePathValidationModel, this.props.routePathStore!.routePath);
+
         this.setState({
             isLoading: false,
         });
@@ -101,8 +104,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 );
             }
             this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
-        } catch (ex) {
-            this.props.errorStore!.addError('Reittisuunnan uuden luonti epäonnistui');
+        } catch (e) {
+            this.props.errorStore!.addError('Reittisuunnan uuden luonti epäonnistui', e);
         }
     }
 
@@ -122,8 +125,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             try {
                 const line = await LineService.fetchLine(routePath.lineId);
                 this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
-            } catch (ex) {
-                this.props.errorStore!.addError('Linjan haku ei onnistunut');
+            } catch (e) {
+                this.props.errorStore!.addError('Linjan haku ei onnistunut', e);
             }
         }
     }
@@ -135,9 +138,14 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             const routePath =
                 await RoutePathService.fetchRoutePath(routeId, startTime, direction);
             this.props.routePathStore!.setRoutePath(routePath);
-        } catch (ex) {
-            this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.');
+        } catch (e) {
+            this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.', e);
         }
+    }
+
+    private onChange = (property: string) => (value: any) => {
+        this.props.routePathStore!.updateRoutePathProperty(property, value);
+        this.validateProperty(routePathValidationModel[property], property, value);
     }
 
     public renderTabContent = () => {
@@ -146,8 +154,9 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 <RoutePathInfoTab
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
-                    markInvalidProperties={this.markInvalidProperties}
                     isNewRoutePath={this.props.isNewRoutePath}
+                    onChange={this.onChange}
+                    invalidPropertiesMap={this.state.invalidPropertiesMap}
                 />
             );
         }
@@ -169,8 +178,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             this.props.routePathStore!.setOldRoutePath(this.props.routePathStore!.routePath!);
 
             DialogStore.setFadeMessage('Tallennettu!');
-        } catch (err) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
         this.setState({
             isEditingDisabled: true,

@@ -6,16 +6,19 @@ import { RouteComponentProps } from 'react-router-dom';
 import L from 'leaflet';
 import { FiChevronRight, FiChevronLeft } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
-import { IValidationResult } from '~/validation/FormValidator';
+import TransitType from '~/enums/transitType';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
+import NodeService from '~/services/nodeService';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
+import { INode } from '~/models';
 import SubSites from '~/routing/subSites';
 import linkValidationModel from '~/models/validationModels/linkValidationModel';
 import directionCodeList from '~/codeLists/directionCodeList';
 import { DialogStore } from '~/stores/dialogStore';
 import routeBuilder from '~/routing/routeBuilder';
+import LinkFactory from '~/factories/linkFactory';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import navigator from '~/routing/navigator';
 import { LinkStore } from '~/stores/linkStore';
@@ -34,35 +37,54 @@ interface ILinkViewState {
 }
 
 interface ILinkViewProps extends RouteComponentProps<any> {
+    isNewLink: boolean;
     errorStore?: ErrorStore;
     linkStore?: LinkStore;
     mapStore?: MapStore;
     dialogStore?: DialogStore;
 }
 
+interface ILinkViewState {
+    isLoading: boolean;
+    isEditingDisabled: boolean;
+    invalidPropertiesMap: object;
+}
+
 @inject('linkStore', 'mapStore', 'errorStore', 'dialogStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
+    private existingTransitTypes: TransitType[] = [];
+
     constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: true,
+            isEditingDisabled: !props.isNewLink,
             invalidPropertiesMap: {},
         };
     }
 
     async componentDidMount() {
-        await this.initUsingUrlParams();
+        if (this.props.isNewLink) {
+            await this.initNewLink();
+        } else {
+            await this.initExistingLink();
+        }
+
         if (this.props.linkStore!.link) {
             const bounds = L.latLngBounds(this.props.linkStore!.link!.geometry);
             this.props.mapStore!.setMapBounds(bounds);
+            this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
         }
     }
 
     componentDidUpdate(prevProps: ILinkViewProps) {
         if (this.props.location.pathname !== prevProps.location.pathname) {
-            this.initUsingUrlParams();
+            if (this.props.isNewLink) {
+                this.initNewLink();
+            } else {
+                this.initExistingLink();
+            }
         }
     }
 
@@ -70,45 +92,89 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.props.linkStore!.clear();
     }
 
-    private initUsingUrlParams = async () => {
+    private initExistingLink = async () => {
         this.setState({ isLoading: true });
+        this.props.linkStore!.clear();
+
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
         try {
             if (startNodeId && endNodeId && transitTypeCode) {
                 const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-                this.props.linkStore!.setLink(link);
-                this.props.linkStore!.setNodes([link.startNode, link.endNode]);
+                this.props.linkStore!.init(link, [link.startNode, link.endNode]);
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
             }
-        } catch (ex) {
+        } catch (e) {
             this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
+                e,
             );
         }
         this.setState({ isLoading: false });
     }
 
-    private onChange = (property: string) =>
-        (value: any, validationResult?: IValidationResult) => {
-            this.props.linkStore!.updateLinkProperty(property, value);
-            if (validationResult) {
-                this.markInvalidProperties(property, validationResult!.isValid);
-            }
+    private initNewLink = async () => {
+        this.setState({ isLoading: true });
+        this.props.linkStore!.clear();
+
+        const [startNodeId, endNodeId] = this.props.match!.params.id.split(',');
+        try {
+            const startNode = await NodeService.fetchNode(startNodeId);
+            const endNode = await NodeService.fetchNode(endNodeId);
+            this.createNewLink(startNode, endNode);
+        } catch (ex) {
+            this.props.errorStore!.addError(`Alkusolmun ${startNodeId} tai loppusolmun ${endNodeId} haku epäonnistui`); // tslint:disable-line max-line-length
+            return;
         }
+
+        const link = this.props.linkStore!.link;
+        const existingLinks = await LinkService.fetchLinks(link.startNode.id, link.endNode.id);
+        if (existingLinks.length > 0) {
+            this.existingTransitTypes = existingLinks
+                .map(link => link.transitType!);
+        }
+
+        this.setState({ isLoading: false });
+    }
+
+    private createNewLink = (startNode: INode, endNode: INode) => {
+        const link = LinkFactory.createNewLink(startNode, endNode);
+        this.props.linkStore!.init(link, [startNode, endNode]);
+    }
 
     private save = async () => {
         this.setState({ isLoading: true });
         try {
-            await LinkService.updateLink(this.props.linkStore!.link);
+            if (this.props.isNewLink) {
+                await LinkService.createLink(this.props.linkStore!.link);
+            } else {
+                await LinkService.updateLink(this.props.linkStore!.link);
+                this.props.linkStore!.setOldLink(this.props.linkStore!.link);
+            }
+            await this.props.dialogStore!.setFadeMessage('Tallennettu!');
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+        }
 
-            this.props.linkStore!.setOldLink(this.props.linkStore!.link);
-            this.props.dialogStore!.setFadeMessage('Tallennettu!');
-        } catch (err) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, err);
+        if (this.props.isNewLink) {
+            this.navigateToNewLink();
+            return;
         }
         this.setState({ isLoading: false });
+    }
+
+    private navigateToNewLink = () => {
+        const link = this.props.linkStore!.link;
+        const linkViewLink = routeBuilder
+            .to(SubSites.link)
+            .toTarget([
+                link.startNode.id,
+                link.endNode.id,
+                link.transitType,
+            ].join(','))
+            .toLink();
+        navigator.goTo(linkViewLink);
     }
 
     private navigateToNode = (nodeId: string) => () => {
@@ -125,8 +191,24 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         );
     }
 
+    private selectTransitType = (transitType: TransitType) => {
+        this.props.linkStore!.updateLinkProperty('transitType', transitType);
+    }
+
+    private transitTypeAlreadyExists = (transitType: TransitType) => {
+        if (!this.props.isNewLink) return false;
+
+        return this.existingTransitTypes.includes(transitType);
+    }
+
+    private onChange = (property: string) => (value: any) => {
+        this.props.linkStore!.updateLinkProperty(property, value);
+        this.validateProperty(linkValidationModel[property], property, value);
+    }
+
     render() {
         const link = this.props.linkStore!.link;
+        const invalidPropertiesMap = this.state.invalidPropertiesMap;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.linkView, s.loaderContainer)}>
@@ -141,15 +223,22 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const startNode = link!.startNode;
         const endNode = link!.endNode;
         const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
-        const isSaveButtonDisabled = this.state.isEditingDisabled
+
+        const transitType = this.props.linkStore!.link.transitType;
+
+        const isSaveButtonDisabled = !transitType
+            || this.state.isEditingDisabled
             || !this.props.linkStore!.isDirty
+            || (this.props.isNewLink
+                && this.transitTypeAlreadyExists(transitType))
             || !this.isFormValid();
+        const selectedTransitTypes = link!.transitType ? [link!.transitType!] : [];
 
         return (
         <div className={s.linkView}>
             <div className={s.content}>
                 <SidebarHeader
-                    isEditButtonVisible={true}
+                    isEditButtonVisible={!this.props.isNewLink}
                     isEditing={!isEditingDisabled}
                     shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
                     onEditButtonClick={this.toggleIsEditingEnabled}
@@ -163,8 +252,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 VERKKO
                             </div>
                             <TransitToggleButtonBar
-                                selectedTransitTypes={[link!.transitType]}
-                                disabled={true}
+                                selectedTransitTypes={selectedTransitTypes}
+                                toggleSelectedTransitType={this.selectTransitType}
+                                disabled={!this.props.isNewLink}
                             />
                         </div>
                     </div>
@@ -210,16 +300,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={isEditingDisabled}
                             value={link.osNumber}
                             type='number'
+                            validationResult={invalidPropertiesMap['osNumber']}
                             onChange={this.onChange('osNumber')}
-                            validatorRule={linkValidationModel.osNumber}
                         />
                         <InputContainer
                             label='LINKIN PITUUS (m)'
                             disabled={isEditingDisabled}
                             value={link.length}
                             type='number'
+                            validationResult={invalidPropertiesMap['length']}
                             onChange={this.onChange('length')}
-                            validatorRule={linkValidationModel.length}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -227,6 +317,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             label='KATU'
                             disabled={isEditingDisabled}
                             value={link.streetName}
+                            validationResult={invalidPropertiesMap['streetName']}
                             onChange={this.onChange('streetName')}
                         />
                         <InputContainer
@@ -234,8 +325,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={isEditingDisabled}
                             value={link.streetNumber}
                             type='number'
+                            validationResult={invalidPropertiesMap['streetNumber']}
                             onChange={this.onChange('streetNumber')}
-                            validatorRule={linkValidationModel.streetNumber}
                         />
                         <Dropdown
                             onChange={this.onChange('municipalityCode')}

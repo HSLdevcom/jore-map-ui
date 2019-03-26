@@ -10,7 +10,6 @@ import routePathValidationModel from '~/models/validationModels/routePathValidat
 import SubSites from '~/routing/subSites';
 import directionCodeList from '~/codeLists/directionCodeList';
 import navigator from '~/routing/navigator';
-import { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../../InputContainer';
 import TextContainer from '../../TextContainer';
 import LinkListView from './LinkListView';
@@ -23,20 +22,13 @@ interface IRoutePathFormProps {
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    markInvalidProperties: (property: string, isValid: boolean) => void;
+    onChange: (property: string) => (value: any) => void;
+    invalidPropertiesMap: object;
 }
 
 @inject('routePathStore')
 @observer
 class RoutePathForm extends React.Component<IRoutePathFormProps>{
-    private onChange = (property: string) =>
-        (value: any, validationResult?: IValidationResult) => {
-            this.props.routePathStore!.updateRoutePathProperty(property, value);
-            if (validationResult) {
-                this.props.markInvalidProperties(property, validationResult.isValid);
-            }
-        }
-
     private redirectToNewRoutePathView = () => {
         const routePath = this.props.routePathStore!.routePath;
         if (!routePath) return;
@@ -78,6 +70,8 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
         const disabledIfUpdating = !this.props.isNewRoutePath || this.props.isEditingDisabled;
+        const invalidPropertiesMap = this.props.invalidPropertiesMap;
+        const onChange = this.props.onChange;
 
         const routePath = this.props.routePath;
         return (
@@ -98,15 +92,15 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         label='LÄHTÖPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={routePath.originFi}
-                        onChange={this.onChange('originFi')}
-                        validatorRule={routePathValidationModel.origin}
+                        onChange={onChange('originFi')}
+                        validationResult={invalidPropertiesMap['originFi']}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={routePath.destinationFi}
-                        onChange={this.onChange('destinationFi')}
-                        validatorRule={routePathValidationModel.destination}
+                        onChange={onChange('destinationFi')}
+                        validationResult={invalidPropertiesMap['destinationFi']}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -114,15 +108,15 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         label='LÄHTÖPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={routePath.originSw}
-                        onChange={this.onChange('originSw')}
-                        validatorRule={routePathValidationModel.origin}
+                        onChange={onChange('originSw')}
+                        validationResult={invalidPropertiesMap['originSw']}
                     />
                     <InputContainer
                         label='PÄÄTEPAIKKA RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={routePath.destinationSw}
-                        onChange={this.onChange('destinationSw')}
-                        validatorRule={routePathValidationModel.destination}
+                        onChange={onChange('destinationSw')}
+                        validationResult={invalidPropertiesMap['destinationSw']}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -130,33 +124,33 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         label='LYHENNE SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={routePath.routePathShortName}
-                        onChange={this.onChange('routePathShortName')}
-                        validatorRule={routePathValidationModel.shortName}
+                        onChange={onChange('routePathShortName')}
+                        validationResult={invalidPropertiesMap['routePathShortName']}
                     />
                     <InputContainer
                         label='LYHENNE RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={routePath.routePathShortNameSw}
-                        onChange={this.onChange('routePathShortNameSw')}
-                        validatorRule={routePathValidationModel.shortName}
+                        onChange={onChange('routePathShortNameSw')}
+                        validationResult={invalidPropertiesMap['routePathShortNameSw']}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='VOIM. AST'
+                        disabled={disabledIfUpdating}
                         type='date'
                         value={routePath.startTime}
-                        onChange={this.onChange('startTime')}
-                        disabled={disabledIfUpdating}
-                        validatorRule={routePathValidationModel.date}
+                        onChange={onChange('startTime')}
+                        validationResult={invalidPropertiesMap['startTime']}
                     />
                     <InputContainer
                         label='VIIM.VOIM.OLO'
+                        disabled={this.props.isEditingDisabled}
                         type='date'
                         value={routePath.endTime}
-                        onChange={this.onChange('endTime')}
-                        disabled={this.props.isEditingDisabled}
-                        validatorRule={routePathValidationModel.date}
+                        onChange={onChange('endTime')}
+                        validationResult={invalidPropertiesMap['endTime']}
                     />
                     <InputContainer
                         label={this.renderLengthLabel()}
@@ -164,7 +158,8 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         disabled={isEditingDisabled}
                         validatorRule={routePathValidationModel.length}
                         type='number'
-                        onChange={this.onChange('length')}
+                        onChange={onChange('length')}
+                        validationResult={invalidPropertiesMap['length']}
                     />
                     <TextContainer
                         label='Laskettu'
@@ -175,15 +170,16 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                     <Dropdown
                         label='SUUNTA'
                         disabled={disabledIfUpdating}
-                        onChange={this.onChange('direction')}
+                        items={['1', '2']}
                         codeList={directionCodeList}
                         selected={this.props.routePath.direction}
+                        onChange={onChange('direction')}
                     />
                     <Dropdown
                         label='POIKKEUSREITTI'
                         disabled={isEditingDisabled}
                         selected={this.props.routePath.exceptionPath}
-                        onChange={this.onChange('exceptionPath')}
+                        onChange={onChange('exceptionPath')}
                         codeList={booleanCodeList}
                     />
                 </div>
@@ -236,14 +232,14 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                     <div className={s.flexInnerRow}>
                         {/* TODO */}
                         <Dropdown
-                            onChange={this.onChange}
+                            onChange={onChange('foo')}
                             disabled={isEditingDisabled}
                             codeList={directionCodeList}
                             selected='Suunta 1'
                         />
                         {/* TODO */}
                         <Dropdown
-                            onChange={this.onChange}
+                            onChange={onChange('foo')}
                             disabled={isEditingDisabled}
                             codeList={directionCodeList}
                             selected='Suunta 2'

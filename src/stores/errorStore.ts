@@ -1,5 +1,6 @@
 import { computed, observable, action } from 'mobx';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
+import IError from '~/models/IError';
 
 export class ErrorStore {
     @observable private _errors: string[];
@@ -22,14 +23,14 @@ export class ErrorStore {
     }
 
     @action
-    public addError(message: string, error?: Error) {
+    public addError(message: string, error?: IError) {
         let msg = message;
         if (
             error &&
-            error['errorCode'] &&
-            httpStatusDescriptionCodeList[error['errorCode']]
+            error.errorCode &&
+            httpStatusDescriptionCodeList[error.errorCode]
         ) {
-            msg += `, ${httpStatusDescriptionCodeList[error['errorCode']]}`;
+            msg += `, ${httpStatusDescriptionCodeList[error.errorCode]}`;
         } else if (
             error &&
             error.message
