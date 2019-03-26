@@ -14,7 +14,7 @@ interface IStopFormProps {
     invalidPropertiesMap: object;
 }
 
-const stopForm = observer((
+const StopForm = observer((
     { stop, isEditingDisabled, onChange, invalidPropertiesMap }: IStopFormProps) => {
     return (
         <div className={s.stopView}>
@@ -229,4 +229,4 @@ const stopForm = observer((
     );
 });
 
-export default stopForm;
+export default StopForm;
