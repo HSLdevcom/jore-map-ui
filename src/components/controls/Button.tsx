@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import ButtonType from '~/enums/buttonType';
 import * as s from './button.scss';
@@ -7,15 +8,12 @@ interface IButtonProps {
     type: ButtonType;
     className?: string;
     disabled?: boolean;
+    children: React.ReactNode;
     onClick(event: any): void;
 }
 
-class Button extends React.Component<IButtonProps, {}> {
-    public static defaultProps: Partial<IButtonProps> = {
-        disabled: false,
-    };
-
-    private getTypeClass = (type: ButtonType) => {
+const Button = observer((props: IButtonProps) => {
+    const getTypeClass = (type: ButtonType) => {
         switch (type) {
         case ButtonType.SQUARE: {
             return s.square;
@@ -33,31 +31,29 @@ class Button extends React.Component<IButtonProps, {}> {
             return s.square;
         }
         }
-    }
+    };
 
-    private onClick = (e: any) => {
-        if (!this.props.disabled) {
-            this.props.onClick(e);
+    const onClick = (e: any) => {
+        if (!props.disabled) {
+            props.onClick(e);
         }
-    }
+    };
 
-    public render(): any {
-        return (
-            <div
-                className={
-                    classnames(
-                        s.button,
-                        this.props.className,
-                        this.getTypeClass(this.props.type),
-                        this.props.disabled ? s.disabled : null,
-                    )
-                }
-                onClick={this.onClick}
-            >
-                {this.props.children}
-            </div>
-        );
-    }
-}
+    return (
+        <div
+            className={
+                classnames(
+                    s.button,
+                    props.className,
+                    getTypeClass(props.type),
+                    props.disabled ? s.disabled : null,
+                )
+            }
+            onClick={onClick}
+        >
+            {props.children}
+        </div>
+    );
+});
 
 export default Button;

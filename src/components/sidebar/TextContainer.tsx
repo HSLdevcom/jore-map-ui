@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import moment from 'moment';
 import * as s from './inputContainer.scss';
 
@@ -7,7 +8,7 @@ interface IInputProps {
     value?: string|number|null|Date;
 }
 
-const TextContainer = (props: IInputProps) => (
+const TextContainer = observer((props: IInputProps) => (
     <div className={s.formItem}>
         <div className={s.inputLabel}>
             {props.label}
@@ -18,6 +19,6 @@ const TextContainer = (props: IInputProps) => (
                 props.value ? props.value : ''
         }
     </div>
-);
+));
 
 export default TextContainer;

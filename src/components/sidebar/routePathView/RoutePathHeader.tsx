@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Moment from 'react-moment';
 import { IRoutePath } from '~/models';
@@ -13,7 +14,7 @@ interface IRoutePathHeaderProps {
     onEditButtonClick: () => void;
 }
 
-const RoutePathHeader = (props: IRoutePathHeaderProps) => (
+const RoutePathHeader = observer((props: IRoutePathHeaderProps) => (
     <div className={classnames(s.formSection, s.content, s.borderBotton)}>
         <SidebarHeader
             isEditButtonVisible={!props.isNewRoutePath}
@@ -38,5 +39,5 @@ const RoutePathHeader = (props: IRoutePathHeaderProps) => (
             {props.routePath.originFi} - {props.routePath.destinationFi}
         </div>
     </div>
-);
+));
 export default RoutePathHeader;

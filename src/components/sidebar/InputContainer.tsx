@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { IValidationResult } from '~/validation/FormValidator';
 import DatePicker from '../controls/DatePicker';
@@ -60,7 +61,7 @@ const renderEditableContent = (props: IInputProps) => {
     );
 };
 
-const InputContainer = (props: IInputProps) => {
+const InputContainer = observer((props: IInputProps) => {
     const validationResult = props.validationResult;
 
     if (props.disabled) {
@@ -87,6 +88,6 @@ const InputContainer = (props: IInputProps) => {
             }
         </div>
     );
-};
+});
 
 export default InputContainer;
