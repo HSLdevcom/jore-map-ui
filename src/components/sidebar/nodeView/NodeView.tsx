@@ -218,7 +218,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         </div>
                         <div className={s.formSection}>
                             <NodeCoordinatesListView
-                                node={this.props.nodeStore!.node}
                                 onChangeCoordinates={this.onNodeGeometryChange}
                                 isEditingDisabled={isEditingDisabled}
                             />
