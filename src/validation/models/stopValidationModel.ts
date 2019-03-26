@@ -1,7 +1,10 @@
-const stopValidatorModel = {
-    name: 'required|min:1|max:20|string', // TODO: These are just made up
-    radius: 'required|numeric|min:0|max:99999',
+const nameRule = 'required|min:1|max:20|string'; // TODO: These are just made up
+
+const stopValidationModel = {
+    nameFi: nameRule,
+    nameSe: nameRule,
+    radius: 'required|min:0|max:99999|numeric',  // TODO: These are just made up
 
 };
 
-export default stopValidatorModel;
+export default stopValidationModel;

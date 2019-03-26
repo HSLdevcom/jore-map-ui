@@ -13,8 +13,11 @@ import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import NodeMarker from '../mapIcons/NodeMarker';
+import StartMarker from '../mapIcons/StartMarker';
 import { LeafletContext } from '../../Map';
 import ArrowDecorator from '../ArrowDecorator';
+
+const START_MARKER_COLOR = '#00df0b';
 
 interface IEditLinkLayerProps {
     linkStore?: LinkStore;
@@ -59,8 +62,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private drawEditableLink = () => {
         const link = this.props.linkStore!.link;
         const map = this.props.leaflet.map;
-        const isLinkView = Boolean(matchPath(navigator.getPathName(), SubSites.link));
-        if (!isLinkView || !link || !map) return;
+        if (!map) return;
 
         this.removeOldLinks();
         this.drawEditableLinkToMap(link);
@@ -112,6 +114,20 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         }
     }
 
+    private renderLinkDecorator = () => {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+
+        const link = this.props.linkStore!.link;
+        return (
+            <ArrowDecorator
+                color='#000'
+                geometry={link!.geometry}
+                hideOnEventName='editable:vertex:drag'
+                showOnEventName='editable:vertex:dragend'
+            />
+        );
+    }
+
     private renderNodes = () => {
         const nodes = this.props.linkStore!.nodes;
         return nodes.map(n => this.renderNode(n));
@@ -130,25 +146,26 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         );
     }
 
-    private renderLinkDecorator = () => {
-        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
-
-        const link = this.props.linkStore!.link;
-        if (!link) return null;
+    private renderStartMarker = () => {
+        const startMarkerCoordinates = this.props.linkStore!.startMarkerCoordinates;
+        if (!startMarkerCoordinates) return null;
 
         return (
-            <ArrowDecorator
-                color='#000'
-                geometry={link!.geometry}
-                hideOnEventName='editable:vertex:drag'
-                showOnEventName='editable:vertex:dragend'
+            <StartMarker
+                latLng={startMarkerCoordinates}
+                color={START_MARKER_COLOR}
             />
         );
     }
 
     render() {
         const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
-        if (!isLinkViewVisible) return null;
+        if (!isLinkViewVisible) return this.renderStartMarker();
+
+        const link = this.props.linkStore!.link;
+        if (!link || !link.geometry) {
+            return null;
+        }
 
         this.drawEditableLink();
 
@@ -156,6 +173,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             <>
                 {this.renderLinkDecorator()}
                 {this.renderNodes()}
+                {this.renderStartMarker()}
             </>
         );
     }

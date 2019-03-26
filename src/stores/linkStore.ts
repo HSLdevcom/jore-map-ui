@@ -12,12 +12,15 @@ export class LinkStore {
     @observable private _link: ILink | null;
     @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
+    // variable for creating new link:
+    @observable private _startMarkerCoordinates: LatLng | null;
     private _undoStore: UndoStore<UndoState>;
 
     constructor() {
         this._nodes = [];
         this._link = null;
         this._oldLink = null;
+        this._startMarkerCoordinates = null;
         this._undoStore = new UndoStore();
     }
 
@@ -29,6 +32,17 @@ export class LinkStore {
     @computed
     get nodes() {
         return this._nodes;
+    }
+
+    @computed
+    get startMarkerCoordinates() {
+        return this._startMarkerCoordinates;
+    }
+
+    @action
+    public init = (link: ILink, nodes: INode[]) => {
+        this.setLink(link);
+        this.setNodes(nodes);
     }
 
     @action
@@ -73,10 +87,16 @@ export class LinkStore {
     }
 
     @action
+    public setStartMarkerCoordinates = (startMarkerCoordinates: LatLng | null) => {
+        this._startMarkerCoordinates = startMarkerCoordinates;
+    }
+
+    @action
     public clear = () => {
         this._link = null;
         this._nodes = [];
         this._oldLink = null;
+        this._startMarkerCoordinates = null;
         this._undoStore.clear();
     }
 

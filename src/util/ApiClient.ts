@@ -1,4 +1,5 @@
 import endpoints from '~/enums/endpoints';
+import IError from '~/models/IError';
 import FetchStatusCode from '~/enums/fetchStatusCode';
 import ApiClientHelper from './apiClientHelper';
 
@@ -11,11 +12,6 @@ enum RequestMethod {
 
 interface IAuthorizationRequest {
     code: string;
-}
-
-export class IRequestError {
-    errorCode: FetchStatusCode;
-    message: string;
 }
 
 const API_URL = process.env.API_URL || 'http://localhost:3040';
@@ -51,7 +47,7 @@ class ApiClient {
 
     private sendRequest = async (method: RequestMethod, endpoint: endpoints, object: any) => {
         const formattedObject = ApiClientHelper.format(object);
-        let error : (IRequestError | null) = null;
+        let error : (IError | null) = null;
 
         try {
             const response = await fetch(this.getUrl(endpoint), {
@@ -73,12 +69,13 @@ class ApiClient {
                 return await response.text();
             }
             error = {
+                name: 'Failed to fetch',
                 errorCode: response.status,
                 message: response.statusText,
             };
-        } catch (err) {
-            console.log(err); // tslint:disable-line no-console
+        } catch {
             error = {
+                name: 'Connectivity error',
                 errorCode: FetchStatusCode.CONNECTION_ERROR,
                 message: 'Yhteysongelma',
             };

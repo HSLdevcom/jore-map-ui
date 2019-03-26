@@ -43,6 +43,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         <NodeView {...props} isNewNode={true} />
     private renderNodeView = (props: any) =>
         <NodeView {...props} isNewNode={false} />
+    private renderNewLinkView = (props: any) =>
+        <LinkView {...props} isNewLink={true} />
+    private renderLinkView = (props: any) =>
+        <LinkView {...props} isNewLink={false} />
     private renderAddNewRoutePathView = (props: any) =>
         <RoutePathView {...props} isNewRoutePath={true} />
     private renderRoutePathView = (props: any) =>
@@ -74,8 +78,13 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         />
                         <Route
                             exact={true}
+                            path={subSites.newLink}
+                            component={this.renderNewLinkView}
+                        />
+                        <Route
+                            exact={true}
                             path={subSites.link}
-                            component={LinkView}
+                            component={this.renderLinkView}
                         />
                         <Route
                             exact={true}

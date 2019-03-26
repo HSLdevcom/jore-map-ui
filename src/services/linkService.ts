@@ -32,12 +32,30 @@ class LinkService {
         return LinkFactory.createLinkFromExternalLink(queryResult.data.link);
     }
 
+    public static fetchLinks = async(startNodeId: string, endNodeId: string)
+        : Promise<ILink[]> => {
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+            { query: GraphqlQueries.getLinksQuery(),
+                variables: { startNodeId, endNodeId } },
+        );
+        const queriedLinks = queryResult.data.getLinks.nodes;
+        return queriedLinks
+            .map((link: IExternalLink) =>
+            LinkFactory.createLinkFromExternalLink(link),
+        );
+    }
+
     public static updateLink = async (link: ILink) => {
         const simplifiedLink = {
             ...link,
             geometry: link.geometry.map(coor => new LatLng(coor.lat, coor.lng)),
         };
         await ApiClient.updateObject(endpoints.LINK, simplifiedLink);
+        await apolloClient.clearStore();
+    }
+
+    public static createLink = async (link: ILink) => {
+        await ApiClient.createObject(endpoints.LINK, link);
         await apolloClient.clearStore();
     }
 }
