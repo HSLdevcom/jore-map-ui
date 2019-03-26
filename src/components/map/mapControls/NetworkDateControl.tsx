@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react';
 import { observer } from 'mobx-react';
 import * as s from './NetworkDateControl.scss';
 
-const networkDateControl = observer(({ selectDate }:{selectDate:(e: ChangeEvent) => void}) => (
+const NetworkDateControl = observer(({ selectDate }:{selectDate:(e: ChangeEvent) => void}) => (
     <div className={s.networkDateControlView}>
         <label>
             Tarkkailupäivämäärä
@@ -11,4 +11,4 @@ const networkDateControl = observer(({ selectDate }:{selectDate:(e: ChangeEvent)
     </div>
 ));
 
-export default networkDateControl;
+export default NetworkDateControl;
