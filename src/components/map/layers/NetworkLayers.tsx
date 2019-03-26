@@ -54,7 +54,7 @@ function getGeoServerUrl(layerName: string) {
 @inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'routePathStore', 'toolbarStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
-    reactionDisposer = {};
+    private reactionDisposer = {};
 
     private parseDateRangesString(dateRangesString?: string) {
         if (!dateRangesString) return undefined;
