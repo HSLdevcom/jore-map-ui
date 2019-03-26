@@ -154,7 +154,10 @@ export class NodeStore {
     @action
     public updateStop = (property: string, value: string|number|Date) => {
         if (!this.node) return;
-        this._node!.stop![property] = value;
+        this._node!.stop = {
+            ...this._node!.stop!,
+            [property]: value,
+        };
     }
 
     @computed
