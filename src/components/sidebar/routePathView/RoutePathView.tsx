@@ -13,6 +13,7 @@ import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import DialogStore from '~/stores/dialogStore';
+import routePathValidationModel from '~/validation/models/routePathValidationModel';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -28,12 +29,6 @@ import RoutePathTabs from './RoutePathTabs';
 import RoutePathHeader from './RoutePathHeader';
 import * as s from './routePathView.scss';
 
-interface IRoutePathViewState {
-    isLoading: boolean;
-    invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
-}
-
 interface IRoutePathViewProps {
     errorStore?: ErrorStore;
     routePathStore?: RoutePathStore;
@@ -41,6 +36,12 @@ interface IRoutePathViewProps {
     toolbarStore?: ToolbarStore;
     match?: match<any>;
     isNewRoutePath: boolean;
+}
+
+interface IRoutePathViewState {
+    isLoading: boolean;
+    invalidPropertiesMap: object;
+    isEditingDisabled: boolean;
 }
 
 @inject('routePathStore', 'networkStore', 'toolbarStore', 'errorStore')
@@ -82,6 +83,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 this.props.routePathStore!.onRoutePathLinksChanged();
             },
         );
+        this.validateAllProperties(routePathValidationModel, this.props.routePathStore!.routePath);
+
         this.setState({
             isLoading: false,
         });
@@ -142,14 +145,20 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
     }
 
+    private onChange = (property: string) => (value: any) => {
+        this.props.routePathStore!.updateRoutePathProperty(property, value);
+        this.validateProperty(routePathValidationModel[property], property, value);
+    }
+
     public renderTabContent = () => {
         if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
                 <RoutePathInfoTab
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
-                    markInvalidProperties={this.markInvalidProperties}
                     isNewRoutePath={this.props.isNewRoutePath}
+                    onChange={this.onChange}
+                    invalidPropertiesMap={this.state.invalidPropertiesMap}
                 />
             );
         }
