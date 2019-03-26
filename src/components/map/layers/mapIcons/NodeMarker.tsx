@@ -8,6 +8,7 @@ import { INode } from '~/models/index';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
+import EventManager from '~/util/EventManager';
 import NodeTypeHelper from '~/util/nodeTypeHelper';
 import * as s from './nodeMarker.scss';
 
@@ -36,6 +37,7 @@ interface INodeMarkerProps {
     isDraggable?: boolean;
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
     isHighlighted?: boolean;
+    onClickEventParams?: any;
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
@@ -179,6 +181,15 @@ class NodeMarker extends Component<INodeMarkerProps> {
         this.props.isSelected && this.props.isDraggable
     )
 
+    private onMarkerClick = () => {
+        if (this.props.onClick) {
+            this.props.onClick();
+        }
+        if (this.props.onClickEventParams) {
+            EventManager.trigger('nodeClick', this.props.onClickEventParams);
+        }
+    }
+
     render() {
 
         const icon = createDivIcon(
@@ -190,7 +201,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             <>
                 <Marker
                     onContextMenu={this.props.onContextMenu}
-                    onClick={this.props.onClick}
+                    onClick={this.onMarkerClick}
                     draggable={this.props.isDraggable}
                     icon={icon}
                     position={this.props.node.coordinates}

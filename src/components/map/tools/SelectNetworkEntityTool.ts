@@ -1,4 +1,5 @@
 import ToolbarTool from '~/enums/toolbarTool';
+import EventManager from '~/util/EventManager';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -9,11 +10,17 @@ import BaseTool from './BaseTool';
  */
 class SelectNetworkEntityTool implements BaseTool {
     public toolType = ToolbarTool.SelectNetworkEntity;
-    public activate() {}
-    public deactivate() {}
+    public activate() {
+        EventManager.on('networkNodeClick', this.onNetworkNodeClick);
+        EventManager.on('networkLinkClick', this.onNetworkLinkClick);
+    }
+    public deactivate() {
+        EventManager.off('networkNodeClick', this.onNetworkNodeClick);
+        EventManager.off('networkLinkClick', this.onNetworkLinkClick);
+    }
 
-    public onNetworkNodeClick = async (clickEvent: any) => {
-        const nodeId = clickEvent.sourceTarget.properties.soltunnus;
+    private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
+        const nodeId = clickEvent.detail.nodeId;
 
         const nodeViewLink = routeBuilder
             .to(SubSites.node)
@@ -21,11 +28,10 @@ class SelectNetworkEntityTool implements BaseTool {
             .toLink();
         navigator.goTo(nodeViewLink);
     }
-    public onNetworkLinkClick = async (clickEvent: any) => {
-        const properties = clickEvent.sourceTarget.properties;
-        const startNodeId = properties.lnkalkusolmu;
-        const endNodeId = properties.lnkloppusolmu;
-        const transitType = properties.lnkverkko;
+    private onNetworkLinkClick = async (clickEvent: CustomEvent) => {
+        const startNodeId = clickEvent.detail.startNodeId;
+        const endNodeId = clickEvent.detail.endNodeId;
+        const transitType = clickEvent.detail.transitType;
 
         const linkViewLink = routeBuilder
             .to(SubSites.link)

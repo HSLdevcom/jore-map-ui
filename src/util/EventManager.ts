@@ -1,5 +1,7 @@
 
-type eventName = 'undo' | 'redo' | 'mapClick' | 'nodeClick' | 'networkNodeClick';
+type eventName = 'undo' | 'redo'
+    | 'mapClick' | 'nodeClick'
+    | 'networkNodeClick' | 'networkLinkClick';
 
 class EventManager {
 

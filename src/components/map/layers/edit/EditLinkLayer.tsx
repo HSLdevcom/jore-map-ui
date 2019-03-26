@@ -141,14 +141,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 key={node.id}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDraggable={false}
-                onClick={this.onNodeClick(node.id)}
+                onClickEventParams={{ nodeId: node.id }}
                 node={node}
             />
         );
-    }
-
-    private onNodeClick = (nodeId: string) => () => {
-        EventManager.trigger('nodeClick', { nodeId });
     }
 
     private renderStartMarker = () => {
