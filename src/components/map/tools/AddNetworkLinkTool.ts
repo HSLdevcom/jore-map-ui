@@ -1,6 +1,7 @@
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
+import EventManager from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
 import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
@@ -18,12 +19,19 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
         NetworkStore.showMapLayer(MapLayer.link);
+        EventManager.on('nodeClick', this._onNodeClick);
+        EventManager.on('networkNodeClick', this._onNodeClick);
     }
     public deactivate() {
         this.resetTool();
+        EventManager.off('nodeClick', this._onNodeClick);
+        EventManager.off('networkNodeClick', this._onNodeClick);
     }
     public onNetworkNodeClick = async (clickEvent: any) => {
-        const nodeId = clickEvent.sourceTarget.properties.soltunnus;
+
+    }
+    private _onNodeClick = async (clickEvent: CustomEvent) => {
+        const nodeId = clickEvent.detail.nodeId;
         if (!this.startNodeId) {
             this.startNodeId = nodeId;
             try {
@@ -35,6 +43,9 @@ class AddNetworkLinkTool implements BaseTool {
         } else {
             const startNodeId = this.startNodeId;
             const endNodeId = nodeId;
+            if (startNodeId === endNodeId) return;
+            // TODO?
+            // if (!this.isNewLinkValid(clickEvent, startNodeId, endNodeId)) return;
 
             const newLinkViewLink = routeBuilder
                 .to(SubSites.newLink)
@@ -48,6 +59,23 @@ class AddNetworkLinkTool implements BaseTool {
             ToolbarStore.selectTool(null);
         }
     }
+
+    // TODO?
+    // If there is a link opened
+    // * the new link has to start from where current link ends
+    // * the new link has to end where the current link starts
+    // private isNewLinkValid =
+    // (clickEvent: CustomEvent, startNodeId: string, endNodeId: string) => {
+    //     const currentLink = LinkStore.link;
+    //     if (!currentLink) return true;
+    //     if (clickEvent.type === 'nodeClick') {
+    //         TODO: throw error if true
+    //         if (currentLink.endNode.id === startNodeId) return true;
+    //         if (currentLink.startNode.id === endNodeId) return true;
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     private resetTool = () => {
         this.startNodeId = null;

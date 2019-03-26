@@ -10,6 +10,7 @@ import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
+import EventManager from '~/util/EventManager';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import TransitType from '~/enums/transitType';
 import NodeType from '~/enums/nodeType';
@@ -236,6 +237,13 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         return { className: s.hidden };
     }
 
+    private onNetworkNodeClick = (clickEvent: any) => {
+        EventManager.trigger(
+            'networkNodeClick',
+            { nodeId: clickEvent.sourceTarget.properties.soltunnus },
+        );
+    }
+
     render() {
         const mapZoomLevel = this.props.mapStore!.zoom;
         if (mapZoomLevel <= Constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
@@ -247,11 +255,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         const nodeSize = this.props.networkStore!.nodeSize;
 
         const selectedTool = this.props.toolbarStore!.selectedTool;
-        let onNetworkNodeClick: Function | undefined;
         let onNetworkLinkClick: Function | undefined;
         if (selectedTool) {
-            onNetworkNodeClick = selectedTool.onNetworkNodeClick ?
-                selectedTool.onNetworkNodeClick : undefined;
             onNetworkLinkClick = selectedTool.onNetworkLinkClick ?
                 selectedTool.onNetworkLinkClick : undefined;
         }
@@ -285,7 +290,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         nodeSize={nodeSize}
-                        onClick={onNetworkNodeClick!}
+                        onClick={this.onNetworkNodeClick}
                         key={GeoserverLayer.Node}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
                         interactive={true}
