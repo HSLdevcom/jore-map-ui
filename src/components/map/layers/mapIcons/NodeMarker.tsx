@@ -129,11 +129,11 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private renderStopRadiusCircle = () => {
         const nodeType = this.props.node.type;
 
-        if (!(this.props.isSelected
-            && nodeType === NodeType.STOP
-            && this.props.node.stop!.radius)) {
-            return null;
-        }
+        if (!this.props.isSelected
+            || nodeType !== NodeType.STOP
+            || !this.props.node.stop
+            || !this.props.node.stop!.radius) return null;
+
         return (
             <Circle
                 className={s.stopCircle}
