@@ -13,6 +13,7 @@ ARG APP_BUILD_DATE
 ENV BUILD_DATE=${APP_BUILD_DATE}
 
 RUN yarn install
+RUN yarn test:ci
 RUN yarn build
 RUN yarn add serve
 

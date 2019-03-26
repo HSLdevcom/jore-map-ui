@@ -2,19 +2,20 @@ import React from 'react';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
-    key: string;
-    value: string;
+    value: string|number;
+    label: string;
 }
 
 interface IDropdownBaseProps {
     label?: string;
-    selected: string;
+    selected?: string;
     disabled?: boolean;
+    emptyItem?: IDropdownItem;
     onChange: (value: any) => void;
 }
 
 interface IDropdownProps extends IDropdownBaseProps {
-    items: string[] | IDropdownItem[];
+    items: IDropdownItem[];
 }
 
 interface IDropdownWithCodeListProps extends IDropdownBaseProps {
@@ -30,31 +31,28 @@ const usesCodeList = (
     );
 };
 
-class Dropdown extends React.Component
-<IDropdownProps | IDropdownWithCodeListProps> {
+class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListProps> {
     onChange = (event: any) => {
         this.props.onChange(event.target.value);
     }
 
     public render() {
-        let dropDownItemList: IDropdownItem[];
+        let dropDownItemList: IDropdownItem[] = [];
 
         if (usesCodeList(this.props)) {
             const codeList = this.props.codeList;
-            dropDownItemList = Object.keys(codeList).map(
-                key => ({ key, value: codeList[key] }),
-            );
+            dropDownItemList = dropDownItemList.concat(Object.keys(codeList).map(
+                value => ({ value, label: codeList[value] }),
+            ));
         } else {
-            const items = this.props.items;
-            if (items.length > 0 && typeof items[0] === 'string') {
-                dropDownItemList =
-                    (items as string[]).map((i: string) => ({ key: i, value: i }));
-            } else {
-                dropDownItemList = items as IDropdownItem[];
-            }
+            dropDownItemList = dropDownItemList.concat(this.props.items);
         }
 
-        const selectedItem = dropDownItemList.find(item => item.key === this.props.selected);
+        if (this.props.emptyItem) {
+            dropDownItemList.unshift(this.props.emptyItem);
+        }
+
+        const selectedItem = dropDownItemList.find(item => item.value === this.props.selected);
 
         return (
             <div className={s.formItem}>
@@ -78,10 +76,10 @@ class Dropdown extends React.Component
                             dropDownItemList.map((item) => {
                                 return (
                                     <option
-                                        key={item.key}
-                                        value={item.key}
+                                        key={item.value ? item.value : 'empty'}
+                                        value={item.value}
                                     >
-                                        {item.value}
+                                        {item.label}
                                     </option>
                                 );
                             })
