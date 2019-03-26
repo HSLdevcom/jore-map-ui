@@ -204,8 +204,10 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 this.props.routePathStore!.routePath!.transitType,
                 this.props.routePathStore!.routePath!.routePathLinks,
             );
-            this.props.routePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
-            this.props.routePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
+            if (queryResult) {
+                this.props.routePathStore!.setNeighborRoutePathLinks(queryResult.routePathLinks);
+                this.props.routePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
+            }
         }
     }
 

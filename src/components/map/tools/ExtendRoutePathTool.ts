@@ -50,8 +50,10 @@ class ExtendRoutePathTool implements BaseTool {
                 RoutePathStore!.routePath!.transitType,
                 RoutePathStore!.routePath!.routePathLinks,
             );
-        RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
-        RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
+        if (queryResult) {
+            RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
+            RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
+        }
     }
 
     private onNodeClick = async (clickEvent: CustomEvent) => {
@@ -65,8 +67,10 @@ class ExtendRoutePathTool implements BaseTool {
                 RoutePathStore!.routePath!.transitType,
                 RoutePathStore!.routePath!.routePathLinks,
             );
-        RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
-        RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
+        if (queryResult) {
+            RoutePathStore!.setNeighborRoutePathLinks(queryResult.routePathLinks);
+            RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
+        }
     }
 
     private isNetworkNodesInteractive() {
