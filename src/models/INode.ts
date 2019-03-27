@@ -1,7 +1,16 @@
 import * as L from 'leaflet';
 import TransitType from '~/enums/transitType';
+import NodeType from '~/enums/nodeType';
 import IStop from './IStop';
-import INodeBase from './baseModels/INodeBase';
+
+interface INodePrimaryKey {
+    id: string;
+}
+
+interface INodeBase extends INodePrimaryKey {
+    shortId?: string; // TODO: split as identifierLetter identifierString (solkirjain sollistunnus)
+    type: NodeType;
+}
 
 export default interface INode extends INodeBase {
     stop?: IStop;
@@ -13,3 +22,8 @@ export default interface INode extends INodeBase {
     modifiedOn: string;
     modifiedBy: string;
 }
+
+export {
+    INodePrimaryKey,
+    INodeBase,
+};
