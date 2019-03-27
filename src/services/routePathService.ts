@@ -30,10 +30,10 @@ class RoutePathService {
     }
 
     public static createRoutePath = async (routePath: IRoutePath) => {
-        const routePathKey =
+        const response =
             await ApiClient.createObject(endpoints.ROUTEPATH, routePath) as IRoutePathPrimaryKey;
         await apolloClient.clearStore();
-        return routePathKey;
+        return response;
     }
 }
 

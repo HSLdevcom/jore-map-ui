@@ -174,14 +174,14 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         let redirectUrl: string | undefined;
         try {
             if (this.props.isNewRoutePath) {
-                const routePathKey =
+                const routePathPrimaryKey =
                     await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
                     .toTarget([
-                        routePathKey.routeId,
-                        moment(routePathKey.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                        routePathKey.direction,
+                        routePathPrimaryKey.routeId,
+                        moment(routePathPrimaryKey.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                        routePathPrimaryKey.direction,
                     ].join(','))
                     .toLink();
             } else {
