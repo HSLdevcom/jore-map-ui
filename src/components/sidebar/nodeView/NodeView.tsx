@@ -200,16 +200,16 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     </SidebarHeader>
                     <div className={s.form}>
                         <div className={s.formSection}>
-                            <div className={s.flexRow}>
+                            <div className={classnames(s.flexRow, s.idRow)}>
                                 <InputContainer
-                                    label='ID KIRJAIN'
+                                    label='KIRJAIN'
                                     disabled={isEditingDisabled}
                                     value={node.shortIdLetter}
                                     onChange={this.onNodePropertyChange('shortIdLetter')}
                                     validationResult={invalidPropertiesMap['shortIdLetter']}
                                 />
                                 <InputContainer
-                                    label='ID TUNNUS'
+                                    label='TUNNUS'
                                     disabled={isEditingDisabled}
                                     value={node.shortIdString}
                                     onChange={this.onNodePropertyChange('shortIdString')}
