@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import ReactDatePicker from 'react-date-picker';
 import { IoMdCalendar } from 'react-icons/io';
 import * as s from './datePicker.scss';
@@ -8,7 +9,7 @@ interface IDatePickerProps {
     onChange: (date: Date) => void;
 }
 
-const datePicker = (props: IDatePickerProps) => (
+const DatePicker = observer((props: IDatePickerProps) => (
     <div className={s.datepickerContainer}>
         <ReactDatePicker
             value={(props.value as Date)}
@@ -18,6 +19,6 @@ const datePicker = (props: IDatePickerProps) => (
             clearIcon={null}
         />
   </div>
-);
+));
 
-export default datePicker;
+export default DatePicker;

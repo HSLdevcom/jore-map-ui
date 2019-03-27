@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import * as s from './toggleView.scss';
 
@@ -6,7 +7,7 @@ interface IToggleViewProps {
     children: JSX.Element[];
 }
 
-const ToggleView = (props: IToggleViewProps) => {
+const ToggleView = observer((props: IToggleViewProps) => {
     return (
         <div className={s.toggleView}>
             <div className={s.buttonContainer}>
@@ -14,7 +15,7 @@ const ToggleView = (props: IToggleViewProps) => {
             </div>
         </div>
     );
-};
+});
 
 interface IToggleItemProps {
     icon?: JSX.Element;
@@ -23,7 +24,7 @@ interface IToggleItemProps {
     onClick(): void;
 }
 
-export const ToggleItem = (props: IToggleItemProps) => {
+export const ToggleItem = observer((props: IToggleItemProps) => {
     return (
         <div
             className={s.buttonContainer}
@@ -42,6 +43,6 @@ export const ToggleItem = (props: IToggleItemProps) => {
             </div>
         </div>
     );
-};
+});
 
 export default ToggleView;

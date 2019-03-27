@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import * as s from './loader.scss';
 
 export enum LoaderSize {
@@ -11,12 +12,8 @@ interface ILoaderProps {
     size?: LoaderSize;
 }
 
-class Loader extends React.Component<ILoaderProps> {
-    render() {
-        return (
-            <div id={s.loader} className={s[this.props.size! || LoaderSize.MEDIUM]}/>
-        );
-    }
-}
+const Loader = observer((props: ILoaderProps) =>
+    <div id={s.loader} className={s[props.size! || LoaderSize.MEDIUM]}/>,
+);
 
 export default Loader;
