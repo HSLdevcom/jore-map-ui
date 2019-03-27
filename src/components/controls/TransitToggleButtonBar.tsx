@@ -11,53 +11,50 @@ interface ITtransitToggleButtonBarProps {
     blurred?: boolean;
 }
 
-@observer
-class TransitToggleButtonBar extends React.Component<ITtransitToggleButtonBarProps> {
-    toggleType = (type: TransitType) => {
-        if (this.props.toggleSelectedTransitType && !this.props.disabled) {
-            this.props.toggleSelectedTransitType(type);
+const TransitToggleButtonBar = observer((props: ITtransitToggleButtonBarProps) => {
+    const toggleType = (type: TransitType) => {
+        if (props.toggleSelectedTransitType && !props.disabled) {
+            props.toggleSelectedTransitType(type);
         }
-    }
+    };
 
-    public render() {
-        return (
-            <div className={s.transitToggleButtonBarView}>
-                <TransitToggleButton
-                    toggleActivity={this.toggleType}
-                    toggled={this.props.selectedTransitTypes.includes(TransitType.BUS)}
-                    type={TransitType.BUS}
-                    disabled={this.props.disabled}
-                />
-                <TransitToggleButton
-                    toggleActivity={this.toggleType}
-                    toggled={this.props.selectedTransitTypes.includes(TransitType.TRAM)}
-                    type={TransitType.TRAM}
-                    disabled={this.props.disabled}
-                />
-                <TransitToggleButton
-                    toggleActivity={this.toggleType}
-                    toggled={this.props.selectedTransitTypes.includes(TransitType.TRAIN)}
-                    type={TransitType.TRAIN}
-                    disabled={this.props.disabled}
-                />
-                <TransitToggleButton
-                    toggleActivity={this.toggleType}
-                    toggled={this.props.selectedTransitTypes.includes(TransitType.SUBWAY)}
-                    type={TransitType.SUBWAY}
-                    disabled={this.props.disabled}
-                />
-                <TransitToggleButton
-                    toggleActivity={this.toggleType}
-                    toggled={this.props.selectedTransitTypes.includes(TransitType.FERRY)}
-                    type={TransitType.FERRY}
-                    disabled={this.props.disabled}
-                />
-                { this.props.blurred &&
-                    <div className={s.blurredOverlay} />
-                }
-            </div>
-        );
-    }
-}
+    return (
+        <div className={s.transitToggleButtonBarView}>
+            <TransitToggleButton
+                toggleActivity={toggleType}
+                toggled={props.selectedTransitTypes.includes(TransitType.BUS)}
+                type={TransitType.BUS}
+                disabled={props.disabled}
+            />
+            <TransitToggleButton
+                toggleActivity={toggleType}
+                toggled={props.selectedTransitTypes.includes(TransitType.TRAM)}
+                type={TransitType.TRAM}
+                disabled={props.disabled}
+            />
+            <TransitToggleButton
+                toggleActivity={toggleType}
+                toggled={props.selectedTransitTypes.includes(TransitType.TRAIN)}
+                type={TransitType.TRAIN}
+                disabled={props.disabled}
+            />
+            <TransitToggleButton
+                toggleActivity={toggleType}
+                toggled={props.selectedTransitTypes.includes(TransitType.SUBWAY)}
+                type={TransitType.SUBWAY}
+                disabled={props.disabled}
+            />
+            <TransitToggleButton
+                toggleActivity={toggleType}
+                toggled={props.selectedTransitTypes.includes(TransitType.FERRY)}
+                type={TransitType.FERRY}
+                disabled={props.disabled}
+            />
+            { props.blurred &&
+                <div className={s.blurredOverlay} />
+            }
+        </div>
+    );
+});
 
 export default TransitToggleButtonBar;

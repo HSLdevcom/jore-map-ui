@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import { INode } from '~/models';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeType from '~/enums/nodeType';
@@ -11,7 +12,7 @@ interface INodeCoordinatesListView {
     onChangeCoordinates: (coordinatesType: NodeLocationType) => (coordinates: L.LatLng) => void;
 }
 
-const nodeCoordinatesListView = (props: INodeCoordinatesListView) => {
+const nodeCoordinatesListView = observer((props: INodeCoordinatesListView) => {
     return (
         <div className={s.nodeCoordinatesListView}>
             <NodeCoordinatesView
@@ -41,6 +42,6 @@ const nodeCoordinatesListView = (props: INodeCoordinatesListView) => {
             }
         </div>
     );
-};
+});
 
 export default nodeCoordinatesListView;

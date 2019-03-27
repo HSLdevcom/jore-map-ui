@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
@@ -31,65 +32,63 @@ const usesCodeList = (
     );
 };
 
-class Dropdown extends React.Component<IDropdownProps | IDropdownWithCodeListProps> {
-    onChange = (event: any) => {
-        this.props.onChange(event.target.value);
+const Dropdown = observer((props: IDropdownProps | IDropdownWithCodeListProps) => {
+    const onChange = (event: any) => {
+        props.onChange(event.target.value);
+    };
+
+    let dropDownItemList: IDropdownItem[] = [];
+
+    if (usesCodeList(props)) {
+        const codeList = props.codeList;
+        dropDownItemList = dropDownItemList.concat(Object.keys(codeList).map(
+            value => ({ value, label: codeList[value] }),
+        ));
+    } else {
+        dropDownItemList = dropDownItemList.concat(props.items);
     }
 
-    public render() {
-        let dropDownItemList: IDropdownItem[] = [];
+    if (props.emptyItem) {
+        dropDownItemList.unshift(props.emptyItem);
+    }
 
-        if (usesCodeList(this.props)) {
-            const codeList = this.props.codeList;
-            dropDownItemList = dropDownItemList.concat(Object.keys(codeList).map(
-                value => ({ value, label: codeList[value] }),
-            ));
-        } else {
-            dropDownItemList = dropDownItemList.concat(this.props.items);
-        }
+    const selectedItem = dropDownItemList.find(item => item.value === props.selected);
 
-        if (this.props.emptyItem) {
-            dropDownItemList.unshift(this.props.emptyItem);
-        }
-
-        const selectedItem = dropDownItemList.find(item => item.value === this.props.selected);
-
-        return (
-            <div className={s.formItem}>
-                <div className={s.dropdownView}>
-                    {this.props.label &&
-                        <div className={s.inputLabel}>
-                            {this.props.label}
-                        </div>
+    return (
+        <div className={s.formItem}>
+            <div className={s.dropdownView}>
+                {props.label &&
+                    <div className={s.inputLabel}>
+                        {props.label}
+                    </div>
+                }
+                {props.disabled ?
+                    <div className={s.disableEditing}>
+                        {Boolean(selectedItem) ? selectedItem!.value : ''}
+                    </div>
+                :
+                    <select
+                        className={s.dropdown}
+                        value={props.selected}
+                        onChange={onChange}
+                    >
+                    {
+                        dropDownItemList.map((item) => {
+                            return (
+                                <option
+                                    key={item.value ? item.value : 'empty'}
+                                    value={item.value}
+                                >
+                                    {item.label}
+                                </option>
+                            );
+                        })
                     }
-                    {this.props.disabled ?
-                        <div className={s.disableEditing}>
-                            {Boolean(selectedItem) ? selectedItem!.value : ''}
-                        </div>
-                    :
-                        <select
-                            className={s.dropdown}
-                            value={this.props.selected}
-                            onChange={this.onChange}
-                        >
-                        {
-                            dropDownItemList.map((item) => {
-                                return (
-                                    <option
-                                        key={item.value ? item.value : 'empty'}
-                                        value={item.value}
-                                    >
-                                        {item.label}
-                                    </option>
-                                );
-                            })
-                        }
-                        </select>
-                    }
-                </div>
+                    </select>
+                }
             </div>
-        );
-    }
-}
+        </div>
+    );
+});
 
 export default Dropdown;

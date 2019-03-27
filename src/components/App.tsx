@@ -32,6 +32,24 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'loginStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
+
+    private renderApp = observer(() => (
+        <>
+            <NavigationBar />
+            <div className={s.appContent}>
+                <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
+                    <Sidebar
+                        location={this.props.location}
+                    />
+                </div>
+                <Map>
+                    <ErrorBar />
+                </Map>
+            </div>
+            <Dialog />
+        </>
+    ));
+
     constructor(props: IAppProps) {
         super(props);
         this.state = {
@@ -61,23 +79,6 @@ class App extends React.Component<IAppProps, IAppState> {
             isLoginInProgress: false,
         });
     }
-
-    private renderApp = (isFullscreen: boolean) => () => (
-        <>
-            <NavigationBar />
-            <div className={s.appContent}>
-                <div className={isFullscreen ? s.hidden : ''}>
-                    <Sidebar
-                        location={this.props.location}
-                    />
-                </div>
-                <Map>
-                    <ErrorBar />
-                </Map>
-            </div>
-            <Dialog />
-        </>
-    )
 
     private renderAfterLogin = () => {
         AuthService.authenticate(
@@ -111,7 +112,7 @@ class App extends React.Component<IAppProps, IAppState> {
                         component={Login}
                     />
                     <Route
-                        component={this.renderApp(this.props.mapStore!.isMapFullscreen)}
+                        component={this.renderApp}
                     />
                 </Switch>
             </div>
