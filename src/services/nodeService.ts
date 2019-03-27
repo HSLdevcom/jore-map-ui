@@ -42,10 +42,10 @@ class NodeService {
     }
 
     public static createNode = async (node: INode) => {
-        const newNodeResponse =
+        const response =
             await ApiClient.createObject(endpoints.NODE, node) as INodePrimaryKey;
         await apolloClient.clearStore();
-        return newNodeResponse.id;
+        return response.id;
     }
 }
 
