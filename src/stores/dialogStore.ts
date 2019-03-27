@@ -26,7 +26,7 @@ export class DialogStore {
 
     @computed
     get isDialogOpen(): boolean {
-        return this._message !== null || true;
+        return this._message !== null;
     }
 
     @action
