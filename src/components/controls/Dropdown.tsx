@@ -41,11 +41,11 @@ const Dropdown = observer((props: IDropdownProps | IDropdownWithCodeListProps) =
 
     if (usesCodeList(props)) {
         const codeList = props.codeList;
-        dropDownItemList = dropDownItemList.concat(Object.keys(codeList).map(
+        dropDownItemList = Object.keys(codeList).map(
             value => ({ value, label: codeList[value] }),
-        ));
+        );
     } else {
-        dropDownItemList = dropDownItemList.concat(props.items);
+        dropDownItemList = props.items;
     }
 
     if (props.emptyItem) {
@@ -76,7 +76,7 @@ const Dropdown = observer((props: IDropdownProps | IDropdownWithCodeListProps) =
                         dropDownItemList.map((item) => {
                             return (
                                 <option
-                                    key={item.value ? item.value : 'empty'}
+                                    key={item.value ? item.value : item.value}
                                     value={item.value}
                                 >
                                     {item.label}

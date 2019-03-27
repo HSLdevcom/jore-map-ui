@@ -2,10 +2,14 @@ import * as L from 'leaflet';
 import TransitType from '~/enums/transitType';
 import INode from './INode';
 
-export default interface ILink {
-    geometry: L.LatLng[];
+interface ILinkPrimaryKey {
+    transitType?: TransitType;
     startNode: INode;
     endNode: INode;
+}
+
+export default interface ILink extends ILinkPrimaryKey {
+    geometry: L.LatLng[];
     municipalityCode: string;
     streetName: string;
     length: number;
@@ -15,5 +19,8 @@ export default interface ILink {
     direction: string;
     modifiedBy: string;
     modifiedOn: Date;
-    transitType?: TransitType;
 }
+
+export {
+    ILinkPrimaryKey,
+};

@@ -16,6 +16,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
 import NodeService from '~/services/nodeService';
+import routeBuilder from '~/routing/routeBuilder';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -116,11 +117,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         let preventSetState = false;
         try {
             if (this.props.isNewNode) {
-                await NodeService.createNode(this.props.nodeStore!.node);
+                const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
                 preventSetState = true;
 
-                // TODO: remove this, should redirect to node/id instead
-                navigator.goTo(SubSites.home);
+                const url = routeBuilder
+                    .to(SubSites.node)
+                    .toTarget(nodeId)
+                    .toLink();
+                navigator.goTo(url);
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,
