@@ -63,6 +63,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         }
     }
 
+    componentDidUpdate(prevProps: INodeViewProps) {
+        if (prevProps.match!.params.id !== this.props.match!.params.id) {
+            this.props.nodeStore!.clear();
+            this.initExistingNode(this.props.match!.params.id);
+        }
+    }
+
     componentWillUnmount() {
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
