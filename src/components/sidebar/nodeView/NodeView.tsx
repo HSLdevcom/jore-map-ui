@@ -2,6 +2,8 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
+import { LatLng } from 'leaflet';
+import NodeFactory from '~/factories/nodeFactory';
 import { INode } from '~/models';
 import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -53,13 +55,16 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
-        const selectedNodeId = this.props.match!.params.id;
-
-        if (selectedNodeId) {
-            this.initExistingNode(selectedNodeId);
-        } else {
+        const params = this.props.match!.params.id;
+        if (this.props.isNewNode) {
+            const [lat, lng] = params.split(':');
+            const coordinate = new LatLng(lat, lng);
+            const newNode = NodeFactory.createNewNode(coordinate);
+            this.props.nodeStore!.init(newNode, []);
             const node = this.props.nodeStore!.node;
             this._validateAllProperties(node.type);
+        } else {
+            this.initExistingNode(params);
         }
     }
 
