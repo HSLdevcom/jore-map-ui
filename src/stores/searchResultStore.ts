@@ -1,6 +1,7 @@
 import { action, computed, observable, reaction } from 'mobx';
 import { ILine } from '~/models';
 import INodeBase from '~/models/baseModels/INodeBase';
+import NodeHelper from '~/util/nodeHelper';
 import TransitType from '~/enums/transitType';
 import SearchStore from './searchStore';
 
@@ -133,10 +134,10 @@ export class SearchResultStore {
 
     private getFilteredNodes = (searchInput: string) => {
         return this._allNodes.filter((node) => {
+            const shortId = NodeHelper.getShortId(node);
             return this.matchText(node.id, searchInput)
                 || (
-                    Boolean(node.shortId)
-                        && this.matchText(node.shortId!, searchInput)
+                    Boolean(shortId) && this.matchText(shortId, searchInput)
                 );
         });
     }

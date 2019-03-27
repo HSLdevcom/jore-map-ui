@@ -162,7 +162,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             (item as ILine).routes !== undefined ||
             (item as ILine).transitType !== undefined
         ) && (
-            (item as INodeBase).shortId === undefined ||
+            (item as INodeBase).shortIdLetter === undefined ||
+            (item as INodeBase).shortIdString === undefined ||
             (item as INodeBase).type === undefined
         );
     }

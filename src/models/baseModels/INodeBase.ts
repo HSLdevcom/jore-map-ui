@@ -2,6 +2,7 @@ import NodeType from '~/enums/nodeType';
 
 export default interface INodeBase {
     id: string;
-    shortId?: string; // TODO: split as identifierLetter identifierString (solkirjain sollistunnus)
+    shortIdLetter?: string;
+    shortIdString?: string;
     type: NodeType;
 }
