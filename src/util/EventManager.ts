@@ -1,5 +1,5 @@
 
-type eventName = 'undo' | 'redo' | 'mapClick';
+type eventName = 'undo' | 'redo' | 'mapClick' | 'geometryChange';
 
 class EventManager {
 

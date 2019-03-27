@@ -53,6 +53,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const selectedNodeId = this.props.match!.params.id;
 
         if (selectedNodeId) {
@@ -64,6 +65,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentWillUnmount() {
+        super.componentWillUnmount();
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
     }

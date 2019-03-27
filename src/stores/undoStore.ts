@@ -1,3 +1,5 @@
+import EventManager from '~/util/EventManager';
+
 class UndoStore<UndoObject> {
     private _undoObjects: UndoObject[];
     private _undoIndex: number;
@@ -7,6 +9,10 @@ class UndoStore<UndoObject> {
     }
 
     public addItem = (undoObject: UndoObject) => {
+        if (this._undoObjects.length !== 0) {
+            EventManager.trigger('geometryChange');
+        }
+
         // Remove the history of undo's because current state is changed
         this._undoObjects.splice(this._undoIndex + 1);
 
@@ -21,6 +27,7 @@ class UndoStore<UndoObject> {
 
         const previousUndoObject = this._undoObjects[this._undoIndex];
         undoCallback(previousUndoObject);
+        EventManager.trigger('geometryChange');
     }
 
     public redo = (undoCallback: (undoObject: UndoObject) => void): any => {
@@ -30,6 +37,7 @@ class UndoStore<UndoObject> {
 
         const nextUndoObject = this._undoObjects[this._undoIndex];
         undoCallback(nextUndoObject);
+        EventManager.trigger('geometryChange');
     }
 
     public clear = () => {
