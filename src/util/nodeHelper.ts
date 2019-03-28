@@ -1,5 +1,5 @@
 import NodeType from '~/enums/nodeType';
-import INodeBase from '~/models/baseModels/INodeBase';
+import { INodeBase } from '~/models/INode';
 import * as s from './nodeTypeColors.scss';
 
 class NodeHelper {
