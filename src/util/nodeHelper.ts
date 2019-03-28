@@ -47,8 +47,7 @@ class NodeHelper {
     public static getShortId = (node: INodeBase) => {
         if (node.shortIdString) {
             return node.shortIdLetter
-            ? node.shortIdLetter + node.shortIdString
-            : node.shortIdString;
+                ? node.shortIdLetter + node.shortIdString : node.shortIdString;
         }
         return '';
     }
