@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
 import municipalityCodeList from '~/codeLists/municipalityCodeList';
@@ -13,7 +14,8 @@ interface IStopFormProps {
     invalidPropertiesMap: object;
 }
 
-const stopForm = ({ stop, isEditingDisabled, onChange, invalidPropertiesMap }: IStopFormProps) => {
+const StopForm = observer((
+    { stop, isEditingDisabled, onChange, invalidPropertiesMap }: IStopFormProps) => {
     return (
         <div className={s.stopView}>
             <SidebarHeader
@@ -225,6 +227,6 @@ const stopForm = ({ stop, isEditingDisabled, onChange, invalidPropertiesMap }: I
             </div>
         </div>
     );
-};
+});
 
-export default stopForm;
+export default StopForm;

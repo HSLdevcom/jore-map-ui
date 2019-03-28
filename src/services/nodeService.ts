@@ -1,9 +1,9 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
-import INodeBase from '~/models/baseModels/INodeBase';
 import IExternalNode from '~/models/externals/IExternalNode';
 import NodeFactory from '~/factories/nodeFactory';
 import { INode, ILink } from '~/models';
+import { INodePrimaryKey, INodeBase } from '~/models/INode';
 import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
 import GraphqlQueries from './graphqlQueries';
@@ -42,8 +42,10 @@ class NodeService {
     }
 
     public static createNode = async (node: INode) => {
-        await ApiClient.createObject(endpoints.NODE, node);
+        const response =
+            await ApiClient.createObject(endpoints.NODE, node) as INodePrimaryKey;
         await apolloClient.clearStore();
+        return response.id;
     }
 }
 

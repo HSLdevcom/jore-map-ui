@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { toJS } from 'mobx';
+import { toJS, IReactionDisposer } from 'mobx';
 import classNames from 'classnames';
 import Moment from 'moment';
 import Constants from '~/constants/constants';
@@ -9,7 +9,7 @@ import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
+import EventManager from '~/util/EventManager';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import TransitType from '~/enums/transitType';
 import NodeType from '~/enums/nodeType';
@@ -28,7 +28,6 @@ interface INetworkLayersProps {
     nodeStore?: NodeStore;
     linkStore?: LinkStore;
     routePathStore?: RoutePathStore;
-    toolbarStore?: ToolbarStore;
 }
 
 interface ILinkProperties {
@@ -51,9 +50,11 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'routePathStore', 'toolbarStore')
+@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'routePathStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
+    private reactionDisposer = {};
+
     private parseDateRangesString(dateRangesString?: string) {
         if (!dateRangesString) return undefined;
         return dateRangesString.split(',')
@@ -236,6 +237,40 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         return { className: s.hidden };
     }
 
+    private onNetworkNodeClick = (clickEvent: any) => {
+        const properties = clickEvent.sourceTarget.properties;
+        EventManager.trigger(
+            'networkNodeClick',
+            {
+                nodeId: properties.soltunnus,
+                nodeType: properties.soltyyppi,
+            },
+        );
+    }
+
+    private onNetworkLinkClick = (clickEvent: any) => {
+        const properties = clickEvent.sourceTarget.properties;
+        EventManager.trigger(
+            'networkLinkClick',
+            {
+                startNodeId: properties.lnkalkusolmu,
+                endNodeId: properties.lnkloppusolmu,
+                transitType: properties.lnkverkko,
+            },
+        );
+    }
+
+    /**
+     * Sets a reaction object for GeoserverLayer (replaces existing one) so
+     * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
+     */
+    private setVectorgridLayerReaction = (
+        type: GeoserverLayer,
+    ) => (reaction: IReactionDisposer) => {
+        if (this.reactionDisposer[type]) this.reactionDisposer[type]();
+        this.reactionDisposer[type] = reaction;
+    }
+
     render() {
         const mapZoomLevel = this.props.mapStore!.zoom;
         if (mapZoomLevel <= Constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
@@ -245,25 +280,16 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;
         const nodeSize = this.props.networkStore!.nodeSize;
-
-        const selectedTool = this.props.toolbarStore!.selectedTool;
-        let onNetworkNodeClick: Function | undefined;
-        let onNetworkLinkClick: Function | undefined;
-        if (selectedTool) {
-            onNetworkNodeClick = selectedTool.onNetworkNodeClick ?
-                selectedTool.onNetworkNodeClick : undefined;
-            onNetworkLinkClick = selectedTool.onNetworkLinkClick ?
-                selectedTool.onNetworkLinkClick : undefined;
-        }
-
         return (
             <>
                 { this.props.networkStore!.isMapLayerVisible(MapLayer.link) &&
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
-                        onClick={onNetworkLinkClick!}
+                        onClick={this.onNetworkLinkClick!}
                         key={GeoserverLayer.Link}
+                        setVectorgridLayerReaction={
+                            this.setVectorgridLayerReaction(GeoserverLayer.Link)}
                         url={getGeoServerUrl(GeoserverLayer.Link)}
                         interactive={true}
                         vectorTileLayerStyles={this.getLinkStyle()}
@@ -274,6 +300,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         key={GeoserverLayer.Point}
+                        setVectorgridLayerReaction={
+                            this.setVectorgridLayerReaction(GeoserverLayer.Point)}
                         url={getGeoServerUrl(GeoserverLayer.Point)}
                         interactive={true}
                         vectorTileLayerStyles={this.getLinkPointStyle()}
@@ -285,8 +313,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         nodeSize={nodeSize}
-                        onClick={onNetworkNodeClick!}
+                        onClick={this.onNetworkNodeClick}
                         key={GeoserverLayer.Node}
+                        setVectorgridLayerReaction={
+                            this.setVectorgridLayerReaction(GeoserverLayer.Node)}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
                         interactive={true}
                         vectorTileLayerStyles={this.getNodeStyle()}

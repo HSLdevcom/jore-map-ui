@@ -170,9 +170,8 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                     <Dropdown
                         label='SUUNTA'
                         disabled={disabledIfUpdating}
-                        items={['1', '2']}
-                        codeList={directionCodeList}
                         selected={this.props.routePath.direction}
+                        codeList={directionCodeList}
                         onChange={onChange('direction')}
                     />
                     <Dropdown

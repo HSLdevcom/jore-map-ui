@@ -1,8 +1,15 @@
 import TransitType from '~/enums/transitType';
 import { ILineRoute } from '.';
 
-export default interface ILine {
-    transitType: TransitType;
+interface ILinePrimaryKey {
     id: string;
+}
+
+export default interface ILine extends ILinePrimaryKey {
+    transitType: TransitType;
     routes: ILineRoute[];
 }
+
+export {
+    ILinePrimaryKey,
+};

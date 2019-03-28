@@ -5,9 +5,9 @@ import { SearchResultStore } from '~/stores/searchResultStore';
 import { ILine } from '~/models';
 import LineService from '~/services/lineService';
 import NodeService from '~/services/nodeService';
+import { INodeBase } from '~/models/INode';
 import { ErrorStore } from '~/stores/errorStore';
 import { SearchStore } from '~/stores/searchStore';
-import INodeBase from '~/models/baseModels/INodeBase';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
 import LineItem from './LineItem';
@@ -162,7 +162,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             (item as ILine).routes !== undefined ||
             (item as ILine).transitType !== undefined
         ) && (
-            (item as INodeBase).shortId === undefined ||
+            (item as INodeBase).shortIdLetter === undefined ||
+            (item as INodeBase).shortIdString === undefined ||
             (item as INodeBase).type === undefined
         );
     }

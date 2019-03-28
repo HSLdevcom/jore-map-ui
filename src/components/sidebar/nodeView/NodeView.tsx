@@ -12,10 +12,12 @@ import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import navigator from '~/routing/navigator';
 import { Button, Dropdown } from '~/components/controls';
 import NodeLocationType from '~/types/NodeLocationType';
+import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
 import NodeService from '~/services/nodeService';
+import routeBuilder from '~/routing/routeBuilder';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -53,13 +55,17 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
-        const selectedNodeId = this.props.match!.params.id;
-
-        if (selectedNodeId) {
-            this.initExistingNode(selectedNodeId);
-        } else {
+        if (this.props.isNewNode) {
             const node = this.props.nodeStore!.node;
             this._validateAllProperties(node.type);
+        } else {
+            this.initExistingNode();
+        }
+    }
+
+    componentDidUpdate(prevProps: INodeViewProps) {
+        if (prevProps.match!.params.id !== this.props.match!.params.id) {
+            this.initExistingNode();
         }
     }
 
@@ -68,10 +74,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.mapStore!.setSelectedNodeId(null);
     }
 
-    private initExistingNode = async (selectedNodeId: string) => {
+    private initExistingNode = async () => {
         this.setState({ isLoading: true });
-        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+        this.props.nodeStore!.clear();
 
+        const selectedNodeId = this.props.match!.params.id;
+        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
         const node = await this.fetchNode(selectedNodeId);
         if (node) {
             const links = await this.fetchLinksForNode(node);
@@ -110,11 +118,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         let preventSetState = false;
         try {
             if (this.props.isNewNode) {
-                await NodeService.createNode(this.props.nodeStore!.node);
+                const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
                 preventSetState = true;
 
-                // TODO: remove this, should redirect to node/id instead
-                navigator.goTo(SubSites.home);
+                const url = routeBuilder
+                    .to(SubSites.node)
+                    .toTarget(nodeId)
+                    .toLink();
+                navigator.goTo(url);
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,
@@ -143,7 +154,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         if (nodeType === NodeType.STOP) {
             this.validateAllProperties(stopValidationModel, node.stop);
         } else {
-            this.validateAllProperties({}, node);
+            this.validateAllProperties(nodeValidationModel, node);
         }
     }
 
@@ -156,7 +167,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private onNodePropertyChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
         // TODO: add nodeValidationModel. Move stop's invalidPropertiesMap into stopFrom?
-        this.validateProperty('', property, value);
+        this.validateProperty(nodeValidationModel[property], property, value);
         if (property === 'type') {
             this._validateAllProperties(value);
         }
@@ -199,13 +210,20 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     </SidebarHeader>
                     <div className={s.form}>
                         <div className={s.formSection}>
-                            <div className={s.flexRow}>
+                            <div className={classnames(s.flexRow, s.idRow)}>
                                 <InputContainer
-                                    label='LYHYT ID'
+                                    label='KIRJAIN'
                                     disabled={isEditingDisabled}
-                                    value={node.shortId}
-                                    onChange={this.onNodePropertyChange('shortId')}
-                                    validationResult={invalidPropertiesMap['length']}
+                                    value={node.shortIdLetter}
+                                    onChange={this.onNodePropertyChange('shortIdLetter')}
+                                    validationResult={invalidPropertiesMap['shortIdLetter']}
+                                />
+                                <InputContainer
+                                    label='TUNNUS'
+                                    disabled={isEditingDisabled}
+                                    value={node.shortIdString}
+                                    onChange={this.onNodePropertyChange('shortIdString')}
+                                    validationResult={invalidPropertiesMap['shortIdString']}
                                 />
                                 <Dropdown
                                     label='TYYPPI'

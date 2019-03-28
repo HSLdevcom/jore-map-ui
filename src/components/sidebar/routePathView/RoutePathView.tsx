@@ -15,6 +15,8 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import DialogStore from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
 import { ErrorStore } from '~/stores/errorStore';
@@ -174,9 +176,19 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
 
     private save = async () => {
         this.setState({ isLoading: true });
+        let redirectUrl: string | undefined;
         try {
             if (this.props.isNewRoutePath) {
-                await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+                const routePathPrimaryKey =
+                    await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+                redirectUrl = routeBuilder
+                    .to(SubSites.routePath)
+                    .toTarget([
+                        routePathPrimaryKey.routeId,
+                        moment(routePathPrimaryKey.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                        routePathPrimaryKey.direction,
+                    ].join(','))
+                    .toLink();
             } else {
                 await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             }
@@ -191,6 +203,9 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             invalidPropertiesMap: {},
             isLoading: false,
         });
+        if (redirectUrl) {
+            navigator.goTo(redirectUrl);
+        }
     }
 
     private toggleIsEditing = () => {

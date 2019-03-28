@@ -4,6 +4,7 @@ import apolloClient from '~/util/ApolloClient';
 import { IRoutePath } from '~/models';
 import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
+import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 
@@ -29,8 +30,10 @@ class RoutePathService {
     }
 
     public static createRoutePath = async (routePath: IRoutePath) => {
-        await ApiClient.createObject(endpoints.ROUTEPATH, routePath);
+        const response =
+            await ApiClient.createObject(endpoints.ROUTEPATH, routePath) as IRoutePathPrimaryKey;
         await apolloClient.clearStore();
+        return response;
     }
 }
 
