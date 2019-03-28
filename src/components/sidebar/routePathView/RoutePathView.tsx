@@ -206,6 +206,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     private toggleIsEditing = () => {
+        this.props.routePathStore!.setNeighborRoutePathLinks([]);
         this.toggleIsEditingDisabled(
             this.props.routePathStore!.undoChanges,
         );
