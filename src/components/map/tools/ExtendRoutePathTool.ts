@@ -6,8 +6,6 @@ import { INode } from '~/models';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import BaseTool from './BaseTool';
 
-const TOOL_TYPE = ToolbarTool.AddNewRoutePathLink;
-
 export interface IExtendRoutePathNodeClickParams {
     node: INode;
     linkOrderNumber: number;
@@ -22,7 +20,7 @@ export interface IExtendRoutePathNetworkClickParams {
  * Tool for creating new routePath
  */
 class ExtendRoutePathTool implements BaseTool {
-    public toolType = TOOL_TYPE;
+    public toolType = ToolbarTool.AddNewRoutePathLink;
     public toolHelpHeader = 'Laajenna reitinsuuntaa';
     public toolHelpText = 'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista liilaksi merkittyjä linkkejä tai solmuja klikkailemalla.'; // tslint:disable-line max-line-length
     public activate() {
