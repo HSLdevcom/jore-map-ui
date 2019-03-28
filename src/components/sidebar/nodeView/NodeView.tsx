@@ -16,6 +16,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
 import NodeService from '~/services/nodeService';
+import routeBuilder from '~/routing/routeBuilder';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
@@ -53,13 +54,17 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
-        const selectedNodeId = this.props.match!.params.id;
-
-        if (selectedNodeId) {
-            this.initExistingNode(selectedNodeId);
-        } else {
+        if (this.props.isNewNode) {
             const node = this.props.nodeStore!.node;
             this._validateAllProperties(node.type);
+        } else {
+            this.initExistingNode();
+        }
+    }
+
+    componentDidUpdate(prevProps: INodeViewProps) {
+        if (prevProps.match!.params.id !== this.props.match!.params.id) {
+            this.initExistingNode();
         }
     }
 
@@ -68,10 +73,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.mapStore!.setSelectedNodeId(null);
     }
 
-    private initExistingNode = async (selectedNodeId: string) => {
+    private initExistingNode = async () => {
         this.setState({ isLoading: true });
-        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+        this.props.nodeStore!.clear();
 
+        const selectedNodeId = this.props.match!.params.id;
+        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
         const node = await this.fetchNode(selectedNodeId);
         if (node) {
             const links = await this.fetchLinksForNode(node);
@@ -110,11 +117,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         let preventSetState = false;
         try {
             if (this.props.isNewNode) {
-                await NodeService.createNode(this.props.nodeStore!.node);
+                const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
                 preventSetState = true;
 
-                // TODO: remove this, should redirect to node/id instead
-                navigator.goTo(SubSites.home);
+                const url = routeBuilder
+                    .to(SubSites.node)
+                    .toTarget(nodeId)
+                    .toLink();
+                navigator.goTo(url);
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,

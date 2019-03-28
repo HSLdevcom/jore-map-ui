@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { toJS } from 'mobx';
+import { toJS, IReactionDisposer } from 'mobx';
 import classNames from 'classnames';
 import Moment from 'moment';
 import Constants from '~/constants/constants';
@@ -53,6 +53,8 @@ function getGeoServerUrl(layerName: string) {
 @inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'routePathStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
+    private reactionDisposer = {};
+
     private parseDateRangesString(dateRangesString?: string) {
         if (!dateRangesString) return undefined;
         return dateRangesString.split(',')
@@ -258,6 +260,17 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         );
     }
 
+    /**
+     * Sets a reaction object for GeoserverLayer (replaces existing one) so
+     * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
+     */
+    private setVectorgridLayerReaction = (
+        type: GeoserverLayer,
+    ) => (reaction: IReactionDisposer) => {
+        if (this.reactionDisposer[type]) this.reactionDisposer[type]();
+        this.reactionDisposer[type] = reaction;
+    }
+
     render() {
         const mapZoomLevel = this.props.mapStore!.zoom;
         if (mapZoomLevel <= Constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
@@ -275,6 +288,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedDate={selectedDate}
                         onClick={this.onNetworkLinkClick!}
                         key={GeoserverLayer.Link}
+                        setVectorgridLayerReaction={
+                            this.setVectorgridLayerReaction(GeoserverLayer.Link)}
                         url={getGeoServerUrl(GeoserverLayer.Link)}
                         interactive={true}
                         vectorTileLayerStyles={this.getLinkStyle()}
@@ -285,6 +300,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         key={GeoserverLayer.Point}
+                        setVectorgridLayerReaction={
+                            this.setVectorgridLayerReaction(GeoserverLayer.Point)}
                         url={getGeoServerUrl(GeoserverLayer.Point)}
                         interactive={true}
                         vectorTileLayerStyles={this.getLinkPointStyle()}
@@ -298,6 +315,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         nodeSize={nodeSize}
                         onClick={this.onNetworkNodeClick}
                         key={GeoserverLayer.Node}
+                        setVectorgridLayerReaction={
+                            this.setVectorgridLayerReaction(GeoserverLayer.Node)}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
                         interactive={true}
                         vectorTileLayerStyles={this.getNodeStyle()}
