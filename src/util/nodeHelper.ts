@@ -1,7 +1,8 @@
 import NodeType from '~/enums/nodeType';
+import { INodeBase } from '~/models/INode';
 import * as s from './nodeTypeColors.scss';
 
-class NodeTypeHelper {
+class NodeHelper {
     public static getTypeClass = (type: NodeType, highlight?: boolean) => {
         switch (type) {
         case NodeType.STOP:
@@ -42,6 +43,14 @@ class NodeTypeHelper {
             return nodeType.toString();
         }}
     }
+
+    public static getShortId = (node: INodeBase) => {
+        if (node.shortIdString) {
+            return node.shortIdLetter
+                ? node.shortIdLetter + node.shortIdString : node.shortIdString;
+        }
+        return '';
+    }
 }
 
-export default NodeTypeHelper;
+export default NodeHelper;

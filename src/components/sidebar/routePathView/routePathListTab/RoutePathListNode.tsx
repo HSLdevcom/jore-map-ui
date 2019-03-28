@@ -11,7 +11,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
-import NodeTypeHelper from '~/util/nodeTypeHelper';
+import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
 import TextContainer from '../../TextContainer';
 import RoutePathListItem from './RoutePathListItem';
@@ -34,7 +34,8 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const isExtended = this.props.routePathStore!.isListItemExtended(
             id,
         );
-        const nodeTypeName = NodeTypeHelper.getNodeTypeName(this.props.node.type);
+        const nodeTypeName = NodeHelper.getNodeTypeName(this.props.node.type);
+        const shortId = NodeHelper.getShortId(this.props.node);
         return (
             <div
                 className={
@@ -54,7 +55,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 {node.id}
                             </div>
                             <div className={s.shortId}>
-                                {node.shortId ? node.shortId : '?'}
+                                {shortId || '?'}
                             </div>
                         </div>
                     </div>
