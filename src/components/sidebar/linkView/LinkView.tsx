@@ -256,6 +256,12 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLink}
                             />
+                            { transitType && this.transitTypeAlreadyExists(transitType) &&
+                                <div className={s.linkAlreadyFound}>
+                                    Linkki jolla on sama alkusolmu,
+                                    loppusolmu ja verkko on jo olemassa
+                                </div>
+                            }
                         </div>
                     </div>
                     <div className={s.flexRow}>
