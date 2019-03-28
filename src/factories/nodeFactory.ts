@@ -3,8 +3,8 @@ import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { roundLatLng } from '~/util/geomHelper';
+import { INodeBase } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
-import INodeBase from '~/models/baseModels/INodeBase';
 import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {

@@ -1,7 +1,7 @@
 import { action, computed, observable, reaction } from 'mobx';
 import { ILine } from '~/models';
-import INodeBase from '~/models/baseModels/INodeBase';
 import NodeHelper from '~/util/nodeHelper';
+import { INodeBase } from '~/models/INode';
 import TransitType from '~/enums/transitType';
 import SearchStore from './searchStore';
 
