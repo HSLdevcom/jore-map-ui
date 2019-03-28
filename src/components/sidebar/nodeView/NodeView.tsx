@@ -54,13 +54,17 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
-        const selectedNodeId = this.props.match!.params.id;
-
-        if (selectedNodeId) {
-            this.initExistingNode(selectedNodeId);
-        } else {
+        if (this.props.isNewNode) {
             const node = this.props.nodeStore!.node;
             this._validateAllProperties(node.type);
+        } else {
+            this.initExistingNode();
+        }
+    }
+
+    componentDidUpdate(prevProps: INodeViewProps) {
+        if (prevProps.match!.params.id !== this.props.match!.params.id) {
+            this.initExistingNode();
         }
     }
 
@@ -69,10 +73,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.mapStore!.setSelectedNodeId(null);
     }
 
-    private initExistingNode = async (selectedNodeId: string) => {
+    private initExistingNode = async () => {
         this.setState({ isLoading: true });
-        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+        this.props.nodeStore!.clear();
 
+        const selectedNodeId = this.props.match!.params.id;
+        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
         const node = await this.fetchNode(selectedNodeId);
         if (node) {
             const links = await this.fetchLinksForNode(node);
