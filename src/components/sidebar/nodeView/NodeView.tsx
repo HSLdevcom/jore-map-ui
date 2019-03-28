@@ -12,6 +12,7 @@ import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import navigator from '~/routing/navigator';
 import { Button, Dropdown } from '~/components/controls';
 import NodeLocationType from '~/types/NodeLocationType';
+import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
@@ -153,7 +154,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         if (nodeType === NodeType.STOP) {
             this.validateAllProperties(stopValidationModel, node.stop);
         } else {
-            this.validateAllProperties({}, node);
+            this.validateAllProperties(nodeValidationModel, node);
         }
     }
 
@@ -166,7 +167,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private onNodePropertyChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
         // TODO: add nodeValidationModel. Move stop's invalidPropertiesMap into stopFrom?
-        this.validateProperty('', property, value);
+        this.validateProperty(nodeValidationModel[property], property, value);
         if (property === 'type') {
             this._validateAllProperties(value);
         }
@@ -209,13 +210,20 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     </SidebarHeader>
                     <div className={s.form}>
                         <div className={s.formSection}>
-                            <div className={s.flexRow}>
+                            <div className={classnames(s.flexRow, s.idRow)}>
                                 <InputContainer
-                                    label='LYHYT ID'
+                                    label='KIRJAIN'
                                     disabled={isEditingDisabled}
-                                    value={node.shortId}
-                                    onChange={this.onNodePropertyChange('shortId')}
-                                    validationResult={invalidPropertiesMap['length']}
+                                    value={node.shortIdLetter}
+                                    onChange={this.onNodePropertyChange('shortIdLetter')}
+                                    validationResult={invalidPropertiesMap['shortIdLetter']}
+                                />
+                                <InputContainer
+                                    label='TUNNUS'
+                                    disabled={isEditingDisabled}
+                                    value={node.shortIdString}
+                                    onChange={this.onNodePropertyChange('shortIdString')}
+                                    validationResult={invalidPropertiesMap['shortIdString']}
                                 />
                                 <Dropdown
                                     label='TYYPPI'

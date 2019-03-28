@@ -8,7 +8,7 @@ import { INode } from '~/models/index';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import NodeTypeHelper from '~/util/nodeTypeHelper';
+import NodeHelper from '~/util/nodeHelper';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -77,8 +77,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
         if (visibleNodeLabels.includes(NodeLabel.longNodeId) || this.props.isNeighborMarker) {
             labels.push(node.id);
         }
-        if (node.shortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
-            labels.push(node.shortId);
+        const nodeShortId = NodeHelper.getShortId(node);
+        if (nodeShortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
+            labels.push(nodeShortId);
         }
 
         return labels;
@@ -92,12 +93,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
         if (this.props.isDisabled) {
             res.push(
-                NodeTypeHelper.getTypeClass(NodeType.DISABLED, isSelected),
+                NodeHelper.getTypeClass(NodeType.DISABLED, isSelected),
             );
         }
         if (this.props.isTimeAlignmentStop) {
             res.push(
-                NodeTypeHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected),
+                NodeHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected),
             );
         }
 
@@ -106,7 +107,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
 
         res.push(
-            NodeTypeHelper.getTypeClass(this.props.node.type, isSelected),
+            NodeHelper.getTypeClass(this.props.node.type, isSelected),
         );
 
         return res;

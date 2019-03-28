@@ -8,7 +8,8 @@ interface INodePrimaryKey {
 }
 
 interface INodeBase extends INodePrimaryKey {
-    shortId?: string; // TODO: split as identifierLetter identifierString (solkirjain sollistunnus)
+    shortIdLetter?: string;
+    shortIdString?: string;
     type: NodeType;
 }
 
