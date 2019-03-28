@@ -50,7 +50,7 @@ class RoutePathListItem
 
     render() {
         const isExtended = this.props.routePathStore!.isListItemExtended(
-            this.props.id,
+            String(this.props.id),
         );
         return (
             <div

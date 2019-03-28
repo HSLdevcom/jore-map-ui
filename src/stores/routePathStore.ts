@@ -20,6 +20,12 @@ export interface UndoState {
     routePathLinks: IRoutePathLink[];
 }
 
+export enum ListFilter {
+    stop,
+    otherNodes,
+    link,
+}
+
 export class RoutePathStore {
     @observable private _routePath: IRoutePath|null;
     @observable private _oldRoutePath: IRoutePath|null;
@@ -28,6 +34,7 @@ export class RoutePathStore {
     @observable private _highlightedMapItem: string | null;
     @observable private _extendedListItems: string[];
     @observable private _activeTab: RoutePathViewTab;
+    @observable private _listFilters: ListFilter[];
     private _undoStore: UndoStore<UndoState>;
 
     constructor() {
@@ -35,6 +42,7 @@ export class RoutePathStore {
         this._highlightedMapItem = null;
         this._extendedListItems = [];
         this._activeTab = RoutePathViewTab.Info;
+        this._listFilters = [ListFilter.link];
         this._undoStore = new UndoStore();
     }
 
@@ -70,6 +78,11 @@ export class RoutePathStore {
         return this._activeTab;
     }
 
+    @computed
+    get listFilters() {
+        return this._listFilters;
+    }
+
     @action
     public setActiveTab = (tab: RoutePathViewTab) => {
         this._activeTab = tab;
@@ -81,6 +94,23 @@ export class RoutePathStore {
             this._activeTab = RoutePathViewTab.List;
         } else {
             this._activeTab = RoutePathViewTab.Info;
+        }
+    }
+
+    @action
+    public removeListFilter = (listFilter: ListFilter) => {
+        if (this._listFilters.includes(listFilter)) {
+            this._listFilters = this._listFilters.filter(lF => lF !== listFilter);
+        }
+    }
+
+    @action
+    public toggleListFilter = (listFilter: ListFilter) => {
+        if (this._listFilters.includes(listFilter)) {
+            this._listFilters = this._listFilters.filter(lF => lF !== listFilter);
+        } else {
+            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            this._listFilters = this._listFilters.concat([listFilter]);
         }
     }
 
@@ -146,7 +176,7 @@ export class RoutePathStore {
     }
 
     @action
-    public setExtendedObjects = (objectIds: string[]) => {
+    public setExtendedListItems = (objectIds: string[]) => {
         this._extendedListItems = objectIds;
     }
 

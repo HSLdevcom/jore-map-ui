@@ -7,7 +7,9 @@ import { IoIosRadioButtonOn } from 'react-icons/io';
 import NodeType from '~/enums/nodeType';
 import { IRoutePath, IRoutePathLink, INode } from '~/models';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
-import { RoutePathStore } from '~/stores/routePathStore';
+import { RoutePathStore, ListFilter } from '~/stores/routePathStore';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import RoutePathListNode from './RoutePathListNode';
 import RoutePathListLink from './RoutePathListLink';
 import s from './routePathLinksTab.scss';
@@ -17,28 +19,15 @@ interface IRoutePathLinksTabProps {
     routePath: IRoutePath;
 }
 
-enum ListFilter {
-    stop,
-    otherNodes,
-    link,
-}
-
-interface IRoutePathLinksTabState {
-    listFilters: ListFilter[];
-}
-
 @inject('routePathStore')
 @observer
-class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRoutePathLinksTabState>{
+class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
     reactionDisposer: IReactionDisposer;
     listObjectReferences: { [id: string] : React.RefObject<HTMLDivElement> } = {};
 
     constructor(props: IRoutePathLinksTabProps) {
         super(props);
         this.listObjectReferences = {};
-        this.state = {
-            listFilters: [ListFilter.link],
-        };
     }
 
     componentDidMount() {
@@ -46,6 +35,10 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
             () => this.props.routePathStore!.extendedObjects,
             this.onExtend,
         );
+        const showItemParam = navigator.getQueryParamValues()[QueryParams.showItem];
+        if (showItemParam) {
+            this.scrollIntoListItem(showItemParam[0]);
+        }
     }
 
     componentWillUnmount() {
@@ -93,39 +86,39 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
 
     private isNodeVisible = (node: INode) => {
         if (node.type === NodeType.STOP) {
-            return !this.state.listFilters.includes(ListFilter.stop);
+            return !this.props.routePathStore!.listFilters.includes(ListFilter.stop);
         }
-        return !this.state.listFilters.includes(ListFilter.otherNodes);
+        return !this.props.routePathStore!.listFilters.includes(ListFilter.otherNodes);
     }
 
     private isLinksVisible = () => {
-        return !this.state.listFilters.includes(ListFilter.link);
+        return !this.props.routePathStore!.listFilters.includes(ListFilter.link);
     }
 
     private onExtend = () => {
         const extendedObjects = this.props.routePathStore!.extendedObjects;
         if (extendedObjects.length === 1) {
-            const id = extendedObjects[0];
-            const item = this.listObjectReferences[id].current!;
+            const listItemId = extendedObjects[0];
+            this.scrollIntoListItem(listItemId);
+        }
+    }
+
+    private scrollIntoListItem = (listItemId: string) => {
+        const item = this.listObjectReferences[listItemId].current!;
+        if (item) {
             item.scrollIntoView({ block: 'center', behavior: 'smooth' });
         }
     }
 
-    toggleFilter = (listFilter: ListFilter) => {
-        let listFilters = this.state.listFilters;
-        if (listFilters.includes(listFilter)) {
-            listFilters = listFilters.filter(mF => mF !== listFilter);
-        } else {
-            listFilters.push(listFilter);
-        }
-        this.setState({
-            listFilters,
-        });
+    private toggleListFilter = (listFilter: ListFilter) => {
+        this.props.routePathStore!.toggleListFilter(listFilter);
     }
 
     render() {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
+
+        const listFilters = this.props.routePathStore!.listFilters;
 
         return (
             <div className={s.RoutePathLinksTabView}>
@@ -133,20 +126,20 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps, IRouteP
                     <ToggleItem
                         icon={<IoIosRadioButtonOn />}
                         text='Pysäkit'
-                        isActive={!this.state.listFilters.includes(ListFilter.stop)}
-                        onClick={this.toggleFilter.bind(this, ListFilter.stop)}
+                        isActive={!listFilters.includes(ListFilter.stop)}
+                        onClick={this.toggleListFilter.bind(this, ListFilter.stop)}
                     />
                     <ToggleItem
                         icon={<IoIosRadioButtonOn />}
                         text='Muut solmut'
-                        isActive={!this.state.listFilters.includes(ListFilter.otherNodes)}
-                        onClick={this.toggleFilter.bind(this, ListFilter.otherNodes)}
+                        isActive={!listFilters.includes(ListFilter.otherNodes)}
+                        onClick={this.toggleListFilter.bind(this, ListFilter.otherNodes)}
                     />
                     <ToggleItem
                         icon={<TiLink />}
                         text='Linkit'
-                        isActive={!this.state.listFilters.includes(ListFilter.link)}
-                        onClick={this.toggleFilter.bind(this, ListFilter.link)}
+                        isActive={!listFilters.includes(ListFilter.link)}
+                        onClick={this.toggleListFilter.bind(this, ListFilter.link)}
                     />
                 </ToggleView>
                 <div
