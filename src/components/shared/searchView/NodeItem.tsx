@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { IoIosRadioButtonOn } from 'react-icons/io';
 import routeBuilder from '~/routing/routeBuilder';
-import NodeTypeHelper from '~/util/nodeTypeHelper';
+import NodeHelper from '~/util/nodeHelper';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import { INodeBase } from '~/models/INode';
@@ -32,10 +32,10 @@ const NodeItem = observer((props: INodeItemProps) => {
                     {props.node.id}
                 </span>
                 <div>
-                    {NodeTypeHelper.getNodeTypeName(props.node.type)}
+                    {NodeHelper.getNodeTypeName(props.node.type)}
                 </div>
                 <div>
-                    {props.node.shortId}
+                    {NodeHelper.getShortId(props.node)}
                 </div>
             </div>
         </div>

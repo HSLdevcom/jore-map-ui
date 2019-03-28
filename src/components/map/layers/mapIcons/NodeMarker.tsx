@@ -8,7 +8,8 @@ import { INode } from '~/models/index';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import NodeTypeHelper from '~/util/nodeTypeHelper';
+import EventManager from '~/util/EventManager';
+import NodeHelper from '~/util/nodeHelper';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -36,6 +37,7 @@ interface INodeMarkerProps {
     isDraggable?: boolean;
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
     isHighlighted?: boolean;
+    onClickEventParams?: any;
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
@@ -77,8 +79,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
         if (visibleNodeLabels.includes(NodeLabel.longNodeId) || this.props.isNeighborMarker) {
             labels.push(node.id);
         }
-        if (node.shortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
-            labels.push(node.shortId);
+        const nodeShortId = NodeHelper.getShortId(node);
+        if (nodeShortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
+            labels.push(nodeShortId);
         }
 
         return labels;
@@ -92,12 +95,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
         if (this.props.isDisabled) {
             res.push(
-                NodeTypeHelper.getTypeClass(NodeType.DISABLED, isSelected),
+                NodeHelper.getTypeClass(NodeType.DISABLED, isSelected),
             );
         }
         if (this.props.isTimeAlignmentStop) {
             res.push(
-                NodeTypeHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected),
+                NodeHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected),
             );
         }
 
@@ -106,7 +109,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
 
         res.push(
-            NodeTypeHelper.getTypeClass(this.props.node.type, isSelected),
+            NodeHelper.getTypeClass(this.props.node.type, isSelected),
         );
 
         return res;
@@ -129,11 +132,11 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private renderStopRadiusCircle = () => {
         const nodeType = this.props.node.type;
 
-        if (!(this.props.isSelected
-            && nodeType === NodeType.STOP
-            && this.props.node.stop!.radius)) {
-            return null;
-        }
+        if (!this.props.isSelected
+            || nodeType !== NodeType.STOP
+            || !this.props.node.stop
+            || !this.props.node.stop!.radius) return null;
+
         return (
             <Circle
                 className={s.stopCircle}
@@ -179,6 +182,15 @@ class NodeMarker extends Component<INodeMarkerProps> {
         this.props.isSelected && this.props.isDraggable
     )
 
+    private onMarkerClick = () => {
+        if (this.props.onClick) {
+            this.props.onClick();
+        }
+        if (this.props.onClickEventParams) {
+            EventManager.trigger('nodeClick', this.props.onClickEventParams);
+        }
+    }
+
     render() {
 
         const icon = createDivIcon(
@@ -190,7 +202,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             <>
                 <Marker
                     onContextMenu={this.props.onContextMenu}
-                    onClick={this.props.onClick}
+                    onClick={this.onMarkerClick}
                     draggable={this.props.isDraggable}
                     icon={icon}
                     position={this.props.node.coordinates}
