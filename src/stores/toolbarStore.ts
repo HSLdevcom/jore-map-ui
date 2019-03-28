@@ -33,7 +33,7 @@ export class ToolbarStore {
         this._disabledTools = [
             ToolbarTool.Print,
         ];
-        this._selectedTool = defaultTool;
+        this.selectDefaultTool();
     }
 
     @computed
@@ -49,7 +49,7 @@ export class ToolbarStore {
 
         // deselect current tool
         if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
-            this._selectedTool = defaultTool;
+            this.selectDefaultTool();
             return;
         }
         const foundTool = TOOLS[tool];
@@ -66,6 +66,12 @@ export class ToolbarStore {
 
     public isDisabled = (tool: ToolbarTool): boolean => {
         return this._disabledTools.indexOf(tool) > -1;
+    }
+
+    @action
+    private selectDefaultTool() {
+        this._selectedTool = defaultTool;
+        this._selectedTool.activate();
     }
 }
 

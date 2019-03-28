@@ -141,6 +141,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 key={node.id}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDraggable={false}
+                onClickEventParams={{ nodeId: node.id }}
                 node={node}
             />
         );
