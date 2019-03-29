@@ -2,7 +2,9 @@
 enum QueryParams {
     routes = 'routes',
     routeId = 'routeId',
+    lineId = 'lineId',
     startTime = 'startTime',
+    showItem = 'showItem',
     direction = 'direction',
     node = 'node',
     code = 'code',

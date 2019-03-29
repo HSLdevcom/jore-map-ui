@@ -11,7 +11,6 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import LinkView from './linkView/LinkView';
 import RoutesView from './routesView/RoutesView';
-import RouteLinkView from './routeLinkView/RouteLinkView';
 import HomeView from './homeView/HomeView';
 import RoutePathView from './routePathView/RoutePathView';
 import NodeView from './nodeView/NodeView';
@@ -70,11 +69,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             exact={true}
                             path={subSites.routes}
                             component={this.renderRoutesView}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.routelink}
-                            component={RouteLinkView}
                         />
                         <Route
                             exact={true}

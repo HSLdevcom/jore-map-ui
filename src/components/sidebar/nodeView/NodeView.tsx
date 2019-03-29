@@ -2,6 +2,8 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { match } from 'react-router';
+import { LatLng } from 'leaflet';
+import NodeFactory from '~/factories/nodeFactory';
 import { INode } from '~/models';
 import { DialogStore } from '~/stores/dialogStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -55,30 +57,46 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
+        const params = this.props.match!.params.id;
         if (this.props.isNewNode) {
-            const node = this.props.nodeStore!.node;
-            this._validateAllProperties(node.type);
+            this.initNewNode(params);
         } else {
-            this.initExistingNode();
+            this.initExistingNode(params);
         }
     }
 
     componentDidUpdate(prevProps: INodeViewProps) {
-        if (prevProps.match!.params.id !== this.props.match!.params.id) {
-            this.initExistingNode();
+        const params = this.props.match!.params.id;
+
+        if (prevProps.match!.params.id !== params) {
+            if (this.props.isNewNode) {
+                this.initNewNode(params);
+            } else {
+                this.initExistingNode(params);
+            }
         }
     }
 
     componentWillUnmount() {
+        super.componentWillUnmount();
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
     }
 
-    private initExistingNode = async () => {
+    private initNewNode = async (params: any) => {
+        const [lat, lng] = params.split(':');
+        const coordinate = new LatLng(lat, lng);
+        const newNode = NodeFactory.createNewNode(coordinate);
+        this.props.nodeStore!.init(newNode, []);
+        const node = this.props.nodeStore!.node;
+        this._validateAllProperties(node.type);
+    }
+
+    private initExistingNode = async (selectedNodeId: string) => {
         this.setState({ isLoading: true });
         this.props.nodeStore!.clear();
 
-        const selectedNodeId = this.props.match!.params.id;
         this.props.mapStore!.setSelectedNodeId(selectedNodeId);
         const node = await this.fetchNode(selectedNodeId);
         if (node) {
