@@ -1,7 +1,7 @@
-import moment from 'moment';
+import Moment from 'moment';
 
 const dateToDateString = (date: Date) => {
-    return moment(
+    return Moment(
         date,
     ).format('DD.MM.YYYY');
 };
