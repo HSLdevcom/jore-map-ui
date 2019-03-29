@@ -5,13 +5,51 @@ import { NeighborToAddType } from '~/stores/routePathStore';
 import ErrorStore from '~/stores/errorStore';
 import TransitType from '~/enums/transitType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
+import INeighborLink from '~/models/INeighborLink';
+import IGraphqlList from '~/models/externals/graphqlModelHelpers/IGraphqlList';
+import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
-interface INeighborLink {
-    usages: string[];
-    routePathLink: IRoutePathLink;
+interface ISimplifiedRoutePath {
+    reitunnus: string;
 }
+
+interface IExtendedExternalNode extends IExternalNode {
+    usageDuringDate?: IGraphqlList<ISimplifiedRoutePath>;
+}
+
+interface IExtendedExternalLink extends IExternalLink {
+    solmuByLnkalkusolmu: IExtendedExternalNode;
+    solmuByLnkloppusolmu: IExtendedExternalNode;
+}
+
+interface IFetchNeighborLinksResponse {
+    neighborToAddType: NeighborToAddType;
+    neighborLinks: INeighborLink[];
+}
+
+const getNeighborLinks = (
+    queryResult: any, orderNumber: number, from: 'startNode' | 'endNode',
+): INeighborLink[] => {
+    const linkPropertyName = from === 'startNode'
+        ? 'linkkisByLnkalkusolmu' : 'linkkisByLnkalkusolmu';
+    const nodePropertyName = from === 'startNode'
+        ? 'solmuByLnkloppusolmu' : 'solmuByLnkloppusolmu';
+    return _getNeighborLinks(queryResult, orderNumber, linkPropertyName, nodePropertyName);
+};
+
+const _getNeighborLinks = (
+    queryResult: any, orderNumber: number, foo: string, foo2: string,
+): INeighborLink[] => {
+    return queryResult.data.solmuBySoltunnus[foo].nodes.map((link: IExtendedExternalLink) => ({
+        routePathLink:
+            RoutePathLinkFactory
+                .createNewRoutePathLinkFromExternalLink(link, orderNumber),
+        usages: link[foo2].usageDuringDate!
+            .nodes.map((e: any) => e.reitunnus),
+    }));
+};
 
 class RoutePathLinkService {
     public static fetchAndCreateRoutePathLinksWithNodeId = async (
@@ -22,36 +60,33 @@ class RoutePathLinkService {
         date: Date,
     ): Promise<INeighborLink[]> => {
         let res: INeighborLink[] = [];
+
         // If new routePathLinks should be created after the node
         if (neighborToAddType === NeighborToAddType.AfterNode) {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getLinksByStartNodeQuery()
                 , variables: { nodeId, date } },
             );
-            console.log(queryResult.data);
-            res = queryResult.data.solmuBySoltunnus.
-                linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) => ({
-                    routePathLink:
-                        RoutePathLinkFactory
-                            .createNewRoutePathLinkFromExternalLink(link, orderNumber),
-                    usages: link
-                        .solmuByLnkloppusolmu['usageDuringDate']
-                        .edges.map((e: any) => e.node.reitunnus),
-                }));
+            res = getNeighborLinks(
+                queryResult,
+                orderNumber,
+                'startNode',
+            );
+
         // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getLinksByEndNodeQuery()
                 , variables: { nodeId, date } },
             );
-            res = queryResult.data.solmuBySoltunnus.
-                linkkisByLnkloppusolmu.nodes.map((link: IExternalLink) =>
-                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(link, orderNumber),
+            res = getNeighborLinks(
+                queryResult,
+                orderNumber,
+                'endNode',
             );
         } else {
             throw new Error(`neighborToAddType not supported: ${neighborToAddType}`);
         }
-        console.log(res);
         return res.filter(rpLink => rpLink.routePathLink.transitType === transitType);
     }
 
@@ -67,7 +102,7 @@ class RoutePathLinkService {
         linkOrderNumber: number,
         transitType: TransitType,
         routePathLinks?: IRoutePathLink[],
-    ) => {
+    ): Promise<IFetchNeighborLinksResponse | null> => {
         const startNodeCount = routePathLinks!.filter(link => link.startNode.id === nodeId).length;
         const endNodeCount = routePathLinks!.filter(link => link.endNode.id === nodeId).length;
         let neighborToAddType;
@@ -94,7 +129,7 @@ class RoutePathLinkService {
             } else {
                 return {
                     neighborToAddType,
-                    routePathLinks: neighborLinks.map(e => e.routePathLink),
+                    neighborLinks,
                 };
             }
         } catch (e) {
@@ -103,5 +138,5 @@ class RoutePathLinkService {
         return null;
     }
 }
-// const routePathLinks = RoutePathStore.routePath!.routePathLinks;
+
 export default RoutePathLinkService;

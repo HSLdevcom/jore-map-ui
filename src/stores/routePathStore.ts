@@ -4,6 +4,7 @@ import { IRoutePath, IRoutePathLink } from '~/models';
 import lengthCalculator from '~/util/lengthCalculator';
 import { validateRoutePathLinks } from '~/util/geomValidator';
 import UndoStore from '~/stores/undoStore';
+import INeighborLink from '~/models/INeighborLink';
 
 // Is the neighbor to add either startNode or endNode
 export enum NeighborToAddType {
@@ -23,7 +24,7 @@ export interface UndoState {
 export class RoutePathStore {
     @observable private _routePath: IRoutePath|null;
     @observable private _oldRoutePath: IRoutePath|null;
-    @observable private _neighborRoutePathLinks: IRoutePathLink[];
+    @observable private _neighborRoutePathLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
     @observable private _highlightedMapItem: string | null;
     @observable private _extendedListItems: string[];
@@ -44,7 +45,7 @@ export class RoutePathStore {
     }
 
     @computed
-    get neighborLinks(): IRoutePathLink[] {
+    get neighborLinks(): INeighborLink[] {
         return this._neighborRoutePathLinks;
     }
 
@@ -178,8 +179,8 @@ export class RoutePathStore {
     }
 
     @action
-    public setNeighborRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
-        this._neighborRoutePathLinks = routePathLinks;
+    public setNeighborRoutePathLinks = (neighborLinks: INeighborLink[]) => {
+        this._neighborRoutePathLinks = neighborLinks;
     }
 
     @action

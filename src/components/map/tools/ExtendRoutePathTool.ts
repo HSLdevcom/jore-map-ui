@@ -49,7 +49,7 @@ class ExtendRoutePathTool implements BaseTool {
                 RoutePathStore!.routePath!.routePathLinks,
             );
         if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(queryResult!.routePathLinks);
+            RoutePathStore!.setNeighborRoutePathLinks(queryResult!.neighborLinks);
             RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
         }
     }
@@ -66,7 +66,7 @@ class ExtendRoutePathTool implements BaseTool {
                 RoutePathStore!.routePath!.routePathLinks,
             );
         if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(queryResult.routePathLinks);
+            RoutePathStore!.setNeighborRoutePathLinks(queryResult.neighborLinks);
             RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
         }
     }

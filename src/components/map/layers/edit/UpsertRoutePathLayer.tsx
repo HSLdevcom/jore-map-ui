@@ -11,6 +11,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
+import INeighborLink from '~/models/INeighborLink';
 import EventManager from '~/util/EventManager';
 import { IExtendRoutePathNodeClickParams } from '../../tools/ExtendRoutePathTool';
 import NodeMarker from '../mapIcons/NodeMarker';
@@ -18,7 +19,6 @@ import StartMarker from '../mapIcons/StartMarker';
 import ArrowDecorator from '../ArrowDecorator';
 
 const START_MARKER_COLOR = '#00df0b';
-const NEIGHBOR_MARKER_COLOR = '#ca00f7';
 const ROUTE_COLOR = '#000';
 
 interface IRoutePathLayerProps {
@@ -152,42 +152,43 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
     }
 
     private renderRoutePathLinkNeighbors = () => {
-        const routePathLinks = this.props.routePathStore!.neighborLinks;
-        if (!routePathLinks) return;
-        return routePathLinks.map((routePathLink: IRoutePathLink, index) => {
+        const neighborLinks = this.props.routePathStore!.neighborLinks;
+        if (!neighborLinks) return;
+        return neighborLinks.map((neighborLink, index) => {
             const neighborToAddType = this.props.routePathStore!.neighborToAddType;
             const nodeToRender = neighborToAddType === NeighborToAddType.AfterNode ?
-                routePathLink.endNode : routePathLink.startNode;
+                neighborLink.routePathLink.endNode : neighborLink.routePathLink.startNode;
             return (
                 [
-                    this.renderNeighborNode(nodeToRender, routePathLink, index),
-                    this.renderNeighborLink(routePathLink),
+                    this.renderNeighborNode(nodeToRender, neighborLink, index),
+                    this.renderNeighborLink(neighborLink),
                 ]
             );
         });
     }
 
-    private renderNeighborNode = (node: INode, routePathLink: IRoutePathLink, key: number) => {
+    private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isNeighborMarker={true}
-                onClick={this.addNeighborLinkToRoutePath(routePathLink)}
+                color={neighborLink.usages.length > 0 ? '#FF0000' : '#00FF00'}
+                onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
                 node={node}
             />
         );
     }
 
-    private renderNeighborLink = (routePathLink: IRoutePathLink) => {
+    private renderNeighborLink = (neighborLink: INeighborLink) => {
         return (
             <Polyline
-                positions={routePathLink.geometry}
-                key={routePathLink.id}
-                color={NEIGHBOR_MARKER_COLOR}
+                positions={neighborLink.routePathLink.geometry}
+                key={neighborLink.routePathLink.id}
+                color={neighborLink.usages.length > 0 ? '#FF0000' : '#00FF00'}
                 weight={5}
                 opacity={0.8}
-                onClick={this.addNeighborLinkToRoutePath(routePathLink)}
+                onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
             />
         );
     }
@@ -205,7 +206,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 this.props.routePathStore!.routePath!.routePathLinks,
             );
             if (queryResult) {
-                this.props.routePathStore!.setNeighborRoutePathLinks(queryResult.routePathLinks);
+                this.props.routePathStore!.setNeighborRoutePathLinks(queryResult.neighborLinks);
                 this.props.routePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
             }
         }

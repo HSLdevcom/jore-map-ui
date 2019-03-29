@@ -324,11 +324,9 @@ linkkisByLnkalkusolmu {
         solmuByLnkloppusolmu {
             ${endNodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
-                edges {
-                    node {
-                        reitunnus
-                        suunimi
-                    }
+                nodes {
+                    reitunnus
+                    suunimi
                 }
             }
         }
@@ -342,11 +340,9 @@ linkkisByLnkloppusolmu {
         solmuByLnkalkusolmu {
             ${startNodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
-                edges {
-                    node {
-                        reitunnus
-                        suunimi
-                    }
+                nodes {
+                    reitunnus
+                    suunimi
                 }
             }
         }
