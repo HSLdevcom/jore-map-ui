@@ -4,6 +4,7 @@ import EventManager from '~/util/EventManager';
 import SubSites from '~/routing/subSites';
 import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
+import { roundLatLng } from '~/util/geomHelper';
 import RouteBuilder from '~/routing/routeBuilder';
 import ToolbarStore from '~/stores/toolbarStore';
 import BaseTool from './BaseTool';
@@ -27,7 +28,7 @@ class AddNetworkNodeTool implements BaseTool {
 
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);
-        const coordinate = clickEvent.detail.latlng;
+        const coordinate = roundLatLng(clickEvent.detail.latlng);
         const url = RouteBuilder
             .to(SubSites.newNode)
             .clear()

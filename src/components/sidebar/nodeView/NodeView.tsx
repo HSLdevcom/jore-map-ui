@@ -60,20 +60,21 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         super.componentDidMount();
         const params = this.props.match!.params.id;
         if (this.props.isNewNode) {
-            const [lat, lng] = params.split(':');
-            const coordinate = new LatLng(lat, lng);
-            const newNode = NodeFactory.createNewNode(coordinate);
-            this.props.nodeStore!.init(newNode, []);
-            const node = this.props.nodeStore!.node;
-            this._validateAllProperties(node.type);
+            this.initNewNode(params);
         } else {
             this.initExistingNode(params);
         }
     }
 
     componentDidUpdate(prevProps: INodeViewProps) {
-        if (prevProps.match!.params.id !== this.props.match!.params.id) {
-            this.initExistingNode(this.props.match!.params.id);
+        const params = this.props.match!.params.id;
+
+        if (prevProps.match!.params.id !== params) {
+            if (this.props.isNewNode) {
+                this.initNewNode(params);
+            } else {
+                this.initExistingNode(params);
+            }
         }
     }
 
@@ -81,6 +82,15 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         super.componentWillUnmount();
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
+    }
+
+    private initNewNode = async (params: any) => {
+        const [lat, lng] = params.split(':');
+        const coordinate = new LatLng(lat, lng);
+        const newNode = NodeFactory.createNewNode(coordinate);
+        this.props.nodeStore!.init(newNode, []);
+        const node = this.props.nodeStore!.node;
+        this._validateAllProperties(node.type);
     }
 
     private initExistingNode = async (selectedNodeId: string) => {
