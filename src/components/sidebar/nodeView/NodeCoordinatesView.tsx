@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import InputContainer from '~/components/sidebar/InputContainer';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
-import NodeTypeHelper from '~/util/nodeTypeHelper';
+import NodeHelper from '~/util/nodeHelper';
 import * as s from './nodeCoordinatesView.scss';
 
 interface INodeCoordinatesViewProps {
@@ -22,7 +22,7 @@ class NodeCoordinatesView extends React.Component<INodeCoordinatesViewProps> {
 
         switch (locationType) {
         case 'coordinates':
-            iconClassName = NodeTypeHelper.getTypeClass(nodeType, true);
+            iconClassName = NodeHelper.getTypeClass(nodeType, true);
             label = 'Mitattu piste';
             break;
         case 'coordinatesManual':

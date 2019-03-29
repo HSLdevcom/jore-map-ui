@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Moment from 'react-moment';
+import ReactMoment from 'react-moment';
 import { IRoutePath } from '~/models';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './routePathView.scss';
@@ -26,11 +26,11 @@ const RoutePathHeader = observer((props: IRoutePathHeaderProps) => (
                 `${props.routePath.lineId} > ${props.routePath.routeId}`}
         </SidebarHeader>
         <div className={s.topic}>
-            <Moment
+            <ReactMoment
                 date={props.routePath.startTime}
                 format='DD.MM.YYYY'
             /> - &nbsp;
-            <Moment
+            <ReactMoment
                 date={props.routePath.endTime}
                 format='DD.MM.YYYY'
             />

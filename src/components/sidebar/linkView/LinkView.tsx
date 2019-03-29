@@ -65,6 +65,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     async componentDidMount() {
+        super.componentDidMount();
         if (this.props.isNewLink) {
             await this.initNewLink();
         } else {
@@ -89,6 +90,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     componentWillUnmount() {
+        super.componentWillUnmount();
         this.props.linkStore!.clear();
     }
 
@@ -256,6 +258,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLink}
                             />
+                            { transitType && this.transitTypeAlreadyExists(transitType) &&
+                                <div className={s.linkAlreadyFoundErrorText}>
+                                    Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).
+                                </div>
+                            }
                         </div>
                     </div>
                     <div className={s.flexRow}>

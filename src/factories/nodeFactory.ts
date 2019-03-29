@@ -3,8 +3,8 @@ import { INode } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { roundLatLng } from '~/util/geomHelper';
+import { INodeBase } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
-import INodeBase from '~/models/baseModels/INodeBase';
 import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {
@@ -38,14 +38,6 @@ class NodeFactory {
     }
 
     public static createNodeBase = (externalNode: IExternalNode): INodeBase => {
-        let shortId;
-
-        if (externalNode.sollistunnus) {
-            shortId = externalNode.solkirjain
-            ? externalNode.solkirjain + externalNode.sollistunnus
-            : externalNode.sollistunnus;
-        }
-
         const type = getNodeType(externalNode.soltyyppi);
         // TODO: Change this when creating abstraction layers for reading from postgis
         if (type === NodeType.INVALID) {
@@ -54,8 +46,9 @@ class NodeFactory {
         }
 
         return {
-            shortId,
             type,
+            shortIdLetter: externalNode.solkirjain,
+            shortIdString: externalNode.sollistunnus,
             id: externalNode.soltunnus,
         };
     }

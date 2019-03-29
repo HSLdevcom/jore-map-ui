@@ -1,15 +1,16 @@
 import { ApolloQueryResult } from 'apollo-client';
-import moment from 'moment';
+import Moment from 'moment';
 import apolloClient from '~/util/ApolloClient';
 import { IRoutePath } from '~/models';
 import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
+import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 
 class RoutePathService {
     public static fetchRoutePath =
-        async (routeId: string, startDate: moment.Moment, direction: string):
+        async (routeId: string, startDate: Moment.Moment, direction: string):
             Promise<IRoutePath> => {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 {
@@ -29,8 +30,10 @@ class RoutePathService {
     }
 
     public static createRoutePath = async (routePath: IRoutePath) => {
-        await ApiClient.createObject(endpoints.ROUTEPATH, routePath);
+        const response =
+            await ApiClient.createObject(endpoints.ROUTEPATH, routePath) as IRoutePathPrimaryKey;
         await apolloClient.clearStore();
+        return response;
     }
 }
 

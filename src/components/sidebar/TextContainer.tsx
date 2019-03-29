@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import moment from 'moment';
+import Moment from 'moment';
 import * as s from './inputContainer.scss';
 
 interface IInputProps {
@@ -15,7 +15,7 @@ const TextContainer = observer((props: IInputProps) => (
         </div>
         {
             props.value instanceof Date ?
-                moment(props.value!).format('DD.MM.YYYY') :
+            Moment(props.value!).format('DD.MM.YYYY') :
                 props.value ? props.value : ''
         }
     </div>

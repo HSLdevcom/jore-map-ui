@@ -3,12 +3,15 @@ import TransitType from '~/enums/transitType';
 import NodeType from '~/enums/nodeType';
 import INode from './INode';
 
-export default interface IRoutePathLink {
+interface IRoutePathLinkPrimaryKey {
+    id: string;
+}
+
+export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     routeId?: string;
     routePathDirection?: string;
     routePathStartDate?: Date;
     transitType: TransitType;
-    id: string;
     geometry: L.LatLng[];
     startNode: INode;
     endNode: INode;
@@ -16,3 +19,7 @@ export default interface IRoutePathLink {
     startNodeType: NodeType;
     isStartNodeTimeAlignmentStop: boolean;
 }
+
+export {
+    IRoutePathLinkPrimaryKey,
+};

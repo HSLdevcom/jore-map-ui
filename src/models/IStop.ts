@@ -1,5 +1,8 @@
-export default interface IStop {
+interface IStopPrimaryKey {
     nodeId: string;
+}
+
+export default interface IStop extends IStopPrimaryKey {
     municipality: string;
     nameFi: string;
     nameSe: string; // TODO: rename as nameSw
@@ -31,3 +34,7 @@ export default interface IStop {
     section: string;
     postalNumber: string;
 }
+
+export {
+    IStopPrimaryKey,
+};

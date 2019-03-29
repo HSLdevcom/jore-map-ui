@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import Moment from 'moment';
 import classnames from 'classnames';
 import { observe } from 'mobx';
 import { observer, inject } from 'mobx-react';
@@ -7,7 +7,7 @@ import { match } from 'react-router';
 import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
-import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
+import { RoutePathStore, RoutePathViewTab, ListFilter } from '~/stores/routePathStore';
 import navigator from '~/routing/navigator';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -15,6 +15,9 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import DialogStore from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
+import routeBuilder from '~/routing/routeBuilder';
+import QueryParams from '~/routing/queryParams';
+import SubSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
 import { ErrorStore } from '~/stores/errorStore';
@@ -55,12 +58,14 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     componentDidMount() {
+        super.componentDidMount();
         EventManager.on('undo', this.props.routePathStore!.undo);
         EventManager.on('redo', this.props.routePathStore!.redo);
         this.initialize();
     }
 
     componentWillUnmount() {
+        super.componentWillUnmount();
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
@@ -72,7 +77,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         if (this.props.isNewRoutePath) {
             await this.createNewRoutePath();
         } else {
-            await this.fetchRoutePath();
+            await this.initExistingRoutePath();
         }
         await this.initializeMap();
         observe(
@@ -92,9 +97,10 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         try {
             if (!this.props.routePathStore!.routePath) {
                 const queryParams = navigator.getQueryParamValues();
-                const route = await RouteService.fetchRoute(queryParams.routeId);
+                const route = await RouteService.fetchRoute(queryParams[QueryParams.routeId]);
                 // TODO: add transitType to this call (if transitType is routePath's property)
-                const newRoutePath = RoutePathFactory.createNewRoutePath(queryParams.lineId, route);
+                const newRoutePath =
+                    RoutePathFactory.createNewRoutePath(queryParams[QueryParams.lineId], route);
                 this.props.routePathStore!.setRoutePath(newRoutePath);
             } else {
                 this.props.routePathStore!.setRoutePath(
@@ -131,9 +137,19 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
     }
 
+    private initExistingRoutePath = async () => {
+        await this.fetchRoutePath();
+        const itemToShow = navigator.getQueryParamValues()[QueryParams.showItem];
+        if (itemToShow) {
+            this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
+            this.props.routePathStore!.setExtendedListItems(itemToShow);
+            this.props.routePathStore!.removeListFilter(ListFilter.link);
+        }
+    }
+
     private fetchRoutePath = async () => {
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
-        const startTime = moment(startTimeString);
+        const startTime = Moment(startTimeString);
         try {
             const routePath =
                 await RoutePathService.fetchRoutePath(routeId, startTime, direction);
@@ -169,9 +185,19 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
 
     private save = async () => {
         this.setState({ isLoading: true });
+        let redirectUrl: string | undefined;
         try {
             if (this.props.isNewRoutePath) {
-                await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+                const routePathPrimaryKey =
+                    await RoutePathService.createRoutePath(this.props.routePathStore!.routePath!);
+                redirectUrl = routeBuilder
+                    .to(SubSites.routePath)
+                    .toTarget([
+                        routePathPrimaryKey.routeId,
+                        Moment(routePathPrimaryKey.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                        routePathPrimaryKey.direction,
+                    ].join(','))
+                    .toLink();
             } else {
                 await RoutePathService.updateRoutePath(this.props.routePathStore!.routePath!);
             }
@@ -186,9 +212,13 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             invalidPropertiesMap: {},
             isLoading: false,
         });
+        if (redirectUrl) {
+            navigator.goTo(redirectUrl);
+        }
     }
 
     private toggleIsEditing = () => {
+        this.props.routePathStore!.setNeighborRoutePathLinks([]);
         this.toggleIsEditingDisabled(
             this.props.routePathStore!.undoChanges,
         );
