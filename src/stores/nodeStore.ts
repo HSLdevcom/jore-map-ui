@@ -5,7 +5,7 @@ import { LatLng } from 'leaflet';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
-import UndoStore from '~/stores/undoStore';
+import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { roundLatLng } from '~/util/geomHelper';
 
 export interface UndoState {
@@ -18,14 +18,14 @@ export class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
-    private _undoStore: UndoStore<UndoState>;
+    private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
         this._links = [];
         this._node = null;
         this._oldNode = null;
         this._oldLinks = [];
-        this._undoStore = new UndoStore();
+        this._geometryUndoStore = new GeometryUndoStore();
     }
 
     @computed
@@ -67,7 +67,7 @@ export class NodeStore {
             links: newLinks,
             node: newNode,
         };
-        this._undoStore.addItem(currentUndoState);
+        this._geometryUndoStore.addItem(currentUndoState);
 
         this._node = newNode;
         this._oldNode = newNode;
@@ -91,7 +91,7 @@ export class NodeStore {
             links: newLinks,
             node: this._node,
         };
-        this._undoStore.addItem(currentUndoState);
+        this._geometryUndoStore.addItem(currentUndoState);
 
         this._links = newLinks;
     }
@@ -121,7 +121,7 @@ export class NodeStore {
             links: newLinks,
             node: newNode,
         };
-        this._undoStore.addItem(currentUndoState);
+        this._geometryUndoStore.addItem(currentUndoState);
 
         this._links = newLinks;
         const geometryVariables: NodeLocationType[] =
@@ -170,7 +170,7 @@ export class NodeStore {
         this._links = [];
         this._node = null;
         this._oldNode = null;
-        this._undoStore.clear();
+        this._geometryUndoStore.clear();
     }
 
     @action
@@ -182,7 +182,7 @@ export class NodeStore {
 
     @action
     public undo = () => {
-        this._undoStore.undo((previousUndoState: UndoState) => {
+        this._geometryUndoStore.undo((previousUndoState: UndoState) => {
             this._links! = previousUndoState.links;
             this._node!.coordinates = previousUndoState.node.coordinates;
             this._node!.coordinatesManual = previousUndoState.node.coordinatesManual;
@@ -192,7 +192,7 @@ export class NodeStore {
 
     @action
     public redo = () => {
-        this._undoStore.redo((nextUndoState: UndoState) => {
+        this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._links! = nextUndoState.links;
             this._node!.coordinates = nextUndoState.node.coordinates;
             this._node!.coordinatesManual = nextUndoState.node.coordinatesManual;
