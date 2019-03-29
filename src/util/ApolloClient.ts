@@ -36,8 +36,9 @@ class ApolloClient {
         try {
             return await this.client.query<T>(options);
         } catch (e) {
-            if (e.networkError) {
-                switch (e.networkError.statusCode) {
+            const err = e as Apollo.ApolloError;
+            if (err.networkError) {
+                switch (err.networkError['statusCode']) {
                 case 403:
                     await DialogStore!.setFadeMessage(httpStatusDescriptionCodeList[403]);
                     AuthService.logout();

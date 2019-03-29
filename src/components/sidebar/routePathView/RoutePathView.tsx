@@ -88,11 +88,10 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 routePathValidationModel,
                 this.props.routePathStore!.routePath,
             );
+            this.setState({
+                isLoading: false,
+            });
         }
-
-        this.setState({
-            isLoading: false,
-        });
     }
 
     private createNewRoutePath = async () => {
