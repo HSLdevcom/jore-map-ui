@@ -30,12 +30,11 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
-        const id = this.props.node.id;
         const isExtended = this.props.routePathStore!.isListItemExtended(
-            id,
+            node.id,
         );
-        const nodeTypeName = NodeHelper.getNodeTypeName(this.props.node.type);
-        const shortId = NodeHelper.getShortId(this.props.node);
+        const nodeTypeName = NodeHelper.getNodeTypeName(node.type);
+        const shortId = NodeHelper.getShortId(node);
         return (
             <div
                 className={
