@@ -12,6 +12,12 @@
         overflow-y: auto;
         flex-grow: 1;
 
+        .linkAlreadyFoundErrorText {
+            color: $errorRed;
+            font-size: 12px;
+            margin: 4px;
+        }
+
         .column {
             display: flex;
             flex-direction: column;
