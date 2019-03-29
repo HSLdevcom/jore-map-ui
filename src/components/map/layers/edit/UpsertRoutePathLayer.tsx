@@ -8,9 +8,11 @@ import INode from '~/models/INode';
 import { RoutePathStore, RoutePathViewTab, NeighborToAddType } from '~/stores/routePathStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ErrorStore } from '~/stores/errorStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
+import EventManager from '~/util/EventManager';
+import { IExtendRoutePathNodeClickParams } from '../../tools/ExtendRoutePathTool';
 import NodeMarker from '../mapIcons/NodeMarker';
 import StartMarker from '../mapIcons/StartMarker';
 import ArrowDecorator from '../ArrowDecorator';
@@ -21,7 +23,7 @@ const ROUTE_COLOR = '#000';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
-    toolbarStore?: ToolbarStore;
+    toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
 }
@@ -90,14 +92,15 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         let isNodeHighlighted;
         // Check if AddNewRoutePathLink is active
         if (selectedTool
-            && selectedTool.onNodeClick
             && selectedTool.toolType === ToolbarTool.AddNewRoutePathLink
             && this.props.routePathStore!.neighborLinks.length === 0
         ) {
             isNodeHighlighted = this.hasNodeOddAmountOfNeighbors(node);
             // Allow click event for highlighted nodes only
             if (isNodeHighlighted) {
-                onNodeClick = selectedTool.onNodeClick(node, linkOrderNumber);
+                const clickParams: IExtendRoutePathNodeClickParams = { node, linkOrderNumber };
+                onNodeClick = () =>
+                    EventManager.trigger('nodeClick', clickParams);
             }
         } else {
             // Prevent default click if there are neighbors on map
