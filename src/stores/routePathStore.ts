@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import lengthCalculator from '~/util/lengthCalculator';
 import { validateRoutePathLinks } from '~/util/geomValidator';
-import UndoStore from '~/stores/undoStore';
+import GeometryUndoStore from '~/stores/geometryUndoStore';
 
 // Is the neighbor to add either startNode or endNode
 export enum NeighborToAddType {
@@ -35,7 +35,7 @@ export class RoutePathStore {
     @observable private _extendedListItems: string[];
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
-    private _undoStore: UndoStore<UndoState>;
+    private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
         this._neighborRoutePathLinks = [];
@@ -43,7 +43,7 @@ export class RoutePathStore {
         this._extendedListItems = [];
         this._activeTab = RoutePathViewTab.Info;
         this._listFilters = [ListFilter.link];
-        this._undoStore = new UndoStore();
+        this._geometryUndoStore = new GeometryUndoStore();
     }
 
     @computed
@@ -130,7 +130,7 @@ export class RoutePathStore {
 
     @action
     public undo = () => {
-        this._undoStore.undo((nextUndoState: UndoState) => {
+        this._geometryUndoStore.undo((nextUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
             this._routePath!.routePathLinks = nextUndoState.routePathLinks;
         });
@@ -138,7 +138,7 @@ export class RoutePathStore {
 
     @action
     public redo = () => {
-        this._undoStore.redo((previousUndoState: UndoState) => {
+        this._geometryUndoStore.redo((previousUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
             this._routePath!.routePathLinks = previousUndoState.routePathLinks;
         });
@@ -158,7 +158,7 @@ export class RoutePathStore {
         const currentUndoState: UndoState = {
             routePathLinks: _.cloneDeep(routePathLinks),
         };
-        this._undoStore.addItem(currentUndoState);
+        this._geometryUndoStore.addItem(currentUndoState);
     }
 
     @action
@@ -189,7 +189,7 @@ export class RoutePathStore {
         const currentUndoState: UndoState = {
             routePathLinks,
         };
-        this._undoStore.addItem(currentUndoState);
+        this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldRoutePath(this._routePath);
     }
@@ -264,7 +264,7 @@ export class RoutePathStore {
     public clear = () => {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
-        this._undoStore.clear();
+        this._geometryUndoStore.clear();
     }
 
     public getCalculatedLength = () => {

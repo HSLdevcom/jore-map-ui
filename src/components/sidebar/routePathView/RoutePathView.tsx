@@ -58,12 +58,14 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     componentDidMount() {
+        super.componentDidMount();
         EventManager.on('undo', this.props.routePathStore!.undo);
         EventManager.on('redo', this.props.routePathStore!.redo);
         this.initialize();
     }
 
     componentWillUnmount() {
+        super.componentWillUnmount();
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
@@ -216,6 +218,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     private toggleIsEditing = () => {
+        this.props.routePathStore!.setNeighborRoutePathLinks([]);
         this.toggleIsEditingDisabled(
             this.props.routePathStore!.undoChanges,
         );
