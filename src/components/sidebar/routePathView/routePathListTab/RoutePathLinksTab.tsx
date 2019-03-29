@@ -37,7 +37,9 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps>{
         );
         const showItemParam = navigator.getQueryParamValues()[QueryParams.showItem];
         if (showItemParam) {
-            this.scrollIntoListItem(showItemParam[0]);
+            const itemId = showItemParam[0];
+            const isExtended = this.props.routePathStore!.isListItemExtended(itemId);
+            if (isExtended) this.scrollIntoListItem(itemId);
         }
     }
 
