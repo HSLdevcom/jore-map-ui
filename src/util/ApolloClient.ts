@@ -28,7 +28,7 @@ class ApolloClient {
     }
 
     public clearStore(): any {
-        return this.clearStore();
+        return this.client.clearStore();
     }
 
     public async query <T, TVariables = Apollo.OperationVariables > (
