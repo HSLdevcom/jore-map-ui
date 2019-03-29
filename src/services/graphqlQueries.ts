@@ -78,9 +78,17 @@ const getRoutePathLinkQuery = () => {
 
 const getLinksByStartNodeQuery = () => {
     return (
-        gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!) {
+        gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksByStartNodeQuery}
+                usageDuringDate(date: $date, isstartnode: true) {
+                    edges {
+                        node {
+                            reitunnus
+                            suunimi
+                        }
+                    }
+                }
             }
         }`
     );
@@ -110,9 +118,17 @@ const getLinksQuery = () => {
 
 const getLinksByEndNodeQuery = () => {
     return (
-        gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!) {
+        gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksByEndNodeQuery}
+                usageDuringDate(date: $date, isstartnode: false) {
+                    edges {
+                        node {
+                            reitunnus
+                            suunimi
+                        }
+                    }
+                }
             }
         }`
     );

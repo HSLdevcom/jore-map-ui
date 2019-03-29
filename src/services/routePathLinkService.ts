@@ -8,29 +8,39 @@ import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
+interface INeighborLink {
+    usages: string[];
+    routePathLink: IRoutePathLink;
+}
+
 class RoutePathLinkService {
     public static fetchAndCreateRoutePathLinksWithNodeId = async (
         nodeId: string,
         neighborToAddType: NeighborToAddType,
         orderNumber: number,
         transitType: TransitType,
-    ): Promise<IRoutePathLink[]> => {
-        let res: IRoutePathLink[] = [];
+        date: Date,
+    ): Promise<INeighborLink[]> => {
+        let res: INeighborLink[] = [];
         // If new routePathLinks should be created after the node
         if (neighborToAddType === NeighborToAddType.AfterNode) {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getLinksByStartNodeQuery()
-                , variables: { nodeId } },
+                , variables: { nodeId, date } },
             );
+            console.log(queryResult.data);
             res = queryResult.data.solmuBySoltunnus.
-                linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) =>
-                    RoutePathLinkFactory.createNewRoutePathLinkFromExternalLink(link, orderNumber),
-            );
+                linkkisByLnkalkusolmu.nodes.map((link: IExternalLink) => ({
+                    routePathLink:
+                        RoutePathLinkFactory
+                            .createNewRoutePathLinkFromExternalLink(link, orderNumber),
+                    usages: link['usageDuringDate'].edges.map((e: any) => e.node.reitunnus),
+                }));
         // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 { query: GraphqlQueries.getLinksByEndNodeQuery()
-                , variables: { nodeId } },
+                , variables: { nodeId, date } },
             );
             res = queryResult.data.solmuBySoltunnus.
                 linkkisByLnkloppusolmu.nodes.map((link: IExternalLink) =>
@@ -39,7 +49,8 @@ class RoutePathLinkService {
         } else {
             throw new Error(`neighborToAddType not supported: ${neighborToAddType}`);
         }
-        return res.filter(rpLink => rpLink.transitType === transitType);
+        console.log(res);
+        return res.filter(rpLink => rpLink.routePathLink.transitType === transitType);
     }
 
     public static fetchRoutePathLink = async (id: number): Promise<IRoutePathLink> => {
@@ -68,19 +79,20 @@ class RoutePathLinkService {
         }
 
         try {
-            const routePathLinks =
-            await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                nodeId,
-                neighborToAddType,
-                orderNumber,
-                transitType);
-            if (routePathLinks.length === 0) {
+            const neighborLinks =
+                await RoutePathLinkService.fetchAndCreateRoutePathLinksWithNodeId(
+                    nodeId,
+                    neighborToAddType,
+                    orderNumber,
+                    transitType,
+                    new Date());
+            if (neighborLinks.length === 0) {
                 // tslint:disable-next-line:max-line-length
                 ErrorStore.addError(`Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`);
             } else {
                 return {
-                    routePathLinks,
                     neighborToAddType,
+                    routePathLinks: neighborLinks.map(e => e.routePathLink),
                 };
             }
         } catch (e) {
