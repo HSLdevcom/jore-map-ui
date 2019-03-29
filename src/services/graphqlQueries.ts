@@ -80,15 +80,7 @@ const getLinksByStartNodeQuery = () => {
     return (
         gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
-                ${linksByStartNodeQuery}
-                usageDuringDate(date: $date, isstartnode: true) {
-                    edges {
-                        node {
-                            reitunnus
-                            suunimi
-                        }
-                    }
-                }
+                ${linksByStartNodeWithNodeUsageQuery}
             }
         }`
     );
@@ -120,15 +112,7 @@ const getLinksByEndNodeQuery = () => {
     return (
         gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
-                ${linksByEndNodeQuery}
-                usageDuringDate(date: $date, isstartnode: false) {
-                    edges {
-                        node {
-                            reitunnus
-                            suunimi
-                        }
-                    }
-                }
+                ${linksByEndNodeWithNodeUsageQuery}
             }
         }`
     );
@@ -329,6 +313,48 @@ const linkQueryFields = `
         ${endNodeQueryFields}
     }
 `;
+
+const linksByStartNodeWithNodeUsageQuery = `
+linkkisByLnkalkusolmu {
+    nodes {
+        ${linkQueryFields}
+        solmuByLnkalkusolmu {
+            ${startNodeQueryFields}
+        }
+        solmuByLnkloppusolmu {
+            ${endNodeQueryFields}
+            usageDuringDate(date: $date, isstartnode: false) {
+                edges {
+                    node {
+                        reitunnus
+                        suunimi
+                    }
+                }
+            }
+        }
+    }
+}`;
+
+const linksByEndNodeWithNodeUsageQuery = `
+linkkisByLnkloppusolmu {
+    nodes {
+        ${linkQueryFields}
+        solmuByLnkalkusolmu {
+            ${startNodeQueryFields}
+            usageDuringDate(date: $date, isstartnode: false) {
+                edges {
+                    node {
+                        reitunnus
+                        suunimi
+                    }
+                }
+            }
+        }
+        solmuByLnkloppusolmu {
+            ${endNodeQueryFields}
+        }
+    }
+}`;
 
 const linksByStartNodeQuery = `
 linkkisByLnkalkusolmu {

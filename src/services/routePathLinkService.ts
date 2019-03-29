@@ -34,7 +34,9 @@ class RoutePathLinkService {
                     routePathLink:
                         RoutePathLinkFactory
                             .createNewRoutePathLinkFromExternalLink(link, orderNumber),
-                    usages: link['usageDuringDate'].edges.map((e: any) => e.node.reitunnus),
+                    usages: link
+                        .solmuByLnkloppusolmu['usageDuringDate']
+                        .edges.map((e: any) => e.node.reitunnus),
                 }));
         // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
