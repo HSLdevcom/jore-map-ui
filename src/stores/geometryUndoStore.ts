@@ -1,6 +1,6 @@
 import EventManager from '~/util/EventManager';
 
-class UndoStore<UndoObject> {
+class GeometryUndoStore<UndoObject> {
     private _undoObjects: UndoObject[];
     private _undoIndex: number;
 
@@ -46,4 +46,4 @@ class UndoStore<UndoObject> {
     }
 }
 
-export default UndoStore;
+export default GeometryUndoStore;

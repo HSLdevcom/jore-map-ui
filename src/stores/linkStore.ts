@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
 import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
-import UndoStore from '~/stores/undoStore';
+import GeometryUndoStore from '~/stores/geometryUndoStore';
 
 export interface UndoState {
     link: ILink;
@@ -14,14 +14,14 @@ export class LinkStore {
     @observable private _nodes: INode[];
     // variable for creating new link:
     @observable private _startMarkerCoordinates: LatLng | null;
-    private _undoStore: UndoStore<UndoState>;
+    private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
         this._nodes = [];
         this._link = null;
         this._oldLink = null;
         this._startMarkerCoordinates = null;
-        this._undoStore = new UndoStore();
+        this._geometryUndoStore = new GeometryUndoStore();
     }
 
     @computed
@@ -51,7 +51,7 @@ export class LinkStore {
         const currentUndoState: UndoState = {
             link,
         };
-        this._undoStore.addItem(currentUndoState);
+        this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldLink(link);
     }
@@ -67,7 +67,7 @@ export class LinkStore {
         const currentUndoState: UndoState = {
             link: updatedLink,
         };
-        this._undoStore.addItem(currentUndoState);
+        this._geometryUndoStore.addItem(currentUndoState);
 
     }
 
@@ -97,7 +97,7 @@ export class LinkStore {
         this._nodes = [];
         this._oldLink = null;
         this._startMarkerCoordinates = null;
-        this._undoStore.clear();
+        this._geometryUndoStore.clear();
     }
 
     @computed
@@ -122,14 +122,14 @@ export class LinkStore {
 
     @action
     public undo = () => {
-        this._undoStore.undo((previousUndoState: UndoState) => {
+        this._geometryUndoStore.undo((previousUndoState: UndoState) => {
             this._link!.geometry = previousUndoState.link.geometry;
         });
     }
 
     @action
     public redo = () => {
-        this._undoStore.redo((nextUndoState: UndoState) => {
+        this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._link!.geometry = nextUndoState.link.geometry;
         });
     }
