@@ -257,9 +257,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 disabled={!this.props.isNewLink}
                             />
                             { transitType && this.transitTypeAlreadyExists(transitType) &&
-                                <div className={s.linkAlreadyFound}>
-                                    Linkki jolla on sama alkusolmu,
-                                    loppusolmu ja verkko on jo olemassa
+                                <div className={s.linkAlreadyFoundErrorText}>
+                                    Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).
                                 </div>
                             }
                         </div>
