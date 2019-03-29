@@ -1,4 +1,4 @@
-import moment from 'moment';
+import Moment from 'moment';
 
 class ApiClientHelper {
     private static arrayToObject = (arr: [string, any][]) => {
@@ -16,7 +16,7 @@ class ApiClientHelper {
             .filter(([key, value]: [string, any]) => value instanceof Date)
             .map(
                 ([key, value]: [string, Date]) =>
-                    [key, moment(value).format()] as [string, string]);
+                    [key, Moment(value).format()] as [string, string]);
 
         return {
             ...obj,

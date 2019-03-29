@@ -1,8 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { IRoutePath, INode, IRoutePathLink } from '~/models';
-import routeBuilder  from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
 import NodeType from '~/enums/nodeType';
 import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
@@ -90,15 +88,20 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
     }
 
     private openLinkView = () => {
-        if (this.state.selectedRoutePathLink) {
-            const linkViewLink =
-                routeBuilder
-                    .to(subSites.routelink)
-                    .toTarget(
-                        this.state.selectedRoutePathLink,
-                    )
-                    .toLink();
-            window.open(linkViewLink);
+        const link = this.state.selectedRoutePathLink;
+        if (link) {
+            window.alert('Toiminnon suunnittelu kesken.');
+            // TODO?
+            // const linkViewLink =
+            //     routeBuilder
+            //         .to(subSites.link)
+            //         .toTarget([
+            //             link.startNode.id,
+            //             link.endNode.id,
+            //             link.transitType,
+            //         ].join(','))
+            //         .toLink();
+            // window.open(linkViewLink);
         }
     }
 
