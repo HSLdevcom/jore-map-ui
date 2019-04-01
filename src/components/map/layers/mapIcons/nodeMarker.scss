@@ -25,12 +25,18 @@
 
     .neighborMarker {
         position: absolute;
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
         top: -4px;
         left: -4px;
-        border-color: #ca00f7;
-        background-color: #ca00f7;
+
+        .usageAmount {
+            font-size: 17px;
+            font-weight: 900;
+            text-align: center;
+            color: white;
+            line-height: 24px;
+        }
     }
 
     .highlight {
@@ -52,8 +58,7 @@
 
 .nodeLabel {
     position: absolute;
-    left: 20px;
-    top: 3px;
+    left: 30px;
     font-weight: 600;
     text-shadow: 0 0 5px white, 0 0 5px white;
 }

@@ -20,6 +20,8 @@ import ArrowDecorator from '../ArrowDecorator';
 
 const START_MARKER_COLOR = '#00df0b';
 const ROUTE_COLOR = '#000';
+const USED_NEIGHBOR_COLOR = '#0dce0a';
+const UNUSED_NEIGHBOR_COLOR = '#fc383a';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
@@ -173,8 +175,9 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 key={`${key}-${node.id}`}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isNeighborMarker={true}
-                color={neighborLink.usages.length > 0 ? '#FF0000' : '#00FF00'}
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
+                neighborMarkerRoutePathUsage={neighborLink.usages}
+                color={neighborLink.usages.length > 0 ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 node={node}
             />
         );
@@ -185,7 +188,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             <Polyline
                 positions={neighborLink.routePathLink.geometry}
                 key={neighborLink.routePathLink.id}
-                color={neighborLink.usages.length > 0 ? '#FF0000' : '#00FF00'}
+                color={neighborLink.usages.length > 0 ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 weight={5}
                 opacity={0.8}
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}

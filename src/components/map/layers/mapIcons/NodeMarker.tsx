@@ -36,6 +36,7 @@ interface INodeMarkerProps {
     onClick?: Function;
     isDraggable?: boolean;
     isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
+    neighborMarkerRoutePathUsage?: string[];
     isHighlighted?: boolean;
     onClickEventParams?: any;
     node: INode;
@@ -177,6 +178,21 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
+    private renderNeighborUsage = () => {
+        if (
+            !this.props.isNeighborMarker ||
+            !this.props.neighborMarkerRoutePathUsage
+        ) return null;
+        return (
+            <div className={s.usageAmount}>
+                {
+                    this.props.neighborMarkerRoutePathUsage.length > 9 ?
+                        '9+' : this.props.neighborMarkerRoutePathUsage.length
+                }
+            </div>
+        );
+    }
+
     private isInteractive = () => (
         // TODO this should probably check other stuff too...
         this.props.isSelected && this.props.isDraggable
@@ -192,10 +208,16 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     render() {
-
         const icon = createDivIcon(
-                <div className={classnames(s.nodeBase, ...this.getMarkerClasses())}>
+                <div
+                    className={classnames(s.nodeBase, ...this.getMarkerClasses())}
+                    style={{
+                        borderColor: this.props.color,
+                        backgroundColor: this.props.color,
+                    }}
+                >
                     {this.renderMarkerLabel()}
+                    {this.renderNeighborUsage()}
                 </div>,
         );
         return (
