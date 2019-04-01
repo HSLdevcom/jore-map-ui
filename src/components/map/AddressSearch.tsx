@@ -70,6 +70,8 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             this.unselectSearchResult();
             return;
         }
+        if (this.searchResultMarker) this.map.removeLayer(this.searchResultMarker);
+
         const coordinates = selectedSearchResult.geometry.coordinates;
         const latLng = L.latLng(coordinates[1], coordinates[0]);
         this.setState({
