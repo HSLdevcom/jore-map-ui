@@ -2,6 +2,7 @@ const commonConstants = {
     DECIMALS_IN_GEOMETRIES: 6,
     MAP_LAYERS_MIN_ZOOM_LEVEL: 15,
     NEW_OBJECT_TAG: 'new',
+    GEOCODER_ADDRESS: 'https://api.digitransit.fi/geocoding/v1/search',
     ADDRESS_SEARCH_RESULT_COUNT: 10,
 };
 

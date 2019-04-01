@@ -115,11 +115,11 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         }
     }
     private requestAddress = async (value: string) => {
-        const GEOCODER_ADDRESS = 'https://api.digitransit.fi/geocoding/v1/search';
+        const GEOCODER_ADDRESS = constants.GEOCODER_ADDRESS;
+        const SEARCH_RESULT_COUNT = constants.ADDRESS_SEARCH_RESULT_COUNT;
         const center = this.map.getCenter();
         const lat = center.lat;
         const lng = center.lng;
-        const SEARCH_RESULT_COUNT = constants.ADDRESS_SEARCH_RESULT_COUNT;
         const requestUrl = `${GEOCODER_ADDRESS}?text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`; // tslint:disable-line max-line-length
 
         const response = await ApiClient
