@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
+import EventManager from '~/util/EventManager';
 
 interface IViewFormBaseState {
     isLoading: boolean;
@@ -7,7 +8,19 @@ interface IViewFormBaseState {
     isEditingDisabled: boolean;
 }
 
+// TODO: refactor to use composition?
+// Inheritance is considered as a bad practice, react doesn't really support inheritance:
+// tslint:disable-next-line max-line-length
+// https://stackoverflow.com/questions/31072841/componentdidmount-method-not-triggered-when-using-inherited-es6-react-class
 class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Props, State> {
+    componentDidMount() {
+        EventManager.on('geometryChange', this.enableEditing);
+    }
+
+    componentWillUnmount() {
+        EventManager.off('geometryChange', this.enableEditing);
+    }
+
     protected isFormValid = () => {
         return !Object.values(this.state.invalidPropertiesMap)
             .some(validatorResult => !validatorResult.isValid);
@@ -52,6 +65,10 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
             isEditingDisabled,
             invalidPropertiesMap: {},
         });
+    }
+
+    protected enableEditing = () => {
+        this.setState({ isEditingDisabled: false });
     }
 }
 

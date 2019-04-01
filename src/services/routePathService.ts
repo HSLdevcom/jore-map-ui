@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import moment from 'moment';
+import Moment from 'moment';
 import apolloClient from '~/util/ApolloClient';
 import { IRoutePath } from '~/models';
 import ApiClient from '~/util/ApiClient';
@@ -10,7 +10,7 @@ import GraphqlQueries from './graphqlQueries';
 
 class RoutePathService {
     public static fetchRoutePath =
-        async (routeId: string, startDate: moment.Moment, direction: string):
+        async (routeId: string, startDate: Moment.Moment, direction: string):
             Promise<IRoutePath> => {
             const queryResult: ApolloQueryResult<any> = await apolloClient.query(
                 {
