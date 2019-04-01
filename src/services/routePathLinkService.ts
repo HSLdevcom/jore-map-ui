@@ -40,15 +40,16 @@ const getNeighborLinks = (
 };
 
 const _getNeighborLinks = (
-    queryResult: any, orderNumber: number, foo: string, foo2: string,
+    queryResult: any, orderNumber: number, linkPropertyName: string, nodePropertyName: string,
 ): INeighborLink[] => {
-    return queryResult.data.solmuBySoltunnus[foo].nodes.map((link: IExtendedExternalLink) => ({
-        routePathLink:
-            RoutePathLinkFactory
-                .createNewRoutePathLinkFromExternalLink(link, orderNumber),
-        usages: link[foo2].usageDuringDate!
-            .nodes.map((e: any) => e.reitunnus),
-    }));
+    return queryResult.data.solmuBySoltunnus[linkPropertyName]
+        .nodes.map((link: IExtendedExternalLink) => ({
+            routePathLink:
+                RoutePathLinkFactory
+                    .createNewRoutePathLinkFromExternalLink(link, orderNumber),
+            usages: link[nodePropertyName].usageDuringDate!
+                .nodes.map((e: any) => e.reitunnus),
+        }));
 };
 
 class RoutePathLinkService {

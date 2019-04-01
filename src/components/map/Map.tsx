@@ -25,8 +25,8 @@ import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import NetworkLayers from './layers/NetworkLayers';
-import * as s from './map.scss';
 import NeighborLinkLayer from './layers/NeighborLinkLayer';
+import * as s from './map.scss';
 
 interface IMapProps {
     mapStore?: MapStore;
