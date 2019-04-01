@@ -13,7 +13,7 @@ interface ISearchInputProps {
 @inject('searchStore', 'searchResultStore')
 @observer
 class SearchInput extends React.Component<ISearchInputProps> {
-    private handleSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+    private onSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
         this.props.searchStore!.setSearchInput(newValue);
     }
@@ -26,7 +26,7 @@ class SearchInput extends React.Component<ISearchInputProps> {
                         placeholder='Hae'
                         type='text'
                         value={this.props.searchStore!.searchInput}
-                        onChange={this.handleSearchInputChange}
+                        onChange={this.onSearchInputChange}
                     />
                     {this.props.searchResultStore!.isSearching &&
                         <div className={s.loader}>
