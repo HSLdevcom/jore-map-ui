@@ -132,9 +132,9 @@ class LeafletMap extends React.Component<IMapProps> {
         map && map.fitBounds(
             this.props.mapStore!.mapBounds,
             {
-                maxZoom: 16,
+                maxZoom: 20,
                 animate: true,
-                padding: [300, 300],
+                padding: [100, 100],
             });
     }
 
