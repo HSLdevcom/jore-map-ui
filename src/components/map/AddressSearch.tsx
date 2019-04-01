@@ -123,7 +123,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         const requestUrl = `${GEOCODER_ADDRESS}?text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`; // tslint:disable-line max-line-length
 
         const response = await ApiClient
-            .sendRequestToUrl(RequestMethod.GET, encodeURI(requestUrl), {});
+            .sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
         const searchResults = response.features;
         if (searchResults) {
             this.setState({

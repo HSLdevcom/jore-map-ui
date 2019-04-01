@@ -16,7 +16,7 @@ interface IAuthorizationRequest {
 
 type credentials = 'include';
 
-const API_URL = process.env.API_URL || 'http://localhost:3040';
+const BACKEND_API_URL = process.env.API_URL || 'http://localhost:3040';
 
 class ApiClient {
     public updateObject = async (entityName: endpoints, object: any) => {
@@ -24,39 +24,37 @@ class ApiClient {
     }
 
     public createObject = async (entityName: endpoints, object: any) => {
-        return await this.sendRequest(RequestMethod.PUT, entityName, object);
+        return await this.sendBackendRequest(RequestMethod.PUT, entityName, object);
     }
 
     public deleteObject = async (entityName: endpoints, object: any) => {
-        return await this.sendRequest(RequestMethod.DELETE, entityName, object);
+        return await this.sendBackendRequest(RequestMethod.DELETE, entityName, object);
     }
 
     public authorizeUsingCode = async (code: string) => {
         const requestBody: IAuthorizationRequest = { code };
-        return await this.sendRequest(
+        return await this.sendBackendRequest(
             RequestMethod.POST, endpoints.AUTH, requestBody);
     }
 
     public getRequest = async (endpoint: endpoints) => {
-        return await this.sendRequest(
+        return await this.sendBackendRequest(
             RequestMethod.GET, endpoint, {});
     }
 
     public postRequest = async (endpoint: endpoints, requestBody: any) => {
-        return await this.sendRequest(
+        return await this.sendBackendRequest(
             RequestMethod.POST, endpoint, requestBody);
     }
 
-    private sendRequest = async (method: RequestMethod, endpoint: endpoints, object: any) => {
-        const entityUrl = this.getEntityUrl(endpoint);
-        return this.sendRequestToUrl(method, entityUrl, object, 'include');
+    private sendBackendRequest = async (
+        method: RequestMethod, endpoint: endpoints, object: any,
+    ) => {
+        const entityUrl = `${BACKEND_API_URL}/${endpoint}`;
+        return this.sendRequest(method, entityUrl, object, 'include');
     }
 
-    private getEntityUrl = (entityName: endpoints) => {
-        return `${API_URL}/${entityName}`;
-    }
-
-    public sendRequestToUrl = async (
+    public sendRequest = async (
         method: RequestMethod, url: string, object: any, credentials?: credentials,
     ) => {
         const formattedObject = ApiClientHelper.format(object);
