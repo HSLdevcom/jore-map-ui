@@ -166,7 +166,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
     }
 
     private setSelectedSearchResult = (_searchIndex?: number) => () => {
-        const searchIndex = _searchIndex ? _searchIndex : this.state.searchIndex;
+        const searchIndex = _searchIndex !== undefined ? _searchIndex : this.state.searchIndex;
         if (searchIndex === -1) return;
 
         const selectedSearchResult = this.state.searchResults[searchIndex];
