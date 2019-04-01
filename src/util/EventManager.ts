@@ -1,5 +1,8 @@
 
 type eventName =
+    'enter' |
+    'arrowUp' |
+    'arrowDown' |
     'undo' |
     'redo' |
     'mapClick' |

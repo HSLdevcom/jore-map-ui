@@ -2,6 +2,7 @@ const commonConstants = {
     DECIMALS_IN_GEOMETRIES: 6,
     MAP_LAYERS_MIN_ZOOM_LEVEL: 15,
     NEW_OBJECT_TAG: 'new',
+    ADDRESS_SEARCH_RESULT_COUNT: 10,
 };
 
 const developmentConstants = {

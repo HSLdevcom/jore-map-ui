@@ -14,6 +14,8 @@ interface IAuthorizationRequest {
     code: string;
 }
 
+type credentials = 'include';
+
 const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 class ApiClient {
@@ -46,15 +48,26 @@ class ApiClient {
     }
 
     private sendRequest = async (method: RequestMethod, endpoint: endpoints, object: any) => {
+        const entityUrl = this.getEntityUrl(endpoint);
+        return this.sendRequestToUrl(method, entityUrl, object, 'include');
+    }
+
+    private getEntityUrl = (entityName: endpoints) => {
+        return `${API_URL}/${entityName}`;
+    }
+
+    public sendRequestToUrl = async (
+        method: RequestMethod, url: string, object: any, credentials?: credentials,
+    ) => {
         const formattedObject = ApiClientHelper.format(object);
         let error : (IError | null) = null;
 
         try {
-            const response = await fetch(this.getUrl(endpoint), {
+            const response = await fetch(url, {
                 method,
                 body: method === RequestMethod.GET ? undefined : JSON.stringify(formattedObject),
                 // To keep the same express session information with each request
-                credentials: 'include',
+                credentials: credentials ? credentials : undefined,
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -85,10 +98,10 @@ class ApiClient {
             throw error;
         }
     }
-
-    private getUrl = (entityName: endpoints) => {
-        return `${API_URL}/${entityName}`;
-    }
 }
 
 export default new ApiClient();
+
+export {
+    RequestMethod,
+};

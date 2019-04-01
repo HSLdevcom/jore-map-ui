@@ -1,6 +1,9 @@
 import EventManager from '~/util/EventManager';
 
 const KEYCODES = {
+    enter: 'Enter',
+    arrowUp: 'ArrowUp',
+    arrowDown: 'ArrowDown',
     Y: 'KeyY',
     Z: 'KeyZ',
 };
@@ -11,6 +14,21 @@ class KeyEventHandler {
     }
 
     handleKeyDownEvent = (event: KeyboardEvent) => {
+        switch (event.code) {
+        case KEYCODES.enter: {
+            EventManager.trigger('enter');
+            break;
+        }
+        case KEYCODES.arrowUp: {
+            EventManager.trigger('arrowUp');
+            break;
+        }
+        case KEYCODES.arrowDown: {
+            EventManager.trigger('arrowDown');
+            break;
+        }
+        }
+
         // Windows
         if (event.ctrlKey) {
             switch (event.code) {
