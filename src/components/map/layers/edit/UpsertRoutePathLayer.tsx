@@ -5,13 +5,10 @@ import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import INode from '~/models/INode';
-import { RoutePathStore, RoutePathViewTab, NeighborToAddType } from '~/stores/routePathStore';
+import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
-import { ErrorStore } from '~/stores/errorStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import RoutePathLinkService from '~/services/routePathLinkService';
 import ToolbarTool from '~/enums/toolbarTool';
-import INeighborLink from '~/models/INeighborLink';
 import EventManager from '~/util/EventManager';
 import { IExtendRoutePathNodeClickParams } from '../../tools/ExtendRoutePathTool';
 import NodeMarker from '../mapIcons/NodeMarker';
@@ -20,21 +17,18 @@ import ArrowDecorator from '../ArrowDecorator';
 
 const START_MARKER_COLOR = '#00df0b';
 const ROUTE_COLOR = '#000';
-const USED_NEIGHBOR_COLOR = '#0dce0a';
-const UNUSED_NEIGHBOR_COLOR = '#fc383a';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
-    errorStore?: ErrorStore;
 }
 
 interface IRoutePathLayerState {
     focusedRoutePathId: string;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore', 'errorStore')
+@inject('routePathStore', 'toolbarStore', 'mapStore')
 @observer
 class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     constructor(props: IRoutePathLayerProps) {
@@ -153,68 +147,6 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         ];
     }
 
-    private renderRoutePathLinkNeighbors = () => {
-        const neighborLinks = this.props.routePathStore!.neighborLinks;
-        if (!neighborLinks) return;
-        return neighborLinks.map((neighborLink, index) => {
-            const neighborToAddType = this.props.routePathStore!.neighborToAddType;
-            const nodeToRender = neighborToAddType === NeighborToAddType.AfterNode ?
-                neighborLink.routePathLink.endNode : neighborLink.routePathLink.startNode;
-            return (
-                [
-                    this.renderNeighborNode(nodeToRender, neighborLink, index),
-                    this.renderNeighborLink(neighborLink),
-                ]
-            );
-        });
-    }
-
-    private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
-        return (
-            <NodeMarker
-                key={`${key}-${node.id}`}
-                isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                isNeighborMarker={true}
-                onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
-                neighborMarkerRoutePathUsage={neighborLink.usages}
-                color={neighborLink.usages.length > 0 ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
-                node={node}
-            />
-        );
-    }
-
-    private renderNeighborLink = (neighborLink: INeighborLink) => {
-        return (
-            <Polyline
-                positions={neighborLink.routePathLink.geometry}
-                key={neighborLink.routePathLink.id}
-                color={neighborLink.usages.length > 0 ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
-                weight={5}
-                opacity={0.8}
-                onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
-            />
-        );
-    }
-
-    private addNeighborLinkToRoutePath = (routePathLink: IRoutePathLink) => async () => {
-        this.props.routePathStore!.addLink(routePathLink);
-        const neighborToAddType = this.props.routePathStore!.neighborToAddType;
-        const nodeToFetch = neighborToAddType === NeighborToAddType.AfterNode ?
-            routePathLink.endNode : routePathLink.startNode;
-        if (this.hasNodeOddAmountOfNeighbors(nodeToFetch)) {
-            const queryResult = await RoutePathLinkService.fetchNeighborRoutePathLinks(
-                nodeToFetch.id,
-                routePathLink.orderNumber,
-                this.props.routePathStore!.routePath!.transitType,
-                this.props.routePathStore!.routePath!.routePathLinks,
-            );
-            if (queryResult) {
-                this.props.routePathStore!.setNeighborRoutePathLinks(queryResult.neighborLinks);
-                this.props.routePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
-            }
-        }
-    }
-
     private calculateBounds = () => {
         const bounds:L.LatLngBounds = new L.LatLngBounds([]);
 
@@ -290,9 +222,6 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             <>
                 {this.renderRoutePathLinks()}
                 {this.renderLinkDecorator()}
-                { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
-                    this.renderRoutePathLinkNeighbors()
-                }
                 {this.renderStartMarker()}
             </>
         );

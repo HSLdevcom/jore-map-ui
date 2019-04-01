@@ -9,7 +9,9 @@ import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
 import { NodeStore } from '~/stores/nodeStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
+import ToolbarTool from '~/enums/toolbarTool';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
@@ -24,11 +26,13 @@ import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import NetworkLayers from './layers/NetworkLayers';
 import * as s from './map.scss';
+import NeighborLinkLayer from './layers/NeighborLinkLayer';
 
 interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
     nodeStore?: NodeStore;
+    toolbarStore?: ToolbarStore;
 }
 
 interface IMapPropReference {
@@ -48,7 +52,7 @@ export type LeafletContext = {
     popupContainer?: L.Layer,
 };
 
-@inject('mapStore', 'routeStore', 'nodeStore')
+@inject('mapStore', 'routeStore', 'nodeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -202,6 +206,9 @@ class LeafletMap extends React.Component<IMapProps> {
                         routes={routes}
                     />
                     <UpsertRoutePathLayer />
+                    { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
+                        <NeighborLinkLayer />
+                    }
                     <PopupLayer />
                     <Control position='topleft'>
                         <Toolbar />
