@@ -33,9 +33,9 @@ const getNeighborLinks = (
     queryResult: any, orderNumber: number, from: 'startNode' | 'endNode',
 ): INeighborLink[] => {
     const linkPropertyName = from === 'startNode'
-        ? 'linkkisByLnkalkusolmu' : 'linkkisByLnkalkusolmu';
+        ? 'linkkisByLnkalkusolmu' : 'linkkisByLnkloppusolmu';
     const nodePropertyName = from === 'startNode'
-        ? 'solmuByLnkloppusolmu' : 'solmuByLnkloppusolmu';
+        ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
     return _getNeighborLinks(queryResult, orderNumber, linkPropertyName, nodePropertyName);
 };
 
