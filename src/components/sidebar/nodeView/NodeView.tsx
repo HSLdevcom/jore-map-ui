@@ -147,7 +147,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,
-                    this.props.nodeStore!.dirtyLinks,
+                    this.props.nodeStore!.getDirtyLinks(),
                 );
             }
 
