@@ -7,8 +7,8 @@ import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import INeighborLink from '~/models/INeighborLink';
-import NodeMarker from './mapIcons/NodeMarker';
-import * as s from './neighborLinkLayer.scss';
+import NodeMarker from '../mapIcons/NodeMarker';
+import * as s from './routePathNeighborLinkLayer.scss';
 
 const USED_NEIGHBOR_COLOR = '#0dce0a';
 const UNUSED_NEIGHBOR_COLOR = '#fc383a';
@@ -20,7 +20,7 @@ interface IRoutePathLayerProps {
 
 @inject('routePathStore', 'mapStore')
 @observer
-class NeighborLinkLayer extends Component<IRoutePathLayerProps> {
+class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
     public hasNodeOddAmountOfNeighbors = (node: INode) => {
         const routePath = this.props.routePathStore!.routePath;
         return routePath!.routePathLinks!.filter(x => x.startNode.id === node.id).length
@@ -97,4 +97,4 @@ class NeighborLinkLayer extends Component<IRoutePathLayerProps> {
     }
 }
 
-export default NeighborLinkLayer;
+export default RoutePathNeighborLinkLayer;

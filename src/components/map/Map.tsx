@@ -25,7 +25,7 @@ import Toolbar from './toolbar/Toolbar';
 import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import NetworkLayers from './layers/NetworkLayers';
-import NeighborLinkLayer from './layers/NeighborLinkLayer';
+import RoutePathNeighborLinkLayer from './layers/edit/RoutePathNeighborLinkLayer';
 import * as s from './map.scss';
 
 interface IMapProps {
@@ -207,7 +207,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     />
                     <UpsertRoutePathLayer />
                     { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
-                        <NeighborLinkLayer />
+                        <RoutePathNeighborLinkLayer />
                     }
                     <PopupLayer />
                     <Control position='topleft'>
