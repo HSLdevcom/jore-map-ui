@@ -24,9 +24,9 @@ export type MapCursor = '' | 'crosshair';
 export class MapStore {
 
     @observable private _coordinates: L.LatLng;
+    @observable private _displayCoordinateSystem:CoordinateSystem;
     @observable private _isMapFullscreen: boolean;
     @observable private _routes: MapRoute[];
-    @observable private _displayCoordinateSystem:CoordinateSystem;
     @observable private _zoom:number;
     @observable private _selectedNodeId: string|null;
     @observable private _visibleNodeLabels: NodeLabel[];
@@ -36,10 +36,10 @@ export class MapStore {
 
     constructor() {
         this._coordinates = INITIAL_COORDINATES;
+        this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._zoom = INITIAL_ZOOM;
         this._isMapFullscreen = false;
         this._routes = [];
-        this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._visibleNodeLabels = [NodeLabel.hastusId];
         this._mapFilters = [MapFilter.arrowDecorator];
         this._mapCursor = '';
@@ -48,6 +48,11 @@ export class MapStore {
     @computed
     get coordinates(): L.LatLng {
         return this._coordinates;
+    }
+
+    @computed
+    get displayCoordinateSystem(): CoordinateSystem {
+        return this._displayCoordinateSystem;
     }
 
     @computed
@@ -63,19 +68,6 @@ export class MapStore {
     @computed
     get routes(): MapRoute[] {
         return this._routes;
-    }
-
-    @computed
-    get displayCoordinateSystem(): CoordinateSystem {
-        return this._displayCoordinateSystem;
-    }
-
-    // TODO: move this out of store
-    // Use get coordinates() and get displayCoordinateSystem() instead.
-    @computed
-    get getDisplayCoordinates(): number[] {
-        return GeometryService.reprojectToCrs(
-            this._coordinates.lat, this._coordinates.lng, this._displayCoordinateSystem);
     }
 
     @computed

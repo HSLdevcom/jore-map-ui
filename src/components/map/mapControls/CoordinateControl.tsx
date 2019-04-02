@@ -23,7 +23,7 @@ class CoordinateControl extends L.Control {
     }
 
     onAdd(map: L.Map) {
-        const [lat, lon] = this.mapStore!.getDisplayCoordinates;
+        const [lat, lon] = this.getDisplayCoordinates();
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
         container.id = s.coordinateControl;
         const xDiv = L.DomUtil.create('div');
@@ -75,10 +75,18 @@ class CoordinateControl extends L.Control {
 
     private updateCoordinates() {
         [this.xInput.value, this.yInput.value] =
-            this.mapStore!.getDisplayCoordinates
-                .map(coord => coord.toPrecision(this.options['precision']));
+            this.getDisplayCoordinates()
+            .map(coord => coord.toPrecision(this.options['precision']));
         ({ x: this.xButton.innerText, y: this.yButton.innerText } =
             GeometryService.coordinateNames(this.mapStore!.displayCoordinateSystem));
+    }
+
+    private getDisplayCoordinates() {
+        const coordinates = this.mapStore!.coordinates;
+        const displayCoordinateSystem = this.mapStore!.displayCoordinateSystem;
+        return GeometryService.reprojectToCrs(
+            coordinates.lat, coordinates.lng, displayCoordinateSystem,
+        );
     }
 }
 
