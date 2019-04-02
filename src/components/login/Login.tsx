@@ -46,10 +46,6 @@ class Login extends React.Component<ILoginProps> {
                     <FaLock />
                     <div className={s.loginText}>Kirjaudu (HSL ID)</div>
                 </div>
-                <label className={s.checkboxContainer}>
-                    <input className={s.checkbox} type='checkbox'/>
-                    Muista minut
-                </label>
             </div>
         </div>
         );

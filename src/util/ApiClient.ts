@@ -1,6 +1,9 @@
 import endpoints from '~/enums/endpoints';
 import IError from '~/models/IError';
 import FetchStatusCode from '~/enums/fetchStatusCode';
+import DialogStore from '~/stores/dialogStore';
+import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
+import LoginStore from '~/stores/loginStore';
 import ApiClientHelper from './apiClientHelper';
 
 enum RequestMethod {
@@ -78,6 +81,12 @@ class ApiClient {
                     return await response.json();
                 }
                 return await response.text();
+            }
+            if (response.status === 403) {
+                DialogStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
+                    LoginStore.clear();
+                });
+                return;
             }
             error = {
                 name: 'Failed to fetch',
