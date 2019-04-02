@@ -5,7 +5,7 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import RoutePathLinkService from '~/services/routePathLinkService';
+import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import INeighborLink from '~/models/INeighborLink';
 import NodeMarker from '../mapIcons/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
@@ -67,7 +67,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
         const nodeToFetch = neighborToAddType === NeighborToAddType.AfterNode ?
             routePathLink.endNode : routePathLink.startNode;
         if (this.hasNodeOddAmountOfNeighbors(nodeToFetch)) {
-            const queryResult = await RoutePathLinkService.fetchNeighborRoutePathLinks(
+            const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
                 nodeToFetch.id,
                 routePathLink.orderNumber,
                 this.props.routePathStore!.routePath!.transitType,

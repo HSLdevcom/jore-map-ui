@@ -3,7 +3,7 @@ import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
 import { INode } from '~/models';
-import RoutePathLinkService from '~/services/routePathLinkService';
+import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import BaseTool from './BaseTool';
 
 export interface IExtendRoutePathNodeClickParams {
@@ -42,7 +42,7 @@ class ExtendRoutePathTool implements BaseTool {
         const params: IExtendRoutePathNetworkClickParams = clickEvent.detail;
         if (params.nodeType !== NodeType.STOP) return;
         const queryResult =
-            await RoutePathLinkService.fetchNeighborRoutePathLinks(
+            await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
                 params.nodeId,
                 1,
                 RoutePathStore!.routePath!.transitType,
@@ -59,7 +59,7 @@ class ExtendRoutePathTool implements BaseTool {
         const node = params.node;
         const linkOrderNumber = params.linkOrderNumber;
         const queryResult =
-            await RoutePathLinkService.fetchNeighborRoutePathLinks(
+            await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
                 node.id,
                 linkOrderNumber,
                 RoutePathStore!.routePath!.transitType,
