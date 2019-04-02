@@ -2,7 +2,6 @@ import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import lengthCalculator from '~/util/lengthCalculator';
-import { validateRoutePathLinks } from '~/util/geomValidator';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 
 // Is the neighbor to add either startNode or endNode
@@ -64,13 +63,6 @@ export class RoutePathStore {
     @computed
     get isDirty() {
         return !_.isEqual(this._routePath, this._oldRoutePath);
-    }
-
-    @computed
-    get isGeometryValid() {
-        return validateRoutePathLinks(
-            this._routePath!.routePathLinks!,
-        );
     }
 
     @computed
