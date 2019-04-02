@@ -1,7 +1,8 @@
 import { action, computed, observable } from 'mobx';
 import Constants from '~/constants/constants';
-
 import { IAuthorizationResponse } from '~/services/authService';
+import navigator from '~/routing/navigator';
+import SubSites from '~/routing/subSites';
 
 export class LoginStore {
     @observable private _isAuthenticated: boolean;
@@ -9,7 +10,7 @@ export class LoginStore {
     @observable private _userEmail?: string;
 
     constructor() {
-        this.clear();
+        this.clear(false);
     }
 
     @computed
@@ -35,10 +36,13 @@ export class LoginStore {
     }
 
     @action
-    public clear() {
+    public clear(redirectToLogin: boolean = true) {
         this._isAuthenticated = false;
         this._userEmail = undefined;
         this._hasWriteAccess = false;
+        if (redirectToLogin) {
+            navigator.goTo(SubSites.login);
+        }
     }
 }
 

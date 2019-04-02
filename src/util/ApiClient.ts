@@ -3,7 +3,7 @@ import IError from '~/models/IError';
 import FetchStatusCode from '~/enums/fetchStatusCode';
 import DialogStore from '~/stores/dialogStore';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
-import AuthService from '~/services/authService';
+import LoginStore from '~/stores/loginStore';
 import ApiClientHelper from './apiClientHelper';
 
 enum RequestMethod {
@@ -72,8 +72,9 @@ class ApiClient {
                 return await response.text();
             }
             if (response.status === 403) {
-                await DialogStore!.setFadeMessage(httpStatusDescriptionCodeList[403]);
-                AuthService.logout();
+                DialogStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
+                    LoginStore.clear();
+                });
                 return;
             }
             error = {

@@ -1,7 +1,7 @@
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import * as Apollo from 'apollo-client';
 import { BatchHttpLink } from 'apollo-link-batch-http';
-import AuthService from '~/services/authService';
+import LoginStore from '~/stores/loginStore';
 import DialogStore from '~/stores/dialogStore';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 
@@ -40,8 +40,9 @@ class ApolloClient {
             if (err.networkError) {
                 switch (err.networkError['statusCode']) {
                 case 403:
-                    await DialogStore!.setFadeMessage(httpStatusDescriptionCodeList[403]);
-                    AuthService.logout();
+                    DialogStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
+                        LoginStore.clear();
+                    });
                 }
             }
             throw e;
