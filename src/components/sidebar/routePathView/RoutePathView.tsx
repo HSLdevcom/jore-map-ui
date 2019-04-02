@@ -23,6 +23,7 @@ import LineService from '~/services/lineService';
 import { ErrorStore } from '~/stores/errorStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
+import { validateRoutePathLinks } from '~/util/geomValidator';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
@@ -234,9 +235,13 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
         if (!this.props.routePathStore!.routePath) return null;
 
+        const isGeometryValid = validateRoutePathLinks(
+            this.props.routePathStore!.routePath!.routePathLinks!,
+        );
+
         const isSaveButtonDisabled = this.state.isEditingDisabled
             || !this.props.routePathStore!.isDirty
-            || !this.props.routePathStore!.isGeometryValid
+            || !isGeometryValid
             || !this.isFormValid();
 
         return (

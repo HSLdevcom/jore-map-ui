@@ -34,27 +34,13 @@ export class NodeStore {
     }
 
     @computed
-    get dirtyLinks() {
-        // All links are dirty if the node coordinate has changed
-        if (!_.isEqual(
-            this._node!.coordinatesProjection,
-            this._oldNode!.coordinatesProjection,
-        )) {
-            return this._links;
-        }
-        return this._links.filter((link) => {
-            const oldLink = this._oldLinks.find(oldLink =>
-                oldLink.transitType === link.transitType &&
-                oldLink.startNode.id === link.startNode.id &&
-                oldLink.endNode.id === link.endNode.id,
-            );
-            return !_.isEqual(link, oldLink);
-        });
+    get node() {
+        return this._node!;
     }
 
     @computed
-    get node() {
-        return this._node!;
+    get isDirty() {
+        return !_.isEqual(this._node, this._oldNode) || !_.isEqual(this._links, this._oldLinks);
     }
 
     @action
@@ -160,11 +146,6 @@ export class NodeStore {
         };
     }
 
-    @computed
-    get isDirty() {
-        return !_.isEqual(this._node, this._oldNode) || !_.isEqual(this._links, this._oldLinks);
-    }
-
     @action
     public clear = () => {
         this._links = [];
@@ -197,6 +178,24 @@ export class NodeStore {
             this._node!.coordinates = nextUndoState.node.coordinates;
             this._node!.coordinatesManual = nextUndoState.node.coordinatesManual;
             this._node!.coordinatesProjection = nextUndoState.node.coordinatesProjection;
+        });
+    }
+
+    getDirtyLinks() {
+        // All links are dirty if the node coordinate has changed
+        if (!_.isEqual(
+            this._node!.coordinatesProjection,
+            this._oldNode!.coordinatesProjection,
+        )) {
+            return this._links;
+        }
+        return this._links.filter((link) => {
+            const oldLink = this._oldLinks.find(oldLink =>
+                oldLink.transitType === link.transitType &&
+                oldLink.startNode.id === link.startNode.id &&
+                oldLink.endNode.id === link.endNode.id,
+            );
+            return !_.isEqual(link, oldLink);
         });
     }
 }

@@ -13,25 +13,12 @@ export class RouteStore {
 
     @computed
     get routes(): IRoute[] {
-        if (this._routes!.length < 1) return [];
         return this._routes;
     }
 
     set routes(value: IRoute[]) {
         this.colorScale = new ColorScale();
         this._routes = value;
-    }
-
-    @computed
-    get visibleRoutePathAmount(): number {
-        let visibleRoutePathsTotal = 0;
-        this._routes.forEach((route: IRoute) => {
-            const visibleRoutePaths = route.routePaths.filter(
-                x => x.visible).length;
-            visibleRoutePathsTotal = visibleRoutePathsTotal + visibleRoutePaths;
-        });
-
-        return visibleRoutePathsTotal;
     }
 
     @action
