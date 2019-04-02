@@ -36,10 +36,10 @@ const getNeighborLinks = (
         ? 'linkkisByLnkalkusolmu' : 'linkkisByLnkloppusolmu';
     const nodePropertyName = from === 'startNode'
         ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
-    return _getNeighborLinks(queryResult, orderNumber, linkPropertyName, nodePropertyName);
+    return _parseNeighborLinks(queryResult, orderNumber, linkPropertyName, nodePropertyName);
 };
 
-const _getNeighborLinks = (
+const _parseNeighborLinks = (
     queryResult: any, orderNumber: number, linkPropertyName: string, nodePropertyName: string,
 ): INeighborLink[] => {
     return queryResult.data.solmuBySoltunnus[linkPropertyName]
