@@ -9,6 +9,7 @@ import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
 import { NodeStore } from '~/stores/nodeStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
@@ -30,6 +31,7 @@ interface IMapProps {
     mapStore?: MapStore;
     routeStore?: RouteStore;
     nodeStore?: NodeStore;
+    toolbarStore?: ToolbarStore;
 }
 
 interface IMapPropReference {
@@ -49,7 +51,7 @@ export type LeafletContext = {
     popupContainer?: L.Layer,
 };
 
-@inject('mapStore', 'routeStore', 'nodeStore')
+@inject('mapStore', 'routeStore', 'nodeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
