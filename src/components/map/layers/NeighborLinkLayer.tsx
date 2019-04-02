@@ -4,10 +4,11 @@ import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
-import { MapStore } from '~/stores/mapStore';
+import { MapStore, NodeLabel } from '~/stores/mapStore';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import INeighborLink from '~/models/INeighborLink';
 import NodeMarker from './mapIcons/NodeMarker';
+import * as s from './neighborLinkLayer.scss';
 
 const USED_NEIGHBOR_COLOR = '#0dce0a';
 const UNUSED_NEIGHBOR_COLOR = '#fc383a';
@@ -31,12 +32,19 @@ class NeighborLinkLayer extends Component<IRoutePathLayerProps> {
             <NodeMarker
                 key={`${key}-${node.id}`}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                isNeighborMarker={true}
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
-                neighborMarkerRoutePathUsage={neighborLink.usages}
+                markerClasses={[s.neighborMarker]}
+                forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
                 color={neighborLink.usages.length > 0 ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 node={node}
-            />
+            >
+                <div className={s.usageAmount}>
+                    {
+                        neighborLink.usages.length > 9 ?
+                            '9+' : neighborLink.usages.length
+                    }
+                </div>
+            </NodeMarker>
         );
     }
 

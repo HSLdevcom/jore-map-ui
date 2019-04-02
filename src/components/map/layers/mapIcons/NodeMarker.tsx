@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
+import _ from 'lodash';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import { INode } from '~/models/index';
@@ -35,10 +36,10 @@ interface INodeMarkerProps {
     onContextMenu?: Function;
     onClick?: Function;
     isDraggable?: boolean;
-    isNeighborMarker?: boolean; // used for highlighting a node when creating new routePath
-    neighborMarkerRoutePathUsage?: string[];
     isHighlighted?: boolean;
     onClickEventParams?: any;
+    forcedVisibleNodeLabels?: NodeLabel[];
+    markerClasses?: string[];
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
@@ -52,8 +53,9 @@ const NODE_LABEL_MIN_ZOOM = 14;
 class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isDraggable: false,
-        isNeighborMarker: false,
         isHighlighted: false,
+        mandatoryNodeLabels: [],
+        markerClasses: [],
     };
 
     private onMoveMarker = (coordinatesType: NodeLocationType) => (e: L.DragEndEvent) => {
@@ -64,12 +66,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     private getLabels(): string[] {
         const node = this.props.node;
-        const visibleNodeLabels = this.props.mapStore!.visibleNodeLabels;
         const zoom = this.props.mapStore!.zoom;
 
-        if (!this.props.isNeighborMarker &&
-            (visibleNodeLabels.length === 0
-            || zoom < NODE_LABEL_MIN_ZOOM)) return [];
+        const visibleNodeLabels = _.union(
+            this.props.mapStore!.visibleNodeLabels,
+            this.props.forcedVisibleNodeLabels,
+        );
+
+        if (visibleNodeLabels.length === 0 || zoom < NODE_LABEL_MIN_ZOOM) return [];
 
         const labels: string[] = [];
         if (visibleNodeLabels.includes(NodeLabel.hastusId)) {
@@ -77,7 +81,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 labels.push(node.stop.hastusId);
             }
         }
-        if (visibleNodeLabels.includes(NodeLabel.longNodeId) || this.props.isNeighborMarker) {
+        if (visibleNodeLabels.includes(NodeLabel.longNodeId)) {
             labels.push(node.id);
         }
         const nodeShortId = NodeHelper.getShortId(node);
@@ -90,10 +94,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     private getMarkerClasses = () => {
         const isSelected = this.props.isSelected;
-        const res : string[] = [];
-        if (this.props.isNeighborMarker) {
-            res.push(s.neighborMarker);
-        }
+        const res = [...this.props.markerClasses!];
+        res.push(s.nodeBase);
         if (this.props.isDisabled) {
             res.push(
                 NodeHelper.getTypeClass(NodeType.DISABLED, isSelected),
@@ -112,7 +114,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         res.push(
             NodeHelper.getTypeClass(this.props.node.type, isSelected),
         );
-
         return res;
     }
 
@@ -155,7 +156,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     icon={createDivIcon(
                         <div
                             className={
-                                classnames(s.nodeBase, s.manual, ...this.getMarkerClasses())}
+                                classnames(s.manual, ...this.getMarkerClasses())}
                         />,
                     )}
                     draggable={this.isInteractive()}
@@ -167,7 +168,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     icon={createDivIcon(
                         <div
                             className={
-                                classnames(s.nodeBase, s.projection, ...this.getMarkerClasses())}
+                                classnames(s.projection, ...this.getMarkerClasses())}
                         />,
                     )}
                     draggable={this.isInteractive()}
@@ -175,21 +176,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     && this.onMoveMarker('coordinatesProjection')}
                 />
             </>
-        );
-    }
-
-    private renderNeighborUsage = () => {
-        if (
-            !this.props.isNeighborMarker ||
-            !this.props.neighborMarkerRoutePathUsage
-        ) return null;
-        return (
-            <div className={s.usageAmount}>
-                {
-                    this.props.neighborMarkerRoutePathUsage.length > 9 ?
-                        '9+' : this.props.neighborMarkerRoutePathUsage.length
-                }
-            </div>
         );
     }
 
@@ -210,14 +196,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
     render() {
         const icon = createDivIcon(
                 <div
-                    className={classnames(s.nodeBase, ...this.getMarkerClasses())}
+                    className={classnames(...this.getMarkerClasses())}
                     style={{
                         borderColor: this.props.color,
                         backgroundColor: this.props.color,
                     }}
                 >
+                    {this.props.children}
                     {this.renderMarkerLabel()}
-                    {this.renderNeighborUsage()}
                 </div>,
         );
         return (

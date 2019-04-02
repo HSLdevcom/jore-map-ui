@@ -1,0 +1,16 @@
+.neighborMarker {
+  position: absolute;
+  width: 24px !important;
+  height: 24px !important;
+  top: -4px;
+  left: -4px;
+
+  .usageAmount {
+    font-size: 17px;
+    font-weight: 900;
+    text-align: center;
+    color: white;
+    line-height: 24px;
+  }
+}
+
