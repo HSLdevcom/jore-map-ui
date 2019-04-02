@@ -36,14 +36,14 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
                 color={
-                    neighborLink.nodeUsageByRouteIds.length > 0
+                    neighborLink.nodeUsageRouteIds.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 node={node}
             >
                 <div className={s.usageCount}>
                     {
-                        neighborLink.nodeUsageByRouteIds.length > 9 ?
-                            '9+' : neighborLink.nodeUsageByRouteIds.length
+                        neighborLink.nodeUsageRouteIds.length > 9 ?
+                            '9+' : neighborLink.nodeUsageRouteIds.length
                     }
                 </div>
             </NodeMarker>
@@ -56,7 +56,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 positions={neighborLink.routePathLink.geometry}
                 key={neighborLink.routePathLink.id}
                 color={
-                    neighborLink.nodeUsageByRouteIds.length > 0
+                    neighborLink.nodeUsageRouteIds.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 weight={5}
                 opacity={0.8}

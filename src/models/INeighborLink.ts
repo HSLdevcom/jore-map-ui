@@ -1,7 +1,7 @@
 import { IRoutePathLink } from '.';
 
 interface INeighborLink {
-    nodeUsageByRouteIds: string[];
+    nodeUsageRouteIds: string[];
     routePathLink: IRoutePathLink;
 }
 

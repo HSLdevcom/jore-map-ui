@@ -47,7 +47,7 @@ const _getNeighborLinks = (
             routePathLink:
                 RoutePathLinkFactory
                     .createNewRoutePathLinkFromExternalLink(link, orderNumber),
-            nodeUsageByRouteIds: link[nodePropertyName].usageDuringDate!
+            nodeUsageRouteIds: link[nodePropertyName].usageDuringDate!
                 .nodes.map((e: any) => e.reitunnus),
         }));
 };
