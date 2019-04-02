@@ -9,7 +9,7 @@ describe('errorStore.addError', () => {
 
         errorStore.addError(errorMessage);
 
-        expect(errorStore.errorCount).toEqual(1);
+        expect(errorStore.errors.length).toEqual(1);
         expect(errorStore.latestError).toEqual(errorMessage);
     });
 
@@ -19,12 +19,12 @@ describe('errorStore.addError', () => {
 
         errorStore.addError(errorMessage);
 
-        expect(errorStore.errorCount).toEqual(1);
+        expect(errorStore.errors.length).toEqual(1);
 
         const error = errorStore.pop();
 
         expect(error).toEqual(errorMessage);
-        expect(errorStore.errorCount).toEqual(0);
+        expect(errorStore.errors.length).toEqual(0);
     });
 
     it('Adds one error with exception to error store', () => {
@@ -42,7 +42,7 @@ describe('errorStore.addError', () => {
 
         errorStore.addError(errorMessage, exception);
 
-        expect(errorStore.errorCount).toEqual(1);
+        expect(errorStore.errors.length).toEqual(1);
         expect(errorStore.latestError).toContain(errorMessage);
         expect(errorStore.latestError).toContain(exception.message);
         expect(console.error).toBeCalled();
@@ -68,12 +68,12 @@ describe('errorStore.addError', () => {
 
         errorStore.addError(errorMessage, errorException);
 
-        expect(errorStore.errorCount).toEqual(1);
+        expect(errorStore.errors.length).toEqual(1);
 
         const error = errorStore.pop();
 
         expect(error).toContain(httpStatusDescriptionCodeList[409]);
-        expect(errorStore.errorCount).toEqual(0);
+        expect(errorStore.errors.length).toEqual(0);
         expect(console.error).toBeCalled();
         // Clean up console.error to be back to normal
         console.error = consoleError;

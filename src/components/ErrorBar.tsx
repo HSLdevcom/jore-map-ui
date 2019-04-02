@@ -24,9 +24,9 @@ class ErrorBar extends Component<IErrorBarProps> {
             <div className={s.errorBarView}>
                 <div>
                     {this.props.errorStore!.latestError}
-                    {this.props.errorStore!.errorCount > 1 &&
+                    {this.props.errorStore!.errors.length > 1 &&
                         (
-                            ` (${this.props.errorStore!.errorCount})`
+                            ` (${this.props.errorStore!.errors.length})`
                         )
                     }
                 </div>
