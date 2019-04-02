@@ -3,11 +3,10 @@ import { IoMdContact } from 'react-icons/io';
 import hslLogo from '~/assets/hsl-logo.png';
 import routeBuilder from '~/routing/routeBuilder';
 import { observer, inject } from 'mobx-react';
-import ApiClient from '~/util/ApiClient';
-import endpoints from '~/enums/endpoints';
 import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
+import AuthService from '~/services/authService';
 import ButtonType from '~/enums/buttonType';
 import { Button } from './controls/index';
 import packageVersion from '../project/version.json';
@@ -23,15 +22,6 @@ class NavigationBar extends Component<INavigationBarProps> {
     private goToHomeView = () => {
         const homeLink = routeBuilder.to(SubSites.home).clear().toLink();
         navigator.goTo(homeLink);
-    }
-
-    private logout = async () => {
-        // TODO: Implement full logout clearing session in backend
-        // https://github.com/HSLdevcom/jore-map-ui/issues/669
-        await ApiClient.postRequest(endpoints.LOGOUT, {});
-        this.props.loginStore!.clear();
-        const loginLink = routeBuilder.to(SubSites.login).clear().toLink();
-        navigator.goTo(loginLink);
     }
 
     render () {
@@ -63,7 +53,7 @@ class NavigationBar extends Component<INavigationBarProps> {
                     <Button
                         className={s.logoutButton}
                         type={ButtonType.SAVE}
-                        onClick={this.logout}
+                        onClick={AuthService.logout}
                     >Kirjaudu ulos
                     </Button>
                 </div>

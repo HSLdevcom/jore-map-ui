@@ -1,8 +1,14 @@
 import { action, computed, observable } from 'mobx';
 import Constants from '~/constants/constants';
 
+export enum DialogType {
+    Success = 1,
+    Info,
+}
+
 export class DialogStore {
     @observable private _message: string|null;
+    @observable private _type: DialogType|null;
 
     constructor() {
         this._message = null;
@@ -14,13 +20,19 @@ export class DialogStore {
     }
 
     @computed
+    get type() {
+        return this._type;
+    }
+
+    @computed
     get isDialogOpen(): boolean {
         return this._message !== null;
     }
 
     @action
-    public setFadeMessage = (message: string) => {
+    public setFadeMessage = (message: string, type: DialogType = DialogType.Success) => {
         this._message = message;
+        this._type = type;
 
         return new Promise((resolve) => {
             setTimeout(
@@ -36,6 +48,7 @@ export class DialogStore {
     @action
     public close = () => {
         this._message = null;
+        this._type = null;
     }
 }
 

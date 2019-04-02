@@ -49,7 +49,7 @@ const history = syncHistoryWithStore(browserHistory, navigator.getStore());
 
 ReactDOM.render(
     <Provider {...stores}>
-        <ApolloProvider client={apolloClient}>
+        <ApolloProvider client={apolloClient.getClient()}>
             <Router history={history}>
                 <App />
             </Router>

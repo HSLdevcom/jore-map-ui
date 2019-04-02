@@ -25,12 +25,20 @@
         justify-content: center;
         flex-direction: column;
         align-items: center;
+        max-width: 400px;
 
-        .checkIcon {
-            color: $busBlue;
+        .icon {
             height: 45px;
             width: 45px;
             margin-bottom: 10px;
+        }
+
+        .success {
+            color: $busBlue;
+        }
+
+        .info {
+            color: $subwayOrange;
         }
     }
 }

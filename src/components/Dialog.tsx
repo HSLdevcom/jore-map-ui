@@ -1,7 +1,9 @@
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
-import { DialogStore } from '~/stores/dialogStore';
+import { IoMdInformationCircle } from 'react-icons/io';
+import { DialogStore, DialogType } from '~/stores/dialogStore';
 import * as s from './dialog.scss';
 
 interface IDialogProps {
@@ -11,14 +13,18 @@ interface IDialogProps {
 @inject('dialogStore')
 @observer
 class Dialog extends React.Component<IDialogProps> {
-
     render() {
         if (!this.props.dialogStore!.isDialogOpen) return null;
 
         return (
             <div className={s.dialogView}>
                 <div className={s.wrapper}>
-                    <FaCheckCircle className={s.checkIcon} />
+                    { this.props.dialogStore!.type === DialogType.Success &&
+                        <FaCheckCircle className={classnames(s.icon, s.success)} />
+                    }
+                    { this.props.dialogStore!.type === DialogType.Info &&
+                        <IoMdInformationCircle className={classnames(s.icon, s.info)} />
+                    }
                     {this.props.dialogStore!.message}
                 </div>
             </div>

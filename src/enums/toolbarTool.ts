@@ -1,5 +1,5 @@
 enum ToolbarTool {
-    AddNetworkNode,
+    AddNetworkNode = 1,
     AddNetworkLink,
     AddNewRoutePathLink,
     Copy,

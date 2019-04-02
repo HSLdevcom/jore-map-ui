@@ -81,17 +81,21 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             await this.initExistingRoutePath();
         }
         await this.initializeMap();
-        observe(
-            this.props.routePathStore!.routePath!.routePathLinks!,
-            () => {
-                this.props.routePathStore!.onRoutePathLinksChanged();
-            },
-        );
-        this.validateAllProperties(routePathValidationModel, this.props.routePathStore!.routePath);
-
-        this.setState({
-            isLoading: false,
-        });
+        if (this.props.routePathStore!.routePath) {
+            observe(
+                this.props.routePathStore!.routePath!.routePathLinks!,
+                () => {
+                    this.props.routePathStore!.onRoutePathLinksChanged();
+                },
+            );
+            this.validateAllProperties(
+                routePathValidationModel,
+                this.props.routePathStore!.routePath,
+            );
+            this.setState({
+                isLoading: false,
+            });
+        }
     }
 
     private createNewRoutePath = async () => {
