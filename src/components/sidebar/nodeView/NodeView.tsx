@@ -171,6 +171,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const node = this.props.nodeStore!.node;
         if (nodeType === NodeType.STOP) {
             this.validateAllProperties(stopValidationModel, node.stop);
+            this.validateAllProperties(nodeValidationModel, node, { clearModel: false });
         } else {
             this.validateAllProperties(nodeValidationModel, node);
         }
