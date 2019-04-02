@@ -18,6 +18,7 @@ import * as s from './nodeMarker.scss';
 // https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
 export const VERY_HIGH_Z_INDEX = 1000;
 
+// TODO: move to utils?
 export const createDivIcon = (html: any) => {
     const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
     const divIconOptions : L.DivIconOptions = {

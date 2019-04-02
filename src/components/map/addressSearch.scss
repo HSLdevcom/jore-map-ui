@@ -1,0 +1,30 @@
+@import '../shared/styles/common.scss';
+
+$searchResultHighlightColor: $lightGrey;
+
+.addressSeachView {
+    margin-left: 10px;
+
+    .searchInput {
+        width: 250px;
+        max-width: 250px;
+    }
+
+    .searchResults {
+        background-color: white;
+
+        .searchResult {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ececec;
+        }
+
+        .searchResult:hover {
+            background-color: $searchResultHighlightColor;
+        }
+
+        .searchResultHighlight {
+            background-color: $searchResultHighlightColor;
+        }
+    }
+}
