@@ -11,15 +11,15 @@ export class ErrorStore {
 
     @computed
     get latestError() {
-        const length = this._errors.length;
-        return length > 0 ?
-            this._errors[length - 1] :
-            null;
+        const errors = this._errors;
+        if (!errors || errors.length === 0) return null;
+
+        return errors[errors.length - 1];
     }
 
     @computed
-    get errorCount() {
-        return this._errors.length;
+    get errors() {
+        return this._errors;
     }
 
     @action
