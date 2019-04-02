@@ -219,12 +219,14 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
 
     render() {
         if (!this.props.routePathStore!.routePath) return null;
+
+        const neighborLinks = this.props.routePathStore!.neighborLinks;
         return (
             <>
                 {this.renderRoutePathLinks()}
                 {this.renderLinkDecorator()}
                 {this.renderStartMarker()}
-                { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
+                { neighborLinks &&
                     <RoutePathNeighborLinkLayer />
                 }
             </>

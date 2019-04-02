@@ -86,7 +86,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
 
     render() {
         const neighborLinks = this.props.routePathStore!.neighborLinks;
-        if (!neighborLinks) return;
         return neighborLinks.map((neighborLink, index) => {
             const neighborToAddType = this.props.routePathStore!.neighborToAddType;
             const nodeToRender = neighborToAddType === NeighborToAddType.AfterNode ?
