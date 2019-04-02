@@ -11,7 +11,6 @@ import { RouteStore } from '~/stores/routeStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
-import ToolbarTool from '~/enums/toolbarTool';
 import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
@@ -26,7 +25,6 @@ import AddressSearch from './AddressSearch';
 import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import NetworkLayers from './layers/NetworkLayers';
-import RoutePathNeighborLinkLayer from './layers/edit/RoutePathNeighborLinkLayer';
 import * as s from './map.scss';
 
 interface IMapProps {
@@ -207,9 +205,6 @@ class LeafletMap extends React.Component<IMapProps> {
                         routes={routes}
                     />
                     <UpsertRoutePathLayer />
-                    { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
-                        <RoutePathNeighborLinkLayer />
-                    }
                     <PopupLayer />
                     <Control position='topleft'>
                         <div className={s.mapLayersContainer}>

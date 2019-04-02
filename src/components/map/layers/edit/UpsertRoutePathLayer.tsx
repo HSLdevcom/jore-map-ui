@@ -14,6 +14,7 @@ import { IExtendRoutePathNodeClickParams } from '../../tools/ExtendRoutePathToo
 import NodeMarker from '../mapIcons/NodeMarker';
 import StartMarker from '../mapIcons/StartMarker';
 import ArrowDecorator from '../ArrowDecorator';
+import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
 
 const START_MARKER_COLOR = '#00df0b';
 const ROUTE_COLOR = '#000';
@@ -223,6 +224,9 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 {this.renderRoutePathLinks()}
                 {this.renderLinkDecorator()}
                 {this.renderStartMarker()}
+                { this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink) &&
+                    <RoutePathNeighborLinkLayer />
+                }
             </>
         );
     }

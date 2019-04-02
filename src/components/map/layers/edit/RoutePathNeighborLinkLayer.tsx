@@ -35,13 +35,15 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
-                color={neighborLink.usages.length > 0 ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
+                color={
+                    neighborLink.nodeUsageByRouteIds.length > 0
+                        ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 node={node}
             >
-                <div className={s.usageAmount}>
+                <div className={s.usageCount}>
                     {
-                        neighborLink.usages.length > 9 ?
-                            '9+' : neighborLink.usages.length
+                        neighborLink.nodeUsageByRouteIds.length > 9 ?
+                            '9+' : neighborLink.nodeUsageByRouteIds.length
                     }
                 </div>
             </NodeMarker>
@@ -53,7 +55,9 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
             <Polyline
                 positions={neighborLink.routePathLink.geometry}
                 key={neighborLink.routePathLink.id}
-                color={neighborLink.usages.length > 0 ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
+                color={
+                    neighborLink.nodeUsageByRouteIds.length > 0
+                        ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 weight={5}
                 opacity={0.8}
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}

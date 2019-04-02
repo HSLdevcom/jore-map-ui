@@ -55,7 +55,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isDraggable: false,
         isHighlighted: false,
-        mandatoryNodeLabels: [],
+        forcedVisibleNodeLabels: [],
         markerClasses: [],
     };
 
