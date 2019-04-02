@@ -60,9 +60,7 @@ export class NetworkStore {
 
     @computed
     get isMapLayersVisible(): boolean {
-        if (!this._visibleMapLayers) return false;
-
-        return this._visibleMapLayers.length !== 0;
+        return this._visibleMapLayers && this._visibleMapLayers.length !== 0;
     }
 
     public isMapLayerVisible = (mapLayer: MapLayer) => {
