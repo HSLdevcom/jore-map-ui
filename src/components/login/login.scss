@@ -92,20 +92,5 @@ $formWidth: 225px;
         ::placeholder {
             color: #FFF;
         }
-
-        .checkboxContainer {
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-
-            .checkbox {
-                position: relative;
-                top: 2px;
-                width: 15px;
-                margin: 0px 10px 0px 0px;
-            }
-        }
     }
 }

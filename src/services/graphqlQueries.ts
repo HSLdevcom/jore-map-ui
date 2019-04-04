@@ -78,9 +78,9 @@ const getRoutePathLinkQuery = () => {
 
 const getLinksByStartNodeQuery = () => {
     return (
-        gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!) {
+        gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
-                ${linksByStartNodeQuery}
+                ${linksWithNodeUsageByStartNodeQuery}
             }
         }`
     );
@@ -110,9 +110,9 @@ const getLinksQuery = () => {
 
 const getLinksByEndNodeQuery = () => {
     return (
-        gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!) {
+        gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
-                ${linksByEndNodeQuery}
+                ${linksWithNodeUsageByEndNodeQuery}
             }
         }`
     );
@@ -313,6 +313,44 @@ const linkQueryFields = `
         ${endNodeQueryFields}
     }
 `;
+
+const linksWithNodeUsageByStartNodeQuery = `
+linkkisByLnkalkusolmu {
+    nodes {
+        ${linkQueryFields}
+        solmuByLnkalkusolmu {
+            ${startNodeQueryFields}
+        }
+        solmuByLnkloppusolmu {
+            ${endNodeQueryFields}
+            usageDuringDate(date: $date, isstartnode: false) {
+                nodes {
+                    reitunnus
+                    suunimi
+                }
+            }
+        }
+    }
+}`;
+
+const linksWithNodeUsageByEndNodeQuery = `
+linkkisByLnkloppusolmu {
+    nodes {
+        ${linkQueryFields}
+        solmuByLnkalkusolmu {
+            ${startNodeQueryFields}
+            usageDuringDate(date: $date, isstartnode: false) {
+                nodes {
+                    reitunnus
+                    suunimi
+                }
+            }
+        }
+        solmuByLnkloppusolmu {
+            ${endNodeQueryFields}
+        }
+    }
+}`;
 
 const linksByStartNodeQuery = `
 linkkisByLnkalkusolmu {
