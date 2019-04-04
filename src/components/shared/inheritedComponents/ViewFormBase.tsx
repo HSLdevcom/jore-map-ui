@@ -8,14 +8,6 @@ interface IViewFormBaseState {
     isEditingDisabled: boolean;
 }
 
-interface IValidateAllPropertiesOption {
-    clearModel: boolean;
-}
-
-const validateAllDefaultOptions: IValidateAllPropertiesOption = {
-    clearModel: true,
-};
-
 // TODO: refactor to use composition?
 // Inheritance is considered as a bad practice, react doesn't really support inheritance:
 // tslint:disable-next-line max-line-length
@@ -45,20 +37,9 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
     }
 
     protected validateAllProperties = (
-        validationModel: object, validationEntity: any, options?: IValidateAllPropertiesOption,
+        validationModel: object, validationEntity: any,
     ) => {
-        const _options = { ...validateAllDefaultOptions, ...options };
-
-        if (_options.clearModel) {
-            this.setState(
-                {
-                    invalidPropertiesMap: {},
-                },
-                () => this._validateUsingModel(validationModel, validationEntity),
-            );
-        } else {
-            this._validateUsingModel(validationModel, validationEntity);
-        }
+        this._validateUsingModel(validationModel, validationEntity);
     }
 
     protected validateProperty = (validatorRule: string, property: string, value: any) => {
