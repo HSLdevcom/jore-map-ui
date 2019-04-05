@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
-import municipalityCodeList from '~/codeLists/municipalityCodeList';
+import { IDropdownItem } from '~/components/controls/Dropdown';
 import { Dropdown } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
@@ -10,12 +10,15 @@ import * as s from './stopForm.scss';
 interface IStopFormProps {
     stop: IStop;
     isEditingDisabled: boolean;
-    onChange: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
+    onChange: (property: string) => (value: any) => void;
+    getDropDownItems: (codeListIdentifier: string) => IDropdownItem[];
 }
 
 const StopForm = observer((
-    { stop, isEditingDisabled, onChange, invalidPropertiesMap }: IStopFormProps) => {
+    {
+        stop, isEditingDisabled, onChange, invalidPropertiesMap, getDropDownItems,
+    }: IStopFormProps) => {
     return (
         <div className={s.stopView}>
             <SidebarHeader
@@ -99,7 +102,7 @@ const StopForm = observer((
                     />
                     <Dropdown
                         onChange={onChange('municipality')}
-                        codeList={municipalityCodeList}
+                        items={getDropDownItems('Kunta (ris/pys)')}
                         selected={stop.municipality}
                         disabled={isEditingDisabled}
                         label='KUNTA'

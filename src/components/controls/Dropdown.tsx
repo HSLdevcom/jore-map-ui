@@ -3,50 +3,24 @@ import { observer } from 'mobx-react';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
-    value: string|number;
+    value: string;
     label: string;
 }
 
-interface IDropdownBaseProps {
+interface IDropdownProps {
     label?: string;
     selected?: string;
     disabled?: boolean;
+    items: IDropdownItem[];
     emptyItem?: IDropdownItem;
     onChange: (value: any) => void;
 }
 
-interface IDropdownProps extends IDropdownBaseProps {
-    items: IDropdownItem[];
-}
-
-interface IDropdownWithCodeListProps extends IDropdownBaseProps {
-    codeList: any;
-}
-
-const usesCodeList = (
-    item: IDropdownProps | IDropdownWithCodeListProps): item is IDropdownWithCodeListProps => {
-    return (
-        (item as IDropdownWithCodeListProps).codeList !== undefined
-    ) && (
-        (item as IDropdownProps).items === undefined
-    );
-};
-
-const Dropdown = observer((props: IDropdownProps | IDropdownWithCodeListProps) => {
+const Dropdown = observer((props: IDropdownProps) => {
     const onChange = (event: any) => {
         props.onChange(event.target.value);
     };
-
-    let dropDownItemList: IDropdownItem[] = [];
-
-    if (usesCodeList(props)) {
-        const codeList = props.codeList;
-        dropDownItemList = Object.keys(codeList).map(
-            value => ({ value, label: codeList[value] }),
-        );
-    } else {
-        dropDownItemList = props.items;
-    }
+    const dropDownItemList = props.items;
 
     if (props.emptyItem) {
         dropDownItemList.unshift(props.emptyItem);

@@ -18,9 +18,9 @@ import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
+import { CodeListStore } from '~/stores/codeListStore';
 import NodeService from '~/services/nodeService';
 import routeBuilder from '~/routing/routeBuilder';
-import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
@@ -36,6 +36,7 @@ interface INodeViewProps {
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
+    codeListStore?: CodeListStore;
 }
 
 interface INodeViewState {
@@ -44,7 +45,7 @@ interface INodeViewState {
     invalidPropertiesMap: object;
 }
 
-@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore')
+@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
@@ -248,7 +249,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     onChange={this.onNodePropertyChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
-                                    codeList={nodeTypeCodeList}
+                                    items={
+                                        this.props.codeListStore!.getDropdownItems(
+                                            'Solmutyyppi (P/E)')}
                                 />
                             </div>
                         </div>
@@ -265,6 +268,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 stop={node.stop!}
                                 onChange={this.onStopPropertyChange}
                                 invalidPropertiesMap={invalidPropertiesMap}
+                                getDropDownItems={this.props.codeListStore!.getDropdownItems}
                             />
                         }
                     </div>

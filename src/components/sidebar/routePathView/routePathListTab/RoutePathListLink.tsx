@@ -4,12 +4,12 @@ import { FiChevronRight } from 'react-icons/fi';
 import classnames from 'classnames';
 import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { CodeListStore } from '~/stores/codeListStore';
 import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import booleanCodeList from '~/codeLists/booleanCodeList';
 import navigator from '~/routing/navigator';
 import RoutePathListItem from './RoutePathListItem';
 import MultiTabTextarea from '../../linkView/MultiTabTextarea';
@@ -18,11 +18,12 @@ import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
     routePathStore?: RoutePathStore;
+    codeListStore?: CodeListStore;
     routePathLink: IRoutePathLink;
     reference: React.RefObject<HTMLDivElement>;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'codeListStore')
 @observer
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
@@ -162,7 +163,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 <div className={s.flexRow}>
                     <Dropdown
                         label='SOLMU HASTUS-PAIKKANA'
-                        codeList={booleanCodeList}
+                        items={this.props.codeListStore!.getDropdownItems('Kyllä/Ei')}
                         selected='Kyllä'
                         onChange={this.onChange}
                     />

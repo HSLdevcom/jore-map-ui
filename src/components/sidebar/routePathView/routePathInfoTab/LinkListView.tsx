@@ -1,14 +1,15 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
+import { CodeListStore } from '~/stores/codeListStore';
 import { IRoutePath, INode, IRoutePathLink } from '~/models';
 import NodeType from '~/enums/nodeType';
-import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import { Dropdown, Button } from '../../../controls';
 import * as s from './linkListView.scss';
 
 interface ILinkListViewProps {
     routePath: IRoutePath;
+    codeListStore?: CodeListStore;
 }
 
 type EmptyFilterType = '';
@@ -19,6 +20,7 @@ interface ILinkListViewState {
     linkTableFilter?: NodeType | EmptyFilterType;
 }
 
+@inject('codeListStore')
 @observer
 class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewState>{
     constructor(props: ILinkListViewProps) {
@@ -131,7 +133,9 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
                     label='Alkusolmutyyppi'
                     selected={this.state.linkTableFilter}
                     emptyItem={{ value: EMPTY_FILTER_VALUE, label: 'Näytä kaikki' }}
-                    codeList={nodeTypeCodeList}
+                    items={
+                        this.props.codeListStore!.getDropdownItems(
+                            'Solmutyyppi (P/E)')}
                     onChange={this.setLinkTableFilter}
                 />
             </div>
