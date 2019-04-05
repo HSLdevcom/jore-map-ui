@@ -11,7 +11,7 @@ class LineService {
         );
 
         return queryResult.data.allLinjas.nodes.map(((linja: any) => {
-            return LineFactory.createLine(linja);
+            return LineFactory.mapExternalLine(linja);
         }));
     }
 
@@ -20,7 +20,7 @@ class LineService {
             { query: GraphqlQueries.getLineQuery(), variables: { lineId: lintunnus } },
         );
 
-        return LineFactory.createLine(queryResult.data.linjaByLintunnus);
+        return LineFactory.mapExternalLine(queryResult.data.linjaByLintunnus);
     }
 }
 
