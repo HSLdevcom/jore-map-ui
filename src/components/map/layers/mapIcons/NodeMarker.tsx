@@ -184,7 +184,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private renderTooltip = () => {
         if (!this.props.tooltip) return null;
         return (
-            <Tooltip>
+            <Tooltip
+                interactive={true}
+                offset={L.point(10, 0)}
+            >
                 {this.props.tooltip}
             </Tooltip>
         );
