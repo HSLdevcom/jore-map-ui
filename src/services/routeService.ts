@@ -27,7 +27,7 @@ class RouteService {
             { query: GraphqlQueries.getRouteQuery(), variables: { routeId } },
         );
         const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
-        return RouteFactory.createRoute(queryResult.data.route, line);
+        return RouteFactory.mapExternalRoute(queryResult.data.route, line);
     }
 }
 
