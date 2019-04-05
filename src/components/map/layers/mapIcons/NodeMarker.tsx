@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { Marker, Circle } from 'react-leaflet';
+import { Marker, Circle, Tooltip } from 'react-leaflet';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { observer, inject } from 'mobx-react';
@@ -40,6 +40,7 @@ interface INodeMarkerProps {
     isHighlighted?: boolean;
     onClickEventParams?: any;
     forcedVisibleNodeLabels?: NodeLabel[];
+    tooltip?: ReactNode;
     markerClasses?: string[];
     node: INode;
     isDisabled?: boolean;
@@ -180,6 +181,15 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     }
 
+    private renderTooltip = () => {
+        if (!this.props.tooltip) return null;
+        return (
+            <Tooltip>
+                {this.props.tooltip}
+            </Tooltip>
+        );
+    }
+
     private isInteractive = () => (
         // TODO this should probably check other stuff too...
         this.props.isSelected && this.props.isDraggable
@@ -218,6 +228,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     onDragEnd={this.props.onMoveMarker
                     && this.onMoveMarker('coordinates')}
                 >
+                    {this.renderTooltip()}
                     {this.renderStopRadiusCircle()}
                 </Marker>
                 {

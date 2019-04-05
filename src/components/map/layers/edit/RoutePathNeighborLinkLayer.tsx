@@ -27,6 +27,16 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
             !== routePath!.routePathLinks!.filter(x => x.endNode.id === node.id).length;
     }
 
+    private nodeUsageView = (nodeUsageRouteIds: string[]) => {
+        return (
+            <div>
+                { nodeUsageRouteIds.map(id => (
+                    <div>{id}</div>
+                ))}
+            </div>
+        );
+    }
+
     private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
         return (
             <NodeMarker
@@ -35,6 +45,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
+                tooltip={this.nodeUsageView(neighborLink.nodeUsageRouteIds)}
                 color={
                     neighborLink.nodeUsageRouteIds.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
