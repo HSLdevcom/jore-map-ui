@@ -13,8 +13,8 @@ class RoutePathLinkFactory {
 
     public static createRoutePathLink =
     (externalRoutePathLink: IExternalRoutePathLink): IRoutePathLink => {
-        const startNode = NodeFactory.createNode(externalRoutePathLink.solmuByLnkalkusolmu);
-        const endNode = NodeFactory.createNode(externalRoutePathLink.solmuByLnkloppusolmu);
+        const startNode = NodeFactory.mapExternalNode(externalRoutePathLink.solmuByLnkalkusolmu);
+        const endNode = NodeFactory.mapExternalNode(externalRoutePathLink.solmuByLnkloppusolmu);
         const geoJson =
             JSON.parse(
                 externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson,
@@ -37,7 +37,7 @@ class RoutePathLinkFactory {
 
     public static createNewRoutePathLinkFromExternalLink =
     (link: IExternalLink, orderNumber: number): IRoutePathLink => {
-        const startNode = NodeFactory.createNode(link.solmuByLnkalkusolmu);
+        const startNode = NodeFactory.mapExternalNode(link.solmuByLnkalkusolmu);
         const geoJson = JSON.parse(
             link.geojson,
         );
@@ -45,7 +45,7 @@ class RoutePathLinkFactory {
         return {
             startNode,
             orderNumber,
-            endNode: NodeFactory.createNode(link.solmuByLnkloppusolmu),
+            endNode: NodeFactory.mapExternalNode(link.solmuByLnkloppusolmu),
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
             isStartNodeTimeAlignmentStop: false,
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
