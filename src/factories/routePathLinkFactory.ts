@@ -11,7 +11,7 @@ class RoutePathLinkFactory {
         return `${Constants.NEW_OBJECT_TAG}-${NumberIterator.getNumber()}`;
     }
 
-    public static createRoutePathLink =
+    public static mapExternalRoutePathLink =
     (externalRoutePathLink: IExternalRoutePathLink): IRoutePathLink => {
         const startNode = NodeFactory.mapExternalNode(externalRoutePathLink.solmuByLnkalkusolmu);
         const endNode = NodeFactory.mapExternalNode(externalRoutePathLink.solmuByLnkloppusolmu);

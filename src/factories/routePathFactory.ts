@@ -19,7 +19,7 @@ class RoutePathFactory {
 
         const routePathLinks = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
             .nodes.map((externalRoutePathLink: IExternalRoutePathLink) => {
-                return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
+                return RoutePathLinkFactory.mapExternalRoutePathLink(externalRoutePathLink);
             }).sort((a, b) => a.orderNumber - b.orderNumber);
         const exceptionPath =
             externalRoutePath.poikkeusreitti ? externalRoutePath.poikkeusreitti : '0';
