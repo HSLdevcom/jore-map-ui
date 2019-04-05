@@ -229,13 +229,15 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     </SidebarHeader>
                     <div className={s.form}>
                         <div className={s.formSection}>
-                            <div className={classnames(s.flexRow, s.idRow)}>
-                                <InputContainer
+                            <div className={s.flexRow}>
+                                <Dropdown
                                     label='KIRJAIN'
-                                    disabled={isEditingDisabled}
-                                    value={node.shortIdLetter}
                                     onChange={this.onNodePropertyChange('shortIdLetter')}
-                                    validationResult={invalidPropertiesMap['shortIdLetter']}
+                                    disabled={isEditingDisabled}
+                                    selected={node.shortIdLetter}
+                                    items={
+                                        this.props.codeListStore!.getDropdownItems(
+                                            'Lyhyttunnus')}
                                 />
                                 <InputContainer
                                     label='TUNNUS'

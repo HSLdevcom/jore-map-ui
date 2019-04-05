@@ -2,11 +2,12 @@ import { observable, action } from 'mobx';
 import ICodeListItem from '~/models/ICodeListItem';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 
-type codeListIdentifier =
+export type codeListIdentifier =
   'Joukkoliikennelaji' |
   'Kyllä/Ei' |
   'Solmutyyppi (P/E)' |
   'Kunta (ris/pys)' |
+  'Lyhyttunnus' |
   'Suunta';
 
 export class CodeListStore {

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
 import { IDropdownItem } from '~/components/controls/Dropdown';
+import { codeListIdentifier } from '~/stores/codeListStore';
 import { Dropdown } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
@@ -12,7 +13,7 @@ interface IStopFormProps {
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
     onChange: (property: string) => (value: any) => void;
-    getDropDownItems: (codeListIdentifier: string) => IDropdownItem[];
+    getDropDownItems: (codeListIdentifier: codeListIdentifier) => IDropdownItem[];
 }
 
 const StopForm = observer((
@@ -114,11 +115,12 @@ const StopForm = observer((
                     Muu tiedot
                 </div>
                 <div className={s.flexRow}>
-                    <InputContainer
-                        label='VAIHTOPYSÄKKI'
-                        disabled={isEditingDisabled}
-                        value={stop.exchangeStop}
+                    <Dropdown
                         onChange={onChange('exchangeStop')}
+                        items={getDropDownItems('Kyllä/Ei')}
+                        selected={stop.exchangeStop}
+                        disabled={isEditingDisabled}
+                        label='VAIHTOPYSÄKKI'
                     />
                     <InputContainer
                         label='LAITURI'
