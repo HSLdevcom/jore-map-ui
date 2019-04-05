@@ -35,7 +35,7 @@ class RoutePathLinkFactory {
         };
     }
 
-    public static createNewRoutePathLinkFromExternalLink =
+    public static mapExternalRoutePathLinkFromExternalLink =
     (link: IExternalLink, orderNumber: number): IRoutePathLink => {
         const startNode = NodeFactory.mapExternalNode(link.solmuByLnkalkusolmu);
         const geoJson = JSON.parse(

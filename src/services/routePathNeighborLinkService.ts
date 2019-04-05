@@ -46,7 +46,7 @@ const _parseNeighborLinks = (
         .nodes.map((link: IExtendedExternalLink) => ({
             routePathLink:
                 RoutePathLinkFactory
-                    .createNewRoutePathLinkFromExternalLink(link, orderNumber),
+                    .mapExternalRoutePathLinkFromExternalLink(link, orderNumber),
             nodeUsageRouteIds: link[nodePropertyName].usageDuringDate!
                 .nodes.map((e: any) => e.reitunnus),
         }));
