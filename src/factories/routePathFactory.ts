@@ -5,7 +5,7 @@ import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
-    public static createRoutePath = (
+    public static mapExternalRoutePath = (
         routeId: string,
         externalRoutePath: IExternalRoutePath,
     ): IRoutePath => {

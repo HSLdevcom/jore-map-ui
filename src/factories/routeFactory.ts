@@ -8,7 +8,7 @@ class RouteFactory {
         const routePaths:IRoutePath[]
             = externalRoute.reitinsuuntasByReitunnus.nodes
                 .map((routePath: IExternalRoutePath) => {
-                    return RoutePathFactory.createRoutePath(
+                    return RoutePathFactory.mapExternalRoutePath(
                         externalRoute.reitunnus, routePath);
                 });
 
