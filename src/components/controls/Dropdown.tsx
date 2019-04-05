@@ -38,7 +38,7 @@ const Dropdown = observer((props: IDropdownProps) => {
                 }
                 {props.disabled ?
                     <div className={s.disableEditing}>
-                        {Boolean(selectedItem) ? selectedItem!.value : ''}
+                        {Boolean(selectedItem) ? selectedItem!.label : ''}
                     </div>
                 :
                     <select
