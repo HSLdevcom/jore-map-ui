@@ -30,7 +30,7 @@ class NodeFactory {
             coordinates,
             coordinatesManual,
             coordinatesProjection,
-            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,
+            stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : undefined,
             measurementDate: externalNode.mittpvm,
             modifiedOn: externalNode.solviimpvm,
             modifiedBy: externalNode.solkuka,
