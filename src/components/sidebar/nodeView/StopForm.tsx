@@ -23,7 +23,7 @@ interface IStopFormState {
     isEditingDisabled: boolean;
 }
 
-@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore')
+@inject('nodeStore')
 @observer
 class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     constructor(props: IStopFormProps) {
