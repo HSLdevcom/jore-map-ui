@@ -147,10 +147,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private save = async () => {
         this.setState({ isLoading: true });
-        let isSaveOk = true;
+        let shouldNavigateToNewLink = false;
         try {
             if (this.props.isNewLink) {
                 await LinkService.createLink(this.props.linkStore!.link);
+                shouldNavigateToNewLink = true;
             } else {
                 await LinkService.updateLink(this.props.linkStore!.link);
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
@@ -158,10 +159,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             }
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            isSaveOk = false;
         }
 
-        if (isSaveOk) {
+        if (shouldNavigateToNewLink) {
             this.navigateToNewLink();
         } else {
             this.setState({ isLoading: false });
