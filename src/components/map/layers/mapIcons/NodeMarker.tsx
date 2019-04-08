@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { Marker, Circle, Tooltip, Popup } from 'react-leaflet';
+import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { observer, inject } from 'mobx-react';
@@ -59,6 +59,13 @@ class NodeMarker extends Component<INodeMarkerProps> {
         forcedVisibleNodeLabels: [],
         markerClasses: [],
     };
+
+    markerRef: any;
+
+    constructor(props: any) {
+        super(props);
+        this.markerRef = React.createRef();
+    }
 
     private onMoveMarker = (coordinatesType: NodeLocationType) => (e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
@@ -195,6 +202,102 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
+    private _getParent = (element: any, className: any) => {
+        let parent = element.parentNode;
+
+        while (parent != null) {
+            if (parent.className && L.DomUtil.hasClass(parent, className)) {
+                return parent;
+            }
+
+            parent = parent.parentNode;
+        }
+        return false;
+    }
+
+    private _popupMouseOut = (e: any) => {
+        const leafletMarker = this.markerRef.current.leafletElement;
+        // detach the event
+        L.DomEvent.off(leafletMarker._popup, 'mouseout', this._popupMouseOut, this);
+
+        // get the element that the mouse hovered onto
+        const target = e.toElement || e.relatedTarget;
+
+        // check to see if the element is a popup
+        if (this._getParent(target, 'leaflet-popup')) {
+            return;
+        }
+
+        // check to see if the marker was hovered back onto
+        if (target === leafletMarker._icon) {
+            return;
+        }
+
+        // hide the popup
+        leafletMarker.closePopup();
+    }
+
+    private bindPopup = () => {
+        if (this.markerRef.current) {
+            const leafletMarker = this.markerRef.current.leafletElement;
+
+            L.Marker.prototype.bindPopup.apply(leafletMarker, ['<div>hejj</div>', {
+                showOnMouseOver: true,
+                closeButton: false,
+            }]);
+
+            leafletMarker.off('click', leafletMarker.openPopup, leafletMarker);
+
+            // bind to mouse over
+            leafletMarker.on(
+                'mouseover',
+                (e: any) => {
+
+                    // get the element that the mouse hovered onto
+                    const target = e.originalEvent.fromElement || e.originalEvent.relatedTarget;
+                    const parent = this._getParent(target, 'leaflet-popup');
+
+                    // check to see if the element is a popup, and if it is this marker's popup
+                    if (parent === leafletMarker._popup._container) {
+                        return;
+                    }
+
+                    // show the popup
+                    leafletMarker.openPopup();
+
+                },
+                this,
+            );
+
+            leafletMarker.on(
+                'mouseout',
+                (e: any) => {
+                    // get the element that the mouse hovered onto
+                    const target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
+
+                    // check to see if the element is a popup
+                    if (this._getParent(target, 'leaflet-popup')) {
+
+                        L.DomEvent.on(
+                            leafletMarker._popup._container,
+                            'mouseout',
+                            this._popupMouseOut,
+                            leafletMarker,
+                        );
+                        return;
+
+                    }
+
+                    // hide the popup
+                    leafletMarker.closePopup();
+
+                },
+                this,
+            );
+        }
+
+    }
+
     render() {
         const icon = createDivIcon(
                 <div
@@ -208,14 +311,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     {this.renderMarkerLabel()}
                 </div>,
         );
+        this.bindPopup();
         return (
             <>
-                <Popup
-                    position={this.props.node.coordinates}
-                >
-                    hej
-                </Popup>
                 <Marker
+                    ref={this.markerRef}
+                    bindPopup={this.bindPopup}
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.onMarkerClick}
                     draggable={this.props.isDraggable}
