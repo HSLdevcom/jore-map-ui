@@ -11,8 +11,8 @@ import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
+import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
-import './popup.css';
 
 // The logic of Z Indexes is not very logical.
 // Setting z-index to 2, if other items is 1 wont force it to be on top.
@@ -43,6 +43,7 @@ interface INodeMarkerProps {
     forcedVisibleNodeLabels?: NodeLabel[];
     tooltip?: ReactNode;
     markerClasses?: string[];
+    popupContent?: string;
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
@@ -62,11 +63,16 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     markerRef: any;
-    timeout: any;
 
     constructor(props: any) {
         super(props);
         this.markerRef = React.createRef();
+    }
+
+    componentDidMount() {
+        if (this.props.popupContent) {
+            MarkerPopup.initPopup(this.props.popupContent, this.markerRef);
+        }
     }
 
     private onMoveMarker = (coordinatesType: NodeLocationType) => (e: L.DragEndEvent) => {
@@ -204,137 +210,18 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private _getParent = (element: any, className: string) => {
-        if (!element) return false;
-        let parent = element.parentNode;
-        while (parent != null) {
-            if (parent.className && L.DomUtil.hasClass(parent, className)) {
-                return parent;
-            }
-            parent = parent.parentNode;
-        }
-        return false;
-    }
-
-    private _popupMouseOut = (e: any) => {
-        const leafletMarker = this.markerRef.current.leafletElement;
-        // detach the event
-        L.DomEvent.off(leafletMarker._popup, 'mouseout', this._popupMouseOut, this);
-
-        // get the element that the mouse hovered onto
-        const target = e.toElement || e.relatedTarget;
-
-        // check to see if the element is a popup
-        if (
-            this._getParent(target, 'leaflet-popup') ||
-            this._getParent(target, 'leaflet-marker-icon')
-        ) {
-            return;
-        }
-
-        // check to see if the marker was hovered back onto
-        if (target === leafletMarker._icon) {
-            return;
-        }
-
-        // hide the popup
-        leafletMarker.closePopup();
-    }
-
-    private content = () => (
-        <div>
-            Halå
-        </div>
-    )
-
-    private bindPopup = () => {
-        if (this.markerRef.current) {
-            const leafletMarker = this.markerRef.current.leafletElement;
-
-            L.Marker.prototype.bindPopup.apply(
-                leafletMarker,
-                [
-                    ReactDOMServer.renderToStaticMarkup(this.content()),
-                    {
-                        showOnMouseOver: true,
-                        closeButton: false,
-                        offset: [0, -10],
-                    }]);
-
-            leafletMarker.off('click', leafletMarker.openPopup, leafletMarker);
-
-            // bind to mouse over
-            leafletMarker.on(
-                'mouseover',
-                (e: any) => {
-                    // get the element that the mouse hovered onto
-                    const target = e.originalEvent.fromElement || e.originalEvent.relatedTarget;
-                    const parent = this._getParent(target, 'leaflet-popup');
-
-                    // check to see if the element is a popup, and if it is this marker's popup
-                    if (parent === leafletMarker._popup._container) {
-                        return;
-                    }
-
-                    this.timeout && clearTimeout(this.timeout);
-                    this.timeout = setTimeout(
-                        () => {
-                            leafletMarker.openPopup();
-                        },
-                        500,
-                    );
-                },
-                this,
-            );
-
-            leafletMarker.on(
-                'mouseout',
-                (e: any) => {
-                    // get the element that the mouse hovered onto
-                    const target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
-
-                    // check to see if the element is a popup
-                    if (
-                        this._getParent(target, 'leaflet-popup') ||
-                        this._getParent(target, 'leaflet-marker-icon')
-                        ) {
-                        L.DomEvent.on(
-                            leafletMarker._popup._container,
-                            'mouseout',
-                            this._popupMouseOut,
-                            leafletMarker,
-                        );
-                        return;
-                    }
-
-                    // hide the popup
-                    this.timeout && clearTimeout(this.timeout);
-                    leafletMarker.closePopup();
-                },
-                this,
-            );
-        }
-
-    }
-
-    componentDidMount() {
-        if (this.props.forcedVisibleNodeLabels && this.props.forcedVisibleNodeLabels.length) {
-            this.bindPopup();
-        }
-    }
-
     render() {
         const icon = createDivIcon(
-                <div
-                    className={classnames(...this.getMarkerClasses())}
-                    style={{
-                        borderColor: this.props.color,
-                        backgroundColor: this.props.color,
-                    }}
-                >
-                    {this.props.children}
-                    {this.renderMarkerLabel()}
-                </div>,
+            <div
+                className={classnames(...this.getMarkerClasses())}
+                style={{
+                    borderColor: this.props.color,
+                    backgroundColor: this.props.color,
+                }}
+            >
+                {this.props.children}
+                {this.renderMarkerLabel()}
+            </div>,
         );
 
         return (

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
@@ -37,6 +38,14 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
         );
     }
 
+    private getPopupContent = () => {
+        return ReactDOMServer.renderToStaticMarkup(
+            <div>
+                hej
+            </div>,
+        );
+    }
+
     private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
         return (
             <NodeMarker
@@ -46,6 +55,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
                 tooltip={this.nodeUsageView(neighborLink.nodeUsageRouteIds)}
+                popupContent={this.getPopupContent()}
                 color={
                     neighborLink.nodeUsageRouteIds.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
