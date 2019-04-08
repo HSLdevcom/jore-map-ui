@@ -237,16 +237,25 @@ class NodeMarker extends Component<INodeMarkerProps> {
         leafletMarker.closePopup();
     }
 
+    private content = () => (
+        <div>
+            Halå
+        </div>
+    )
+
     private bindPopup = () => {
         if (this.markerRef.current) {
             const leafletMarker = this.markerRef.current.leafletElement;
 
-            L.Marker.prototype.bindPopup.apply(leafletMarker, ['<div>hejj</div>', {
-                showOnMouseOver: true,
-                closeButton: false,
-                offset: [0, -10],
-
-            }]);
+            L.Marker.prototype.bindPopup.apply(
+                leafletMarker,
+                [
+                    ReactDOMServer.renderToStaticMarkup(this.content()),
+                    {
+                        showOnMouseOver: true,
+                        closeButton: false,
+                        offset: [0, -10],
+                    }]);
 
             leafletMarker.off('click', leafletMarker.openPopup, leafletMarker);
 
