@@ -62,6 +62,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     markerRef: any;
+    timeout: any;
 
     constructor(props: any) {
         super(props);
@@ -203,9 +204,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private _getParent = (element: any, className: any) => {
+    private _getParent = (element: any, className: string) => {
         let parent = element.parentNode;
-
         while (parent != null) {
             if (parent.className && L.DomUtil.hasClass(parent, className)) {
                 return parent;
@@ -263,8 +263,13 @@ class NodeMarker extends Component<INodeMarkerProps> {
                         return;
                     }
 
-                    // show the popup
-                    leafletMarker.openPopup();
+                    this.timeout && clearTimeout(this.timeout);
+                    this.timeout = setTimeout(
+                        () => {
+                            leafletMarker.openPopup();
+                        },
+                        1000,
+                    );
                 },
                 this,
             );
@@ -287,6 +292,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     }
 
                     // hide the popup
+                    this.timeout && clearTimeout(this.timeout);
                     leafletMarker.closePopup();
                 },
                 this,
