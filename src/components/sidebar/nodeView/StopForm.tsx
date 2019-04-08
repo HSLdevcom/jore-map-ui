@@ -18,7 +18,7 @@ interface IStopFormProps {
 }
 
 interface IStopFormState {
-    isLoading: boolean;
+    isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
     invalidPropertiesMap: object;
     isEditingDisabled: boolean;
 }
