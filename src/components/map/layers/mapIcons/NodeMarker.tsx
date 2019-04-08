@@ -205,6 +205,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     private _getParent = (element: any, className: string) => {
+        if (!element) return false;
         let parent = element.parentNode;
         while (parent != null) {
             if (parent.className && L.DomUtil.hasClass(parent, className)) {
