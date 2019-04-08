@@ -153,7 +153,7 @@ export class NodeStore {
     }
 
     @action
-    public setIsFormValid = (isStopFormValid: boolean) => {
+    public setIsStopFormValid = (isStopFormValid: boolean) => {
         this._isStopFormValid = isStopFormValid;
     }
 
