@@ -209,7 +209,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
             if (parent.className && L.DomUtil.hasClass(parent, className)) {
                 return parent;
             }
-
             parent = parent.parentNode;
         }
         return false;
@@ -252,7 +251,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
             leafletMarker.on(
                 'mouseover',
                 (e: any) => {
-
                     // get the element that the mouse hovered onto
                     const target = e.originalEvent.fromElement || e.originalEvent.relatedTarget;
                     const parent = this._getParent(target, 'leaflet-popup');
@@ -264,7 +262,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
                     // show the popup
                     leafletMarker.openPopup();
-
                 },
                 this,
             );
@@ -277,7 +274,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
                     // check to see if the element is a popup
                     if (this._getParent(target, 'leaflet-popup')) {
-
                         L.DomEvent.on(
                             leafletMarker._popup._container,
                             'mouseout',
@@ -285,12 +281,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
                             leafletMarker,
                         );
                         return;
-
                     }
 
                     // hide the popup
                     leafletMarker.closePopup();
-
                 },
                 this,
             );
