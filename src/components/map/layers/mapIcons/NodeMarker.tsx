@@ -12,6 +12,7 @@ import { MapStore, NodeLabel } from '~/stores/mapStore';
 import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
 import * as s from './nodeMarker.scss';
+import './popup.css';
 
 // The logic of Z Indexes is not very logical.
 // Setting z-index to 2, if other items is 1 wont force it to be on top.
@@ -243,6 +244,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
             L.Marker.prototype.bindPopup.apply(leafletMarker, ['<div>hejj</div>', {
                 showOnMouseOver: true,
                 closeButton: false,
+                offset: [0, -10],
+
             }]);
 
             leafletMarker.off('click', leafletMarker.openPopup, leafletMarker);
@@ -292,6 +295,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     }
 
+    componentDidMount() {
+        if (this.props.forcedVisibleNodeLabels && this.props.forcedVisibleNodeLabels.length) {
+            this.bindPopup();
+        }
+    }
+
     render() {
         const icon = createDivIcon(
                 <div
@@ -305,12 +314,11 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     {this.renderMarkerLabel()}
                 </div>,
         );
-        this.bindPopup();
+
         return (
             <>
                 <Marker
                     ref={this.markerRef}
-                    bindPopup={this.bindPopup}
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.onMarkerClick}
                     draggable={this.props.isDraggable}
