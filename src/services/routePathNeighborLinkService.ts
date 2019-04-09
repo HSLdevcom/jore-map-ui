@@ -13,16 +13,8 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
-interface ISimplifiedRoutePath {
-    reitunnus: string;
-    suunimi: string;
-    suuvoimast: string;
-    suuvoimviimpvm: string;
-    suusuunta: string;
-}
-
 interface IExtendedExternalNode extends IExternalNode {
-    usageDuringDate?: IGraphqlList<ISimplifiedRoutePath>;
+    usageDuringDate?: IGraphqlList<IExternalRoutePath>;
 }
 
 interface IExtendedExternalLink extends IExternalLink {

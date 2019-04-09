@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
@@ -41,7 +41,6 @@ interface INodeMarkerProps {
     isHighlighted?: boolean;
     onClickEventParams?: any;
     forcedVisibleNodeLabels?: NodeLabel[];
-    tooltip?: ReactNode;
     markerClasses?: string[];
     popupContent?: string;
     node: INode;
