@@ -20,22 +20,24 @@ class MarkerPopup {
             const leafletMarker = markerRef.current.leafletElement;
 
             const _popupMouseOut = (e: any) => {
-                const leafletMarker = markerRef.current.leafletElement;
-                // detach the event
-                L.DomEvent.off(leafletMarker._popup, 'mouseout', _popupMouseOut, this);
+                if (markerRef.current) {
+                    const leafletMarker = markerRef.current.leafletElement;
+                    // detach the event
+                    L.DomEvent.off(leafletMarker._popup, 'mouseout', _popupMouseOut, this);
 
-                // get the element that the mouse hovered onto
-                const target = e.toElement || e.relatedTarget;
-                // check to see if the element is a popup or a marker
-                if (
-                    _getParent(target, 'leaflet-popup') ||
-                    _getParent(target, 'leaflet-marker-icon')
-                ) {
-                    return;
+                    // get the element that the mouse hovered onto
+                    const target = e.toElement || e.relatedTarget;
+                    // check to see if the element is a popup or a marker
+                    if (
+                        _getParent(target, 'leaflet-popup') ||
+                        _getParent(target, 'leaflet-marker-icon')
+                    ) {
+                        return;
+                    }
+
+                    // hide the popup
+                    leafletMarker.closePopup();
                 }
-
-                // hide the popup
-                leafletMarker.closePopup();
             };
 
             // Bind popup to marker

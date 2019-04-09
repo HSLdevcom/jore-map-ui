@@ -64,9 +64,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     markerRef: any;
 
-    constructor(props: any) {
+    constructor(props: INodeMarkerProps) {
         super(props);
-        this.markerRef = React.createRef();
+        this.markerRef = React.createRef<Marker>();
     }
 
     componentDidMount() {
