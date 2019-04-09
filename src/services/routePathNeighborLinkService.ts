@@ -5,6 +5,8 @@ import { NeighborToAddType } from '~/stores/routePathStore';
 import ErrorStore from '~/stores/errorStore';
 import TransitType from '~/enums/transitType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
+import RoutePathFactory from '~/factories/routePathFactory';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import INeighborLink from '~/models/INeighborLink';
 import IGraphqlList from '~/models/externals/graphqlModelHelpers/IGraphqlList';
 import IExternalNode from '~/models/externals/IExternalNode';
@@ -13,6 +15,10 @@ import GraphqlQueries from './graphqlQueries';
 
 interface ISimplifiedRoutePath {
     reitunnus: string;
+    suunimi: string;
+    suuvoimast: string;
+    suuvoimviimpvm: string;
+    suusuunta: string;
 }
 
 interface IExtendedExternalNode extends IExternalNode {
@@ -43,12 +49,12 @@ const _parseNeighborLinks = (
     queryResult: any, orderNumber: number, linkPropertyName: string, nodePropertyName: string,
 ): INeighborLink[] => {
     return queryResult.data.solmuBySoltunnus[linkPropertyName]
-        .nodes.map((link: IExtendedExternalLink) => ({
+        .nodes.map((link: IExtendedExternalLink): INeighborLink => ({
             routePathLink:
                 RoutePathLinkFactory
                     .createNewRoutePathLinkFromExternalLink(link, orderNumber),
-            nodeUsageRouteIds: link[nodePropertyName].usageDuringDate!
-                .nodes.map((e: any) => e.reitunnus),
+            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!
+                .nodes.map((rp: IExternalRoutePath) => RoutePathFactory.createRoutePath(rp)),
         }));
 };
 

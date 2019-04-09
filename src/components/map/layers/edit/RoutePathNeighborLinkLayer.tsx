@@ -6,6 +6,7 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
+import { IRoutePath } from '~/models';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import INeighborLink from '~/models/INeighborLink';
 import NodeMarker from '../mapIcons/NodeMarker';
@@ -28,20 +29,13 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
             !== routePath!.routePathLinks!.filter(x => x.endNode.id === node.id).length;
     }
 
-    private nodeUsageView = (nodeUsageRouteIds: string[]) => {
-        return (
-            <div>
-                { nodeUsageRouteIds.map(id => (
-                    <div>{id}</div>
-                ))}
-            </div>
-        );
-    }
-
-    private getPopupContent = () => {
+    private nodeUsageView = (routePaths: IRoutePath[]) => {
+        if (!routePaths || routePaths.length === 0) return;
         return ReactDOMServer.renderToStaticMarkup(
             <div>
-                hej
+                { routePaths.map(rp => (
+                    <div>{rp.routeId}</div>
+                ))}
             </div>,
         );
     }
@@ -54,17 +48,16 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
-                tooltip={this.nodeUsageView(neighborLink.nodeUsageRouteIds)}
-                popupContent={this.getPopupContent()}
+                popupContent={this.nodeUsageView(neighborLink.nodeUsageRoutePaths)}
                 color={
-                    neighborLink.nodeUsageRouteIds.length > 0
+                    neighborLink.nodeUsageRoutePaths.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 node={node}
             >
                 <div className={s.usageCount}>
                     {
-                        neighborLink.nodeUsageRouteIds.length > 9 ?
-                            '9+' : neighborLink.nodeUsageRouteIds.length
+                        neighborLink.nodeUsageRoutePaths.length > 9 ?
+                            '9+' : neighborLink.nodeUsageRoutePaths.length
                     }
                 </div>
             </NodeMarker>
@@ -77,7 +70,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 positions={neighborLink.routePathLink.geometry}
                 key={neighborLink.routePathLink.id}
                 color={
-                    neighborLink.nodeUsageRouteIds.length > 0
+                    neighborLink.nodeUsageRoutePaths.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 weight={5}
                 opacity={0.8}

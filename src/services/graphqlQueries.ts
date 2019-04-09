@@ -175,6 +175,7 @@ const routeQueryFields = `
 `;
 
 const routePathQueryFields = `
+    reitunnus
     suusuunta
     suunimi
     suunimir
@@ -325,8 +326,8 @@ linkkisByLnkalkusolmu {
             ${endNodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
                 nodes {
-                    reitunnus
-                    suunimi
+                    ${routeForRoutePathQuery}
+                    ${routePathQueryFields}
                 }
             }
         }
@@ -341,8 +342,8 @@ linkkisByLnkloppusolmu {
             ${startNodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
                 nodes {
-                    reitunnus
-                    suunimi
+                    ${routeForRoutePathQuery}
+                    ${routePathQueryFields}
                 }
             }
         }
