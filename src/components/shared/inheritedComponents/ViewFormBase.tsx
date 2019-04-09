@@ -21,16 +21,7 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
         EventManager.off('geometryChange', this.enableEditing);
     }
 
-    protected isFormValid = () => {
-        return !Object.values(this.state.invalidPropertiesMap)
-            .some(validatorResult => !validatorResult.isValid);
-    }
-
-    protected validateAllProperties = (validationModel: object, validationEntity: any) => {
-        this.setState({
-            invalidPropertiesMap: {},
-        });
-
+    private _validateUsingModel = (validationModel: object, validationEntity: any) => {
         Object.entries(validationModel).forEach(([property, validatorRule]) => {
             this.validateProperty(
                 validatorRule,
@@ -38,6 +29,17 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
                 validationEntity[property],
             );
         });
+    }
+
+    protected isFormValid = () => {
+        return !Object.values(this.state.invalidPropertiesMap)
+            .some(validatorResult => !validatorResult.isValid);
+    }
+
+    protected validateAllProperties = (
+        validationModel: object, validationEntity: any,
+    ) => {
+        this._validateUsingModel(validationModel, validationEntity);
     }
 
     protected validateProperty = (validatorRule: string, property: string, value: any) => {

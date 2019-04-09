@@ -10,7 +10,6 @@ import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
 import SubSites from '~/routing/subSites';
-import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import navigator from '~/routing/navigator';
 import { Button, Dropdown } from '~/components/controls';
 import NodeLocationType from '~/types/NodeLocationType';
@@ -89,8 +88,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const coordinate = new LatLng(lat, lng);
         const newNode = NodeFactory.createNewNode(coordinate);
         this.props.nodeStore!.init(newNode, []);
-        const node = this.props.nodeStore!.node;
-        this._validateAllProperties(node.type);
+        this.validateNode();
     }
 
     private initExistingNode = async (selectedNodeId: string) => {
@@ -104,7 +102,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             if (links) {
                 this.props.nodeStore!.init(node, links);
             }
-            this._validateAllProperties(node.type);
+            this.validateNode();
         }
         this.setState({ isLoading: false });
     }
@@ -167,44 +165,26 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         );
     }
 
-    private _validateAllProperties = (nodeType: NodeType) => {
+    private validateNode = () => {
         const node = this.props.nodeStore!.node;
-        if (nodeType === NodeType.STOP) {
-            this.validateAllProperties(stopValidationModel, node.stop);
-        } else {
-            this.validateAllProperties(nodeValidationModel, node);
-        }
+        this.validateAllProperties(nodeValidationModel, node);
     }
 
     private onNodeGeometryChange = (property: NodeLocationType) => (value: any) => {
         this.props.nodeStore!.updateNodeGeometry(property, value);
-        // TODO: add nodeValidationModel. Move stop's invalidPropertiesMap into stopFrom?
-        this.validateProperty('', property, value);
+        this.validateProperty(nodeValidationModel[property], property, value);
     }
 
     private onNodePropertyChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
-        // TODO: add nodeValidationModel. Move stop's invalidPropertiesMap into stopFrom?
         this.validateProperty(nodeValidationModel[property], property, value);
         if (property === 'type') {
-            this._validateAllProperties(value);
+            this.validateNode();
         }
-    }
-
-    private onStopPropertyChange = (property: string) => (value: any) => {
-        this.props.nodeStore!.updateStop(property, value);
-        this.validateProperty(stopValidationModel[property], property, value);
     }
 
     render() {
         const node = this.props.nodeStore!.node;
-        const isEditingDisabled = this.state.isEditingDisabled;
-        const invalidPropertiesMap = this.state.invalidPropertiesMap;
-
-        const isSaveButtonDisabled = this.state.isEditingDisabled
-            || !this.props.nodeStore!.isDirty
-            || !this.isFormValid();
-
         if (this.state.isLoading) {
             return(
                 <div className={classnames(s.nodeView, s.loaderContainer)}>
@@ -215,6 +195,15 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         // TODO: show some indicator to user of an empty page
         if (!node) return null;
 
+        const isEditingDisabled = this.state.isEditingDisabled;
+        const invalidPropertiesMap = this.state.invalidPropertiesMap;
+        const isNodeFormInvalid = !this.isFormValid();
+        const isStopFormInvalid = node.type === NodeType.STOP
+            && !this.props.nodeStore!.isStopFormValid;
+        const isSaveButtonDisabled = this.state.isEditingDisabled
+            || !this.props.nodeStore!.isDirty
+            || isNodeFormInvalid
+            || isStopFormInvalid;
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
@@ -259,11 +248,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 isEditingDisabled={isEditingDisabled}
                             />
                         </div>
-                        { node.type === NodeType.STOP &&
+                        { node.type === NodeType.STOP && node.stop &&
                             <StopForm
                                 isEditingDisabled={isEditingDisabled}
                                 stop={node.stop!}
-                                onChange={this.onStopPropertyChange}
                                 invalidPropertiesMap={invalidPropertiesMap}
                             />
                         }
