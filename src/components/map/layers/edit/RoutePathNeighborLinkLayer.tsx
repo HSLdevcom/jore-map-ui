@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
+import Moment from 'moment';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { IRoutePath } from '~/models';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import INeighborLink from '~/models/INeighborLink';
 import NodeMarker from '../mapIcons/NodeMarker';
@@ -32,17 +35,32 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
     private nodeUsageView = (routePaths: IRoutePath[]) => {
         if (!routePaths || routePaths.length === 0) return;
         return ReactDOMServer.renderToStaticMarkup(
-            <div>
-                { routePaths.map(rp => (
-                    <div className={s.usageListItemTitle}>
-                        {rp.routePathShortName}
-                        <div className={s.usageListItemId}>
-                            (<a href='https://google.com' target='_blank'>
-                                {rp.routeId}
-                            </a>)
-                        </div>
-                    </div>
-                ))}
+            <div className={s.usageList}>
+                { routePaths
+                    .slice()
+                    .sort((a, b) => a.routeId < b.routeId ? -1 : 1)
+                    .map((routePath, index) => {
+                        const link = routeBuilder
+                            .to(SubSites.routePath)
+                            .toTarget([
+                                routePath.routeId,
+                                Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                                routePath.direction,
+                            ].join(','))
+                            .clear()
+                            .toLink();
+                        return (
+                            <div className={s.usageListItemTitle} key={index}>
+                                {routePath.originFi}-{routePath.destinationFi}
+                                <div className={s.usageListItemId}>
+                                    <a href={link} target='_blank'>
+                                        {routePath.routeId}
+                                    </a>
+                                </div>
+                            </div>
+                        );
+                    })
+                }
             </div>,
         );
     }

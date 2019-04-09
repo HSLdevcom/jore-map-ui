@@ -53,7 +53,6 @@ class MarkerPopup {
 
             // Remove default listener that opens popup on click
             leafletMarker.off('click', leafletMarker.openPopup, leafletMarker);
-            leafletMarker.openPopup();
 
             // Bind to mouse over
             leafletMarker.on(
