@@ -171,14 +171,14 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         label='SUUNTA'
                         disabled={disabledIfUpdating}
                         selected={this.props.routePath.direction}
-                        items={this.props.codeListStore!.getDropdownItems('Suunta')}
+                        items={this.props.codeListStore!.getCodeList('Suunta')}
                         onChange={onChange('direction')}
                     />
                     <Dropdown
                         label='POIKKEUSREITTI'
                         disabled={isEditingDisabled}
                         selected={this.props.routePath.exceptionPath}
-                        items={this.props.codeListStore!.getDropdownItems('Kyllä/Ei')}
+                        items={this.props.codeListStore!.getCodeList('Kyllä/Ei')}
                         onChange={onChange('exceptionPath')}
                     />
                 </div>
@@ -233,14 +233,14 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         <Dropdown
                             onChange={onChange('foo')}
                             disabled={isEditingDisabled}
-                            items={this.props.codeListStore!.getDropdownItems('Suunta')}
+                            items={this.props.codeListStore!.getCodeList('Suunta')}
                             selected='Suunta 1'
                         />
                         {/* TODO */}
                         <Dropdown
                             onChange={onChange('foo')}
                             disabled={isEditingDisabled}
-                            items={this.props.codeListStore!.getDropdownItems('Suunta')}
+                            items={this.props.codeListStore!.getCodeList('Suunta')}
                             selected='Suunta 2'
                         />
                     </div>

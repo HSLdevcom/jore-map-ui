@@ -1,8 +1,7 @@
 import { observable, action } from 'mobx';
 import ICodeListItem from '~/models/ICodeListItem';
-import { IDropdownItem } from '~/components/controls/Dropdown';
 
-export type codeListIdentifier =
+export type codeListName =
   'Joukkoliikennelaji' |
   'Kyllä/Ei' |
   'Solmutyyppi (P/E)' |
@@ -22,17 +21,13 @@ export class CodeListStore {
         this._codeListItems = codeListItems;
     }
 
-    public getDropdownItems = (identifier: codeListIdentifier): IDropdownItem[] => {
+    public getCodeList = (codeListName: codeListName): ICodeListItem[] => {
         return this._codeListItems
-            .filter(item => item.listId === identifier)
-            .sort((a, b) => a.orderNumber - b.orderNumber)
-            .map(item => ({
-                label: item.label,
-                value: item.value,
-            }));
+            .filter(item => item.listId === codeListName)
+            .sort((a, b) => a.orderNumber - b.orderNumber);
     }
 
-    public getCodeListLabel = (identifier: codeListIdentifier, value: string) => {
+    public getCodeListLabel = (identifier: codeListName, value: string) => {
         const item = this._codeListItems
             .find(item => item.listId === identifier && item.value === value);
         return item ? item.label : '';

@@ -305,7 +305,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={isEditingDisabled}
                             selected={link.direction}
                             onChange={this.onChange('direction')}
-                            items={this.props.codeListStore!.getDropdownItems('Suunta')}
+                            items={this.props.codeListStore!.getCodeList('Suunta')}
                         />
                         <InputContainer
                             label='OS. NRO'
@@ -343,7 +343,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         <Dropdown
                             onChange={this.onChange('municipalityCode')}
                             disabled={isEditingDisabled}
-                            items={this.props.codeListStore!.getDropdownItems('Kunta (ris/pys)')}
+                            items={this.props.codeListStore!.getCodeList('Kunta (ris/pys)')}
                             selected={link.municipalityCode}
                             label='KUNTA'
                         />

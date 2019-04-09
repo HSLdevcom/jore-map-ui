@@ -2,8 +2,8 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
-import { IDropdownItem } from '~/components/controls/Dropdown';
-import { codeListIdentifier } from '~/stores/codeListStore';
+import ICodeListItem from '~/models/ICodeListItem';
+import { codeListName } from '~/stores/codeListStore';
 import { Dropdown } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
@@ -13,13 +13,14 @@ interface IStopFormProps {
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
     onChange: (property: string) => (value: any) => void;
-    getDropDownItems: (codeListIdentifier: codeListIdentifier) => IDropdownItem[];
+    getDropDownItems: (codeListIdentifier: codeListName) => ICodeListItem[];
 }
 
 const StopForm = observer((
     {
         stop, isEditingDisabled, onChange, invalidPropertiesMap, getDropDownItems,
     }: IStopFormProps) => {
+    console.log(stop.municipality);
     return (
         <div className={s.stopView}>
             <SidebarHeader

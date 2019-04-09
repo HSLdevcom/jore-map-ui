@@ -236,7 +236,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     disabled={isEditingDisabled}
                                     selected={node.shortIdLetter}
                                     items={
-                                        this.props.codeListStore!.getDropdownItems(
+                                        this.props.codeListStore!.getCodeList(
                                             'Lyhyttunnus')}
                                 />
                                 <InputContainer
@@ -252,7 +252,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     disabled={isEditingDisabled}
                                     selected={node.type}
                                     items={
-                                        this.props.codeListStore!.getDropdownItems(
+                                        this.props.codeListStore!.getCodeList(
                                             'Solmutyyppi (P/E)')}
                                 />
                             </div>
@@ -270,7 +270,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 stop={node.stop!}
                                 onChange={this.onStopPropertyChange}
                                 invalidPropertiesMap={invalidPropertiesMap}
-                                getDropDownItems={this.props.codeListStore!.getDropdownItems}
+                                getDropDownItems={this.props.codeListStore!.getCodeList}
                             />
                         }
                     </div>

@@ -163,7 +163,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 <div className={s.flexRow}>
                     <Dropdown
                         label='SOLMU HASTUS-PAIKKANA'
-                        items={this.props.codeListStore!.getDropdownItems('Kyllä/Ei')}
+                        items={this.props.codeListStore!.getCodeList('Kyllä/Ei')}
                         selected='Kyllä'
                         onChange={this.onChange}
                     />
