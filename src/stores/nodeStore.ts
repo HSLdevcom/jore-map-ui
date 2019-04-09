@@ -18,6 +18,7 @@ export class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
+    @observable private _isStopFormValid: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -41,6 +42,11 @@ export class NodeStore {
     @computed
     get isDirty() {
         return !_.isEqual(this._node, this._oldNode) || !_.isEqual(this._links, this._oldLinks);
+    }
+
+    @computed
+    get isStopFormValid() {
+        return this._isStopFormValid;
     }
 
     @action
@@ -144,6 +150,11 @@ export class NodeStore {
             ...this._node!.stop!,
             [property]: value,
         };
+    }
+
+    @action
+    public setIsStopFormValid = (isStopFormValid: boolean) => {
+        this._isStopFormValid = isStopFormValid;
     }
 
     @action
