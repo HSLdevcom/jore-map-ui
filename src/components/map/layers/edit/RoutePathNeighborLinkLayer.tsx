@@ -34,7 +34,14 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
         return ReactDOMServer.renderToStaticMarkup(
             <div>
                 { routePaths.map(rp => (
-                    <div>{rp.routeId}</div>
+                    <div className={s.usageListItemTitle}>
+                        {rp.routePathShortName}
+                        <div className={s.usageListItemId}>
+                            (<a href='https://google.com' target='_blank'>
+                                {rp.routeId}
+                            </a>)
+                        </div>
+                    </div>
                 ))}
             </div>,
         );

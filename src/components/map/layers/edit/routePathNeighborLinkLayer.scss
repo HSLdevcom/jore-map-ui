@@ -1,3 +1,5 @@
+@import '../../../shared/styles/common';
+
 .neighborMarker {
   position: absolute;
   width: 24px !important;
@@ -11,6 +13,23 @@
     text-align: center;
     color: white;
     line-height: 24px;
+  }
+}
+
+.usageListItemTitle {
+  font-size: 14px;
+  margin: 2px 0px;
+  white-space: nowrap;
+
+  .usageListItemId {
+    display: inline;
+    margin-left: 5px;
+
+    a {
+      cursor: pointer;
+      color: $busBlue;
+      margin: 0 3px;
+    }
   }
 }
 
