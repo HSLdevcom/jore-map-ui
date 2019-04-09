@@ -1,0 +1,33 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.lineRoutesTabView {
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    overflow-y: auto;
+    .list {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        font-weight: bold;
+        color: $labelColor;
+        font-size: $mediumFontSize;
+        overflow-y: auto;
+
+        .saveButton {
+            padding: 20px;
+            background-color: $saveButtonGreen;
+            color: #FFF;
+            text-align: center;
+            font-size: $mediumFontSize;
+            cursor: pointer;
+        }
+
+        .saveButton:hover {
+            background-color: darken($saveButtonGreen, 10)
+        }
+
+    }
+}

@@ -9,7 +9,8 @@ type eventName =
     'nodeClick' |
     'networkNodeClick' |
     'networkLinkClick' |
-    'geometryChange';
+    'geometryChange' |
+    'selectedTabIndex';
 
 class EventManager {
 

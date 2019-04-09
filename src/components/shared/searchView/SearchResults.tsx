@@ -2,10 +2,10 @@ import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import React from 'react';
 import { SearchResultStore } from '~/stores/searchResultStore';
-import { ILine } from '~/models';
 import LineService from '~/services/lineService';
 import NodeService from '~/services/nodeService';
 import { INodeBase } from '~/models/INode';
+import ISearchLine from '~/models/searchModels/ISearchLine';
 import { ErrorStore } from '~/stores/errorStore';
 import { SearchStore } from '~/stores/searchStore';
 import Navigator from '~/routing/navigator';
@@ -79,8 +79,8 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     private fetchAllLines = async () => {
         try {
-            const lines = await LineService.fetchAllLines();
-            this.props.searchResultStore!.setAllLines(lines);
+            const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
+            this.props.searchResultStore!.setAllLines(searchLines);
         } catch (e) {
             this.props.errorStore!.addError('Linjojen haku ei onnistunut', e);
         }
@@ -102,44 +102,10 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             .splice(0, this.state.showLimit);
     }
 
-    private renderSearchResultButton() {
-        const subLineItemsLength = this.props.searchStore!.subLineItems.length;
-
-        const isSearchResultButtonVisible = subLineItemsLength > 0 ||
-            (Navigator.getPathName() !== subSites.home && subLineItemsLength === 0);
-        if (!isSearchResultButtonVisible) {
-            return;
-        }
-
-        if (subLineItemsLength > 0) {
-            return (
-                <div
-                    className={s.searchResultButton}
-                    onClick={this.addSearchResults}
-                >
-                    Lisää tarkasteluun ({subLineItemsLength})
-                </div>
-            );
-        }
-        return (
-            <div
-                className={s.searchResultButton}
-                onClick={this.closeSearchResults}
-            >
-                Sulje
-            </div>
-        );
-    }
-
-    private addSearchResults = () => {
-        // TODO, add all selected routePaths into location (use LinkBuilder)
-        this.props.searchStore!.setSearchInput('');
-        this.props.searchStore!.removeAllSubLineItems();
-    }
-
     private closeSearchResults = () => {
         this.props.searchStore!.setSearchInput('');
     }
+
     private showMoreResults = () => {
         if (this.paginatedDiv.current &&
             this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight
@@ -157,10 +123,10 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
     }
 
-    private isLine(item: INodeBase | ILine): item is ILine {
+    private isLine(item: INodeBase | ISearchLine): item is ISearchLine {
         return (
-            (item as ILine).routes !== undefined ||
-            (item as ILine).transitType !== undefined
+            (item as ISearchLine).routes !== undefined ||
+            (item as ISearchLine).transitType !== undefined
         ) && (
             (item as INodeBase).shortIdLetter === undefined ||
             (item as INodeBase).shortIdString === undefined ||
@@ -176,6 +142,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 </div>
             );
         }
+        const isRoutesView = Navigator.getPathName() === subSites.routes;
         const filteredItems = this.getFilteredItems();
         return (
             <div className={s.searchResultsView}>
@@ -191,7 +158,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                         </div>
                         :
                         filteredItems
-                            .map((item: ILine | INodeBase) => {
+                            .map((item: ISearchLine | INodeBase) => {
                                 if (this.isLine(item)) {
                                     return (
                                         <LineItem
@@ -209,7 +176,15 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                             })
                 }
                 </div>
-                {this.renderSearchResultButton()}
+                {
+                    isRoutesView &&
+                    <div
+                        className={s.largeButton}
+                        onClick={this.closeSearchResults}
+                    >
+                        Sulje
+                    </div>
+                }
             </div>
         );
     }

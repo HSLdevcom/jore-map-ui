@@ -10,6 +10,7 @@ import App from './components/App';
 import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
 import SearchResultStore from './stores/searchResultStore';
+import LineStore from './stores/lineStore';
 import RouteStore from './stores/routeStore';
 import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
@@ -34,6 +35,7 @@ const stores = {
     mapStore: MapStore,
     searchResultStore: SearchResultStore,
     loginStore: LoginStore,
+    lineStore: LineStore,
     routeStore: RouteStore,
     routePathStore: RoutePathStore,
     searchStore: SearchStore,

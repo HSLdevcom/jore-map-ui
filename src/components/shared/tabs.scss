@@ -1,0 +1,20 @@
+.tabs {
+    padding: 0px;
+}
+
+.tab {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.tabList {
+    display: flex;
+
+    .active {
+        background-color: grey;
+    }
+}
+
+.contentList{
+    padding: 10px;
+}

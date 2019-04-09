@@ -15,9 +15,15 @@
         margin-bottom: 0;
         padding-top: 5px;
 
-        .label {
+        .lineLabel {
             font-size: $largeFontSize;
             font-weight: 600;
+            cursor: pointer;
+        }
+
+        .lineLabel:hover {
+            background-color: #e6e6e6;
+            transition: .5s;
         }
 
         .icon {

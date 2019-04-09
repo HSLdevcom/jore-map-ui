@@ -1,0 +1,20 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.lineInfoTabView {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+
+    .content {
+        padding: 15px 15px 45px 15px;
+
+        .staticInfo {
+            margin-top: 5px;
+            font-size: $smallFontSize;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    }
+}

@@ -18,12 +18,28 @@ const getLineQuery = () => {
     );
 };
 
-const getAllLinesQuery = () => {
+const getSearchLineQuery = () => {
+    return (
+        gql`query getLineByLintunnus ($lineId: String!) {
+            linjaByLintunnus(lintunnus:$lineId) {
+                ${searchLineQueryFields}
+                reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
+                    nodes {
+                        reinimi
+                        reiviimpvm
+                    }
+                }
+            }
+        }`
+    );
+};
+
+const getAllSearchLinesQuery = () => {
     return (
         gql`{
             allLinjas {
                 nodes {
-                    ${lineQueryFields}
+                    ${searchLineQueryFields}
                     reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
                         nodes {
                             reinimi
@@ -158,6 +174,22 @@ const getNodeQuery = () => {
 };
 
 const lineQueryFields = `
+    lintunnus
+    linperusreitti
+    linvoimast
+    linvoimviimpvm
+    linjoukkollaji
+    lintilorg
+    linverkko
+    linryhma
+    linkuka
+    linviimpvm
+    linjlkohde
+    vaihtoaika
+    linkorvtyyppi
+`;
+
+const searchLineQueryFields = `
     lintunnus
     linjoukkollaji
     linverkko
@@ -381,10 +413,11 @@ linkkisByLnkloppusolmu {
 // tslint:enable:max-line-length
 
 export default {
+    getLineQuery,
+    getSearchLineQuery,
+    getAllSearchLinesQuery,
     getLinkQuery,
     getLinksQuery,
-    getLineQuery,
-    getAllLinesQuery,
     getRouteQuery,
     getRoutePathQuery,
     getLinksByStartNodeQuery,
