@@ -1,0 +1,11 @@
+.leaflet-popup-tip-container {
+  pointer-events: all;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+}
+
+.leaflet-popup-content > div {
+  padding: 13px 19px;
+}
