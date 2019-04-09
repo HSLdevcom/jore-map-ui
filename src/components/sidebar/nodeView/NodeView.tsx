@@ -88,7 +88,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const coordinate = new LatLng(lat, lng);
         const newNode = NodeFactory.createNewNode(coordinate);
         this.props.nodeStore!.init(newNode, []);
-        this._validateAllProperties();
+        this.validateNode();
     }
 
     private initExistingNode = async (selectedNodeId: string) => {
@@ -102,7 +102,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             if (links) {
                 this.props.nodeStore!.init(node, links);
             }
-            this._validateAllProperties();
+            this.validateNode();
         }
         this.setState({ isLoading: false });
     }
@@ -165,7 +165,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         );
     }
 
-    private _validateAllProperties = () => {
+    private validateNode = () => {
         const node = this.props.nodeStore!.node;
         this.validateAllProperties(nodeValidationModel, node);
     }
@@ -179,7 +179,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.updateNode(property, value);
         this.validateProperty(nodeValidationModel[property], property, value);
         if (property === 'type') {
-            this._validateAllProperties();
+            this.validateNode();
         }
     }
 

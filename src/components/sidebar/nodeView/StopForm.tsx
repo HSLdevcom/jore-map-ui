@@ -36,16 +36,16 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     }
 
     componentDidMount() {
-        this._validateAllProperties();
+        this.validateStop();
     }
 
     componentDidUpdate(prevProps: IStopFormProps) {
         if (prevProps.stop.nodeId !== this.props.stop.nodeId) {
-            this._validateAllProperties();
+            this.validateStop();
         }
     }
 
-    private _validateAllProperties = () => {
+    private validateStop = () => {
         const node = this.props.nodeStore!.node;
         if (!node) return;
         const stop = node.stop;
