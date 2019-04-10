@@ -229,6 +229,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     disabled={isEditingDisabled}
                                     selected={node.shortIdLetter}
                                     isValueIncludedInLabel={true}
+                                    emptyItem={{
+                                        value: '',
+                                        label: '',
+                                    }}
                                     items={
                                         this.props.codeListStore!.getCodeList(
                                             'Lyhyttunnus')}

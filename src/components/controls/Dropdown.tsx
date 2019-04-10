@@ -27,12 +27,12 @@ const Dropdown = observer((props: IDropdownProps) => {
         label: item.label,
     }));
 
-    if (props.emptyItem) {
-        dropDownItemList.unshift(props.emptyItem);
-    }
-
     if (props.isValueIncludedInLabel) {
         dropDownItemList.forEach(item => item.label = `${item.value} - ${item.label}`);
+    }
+
+    if (props.emptyItem) {
+        dropDownItemList.unshift(props.emptyItem);
     }
 
     let selectedItem: IDropdownItem | undefined;
