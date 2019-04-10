@@ -14,6 +14,7 @@ interface IDropdownProps {
     disabled?: boolean;
     items: ICodeListItem[];
     emptyItem?: IDropdownItem;
+    isValueIncludedInLabel?: boolean;
     onChange: (value: any) => void;
 }
 
@@ -28,6 +29,10 @@ const Dropdown = observer((props: IDropdownProps) => {
 
     if (props.emptyItem) {
         dropDownItemList.unshift(props.emptyItem);
+    }
+
+    if (props.isValueIncludedInLabel) {
+        dropDownItemList.forEach(item => item.label = `${item.value} - ${item.label}`);
     }
 
     let selectedItem: IDropdownItem | undefined;

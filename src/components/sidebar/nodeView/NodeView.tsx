@@ -205,6 +205,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             || !this.props.nodeStore!.isDirty
             || isNodeFormInvalid
             || isStopFormInvalid;
+        const nodeTypeCodeListWithoutDisabled =
+            this.props.codeListStore!
+                .getCodeList('Solmutyyppi (P/E)')
+                .filter(item => item.value !== 'E');
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
@@ -220,16 +224,17 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         <div className={s.formSection}>
                             <div className={s.flexRow}>
                                 <Dropdown
-                                    label='KIRJAIN'
+                                    label='LYHYTTUNNUS (2 kirj.'
                                     onChange={this.onNodePropertyChange('shortIdLetter')}
                                     disabled={isEditingDisabled}
                                     selected={node.shortIdLetter}
+                                    isValueIncludedInLabel={true}
                                     items={
                                         this.props.codeListStore!.getCodeList(
                                             'Lyhyttunnus')}
                                 />
                                 <InputContainer
-                                    label='TUNNUS'
+                                    label='+ 4 num.)'
                                     disabled={isEditingDisabled}
                                     value={node.shortIdString}
                                     onChange={this.onNodePropertyChange('shortIdString')}
@@ -240,9 +245,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     onChange={this.onNodePropertyChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
-                                    items={
-                                        this.props.codeListStore!.getCodeList(
-                                            'Solmutyyppi (P/E)')}
+                                    items={nodeTypeCodeListWithoutDisabled}
                                 />
                             </div>
                         </div>
