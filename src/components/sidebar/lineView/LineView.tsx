@@ -149,14 +149,20 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
 
     private renderLineViewHeader = () => {
         return (
-            <SidebarHeader
-                isEditButtonVisible={!this.props.isNewLine}
-                onEditButtonClick={this.toggleIsEditing}
-                isEditing={!this.state.isEditingDisabled}
-                shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
-            >
-                {this.props.isNewLine ? 'Uusi linja' : `Linja ${this.props.lineStore!.line!.id}`}
-            </SidebarHeader>
+            <div className={s.sidebarHeaderSection}>
+                <SidebarHeader
+                    isEditButtonVisible={!this.props.isNewLine}
+                    onEditButtonClick={this.toggleIsEditing}
+                    isEditing={!this.state.isEditingDisabled}
+                    shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
+                >
+                    {
+                        this.props.isNewLine ?
+                        'Uusi linja' :
+                        `Linja ${this.props.lineStore!.line!.id}`
+                    }
+                </SidebarHeader>
+            </div>
         );
     }
 

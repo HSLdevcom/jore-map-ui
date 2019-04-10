@@ -27,20 +27,11 @@ const TabList = observer((props: ITabListProps) => {
             {
                 React.Children.map(props.children, (child, index) => {
                     const isActive = props.selectedTabIndex === index;
-                    const setSelectedTabIndex = () => props.setSelectedTabIndex(index);
-                    return (
-                        <div
-                            className={
-                                classnames(
-                                    isActive ? s.active : null,
-                                )
-                            }
-                            onClick={setSelectedTabIndex}
-                        >
-                            {
-                                React.cloneElement(child)
-                            }
-                        </div>
+                    return (React.cloneElement(child, {
+                        isActive,
+                        index,
+                        setSelectedTabIndex: props.setSelectedTabIndex,
+                    })
                     );
                 })
             }
@@ -50,12 +41,24 @@ const TabList = observer((props: ITabListProps) => {
 
 interface ITabProps {
     children: JSX.Element;
+    setSelectedTabIndex?: Function;
+    index?: number;
+    isActive?: boolean;
 }
 
 const Tab = observer((props: ITabProps) => {
+    const isActive = props.isActive;
+    const setSelectedTabIndex = () => props.setSelectedTabIndex!(props.index);
+
     return (
         <div
-            className={s.tab}
+            className={
+                classnames(
+                    s.tab,
+                    isActive ? s.active : null,
+                )
+            }
+            onClick={setSelectedTabIndex}
         >
             {props.children}
         </div>
@@ -93,7 +96,7 @@ interface IContentItemProps {
 const ContentItem = observer((props: IContentItemProps) => {
     return (
         <div
-            className={s.tab}
+            className={s.contentItem}
         >
             {props.children}
         </div>

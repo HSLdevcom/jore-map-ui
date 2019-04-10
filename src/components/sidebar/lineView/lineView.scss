@@ -1,4 +1,5 @@
 @import '../../shared/styles/common';
+@import '../../shared/styles/sidebar';
 @import '../../shared/styles/flexbox';
 @import '../../shared/styles/form';
 
@@ -10,10 +11,6 @@
 
     .content {
         padding: 15px;
-    }
-
-    .borderBotton {
-        border-bottom: 1.5px solid $mediumLightGrey;
     }
 
     .lineViewHeader {

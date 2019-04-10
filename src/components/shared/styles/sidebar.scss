@@ -1,8 +1,15 @@
-.largeButton{
+@import './common';
+
+.largeButton {
     padding: 20px;
     background-color: $busBlue;
     color: #FFF;
     text-align: center;
     font-size: $mediumFontSize;
     cursor: pointer;
+}
+
+.sidebarHeaderSection {
+    border-bottom: 1.5px solid $mediumLightGrey;
+    padding: 15px;
 }
