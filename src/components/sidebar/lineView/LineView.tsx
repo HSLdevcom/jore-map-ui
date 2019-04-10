@@ -144,7 +144,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
     }
 
     private toggleIsEditing = () => {
-        this.toggleIsEditingDisabled(() => {}); // TODO: refactor to use await
+        this.toggleIsEditingDisabled(() => {});
     }
 
     private renderLineViewHeader = () => {
