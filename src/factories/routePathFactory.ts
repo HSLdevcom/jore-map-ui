@@ -1,4 +1,4 @@
-import { IRoutePath, IRoute } from '~/models';
+import { IRoutePath, IRoute, IRoutePathLink } from '~/models';
 import HashHelper from '~/util/hashHelper';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
@@ -6,27 +6,30 @@ import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
     public static createRoutePath = (
-        routeId: string,
         externalRoutePath: IExternalRoutePath,
     ): IRoutePath => {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
-                routeId,
+                externalRoutePath.reitunnus,
                 externalRoutePath.suuvoimast,
                 externalRoutePath.suusuunta,
             ].join('-'),
         ).toString();
 
-        const routePathLinks = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
-            .nodes.map((externalRoutePathLink: IExternalRoutePathLink) => {
-                return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
-            }).sort((a, b) => a.orderNumber - b.orderNumber);
+        let routePathLinks: IRoutePathLink[] | undefined = undefined;
+        if (externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta) {
+            routePathLinks = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
+                .nodes.map((externalRoutePathLink: IExternalRoutePathLink) => {
+                    return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
+                }).sort((a, b) => a.orderNumber - b.orderNumber);
+        }
+
         const exceptionPath =
             externalRoutePath.poikkeusreitti ? externalRoutePath.poikkeusreitti : '0';
         return {
-            routeId,
-            routePathLinks,
             exceptionPath,
+            routeId: externalRoutePath.reitunnus,
+            routePathLinks: routePathLinks !== undefined ? routePathLinks : undefined,
             lineId: externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
             transitType: externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
             internalId: internalRoutePathId,

@@ -21,7 +21,7 @@ class RoutePathService {
                         startDate: startDate.format(),
                     } },
             );
-            return RoutePathFactory.createRoutePath(routeId, queryResult.data.routePath);
+            return RoutePathFactory.createRoutePath(queryResult.data.routePath);
         }
 
     public static updateRoutePath = async (routePath: IRoutePath) => {

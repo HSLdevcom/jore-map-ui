@@ -1,58 +1,44 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import ICodeListItem from '~/models/ICodeListItem';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
-    value: string|number;
+    value: string;
     label: string;
 }
 
-interface IDropdownBaseProps {
+interface IDropdownProps {
     label?: string;
     selected?: string;
     disabled?: boolean;
+    items: ICodeListItem[];
     emptyItem?: IDropdownItem;
+    isValueIncludedInLabel?: boolean;
     onChange: (value: any) => void;
 }
 
-interface IDropdownProps extends IDropdownBaseProps {
-    items: IDropdownItem[];
-}
-
-interface IDropdownWithCodeListProps extends IDropdownBaseProps {
-    codeList: any;
-}
-
-const usesCodeList = (
-    item: IDropdownProps | IDropdownWithCodeListProps): item is IDropdownWithCodeListProps => {
-    return (
-        (item as IDropdownWithCodeListProps).codeList !== undefined
-    ) && (
-        (item as IDropdownProps).items === undefined
-    );
-};
-
-const Dropdown = observer((props: IDropdownProps | IDropdownWithCodeListProps) => {
+const Dropdown = observer((props: IDropdownProps) => {
     const onChange = (event: any) => {
         props.onChange(event.target.value);
     };
+    const dropDownItemList = props.items.map((item): IDropdownItem => ({
+        value: item.value,
+        label: item.label,
+    }));
 
-    let dropDownItemList: IDropdownItem[] = [];
-
-    if (usesCodeList(props)) {
-        const codeList = props.codeList;
-        dropDownItemList = Object.keys(codeList).map(
-            value => ({ value, label: codeList[value] }),
-        );
-    } else {
-        dropDownItemList = props.items;
+    if (props.isValueIncludedInLabel) {
+        dropDownItemList.forEach(item => item.label = `${item.value} - ${item.label}`);
     }
 
     if (props.emptyItem) {
         dropDownItemList.unshift(props.emptyItem);
     }
 
-    const selectedItem = dropDownItemList.find(item => item.value === props.selected);
+    let selectedItem: IDropdownItem | undefined;
+    if (props.selected) {
+        selectedItem = dropDownItemList.find(item => item.value === props.selected!.trim());
+    }
 
     return (
         <div className={s.formItem}>
@@ -64,12 +50,12 @@ const Dropdown = observer((props: IDropdownProps | IDropdownWithCodeListProps) =
                 }
                 {props.disabled ?
                     <div className={s.disableEditing}>
-                        {Boolean(selectedItem) ? selectedItem!.value : ''}
+                        {Boolean(selectedItem) ? selectedItem!.label : ''}
                     </div>
                 :
                     <select
                         className={s.dropdown}
-                        value={props.selected}
+                        value={selectedItem ? selectedItem.value : undefined}
                         onChange={onChange}
                     >
                     {

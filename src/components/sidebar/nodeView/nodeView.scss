@@ -11,12 +11,6 @@
         padding: 20px;
         overflow-y: auto;
         flex-grow: 1;
-
-        .idRow {
-            > div:first-child {
-                max-width: 80px;
-            }
-        }
     }
 
     &.loaderContainer > div {

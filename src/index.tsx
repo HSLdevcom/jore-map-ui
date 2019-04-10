@@ -18,6 +18,7 @@ import PopupStore from './stores/popupStore';
 import ErrorStore from './stores/errorStore';
 import ToolbarStore from './stores/toolbarStore';
 import NetworkStore from './stores/networkStore';
+import CodeListStore from './stores/codeListStore';
 import NodeStore from './stores/nodeStore';
 import LinkStore from './stores/linkStore';
 import DialogStore from './stores/dialogStore';
@@ -45,6 +46,7 @@ const stores = {
     nodeStore: NodeStore,
     linkStore: LinkStore,
     dialogStore: DialogStore,
+    codeListStore: CodeListStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());

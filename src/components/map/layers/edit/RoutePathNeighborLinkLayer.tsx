@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
+import Moment from 'moment';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
+import { IRoutePath } from '~/models';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import INeighborLink from '~/models/INeighborLink';
 import NodeMarker from '../mapIcons/NodeMarker';
@@ -27,6 +32,44 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
             !== routePath!.routePathLinks!.filter(x => x.endNode.id === node.id).length;
     }
 
+    private getNodeUsageViewMarkup = (routePaths: IRoutePath[]) => {
+        if (!routePaths || routePaths.length === 0) return;
+        return ReactDOMServer.renderToStaticMarkup(
+            <div className={s.nodeUsageList}>
+                <div className={s.topic}>
+                    Solmua käyttävät reitinsuunnat
+                </div>
+                { routePaths
+                    .slice()
+                    .sort((a, b) => a.routeId < b.routeId ? -1 : 1)
+                    .map((routePath, index) => {
+                        const link = routeBuilder
+                            .to(SubSites.routePath)
+                            .toTarget([
+                                routePath.routeId,
+                                Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                                routePath.direction,
+                            ].join(','))
+                            .clear()
+                            .toLink();
+                        return (
+                            <div className={s.usageListItem} key={index}>
+                                <div className={s.usageListItemTitle}>
+                                    {routePath.originFi}-{routePath.destinationFi}
+                                </div>
+                                <div className={s.usageListItemId}>
+                                    <a href={link} target='_blank'>
+                                        {routePath.routeId}
+                                    </a>
+                                </div>
+                            </div>
+                        );
+                    })
+                }
+            </div>,
+        );
+    }
+
     private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
         return (
             <NodeMarker
@@ -35,15 +78,16 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
+                popupContent={this.getNodeUsageViewMarkup(neighborLink.nodeUsageRoutePaths)}
                 color={
-                    neighborLink.nodeUsageRouteIds.length > 0
+                    neighborLink.nodeUsageRoutePaths.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 node={node}
             >
                 <div className={s.usageCount}>
                     {
-                        neighborLink.nodeUsageRouteIds.length > 9 ?
-                            '9+' : neighborLink.nodeUsageRouteIds.length
+                        neighborLink.nodeUsageRoutePaths.length > 9 ?
+                            '9+' : neighborLink.nodeUsageRoutePaths.length
                     }
                 </div>
             </NodeMarker>
@@ -56,7 +100,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 positions={neighborLink.routePathLink.geometry}
                 key={neighborLink.routePathLink.id}
                 color={
-                    neighborLink.nodeUsageRouteIds.length > 0
+                    neighborLink.nodeUsageRoutePaths.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}
                 weight={5}
                 opacity={0.8}

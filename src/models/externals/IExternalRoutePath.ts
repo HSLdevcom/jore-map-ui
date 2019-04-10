@@ -6,6 +6,7 @@ export default interface IExternalRoutePath {
     poikkeusreitti: string;
     reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta: IGraphqlList<IExternalRoutePathLink>;
     reittiByReitunnus: IExternalRoute;
+    reitunnus: string;
     suulahpaik: string;
     suunimi: string;
     suunimir: string;
