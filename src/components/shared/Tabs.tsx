@@ -1,6 +1,5 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import EventManager from '~/util/EventManager';
 import classnames from 'classnames';
 import * as s from './tabs.scss';
 
@@ -19,11 +18,8 @@ const Tabs = observer((props: ITabsProps) => {
 interface ITabListProps {
     children: JSX.Element[];
     selectedTabIndex: number;
+    setSelectedTabIndex: Function;
 }
-
-const selectTab = (index: number) => () => {
-    EventManager.trigger('selectedTabIndex', index);
-};
 
 const TabList = observer((props: ITabListProps) => {
     return (
@@ -31,6 +27,7 @@ const TabList = observer((props: ITabListProps) => {
             {
                 React.Children.map(props.children, (child, index) => {
                     const isActive = props.selectedTabIndex === index;
+                    const setSelectedTabIndex = () => props.setSelectedTabIndex(index);
                     return (
                         <div
                             className={
@@ -38,7 +35,7 @@ const TabList = observer((props: ITabListProps) => {
                                     isActive ? s.active : null,
                                 )
                             }
-                            onClick={selectTab(index)}
+                            onClick={setSelectedTabIndex}
                         >
                             {
                                 React.cloneElement(child)

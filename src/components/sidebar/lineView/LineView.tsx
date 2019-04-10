@@ -7,7 +7,6 @@ import Button from '~/components/controls/Button';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import lineValidationModel from '~/models/validationModels/lineValidationModel';
-import EventManager from '~/util/EventManager';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineStore } from '~/stores/lineStore';
 import { DialogStore } from '~/stores/dialogStore';
@@ -53,18 +52,16 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
     componentDidMount() {
         super.componentDidMount();
         this.initialize();
-        EventManager.on('selectedTabIndex', this.setSelectedTabIndex);
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
         this.props.lineStore!.clear();
-        EventManager.off('selectedTabIndex', this.setSelectedTabIndex);
     }
 
-    private setSelectedTabIndex = (event: CustomEvent) => {
+    private setSelectedTabIndex = (index: number) => {
         this.setState({
-            selectedTabIndex: event.detail,
+            selectedTabIndex: index,
         });
     }
 
@@ -114,22 +111,6 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
         this.props.lineStore!.updateLineProperty(property, value);
         this.validateProperty(lineValidationModel[property], property, value);
     }
-
-    // public renderTabContent = () => {
-    //     if (this.props.lineStore!.activeTab === LineViewTab.Info) {
-    //         return (
-    //             <LineInfoTab
-    //                 isEditingDisabled={this.state.isEditingDisabled}
-    //                 isNewLine={this.props.isNewLine}
-    //                 onChange={this.onChangeLineProperty}
-    //                 invalidPropertiesMap={this.state.invalidPropertiesMap}
-    //             />
-    //         );
-    //     }
-    //     return (
-    //         <LineRoutesTab />
-    //     );
-    // }
 
     private save = async () => {
         this.setState({ isLoading: true });
@@ -200,7 +181,10 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
                 {this.renderLineViewHeader()}
                 <div>
                     <Tabs>
-                        <TabList selectedTabIndex={this.state.selectedTabIndex}>
+                        <TabList
+                            selectedTabIndex={this.state.selectedTabIndex}
+                            setSelectedTabIndex={this.setSelectedTabIndex}
+                        >
                             <Tab><div>Linjan tiedot</div></Tab>
                             <Tab><div>Reitit</div></Tab>
                         </TabList>
