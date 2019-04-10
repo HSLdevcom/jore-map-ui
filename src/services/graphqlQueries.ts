@@ -157,6 +157,22 @@ const getNodeQuery = () => {
     );
 };
 
+const getAllCodeLists = () => {
+    return (
+        gql`
+        query getAllCodeLists {
+            node: allKoodistos{
+                nodes {
+                    koolista
+                    koojarjestys
+                    kookoodi
+                    kooselite
+                }
+            }
+        }`
+    );
+};
+
 const lineQueryFields = `
     lintunnus
     linjoukkollaji
@@ -394,4 +410,5 @@ export default {
     getAllNodesQuery,
     getRoutePathLinkQuery,
     getLinksByEndNodeQuery,
+    getAllCodeLists,
 };

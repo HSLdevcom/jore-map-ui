@@ -3,9 +3,10 @@ import { inject, observer } from 'mobx-react';
 import InputContainer from '~/components/sidebar/InputContainer';
 import { IStop } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
+import { codeListName } from '~/stores/codeListStore';
+import ICodeListItem from '~/models/ICodeListItem';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import { Dropdown } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
@@ -15,6 +16,7 @@ interface IStopFormProps {
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
     nodeStore?: NodeStore;
+    getDropDownItems: (codeListIdentifier: codeListName) => ICodeListItem[];
 }
 
 interface IStopFormState {
@@ -66,6 +68,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const stop = this.props.stop;
         const onChange = this.onStopPropertyChange;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
+        const getDropDownItems = this.props.getDropDownItems;
 
         return (
             <div className={s.stopView}>
@@ -150,7 +153,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         />
                         <Dropdown
                             onChange={onChange('municipality')}
-                            codeList={municipalityCodeList}
+                            items={getDropDownItems('Kunta (ris/pys)')}
                             selected={stop.municipality}
                             disabled={isEditingDisabled}
                             label='KUNTA'
@@ -162,11 +165,12 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         Muu tiedot
                     </div>
                     <div className={s.flexRow}>
-                        <InputContainer
-                            label='VAIHTOPYSÄKKI'
-                            disabled={isEditingDisabled}
-                            value={stop.exchangeStop}
+                        <Dropdown
                             onChange={onChange('exchangeStop')}
+                            items={getDropDownItems('Kyllä/Ei')}
+                            selected={stop.exchangeStop}
+                            disabled={isEditingDisabled}
+                            label='VAIHTOPYSÄKKI'
                         />
                         <InputContainer
                             label='LAITURI'

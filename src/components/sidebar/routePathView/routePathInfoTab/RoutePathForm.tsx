@@ -4,11 +4,10 @@ import { FiRefreshCw } from 'react-icons/fi';
 import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
-import booleanCodeList from '~/codeLists/booleanCodeList';
+import { CodeListStore } from '~/stores/codeListStore';
 import routeBuilder from '~/routing/routeBuilder';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import SubSites from '~/routing/subSites';
-import directionCodeList from '~/codeLists/directionCodeList';
 import navigator from '~/routing/navigator';
 import InputContainer from '../../InputContainer';
 import TextContainer from '../../TextContainer';
@@ -19,6 +18,7 @@ import * as s from './routePathForm.scss';
 
 interface IRoutePathFormProps {
     routePathStore?: RoutePathStore;
+    codeListStore?: CodeListStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
@@ -26,7 +26,7 @@ interface IRoutePathFormProps {
     invalidPropertiesMap: object;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'codeListStore')
 @observer
 class RoutePathForm extends React.Component<IRoutePathFormProps>{
     private redirectToNewRoutePathView = () => {
@@ -171,15 +171,15 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         label='SUUNTA'
                         disabled={disabledIfUpdating}
                         selected={this.props.routePath.direction}
-                        codeList={directionCodeList}
+                        items={this.props.codeListStore!.getCodeList('Suunta')}
                         onChange={onChange('direction')}
                     />
                     <Dropdown
                         label='POIKKEUSREITTI'
                         disabled={isEditingDisabled}
                         selected={this.props.routePath.exceptionPath}
+                        items={this.props.codeListStore!.getCodeList('Kyllä/Ei')}
                         onChange={onChange('exceptionPath')}
-                        codeList={booleanCodeList}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -233,14 +233,14 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                         <Dropdown
                             onChange={onChange('foo')}
                             disabled={isEditingDisabled}
-                            codeList={directionCodeList}
+                            items={this.props.codeListStore!.getCodeList('Suunta')}
                             selected='Suunta 1'
                         />
                         {/* TODO */}
                         <Dropdown
                             onChange={onChange('foo')}
                             disabled={isEditingDisabled}
-                            codeList={directionCodeList}
+                            items={this.props.codeListStore!.getCodeList('Suunta')}
                             selected='Suunta 2'
                         />
                     </div>
