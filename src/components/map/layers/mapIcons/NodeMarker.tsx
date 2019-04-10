@@ -11,6 +11,7 @@ import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
+import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
 
 // The logic of Z Indexes is not very logical.
@@ -41,6 +42,8 @@ interface INodeMarkerProps {
     onClickEventParams?: any;
     forcedVisibleNodeLabels?: NodeLabel[];
     markerClasses?: string[];
+    // static markup language (HTML)
+    popupContent?: string;
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
@@ -58,6 +61,19 @@ class NodeMarker extends Component<INodeMarkerProps> {
         forcedVisibleNodeLabels: [],
         markerClasses: [],
     };
+
+    markerRef: any;
+
+    constructor(props: INodeMarkerProps) {
+        super(props);
+        this.markerRef = React.createRef<Marker>();
+    }
+
+    componentDidMount() {
+        if (this.props.popupContent) {
+            MarkerPopup.initPopup(this.props.popupContent, this.markerRef);
+        }
+    }
 
     private onMoveMarker = (coordinatesType: NodeLocationType) => (e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
@@ -196,20 +212,22 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     render() {
         const icon = createDivIcon(
-                <div
-                    className={classnames(...this.getMarkerClasses())}
-                    style={{
-                        borderColor: this.props.color,
-                        backgroundColor: this.props.color,
-                    }}
-                >
-                    {this.props.children}
-                    {this.renderMarkerLabel()}
-                </div>,
+            <div
+                className={classnames(...this.getMarkerClasses())}
+                style={{
+                    borderColor: this.props.color,
+                    backgroundColor: this.props.color,
+                }}
+            >
+                {this.props.children}
+                {this.renderMarkerLabel()}
+            </div>,
         );
+
         return (
             <>
                 <Marker
+                    ref={this.markerRef}
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.onMarkerClick}
                     draggable={this.props.isDraggable}

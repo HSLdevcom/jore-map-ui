@@ -1,16 +1,54 @@
-.neighborMarker {
-  position: absolute;
-  width: 24px !important;
-  height: 24px !important;
-  top: -4px;
-  left: -4px;
+@import '../../../shared/styles/common';
 
-  .usageCount {
-    font-size: 17px;
-    font-weight: 900;
-    text-align: center;
-    color: white;
-    line-height: 24px;
-  }
+.neighborMarker {
+    position: absolute;
+    width: 24px !important;
+    height: 24px !important;
+    top: -4px;
+    left: -4px;
+
+    .usageCount {
+        font-size: 17px;
+        font-weight: 900;
+        text-align: center;
+        color: white;
+        line-height: 24px;
+    }
 }
 
+.nodeUsageList {
+    display: flex;
+    flex-direction: column;
+    max-height: 200px;
+    overflow: auto;
+
+    .topic {
+        font-weight: bold;
+        font-size: $mediumFontSize;
+    }
+
+    .usageListItem {
+        font-size: $smallFontSize;
+        margin: 2px 0px;
+        white-space: nowrap;
+        display: flex;
+        justify-content: space-between;
+        flex-shrink: 0;
+
+        .usageListItemTitle {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .usageListItemId {
+            display: inline;
+            margin-left: 5px;
+
+            a {
+                cursor: pointer;
+                color: $busBlue;
+                margin: 0 3px;
+            }
+        }
+    }
+}
