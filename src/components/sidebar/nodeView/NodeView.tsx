@@ -205,7 +205,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             || !this.props.nodeStore!.isDirty
             || isNodeFormInvalid
             || isStopFormInvalid;
-        const nodeTypeCodeListWithoutDisabled =
+        const nodeTypeCodeList =
             this.props.codeListStore!
                 .getCodeList('Solmutyyppi (P/E)')
                 .filter(item => item.value !== 'E');
@@ -245,7 +245,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     onChange={this.onNodePropertyChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
-                                    items={nodeTypeCodeListWithoutDisabled}
+                                    items={nodeTypeCodeList}
                                 />
                             </div>
                         </div>
