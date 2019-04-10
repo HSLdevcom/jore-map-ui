@@ -36,6 +36,9 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
         if (!routePaths || routePaths.length === 0) return;
         return ReactDOMServer.renderToStaticMarkup(
             <div className={s.nodeUsageList}>
+                <div className={s.topic}>
+                    Solmua käyttävät reitinsuunnat
+                </div>
                 { routePaths
                     .slice()
                     .sort((a, b) => a.routeId < b.routeId ? -1 : 1)
