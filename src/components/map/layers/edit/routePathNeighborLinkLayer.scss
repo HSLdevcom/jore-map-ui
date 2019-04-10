@@ -16,20 +16,25 @@
   }
 }
 
-.usageList {
+.nodeUsageList {
   display: flex;
   flex-direction: column;
   max-height: 200px;
   overflow: auto;
-
-  .usageListItemTitle {
+  
+  .usageListItem {
     font-size: 14px;
     margin: 2px 0px;
     white-space: nowrap;
     display: flex;
     justify-content: space-between;
     flex-shrink: 0;
-  
+
+    .usageListItemTitle {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
     .usageListItemId {
       display: inline;
       margin-left: 5px;
@@ -41,5 +46,4 @@
       }
     }
   }
-  
 }

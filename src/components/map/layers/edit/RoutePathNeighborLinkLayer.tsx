@@ -32,10 +32,10 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
             !== routePath!.routePathLinks!.filter(x => x.endNode.id === node.id).length;
     }
 
-    private nodeUsageView = (routePaths: IRoutePath[]) => {
+    private getNodeUsageViewMarkup = (routePaths: IRoutePath[]) => {
         if (!routePaths || routePaths.length === 0) return;
         return ReactDOMServer.renderToStaticMarkup(
-            <div className={s.usageList}>
+            <div className={s.nodeUsageList}>
                 { routePaths
                     .slice()
                     .sort((a, b) => a.routeId < b.routeId ? -1 : 1)
@@ -50,8 +50,10 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                             .clear()
                             .toLink();
                         return (
-                            <div className={s.usageListItemTitle} key={index}>
-                                {routePath.originFi}-{routePath.destinationFi}
+                            <div className={s.usageListItem} key={index}>
+                                <div className={s.usageListItemTitle}>
+                                    {routePath.originFi}-{routePath.destinationFi}
+                                </div>
                                 <div className={s.usageListItemId}>
                                     <a href={link} target='_blank'>
                                         {routePath.routeId}
@@ -73,7 +75,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 onClick={this.addNeighborLinkToRoutePath(neighborLink.routePathLink)}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
-                popupContent={this.nodeUsageView(neighborLink.nodeUsageRoutePaths)}
+                popupContent={this.getNodeUsageViewMarkup(neighborLink.nodeUsageRoutePaths)}
                 color={
                     neighborLink.nodeUsageRoutePaths.length > 0
                         ? USED_NEIGHBOR_COLOR : UNUSED_NEIGHBOR_COLOR}

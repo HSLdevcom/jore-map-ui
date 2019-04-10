@@ -42,6 +42,7 @@ interface INodeMarkerProps {
     onClickEventParams?: any;
     forcedVisibleNodeLabels?: NodeLabel[];
     markerClasses?: string[];
+    // static markup language (HTML)
     popupContent?: string;
     node: INode;
     isDisabled?: boolean;

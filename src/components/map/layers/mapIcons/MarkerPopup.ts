@@ -1,6 +1,8 @@
 import * as L from 'leaflet';
 import './markerPopup.css';
 
+const OPEN_POPUP_DELAY = 500;
+
 const _getParent = (element: any, className: string) => {
     if (!element) return false;
     let parent = element.parentNode;
@@ -72,7 +74,7 @@ class MarkerPopup {
                         () => {
                             leafletMarker.openPopup();
                         },
-                        500,
+                        OPEN_POPUP_DELAY,
                     );
                 },
                 this,
@@ -85,17 +87,23 @@ class MarkerPopup {
                     // get the element that the mouse hovered onto
                     const target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
 
+                    const isTargetOtherPopup = Boolean(_getParent(target, 'leaflet-popup'));
+                    const isTargetThisMarker =
+                        _getParent(target, 'leaflet-marker-icon') === leafletMarker;
+
                     // check to see if the element is a popup
                     if (
-                        _getParent(target, 'leaflet-popup') ||
-                        _getParent(target, 'leaflet-marker-icon')
+                        isTargetOtherPopup ||
+                        isTargetThisMarker
                         ) {
-                        L.DomEvent.on(
-                            leafletMarker._popup._container,
-                            'mouseout',
-                            _popupMouseOut,
-                            leafletMarker,
-                        );
+                        if (leafletMarker._popup && leafletMarker._popup._container) {
+                            L.DomEvent.on(
+                                leafletMarker._popup._container,
+                                'mouseout',
+                                _popupMouseOut,
+                                leafletMarker,
+                            );
+                        }
                         return;
                     }
 
