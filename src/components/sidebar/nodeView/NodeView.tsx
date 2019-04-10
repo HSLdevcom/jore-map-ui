@@ -17,9 +17,9 @@ import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import { ErrorStore } from '~/stores/errorStore';
+import { CodeListStore } from '~/stores/codeListStore';
 import NodeService from '~/services/nodeService';
 import routeBuilder from '~/routing/routeBuilder';
-import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import ButtonType from '~/enums/buttonType';
 import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
@@ -35,6 +35,7 @@ interface INodeViewProps {
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
+    codeListStore?: CodeListStore;
 }
 
 interface INodeViewState {
@@ -43,7 +44,7 @@ interface INodeViewState {
     invalidPropertiesMap: object;
 }
 
-@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore')
+@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
@@ -204,6 +205,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             || !this.props.nodeStore!.isDirty
             || isNodeFormInvalid
             || isStopFormInvalid;
+        const nodeTypeCodeList =
+            this.props.codeListStore!
+                .getCodeList('Solmutyyppi (P/E)')
+                .filter(item => item.value !== 'E');
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
@@ -217,16 +222,23 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     </SidebarHeader>
                     <div className={s.form}>
                         <div className={s.formSection}>
-                            <div className={classnames(s.flexRow, s.idRow)}>
-                                <InputContainer
-                                    label='KIRJAIN'
-                                    disabled={isEditingDisabled}
-                                    value={node.shortIdLetter}
+                            <div className={s.flexRow}>
+                                <Dropdown
+                                    label='LYHYTTUNNUS (2 kirj.'
                                     onChange={this.onNodePropertyChange('shortIdLetter')}
-                                    validationResult={invalidPropertiesMap['shortIdLetter']}
+                                    disabled={isEditingDisabled}
+                                    selected={node.shortIdLetter}
+                                    isValueIncludedInLabel={true}
+                                    emptyItem={{
+                                        value: '',
+                                        label: '',
+                                    }}
+                                    items={
+                                        this.props.codeListStore!.getCodeList(
+                                            'Lyhyttunnus')}
                                 />
                                 <InputContainer
-                                    label='TUNNUS'
+                                    label='+ 4 num.)'
                                     disabled={isEditingDisabled}
                                     value={node.shortIdString}
                                     onChange={this.onNodePropertyChange('shortIdString')}
@@ -237,7 +249,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     onChange={this.onNodePropertyChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
-                                    codeList={nodeTypeCodeList}
+                                    items={nodeTypeCodeList}
                                 />
                             </div>
                         </div>
@@ -253,6 +265,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 isEditingDisabled={isEditingDisabled}
                                 stop={node.stop!}
                                 invalidPropertiesMap={invalidPropertiesMap}
+                                getDropDownItems={this.props.codeListStore!.getCodeList}
                             />
                         }
                     </div>

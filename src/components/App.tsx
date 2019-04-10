@@ -11,6 +11,9 @@ import AuthService, { IAuthorizationResponse } from '~/services/authService';
 import ApiClient from '~/util/ApiClient';
 import navigator from '~/routing/navigator';
 import constants from '~/constants/constants';
+import CodeListService from '~/services/codeListService';
+import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
 import * as localStorageHelper from '~/util/localStorageHelper';
 import ErrorBar from './ErrorBar';
 import Dialog from './Dialog';
@@ -27,9 +30,11 @@ interface IAppState {
 interface IAppProps extends RouteComponentProps<any> {
     loginStore?: LoginStore;
     mapStore?: MapStore;
+    codeListStore?: CodeListStore;
+    errorStore?: ErrorStore;
 }
 
-@inject('mapStore', 'loginStore')
+@inject('mapStore', 'loginStore', 'codeListStore', 'errorStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
 
@@ -55,10 +60,24 @@ class App extends React.Component<IAppProps, IAppState> {
         this.state = {
             isLoginInProgress: true,
         };
+
     }
 
     componentWillMount() {
         this.redirectToLogin();
+    }
+
+    componentDidMount() {
+        this.initCodeLists();
+    }
+
+    private initCodeLists = async () => {
+        try {
+            const codeLists = await CodeListService.fetchAllCodeLists();
+            this.props.codeListStore!.setCodeListItems(codeLists);
+        } catch (e) {
+            this.props.errorStore!.addError('Koodiston haku epäonnistui', e);
+        }
     }
 
     private redirectToLogin = async () => {
