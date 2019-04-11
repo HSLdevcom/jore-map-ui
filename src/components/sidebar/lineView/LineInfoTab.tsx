@@ -3,7 +3,8 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import TransitType from '~/enums/transitType';
 import { LineStore } from '~/stores/lineStore';
-import { TransitToggleButtonBar } from '~/components/controls';
+import { CodeListStore } from '~/stores/codeListStore';
+import { TransitToggleButtonBar, Dropdown } from '~/components/controls';
 import InputContainer from '../InputContainer';
 import * as s from './lineInfoTab.scss';
 
@@ -13,13 +14,14 @@ interface ILineInfoTabState {
 
 interface ILineInfoTabProps {
     lineStore?: LineStore;
+    codeListStore?: CodeListStore;
     isEditingDisabled: boolean;
     isNewLine: boolean;
     onChange: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
 }
 
-@inject('lineStore')
+@inject('lineStore', 'codeListStore')
 @observer
 class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
     constructor(props: any) {
@@ -78,6 +80,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                         <InputContainer
                             disabled={isEditingDisabled}
                             label='LINJAN VOIMAANASTUMISPÄIVÄ'
+                            type='date'
                             value={line.lineStartDate}
                             onChange={onChange('lineStartDate')}
                             validationResult={invalidPropertiesMap['lineStartDate']}
@@ -87,21 +90,52 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                         <InputContainer
                             disabled={isEditingDisabled}
                             label='LINJAN VIIMEINEN VOIMASSAOLOPÄIVÄ'
+                            type='date'
                             value={line.lineEndDate}
                             onChange={onChange('lineEndDate')}
                             validationResult={invalidPropertiesMap['lineEndDate']}
                         />
                     </div>
-                    {/*
                     <div className={s.flexRow}>
-                        <div>JOUKKOLIIKENNELAJI</div>
-                        <div>TILAAJAORGANISAATIO</div>
+                        <Dropdown
+                            label='JOUKKOLIIKENNELAJI'
+                            disabled={isEditingDisabled}
+                            selected={line.publicTransportType}
+                            items={this.props.codeListStore!.getCodeList('Joukkoliikennelaji')}
+                            onChange={onChange('publicTransportType')}
+                        />
+                        <Dropdown
+                            label='TILAAJAORGANISAATIO'
+                            disabled={isEditingDisabled}
+                            selected={line.clientOrganization}
+                            items={this.props.codeListStore!.getCodeList('Tilaajaorganisaatio')}
+                            onChange={onChange('clientOrganization')}
+                        />
                     </div>
                     <div className={s.flexRow}>
-                        <div>JOUKKOLIIKENNEKOHDE</div>
-                        <div>LINJAN KORVAAVA TYYPPI</div>
+                        <Dropdown
+                            label='JOUKKOLIIKENNEKOHDE'
+                            disabled={isEditingDisabled}
+                            selected={line.publicTransportDestination}
+                            emptyItem={{
+                                value: '',
+                                label: '',
+                            }}
+                            items={this.props.codeListStore!.getCodeList('Joukkoliikennekohde')}
+                            onChange={onChange('publicTransportDestination')}
+                        />
+                        <Dropdown
+                            label='LINJAN KORVAAVA TYYPPI'
+                            disabled={isEditingDisabled}
+                            selected={line.lineReplacementType}
+                            emptyItem={{
+                                value: '',
+                                label: '',
+                            }}
+                            items={this.props.codeListStore!.getCodeList('LinjanKorvaavaTyyppi')}
+                            onChange={onChange('lineReplacementType')}
+                        />
                     </div>
-                    */}
                 </div>
             </div>
         </div>

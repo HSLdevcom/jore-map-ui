@@ -6,15 +6,9 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    height: 100%;
 
     .content {
-        padding: 15px 15px 45px 15px;
-
-        .staticInfo {
-            margin-top: 5px;
-            font-size: $smallFontSize;
-            margin-right: 10px;
-            font-weight: bold;
-        }
+        padding: 15px;
     }
 }

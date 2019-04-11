@@ -3,6 +3,10 @@ import ICodeListItem from '~/models/ICodeListItem';
 
 export type codeListName =
   'Joukkoliikennelaji' |
+  'Tilaajaorganisaatio' |
+  'Verkko' |
+  'Joukkoliikennekohde' |
+  'LinjanKorvaavaTyyppi' |
   'Kyllä/Ei' |
   'Solmutyyppi (P/E)' |
   'Kunta (ris/pys)' |

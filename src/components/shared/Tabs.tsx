@@ -76,12 +76,9 @@ const ContentList = observer((props: IContentListProps) => {
             {
                 React.Children.map(props.children, (child, index) => {
                     const isActive = props.selectedTabIndex === index;
+                    if (!isActive) return null;
                     return (
-                        <div>
-                            { isActive &&
-                                React.cloneElement(child)
-                            }
-                        </div>
+                        React.cloneElement(child)
                     );
                 })
             }

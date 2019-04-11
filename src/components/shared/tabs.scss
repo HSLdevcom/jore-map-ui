@@ -1,7 +1,7 @@
 @import './styles/common';
 
 .tabs {
-    padding: 0px;
+    height: 100%;
 
     .tabList {
         display: flex;
@@ -36,10 +36,10 @@
     }
 
     .contentList{
-        padding: 0px;
+        height: 100%;
 
         .contentItem {
-            padding: 0px;
+            height: 100%;
         }
     }
 }

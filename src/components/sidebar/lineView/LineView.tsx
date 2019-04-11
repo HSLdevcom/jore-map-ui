@@ -158,7 +158,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
                 >
                     {
                         this.props.isNewLine ?
-                        'Uusi linja' :
+                        'Luo uusi linja' :
                         `Linja ${this.props.lineStore!.line!.id}`
                     }
                 </SidebarHeader>
@@ -176,7 +176,6 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
             );
         }
         if (!this.props.lineStore!.line) return null;
-        console.log(this.props.lineStore!.line);
 
         const isSaveButtonDisabled = this.state.isEditingDisabled
             || !this.props.lineStore!.isDirty
@@ -185,30 +184,28 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
         return (
             <div className={s.lineView}>
                 {this.renderLineViewHeader()}
-                <div>
-                    <Tabs>
-                        <TabList
-                            selectedTabIndex={this.state.selectedTabIndex}
-                            setSelectedTabIndex={this.setSelectedTabIndex}
-                        >
-                            <Tab><div>Linjan tiedot</div></Tab>
-                            <Tab><div>Reitit</div></Tab>
-                        </TabList>
-                        <ContentList selectedTabIndex={this.state.selectedTabIndex}>
-                            <ContentItem>
-                                <LineInfoTab
-                                    isEditingDisabled={this.state.isEditingDisabled}
-                                    isNewLine={this.props.isNewLine}
-                                    onChange={this.onChangeLineProperty}
-                                    invalidPropertiesMap={this.state.invalidPropertiesMap}
-                                />
-                            </ContentItem>
-                            <ContentItem>
-                                <LineRoutesTab />
-                            </ContentItem>
-                        </ContentList>
-                    </Tabs>
-                </div>
+                <Tabs>
+                    <TabList
+                        selectedTabIndex={this.state.selectedTabIndex}
+                        setSelectedTabIndex={this.setSelectedTabIndex}
+                    >
+                        <Tab><div>Linjan tiedot</div></Tab>
+                        <Tab><div>Reitit</div></Tab>
+                    </TabList>
+                    <ContentList selectedTabIndex={this.state.selectedTabIndex}>
+                        <ContentItem>
+                            <LineInfoTab
+                                isEditingDisabled={this.state.isEditingDisabled}
+                                isNewLine={this.props.isNewLine}
+                                onChange={this.onChangeLineProperty}
+                                invalidPropertiesMap={this.state.invalidPropertiesMap}
+                            />
+                        </ContentItem>
+                        <ContentItem>
+                            <LineRoutesTab />
+                        </ContentItem>
+                    </ContentList>
+                </Tabs>
                 <Button
                     onClick={this.save}
                     type={ButtonType.SAVE}

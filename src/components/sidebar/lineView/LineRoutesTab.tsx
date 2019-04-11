@@ -18,8 +18,13 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps>{
 
         return (
             <div className={s.lineRoutesTabView}>
-                <div className={s.list}>
-                    <div>todo: list routes here</div>
+                <div className={s.content}>
+                    { line.routes.length === 0 ? (
+                        <div>Linjalla ei olemassa olevia reittejä.</div>
+                    ) : (
+                        // TODO: render routes list here
+                        <div>Reittilista tulee tähän (työn alla).</div>
+                    )}
                 </div>
             </div>
         );
