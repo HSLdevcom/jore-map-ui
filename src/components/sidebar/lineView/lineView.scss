@@ -9,28 +9,6 @@
     display: flex;
     flex-direction: column;
 
-    .content {
-        padding: 15px;
-    }
-
-    .lineViewHeader {
-        display: flex;
-    }
-
-    .topic {
-        padding: 10px;
-        font-weight: bold;
-        color: #898989;
-        font-size: 1rem;
-    }
-
-    .staticInfo {
-        margin-top: 5px;
-        font-size: $smallFontSize;
-        margin-right: 10px;
-        font-weight: bold;
-    }
-
     &.loaderContainer > div {
         margin: 30px auto;
     }
