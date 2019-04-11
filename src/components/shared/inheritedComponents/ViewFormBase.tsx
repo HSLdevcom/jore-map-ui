@@ -58,16 +58,18 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
         });
     }
 
-    // TODO: refactor to return promise instead of taking callback as parameter
-    protected toggleIsEditingDisabled = (undoChange: () => void) => {
-        if (!this.state.isEditingDisabled) {
-            undoChange();
-        }
+    protected toggleIsEditingDisabled = () => {
         const isEditingDisabled = !this.state.isEditingDisabled;
-        this.setState({
-            isEditingDisabled,
-            invalidPropertiesMap: {},
-        });
+        if (isEditingDisabled) {
+            this.setState({
+                isEditingDisabled,
+                invalidPropertiesMap: {},
+            });
+        } else {
+            this.setState({
+                isEditingDisabled,
+            });
+        }
     }
 
     protected enableEditing = () => {

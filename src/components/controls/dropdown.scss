@@ -21,10 +21,15 @@
         background-color: white;
 
         /* Remove default browser arrow */
-        -webkit-appearance:none;
-        -moz-appearance:none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
 
-        margin-right:10px;
+        margin-right: 10px;
+
+        /* Prevents text overflow*/
+        padding:0 30px 0 10px;
+        -webkit-padding-end: 30px;
+        -webkit-padding-start: 10px;
     }
 
     .disableEditing {

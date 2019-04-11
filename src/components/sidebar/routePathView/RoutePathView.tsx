@@ -89,10 +89,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                     this.props.routePathStore!.onRoutePathLinksChanged();
                 },
             );
-            this.validateAllProperties(
-                routePathValidationModel,
-                this.props.routePathStore!.routePath,
-            );
+            this.validateRoutePath();
             this.setState({
                 isLoading: false,
             });
@@ -224,10 +221,18 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     private toggleIsEditing = () => {
+        const isEditingDisabled = this.state.isEditingDisabled;
+
         this.props.routePathStore!.setNeighborRoutePathLinks([]);
-        this.toggleIsEditingDisabled(
-            this.props.routePathStore!.undoChanges,
-        );
+        if (!isEditingDisabled) {
+            this.props.routePathStore!.undoChanges();
+        }
+        this.toggleIsEditingDisabled();
+        if (!isEditingDisabled) this.validateRoutePath();
+    }
+
+    private validateRoutePath = () => {
+        this.validateAllProperties(routePathValidationModel, this.props.routePathStore!.routePath);
     }
 
     render() {

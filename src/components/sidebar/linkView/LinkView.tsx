@@ -74,7 +74,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         if (this.props.linkStore!.link) {
             const bounds = L.latLngBounds(this.props.linkStore!.link!.geometry);
             this.props.mapStore!.setMapBounds(bounds);
-            this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
+            this.validateLink();
         }
     }
 
@@ -187,9 +187,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     private toggleIsEditingEnabled = () => {
-        this.toggleIsEditingDisabled(
-            this.props.linkStore!.undoChanges,
-        );
+        const isEditingDisabled = this.state.isEditingDisabled;
+        if (!isEditingDisabled) {
+            this.props.linkStore!.undoChanges();
+        }
+        this.toggleIsEditingDisabled();
+        if (!isEditingDisabled) this.validateLink();
+    }
+
+    private validateLink = () => {
+        this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
     }
 
     private selectTransitType = (transitType: TransitType) => {

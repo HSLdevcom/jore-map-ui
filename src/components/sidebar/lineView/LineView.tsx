@@ -72,10 +72,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
             await this.initExistingLine();
         }
         if (this.props.lineStore!.line) {
-            this.validateAllProperties(
-                lineValidationModel,
-                this.props.lineStore!.line,
-            );
+            this.validateLine();
             this.setState({
                 isLoading: false,
             });
@@ -144,7 +141,13 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
     }
 
     private toggleIsEditing = () => {
-        this.toggleIsEditingDisabled(() => {});
+        const isEditingDisabled = this.state.isEditingDisabled;
+        this.toggleIsEditingDisabled();
+        if (!isEditingDisabled) this.validateLine();
+    }
+
+    private validateLine = () => {
+        this.validateAllProperties(lineValidationModel, this.props.lineStore!.line);
     }
 
     private renderLineViewHeader = () => {
