@@ -11,15 +11,13 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
-import nodeTypeCodeList from '~/codeLists/nodeTypeCodeList';
 import { INode } from '~/models';
 import SubSites from '~/routing/subSites';
+import { CodeListStore } from '~/stores/codeListStore';
 import linkValidationModel from '~/models/validationModels/linkValidationModel';
-import directionCodeList from '~/codeLists/directionCodeList';
 import { DialogStore } from '~/stores/dialogStore';
 import routeBuilder from '~/routing/routeBuilder';
 import LinkFactory from '~/factories/linkFactory';
-import municipalityCodeList from '~/codeLists/municipalityCodeList';
 import navigator from '~/routing/navigator';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -38,6 +36,7 @@ interface ILinkViewState {
 
 interface ILinkViewProps extends RouteComponentProps<any> {
     isNewLink: boolean;
+    codeListStore?: CodeListStore;
     errorStore?: ErrorStore;
     linkStore?: LinkStore;
     mapStore?: MapStore;
@@ -50,7 +49,7 @@ interface ILinkViewState {
     invalidPropertiesMap: object;
 }
 
-@inject('linkStore', 'mapStore', 'errorStore', 'dialogStore')
+@inject('linkStore', 'mapStore', 'errorStore', 'dialogStore', 'codeListStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     private existingTransitTypes: TransitType[] = [];
@@ -274,7 +273,10 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         />
                         <TextContainer
                             label='TYYPPI'
-                            value={nodeTypeCodeList[startNode.type]}
+                            value={
+                                this.props.codeListStore!.getCodeListLabel(
+                                    'Solmutyyppi (P/E)', startNode.type)
+                            }
                         />
                         <TextContainer
                             label='NIMI'
@@ -289,7 +291,10 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         />
                         <TextContainer
                             label='TYYPPI'
-                            value={nodeTypeCodeList[endNode.type]}
+                            value={
+                                this.props.codeListStore!.getCodeListLabel(
+                                    'Solmutyyppi (P/E)', endNode.type)
+                            }
                         />
                         <TextContainer
                             label='NIMI'
@@ -302,7 +307,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             disabled={isEditingDisabled}
                             selected={link.direction}
                             onChange={this.onChange('direction')}
-                            codeList={directionCodeList}
+                            items={this.props.codeListStore!.getCodeList('Suunta')}
                         />
                         <InputContainer
                             label='OS. NRO'
@@ -340,7 +345,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         <Dropdown
                             onChange={this.onChange('municipalityCode')}
                             disabled={isEditingDisabled}
-                            codeList={municipalityCodeList}
+                            items={this.props.codeListStore!.getCodeList('Kunta (ris/pys)')}
                             selected={link.municipalityCode}
                             label='KUNTA'
                         />

@@ -157,6 +157,22 @@ const getNodeQuery = () => {
     );
 };
 
+const getAllCodeLists = () => {
+    return (
+        gql`
+        query getAllCodeLists {
+            node: allKoodistos{
+                nodes {
+                    koolista
+                    koojarjestys
+                    kookoodi
+                    kooselite
+                }
+            }
+        }`
+    );
+};
+
 const lineQueryFields = `
     lintunnus
     linjoukkollaji
@@ -175,6 +191,7 @@ const routeQueryFields = `
 `;
 
 const routePathQueryFields = `
+    reitunnus
     suusuunta
     suunimi
     suunimir
@@ -325,8 +342,8 @@ linkkisByLnkalkusolmu {
             ${endNodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
                 nodes {
-                    reitunnus
-                    suunimi
+                    ${routeForRoutePathQuery}
+                    ${routePathQueryFields}
                 }
             }
         }
@@ -341,8 +358,8 @@ linkkisByLnkloppusolmu {
             ${startNodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
                 nodes {
-                    reitunnus
-                    suunimi
+                    ${routeForRoutePathQuery}
+                    ${routePathQueryFields}
                 }
             }
         }
@@ -393,4 +410,5 @@ export default {
     getAllNodesQuery,
     getRoutePathLinkQuery,
     getLinksByEndNodeQuery,
+    getAllCodeLists,
 };

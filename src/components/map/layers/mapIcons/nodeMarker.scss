@@ -46,3 +46,7 @@
     font-weight: 600;
     text-shadow: 0 0 5px white, 0 0 5px white;
 }
+
+.leaflet-popup-tip-container {
+    pointer-events: all;
+}
