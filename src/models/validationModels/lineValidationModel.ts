@@ -1,6 +1,6 @@
 import Constants from '~/constants/constants';
 
-const linkValidationModel = {
+const lineValidationModel = {
     id: 'required|min:4|max:6|string',
     lineBasicRoute: 'required|min:4|max:6|string',
     lineStartDate: 'required|date',
@@ -13,4 +13,4 @@ const linkValidationModel = {
     lineReplacementType: 'min:0|max:2|string',
 };
 
-export default linkValidationModel;
+export default lineValidationModel;
