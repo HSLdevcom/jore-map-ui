@@ -9,7 +9,7 @@ class RoutePathLinkService {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query(
             { query: GraphqlQueries.getRoutePathLinkQuery(), variables: { routeLinkId: id } },
         );
-        return RoutePathLinkFactory.createRoutePathLink(queryResult.data.routePathLink);
+        return RoutePathLinkFactory.mapExternalRoutePathLink(queryResult.data.routePathLink);
     }
 }
 

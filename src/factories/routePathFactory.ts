@@ -5,7 +5,7 @@ import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
-    public static createRoutePath = (
+    public static mapExternalRoutePath = (
         externalRoutePath: IExternalRoutePath,
     ): IRoutePath => {
         const internalRoutePathId = HashHelper.getHashFromString(
@@ -20,7 +20,7 @@ class RoutePathFactory {
         if (externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta) {
             routePathLinks = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
                 .nodes.map((externalRoutePathLink: IExternalRoutePathLink) => {
-                    return RoutePathLinkFactory.createRoutePathLink(externalRoutePathLink);
+                    return RoutePathLinkFactory.mapExternalRoutePathLink(externalRoutePathLink);
                 }).sort((a, b) => a.orderNumber - b.orderNumber);
         }
 

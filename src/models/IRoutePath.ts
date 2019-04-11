@@ -19,15 +19,15 @@ interface IViewOnlyProperties  {
 export default interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyProperties {
     lineId: string;
     routePathLinks?: IRoutePathLink[]; // TODO: change to be never undefined
-    routePathName: string;
-    routePathNameSw: string;
+    routePathName: string; // TODO: rename as name
+    routePathNameSw: string; // TODO: rename as nameSw
     endTime: Date;
     originFi: string;
     originSw: string;
     destinationFi: string;
     destinationSw: string;
-    routePathShortName: string;
-    routePathShortNameSw: string;
+    routePathShortName: string; // TODO: rename as shortName
+    routePathShortNameSw: string; // TODO: rename as shortNameSw
     length: number;
     exceptionPath: string;
 }

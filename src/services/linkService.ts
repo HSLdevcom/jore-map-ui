@@ -19,7 +19,7 @@ class LinkService {
             ...queryResult.data.solmuBySoltunnus.linkkisByLnkloppusolmu.nodes];
         return queriedLinks
             .map((link: IExternalLink) =>
-            LinkFactory.createLinkFromExternalLink(link),
+            LinkFactory.mapExternalLink(link),
         );
     }
 
@@ -29,7 +29,7 @@ class LinkService {
             { query: GraphqlQueries.getLinkQuery(),
                 variables: { startNodeId, endNodeId, transitType: transitTypeCode } },
         );
-        return LinkFactory.createLinkFromExternalLink(queryResult.data.link);
+        return LinkFactory.mapExternalLink(queryResult.data.link);
     }
 
     public static fetchLinks = async(startNodeId: string, endNodeId: string)
@@ -41,7 +41,7 @@ class LinkService {
         const queriedLinks = queryResult.data.getLinks.nodes;
         return queriedLinks
             .map((link: IExternalLink) =>
-            LinkFactory.createLinkFromExternalLink(link),
+            LinkFactory.mapExternalLink(link),
         );
     }
 

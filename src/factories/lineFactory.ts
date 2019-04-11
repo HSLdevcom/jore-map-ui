@@ -3,7 +3,7 @@ import IExternalLine  from '~/models/externals/IExternalLine.ts';
 import IExternalRoute  from '~/models/externals/IExternalRoute.ts';
 
 class LineFactory {
-    public static createLine = (externalLine: IExternalLine): ILine => {
+    public static mapExternalLine = (externalLine: IExternalLine): ILine => {
         const routes = externalLine.reittisByLintunnus.nodes.map(
             (route: IExternalRoute): ILineRoute => {
                 return {

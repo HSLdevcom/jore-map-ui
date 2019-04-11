@@ -18,7 +18,7 @@ class NodeService {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query(
             { query: GraphqlQueries.getNodeQuery(), variables: { nodeId } },
         );
-        return NodeFactory.createNode(queryResult.data.node);
+        return NodeFactory.mapExternalNode(queryResult.data.node);
     }
 
     public static fetchAllNodes = async () => {

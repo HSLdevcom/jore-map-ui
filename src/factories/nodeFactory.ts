@@ -8,7 +8,7 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {
-    public static createNode = (externalNode: IExternalNode): INode => {
+    public static mapExternalNode = (externalNode: IExternalNode): INode => {
         // Use less accurate location if measured location is missing.
         const coordinates = roundLatLng(
                 L.GeoJSON.coordsToLatLng((JSON.parse(
@@ -30,7 +30,7 @@ class NodeFactory {
             coordinates,
             coordinatesManual,
             coordinatesProjection,
-            stop: nodeStop ? NodeStopFactory.createStop(nodeStop) : undefined,
+            stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : undefined,
             measurementDate: externalNode.mittpvm,
             modifiedOn: externalNode.solviimpvm,
             modifiedBy: externalNode.solkuka,

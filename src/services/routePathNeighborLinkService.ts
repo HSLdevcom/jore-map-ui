@@ -44,9 +44,9 @@ const _parseNeighborLinks = (
         .nodes.map((link: IExtendedExternalLink): INeighborLink => ({
             routePathLink:
                 RoutePathLinkFactory
-                    .createNewRoutePathLinkFromExternalLink(link, orderNumber),
-            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!
-                .nodes.map((rp: IExternalRoutePath) => RoutePathFactory.createRoutePath(rp)),
+                    .mapExternalRoutePathLinkFromExternalLink(link, orderNumber),
+            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes
+                .map((rp: IExternalRoutePath) => RoutePathFactory.mapExternalRoutePath(rp)),
         }));
 };
 
