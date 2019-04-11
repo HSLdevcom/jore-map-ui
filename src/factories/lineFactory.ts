@@ -33,7 +33,7 @@ class LineFactory {
             lineStartDate: '',
             lineEndDate: '',
             publicTransportType: '',
-            clientOrganization: '',
+            clientOrganization: 'HSL',
             modifiedBy: '',
             modifiedOn: '',
             publicTransportDestination: '',

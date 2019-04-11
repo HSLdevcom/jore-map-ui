@@ -31,9 +31,9 @@ export class CodeListStore {
             .sort((a, b) => a.orderNumber - b.orderNumber);
     }
 
-    public getCodeListLabel = (identifier: codeListName, value: string) => {
+    public getCodeListLabel = (codeListName: codeListName, value: string) => {
         const item = this._codeListItems
-            .find(item => item.listId === identifier && item.value === value);
+            .find(item => item.listId === codeListName && item.value === value);
         return item ? item.label : '';
     }
 }

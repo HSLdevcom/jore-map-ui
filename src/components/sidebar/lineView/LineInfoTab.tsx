@@ -101,8 +101,13 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                             label='JOUKKOLIIKENNELAJI'
                             disabled={isEditingDisabled}
                             selected={line.publicTransportType}
+                            emptyItem={{
+                                value: '',
+                                label: '',
+                            }}
                             items={this.props.codeListStore!.getCodeList('Joukkoliikennelaji')}
                             onChange={onChange('publicTransportType')}
+                            validationResult={invalidPropertiesMap['publicTransportType']}
                         />
                         <Dropdown
                             label='TILAAJAORGANISAATIO'
@@ -110,6 +115,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                             selected={line.clientOrganization}
                             items={this.props.codeListStore!.getCodeList('Tilaajaorganisaatio')}
                             onChange={onChange('clientOrganization')}
+                            validationResult={invalidPropertiesMap['clientOrganization']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -123,6 +129,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                             }}
                             items={this.props.codeListStore!.getCodeList('Joukkoliikennekohde')}
                             onChange={onChange('publicTransportDestination')}
+                            validationResult={invalidPropertiesMap['publicTransportDestination']}
                         />
                         <Dropdown
                             label='LINJAN KORVAAVA TYYPPI'
@@ -134,6 +141,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                             }}
                             items={this.props.codeListStore!.getCodeList('LinjanKorvaavaTyyppi')}
                             onChange={onChange('lineReplacementType')}
+                            validationResult={invalidPropertiesMap['lineReplacementType']}
                         />
                     </div>
                     <div className={s.flexRow}>

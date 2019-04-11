@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import { IValidationResult } from '~/validation/FormValidator';
 import ICodeListItem from '~/models/ICodeListItem';
 import * as s from './dropdown.scss';
 
@@ -16,9 +17,11 @@ interface IDropdownProps {
     emptyItem?: IDropdownItem;
     isValueIncludedInLabel?: boolean;
     onChange: (value: any) => void;
+    validationResult?: IValidationResult;
 }
 
 const Dropdown = observer((props: IDropdownProps) => {
+    const validationResult = props.validationResult;
     const onChange = (event: any) => {
         props.onChange(event.target.value);
     };
@@ -71,6 +74,11 @@ const Dropdown = observer((props: IDropdownProps) => {
                         })
                     }
                     </select>
+                }
+                { validationResult && validationResult.errorMessage && !props.disabled &&
+                    <div className={s.errorMessage}>
+                        {validationResult.errorMessage}
+                    </div>
                 }
             </div>
         </div>
