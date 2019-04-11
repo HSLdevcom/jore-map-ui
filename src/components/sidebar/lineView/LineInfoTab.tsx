@@ -136,6 +136,16 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                             onChange={onChange('lineReplacementType')}
                         />
                     </div>
+                    <div className={s.flexRow}>
+                        <InputContainer
+                            disabled={isEditingDisabled}
+                            label='VAIHTOAIKA'
+                            type='number'
+                            value={line.exchangeTime}
+                            onChange={onChange('exchangeTime')}
+                            validationResult={invalidPropertiesMap['exchangeTime']}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

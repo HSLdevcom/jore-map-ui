@@ -13,7 +13,6 @@ export default interface ILine extends ILinePrimaryKey {
     lineEndDate: string;
     publicTransportType: string;
     clientOrganization: string;
-    lineGroup: string;
     modifiedBy: string;
     modifiedOn: string;
     publicTransportDestination: string;

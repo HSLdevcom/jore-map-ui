@@ -197,7 +197,6 @@ const lineQueryFields = `
     linjoukkollaji
     lintilorg
     linverkko
-    linryhma
     linkuka
     linviimpvm
     linjlkohde

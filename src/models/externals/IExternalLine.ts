@@ -11,7 +11,6 @@ export default interface IExternalLine {
     linjoukkollaji: string;
     lintilorg: string;
     linverkko: TransitType;
-    linryhma: string;
     linkuka: string;
     linviimpvm: string;
     linjlkohde: string;

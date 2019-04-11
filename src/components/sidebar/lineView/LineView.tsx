@@ -142,6 +142,9 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
 
     private toggleIsEditing = () => {
         const isEditingDisabled = this.state.isEditingDisabled;
+        if (!isEditingDisabled) {
+            this.props.lineStore!.resetChanges();
+        }
         this.toggleIsEditingDisabled();
         if (!isEditingDisabled) this.validateLine();
     }

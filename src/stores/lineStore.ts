@@ -65,6 +65,13 @@ export class LineStore {
     }
 
     @action
+    public resetChanges = () => {
+        if (this._oldline) {
+            this.setLine(this._oldline);
+        }
+    }
+
+    @action
     public clear = () => {
         this._line = null;
     }
