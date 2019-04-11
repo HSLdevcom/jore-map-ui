@@ -37,7 +37,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
 
     render() {
         const line = this.props.lineStore!.line;
-        if (!line) return 'Error';
+        if (!line) return null;
 
         const isEditingDisabled = this.props.isEditingDisabled;
         const onChange = this.props.onChange;
