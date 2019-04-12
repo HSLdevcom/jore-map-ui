@@ -16,7 +16,7 @@ import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import * as localStorageHelper from '~/util/localStorageHelper';
 import ErrorBar from './ErrorBar';
-import Dialog from './Dialog';
+import Alert from './overlays/Alert';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import Login from './login/Login';
@@ -51,7 +51,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     <ErrorBar />
                 </Map>
             </div>
-            <Dialog />
+            <Alert />
         </>
     ));
 

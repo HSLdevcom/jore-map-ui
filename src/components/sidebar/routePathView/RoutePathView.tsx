@@ -13,7 +13,7 @@ import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
-import DialogStore from '~/stores/dialogStore';
+import AlertStore from '~/stores/alertStore';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
@@ -208,7 +208,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             }
             this.props.routePathStore!.setOldRoutePath(this.props.routePathStore!.routePath!);
 
-            DialogStore.setFadeMessage('Tallennettu!');
+            AlertStore.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }

@@ -5,7 +5,7 @@ import { match } from 'react-router';
 import { LatLng } from 'leaflet';
 import NodeFactory from '~/factories/nodeFactory';
 import { INode } from '~/models';
-import { DialogStore } from '~/stores/dialogStore';
+import { AlertStore } from '~/stores/alertStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { MapStore } from '~/stores/mapStore';
 import LinkService from '~/services/linkService';
@@ -31,7 +31,7 @@ import * as s from './nodeView.scss';
 interface INodeViewProps {
     isNewNode: boolean;
     match?: match<any>;
-    dialogStore?: DialogStore;
+    alertStore?: AlertStore;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
@@ -44,7 +44,7 @@ interface INodeViewState {
     invalidPropertiesMap: object;
 }
 
-@inject('dialogStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore')
+@inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
@@ -151,7 +151,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             }
 
             this.props.nodeStore!.setCurrentStateAsOld();
-            this.props.dialogStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }

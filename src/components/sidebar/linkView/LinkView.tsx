@@ -15,7 +15,7 @@ import { INode } from '~/models';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import linkValidationModel from '~/models/validationModels/linkValidationModel';
-import { DialogStore } from '~/stores/dialogStore';
+import { AlertStore } from '~/stores/alertStore';
 import routeBuilder from '~/routing/routeBuilder';
 import LinkFactory from '~/factories/linkFactory';
 import navigator from '~/routing/navigator';
@@ -40,7 +40,7 @@ interface ILinkViewProps extends RouteComponentProps<any> {
     errorStore?: ErrorStore;
     linkStore?: LinkStore;
     mapStore?: MapStore;
-    dialogStore?: DialogStore;
+    alertStore?: AlertStore;
 }
 
 interface ILinkViewState {
@@ -49,7 +49,7 @@ interface ILinkViewState {
     invalidPropertiesMap: object;
 }
 
-@inject('linkStore', 'mapStore', 'errorStore', 'dialogStore', 'codeListStore')
+@inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     private existingTransitTypes: TransitType[] = [];
@@ -155,7 +155,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 await LinkService.updateLink(this.props.linkStore!.link);
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
             }
-            await this.props.dialogStore!.setFadeMessage('Tallennettu!');
+            await this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }

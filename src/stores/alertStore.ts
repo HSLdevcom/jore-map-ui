@@ -6,7 +6,7 @@ export enum DialogType {
     Info,
 }
 
-export class DialogStore {
+export class AlertStore {
     @observable private _message: string|null;
     @observable private _type: DialogType|null;
 
@@ -52,6 +52,6 @@ export class DialogStore {
     }
 }
 
-const observableDialogStore = new DialogStore();
+const observableAlertStore = new AlertStore();
 
-export default observableDialogStore;
+export default observableAlertStore;

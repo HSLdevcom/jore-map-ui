@@ -3,31 +3,32 @@ import classnames from 'classnames';
 import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { IoMdInformationCircle } from 'react-icons/io';
-import { DialogStore, DialogType } from '~/stores/dialogStore';
-import * as s from './dialog.scss';
+import { AlertStore, DialogType } from '~/stores/alertStore';
+import * as s from './alert.scss';
+import Modal from './Modal';
 
 interface IDialogProps {
-    dialogStore?: DialogStore;
+    alertStore?: AlertStore;
 }
 
-@inject('dialogStore')
+@inject('alertStore')
 @observer
 class Dialog extends React.Component<IDialogProps> {
     render() {
-        if (!this.props.dialogStore!.isDialogOpen) return null;
+        if (!this.props.alertStore!.isDialogOpen) return null;
 
         return (
-            <div className={s.dialogView}>
-                <div className={s.wrapper}>
-                    { this.props.dialogStore!.type === DialogType.Success &&
+            <Modal>
+                <div className={s.content}>
+                    { this.props.alertStore!.type === DialogType.Success &&
                         <FaCheckCircle className={classnames(s.icon, s.success)} />
                     }
-                    { this.props.dialogStore!.type === DialogType.Info &&
+                    { this.props.alertStore!.type === DialogType.Info &&
                         <IoMdInformationCircle className={classnames(s.icon, s.info)} />
                     }
-                    {this.props.dialogStore!.message}
+                    {this.props.alertStore!.message}
                 </div>
-            </div>
+            </Modal>
         );
     }
 }
