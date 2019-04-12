@@ -2,16 +2,11 @@ import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import ApiClient from '~/util/ApiClient';
 import LineFactory from '~/factories/lineFactory';
-import { ILine, IRoute } from '~/models';
+import { ILine } from '~/models';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import { ILinePrimaryKey } from '~/models/ILine';
 import endpoints from '~/enums/endpoints';
 import GraphqlQueries from './graphqlQueries';
-
-interface ILineSavingModel {
-    line: ILine;
-    routes: IRoute[];
-}
 
 class LineService {
     public static fetchLine = async (lintunnus: string): Promise<ILine> => {
@@ -47,12 +42,7 @@ class LineService {
     }
 
     public static updateLine = async (line: ILine) => {
-        const requestBody: ILineSavingModel = {
-            line,
-            routes: line.routes,
-        };
-
-        await ApiClient.updateObject(endpoints.LINE, requestBody);
+        await ApiClient.updateObject(endpoints.LINE, line);
         await apolloClient.clearStore();
     }
 
