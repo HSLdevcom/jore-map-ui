@@ -111,17 +111,11 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
 
     private save = async () => {
         this.setState({ isLoading: true });
-        let redirectUrl: string | undefined;
+
         const line = this.props.lineStore!.line;
         try {
             if (this.props.isNewLine) {
-                const linePrimaryKey = await LineService.createLine(line!);
-                redirectUrl = routeBuilder
-                    .to(SubSites.line)
-                    .toTarget([
-                        linePrimaryKey,
-                    ].join(','))
-                    .toLink();
+                await LineService.createLine(line!);
             } else {
                 await LineService.updateLine(line!);
             }
@@ -130,14 +124,26 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
+        if (this.props.isNewLine) {
+            this.navigateToNewLine();
+            return;
+        }
         this.setState({
             isEditingDisabled: true,
             invalidPropertiesMap: {},
             isLoading: false,
         });
-        if (redirectUrl) {
-            navigator.goTo(redirectUrl);
-        }
+    }
+
+    private navigateToNewLine = () => {
+        const line = this.props.lineStore!.line;
+        const lineViewLink = routeBuilder
+            .to(SubSites.line)
+            .toTarget([
+                line!.id,
+            ].join(','))
+            .toLink();
+        navigator.goTo(lineViewLink);
     }
 
     private toggleIsEditing = () => {
