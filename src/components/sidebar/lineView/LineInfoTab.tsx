@@ -17,7 +17,7 @@ interface ILineInfoTabProps {
     codeListStore?: CodeListStore;
     isEditingDisabled: boolean;
     isNewLine: boolean;
-    onChange: (property: string) => (value: any) => void;
+    onChangeLineProperty: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
 }
 
@@ -32,7 +32,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
     }
 
     private selectTransitType = (transitType: TransitType) => {
-        this.props.lineStore!.updateLineProperty('transitType', transitType);
+        this.props.onChangeLineProperty('transitType')(transitType);
     }
 
     render() {
@@ -40,7 +40,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
         if (!line) return null;
 
         const isEditingDisabled = this.props.isEditingDisabled;
-        const onChange = this.props.onChange;
+        const onChange = this.props.onChangeLineProperty;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
 
@@ -57,6 +57,8 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                                 selectedTransitTypes={selectedTransitTypes}
                                 toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLine}
+                                errorMessage={!line!.transitType ?
+                                    'Verkon tyyppi täytyy valita.' : undefined}
                             />
                         </div>
                     </div>

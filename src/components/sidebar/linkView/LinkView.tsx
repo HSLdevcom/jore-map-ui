@@ -244,6 +244,13 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             || !this.isFormValid();
         const selectedTransitTypes = link!.transitType ? [link!.transitType!] : [];
 
+        let transitTypeError;
+        if (!transitType) {
+            transitTypeError = 'Verkon tyyppi täytyy valita.';
+        } else if (transitType && this.transitTypeAlreadyExists(transitType)) {
+            transitTypeError = 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
+        }
+
         return (
         <div className={s.linkView}>
             <div className={s.content}>
@@ -265,17 +272,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 selectedTransitTypes={selectedTransitTypes}
                                 toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLink}
+                                errorMessage={transitTypeError}
                             />
-                            { !transitType &&
-                                <div className={s.errorText}>
-                                Verkon tyyppi täytyy valita.
-                            </div>
-                            }
-                            { transitType && this.transitTypeAlreadyExists(transitType) &&
-                                <div className={s.errorText}>
-                                    Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).
-                                </div>
-                            }
                         </div>
                     </div>
                     <div className={s.flexRow}>

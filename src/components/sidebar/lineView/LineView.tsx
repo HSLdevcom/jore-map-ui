@@ -209,7 +209,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
                             <LineInfoTab
                                 isEditingDisabled={this.state.isEditingDisabled}
                                 isNewLine={this.props.isNewLine}
-                                onChange={this.onChangeLineProperty}
+                                onChangeLineProperty={this.onChangeLineProperty}
                                 invalidPropertiesMap={this.state.invalidPropertiesMap}
                             />
                         </ContentItem>

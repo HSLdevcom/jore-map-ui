@@ -12,12 +12,6 @@
         overflow-y: auto;
         flex-grow: 1;
 
-        .errorText {
-            color: $errorRed;
-            font-size: 12px;
-            margin: 4px;
-        }
-
         .column {
             display: flex;
             flex-direction: column;
