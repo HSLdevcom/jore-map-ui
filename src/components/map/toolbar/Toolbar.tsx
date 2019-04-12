@@ -6,6 +6,7 @@ import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import LoginStore from '~/stores/loginStore';
 import RoutePathButtons from './toolbarRoutePathButtons';
+import LinkButtons from './toolbarLinkButtons';
 import ToolbarCommonButtons from './ToolbarCommonButtons';
 import ToolbarHelp from './toolbarHelp';
 import * as s from './toolbar.scss';
@@ -18,6 +19,13 @@ class Toolbar extends React.Component {
             return (
                 <div className={classnames(s.toolbar, s.modeSpecificToolbar)}>
                     <RoutePathButtons />
+                </div>
+            );
+        }
+        if (matchPath(navigator.getPathName(), SubSites.link)) {
+            return (
+                <div className={classnames(s.toolbar, s.modeSpecificToolbar)}>
+                    <LinkButtons />
                 </div>
             );
         }

@@ -8,6 +8,7 @@ enum ToolbarTool {
     EditNetworkNode,
     Print,
     SelectNetworkEntity,
+    SplitLink,
 }
 
 export default ToolbarTool;

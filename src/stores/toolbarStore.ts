@@ -9,6 +9,7 @@ import DivideLinkTool from '~/components/map/tools/DivideLinkTool';
 import PrintTool from '~/components/map/tools/PrintTool';
 import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkTool';
 import SelectNetworkEntityTool from '~/components/map/tools/SelectNetworkEntityTool';
+import SplitLinkTool from '~/components/map/tools/SplitLinkTool';
 
 const defaultTool = new SelectNetworkEntityTool();
 
@@ -21,6 +22,7 @@ const TOOL_LIST = [
     new DivideLinkTool(),
     new RemoveRoutePathLinkTool(),
     new PrintTool(),
+    new SplitLinkTool(),
 ];
 
 const TOOLS = {};
