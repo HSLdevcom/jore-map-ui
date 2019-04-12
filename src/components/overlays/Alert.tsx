@@ -13,7 +13,7 @@ interface IDialogProps {
 
 @inject('alertStore')
 @observer
-class Dialog extends React.Component<IDialogProps> {
+class Alert extends React.Component<IDialogProps> {
     render() {
         if (!this.props.alertStore!.isDialogOpen) return null;
 
@@ -33,4 +33,4 @@ class Dialog extends React.Component<IDialogProps> {
     }
 }
 
-export default Dialog;
+export default Alert;
