@@ -135,6 +135,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.existingTransitTypes = existingLinks
                 .map(link => link.transitType!);
         }
+        this.validateLink();
 
         this.setState({ isLoading: false });
     }
@@ -201,6 +202,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private selectTransitType = (transitType: TransitType) => {
         this.props.linkStore!.updateLinkProperty('transitType', transitType);
+        this.validateProperty(linkValidationModel['transitType'], 'transitType', transitType);
     }
 
     private transitTypeAlreadyExists = (transitType: TransitType) => {
@@ -264,8 +266,13 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLink}
                             />
+                            { !transitType &&
+                                <div className={s.errorText}>
+                                Verkon tyyppi täytyy valita.
+                            </div>
+                            }
                             { transitType && this.transitTypeAlreadyExists(transitType) &&
-                                <div className={s.linkAlreadyFoundErrorText}>
+                                <div className={s.errorText}>
                                     Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).
                                 </div>
                             }

@@ -147,7 +147,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                     <div className={s.flexRow}>
                         <InputContainer
                             disabled={isEditingDisabled}
-                            label='VAIHTOAIKA'
+                            label='VAIHTOAJAN PIDENNYS'
                             type='number'
                             value={line.exchangeTime}
                             onChange={onChange('exchangeTime')}

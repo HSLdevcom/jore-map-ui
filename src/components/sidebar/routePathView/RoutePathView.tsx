@@ -133,7 +133,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         if (routePath && routePath.lineId) {
             try {
                 const line = await LineService.fetchLine(routePath.lineId);
-                this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
+                this.props.networkStore!.setSelectedTransitTypes([line.transitType!]);
             } catch (e) {
                 this.props.errorStore!.addError('Linjan haku epäonnistui', e);
             }

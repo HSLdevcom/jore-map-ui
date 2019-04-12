@@ -57,7 +57,7 @@ class RoutePathFactory {
 
         return {
             lineId,
-            transitType: route.line!.transitType,
+            transitType: route.line!.transitType!,
             routeId: route.id,
             internalId: '',
             routePathName: route.routeName,

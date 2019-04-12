@@ -7,7 +7,7 @@ interface ILinePrimaryKey {
 
 export default interface ILine extends ILinePrimaryKey {
     routes: IRoute[];
-    transitType: TransitType;
+    transitType?: TransitType;
     lineBasicRoute: string;
     lineStartDate: string;
     lineEndDate: string;

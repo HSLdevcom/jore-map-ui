@@ -3,7 +3,6 @@ import IExternalLine  from '~/models/externals/IExternalLine.ts';
 import IExternalRoute  from '~/models/externals/IExternalRoute.ts';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 import ISearchLine from '~/models/searchModels/ISearchLine';
-import TransitType from '~/enums/transitType';
 
 class LineFactory {
     public static createLine = (externalLine: IExternalLine): ILine => {
@@ -27,7 +26,6 @@ class LineFactory {
     public static createNewLine = (): ILine => {
         return {
             routes: [],
-            transitType: TransitType.BUS,
             id: '',
             lineBasicRoute: '',
             lineStartDate: '',
