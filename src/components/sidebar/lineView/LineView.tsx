@@ -211,6 +211,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
                                 isNewLine={this.props.isNewLine}
                                 onChangeLineProperty={this.onChangeLineProperty}
                                 invalidPropertiesMap={this.state.invalidPropertiesMap}
+                                setValidatorResult={this.setValidatorResult}
                             />
                         </ContentItem>
                         <ContentItem>

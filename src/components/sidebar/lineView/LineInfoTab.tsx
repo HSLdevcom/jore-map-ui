@@ -4,6 +4,10 @@ import classnames from 'classnames';
 import TransitType from '~/enums/transitType';
 import { LineStore } from '~/stores/lineStore';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
+import LineService from '~/services/lineService';
+import ISearchLine from '~/models/searchModels/ISearchLine';
+import { IValidationResult } from '~/validation/FormValidator';
 import { TransitToggleButtonBar, Dropdown } from '~/components/controls';
 import InputContainer from '../InputContainer';
 import * as s from './lineInfoTab.scss';
@@ -15,15 +19,19 @@ interface ILineInfoTabState {
 interface ILineInfoTabProps {
     lineStore?: LineStore;
     codeListStore?: CodeListStore;
+    errorStore?: ErrorStore;
     isEditingDisabled: boolean;
     isNewLine: boolean;
     onChangeLineProperty: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
+    setValidatorResult: (property: string, validationResult: IValidationResult) => void;
 }
 
-@inject('lineStore', 'codeListStore')
+@inject('lineStore', 'codeListStore', 'errorStore')
 @observer
 class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
+    private existingLines: ISearchLine[] = [];
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -31,8 +39,47 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
         };
     }
 
+    componentDidMount() {
+        if (this.props.isNewLine) {
+            this.fetchAllLines();
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.isNewLine) {
+            this.fetchAllLines();
+        }
+    }
+
     private selectTransitType = (transitType: TransitType) => {
         this.props.onChangeLineProperty('transitType')(transitType);
+    }
+
+    private isLineAlreadyFound = (lineId: string): boolean => {
+        return Boolean(this.existingLines
+            .find((searchLine: ISearchLine) => searchLine.id === lineId));
+    }
+
+    private fetchAllLines = async () => {
+        if (this.existingLines.length > 0) return;
+
+        try {
+            const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
+            this.existingLines = searchLines;
+        } catch (e) {
+            this.props.errorStore!.addError('Olemassa olevien linjojen haku ei onnistunut', e);
+        }
+    }
+
+    private onChangeLineId = (value: any) => {
+        this.props.onChangeLineProperty('id')(value);
+        if (this.isLineAlreadyFound(value)) {
+            const validationResult: IValidationResult = {
+                isValid: false,
+                errorMessage: `Linja ${value} on jo olemassa.`,
+            };
+            this.props.setValidatorResult('id', validationResult);
+        }
     }
 
     render() {
@@ -40,6 +87,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
         if (!line) return null;
 
         const isEditingDisabled = this.props.isEditingDisabled;
+        const isUpdating = !this.props.isNewLine || this.props.isEditingDisabled;
         const onChange = this.props.onChangeLineProperty;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
@@ -64,10 +112,10 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                     </div>
                     <div className={s.flexRow}>
                         <InputContainer
-                            disabled={isEditingDisabled}
+                            disabled={isUpdating}
                             label='LINJAN TUNNUS'
                             value={line.id}
-                            onChange={onChange('id')}
+                            onChange={this.onChangeLineId}
                             validationResult={invalidPropertiesMap['id']}
                         />
                         <InputContainer

@@ -47,10 +47,10 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
 
         const validatorResult: IValidationResult
             = FormValidator.validate(value, validatorRule);
-        this.markInvalidProperties(property, validatorResult);
+        this.setValidatorResult(property, validatorResult);
     }
 
-    protected markInvalidProperties = (property: string, validatorResult: IValidationResult) => {
+    protected setValidatorResult = (property: string, validatorResult: IValidationResult) => {
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         invalidPropertiesMap[property] = validatorResult;
         this.setState({
