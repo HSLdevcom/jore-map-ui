@@ -70,12 +70,12 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
         }
     }
 
-    private onChangeLineId = (value: any) => {
-        this.props.onChangeLineProperty('id')(value);
-        if (this.isLineAlreadyFound(value)) {
+    private onChangeLineId = (lineId: string) => {
+        this.props.onChangeLineProperty('id')(lineId);
+        if (this.isLineAlreadyFound(lineId)) {
             const validationResult: IValidationResult = {
                 isValid: false,
-                errorMessage: `Linja ${value} on jo olemassa.`,
+                errorMessage: `Linja ${lineId} on jo olemassa.`,
             };
             this.props.setValidatorResult('id', validationResult);
         }
