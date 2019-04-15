@@ -9,8 +9,7 @@ interface ILineRoutesTabProps {
 
 @inject('lineStore')
 @observer
-class LineRoutesTab extends React.Component<ILineRoutesTabProps>{
-
+class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     render() {
         const line = this.props.lineStore!.line;
         if (!line) return null;

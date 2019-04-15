@@ -9,6 +9,10 @@
     cursor: pointer;
 }
 
+.largeButton:hover {
+    background-color: darken($busBlue, 10);
+}
+
 .sidebarHeaderSection {
     border-bottom: 1.5px solid $mediumLightGrey;
     padding: 15px;
