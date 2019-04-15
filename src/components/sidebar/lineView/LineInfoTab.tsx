@@ -64,8 +64,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
         if (this.existingLines.length > 0) return;
 
         try {
-            const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
-            this.existingLines = searchLines;
+            this.existingLines = await LineService.fetchAllSearchLines();
         } catch (e) {
             this.props.errorStore!.addError('Olemassa olevien linjojen haku ei onnistunut', e);
         }

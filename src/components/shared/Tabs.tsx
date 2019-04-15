@@ -18,7 +18,7 @@ const Tabs = observer((props: ITabsProps) => {
 interface ITabListProps {
     children: JSX.Element[];
     selectedTabIndex: number;
-    setSelectedTabIndex: Function;
+    setSelectedTabIndex: (index: number) => void;
 }
 
 const TabList = observer((props: ITabListProps) => {
@@ -41,14 +41,14 @@ const TabList = observer((props: ITabListProps) => {
 
 interface ITabProps {
     children: JSX.Element;
-    setSelectedTabIndex?: Function;
+    setSelectedTabIndex?: (index: number) => void;
     index?: number;
     isActive?: boolean;
 }
 
 const Tab = observer((props: ITabProps) => {
     const isActive = props.isActive;
-    const setSelectedTabIndex = () => props.setSelectedTabIndex!(props.index);
+    const setSelectedTabIndex = () => props.setSelectedTabIndex!(props.index!);
 
     return (
         <div
