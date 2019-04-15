@@ -14,7 +14,7 @@ interface INodeBase extends INodePrimaryKey {
 }
 
 export default interface INode extends INodeBase {
-    stop?: IStop;
+    stop?: IStop; // TODO: change as IStop|null
     transitTypes: TransitType[];
     coordinates: L.LatLng;
     coordinatesManual: L.LatLng;
