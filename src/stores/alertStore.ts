@@ -25,7 +25,7 @@ export class AlertStore {
     }
 
     @computed
-    get isDialogOpen(): boolean {
+    get isAlertOpen(): boolean {
         return this._message !== null;
     }
 
@@ -40,7 +40,7 @@ export class AlertStore {
                     this.close();
                     resolve();
                 },
-                Constants.FADE_DIALOG_TIMEOUT,
+                Constants.FADE_DIALOG_TIMEOUT * 10000,
             );
         });
     }

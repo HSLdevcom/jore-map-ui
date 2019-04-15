@@ -1,27 +1,45 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { AlertStore } from '~/stores/alertStore';
+import ButtonType from '~/enums/buttonType';
+import { ConfirmStore } from '~/stores/confirmStore';
 import * as s from './confirm.scss';
 import Modal from './Modal';
+import { Button } from '../controls';
 
 interface IDialogProps {
-    alertStore?: AlertStore;
+    confirmStore?: ConfirmStore;
 }
 
-@inject('alertStore')
+@inject('confirmStore')
 @observer
-class Dialog extends React.Component<IDialogProps> {
+class Confirm extends React.Component<IDialogProps> {
     render() {
-        if (!this.props.alertStore!.isDialogOpen) return null;
+        if (!this.props.confirmStore!.message) return null;
 
         return (
             <Modal>
-                <div className={s.content}>
-                    {this.props.alertStore!.message}
+                <div className={s.confirmView}>
+                    <div className={s.content}>
+                        {this.props.confirmStore!.message}
+                    </div>
+                    <div className={s.buttons}>
+                        <Button
+                            type={ButtonType.SQUARE}
+                            onClick={this.props.confirmStore!.confirm}
+                        >
+                            Peruuta
+                        </Button>
+                        <Button
+                            type={ButtonType.SQUARE}
+                            onClick={this.props.confirmStore!.cancel}
+                        >
+                            Hyväksy
+                        </Button>
+                    </div>
                 </div>
             </Modal>
         );
     }
 }
 
-export default Dialog;
+export default Confirm;

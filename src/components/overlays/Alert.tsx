@@ -15,7 +15,7 @@ interface IDialogProps {
 @observer
 class Alert extends React.Component<IDialogProps> {
     render() {
-        if (!this.props.alertStore!.isDialogOpen) return null;
+        if (!this.props.alertStore!.isAlertOpen) return null;
 
         return (
             <Modal>
