@@ -140,9 +140,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
         const line = this.props.lineStore!.line;
         const lineViewLink = routeBuilder
             .to(SubSites.line)
-            .toTarget([
-                line!.id,
-            ].join(','))
+            .toTarget(line!.id)
             .toLink();
         navigator.goTo(lineViewLink);
     }
