@@ -123,6 +123,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            return;
         }
         if (this.props.isNewLine) {
             this.navigateToNewLine();
@@ -179,7 +180,6 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
     }
 
     render() {
-
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.lineView, s.loaderContainer)}>

@@ -6,9 +6,6 @@ export class LineStore {
     @observable private _line: ILine|null;
     @observable private _oldline: ILine|null;
 
-    constructor() {
-    }
-
     @computed
     get line(): ILine|null {
         return this._line;
