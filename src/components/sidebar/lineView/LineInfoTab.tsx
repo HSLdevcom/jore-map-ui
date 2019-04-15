@@ -81,6 +81,29 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
         }
     }
 
+    private validateDates = (startDate: Date, endDate: Date) => {
+        this.props.onChangeLineProperty('lineStartDate')(startDate);
+        this.props.onChangeLineProperty('lineEndDate')(endDate);
+        // is end date before start date?
+        if (endDate && endDate.getTime() < startDate.getTime()) {
+            const validationResult: IValidationResult = {
+                isValid: false,
+                errorMessage: `Viimeinen voimassaolopäivä ei voi olla ennen voimaanastumispäivää.`,
+            };
+            this.props.setValidatorResult('lineEndDate', validationResult);
+        }
+    }
+
+    private onChangeStartDate = (startDate: Date) => {
+        const endDate = this.props.lineStore!.line!.lineEndDate;
+        this.validateDates(startDate, endDate);
+    }
+
+    private onChangeEndDate = (endDate: Date) => {
+        const startDate = this.props.lineStore!.line!.lineStartDate;
+        this.validateDates(startDate, endDate);
+    }
+
     render() {
         const line = this.props.lineStore!.line;
         if (!line) return null;
@@ -131,7 +154,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                             label='LINJAN VOIMAANASTUMISPÄIVÄ'
                             type='date'
                             value={line.lineStartDate}
-                            onChange={onChange('lineStartDate')}
+                            onChange={this.onChangeStartDate}
                             validationResult={invalidPropertiesMap['lineStartDate']}
                         />
                     </div>
@@ -141,7 +164,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                             label='LINJAN VIIMEINEN VOIMASSAOLOPÄIVÄ'
                             type='date'
                             value={line.lineEndDate}
-                            onChange={onChange('lineEndDate')}
+                            onChange={this.onChangeEndDate}
                             validationResult={invalidPropertiesMap['lineEndDate']}
                         />
                     </div>

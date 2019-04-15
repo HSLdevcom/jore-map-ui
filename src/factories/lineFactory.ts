@@ -11,8 +11,8 @@ class LineFactory {
             transitType: externalLine.linverkko,
             id: externalLine.lintunnus,
             lineBasicRoute: externalLine.linperusreitti,
-            lineStartDate: externalLine.linvoimast,
-            lineEndDate: externalLine.linvoimviimpvm,
+            lineStartDate: new Date(externalLine.linvoimast),
+            lineEndDate: new Date(externalLine.linvoimviimpvm),
             publicTransportType: externalLine.linjoukkollaji,
             clientOrganization: externalLine.lintilorg,
             modifiedBy: externalLine.linkuka,
@@ -24,12 +24,15 @@ class LineFactory {
     }
 
     public static createNewLine = (): ILine => {
+        const defaultDate = new Date();
+        defaultDate.setHours(0, 0, 0, 0);
+
         return {
             routes: [],
             id: '',
             lineBasicRoute: '',
-            lineStartDate: '',
-            lineEndDate: '',
+            lineStartDate: new Date(defaultDate),
+            lineEndDate: new Date(defaultDate),
             publicTransportType: '',
             clientOrganization: 'HSL',
             modifiedBy: '',
