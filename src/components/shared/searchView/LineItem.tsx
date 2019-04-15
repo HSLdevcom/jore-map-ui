@@ -14,16 +14,16 @@ import QueryParams from '~/routing/queryParams';
 import LineItemSubMenu from './LineItemSubMenu';
 import * as s from './lineItem.scss';
 
-interface ISearchLineItemState {
+interface ILineItemState {
     openRouteIds: string[];
 }
 
-interface ISearchLineItemProps {
+interface ILineItemProps {
     line: ISearchLine;
 }
 
-class LineItem extends React.Component<ISearchLineItemProps, ISearchLineItemState> {
-    constructor(props: ISearchLineItemProps) {
+class LineItem extends React.Component<ILineItemProps, ILineItemState> {
+    constructor(props: ILineItemProps) {
         super(props);
         this.state = {
             openRouteIds: [],
