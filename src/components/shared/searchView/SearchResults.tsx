@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import React from 'react';
+import { matchPath } from 'react-router';
 import { SearchResultStore } from '~/stores/searchResultStore';
 import LineService from '~/services/lineService';
 import NodeService from '~/services/nodeService';
@@ -142,7 +143,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 </div>
             );
         }
-        const isRoutesView = Navigator.getPathName() === subSites.routes;
+        const isRoutesView = matchPath(Navigator.getPathName(), subSites.routes);
         const filteredItems = this.getFilteredItems();
         return (
             <div className={s.searchResultsView}>
