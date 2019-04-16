@@ -74,7 +74,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         if (this.props.linkStore!.link) {
             const bounds = L.latLngBounds(this.props.linkStore!.link!.geometry);
             this.props.mapStore!.setMapBounds(bounds);
-            this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
+            this.validateLink();
         }
     }
 
@@ -135,6 +135,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.existingTransitTypes = existingLinks
                 .map(link => link.transitType!);
         }
+        this.validateLink();
 
         this.setState({ isLoading: false });
     }
@@ -189,13 +190,21 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     private toggleIsEditingEnabled = () => {
-        this.toggleIsEditingDisabled(
-            this.props.linkStore!.undoChanges,
-        );
+        const isEditingDisabled = this.state.isEditingDisabled;
+        if (!isEditingDisabled) {
+            this.props.linkStore!.undoChanges();
+        }
+        this.toggleIsEditingDisabled();
+        if (!isEditingDisabled) this.validateLink();
+    }
+
+    private validateLink = () => {
+        this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
     }
 
     private selectTransitType = (transitType: TransitType) => {
         this.props.linkStore!.updateLinkProperty('transitType', transitType);
+        this.validateProperty(linkValidationModel['transitType'], 'transitType', transitType);
     }
 
     private transitTypeAlreadyExists = (transitType: TransitType) => {
@@ -237,6 +246,13 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             || !this.isFormValid();
         const selectedTransitTypes = link!.transitType ? [link!.transitType!] : [];
 
+        let transitTypeError;
+        if (!transitType) {
+            transitTypeError = 'Verkon tyyppi täytyy valita.';
+        } else if (transitType && this.transitTypeAlreadyExists(transitType)) {
+            transitTypeError = 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
+        }
+
         return (
         <div className={s.linkView}>
             <div className={s.content}>
@@ -258,12 +274,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 selectedTransitTypes={selectedTransitTypes}
                                 toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLink}
+                                errorMessage={transitTypeError}
                             />
-                            { transitType && this.transitTypeAlreadyExists(transitType) &&
-                                <div className={s.linkAlreadyFoundErrorText}>
-                                    Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).
-                                </div>
-                            }
                         </div>
                     </div>
                     <div className={s.flexRow}>

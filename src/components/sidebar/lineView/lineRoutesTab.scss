@@ -1,0 +1,14 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.lineRoutesTabView {
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    overflow-y: auto;
+
+    .content {
+        padding: 15px;
+    }
+}

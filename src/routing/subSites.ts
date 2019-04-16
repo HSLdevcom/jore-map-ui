@@ -1,6 +1,8 @@
 enum SubSites {
     current = '',
     home = '/',
+    line = '/line/:id',
+    newLine = '/line/new',
     routes = '/routes/',
     link = '/link/:id',
     newLink = '/link/new/:id',
