@@ -13,4 +13,8 @@
         margin: 30px auto;
     }
 
+    .content {
+        overflow-y: auto;
+        flex-grow: 1;
+    }
 }

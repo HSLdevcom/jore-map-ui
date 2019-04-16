@@ -193,30 +193,32 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
 
         return (
             <div className={s.lineView}>
-                {this.renderLineViewHeader()}
-                <Tabs>
-                    <TabList
-                        selectedTabIndex={this.state.selectedTabIndex}
-                        setSelectedTabIndex={this.setSelectedTabIndex}
-                    >
-                        <Tab><div>Linjan tiedot</div></Tab>
-                        <Tab><div>Reitit</div></Tab>
-                    </TabList>
-                    <ContentList selectedTabIndex={this.state.selectedTabIndex}>
-                        <ContentItem>
-                            <LineInfoTab
-                                isEditingDisabled={this.state.isEditingDisabled}
-                                isNewLine={this.props.isNewLine}
-                                onChangeLineProperty={this.onChangeLineProperty}
-                                invalidPropertiesMap={this.state.invalidPropertiesMap}
-                                setValidatorResult={this.setValidatorResult}
-                            />
-                        </ContentItem>
-                        <ContentItem>
-                            <LineRoutesTab />
-                        </ContentItem>
-                    </ContentList>
-                </Tabs>
+                <div className={s.content}>
+                    {this.renderLineViewHeader()}
+                    <Tabs>
+                        <TabList
+                            selectedTabIndex={this.state.selectedTabIndex}
+                            setSelectedTabIndex={this.setSelectedTabIndex}
+                        >
+                            <Tab><div>Linjan tiedot</div></Tab>
+                            <Tab><div>Reitit</div></Tab>
+                        </TabList>
+                        <ContentList selectedTabIndex={this.state.selectedTabIndex}>
+                            <ContentItem>
+                                <LineInfoTab
+                                    isEditingDisabled={this.state.isEditingDisabled}
+                                    isNewLine={this.props.isNewLine}
+                                    onChangeLineProperty={this.onChangeLineProperty}
+                                    invalidPropertiesMap={this.state.invalidPropertiesMap}
+                                    setValidatorResult={this.setValidatorResult}
+                                />
+                            </ContentItem>
+                            <ContentItem>
+                                <LineRoutesTab />
+                            </ContentItem>
+                        </ContentList>
+                    </Tabs>
+                </div>
                 <Button
                     onClick={this.save}
                     type={ButtonType.SAVE}
