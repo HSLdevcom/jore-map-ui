@@ -1,6 +1,5 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 import ReactMoment from 'react-moment';
 import { IRoutePath } from '~/models';
 import SidebarHeader from '../SidebarHeader';
@@ -15,7 +14,7 @@ interface IRoutePathHeaderProps {
 }
 
 const RoutePathHeader = observer((props: IRoutePathHeaderProps) => (
-    <div className={classnames(s.formSection, s.content, s.borderBotton)}>
+    <div className={s.sidebarHeaderSection}>
         <SidebarHeader
             isEditButtonVisible={!props.isNewRoutePath}
             onEditButtonClick={props.onEditButtonClick}

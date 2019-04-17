@@ -1,13 +1,23 @@
 import TransitType from '~/enums/transitType';
-import { ILineRoute } from '.';
+import { IRoute } from '.';
 
 interface ILinePrimaryKey {
     id: string;
 }
 
 export default interface ILine extends ILinePrimaryKey {
-    transitType: TransitType;
-    routes: ILineRoute[];
+    routes: IRoute[];
+    transitType?: TransitType;
+    lineBasicRoute: string;
+    lineStartDate: Date;
+    lineEndDate: Date;
+    publicTransportType: string;
+    clientOrganization: string;
+    modifiedBy: string;
+    modifiedOn: string;
+    publicTransportDestination: string;
+    exchangeTime: number;
+    lineReplacementType: string;
 }
 
 export {

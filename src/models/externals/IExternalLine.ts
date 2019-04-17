@@ -4,7 +4,16 @@ import IGraphqlList from './graphqlModelHelpers/IGraphqlList';
 
 export default interface IExternalLine {
     reittisByLintunnus: IGraphqlList<IExternalRoute>;
-    linjoukkollaji: string;
     lintunnus: string;
+    linperusreitti: string;
+    linvoimast: string;
+    linvoimviimpvm: string;
+    linjoukkollaji: string;
+    lintilorg: string;
     linverkko: TransitType;
+    linkuka: string;
+    linviimpvm: string;
+    linjlkohde: string;
+    vaihtoaika: number;
+    linkorvtyyppi: string;
 }

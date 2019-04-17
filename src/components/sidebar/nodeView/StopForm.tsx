@@ -46,6 +46,10 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         if (prevProps.stop.nodeId !== this.props.stop.nodeId) {
             this.validateStop();
         }
+        if (prevProps.isEditingDisabled !== this.props.isEditingDisabled
+            && !this.props.isEditingDisabled) {
+            this.validateStop();
+        }
     }
 
     private validateStop = () => {

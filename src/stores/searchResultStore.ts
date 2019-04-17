@@ -1,14 +1,14 @@
 import { action, computed, observable, reaction } from 'mobx';
-import { ILine } from '~/models';
+import ISearchLine from '~/models/searchModels/ISearchLine';
 import NodeHelper from '~/util/nodeHelper';
 import { INodeBase } from '~/models/INode';
 import TransitType from '~/enums/transitType';
 import SearchStore from './searchStore';
 
 export class SearchResultStore {
-    @observable private _allLines: ILine[];
+    @observable private _allLines: ISearchLine[];
     @observable private _allNodes: INodeBase[];
-    @observable private _filteredItems: (INodeBase | ILine)[];
+    @observable private _filteredItems: (INodeBase | ISearchLine)[];
     @observable private _isSearching: boolean;
     private delayTimer: NodeJS.Timeout;
 
@@ -30,7 +30,7 @@ export class SearchResultStore {
     }
 
     @computed
-    get allLines(): ILine[] {
+    get allLines(): ISearchLine[] {
         return this._allLines;
     }
 
@@ -45,12 +45,12 @@ export class SearchResultStore {
     }
 
     @computed
-    get filteredItems(): (INodeBase | ILine)[] {
+    get filteredItems(): (INodeBase | ISearchLine)[] {
         return this._filteredItems;
     }
 
     @action
-    public setAllLines = (lines: ILine[]) => {
+    public setAllLines = (lines: ISearchLine[]) => {
         this._allLines = lines;
     }
 
@@ -92,7 +92,7 @@ export class SearchResultStore {
         this.setIsSearching(true);
         const searchInput = SearchStore.searchInput.trim();
 
-        let list: (INodeBase | ILine)[] = [];
+        let list: (INodeBase | ISearchLine)[] = [];
         if (SearchStore.isSearchingForLines) {
             const lines = this.getFilteredLines(
                 searchInput,
@@ -143,6 +143,6 @@ export class SearchResultStore {
     }
 }
 
-const observableLineStore = new SearchResultStore();
+const observableSearchResultStore = new SearchResultStore();
 
-export default observableLineStore;
+export default observableSearchResultStore;
