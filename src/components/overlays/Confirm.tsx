@@ -14,7 +14,7 @@ interface IDialogProps {
 @observer
 class Confirm extends React.Component<IDialogProps> {
     render() {
-        if (!this.props.confirmStore!.message) return null;
+        if (!this.props.confirmStore!.isConfirmOpen) return null;
 
         return (
             <Modal>

@@ -1,0 +1,25 @@
+.confirmView {
+
+    .confirmHeader {
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .pair {
+        display: flex;
+
+        > div {
+            flex-grow: 1;
+            flex-basis: 0;
+        }
+
+        .label {
+            font-weight: 600;
+        }
+    }
+
+    .note {
+        margin-top: 10px;
+        text-align: center;
+    }
+}
