@@ -22,6 +22,17 @@ enum GeoserverLayer {
     Point = 'piste',
 }
 
+interface NetworkNodeClickParams {
+    nodeId: string;
+    nodeType: NodeType;
+}
+
+interface NetworkLinkClickParams {
+    startNodeId: string;
+    endNodeId: NodeType;
+    transitType: TransitType;
+}
+
 interface INetworkLayersProps {
     mapStore?: MapStore;
     networkStore?: NetworkStore;
@@ -239,24 +250,26 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private onNetworkNodeClick = (clickEvent: any) => {
         const properties = clickEvent.sourceTarget.properties;
+        const clickParams: NetworkNodeClickParams = {
+            nodeId: properties.soltunnus,
+            nodeType: properties.soltyyppi,
+        };
         EventManager.trigger(
             'networkNodeClick',
-            {
-                nodeId: properties.soltunnus,
-                nodeType: properties.soltyyppi,
-            },
+            clickParams,
         );
     }
 
     private onNetworkLinkClick = (clickEvent: any) => {
         const properties = clickEvent.sourceTarget.properties;
+        const clickParams: NetworkLinkClickParams = {
+            startNodeId: properties.lnkalkusolmu,
+            endNodeId: properties.lnkloppusolmu,
+            transitType: properties.lnkverkko,
+        };
         EventManager.trigger(
             'networkLinkClick',
-            {
-                startNodeId: properties.lnkalkusolmu,
-                endNodeId: properties.lnkloppusolmu,
-                transitType: properties.lnkverkko,
-            },
+            clickParams,
         );
     }
 
@@ -328,3 +341,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 }
 
 export default NetworkLayers;
+
+export {
+    NetworkNodeClickParams,
+    NetworkLinkClickParams,
+};

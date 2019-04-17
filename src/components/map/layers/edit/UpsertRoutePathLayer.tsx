@@ -10,7 +10,6 @@ import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
-import { IExtendRoutePathNodeClickParams } from '../../tools/ExtendRoutePathTool';
 import NodeMarker from '../mapIcons/NodeMarker';
 import StartMarker from '../mapIcons/StartMarker';
 import ArrowDecorator from '../ArrowDecorator';
@@ -18,6 +17,11 @@ import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
 
 const START_MARKER_COLOR = '#00df0b';
 const ROUTE_COLOR = '#000';
+
+interface IEditRoutePathLayerNodeClickParams {
+    node: INode;
+    linkOrderNumber: number;
+}
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
@@ -97,7 +101,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             isNodeHighlighted = this.hasNodeOddAmountOfNeighbors(node);
             // Allow click event for highlighted nodes only
             if (isNodeHighlighted) {
-                const clickParams: IExtendRoutePathNodeClickParams = { node, linkOrderNumber };
+                const clickParams: IEditRoutePathLayerNodeClickParams = { node, linkOrderNumber };
                 onNodeClick = () =>
                     EventManager.trigger('nodeClick', clickParams);
             }
@@ -236,3 +240,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
 }
 
 export default UpsertRoutePathLayer;
+
+export {
+    IEditRoutePathLayerNodeClickParams,
+};
