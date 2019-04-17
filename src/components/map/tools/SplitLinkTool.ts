@@ -1,6 +1,7 @@
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
 import ConfirmStore from '~/stores/confirmStore';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
 import NodeType from '~/enums/nodeType';
@@ -13,8 +14,11 @@ import BaseTool from './BaseTool';
 class SplitLinkTool implements BaseTool {
     public toolType = ToolbarTool.SplitLink;
     public activate() {
+        NetworkStore.showMapLayer(MapLayer.node);
+        NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
         EventManager.on('networkNodeClick', this.confirmNode);
     }
+
     public deactivate() {
         EventManager.off('networkNodeClick', this.confirmNode);
     }
