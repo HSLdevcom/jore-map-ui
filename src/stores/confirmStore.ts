@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 
 export class ConfirmStore {
-    @observable private _content: string|null;
+    @observable private _content: React.ReactNode;
     private _onConfirm: null | (() => void);
     private _onCancel: null | (() => void);
 
@@ -21,7 +21,7 @@ export class ConfirmStore {
 
     @action
     public openConfirm = (
-        message: string,
+        message: React.ReactNode,
         onConfirm: () => void,
         onCancel?: () => void,
     ) => {

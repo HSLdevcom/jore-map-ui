@@ -3,7 +3,6 @@ enum ToolbarTool {
     AddNetworkLink,
     AddNewRoutePathLink,
     Copy,
-    DivideLink,
     RemoveRoutePathLink,
     EditNetworkNode,
     Print,
