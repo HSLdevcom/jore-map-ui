@@ -25,13 +25,13 @@ class Confirm extends React.Component<IDialogProps> {
                     <div className={s.buttons}>
                         <Button
                             type={ButtonType.SQUARE}
-                            onClick={this.props.confirmStore!.confirm}
+                            onClick={this.props.confirmStore!.cancel}
                         >
                             Peruuta
                         </Button>
                         <Button
                             type={ButtonType.SQUARE}
-                            onClick={this.props.confirmStore!.cancel}
+                            onClick={this.props.confirmStore!.confirm}
                         >
                             Hyväksy
                         </Button>

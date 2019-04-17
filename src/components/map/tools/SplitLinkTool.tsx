@@ -7,6 +7,9 @@ import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
 import NodeType from '~/enums/nodeType';
 import NodeHelper from '~/util/nodeHelper';
+import RouteBuilder from '~/routing/routeBuilder';
+import navigator from '~/routing/navigator';
+import SubSites from '~/routing/subSites';
 import BaseTool from './BaseTool';
 import * as s from './splitLinkTool.scss';
 
@@ -47,8 +50,16 @@ class SplitLinkTool implements BaseTool {
         </div>
     )
 
+    navigateToSplitLink = (nodeId: string) => {
+        const link = RouteBuilder.to(SubSites.splitLink)
+            .clear().toTarget(nodeId)
+            .toLink();
+        navigator.goTo(link);
+    }
+
     private confirmNode = async (clickEvent: CustomEvent) => {
         const nodeId = clickEvent.detail.nodeId;
+        // const link = LinkStore.link;
 
         const node = await NodeService.fetchNode(nodeId);
         if (!node) {
@@ -74,7 +85,11 @@ class SplitLinkTool implements BaseTool {
                 ],
             );
         }
-        ConfirmStore.openConfirm(confirmContent, () => {});
+        ConfirmStore.openConfirm(confirmContent, () => {
+            this.navigateToSplitLink(
+                nodeId,
+            );
+        });
     }
 }
 
