@@ -76,6 +76,11 @@ export class RoutePathStore {
         return this._listFilters;
     }
 
+    @computed
+    get extendedObjects() {
+        return this._extendedListItems;
+    }
+
     @action
     public setActiveTab = (tab: RoutePathViewTab) => {
         this._activeTab = tab;
@@ -105,20 +110,6 @@ export class RoutePathStore {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
             this._listFilters = this._listFilters.concat([listFilter]);
         }
-    }
-
-    public isMapItemHighlighted = (objectId: string) => {
-        return this._highlightedMapItem === objectId
-            || (!this._highlightedMapItem && this.isListItemExtended(objectId));
-    }
-
-    public isListItemExtended = (objectId: string) => {
-        return this._extendedListItems.some(n => n === objectId);
-    }
-
-    @computed
-    get extendedObjects() {
-        return this._extendedListItems;
     }
 
     @action
@@ -258,6 +249,15 @@ export class RoutePathStore {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
         this._geometryUndoStore.clear();
+    }
+
+    public isMapItemHighlighted = (objectId: string) => {
+        return this._highlightedMapItem === objectId
+            || (!this._highlightedMapItem && this.isListItemExtended(objectId));
+    }
+
+    public isListItemExtended = (objectId: string) => {
+        return this._extendedListItems.some(n => n === objectId);
     }
 
     public getCalculatedLength = () => {
