@@ -88,10 +88,15 @@ class ApiClient {
                 });
                 return;
             }
+            let message = response.statusText;
+            const errorContent = await response.text();
+            if (errorContent) {
+                message = errorContent;
+            }
             error = {
+                message,
                 name: 'Failed to fetch',
                 errorCode: response.status,
-                message: response.statusText,
             };
         } catch {
             error = {
