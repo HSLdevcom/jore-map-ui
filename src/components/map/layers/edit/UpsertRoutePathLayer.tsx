@@ -6,6 +6,7 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import INode from '~/models/INode';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
+import { RoutePathCopySeqmentStore } from '~/stores/routePathCopySeqmentStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -14,6 +15,7 @@ import NodeMarker from '../mapIcons/NodeMarker';
 import StartMarker from '../mapIcons/StartMarker';
 import ArrowDecorator from '../ArrowDecorator';
 import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
+import RoutePathCopySeqmentLayer from './routePathCopySeqmentLayer';
 
 const START_MARKER_COLOR = '#00df0b';
 const ROUTE_COLOR = '#000';
@@ -25,6 +27,7 @@ interface IEditRoutePathLayerNodeClickParams {
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
+    routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
 }
@@ -33,7 +36,7 @@ interface IRoutePathLayerState {
     focusedRoutePathId: string;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore')
+@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySeqmentStore')
 @observer
 class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     constructor(props: IRoutePathLayerProps) {
@@ -226,13 +229,19 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         if (!this.props.routePathStore!.routePath) return null;
 
         const neighborLinks = this.props.routePathStore!.neighborLinks;
-        return (
+        const isCopySeqmentLayerVisible =
+            this.props.routePathCopySeqmentStore!.startNode
+            || this.props.routePathCopySeqmentStore!.endNode;
+        return(
             <>
                 {this.renderRoutePathLinks()}
                 {this.renderLinkDecorator()}
                 {this.renderStartMarker()}
                 { neighborLinks &&
                     <RoutePathNeighborLinkLayer />
+                }
+                { isCopySeqmentLayerVisible &&
+                    <RoutePathCopySeqmentLayer />
                 }
             </>
         );

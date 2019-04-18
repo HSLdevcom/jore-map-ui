@@ -92,6 +92,18 @@ const getRoutePathLinkQuery = () => {
     );
 };
 
+const getRoutePathSeqmentQuery = () => {
+    return (
+        gql`query getRoutePathLinksFromRoutePath($startNodeId: String, $endNodeId: String) {
+            linkswithroutepathinfo: getRoutePathLinksFromRoutePath(startnodeid: $startNodeId, endnodeid: $endNodeId) {
+                nodes {
+                    ${routePathSeqmentQueryFields}
+                }
+            }
+        }`
+    );
+};
+
 const getLinksByStartNodeQuery = () => {
     return (
         gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
@@ -238,6 +250,17 @@ const routePathQueryFields = `
     suupaapaikr
     suupituus
     poikkeusreitti
+`;
+
+const routePathSeqmentQueryFields = `
+    reitunnus
+    suusuunta
+    suuvoimast
+    reljarjnro
+    lnkverkko
+    lnkalkusolmu
+    lnkloppusolmu
+    geom
 `;
 
 const stopQueryFields = `
@@ -436,11 +459,12 @@ export default {
     getLinksQuery,
     getRouteQuery,
     getRoutePathQuery,
+    getRoutePathLinkQuery,
+    getRoutePathSeqmentQuery,
     getLinksByStartNodeQuery,
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
     getAllNodesQuery,
-    getRoutePathLinkQuery,
     getLinksByEndNodeQuery,
     getAllCodeLists,
 };
