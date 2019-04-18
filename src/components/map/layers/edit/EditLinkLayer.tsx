@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { withLeaflet } from 'react-leaflet';
-import { matchPath } from 'react-router';
+// import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import EventManager from '~/util/EventManager';
 import { LoginStore } from '~/stores/loginStore';
-import navigator from '~/routing/navigator';
-import SubSites from '~/routing/subSites';
+// import navigator from '~/routing/navigator';
+// import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
@@ -160,8 +160,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     }
 
     render() {
-        const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
-        if (!isLinkViewVisible) return this.renderStartMarker();
+        // const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
+        // if (!isLinkViewVisible) return this.renderStartMarker();
 
         const link = this.props.linkStore!.link;
         if (!link || !link.geometry) {

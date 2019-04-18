@@ -5,6 +5,7 @@ import ConfirmStore from '~/stores/confirmStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
+import LinkStore from '~/stores/linkStore';
 import NodeType from '~/enums/nodeType';
 import NodeHelper from '~/util/nodeHelper';
 import RouteBuilder from '~/routing/routeBuilder';
@@ -51,10 +52,17 @@ class SplitLinkTool implements BaseTool {
     )
 
     navigateToSplitLink = (nodeId: string) => {
-        const link = RouteBuilder.to(SubSites.splitLink)
-            .clear().toTarget(nodeId)
+        const link = LinkStore.link;
+        if (!link) throw 'Unable to access which link should be splitted';
+        const url = RouteBuilder.to(SubSites.splitLink)
+            .clear().toTarget([
+                link.startNode.id,
+                link.endNode.id,
+                link.transitType,
+                nodeId,
+            ].join(','))
             .toLink();
-        navigator.goTo(link);
+        navigator.goTo(url);
     }
 
     private confirmNode = async (clickEvent: CustomEvent) => {
