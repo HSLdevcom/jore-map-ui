@@ -102,6 +102,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             if (startNodeId && endNodeId && transitTypeCode) {
                 const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
                 this.props.linkStore!.init(link, [link.startNode, link.endNode]);
+                this.props.linkStore!.setIsLinkGeometryEditable(true);
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
             }

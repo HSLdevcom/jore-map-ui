@@ -65,7 +65,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         if (!map) return;
 
         this.removeOldLinks();
-        this.drawEditableLinkToMap(link);
+        const isEditable =
+            this.props.loginStore!.hasWriteAccess
+            && this.props.linkStore!.isLinkGeometryEditable;
+        this.drawLinkToMap(link, isEditable);
 
         map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
@@ -83,7 +86,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         this.props.linkStore!.updateLinkGeometry(latlngs);
     }
 
-    private drawEditableLinkToMap = (link: ILink) => {
+    private drawLinkToMap = (link: ILink, isEditable: boolean) => {
         const map = this.props.leaflet.map;
         if (map) {
             const editableLink = L.polyline(
@@ -94,7 +97,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 },
             ).addTo(map);
 
-            if (this.props.loginStore!.hasWriteAccess) {
+            if (isEditable) {
                 editableLink.enableEdit();
                 const latLngs = editableLink.getLatLngs() as L.LatLng[][];
                 const coords = latLngs[0];
@@ -160,6 +163,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     }
 
     render() {
+        // TODO: fix this in some smarter way
         // const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
         // if (!isLinkViewVisible) return this.renderStartMarker();
 
