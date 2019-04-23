@@ -1,0 +1,18 @@
+@import '../../../shared/styles/common';
+
+.popupContent {
+    max-height: 250px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    font-size: $mediumFontSize;
+
+    .routePathList {
+        font-size: $smallFontSize;
+    }
+}
+
+.topic {
+    font-weight: bold;
+    font-size: $mediumFontSize;
+}

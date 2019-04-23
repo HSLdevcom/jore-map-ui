@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
-import { CopySeqmentRoutePath } from '~/stores/routePathCopySeqmentStore';
+import { ICopySeqmentRoutePath } from '~/stores/routePathCopySeqmentStore';
 import RoutePathCopySeqmentFactory from '~/factories/routePathCopySeqmentFactory';
 import GraphqlQueries from './graphqlQueries';
 
@@ -8,7 +8,7 @@ class RoutePathSeqmentService {
     public static fetchRoutePathLinkSeqment = async (
         startNodeId: string,
         endNodeId: string,
-    ): Promise<CopySeqmentRoutePath[]> => {
+    ): Promise<ICopySeqmentRoutePath[]> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query(
             { query:
                 GraphqlQueries.getRoutePathSeqmentQuery(),

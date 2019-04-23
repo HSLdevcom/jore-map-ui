@@ -14,12 +14,6 @@ import NodeHelper from '~/util/nodeHelper';
 import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
 
-// The logic of Z Indexes is not very logical.
-// Setting z-index to 2, if other items is 1 wont force it to be on top.
-// Setting z-index to a very high number will however most likely set the item on top.
-// https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
-export const VERY_HIGH_Z_INDEX = 1000;
-
 // TODO: move to utils?
 export const createDivIcon = (html: any) => {
     const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
