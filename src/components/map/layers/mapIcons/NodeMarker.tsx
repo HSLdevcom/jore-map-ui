@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOMServer from 'react-dom/server';
 import { Marker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import _ from 'lodash';
@@ -11,19 +10,9 @@ import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
+import LeafletUtils from '~/util/leafletUtils';
 import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
-
-// TODO: move to utils?
-export const createDivIcon = (html: any) => {
-    const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
-    const divIconOptions : L.DivIconOptions = {
-        html: renderedHtml,
-        className: s.node,
-    };
-
-    return new L.DivIcon(divIconOptions);
-};
 
 interface INodeMarkerProps {
     mapStore?: MapStore;
@@ -164,11 +153,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
             <>
                 <Marker
                     position={node.coordinatesManual}
-                    icon={createDivIcon(
+                    icon={LeafletUtils.createDivIcon(
                         <div
                             className={
                                 classnames(s.manual, ...this.getMarkerClasses())}
                         />,
+                        s.node,
                     )}
                     draggable={this.isInteractive()}
                     onDragEnd={this.props.onMoveMarker
@@ -176,11 +166,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 />
                 <Marker
                     position={node.coordinatesProjection}
-                    icon={createDivIcon(
+                    icon={LeafletUtils.createDivIcon(
                         <div
                             className={
                                 classnames(s.projection, ...this.getMarkerClasses())}
                         />,
+                        s.node,
                     )}
                     draggable={this.isInteractive()}
                     onDragEnd={this.props.onMoveMarker
@@ -205,7 +196,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     render() {
-        const icon = createDivIcon(
+        const icon = LeafletUtils.createDivIcon(
             <div
                 className={classnames(...this.getMarkerClasses())}
                 style={{
@@ -216,6 +207,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 {this.props.children}
                 {this.renderMarkerLabel()}
             </div>,
+            s.node,
         );
 
         return (

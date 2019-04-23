@@ -7,7 +7,7 @@ import ApiClient, { RequestMethod } from '~/util/ApiClient';
 import EventManager from '~/util/EventManager';
 import PinIcon from '~/icons/PinIcon';
 import constants from '~/constants/constants';
-import { createDivIcon } from './layers/mapIcons/NodeMarker';
+import LeafletUtils from '~/util/leafletUtils';
 import * as s from './addressSearch.scss';
 
 interface IAddressSearchProps {
@@ -80,7 +80,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             searchIndex: -1,
         });
         this.map.setView(latLng, this.map.getZoom());
-        const marker = createDivIcon(<PinIcon color={SEARCH_RESULT_MARKER_COLOR}/>);
+        const marker = LeafletUtils.createDivIcon(<PinIcon color={SEARCH_RESULT_MARKER_COLOR}/>);
         this.searchResultMarker = L.marker(latLng, { icon: marker }).addTo(this.map);
     }
 
