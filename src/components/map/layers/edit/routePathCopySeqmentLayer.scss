@@ -9,6 +9,44 @@
 
     .routePathList {
         font-size: $smallFontSize;
+
+        .routePathRow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px;
+            font-size: 15px;
+
+            .icons {
+                display: flex;
+
+                .icon {
+                    position: relative;
+                    color: #007ac9;
+                    font-size: 1.5rem;
+                    line-height: 1.5rem;
+                    cursor: pointer;
+                    border-width: 1px;
+                    border-style: solid;
+                    border-color: #e2e2e2;
+                    padding: 3px;
+                    transition: 0.5s;
+                    height: 24px;
+                    margin: 2px;
+                }
+            }
+        }
+        .routePathRow:nth-child(even) {
+            background-color: #fafafa;
+        }
+        .routePathRow:hover {
+            background-color: $backgroundlightGrey;
+        }
+    }
+
+    .loaderContainer {
+        margin: 10px auto;
+        height: 100%;
     }
 }
 

@@ -22,14 +22,21 @@ interface ICopySeqmentRoutePath extends IRoutePathPrimaryKey {
 }
 
 class RoutePathCopySeqmentStore {
+    @observable private _isLoading: boolean;
     @observable private _startNode: ICopySeqmentNode|null;
     @observable private _endNode: ICopySeqmentNode|null;
     @observable private _routePaths: ICopySeqmentRoutePath[];
 
     constructor() {
+        this._isLoading = true;
         this._startNode = null;
         this._endNode = null;
         this._routePaths = [];
+    }
+
+    @computed
+    get isLoading(): boolean {
+        return this._isLoading;
     }
 
     @computed
@@ -45,6 +52,11 @@ class RoutePathCopySeqmentStore {
     @computed
     get routePaths(): ICopySeqmentRoutePath[] {
         return this._routePaths;
+    }
+
+    @action
+    public setIsLoading = (isLoading: boolean) => {
+        this._isLoading = isLoading;
     }
 
     @action

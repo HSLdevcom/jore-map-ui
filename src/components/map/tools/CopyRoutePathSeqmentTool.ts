@@ -26,16 +26,27 @@ class CopyRoutePathSeqmentTool implements BaseTool {
         const params: NetworkNodeClickParams = clickEvent.detail;
         const node = await NodeService.fetchNode(params.nodeId);
         RoutePathCopySeqmentStore.setEndNode(node);
-        const startNodeId = RoutePathCopySeqmentStore.startNode!.nodeId;
-        const routePaths =
-            await RoutePathSeqmentService.fetchRoutePathLinkSeqment(startNodeId, node.id);
-        RoutePathCopySeqmentStore.setRoutePaths(routePaths);
+
+        this.fetchRoutePathLinkSeqment();
     }
 
     private selectStartNode = async (clickEvent: CustomEvent) => {
         const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
-
         RoutePathCopySeqmentStore.setStartNode(params.node);
+
+        this.fetchRoutePathLinkSeqment();
+    }
+
+    private fetchRoutePathLinkSeqment = async () => {
+        const startNode = RoutePathCopySeqmentStore.startNode;
+        const endNode = RoutePathCopySeqmentStore.endNode;
+        if (!startNode || !endNode) return;
+
+        RoutePathCopySeqmentStore.setIsLoading(true);
+        const routePaths = await RoutePathSeqmentService
+            .fetchRoutePathLinkSeqment(startNode.nodeId, endNode.nodeId);
+        RoutePathCopySeqmentStore.setRoutePaths(routePaths);
+        RoutePathCopySeqmentStore.setIsLoading(false);
     }
 }
 
