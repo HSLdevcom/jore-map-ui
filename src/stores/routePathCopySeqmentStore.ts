@@ -26,12 +26,14 @@ class RoutePathCopySeqmentStore {
     @observable private _startNode: ICopySeqmentNode|null;
     @observable private _endNode: ICopySeqmentNode|null;
     @observable private _routePaths: ICopySeqmentRoutePath[];
+    @observable private _highlightedRoutePath: ICopySeqmentRoutePath|null;
 
     constructor() {
         this._isLoading = true;
         this._startNode = null;
         this._endNode = null;
         this._routePaths = [];
+        this._highlightedRoutePath = null;
     }
 
     @computed
@@ -52,6 +54,11 @@ class RoutePathCopySeqmentStore {
     @computed
     get routePaths(): ICopySeqmentRoutePath[] {
         return this._routePaths;
+    }
+
+    @computed
+    get highlightedRoutePath(): ICopySeqmentRoutePath|null {
+        return this._highlightedRoutePath;
     }
 
     @action
@@ -81,10 +88,51 @@ class RoutePathCopySeqmentStore {
     }
 
     @action
+    public setHighlightedRoutePath = (highlightedRoutePath: ICopySeqmentRoutePath|null) => {
+        this._highlightedRoutePath = highlightedRoutePath;
+    }
+
+    @action
     public clear = () => {
         this._endNode = null;
         this._startNode = null;
         this._routePaths = [];
+    }
+
+    public getLinksToCopy = (
+        routePath: ICopySeqmentRoutePath, startNodeId: string, endNodeId: string,
+    ) => {
+        const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);
+        const endLinkOrderNumber = this._getEndLinkOrderNumber(routePath.links, endNodeId);
+
+        return routePath.links.filter((link: ICopySeqmentLink) => {
+            return link.orderNumber >= startLinkOrderNumber
+                && link.orderNumber <= endLinkOrderNumber;
+        });
+    }
+
+    public getLinksNotToCopy = (
+        routePath: ICopySeqmentRoutePath, startNodeId: string, endNodeId: string,
+    ) => {
+        const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);
+        const endLinkOrderNumber = this._getEndLinkOrderNumber(routePath.links, endNodeId);
+
+        return routePath.links.filter((link: ICopySeqmentLink) => {
+            return link.orderNumber < startLinkOrderNumber
+                || link.orderNumber > endLinkOrderNumber;
+        });
+    }
+
+    private _getStartLinkOrderNumber = (links: ICopySeqmentLink[], startNodeId: string) => {
+        return links
+            .find((link: ICopySeqmentLink) => link.startNodeId === startNodeId)!
+            .orderNumber;
+    }
+
+    private _getEndLinkOrderNumber = (links: ICopySeqmentLink[], endNodeId: string) => {
+        return links
+            .find((link: ICopySeqmentLink) => link.endNodeId === endNodeId)!
+            .orderNumber;
     }
 }
 

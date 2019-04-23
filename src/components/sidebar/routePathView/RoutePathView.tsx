@@ -8,19 +8,20 @@ import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { RoutePathStore, RoutePathViewTab, ListFilter } from '~/stores/routePathStore';
-import navigator from '~/routing/navigator';
+import { RoutePathCopySeqmentStore } from '~/stores/routePathCopySeqmentStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
+import { DialogStore } from '~/stores/dialogStore';
+import { ErrorStore } from '~/stores/errorStore';
+import navigator from '~/routing/navigator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
-import { DialogStore } from '~/stores/dialogStore';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import SubSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
-import { ErrorStore } from '~/stores/errorStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
 import { validateRoutePathLinks } from '~/util/geomValidator';
@@ -30,13 +31,15 @@ import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
 import RoutePathHeader from './RoutePathHeader';
 import * as s from './routePathView.scss';
+import RoutePathCopySeqmentView from './RoutePathCopySeqmentView';
 
 interface IRoutePathViewProps {
-    errorStore?: ErrorStore;
-    dialogStore?: DialogStore;
     routePathStore?: RoutePathStore;
+    routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
+    errorStore?: ErrorStore;
+    dialogStore?: DialogStore;
     match?: match<any>;
     isNewRoutePath: boolean;
 }
@@ -47,7 +50,13 @@ interface IRoutePathViewState {
     isEditingDisabled: boolean;
 }
 
-@inject('routePathStore', 'networkStore', 'toolbarStore', 'errorStore', 'dialogStore')
+@inject(
+    'routePathStore',
+    'routePathCopySeqmentStore',
+    'networkStore',
+    'toolbarStore',
+    'errorStore',
+    'dialogStore')
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
@@ -254,6 +263,11 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             || !isGeometryValid
             || !this.isFormValid();
 
+        const copySeqmentStore = this.props.routePathCopySeqmentStore;
+        const isCopyRoutePathSeqmentViewVisible =
+           copySeqmentStore!.startNode
+        && copySeqmentStore!.endNode;
+
         return (
             <div className={s.routePathView}>
                 <RoutePathHeader
@@ -263,17 +277,23 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                     isEditing={!this.state.isEditingDisabled}
                     onEditButtonClick={this.toggleIsEditing}
                 />
-                <div>
-                    <RoutePathTabs />
-                </div>
-                {this.renderTabContent()}
-                <Button
-                    onClick={this.save}
-                    type={ButtonType.SAVE}
-                    disabled={isSaveButtonDisabled}
-                >
-                    {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-                </Button>
+                { isCopyRoutePathSeqmentViewVisible ? (
+                    <RoutePathCopySeqmentView />
+                ) : (
+                    <>
+                        <div>
+                            <RoutePathTabs />
+                        </div>
+                            {this.renderTabContent()}
+                        <Button
+                            onClick={this.save}
+                            type={ButtonType.SAVE}
+                            disabled={isSaveButtonDisabled}
+                        >
+                            {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
+                        </Button>
+                    </>
+                )}
             </div>
         );
     }
