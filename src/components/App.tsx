@@ -38,22 +38,26 @@ interface IAppProps extends RouteComponentProps<any> {
 @observer
 class App extends React.Component<IAppProps, IAppState> {
 
-    private renderApp = observer(() => (
-        <>
-            <NavigationBar />
-            <div className={s.appContent}>
-                <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
-                    <Sidebar
-                        location={this.props.location}
-                    />
+    private renderApp = observer(() => {
+        this.initCodeLists();
+
+        return (
+            <>
+                <NavigationBar />
+                <div className={s.appContent}>
+                    <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
+                        <Sidebar
+                            location={this.props.location}
+                        />
+                    </div>
+                    <Map>
+                        <ErrorBar />
+                    </Map>
                 </div>
-                <Map>
-                    <ErrorBar />
-                </Map>
-            </div>
-            <Dialog />
-        </>
-    ));
+                <Dialog />
+            </>
+        );
+    });
 
     constructor(props: IAppProps) {
         super(props);
@@ -64,7 +68,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     componentWillMount() {
-        this.redirectToLogin();
+        this.init();
     }
 
     private initCodeLists = async () => {
@@ -76,21 +80,22 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
-    private redirectToLogin = async () => {
+    private init = async () => {
         const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
         if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
-            const response = (await ApiClient
-                .getRequest(endpoints.EXISTING_SESSION) as IAuthorizationResponse);
+            const response = await ApiClient
+                .getRequest(endpoints.EXISTING_SESSION) as IAuthorizationResponse;
             if (response.isOk) {
                 // Auth was ok, keep the current site as it is
                 this.props.loginStore!.setAuthenticationInfo(response);
-                this.initCodeLists();
+
             } else {
                 // Redirect to login
                 localStorageHelper.setItem('origin_url', navigator.getFullPath());
                 navigator.goTo(SubSites.login);
             }
         }
+
         this.setState({
             isLoginInProgress: false,
         });
