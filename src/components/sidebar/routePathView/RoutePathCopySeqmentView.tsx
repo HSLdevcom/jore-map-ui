@@ -106,7 +106,7 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
         return (
             <div className={s.routePathCopySeqmentView}>
                 <div className={s.topic}>
-                    Kopioitavat reitinsuunnat
+                    Kopioitavat reitinsuuntasegmentit
                 </div>
                 { isLoading ? (
                     <div className={s.loaderContainer}>
