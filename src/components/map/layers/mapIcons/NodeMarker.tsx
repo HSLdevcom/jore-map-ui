@@ -208,6 +208,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 {this.renderMarkerLabel()}
             </div>,
             s.node,
+            -15,
         );
 
         return (
