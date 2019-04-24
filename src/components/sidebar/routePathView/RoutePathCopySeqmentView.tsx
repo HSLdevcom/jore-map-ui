@@ -9,16 +9,18 @@ import SubSites from '~/routing/subSites';
 import {
     RoutePathCopySeqmentStore, ICopySeqmentRoutePath,
 } from '~/stores/routePathCopySeqmentStore';
-import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
+import { IRoutePathLink } from '~/models';
 import * as s from './routePathCopySeqmentView.scss';
 
 interface IRoutePathCopySeqmentViewProps {
     routePathStore?: RoutePathStore;
     routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
+    toolbarStore?: ToolbarStore;
 }
 
-@inject('routePathStore', 'routePathCopySeqmentStore')
+@inject('routePathStore', 'routePathCopySeqmentStore', 'toolbarStore')
 @observer
 class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentViewProps> {
 
@@ -67,15 +69,16 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
         );
     }
 
-    private copySeqments = (routePath: ICopySeqmentRoutePath) => () => {
+    private copySeqments = (routePath: ICopySeqmentRoutePath) => async () => {
         const copySeqmentStore = this.props.routePathCopySeqmentStore;
         const startNodeId = copySeqmentStore!.startNode!.nodeId;
         const endNodeId = copySeqmentStore!.endNode!.nodeId;
         const seqmentsToCopy = copySeqmentStore!.getLinksToCopy(routePath, startNodeId, endNodeId);
 
         for (let i = 0; i < seqmentsToCopy.length; i += 1) {
-            this.copySeqment(seqmentsToCopy[i].routePathLinkId);
+            await this.copySeqment(seqmentsToCopy[i].routePathLinkId);
         }
+        this.props.toolbarStore!.selectTool(null);
     }
 
     private copySeqment = async (routePathLinkId: number) => {
