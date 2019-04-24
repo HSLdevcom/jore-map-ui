@@ -14,10 +14,14 @@ interface ICopySeqmentLink {
     startNodeId: string;
     endNodeId: string;
     orderNumber: number;
+    routePathLinkId: number;
 }
 
 interface ICopySeqmentRoutePath extends IRoutePathPrimaryKey {
     transitType: TransitType;
+    endTime: Date;
+    originFi: string;
+    destinationFi: string;
     links: ICopySeqmentLink[];
 }
 

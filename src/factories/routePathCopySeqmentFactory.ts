@@ -6,10 +6,14 @@ interface IExternalLinkWithRoutePathInfo {
     reitunnus: string;
     suusuunta: string;
     suuvoimast: Date;
+    relid: number;
     reljarjnro: number;
     lnkverkko: TransitType;
     lnkalkusolmu: string;
     lnkloppusolmu: string;
+    suuvoimviimpvm: Date;
+    suulahpaik: string;
+    suupaapaik: string;
     geom: string;
 }
 
@@ -26,6 +30,7 @@ class RoutePathCopySeqmentFactory {
                 startNodeId: externalLink.lnkalkusolmu,
                 endNodeId: externalLink.lnkloppusolmu,
                 orderNumber: externalLink.reljarjnro,
+                routePathLinkId: externalLink.relid,
             };
 
             const oldRoutePath = routePaths.find(routePath =>
@@ -39,6 +44,9 @@ class RoutePathCopySeqmentFactory {
                     direction: externalLink.suusuunta,
                     startTime: externalLink.suuvoimast,
                     transitType: externalLink.lnkverkko,
+                    endTime: externalLink.suuvoimviimpvm,
+                    originFi: externalLink.suulahpaik,
+                    destinationFi: externalLink.suupaapaik,
                     links: [link],
                 };
                 routePaths.push(newRoutePath);

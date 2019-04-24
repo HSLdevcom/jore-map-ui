@@ -256,10 +256,14 @@ const routePathSeqmentQueryFields = `
     reitunnus
     suusuunta
     suuvoimast
+    relid
     reljarjnro
     lnkverkko
     lnkalkusolmu
     lnkloppusolmu
+    suuvoimviimpvm
+    suulahpaik
+    suupaapaik
     geom
 `;
 

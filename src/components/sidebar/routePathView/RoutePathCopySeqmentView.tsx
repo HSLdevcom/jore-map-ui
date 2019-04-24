@@ -1,20 +1,24 @@
 import React from 'react';
-import {
-    RoutePathCopySeqmentStore, ICopySeqmentRoutePath,
-} from '~/stores/routePathCopySeqmentStore';
 import { inject, observer } from 'mobx-react';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { FiCopy, FiExternalLink } from 'react-icons/fi';
 import Moment from 'moment';
+import RoutePathLinkService from '~/services/routePathLinkService';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import {
+    RoutePathCopySeqmentStore, ICopySeqmentRoutePath,
+} from '~/stores/routePathCopySeqmentStore';
+import { IRoutePathLink } from '~/models';
+import { RoutePathStore } from '~/stores/routePathStore';
 import * as s from './routePathCopySeqmentView.scss';
 
 interface IRoutePathCopySeqmentViewProps {
+    routePathStore?: RoutePathStore;
     routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
 }
 
-@inject('routePathCopySeqmentStore')
+@inject('routePathStore', 'routePathCopySeqmentStore')
 @observer
 class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentViewProps> {
 
@@ -26,12 +30,12 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
                 onMouseEnter={this.setHighlightedRoutePath(routePath)}
                 onMouseLeave={this.setHighlightedRoutePath(null)}
             >
-                {routePath.routeId}
+                {this.renderTextRow(routePath)}
                 <div className={s.icons}>
                     <div
                         className={s.icon}
                         title={`Kopioi reitin ${routePath.routeId} reitin suunnan segmentti`}
-                        onClick={this.copySeqment(routePath)}
+                        onClick={this.copySeqments(routePath)}
                     >
                         <FiCopy />
                     </div>
@@ -51,12 +55,35 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
         this.props.routePathCopySeqmentStore!.setHighlightedRoutePath(routePath);
     }
 
-    private copySeqment = (routePath: ICopySeqmentRoutePath) => () => {
+    private renderTextRow = (routePath: ICopySeqmentRoutePath) => {
+        return (
+            <div>
+                <div>{routePath.routeId} {routePath.originFi} - {routePath.destinationFi}</div>
+                <div className={s.timestampRow}>
+                    {Moment(routePath.startTime).format('DD.MM.YYYY')} -{' '}
+                    {Moment(routePath.endTime).format('DD.MM.YYYY')}
+                </div>
+            </div>
+        );
+    }
+
+    private copySeqments = (routePath: ICopySeqmentRoutePath) => () => {
         const copySeqmentStore = this.props.routePathCopySeqmentStore;
         const startNodeId = copySeqmentStore!.startNode!.nodeId;
         const endNodeId = copySeqmentStore!.endNode!.nodeId;
         const seqmentsToCopy = copySeqmentStore!.getLinksToCopy(routePath, startNodeId, endNodeId);
         console.log('seqmentsToCopy ', seqmentsToCopy);
+
+        for (let i = 0; i < seqmentsToCopy.length; i += 1) {
+            this.copySeqment(seqmentsToCopy[i].routePathLinkId);
+        }
+    }
+
+    private copySeqment = async (routePathLinkId: number) => {
+        const routePathLink: IRoutePathLink = await RoutePathLinkService
+            .fetchRoutePathLink(routePathLinkId);
+        console.log(routePathLink);
+        this.props.routePathStore!.addLink(routePathLink);
     }
 
     private openRoutePathInNewTab = (routePath: ICopySeqmentRoutePath) => () => {
