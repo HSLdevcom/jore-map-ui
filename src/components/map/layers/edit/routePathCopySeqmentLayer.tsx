@@ -22,12 +22,14 @@ class RoutePathCopySeqmentLayer extends Component<IRoutePathCopySeqmentLayerProp
 
     private renderHighlightedRoutePath = () => {
         const copySeqmentStore = this.props.routePathCopySeqmentStore;
+        const startNode = copySeqmentStore!.startNode;
+        const endNode = copySeqmentStore!.endNode;
 
         const highlightedRoutePath = copySeqmentStore!.highlightedRoutePath;
-        if (!highlightedRoutePath) return null;
+        if (!highlightedRoutePath || !startNode || !endNode) return null;
 
-        const startNodeId = copySeqmentStore!.startNode!.nodeId;
-        const endNodeId = copySeqmentStore!.endNode!.nodeId;
+        const startNodeId = startNode.nodeId;
+        const endNodeId = endNode.nodeId;
         const seqmentsToCopy = copySeqmentStore!
             .getLinksToCopy(highlightedRoutePath, startNodeId, endNodeId);
         const seqmentsNotToCopy = copySeqmentStore!
