@@ -67,10 +67,6 @@ class App extends React.Component<IAppProps, IAppState> {
         this.redirectToLogin();
     }
 
-    componentDidMount() {
-        this.initCodeLists();
-    }
-
     private initCodeLists = async () => {
         try {
             const codeLists = await CodeListService.fetchAllCodeLists();
@@ -88,6 +84,7 @@ class App extends React.Component<IAppProps, IAppState> {
             if (response.isOk) {
                 // Auth was ok, keep the current site as it is
                 this.props.loginStore!.setAuthenticationInfo(response);
+                this.initCodeLists();
             } else {
                 // Redirect to login
                 localStorageHelper.setItem('origin_url', navigator.getFullPath());
