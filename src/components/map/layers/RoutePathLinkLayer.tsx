@@ -7,8 +7,8 @@ import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
-import NodeMarker from './mapIcons/NodeMarker';
-import Marker from './mapIcons/Marker';
+import NodeMarker from './markers/NodeMarker';
+import Marker from './markers/Marker';
 import ArrowDecorator from './ArrowDecorator';
 
 interface RoutePathLinkLayerProps {

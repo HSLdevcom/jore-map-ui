@@ -5,7 +5,7 @@ import {
     RoutePathCopySeqmentStore,
     ICopySeqmentLink,
 } from '~/stores/routePathCopySeqmentStore';
-import Marker from '../mapIcons/Marker';
+import Marker from '../markers/Marker';
 
 interface IRoutePathCopySeqmentLayerProps {
     routePathCopySeqmentStore?: RoutePathCopySeqmentStore;

@@ -12,8 +12,8 @@ import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
-import NodeMarker from '../mapIcons/NodeMarker';
-import Marker from '../mapIcons/Marker';
+import NodeMarker from '../markers/NodeMarker';
+import Marker from '../markers/Marker';
 import { LeafletContext } from '../../Map';
 import ArrowDecorator from '../ArrowDecorator';
 
