@@ -5,7 +5,7 @@ import {
     RoutePathCopySeqmentStore,
     ICopySeqmentLink,
 } from '~/stores/routePathCopySeqmentStore';
-import StartMarker from '../mapIcons/StartMarker';
+import Marker from '../mapIcons/Marker';
 
 interface IRoutePathCopySeqmentLayerProps {
     routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
@@ -59,13 +59,13 @@ class RoutePathCopySeqmentLayer extends Component<IRoutePathCopySeqmentLayerProp
         return (
             <>
                 { startNode &&
-                    <StartMarker
+                    <Marker
                         latLng={startNode!.geometry}
                         color={START_MARKER_COLOR}
                     />
                 }
                 { endNode &&
-                    <StartMarker
+                    <Marker
                         latLng={endNode!.geometry}
                         color={END_MARKER_COLOR}
                     />

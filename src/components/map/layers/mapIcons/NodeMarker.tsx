@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Marker, Circle } from 'react-leaflet';
+import { Marker as LeafletMarker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { observer, inject } from 'mobx-react';
@@ -49,7 +49,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     constructor(props: INodeMarkerProps) {
         super(props);
-        this.markerRef = React.createRef<Marker>();
+        this.markerRef = React.createRef<LeafletMarker>();
     }
 
     componentDidMount() {
@@ -151,7 +151,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private renderAdditionalLocations = (node: INode) => {
         return (
             <>
-                <Marker
+                <LeafletMarker
                     position={node.coordinatesManual}
                     icon={LeafletUtils.createDivIcon(
                         <div
@@ -164,7 +164,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     onDragEnd={this.props.onMoveMarker
                     && this.onMoveMarker('coordinatesManual')}
                 />
-                <Marker
+                <LeafletMarker
                     position={node.coordinatesProjection}
                     icon={LeafletUtils.createDivIcon(
                         <div
@@ -212,7 +212,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
         return (
             <>
-                <Marker
+                <LeafletMarker
                     ref={this.markerRef}
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.onMarkerClick}
@@ -223,7 +223,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     && this.onMoveMarker('coordinates')}
                 >
                     {this.renderStopRadiusCircle()}
-                </Marker>
+                </LeafletMarker>
                 {
                     (
                         this.props.isSelected &&

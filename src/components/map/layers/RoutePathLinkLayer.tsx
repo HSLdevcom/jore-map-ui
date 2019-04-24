@@ -8,7 +8,7 @@ import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import NodeMarker from './mapIcons/NodeMarker';
-import StartMarker from './mapIcons/StartMarker';
+import Marker from './mapIcons/Marker';
 import ArrowDecorator from './ArrowDecorator';
 
 interface RoutePathLinkLayerProps {
@@ -89,12 +89,12 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         return nodes;
     }
 
-    private renderStartMarker() {
+    private renderMarker() {
         const color = this.props.color;
         const routePathLinks = this.props.routePathLinks;
         if (routePathLinks!.length === 0) return;
         return (
-            <StartMarker
+            <Marker
                 latLng={routePathLinks![0].startNode.coordinates}
                 color={color}
             />
@@ -134,7 +134,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 >
                     {this.renderRoutePathLinks()}
                     {this.renderNodes()}
-                    {this.renderStartMarker()}
+                    {this.renderMarker()}
                 </FeatureGroup>
                 <FeatureGroup>
                     {this.renderDirectionDecoration()}

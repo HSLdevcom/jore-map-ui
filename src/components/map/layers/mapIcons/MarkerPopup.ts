@@ -50,7 +50,6 @@ class MarkerPopup {
                     {
                         showOnMouseOver: true,
                         closeButton: false,
-                        offset: [0, -10],
                     }]);
 
             // Remove default listener that opens popup on click

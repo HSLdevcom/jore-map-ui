@@ -12,7 +12,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
 import NodeMarker from '../mapIcons/NodeMarker';
-import StartMarker from '../mapIcons/StartMarker';
+import Marker from '../mapIcons/Marker';
 import ArrowDecorator from '../ArrowDecorator';
 import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
 import RoutePathCopySeqmentLayer from './routePathCopySeqmentLayer';
@@ -189,7 +189,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         }
     }
 
-    private renderStartMarker = () => {
+    private renderMarker = () => {
         if (this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)) {
             // Hiding start marker if we set target node adding new links.
             // Due to the UI otherwise getting messy
@@ -202,7 +202,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         }
 
         return (
-            <StartMarker
+            <Marker
                 latLng={routePathLinks![0].startNode.coordinates}
                 color={START_MARKER_COLOR}
             />
@@ -236,7 +236,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             <>
                 {this.renderRoutePathLinks()}
                 {this.renderLinkDecorator()}
-                {this.renderStartMarker()}
+                {this.renderMarker()}
                 { neighborLinks &&
                     <RoutePathNeighborLinkLayer />
                 }

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import * as L from 'leaflet';
-import { Marker, Popup } from 'react-leaflet';
+import { Marker as LeafletMarker } from 'react-leaflet';
 import PinIcon from '~/icons/PinIcon';
 import LeafletUtils from '~/util/leafletUtils';
-import * as s from './startMarker.scss';
+import * as s from './marker.scss';
 
-interface IStartMarkerProps {
+interface IMarkerProps {
     latLng: L.LatLng;
     color: string;
     popupContent?: any;
@@ -17,7 +17,7 @@ interface IStartMarkerProps {
 // https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
 const VERY_HIGH_Z_INDEX = 1000;
 
-class StartMarker extends Component<IStartMarkerProps> {
+class Marker extends Component<IMarkerProps> {
     private markerRef: any;
 
     componentDidUpdate() {
@@ -38,15 +38,16 @@ class StartMarker extends Component<IStartMarkerProps> {
     }
 
     render() {
-        const { latLng, color, popupContent }: IStartMarkerProps = this.props;
+        const { latLng, color }: IMarkerProps = this.props;
         return (
-            <Marker
+            <LeafletMarker
                 ref={this.initMarkerRef}
                 zIndexOffset={VERY_HIGH_Z_INDEX}
-                icon={LeafletUtils.createDivIcon(<PinIcon color={color}/>, s.startMarker)}
+                icon={LeafletUtils.createDivIcon(<PinIcon color={color}/>, s.markerBase)}
                 position={latLng}
             >
-            { popupContent &&
+            {/* working react-leaflet popup, not currently in use
+                { popupContent &&
                 <Popup
                     position={latLng}
                     closeButton={false}
@@ -54,11 +55,11 @@ class StartMarker extends Component<IStartMarkerProps> {
                 >
                     {popupContent}
                 </Popup>
-            }
-            </Marker>
+            } */}
+            </LeafletMarker>
 
         );
     }
 }
 
-export default StartMarker;
+export default Marker;
