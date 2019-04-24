@@ -72,7 +72,6 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
         const startNodeId = copySeqmentStore!.startNode!.nodeId;
         const endNodeId = copySeqmentStore!.endNode!.nodeId;
         const seqmentsToCopy = copySeqmentStore!.getLinksToCopy(routePath, startNodeId, endNodeId);
-        console.log('seqmentsToCopy ', seqmentsToCopy);
 
         for (let i = 0; i < seqmentsToCopy.length; i += 1) {
             this.copySeqment(seqmentsToCopy[i].routePathLinkId);
@@ -82,7 +81,6 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
     private copySeqment = async (routePathLinkId: number) => {
         const routePathLink: IRoutePathLink = await RoutePathLinkService
             .fetchRoutePathLink(routePathLinkId);
-        console.log(routePathLink);
         this.props.routePathStore!.addLink(routePathLink);
     }
 
@@ -115,8 +113,8 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
                     <div className={s.routePathList}>
                         { routePaths.length === 0 ? (
                             <div className={s.noResultsContainer}>
-                                Kopioitavia reitinsuunnan segmenttejä valitulta väliltä ei
-                                löytynyt. Kokeile asettaa pienempi kopioitava väli.
+                                Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta väliltä.
+                                Kokeile asettaa pienempi kopioitava väli.
                             </div>
                         ) : (
                             <>

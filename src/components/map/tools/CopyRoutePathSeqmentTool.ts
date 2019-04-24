@@ -2,6 +2,7 @@ import EventManager from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySeqmentStore from '~/stores/routePathCopySeqmentStore';
+import RoutePathStore from '~/stores/routePathStore';
 import NodeService from '~/services/nodeService';
 import RoutePathSeqmentService from '~/services/routePathSeqmentService';
 import BaseTool from './BaseTool';
@@ -43,8 +44,11 @@ class CopyRoutePathSeqmentTool implements BaseTool {
         if (!startNode || !endNode) return;
 
         RoutePathCopySeqmentStore.setIsLoading(true);
+
+        const transitType = RoutePathStore.routePath!.transitType;
+
         const routePaths = await RoutePathSeqmentService
-            .fetchRoutePathLinkSeqment(startNode.nodeId, endNode.nodeId);
+            .fetchRoutePathLinkSeqment(startNode.nodeId, endNode.nodeId, transitType);
         RoutePathCopySeqmentStore.setRoutePaths(routePaths);
         RoutePathCopySeqmentStore.setIsLoading(false);
     }
