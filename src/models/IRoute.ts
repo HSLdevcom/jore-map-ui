@@ -5,10 +5,12 @@ interface IRoutePrimaryKey {
 }
 
 export default interface IRoute extends IRoutePrimaryKey {
-    routeName: string;
-    routeNameSwedish: string;
-    lineId: string;
     routePaths: IRoutePath[];
+    routeName: string;
+    routeNameShort: string;
+    routeNameSw: string;
+    routeNameShortSw: string;
+    lineId: string;
     line?: ILine;
 }
 

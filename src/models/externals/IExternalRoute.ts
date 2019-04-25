@@ -5,12 +5,12 @@ import IExternalLine from './IExternalLine';
 export default interface IExternalRoute {
     reitinsuuntasByReitunnus: IGraphqlList<IExternalRoutePath>;
     linjaByLintunnus: IExternalLine;
-    lintunnus: string;
-    reikuka: string;
+    reitunnus: string;
     reinimi: string;
     reinimilyh: string;
-    reinimilyhr: string;
     reinimir: string;
-    reitunnus: string;
+    reinimilyhr: string;
+    lintunnus: string;
+    reikuka: string;
     reiviimpvm: string;
 }

@@ -2,6 +2,9 @@ import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute, INode } from '~/models';
+import { IRoutePrimaryKey } from '~/models/IRoute';
+import ApiClient from '~/util/ApiClient';
+import endpoints from '~/enums/endpoints';
 import LineService from './lineService';
 import GraphqlQueries from './graphqlQueries';
 
@@ -28,6 +31,18 @@ class RouteService {
         );
         const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
         return RouteFactory.mapExternalRoute(queryResult.data.route, line);
+    }
+
+    public static updateRoute = async (route: IRoute) => {
+        await ApiClient.updateObject(endpoints.ROUTE, route);
+        await apolloClient.clearStore();
+    }
+
+    public static createRoute = async (route: IRoute) => {
+        const response =
+            await ApiClient.createObject(endpoints.ROUTE, route) as IRoutePrimaryKey;
+        await apolloClient.clearStore();
+        return response.id;
     }
 }
 

@@ -1,0 +1,12 @@
+@import '../../shared/styles/common';
+
+.routePathTabView {
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    overflow-y: auto;
+
+    .content {
+        padding: 15px;
+    }
+}
