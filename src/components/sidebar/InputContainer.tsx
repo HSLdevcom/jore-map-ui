@@ -10,7 +10,7 @@ type inputType = 'text' | 'number' | 'date';
 
 interface IInputProps {
     label: string|JSX.Element;
-    onChange: (value: any) => void;
+    onChange?: (value: any) => void;
     validationResult?: IValidationResult;
     placeholder?: string;
     className?: string;
