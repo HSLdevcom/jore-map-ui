@@ -1,12 +1,15 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { RouteStore } from '~/stores/routeStore';
 import * as s from './routePathTab.scss';
+import RouteItem from '../routeListView/RouteItem';
 
 interface IRoutePathTabState {
     isLoading: boolean;
 }
 
 interface IRoutePathTabProps {
+    routeStore?: RouteStore;
 }
 
 @inject('routeStore', 'errorStore')
@@ -19,19 +22,15 @@ class RoutePathTab extends React.Component<IRoutePathTabProps, IRoutePathTabStat
         };
     }
 
-    componentDidMount() {
-        this.fetchAllRoutePaths();
-    }
-
-    private fetchAllRoutePaths = async () => {
-        // TODO
-    }
-
     render() {
+        const route = this.props.routeStore!.route;
         return (
         <div className={s.routePathTabView}>
             <div className={s.content}>
-                List of route paths
+                {/* TODO: make routeItem more generic so that it would work here properly*/}
+                <RouteItem
+                    route={route!}
+                />
             </div>
         </div>
         );

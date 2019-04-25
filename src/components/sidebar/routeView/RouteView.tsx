@@ -97,10 +97,10 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
     }
 
     private fetchRoute = async () => {
-        const RouteId = this.props.match!.params.id;
+        const routeId = this.props.match!.params.id;
         try {
-            const Route = await RouteService.fetchRoute(RouteId);
-            this.props.routeStore!.setRoute(Route);
+            const route = await RouteService.fetchRoute(routeId);
+            this.props.routeStore!.setRoute(route);
         } catch (e) {
             this.props.errorStore!.addError('Reitin haku epäonnistui.', e);
         }
@@ -114,12 +114,12 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
     private save = async () => {
         this.setState({ isLoading: true });
 
-        const Route = this.props.routeStore!.route;
+        const route = this.props.routeStore!.route;
         try {
             if (this.props.isNewRoute) {
-                await RouteService.createRoute(Route!);
+                await RouteService.createRoute(route!);
             } else {
-                await RouteService.updateRoute(Route!);
+                await RouteService.updateRoute(route!);
             }
 
             this.props.dialogStore!.setFadeMessage('Tallennettu!');
