@@ -24,15 +24,15 @@ class RouteFactory {
         };
     }
 
-    public static createNewRoute = (): IRoute => {
+    public static createNewRoute = (lineId: string): IRoute => {
         return {
+            lineId,
             id: '',
             routePaths: [],
             routeName: '',
             routeNameShort: '',
             routeNameSw: '',
             routeNameShortSw: '',
-            lineId: '',
         };
     }
 }

@@ -45,9 +45,9 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     private renderLineView = (props: any) =>
         <LineView {...props} isNewLine={false} />
     private renderNewRouteView = (props: any) =>
-        <RouteView {...props} isNewLine={false} />
+        <RouteView {...props} isNewRoute={true} />
     private renderRouteView = (props: any) =>
-        <RouteView {...props} isNewLine={false} />
+        <RouteView {...props} isNewRoute={false} />
     private renderNewNodeView = (props: any) =>
         <NodeView {...props} isNewNode={true} />
     private renderNodeView = (props: any) =>

@@ -16,6 +16,7 @@ import RouteFactory from '~/factories/routeFactory';
 import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
+import QueryParams from '~/routing/queryParams';
 import RoutePathTab from './RoutePathTab';
 import RouteInfoTab from './RouteInfoTab';
 import SidebarHeader from '../SidebarHeader';
@@ -82,7 +83,8 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
     private createNewRoute = async () => {
         try {
             if (!this.props.routeStore!.route) {
-                const newRoute = RouteFactory.createNewRoute();
+                const lineId = navigator.getQueryParam(QueryParams.lineId);
+                const newRoute = RouteFactory.createNewRoute(lineId);
                 this.props.routeStore!.setRoute(newRoute);
             }
         } catch (e) {
@@ -159,6 +161,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
     }
 
     private renderRouteViewHeader = () => {
+        const lineId = navigator.getQueryParam(QueryParams.lineId);
         return (
             <div className={s.sidebarHeaderSection}>
                 <SidebarHeader
@@ -169,7 +172,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
                 >
                     {
                         this.props.isNewRoute ?
-                        'Luo uusi reitti' :
+                        `Luo uusi reitti linjalle ${lineId}` :
                         `Reitti ${this.props.routeStore!.route!.id}`
                     }
                 </SidebarHeader>

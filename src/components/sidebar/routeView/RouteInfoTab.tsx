@@ -4,6 +4,8 @@ import classnames from 'classnames';
 import { RouteStore } from '~/stores/routeStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { IValidationResult } from '~/validation/FormValidator';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import InputContainer from '../InputContainer';
 import * as s from './routeInfoTab.scss';
 
@@ -36,9 +38,13 @@ class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabStat
         if (!route) return null;
 
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating = !this.props.isNewRoute || isEditingDisabled;
+        const isNewRoute = this.props.isNewRoute;
+        const isUpdating = !isNewRoute || isEditingDisabled;
+
         const onChange = this.props.onChangeRouteProperty;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
+
+        const queryParamLineId = navigator.getQueryParam(QueryParams.lineId);
 
         return (
         <div className={classnames(s.routeInfoTabView, s.form)}>
@@ -47,7 +53,7 @@ class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabStat
                     <InputContainer
                         disabled={true}
                         label='LINJAN TUNNUS'
-                        value={route.lineId}
+                        value={isNewRoute ? queryParamLineId : route.lineId}
                     />
                     <InputContainer
                         disabled={isUpdating}
