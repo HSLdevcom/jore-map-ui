@@ -11,7 +11,7 @@ import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
 import SearchResultStore from './stores/searchResultStore';
 import LineStore from './stores/lineStore';
-import RouteStore from './stores/routeStore';
+import RouteListStore from './stores/routeListStore';
 import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
 import PopupStore from './stores/popupStore';
@@ -37,7 +37,7 @@ const stores = {
     searchResultStore: SearchResultStore,
     loginStore: LoginStore,
     lineStore: LineStore,
-    routeStore: RouteStore,
+    routeListStore: RouteListStore,
     routePathStore: RoutePathStore,
     searchStore: SearchStore,
     popupStore: PopupStore,

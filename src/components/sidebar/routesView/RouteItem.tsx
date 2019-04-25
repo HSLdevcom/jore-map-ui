@@ -3,7 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
 import Moment from 'moment';
-import { RouteStore } from '~/stores/routeStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import LineHelper from '~/util/lineHelper';
 import { dateToDateString } from '~/util/dateFormatHelper';
 import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
@@ -17,24 +17,24 @@ import SidebarHeader from '../SidebarHeader';
 import * as s from './routeItem.scss';
 
 interface IRouteItemProps {
-    routeStore?: RouteStore;
+    routeListStore?: RouteListStore;
     route: IRoute;
 }
 
-@inject('routeStore')
+@inject('routeListStore')
 @observer
 class RouteItem extends React.Component<IRouteItemProps> {
     async componentDidMount() {
         this.props.route.routePaths.forEach((routePath, index) => {
             // Make two first route paths visible by default
             if (index < 2) {
-                this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
+                this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
             }
         });
     }
 
     private closeRoute = () => {
-        this.props.routeStore!.removeFromRoutes(this.props.route.id);
+        this.props.routeListStore!.removeFromRoutes(this.props.route.id);
         const closeRouteLink = routeBuilder
             .to(subSites.current)
             .remove(QueryParams.routes, this.props.route.id)
@@ -81,7 +81,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
     private renderRoutePathList = (routePaths: IRoutePath[]) => {
         return routePaths.map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
-                this.props.routeStore!.toggleRoutePathVisibility(routePath.internalId);
+                this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
             };
 
             const openRoutePathView = () => {

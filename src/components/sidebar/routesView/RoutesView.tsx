@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router';
-import { RouteStore } from '~/stores/routeStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -16,11 +16,11 @@ import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import * as s from './routesView.scss';
 
 interface IRoutesViewProps{
-    routeStore?: RouteStore;
+    routeListStore?: RouteListStore;
     searchStore?: SearchStore;
 }
 
-@inject('routeStore', 'searchStore')
+@inject('routeListStore', 'searchStore')
 @observer
 class RoutesView extends React.Component<IRoutesViewProps> {
     private toggleTransitType = (type: TransitType) => {
@@ -35,7 +35,7 @@ class RoutesView extends React.Component<IRoutesViewProps> {
     }
 
     componentWillUnmount() {
-        this.props.routeStore!.clearRoutes();
+        this.props.routeListStore!.clearRoutes();
     }
 
     render() {

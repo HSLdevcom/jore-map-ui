@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '~/models';
 import ColorScale from '~/util/colorScale';
 
-export class RouteStore {
+export class RouteListStore {
     @observable private _routes: IRoute[];
     private colorScale: ColorScale;
 
@@ -70,6 +70,6 @@ export class RouteStore {
     }
 }
 
-const observableStoreStore = new RouteStore();
+const observableStoreStore = new RouteListStore();
 
 export default observableStoreStore;
