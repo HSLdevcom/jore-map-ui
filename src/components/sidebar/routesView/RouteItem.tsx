@@ -56,12 +56,26 @@ class RouteItem extends React.Component<IRouteItemProps> {
                                 this.props.route.line!.transitType!),
                         )}
                     >
+                        <div
+                            className={s.routeId}
+                            onClick={this.openRouteView}
+                        >
                         {this.props.route.id}
+                        </div>
                     </div>
                     {this.props.route.routeName}
                 </div>
             </SidebarHeader>
         );
+    }
+
+    private openRouteView = () => {
+        const routeViewLink = routeBuilder
+            .to(subSites.route)
+            .toTarget(this.props.route.id)
+            .clear()
+            .toLink();
+        navigator.goTo(routeViewLink);
     }
 
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]) => {
