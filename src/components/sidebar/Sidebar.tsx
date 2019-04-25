@@ -10,7 +10,7 @@ import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import LinkView from './linkView/LinkView';
-import RoutesView from './routesView/RoutesView';
+import RouteListView from './routeListView/RouteListView';
 import HomeView from './homeView/HomeView';
 import LineView from './lineView/LineView';
 import RouteView from './routeView/RouteView';
@@ -36,9 +36,9 @@ interface ILinelistState {
 @inject('routeListStore', 'searchStore', 'toolbarStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
-    private renderRoutesView = () => {
+    private renderRouteListView = () => {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
-        return queryParams ? <RoutesView /> : <Redirect to='/' />;
+        return queryParams ? <RouteListView /> : <Redirect to='/' />;
     }
     private renderNewLineView = (props: any) =>
         <LineView {...props} isNewLine={true} />
@@ -98,7 +98,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         <Route
                             exact={true}
                             path={subSites.routes}
-                            component={this.renderRoutesView}
+                            component={this.renderRouteListView}
                         />
                         <Route
                             exact={true}

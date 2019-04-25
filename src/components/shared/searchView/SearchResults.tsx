@@ -143,7 +143,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 </div>
             );
         }
-        const isRoutesView = matchPath(Navigator.getPathName(), subSites.routes);
+        const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
         const filteredItems = this.getFilteredItems();
         return (
             <div className={s.searchResultsView}>
@@ -178,7 +178,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 }
                 </div>
                 {
-                    isRoutesView &&
+                    isRouteListView &&
                     <div
                         className={s.largeButton}
                         onClick={this.closeSearchResults}
