@@ -173,6 +173,20 @@ const getAllCodeLists = () => {
     );
 };
 
+const getRoutePathsUsingLinkFromDate = () => {
+    return (
+        gql`
+        query routepathsUsingLinkFromDate($startNodeId:String!, $endNodeId:String!, $date: Datetime!, $transitType: String!) {
+            routePaths: routepathsUsingLinkFromDate(startnodeid: $startNodeId, endnodeid: $endNodeId, date: $date, transittype: $transitType) {
+                nodes {
+                    ${routePathQueryFields}
+                    ${routeForRoutePathQuery}
+                }
+            }
+        }`
+    );
+};
+
 const lineQueryFields = `
     lintunnus
     linjoukkollaji
@@ -411,4 +425,5 @@ export default {
     getRoutePathLinkQuery,
     getLinksByEndNodeQuery,
     getAllCodeLists,
+    getRoutePathsUsingLinkFromDate,
 };

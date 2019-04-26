@@ -1,3 +1,7 @@
+@import '../../shared/styles/common.scss';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
 .splitLinkView {
     display: flex;
     flex-direction: column;
@@ -7,6 +11,10 @@
         padding: 20px;
         overflow-y: auto;
         flex-grow: 1;
+
+        .section {
+            padding-top: 20px;
+        }
     }
 
     &.loaderContainer > div {

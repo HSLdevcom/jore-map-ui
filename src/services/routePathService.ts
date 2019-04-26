@@ -4,6 +4,7 @@ import apolloClient from '~/util/ApolloClient';
 import { IRoutePath } from '~/models';
 import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
@@ -22,6 +23,25 @@ class RoutePathService {
                     } },
             );
             return RoutePathFactory.mapExternalRoutePath(queryResult.data.routePath);
+        }
+
+    public static fetchRoutePathsUsingLinkFromDate =
+        async (startNodeId: string, endNodeId: string, transitType: string, date: Date):
+            Promise<IRoutePath[]> => {
+            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+                {
+                    query: GraphqlQueries.getRoutePathsUsingLinkFromDate(),
+                    variables: {
+                        startNodeId,
+                        endNodeId,
+                        transitType,
+                        date,
+                    },
+                },
+            );
+            return queryResult.data.routePaths.nodes.map(
+                (externalRp: IExternalRoutePath) =>
+                    RoutePathFactory.mapExternalRoutePath(externalRp));
         }
 
     public static updateRoutePath = async (routePath: IRoutePath) => {
