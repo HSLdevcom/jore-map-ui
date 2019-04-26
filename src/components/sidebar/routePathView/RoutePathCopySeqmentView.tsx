@@ -78,6 +78,7 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
         for (let i = 0; i < seqmentsToCopy.length; i += 1) {
             await this.copySeqment(seqmentsToCopy[i].routePathLinkId);
         }
+        this.props.routePathCopySeqmentStore!.clear();
         this.props.toolbarStore!.selectTool(null);
     }
 

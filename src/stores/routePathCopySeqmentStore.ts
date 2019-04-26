@@ -100,6 +100,7 @@ class RoutePathCopySeqmentStore {
     public clear = () => {
         this._endNode = null;
         this._startNode = null;
+        this._highlightedRoutePath = null;
         this._routePaths = [];
     }
 
@@ -129,14 +130,12 @@ class RoutePathCopySeqmentStore {
 
     private _getStartLinkOrderNumber = (links: ICopySeqmentLink[], startNodeId: string) => {
         return links
-            .find((link: ICopySeqmentLink) => link.startNodeId === startNodeId)!
-            .orderNumber;
+            .find((link: ICopySeqmentLink) => link.startNodeId === startNodeId)!.orderNumber;
     }
 
     private _getEndLinkOrderNumber = (links: ICopySeqmentLink[], endNodeId: string) => {
         return links
-            .find((link: ICopySeqmentLink) => link.endNodeId === endNodeId)!
-            .orderNumber;
+            .find((link: ICopySeqmentLink) => link.endNodeId === endNodeId)!.orderNumber;
     }
 }
 
