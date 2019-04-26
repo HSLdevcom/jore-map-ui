@@ -13,8 +13,8 @@ interface IRoutePathCopySegmentLayerProps {
 
 const START_MARKER_COLOR = '#4286f4';
 const END_MARKER_COLOR = '#4286f4';
-const HIGHLIGHTED_LINK_TO_COPY = '#00df0b';
-const HIGHLIGHTED_LINK_NOT_TO_COPY = '#f7e200';
+const HIGHLIGHTED_LINK_TO_COPY_COLOR = '#00df0b';
+const HIGHLIGHTED_LINK_NOT_TO_COPY_COLOR = '#f7e200';
 
 @inject('routePathCopySegmentStore')
 @observer
@@ -36,8 +36,10 @@ class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProp
             .getSegmentLinksNotToCopy(highlightedRoutePath, startNodeId, endNodeId);
         return (
             <>
-                {segmentsToCopy.map(this.renderCopySegmentLink(HIGHLIGHTED_LINK_TO_COPY))}
-                {segmentsNotToCopy.map(this.renderCopySegmentLink(HIGHLIGHTED_LINK_NOT_TO_COPY))}
+                {segmentsToCopy.map(
+                    this.renderCopySegmentLink(HIGHLIGHTED_LINK_TO_COPY_COLOR))}
+                {segmentsNotToCopy.map(
+                    this.renderCopySegmentLink(HIGHLIGHTED_LINK_NOT_TO_COPY_COLOR))}
             </>
         );
     }

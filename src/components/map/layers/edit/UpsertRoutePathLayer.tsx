@@ -109,7 +109,6 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                     EventManager.trigger('nodeClick', clickParams);
             }
         } else {
-            // Prevent default click if there are neighbors on map
             onNodeClick = () => this.defaultActionOnObjectClick(node.id);
             isNodeHighlighted = this.props.routePathStore!.isMapItemHighlighted(node.id);
         }

@@ -158,7 +158,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                             className={
                                 classnames(s.manual, ...this.getMarkerClasses())}
                         />,
-                        s.node,
+                        { className: s.node },
                     )}
                     draggable={this.isInteractive()}
                     onDragEnd={this.props.onMoveMarker
@@ -171,7 +171,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                             className={
                                 classnames(s.projection, ...this.getMarkerClasses())}
                         />,
-                        s.node,
+                        { className: s.node },
                     )}
                     draggable={this.isInteractive()}
                     onDragEnd={this.props.onMoveMarker
@@ -207,8 +207,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 {this.props.children}
                 {this.renderMarkerLabel()}
             </div>,
-            s.node,
-            -15,
+            {
+                className: s.node,
+                popupOffset: -15,
+            },
         );
 
         return (
