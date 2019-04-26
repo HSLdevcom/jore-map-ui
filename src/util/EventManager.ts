@@ -6,7 +6,7 @@ type eventName =
     'undo' |
     'redo' |
     'mapClick' |
-    'nodeClick' |
+    'nodeClick' | // TODO: rename as onRoutePathNodeClick?
     'networkNodeClick' |
     'networkLinkClick' |
     'geometryChange';

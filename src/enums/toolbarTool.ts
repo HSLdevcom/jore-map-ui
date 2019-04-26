@@ -1,4 +1,4 @@
-enum CopyRoutePathSeqmentTool {
+enum ToolbarTool {
     AddNetworkNode = 1,
     AddNetworkLink,
     AddNewRoutePathLink,
@@ -10,4 +10,4 @@ enum CopyRoutePathSeqmentTool {
     SelectNetworkEntity,
 }
 
-export default CopyRoutePathSeqmentTool;
+export default ToolbarTool;

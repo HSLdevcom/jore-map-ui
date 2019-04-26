@@ -15,4 +15,10 @@
         padding: 2px 0px 2px 0px;
         font-weight: bold;
     }
+
+    .copyRoutePathToolButtons {
+        display: flex;
+        padding: 10px;
+        justify-content: space-evenly;
+    }
 }

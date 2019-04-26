@@ -25,12 +25,16 @@ interface ICopySeqmentRoutePath extends IRoutePathPrimaryKey {
     links: ICopySeqmentLink[];
 }
 
+// which type of node will be set next when a node is selected on map
+type setNodeType = 'startNode' | 'endNode';
+
 class RoutePathCopySeqmentStore {
     @observable private _isLoading: boolean;
     @observable private _startNode: ICopySeqmentNode|null;
     @observable private _endNode: ICopySeqmentNode|null;
     @observable private _routePaths: ICopySeqmentRoutePath[];
     @observable private _highlightedRoutePath: ICopySeqmentRoutePath|null;
+    @observable private _setNodeType: setNodeType;
 
     constructor() {
         this._isLoading = true;
@@ -38,6 +42,7 @@ class RoutePathCopySeqmentStore {
         this._endNode = null;
         this._routePaths = [];
         this._highlightedRoutePath = null;
+        this._setNodeType = 'startNode';
     }
 
     @computed
@@ -63,6 +68,11 @@ class RoutePathCopySeqmentStore {
     @computed
     get highlightedRoutePath(): ICopySeqmentRoutePath|null {
         return this._highlightedRoutePath;
+    }
+
+    @computed
+    get setNodeType(): setNodeType {
+        return this._setNodeType;
     }
 
     @action
@@ -97,11 +107,17 @@ class RoutePathCopySeqmentStore {
     }
 
     @action
+    public setSetNodeType = (_setNodeType: setNodeType) => {
+        this._setNodeType = _setNodeType;
+    }
+
+    @action
     public clear = () => {
-        this._endNode = null;
         this._startNode = null;
-        this._highlightedRoutePath = null;
+        this._endNode = null;
         this._routePaths = [];
+        this._highlightedRoutePath = null;
+        this._setNodeType = 'startNode';
     }
 
     public getLinksToCopy = (
@@ -146,4 +162,5 @@ export {
     ICopySeqmentNode,
     ICopySeqmentLink,
     ICopySeqmentRoutePath,
+    setNodeType,
 };
