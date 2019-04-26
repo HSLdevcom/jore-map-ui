@@ -7,24 +7,24 @@ import RoutePathLinkService from '~/services/routePathLinkService';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import {
-    RoutePathCopySeqmentStore, ICopySeqmentRoutePath,
-} from '~/stores/routePathCopySeqmentStore';
+    RoutePathCopySegmentStore, ICopySegmentRoutePath,
+} from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { IRoutePathLink } from '~/models';
-import * as s from './routePathCopySeqmentView.scss';
+import * as s from './routePathCopySegmentView.scss';
 
-interface IRoutePathCopySeqmentViewProps {
+interface IRoutePathCopySegmentViewProps {
     routePathStore?: RoutePathStore;
-    routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
+    routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
 }
 
-@inject('routePathStore', 'routePathCopySeqmentStore', 'toolbarStore')
+@inject('routePathStore', 'routePathCopySegmentStore', 'toolbarStore')
 @observer
-class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentViewProps> {
+class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentViewProps> {
 
-    private renderRoutePathRow = (routePath: ICopySeqmentRoutePath, key: string) => {
+    private renderRoutePathRow = (routePath: ICopySegmentRoutePath, key: string) => {
         return (
             <div
                 key={key}
@@ -37,7 +37,7 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
                     <div
                         className={s.icon}
                         title={`Kopioi reitin ${routePath.routeId} reitin suunnan segmentti`}
-                        onClick={this.copySeqments(routePath)}
+                        onClick={this.copySegments(routePath)}
                     >
                         <FiCopy />
                     </div>
@@ -53,11 +53,11 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
         );
     }
 
-    private setHighlightedRoutePath = (routePath: ICopySeqmentRoutePath|null) => () => {
-        this.props.routePathCopySeqmentStore!.setHighlightedRoutePath(routePath);
+    private setHighlightedRoutePath = (routePath: ICopySegmentRoutePath|null) => () => {
+        this.props.routePathCopySegmentStore!.setHighlightedRoutePath(routePath);
     }
 
-    private renderTextRow = (routePath: ICopySeqmentRoutePath) => {
+    private renderTextRow = (routePath: ICopySegmentRoutePath) => {
         return (
             <div>
                 <div>{routePath.routeId} {routePath.originFi} - {routePath.destinationFi}</div>
@@ -69,26 +69,27 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
         );
     }
 
-    private copySeqments = (routePath: ICopySeqmentRoutePath) => async () => {
-        const copySeqmentStore = this.props.routePathCopySeqmentStore;
-        const startNodeId = copySeqmentStore!.startNode!.nodeId;
-        const endNodeId = copySeqmentStore!.endNode!.nodeId;
-        const seqmentsToCopy = copySeqmentStore!.getSegmentLinksToCopy(routePath, startNodeId, endNodeId);
+    private copySegments = (routePath: ICopySegmentRoutePath) => async () => {
+        const copySegmentStore = this.props.routePathCopySegmentStore;
+        const startNodeId = copySegmentStore!.startNode!.nodeId;
+        const endNodeId = copySegmentStore!.endNode!.nodeId;
+        const segmentsToCopy = copySegmentStore!
+            .getSegmentLinksToCopy(routePath, startNodeId, endNodeId);
 
-        for (let i = 0; i < seqmentsToCopy.length; i += 1) {
-            await this.copySeqment(seqmentsToCopy[i].routePathLinkId);
+        for (let i = 0; i < segmentsToCopy.length; i += 1) {
+            await this.copySegment(segmentsToCopy[i].routePathLinkId);
         }
-        this.props.routePathCopySeqmentStore!.clear();
+        this.props.routePathCopySegmentStore!.clear();
         this.props.toolbarStore!.selectTool(null);
     }
 
-    private copySeqment = async (routePathLinkId: number) => {
+    private copySegment = async (routePathLinkId: number) => {
         const routePathLink: IRoutePathLink = await RoutePathLinkService
             .fetchRoutePathLink(routePathLinkId);
         this.props.routePathStore!.addLink(routePathLink);
     }
 
-    private openRoutePathInNewTab = (routePath: ICopySeqmentRoutePath) => () => {
+    private openRoutePathInNewTab = (routePath: ICopySegmentRoutePath) => () => {
         const routePathLink = routeBuilder
         .to(SubSites.routePath)
         .toTarget([
@@ -101,11 +102,11 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
     }
 
     render() {
-        const routePaths = this.props.routePathCopySeqmentStore!.routePaths;
-        const isLoading = this.props.routePathCopySeqmentStore!.isLoading;
+        const routePaths = this.props.routePathCopySegmentStore!.routePaths;
+        const isLoading = this.props.routePathCopySegmentStore!.isLoading;
 
         return (
-            <div className={s.routePathCopySeqmentView}>
+            <div className={s.routePathCopySegmentView}>
                 <div className={s.topic}>
                     Kopioitavat reitinsuuntasegmentit
                 </div>
@@ -138,4 +139,4 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
 
 }
 
-export default RoutePathCopySeqmentView;
+export default RoutePathCopySegmentView;

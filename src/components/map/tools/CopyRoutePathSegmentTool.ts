@@ -1,16 +1,16 @@
 import EventManager from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import RoutePathCopySeqmentStore from '~/stores/routePathCopySeqmentStore';
+import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
 import NodeService from '~/services/nodeService';
-import RoutePathSeqmentService from '~/services/routePathSeqmentService';
+import RoutePathSegmentService from '~/services/routePathSegmentService';
 import BaseTool from './BaseTool';
 import { IEditRoutePathLayerNodeClickParams } from '../layers/edit/UpsertRoutePathLayer';
 import { NetworkNodeClickParams } from '../layers/NetworkLayers';
 
-class CopyRoutePathSeqmentTool implements BaseTool {
-    public toolType = ToolbarTool.CopyRoutePathSeqmentTool;
+class CopyRoutePathSegmentTool implements BaseTool {
+    public toolType = ToolbarTool.CopyRoutePathSegmentTool;
     public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
     public toolHelpText = 'Valitse kopioitava väli kartalta. Tämän työkaluohjeen alla oleva korostettu nappi (alkusolmu/loppusolmu) kertoo kumpi solmu tullaan asettamaan seuraavaksi kun solmu valitaan kartalta. Kun sekä alku- ja loppusolmu ovat valitut, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) ilmestyvät sivupalkkiin. Valitse tämän jälkeen reitinsuunta, jolta segmentti kopioidaan.'; // tslint:disable-line max-line-length
 
@@ -23,11 +23,11 @@ class CopyRoutePathSeqmentTool implements BaseTool {
     public deactivate() {
         EventManager.off('networkNodeClick', this.onNetworkNodeClick);
         EventManager.off('nodeClick', this.onNodeClick);
-        RoutePathCopySeqmentStore.clear();
+        RoutePathCopySegmentStore.clear();
     }
 
     private onNodeClick = (clickEvent: CustomEvent) => {
-        const setNodeType = RoutePathCopySeqmentStore.setNodeType;
+        const setNodeType = RoutePathCopySegmentStore.setNodeType;
         const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
 
         if (setNodeType === 'startNode') this.selectStartNode(params.node.id);
@@ -35,7 +35,7 @@ class CopyRoutePathSeqmentTool implements BaseTool {
     }
 
     private onNetworkNodeClick = (clickEvent: CustomEvent) => {
-        const setNodeType = RoutePathCopySeqmentStore.setNodeType;
+        const setNodeType = RoutePathCopySegmentStore.setNodeType;
         const params: NetworkNodeClickParams = clickEvent.detail;
 
         if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
@@ -44,39 +44,39 @@ class CopyRoutePathSeqmentTool implements BaseTool {
 
     private selectEndNode = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
-        RoutePathCopySeqmentStore.setEndNode(node);
+        RoutePathCopySegmentStore.setEndNode(node);
 
-        await this.fetchRoutePathLinkSeqment();
+        await this.fetchRoutePathLinkSegment();
 
-        if (!RoutePathCopySeqmentStore.startNode) {
-            RoutePathCopySeqmentStore.setSetNodeType('startNode');
+        if (!RoutePathCopySegmentStore.startNode) {
+            RoutePathCopySegmentStore.setSetNodeType('startNode');
         }
     }
 
     private selectStartNode = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
-        RoutePathCopySeqmentStore.setStartNode(node);
+        RoutePathCopySegmentStore.setStartNode(node);
 
-        await this.fetchRoutePathLinkSeqment();
+        await this.fetchRoutePathLinkSegment();
 
-        if (!RoutePathCopySeqmentStore.endNode) {
-            RoutePathCopySeqmentStore.setSetNodeType('endNode');
+        if (!RoutePathCopySegmentStore.endNode) {
+            RoutePathCopySegmentStore.setSetNodeType('endNode');
         }
     }
 
-    private fetchRoutePathLinkSeqment = async () => {
-        const startNode = RoutePathCopySeqmentStore.startNode;
-        const endNode = RoutePathCopySeqmentStore.endNode;
+    private fetchRoutePathLinkSegment = async () => {
+        const startNode = RoutePathCopySegmentStore.startNode;
+        const endNode = RoutePathCopySegmentStore.endNode;
         if (!startNode || !endNode) return;
 
-        RoutePathCopySeqmentStore.setIsLoading(true);
+        RoutePathCopySegmentStore.setIsLoading(true);
 
         const transitType = RoutePathStore.routePath!.transitType;
-        const routePaths = await RoutePathSeqmentService
-            .fetchRoutePathLinkSeqment(startNode.nodeId, endNode.nodeId, transitType);
-        RoutePathCopySeqmentStore.setRoutePaths(routePaths);
-        RoutePathCopySeqmentStore.setIsLoading(false);
+        const routePaths = await RoutePathSegmentService
+            .fetchRoutePathLinkSegment(startNode.nodeId, endNode.nodeId, transitType);
+        RoutePathCopySegmentStore.setRoutePaths(routePaths);
+        RoutePathCopySegmentStore.setIsLoading(false);
     }
 }
 
-export default CopyRoutePathSeqmentTool;
+export default CopyRoutePathSegmentTool;

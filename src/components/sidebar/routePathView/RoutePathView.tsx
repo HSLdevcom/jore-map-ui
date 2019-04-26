@@ -8,7 +8,7 @@ import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { RoutePathStore, RoutePathViewTab, ListFilter } from '~/stores/routePathStore';
-import { RoutePathCopySeqmentStore } from '~/stores/routePathCopySeqmentStore';
+import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { DialogStore } from '~/stores/dialogStore';
@@ -31,11 +31,11 @@ import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
 import RoutePathHeader from './RoutePathHeader';
 import * as s from './routePathView.scss';
-import RoutePathCopySeqmentView from './RoutePathCopySeqmentView';
+import RoutePathCopySegmentView from './RoutePathCopySegmentView';
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
-    routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
+    routePathCopySegmentStore?: RoutePathCopySegmentStore;
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
     errorStore?: ErrorStore;
@@ -52,7 +52,7 @@ interface IRoutePathViewState {
 
 @inject(
     'routePathStore',
-    'routePathCopySeqmentStore',
+    'routePathCopySegmentStore',
     'networkStore',
     'toolbarStore',
     'errorStore',
@@ -263,10 +263,10 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             || !isGeometryValid
             || !this.isFormValid();
 
-        const copySeqmentStore = this.props.routePathCopySeqmentStore;
-        const isCopyRoutePathSeqmentViewVisible =
-           copySeqmentStore!.startNode
-        && copySeqmentStore!.endNode;
+        const copySegmentStore = this.props.routePathCopySegmentStore;
+        const isCopyRoutePathSegmentViewVisible =
+           copySegmentStore!.startNode
+        && copySegmentStore!.endNode;
 
         return (
             <div className={s.routePathView}>
@@ -277,8 +277,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                     isEditing={!this.state.isEditingDisabled}
                     onEditButtonClick={this.toggleIsEditing}
                 />
-                { isCopyRoutePathSeqmentViewVisible ? (
-                    <RoutePathCopySeqmentView />
+                { isCopyRoutePathSegmentViewVisible ? (
+                    <RoutePathCopySegmentView />
                 ) : (
                     <>
                         <div>

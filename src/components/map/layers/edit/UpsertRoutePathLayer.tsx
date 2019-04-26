@@ -6,7 +6,7 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import INode from '~/models/INode';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
-import { RoutePathCopySeqmentStore } from '~/stores/routePathCopySeqmentStore';
+import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -15,7 +15,7 @@ import NodeMarker from '../markers/NodeMarker';
 import Marker from '../markers/Marker';
 import ArrowDecorator from '../ArrowDecorator';
 import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
-import RoutePathCopySeqmentLayer from './routePathCopySeqmentLayer';
+import RoutePathCopySegmentLayer from './routePathCopySegmentLayer';
 
 const START_MARKER_COLOR = '#00df0b';
 const ROUTE_COLOR = '#000';
@@ -27,7 +27,7 @@ interface IEditRoutePathLayerNodeClickParams {
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
-    routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
+    routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
 }
@@ -36,7 +36,7 @@ interface IRoutePathLayerState {
     focusedRoutePathId: string;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySeqmentStore')
+@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
 @observer
 class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     constructor(props: IRoutePathLayerProps) {
@@ -95,7 +95,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         const areNodesClickable = selectedTool &&
             ((selectedTool.toolType === ToolbarTool.AddNewRoutePathLink
                 && this.props.routePathStore!.neighborLinks.length === 0)
-            || selectedTool.toolType === ToolbarTool.CopyRoutePathSeqmentTool);
+            || selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool);
 
         let onNodeClick;
         let isNodeHighlighted;
@@ -231,8 +231,8 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
 
         const neighborLinks = this.props.routePathStore!.neighborLinks;
         const isRoutePathCopySegmentLayerVisible =
-            this.props.routePathCopySeqmentStore!.startNode
-            || this.props.routePathCopySeqmentStore!.endNode;
+            this.props.routePathCopySegmentStore!.startNode
+            || this.props.routePathCopySegmentStore!.endNode;
         return(
             <>
                 {this.renderRoutePathLinks()}
@@ -242,7 +242,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                     <RoutePathNeighborLinkLayer />
                 }
                 { isRoutePathCopySegmentLayerVisible &&
-                    <RoutePathCopySeqmentLayer />
+                    <RoutePathCopySegmentLayer />
                 }
             </>
         );

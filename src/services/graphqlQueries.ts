@@ -92,12 +92,12 @@ const getRoutePathLinkQuery = () => {
     );
 };
 
-const getRoutePathSeqmentQuery = () => {
+const getRoutePathSegmentQuery = () => {
     return (
         gql`query getRoutePathLinksFromRoutePath($startNodeId: String, $endNodeId: String, $transitType: String) {
             linkswithroutepathinfo: getRoutePathLinksFromRoutePath(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
                 nodes {
-                    ${routePathSeqmentQueryFields}
+                    ${routePathSegmentQueryFields}
                 }
             }
         }`
@@ -252,7 +252,7 @@ const routePathQueryFields = `
     poikkeusreitti
 `;
 
-const routePathSeqmentQueryFields = `
+const routePathSegmentQueryFields = `
     reitunnus
     suusuunta
     suuvoimast
@@ -464,7 +464,7 @@ export default {
     getRouteQuery,
     getRoutePathQuery,
     getRoutePathLinkQuery,
-    getRoutePathSeqmentQuery,
+    getRoutePathSegmentQuery,
     getLinksByStartNodeQuery,
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,

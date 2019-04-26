@@ -1,6 +1,6 @@
 import * as L from 'leaflet';
 import TransitType from '~/enums/transitType';
-import { ICopySeqmentRoutePath, ICopySeqmentLink } from '~/stores/routePathCopySeqmentStore';
+import { ICopySegmentRoutePath, ICopySegmentLink } from '~/stores/routePathCopySegmentStore';
 
 interface IExternalLinkWithRoutePathInfo {
     reitunnus: string;
@@ -17,15 +17,15 @@ interface IExternalLinkWithRoutePathInfo {
     geom: string;
 }
 
-class RoutePathCopySeqmentFactory {
+class RoutePathCopySegmentFactory {
     public static mapExternalLinksWithRoutePathInfo = (
         externalLinksWithRoutePathInfo: IExternalLinkWithRoutePathInfo[],
-    ): ICopySeqmentRoutePath[] => {
-        const routePaths: ICopySeqmentRoutePath[] = [];
+    ): ICopySegmentRoutePath[] => {
+        const routePaths: ICopySegmentRoutePath[] = [];
 
         externalLinksWithRoutePathInfo.forEach((externalLink: IExternalLinkWithRoutePathInfo) => {
             const geoJson = JSON.parse(externalLink.geom);
-            const link: ICopySeqmentLink = {
+            const link: ICopySegmentLink = {
                 geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
                 startNodeId: externalLink.lnkalkusolmu,
                 endNodeId: externalLink.lnkloppusolmu,
@@ -39,7 +39,7 @@ class RoutePathCopySeqmentFactory {
                 && routePath.startTime === externalLink.suuvoimast,
             );
             if (!oldRoutePath) {
-                const newRoutePath: ICopySeqmentRoutePath = {
+                const newRoutePath: ICopySegmentRoutePath = {
                     routeId: externalLink.reitunnus,
                     direction: externalLink.suusuunta,
                     startTime: externalLink.suuvoimast,
@@ -59,4 +59,4 @@ class RoutePathCopySeqmentFactory {
     }
 }
 
-export default RoutePathCopySeqmentFactory;
+export default RoutePathCopySegmentFactory;

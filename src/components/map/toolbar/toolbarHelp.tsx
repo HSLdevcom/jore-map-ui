@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import ToolbarStore from '~/stores/toolbarStore';
-import RoutePathCopySeqmentStore, { setNodeType } from '~/stores/routePathCopySeqmentStore';
+import RoutePathCopySegmentStore, { setNodeType } from '~/stores/routePathCopySegmentStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
@@ -12,9 +12,9 @@ class ToolbarHelp extends Component {
 
     private renderCopyRoutePathToolToolHelpContent = () => {
         const setSetNodeType = (setNodeType: setNodeType) => () => {
-            RoutePathCopySeqmentStore.setSetNodeType(setNodeType);
+            RoutePathCopySegmentStore.setSetNodeType(setNodeType);
         };
-        const setNodeType = RoutePathCopySeqmentStore.setNodeType;
+        const setNodeType = RoutePathCopySegmentStore.setNodeType;
         return (
             <div className={s.copyRoutePathToolButtons}>
                 <Button
@@ -45,7 +45,7 @@ class ToolbarHelp extends Component {
                     {selectedTool.toolHelpHeader}
                 </div>
                 {selectedTool.toolHelpText}
-                { selectedTool.toolType === ToolbarTool.CopyRoutePathSeqmentTool &&
+                { selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool &&
                     this.renderCopyRoutePathToolToolHelpContent()
                 }
             </div>

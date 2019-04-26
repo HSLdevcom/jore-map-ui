@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Polyline } from 'react-leaflet';
 import {
-    RoutePathCopySeqmentStore,
-    ICopySeqmentLink,
-} from '~/stores/routePathCopySeqmentStore';
+    RoutePathCopySegmentStore,
+    ICopySegmentLink,
+} from '~/stores/routePathCopySegmentStore';
 import Marker from '../markers/Marker';
 
-interface IRoutePathCopySeqmentLayerProps {
-    routePathCopySeqmentStore?: RoutePathCopySeqmentStore;
+interface IRoutePathCopySegmentLayerProps {
+    routePathCopySegmentStore?: RoutePathCopySegmentStore;
 }
 
 const START_MARKER_COLOR = '#4286f4';
@@ -16,33 +16,33 @@ const END_MARKER_COLOR = '#4286f4';
 const HIGHLIGHTED_LINK_TO_COPY = '#00df0b';
 const HIGHLIGHTED_LINK_NOT_TO_COPY = '#f7e200';
 
-@inject('routePathCopySeqmentStore')
+@inject('routePathCopySegmentStore')
 @observer
-class RoutePathCopySeqmentLayer extends Component<IRoutePathCopySeqmentLayerProps> {
+class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProps> {
 
     private renderHighlightedRoutePath = () => {
-        const copySeqmentStore = this.props.routePathCopySeqmentStore;
-        const startNode = copySeqmentStore!.startNode;
-        const endNode = copySeqmentStore!.endNode;
+        const copySegmentStore = this.props.routePathCopySegmentStore;
+        const startNode = copySegmentStore!.startNode;
+        const endNode = copySegmentStore!.endNode;
 
-        const highlightedRoutePath = copySeqmentStore!.highlightedRoutePath;
+        const highlightedRoutePath = copySegmentStore!.highlightedRoutePath;
         if (!highlightedRoutePath || !startNode || !endNode) return null;
 
         const startNodeId = startNode.nodeId;
         const endNodeId = endNode.nodeId;
-        const seqmentsToCopy = copySeqmentStore!
+        const segmentsToCopy = copySegmentStore!
             .getSegmentLinksToCopy(highlightedRoutePath, startNodeId, endNodeId);
-        const seqmentsNotToCopy = copySeqmentStore!
+        const segmentsNotToCopy = copySegmentStore!
             .getSegmentLinksNotToCopy(highlightedRoutePath, startNodeId, endNodeId);
         return (
             <>
-                {seqmentsToCopy.map(this.renderCopySeqmentLink(HIGHLIGHTED_LINK_TO_COPY))}
-                {seqmentsNotToCopy.map(this.renderCopySeqmentLink(HIGHLIGHTED_LINK_NOT_TO_COPY))}
+                {segmentsToCopy.map(this.renderCopySegmentLink(HIGHLIGHTED_LINK_TO_COPY))}
+                {segmentsNotToCopy.map(this.renderCopySegmentLink(HIGHLIGHTED_LINK_NOT_TO_COPY))}
             </>
         );
     }
 
-    private renderCopySeqmentLink = (color: string) => (link: ICopySeqmentLink) => {
+    private renderCopySegmentLink = (color: string) => (link: ICopySegmentLink) => {
         return (
             <Polyline
                 positions={link.geometry}
@@ -55,8 +55,8 @@ class RoutePathCopySeqmentLayer extends Component<IRoutePathCopySeqmentLayerProp
     }
 
     render() {
-        const startNode = this.props.routePathCopySeqmentStore!.startNode;
-        const endNode = this.props.routePathCopySeqmentStore!.endNode;
+        const startNode = this.props.routePathCopySegmentStore!.startNode;
+        const endNode = this.props.routePathCopySegmentStore!.endNode;
 
         return (
             <>
@@ -78,4 +78,4 @@ class RoutePathCopySeqmentLayer extends Component<IRoutePathCopySeqmentLayerProp
     }
 }
 
-export default RoutePathCopySeqmentLayer;
+export default RoutePathCopySegmentLayer;
