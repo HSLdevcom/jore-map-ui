@@ -7,12 +7,13 @@ import { codeListName } from '~/stores/codeListStore';
 import ICodeListItem from '~/models/ICodeListItem';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import { Dropdown } from '~/components/controls';
+import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
 
 interface IStopFormProps {
     stop: IStop;
+    isNewStop: boolean;
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
     nodeStore?: NodeStore;
@@ -82,6 +83,23 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     Pysäkkitiedot
                 </SidebarHeader>
                 <div className={s.formSection}>
+                    { this.props.isNewStop &&
+                        <div className={s.flexRow}>
+                            <div className={s.formItem}>
+                                <div className={s.inputLabel}>
+                                    VERKKO
+                                </div>
+                                <TransitToggleButtonBar
+                                    selectedTransitTypes={
+                                        stop.transitType ? [stop.transitType] : []
+                                    }
+                                    toggleSelectedTransitType={
+                                        this.onStopPropertyChange('transitType')
+                                    }
+                                />
+                            </div>
+                        </div>
+                    }
                     <div className={s.sectionHeader}>
                         Nimitiedot
                     </div>
