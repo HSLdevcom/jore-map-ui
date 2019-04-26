@@ -160,15 +160,17 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                             />
                         </div>
                     }
-                    <div className={classnames(s.section, s.expanded)}>
-                        <div className={s.inputLabel}>Mitkä reitinsuunnat katkaistaan</div>
-                        <RoutePathSelector
-                            toggleIsRoutePathSelected={this.toggleIsRoutePathSelected}
-                            routePaths={this.state.routePaths}
-                            selectedIds={this.state.selectedRoutePathIds}
-                            isLoading={this.state.isLoadingRoutePaths}
-                        />
-                    </div>
+                    { this.state.selectedDate &&
+                        <div className={classnames(s.section, s.expanded)}>
+                            <div className={s.inputLabel}>Mitkä reitinsuunnat katkaistaan</div>
+                            <RoutePathSelector
+                                toggleIsRoutePathSelected={this.toggleIsRoutePathSelected}
+                                routePaths={this.state.routePaths}
+                                selectedIds={this.state.selectedRoutePathIds}
+                                isLoading={this.state.isLoadingRoutePaths}
+                            />
+                        </div>
+                    }
                 </div>
                 <Button
                     type={ButtonType.SAVE}

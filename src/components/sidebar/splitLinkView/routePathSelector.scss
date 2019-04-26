@@ -9,8 +9,8 @@
     border-width: 1px;
     border-color: #bebebe;
     border-radius: 5px;
-    height: 500px;
     flex-grow: 1;
+    flex-shrink: 1;
     overflow-y: auto;
 
     > label {
