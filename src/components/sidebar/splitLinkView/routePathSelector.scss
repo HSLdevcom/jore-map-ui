@@ -3,16 +3,18 @@
 @import '../../shared/styles/form';
 
 .routePathSelectorView {
-    padding: 5px;
+    padding: 15px;
     background-color: white;
     border-style: solid;
     border-width: 1px;
     border-color: #bebebe;
     border-radius: 5px;
     height: 500px;
+    flex-grow: 1;
+    overflow-y: auto;
 
     > label {
-        margin-bottom: 5px;
+        margin-bottom: 10px;
     }
 
     .loader {

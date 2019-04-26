@@ -13,10 +13,12 @@ import NodeType from '~/enums/nodeType';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import Loader from '~/components/shared/loader/Loader';
-import * as s from './splitLinkView.scss';
+import { Button } from '~/components/controls';
+import ButtonType from '~/enums/buttonType';
 import SidebarHeader from '../SidebarHeader';
 import InputContainer from '../InputContainer';
 import RoutePathSelector from './RoutePathSelector';
+import * as s from './splitLinkView.scss';
 
 interface ISplitLinkViewState {
     isLoading: boolean;
@@ -124,7 +126,16 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         this.setState({ selectedRoutePathIds: newSelectedRouteIds });
     }
 
+    saveSplittedLink = () => {
+        const splittedRoutePaths =
+            this.state.routePaths
+                .filter(rp => this.state.selectedRoutePathIds.includes(rp.internalId));
+        // tslint:disable-next-line
+        console.log(splittedRoutePaths);
+    }
+
     render() {
+        const isSaveButtonDisabled = false;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.splitLinkView, s.loaderContainer)}>
@@ -139,30 +150,33 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                     <SidebarHeader>
                         Linkin jako
                     </SidebarHeader>
-                    <div className={s.form}>
-                        <div className={s.formSection}>
-                            { this.state.node.type === NodeType.STOP &&
-                                <div className={s.section}>
-                                    <InputContainer
-                                        label='Mistä eteenpäin katkaistaan'
-                                        type='date'
-                                        value={this.state.selectedDate}
-                                        onChange={this.updateSelectedDate}
-                                    />
-                                </div>
-                            }
-                            <div className={s.section}>
-                                <div className={s.inputLabel}>Mitkä reitinsuunnat katkaistaan</div>
-                                <RoutePathSelector
-                                    toggleIsRoutePathSelected={this.toggleIsRoutePathSelected}
-                                    routePaths={this.state.routePaths}
-                                    selectedIds={this.state.selectedRoutePathIds}
-                                    isLoading={this.state.isLoadingRoutePaths}
-                                />
-                            </div>
+                    { this.state.node.type === NodeType.STOP &&
+                        <div className={s.section}>
+                            <InputContainer
+                                label='Mistä eteenpäin katkaistaan'
+                                type='date'
+                                value={this.state.selectedDate}
+                                onChange={this.updateSelectedDate}
+                            />
                         </div>
+                    }
+                    <div className={classnames(s.section, s.expanded)}>
+                        <div className={s.inputLabel}>Mitkä reitinsuunnat katkaistaan</div>
+                        <RoutePathSelector
+                            toggleIsRoutePathSelected={this.toggleIsRoutePathSelected}
+                            routePaths={this.state.routePaths}
+                            selectedIds={this.state.selectedRoutePathIds}
+                            isLoading={this.state.isLoadingRoutePaths}
+                        />
                     </div>
                 </div>
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                    onClick={this.saveSplittedLink}
+                >
+                    Jaa linkki
+                </Button>
             </div >
         );
     }
