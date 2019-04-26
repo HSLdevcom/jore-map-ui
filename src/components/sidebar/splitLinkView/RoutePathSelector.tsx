@@ -28,17 +28,21 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
 
     return (
         <div className={s.routePathSelectorView}>
-            {props.routePaths.length === 0 &&
-                <div>Ei löytänyt reitinsuuntia</div>
-            }
-            {props.routePaths.map((rp, index) =>
-                <Checkbox
-                    text={`${rp.routeId}: ${rp.originFi} - ${rp.destinationFi}`}
-                    key={index}
-                    checked={props.selectedIds.includes(rp.internalId)}
-                    onClick={toggleRoutePath(rp.internalId)}
-                />)
-            }
+                {props.routePaths.length === 0 &&
+                    <div>Ei löytänyt reitinsuuntia</div>
+                }
+                {props.routePaths.length !== 0 &&
+                    <div className={s.list}>
+                        {props.routePaths.map((rp, index) =>
+                            <Checkbox
+                                text={`${rp.routeId}: ${rp.originFi} - ${rp.destinationFi}`}
+                                key={index}
+                                checked={props.selectedIds.includes(rp.internalId)}
+                                onClick={toggleRoutePath(rp.internalId)}
+                            />)
+                        }
+                    </div>
+                }
         </div>
     );
 };

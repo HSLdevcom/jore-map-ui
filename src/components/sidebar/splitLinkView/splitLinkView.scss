@@ -16,6 +16,17 @@
 
         .section {
             padding-top: 20px;
+
+            .toggleButtons {
+                display: flex;
+                flex-direction: row;
+                margin-top: 15px;
+        
+                > div {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                }
+            }
         }
 
         .expanded {

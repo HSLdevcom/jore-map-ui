@@ -134,6 +134,18 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         console.log(splittedRoutePaths);
     }
 
+    selectAllRoutePaths = () => {
+        this.setState({
+            selectedRoutePathIds: this.state.routePaths.map(rp => rp.internalId),
+        });
+    }
+
+    clearSelectedRoutePaths = () => {
+        this.setState({
+            selectedRoutePathIds: [],
+        });
+    }
+
     render() {
         const isSaveButtonDisabled = false;
         if (this.state.isLoading) {
@@ -169,6 +181,17 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                                 selectedIds={this.state.selectedRoutePathIds}
                                 isLoading={this.state.isLoadingRoutePaths}
                             />
+                            <div className={s.toggleButtons}>
+                                <Button onClick={this.selectAllRoutePaths} type={ButtonType.SQUARE}>
+                                    Valitse kaikki
+                                </Button>
+                                <Button
+                                    onClick={this.clearSelectedRoutePaths}
+                                    type={ButtonType.SQUARE}
+                                >
+                                    Tyhjennä
+                                </Button>
+                            </div>
                         </div>
                     }
                 </div>
