@@ -38,37 +38,36 @@ interface IAppProps extends RouteComponentProps<any> {
 @observer
 class App extends React.Component<IAppProps, IAppState> {
 
-    private renderApp = observer(() => {
-        this.initCodeLists();
-
-        return (
-            <>
-                <NavigationBar />
-                <div className={s.appContent}>
-                    <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
-                        <Sidebar
-                            location={this.props.location}
-                        />
-                    </div>
-                    <Map>
-                        <ErrorBar />
-                    </Map>
-                </div>
-                <Dialog />
-            </>
-        );
-    });
-
     constructor(props: IAppProps) {
         super(props);
         this.state = {
             isLoginInProgress: true,
         };
-
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.init();
+    }
+
+    private renderApp = () => {
+        this.initCodeLists();
+
+        return (
+            <>
+                <NavigationBar />
+                    <div className={s.appContent}>
+                        <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
+                            <Sidebar
+                                location={this.props.location}
+                            />
+                        </div>
+                        <Map>
+                            <ErrorBar />
+                        </Map>
+                    </div>
+                    <Dialog />
+                </>
+        );
     }
 
     private initCodeLists = async () => {
@@ -114,7 +113,7 @@ class App extends React.Component<IAppProps, IAppState> {
             // On error
             navigator.goTo(SubSites.loginError);
         });
-        return (<div>Logging in</div>);
+        return (<div>Kirjaudutaan sisään...</div>);
     }
 
     render() {
