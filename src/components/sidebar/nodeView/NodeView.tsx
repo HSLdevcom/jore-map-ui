@@ -267,6 +267,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             <StopForm
                                 isEditingDisabled={isEditingDisabled}
                                 stop={node.stop!}
+                                isNewStop={this.props.isNewNode}
                                 invalidPropertiesMap={invalidPropertiesMap}
                                 getDropDownItems={this.props.codeListStore!.getCodeList}
                             />
