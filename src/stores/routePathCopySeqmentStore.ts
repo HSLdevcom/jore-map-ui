@@ -120,7 +120,7 @@ class RoutePathCopySeqmentStore {
         this._setNodeType = 'startNode';
     }
 
-    public getLinksToCopy = (
+    public getSegmentLinksToCopy = (
         routePath: ICopySeqmentRoutePath, startNodeId: string, endNodeId: string,
     ) => {
         const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);
@@ -132,7 +132,7 @@ class RoutePathCopySeqmentStore {
         });
     }
 
-    public getLinksNotToCopy = (
+    public getSegmentLinksNotToCopy = (
         routePath: ICopySeqmentRoutePath, startNodeId: string, endNodeId: string,
     ) => {
         const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);

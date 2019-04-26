@@ -31,9 +31,9 @@ class RoutePathCopySeqmentLayer extends Component<IRoutePathCopySeqmentLayerProp
         const startNodeId = startNode.nodeId;
         const endNodeId = endNode.nodeId;
         const seqmentsToCopy = copySeqmentStore!
-            .getLinksToCopy(highlightedRoutePath, startNodeId, endNodeId);
+            .getSegmentLinksToCopy(highlightedRoutePath, startNodeId, endNodeId);
         const seqmentsNotToCopy = copySeqmentStore!
-            .getLinksNotToCopy(highlightedRoutePath, startNodeId, endNodeId);
+            .getSegmentLinksNotToCopy(highlightedRoutePath, startNodeId, endNodeId);
         return (
             <>
                 {seqmentsToCopy.map(this.renderCopySeqmentLink(HIGHLIGHTED_LINK_TO_COPY))}

@@ -230,7 +230,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         if (!this.props.routePathStore!.routePath) return null;
 
         const neighborLinks = this.props.routePathStore!.neighborLinks;
-        const isCopySeqmentLayerVisible =
+        const isRoutePathCopySegmentLayerVisible =
             this.props.routePathCopySeqmentStore!.startNode
             || this.props.routePathCopySeqmentStore!.endNode;
         return(
@@ -241,7 +241,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 { neighborLinks &&
                     <RoutePathNeighborLinkLayer />
                 }
-                { isCopySeqmentLayerVisible &&
+                { isRoutePathCopySegmentLayerVisible &&
                     <RoutePathCopySeqmentLayer />
                 }
             </>

@@ -43,7 +43,7 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
                     </div>
                     <div
                         className={s.icon}
-                        title={`Avaa reitin ${routePath.routeId} reitin  suunta uuteen ikkunaan`}
+                        title={`Avaa reitin ${routePath.routeId} reitin suunta uuteen ikkunaan`}
                         onClick={this.openRoutePathInNewTab(routePath)}
                     >
                         <FiExternalLink />
@@ -73,7 +73,7 @@ class RoutePathCopySeqmentView extends React.Component<IRoutePathCopySeqmentView
         const copySeqmentStore = this.props.routePathCopySeqmentStore;
         const startNodeId = copySeqmentStore!.startNode!.nodeId;
         const endNodeId = copySeqmentStore!.endNode!.nodeId;
-        const seqmentsToCopy = copySeqmentStore!.getLinksToCopy(routePath, startNodeId, endNodeId);
+        const seqmentsToCopy = copySeqmentStore!.getSegmentLinksToCopy(routePath, startNodeId, endNodeId);
 
         for (let i = 0; i < seqmentsToCopy.length; i += 1) {
             await this.copySeqment(seqmentsToCopy[i].routePathLinkId);
