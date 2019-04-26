@@ -30,8 +30,8 @@ import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import RoutePathTabs from './RoutePathTabs';
 import RoutePathHeader from './RoutePathHeader';
-import * as s from './routePathView.scss';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView';
+import * as s from './routePathView.scss';
 
 interface IRoutePathViewProps {
     routePathStore?: RoutePathStore;
