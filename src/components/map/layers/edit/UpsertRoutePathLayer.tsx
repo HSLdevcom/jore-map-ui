@@ -189,7 +189,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         }
     }
 
-    private renderMarker = () => {
+    private renderStartMarker = () => {
         if (this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)) {
             // Hiding start marker if we set target node adding new links.
             // Due to the UI otherwise getting messy
@@ -205,6 +205,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             <Marker
                 latLng={routePathLinks![0].startNode.coordinates}
                 color={START_MARKER_COLOR}
+                isClickable={false}
             />
         );
     }
@@ -236,7 +237,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             <>
                 {this.renderRoutePathLinks()}
                 {this.renderLinkDecorator()}
-                {this.renderMarker()}
+                {this.renderStartMarker()}
                 { neighborLinks &&
                     <RoutePathNeighborLinkLayer />
                 }

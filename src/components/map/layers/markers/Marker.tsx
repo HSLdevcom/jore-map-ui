@@ -8,6 +8,7 @@ import * as s from './marker.scss';
 interface IMarkerProps {
     latLng: L.LatLng;
     color: string;
+    isClickable?: boolean; // defaults to true
     popupContent?: any;
 }
 
@@ -39,12 +40,17 @@ class Marker extends Component<IMarkerProps> {
 
     render() {
         const { latLng, color }: IMarkerProps = this.props;
+        const isClickable = typeof this.props.isClickable === undefined ?
+            true : this.props.isClickable;
+        const iconBaseClass = isClickable ? s.iconBase : s.iconBaseNotClickable;
+
         return (
             <LeafletMarker
                 ref={this.initMarkerRef}
                 zIndexOffset={VERY_HIGH_Z_INDEX}
-                icon={LeafletUtils.createDivIcon(<PinIcon color={color}/>, s.markerBase)}
+                icon={LeafletUtils.createDivIcon(<PinIcon color={color}/>, iconBaseClass)}
                 position={latLng}
+                clickable={isClickable}
             >
             {/* working react-leaflet popup, not currently in use
                 { popupContent &&

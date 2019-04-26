@@ -89,7 +89,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         return nodes;
     }
 
-    private renderMarker() {
+    private renderStartMarker() {
         const color = this.props.color;
         const routePathLinks = this.props.routePathLinks;
         if (routePathLinks!.length === 0) return;
@@ -97,6 +97,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             <Marker
                 latLng={routePathLinks![0].startNode.coordinates}
                 color={color}
+                isClickable={false}
             />
         );
     }
@@ -134,7 +135,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 >
                     {this.renderRoutePathLinks()}
                     {this.renderNodes()}
-                    {this.renderMarker()}
+                    {this.renderStartMarker()}
                 </FeatureGroup>
                 <FeatureGroup>
                     {this.renderDirectionDecoration()}
