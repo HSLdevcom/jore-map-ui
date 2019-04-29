@@ -14,7 +14,7 @@ interface ISplitLinkInfoProps {
 const SplitLinkInfo = (props: ISplitLinkInfoProps) => (
     <div className={s.splitLinkInfo}>
         <div className={s.formSection}>
-            <div>
+            <div className={s.sectionHeader}>
                 Jaettava linkki
             </div>
             <div className={s.flexRow}>
@@ -35,7 +35,7 @@ const SplitLinkInfo = (props: ISplitLinkInfoProps) => (
             </div>
         </div>
         <div className={s.formSection}>
-            <div>
+            <div className={s.sectionHeader}>
                 Solmu jolla linkki jaetaan
             </div>
             <div className={s.flexRow}>
