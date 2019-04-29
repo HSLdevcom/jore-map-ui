@@ -4,6 +4,7 @@ import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { IoMdInformationCircle } from 'react-icons/io';
 import { DialogStore, DialogType } from '~/stores/dialogStore';
+import Loader, { LoaderSize } from './shared/loader/Loader';
 import * as s from './dialog.scss';
 
 interface IDialogProps {
@@ -24,6 +25,11 @@ class Dialog extends React.Component<IDialogProps> {
                     }
                     { this.props.dialogStore!.type === DialogType.Info &&
                         <IoMdInformationCircle className={classnames(s.icon, s.info)} />
+                    }
+                    { this.props.dialogStore!.type === DialogType.Loader &&
+                        <div className={s.icon}>
+                            <Loader size={LoaderSize.SMALL}/>
+                        </div>
                     }
                     {this.props.dialogStore!.message}
                 </div>

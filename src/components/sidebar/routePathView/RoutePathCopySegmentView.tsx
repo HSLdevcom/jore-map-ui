@@ -9,18 +9,20 @@ import SubSites from '~/routing/subSites';
 import {
     RoutePathCopySegmentStore, ICopySegmentRoutePath,
 } from '~/stores/routePathCopySegmentStore';
+import { DialogStore, DialogType } from '~/stores/dialogStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { IRoutePathLink } from '~/models';
 import * as s from './routePathCopySegmentView.scss';
 
 interface IRoutePathCopySegmentViewProps {
+    dialogStore?: DialogStore;
     routePathStore?: RoutePathStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
 }
 
-@inject('routePathStore', 'routePathCopySegmentStore', 'toolbarStore')
+@inject('dialogStore', 'routePathStore', 'routePathCopySegmentStore', 'toolbarStore')
 @observer
 class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentViewProps> {
 
@@ -70,6 +72,8 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
     }
 
     private copySegments = (routePath: ICopySegmentRoutePath) => async () => {
+        this.props.dialogStore!.setLoaderMessage('Kopioidaan reitinsuunnan segmenttiä...');
+
         const copySegmentStore = this.props.routePathCopySegmentStore;
         const startNodeId = copySegmentStore!.startNode!.nodeId;
         const endNodeId = copySegmentStore!.endNode!.nodeId;
@@ -81,6 +85,9 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         }
         this.props.routePathCopySegmentStore!.clear();
         this.props.toolbarStore!.selectTool(null);
+
+        this.props.dialogStore!.closeLoaderMessage();
+        this.props.dialogStore!.setFadeMessage('Segmentti kopioitu!', DialogType.Success);
     }
 
     private copySegment = async (routePathLinkId: number) => {
