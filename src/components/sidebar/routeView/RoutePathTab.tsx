@@ -28,6 +28,7 @@ class RoutePathTab extends React.Component<IRoutePathTabProps, IRoutePathTabStat
         <div className={s.routePathTabView}>
             <div className={s.content}>
                 {/* TODO: make routeItem more generic so that it would work here properly*/}
+                <div><b>Huom! Tämän näkymän toteutus on vielä kesken.</b></div>
                 <RouteItem
                     route={route!}
                 />
