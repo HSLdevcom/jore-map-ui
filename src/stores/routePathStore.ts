@@ -134,18 +134,6 @@ export class RoutePathStore {
     }
 
     @action
-    public resetUndoState() {
-        this._neighborRoutePathLinks = [];
-
-        const routePathLinks = this._routePath && this._routePath.routePathLinks ?
-            this._routePath.routePathLinks : [];
-        const currentUndoState: UndoState = {
-            routePathLinks: _.cloneDeep(routePathLinks),
-        };
-        this._geometryUndoStore.addItem(currentUndoState);
-    }
-
-    @action
     public setHighlightedObject = (objectId: string | null) => {
         this._highlightedMapItem = objectId;
     }
@@ -210,7 +198,7 @@ export class RoutePathStore {
             routePathLink);
 
         this.recalculateOrderNumbers();
-        this.resetUndoState();
+        this.addCurrentStateToUndoStore();
     }
 
     @action
@@ -221,7 +209,19 @@ export class RoutePathStore {
         this._routePath!.routePathLinks!.splice(linkToRemoveIndex, 1);
 
         this.recalculateOrderNumbers();
-        this.resetUndoState();
+        this.addCurrentStateToUndoStore();
+    }
+
+    @action
+    public addCurrentStateToUndoStore() {
+        this._neighborRoutePathLinks = [];
+
+        const routePathLinks = this._routePath && this._routePath.routePathLinks ?
+            this._routePath.routePathLinks : [];
+        const currentUndoState: UndoState = {
+            routePathLinks: _.cloneDeep(routePathLinks),
+        };
+        this._geometryUndoStore.addItem(currentUndoState);
     }
 
     @action
