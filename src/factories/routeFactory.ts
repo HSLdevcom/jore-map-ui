@@ -21,6 +21,8 @@ class RouteFactory {
             routeNameShortSw: externalRoute.reinimilyhr,
             lineId: externalRoute.lintunnus,
             id: externalRoute.reitunnus,
+            modifiedBy: externalRoute.reikuka,
+            modifiedOn: externalRoute.reiviimpvm,
         };
     }
 
@@ -33,6 +35,8 @@ class RouteFactory {
             routeNameShort: '',
             routeNameSw: '',
             routeNameShortSw: '',
+            modifiedBy: '',
+            modifiedOn: new Date(),
         };
     }
 }
