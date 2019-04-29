@@ -10,7 +10,7 @@ import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import EventManager from '~/util/EventManager';
-import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
 import TransitType from '~/enums/transitType';
 import NodeType from '~/enums/nodeType';
 import VectorGridLayer from './VectorGridLayer';
@@ -77,7 +77,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 }
 
                 return {
-                    color: TransitTypeColorHelper.getColor(properties.lnkverkko),
+                    color: TransitTypeHelper.getColor(properties.lnkverkko),
                     weight: 2,
                     fillOpacity: 1,
                     fill: true,
@@ -95,7 +95,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 }
                 const { lnkverkko: transitTypeCode } = properties;
                 return {
-                    color: TransitTypeColorHelper.getColor(transitTypeCode),
+                    color: TransitTypeHelper.getColor(transitTypeCode),
                     radius: 1,
                 };
             },

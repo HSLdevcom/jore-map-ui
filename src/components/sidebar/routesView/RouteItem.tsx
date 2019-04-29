@@ -6,7 +6,7 @@ import Moment from 'moment';
 import { RouteStore } from '~/stores/routeStore';
 import LineHelper from '~/util/lineHelper';
 import { dateToDateString } from '~/util/dateFormatHelper';
-import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import subSites from '~/routing/subSites';
@@ -52,7 +52,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
                     <div
                         className={classNames(
                             s.label,
-                            TransitTypeColorHelper.getColorClass(
+                            TransitTypeHelper.getColorClass(
                                 this.props.route.line!.transitType),
                         )}
                     >

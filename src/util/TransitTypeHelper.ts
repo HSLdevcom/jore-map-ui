@@ -1,7 +1,7 @@
 import TransitType from '~/enums/transitType';
 import * as s from './transitTypeColors.scss';
 
-class TransitTypeColorHelper {
+class TransitTypeHelper {
     public static getColor = (type: TransitType) => {
         switch (type) {
         case TransitType.BUS:
@@ -52,6 +52,23 @@ class TransitTypeColorHelper {
             throw new Error(`TransitType not supported: ${type}`);
         }
     }
+
+    public static getTransitTypeLabel = (type: TransitType) => {
+        switch (type) {
+        case TransitType.BUS:
+            return 'Linja-auto';
+        case TransitType.FERRY:
+            return 'Lautta';
+        case TransitType.SUBWAY:
+            return 'Metro';
+        case TransitType.TRAM:
+            return 'Raitiovaunu';
+        case TransitType.TRAIN:
+            return 'Lähijuna';
+        default:
+            throw new Error(`TransitType not supported: ${type}`);
+        }
+    }
 }
 
-export default TransitTypeColorHelper;
+export default TransitTypeHelper;
