@@ -1,0 +1,8 @@
+@import '../../shared/styles/common.scss';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.splitLinkInfo {
+    display: flex;
+    flex-direction: column;
+}

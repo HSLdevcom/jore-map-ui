@@ -18,6 +18,7 @@ import ButtonType from '~/enums/buttonType';
 import SidebarHeader from '../SidebarHeader';
 import InputContainer from '../InputContainer';
 import RoutePathSelector from './RoutePathSelector';
+import SplitLinkInfo from './SplitLinkInfo';
 import * as s from './splitLinkView.scss';
 
 interface ISplitLinkViewState {
@@ -162,6 +163,9 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                     <SidebarHeader>
                         Linkin jako
                     </SidebarHeader>
+                    <div className={s.section}>
+                        <SplitLinkInfo link={this.state.link} node={this.state.node} />
+                    </div>
                     { this.state.node.type === NodeType.STOP &&
                         <div className={s.section}>
                             <InputContainer
