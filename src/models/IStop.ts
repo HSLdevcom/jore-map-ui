@@ -1,3 +1,5 @@
+import TransitType from '~/enums/transitType';
+
 interface IStopPrimaryKey {
     nodeId: string;
 }
@@ -33,6 +35,7 @@ export default interface IStop extends IStopPrimaryKey {
     nameModifiedOn: Date;
     section: string;
     postalNumber: string;
+    transitType?: TransitType; // Only used for creating a soltunnus
 }
 
 export {
