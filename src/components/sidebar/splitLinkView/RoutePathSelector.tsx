@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import { Checkbox } from '~/components/controls';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
@@ -15,6 +16,22 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
     const toggleRoutePath = (routePathId: string) => () => {
         props.toggleIsRoutePathSelected(routePathId);
     };
+
+    const getCheckboxContent = (routePath: IRoutePath) => (
+        <div className={s.checkboxContent}>
+            <div className={s.contentHeader}>
+            {routePath.routeId}:
+            </div>
+            <div className={s.contentDescription}>
+                <div>{routePath.originFi} - {routePath.destinationFi}</div>
+                <div>
+                    {Moment(routePath.startTime).format('DD.MM.YYYY')}
+                    {' '}-{' '}
+                    {Moment(routePath.endTime).format('DD.MM.YYYY')}
+                </div>
+            </div>
+        </div>
+    );
 
     if (props.isLoading) {
         return (
@@ -35,7 +52,7 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
                     <div className={s.list}>
                         {props.routePaths.map((rp, index) =>
                             <Checkbox
-                                text={`${rp.routeId}: ${rp.originFi} - ${rp.destinationFi}`}
+                                text={getCheckboxContent(rp)}
                                 key={index}
                                 checked={props.selectedIds.includes(rp.internalId)}
                                 onClick={toggleRoutePath(rp.internalId)}
