@@ -4,7 +4,7 @@ import * as s from './checkbox.scss';
 
 interface ICheckboxProps {
     checked: boolean;
-    text: string;
+    text: React.ReactNode;
     onClick(): void;
 }
 
