@@ -204,7 +204,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
                             setSelectedTabIndex={this.setSelectedTabIndex}
                         >
                             <Tab><div>Reitin tiedot</div></Tab>
-                            <Tab><div>Reitinsuunnat</div></Tab>
+                            <Tab isDisabled={this.props.isNewRoute}><div>Reitinsuunnat</div></Tab>
                         </TabList>
                         <ContentList selectedTabIndex={this.state.selectedTabIndex}>
                             <ContentItem>

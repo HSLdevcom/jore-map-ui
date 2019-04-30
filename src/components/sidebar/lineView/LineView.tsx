@@ -201,7 +201,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
                             setSelectedTabIndex={this.setSelectedTabIndex}
                         >
                             <Tab><div>Linjan tiedot</div></Tab>
-                            <Tab><div>Reitit</div></Tab>
+                            <Tab isDisabled={this.props.isNewLine}><div>Reitit</div></Tab>
                         </TabList>
                         <ContentList selectedTabIndex={this.state.selectedTabIndex}>
                             <ContentItem>
