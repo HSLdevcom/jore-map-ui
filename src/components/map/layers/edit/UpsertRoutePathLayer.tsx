@@ -198,7 +198,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
             <Marker
                 latLng={routePathLinks![0].startNode.coordinates}
                 color={START_MARKER_COLOR}
-                isClickable={false}
+                isClickDisabled={true}
             />
         );
     }

@@ -8,7 +8,7 @@ import * as s from './marker.scss';
 interface IMarkerProps {
     latLng: L.LatLng;
     color: string;
-    isClickable?: boolean; // defaults to true
+    isClickDisabled?: boolean;
     popupContent?: React.ReactNode;
 }
 
@@ -39,10 +39,8 @@ class Marker extends Component<IMarkerProps> {
     }
 
     render() {
-        const { latLng, color }: IMarkerProps = this.props;
-        const isClickable = typeof this.props.isClickable === undefined ?
-            true : this.props.isClickable;
-        const iconBaseClass = isClickable ? s.iconBase : s.iconBaseNotClickable;
+        const { latLng, color, isClickDisabled }: IMarkerProps = this.props;
+        const iconBaseClass = isClickDisabled ? s.iconBaseNotClickable : s.iconBase;
 
         return (
             <LeafletMarker
@@ -53,7 +51,7 @@ class Marker extends Component<IMarkerProps> {
                     { className: iconBaseClass },
                 )}
                 position={latLng}
-                clickable={isClickable}
+                clickable={!isClickDisabled}
             >
             {/* working react-leaflet popup, not currently in use
                 { this.props.popupContent &&

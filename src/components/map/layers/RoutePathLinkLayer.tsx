@@ -97,7 +97,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             <Marker
                 latLng={routePathLinks![0].startNode.coordinates}
                 color={color}
-                isClickable={false}
+                isClickDisabled={true}
             />
         );
     }
