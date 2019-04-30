@@ -13,7 +13,7 @@ import { NetworkNodeClickParams } from '../layers/NetworkLayers';
 class CopyRoutePathSegmentTool implements BaseTool {
     public toolType = ToolbarTool.CopyRoutePathSegmentTool;
     public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
-    public toolHelpText = 'Valitse kopioitava väli kartalta. Tämän työkaluohjeen alla oleva korostettu nappi (alkusolmu/loppusolmu) kertoo kumpi solmu tullaan asettamaan seuraavaksi kun solmu valitaan kartalta. Kun sekä alku- ja loppusolmu ovat valitut, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) ilmestyvät sivupalkkiin. Valitse tämän jälkeen reitinsuunta, jolta segmentti kopioidaan.'; // tslint:disable-line max-line-length
+    public toolHelpText = 'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.'; // tslint:disable-line max-line-length
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
