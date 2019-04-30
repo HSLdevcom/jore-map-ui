@@ -101,7 +101,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                 await this.copySegment(segmentsToCopy[i].routePathLinkId, orderNumber);
             }
         } else {
-            // sanity check
+            // Should not occur
             throw 'Node with odd neighbors not found from current routePath by startNodeId or endNodeId.'; // tslint:disable-line max-line-length
         }
 
