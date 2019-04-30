@@ -9,7 +9,7 @@ interface IMarkerProps {
     latLng: L.LatLng;
     color: string;
     isClickable?: boolean; // defaults to true
-    popupContent?: any;
+    popupContent?: React.ReactNode;
 }
 
 // The logic of Z Indexes is not very logical.
@@ -56,15 +56,15 @@ class Marker extends Component<IMarkerProps> {
                 clickable={isClickable}
             >
             {/* working react-leaflet popup, not currently in use
-                { popupContent &&
+                { this.props.popupContent &&
                 <Popup
                     position={latLng}
                     closeButton={false}
                     minWidth={300}
                 >
-                    {popupContent}
-                </Popup>
-            } */}
+                    {this.props.popupContent}
+                </Popup> */}
+            }
             </LeafletMarker>
 
         );
