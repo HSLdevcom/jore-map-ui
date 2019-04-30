@@ -132,38 +132,63 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         window.open(routePathLink, '_blank');
     }
 
-    render() {
+    private renderErrorMessage = () => {
+        return (
+            <div className={s.routePathList}>
+                <div className={s.messageContainer}>
+                    Virhe alku- ja loppusolmun asetuksessa.
+                </div>
+            </div>
+        );
+    }
+
+    private renderResults = () => {
         const routePaths = this.props.routePathCopySegmentStore!.routePaths;
+        return (
+            <div className={s.routePathList}>
+                { routePaths.length === 0 ? (
+                    <div className={s.messageContainer}>
+                        Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta väliltä.
+                        Kokeile asettaa pienempi kopioitava väli.
+                    </div>
+                ) : (
+                    <>
+                    { routePaths.map((routePath, index) => {
+                        return this.renderRoutePathRow(
+                            routePath, `row-${index}-${routePath.routeId}'`);
+                    })
+                    }
+                    </>
+                )}
+        </div>
+        );
+    }
+
+    render() {
         const isLoading = this.props.routePathCopySegmentStore!.isLoading;
+        const areNodePositionsValid = this.props.routePathCopySegmentStore!.areNodePositionsValid;
+        let state;
+        if (!areNodePositionsValid) {
+            state = 'hasError';
+        } else if (isLoading) {
+            state = 'isLoading';
+        } else {
+            state = 'showResults';
+        }
 
         return (
             <div className={s.routePathCopySegmentView}>
                 <div className={s.topic}>
                     Kopioitavat reitinsuuntasegmentit
                 </div>
-                { isLoading ? (
+                {{
+                    hasError: this.renderErrorMessage(),
+                    isLoading:
                     <div className={s.loaderContainer}>
                         <Loader size={LoaderSize.SMALL} />
-                    </div>
-                ) : (
-                    <div className={s.routePathList}>
-                        { routePaths.length === 0 ? (
-                            <div className={s.noResultsContainer}>
-                                Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta väliltä.
-                                Kokeile asettaa pienempi kopioitava väli.
-                            </div>
-                        ) : (
-                            <>
-                            { routePaths.map((routePath, index) => {
-                                return this.renderRoutePathRow(
-                                    routePath, `row-${index}-${routePath.routeId}'`);
-                            })
-                            }
-                            </>
-                        )}
-                    </div>
-                )
-                }
+                    </div>,
+                    showResults: this.renderResults(),
+                }[state]}
             </div>
         );
     }

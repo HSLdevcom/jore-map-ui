@@ -35,6 +35,7 @@ class RoutePathCopySegmentStore {
     @observable private _routePaths: ICopySegmentRoutePath[];
     @observable private _highlightedRoutePath: ICopySegmentRoutePath|null;
     @observable private _setNodeType: setNodeType;
+    @observable private _areNodePositionsValid: boolean;
 
     constructor() {
         this._isLoading = true;
@@ -43,6 +44,7 @@ class RoutePathCopySegmentStore {
         this._routePaths = [];
         this._highlightedRoutePath = null;
         this._setNodeType = 'startNode';
+        this._areNodePositionsValid = true;
     }
 
     @computed
@@ -73,6 +75,11 @@ class RoutePathCopySegmentStore {
     @computed
     get setNodeType(): setNodeType {
         return this._setNodeType;
+    }
+
+    @computed
+    get areNodePositionsValid(): boolean {
+        return this._areNodePositionsValid;
     }
 
     @action
@@ -109,6 +116,11 @@ class RoutePathCopySegmentStore {
     @action
     public setSetNodeType = (_setNodeType: setNodeType) => {
         this._setNodeType = _setNodeType;
+    }
+
+    @action
+    public setNodePositionValidity = (areNodePositionsValid: boolean) => {
+        this._areNodePositionsValid = areNodePositionsValid;
     }
 
     @action
