@@ -72,7 +72,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         if (!this.isStartNodeOnRoutePath(startNode.nodeId)
             && !this.isEndNodeOnRoutePath(endNode.nodeId)) {
-            ErrorStore.addError('Ainakin toisen kopioitavan välin alku tai loppusolmuista on oltava reitinsuunnalla.'); // tslint:disable-line max-line-length
+            ErrorStore.addError('Ainakin toisen kopioitavan välin alku- tai loppusolmuista on kuuluttava reitinsuuntaan, johon segmentti kopioidaan.'); // tslint:disable-line max-line-length
             RoutePathCopySegmentStore.setNodePositionValidity(false);
             return;
         }
