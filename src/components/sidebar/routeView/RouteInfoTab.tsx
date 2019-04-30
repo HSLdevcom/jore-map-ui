@@ -61,6 +61,7 @@ class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabStat
                         value={route.id}
                         onChange={onChange('id')}
                         validationResult={invalidPropertiesMap['id']}
+                        capitalizeInput={true}
                     />
                 </div>
                 <div className={s.flexRow}>
