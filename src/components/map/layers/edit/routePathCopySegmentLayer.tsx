@@ -66,12 +66,14 @@ class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProp
                     <Marker
                         latLng={startNode!.geometry}
                         color={START_MARKER_COLOR}
+                        isClickDisabled={true}
                     />
                 }
                 { endNode &&
                     <Marker
                         latLng={endNode!.geometry}
                         color={END_MARKER_COLOR}
+                        isClickDisabled={true}
                     />
                 }
                 {this.renderHighlightedRoutePath()}
