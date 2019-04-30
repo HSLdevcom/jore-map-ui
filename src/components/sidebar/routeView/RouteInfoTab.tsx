@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { RouteStore } from '~/stores/routeStore';
 import { ErrorStore } from '~/stores/errorStore';
+import RouteService from '~/services/routeService';
 import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -26,11 +27,50 @@ interface IRouteInfoTabProps {
 @inject('routeStore', 'errorStore')
 @observer
 class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabState>{
+    private existinRouteIds: string[] = [];
+
     constructor(props: any) {
         super(props);
         this.state = {
             isLoading: true,
         };
+    }
+
+    componentDidMount() {
+        if (this.props.isNewRoute) {
+            this.fetchAllRoutes();
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.isNewRoute) {
+            this.fetchAllRoutes();
+        }
+    }
+
+    private fetchAllRoutes = async () => {
+        if (this.existinRouteIds.length > 0) return;
+
+        try {
+            this.existinRouteIds = await RouteService.fetchAllRoutes();
+        } catch (e) {
+            this.props.errorStore!.addError('Olemassa olevien reittien haku ei onnistunut', e);
+        }
+    }
+
+    private onChangeRouteId = (routeId: string) => {
+        this.props.onChangeRouteProperty('id')(routeId);
+        if (this.isRouteAlreadyFound(routeId)) {
+            const validationResult: IValidationResult = {
+                isValid: false,
+                errorMessage: `Reitti ${routeId} on jo olemassa.`,
+            };
+            this.props.setValidatorResult('id', validationResult);
+        }
+    }
+
+    private isRouteAlreadyFound = (routeId: string): boolean => {
+        return Boolean(this.existinRouteIds.includes(routeId));
     }
 
     render() {
@@ -59,7 +99,7 @@ class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabStat
                         disabled={isUpdating}
                         label='REITIN TUNNUS'
                         value={route.id}
-                        onChange={onChange('id')}
+                        onChange={this.onChangeRouteId}
                         validationResult={invalidPropertiesMap['id']}
                         capitalizeInput={true}
                     />

@@ -25,6 +25,17 @@ class RouteService {
         return routes.map((res: IRoute) => res!);
     }
 
+    /**
+     * @return {string[]} list of all routeIds
+     */
+    public static fetchAllRoutes = async (): Promise<string[]> => {
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query(
+            { query: GraphqlQueries.getAllRoutesQuery() },
+        );
+
+        return queryResult.data.allReittis.nodes.map((node: any) => node.reitunnus);
+    }
+
     private static runFetchRouteQuery = async (routeId: string): Promise<IRoute> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query(
             { query: GraphqlQueries.getRouteQuery(), variables: { routeId } },

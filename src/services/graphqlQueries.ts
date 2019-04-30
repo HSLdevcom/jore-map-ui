@@ -70,6 +70,18 @@ const getRouteQuery = () => {
     );
 };
 
+const getAllRoutesQuery = () => {
+    return (
+        gql`{
+            allReittis {
+                nodes {
+                    reitunnus
+                }
+            }
+        }`
+    );
+};
+
 const getRoutePathQuery = () => {
     return (
         gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
@@ -435,6 +447,7 @@ export default {
     getLinkQuery,
     getLinksQuery,
     getRouteQuery,
+    getAllRoutesQuery,
     getRoutePathQuery,
     getLinksByStartNodeQuery,
     getLinksByStartNodeAndEndNodeQuery,
