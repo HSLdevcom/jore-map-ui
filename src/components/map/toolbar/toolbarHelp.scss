@@ -3,6 +3,7 @@
 $copyRoutePathToolButtonBorderWidth: 2px;
 
 .toolbarHelp {
+    pointer-events: auto;
     display: flex;
     flex-direction: column;
     background-color: $white;

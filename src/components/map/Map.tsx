@@ -26,6 +26,7 @@ import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
 import NetworkLayers from './layers/NetworkLayers';
 import * as s from './map.scss';
+import './map.css';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -212,18 +213,15 @@ class LeafletMap extends React.Component<IMapProps> {
                             <AddressSearch map={this.mapReference} />
                         </div>
                     </Control>
-
                     <Control position='topright'>
                         <MeasurementControl />
                     </Control>
-
                     <Control position='bottomleft'>
                         <div className={s.mapLayersContainer}>
                             <MapLayersControl />
                             <MapLayersZoomHint />
                         </div>
                     </Control>
-
                     <Control position='bottomright'>
                         <FullscreenControl />
                     </Control>
