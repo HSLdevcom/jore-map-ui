@@ -11,8 +11,8 @@ interface IRoutePathCopySegmentLayerProps {
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
 }
 
-const START_MARKER_COLOR = '#4286f4';
-const END_MARKER_COLOR = '#4286f4';
+const START_MARKER_COLOR = '#00d4ff';
+const END_MARKER_COLOR = '#ff96f4';
 const HIGHLIGHTED_LINK_TO_COPY_COLOR = '#00df0b';
 const HIGHLIGHTED_LINK_NOT_TO_COPY_COLOR = '#f7e200';
 

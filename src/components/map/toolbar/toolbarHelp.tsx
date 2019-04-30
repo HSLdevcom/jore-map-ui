@@ -15,19 +15,20 @@ class ToolbarHelp extends Component {
             RoutePathCopySegmentStore.setSetNodeType(setNodeType);
         };
         const setNodeType = RoutePathCopySegmentStore.setNodeType;
+
         return (
             <div className={s.copyRoutePathToolButtons}>
                 <Button
                     onClick={setSetNodeType('startNode')}
-                    type={setNodeType === 'startNode' ?
-                        ButtonType.SQUARE : ButtonType.SQUARE_SECONDARY}
+                    type={ButtonType.SQUARE}
+                    className={setNodeType === 'startNode' ? s.startButtonSelected : s.startButton}
                 >
                     Alkusolmu
                 </Button>
                 <Button
                     onClick={setSetNodeType('endNode')}
-                    type={setNodeType === 'endNode' ?
-                        ButtonType.SQUARE : ButtonType.SQUARE_SECONDARY}
+                    type={ButtonType.SQUARE}
+                    className={setNodeType === 'endNode' ? s.endButtonSelected : s.endButton}
                 >
                     Loppusolmu
                 </Button>
