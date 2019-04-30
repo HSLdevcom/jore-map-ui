@@ -155,7 +155,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                     <>
                     { routePaths.map((routePath, index) => {
                         return this.renderRoutePathRow(
-                            routePath, `row-${index}-${routePath.routeId}'`);
+                            routePath, `row-${index}-${routePath.routeId}`);
                     })
                     }
                     </>
