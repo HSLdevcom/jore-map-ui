@@ -75,14 +75,36 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         this.props.dialogStore!.setLoaderMessage('Kopioidaan reitinsuunnan segmenttiä...');
 
         const copySegmentStore = this.props.routePathCopySegmentStore;
-        const startNodeId = copySegmentStore!.startNode!.nodeId;
-        const endNodeId = copySegmentStore!.endNode!.nodeId;
+        const copyStartNodeId = copySegmentStore!.startNode!.nodeId;
+        const copyEndNodeId = copySegmentStore!.endNode!.nodeId;
         const segmentsToCopy = copySegmentStore!
-            .getSegmentLinksToCopy(routePath, startNodeId, endNodeId);
+            .getSegmentLinksToCopy(routePath, copyStartNodeId, copyEndNodeId);
 
-        for (let i = 0; i < segmentsToCopy.length; i += 1) {
-            await this.copySegment(segmentsToCopy[i].routePathLinkId);
+        const isNaturalDirection = this.props.routePathStore!
+            .hasNodeOddAmountOfNeighbors(copyStartNodeId);
+
+        const isOppositeDirection = this.props.routePathStore!
+            .hasNodeOddAmountOfNeighbors(copyEndNodeId);
+
+        if (isNaturalDirection) {
+            // orderNumbers start from 1
+            let orderNumber = this.props.routePathStore!.routePath!.routePathLinks!
+            .find(link => link.endNode.id === copyStartNodeId)!.orderNumber + 1;
+            for (let i = 0; i < segmentsToCopy.length; i += 1) {
+                await this.copySegment(segmentsToCopy[i].routePathLinkId, orderNumber);
+                orderNumber += 1;
+            }
+        } else if (isOppositeDirection) {
+            const orderNumber = this.props.routePathStore!.routePath!.routePathLinks!
+                .find(link => link.startNode.id === copyEndNodeId)!.orderNumber;
+            for (let i = segmentsToCopy.length - 1; i >= 0; i -= 1) {
+                await this.copySegment(segmentsToCopy[i].routePathLinkId, orderNumber);
+            }
+        } else {
+            // sanity check
+            throw 'Node with odd neighbors not found from current routePath by startNodeId or endNodeId.'; // tslint:disable-line max-line-length
         }
+
         this.props.routePathCopySegmentStore!.clear();
         this.props.toolbarStore!.selectTool(null);
 
@@ -90,9 +112,11 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         this.props.dialogStore!.setFadeMessage('Segmentti kopioitu!', DialogType.Success);
     }
 
-    private copySegment = async (routePathLinkId: number) => {
+    private copySegment = async (routePathLinkId: number, fixedOrderNumber: number) => {
         const routePathLink: IRoutePathLink = await RoutePathLinkService
             .fetchRoutePathLink(routePathLinkId);
+        routePathLink.orderNumber = fixedOrderNumber;
+
         this.props.routePathStore!.addLink(routePathLink);
     }
 

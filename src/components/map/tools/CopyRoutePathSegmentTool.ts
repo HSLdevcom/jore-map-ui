@@ -1,5 +1,6 @@
 import EventManager from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
+import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
@@ -69,6 +70,12 @@ class CopyRoutePathSegmentTool implements BaseTool {
         const endNode = RoutePathCopySegmentStore.endNode;
         if (!startNode || !endNode) return;
 
+        if (!this.isStartNodeOnRoutePath(startNode.nodeId)
+            && !this.isEndNodeOnRoutePath(endNode.nodeId)) {
+            ErrorStore.addError('Ainakin toisen kopioitavan välin alku tai loppusolmuista on oltava reitinsuunnalla.'); // tslint:disable-line max-line-length
+            return;
+        }
+
         RoutePathCopySegmentStore.setIsLoading(true);
 
         const transitType = RoutePathStore.routePath!.transitType;
@@ -76,6 +83,16 @@ class CopyRoutePathSegmentTool implements BaseTool {
             .fetchRoutePathLinkSegment(startNode.nodeId, endNode.nodeId, transitType);
         RoutePathCopySegmentStore.setRoutePaths(routePaths);
         RoutePathCopySegmentStore.setIsLoading(false);
+    }
+
+    private isStartNodeOnRoutePath(nodeId: string) {
+        const routePathLinks = RoutePathStore.routePath!.routePathLinks;
+        return Boolean(routePathLinks!.find(link => link.endNode.id === nodeId));
+    }
+
+    private isEndNodeOnRoutePath(nodeId: string) {
+        const routePathLinks = RoutePathStore.routePath!.routePathLinks;
+        return Boolean(routePathLinks!.find(link => link.startNode.id === nodeId));
     }
 }
 

@@ -189,6 +189,10 @@ export class RoutePathStore {
         this._neighborToAddType = neighborToAddType;
     }
 
+    /**
+     * Uses given routePathLink's orderNumber to place given routePathLink in the correct position
+     * in routePath.routePathLinks array
+     */
     @action
     public addLink = (routePathLink: IRoutePathLink) => {
         this._routePath!.routePathLinks!.splice(
@@ -284,6 +288,12 @@ export class RoutePathStore {
             return node.geometry;
         }
         return [];
+    }
+
+    public hasNodeOddAmountOfNeighbors = (nodeId: string) => {
+        const routePath = this.routePath;
+        return routePath!.routePathLinks!.filter(x => x.startNode.id === nodeId).length
+            !== routePath!.routePathLinks!.filter(x => x.endNode.id === nodeId).length;
     }
 
     private recalculateOrderNumbers = () => {

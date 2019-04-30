@@ -83,12 +83,6 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         return res;
     }
 
-    public hasNodeOddAmountOfNeighbors = (node: INode) => {
-        const routePath = this.props.routePathStore!.routePath;
-        return routePath!.routePathLinks!.filter(x => x.startNode.id === node.id).length
-            !== routePath!.routePathLinks!.filter(x => x.endNode.id === node.id).length;
-    }
-
     private renderNode = (node: INode, linkOrderNumber: number, index: number) => {
         const selectedTool = this.props.toolbarStore!.selectedTool;
 
@@ -101,7 +95,7 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         let isNodeHighlighted;
         // Check if AddNewRoutePathLink is active
         if (areNodesClickable) {
-            isNodeHighlighted = this.hasNodeOddAmountOfNeighbors(node);
+            isNodeHighlighted = this.props.routePathStore!.hasNodeOddAmountOfNeighbors(node.id);
             // Allow click event for highlighted nodes only
             if (isNodeHighlighted) {
                 const clickParams: IEditRoutePathLayerNodeClickParams = { node, linkOrderNumber };
