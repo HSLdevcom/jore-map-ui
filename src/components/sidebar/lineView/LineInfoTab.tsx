@@ -138,6 +138,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState>{
                         value={line.id}
                         onChange={this.onChangeLineId}
                         validationResult={invalidPropertiesMap['id']}
+                        capitalizeInput={true}
                     />
                     <InputContainer
                         disabled={isEditingDisabled}

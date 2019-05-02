@@ -7,7 +7,7 @@ import React from 'react';
 import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
 import { MapStore } from '~/stores/mapStore';
-import { RouteStore } from '~/stores/routeStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
@@ -30,7 +30,7 @@ import './map.css';
 
 interface IMapProps {
     mapStore?: MapStore;
-    routeStore?: RouteStore;
+    routeListStore?: RouteListStore;
     nodeStore?: NodeStore;
     toolbarStore?: ToolbarStore;
 }
@@ -52,7 +52,7 @@ export type LeafletContext = {
     popupContainer?: L.Layer,
 };
 
-@inject('mapStore', 'routeStore', 'nodeStore', 'toolbarStore')
+@inject('mapStore', 'routeListStore', 'nodeStore', 'toolbarStore')
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -163,7 +163,7 @@ class LeafletMap extends React.Component<IMapProps> {
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
         const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
-        const routes = toJS(this.props.routeStore!.routes);
+        const routes = toJS(this.props.routeListStore!.routes);
         return (
             <div
                 className={classnames(
