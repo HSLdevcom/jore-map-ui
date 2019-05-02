@@ -3,6 +3,8 @@ enum SubSites {
     home = '/',
     line = '/line/:id',
     newLine = '/line/new',
+    route = '/route/:id',
+    newRoute = '/route/new',
     routes = '/routes/',
     link = '/link/:id',
     splitLink = '/splitLink/:id',

@@ -44,10 +44,12 @@ interface ITabProps {
     setSelectedTabIndex?: (index: number) => void;
     index?: number;
     isActive?: boolean;
+    isDisabled?: boolean;
 }
 
 const Tab = observer((props: ITabProps) => {
     const isActive = props.isActive;
+    const isDisabled = props.isDisabled;
     const setSelectedTabIndex = () => props.setSelectedTabIndex!(props.index!);
 
     return (
@@ -56,6 +58,7 @@ const Tab = observer((props: ITabProps) => {
                 classnames(
                     s.tab,
                     isActive ? s.active : null,
+                    isDisabled ? s.disabled : null,
                 )
             }
             onClick={setSelectedTabIndex}

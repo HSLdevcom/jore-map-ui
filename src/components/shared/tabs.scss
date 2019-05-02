@@ -32,6 +32,13 @@
             border-left: none;
             border-right: none;
         }
+
+        .disabled {
+            cursor: auto;
+            pointer-events: none;
+            background-color: rgba(0,0,0,.3);
+            filter: brightness(75%);
+        }
     }
 
     .contentList{

@@ -12,6 +12,7 @@ import MapStore from './stores/mapStore';
 import SearchResultStore from './stores/searchResultStore';
 import LineStore from './stores/lineStore';
 import RouteStore from './stores/routeStore';
+import RouteListStore from './stores/routeListStore';
 import RoutePathStore from './stores/routePathStore';
 import SearchStore from './stores/searchStore';
 import PopupStore from './stores/popupStore';
@@ -39,6 +40,7 @@ const stores = {
     loginStore: LoginStore,
     lineStore: LineStore,
     routeStore: RouteStore,
+    routeListStore: RouteListStore,
     routePathStore: RoutePathStore,
     searchStore: SearchStore,
     popupStore: PopupStore,

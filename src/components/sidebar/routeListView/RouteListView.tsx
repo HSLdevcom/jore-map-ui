@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router';
-import { RouteStore } from '~/stores/routeStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -13,16 +13,16 @@ import SearchInput from '../../shared/searchView/SearchInput';
 import RouteList from './RouteList';
 import SearchResults from '../../shared/searchView/SearchResults';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
-import * as s from './routesView.scss';
+import * as s from './routeListView.scss';
 
-interface IRoutesViewProps{
-    routeStore?: RouteStore;
+interface IRouteListViewProps{
+    routeListStore?: RouteListStore;
     searchStore?: SearchStore;
 }
 
-@inject('routeStore', 'searchStore')
+@inject('routeListStore', 'searchStore')
 @observer
-class RoutesView extends React.Component<IRoutesViewProps> {
+class RouteListView extends React.Component<IRouteListViewProps> {
     private toggleTransitType = (type: TransitType) => {
         this.props.searchStore!.toggleTransitType(type);
     }
@@ -35,12 +35,12 @@ class RoutesView extends React.Component<IRoutesViewProps> {
     }
 
     componentWillUnmount() {
-        this.props.routeStore!.clearRoutes();
+        this.props.routeListStore!.clearRoutes();
     }
 
     render() {
         return (
-            <div className={s.routesView}>
+            <div className={s.routeListView}>
                 <SearchInput/>
                 { this.props.searchStore!.searchInput === '' ? (
                     <Route component={RouteList} />
@@ -60,4 +60,4 @@ class RoutesView extends React.Component<IRoutesViewProps> {
     }
 }
 
-export default RoutesView;
+export default RouteListView;
