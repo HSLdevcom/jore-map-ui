@@ -9,7 +9,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import lineValidationModel from '~/models/validationModels/lineValidationModel';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineStore } from '~/stores/lineStore';
-import { DialogStore } from '~/stores/dialogStore';
+import { AlertStore } from '~/stores/alertStore';
 import { Tabs, TabList, Tab, ContentList, ContentItem } from '~/components/shared/Tabs';
 import LineService from '~/services/lineService';
 import LineFactory from '~/factories/lineFactory';
@@ -22,7 +22,7 @@ import SidebarHeader from '../SidebarHeader';
 import * as s from './lineView.scss';
 
 interface ILineViewProps {
-    dialogStore?: DialogStore;
+    alertStore?: AlertStore;
     errorStore?: ErrorStore;
     lineStore?: LineStore;
     match?: match<any>;
@@ -36,7 +36,7 @@ interface ILineViewState {
     selectedTabIndex: number;
 }
 
-@inject('lineStore', 'errorStore', 'dialogStore')
+@inject('lineStore', 'errorStore', 'alertStore')
 @observer
 class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
     constructor(props: ILineViewProps) {
@@ -120,7 +120,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState>{
                 await LineService.updateLine(line!);
             }
 
-            this.props.dialogStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;
