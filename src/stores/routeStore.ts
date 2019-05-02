@@ -1,75 +1,61 @@
 import { action, computed, observable } from 'mobx';
-import { IRoute, IRoutePath } from '~/models';
-import ColorScale from '~/util/colorScale';
+import _ from 'lodash';
+import { IRoute } from '~/models';
 
-export class RouteStore {
-    @observable private _routes: IRoute[];
-    private colorScale: ColorScale;
+class RouteStore {
+    @observable private _route: IRoute|null;
+    @observable private _oldRoute: IRoute|null;
 
-    constructor() {
-        this._routes = [];
-        this.colorScale = new ColorScale();
+    @computed
+    get route(): IRoute|null {
+        return this._route;
     }
 
     @computed
-    get routes(): IRoute[] {
-        return this._routes;
-    }
-
-    set routes(value: IRoute[]) {
-        this.colorScale = new ColorScale();
-        this._routes = value;
-    }
-
-    @action
-    public addToRoutes = (routes: IRoute[]) => {
-        this._routes.push(...routes);
+    get isDirty() {
+        // line and routePaths can't change in routeView, omit them from
+        // the comparison to prevent lag
+        return !_.isEqual(
+            _.omit(this._route, ['line', 'routePaths']),
+            _.omit(this._oldRoute, ['line', 'routePaths']),
+          );
     }
 
     @action
-    public removeFromRoutes = (routeId: string) => {
-        for (let i = 0; i < this._routes.length; i += 1) {
-            if (this._routes[i].id === routeId) {
-                this._routes[i].routePaths
-                    .forEach(routePath => this.colorScale.releaseColor(routePath.color!));
-                this._routes.splice(i, 1);
-            }
+    public setRoute = (route: IRoute) => {
+        this._route = route;
+        this.setOldRoute(this._route);
+    }
+
+    @action
+    public setOldRoute = (route: IRoute) => {
+        this._oldRoute = _.cloneDeep(route);
+    }
+
+    @action
+    public updateRouteProperty = (property: string, value: string|number|Date) => {
+        this._route = {
+            ...this._route!,
+            [property]: value,
+        };
+    }
+
+    @action
+    public resetChanges = () => {
+        if (this._oldRoute) {
+            this.setRoute(this._oldRoute);
         }
     }
 
     @action
-    public clearRoutes = () => {
-        this._routes = [];
-        this.colorScale = new ColorScale();
+    public clear = () => {
+        this._route = null;
     }
 
-    private getRoutePath = (internalId: string): IRoutePath | null => {
-        let routePathObservable: IRoutePath | null = null;
-        this._routes.find((_route) => {
-            const found = _route.routePaths.find(_routePath =>
-                _routePath.internalId === internalId,
-            );
-            if (found) {
-                routePathObservable = found;
-                return true;
-            }
-            return false;
-        });
-        return routePathObservable;
-    }
-
-    @action
-    public toggleRoutePathVisibility = (internalId: string) => {
-        const routePathObservable = this.getRoutePath(internalId);
-        if (routePathObservable) {
-            routePathObservable.visible = !routePathObservable.visible;
-            routePathObservable.color = routePathObservable.visible ?
-                this.colorScale.reserveColor()
-                : this.colorScale.releaseColor(routePathObservable.color!);
-        }
-    }
 }
 
-const observableStoreStore = new RouteStore();
+export default new RouteStore();
 
-export default observableStoreStore;
+export {
+    RouteStore,
+};

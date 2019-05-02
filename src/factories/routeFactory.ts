@@ -16,9 +16,27 @@ class RouteFactory {
             routePaths: routePaths
                 .sort((a, b) => b.endTime.getTime() - a.endTime.getTime()),
             routeName: externalRoute.reinimi,
-            routeNameSwedish: externalRoute.reinimir,
+            routeNameShort: externalRoute.reinimilyh,
+            routeNameSw: externalRoute.reinimir,
+            routeNameShortSw: externalRoute.reinimilyhr,
             lineId: externalRoute.lintunnus,
             id: externalRoute.reitunnus,
+            modifiedBy: externalRoute.reikuka,
+            modifiedOn: externalRoute.reiviimpvm,
+        };
+    }
+
+    public static createNewRoute = (lineId: string): IRoute => {
+        return {
+            lineId,
+            id: '',
+            routePaths: [],
+            routeName: '',
+            routeNameShort: '',
+            routeNameSw: '',
+            routeNameShortSw: '',
+            modifiedBy: '',
+            modifiedOn: new Date(),
         };
     }
 }

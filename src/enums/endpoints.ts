@@ -3,6 +3,7 @@ enum endpoints { // TODO: rename as endpointPath
     EXISTING_SESSION = 'existingSession',
     LOGOUT = 'logout',
     LINE = 'line',
+    ROUTE = 'route',
     ROUTEPATH = 'routePath',
     ROUTELINK = 'routeLink',
     NODE = 'node',

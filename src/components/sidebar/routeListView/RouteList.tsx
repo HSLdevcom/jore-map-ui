@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import React from 'react';
-import { RouteStore } from '~/stores/routeStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import { SearchStore } from '~/stores/searchStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -25,12 +25,12 @@ interface IRouteListState {
 interface IRouteListProps {
     errorStore?: ErrorStore;
     searchStore?: SearchStore;
-    routeStore?: RouteStore;
+    routeListStore?: RouteListStore;
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
 }
 
-@inject('searchStore', 'routeStore', 'networkStore', 'routePathStore', 'errorStore')
+@inject('searchStore', 'routeListStore', 'networkStore', 'routePathStore', 'errorStore')
 @observer
 class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     constructor(props: any) {
@@ -50,15 +50,15 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
             this.setState({ isLoading: true });
-            const currentRouteIds = this.props.routeStore!.routes.map(r => r.id);
+            const currentRouteIds = this.props.routeListStore!.routes.map(r => r.id);
             const missingRouteIds = routeIds.filter(id => !currentRouteIds.includes(id));
             currentRouteIds
                 .filter(id => !routeIds.includes(id))
-                .forEach(id => this.props.routeStore!.removeFromRoutes(id));
+                .forEach(id => this.props.routeListStore!.removeFromRoutes(id));
 
             try {
                 const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
-                this.props.routeStore!.addToRoutes(routes);
+                this.props.routeListStore!.addToRoutes(routes);
             } catch (e) {
                 this.props.errorStore!.addError(
                     `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
@@ -70,7 +70,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     }
 
     private renderRouteList = () => {
-        const routes = this.props.routeStore!.routes;
+        const routes = this.props.routeListStore!.routes;
 
         if (routes.length < 1) return null;
 

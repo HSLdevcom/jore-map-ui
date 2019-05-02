@@ -10,7 +10,7 @@ type inputType = 'text' | 'number' | 'date';
 
 interface IInputProps {
     label: string|JSX.Element;
-    onChange: (value: any) => void;
+    onChange?: (value: any) => void;
     validationResult?: IValidationResult;
     placeholder?: string;
     className?: string;
@@ -18,19 +18,23 @@ interface IInputProps {
     value?: string|number|Date;
     validatorRule?: string;
     type?: inputType; // Defaults to text
+    capitalizeInput?: boolean;
 }
 
 const renderEditableContent = (props: IInputProps) => {
     const type = props.type || 'text';
     const validationResult = props.validationResult;
     const onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        const value = e.currentTarget.value;
+        let value = e.currentTarget.value;
         if (props.type === 'number') {
             const parsedValue = parseFloat(value);
             props.onChange!(
                 !isNaN(parsedValue) ? parsedValue : null,
             );
         } else {
+            if (props.capitalizeInput) {
+                value = value.toUpperCase();
+            }
             props.onChange!(value);
         }
     };

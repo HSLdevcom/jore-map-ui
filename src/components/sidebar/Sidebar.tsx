@@ -3,16 +3,17 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
-import { RouteStore } from '~/stores/routeStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import { SearchStore } from '~/stores/searchStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import LinkView from './linkView/LinkView';
-import RoutesView from './routesView/RoutesView';
+import RouteListView from './routeListView/RouteListView';
 import HomeView from './homeView/HomeView';
 import LineView from './lineView/LineView';
+import RouteView from './routeView/RouteView';
 import RoutePathView from './routePathView/RoutePathView';
 import NodeView from './nodeView/NodeView';
 import * as s from './sidebar.scss';
@@ -22,7 +23,7 @@ import * as s from './sidebar.scss';
 // tslint:disable-next-line
 // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
 interface ISidebarProps {
-    routeStore?: RouteStore;
+    routeListStore?: RouteListStore;
     searchStore?: SearchStore;
     toolbarStore?: ToolbarStore;
     location: Location;
@@ -32,17 +33,21 @@ interface ILinelistState {
     searchInput: string;
 }
 
-@inject('routeStore', 'searchStore', 'toolbarStore')
+@inject('routeListStore', 'searchStore', 'toolbarStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
-    private renderRoutesView = () => {
+    private renderRouteListView = () => {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
-        return queryParams ? <RoutesView /> : <Redirect to='/' />;
+        return queryParams ? <RouteListView /> : <Redirect to='/' />;
     }
     private renderNewLineView = (props: any) =>
         <LineView {...props} isNewLine={true} />
     private renderLineView = (props: any) =>
         <LineView {...props} isNewLine={false} />
+    private renderNewRouteView = (props: any) =>
+        <RouteView {...props} isNewRoute={true} />
+    private renderRouteView = (props: any) =>
+        <RouteView {...props} isNewRoute={false} />
     private renderNewNodeView = (props: any) =>
         <NodeView {...props} isNewNode={true} />
     private renderNodeView = (props: any) =>
@@ -82,8 +87,18 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         />
                         <Route
                             exact={true}
+                            path={subSites.newRoute}
+                            component={this.renderNewRouteView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.route}
+                            component={this.renderRouteView}
+                        />
+                        <Route
+                            exact={true}
                             path={subSites.routes}
-                            component={this.renderRoutesView}
+                            component={this.renderRouteListView}
                         />
                         <Route
                             exact={true}

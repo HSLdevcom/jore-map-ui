@@ -1,6 +1,12 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { Button } from '~/components/controls';
+import ButtonType from '~/enums/buttonType';
 import { LineStore } from '~/stores/lineStore';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import QueryParams from '~/routing/queryParams';
+import navigator from '~/routing/navigator';
 import s from './lineRoutesTab.scss';
 
 interface ILineRoutesTabProps {
@@ -10,6 +16,17 @@ interface ILineRoutesTabProps {
 @inject('lineStore')
 @observer
 class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
+    private redirectToNewRouteView = () => {
+        const line = this.props.lineStore!.line;
+
+        const newRouteLink = routeBuilder
+            .to(SubSites.newRoute)
+            .set(QueryParams.lineId, line!.id)
+            .toLink();
+
+        navigator.goTo(newRouteLink);
+    }
+
     render() {
         const line = this.props.lineStore!.line;
         if (!line) return null;
@@ -23,6 +40,14 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                         // TODO: render routes list here
                         <div>Reittilista tulee tähän (työn alla).</div>
                     )}
+
+                    <Button
+                        onClick={this.redirectToNewRouteView}
+                        className={s.createRouteButton}
+                        type={ButtonType.SQUARE}
+                    >
+                        {`Luo uusi reitti linjalle ${line.id}`}
+                    </Button>
                 </div>
             </div>
         );
