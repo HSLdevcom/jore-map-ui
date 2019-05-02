@@ -7,15 +7,23 @@ interface IModalProps {
     children: React.ReactNode;
 }
 
-const Modal = observer((props: IModalProps) => (
-    <div
-        className={s.modalView}
-        onClick={props.onExteriorClick ? props.onExteriorClick : undefined}
-    >
-        <div className={s.wrapper}>
-            {props.children}
+const Modal = observer((props: IModalProps) => {
+    const onExteriorDivClick = (e: any) => {
+        if (e.target.className === s.modalView && props.onExteriorClick) {
+            props.onExteriorClick();
+        }
+    };
+
+    return(
+        <div
+            className={s.modalView}
+            onClick={onExteriorDivClick}
+        >
+            <div className={s.wrapper}>
+                {props.children}
+            </div>
         </div>
-    </div>
-));
+    );
+});
 
 export default Modal;
