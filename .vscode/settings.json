@@ -4,7 +4,7 @@
     "editor.insertSpaces": true,
     "editor.codeActionsOnSave": {
         "source.fixAll.tslint": true,
-    },
+    }, 
     "files.exclude": {
         "**/*.scss.d.ts": true,
     }
