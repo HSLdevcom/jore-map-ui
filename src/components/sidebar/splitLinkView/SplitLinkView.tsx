@@ -57,6 +57,10 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         };
     }
 
+    componentDidMount() {
+        this.init();
+    }
+
     private init = async () => {
         this.setState({ isLoading: true });
 
@@ -86,16 +90,12 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             }
         } catch (e) {
             this.props.errorStore!.addError(
-                    // tslint:disable-next-line:max-line-length
-                    `Haku löytää linkin ja solmun joka olet valinnut epäonnistui`,
-                    e,
-                );
+                // tslint:disable-next-line:max-line-length
+                `Jaettavan linkin ja solmun haussa tapahtui virhe.`,
+                e,
+            );
         }
         this.setState({ isLoading: false });
-    }
-
-    componentDidMount() {
-        this.init();
     }
 
     fetchRoutePaths = async (date: Date) => {
@@ -132,7 +132,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         this.setState({ selectedRoutePathIds: newSelectedRouteIds });
     }
 
-    saveSplittedLink = () => {
+    save = () => {
         const splittedRoutePaths =
             this.state.routePaths
                 .filter(rp => this.state.selectedRoutePathIds.includes(rp.internalId));
@@ -147,7 +147,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         });
     }
 
-    clearSelectedRoutePaths = () => {
+    unselectAllRoutePaths = () => {
         this.setState({
             selectedRoutePathIds: [],
         });
@@ -167,7 +167,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             <div className={s.splitLinkView}>
                 <div className={s.content}>
                     <SidebarHeader>
-                        Linkin jako
+                        Linkin jako solmulla
                     </SidebarHeader>
                     <div className={s.section}>
                         <SplitLinkInfo link={this.state.link} node={this.state.node} />
@@ -175,7 +175,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                     { this.state.node.type === NodeType.STOP &&
                         <div className={s.section}>
                             <InputContainer
-                                label='Mistä eteenpäin katkaistaan'
+                                label='Mistä eteenpäin jaetaan'
                                 type='date'
                                 value={this.state.selectedDate}
                                 onChange={this.updateSelectedDate}
@@ -184,19 +184,20 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                     }
                     { this.state.selectedDate &&
                         <div className={classnames(s.section, s.expanded)}>
-                            <div className={s.inputLabel}>Mitkä reitinsuunnat katkaistaan</div>
+                            <div className={s.inputLabel}>Mitkä reitinsuunnat jaetaan?</div>
                             <RoutePathSelector
                                 toggleIsRoutePathSelected={this.toggleIsRoutePathSelected}
                                 routePaths={this.state.routePaths}
                                 selectedIds={this.state.selectedRoutePathIds}
                                 isLoading={this.state.isLoadingRoutePaths}
+                                selectedDate={this.state.selectedDate}
                             />
                             <div className={s.toggleButtons}>
                                 <Button onClick={this.selectAllRoutePaths} type={ButtonType.SQUARE}>
                                     Valitse kaikki
                                 </Button>
                                 <Button
-                                    onClick={this.clearSelectedRoutePaths}
+                                    onClick={this.unselectAllRoutePaths}
                                     type={ButtonType.SQUARE}
                                 >
                                     Tyhjennä
@@ -208,7 +209,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                 <Button
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
-                    onClick={this.saveSplittedLink}
+                    onClick={this.save}
                 >
                     Jaa linkki
                 </Button>

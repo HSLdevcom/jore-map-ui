@@ -64,6 +64,4 @@ export class AlertStore {
     }
 }
 
-const observableAlertStore = new AlertStore();
-
-export default observableAlertStore;
+export default new AlertStore();

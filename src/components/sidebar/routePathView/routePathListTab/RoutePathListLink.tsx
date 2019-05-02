@@ -111,7 +111,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text='Ohitusaika kirja-aikat.'
+                            content='Ohitusaika kirja-aikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -123,7 +123,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text='Ohitusaika nettiaikat.'
+                            content='Ohitusaika nettiaikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -142,7 +142,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text='Ohitusaika nettiaikat.'
+                            content='Ohitusaika nettiaikat.'
                             onClick={this.onChange}
                         />
                     </div>
@@ -154,7 +154,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         />
                         <Checkbox
                             checked={false}
-                            text='Ohitusaika kirja-aikat.'
+                            content='Ohitusaika kirja-aikat.'
                             onClick={this.onChange}
                         />
                     </div>

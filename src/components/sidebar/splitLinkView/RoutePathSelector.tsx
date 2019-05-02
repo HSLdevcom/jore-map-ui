@@ -10,6 +10,7 @@ interface IRoutePathSelectorProps {
     selectedIds: string[];
     isLoading?: boolean;
     toggleIsRoutePathSelected: (routePathId: string) => void;
+    selectedDate: Date;
 }
 
 const RoutePathSelector = (props: IRoutePathSelectorProps) => {
@@ -46,13 +47,16 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
     return (
         <div className={s.routePathSelectorView}>
                 {props.routePaths.length === 0 &&
-                    <div>Ei löytänyt reitinsuuntia</div>
+                    <div>
+                        Päivämäärän {Moment(props.selectedDate).format('DD.MM.YYYY')}
+                        jälkeen voimassa olevia reitinsuuntia ei löytynyt.
+                    </div>
                 }
                 {props.routePaths.length !== 0 &&
                     <div className={s.list}>
                         {props.routePaths.map((rp, index) =>
                             <Checkbox
-                                text={getCheckboxContent(rp)}
+                                content={getCheckboxContent(rp)}
                                 key={index}
                                 checked={props.selectedIds.includes(rp.internalId)}
                                 onClick={toggleRoutePath(rp.internalId)}

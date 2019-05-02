@@ -33,7 +33,7 @@ const Button = observer((props: IButtonProps) => {
         }
     };
 
-    const onClick = (e: any) => {
+    const onClick = () => {
         if (!props.disabled) {
             props.onClick();
         }

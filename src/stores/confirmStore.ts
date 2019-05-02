@@ -12,7 +12,7 @@ export class ConfirmStore {
     }
 
     @computed
-    get message() {
+    get content() {
         return this._content;
     }
 
@@ -23,11 +23,11 @@ export class ConfirmStore {
 
     @action
     public openConfirm = (
-        message: React.ReactNode,
+        content: React.ReactNode,
         onConfirm: () => void,
         onCancel?: () => void,
     ) => {
-        this._content = message;
+        this._content = content;
         this._onConfirm = onConfirm;
         this._isOpen = true;
         if (onCancel) {
@@ -60,6 +60,4 @@ export class ConfirmStore {
     }
 }
 
-const observableAlertStore = new ConfirmStore();
-
-export default observableAlertStore;
+export default new ConfirmStore();

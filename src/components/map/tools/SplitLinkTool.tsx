@@ -19,8 +19,8 @@ import * as s from './splitLinkTool.scss';
  */
 class SplitLinkTool implements BaseTool {
     public toolType = ToolbarTool.SplitLink;
-    public toolHelpHeader = 'Jakaa linkin solmulla';
-    public toolHelpText = 'Valitse solmun millä haluat jakaa linkin';
+    public toolHelpHeader = 'Jaa linkki solmulla';
+    public toolHelpText = 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
@@ -46,14 +46,14 @@ class SplitLinkTool implements BaseTool {
                 ))
             }
             <div className={s.note}>
-                (Muutoksia eivät vielä tallenneta)
+                (Muutoksia ei vielä tallenneta)
             </div>
         </div>
     )
 
     navigateToSplitLink = (nodeId: string) => {
         const link = LinkStore.link;
-        if (!link) throw 'Ei löytänyt valittu linkki';
+        if (!link) throw 'Valittua linkkiä ei löytynyt.';
         const url = RouteBuilder.to(SubSites.splitLink)
             .clear().toTarget([
                 link.startNode.id,
@@ -70,7 +70,7 @@ class SplitLinkTool implements BaseTool {
 
         const node = await NodeService.fetchNode(nodeId);
         if (!node) {
-            ErrorStore.addError(`Solmu soltunnuksella: ${nodeId} ei löytänyt`);
+            ErrorStore.addError(`Solmua (soltunnus ${nodeId}) ei löytynyt`);
             return;
         }
         let confirmContent: React.ReactNode = null;
