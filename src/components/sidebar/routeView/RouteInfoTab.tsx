@@ -29,7 +29,7 @@ interface IRouteInfoTabProps {
 class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabState>{
     private existinRouteIds: string[] = [];
 
-    constructor(props: any) {
+    constructor(props: IRouteInfoTabProps) {
         super(props);
         this.state = {
             isLoading: true,
@@ -38,21 +38,21 @@ class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabStat
 
     componentDidMount() {
         if (this.props.isNewRoute) {
-            this.fetchAllRoutes();
+            this.fetchAllRouteIds();
         }
     }
 
     componentDidUpdate() {
         if (this.props.isNewRoute) {
-            this.fetchAllRoutes();
+            this.fetchAllRouteIds();
         }
     }
 
-    private fetchAllRoutes = async () => {
+    private fetchAllRouteIds = async () => {
         if (this.existinRouteIds.length > 0) return;
 
         try {
-            this.existinRouteIds = await RouteService.fetchAllRoutes();
+            this.existinRouteIds = await RouteService.fetchAllRouteIds();
         } catch (e) {
             this.props.errorStore!.addError('Olemassa olevien reittien haku ei onnistunut', e);
         }

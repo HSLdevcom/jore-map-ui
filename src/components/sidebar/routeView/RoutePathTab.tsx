@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { RouteStore } from '~/stores/routeStore';
-import * as s from './routePathTab.scss';
 import RouteItem from '../routeListView/RouteItem';
+import * as s from './routePathTab.scss';
 
 interface IRoutePathTabState {
     isLoading: boolean;
@@ -15,7 +15,7 @@ interface IRoutePathTabProps {
 @inject('routeStore', 'errorStore')
 @observer
 class RoutePathTab extends React.Component<IRoutePathTabProps, IRoutePathTabState>{
-    constructor(props: any) {
+    constructor(props: IRoutePathTabProps) {
         super(props);
         this.state = {
             isLoading: true,
