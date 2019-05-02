@@ -9,7 +9,7 @@ import SubSites from '~/routing/subSites';
 import {
     RoutePathCopySegmentStore, ICopySegmentRoutePath,
 } from '~/stores/routePathCopySegmentStore';
-import { AlertStore, AlertType } from '~/stores/AlertStore';
+import { AlertStore, AlertType } from '~/stores/alertStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { IRoutePathLink } from '~/models';
