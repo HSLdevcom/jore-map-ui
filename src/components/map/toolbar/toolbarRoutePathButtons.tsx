@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiDelete } from 'react-icons/fi';
+import { FiCopy, FiDelete } from 'react-icons/fi';
 import { IoMdGitCommit } from 'react-icons/io';
 import { observer } from 'mobx-react';
 import ToolbarStore from '~/stores/toolbarStore';
@@ -18,16 +18,6 @@ class ToolbarLineButtons extends React.Component {
             <div className={s.toolbarToolButtonsView}>
                 {/* First toolbar row */}
                 <div className={s.toolbarButtonRow}>
-                {/*
-                    <MapControlButton
-                        onClick={this.selectTool(ToolbarTool.Copy)}
-                        isActive={ToolbarStore.isSelected(ToolbarTool.Copy)}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.Copy)}
-                        label='Kopioi reitti toiseen suuntaan'
-                    >
-                        <FiCopy />
-                    </MapControlButton>
-                    */}
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.AddNewRoutePathLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.AddNewRoutePathLink)}
@@ -50,9 +40,17 @@ class ToolbarLineButtons extends React.Component {
                         onClick={this.selectTool(ToolbarTool.RemoveRoutePathLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.RemoveRoutePathLink)}
                         isDisabled={ToolbarStore.isDisabled(ToolbarTool.RemoveRoutePathLink)}
-                        label='Poista linkki'
+                        label='Poista reitinsuunnan linkki'
                     >
                         <FiDelete/>
+                    </MapControlButton>
+                    <MapControlButton
+                        onClick={this.selectTool(ToolbarTool.CopyRoutePathSegmentTool)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.CopyRoutePathSegmentTool)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.CopyRoutePathSegmentTool)}
+                        label='Kopioi reitinsuunnan segmentti toiselta reitinsuunnalta'
+                    >
+                        <FiCopy />
                     </MapControlButton>
                 </div>
             </div>

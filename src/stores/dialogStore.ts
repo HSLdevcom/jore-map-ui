@@ -4,6 +4,7 @@ import Constants from '~/constants/constants';
 export enum DialogType {
     Success = 1,
     Info,
+    Loader,
 }
 
 export class DialogStore {
@@ -30,7 +31,10 @@ export class DialogStore {
     }
 
     @action
-    public setFadeMessage = (message: string, type: DialogType = DialogType.Success) => {
+    public setFadeMessage = (
+        message: string,
+        type: DialogType = DialogType.Success,
+    ) => {
         this._message = message;
         this._type = type;
 
@@ -43,6 +47,17 @@ export class DialogStore {
                 Constants.FADE_DIALOG_TIMEOUT,
             );
         });
+    }
+
+    @action
+    public setLoaderMessage = (message: string) => {
+        this._message = message;
+        this._type = DialogType.Loader;
+    }
+
+    @action
+    public closeLoaderMessage = () => {
+        this.close();
     }
 
     @action

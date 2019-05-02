@@ -4,6 +4,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import BaseTool from './BaseTool';
+import { NetworkNodeClickParams, NetworkLinkClickParams } from '../layers/NetworkLayers';
 
 /**
  * Tool for creating new routePath
@@ -20,25 +21,23 @@ class SelectNetworkEntityTool implements BaseTool {
     }
 
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
-        const nodeId = clickEvent.detail.nodeId;
+        const params: NetworkNodeClickParams = clickEvent.detail;
 
         const nodeViewLink = routeBuilder
             .to(SubSites.node)
-            .toTarget(nodeId)
+            .toTarget(params.nodeId)
             .toLink();
         navigator.goTo(nodeViewLink);
     }
     private onNetworkLinkClick = async (clickEvent: CustomEvent) => {
-        const startNodeId = clickEvent.detail.startNodeId;
-        const endNodeId = clickEvent.detail.endNodeId;
-        const transitType = clickEvent.detail.transitType;
+        const params: NetworkLinkClickParams = clickEvent.detail;
 
         const linkViewLink = routeBuilder
             .to(SubSites.link)
             .toTarget([
-                startNodeId,
-                endNodeId,
-                transitType,
+                params.startNodeId,
+                params.endNodeId,
+                params.transitType,
             ].join(','))
             .toLink();
         navigator.goTo(linkViewLink);

@@ -12,8 +12,8 @@ import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
-import NodeMarker from '../mapIcons/NodeMarker';
-import StartMarker from '../mapIcons/StartMarker';
+import NodeMarker from '../markers/NodeMarker';
+import Marker from '../markers/Marker';
 import { LeafletContext } from '../../Map';
 import ArrowDecorator from '../ArrowDecorator';
 
@@ -147,12 +147,12 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         );
     }
 
-    private renderStartMarker = () => {
+    private renderMarker = () => {
         const startMarkerCoordinates = this.props.linkStore!.startMarkerCoordinates;
         if (!startMarkerCoordinates) return null;
 
         return (
-            <StartMarker
+            <Marker
                 latLng={startMarkerCoordinates}
                 color={START_MARKER_COLOR}
             />
@@ -161,7 +161,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     render() {
         const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
-        if (!isLinkViewVisible) return this.renderStartMarker();
+        if (!isLinkViewVisible) return this.renderMarker();
 
         const link = this.props.linkStore!.link;
         if (!link || !link.geometry) {
@@ -174,7 +174,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             <>
                 {this.renderLinkDecorator()}
                 {this.renderNodes()}
-                {this.renderStartMarker()}
+                {this.renderMarker()}
             </>
         );
     }

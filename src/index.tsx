@@ -14,6 +14,7 @@ import LineStore from './stores/lineStore';
 import RouteStore from './stores/routeStore';
 import RouteListStore from './stores/routeListStore';
 import RoutePathStore from './stores/routePathStore';
+import RoutePathCopySegmentStore from './stores/routePathCopySegmentStore';
 import SearchStore from './stores/searchStore';
 import PopupStore from './stores/popupStore';
 import ErrorStore from './stores/errorStore';
@@ -41,6 +42,7 @@ const stores = {
     routeStore: RouteStore,
     routeListStore: RouteListStore,
     routePathStore: RoutePathStore,
+    routePathCopySegmentStore: RoutePathCopySegmentStore,
     searchStore: SearchStore,
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,

@@ -5,6 +5,7 @@
 
     .toolbarRow {
         display: flex;
+        pointer-events: auto;
 
         .toolbar {
             display: flex;

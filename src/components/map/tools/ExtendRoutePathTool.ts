@@ -2,19 +2,10 @@ import RoutePathStore from '~/stores/routePathStore';
 import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
-import { INode } from '~/models';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import BaseTool from './BaseTool';
-
-export interface IExtendRoutePathNodeClickParams {
-    node: INode;
-    linkOrderNumber: number;
-}
-
-export interface IExtendRoutePathNetworkClickParams {
-    nodeId: string;
-    nodeType: NodeType;
-}
+import { IEditRoutePathLayerNodeClickParams } from '../layers/edit/UpsertRoutePathLayer';
+import { NetworkNodeClickParams } from '../layers/NetworkLayers';
 
 /**
  * Tool for creating new routePath
@@ -39,7 +30,7 @@ class ExtendRoutePathTool implements BaseTool {
 
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
         if (!this.isNetworkNodesInteractive()) return;
-        const params: IExtendRoutePathNetworkClickParams = clickEvent.detail;
+        const params: NetworkNodeClickParams = clickEvent.detail;
         if (params.nodeType !== NodeType.STOP) return;
         const queryResult =
             await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
@@ -55,7 +46,7 @@ class ExtendRoutePathTool implements BaseTool {
     }
 
     private onNodeClick = async (clickEvent: CustomEvent) => {
-        const params: IExtendRoutePathNodeClickParams = clickEvent.detail;
+        const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
         const node = params.node;
         const linkOrderNumber = params.linkOrderNumber;
         const queryResult =

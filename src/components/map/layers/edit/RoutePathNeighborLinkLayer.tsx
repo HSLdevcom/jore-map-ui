@@ -12,7 +12,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import INeighborLink from '~/models/INeighborLink';
-import NodeMarker from '../mapIcons/NodeMarker';
+import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
 
 const USED_NEIGHBOR_COLOR = '#0dce0a';
