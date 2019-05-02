@@ -67,7 +67,6 @@ class SplitLinkTool implements BaseTool {
 
     private confirmNode = async (clickEvent: CustomEvent) => {
         const nodeId = clickEvent.detail.nodeId;
-        // const link = LinkStore.link;
 
         const node = await NodeService.fetchNode(nodeId);
         if (!node) {

@@ -14,8 +14,8 @@ import RoutesView from './routesView/RoutesView';
 import HomeView from './homeView/HomeView';
 import RoutePathView from './routePathView/RoutePathView';
 import NodeView from './nodeView/NodeView';
-import * as s from './sidebar.scss';
 import SplitLinkView from './splitLinkView/SplitLinkView';
+import * as s from './sidebar.scss';
 
 // Requiring location to force update on location change
 // This is due to blocked updates issue

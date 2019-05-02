@@ -4,8 +4,8 @@ import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { IoMdInformationCircle } from 'react-icons/io';
 import { AlertStore, DialogType } from '~/stores/alertStore';
-import * as s from './alert.scss';
 import Modal from './Modal';
+import * as s from './alert.scss';
 
 interface IDialogProps {
     alertStore?: AlertStore;

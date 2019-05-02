@@ -2,9 +2,9 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import ButtonType from '~/enums/buttonType';
 import { ConfirmStore } from '~/stores/confirmStore';
-import * as s from './confirm.scss';
 import Modal from './Modal';
 import { Button } from '../controls';
+import * as s from './confirm.scss';
 
 interface IDialogProps {
     confirmStore?: ConfirmStore;
