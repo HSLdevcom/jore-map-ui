@@ -20,7 +20,7 @@ class Confirm extends React.Component<IConfirmProps> {
             <Modal>
                 <div className={s.confirmView}>
                     <div className={s.content}>
-                        {this.props.confirmStore!.message}
+                        {this.props.confirmStore!.content}
                     </div>
                     <div className={s.buttons}>
                         <Button
