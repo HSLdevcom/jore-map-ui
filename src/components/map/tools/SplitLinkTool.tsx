@@ -53,7 +53,7 @@ class SplitLinkTool implements BaseTool {
 
     navigateToSplitLink = (nodeId: string) => {
         const link = LinkStore.link;
-        if (!link) throw 'Unable to access which link should be splitted';
+        if (!link) throw 'Ei löytänyt valittu linkki';
         const url = RouteBuilder.to(SubSites.splitLink)
             .clear().toTarget([
                 link.startNode.id,
