@@ -94,8 +94,8 @@ const getRoutePathLinkQuery = () => {
 
 const getRoutePathSegmentQuery = () => {
     return (
-        gql`query getRoutePathLinksFromRoutePath($startNodeId: String, $endNodeId: String, $transitType: String) {
-            linkswithroutepathinfo: getRoutePathLinksFromRoutePath(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
+        gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String) {
+            linkswithroutepathinfo: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
                 nodes {
                     ${routePathSegmentQueryFields}
                 }
