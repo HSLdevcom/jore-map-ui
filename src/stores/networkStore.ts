@@ -83,6 +83,11 @@ export class NetworkStore {
     }
 
     @action
+    public hideAllMapLayers = () => {
+        this._visibleMapLayers = [];
+    }
+
+    @action
     public hideMapLayer = (mapLayer: MapLayer) => {
         this._visibleMapLayers = this._visibleMapLayers.filter(mL => mL !== mapLayer);
     }

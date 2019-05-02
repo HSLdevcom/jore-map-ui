@@ -38,8 +38,8 @@ class SplitLinkTool implements BaseTool {
                 {message}
             </div>
             {
-                itemList.map(item => (
-                    <div className={s.pair}>
+                itemList.map((item, index) => (
+                    <div key={index} className={s.pair}>
                         <div className={s.label}>{item.label}</div>
                         <div>{item.value}</div>
                     </div>

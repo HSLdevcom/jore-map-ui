@@ -12,6 +12,7 @@ import { ILink, INode, IRoutePath } from '~/models';
 import NodeType from '~/enums/nodeType';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import { NetworkStore } from '~/stores/networkStore';
 import Loader from '~/components/shared/loader/Loader';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
@@ -38,9 +39,10 @@ interface ISplitLinkViewProps extends RouteComponentProps<any>{
     linkStore?: LinkStore;
     nodeStore?: NodeStore;
     alertStore?: AlertStore;
+    networkStore?: NetworkStore;
 }
 
-@inject('mapStore', 'errorStore', 'linkStore', 'nodeStore', 'alertStore')
+@inject('mapStore', 'errorStore', 'linkStore', 'nodeStore', 'alertStore', 'networkStore')
 @observer
 class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewState> {
     constructor(props: ISplitLinkViewProps) {
@@ -80,6 +82,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                 const bounds = L.latLngBounds(link.geometry);
                 bounds.extend(node.coordinates);
                 this.props.mapStore!.setMapBounds(bounds);
+                this.props.networkStore!.hideAllMapLayers();
             }
         } catch (e) {
             this.props.errorStore!.addError(
