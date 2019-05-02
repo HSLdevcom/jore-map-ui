@@ -79,6 +79,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         const copyEndNodeId = copySegmentStore!.endNode!.nodeId;
         const segmentsToCopy = copySegmentStore!
             .getSegmentLinksToCopy(routePath, copyStartNodeId, copyEndNodeId);
+        segmentsToCopy.sort((a, b) => a.orderNumber < b.orderNumber ? -1 : 1);
 
         const isNaturalDirection = this.props.routePathStore!
             .hasNodeOddAmountOfNeighbors(copyStartNodeId);
