@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOMServer from 'react-dom/server';
-import { Marker, Circle } from 'react-leaflet';
+import { Marker as LeafletMarker, Circle } from 'react-leaflet';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { observer, inject } from 'mobx-react';
@@ -11,25 +10,9 @@ import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
+import LeafletUtils from '~/util/leafletUtils';
 import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
-
-// The logic of Z Indexes is not very logical.
-// Setting z-index to 2, if other items is 1 wont force it to be on top.
-// Setting z-index to a very high number will however most likely set the item on top.
-// https://leafletjs.com/reference-1.3.4.html#marker-zindexoffset
-export const VERY_HIGH_Z_INDEX = 1000;
-
-// TODO: move to utils?
-export const createDivIcon = (html: any) => {
-    const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
-    const divIconOptions : L.DivIconOptions = {
-        html: renderedHtml,
-        className: s.node,
-    };
-
-    return new L.DivIcon(divIconOptions);
-};
 
 interface INodeMarkerProps {
     mapStore?: MapStore;
@@ -66,7 +49,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     constructor(props: INodeMarkerProps) {
         super(props);
-        this.markerRef = React.createRef<Marker>();
+        this.markerRef = React.createRef<LeafletMarker>();
     }
 
     componentDidMount() {
@@ -168,25 +151,27 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private renderAdditionalLocations = (node: INode) => {
         return (
             <>
-                <Marker
+                <LeafletMarker
                     position={node.coordinatesManual}
-                    icon={createDivIcon(
+                    icon={LeafletUtils.createDivIcon(
                         <div
                             className={
                                 classnames(s.manual, ...this.getMarkerClasses())}
                         />,
+                        { className: s.node },
                     )}
                     draggable={this.isInteractive()}
                     onDragEnd={this.props.onMoveMarker
                     && this.onMoveMarker('coordinatesManual')}
                 />
-                <Marker
+                <LeafletMarker
                     position={node.coordinatesProjection}
-                    icon={createDivIcon(
+                    icon={LeafletUtils.createDivIcon(
                         <div
                             className={
                                 classnames(s.projection, ...this.getMarkerClasses())}
                         />,
+                        { className: s.node },
                     )}
                     draggable={this.isInteractive()}
                     onDragEnd={this.props.onMoveMarker
@@ -211,7 +196,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }
 
     render() {
-        const icon = createDivIcon(
+        const icon = LeafletUtils.createDivIcon(
             <div
                 className={classnames(...this.getMarkerClasses())}
                 style={{
@@ -222,11 +207,15 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 {this.props.children}
                 {this.renderMarkerLabel()}
             </div>,
+            {
+                className: s.node,
+                popupOffset: -15,
+            },
         );
 
         return (
             <>
-                <Marker
+                <LeafletMarker
                     ref={this.markerRef}
                     onContextMenu={this.props.onContextMenu}
                     onClick={this.onMarkerClick}
@@ -237,7 +226,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     && this.onMoveMarker('coordinates')}
                 >
                     {this.renderStopRadiusCircle()}
-                </Marker>
+                </LeafletMarker>
                 {
                     (
                         this.props.isSelected &&

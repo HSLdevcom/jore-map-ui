@@ -1,7 +1,7 @@
 @import '../../shared/styles/common.scss';
 
 .leafletPopup {
-  
+
   /* Override leaflet's default margin */
   & > div:first-child {
       margin: 0;

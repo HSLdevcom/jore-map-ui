@@ -94,7 +94,7 @@ export class LinkStore {
     }
 
     @action
-    public setStartMarkerCoordinates = (startMarkerCoordinates: LatLng | null) => {
+    public setMarkerCoordinates = (startMarkerCoordinates: LatLng | null) => {
         this._startMarkerCoordinates = startMarkerCoordinates;
     }
 

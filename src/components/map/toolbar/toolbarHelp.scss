@@ -1,18 +1,61 @@
 @import '../../shared/styles/common.scss';
 
+$copyRoutePathToolButtonBorderWidth: 2px;
+
 .toolbarHelp {
+    pointer-events: auto;
     display: flex;
     flex-direction: column;
     background-color: $white;
     border-radius: 3px;
     box-shadow: 0 0 4px $grey;
     padding: 10px;
-    max-width: 284px;
+    max-width: 368px;
     font-size: 1rem;
     margin-top: 10px;
 
     .toolbarHelpHeader {
         padding: 2px 0px 2px 0px;
         font-weight: bold;
+    }
+
+    .copyRoutePathToolButtons {
+        display: flex;
+        padding: 10px;
+        justify-content: space-evenly;
+
+        .startButton {
+            color: #000;
+            background-color: #00d4ff;
+            border: $copyRoutePathToolButtonBorderWidth solid transparent;
+        }
+
+        .startButton:hover {
+            background-color: darken(#00d4ff, 10);
+        }
+
+        .startButtonSelected {
+            color: #000;
+            border: $copyRoutePathToolButtonBorderWidth solid #000;
+            background-color: #00d4ff;
+            text-decoration: underline;
+        }
+
+        .endButton {
+            color: #000;
+            background-color: #ff96f4;
+            border: $copyRoutePathToolButtonBorderWidth solid transparent;
+        }
+
+        .endButton:hover {
+            background-color: darken(#ff96f4, 10);
+        }
+
+        .endButtonSelected {
+            color: #000;
+            background-color: #ff96f4;
+            border: $copyRoutePathToolButtonBorderWidth solid #000;
+            text-decoration: underline;
+        }
     }
 }

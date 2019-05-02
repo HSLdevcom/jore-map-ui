@@ -4,6 +4,7 @@ import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { IoMdInformationCircle } from 'react-icons/io';
 import { AlertStore, AlertType } from '~/stores/alertStore';
+import Loader, { LoaderSize } from '../shared/loader/Loader';
 import Modal from './Modal';
 import * as s from './alert.scss';
 
@@ -25,6 +26,11 @@ class Alert extends React.Component<IAlertProps> {
                     }
                     { this.props.alertStore!.type === AlertType.Info &&
                         <IoMdInformationCircle className={classnames(s.icon, s.info)} />
+                    }
+                    { this.props.alertStore!.type === AlertType.Loader &&
+                        <div className={s.icon}>
+                            <Loader size={LoaderSize.SMALL}/>
+                        </div>
                     }
                     {this.props.alertStore!.message}
                 </div>

@@ -8,10 +8,12 @@ $searchResultHighlightColor: $lightGrey;
     .searchInput {
         width: 250px;
         max-width: 250px;
+        pointer-events: auto;
     }
 
     .searchResults {
         background-color: white;
+        pointer-events: auto;
 
         .searchResult {
             padding: 10px;

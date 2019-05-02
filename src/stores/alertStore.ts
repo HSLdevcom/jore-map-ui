@@ -4,6 +4,7 @@ import Constants from '~/constants/constants';
 export enum AlertType {
     Success = 1,
     Info,
+    Loader,
 }
 
 export class AlertStore {
@@ -43,6 +44,17 @@ export class AlertStore {
                 Constants.FADE_ALERT_TIMEOUT,
             );
         });
+    }
+
+    @action
+    public setLoaderMessage = (message: string) => {
+        this._message = message;
+        this._type = AlertType.Loader;
+    }
+
+    @action
+    public closeLoaderMessage = () => {
+        this.close();
     }
 
     @action

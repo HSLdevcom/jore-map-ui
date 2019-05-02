@@ -4,7 +4,7 @@ import BaseTool from '~/components/map/tools/BaseTool';
 import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
 import AddNetworkLinkTool from '~/components/map/tools/AddNetworkLinkTool';
 import ExtendRoutePathTool from '~/components/map/tools/ExtendRoutePathTool';
-import CopyTool from '~/components/map/tools/CopyTool';
+import CopyRoutePathSegmentTool from '~/components/map/tools/CopyRoutePathSegmentTool';
 import PrintTool from '~/components/map/tools/PrintTool';
 import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkTool';
 import SelectNetworkEntityTool from '~/components/map/tools/SelectNetworkEntityTool';
@@ -17,7 +17,7 @@ const TOOL_LIST = [
     new AddNetworkNodeTool(),
     new AddNetworkLinkTool(),
     new ExtendRoutePathTool(),
-    new CopyTool(),
+    new CopyRoutePathSegmentTool(),
     new RemoveRoutePathLinkTool(),
     new PrintTool(),
     new SplitLinkTool(),
