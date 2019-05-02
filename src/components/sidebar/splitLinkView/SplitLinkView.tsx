@@ -15,6 +15,7 @@ import NodeService from '~/services/nodeService';
 import Loader from '~/components/shared/loader/Loader';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import { AlertStore, DialogType } from '~/stores/alertStore';
 import SidebarHeader from '../SidebarHeader';
 import InputContainer from '../InputContainer';
 import RoutePathSelector from './RoutePathSelector';
@@ -36,9 +37,10 @@ interface ISplitLinkViewProps extends RouteComponentProps<any>{
     errorStore?: ErrorStore;
     linkStore?: LinkStore;
     nodeStore?: NodeStore;
+    alertStore?: AlertStore;
 }
 
-@inject('mapStore', 'errorStore', 'linkStore', 'nodeStore')
+@inject('mapStore', 'errorStore', 'linkStore', 'nodeStore', 'alertStore')
 @observer
 class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewState> {
     constructor(props: ISplitLinkViewProps) {
@@ -133,6 +135,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                 .filter(rp => this.state.selectedRoutePathIds.includes(rp.internalId));
         // tslint:disable-next-line
         console.log(splittedRoutePaths);
+        this.props.alertStore!.setFadeMessage('Linkin jako vielä kehitetään', DialogType.Info);
     }
 
     selectAllRoutePaths = () => {

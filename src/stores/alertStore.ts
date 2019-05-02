@@ -40,7 +40,7 @@ export class AlertStore {
                     this.close();
                     resolve();
                 },
-                Constants.FADE_DIALOG_TIMEOUT * 10000,
+                Constants.FADE_DIALOG_TIMEOUT,
             );
         });
     }
