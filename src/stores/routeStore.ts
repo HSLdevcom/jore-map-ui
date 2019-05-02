@@ -11,8 +11,14 @@ class RouteStore {
         return this._route;
     }
 
+    @computed
     get isDirty() {
-        return !_.isEqual(this._route, this._oldRoute);
+        // line and routePaths can't change in routeView, omit them from
+        // the comparison to prevent lag
+        return _.isEqual(
+            _.omit(this._route, ['line', 'routePaths']),
+            _.omit(this._oldRoute, ['line', 'routePaths']),
+          );
     }
 
     @action
