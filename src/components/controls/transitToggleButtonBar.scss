@@ -1,3 +1,5 @@
+@import '../shared/styles/common';
+
 .transitToggleButtonBarView {
     position: relative;
     height: 40px;
@@ -13,4 +15,10 @@
     left: 0;
     right: 0;
     background-color: #7d7d7da3;
+}
+
+.errorText {
+    color: $errorRed;
+    font-size: 12px;
+    margin: 4px;
 }

@@ -13,7 +13,7 @@ import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
-import AlertStore from '~/stores/alertStore';
+import { AlertStore } from '~/stores/alertStore';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
@@ -33,6 +33,7 @@ import * as s from './routePathView.scss';
 
 interface IRoutePathViewProps {
     errorStore?: ErrorStore;
+    alertStore?: AlertStore;
     routePathStore?: RoutePathStore;
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
@@ -46,7 +47,7 @@ interface IRoutePathViewState {
     isEditingDisabled: boolean;
 }
 
-@inject('routePathStore', 'networkStore', 'toolbarStore', 'errorStore')
+@inject('routePathStore', 'networkStore', 'toolbarStore', 'errorStore', 'alertStore')
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
@@ -88,10 +89,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                     this.props.routePathStore!.onRoutePathLinksChanged();
                 },
             );
-            this.validateAllProperties(
-                routePathValidationModel,
-                this.props.routePathStore!.routePath,
-            );
+            this.validateRoutePath();
             this.setState({
                 isLoading: false,
             });
@@ -116,7 +114,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             }
             this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
         } catch (e) {
-            this.props.errorStore!.addError('Reittisuunnan uuden luonti epäonnistui', e);
+            this.props.errorStore!.addError('Uuden reitinsuunnan luonti epäonnistui', e);
         }
     }
 
@@ -135,9 +133,9 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         if (routePath && routePath.lineId) {
             try {
                 const line = await LineService.fetchLine(routePath.lineId);
-                this.props.networkStore!.setSelectedTransitTypes([line.transitType]);
+                this.props.networkStore!.setSelectedTransitTypes([line.transitType!]);
             } catch (e) {
-                this.props.errorStore!.addError('Linjan haku ei onnistunut', e);
+                this.props.errorStore!.addError('Linjan haku epäonnistui', e);
             }
         }
     }
@@ -208,7 +206,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             }
             this.props.routePathStore!.setOldRoutePath(this.props.routePathStore!.routePath!);
 
-            AlertStore.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
@@ -223,10 +221,18 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     private toggleIsEditing = () => {
+        const isEditingDisabled = this.state.isEditingDisabled;
+
         this.props.routePathStore!.setNeighborRoutePathLinks([]);
-        this.toggleIsEditingDisabled(
-            this.props.routePathStore!.undoChanges,
-        );
+        if (!isEditingDisabled) {
+            this.props.routePathStore!.undoChanges();
+        }
+        this.toggleIsEditingDisabled();
+        if (!isEditingDisabled) this.validateRoutePath();
+    }
+
+    private validateRoutePath = () => {
+        this.validateAllProperties(routePathValidationModel, this.props.routePathStore!.routePath);
     }
 
     render() {

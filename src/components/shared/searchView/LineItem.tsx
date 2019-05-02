@@ -3,11 +3,12 @@ import classNames from 'classnames';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import ReactMoment from 'react-moment';
 import lineHelper from '~/util/lineHelper';
-import { ILine, ILineRoute } from '~/models';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
+import ISearchLine from '~/models/searchModels/ISearchLine';
+import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 import searchStore from '~/stores/searchStore';
-import routeBuilder from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
+import RouteBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import LineItemSubMenu from './LineItemSubMenu';
@@ -18,7 +19,7 @@ interface ILineItemState {
 }
 
 interface ILineItemProps {
-    line: ILine;
+    line: ISearchLine;
 }
 
 class LineItem extends React.Component<ILineItemProps, ILineItemState> {
@@ -55,8 +56,8 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     }
 
     private openRoute = (routeId: string) => () => {
-        const openRouteLink = routeBuilder
-            .to(subSites.routes)
+        const openRouteLink = RouteBuilder
+            .to(SubSites.routes)
             .append(QueryParams.routes, routeId)
             .toLink();
         searchStore.setSearchInput('');
@@ -64,7 +65,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         navigator.goTo(openRouteLink);
     }
 
-    public renderRoute(route: ILineRoute): any {
+    private renderRoute(route: ISearchLineRoute): any {
         return (
             <div
                 key={route.id}
@@ -112,6 +113,14 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         );
     }
 
+    private redirectToLineView = (lineId: string) => () => {
+        const url = RouteBuilder
+            .to(SubSites.line)
+            .toTarget(lineId)
+            .toLink();
+        navigator.goTo(url);
+    }
+
     public render() {
         return (
             <div className={s.lineItemView}>
@@ -122,8 +131,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                     <div
                         className={classNames(
                             TransitTypeHelper.getColorClass(this.props.line.transitType),
-                            s.label,
+                            s.lineLabel,
                         )}
+                        onClick={this.redirectToLineView(this.props.line.id)}
                     >
                         {this.props.line.id}
                     </div>

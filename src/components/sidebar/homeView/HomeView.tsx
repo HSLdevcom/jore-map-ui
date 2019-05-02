@@ -3,6 +3,9 @@ import { inject, observer } from 'mobx-react';
 import { SearchStore } from '~/stores/searchStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import TransitType from '~/enums/transitType';
+import RouteBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import navigator from '~/routing/navigator';
 import SearchInput from '../../shared/searchView/SearchInput';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import SearchResults from '../../shared/searchView/SearchResults';
@@ -25,6 +28,14 @@ class HomeView extends React.Component<IHomeViewProps> {
         this.props.routePathStore!.clear();
     }
 
+    private redirectToNewLineView = () => {
+        const url = RouteBuilder
+            .to(SubSites.newLine)
+            .clear()
+            .toLink();
+        navigator.goTo(url);
+    }
+
     render() {
         return (
             <div className={s.homeView}>
@@ -37,6 +48,12 @@ class HomeView extends React.Component<IHomeViewProps> {
                     blurred={!this.props.searchStore!.isSearchingForLines}
                 />
                 <SearchResults />
+                <div
+                    className={s.largeButton}
+                    onClick={this.redirectToNewLineView}
+                >
+                    Luo uusi linja
+                </div>
             </div>
         );
     }

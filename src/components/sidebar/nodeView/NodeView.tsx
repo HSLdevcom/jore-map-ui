@@ -161,9 +161,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     private toggleIsEditingEnabled = () => {
-        this.toggleIsEditingDisabled(
-            this.props.nodeStore!.resetChanges,
-        );
+        const isEditingDisabled = this.state.isEditingDisabled;
+        if (!isEditingDisabled) {
+            this.props.nodeStore!.resetChanges();
+        }
+        this.toggleIsEditingDisabled();
+        if (!isEditingDisabled) this.validateNode();
     }
 
     private validateNode = () => {
@@ -264,6 +267,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             <StopForm
                                 isEditingDisabled={isEditingDisabled}
                                 stop={node.stop!}
+                                isNewStop={this.props.isNewNode}
                                 invalidPropertiesMap={invalidPropertiesMap}
                                 getDropDownItems={this.props.codeListStore!.getCodeList}
                             />

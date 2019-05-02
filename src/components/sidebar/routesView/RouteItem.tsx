@@ -48,12 +48,12 @@ class RouteItem extends React.Component<IRouteItemProps> {
                 onCloseButtonClick={this.closeRoute}
             >
                 <div className={s.routeName}>
-                    {LineHelper.getTransitIcon(this.props.route.line!.transitType, false)}
+                    {LineHelper.getTransitIcon(this.props.route.line!.transitType!, false)}
                     <div
                         className={classNames(
                             s.label,
                             TransitTypeHelper.getColorClass(
-                                this.props.route.line!.transitType),
+                                this.props.route.line!.transitType!),
                         )}
                     >
                         {this.props.route.id}

@@ -69,7 +69,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
-        const disabledIfUpdating = !this.props.isNewRoutePath || this.props.isEditingDisabled;
+        const isUpdating = !this.props.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const onChange = this.props.onChange;
 
@@ -138,7 +138,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                 <div className={s.flexRow}>
                     <InputContainer
                         label='VOIM. AST'
-                        disabled={disabledIfUpdating}
+                        disabled={isUpdating}
                         type='date'
                         value={routePath.startTime}
                         onChange={onChange('startTime')}
@@ -169,7 +169,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps>{
                 <div className={s.flexRow}>
                     <Dropdown
                         label='SUUNTA'
-                        disabled={disabledIfUpdating}
+                        disabled={isUpdating}
                         selected={this.props.routePath.direction}
                         items={this.props.codeListStore!.getCodeList('Suunta')}
                         onChange={onChange('direction')}
