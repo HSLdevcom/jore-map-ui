@@ -1,5 +1,4 @@
 import * as L from 'leaflet';
-import TransitType from '~/enums/transitType';
 import { ICopySegmentRoutePath, ICopySegmentLink } from '~/stores/routePathCopySegmentStore';
 
 interface IExternalLinkWithRoutePathInfo {
@@ -8,7 +7,6 @@ interface IExternalLinkWithRoutePathInfo {
     suuvoimast: Date;
     relid: number;
     reljarjnro: number;
-    lnkverkko: TransitType;
     lnkalkusolmu: string;
     lnkloppusolmu: string;
     suuvoimviimpvm: Date;
@@ -43,7 +41,6 @@ class RoutePathCopySegmentFactory {
                     routeId: externalLink.reitunnus,
                     direction: externalLink.suusuunta,
                     startTime: externalLink.suuvoimast,
-                    transitType: externalLink.lnkverkko,
                     endTime: externalLink.suuvoimviimpvm,
                     originFi: externalLink.suulahpaik,
                     destinationFi: externalLink.suupaapaik,

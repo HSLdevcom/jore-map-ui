@@ -2,7 +2,6 @@ import { action, computed, observable } from 'mobx';
 import * as L from 'leaflet';
 import { INode } from '~/models';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
-import TransitType from '~/enums/transitType';
 
 interface ICopySegmentNode {
     nodeId: string;
@@ -18,7 +17,6 @@ interface ICopySegmentLink {
 }
 
 interface ICopySegmentRoutePath extends IRoutePathPrimaryKey {
-    transitType: TransitType;
     endTime: Date;
     originFi: string;
     destinationFi: string;

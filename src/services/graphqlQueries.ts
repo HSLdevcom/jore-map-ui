@@ -258,7 +258,6 @@ const routePathSegmentQueryFields = `
     suuvoimast
     relid
     reljarjnro
-    lnkverkko
     lnkalkusolmu
     lnkloppusolmu
     suuvoimviimpvm
