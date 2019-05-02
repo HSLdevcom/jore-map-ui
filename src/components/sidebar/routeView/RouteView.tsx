@@ -9,7 +9,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import routeValidationModel from '~/models/validationModels/routeValidationModel';
 import { ErrorStore } from '~/stores/errorStore';
 import { RouteStore } from '~/stores/routeStore';
-import { DialogStore } from '~/stores/dialogStore';
+import { AlertStore } from '~/stores/alertStore';
 import { Tabs, TabList, Tab, ContentList, ContentItem } from '~/components/shared/Tabs';
 import RouteService from '~/services/routeService';
 import RouteFactory from '~/factories/routeFactory';
@@ -23,7 +23,7 @@ import SidebarHeader from '../SidebarHeader';
 import * as s from './routeView.scss';
 
 interface IRouteViewProps {
-    dialogStore?: DialogStore;
+    alertStore?: AlertStore;
     errorStore?: ErrorStore;
     routeStore?: RouteStore;
     match?: match<any>;
@@ -37,7 +37,7 @@ interface IRouteViewState {
     selectedTabIndex: number;
 }
 
-@inject('routeStore', 'errorStore', 'dialogStore')
+@inject('routeStore', 'errorStore', 'alertStore')
 @observer
 class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
     constructor(props: IRouteViewProps) {
@@ -122,7 +122,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
                 await RouteService.updateRoute(route!);
             }
 
-            this.props.dialogStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;

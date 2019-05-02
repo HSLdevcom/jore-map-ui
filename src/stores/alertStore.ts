@@ -1,14 +1,14 @@
 import { action, computed, observable } from 'mobx';
 import Constants from '~/constants/constants';
 
-export enum DialogType {
+export enum AlertType {
     Success = 1,
     Info,
 }
 
 export class AlertStore {
     @observable private _message: string|null;
-    @observable private _type: DialogType|null;
+    @observable private _type: AlertType|null;
 
     constructor() {
         this._message = null;
@@ -30,7 +30,7 @@ export class AlertStore {
     }
 
     @action
-    public setFadeMessage = (message: string, type: DialogType = DialogType.Success) => {
+    public setFadeMessage = (message: string, type: AlertType = AlertType.Success) => {
         this._message = message;
         this._type = type;
 
@@ -40,7 +40,7 @@ export class AlertStore {
                     this.close();
                     resolve();
                 },
-                Constants.FADE_DIALOG_TIMEOUT,
+                Constants.FADE_ALERT_TIMEOUT,
             );
         });
     }

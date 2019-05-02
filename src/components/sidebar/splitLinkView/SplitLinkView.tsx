@@ -16,7 +16,7 @@ import { NetworkStore } from '~/stores/networkStore';
 import Loader from '~/components/shared/loader/Loader';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
-import { AlertStore, DialogType } from '~/stores/alertStore';
+import { AlertStore, AlertType } from '~/stores/alertStore';
 import SidebarHeader from '../SidebarHeader';
 import InputContainer from '../InputContainer';
 import RoutePathSelector from './RoutePathSelector';
@@ -138,7 +138,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                 .filter(rp => this.state.selectedRoutePathIds.includes(rp.internalId));
         // tslint:disable-next-line
         console.log(splittedRoutePaths);
-        this.props.alertStore!.setFadeMessage('Linkin jako vielä kehitetään', DialogType.Info);
+        this.props.alertStore!.setFadeMessage('Linkin jako vielä kehitetään', AlertType.Info);
     }
 
     selectAllRoutePaths = () => {

@@ -6,13 +6,13 @@ import Modal from './Modal';
 import { Button } from '../controls';
 import * as s from './confirm.scss';
 
-interface IDialogProps {
+interface IConfirmProps {
     confirmStore?: ConfirmStore;
 }
 
 @inject('confirmStore')
 @observer
-class Confirm extends React.Component<IDialogProps> {
+class Confirm extends React.Component<IConfirmProps> {
     render() {
         if (!this.props.confirmStore!.isConfirmOpen) return null;
 
