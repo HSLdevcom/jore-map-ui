@@ -18,7 +18,7 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
         props.toggleIsRoutePathSelected(routePathId);
     };
 
-    const getCheckboxContent = (routePath: IRoutePath) => (
+    const renderCheckboxContent = (routePath: IRoutePath) => (
         <div className={s.checkboxContent}>
             <div className={s.contentHeader}>
             {routePath.routeId}:
@@ -56,7 +56,7 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
                     <div className={s.list}>
                         {props.routePaths.map((rp, index) =>
                             <Checkbox
-                                content={getCheckboxContent(rp)}
+                                content={renderCheckboxContent(rp)}
                                 key={index}
                                 checked={props.selectedIds[rp.internalId] || false}
                                 onClick={toggleRoutePath(rp.internalId)}
