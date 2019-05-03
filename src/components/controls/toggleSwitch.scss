@@ -17,23 +17,23 @@
         right: 0;
         bottom: 0;
         background-color: $lightGrey;
-        transition: .4s;
+        transition: 0.4s;
         border-radius: 30px;
     }
-    
+
     .slider:before {
         position: absolute;
-        content: "";
+        content: '';
         height: 26px;
         width: 26px;
         left: 4px;
         bottom: 4px;
         background-color: white;
-        transition: .4s;
+        transition: 0.4s;
         border-radius: 50%;
     }
 
-    input:checked+.slider:before {
+    input:checked + .slider:before {
         transform: translateX(26px);
     }
 }

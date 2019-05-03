@@ -33,7 +33,7 @@
 
         .routeId:hover {
             background-color: $linkHoverBackgroundColor;
-            transition: .5s;
+            transition: 0.5s;
         }
 
         .label {
@@ -49,14 +49,14 @@
 
         .close {
             color: $mediumGrey;
-            transition: .5s;
+            transition: 0.5s;
             font-size: 18px;
             cursor: pointer;
         }
 
         .close:hover {
             color: $darkGrey;
-            transition: .5s;
+            transition: 0.5s;
             font-size: 18px;
             cursor: pointer;
         }
@@ -87,7 +87,6 @@
                     text-align: center;
                 }
             }
-
         }
 
         .routePathControls {
@@ -108,13 +107,13 @@
         width: 29px;
         cursor: pointer;
         border: none;
-        transition: .5s;
+        transition: 0.5s;
         border-radius: 5px;
         padding: 3px;
     }
 
     .routeInfoButton:hover {
-        color: #FFF;
+        color: #fff;
         background-color: $busBlue;
     }
 }

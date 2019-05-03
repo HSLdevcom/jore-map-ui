@@ -1,7 +1,6 @@
 @import './styles/common';
 
 .tabs {
-
     .tabList {
         display: flex;
 
@@ -17,7 +16,7 @@
             color: $blue;
             font-weight: 500;
             top: 50%;
-            transition: .2s;
+            transition: 0.2s;
             cursor: pointer;
             display: inline-block;
             width: 50%;
@@ -36,12 +35,12 @@
         .disabled {
             cursor: auto;
             pointer-events: none;
-            background-color: rgba(0,0,0,.3);
+            background-color: rgba(0, 0, 0, 0.3);
             filter: brightness(75%);
         }
     }
 
-    .contentList{
+    .contentList {
         height: 100%;
 
         .contentItem {

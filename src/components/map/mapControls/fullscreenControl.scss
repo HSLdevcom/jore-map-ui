@@ -1,6 +1,6 @@
 @import '../../shared/styles/mapControl';
 
 .fullscreenControlView {
-  @extend %soloControl;
-  color: black;
+    @extend %soloControl;
+    color: black;
 }
