@@ -115,7 +115,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         this.setState({ isLoading: false });
     }
 
-    fetchRoutePaths = async (date: Date) => {
+    private fetchRoutePaths = async (date: Date) => {
         if (!date) return;
         this.setState({
             isLoadingRoutePaths: true,
@@ -133,13 +133,13 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         });
     }
 
-    updateSelectedDate = (date: Date) => {
+    private updateSelectedDate = (date: Date) => {
         this.setState({ selectedDate: date });
         this.unselectAllRoutePaths();
         this.fetchRoutePaths(date);
     }
 
-    toggleIsRoutePathSelected = (routePathId: string) => {
+    private toggleIsRoutePathSelected = (routePathId: string) => {
         this.setState({
             selectedRoutePathIds: {
                 ...this.state.selectedRoutePathIds,
@@ -148,7 +148,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         });
     }
 
-    openSaveConfirm = () => {
+    private openSaveConfirm = () => {
         // tslint:disable:max-line-length
         let confirmText = 'Oletko varma, että haluat jakaa tämän linkin? Tätä toimenpidettä ei pysty peruutamaan tämän varmistuksen jälkeen.';
         if (this.getNode()!.type === NodeType.STOP && this.state.selectedDate) {
@@ -163,7 +163,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         );
     }
 
-    save = () => {
+    private save = () => {
         // tslint:disable-next-line
         console.log({
             routePaths: this.getRoutepathsBeingSplit(),
@@ -174,7 +174,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         this.props.alertStore!.setFadeMessage('Linkin jaon kehitys kesken.', AlertType.Info);
     }
 
-    selectAllRoutePaths = () => {
+    private selectAllRoutePaths = () => {
         this.setState({
             selectedRoutePathIds:
                 this.state.routePaths.reduce<{}>(
@@ -182,18 +182,18 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         });
     }
 
-    unselectAllRoutePaths = () => {
+    private unselectAllRoutePaths = () => {
         this.setState({
             selectedRoutePathIds: {},
         });
     }
 
-    getNode = () => {
+    private getNode = () => {
         return this.props.linkStore!.nodes.length > 0
         ? this.props.linkStore!.nodes[0] : null;
     }
 
-    getRoutepathsBeingSplit = () => {
+    private getRoutepathsBeingSplit = () => {
         return this.state.routePaths
             .filter(rp => Boolean(this.state.selectedRoutePathIds[rp.internalId]));
     }
