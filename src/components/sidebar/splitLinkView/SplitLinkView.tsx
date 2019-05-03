@@ -143,7 +143,12 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             this.state.routePaths
                 .filter(rp => Boolean(this.state.selectedRoutePathIds[rp.internalId]));
         // tslint:disable-next-line
-        console.log(splittedRoutePaths);
+        console.log({
+            routePaths: splittedRoutePaths,
+            date: this.state.selectedDate,
+            link: this.props.linkStore!.link,
+            node: this.props.linkStore!.nodes[0],
+        });
         this.props.alertStore!.setFadeMessage('Linkin jako vielä kehitetään', AlertType.Info);
     }
 
