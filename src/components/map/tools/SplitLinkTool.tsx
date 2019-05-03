@@ -6,6 +6,7 @@ import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
 import LinkStore from '~/stores/linkStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import NodeType from '~/enums/nodeType';
 import NodeHelper from '~/util/nodeHelper';
 import RouteBuilder from '~/routing/routeBuilder';
@@ -93,6 +94,7 @@ class SplitLinkTool implements BaseTool {
             );
         }
         ConfirmStore.openConfirm(confirmContent, () => {
+            ToolbarStore.selectTool(null);
             this.navigateToSplitLink(
                 nodeId,
             );
