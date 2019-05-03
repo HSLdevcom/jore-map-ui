@@ -7,7 +7,7 @@ import * as s from './routePathSelector.scss';
 
 interface IRoutePathSelectorProps {
     routePaths: IRoutePath[];
-    selectedIds: string[];
+    selectedIds: {};
     isLoading?: boolean;
     toggleIsRoutePathSelected: (routePathId: string) => void;
     selectedDate: Date;
@@ -58,7 +58,7 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
                             <Checkbox
                                 content={getCheckboxContent(rp)}
                                 key={index}
-                                checked={props.selectedIds.includes(rp.internalId)}
+                                checked={props.selectedIds[rp.internalId]}
                                 onClick={toggleRoutePath(rp.internalId)}
                             />)
                         }

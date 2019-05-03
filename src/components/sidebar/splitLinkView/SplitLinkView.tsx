@@ -28,7 +28,7 @@ interface ISplitLinkViewState {
     link: ILink | null;
     node: INode | null;
     selectedDate?: Date;
-    selectedRoutePathIds: string[];
+    selectedRoutePathIds: object;
     routePaths: IRoutePath[];
     isLoadingRoutePaths: boolean;
 }
@@ -51,7 +51,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             isLoading: false,
             link: null,
             node: null,
-            selectedRoutePathIds: [],
+            selectedRoutePathIds: {},
             routePaths: [],
             isLoadingRoutePaths: false,
         };
@@ -121,21 +121,18 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
     }
 
     toggleIsRoutePathSelected = (routePathId: string) => {
-        const selectedRoutePathIds = this.state.selectedRoutePathIds;
-        let newSelectedRouteIds = [];
-        if (this.state.selectedRoutePathIds.includes(routePathId)) {
-            newSelectedRouteIds = selectedRoutePathIds.filter(id => id !== routePathId);
-        } else {
-            selectedRoutePathIds.push(routePathId);
-            newSelectedRouteIds = selectedRoutePathIds;
-        }
-        this.setState({ selectedRoutePathIds: newSelectedRouteIds });
+        this.setState({
+            selectedRoutePathIds: {
+                ...this.state.selectedRoutePathIds,
+                [routePathId]: !this.state.selectedRoutePathIds[routePathId],
+            },
+        });
     }
 
     save = () => {
         const splittedRoutePaths =
             this.state.routePaths
-                .filter(rp => this.state.selectedRoutePathIds.includes(rp.internalId));
+                .filter(rp => Boolean(this.state.selectedRoutePathIds[rp.internalId]));
         // tslint:disable-next-line
         console.log(splittedRoutePaths);
         this.props.alertStore!.setFadeMessage('Linkin jako vielä kehitetään', AlertType.Info);
@@ -143,13 +140,15 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
     selectAllRoutePaths = () => {
         this.setState({
-            selectedRoutePathIds: this.state.routePaths.map(rp => rp.internalId),
+            selectedRoutePathIds:
+                this.state.routePaths.reduce<{}>(
+                    (acc, curr) => ({ ...acc, [curr.internalId]: true }), {}),
         });
     }
 
     unselectAllRoutePaths = () => {
         this.setState({
-            selectedRoutePathIds: [],
+            selectedRoutePathIds: {},
         });
     }
 
