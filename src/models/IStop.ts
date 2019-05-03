@@ -38,6 +38,4 @@ export default interface IStop extends IStopPrimaryKey {
     transitType?: TransitType; // Only used for creating a soltunnus
 }
 
-export {
-    IStopPrimaryKey,
-};
+export { IStopPrimaryKey };

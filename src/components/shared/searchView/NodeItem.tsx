@@ -22,21 +22,12 @@ const NodeItem = observer((props: INodeItemProps) => {
     };
 
     return (
-        <div
-            className={s.nodeItem}
-            onClick={openNode}
-        >
+        <div className={s.nodeItem} onClick={openNode}>
             <IoIosRadioButtonOn />
             <div className={s.nodeItemTextContainer}>
-                <span>
-                    {props.node.id}
-                </span>
-                <div>
-                    {NodeHelper.getNodeTypeName(props.node.type)}
-                </div>
-                <div>
-                    {NodeHelper.getShortId(props.node)}
-                </div>
+                <span>{props.node.id}</span>
+                <div>{NodeHelper.getNodeTypeName(props.node.type)}</div>
+                <div>{NodeHelper.getShortId(props.node)}</div>
             </div>
         </div>
     );

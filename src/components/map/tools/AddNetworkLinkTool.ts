@@ -14,7 +14,8 @@ class AddNetworkLinkTool implements BaseTool {
     private startNodeId: string | null = null;
     public toolType = ToolbarTool.AddNetworkLink;
     public toolHelpHeader = 'Luo uusi linkki';
-    public toolHelpText = 'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.'; // tslint:disable-line max-line-length
+    public toolHelpText =
+        'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.'; // tslint:disable-line max-line-length
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
@@ -46,16 +47,13 @@ class AddNetworkLinkTool implements BaseTool {
 
             const newLinkViewLink = routeBuilder
                 .to(SubSites.newLink)
-                .toTarget([
-                    startNodeId,
-                    endNodeId,
-                ].join(','))
+                .toTarget([startNodeId, endNodeId].join(','))
                 .toLink();
             navigator.goTo(newLinkViewLink);
 
             ToolbarStore.selectTool(null);
         }
-    }
+    };
 
     // TODO?
     // If there is a link opened
@@ -77,7 +75,7 @@ class AddNetworkLinkTool implements BaseTool {
     private resetTool = () => {
         this.startNodeId = null;
         LinkStore.setMarkerCoordinates(null);
-    }
+    };
 }
 
 export default AddNetworkLinkTool;

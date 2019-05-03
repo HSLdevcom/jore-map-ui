@@ -30,7 +30,7 @@ class Toolbar extends React.Component {
             );
         }
         return null;
-    }
+    };
 
     render() {
         return (

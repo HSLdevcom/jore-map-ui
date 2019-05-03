@@ -24,7 +24,4 @@ export default interface INode extends INodeBase {
     modifiedBy: string;
 }
 
-export {
-    INodePrimaryKey,
-    INodeBase,
-};
+export { INodePrimaryKey, INodeBase };

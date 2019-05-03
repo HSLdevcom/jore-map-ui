@@ -20,14 +20,13 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
 
     const renderCheckboxContent = (routePath: IRoutePath) => (
         <div className={s.checkboxContent}>
-            <div className={s.contentHeader}>
-            {routePath.routeId}:
-            </div>
+            <div className={s.contentHeader}>{routePath.routeId}:</div>
             <div className={s.contentDescription}>
-                <div>{routePath.originFi} - {routePath.destinationFi}</div>
                 <div>
-                    {Moment(routePath.startTime).format('DD.MM.YYYY')}
-                    {' '}-{' '}
+                    {routePath.originFi} - {routePath.destinationFi}
+                </div>
+                <div>
+                    {Moment(routePath.startTime).format('DD.MM.YYYY')} -{' '}
                     {Moment(routePath.endTime).format('DD.MM.YYYY')}
                 </div>
             </div>
@@ -46,24 +45,26 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
 
     return (
         <div className={s.routePathSelectorView}>
-                {props.routePaths.length === 0 &&
-                    <div>
-                        {`Päivämääränä ${Moment(props.selectedDate).format('DD.MM.YYYY')} tai sen
+            {props.routePaths.length === 0 && (
+                <div>
+                    {`Päivämääränä ${Moment(props.selectedDate).format(
+                        'DD.MM.YYYY'
+                    )} tai sen
                          jälkeen voimassa olevia reitinsuuntia ei löytynyt.`}
-                    </div>
-                }
-                {props.routePaths.length !== 0 &&
-                    <div className={s.list}>
-                        {props.routePaths.map((rp, index) =>
-                            <Checkbox
-                                content={renderCheckboxContent(rp)}
-                                key={index}
-                                checked={props.selectedIds[rp.internalId] || false}
-                                onClick={toggleRoutePath(rp.internalId)}
-                            />)
-                        }
-                    </div>
-                }
+                </div>
+            )}
+            {props.routePaths.length !== 0 && (
+                <div className={s.list}>
+                    {props.routePaths.map((rp, index) => (
+                        <Checkbox
+                            content={renderCheckboxContent(rp)}
+                            key={index}
+                            checked={props.selectedIds[rp.internalId] || false}
+                            onClick={toggleRoutePath(rp.internalId)}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

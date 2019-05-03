@@ -12,14 +12,14 @@ const cache = new InMemoryCache();
 class ApolloClient {
     private client: Apollo.ApolloClient<NormalizedCacheObject>;
 
-    constructor () {
+    constructor() {
         this.client = new Apollo.ApolloClient({
             cache,
             link: new BatchHttpLink({
                 uri: `${API_URL}/graphql`,
                 // To keep the same express session information with each request
-                credentials: 'include',
-            }),
+                credentials: 'include'
+            })
         });
     }
 
@@ -31,18 +31,21 @@ class ApolloClient {
         return this.client.clearStore();
     }
 
-    public async query <T, TVariables = Apollo.OperationVariables > (
-        options: Apollo.QueryOptions<TVariables>): Promise<Apollo.ApolloQueryResult<T>> {
+    public async query<T, TVariables = Apollo.OperationVariables>(
+        options: Apollo.QueryOptions<TVariables>
+    ): Promise<Apollo.ApolloQueryResult<T>> {
         try {
             return await this.client.query<T>(options);
         } catch (e) {
             const err = e as Apollo.ApolloError;
             if (err.networkError) {
                 switch (err.networkError['statusCode']) {
-                case 403:
-                    AlertStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
-                        LoginStore.clear();
-                    });
+                    case 403:
+                        AlertStore!
+                            .setFadeMessage(httpStatusDescriptionCodeList[403])
+                            .then(() => {
+                                LoginStore.clear();
+                            });
                 }
             }
             throw e;

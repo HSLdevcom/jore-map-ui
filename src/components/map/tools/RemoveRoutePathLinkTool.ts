@@ -14,7 +14,7 @@ class RemoveRoutePathLinkTool implements BaseTool {
 
     public onRoutePathLinkClick = (id: string) => async (clickEvent: any) => {
         RoutePathStore.removeLink(id);
-    }
+    };
 }
 
 export default RemoveRoutePathLinkTool;

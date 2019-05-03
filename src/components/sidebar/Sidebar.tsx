@@ -4,7 +4,7 @@ import { Route, Switch, Redirect } from 'react-router';
 import { Location } from 'history';
 import classnames from 'classnames';
 import { RouteListStore } from '~/stores/routeListStore';
-import { SearchStore } from '~/stores/searchStore';
+import { SearchStore } from '~/stores/searchStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -40,35 +40,41 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     private renderRouteListView = () => {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RouteListView /> : <Redirect to='/' />;
-    }
-    private renderNewLineView = (props: any) =>
+    };
+    private renderNewLineView = (props: any) => (
         <LineView {...props} isNewLine={true} />
-    private renderLineView = (props: any) =>
+    );
+    private renderLineView = (props: any) => (
         <LineView {...props} isNewLine={false} />
-    private renderNewRouteView = (props: any) =>
+    );
+    private renderNewRouteView = (props: any) => (
         <RouteView {...props} isNewRoute={true} />
-    private renderRouteView = (props: any) =>
+    );
+    private renderRouteView = (props: any) => (
         <RouteView {...props} isNewRoute={false} />
-    private renderNewNodeView = (props: any) =>
+    );
+    private renderNewNodeView = (props: any) => (
         <NodeView {...props} isNewNode={true} />
-    private renderNodeView = (props: any) =>
+    );
+    private renderNodeView = (props: any) => (
         <NodeView {...props} isNewNode={false} />
-    private renderNewLinkView = (props: any) =>
+    );
+    private renderNewLinkView = (props: any) => (
         <LinkView {...props} isNewLink={true} />
-    private renderLinkView = (props: any) =>
+    );
+    private renderLinkView = (props: any) => (
         <LinkView {...props} isNewLink={false} />
-    private renderNewRoutePathView = (props: any) =>
+    );
+    private renderNewRoutePathView = (props: any) => (
         <RoutePathView {...props} isNewRoutePath={true} />
-    private renderRoutePathView = (props: any) =>
+    );
+    private renderRoutePathView = (props: any) => (
         <RoutePathView {...props} isNewRoutePath={false} />
+    );
 
     render() {
         return (
-            <div
-                className={classnames(
-                    s.sidebarView,
-                )}
-            >
+            <div className={classnames(s.sidebarView)}>
                 <div className={s.content}>
                     <Switch>
                         <Route

@@ -16,8 +16,8 @@ interface IControlProps extends MapControlProps {
     position: any;
 }
 
-class Control extends MapControl<IControlProps>{
-    createLeafletElement({ position } : { position: any }) {
+class Control extends MapControl<IControlProps> {
+    createLeafletElement({ position }: { position: any }) {
         this.leafletElement = new DivControl({ position });
         return this.leafletElement;
     }
@@ -41,9 +41,12 @@ class Control extends MapControl<IControlProps>{
         const container = this.leafletElement.getContainer();
         if (container && this.props.children) {
             const { children, ...rest } = this.props;
-            render(React.cloneElement(children, {
-                ...rest }),
-                   container);
+            render(
+                React.cloneElement(children, {
+                    ...rest
+                }),
+                container
+            );
         }
     }
 }

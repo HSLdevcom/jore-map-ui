@@ -21,6 +21,4 @@ export default interface ILink extends ILinkPrimaryKey {
     modifiedOn: Date;
 }
 
-export {
-    ILinkPrimaryKey,
-};
+export { ILinkPrimaryKey };

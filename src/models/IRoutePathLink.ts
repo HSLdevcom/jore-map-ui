@@ -20,6 +20,4 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     isStartNodeTimeAlignmentStop: boolean;
 }
 
-export {
-    IRoutePathLinkPrimaryKey,
-};
+export { IRoutePathLinkPrimaryKey };

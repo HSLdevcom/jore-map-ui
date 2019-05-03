@@ -34,7 +34,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         this.state = {
             isLoading: false,
             invalidPropertiesMap: {},
-            isEditingDisabled: false,
+            isEditingDisabled: false
         };
     }
 
@@ -46,8 +46,10 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         if (prevProps.stop.nodeId !== this.props.stop.nodeId) {
             this.validateStop();
         }
-        if (prevProps.isEditingDisabled !== this.props.isEditingDisabled
-            && !this.props.isEditingDisabled) {
+        if (
+            prevProps.isEditingDisabled !== this.props.isEditingDisabled &&
+            !this.props.isEditingDisabled
+        ) {
             this.validateStop();
         }
     }
@@ -59,14 +61,14 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         this.validateAllProperties(stopValidationModel, stop);
         const isStopFormValid = this.isFormValid();
         this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
-    }
+    };
 
     private onStopPropertyChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateStop(property, value);
         this.validateProperty(stopValidationModel[property], property, value);
         const isStopFormValid = this.isFormValid();
         this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
-    }
+    };
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
@@ -77,32 +79,28 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
 
         return (
             <div className={s.stopView}>
-                <SidebarHeader
-                    hideCloseButton={true}
-                >
+                <SidebarHeader hideCloseButton={true}>
                     Pysäkkitiedot
                 </SidebarHeader>
                 <div className={s.formSection}>
-                    { this.props.isNewStop &&
+                    {this.props.isNewStop && (
                         <div className={s.flexRow}>
                             <div className={s.formItem}>
-                                <div className={s.inputLabel}>
-                                    VERKKO
-                                </div>
+                                <div className={s.inputLabel}>VERKKO</div>
                                 <TransitToggleButtonBar
                                     selectedTransitTypes={
-                                        stop.transitType ? [stop.transitType] : []
+                                        stop.transitType
+                                            ? [stop.transitType]
+                                            : []
                                     }
-                                    toggleSelectedTransitType={
-                                        this.onStopPropertyChange('transitType')
-                                    }
+                                    toggleSelectedTransitType={this.onStopPropertyChange(
+                                        'transitType'
+                                    )}
                                 />
                             </div>
                         </div>
-                    }
-                    <div className={s.sectionHeader}>
-                        Nimitiedot
-                    </div>
+                    )}
+                    <div className={s.sectionHeader}>Nimitiedot</div>
                     <div className={s.flexRow}>
                         <InputContainer
                             label='NIMI'
@@ -133,11 +131,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             onChange={onChange('nameLongSe')}
                         />
                     </div>
-                    </div>
-                    <div className={s.formSection}>
-                    <div className={s.sectionHeader}>
-                        Osoitetiedot
-                    </div>
+                </div>
+                <div className={s.formSection}>
+                    <div className={s.sectionHeader}>Osoitetiedot</div>
                     <div className={s.flexRow}>
                         <InputContainer
                             label='PAIKAN NIMI'
@@ -181,11 +177,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='KUNTA'
                         />
                     </div>
-                    </div>
-                    <div className={s.formSection}>
-                    <div className={s.sectionHeader}>
-                        Muu tiedot
-                    </div>
+                </div>
+                <div className={s.formSection}>
+                    <div className={s.sectionHeader}>Muu tiedot</div>
                     <div className={s.flexRow}>
                         <Dropdown
                             onChange={onChange('exchangeStop')}

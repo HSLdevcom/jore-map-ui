@@ -18,58 +18,63 @@ interface ISidebarHeaderProps {
 }
 
 // tslint:disable:max-line-length
-const closePromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
-const revertPromptMessage = 'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
+const closePromptMessage =
+    'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
+const revertPromptMessage =
+    'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
 // tslint:enable:max-line-length
 
 @inject('loginStore')
 @observer
 class SidebarHeader extends React.Component<ISidebarHeaderProps> {
     onCloseButtonClick = () => {
-        if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
-            this.props.onCloseButtonClick ? this.props.onCloseButtonClick() : navigator.goBack();
+        if (
+            !this.props.shouldShowClosePromptMessage ||
+            confirm(closePromptMessage)
+        ) {
+            this.props.onCloseButtonClick
+                ? this.props.onCloseButtonClick()
+                : navigator.goBack();
         }
-    }
+    };
 
     onEditButtonClick = () => {
         if (this.props.isEditing!) {
-            if (!this.props.shouldShowClosePromptMessage
-                || confirm(revertPromptMessage)) {
+            if (
+                !this.props.shouldShowClosePromptMessage ||
+                confirm(revertPromptMessage)
+            ) {
                 this.props.onEditButtonClick!();
             }
         } else {
             this.props.onEditButtonClick!();
         }
-    }
+    };
 
     render() {
         return (
             <div className={s.sidebarHeaderView}>
                 <div className={s.topic}>{this.props.children}</div>
                 <div>
-                    {
-                        this.props.isEditButtonVisible &&
-                        this.props.loginStore!.hasWriteAccess &&
-                        <FiEdit3
-                            onClick={this.onEditButtonClick}
-                            className={
-                                classnames(
+                    {this.props.isEditButtonVisible &&
+                        this.props.loginStore!.hasWriteAccess && (
+                            <FiEdit3
+                                onClick={this.onEditButtonClick}
+                                className={classnames(
                                     s.icon,
-                                    this.props.isEditing && s.active,
-                                )
-                            }
-                        />
-                    }
-                    { !this.props.hideCloseButton &&
+                                    this.props.isEditing && s.active
+                                )}
+                            />
+                        )}
+                    {!this.props.hideCloseButton && (
                         <FiXCircle
                             className={s.icon}
                             onClick={this.onCloseButtonClick}
                         />
-                    }
+                    )}
                 </div>
             </div>
         );
     }
-
 }
 export default SidebarHeader;

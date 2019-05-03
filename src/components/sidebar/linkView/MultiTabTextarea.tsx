@@ -10,50 +10,47 @@ interface IMultiTabInputState {
     selectedTabIndex: number;
 }
 
-class MultiTabTextarea extends React.Component<IMultiTabInputProps, IMultiTabInputState> {
+class MultiTabTextarea extends React.Component<
+    IMultiTabInputProps,
+    IMultiTabInputState
+> {
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedTabIndex: 0,
+            selectedTabIndex: 0
         };
-
     }
 
     private onTabClick = (selectedTabIndex: number) => () => {
         this.setState({
-            selectedTabIndex,
+            selectedTabIndex
         });
-    }
+    };
 
     private generateTabs = () => {
         return this.props.tabs.map((tab: string, index) => {
             const classname = classnames(s.tabButton, s.tabButtonPiece);
-            return(
+            return (
                 <div
                     key={index}
-                    className={(this.state.selectedTabIndex === index) ?
-                    classnames(classname, s.opened) :
-                    classname}
+                    className={
+                        this.state.selectedTabIndex === index
+                            ? classnames(classname, s.opened)
+                            : classname
+                    }
                     onClick={this.onTabClick(index)}
                 >
-                    <div className={s.tabLabel}>
-                        {tab}
-                    </div>
+                    <div className={s.tabLabel}>{tab}</div>
                 </div>
             );
         });
-    }
+    };
 
     render() {
         return (
-             <div className={s.tabsInputContainer}>
-                <div className={s.flexRow}>
-                    {this.generateTabs()}
-                </div>
-                <textarea
-                    placeholder=''
-                    className={s.tabsInput}
-                />
+            <div className={s.tabsInputContainer}>
+                <div className={s.flexRow}>{this.generateTabs()}</div>
+                <textarea placeholder='' className={s.tabsInput} />
             </div>
         );
     }

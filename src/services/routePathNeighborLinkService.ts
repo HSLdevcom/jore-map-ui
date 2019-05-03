@@ -28,26 +28,43 @@ interface IFetchNeighborLinksResponse {
 }
 
 const getNeighborLinks = (
-    queryResult: any, orderNumber: number, from: 'startNode' | 'endNode',
+    queryResult: any,
+    orderNumber: number,
+    from: 'startNode' | 'endNode'
 ): INeighborLink[] => {
-    const linkPropertyName = from === 'startNode'
-        ? 'linkkisByLnkalkusolmu' : 'linkkisByLnkloppusolmu';
-    const nodePropertyName = from === 'startNode'
-        ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
-    return _parseNeighborLinks(queryResult, orderNumber, linkPropertyName, nodePropertyName);
+    const linkPropertyName =
+        from === 'startNode'
+            ? 'linkkisByLnkalkusolmu'
+            : 'linkkisByLnkloppusolmu';
+    const nodePropertyName =
+        from === 'startNode' ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
+    return _parseNeighborLinks(
+        queryResult,
+        orderNumber,
+        linkPropertyName,
+        nodePropertyName
+    );
 };
 
 const _parseNeighborLinks = (
-    queryResult: any, orderNumber: number, linkPropertyName: string, nodePropertyName: string,
+    queryResult: any,
+    orderNumber: number,
+    linkPropertyName: string,
+    nodePropertyName: string
 ): INeighborLink[] => {
-    return queryResult.data.solmuBySoltunnus[linkPropertyName]
-        .nodes.map((link: IExtendedExternalLink): INeighborLink => ({
-            routePathLink:
-                RoutePathLinkFactory
-                    .mapExternalRoutePathLinkFromExternalLink(link, orderNumber),
-            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes
-                .map((rp: IExternalRoutePath) => RoutePathFactory.mapExternalRoutePath(rp)),
-        }));
+    return queryResult.data.solmuBySoltunnus[linkPropertyName].nodes.map(
+        (link: IExtendedExternalLink): INeighborLink => ({
+            routePathLink: RoutePathLinkFactory.mapExternalRoutePathLinkFromExternalLink(
+                link,
+                orderNumber
+            ),
+            nodeUsageRoutePaths: link[
+                nodePropertyName
+            ].usageDuringDate!.nodes.map((rp: IExternalRoutePath) =>
+                RoutePathFactory.mapExternalRoutePath(rp)
+            )
+        })
+    );
 };
 
 class RoutePathNeighborLinkService {
@@ -56,47 +73,51 @@ class RoutePathNeighborLinkService {
         neighborToAddType: NeighborToAddType,
         orderNumber: number,
         transitType: TransitType,
-        date: Date,
+        date: Date
     ): Promise<INeighborLink[]> => {
         let res: INeighborLink[] = [];
 
         // If new routePathLinks should be created after the node
         if (neighborToAddType === NeighborToAddType.AfterNode) {
-            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: GraphqlQueries.getLinksByStartNodeQuery()
-                , variables: { nodeId, date } },
-            );
-            res = getNeighborLinks(
-                queryResult,
-                orderNumber,
-                'startNode',
-            );
+            const queryResult: ApolloQueryResult<
+                any
+            > = await apolloClient.query({
+                query: GraphqlQueries.getLinksByStartNodeQuery(),
+                variables: { nodeId, date }
+            });
+            res = getNeighborLinks(queryResult, orderNumber, 'startNode');
 
-        // If new routePathLinks should be created before the node
+            // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
-            const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-                { query: GraphqlQueries.getLinksByEndNodeQuery()
-                , variables: { nodeId, date } },
-            );
-            res = getNeighborLinks(
-                queryResult,
-                orderNumber,
-                'endNode',
-            );
+            const queryResult: ApolloQueryResult<
+                any
+            > = await apolloClient.query({
+                query: GraphqlQueries.getLinksByEndNodeQuery(),
+                variables: { nodeId, date }
+            });
+            res = getNeighborLinks(queryResult, orderNumber, 'endNode');
         } else {
-            throw new Error(`neighborToAddType not supported: ${neighborToAddType}`);
+            throw new Error(
+                `neighborToAddType not supported: ${neighborToAddType}`
+            );
         }
-        return res.filter(rpLink => rpLink.routePathLink.transitType === transitType);
-    }
+        return res.filter(
+            rpLink => rpLink.routePathLink.transitType === transitType
+        );
+    };
 
     public static fetchNeighborRoutePathLinks = async (
         nodeId: string,
         linkOrderNumber: number,
         transitType: TransitType,
-        routePathLinks?: IRoutePathLink[],
+        routePathLinks?: IRoutePathLink[]
     ): Promise<IFetchNeighborLinksResponse | null> => {
-        const startNodeCount = routePathLinks!.filter(link => link.startNode.id === nodeId).length;
-        const endNodeCount = routePathLinks!.filter(link => link.endNode.id === nodeId).length;
+        const startNodeCount = routePathLinks!.filter(
+            link => link.startNode.id === nodeId
+        ).length;
+        const endNodeCount = routePathLinks!.filter(
+            link => link.endNode.id === nodeId
+        ).length;
         let neighborToAddType;
         let orderNumber;
         if (startNodeCount <= endNodeCount) {
@@ -108,27 +129,29 @@ class RoutePathNeighborLinkService {
         }
 
         try {
-            const neighborLinks =
-                await RoutePathNeighborLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                    nodeId,
-                    neighborToAddType,
-                    orderNumber,
-                    transitType,
-                    new Date());
+            const neighborLinks = await RoutePathNeighborLinkService.fetchAndCreateRoutePathLinksWithNodeId(
+                nodeId,
+                neighborToAddType,
+                orderNumber,
+                transitType,
+                new Date()
+            );
             if (neighborLinks.length === 0) {
                 // tslint:disable-next-line:max-line-length
-                ErrorStore.addError(`Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`);
+                ErrorStore.addError(
+                    `Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`
+                );
             } else {
                 return {
                     neighborToAddType,
-                    neighborLinks,
+                    neighborLinks
                 };
             }
         } catch (e) {
             ErrorStore.addError('Haku löytää naapurisolmuja epäonnistui', e);
         }
         return null;
-    }
+    };
 }
 
 export default RoutePathNeighborLinkService;

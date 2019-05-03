@@ -30,7 +30,10 @@ interface INodeMarkerProps {
     node: INode;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
-    onMoveMarker?: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
+    onMoveMarker?: (
+        coordinatesType: NodeLocationType,
+        coordinates: L.LatLng
+    ) => void;
 }
 
 const NODE_LABEL_MIN_ZOOM = 14;
@@ -42,7 +45,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isDraggable: false,
         isHighlighted: false,
         forcedVisibleNodeLabels: [],
-        markerClasses: [],
+        markerClasses: []
     };
 
     markerRef: any;
@@ -58,11 +61,13 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private onMoveMarker = (coordinatesType: NodeLocationType) => (e: L.DragEndEvent) => {
+    private onMoveMarker = (coordinatesType: NodeLocationType) => (
+        e: L.DragEndEvent
+    ) => {
         if (this.props.onMoveMarker) {
             this.props.onMoveMarker(coordinatesType, e.target.getLatLng());
         }
-    }
+    };
 
     private getLabels(): string[] {
         const node = this.props.node;
@@ -70,10 +75,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
         const visibleNodeLabels = _.union(
             this.props.mapStore!.visibleNodeLabels,
-            this.props.forcedVisibleNodeLabels,
+            this.props.forcedVisibleNodeLabels
         );
 
-        if (visibleNodeLabels.length === 0 || zoom < NODE_LABEL_MIN_ZOOM) return [];
+        if (visibleNodeLabels.length === 0 || zoom < NODE_LABEL_MIN_ZOOM) {
+            return [];
+        }
 
         const labels: string[] = [];
         if (visibleNodeLabels.includes(NodeLabel.hastusId)) {
@@ -97,13 +104,11 @@ class NodeMarker extends Component<INodeMarkerProps> {
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
         if (this.props.isDisabled) {
-            res.push(
-                NodeHelper.getTypeClass(NodeType.DISABLED, isSelected),
-            );
+            res.push(NodeHelper.getTypeClass(NodeType.DISABLED, isSelected));
         }
         if (this.props.isTimeAlignmentStop) {
             res.push(
-                NodeHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected),
+                NodeHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected)
             );
         }
 
@@ -111,11 +116,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
             res.push(s.highlight);
         }
 
-        res.push(
-            NodeHelper.getTypeClass(this.props.node.type, isSelected),
-        );
+        res.push(NodeHelper.getTypeClass(this.props.node.type, isSelected));
         return res;
-    }
+    };
 
     private renderMarkerLabel = () => {
         const labels = this.getLabels();
@@ -123,21 +126,23 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return (
             <div className={s.nodeLabel}>
                 {labels.map((label, index) => {
-                    return (
-                        <div key={index}>{label}</div>
-                    );
+                    return <div key={index}>{label}</div>;
                 })}
             </div>
         );
-    }
+    };
 
     private renderStopRadiusCircle = () => {
         const nodeType = this.props.node.type;
 
-        if (!this.props.isSelected
-            || nodeType !== NodeType.STOP
-            || !this.props.node.stop
-            || !this.props.node.stop!.radius) return null;
+        if (
+            !this.props.isSelected ||
+            nodeType !== NodeType.STOP ||
+            !this.props.node.stop ||
+            !this.props.node.stop!.radius
+        ) {
+            return null;
+        }
 
         return (
             <Circle
@@ -146,7 +151,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 radius={this.props.node.stop!.radius}
             />
         );
-    }
+    };
 
     private renderAdditionalLocations = (node: INode) => {
         return (
@@ -155,36 +160,43 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     position={node.coordinatesManual}
                     icon={LeafletUtils.createDivIcon(
                         <div
-                            className={
-                                classnames(s.manual, ...this.getMarkerClasses())}
+                            className={classnames(
+                                s.manual,
+                                ...this.getMarkerClasses()
+                            )}
                         />,
-                        { className: s.node },
+                        { className: s.node }
                     )}
                     draggable={this.isInteractive()}
-                    onDragEnd={this.props.onMoveMarker
-                    && this.onMoveMarker('coordinatesManual')}
+                    onDragEnd={
+                        this.props.onMoveMarker &&
+                        this.onMoveMarker('coordinatesManual')
+                    }
                 />
                 <LeafletMarker
                     position={node.coordinatesProjection}
                     icon={LeafletUtils.createDivIcon(
                         <div
-                            className={
-                                classnames(s.projection, ...this.getMarkerClasses())}
+                            className={classnames(
+                                s.projection,
+                                ...this.getMarkerClasses()
+                            )}
                         />,
-                        { className: s.node },
+                        { className: s.node }
                     )}
                     draggable={this.isInteractive()}
-                    onDragEnd={this.props.onMoveMarker
-                    && this.onMoveMarker('coordinatesProjection')}
+                    onDragEnd={
+                        this.props.onMoveMarker &&
+                        this.onMoveMarker('coordinatesProjection')
+                    }
                 />
             </>
         );
-    }
+    };
 
-    private isInteractive = () => (
+    private isInteractive = () =>
         // TODO this should probably check other stuff too...
-        this.props.isSelected && this.props.isDraggable
-    )
+        this.props.isSelected && this.props.isDraggable;
 
     private onMarkerClick = () => {
         if (this.props.onClick) {
@@ -193,7 +205,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         if (this.props.onClickEventParams) {
             EventManager.trigger('nodeClick', this.props.onClickEventParams);
         }
-    }
+    };
 
     render() {
         const icon = LeafletUtils.createDivIcon(
@@ -201,7 +213,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 className={classnames(...this.getMarkerClasses())}
                 style={{
                     borderColor: this.props.color,
-                    backgroundColor: this.props.color,
+                    backgroundColor: this.props.color
                 }}
             >
                 {this.props.children}
@@ -209,8 +221,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
             </div>,
             {
                 className: s.node,
-                popupOffset: -15,
-            },
+                popupOffset: -15
+            }
         );
 
         return (
@@ -222,16 +234,16 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     draggable={this.props.isDraggable}
                     icon={icon}
                     position={this.props.node.coordinates}
-                    onDragEnd={this.props.onMoveMarker
-                    && this.onMoveMarker('coordinates')}
+                    onDragEnd={
+                        this.props.onMoveMarker &&
+                        this.onMoveMarker('coordinates')
+                    }
                 >
                     {this.renderStopRadiusCircle()}
                 </LeafletMarker>
-                {
-                    (
-                        this.props.isSelected &&
-                        this.props.node.type === NodeType.STOP
-                    ) && this.renderAdditionalLocations(this.props.node!)}
+                {this.props.isSelected &&
+                    this.props.node.type === NodeType.STOP &&
+                    this.renderAdditionalLocations(this.props.node!)}
             </>
         );
     }

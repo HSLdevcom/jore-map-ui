@@ -17,7 +17,8 @@ import BaseTool from './BaseTool';
 class SplitLinkTool implements BaseTool {
     public toolType = ToolbarTool.SplitLink;
     public toolHelpHeader = 'Jaa linkki solmulla';
-    public toolHelpText = 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
+    public toolHelpText =
+        'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
@@ -33,15 +34,18 @@ class SplitLinkTool implements BaseTool {
         const link = LinkStore.link;
         if (!link) throw 'Valittua linkkiä ei löytynyt.';
         const url = RouteBuilder.to(SubSites.splitLink)
-            .clear().toTarget([
-                link.startNode.id,
-                link.endNode.id,
-                link.transitType,
-                nodeId,
-            ].join(','))
+            .clear()
+            .toTarget(
+                [
+                    link.startNode.id,
+                    link.endNode.id,
+                    link.transitType,
+                    nodeId
+                ].join(',')
+            )
             .toLink();
         navigator.goTo(url);
-    }
+    };
 
     private openNodeConfirm = async (clickEvent: CustomEvent) => {
         const nodeId = clickEvent.detail.nodeId;
@@ -58,25 +62,26 @@ class SplitLinkTool implements BaseTool {
                 itemList: [
                     { label: 'Lyhyt ID', value: NodeHelper.getShortId(node) },
                     { label: 'Nimi', value: node.stop!.nameFi },
-                    { label: 'Soltunnus', value: node.id },
-                ],
+                    { label: 'Soltunnus', value: node.id }
+                ]
             });
         } else {
             confirmContent = SplitConfirmContent({
                 message: 'Oletko varma, että haluat jakaa linkin solmulla?',
                 itemList: [
-                    { label: 'Tyyppi', value: NodeHelper.getNodeTypeName(node.type) },
-                    { label: 'Soltunnus', value: node.id },
-                ],
+                    {
+                        label: 'Tyyppi',
+                        value: NodeHelper.getNodeTypeName(node.type)
+                    },
+                    { label: 'Soltunnus', value: node.id }
+                ]
             });
         }
         ConfirmStore.openConfirm(confirmContent, () => {
             ToolbarStore.selectTool(null);
-            this.navigateToSplitLink(
-                nodeId,
-            );
+            this.navigateToSplitLink(nodeId);
         });
-    }
+    };
 }
 
 export default SplitLinkTool;

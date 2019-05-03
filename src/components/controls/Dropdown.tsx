@@ -25,13 +25,17 @@ const Dropdown = observer((props: IDropdownProps) => {
     const onChange = (event: any) => {
         props.onChange(event.target.value);
     };
-    const dropDownItemList = props.items.map((item): IDropdownItem => ({
-        value: item.value,
-        label: item.label,
-    }));
+    const dropDownItemList = props.items.map(
+        (item): IDropdownItem => ({
+            value: item.value,
+            label: item.label
+        })
+    );
 
     if (props.isValueIncludedInLabel) {
-        dropDownItemList.forEach(item => item.label = `${item.value} - ${item.label}`);
+        dropDownItemList.forEach(
+            item => (item.label = `${item.value} - ${item.label}`)
+        );
     }
 
     if (props.emptyItem) {
@@ -40,29 +44,28 @@ const Dropdown = observer((props: IDropdownProps) => {
 
     let selectedItem: IDropdownItem | undefined;
     if (props.selected) {
-        selectedItem = dropDownItemList.find(item => item.value === props.selected!.trim());
+        selectedItem = dropDownItemList.find(
+            item => item.value === props.selected!.trim()
+        );
     }
 
     return (
         <div className={s.formItem}>
             <div className={s.dropdownView}>
-                {props.label &&
-                    <div className={s.inputLabel}>
-                        {props.label}
-                    </div>
-                }
-                {props.disabled ?
+                {props.label && (
+                    <div className={s.inputLabel}>{props.label}</div>
+                )}
+                {props.disabled ? (
                     <div className={s.disableEditing}>
                         {Boolean(selectedItem) ? selectedItem!.label : ''}
                     </div>
-                :
+                ) : (
                     <select
                         className={s.dropdown}
                         value={selectedItem ? selectedItem.value : undefined}
                         onChange={onChange}
                     >
-                    {
-                        dropDownItemList.map((item) => {
+                        {dropDownItemList.map(item => {
                             return (
                                 <option
                                     key={item.value ? item.value : item.value}
@@ -71,15 +74,16 @@ const Dropdown = observer((props: IDropdownProps) => {
                                     {item.label}
                                 </option>
                             );
-                        })
-                    }
+                        })}
                     </select>
-                }
-                { validationResult && validationResult.errorMessage && !props.disabled &&
-                    <div className={s.errorMessage}>
-                        {validationResult.errorMessage}
-                    </div>
-                }
+                )}
+                {validationResult &&
+                    validationResult.errorMessage &&
+                    !props.disabled && (
+                        <div className={s.errorMessage}>
+                            {validationResult.errorMessage}
+                        </div>
+                    )}
             </div>
         </div>
     );

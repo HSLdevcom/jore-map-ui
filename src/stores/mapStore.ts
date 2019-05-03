@@ -3,32 +3,28 @@ import { action, computed, observable } from 'mobx';
 import CoordinateSystem from '~/enums/coordinateSystem';
 import GeometryService from '~/services/geometryService';
 
-const INITIAL_COORDINATES = new L.LatLng(
-    60.1699,
-    24.9384,
-);
+const INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384);
 const INITIAL_ZOOM = 15;
 
 export enum NodeLabel {
     hastusId,
     longNodeId,
-    shortNodeId,
+    shortNodeId
 }
 
 export enum MapFilter {
-    arrowDecorator,
+    arrowDecorator
 }
 
-export type MapCursor = '' | 'crosshair';
+export type MapCursor = '' | 'crosshair';
 
 export class MapStore {
-
     @observable private _coordinates: L.LatLng;
-    @observable private _displayCoordinateSystem:CoordinateSystem;
+    @observable private _displayCoordinateSystem: CoordinateSystem;
     @observable private _isMapFullscreen: boolean;
     @observable private _routes: MapRoute[];
-    @observable private _zoom:number;
-    @observable private _selectedNodeId: string|null;
+    @observable private _zoom: number;
+    @observable private _selectedNodeId: string | null;
     @observable private _visibleNodeLabels: NodeLabel[];
     @observable private _mapFilters: MapFilter[];
     @observable private _mapBounds: L.LatLngBounds;
@@ -92,55 +88,66 @@ export class MapStore {
 
     public isMapFilterEnabled = (mapFilter: MapFilter) => {
         return this._mapFilters.includes(mapFilter);
-    }
+    };
 
     @action
     public setMapBounds = (bounds: L.LatLngBounds) => {
         this._mapBounds = bounds;
-    }
+    };
 
     @action
     public setCoordinates = (location: L.LatLng) => {
         this._coordinates = location;
-    }
+    };
 
     @action
     public setZoom = (zoom: number) => {
         this._zoom = zoom;
-    }
+    };
 
     @action
     public toggleMapFullscreen = () => {
         this._isMapFullscreen = !this._isMapFullscreen;
-    }
+    };
 
     // TODO: move logic out of store? You can setCoordinates() instead
     @action
-    public setCoordinatesFromDisplayCoordinateSystem = (lat: number, lon: number) => {
+    public setCoordinatesFromDisplayCoordinateSystem = (
+        lat: number,
+        lon: number
+    ) => {
         const [wgsLat, wgsLon] = GeometryService.reprojectToCrs(
-            lat, lon, CoordinateSystem.EPSG4326, this._displayCoordinateSystem);
+            lat,
+            lon,
+            CoordinateSystem.EPSG4326,
+            this._displayCoordinateSystem
+        );
         this._coordinates = new L.LatLng(wgsLat, wgsLon);
-    }
+    };
 
     @action
     public setDisplayCoordinateSystem = (value: CoordinateSystem) => {
         this._displayCoordinateSystem = value;
-    }
+    };
 
     @action
-    public setSelectedNodeId = (id: string|null) => {
+    public setSelectedNodeId = (id: string | null) => {
         this._selectedNodeId = id;
-    }
+    };
 
     @action
     public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => {
         if (this._visibleNodeLabels.includes(nodeLabel)) {
-            this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
+            this._visibleNodeLabels = this._visibleNodeLabels.filter(
+                t => t !== nodeLabel
+            );
         } else {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
-            this._visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
+            this._visibleNodeLabels = this._visibleNodeLabels.concat([
+                nodeLabel
+            ]);
         }
-    }
+    };
 
     @action
     public toggleMapFilter = (mapFilter: MapFilter) => {
@@ -150,17 +157,16 @@ export class MapStore {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
             this._mapFilters = this._mapFilters.concat([mapFilter]);
         }
-    }
+    };
 
     @action
     public setMapCursor = (mapCursor: MapCursor) => {
         this._mapCursor = mapCursor;
-    }
+    };
 
     public isNodeLabelVisible = (nodeLabel: NodeLabel) => {
         return this._visibleNodeLabels.includes(nodeLabel);
-    }
-
+    };
 }
 
 const observableMapStore = new MapStore();

@@ -16,25 +16,24 @@ interface IToolbarCommonButtonsProps {
 
 @observer
 class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
-    private print = () => {
-    }
+    private print = () => {};
 
     private openInNewTab = () => {
         const path = Navigator.getPathName() + Navigator.getSearch();
         window.open(path, '_blank');
-    }
+    };
 
     private selectTool = (tool: ToolbarTool) => () => {
         ToolbarStore.selectTool(tool);
-    }
+    };
 
     private undo = () => {
         EventManager.trigger('undo');
-    }
+    };
 
     private redo = () => {
         EventManager.trigger('redo');
-    }
+    };
 
     render() {
         return (
@@ -56,23 +55,31 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                     >
                         <FiExternalLink />
                     </MapControlButton>
-                    { this.props.hasWriteAccess &&
+                    {this.props.hasWriteAccess && (
                         <>
                             <MapControlButton
-                                onClick={this.selectTool(ToolbarTool.AddNetworkNode)}
-                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkNode)}
+                                onClick={this.selectTool(
+                                    ToolbarTool.AddNetworkNode
+                                )}
+                                isActive={ToolbarStore.isSelected(
+                                    ToolbarTool.AddNetworkNode
+                                )}
                                 isDisabled={false}
                                 label='Lisää solmu'
                             >
                                 <FiPlus />
                             </MapControlButton>
                             <MapControlButton
-                                onClick={this.selectTool(ToolbarTool.AddNetworkLink)}
-                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkLink)}
+                                onClick={this.selectTool(
+                                    ToolbarTool.AddNetworkLink
+                                )}
+                                isActive={ToolbarStore.isSelected(
+                                    ToolbarTool.AddNetworkLink
+                                )}
                                 isDisabled={false}
                                 label='Lisää linkki'
                             >
-                                <TiLink/>
+                                <TiLink />
                             </MapControlButton>
                             <MapControlButton
                                 onClick={this.undo}
@@ -91,7 +98,7 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                                 <IoMdRedo />
                             </MapControlButton>
                         </>
-                    }
+                    )}
                 </div>
             </div>
         );

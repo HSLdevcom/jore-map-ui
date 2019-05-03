@@ -10,7 +10,7 @@ import * as s from './toolbarToolButtons.scss';
 class ToolbarLinkButtons extends React.Component {
     private selectTool = (tool: ToolbarTool) => () => {
         ToolbarStore.selectTool(tool);
-    }
+    };
 
     render() {
         return (
@@ -18,8 +18,12 @@ class ToolbarLinkButtons extends React.Component {
                 <div className={s.toolbarButtonRow}>
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.SplitLink)}
-                        isActive={ToolbarStore.isSelected(ToolbarTool.SplitLink)}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.SplitLink)}
+                        isActive={ToolbarStore.isSelected(
+                            ToolbarTool.SplitLink
+                        )}
+                        isDisabled={ToolbarStore.isDisabled(
+                            ToolbarTool.SplitLink
+                        )}
                         label='Jaa linkki solmulla'
                     >
                         <FiScissors />

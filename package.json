@@ -60,8 +60,6 @@
     "ts-loader": "^2.3.7",
     "tsconfig-paths-webpack-plugin": "^2.0.0",
     "tslint": "^5.11.0",
-    "tslint-config-airbnb": "^5.9.2",
-    "tslint-config-prettier": "^1.10.0",
     "tslint-react": "^3.2.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "url-loader": "0.6.2",
@@ -108,10 +106,13 @@
     "mobx-react-devtools": "^6.0.1",
     "node-sass": "^4.9.2",
     "npm-run-all": "^4.1.3",
+    "prettier": "1.17.0",
     "react-dev-utils": "^5.0.1",
     "sass": "^1.10.1",
     "sass-loader": "^7.1.0",
     "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.9.2",
+    "tslint-config-prettier": "^1.10.0",
     "tslint-eslint-rules": "^5.3.1",
     "tslint-origin-ordered-imports-rule": "^1.1.2",
     "typescript": "^2.9.2",
@@ -174,5 +175,11 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": true,
+    "jsxSingleQuote": true
   }
 }

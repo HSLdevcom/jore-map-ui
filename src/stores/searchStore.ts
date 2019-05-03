@@ -19,7 +19,7 @@ export class SearchStore {
             TransitType.FERRY,
             TransitType.SUBWAY,
             TransitType.TRAIN,
-            TransitType.TRAM,
+            TransitType.TRAM
         ];
         this._isSearchingForLines = true;
         this._isSearchingForNodes = true;
@@ -33,28 +33,30 @@ export class SearchStore {
     @action
     public setSearchInput = (input: string) => {
         this._searchInput = input;
-    }
+    };
 
     @action
     public addSubLineItem = (routeId: string, routePathId: string) => {
         this._subLineItems.push({
             routeId,
-            routePathId,
+            routePathId
         });
-    }
+    };
 
     @action
     public removeSubLineItem = (routeId: string, routePathId: string) => {
-        this._subLineItems = this._subLineItems.filter((subLineItem) =>  {
-            return !(subLineItem.routeId === routeId
-                && subLineItem.routePathId === routePathId);
+        this._subLineItems = this._subLineItems.filter(subLineItem => {
+            return !(
+                subLineItem.routeId === routeId &&
+                subLineItem.routePathId === routePathId
+            );
         });
-    }
+    };
 
     @action
     public removeAllSubLineItems = () => {
         this._subLineItems = [];
-    }
+    };
 
     @computed
     get subLineItems() {
@@ -89,11 +91,13 @@ export class SearchStore {
     @action
     public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(
+                t => t !== type
+            );
         } else {
             this._selectedTransitTypes.push(type);
         }
-    }
+    };
 }
 
 const observableSearchStore = new SearchStore();

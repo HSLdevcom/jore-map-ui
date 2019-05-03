@@ -12,7 +12,8 @@ import BaseTool from './BaseTool';
 class AddNetworkNodeTool implements BaseTool {
     public toolType = ToolbarTool.AddNetworkNode;
     public toolHelpHeader = 'Luo uusi solmu';
-    public toolHelpText = 'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.'; // tslint:disable-line max-line-length
+    public toolHelpText =
+        'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.'; // tslint:disable-line max-line-length
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
@@ -29,14 +30,12 @@ class AddNetworkNodeTool implements BaseTool {
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);
         const coordinate = roundLatLng(clickEvent.detail.latlng);
-        const url = RouteBuilder
-            .to(SubSites.newNode)
+        const url = RouteBuilder.to(SubSites.newNode)
             .clear()
-            .toTarget(
-                `${coordinate.lat}:${coordinate.lng}`,
-            ).toLink();
+            .toTarget(`${coordinate.lat}:${coordinate.lng}`)
+            .toLink();
         navigator.goTo(url);
-    }
+    };
 }
 
 export default AddNetworkNodeTool;

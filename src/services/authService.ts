@@ -11,9 +11,14 @@ export interface IAuthorizationResponse {
 }
 
 class AuthService {
-    public static async authenticate(onSuccess: () => void, onError: () => void) {
+    public static async authenticate(
+        onSuccess: () => void,
+        onError: () => void
+    ) {
         const code = navigator.getQueryParam(QueryParams.code);
-        const response = (await ApiClient.authorizeUsingCode(code)) as IAuthorizationResponse;
+        const response = (await ApiClient.authorizeUsingCode(
+            code
+        )) as IAuthorizationResponse;
         LoginStore.setAuthenticationInfo(response);
 
         response.isOk ? onSuccess() : onError();

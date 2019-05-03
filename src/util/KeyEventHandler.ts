@@ -5,7 +5,7 @@ const KEYCODES = {
     arrowUp: 'ArrowUp',
     arrowDown: 'ArrowDown',
     Y: 'KeyY',
-    Z: 'KeyZ',
+    Z: 'KeyZ'
 };
 
 class KeyEventHandler {
@@ -15,32 +15,33 @@ class KeyEventHandler {
 
     handleKeyDownEvent = (event: KeyboardEvent) => {
         switch (event.code) {
-        case KEYCODES.enter: {
-            EventManager.trigger('enter');
-            break;
-        }
-        case KEYCODES.arrowUp: {
-            EventManager.trigger('arrowUp');
-            break;
-        }
-        case KEYCODES.arrowDown: {
-            EventManager.trigger('arrowDown');
-            break;
-        }
+            case KEYCODES.enter: {
+                EventManager.trigger('enter');
+                break;
+            }
+            case KEYCODES.arrowUp: {
+                EventManager.trigger('arrowUp');
+                break;
+            }
+            case KEYCODES.arrowDown: {
+                EventManager.trigger('arrowDown');
+                break;
+            }
         }
 
         // Windows
         if (event.ctrlKey) {
             switch (event.code) {
-            case KEYCODES.Z: {
-                EventManager.trigger('undo');
-                break;
+                case KEYCODES.Z: {
+                    EventManager.trigger('undo');
+                    break;
+                }
+                case KEYCODES.Y: {
+                    EventManager.trigger('redo');
+                    break;
+                }
             }
-            case KEYCODES.Y: {
-                EventManager.trigger('redo');
-                break;
-            }}
-        // Macbook
+            // Macbook
         } else if (event.metaKey && event.code === KEYCODES.Z) {
             if (event.shiftKey) {
                 EventManager.trigger('redo');
@@ -48,7 +49,7 @@ class KeyEventHandler {
                 EventManager.trigger('undo');
             }
         }
-    }
+    };
 }
 
 new KeyEventHandler();

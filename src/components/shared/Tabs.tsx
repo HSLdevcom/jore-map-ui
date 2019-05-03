@@ -8,11 +8,7 @@ interface ITabsProps {
 }
 
 const Tabs = observer((props: ITabsProps) => {
-    return (
-        <div className={s.tabs}>
-            {props.children}
-        </div>
-    );
+    return <div className={s.tabs}>{props.children}</div>;
 });
 
 interface ITabListProps {
@@ -24,17 +20,14 @@ interface ITabListProps {
 const TabList = observer((props: ITabListProps) => {
     return (
         <div className={s.tabList}>
-            {
-                React.Children.map(props.children, (child, index) => {
-                    const isActive = props.selectedTabIndex === index;
-                    return (React.cloneElement(child, {
-                        isActive,
-                        index,
-                        setSelectedTabIndex: props.setSelectedTabIndex,
-                    })
-                    );
-                })
-            }
+            {React.Children.map(props.children, (child, index) => {
+                const isActive = props.selectedTabIndex === index;
+                return React.cloneElement(child, {
+                    isActive,
+                    index,
+                    setSelectedTabIndex: props.setSelectedTabIndex
+                });
+            })}
         </div>
     );
 });
@@ -54,13 +47,11 @@ const Tab = observer((props: ITabProps) => {
 
     return (
         <div
-            className={
-                classnames(
-                    s.tab,
-                    isActive ? s.active : null,
-                    isDisabled ? s.disabled : null,
-                )
-            }
+            className={classnames(
+                s.tab,
+                isActive ? s.active : null,
+                isDisabled ? s.disabled : null
+            )}
             onClick={setSelectedTabIndex}
         >
             {props.children}
@@ -76,15 +67,11 @@ interface IContentListProps {
 const ContentList = observer((props: IContentListProps) => {
     return (
         <div className={s.contentList}>
-            {
-                React.Children.map(props.children, (child, index) => {
-                    const isActive = props.selectedTabIndex === index;
-                    if (!isActive) return null;
-                    return (
-                        React.cloneElement(child)
-                    );
-                })
-            }
+            {React.Children.map(props.children, (child, index) => {
+                const isActive = props.selectedTabIndex === index;
+                if (!isActive) return null;
+                return React.cloneElement(child);
+            })}
         </div>
     );
 });
@@ -94,19 +81,7 @@ interface IContentItemProps {
 }
 
 const ContentItem = observer((props: IContentItemProps) => {
-    return (
-        <div
-            className={s.contentItem}
-        >
-            {props.children}
-        </div>
-    );
+    return <div className={s.contentItem}>{props.children}</div>;
 });
 
-export {
-    Tabs,
-    TabList,
-    Tab,
-    ContentList,
-    ContentItem,
-};
+export { Tabs, TabList, Tab, ContentList, ContentItem };

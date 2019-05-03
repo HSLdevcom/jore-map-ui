@@ -24,7 +24,10 @@ class CoordinateControl extends L.Control {
 
     onAdd(map: L.Map) {
         const [lat, lon] = this.getDisplayCoordinates();
-        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        const container = L.DomUtil.create(
+            'div',
+            'leaflet-bar leaflet-control'
+        );
         container.id = s.coordinateControl;
         const xDiv = L.DomUtil.create('div');
         this.xButton = L.DomUtil.create('button');
@@ -47,14 +50,16 @@ class CoordinateControl extends L.Control {
         container.appendChild(yDiv);
         this.yInput.value = lon.toString(10);
 
-        this.xInput.onblur = this.yInput.onblur = (e) => {
+        this.xInput.onblur = this.yInput.onblur = e => {
             const newX = Number(this.xInput.value);
             const newY = Number(this.yInput.value);
             if (!isNaN(newY) && !isNaN(newX)) {
                 this.setInputAsCenter(newX, newY);
             }
         };
-        this.xInput.onkeypress = this.yInput.onkeypress = (e: KeyboardEvent) => {
+        this.xInput.onkeypress = this.yInput.onkeypress = (
+            e: KeyboardEvent
+        ) => {
             if (e.key === 'Enter') {
                 this.xInput.blur();
                 this.yInput.blur();
@@ -62,7 +67,10 @@ class CoordinateControl extends L.Control {
         };
         this.xButton.onclick = this.yButton.onclick = () => {
             this.mapStore!.setDisplayCoordinateSystem(
-                GeometryService.nextCoordinateSystem(this.mapStore!.displayCoordinateSystem));
+                GeometryService.nextCoordinateSystem(
+                    this.mapStore!.displayCoordinateSystem
+                )
+            );
         };
         L.DomEvent.disableClickPropagation(container);
         autorun(() => this.updateCoordinates());
@@ -71,21 +79,30 @@ class CoordinateControl extends L.Control {
 
     private setInputAsCenter = (lat: number, lon: number) => {
         this.mapStore!.setCoordinatesFromDisplayCoordinateSystem(lat, lon);
-    }
+    };
 
     private updateCoordinates() {
-        [this.xInput.value, this.yInput.value] =
-            this.getDisplayCoordinates()
-            .map(coord => coord.toPrecision(this.options['precision']));
-        ({ x: this.xButton.innerText, y: this.yButton.innerText } =
-            GeometryService.coordinateNames(this.mapStore!.displayCoordinateSystem));
+        [
+            this.xInput.value,
+            this.yInput.value
+        ] = this.getDisplayCoordinates().map(coord =>
+            coord.toPrecision(this.options['precision'])
+        );
+        ({
+            x: this.xButton.innerText,
+            y: this.yButton.innerText
+        } = GeometryService.coordinateNames(
+            this.mapStore!.displayCoordinateSystem
+        ));
     }
 
     private getDisplayCoordinates() {
         const coordinates = this.mapStore!.coordinates;
         const displayCoordinateSystem = this.mapStore!.displayCoordinateSystem;
         return GeometryService.reprojectToCrs(
-            coordinates.lat, coordinates.lng, displayCoordinateSystem,
+            coordinates.lat,
+            coordinates.lng,
+            displayCoordinateSystem
         );
     }
 }

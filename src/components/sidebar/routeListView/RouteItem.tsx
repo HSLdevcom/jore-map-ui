@@ -28,7 +28,9 @@ class RouteItem extends React.Component<IRouteItemProps> {
         this.props.route.routePaths.forEach((routePath, index) => {
             // Make two first route paths visible by default
             if (index < 2) {
-                this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
+                this.props.routeListStore!.toggleRoutePathVisibility(
+                    routePath.internalId
+                );
             }
         });
     }
@@ -40,34 +42,33 @@ class RouteItem extends React.Component<IRouteItemProps> {
             .remove(QueryParams.routes, this.props.route.id)
             .toLink();
         navigator.goTo(closeRouteLink);
-    }
+    };
 
     private renderRouteName = () => {
         return (
-            <SidebarHeader
-                onCloseButtonClick={this.closeRoute}
-            >
+            <SidebarHeader onCloseButtonClick={this.closeRoute}>
                 <div className={s.routeName}>
-                    {LineHelper.getTransitIcon(this.props.route.line!.transitType!, false)}
+                    {LineHelper.getTransitIcon(
+                        this.props.route.line!.transitType!,
+                        false
+                    )}
                     <div
                         className={classNames(
                             s.label,
                             TransitTypeHelper.getColorClass(
-                                this.props.route.line!.transitType!),
+                                this.props.route.line!.transitType!
+                            )
                         )}
                     >
-                        <div
-                            className={s.routeId}
-                            onClick={this.openRouteView}
-                        >
-                        {this.props.route.id}
+                        <div className={s.routeId} onClick={this.openRouteView}>
+                            {this.props.route.id}
                         </div>
                     </div>
                     {this.props.route.routeName}
                 </div>
             </SidebarHeader>
         );
-    }
+    };
 
     private openRouteView = () => {
         const routeViewLink = routeBuilder
@@ -76,42 +77,53 @@ class RouteItem extends React.Component<IRouteItemProps> {
             .clear()
             .toLink();
         navigator.goTo(routeViewLink);
-    }
+    };
 
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]) => {
         const res = {};
-        routePaths.forEach((rp) => {
-            const identifier = rp.startTime.toLocaleDateString() + rp.endTime.toLocaleDateString();
+        routePaths.forEach(rp => {
+            const identifier =
+                rp.startTime.toLocaleDateString() +
+                rp.endTime.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
 
         const list = Object.values(res);
-        list.sort((a: IRoutePath[], b: IRoutePath[]) =>
-            b[0].startTime.getTime() - a[0].startTime.getTime());
+        list.sort(
+            (a: IRoutePath[], b: IRoutePath[]) =>
+                b[0].startTime.getTime() - a[0].startTime.getTime()
+        );
 
         return list;
-    }
+    };
 
     private renderRoutePathList = (routePaths: IRoutePath[]) => {
         return routePaths.map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
-                this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
+                this.props.routeListStore!.toggleRoutePathVisibility(
+                    routePath.internalId
+                );
             };
 
             const openRoutePathView = () => {
                 const routePathViewLink = routeBuilder
                     .to(subSites.routePath)
-                    .toTarget([
+                    .toTarget(
+                        [
                             routePath.routeId,
-                            Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                            routePath.direction,
-                    ].join(','))
+                            Moment(routePath.startTime).format(
+                                'YYYY-MM-DDTHH:mm:ss'
+                            ),
+                            routePath.direction
+                        ].join(',')
+                    )
                     .toLink();
                 navigator.goTo(routePathViewLink);
             };
 
-            const isWithinTimeSpan = (Moment(routePath.startTime).isBefore(Moment()) &&
-                                    Moment(routePath.endTime).isAfter(Moment()));
+            const isWithinTimeSpan =
+                Moment(routePath.startTime).isBefore(Moment()) &&
+                Moment(routePath.endTime).isAfter(Moment());
 
             return (
                 <div
@@ -119,9 +131,11 @@ class RouteItem extends React.Component<IRouteItemProps> {
                     key={routePath.internalId}
                 >
                     <div
-                        className={(isWithinTimeSpan) ?
-                        classNames(s.routePathInfo, s.highlight) :
-                        s.routePathInfo}
+                        className={
+                            isWithinTimeSpan
+                                ? classNames(s.routePathInfo, s.highlight)
+                                : s.routePathInfo
+                        }
                     >
                         <div>
                             {`${routePath.originFi}-${routePath.destinationFi}`}
@@ -131,7 +145,9 @@ class RouteItem extends React.Component<IRouteItemProps> {
                         <ToggleSwitch
                             onClick={toggleRoutePathVisibility}
                             value={routePath.visible}
-                            color={routePath.visible ? routePath.color! : '#898989'}
+                            color={
+                                routePath.visible ? routePath.color! : '#898989'
+                            }
                         />
                         <div
                             className={s.routeInfoButton}
@@ -143,7 +159,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
                 </div>
             );
         });
-    }
+    };
 
     private renderList = () => {
         const routePaths = this.props.route.routePaths;
@@ -151,29 +167,26 @@ class RouteItem extends React.Component<IRouteItemProps> {
 
         return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
             const first = routePaths[0];
-            const header =
-                `${dateToDateString(first.startTime)} - ${dateToDateString(first.endTime)}`;
+            const header = `${dateToDateString(
+                first.startTime
+            )} - ${dateToDateString(first.endTime)}`;
 
             return (
                 <div
                     key={header}
-                    className={
-                        classNames(
-                            s.groupedRoutes,
-                            index % 2 ? undefined : s.shadow,
-                        )
-                    }
+                    className={classNames(
+                        s.groupedRoutes,
+                        index % 2 ? undefined : s.shadow
+                    )}
                 >
-                    <div className={s.groupedRoutesDate}>
-                        {header}
-                    </div>
+                    <div className={s.groupedRoutesDate}>{header}</div>
                     <div className={s.groupedRoutesContent}>
                         {this.renderRoutePathList(routePaths)}
                     </div>
                 </div>
             );
         });
-    }
+    };
 
     render() {
         return (

@@ -25,7 +25,7 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
             .toLink();
 
         navigator.goTo(newRouteLink);
-    }
+    };
 
     render() {
         const line = this.props.lineStore!.line;
@@ -34,7 +34,7 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
         return (
             <div className={s.lineRoutesTabView}>
                 <div className={s.content}>
-                    { line.routes.length === 0 ? (
+                    {line.routes.length === 0 ? (
                         <div>Linjalla ei olemassa olevia reittejä.</div>
                     ) : (
                         // TODO: render routes list here

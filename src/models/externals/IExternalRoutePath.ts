@@ -4,7 +4,9 @@ import IExternalRoute from './IExternalRoute';
 
 export default interface IExternalRoutePath {
     poikkeusreitti: string;
-    reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta: IGraphqlList<IExternalRoutePathLink>;
+    reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta: IGraphqlList<
+        IExternalRoutePathLink
+    >;
     reittiByReitunnus: IExternalRoute;
     reitunnus: string;
     suulahpaik: string;

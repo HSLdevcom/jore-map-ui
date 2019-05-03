@@ -13,7 +13,8 @@ import { NetworkNodeClickParams } from '../layers/NetworkLayers';
 class ExtendRoutePathTool implements BaseTool {
     public toolType = ToolbarTool.AddNewRoutePathLink;
     public toolHelpHeader = 'Laajenna reitinsuuntaa';
-    public toolHelpText = 'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista liilaksi merkittyjä linkkejä tai solmuja klikkailemalla.'; // tslint:disable-line max-line-length
+    public toolHelpText =
+        'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista liilaksi merkittyjä linkkejä tai solmuja klikkailemalla.'; // tslint:disable-line max-line-length
     public activate() {
         EventManager.on('networkNodeClick', this.onNetworkNodeClick);
         EventManager.on('nodeClick', this.onNodeClick);
@@ -32,39 +33,45 @@ class ExtendRoutePathTool implements BaseTool {
         if (!this.isNetworkNodesInteractive()) return;
         const params: NetworkNodeClickParams = clickEvent.detail;
         if (params.nodeType !== NodeType.STOP) return;
-        const queryResult =
-            await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
-                params.nodeId,
-                1,
-                RoutePathStore!.routePath!.transitType,
-                RoutePathStore!.routePath!.routePathLinks,
-            );
+        const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
+            params.nodeId,
+            1,
+            RoutePathStore!.routePath!.transitType,
+            RoutePathStore!.routePath!.routePathLinks
+        );
         if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(queryResult!.neighborLinks);
-            RoutePathStore!.setNeighborToAddType(queryResult!.neighborToAddType);
+            RoutePathStore!.setNeighborRoutePathLinks(
+                queryResult!.neighborLinks
+            );
+            RoutePathStore!.setNeighborToAddType(
+                queryResult!.neighborToAddType
+            );
         }
-    }
+    };
 
     private onNodeClick = async (clickEvent: CustomEvent) => {
         const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
         const node = params.node;
         const linkOrderNumber = params.linkOrderNumber;
-        const queryResult =
-            await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
-                node.id,
-                linkOrderNumber,
-                RoutePathStore!.routePath!.transitType,
-                RoutePathStore!.routePath!.routePathLinks,
-            );
+        const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
+            node.id,
+            linkOrderNumber,
+            RoutePathStore!.routePath!.transitType,
+            RoutePathStore!.routePath!.routePathLinks
+        );
         if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(queryResult.neighborLinks);
+            RoutePathStore!.setNeighborRoutePathLinks(
+                queryResult.neighborLinks
+            );
             RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
         }
-    }
+    };
 
     private isNetworkNodesInteractive() {
-        return RoutePathStore!.routePath &&
-            RoutePathStore!.routePath!.routePathLinks!.length === 0;
+        return (
+            RoutePathStore!.routePath &&
+            RoutePathStore!.routePath!.routePathLinks!.length === 0
+        );
     }
 }
 

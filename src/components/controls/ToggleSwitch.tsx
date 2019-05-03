@@ -21,23 +21,13 @@ const ToggleSwitch = observer((props: IToggleSwitchProps) => {
     };
 
     const style = {
-        backgroundColor: props.color,
+        backgroundColor: props.color
     };
 
     return (
-        <label
-            onClick={onClick}
-            className={s.toggleSwitchView}
-        >
-            <input
-                type='checkbox'
-                checked={props.value}
-                onChange={doNothing}
-            />
-            <div
-                style={style}
-                className={s.slider}
-            />
+        <label onClick={onClick} className={s.toggleSwitchView}>
+            <input type='checkbox' checked={props.value} onChange={doNothing} />
+            <div style={style} className={s.slider} />
         </label>
     );
 });

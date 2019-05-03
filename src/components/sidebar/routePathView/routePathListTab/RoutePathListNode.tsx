@@ -31,31 +31,29 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
         const isExtended = this.props.routePathStore!.isListItemExtended(
-            node.id,
+            node.id
         );
         const nodeTypeName = NodeHelper.getNodeTypeName(node.type);
         const shortId = NodeHelper.getShortId(node);
         return (
             <div
-                className={
-                    classnames(
-                        s.itemHeader,
-                        isExtended ? s.itemExtended : null,
-                    )
-                }
+                className={classnames(
+                    s.itemHeader,
+                    isExtended ? s.itemExtended : null
+                )}
             >
                 <div className={s.headerContent}>
                     <div className={s.headerNodeTypeContainer}>
-                        <div>{node.type === NodeType.STOP ? stopName : nodeTypeName}</div>
+                        <div>
+                            {node.type === NodeType.STOP
+                                ? stopName
+                                : nodeTypeName}
+                        </div>
                     </div>
                     <div className={s.label}>
                         <div className={s.headerContentDescription}>
-                            <div className={s.longId}>
-                                {node.id}
-                            </div>
-                            <div className={s.shortId}>
-                                {shortId || '?'}
-                            </div>
+                            <div className={s.longId}>{node.id}</div>
+                            <div className={s.shortId}>{shortId || '?'}</div>
                         </div>
                     </div>
                 </div>
@@ -65,17 +63,14 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 </div>
             </div>
         );
-    }
+    };
 
     private renderBody = () => {
         return (
             <div className={s.extendedContent}>
-                { Boolean(this.props.node.stop) &&
-                    this.renderStopView(this.props.node.stop!)
-                }
-                {
-                    this.renderNodeView(this.props.node)
-                }
+                {Boolean(this.props.node.stop) &&
+                    this.renderStopView(this.props.node.stop!)}
+                {this.renderNodeView(this.props.node)}
                 <div className={s.footer}>
                     <Button
                         onClick={this.openInNetworkView}
@@ -87,7 +82,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 </div>
             </div>
         );
-    }
+    };
 
     private openInNetworkView = () => {
         const editNetworkLink = routeBuilder
@@ -95,17 +90,14 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             .toTarget(this.props.node.id)
             .toLink();
         navigator.goTo(editNetworkLink);
-    }
+    };
 
     private renderStopView = (stop: IStop) => {
         return (
             <div className={s.stopContent}>
                 Pysäkin tiedot
                 <div className={s.flexRow}>
-                    <TextContainer
-                        label='PYSÄKIN NIMI'
-                        value={stop.nameFi}
-                    />
+                    <TextContainer label='PYSÄKIN NIMI' value={stop.nameFi} />
                     <TextContainer
                         label='PYSÄKIN NIMI RUOTSIKSI'
                         value={stop.nameSe}
@@ -113,7 +105,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 </div>
             </div>
         );
-    }
+    };
 
     private renderNodeView = (node: INode) => {
         return (
@@ -124,27 +116,23 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                         label='MITTAUSPÄIVÄMÄÄRÄ'
                         value={node.measurementDate}
                     />
-                    <TextContainer
-                        label='SOLMUN TYYPPI'
-                        value={node.type}
-                    />
+                    <TextContainer label='SOLMUN TYYPPI' value={node.type} />
                 </div>
             </div>
         );
-    }
+    };
 
     private renderListIcon = () => {
         const node = this.props.node;
         const routePathLink = this.props.routePathLink;
         let icon = (
             <div
-                className={
-                    classnames(
-                        s.nodeIcon,
-                        routePathLink.isStartNodeTimeAlignmentStop
-                            ? s.timeAlignmentIcon
-                            : undefined)
-                    }
+                className={classnames(
+                    s.nodeIcon,
+                    routePathLink.isStartNodeTimeAlignmentStop
+                        ? s.timeAlignmentIcon
+                        : undefined
+                )}
             />
         );
 
@@ -153,7 +141,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         } else if (node.type === NodeType.DISABLED) {
             icon = this.addBorder(icon, '#353333');
         } else if (node.type === NodeType.STOP) {
-            node.transitTypes.forEach((type) => {
+            node.transitTypes.forEach(type => {
                 icon = this.addBorder(icon, TransitTypeHelper.getColor(type));
             });
         } else if (node.type === NodeType.CROSSROAD) {
@@ -161,7 +149,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         }
 
         return icon;
-    }
+    };
 
     private addBorder = (icon: React.ReactNode, color: string) => {
         return (
@@ -169,7 +157,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 {icon}
             </div>
         );
-    }
+    };
 
     private getShadowClass() {
         let shadowClass;
@@ -182,7 +170,9 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     }
 
     render() {
-        const geometry = this.props.routePathStore!.getNodeGeom(this.props.node.id);
+        const geometry = this.props.routePathStore!.getNodeGeom(
+            this.props.node.id
+        );
         return (
             <RoutePathListItem
                 reference={this.props.reference}

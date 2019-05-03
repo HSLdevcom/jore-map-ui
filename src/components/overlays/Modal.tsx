@@ -14,14 +14,9 @@ const Modal = observer((props: IModalProps) => {
         }
     };
 
-    return(
-        <div
-            className={s.modalView}
-            onClick={onExteriorDivClick}
-        >
-            <div className={s.wrapper}>
-                {props.children}
-            </div>
+    return (
+        <div className={s.modalView} onClick={onExteriorDivClick}>
+            <div className={s.wrapper}>{props.children}</div>
         </div>
     );
 });

@@ -23,9 +23,11 @@ class Login extends React.Component<ILoginProps> {
         window.location.replace(
             // TODO: split into parts & move into constants
             // tslint:disable-next-line
-            `https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=${constants.AFTER_LOGIN_URL}&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly`
+            `https://hslid-uat.cinfra.fi/openid/auth?client_id=6549375356227079&redirect_uri=${
+                constants.AFTER_LOGIN_URL
+            }&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly`
         );
-    }
+    };
 
     public render() {
         if (this.props.loginStore!.isAuthenticated) {
@@ -33,21 +35,18 @@ class Login extends React.Component<ILoginProps> {
         }
 
         return (
-        <div className={s.loginView}>
-            <div className={s.wrapper}>
-                <div className={s.header}>
-                    <img className={s.logo} src={hslLogo} alt='HSL Logo'/>
-                    <h2>Joukkoliikennerekisteri</h2>
-                </div>
-                <div
-                    className={s.loginButton}
-                    onClick={this.openLoginForm}
-                >
-                    <FaLock />
-                    <div className={s.loginText}>Kirjaudu (HSL ID)</div>
+            <div className={s.loginView}>
+                <div className={s.wrapper}>
+                    <div className={s.header}>
+                        <img className={s.logo} src={hslLogo} alt='HSL Logo' />
+                        <h2>Joukkoliikennerekisteri</h2>
+                    </div>
+                    <div className={s.loginButton} onClick={this.openLoginForm}>
+                        <FaLock />
+                        <div className={s.loginText}>Kirjaudu (HSL ID)</div>
+                    </div>
                 </div>
             </div>
-        </div>
         );
     }
 }

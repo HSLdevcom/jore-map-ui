@@ -36,14 +36,22 @@ interface IRoutePathLayerState {
     focusedRoutePathId: string;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
+@inject(
+    'routePathStore',
+    'toolbarStore',
+    'mapStore',
+    'routePathCopySegmentStore'
+)
 @observer
-class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
+class UpsertRoutePathLayer extends Component<
+    IRoutePathLayerProps,
+    IRoutePathLayerState
+> {
     constructor(props: IRoutePathLayerProps) {
         super(props);
 
         this.state = {
-            focusedRoutePathId: '',
+            focusedRoutePathId: ''
         };
     }
 
@@ -64,47 +72,66 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
         this.props.routePathStore!.setExtendedListItems([id]);
         // Set highlight
         this.props.routePathStore!.setHighlightedObject(id);
-
-    }
+    };
 
     private renderRoutePathLinks = () => {
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
+        const routePathLinks = this.props.routePathStore!.routePath!
+            .routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
 
         let res: ReactNode[] = [];
         routePathLinks.forEach((rpLink, index) => {
             // Render node which is lacking preceeding link
-            if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
-                res.push(this.renderNode(rpLink.startNode, rpLink.orderNumber, index));
+            if (
+                index === 0 ||
+                routePathLinks[index - 1].endNode.id !== rpLink.startNode.id
+            ) {
+                res.push(
+                    this.renderNode(rpLink.startNode, rpLink.orderNumber, index)
+                );
             }
             res = res.concat(this.renderLink(rpLink));
-            res.push(this.renderNode(rpLink.endNode, rpLink.orderNumber, index));
+            res.push(
+                this.renderNode(rpLink.endNode, rpLink.orderNumber, index)
+            );
         });
         return res;
-    }
+    };
 
-    private renderNode = (node: INode, linkOrderNumber: number, index: number) => {
+    private renderNode = (
+        node: INode,
+        linkOrderNumber: number,
+        index: number
+    ) => {
         const selectedTool = this.props.toolbarStore!.selectedTool;
 
-        const areNodesClickable = selectedTool &&
-            ((selectedTool.toolType === ToolbarTool.AddNewRoutePathLink
-                && this.props.routePathStore!.neighborLinks.length === 0)
-            || selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool);
+        const areNodesClickable =
+            selectedTool &&
+            ((selectedTool.toolType === ToolbarTool.AddNewRoutePathLink &&
+                this.props.routePathStore!.neighborLinks.length === 0) ||
+                selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool);
 
         let onNodeClick;
         let isNodeHighlighted;
         // Check if AddNewRoutePathLink is active
         if (areNodesClickable) {
-            isNodeHighlighted = this.props.routePathStore!.hasNodeOddAmountOfNeighbors(node.id);
+            isNodeHighlighted = this.props.routePathStore!.hasNodeOddAmountOfNeighbors(
+                node.id
+            );
             // Allow click event for highlighted nodes only
             if (isNodeHighlighted) {
-                const clickParams: IEditRoutePathLayerNodeClickParams = { node, linkOrderNumber };
+                const clickParams: IEditRoutePathLayerNodeClickParams = {
+                    node,
+                    linkOrderNumber
+                };
                 onNodeClick = () =>
                     EventManager.trigger('nodeClick', clickParams);
             }
         } else {
             onNodeClick = () => this.defaultActionOnObjectClick(node.id);
-            isNodeHighlighted = this.props.routePathStore!.isMapItemHighlighted(node.id);
+            isNodeHighlighted = this.props.routePathStore!.isMapItemHighlighted(
+                node.id
+            );
         }
 
         return (
@@ -116,27 +143,29 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 isHighlighted={isNodeHighlighted}
             />
         );
-    }
+    };
 
     private renderLink = (routePathLink: IRoutePathLink) => {
         const onRoutePathLinkClick =
             this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick ?
-                this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
+            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick
+                ? this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(
+                      routePathLink.id
+                  )
                 : () => this.defaultActionOnObjectClick(routePathLink.id);
 
         return [
-            (
-                <Polyline
-                    positions={routePathLink.geometry}
-                    key={routePathLink.id}
-                    color={ROUTE_COLOR}
-                    weight={5}
-                    opacity={0.8}
-                    onClick={onRoutePathLinkClick}
-                />
-            ), this.props.routePathStore!.isMapItemHighlighted(routePathLink.id) &&
-            (
+            <Polyline
+                positions={routePathLink.geometry}
+                key={routePathLink.id}
+                color={ROUTE_COLOR}
+                weight={5}
+                opacity={0.8}
+                onClick={onRoutePathLinkClick}
+            />,
+            this.props.routePathStore!.isMapItemHighlighted(
+                routePathLink.id
+            ) && (
                 <Polyline
                     positions={routePathLink.geometry}
                     key={`${routePathLink.id}-highlight`}
@@ -145,52 +174,62 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                     opacity={0.5}
                     onClick={onRoutePathLinkClick}
                 />
-            ),
+            )
         ];
-    }
+    };
 
     private calculateBounds = () => {
-        const bounds:L.LatLngBounds = new L.LatLngBounds([]);
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
 
-        this.props.routePathStore!.routePath!.routePathLinks!.forEach((link) => {
-            link.geometry
-                .forEach(pos => bounds.extend(pos));
+        this.props.routePathStore!.routePath!.routePathLinks!.forEach(link => {
+            link.geometry.forEach(pos => bounds.extend(pos));
         });
 
         return bounds;
-    }
+    };
 
     private setBounds = () => {
         const routePathStore = this.props.routePathStore!;
 
         if (routePathStore!.routePath) {
             // Only automatic refocus if user opened new routepath
-            if (routePathStore!.routePath!.internalId !== this.state.focusedRoutePathId) {
+            if (
+                routePathStore!.routePath!.internalId !==
+                this.state.focusedRoutePathId
+            ) {
                 const bounds = this.calculateBounds();
                 if (bounds.isValid()) {
                     this.props.mapStore!.setMapBounds(bounds);
                     this.setState({
-                        focusedRoutePathId: routePathStore!.routePath!.internalId,
+                        focusedRoutePathId: routePathStore!.routePath!
+                            .internalId
                     });
                 }
             }
         } else if (this.state.focusedRoutePathId) {
             // Reset focused id if user clears the chosen routepath, if he leaves the routepathview
             this.setState({
-                focusedRoutePathId: '',
+                focusedRoutePathId: ''
             });
         }
-    }
+    };
 
     private renderStartMarker = () => {
-        if (this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)) {
+        if (
+            this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)
+        ) {
             // Hiding start marker if we set target node adding new links.
             // Due to the UI otherwise getting messy
             return null;
         }
 
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks || routePathLinks.length === 0 || !routePathLinks[0].startNode) {
+        const routePathLinks = this.props.routePathStore!.routePath!
+            .routePathLinks;
+        if (
+            !routePathLinks ||
+            routePathLinks.length === 0 ||
+            !routePathLinks[0].startNode
+        ) {
             return null;
         }
 
@@ -201,14 +240,19 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 isClickDisabled={true}
             />
         );
-    }
+    };
 
     private renderLinkDecorator = () => {
-        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+        if (
+            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
+        ) {
+            return null;
+        }
 
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks!;
+        const routePathLinks = this.props.routePathStore!.routePath!
+            .routePathLinks!;
         const coherentPolylines = createCoherentLinesFromPolylines(
-            routePathLinks.map(rpLink => rpLink.geometry),
+            routePathLinks.map(rpLink => rpLink.geometry)
         );
         return coherentPolylines.map((polyline, index) => (
             <ArrowDecorator
@@ -217,26 +261,24 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
                 geometry={polyline}
             />
         ));
-    }
+    };
 
     render() {
         if (!this.props.routePathStore!.routePath) return null;
 
         const neighborLinks = this.props.routePathStore!.neighborLinks;
         const isRoutePathCopySegmentLayerVisible =
-            this.props.routePathCopySegmentStore!.startNode
-            || this.props.routePathCopySegmentStore!.endNode;
-        return(
+            this.props.routePathCopySegmentStore!.startNode ||
+            this.props.routePathCopySegmentStore!.endNode;
+        return (
             <>
                 {this.renderRoutePathLinks()}
                 {this.renderLinkDecorator()}
                 {this.renderStartMarker()}
-                { neighborLinks &&
-                    <RoutePathNeighborLinkLayer />
-                }
-                { isRoutePathCopySegmentLayerVisible &&
+                {neighborLinks && <RoutePathNeighborLinkLayer />}
+                {isRoutePathCopySegmentLayerVisible && (
                     <RoutePathCopySegmentLayer />
-                }
+                )}
             </>
         );
     }
@@ -244,6 +286,4 @@ class UpsertRoutePathLayer extends Component<IRoutePathLayerProps, IRoutePathLay
 
 export default UpsertRoutePathLayer;
 
-export {
-    IEditRoutePathLayerNodeClickParams,
-};
+export { IEditRoutePathLayerNodeClickParams };

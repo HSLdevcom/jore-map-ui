@@ -4,7 +4,7 @@ import { ErrorStore } from '../errorStore';
 
 describe('errorStore.addError', () => {
     it('Adds one error to error store', () => {
-        const errorStore = new ErrorStore;
+        const errorStore = new ErrorStore();
         const errorMessage = 'This is a test error';
 
         errorStore.addError(errorMessage);
@@ -14,7 +14,7 @@ describe('errorStore.addError', () => {
     });
 
     it('Adds one error to error store, then removes it', () => {
-        const errorStore = new ErrorStore;
+        const errorStore = new ErrorStore();
         const errorMessage = 'This is a test error';
 
         errorStore.addError(errorMessage);
@@ -33,11 +33,11 @@ describe('errorStore.addError', () => {
         const consoleError = console.error;
         global.console.error = jest.fn();
 
-        const errorStore = new ErrorStore;
+        const errorStore = new ErrorStore();
         const errorMessage = 'This is a test error';
         const exception: Error = {
             message: 'This is a test exception message',
-            name: 'Test exception',
+            name: 'Test exception'
         };
 
         errorStore.addError(errorMessage, exception);
@@ -57,13 +57,13 @@ describe('errorStore.addError', () => {
         const consoleError = console.error;
         global.console.error = jest.fn();
 
-        const errorStore = new ErrorStore;
+        const errorStore = new ErrorStore();
         const errorMessage = 'This is a test error';
         const exceptionMessage = 'This is a test exception message';
         const errorException: IError = {
             message: exceptionMessage,
             name: 'Test exception',
-            errorCode: 409,
+            errorCode: 409
         };
 
         errorStore.addError(errorMessage, errorException);

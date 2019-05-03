@@ -32,7 +32,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     componentDidMount() {
         this.reactionDisposer = reaction(
             () => this.props.linkStore!.link,
-            () => this.props.linkStore!.link === null && this.removeOldLinks(),
+            () => this.props.linkStore!.link === null && this.removeOldLinks()
         );
         EventManager.on('undo', this.props.linkStore!.undo);
         EventManager.on('redo', this.props.linkStore!.redo);
@@ -50,11 +50,11 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     private removeOldLinks = () => {
         // Remove (possible) previously drawn links from map
-        this.editableLinks.forEach((editableLink) => {
+        this.editableLinks.forEach(editableLink => {
             editableLink.remove();
         });
         this.editableLinks = [];
-    }
+    };
 
     private drawEditableLink = () => {
         const link = this.props.linkStore!.link;
@@ -63,8 +63,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
         this.removeOldLinks();
         const isEditable =
-            this.props.loginStore!.hasWriteAccess
-            && this.props.linkStore!.isLinkGeometryEditable;
+            this.props.loginStore!.hasWriteAccess &&
+            this.props.linkStore!.isLinkGeometryEditable;
         this.drawLinkToMap(link, isEditable);
 
         map.off('editable:vertex:dragend');
@@ -76,7 +76,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         map!.on('editable:vertex:deleted', (data: any) => {
             this.refreshEditableLink();
         });
-    }
+    };
 
     private refreshEditableLink() {
         const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
@@ -86,13 +86,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private drawLinkToMap = (link: ILink, isEditable: boolean) => {
         const map = this.props.leaflet.map;
         if (map) {
-            const editableLink = L.polyline(
-                [_.cloneDeep(link.geometry)],
-                {
-                    interactive: false,
-                    color: '#000',
-                },
-            ).addTo(map);
+            const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
+                interactive: false,
+                color: '#000'
+            }).addTo(map);
 
             if (isEditable) {
                 editableLink.enableEdit();
@@ -112,10 +109,14 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 this.editableLinks.push(editableLink);
             }
         }
-    }
+    };
 
     private renderLinkDecorator = () => {
-        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+        if (
+            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
+        ) {
+            return null;
+        }
 
         const link = this.props.linkStore!.link;
         return (
@@ -126,12 +127,12 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 showOnEventName='editable:vertex:dragend'
             />
         );
-    }
+    };
 
     private renderNodes = () => {
         const nodes = this.props.linkStore!.nodes;
         return nodes.map(n => this.renderNode(n));
-    }
+    };
 
     private renderNode = (node: INode) => {
         if (!node) return null;
@@ -145,10 +146,11 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 node={node}
             />
         );
-    }
+    };
 
     private renderMarker = () => {
-        const startMarkerCoordinates = this.props.linkStore!.startMarkerCoordinates;
+        const startMarkerCoordinates = this.props.linkStore!
+            .startMarkerCoordinates;
         if (!startMarkerCoordinates) return null;
 
         return (
@@ -157,7 +159,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 color={START_MARKER_COLOR}
             />
         );
-    }
+    };
 
     render() {
         const link = this.props.linkStore!.link;

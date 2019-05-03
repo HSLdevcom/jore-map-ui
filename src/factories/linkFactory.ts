@@ -8,8 +8,12 @@ class LinkFactory {
         const geoJson = JSON.parse(externalLink.geojson);
 
         return {
-            startNode: NodeFactory.mapExternalNode(externalLink.solmuByLnkalkusolmu),
-            endNode: NodeFactory.mapExternalNode(externalLink.solmuByLnkloppusolmu),
+            startNode: NodeFactory.mapExternalNode(
+                externalLink.solmuByLnkalkusolmu
+            ),
+            endNode: NodeFactory.mapExternalNode(
+                externalLink.solmuByLnkloppusolmu
+            ),
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
             transitType: externalLink.lnkverkko,
             length: externalLink.lnkpituus,
@@ -20,9 +24,9 @@ class LinkFactory {
             modifiedBy: externalLink.lnkkuka,
             modifiedOn: new Date(externalLink.lnkviimpvm),
             direction: externalLink.lnksuunta,
-            osNumber: externalLink.lnkosnro,
+            osNumber: externalLink.lnkosnro
         };
-    }
+    };
 
     public static createNewLink = (startNode: INode, endNode: INode): ILink => {
         const geometry = [startNode.coordinates, endNode.coordinates];
@@ -36,11 +40,11 @@ class LinkFactory {
             streetName: '',
             streetNumber: '',
             modifiedBy: '',
-            modifiedOn: new Date,
+            modifiedOn: new Date(),
             direction: '0',
-            osNumber: '',
+            osNumber: ''
         };
-    }
+    };
 }
 
 export default LinkFactory;

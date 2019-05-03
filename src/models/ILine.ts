@@ -20,6 +20,4 @@ export default interface ILine extends ILinePrimaryKey {
     lineReplacementType: string;
 }
 
-export {
-    ILinePrimaryKey,
-};
+export { ILinePrimaryKey };

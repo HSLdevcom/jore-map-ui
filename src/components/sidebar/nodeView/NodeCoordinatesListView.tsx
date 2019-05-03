@@ -9,7 +9,9 @@ import * as s from './nodeCoordinatesListView.scss';
 interface INodeCoordinatesListView {
     node: INode;
     isEditingDisabled: boolean;
-    onChangeCoordinates: (coordinatesType: NodeLocationType) => (coordinates: L.LatLng) => void;
+    onChangeCoordinates: (
+        coordinatesType: NodeLocationType
+    ) => (coordinates: L.LatLng) => void;
 }
 
 const nodeCoordinatesListView = observer((props: INodeCoordinatesListView) => {
@@ -22,24 +24,28 @@ const nodeCoordinatesListView = observer((props: INodeCoordinatesListView) => {
                 onChangeCoordinates={props.onChangeCoordinates('coordinates')}
                 isEditingDisabled={props.isEditingDisabled}
             />
-            { props.node.type === NodeType.STOP &&
+            {props.node.type === NodeType.STOP && (
                 <>
                     <NodeCoordinatesView
                         nodeType={props.node.type}
                         locationType='coordinatesManual'
                         coordinates={props.node.coordinatesManual}
-                        onChangeCoordinates={props.onChangeCoordinates('coordinatesManual')}
+                        onChangeCoordinates={props.onChangeCoordinates(
+                            'coordinatesManual'
+                        )}
                         isEditingDisabled={props.isEditingDisabled}
                     />
                     <NodeCoordinatesView
                         nodeType={props.node.type}
                         locationType='coordinatesProjection'
                         coordinates={props.node.coordinatesProjection}
-                        onChangeCoordinates={props.onChangeCoordinates('coordinatesProjection')}
+                        onChangeCoordinates={props.onChangeCoordinates(
+                            'coordinatesProjection'
+                        )}
                         isEditingDisabled={props.isEditingDisabled}
                     />
                 </>
-            }
+            )}
         </div>
     );
 });

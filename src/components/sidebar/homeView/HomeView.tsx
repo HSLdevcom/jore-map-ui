@@ -12,7 +12,7 @@ import SearchResults from '../../shared/searchView/SearchResults';
 import EntityTypeToggles from './EntityTypeToggles';
 import * as s from './homeView.scss';
 
-interface IHomeViewProps{
+interface IHomeViewProps {
     searchStore?: SearchStore;
     routePathStore?: RoutePathStore;
 }
@@ -22,28 +22,29 @@ interface IHomeViewProps{
 class HomeView extends React.Component<IHomeViewProps> {
     public toggleTransitType = (type: TransitType) => {
         this.props.searchStore!.toggleTransitType(type);
-    }
+    };
 
     componentDidMount() {
         this.props.routePathStore!.clear();
     }
 
     private redirectToNewLineView = () => {
-        const url = RouteBuilder
-            .to(SubSites.newLine)
+        const url = RouteBuilder.to(SubSites.newLine)
             .clear()
             .toLink();
         navigator.goTo(url);
-    }
+    };
 
     render() {
         return (
             <div className={s.homeView}>
-                <SearchInput/>
+                <SearchInput />
                 <EntityTypeToggles />
                 <TransitToggleButtonBar
                     toggleSelectedTransitType={this.toggleTransitType}
-                    selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
+                    selectedTransitTypes={
+                        this.props.searchStore!.selectedTransitTypes
+                    }
                     disabled={!this.props.searchStore!.isSearchingForLines}
                     blurred={!this.props.searchStore!.isSearchingForLines}
                 />

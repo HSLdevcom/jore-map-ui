@@ -1,5 +1,5 @@
 {
-  "extends": ["tslint-react", "tslint-eslint-rules", "tslint-config-airbnb"],
+  "extends": ["tslint-config-airbnb", "tslint-config-prettier"],
   "linterOptions": {
     "exclude": [
       "config/**/*.js",
@@ -11,7 +11,6 @@
     "node_modules/tslint-origin-ordered-imports-rule/dist"
   ],
   "rules": {
-    "ter-indent": [true, 4],
     "no-trailing-whitespace": true,
     "jsx-no-multiline-js": false,
     "no-console": {

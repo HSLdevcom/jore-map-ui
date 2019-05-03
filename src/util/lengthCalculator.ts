@@ -11,13 +11,11 @@ const fromPositions = (geometry: L.LatLng[]) => {
 };
 
 const fromRoutePathLinks = (rpLinks: IRoutePathLink[]) => {
-    return rpLinks.reduce(
-        (total, rpLink) => {
-            return total + fromPositions(rpLink.geometry);
-        },
-        0);
+    return rpLinks.reduce((total, rpLink) => {
+        return total + fromPositions(rpLink.geometry);
+    }, 0);
 };
 
 export default {
-    fromRoutePathLinks,
+    fromRoutePathLinks
 };

@@ -40,7 +40,7 @@ class App extends React.Component<IAppProps, IAppState> {
     constructor(props: IAppProps) {
         super(props);
         this.state = {
-            isLoginInProgress: true,
+            isLoginInProgress: true
         };
     }
 
@@ -54,20 +54,22 @@ class App extends React.Component<IAppProps, IAppState> {
         return (
             <>
                 <NavigationBar />
-                    <div className={s.appContent}>
-                        <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
-                            <Sidebar
-                                location={this.props.location}
-                            />
-                        </div>
-                        <Map>
-                            <ErrorBar />
-                        </Map>
+                <div className={s.appContent}>
+                    <div
+                        className={
+                            this.props.mapStore!.isMapFullscreen ? s.hidden : ''
+                        }
+                    >
+                        <Sidebar location={this.props.location} />
                     </div>
-                    <OverlayContainer />
-                </>
+                    <Map>
+                        <ErrorBar />
+                    </Map>
+                </div>
+                <OverlayContainer />
+            </>
         );
-    }
+    };
 
     private initCodeLists = async () => {
         try {
@@ -76,47 +78,55 @@ class App extends React.Component<IAppProps, IAppState> {
         } catch (e) {
             this.props.errorStore!.addError('Koodiston haku epäonnistui', e);
         }
-    }
+    };
 
     private init = async () => {
-        const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
-        if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
-            const response = await ApiClient
-                .getRequest(endpoints.EXISTING_SESSION) as IAuthorizationResponse;
+        const isAfterLogin = Boolean(
+            matchPath(navigator.getPathName(), SubSites.afterLogin)
+        );
+        if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
+            const response = (await ApiClient.getRequest(
+                endpoints.EXISTING_SESSION
+            )) as IAuthorizationResponse;
             if (response.isOk) {
                 // Auth was ok, keep the current site as it is
                 this.props.loginStore!.setAuthenticationInfo(response);
-
             } else {
                 // Redirect to login
-                localStorageHelper.setItem('origin_url', navigator.getFullPath());
+                localStorageHelper.setItem(
+                    'origin_url',
+                    navigator.getFullPath()
+                );
                 navigator.goTo(SubSites.login);
             }
         }
 
         this.setState({
-            isLoginInProgress: false,
+            isLoginInProgress: false
         });
-    }
+    };
 
     private renderAfterLogin = () => {
         AuthService.authenticate(
-        () => {
-            // On success: Redirecting user to where she left off.
-            const originUrl = localStorageHelper.getItem('origin_url');
-            const destination = originUrl ? originUrl : SubSites.home;
-            localStorageHelper.clearItem('origin_url');
-            navigator.goTo(destination);
-        },
-        () => {
-            // On error
-            navigator.goTo(SubSites.loginError);
-        });
-        return (<div>Kirjaudutaan sisään...</div>);
-    }
+            () => {
+                // On success: Redirecting user to where she left off.
+                const originUrl = localStorageHelper.getItem('origin_url');
+                const destination = originUrl ? originUrl : SubSites.home;
+                localStorageHelper.clearItem('origin_url');
+                navigator.goTo(destination);
+            },
+            () => {
+                // On error
+                navigator.goTo(SubSites.loginError);
+            }
+        );
+        return <div>Kirjaudutaan sisään...</div>;
+    };
 
     render() {
-        if (this.state.isLoginInProgress) return <div>Ladataan sovellusta...</div>;
+        if (this.state.isLoginInProgress) {
+            return <div>Ladataan sovellusta...</div>;
+        }
 
         return (
             <div className={s.appView}>
@@ -126,13 +136,8 @@ class App extends React.Component<IAppProps, IAppState> {
                         path={SubSites.afterLogin}
                         render={this.renderAfterLogin}
                     />
-                    <Route
-                        path='/login'
-                        component={Login}
-                    />
-                    <Route
-                        component={this.renderApp}
-                    />
+                    <Route path='/login' component={Login} />
+                    <Route component={this.renderApp} />
                 </Switch>
             </div>
         );

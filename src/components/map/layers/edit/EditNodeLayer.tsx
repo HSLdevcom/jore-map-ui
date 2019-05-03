@@ -53,37 +53,46 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
             editableLink.remove();
         });
         this.editableLinks = [];
-    }
+    };
 
     private centerNode = () => {
         const node = this.props.nodeStore!.node;
         this.props.mapStore!.setCoordinates(node.coordinates);
-    }
+    };
 
     private renderNode() {
         const node = this.props.nodeStore!.node;
 
-        const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
+        const isNewNodeView = Boolean(
+            matchPath(navigator.getPathName(), SubSites.newNode)
+        );
         return (
             <NodeMarker
                 key={node.id}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
-                isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
+                isSelected={
+                    isNewNodeView ||
+                    this.props.mapStore!.selectedNodeId === node.id
+                }
                 node={node}
                 onMoveMarker={this.onMoveMarker()}
             />
         );
     }
 
-    private onMoveMarker = () => (nodeLocationType: NodeLocationType, coordinates: L.LatLng) => {
+    private onMoveMarker = () => (
+        nodeLocationType: NodeLocationType,
+        coordinates: L.LatLng
+    ) => {
         this.props.nodeStore!.updateNodeGeometry(nodeLocationType, coordinates);
-    }
+    };
 
     private drawEditableLinks = () => {
         this.removeOldLinks();
 
-        this.props.nodeStore!.links.forEach(
-            link => this.drawEditableLink(link));
+        this.props.nodeStore!.links.forEach(link =>
+            this.drawEditableLink(link)
+        );
 
         const map = this.props.leaflet.map;
 
@@ -93,36 +102,40 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         map!.on('editable:vertex:deleted', (data: any) => {
             this.refreshEditableLink(data.layer._leaflet_id);
         });
-    }
+    };
 
     private refreshEditableLink(leafletId: number) {
-        const editableLink =
-            this.editableLinks.find((link: any) => link._leaflet_id === leafletId);
+        const editableLink = this.editableLinks.find(
+            (link: any) => link._leaflet_id === leafletId
+        );
         if (editableLink) {
             const latlngs = editableLink!.getLatLngs()[0] as L.LatLng[];
-            const editableLinkIndex =
-                this.editableLinks.findIndex((link: any) => link._leaflet_id === leafletId);
-            this.props.nodeStore!.changeLinkGeometry(latlngs, editableLinkIndex);
+            const editableLinkIndex = this.editableLinks.findIndex(
+                (link: any) => link._leaflet_id === leafletId
+            );
+            this.props.nodeStore!.changeLinkGeometry(
+                latlngs,
+                editableLinkIndex
+            );
         }
     }
 
     private drawEditableLink = (link: ILink) => {
-        const isNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.node));
-        if (!isNodeView || !link) return;
+        const isNodeView = Boolean(
+            matchPath(navigator.getPathName(), SubSites.node)
+        );
+        if (!isNodeView || !link) return;
 
         this.drawEditableLinkToMap(link);
-    }
+    };
 
     private drawEditableLinkToMap = (link: ILink) => {
         const map = this.props.leaflet.map;
         if (map) {
-            const editableLink = L.polyline(
-                [_.cloneDeep(link.geometry)],
-                {
-                    interactive: false,
-                    color: '#000',
-                },
-            ).addTo(map);
+            const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
+                interactive: false,
+                color: '#000'
+            }).addTo(map);
 
             if (this.props.loginStore!.hasWriteAccess) {
                 editableLink.enableEdit();
@@ -141,25 +154,30 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 this.editableLinks.push(editableLink);
             }
         }
-    }
+    };
 
     private renderLinkDecorators = () => {
-        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+        if (
+            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
+        ) {
+            return null;
+        }
 
-        return this.props.nodeStore!.links.map(
-            (link, index) => (
-                <ArrowDecorator
-                    key={index}
-                    color='#000'
-                    geometry={link!.geometry}
-                    hideOnEventName='editable:vertex:drag'
-                    showOnEventName='editable:vertex:dragend'
-                />
-            ));
-    }
+        return this.props.nodeStore!.links.map((link, index) => (
+            <ArrowDecorator
+                key={index}
+                color='#000'
+                geometry={link!.geometry}
+                hideOnEventName='editable:vertex:drag'
+                showOnEventName='editable:vertex:dragend'
+            />
+        ));
+    };
 
     render() {
-        const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.node));
+        const isNodeViewVisible = Boolean(
+            matchPath(navigator.getPathName(), SubSites.node)
+        );
         if (!isNodeViewVisible) return null;
 
         this.drawEditableLinks();

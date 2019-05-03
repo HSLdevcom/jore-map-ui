@@ -19,7 +19,7 @@ import * as s from './NetworkLayers.scss';
 enum GeoserverLayer {
     Node = 'solmu',
     Link = 'linkki',
-    Point = 'piste',
+    Point = 'piste'
 }
 
 interface NetworkNodeClickParams {
@@ -56,7 +56,8 @@ interface INodeProperties {
 }
 
 function getGeoServerUrl(layerName: string) {
-    const GEOSERVER_URL = process.env.GEOSERVER_URL || 'http://localhost:8080/geoserver';
+    const GEOSERVER_URL =
+        process.env.GEOSERVER_URL || 'http://localhost:8080/geoserver';
     // tslint:disable-next-line:max-line-length
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
@@ -68,14 +69,21 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private parseDateRangesString(dateRangesString?: string) {
         if (!dateRangesString) return undefined;
-        return dateRangesString.split(',')
+        return dateRangesString
+            .split(',')
             .map((dr: string) => dr.split('/').map(date => Moment(date)));
     }
 
-    private isDateInRanges(selectedDate: Moment.Moment, dateRanges?: Moment.Moment[][]) {
-        return (selectedDate &&
+    private isDateInRanges(
+        selectedDate: Moment.Moment,
+        dateRanges?: Moment.Moment[][]
+    ) {
+        return (
+            selectedDate &&
             (!dateRanges ||
-                !dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]')))
+                !dateRanges.some(dr =>
+                    selectedDate.isBetween(dr[0], dr[1], 'day', '[]')
+                ))
         );
     }
 
@@ -91,11 +99,11 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     color: TransitTypeHelper.getColor(properties.lnkverkko),
                     weight: 2,
                     fillOpacity: 1,
-                    fill: true,
+                    fill: true
                 };
-            },
+            }
         };
-    }
+    };
 
     private getLinkPointStyle = () => {
         return {
@@ -107,45 +115,45 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 const { lnkverkko: transitTypeCode } = properties;
                 return {
                     color: TransitTypeHelper.getColor(transitTypeCode),
-                    radius: 1,
+                    radius: 1
                 };
-            },
+            }
         };
-    }
+    };
 
-    private isNetworkElementHidden =
-        ({
-             lnkverkko: transitTypeCode,
-             date_ranges: dateRangesString,
-             lnkalkusolmu: startNodeId,
-             lnkloppusolmu: endNodeId,
-         }:ILinkProperties) => {
-            const dateRanges = this.parseDateRangesString(dateRangesString);
-            const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-            const selectedDate = this.props.networkStore!.selectedDate;
+    private isNetworkElementHidden = ({
+        lnkverkko: transitTypeCode,
+        date_ranges: dateRangesString,
+        lnkalkusolmu: startNodeId,
+        lnkloppusolmu: endNodeId
+    }: ILinkProperties) => {
+        const dateRanges = this.parseDateRangesString(dateRangesString);
+        const selectedTransitTypes = this.props.networkStore!
+            .selectedTransitTypes;
+        const selectedDate = this.props.networkStore!.selectedDate;
 
-            const link = this.props.linkStore!.link;
+        const link = this.props.linkStore!.link;
 
-            const node = this.props.nodeStore!.node;
+        const node = this.props.nodeStore!.node;
 
-            // the element is related to an opened link
-            const isLinkOpen = link
-                && link.startNode.id === startNodeId
-                && link.endNode.id === endNodeId
-                && link.transitType === transitTypeCode;
+        // the element is related to an opened link
+        const isLinkOpen =
+            link &&
+            link.startNode.id === startNodeId &&
+            link.endNode.id === endNodeId &&
+            link.transitType === transitTypeCode;
 
-            // the element is related to a link that is related to an opened node
-            const isLinkRelatedToOpenedNode = node
-                && (
-                    node.id === startNodeId
-                    || node.id === endNodeId
-                );
+        // the element is related to a link that is related to an opened node
+        const isLinkRelatedToOpenedNode =
+            node && (node.id === startNodeId || node.id === endNodeId);
 
-            return (!selectedTransitTypes.includes(transitTypeCode))
-                || this.isDateInRanges(selectedDate, dateRanges)
-                || isLinkOpen
-                || isLinkRelatedToOpenedNode;
-        }
+        return (
+            !selectedTransitTypes.includes(transitTypeCode) ||
+            this.isDateInRanges(selectedDate, dateRanges) ||
+            isLinkOpen ||
+            isLinkRelatedToOpenedNode
+        );
+    };
 
     private getNodeStyle = () => {
         return {
@@ -155,7 +163,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     transittypes: transitTypeCodes,
                     date_ranges: dateRangesString,
                     soltyyppi: nodeType,
-                    soltunnus: nodeId,
+                    soltunnus: nodeId
                 } = properties;
                 const dateRanges = this.parseDateRangesString(dateRangesString);
                 if (this.isNodeHidden(nodeId, transitTypeCodes, dateRanges)) {
@@ -163,82 +171,96 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 }
                 let className;
                 switch (nodeType) {
-                case NodeType.STOP:
-                    className = s.stop;
-                    break;
-                case NodeType.CROSSROAD:
-                    className = s.crossroad;
-                    break;
-                case NodeType.MUNICIPALITY_BORDER:
-                    className = s.border;
-                    break;
+                    case NodeType.STOP:
+                        className = s.stop;
+                        break;
+                    case NodeType.CROSSROAD:
+                        className = s.crossroad;
+                        break;
+                    case NodeType.MUNICIPALITY_BORDER:
+                        className = s.border;
+                        break;
                 }
                 let radius: any;
                 switch (this.props.networkStore!.nodeSize) {
-                case NodeSize.normal:
-                    radius = 4;
-                    break;
-                case NodeSize.large:
-                    radius = 6;
-                    break;
-                default:
-                    throw new Error(`nodeSize not supported ${this.props.networkStore!.nodeSize}`);
+                    case NodeSize.normal:
+                        radius = 4;
+                        break;
+                    case NodeSize.large:
+                        radius = 6;
+                        break;
+                    default:
+                        throw new Error(
+                            `nodeSize not supported ${
+                                this.props.networkStore!.nodeSize
+                            }`
+                        );
                 }
                 if (transitTypeCodes && transitTypeCodes.length === 1) {
                     switch (transitTypeCodes[0]) {
-                    case TransitType.BUS:
-                        className = classNames(className, s.bus);
-                        break;
-                    case TransitType.TRAM:
-                        className = classNames(className, s.tram);
-                        break;
-                    case TransitType.SUBWAY:
-                        className = classNames(className, s.subway);
-                        break;
-                    case TransitType.TRAIN:
-                        className = classNames(className, s.train);
-                        break;
-                    case TransitType.FERRY:
-                        className = classNames(className, s.ferry);
-                        break;
+                        case TransitType.BUS:
+                            className = classNames(className, s.bus);
+                            break;
+                        case TransitType.TRAM:
+                            className = classNames(className, s.tram);
+                            break;
+                        case TransitType.SUBWAY:
+                            className = classNames(className, s.subway);
+                            break;
+                        case TransitType.TRAIN:
+                            className = classNames(className, s.train);
+                            break;
+                        case TransitType.FERRY:
+                            className = classNames(className, s.ferry);
+                            break;
                     }
                 }
 
                 return {
                     className,
-                    radius,
+                    radius
                 };
-            },
+            }
         };
-    }
+    };
 
     private isNodeHidden = (
         nodeId: string,
         transitTypeCodes: string,
-        dateRanges?: Moment.Moment[][],
+        dateRanges?: Moment.Moment[][]
     ) => {
         const node = this.props.nodeStore!.node;
         if (node && node.id === nodeId) {
             return true;
         }
 
-        const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
+        const selectedTransitTypes = toJS(
+            this.props.networkStore!.selectedTransitTypes
+        );
         if (this.isNodePartOfLinks(transitTypeCodes)) {
             if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
                 return true;
             }
             const nodeTransitTypes = transitTypeCodes.split(',');
-            if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
+            if (
+                !selectedTransitTypes.some(type =>
+                    nodeTransitTypes.includes(type)
+                )
+            ) {
                 return true;
             }
         } else {
-            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
+            if (
+                !this.props.networkStore!.isMapLayerVisible(
+                    MapLayer.nodeWithoutLink
+                )
+            ) {
                 return true;
             }
         }
         const selectedDate = this.props.networkStore!.selectedDate;
-        return (selectedDate && this.isDateInRanges(selectedDate, dateRanges));
-    }
+        return selectedDate && this.isDateInRanges(selectedDate, dateRanges);
+    };
 
     private isNodePartOfLinks(transitTypeCodes: string) {
         return Boolean(transitTypeCodes);
@@ -246,43 +268,37 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private getEmptyStyle = () => {
         return { className: s.hidden };
-    }
+    };
 
     private onNetworkNodeClick = (clickEvent: any) => {
         const properties = clickEvent.sourceTarget.properties;
         const clickParams: NetworkNodeClickParams = {
             nodeId: properties.soltunnus,
-            nodeType: properties.soltyyppi,
+            nodeType: properties.soltyyppi
         };
-        EventManager.trigger(
-            'networkNodeClick',
-            clickParams,
-        );
-    }
+        EventManager.trigger('networkNodeClick', clickParams);
+    };
 
     private onNetworkLinkClick = (clickEvent: any) => {
         const properties = clickEvent.sourceTarget.properties;
         const clickParams: NetworkLinkClickParams = {
             startNodeId: properties.lnkalkusolmu,
             endNodeId: properties.lnkloppusolmu,
-            transitType: properties.lnkverkko,
+            transitType: properties.lnkverkko
         };
-        EventManager.trigger(
-            'networkLinkClick',
-            clickParams,
-        );
-    }
+        EventManager.trigger('networkLinkClick', clickParams);
+    };
 
     /**
      * Sets a reaction object for GeoserverLayer (replaces existing one) so
      * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
      */
-    private setVectorgridLayerReaction = (
-        type: GeoserverLayer,
-    ) => (reaction: IReactionDisposer) => {
+    private setVectorgridLayerReaction = (type: GeoserverLayer) => (
+        reaction: IReactionDisposer
+    ) => {
         if (this.reactionDisposer[type]) this.reactionDisposer[type]();
         this.reactionDisposer[type] = reaction;
-    }
+    };
 
     render() {
         const mapZoomLevel = this.props.mapStore!.zoom;
@@ -290,51 +306,59 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             return null;
         }
 
-        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+        const selectedTransitTypes = this.props.networkStore!
+            .selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;
         const nodeSize = this.props.networkStore!.nodeSize;
         return (
             <>
-                { this.props.networkStore!.isMapLayerVisible(MapLayer.link) &&
+                {this.props.networkStore!.isMapLayerVisible(MapLayer.link) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         onClick={this.onNetworkLinkClick!}
                         key={GeoserverLayer.Link}
-                        setVectorgridLayerReaction={
-                            this.setVectorgridLayerReaction(GeoserverLayer.Link)}
+                        setVectorgridLayerReaction={this.setVectorgridLayerReaction(
+                            GeoserverLayer.Link
+                        )}
                         url={getGeoServerUrl(GeoserverLayer.Link)}
                         interactive={true}
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
-                }
-                { this.props.networkStore!.isMapLayerVisible(MapLayer.linkPoint) &&
+                )}
+                {this.props.networkStore!.isMapLayerVisible(
+                    MapLayer.linkPoint
+                ) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         key={GeoserverLayer.Point}
-                        setVectorgridLayerReaction={
-                            this.setVectorgridLayerReaction(GeoserverLayer.Point)}
+                        setVectorgridLayerReaction={this.setVectorgridLayerReaction(
+                            GeoserverLayer.Point
+                        )}
                         url={getGeoServerUrl(GeoserverLayer.Point)}
                         interactive={true}
                         vectorTileLayerStyles={this.getLinkPointStyle()}
                     />
-                }
-                { (this.props.networkStore!.isMapLayerVisible(MapLayer.node)
-                || this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) &&
+                )}
+                {(this.props.networkStore!.isMapLayerVisible(MapLayer.node) ||
+                    this.props.networkStore!.isMapLayerVisible(
+                        MapLayer.nodeWithoutLink
+                    )) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         nodeSize={nodeSize}
                         onClick={this.onNetworkNodeClick}
                         key={GeoserverLayer.Node}
-                        setVectorgridLayerReaction={
-                            this.setVectorgridLayerReaction(GeoserverLayer.Node)}
+                        setVectorgridLayerReaction={this.setVectorgridLayerReaction(
+                            GeoserverLayer.Node
+                        )}
                         url={getGeoServerUrl(GeoserverLayer.Node)}
                         interactive={true}
                         vectorTileLayerStyles={this.getNodeStyle()}
                     />
-                }
+                )}
             </>
         );
     }
@@ -342,7 +366,4 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
 export default NetworkLayers;
 
-export {
-    NetworkNodeClickParams,
-    NetworkLinkClickParams,
-};
+export { NetworkNodeClickParams, NetworkLinkClickParams };

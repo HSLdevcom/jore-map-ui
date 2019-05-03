@@ -16,59 +16,58 @@ interface INodeCoordinatesViewProps {
 }
 
 class NodeCoordinatesView extends React.Component<INodeCoordinatesViewProps> {
-    getCoordinateSpecificData = (locationType: NodeLocationType, nodeType: NodeType) => {
+    getCoordinateSpecificData = (
+        locationType: NodeLocationType,
+        nodeType: NodeType
+    ) => {
         let iconClassName = '';
         let label = '';
 
         switch (locationType) {
-        case 'coordinates':
-            iconClassName = NodeHelper.getTypeClass(nodeType, true);
-            label = 'Mitattu piste';
-            break;
-        case 'coordinatesManual':
-            iconClassName = s.manual;
-            label = 'Sovitettu piste';
-            break;
-        case 'coordinatesProjection':
-            iconClassName = s.projected;
-            label = 'Projektoitu piste';
-            break;
+            case 'coordinates':
+                iconClassName = NodeHelper.getTypeClass(nodeType, true);
+                label = 'Mitattu piste';
+                break;
+            case 'coordinatesManual':
+                iconClassName = s.manual;
+                label = 'Sovitettu piste';
+                break;
+            case 'coordinatesProjection':
+                iconClassName = s.projected;
+                label = 'Projektoitu piste';
+                break;
         }
 
         return { iconClassName, label };
-    }
+    };
 
     latChange = (value: string) => {
         const lat = Number(value);
         if (lat === this.props.coordinates.lat) return;
         this.props.onChangeCoordinates(
-            new L.LatLng(
-                lat,
-                this.props.coordinates.lng,
-            ),
+            new L.LatLng(lat, this.props.coordinates.lng)
         );
-    }
+    };
 
     lngChange = (value: string) => {
         const lng = Number(value);
         if (lng === this.props.coordinates.lng) return;
         this.props.onChangeCoordinates(
-            new L.LatLng(
-                this.props.coordinates.lat,
-                lng,
-            ),
+            new L.LatLng(this.props.coordinates.lat, lng)
         );
-    }
+    };
 
     render() {
-        const { iconClassName, label } =
-            this.getCoordinateSpecificData(this.props.locationType, this.props.nodeType);
+        const { iconClassName, label } = this.getCoordinateSpecificData(
+            this.props.locationType,
+            this.props.nodeType
+        );
 
         return (
             <div className={s.nodeCoordinatesView}>
                 <div className={s.nodeCoordinatesHeader}>
                     {label}
-                    <div className={classnames(s.labelIcon, iconClassName)}/>
+                    <div className={classnames(s.labelIcon, iconClassName)} />
                 </div>
                 <div className={s.coordinatesInputs}>
                     <InputContainer

@@ -7,19 +7,19 @@ const TRANSIT_TYPES = [
     TransitType.FERRY,
     TransitType.SUBWAY,
     TransitType.TRAIN,
-    TransitType.TRAM,
+    TransitType.TRAM
 ];
 
 export enum NodeSize {
     normal,
-    large,
+    large
 }
 
 export enum MapLayer { // TODO change name to something better
     node,
     link,
     linkPoint,
-    nodeWithoutLink,
+    nodeWithoutLink
 }
 
 export class NetworkStore {
@@ -47,13 +47,13 @@ export class NetworkStore {
     }
 
     @action
-    public setSelectedDate = (value: Moment.Moment|string) => {
+    public setSelectedDate = (value: Moment.Moment | string) => {
         if (typeof value === 'string') {
             this._selectedDate = Moment(value);
         } else {
             this._selectedDate = value;
         }
-    }
+    };
 
     @computed
     get nodeSize(): NodeSize {
@@ -72,12 +72,12 @@ export class NetworkStore {
 
     public isMapLayerVisible = (mapLayer: MapLayer) => {
         return this._visibleMapLayers.includes(mapLayer);
-    }
+    };
 
     @action
     public setVisibleMapLayers = (layers: MapLayer[]) => {
         this._visibleMapLayers = layers;
-    }
+    };
 
     @action
     public toggleMapLayerVisibility = (mapLayer: MapLayer) => {
@@ -86,49 +86,55 @@ export class NetworkStore {
         } else {
             this.showMapLayer(mapLayer);
         }
-    }
+    };
 
     @action
     public showMapLayer = (mapLayer: MapLayer) => {
         // Need to do concat (instead of push) to trigger ReactionDisposer watcher
         this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer]);
-    }
+    };
 
     @action
     public hideAllMapLayers = () => {
         this._visibleMapLayers = [];
-    }
+    };
 
     @action
     public hideMapLayer = (mapLayer: MapLayer) => {
-        this._visibleMapLayers = this._visibleMapLayers.filter(mL => mL !== mapLayer);
-    }
+        this._visibleMapLayers = this._visibleMapLayers.filter(
+            mL => mL !== mapLayer
+        );
+    };
 
     @action
     public setSelectedTransitTypes = (types: TransitType[]) => {
         this._selectedTransitTypes = types;
-    }
+    };
 
     @action
     public selectAllTransitTypes = () => {
         this._selectedTransitTypes = TRANSIT_TYPES;
-    }
+    };
 
     @action
     public setNodeSize = (nodeSize: NodeSize) => {
         this._nodeSize = nodeSize;
-    }
+    };
 
     // TODO rename as toggleSelectedTransitType?
     @action
     public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(
+                t => t !== type
+            );
         } else {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
-            this._selectedTransitTypes = this._selectedTransitTypes.concat([type]);
+            this._selectedTransitTypes = this._selectedTransitTypes.concat([
+                type
+            ]);
         }
-    }
+    };
 
     @action
     restoreSavedMapLayers() {

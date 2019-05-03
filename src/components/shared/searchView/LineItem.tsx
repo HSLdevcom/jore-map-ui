@@ -26,7 +26,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     constructor(props: ILineItemProps) {
         super(props);
         this.state = {
-            openRouteIds: [],
+            openRouteIds: []
         };
     }
 
@@ -36,13 +36,13 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     private openRouteMenu(routeId: string) {
         this.setState({
-            openRouteIds: this.state.openRouteIds.concat(routeId),
+            openRouteIds: this.state.openRouteIds.concat(routeId)
         });
     }
 
     private closeRouteMenu(routeId: string) {
         this.setState({
-            openRouteIds: this.state.openRouteIds.filter(id => id !== routeId),
+            openRouteIds: this.state.openRouteIds.filter(id => id !== routeId)
         });
     }
 
@@ -53,39 +53,38 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         } else {
             this.openRouteMenu(routeId);
         }
-    }
+    };
 
     private openRoute = (routeId: string) => () => {
-        const openRouteLink = RouteBuilder
-            .to(SubSites.routes)
+        const openRouteLink = RouteBuilder.to(SubSites.routes)
             .append(QueryParams.routes, routeId)
             .toLink();
         searchStore.setSearchInput('');
         searchStore.removeAllSubLineItems();
         navigator.goTo(openRouteLink);
-    }
+    };
 
     private renderRoute(route: ISearchLineRoute): any {
         return (
-            <div
-                key={route.id}
-                className={s.routeItem}
-            >
+            <div key={route.id} className={s.routeItem}>
                 <div className={s.routeItemHeader}>
                     <div
                         className={s.routePathToggle}
                         onClick={this.toggleRouteMenu(route.id)}
                     >
-                        {this.isRouteOpen(route.id) ?
-                            <FaAngleDown /> :
-                            <FaAngleRight />}
+                        {this.isRouteOpen(route.id) ? (
+                            <FaAngleDown />
+                        ) : (
+                            <FaAngleRight />
+                        )}
                     </div>
                     <div>
                         <div
                             className={classNames(
                                 s.routeName,
                                 TransitTypeHelper.getColorClass(
-                                    this.props.line.transitType),
+                                    this.props.line.transitType
+                                )
                             )}
                             onClick={this.openRoute(route.id)}
                         >
@@ -109,29 +108,32 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                     />
                 </div>
             </div>
-
         );
     }
 
     private redirectToLineView = (lineId: string) => () => {
-        const url = RouteBuilder
-            .to(SubSites.line)
+        const url = RouteBuilder.to(SubSites.line)
             .toTarget(lineId)
             .toLink();
         navigator.goTo(url);
-    }
+    };
 
     public render() {
         return (
             <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
-                        {lineHelper.getTransitIcon(this.props.line.transitType, false)}
+                        {lineHelper.getTransitIcon(
+                            this.props.line.transitType,
+                            false
+                        )}
                     </div>
                     <div
                         className={classNames(
-                            TransitTypeHelper.getColorClass(this.props.line.transitType),
-                            s.lineLabel,
+                            TransitTypeHelper.getColorClass(
+                                this.props.line.transitType
+                            ),
+                            s.lineLabel
                         )}
                         onClick={this.redirectToLineView(this.props.line.id)}
                     >
@@ -139,10 +141,9 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                     </div>
                 </div>
                 {this.props.line.routes
-                    .slice().sort((a, b) => a.id < b.id ? -1 : 1)
-                    .map(route =>
-                    this.renderRoute(route),
-                )}
+                    .slice()
+                    .sort((a, b) => (a.id < b.id ? -1 : 1))
+                    .map(route => this.renderRoute(route))}
             </div>
         );
     }

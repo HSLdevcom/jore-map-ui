@@ -46,10 +46,10 @@ interface IMapPropReference {
 }
 
 export type LeafletContext = {
-    map?: L.Map,
-    pane?: string,
-    layerContainer?: LayerContainer,
-    popupContainer?: L.Layer,
+    map?: L.Map;
+    pane?: string;
+    layerContainer?: LayerContainer;
+    popupContainer?: L.Layer;
 };
 
 @inject('mapStore', 'routeListStore', 'nodeStore', 'toolbarStore')
@@ -65,7 +65,9 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     private getMap() {
-        return this.mapReference.current ? this.mapReference.current.leafletElement : null;
+        return this.mapReference.current
+            ? this.mapReference.current.leafletElement
+            : null;
     }
 
     componentDidMount() {
@@ -74,13 +76,10 @@ class LeafletMap extends React.Component<IMapProps> {
 
         // Ugly hack to force map to reload, necessary because map stays gray when app is in docker
         // TODO: Should be fixed: https://github.com/HSLdevcom/jore-map-ui/issues/284
-        setTimeout(
-            () => {
-                const map = this.getMap();
-                map && map.invalidateSize();
-            },
-            1000,
-        );
+        setTimeout(() => {
+            const map = this.getMap();
+            map && map.invalidateSize();
+        }, 1000);
 
         map.addControl(L.control.scale({ imperial: false }));
 
@@ -88,35 +87,32 @@ class LeafletMap extends React.Component<IMapProps> {
         map.addControl(new CoordinateControl({ position: 'topright' }));
         // map.addControl(new MeasurementControl({ position: 'topright' }));
         map.on('moveend', () => {
-            this.props.mapStore!.setCoordinates(
-                map.getCenter(),
-            );
+            this.props.mapStore!.setCoordinates(map.getCenter());
         });
 
         map.on('zoomend', () => {
             this.props.mapStore!.setZoom(map.getZoom());
         });
 
-        this.reactionDisposers.push(reaction(
-            () => this.props.mapStore!.coordinates,
-            this.centerMap,
-        ));
+        this.reactionDisposers.push(
+            reaction(() => this.props.mapStore!.coordinates, this.centerMap)
+        );
 
-        this.reactionDisposers.push(reaction(
-            () => this.props.mapStore!.mapBounds,
-            this.fitBounds,
-        ));
+        this.reactionDisposers.push(
+            reaction(() => this.props.mapStore!.mapBounds, this.fitBounds)
+        );
 
-        this.reactionDisposers.push(reaction(
-            () => this.props.mapStore!.mapCursor,
-            this.setMapCursor,
-        ));
+        this.reactionDisposers.push(
+            reaction(() => this.props.mapStore!.mapCursor, this.setMapCursor)
+        );
 
         map.setView(
             this.props.mapStore!.coordinates,
-            this.props.mapStore!.zoom,
+            this.props.mapStore!.zoom
         );
-        map.on('click', (e: L.LeafletEvent) => EventManager.trigger('mapClick', e));
+        map.on('click', (e: L.LeafletEvent) =>
+            EventManager.trigger('mapClick', e)
+        );
     }
 
     private centerMap = () => {
@@ -128,25 +124,24 @@ class LeafletMap extends React.Component<IMapProps> {
                 map.setView(storeCoordinates, map.getZoom());
             }
         }
-    }
+    };
 
     private fitBounds = () => {
         const map = this.getMap();
-        map && map.fitBounds(
-            this.props.mapStore!.mapBounds,
-            {
+        map &&
+            map.fitBounds(this.props.mapStore!.mapBounds, {
                 maxZoom: 20,
                 animate: true,
-                padding: [100, 100],
+                padding: [100, 100]
             });
-    }
+    };
 
     private setMapCursor = () => {
         const mapElement = document.getElementById(s.mapLeaflet);
         if (mapElement) {
             mapElement.style.cursor = this.props.mapStore!.mapCursor;
         }
-    }
+    };
 
     componentDidUpdate() {
         const map = this.getMap();
@@ -162,15 +157,12 @@ class LeafletMap extends React.Component<IMapProps> {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
-        const fullScreenMapViewClass = (this.props.mapStore!.isMapFullscreen) ? '' : '';
+        const fullScreenMapViewClass = this.props.mapStore!.isMapFullscreen
+            ? ''
+            : '';
         const routes = toJS(this.props.routeListStore!.routes);
         return (
-            <div
-                className={classnames(
-                    s.mapView,
-                    fullScreenMapViewClass,
-                )}
-            >
+            <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 {this.props.children}
                 <Map
                     ref={this.mapReference}
@@ -181,14 +173,12 @@ class LeafletMap extends React.Component<IMapProps> {
                     <TileLayer
                         // tslint:disable:max-line-length
                         url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
-                        attribution={
-                                `
+                        attribution={`
                                 Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
                                 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
                                 Imagery © <a href="http://mapbox.com">Mapbox</a>
                                 />
-                            `
-                        }
+                            `}
                         baseLayer={true}
                         maxZoom={21}
                         minZoom={8}
@@ -198,13 +188,9 @@ class LeafletMap extends React.Component<IMapProps> {
                         // tslint:enable:max-line-length
                     />
                     <NetworkLayers />
-                    { node &&
-                        <EditNodeLayer />
-                    }
+                    {node && <EditNodeLayer />}
                     <EditLinkLayer />
-                    <RouteLayer
-                        routes={routes}
-                    />
+                    <RouteLayer routes={routes} />
                     <UpsertRoutePathLayer />
                     <PopupLayer />
                     <Control position='topleft'>

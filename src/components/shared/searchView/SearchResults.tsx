@@ -16,7 +16,7 @@ import Loader from '../loader/Loader';
 import NodeItem from './NodeItem';
 import * as s from './searchResults.scss';
 
-interface ISearchResultsProps{
+interface ISearchResultsProps {
     searchResultStore?: SearchResultStore;
     searchStore?: SearchStore;
     errorStore?: ErrorStore;
@@ -33,7 +33,10 @@ const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half 
 
 @inject('searchResultStore', 'searchStore', 'errorStore')
 @observer
-class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
+class SearchResults extends React.Component<
+    ISearchResultsProps,
+    ISearchResultsState
+> {
     private paginatedDiv: React.RefObject<HTMLDivElement>;
 
     private reactionDisposer: IReactionDisposer;
@@ -42,7 +45,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         super(props);
         this.state = {
             isLoading: false,
-            showLimit: SHOW_LIMIT_DEFAULT,
+            showLimit: SHOW_LIMIT_DEFAULT
         };
 
         this.paginatedDiv = React.createRef();
@@ -52,13 +55,12 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.showMoreResults();
         this.fetchAll();
         this.reactionDisposer = reaction(
-            () =>
-                [
-                    this.props.searchStore!.searchInput,
-                    this.props.searchStore!.selectedTransitTypes,
-                ],
-            this.scrollToBeginning,
-            );
+            () => [
+                this.props.searchStore!.searchInput,
+                this.props.searchStore!.selectedTransitTypes
+            ],
+            this.scrollToBeginning
+        );
     }
 
     componentWillUnmount() {
@@ -67,16 +69,13 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     private fetchAll = async () => {
         this.setState({ isLoading: true });
-        return Promise.all([
-            this.fetchAllLines(),
-            this.fetchAllNodes(),
-        ]).then(
+        return Promise.all([this.fetchAllLines(), this.fetchAllNodes()]).then(
             () => {
                 this.setState({ isLoading: false });
                 this.props.searchResultStore!.search();
-            },
-    );
-    }
+            }
+        );
+    };
 
     private fetchAllLines = async () => {
         try {
@@ -85,7 +84,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         } catch (e) {
             this.props.errorStore!.addError('Linjojen haku ei onnistunut', e);
         }
-    }
+    };
 
     private fetchAllNodes = async () => {
         try {
@@ -94,44 +93,48 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         } catch (e) {
             this.props.errorStore!.addError('Solmujen haku ei onnistunut', e);
         }
-    }
+    };
 
     private getFilteredItems = () => {
-        return this.props.searchResultStore!
-            .filteredItems
-            .slice()
+        return this.props
+            .searchResultStore!.filteredItems.slice()
             .splice(0, this.state.showLimit);
-    }
+    };
 
     private closeSearchResults = () => {
         this.props.searchStore!.setSearchInput('');
-    }
+    };
 
     private showMoreResults = () => {
-        if (this.paginatedDiv.current &&
-            this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight
-            >= this.paginatedDiv.current.scrollHeight / SCROLL_PAGINATION_TRIGGER_POINT) {
-            this.setState({ showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT });
+        if (
+            this.paginatedDiv.current &&
+            this.paginatedDiv.current.scrollTop +
+                this.paginatedDiv.current.offsetHeight >=
+                this.paginatedDiv.current.scrollHeight /
+                    SCROLL_PAGINATION_TRIGGER_POINT
+        ) {
+            this.setState({
+                showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT
+            });
         }
-    }
+    };
 
     private scrollToBeginning = () => {
         this.setState({
-            showLimit: SHOW_LIMIT_DEFAULT,
+            showLimit: SHOW_LIMIT_DEFAULT
         });
         if (this.paginatedDiv && this.paginatedDiv.current) {
             this.paginatedDiv.current.scrollTo(0, 0);
         }
-    }
+    };
 
     private isLine(item: INodeBase | ISearchLine): item is ISearchLine {
         return (
-            (item as ISearchLine).routes !== undefined ||
-            (item as ISearchLine).transitType !== undefined
-        ) && (
-            (item as INodeBase).shortIdLetter === undefined ||
-            (item as INodeBase).shortIdString === undefined ||
-            (item as INodeBase).type === undefined
+            ((item as ISearchLine).routes !== undefined ||
+                (item as ISearchLine).transitType !== undefined) &&
+            ((item as INodeBase).shortIdLetter === undefined ||
+                (item as INodeBase).shortIdString === undefined ||
+                (item as INodeBase).type === undefined)
         );
     }
 
@@ -139,11 +142,14 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         if (this.state.isLoading) {
             return (
                 <div className={s.loaderContainer}>
-                    <Loader/>
+                    <Loader />
                 </div>
             );
         }
-        const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
+        const isRouteListView = matchPath(
+            Navigator.getPathName(),
+            subSites.routes
+        );
         const filteredItems = this.getFilteredItems();
         return (
             <div className={s.searchResultsView}>
@@ -152,40 +158,25 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                     onScroll={this.showMoreResults}
                     ref={this.paginatedDiv}
                 >
-                {
-                    filteredItems.length === 0 ?
-                        <div className={s.noResults}>
-                            Ei hakutuloksia.
-                        </div>
-                        :
-                        filteredItems
-                            .map((item: ISearchLine | INodeBase) => {
-                                if (this.isLine(item)) {
-                                    return (
-                                        <LineItem
-                                            key={item.id}
-                                            line={item}
-                                        />
-                                    );
-                                }
-                                return (
-                                    <NodeItem
-                                        key={item.id}
-                                        node={item}
-                                    />
-                                );
-                            })
-                }
+                    {filteredItems.length === 0 ? (
+                        <div className={s.noResults}>Ei hakutuloksia.</div>
+                    ) : (
+                        filteredItems.map((item: ISearchLine | INodeBase) => {
+                            if (this.isLine(item)) {
+                                return <LineItem key={item.id} line={item} />;
+                            }
+                            return <NodeItem key={item.id} node={item} />;
+                        })
+                    )}
                 </div>
-                {
-                    isRouteListView &&
+                {isRouteListView && (
                     <div
                         className={s.largeButton}
                         onClick={this.closeSearchResults}
                     >
                         Sulje
                     </div>
-                }
+                )}
             </div>
         );
     }

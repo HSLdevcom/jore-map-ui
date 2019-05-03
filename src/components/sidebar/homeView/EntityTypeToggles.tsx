@@ -13,11 +13,11 @@ interface IEntityTypeToggleProps {
 class EntityTypeToggles extends React.Component<IEntityTypeToggleProps> {
     private toggleSearchingLines = () => {
         this.props.searchStore!.toggleIsSearchingForLines();
-    }
+    };
 
     private toggleSearchingNodes = () => {
         this.props.searchStore!.toggleIsSearchingForNodes();
-    }
+    };
 
     render() {
         return (

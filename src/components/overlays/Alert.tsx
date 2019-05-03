@@ -21,17 +21,21 @@ class Alert extends React.Component<IAlertProps> {
         return (
             <Modal>
                 <div className={s.alertView}>
-                    { this.props.alertStore!.type === AlertType.Success &&
-                        <FaCheckCircle className={classnames(s.icon, s.success)} />
-                    }
-                    { this.props.alertStore!.type === AlertType.Info &&
-                        <IoMdInformationCircle className={classnames(s.icon, s.info)} />
-                    }
-                    { this.props.alertStore!.type === AlertType.Loader &&
+                    {this.props.alertStore!.type === AlertType.Success && (
+                        <FaCheckCircle
+                            className={classnames(s.icon, s.success)}
+                        />
+                    )}
+                    {this.props.alertStore!.type === AlertType.Info && (
+                        <IoMdInformationCircle
+                            className={classnames(s.icon, s.info)}
+                        />
+                    )}
+                    {this.props.alertStore!.type === AlertType.Loader && (
                         <div className={s.icon}>
-                            <Loader size={LoaderSize.SMALL}/>
+                            <Loader size={LoaderSize.SMALL} />
                         </div>
-                    }
+                    )}
                     {this.props.alertStore!.message}
                 </div>
             </Modal>

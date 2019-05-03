@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Moment from 'moment';
 import { observer } from 'mobx-react';
 import { IRoutePath } from '~/models';
-import routeBuilder  from '~/routing/routeBuilder';
+import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -18,39 +18,42 @@ interface RoutePathLayerProps {
 
 @observer
 class RoutePathLayer extends Component<RoutePathLayerProps> {
-    private openLinkView = (routePath: IRoutePath) => (routePathLinkId: string) => {
+    private openLinkView = (routePath: IRoutePath) => (
+        routePathLinkId: string
+    ) => {
         const routePathViewLink = routeBuilder
             .to(subSites.routePath)
-            .toTarget([
+            .toTarget(
+                [
                     routePath.routeId,
                     Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                    routePath.direction,
-            ].join(','))
+                    routePath.direction
+                ].join(',')
+            )
             .append(QueryParams.showItem, routePathLinkId)
             .toLink();
         navigator.goTo(routePathViewLink);
-    }
+    };
 
     render() {
-        return this.props.routePaths
-            .map((routePath, index) => {
-                if (!routePath.visible) return;
-                const internalId = routePath.internalId;
-                return (
-                    <RoutePathLinkLayer
-                        key={routePath.internalId}
-                        internalId={internalId}
-                        onClick={this.props.toggleHighlight(internalId)}
-                        onContextMenu={this.openLinkView(routePath)}
-                        onMouseOver={this.props.hoverHighlight(internalId)}
-                        onMouseOut={this.props.hoverHighlightOff(internalId)}
-                        routePathLinks={routePath.routePathLinks!}
-                        color={routePath.color!}
-                        opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}
-                        weight={this.props.hasHighlight(internalId) ? 8 : 6}
-                    />
-                );
-            });
+        return this.props.routePaths.map((routePath, index) => {
+            if (!routePath.visible) return;
+            const internalId = routePath.internalId;
+            return (
+                <RoutePathLinkLayer
+                    key={routePath.internalId}
+                    internalId={internalId}
+                    onClick={this.props.toggleHighlight(internalId)}
+                    onContextMenu={this.openLinkView(routePath)}
+                    onMouseOver={this.props.hoverHighlight(internalId)}
+                    onMouseOut={this.props.hoverHighlightOff(internalId)}
+                    routePathLinks={routePath.routePathLinks!}
+                    color={routePath.color!}
+                    opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}
+                    weight={this.props.hasHighlight(internalId) ? 8 : 6}
+                />
+            );
+        });
     }
 }
 

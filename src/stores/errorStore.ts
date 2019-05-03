@@ -31,10 +31,7 @@ export class ErrorStore {
             httpStatusDescriptionCodeList[error.errorCode]
         ) {
             msg += `, ${httpStatusDescriptionCodeList[error.errorCode]}`;
-        } else if (
-            error &&
-            error.message
-        ) {
+        } else if (error && error.message) {
             msg += `, ${error.message}`;
         }
         this._errors.push(msg);
@@ -44,8 +41,7 @@ export class ErrorStore {
 
     @action
     public pop() {
-        return this._errors.length > 0 &&
-            this._errors.pop();
+        return this._errors.length > 0 && this._errors.pop();
     }
 }
 
