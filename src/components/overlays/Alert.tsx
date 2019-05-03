@@ -20,7 +20,7 @@ class Alert extends React.Component<IAlertProps> {
 
         return (
             <Modal>
-                <div className={s.content}>
+                <div className={s.alertView}>
                     { this.props.alertStore!.type === AlertType.Success &&
                         <FaCheckCircle className={classnames(s.icon, s.success)} />
                     }
