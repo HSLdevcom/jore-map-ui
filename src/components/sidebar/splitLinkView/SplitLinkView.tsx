@@ -200,7 +200,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
     render() {
         const isSaveButtonDisabled =
-            this.state.selectedDate && !this.getRoutepathsBeingSplit();
+            this.state.selectedDate && this.getRoutepathsBeingSplit().length === 0;
         const node = this.getNode();
 
         const link = this.props.linkStore!.link;
