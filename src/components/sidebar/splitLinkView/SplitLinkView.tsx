@@ -150,7 +150,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
     openSaveConfirm = () => {
         // tslint:disable:max-line-length
-        let confirmText = 'Oletko varma, että haluat jakaa tämän linkin, tätä toimenpidettä ei pysty peruutamaan tämän varmistuksen jälkeen.';
+        let confirmText = 'Oletko varma, että haluat jakaa tämän linkin? Tätä toimenpidettä ei pysty peruutamaan tämän varmistuksen jälkeen.';
         if (this.getNode()!.type === NodeType.STOP && this.state.selectedDate) {
             confirmText = `${confirmText} Toimenpide vaikuttaa yhteensä ${this.getRoutepathsBeingSplit().length} reitinsuuntaan.`;
         } else {
@@ -234,7 +234,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                     }
                     { !this.state.selectedDate && node.type === NodeType.STOP &&
                         <div className={s.section}>
-                            Tyhjä päivämäärä jakaa kaikki reitinsuunnat
+                            Tyhjä päivämäärä jakaa kaikki reitinsuunnat.
                         </div>
                     }
                     { this.state.selectedDate &&

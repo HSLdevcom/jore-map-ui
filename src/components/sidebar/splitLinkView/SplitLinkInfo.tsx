@@ -15,7 +15,7 @@ const SplitLinkInfo = (props: ISplitLinkInfoProps) => (
     <div className={s.splitLinkInfo}>
         <div className={s.formSection}>
             <div className={s.sectionHeader}>
-                Jakava solmu
+                Jaettava linkki
             </div>
             <div className={s.flexRow}>
                 <TextContainer
@@ -36,7 +36,7 @@ const SplitLinkInfo = (props: ISplitLinkInfoProps) => (
         </div>
         <div className={s.formSection}>
             <div className={s.sectionHeader}>
-                Solmu jolla linkki jaetaan
+                Jakava solmu
             </div>
             <div className={s.flexRow}>
                 <TextContainer

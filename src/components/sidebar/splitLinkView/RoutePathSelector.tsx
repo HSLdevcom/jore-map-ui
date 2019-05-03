@@ -48,8 +48,8 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
         <div className={s.routePathSelectorView}>
                 {props.routePaths.length === 0 &&
                     <div>
-                        Päivämäärän {Moment(props.selectedDate).format('DD.MM.YYYY')}
-                        jälkeen voimassa olevia reitinsuuntia ei löytynyt.
+                        {`Päivämääränä ${Moment(props.selectedDate).format('DD.MM.YYYY')} tai sen
+                         jälkeen voimassa olevia reitinsuuntia ei löytynyt.`}
                     </div>
                 }
                 {props.routePaths.length !== 0 &&
