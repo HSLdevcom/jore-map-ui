@@ -196,6 +196,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                                 type='date'
                                 value={this.state.selectedDate}
                                 onChange={this.updateSelectedDate}
+                                showClearButtonOnDates={true}
                             />
                         </div>
                     }
