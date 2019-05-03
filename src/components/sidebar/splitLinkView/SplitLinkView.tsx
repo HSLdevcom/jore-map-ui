@@ -7,6 +7,7 @@ import { MapStore } from '~/stores/mapStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { NodeStore } from '~/stores/nodeStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import RoutePathService from '~/services/routePathService';
 import { IRoutePath } from '~/models';
 import NodeType from '~/enums/nodeType';
@@ -38,9 +39,18 @@ interface ISplitLinkViewProps extends RouteComponentProps<any>{
     nodeStore?: NodeStore;
     alertStore?: AlertStore;
     networkStore?: NetworkStore;
+    confirmStore?: ConfirmStore;
 }
 
-@inject('mapStore', 'errorStore', 'linkStore', 'nodeStore', 'alertStore', 'networkStore')
+@inject(
+    'mapStore',
+    'errorStore',
+    'linkStore',
+    'nodeStore',
+    'alertStore',
+    'networkStore',
+    'confirmStore',
+)
 @observer
 class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewState> {
     constructor(props: ISplitLinkViewProps) {
@@ -138,18 +148,30 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         });
     }
 
+    confirmSave = () => {
+        // tslint:disable:max-line-length
+        let confirmText = 'Oletko varma, että haluat jakaa tämän linkin, tätä toimenpidettä ei pysty peruutamaan tämän varmistuksen jälkeen.';
+        if (this.getNode()!.type === NodeType.STOP && this.state.selectedDate) {
+            confirmText = `${confirmText} Toimenpide vaikuttaa yhteensä ${this.getRoutepathsBeingSplit().length} reitinsuuntaan.`;
+        } else {
+            confirmText = `${confirmText} Tämä toimenpide vaikuttaa kaikkiin tätä linkkiä käyttäviin reitinsuuntiin.`;
+        }
+        // tslint:enable:max-line-length
+        this.props.confirmStore!.openConfirm(
+            confirmText,
+            this.save,
+        );
+    }
+
     save = () => {
-        const splittedRoutePaths =
-            this.state.routePaths
-                .filter(rp => Boolean(this.state.selectedRoutePathIds[rp.internalId]));
         // tslint:disable-next-line
         console.log({
-            routePaths: splittedRoutePaths,
+            routePaths: this.getRoutepathsBeingSplit(),
             date: this.state.selectedDate,
             link: this.props.linkStore!.link,
             node: this.props.linkStore!.nodes[0],
         });
-        this.props.alertStore!.setFadeMessage('Linkin jako vielä kehitetään', AlertType.Info);
+        this.props.alertStore!.setFadeMessage('Linkin jaon kehitys kesken.', AlertType.Info);
     }
 
     selectAllRoutePaths = () => {
@@ -166,12 +188,20 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         });
     }
 
+    getNode = () => {
+        return this.props.linkStore!.nodes.length > 0
+        ? this.props.linkStore!.nodes[0] : null;
+    }
+
+    getRoutepathsBeingSplit = () => {
+        return this.state.routePaths
+            .filter(rp => Boolean(this.state.selectedRoutePathIds[rp.internalId]));
+    }
+
     render() {
         const isSaveButtonDisabled =
-            this.state.selectedDate &&
-            !Object.values(this.state.selectedRoutePathIds).some(item => Boolean(item));
-        const node = this.props.linkStore!.nodes.length > 0
-            ? this.props.linkStore!.nodes[0] : null;
+            this.state.selectedDate && !this.getRoutepathsBeingSplit();
+        const node = this.getNode();
 
         const link = this.props.linkStore!.link;
         if (this.state.isLoading) {
@@ -194,7 +224,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                     { node.type === NodeType.STOP &&
                         <div className={s.section}>
                             <InputContainer
-                                label='Mistä eteenpäin jaetaan'
+                                label='Mistä eteenpäin jaetaan?'
                                 type='date'
                                 value={this.state.selectedDate}
                                 onChange={this.updateSelectedDate}
@@ -202,7 +232,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                             />
                         </div>
                     }
-                    { !this.state.selectedDate &&
+                    { !this.state.selectedDate && node.type === NodeType.STOP &&
                         <div className={s.section}>
                             Tyhjä päivämäärä jakaa kaikki reitinsuunnat
                         </div>
@@ -234,7 +264,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                 <Button
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
-                    onClick={this.save}
+                    onClick={this.confirmSave}
                 >
                     Jaa linkki
                 </Button>
