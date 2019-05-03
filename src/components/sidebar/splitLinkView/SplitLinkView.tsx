@@ -8,7 +8,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import RoutePathService from '~/services/routePathService';
-import { ILink, INode, IRoutePath } from '~/models';
+import { IRoutePath } from '~/models';
 import NodeType from '~/enums/nodeType';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
@@ -25,8 +25,6 @@ import * as s from './splitLinkView.scss';
 
 interface ISplitLinkViewState {
     isLoading: boolean;
-    link: ILink | null;
-    node: INode | null;
     selectedDate?: Date;
     selectedRoutePathIds: object;
     routePaths: IRoutePath[];
@@ -49,8 +47,6 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         super(props);
         this.state = {
             isLoading: false,
-            link: null,
-            node: null,
             selectedRoutePathIds: {},
             routePaths: [],
             isLoadingRoutePaths: false,
@@ -76,10 +72,6 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                     linkStartNodeId, linkEndNodeId, linkTransitType,
                 );
                 const node = await NodeService.fetchNode(nodeId);
-                this.setState({
-                    link,
-                    node,
-                });
                 this.props.linkStore!.setLink(link);
                 this.props.linkStore!.setIsLinkGeometryEditable(false);
                 this.props.linkStore!.setNodes([node]);
@@ -102,7 +94,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         this.setState({
             isLoadingRoutePaths: true,
         });
-        const link = this.state.link;
+        const link = this.props.linkStore!.link;
         const routePaths = await RoutePathService.fetchRoutePathsUsingLinkFromDate(
             link!.startNode.id,
             link!.endNode.id,
@@ -154,6 +146,10 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
     render() {
         const isSaveButtonDisabled = false;
+        const node = this.props.linkStore!.nodes.length > 0
+            ? this.props.linkStore!.nodes[0] : null;
+
+        const link = this.props.linkStore!.link;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.splitLinkView, s.loaderContainer)}>
@@ -161,7 +157,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                 </div>
             );
         }
-        if (!this.state.node || !this.state.link) return null;
+        if (!node || !link) return null;
         return (
             <div className={s.splitLinkView}>
                 <div className={s.content}>
@@ -169,9 +165,9 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                         Linkin jako solmulla
                     </SidebarHeader>
                     <div className={s.section}>
-                        <SplitLinkInfo link={this.state.link} node={this.state.node} />
+                        <SplitLinkInfo link={link} node={node} />
                     </div>
-                    { this.state.node.type === NodeType.STOP &&
+                    { node.type === NodeType.STOP &&
                         <div className={s.section}>
                             <InputContainer
                                 label='Mistä eteenpäin jaetaan'
