@@ -26,11 +26,11 @@ class SplitLinkTool implements BaseTool {
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
-        EventManager.on('networkNodeClick', this.confirmNode);
+        EventManager.on('networkNodeClick', this.openNodeConfirm);
     }
 
     public deactivate() {
-        EventManager.off('networkNodeClick', this.confirmNode);
+        EventManager.off('networkNodeClick', this.openNodeConfirm);
     }
 
     getConfirmContent = (message: string, itemList: { label: string, value: string }[]) => (
@@ -66,7 +66,7 @@ class SplitLinkTool implements BaseTool {
         navigator.goTo(url);
     }
 
-    private confirmNode = async (clickEvent: CustomEvent) => {
+    private openNodeConfirm = async (clickEvent: CustomEvent) => {
         const nodeId = clickEvent.detail.nodeId;
 
         const node = await NodeService.fetchNode(nodeId);

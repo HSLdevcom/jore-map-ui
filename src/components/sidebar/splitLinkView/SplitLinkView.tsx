@@ -148,7 +148,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         });
     }
 
-    confirmSave = () => {
+    openSaveConfirm = () => {
         // tslint:disable:max-line-length
         let confirmText = 'Oletko varma, että haluat jakaa tämän linkin, tätä toimenpidettä ei pysty peruutamaan tämän varmistuksen jälkeen.';
         if (this.getNode()!.type === NodeType.STOP && this.state.selectedDate) {
@@ -264,7 +264,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                 <Button
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
-                    onClick={this.confirmSave}
+                    onClick={this.openSaveConfirm}
                 >
                     Jaa linkki
                 </Button>
