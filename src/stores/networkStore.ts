@@ -27,11 +27,13 @@ export class NetworkStore {
     @observable private _selectedDate: Moment.Moment;
     @observable private _visibleMapLayers: MapLayer[];
     @observable private _nodeSize: NodeSize;
+    private _savedMapLayers: MapLayer[];
 
     constructor() {
         this._selectedTransitTypes = TRANSIT_TYPES;
         this._visibleMapLayers = [];
         this._nodeSize = NodeSize.normal;
+        this._savedMapLayers = [];
     }
 
     @computed
@@ -126,6 +128,16 @@ export class NetworkStore {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
             this._selectedTransitTypes = this._selectedTransitTypes.concat([type]);
         }
+    }
+
+    @action
+    restoreSavedMapLayers() {
+        this.setVisibleMapLayers(this._savedMapLayers);
+        this._savedMapLayers = [];
+    }
+
+    saveMapLayers() {
+        this._savedMapLayers = this._visibleMapLayers;
     }
 }
 
