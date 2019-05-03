@@ -19,7 +19,7 @@ interface IInputProps {
     validatorRule?: string;
     type?: inputType; // Defaults to text
     capitalizeInput?: boolean;
-    showClearButtonOnDates?: boolean;
+    isClearButtonVisibleOnDates?: boolean;
 }
 
 const renderEditableContent = (props: IInputProps) => {
@@ -45,7 +45,7 @@ const renderEditableContent = (props: IInputProps) => {
             <DatePicker
                 value={(props.value! as Date)}
                 onChange={props.onChange!}
-                showClearButton={props.showClearButtonOnDates}
+                isClearButtonVisible={props.isClearButtonVisibleOnDates}
             />
         );
     }

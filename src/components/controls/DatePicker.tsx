@@ -6,7 +6,7 @@ import * as s from './datePicker.scss';
 
 interface IDatePickerProps {
     value: Date;
-    showClearButton?: boolean;
+    isClearButtonVisible?: boolean;
     onChange: (date: Date) => void;
 }
 
@@ -17,7 +17,7 @@ const DatePicker = observer((props: IDatePickerProps) => (
             onChange={props.onChange}
             locale='fi-FI'
             calendarIcon={<IoMdCalendar />}
-            clearIcon={props.showClearButton ? undefined : null}
+            clearIcon={props.isClearButtonVisible ? undefined : null}
         />
   </div>
 ));
