@@ -58,7 +58,7 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
                             <Checkbox
                                 content={getCheckboxContent(rp)}
                                 key={index}
-                                checked={props.selectedIds[rp.internalId]}
+                                checked={props.selectedIds[rp.internalId] || false}
                                 onClick={toggleRoutePath(rp.internalId)}
                             />)
                         }
