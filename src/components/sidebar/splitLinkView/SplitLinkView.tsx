@@ -12,7 +12,7 @@ import { IRoutePath } from '~/models';
 import NodeType from '~/enums/nodeType';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
-import { NetworkStore } from '~/stores/networkStore';
+import { NetworkStore, MapLayer } from '~/stores/networkStore';
 import Loader from '~/components/shared/loader/Loader';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
@@ -43,6 +43,8 @@ interface ISplitLinkViewProps extends RouteComponentProps<any>{
 @inject('mapStore', 'errorStore', 'linkStore', 'nodeStore', 'alertStore', 'networkStore')
 @observer
 class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewState> {
+    previousVisibleMapLayers: MapLayer[];
+
     constructor(props: ISplitLinkViewProps) {
         super(props);
         this.state = {
@@ -55,6 +57,21 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
     componentDidMount() {
         this.init();
+    }
+
+    componentWillUnmount() {
+        this.resetToPreviousSelectedMapLayers();
+    }
+
+    private hideAllMapLayers = () => {
+        this.previousVisibleMapLayers = this.props.networkStore!.visibleMapLayers;
+        this.props.networkStore!.hideAllMapLayers();
+    }
+
+    private resetToPreviousSelectedMapLayers = () => {
+        if (this.props.networkStore!.visibleMapLayers.length === 0) {
+            this.props.networkStore!.setVisibleMapLayers(this.previousVisibleMapLayers);
+        }
     }
 
     private init = async () => {
@@ -78,7 +95,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                 const bounds = L.latLngBounds(link.geometry);
                 bounds.extend(node.coordinates);
                 this.props.mapStore!.setMapBounds(bounds);
-                this.props.networkStore!.hideAllMapLayers();
+                this.hideAllMapLayers();
             }
         } catch (e) {
             this.props.errorStore!.addError(
