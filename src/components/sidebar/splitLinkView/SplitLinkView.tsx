@@ -108,6 +108,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
     }
 
     fetchRoutePaths = async (date: Date) => {
+        if (!date) return;
         this.setState({
             isLoadingRoutePaths: true,
         });
@@ -126,6 +127,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
     updateSelectedDate = (date: Date) => {
         this.setState({ selectedDate: date });
+        this.unselectAllRoutePaths();
         this.fetchRoutePaths(date);
     }
 
@@ -167,7 +169,9 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
     }
 
     render() {
-        const isSaveButtonDisabled = false;
+        const isSaveButtonDisabled =
+            this.state.selectedDate &&
+            !Object.values(this.state.selectedRoutePathIds).some(item => Boolean(item));
         const node = this.props.linkStore!.nodes.length > 0
             ? this.props.linkStore!.nodes[0] : null;
 
@@ -198,6 +202,11 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                                 onChange={this.updateSelectedDate}
                                 showClearButtonOnDates={true}
                             />
+                        </div>
+                    }
+                    { !this.state.selectedDate &&
+                        <div className={s.section}>
+                            Tyhjä päivämäärä jakaa kaikki reitinsuunnat
                         </div>
                     }
                     { this.state.selectedDate &&
