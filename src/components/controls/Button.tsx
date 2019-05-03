@@ -9,7 +9,7 @@ interface IButtonProps {
     className?: string;
     disabled?: boolean;
     children: React.ReactNode;
-    onClick(event: any): void;
+    onClick: () => void;
 }
 
 const Button = observer((props: IButtonProps) => {
@@ -33,9 +33,9 @@ const Button = observer((props: IButtonProps) => {
         }
     };
 
-    const onClick = (e: any) => {
+    const onClick = () => {
         if (!props.disabled) {
-            props.onClick(e);
+            props.onClick();
         }
     };
 

@@ -1,0 +1,44 @@
+@import '../../shared/styles/common.scss';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.splitLinkView {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+
+    .content {
+        padding: 20px;
+        overflow-y: auto;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+
+        .section {
+            padding-top: 20px;
+
+            .toggleButtons {
+                display: flex;
+                flex-direction: row;
+                margin-top: 15px;
+        
+                > div {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                }
+            }
+        }
+
+        .expanded {
+            flex-grow: 1;
+            flex-shrink: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+    }
+
+    &.loaderContainer > div {
+        margin: 30px auto;
+    }
+}

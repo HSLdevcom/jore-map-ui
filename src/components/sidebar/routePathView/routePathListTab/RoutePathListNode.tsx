@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { IRoutePathLink, INode, IStop } from '~/models';
 import { FiChevronRight } from 'react-icons/fi';
-import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
@@ -154,7 +154,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             icon = this.addBorder(icon, '#353333');
         } else if (node.type === NodeType.STOP) {
             node.transitTypes.forEach((type) => {
-                icon = this.addBorder(icon, TransitTypeColorHelper.getColor(type));
+                icon = this.addBorder(icon, TransitTypeHelper.getColor(type));
             });
         } else if (node.type === NodeType.CROSSROAD) {
             icon = this.addBorder(icon, '#727272');

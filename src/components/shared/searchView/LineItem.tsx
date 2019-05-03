@@ -3,9 +3,9 @@ import classNames from 'classnames';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import ReactMoment from 'react-moment';
 import lineHelper from '~/util/lineHelper';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
-import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
 import searchStore from '~/stores/searchStore';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -84,7 +84,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         <div
                             className={classNames(
                                 s.routeName,
-                                TransitTypeColorHelper.getColorClass(
+                                TransitTypeHelper.getColorClass(
                                     this.props.line.transitType),
                             )}
                             onClick={this.openRoute(route.id)}
@@ -130,7 +130,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                     </div>
                     <div
                         className={classNames(
-                            TransitTypeColorHelper.getColorClass(this.props.line.transitType),
+                            TransitTypeHelper.getColorClass(this.props.line.transitType),
                             s.lineLabel,
                         )}
                         onClick={this.redirectToLineView(this.props.line.id)}

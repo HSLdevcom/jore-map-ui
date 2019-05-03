@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { withLeaflet } from 'react-leaflet';
-import { matchPath } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import EventManager from '~/util/EventManager';
 import { LoginStore } from '~/stores/loginStore';
-import navigator from '~/routing/navigator';
-import SubSites from '~/routing/subSites';
 import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
@@ -65,7 +62,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         if (!map) return;
 
         this.removeOldLinks();
-        this.drawEditableLinkToMap(link);
+        const isEditable =
+            this.props.loginStore!.hasWriteAccess
+            && this.props.linkStore!.isLinkGeometryEditable;
+        this.drawLinkToMap(link, isEditable);
 
         map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
@@ -83,7 +83,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         this.props.linkStore!.updateLinkGeometry(latlngs);
     }
 
-    private drawEditableLinkToMap = (link: ILink) => {
+    private drawLinkToMap = (link: ILink, isEditable: boolean) => {
         const map = this.props.leaflet.map;
         if (map) {
             const editableLink = L.polyline(
@@ -94,7 +94,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 },
             ).addTo(map);
 
-            if (this.props.loginStore!.hasWriteAccess) {
+            if (isEditable) {
                 editableLink.enableEdit();
                 const latLngs = editableLink.getLatLngs() as L.LatLng[][];
                 const coords = latLngs[0];
@@ -160,9 +160,6 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     }
 
     render() {
-        const isLinkViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.link));
-        if (!isLinkViewVisible) return this.renderMarker();
-
         const link = this.props.linkStore!.link;
         if (!link || !link.geometry) {
             return null;

@@ -1,0 +1,23 @@
+@import '../shared/styles/common.scss';
+
+.alertView {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px 70px;
+
+    .icon {
+        height: 45px;
+        width: 45px;
+        margin-bottom: 10px;
+    }
+
+    .success {
+        color: $busBlue;
+    }
+
+    .info {
+        color: $subwayOrange;
+    }
+}

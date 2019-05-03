@@ -1,7 +1,7 @@
 import endpoints from '~/enums/endpoints';
 import IError from '~/models/IError';
 import FetchStatusCode from '~/enums/fetchStatusCode';
-import DialogStore from '~/stores/dialogStore';
+import AlertStore from '~/stores/alertStore';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import LoginStore from '~/stores/loginStore';
 import ApiClientHelper from './apiClientHelper';
@@ -83,7 +83,7 @@ class ApiClient {
                 return await response.text();
             }
             if (response.status === 403) {
-                DialogStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
+                AlertStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
                     LoginStore.clear();
                 });
                 return;

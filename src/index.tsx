@@ -23,7 +23,8 @@ import NetworkStore from './stores/networkStore';
 import CodeListStore from './stores/codeListStore';
 import NodeStore from './stores/nodeStore';
 import LinkStore from './stores/linkStore';
-import DialogStore from './stores/dialogStore';
+import AlertStore from './stores/alertStore';
+import ConfirmStore from './stores/confirmStore';
 import apolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
 import './index.scss';
@@ -49,8 +50,9 @@ const stores = {
     networkStore: NetworkStore,
     nodeStore: NodeStore,
     linkStore: LinkStore,
-    dialogStore: DialogStore,
+    alertStore: AlertStore,
     codeListStore: CodeListStore,
+    confirmStore: ConfirmStore,
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());

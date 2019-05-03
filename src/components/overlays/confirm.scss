@@ -1,0 +1,21 @@
+@import '../shared/styles/common.scss';
+
+.confirmView {
+    display: flex;
+    padding: 0 15px;
+    flex-direction: column;
+    max-width: 400px;
+
+    .content {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .buttons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+}

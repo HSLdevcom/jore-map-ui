@@ -9,20 +9,20 @@ import SubSites from '~/routing/subSites';
 import {
     RoutePathCopySegmentStore, ICopySegmentRoutePath,
 } from '~/stores/routePathCopySegmentStore';
-import { DialogStore, DialogType } from '~/stores/dialogStore';
+import { AlertStore, AlertType } from '~/stores/alertStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { IRoutePathLink } from '~/models';
 import * as s from './routePathCopySegmentView.scss';
 
 interface IRoutePathCopySegmentViewProps {
-    dialogStore?: DialogStore;
+    alertStore?: AlertStore;
     routePathStore?: RoutePathStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
 }
 
-@inject('dialogStore', 'routePathStore', 'routePathCopySegmentStore', 'toolbarStore')
+@inject('alertStore', 'routePathStore', 'routePathCopySegmentStore', 'toolbarStore')
 @observer
 class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentViewProps> {
 
@@ -72,7 +72,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
     }
 
     private copySegments = (routePath: ICopySegmentRoutePath) => async () => {
-        this.props.dialogStore!.setLoaderMessage('Kopioidaan reitinsuunnan segmenttiä...');
+        this.props.alertStore!.setLoaderMessage('Kopioidaan reitinsuunnan segmenttiä...');
 
         const copySegmentStore = this.props.routePathCopySegmentStore;
         const copyStartNodeId = copySegmentStore!.startNode!.nodeId;
@@ -109,8 +109,8 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         this.props.routePathCopySegmentStore!.clear();
         this.props.toolbarStore!.selectTool(null);
 
-        this.props.dialogStore!.closeLoaderMessage();
-        this.props.dialogStore!.setFadeMessage('Segmentti kopioitu!', DialogType.Success);
+        this.props.alertStore!.closeLoaderMessage();
+        this.props.alertStore!.setFadeMessage('Segmentti kopioitu!', AlertType.Success);
     }
 
     private copySegment = async (routePathLinkId: number, fixedOrderNumber: number) => {

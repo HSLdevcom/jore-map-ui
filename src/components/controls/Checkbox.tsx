@@ -4,7 +4,7 @@ import * as s from './checkbox.scss';
 
 interface ICheckboxProps {
     checked: boolean;
-    text: string;
+    content: React.ReactNode;
     onClick(): void;
 }
 
@@ -22,7 +22,7 @@ const Checkbox = observer((props: ICheckboxProps) => {
             onClick={onClick}
             className={s.container}
         >
-            {props.text}
+            {props.content}
             <input
                 type='checkbox'
                 checked={props.checked}

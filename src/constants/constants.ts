@@ -10,14 +10,14 @@ const commonConstants = {
 const developmentConstants = {
     ...commonConstants,
     AFTER_LOGIN_URL: 'http://localhost:3000/afterLogin',
-    FADE_DIALOG_TIMEOUT: 500, // milliseconds
+    FADE_ALERT_TIMEOUT: 500, // milliseconds
     IS_LOGIN_REQUIRED: false,
 };
 
 const productionConstants = {
     ...commonConstants,
     AFTER_LOGIN_URL: 'https://jore-map-dev.hsldev.com/afterLogin',
-    FADE_DIALOG_TIMEOUT: 2500, // milliseconds
+    FADE_ALERT_TIMEOUT: 2500, // milliseconds
     IS_LOGIN_REQUIRED: true, // set always true in production
 };
 

@@ -15,8 +15,8 @@ import CodeListService from '~/services/codeListService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import * as localStorageHelper from '~/util/localStorageHelper';
+import OverlayContainer from './overlays/OverlayContainer';
 import ErrorBar from './ErrorBar';
-import Dialog from './Dialog';
 import Map from './map/Map';
 import Sidebar from './sidebar/Sidebar';
 import Login from './login/Login';
@@ -37,7 +37,6 @@ interface IAppProps extends RouteComponentProps<any> {
 @inject('mapStore', 'loginStore', 'codeListStore', 'errorStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
-
     constructor(props: IAppProps) {
         super(props);
         this.state = {
@@ -65,7 +64,7 @@ class App extends React.Component<IAppProps, IAppState> {
                             <ErrorBar />
                         </Map>
                     </div>
-                    <Dialog />
+                    <OverlayContainer />
                 </>
         );
     }

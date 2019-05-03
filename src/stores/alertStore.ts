@@ -1,15 +1,15 @@
 import { action, computed, observable } from 'mobx';
 import Constants from '~/constants/constants';
 
-export enum DialogType {
+export enum AlertType {
     Success = 1,
     Info,
     Loader,
 }
 
-export class DialogStore {
+export class AlertStore {
     @observable private _message: string|null;
-    @observable private _type: DialogType|null;
+    @observable private _type: AlertType|null;
 
     constructor() {
         this._message = null;
@@ -26,15 +26,12 @@ export class DialogStore {
     }
 
     @computed
-    get isDialogOpen(): boolean {
+    get isAlertOpen(): boolean {
         return this._message !== null;
     }
 
     @action
-    public setFadeMessage = (
-        message: string,
-        type: DialogType = DialogType.Success,
-    ) => {
+    public setFadeMessage = (message: string, type: AlertType = AlertType.Success) => {
         this._message = message;
         this._type = type;
 
@@ -44,7 +41,7 @@ export class DialogStore {
                     this.close();
                     resolve();
                 },
-                Constants.FADE_DIALOG_TIMEOUT,
+                Constants.FADE_ALERT_TIMEOUT,
             );
         });
     }
@@ -52,7 +49,7 @@ export class DialogStore {
     @action
     public setLoaderMessage = (message: string) => {
         this._message = message;
-        this._type = DialogType.Loader;
+        this._type = AlertType.Loader;
     }
 
     @action
@@ -67,6 +64,4 @@ export class DialogStore {
     }
 }
 
-const observableDialogStore = new DialogStore();
-
-export default observableDialogStore;
+export default new AlertStore();

@@ -10,8 +10,8 @@ import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { RoutePathStore, RoutePathViewTab, ListFilter } from '~/stores/routePathStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { NetworkStore, NodeSize, MapLayer } from '~/stores/networkStore';
+import { AlertStore } from '~/stores/alertStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import { DialogStore } from '~/stores/dialogStore';
 import { ErrorStore } from '~/stores/errorStore';
 import navigator from '~/routing/navigator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
@@ -34,12 +34,13 @@ import RoutePathCopySegmentView from './RoutePathCopySegmentView';
 import * as s from './routePathView.scss';
 
 interface IRoutePathViewProps {
+    alertStore?: AlertStore;
     routePathStore?: RoutePathStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
     errorStore?: ErrorStore;
-    dialogStore?: DialogStore;
+    AlertStore?: AlertStore;
     match?: match<any>;
     isNewRoutePath: boolean;
 }
@@ -56,7 +57,8 @@ interface IRoutePathViewState {
     'networkStore',
     'toolbarStore',
     'errorStore',
-    'dialogStore')
+    'alertStore',
+)
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState>{
     constructor(props: IRoutePathViewProps) {
@@ -215,7 +217,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             }
             this.props.routePathStore!.setOldRoutePath(this.props.routePathStore!.routePath!);
 
-            this.props.dialogStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }

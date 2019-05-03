@@ -12,10 +12,12 @@
         color: $fontColorDefault;
         background-color: white;
         font-size: 11px;
+        width: 100%;
 
         // Input field
         >:first-child {
             border: 0;
+            width: 100%;
 
             input:focus {
                 border: 0;
@@ -24,6 +26,7 @@
             // Calendar icon
             > button {
                 padding: 0;
+                align-self: flex-end;
 
                 svg {
                     color: $fontColorDefault;

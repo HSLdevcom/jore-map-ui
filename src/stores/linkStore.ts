@@ -14,6 +14,7 @@ export class LinkStore {
     @observable private _nodes: INode[];
     // variable for creating new link:
     @observable private _startMarkerCoordinates: LatLng | null;
+    @observable private _isLinkGeometryEditable: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -21,6 +22,7 @@ export class LinkStore {
         this._link = null;
         this._oldLink = null;
         this._startMarkerCoordinates = null;
+        this._isLinkGeometryEditable = true;
         this._geometryUndoStore = new GeometryUndoStore();
     }
 
@@ -58,7 +60,7 @@ export class LinkStore {
 
     @action
     public updateLinkGeometry = (latLngs: L.LatLng[]) => {
-        if (!this._link) return;
+        if (!this._link || !this._isLinkGeometryEditable) return;
 
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = latLngs;
@@ -82,6 +84,11 @@ export class LinkStore {
     }
 
     @action
+    public setIsLinkGeometryEditable = (isEditable: boolean) => {
+        this._isLinkGeometryEditable = isEditable;
+    }
+
+    @action
     public updateLinkProperty = (property: string, value: string|number|Date|LatLng[]) => {
         this._link![property] = value;
     }
@@ -98,6 +105,11 @@ export class LinkStore {
         this._oldLink = null;
         this._startMarkerCoordinates = null;
         this._geometryUndoStore.clear();
+    }
+
+    @computed
+    get isLinkGeometryEditable() {
+        return this._isLinkGeometryEditable;
     }
 
     @computed

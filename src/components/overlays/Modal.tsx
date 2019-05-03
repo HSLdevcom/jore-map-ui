@@ -3,24 +3,21 @@ import { observer } from 'mobx-react';
 import * as s from './modal.scss';
 
 interface IModalProps {
-    closeModal: Function;
-    isVisible: boolean;
+    onExteriorClick?: () => void;
     children: React.ReactNode;
 }
 
 const Modal = observer((props: IModalProps) => {
-    const closeModal = (e: any) => {
-        if (e.target.className === s.modalView) {
-            props.closeModal();
+    const onExteriorDivClick = (e: any) => {
+        if (e.target.className === s.modalView && props.onExteriorClick) {
+            props.onExteriorClick();
         }
     };
 
-    if (!props.isVisible) return (null);
-
-    return (
+    return(
         <div
             className={s.modalView}
-            onClick={closeModal}
+            onClick={onExteriorDivClick}
         >
             <div className={s.wrapper}>
                 {props.children}

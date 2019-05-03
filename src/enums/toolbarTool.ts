@@ -3,11 +3,11 @@ enum ToolbarTool {
     AddNetworkLink,
     AddNewRoutePathLink,
     CopyRoutePathSegmentTool,
-    DivideLink,
     RemoveRoutePathLink,
     EditNetworkNode,
     Print,
     SelectNetworkEntity,
+    SplitLink,
 }
 
 export default ToolbarTool;

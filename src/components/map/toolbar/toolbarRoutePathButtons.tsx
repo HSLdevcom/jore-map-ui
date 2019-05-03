@@ -26,16 +26,6 @@ class ToolbarLineButtons extends React.Component {
                     >
                         <IoMdGitCommit />
                     </MapControlButton>
-                    {/*
-                    <MapControlButton
-                        onClick={this.selectTool(ToolbarTool.DivideLink)}
-                        isActive={ToolbarStore.isSelected(ToolbarTool.DivideLink)}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.DivideLink)}
-                        label='Jaa linkki'
-                    >
-                        <FiShare2/>
-                    </MapControlButton>
-                    */}
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.RemoveRoutePathLink)}
                         isActive={ToolbarStore.isSelected(ToolbarTool.RemoveRoutePathLink)}

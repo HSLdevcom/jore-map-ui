@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import lineHelper from '~/util/lineHelper';
 import TransitType from '~/enums/transitType';
-import TransitTypeColorHelper from '~/util/transitTypeColorHelper';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
 import * as s from './transitToggleButton.scss';
 
 interface ITransitToggleButtonProps {
@@ -20,7 +20,7 @@ const TransitToggleButton = observer((props: ITransitToggleButtonProps) => {
 
     const getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
         if (isToggled) {
-            return TransitTypeColorHelper.getBackgroundColorClass(transitType);
+            return TransitTypeHelper.getBackgroundColorClass(transitType);
         }
         return s.toggled;
     };

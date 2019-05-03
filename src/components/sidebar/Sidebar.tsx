@@ -16,6 +16,7 @@ import LineView from './lineView/LineView';
 import RouteView from './routeView/RouteView';
 import RoutePathView from './routePathView/RoutePathView';
 import NodeView from './nodeView/NodeView';
+import SplitLinkView from './splitLinkView/SplitLinkView';
 import * as s from './sidebar.scss';
 
 // Requiring location to force update on location change
@@ -109,6 +110,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             exact={true}
                             path={subSites.link}
                             component={this.renderLinkView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.splitLink}
+                            component={SplitLinkView}
                         />
                         <Route
                             exact={true}
