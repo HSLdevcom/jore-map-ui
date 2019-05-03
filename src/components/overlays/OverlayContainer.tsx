@@ -2,11 +2,11 @@ import React from 'react';
 import Alert from './Alert';
 import Confirm from './Confirm';
 
-const OverlayController = () => (
+const OverlayContainer = () => (
     <>
         <Alert />
         <Confirm />
     </>
 );
 
-export default OverlayController;
+export default OverlayContainer;
