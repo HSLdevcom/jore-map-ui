@@ -29,31 +29,32 @@ class Marker extends Component<IMarkerProps> {
         if (this.markerRef) {
             this.markerRef.leafletElement.openPopup();
         }
-    }
+    };
 
     initMarkerRef = (ref: any) => {
         if (ref) {
             this.markerRef = ref;
             this.openPopup();
         }
-    }
+    };
 
     render() {
         const { latLng, color, isClickDisabled }: IMarkerProps = this.props;
-        const iconBaseClass = isClickDisabled ? s.iconBaseNotClickable : s.iconBase;
+        const iconBaseClass = isClickDisabled
+            ? s.iconBaseNotClickable
+            : s.iconBase;
 
         return (
             <LeafletMarker
                 ref={this.initMarkerRef}
                 zIndexOffset={VERY_HIGH_Z_INDEX}
-                icon={LeafletUtils.createDivIcon(
-                    <PinIcon color={color}/>,
-                    { className: iconBaseClass },
-                )}
+                icon={LeafletUtils.createDivIcon(<PinIcon color={color} />, {
+                    className: iconBaseClass
+                })}
                 position={latLng}
                 clickable={!isClickDisabled}
             >
-            {/* working react-leaflet popup, not currently in use
+                {/* working react-leaflet popup, not currently in use
                 { this.props.popupContent &&
                 <Popup
                     position={latLng}
@@ -62,9 +63,8 @@ class Marker extends Component<IMarkerProps> {
                 >
                     {this.props.popupContent}
                 </Popup> */}
-            }
+                }
             </LeafletMarker>
-
         );
     }
 }

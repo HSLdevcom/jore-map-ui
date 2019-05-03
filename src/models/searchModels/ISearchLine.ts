@@ -10,6 +10,4 @@ export default interface ISearchLine extends ISearchLinePrimaryKey {
     routes: ISearchLineRoute[];
 }
 
-export {
-    ISearchLinePrimaryKey,
-};
+export { ISearchLinePrimaryKey };

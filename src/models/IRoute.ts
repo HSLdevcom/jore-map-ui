@@ -16,6 +16,4 @@ export default interface IRoute extends IRoutePrimaryKey {
     modifiedOn: Date;
 }
 
-export {
-    IRoutePrimaryKey,
-};
+export { IRoutePrimaryKey };

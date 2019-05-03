@@ -15,38 +15,40 @@ interface INodeSavingModel {
 
 class NodeService {
     public static fetchNode = async (nodeId: string) => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-            { query: GraphqlQueries.getNodeQuery(), variables: { nodeId } },
-        );
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+            query: GraphqlQueries.getNodeQuery(),
+            variables: { nodeId }
+        });
         return NodeFactory.mapExternalNode(queryResult.data.node);
-    }
+    };
 
     public static fetchAllNodes = async () => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-            { query: GraphqlQueries.getAllNodesQuery() },
-        );
-        return queryResult.data.allNodes.nodes
-            .map((node: IExternalNode) =>
-            NodeFactory.createNodeBase(node),
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+            query: GraphqlQueries.getAllNodesQuery()
+        });
+        return queryResult.data.allNodes.nodes.map((node: IExternalNode) =>
+            NodeFactory.createNodeBase(node)
         ) as INodeBase[];
-    }
+    };
 
     public static updateNode = async (node: INode, links: ILink[]) => {
         const requestBody: INodeSavingModel = {
             node,
-            links,
+            links
         };
 
         await ApiClient.updateObject(endpoints.NODE, requestBody);
         await apolloClient.clearStore();
-    }
+    };
 
     public static createNode = async (node: INode) => {
-        const response =
-            await ApiClient.createObject(endpoints.NODE, node) as INodePrimaryKey;
+        const response = (await ApiClient.createObject(
+            endpoints.NODE,
+            node
+        )) as INodePrimaryKey;
         await apolloClient.clearStore();
         return response.id;
-    }
+    };
 }
 
 export default NodeService;

@@ -4,23 +4,23 @@ const commonConstants = {
     MAP_LAYERS_MIN_ZOOM_LEVEL: 15,
     NEW_OBJECT_TAG: 'new',
     GEOCODER_ADDRESS: 'https://api.digitransit.fi/geocoding/v1/search',
-    ADDRESS_SEARCH_RESULT_COUNT: 10,
+    ADDRESS_SEARCH_RESULT_COUNT: 10
 };
 
 const developmentConstants = {
     ...commonConstants,
     AFTER_LOGIN_URL: 'http://localhost:3000/afterLogin',
     FADE_ALERT_TIMEOUT: 500, // milliseconds
-    IS_LOGIN_REQUIRED: false,
+    IS_LOGIN_REQUIRED: false
 };
 
 const productionConstants = {
     ...commonConstants,
     AFTER_LOGIN_URL: 'https://jore-map-dev.hsldev.com/afterLogin',
     FADE_ALERT_TIMEOUT: 2500, // milliseconds
-    IS_LOGIN_REQUIRED: true, // set always true in production
+    IS_LOGIN_REQUIRED: true // set always true in production
 };
 
-const isDevelopment = (process.env.NODE_ENV === 'development');
+const isDevelopment = process.env.NODE_ENV === 'development';
 
-export default isDevelopment ? developmentConstants : productionConstants;
+export default (isDevelopment ? developmentConstants : productionConstants);

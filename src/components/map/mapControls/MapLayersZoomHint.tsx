@@ -11,7 +11,12 @@ class MapLayersZoomHint extends React.Component {
     render() {
         const mapZoomLevel = mapStore.zoom;
         const isMapLayersVisible = networkStore.isMapLayersVisible;
-        if (!isMapLayersVisible || mapZoomLevel > Constants.MAP_LAYERS_MIN_ZOOM_LEVEL) return null;
+        if (
+            !isMapLayersVisible ||
+            mapZoomLevel > Constants.MAP_LAYERS_MIN_ZOOM_LEVEL
+        ) {
+            return null;
+        }
 
         return (
             <div className={s.mapLayersZoomHint}>

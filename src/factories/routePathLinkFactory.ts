@@ -9,16 +9,21 @@ import NodeFactory from './nodeFactory';
 class RoutePathLinkFactory {
     private static getTemporaryRoutePathLinkId = () => {
         return `${Constants.NEW_OBJECT_TAG}-${NumberIterator.getNumber()}`;
-    }
+    };
 
-    public static mapExternalRoutePathLink =
-    (externalRoutePathLink: IExternalRoutePathLink): IRoutePathLink => {
-        const startNode = NodeFactory.mapExternalNode(externalRoutePathLink.solmuByLnkalkusolmu);
-        const endNode = NodeFactory.mapExternalNode(externalRoutePathLink.solmuByLnkloppusolmu);
-        const geoJson =
-            JSON.parse(
-                externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson,
-            );
+    public static mapExternalRoutePathLink = (
+        externalRoutePathLink: IExternalRoutePathLink
+    ): IRoutePathLink => {
+        const startNode = NodeFactory.mapExternalNode(
+            externalRoutePathLink.solmuByLnkalkusolmu
+        );
+        const endNode = NodeFactory.mapExternalNode(
+            externalRoutePathLink.solmuByLnkloppusolmu
+        );
+        const geoJson = JSON.parse(
+            externalRoutePathLink
+                .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson
+        );
 
         return {
             startNode,
@@ -27,20 +32,22 @@ class RoutePathLinkFactory {
             id: String(externalRoutePathLink.relid),
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeType: externalRoutePathLink.relpysakki,
-            isStartNodeTimeAlignmentStop: Boolean((externalRoutePathLink.ajantaspys === '1')),
+            isStartNodeTimeAlignmentStop: Boolean(
+                externalRoutePathLink.ajantaspys === '1'
+            ),
             routeId: externalRoutePathLink.reitunnus,
             routePathDirection: externalRoutePathLink.suusuunta,
             routePathStartDate: new Date(externalRoutePathLink.suuvoimast),
-            transitType: externalRoutePathLink.lnkverkko,
+            transitType: externalRoutePathLink.lnkverkko
         };
-    }
+    };
 
-    public static mapExternalRoutePathLinkFromExternalLink =
-    (link: IExternalLink, orderNumber: number): IRoutePathLink => {
+    public static mapExternalRoutePathLinkFromExternalLink = (
+        link: IExternalLink,
+        orderNumber: number
+    ): IRoutePathLink => {
         const startNode = NodeFactory.mapExternalNode(link.solmuByLnkalkusolmu);
-        const geoJson = JSON.parse(
-            link.geojson,
-        );
+        const geoJson = JSON.parse(link.geojson);
 
         return {
             startNode,
@@ -50,9 +57,9 @@ class RoutePathLinkFactory {
             isStartNodeTimeAlignmentStop: false,
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             startNodeType: startNode.type,
-            transitType: link.lnkverkko,
+            transitType: link.lnkverkko
         };
-    }
+    };
 }
 
 export default RoutePathLinkFactory;

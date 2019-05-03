@@ -3,8 +3,7 @@ import gql from 'graphql-tag';
 // tslint:disable:max-line-length
 
 const getLineQuery = () => {
-    return (
-        gql`query getLineByLintunnus ($lineId: String!) {
+    return gql`query getLineByLintunnus ($lineId: String!) {
             linjaByLintunnus(lintunnus:$lineId) {
                 ${lineQueryFields}
                 reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
@@ -14,13 +13,11 @@ const getLineQuery = () => {
                     }
                 }
             }
-        }`
-    );
+        }`;
 };
 
 const getSearchLineQuery = () => {
-    return (
-        gql`query getLineByLintunnus ($lineId: String!) {
+    return gql`query getLineByLintunnus ($lineId: String!) {
             linjaByLintunnus(lintunnus:$lineId) {
                 ${searchLineQueryFields}
                 reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
@@ -30,13 +27,11 @@ const getSearchLineQuery = () => {
                     }
                 }
             }
-        }`
-    );
+        }`;
 };
 
 const getAllSearchLinesQuery = () => {
-    return (
-        gql`{
+    return gql`{
             allLinjas {
                 nodes {
                     ${searchLineQueryFields}
@@ -49,13 +44,11 @@ const getAllSearchLinesQuery = () => {
                     }
                 }
             }
-        }`
-    );
+        }`;
 };
 
 const getRouteQuery = () => {
-    return (
-        gql`query getLineDetails($routeId: String!) {
+    return gql`query getLineDetails($routeId: String!) {
             route: reittiByReitunnus(reitunnus: $routeId) {
                 ${routeQueryFields}
                 reitinsuuntasByReitunnus{
@@ -66,142 +59,120 @@ const getRouteQuery = () => {
                     }
                 }
             }
-        }`
-    );
+        }`;
 };
 
 const getAllRoutesQuery = () => {
-    return (
-        gql`{
+    return gql`
+        {
             allReittis {
                 nodes {
                     reitunnus
                 }
             }
-        }`
-    );
+        }
+    `;
 };
 
 const getRoutePathQuery = () => {
-    return (
-        gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
+    return gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
             routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
                 ${routePathQueryFields}
                 ${routeForRoutePathQuery}
                 ${routePathLinksForRoutePathQuery}
             }
-        }`
-    );
+        }`;
 };
 
 const getRoutePathLinkQuery = () => {
-    return (
-        gql`query getRoutePathLink($routeLinkId: Int!) {
+    return gql`query getRoutePathLink($routeLinkId: Int!) {
             routePathLink: reitinlinkkiByRelid(relid: $routeLinkId) {
                 ${routePathLinkQueryFields}
             }
-        }`
-    );
+        }`;
 };
 
 const getRoutePathSegmentQuery = () => {
-    return (
-        gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String) {
+    return gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String) {
             linkswithroutepathinfo: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
                 nodes {
                     ${routePathSegmentQueryFields}
                 }
             }
-        }`
-    );
+        }`;
 };
 
 const getLinksByStartNodeQuery = () => {
-    return (
-        gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
+    return gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksWithNodeUsageByStartNodeQuery}
             }
-        }`
-    );
+        }`;
 };
 
 const getLinkQuery = () => {
-    return (
-        gql`query getLink($startNodeId: String!, $endNodeId: String!, $transitType:String!) {
+    return gql`query getLink($startNodeId: String!, $endNodeId: String!, $transitType:String!) {
             link: linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu(lnkverkko: $transitType, lnkalkusolmu: $startNodeId, lnkloppusolmu: $endNodeId) {
                 ${linkQueryFields}
             }
-        }`
-    );
+        }`;
 };
 
 const getLinksQuery = () => {
-    return (
-        gql`query getLinks($startNodeId: String!, $endNodeId: String!) {
+    return gql`query getLinks($startNodeId: String!, $endNodeId: String!) {
             getLinks(startnodeid: $startNodeId, endnodeid: $endNodeId) {
                 nodes {
                     ${linkQueryFields}
                 }
             }
-        }`
-    );
+        }`;
 };
 
 const getLinksByEndNodeQuery = () => {
-    return (
-        gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!, $date: Datetime!) {
+    return gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksWithNodeUsageByEndNodeQuery}
             }
-        }`
-    );
+        }`;
 };
 
 const getLinksByStartNodeAndEndNodeQuery = () => {
-    return (
-        gql`query getNodesWithRoutePathLinkStartNodeAndEndNodeId($nodeId: String!) {
+    return gql`query getNodesWithRoutePathLinkStartNodeAndEndNodeId($nodeId: String!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksByStartNodeQuery}
                 ${linksByEndNodeQuery}
             }
-        }`
-    );
+        }`;
 };
 
 const getAllNodesQuery = () => {
-    return (
-        gql`
-            query getAllNodes {
-                allNodes: allSolmus{
-                    nodes {
-                        soltunnus
-                        soltyyppi
-                        sollistunnus
-                        solkirjain
-                    }
+    return gql`
+        query getAllNodes {
+            allNodes: allSolmus {
+                nodes {
+                    soltunnus
+                    soltyyppi
+                    sollistunnus
+                    solkirjain
                 }
             }
-        `
-    );
+        }
+    `;
 };
 
 const getNodeQuery = () => {
-    return (
-        gql`
+    return gql`
         query getNodeDetails($nodeId: String!) {
             node: solmuBySoltunnus(soltunnus: $nodeId) {
                 ${nodeQueryFields}
             }
-        }`
-    );
+        }`;
 };
 
 const getAllCodeLists = () => {
-    return (
-        gql`
+    return gql`
         query getAllCodeLists {
-            node: allKoodistos{
+            node: allKoodistos {
                 nodes {
                     koolista
                     koojarjestys
@@ -209,13 +180,12 @@ const getAllCodeLists = () => {
                     kooselite
                 }
             }
-        }`
-    );
+        }
+    `;
 };
 
 const getRoutePathsUsingLinkFromDate = () => {
-    return (
-        gql`
+    return gql`
         query routepathsUsingLinkFromDate($startNodeId:String!, $endNodeId:String!, $date: Datetime!, $transitType: String!) {
             routePaths: routepathsUsingLinkFromDate(startnodeid: $startNodeId, endnodeid: $endNodeId, date: $date, transittype: $transitType) {
                 nodes {
@@ -223,8 +193,7 @@ const getRoutePathsUsingLinkFromDate = () => {
                     ${routeForRoutePathQuery}
                 }
             }
-        }`
-    );
+        }`;
 };
 
 const lineQueryFields = `
@@ -497,5 +466,5 @@ export default {
     getAllNodesQuery,
     getLinksByEndNodeQuery,
     getAllCodeLists,
-    getRoutePathsUsingLinkFromDate,
+    getRoutePathsUsingLinkFromDate
 };

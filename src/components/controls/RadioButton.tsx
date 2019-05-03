@@ -18,16 +18,9 @@ const RadioButton = observer((props: IRadioButtonProps) => {
     };
 
     return (
-        <label
-            onClick={onClick}
-            className={s.container}
-        >
+        <label onClick={onClick} className={s.container}>
             {props.text}
-            <input
-                type='radio'
-                checked={props.checked}
-                onChange={doNothing}
-            />
+            <input type='radio' checked={props.checked} onChange={doNothing} />
             <span className={s.checkmark} />
         </label>
     );

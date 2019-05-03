@@ -59,7 +59,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.state = {
             isLoading: false,
             isEditingDisabled: !props.isNewLink,
-            invalidPropertiesMap: {},
+            invalidPropertiesMap: {}
         };
     }
 
@@ -97,11 +97,22 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.setState({ isLoading: true });
         this.props.linkStore!.clear();
 
-        const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
+        const [
+            startNodeId,
+            endNodeId,
+            transitTypeCode
+        ] = this.props.match!.params.id.split(',');
         try {
             if (startNodeId && endNodeId && transitTypeCode) {
-                const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-                this.props.linkStore!.init(link, [link.startNode, link.endNode]);
+                const link = await LinkService.fetchLink(
+                    startNodeId,
+                    endNodeId,
+                    transitTypeCode
+                );
+                this.props.linkStore!.init(link, [
+                    link.startNode,
+                    link.endNode
+                ]);
                 this.props.linkStore!.setIsLinkGeometryEditable(true);
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
@@ -110,11 +121,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
                 `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
-                e,
+                e
             );
         }
         this.setState({ isLoading: false });
-    }
+    };
 
     private initNewLink = async () => {
         this.setState({ isLoading: true });
@@ -126,25 +137,31 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             const endNode = await NodeService.fetchNode(endNodeId);
             this.createNewLink(startNode, endNode);
         } catch (ex) {
-            this.props.errorStore!.addError(`Alkusolmun ${startNodeId} tai loppusolmun ${endNodeId} haku epäonnistui`); // tslint:disable-line max-line-length
+            this.props.errorStore!.addError(
+                `Alkusolmun ${startNodeId} tai loppusolmun ${endNodeId} haku epäonnistui`
+            ); // tslint:disable-line max-line-length
             return;
         }
 
         const link = this.props.linkStore!.link;
-        const existingLinks = await LinkService.fetchLinks(link.startNode.id, link.endNode.id);
+        const existingLinks = await LinkService.fetchLinks(
+            link.startNode.id,
+            link.endNode.id
+        );
         if (existingLinks.length > 0) {
-            this.existingTransitTypes = existingLinks
-                .map(link => link.transitType!);
+            this.existingTransitTypes = existingLinks.map(
+                link => link.transitType!
+            );
         }
         this.validateLink();
 
         this.setState({ isLoading: false });
-    }
+    };
 
     private createNewLink = (startNode: INode, endNode: INode) => {
         const link = LinkFactory.createNewLink(startNode, endNode);
         this.props.linkStore!.init(link, [startNode, endNode]);
-    }
+    };
 
     private save = async () => {
         this.setState({ isLoading: true });
@@ -167,20 +184,18 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         } else {
             this.setState({ isLoading: false });
         }
-    }
+    };
 
     private navigateToNewLink = () => {
         const link = this.props.linkStore!.link;
         const linkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget([
-                link.startNode.id,
-                link.endNode.id,
-                link.transitType,
-            ].join(','))
+            .toTarget(
+                [link.startNode.id, link.endNode.id, link.transitType].join(',')
+            )
             .toLink();
         navigator.goTo(linkViewLink);
-    }
+    };
 
     private navigateToNode = (nodeId: string) => () => {
         const editNetworkLink = routeBuilder
@@ -188,7 +203,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             .toTarget(nodeId)
             .toLink();
         navigator.goTo(editNetworkLink);
-    }
+    };
 
     private toggleIsEditingEnabled = () => {
         const isEditingDisabled = this.state.isEditingDisabled;
@@ -197,27 +212,34 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         }
         this.toggleIsEditingDisabled();
         if (!isEditingDisabled) this.validateLink();
-    }
+    };
 
     private validateLink = () => {
-        this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
-    }
+        this.validateAllProperties(
+            linkValidationModel,
+            this.props.linkStore!.link
+        );
+    };
 
     private selectTransitType = (transitType: TransitType) => {
         this.props.linkStore!.updateLinkProperty('transitType', transitType);
-        this.validateProperty(linkValidationModel['transitType'], 'transitType', transitType);
-    }
+        this.validateProperty(
+            linkValidationModel['transitType'],
+            'transitType',
+            transitType
+        );
+    };
 
     private transitTypeAlreadyExists = (transitType: TransitType) => {
         if (!this.props.isNewLink) return false;
 
         return this.existingTransitTypes.includes(transitType);
-    }
+    };
 
     private onChange = (property: string) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
         this.validateProperty(linkValidationModel[property], property, value);
-    }
+    };
 
     render() {
         const link = this.props.linkStore!.link;
@@ -239,186 +261,203 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
         const transitType = this.props.linkStore!.link.transitType;
 
-        const isSaveButtonDisabled = !transitType
-            || this.state.isEditingDisabled
-            || !this.props.linkStore!.isDirty
-            || (this.props.isNewLink
-                && this.transitTypeAlreadyExists(transitType))
-            || !this.isFormValid();
-        const selectedTransitTypes = link!.transitType ? [link!.transitType!] : [];
+        const isSaveButtonDisabled =
+            !transitType ||
+            this.state.isEditingDisabled ||
+            !this.props.linkStore!.isDirty ||
+            (this.props.isNewLink &&
+                this.transitTypeAlreadyExists(transitType)) ||
+            !this.isFormValid();
+        const selectedTransitTypes = link!.transitType
+            ? [link!.transitType!]
+            : [];
 
         let transitTypeError;
         if (!transitType) {
             transitTypeError = 'Verkon tyyppi täytyy valita.';
         } else if (transitType && this.transitTypeAlreadyExists(transitType)) {
-            transitTypeError = 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
+            transitTypeError =
+                'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
         }
 
         return (
-        <div className={s.linkView}>
-            <div className={s.content}>
-                <SidebarHeader
-                    isEditButtonVisible={!this.props.isNewLink}
-                    isEditing={!isEditingDisabled}
-                    shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
-                    onEditButtonClick={this.toggleIsEditingEnabled}
-                >
-                    Linkki
-                </SidebarHeader>
-                <div className={s.formSection}>
-                    <div className={s.flexRow}>
-                        <div className={s.formItem}>
-                            <div className={s.inputLabel}>
-                                VERKKO
+            <div className={s.linkView}>
+                <div className={s.content}>
+                    <SidebarHeader
+                        isEditButtonVisible={!this.props.isNewLink}
+                        isEditing={!isEditingDisabled}
+                        shouldShowClosePromptMessage={
+                            this.props.linkStore!.isDirty!
+                        }
+                        onEditButtonClick={this.toggleIsEditingEnabled}
+                    >
+                        Linkki
+                    </SidebarHeader>
+                    <div className={s.formSection}>
+                        <div className={s.flexRow}>
+                            <div className={s.formItem}>
+                                <div className={s.inputLabel}>VERKKO</div>
+                                <TransitToggleButtonBar
+                                    selectedTransitTypes={selectedTransitTypes}
+                                    toggleSelectedTransitType={
+                                        this.selectTransitType
+                                    }
+                                    disabled={!this.props.isNewLink}
+                                    errorMessage={transitTypeError}
+                                />
                             </div>
-                            <TransitToggleButtonBar
-                                selectedTransitTypes={selectedTransitTypes}
-                                toggleSelectedTransitType={this.selectTransitType}
-                                disabled={!this.props.isNewLink}
-                                errorMessage={transitTypeError}
+                        </div>
+                        <div className={s.flexRow}>
+                            <TextContainer
+                                label='ALKUSOLMU'
+                                value={startNode ? startNode.id : '-'}
+                            />
+                            <TextContainer
+                                label='TYYPPI'
+                                value={this.props.codeListStore!.getCodeListLabel(
+                                    'Solmutyyppi (P/E)',
+                                    startNode.type
+                                )}
+                            />
+                            <TextContainer
+                                label='NIMI'
+                                value={
+                                    startNode && startNode.stop
+                                        ? startNode.stop!.nameFi
+                                        : '-'
+                                }
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <TextContainer
+                                label='LOPPUSOLMU'
+                                value={endNode ? endNode.id : '-'}
+                            />
+                            <TextContainer
+                                label='TYYPPI'
+                                value={this.props.codeListStore!.getCodeListLabel(
+                                    'Solmutyyppi (P/E)',
+                                    endNode.type
+                                )}
+                            />
+                            <TextContainer
+                                label='NIMI'
+                                value={
+                                    endNode && endNode.stop
+                                        ? endNode.stop!.nameFi
+                                        : '-'
+                                }
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <Dropdown
+                                label='SUUNTA'
+                                disabled={isEditingDisabled}
+                                selected={link.direction}
+                                onChange={this.onChange('direction')}
+                                items={this.props.codeListStore!.getCodeList(
+                                    'Suunta'
+                                )}
+                            />
+                            <InputContainer
+                                label='OS. NRO'
+                                disabled={isEditingDisabled}
+                                value={link.osNumber}
+                                type='number'
+                                validationResult={
+                                    invalidPropertiesMap['osNumber']
+                                }
+                                onChange={this.onChange('osNumber')}
+                            />
+                            <InputContainer
+                                label='LINKIN PITUUS (m)'
+                                disabled={isEditingDisabled}
+                                value={link.length}
+                                type='number'
+                                validationResult={
+                                    invalidPropertiesMap['length']
+                                }
+                                onChange={this.onChange('length')}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                label='KATU'
+                                disabled={isEditingDisabled}
+                                value={link.streetName}
+                                validationResult={
+                                    invalidPropertiesMap['streetName']
+                                }
+                                onChange={this.onChange('streetName')}
+                            />
+                            <InputContainer
+                                label='KATUOSAN OS. NRO'
+                                disabled={isEditingDisabled}
+                                value={link.streetNumber}
+                                type='number'
+                                validationResult={
+                                    invalidPropertiesMap['streetNumber']
+                                }
+                                onChange={this.onChange('streetNumber')}
+                            />
+                            <Dropdown
+                                onChange={this.onChange('municipalityCode')}
+                                disabled={isEditingDisabled}
+                                items={this.props.codeListStore!.getCodeList(
+                                    'Kunta (ris/pys)'
+                                )}
+                                selected={link.municipalityCode}
+                                label='KUNTA'
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <TextContainer
+                                label='PÄIVITTÄJÄ'
+                                value={link.modifiedBy}
+                            />
+                            <TextContainer
+                                label='PÄIVITYSPVM'
+                                value={Moment(link.modifiedOn).format(
+                                    datetimeStringDisplayFormat
+                                )}
                             />
                         </div>
                     </div>
-                    <div className={s.flexRow}>
-                        <TextContainer
-                            label='ALKUSOLMU'
-                            value={startNode ? startNode.id : '-'}
-                        />
-                        <TextContainer
-                            label='TYYPPI'
-                            value={
-                                this.props.codeListStore!.getCodeListLabel(
-                                    'Solmutyyppi (P/E)', startNode.type)
-                            }
-                        />
-                        <TextContainer
-                            label='NIMI'
-                            value={
-                                startNode && startNode.stop ? startNode.stop!.nameFi : '-'}
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <TextContainer
-                            label='LOPPUSOLMU'
-                            value={endNode ? endNode.id : '-'}
-                        />
-                        <TextContainer
-                            label='TYYPPI'
-                            value={
-                                this.props.codeListStore!.getCodeListLabel(
-                                    'Solmutyyppi (P/E)', endNode.type)
-                            }
-                        />
-                        <TextContainer
-                            label='NIMI'
-                            value={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <Dropdown
-                            label='SUUNTA'
-                            disabled={isEditingDisabled}
-                            selected={link.direction}
-                            onChange={this.onChange('direction')}
-                            items={this.props.codeListStore!.getCodeList('Suunta')}
-                        />
-                        <InputContainer
-                            label='OS. NRO'
-                            disabled={isEditingDisabled}
-                            value={link.osNumber}
-                            type='number'
-                            validationResult={invalidPropertiesMap['osNumber']}
-                            onChange={this.onChange('osNumber')}
-                        />
-                        <InputContainer
-                            label='LINKIN PITUUS (m)'
-                            disabled={isEditingDisabled}
-                            value={link.length}
-                            type='number'
-                            validationResult={invalidPropertiesMap['length']}
-                            onChange={this.onChange('length')}
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <InputContainer
-                            label='KATU'
-                            disabled={isEditingDisabled}
-                            value={link.streetName}
-                            validationResult={invalidPropertiesMap['streetName']}
-                            onChange={this.onChange('streetName')}
-                        />
-                        <InputContainer
-                            label='KATUOSAN OS. NRO'
-                            disabled={isEditingDisabled}
-                            value={link.streetNumber}
-                            type='number'
-                            validationResult={invalidPropertiesMap['streetNumber']}
-                            onChange={this.onChange('streetNumber')}
-                        />
-                        <Dropdown
-                            onChange={this.onChange('municipalityCode')}
-                            disabled={isEditingDisabled}
-                            items={this.props.codeListStore!.getCodeList('Kunta (ris/pys)')}
-                            selected={link.municipalityCode}
-                            label='KUNTA'
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <TextContainer
-                            label='PÄIVITTÄJÄ'
-                            value={link.modifiedBy}
-                        />
-                        <TextContainer
-                            label='PÄIVITYSPVM'
-                            value={Moment(link.modifiedOn)
-                                .format(datetimeStringDisplayFormat)}
-                        />
-                    </div>
                 </div>
-
-            </div >
-            <div className={s.buttonBar}>
-                <Button
-                    onClick={this.navigateToNode(link.startNode.id)}
-                    type={ButtonType.SQUARE}
-                >
-                    <div className={s.buttonContent}>
-                        <FiChevronLeft
-                            className={s.startNodeButton}
-                        />
-                        <div className={s.contentText}>
-                            Alkusolmu
-                            <p>
-                                {startNode.id}
-                            </p>
+                <div className={s.buttonBar}>
+                    <Button
+                        onClick={this.navigateToNode(link.startNode.id)}
+                        type={ButtonType.SQUARE}
+                    >
+                        <div className={s.buttonContent}>
+                            <FiChevronLeft className={s.startNodeButton} />
+                            <div className={s.contentText}>
+                                Alkusolmu
+                                <p>{startNode.id}</p>
+                            </div>
                         </div>
-                    </div>
-                </Button>
-                <Button
-                    onClick={this.navigateToNode(link.endNode.id)}
-                    type={ButtonType.SQUARE}
-                >
-                    <div className={s.buttonContent}>
-                        <div className={s.contentText}>
-                            Loppusolmu
-                            <p>
-                                {endNode.id}
-                            </p>
+                    </Button>
+                    <Button
+                        onClick={this.navigateToNode(link.endNode.id)}
+                        type={ButtonType.SQUARE}
+                    >
+                        <div className={s.buttonContent}>
+                            <div className={s.contentText}>
+                                Loppusolmu
+                                <p>{endNode.id}</p>
+                            </div>
+                            <FiChevronRight className={s.endNodeButton} />
                         </div>
-                        <FiChevronRight
-                            className={s.endNodeButton}
-                        />
-                    </div>
+                    </Button>
+                </div>
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                    onClick={this.save}
+                >
+                    Tallenna muutokset
                 </Button>
             </div>
-            <Button
-                type={ButtonType.SAVE}
-                disabled={isSaveButtonDisabled}
-                onClick={this.save}
-            >
-                Tallenna muutokset
-            </Button>
-        </div >
         );
     }
 }

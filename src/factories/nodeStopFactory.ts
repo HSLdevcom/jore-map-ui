@@ -1,5 +1,5 @@
 import IStop from '~/models/IStop';
-import IExternalStop  from '~/models/externals/IExternalStop';
+import IExternalStop from '~/models/externals/IExternalStop';
 
 class StopFactory {
     public static mapExternalStop = (node: IExternalStop): IStop => {
@@ -34,9 +34,9 @@ class StopFactory {
             section: node.vyohyke,
             terminal: node.terminaali,
             type: node.pystyyppi,
-            courseDirection: node.kulkusuunta,
+            courseDirection: node.kulkusuunta
         };
-    }
+    };
 
     public static createNewStop = (): IStop => {
         return {
@@ -70,9 +70,9 @@ class StopFactory {
             section: '',
             terminal: '',
             type: '',
-            courseDirection: '',
+            courseDirection: ''
         };
-    }
+    };
 }
 
 export default StopFactory;

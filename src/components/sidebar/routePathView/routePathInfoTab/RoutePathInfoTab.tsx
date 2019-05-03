@@ -21,11 +21,14 @@ interface IRoutePathInfoTabProps {
 
 @inject('routePathStore')
 @observer
-class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState>{
+class RoutePathInfoTab extends React.Component<
+    IRoutePathInfoTabProps,
+    IRoutePathInfoTabState
+> {
     constructor(props: any) {
         super(props);
         this.state = {
-            isLoading: true,
+            isLoading: true
         };
     }
 
@@ -34,19 +37,21 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
 
         if (!routePath) return 'Error';
         return (
-        <div className={classnames(s.routePathInfoTabView, s.form)}>
-            <div className={s.content}>
-                <div className={s.formSection}>
-                    <RoutePathForm
-                        isEditingDisabled={this.props.isEditingDisabled}
-                        routePath={this.props.routePathStore!.routePath!}
-                        isNewRoutePath={this.props.isNewRoutePath}
-                        onChange={this.props.onChange}
-                        invalidPropertiesMap={this.props.invalidPropertiesMap}
-                    />
+            <div className={classnames(s.routePathInfoTabView, s.form)}>
+                <div className={s.content}>
+                    <div className={s.formSection}>
+                        <RoutePathForm
+                            isEditingDisabled={this.props.isEditingDisabled}
+                            routePath={this.props.routePathStore!.routePath!}
+                            isNewRoutePath={this.props.isNewRoutePath}
+                            onChange={this.props.onChange}
+                            invalidPropertiesMap={
+                                this.props.invalidPropertiesMap
+                            }
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
         );
     }
 }

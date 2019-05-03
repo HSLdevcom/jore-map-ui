@@ -21,19 +21,15 @@ const RoutePathHeader = observer((props: IRoutePathHeaderProps) => (
             isEditing={props.isEditing}
             shouldShowClosePromptMessage={props.hasModifications!}
         >
-            {props.isNewRoutePath ? 'Uusi reitinsuunta' :
-                `${props.routePath.lineId} > ${props.routePath.routeId}`}
+            {props.isNewRoutePath
+                ? 'Uusi reitinsuunta'
+                : `${props.routePath.lineId} > ${props.routePath.routeId}`}
         </SidebarHeader>
         <div className={s.topic}>
-            <ReactMoment
-                date={props.routePath.startTime}
-                format='DD.MM.YYYY'
-            /> - &nbsp;
-            <ReactMoment
-                date={props.routePath.endTime}
-                format='DD.MM.YYYY'
-            />
-            <br/>
+            <ReactMoment date={props.routePath.startTime} format='DD.MM.YYYY' />{' '}
+            - &nbsp;
+            <ReactMoment date={props.routePath.endTime} format='DD.MM.YYYY' />
+            <br />
             Suunta {props.routePath.direction}:&nbsp;
             {props.routePath.originFi} - {props.routePath.destinationFi}
         </div>

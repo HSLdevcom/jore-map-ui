@@ -52,7 +52,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.state = {
             isLoading: false,
             isEditingDisabled: !props.isNewNode,
-            invalidPropertiesMap: {},
+            invalidPropertiesMap: {}
         };
     }
 
@@ -90,7 +90,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const newNode = NodeFactory.createNewNode(coordinate);
         this.props.nodeStore!.init(newNode, []);
         this.validateNode();
-    }
+    };
 
     private initExistingNode = async (selectedNodeId: string) => {
         this.setState({ isLoading: true });
@@ -106,7 +106,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             this.validateNode();
         }
         this.setState({ isLoading: false });
-    }
+    };
 
     private async fetchNode(nodeId: string) {
         try {
@@ -123,8 +123,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         } catch (e) {
             this.props.errorStore!.addError(
                 // tslint:disable-next-line:max-line-length
-                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
-                e,
+                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${
+                    node.id
+                } (soltunnus), ei onnistunut.`,
+                e
             );
             return null;
         }
@@ -135,7 +137,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         let preventSetState = false;
         try {
             if (this.props.isNewNode) {
-                const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
+                const nodeId = await NodeService.createNode(
+                    this.props.nodeStore!.node
+                );
                 preventSetState = true;
 
                 const url = routeBuilder
@@ -146,7 +150,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,
-                    this.props.nodeStore!.getDirtyLinks(),
+                    this.props.nodeStore!.getDirtyLinks()
                 );
             }
 
@@ -158,7 +162,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
         if (preventSetState) return;
         this.setState({ isLoading: false });
-    }
+    };
 
     private toggleIsEditingEnabled = () => {
         const isEditingDisabled = this.state.isEditingDisabled;
@@ -167,17 +171,19 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         }
         this.toggleIsEditingDisabled();
         if (!isEditingDisabled) this.validateNode();
-    }
+    };
 
     private validateNode = () => {
         const node = this.props.nodeStore!.node;
         this.validateAllProperties(nodeValidationModel, node);
-    }
+    };
 
-    private onNodeGeometryChange = (property: NodeLocationType) => (value: any) => {
+    private onNodeGeometryChange = (property: NodeLocationType) => (
+        value: any
+    ) => {
         this.props.nodeStore!.updateNodeGeometry(property, value);
         this.validateProperty(nodeValidationModel[property], property, value);
-    }
+    };
 
     private onNodePropertyChange = (property: string) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
@@ -185,14 +191,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         if (property === 'type') {
             this.validateNode();
         }
-    }
+    };
 
     render() {
         const node = this.props.nodeStore!.node;
         if (this.state.isLoading) {
-            return(
+            return (
                 <div className={classnames(s.nodeView, s.loaderContainer)}>
-                    <Loader/>
+                    <Loader />
                 </div>
             );
         }
@@ -202,22 +208,25 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const isEditingDisabled = this.state.isEditingDisabled;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         const isNodeFormInvalid = !this.isFormValid();
-        const isStopFormInvalid = node.type === NodeType.STOP
-            && !this.props.nodeStore!.isStopFormValid;
-        const isSaveButtonDisabled = this.state.isEditingDisabled
-            || !this.props.nodeStore!.isDirty
-            || isNodeFormInvalid
-            || isStopFormInvalid;
-        const nodeTypeCodeList =
-            this.props.codeListStore!
-                .getCodeList('Solmutyyppi (P/E)')
-                .filter(item => item.value !== 'E');
+        const isStopFormInvalid =
+            node.type === NodeType.STOP &&
+            !this.props.nodeStore!.isStopFormValid;
+        const isSaveButtonDisabled =
+            this.state.isEditingDisabled ||
+            !this.props.nodeStore!.isDirty ||
+            isNodeFormInvalid ||
+            isStopFormInvalid;
+        const nodeTypeCodeList = this.props
+            .codeListStore!.getCodeList('Solmutyyppi (P/E)')
+            .filter(item => item.value !== 'E');
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewNode}
-                        shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
+                        shouldShowClosePromptMessage={
+                            this.props.nodeStore!.isDirty
+                        }
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={this.toggleIsEditingEnabled}
                     >
@@ -228,24 +237,30 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             <div className={s.flexRow}>
                                 <Dropdown
                                     label='LYHYTTUNNUS (2 kirj.'
-                                    onChange={this.onNodePropertyChange('shortIdLetter')}
+                                    onChange={this.onNodePropertyChange(
+                                        'shortIdLetter'
+                                    )}
                                     disabled={isEditingDisabled}
                                     selected={node.shortIdLetter}
                                     isValueIncludedInLabel={true}
                                     emptyItem={{
                                         value: '',
-                                        label: '',
+                                        label: ''
                                     }}
-                                    items={
-                                        this.props.codeListStore!.getCodeList(
-                                            'Lyhyttunnus')}
+                                    items={this.props.codeListStore!.getCodeList(
+                                        'Lyhyttunnus'
+                                    )}
                                 />
                                 <InputContainer
                                     label='+ 4 num.)'
                                     disabled={isEditingDisabled}
                                     value={node.shortIdString}
-                                    onChange={this.onNodePropertyChange('shortIdString')}
-                                    validationResult={invalidPropertiesMap['shortIdString']}
+                                    onChange={this.onNodePropertyChange(
+                                        'shortIdString'
+                                    )}
+                                    validationResult={
+                                        invalidPropertiesMap['shortIdString']
+                                    }
                                 />
                                 <Dropdown
                                     label='TYYPPI'
@@ -263,15 +278,17 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 isEditingDisabled={isEditingDisabled}
                             />
                         </div>
-                        { node.type === NodeType.STOP && node.stop &&
+                        {node.type === NodeType.STOP && node.stop && (
                             <StopForm
                                 isEditingDisabled={isEditingDisabled}
                                 stop={node.stop!}
                                 isNewStop={this.props.isNewNode}
                                 invalidPropertiesMap={invalidPropertiesMap}
-                                getDropDownItems={this.props.codeListStore!.getCodeList}
+                                getDropDownItems={
+                                    this.props.codeListStore!.getCodeList
+                                }
                             />
-                        }
+                        )}
                     </div>
                 </div>
                 <Button

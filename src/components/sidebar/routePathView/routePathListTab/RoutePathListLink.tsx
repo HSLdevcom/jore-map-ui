@@ -28,38 +28,32 @@ interface IRoutePathListLinkProps {
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
-        const isExtended = this.props.routePathStore!.isListItemExtended(
-            id,
-        );
+        const isExtended = this.props.routePathStore!.isListItemExtended(id);
         return (
             <div
-                className={
-                    classnames(
-                        s.itemHeader,
-                        isExtended ? s.itemExtended : null,
-                    )
-                }
+                className={classnames(
+                    s.itemHeader,
+                    isExtended ? s.itemExtended : null
+                )}
             >
                 <div className={s.headerContent}>
                     <div className={s.headerNodeTypeContainer}>
                         Reitinlinkki
                     </div>
                     <div className={s.label} />
-                    </div>
-                    <div className={s.itemToggle}>
-                        {isExtended && <FaAngleDown />}
-                        {!isExtended && <FaAngleRight />}
+                </div>
+                <div className={s.itemToggle}>
+                    {isExtended && <FaAngleDown />}
+                    {!isExtended && <FaAngleRight />}
                 </div>
             </div>
         );
-    }
+    };
 
     private renderBody = () => {
         return (
             <div className={s.extendedContent}>
-                {
-                    this.renderRoutePathLinkView(this.props.routePathLink)
-                }
+                {this.renderRoutePathLinkView(this.props.routePathLink)}
                 <div className={s.footer}>
                     <Button
                         onClick={this.openInNetworkView}
@@ -71,7 +65,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 </div>
             </div>
         );
-    }
+    };
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
         return (
@@ -94,13 +88,13 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                     />
                     <TextContainer
                         label='AJANTASAUSPYSÄKKI'
-                        value={rpLink.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'ei'}
+                        value={
+                            rpLink.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'ei'
+                        }
                     />
                 </div>
                 <div className={s.flexRow}>
-                    <div className={s.inputLabel}>
-                        ALKUSOLMUN SARAKE NRO
-                    </div>
+                    <div className={s.inputLabel}>ALKUSOLMUN SARAKE NRO</div>
                 </div>
                 <div className={s.flexRow}>
                     <div className={s.flexInnerRow}>
@@ -158,22 +152,21 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                             onClick={this.onChange}
                         />
                     </div>
-
                 </div>
                 <div className={s.flexRow}>
                     <Dropdown
                         label='SOLMU HASTUS-PAIKKANA'
-                        items={this.props.codeListStore!.getCodeList('Kyllä/Ei')}
+                        items={this.props.codeListStore!.getCodeList(
+                            'Kyllä/Ei'
+                        )}
                         selected='Kyllä'
                         onChange={this.onChange}
                     />
                 </div>
-                <MultiTabTextarea
-                    tabs={['Tariffialueet', 'Määränpäät']}
-                />
+                <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
             </div>
         );
-    }
+    };
 
     // TODO:
     private onChange = () => {};
@@ -182,19 +175,23 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         const routeLink = this.props.routePathLink;
         const routeLinkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget([
-                routeLink.startNode.id,
-                routeLink.endNode.id,
-                routeLink.transitType,
-            ].join(','))
+            .toTarget(
+                [
+                    routeLink.startNode.id,
+                    routeLink.endNode.id,
+                    routeLink.transitType
+                ].join(',')
+            )
             .toLink();
         navigator.goTo(routeLinkViewLink);
-    }
+    };
 
     private renderListIcon = () => <div className={s.linkIcon} />;
 
     render() {
-        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
+        const geometry = this.props.routePathStore!.getLinkGeom(
+            this.props.routePathLink.id
+        );
         return (
             <RoutePathListItem
                 reference={this.props.reference}

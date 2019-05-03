@@ -1,6 +1,6 @@
 import { ILine } from '~/models';
-import IExternalLine  from '~/models/externals/IExternalLine.ts';
-import IExternalRoute  from '~/models/externals/IExternalRoute.ts';
+import IExternalLine from '~/models/externals/IExternalLine.ts';
+import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 
@@ -19,9 +19,9 @@ class LineFactory {
             modifiedOn: externalLine.linviimpvm,
             publicTransportDestination: externalLine.linjlkohde,
             exchangeTime: externalLine.vaihtoaika,
-            lineReplacementType: externalLine.linkorvtyyppi,
+            lineReplacementType: externalLine.linkorvtyyppi
         };
-    }
+    };
 
     public static createNewLine = (): ILine => {
         const defaultDate = new Date();
@@ -39,26 +39,29 @@ class LineFactory {
             modifiedOn: '',
             publicTransportDestination: '',
             exchangeTime: 0,
-            lineReplacementType: '',
+            lineReplacementType: ''
         };
-    }
+    };
 
-    public static createSearchLine = (externalLine: IExternalLine): ISearchLine => {
+    public static createSearchLine = (
+        externalLine: IExternalLine
+    ): ISearchLine => {
         const routes = externalLine.reittisByLintunnus.nodes.map(
             (route: IExternalRoute): ISearchLineRoute => {
                 return {
                     id: route.reitunnus,
                     name: _getRouteName(route),
-                    date: new Date(route.reiviimpvm),
+                    date: new Date(route.reiviimpvm)
                 };
-            });
+            }
+        );
 
         return {
             routes,
             transitType: externalLine.linverkko,
-            id: externalLine.lintunnus,
+            id: externalLine.lintunnus
         };
-    }
+    };
 }
 
 const _getRouteName = (route: any) => {

@@ -20,59 +20,47 @@ interface IRoutePathListItemProps {
 
 @inject('routePathStore', 'mapStore')
 @observer
-class RoutePathListItem
-    extends React.Component<IRoutePathListItemProps> {
+class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
     private toggleIsExtended = () => {
         this.props.routePathStore!.toggleExtendedListItem(this.props.id);
 
         if (this.props.routePathStore!.isListItemExtended(this.props.id)) {
-            this.props.mapStore!.setMapBounds(
-                this.getBounds(),
-            );
+            this.props.mapStore!.setMapBounds(this.getBounds());
         }
-    }
+    };
 
     private getBounds = () => {
-        const bounds:L.LatLngBounds = new L.LatLngBounds([]);
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
         this.props.geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
         return bounds;
-    }
+    };
 
     private onMouseEnter = () => {
         this.props.routePathStore!.setHighlightedObject(this.props.id);
-    }
+    };
 
     private onMouseLeave = () => {
         if (this.props.routePathStore!.isMapItemHighlighted(this.props.id)) {
             this.props.routePathStore!.setHighlightedObject(null);
         }
-    }
+    };
 
     render() {
         const isExtended = this.props.routePathStore!.isListItemExtended(
-            this.props.id,
+            this.props.id
         );
         return (
             <div
                 ref={this.props.reference}
-                className={classnames(
-                    s.item,
-                    this.props.shadowClass,
-                )}
+                className={classnames(s.item, this.props.shadowClass)}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
-                <div className={s.listIcon}>
-                    {this.props.listIcon}
-                </div>
-                <div onClick={this.toggleIsExtended}>
-                    {this.props.header}
-                </div>
-                { isExtended &&
-                    <div className={s.itemContent}>
-                        {this.props.body}
-                    </div>
-                }
+                <div className={s.listIcon}>{this.props.listIcon}</div>
+                <div onClick={this.toggleIsExtended}>{this.props.header}</div>
+                {isExtended && (
+                    <div className={s.itemContent}>{this.props.body}</div>
+                )}
             </div>
         );
     }

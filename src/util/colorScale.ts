@@ -1,4 +1,3 @@
-
 class ColorScale {
     public static allColors = [
         '#e6194B',
@@ -15,7 +14,7 @@ class ColorScale {
         // '#fffac8',
         '#800000',
         '#aaffc3',
-        '#000075',
+        '#000075'
         // '#a9a9a9',
     ];
 
@@ -30,14 +29,14 @@ class ColorScale {
             return '#007ac9';
         }
         return this.colorStack.pop();
-    }
+    };
 
     public releaseColor = (color: string) => {
         if (ColorScale.allColors.includes(color)) {
             this.colorStack.push(color);
         }
         return undefined;
-    }
+    };
 }
 
 export default ColorScale;

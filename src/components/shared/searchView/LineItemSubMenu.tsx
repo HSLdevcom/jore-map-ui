@@ -23,13 +23,16 @@ interface LineItemSubMenuState {
 
 @inject('errorStore', 'searchStore')
 @observer
-class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuState> {
+class LineItemSubMenu extends Component<
+    LineItemSubMenuProps,
+    LineItemSubMenuState
+> {
     private mounted: boolean;
 
     constructor(props: LineItemSubMenuProps) {
         super(props);
         this.state = {
-            routePaths: null,
+            routePaths: null
         };
     }
 
@@ -54,13 +57,16 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
             const route = await RouteService.fetchRoute(this.props.routeId);
             if (this.mounted && route != null) {
                 this.setState({
-                    routePaths: route.routePaths,
+                    routePaths: route.routePaths
                 });
             }
         } catch (e) {
-            this.props.errorStore!.addError('Reitinsuuntien haussa tapahtui virhe.', e);
+            this.props.errorStore!.addError(
+                'Reitinsuuntien haussa tapahtui virhe.',
+                e
+            );
         }
-    }
+    };
 
     private toggle = (routePathId: string) => () => {
         if (this.isSelected(routePathId)) {
@@ -68,47 +74,48 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
         } else {
             this.select(routePathId);
         }
-    }
+    };
 
     private select = (routePathId: string) => {
         this.props.searchStore!.addSubLineItem(this.props.routeId, routePathId);
-    }
+    };
 
     private unSelect = (routePathId: string) => {
-        this.props.searchStore!.removeSubLineItem(this.props.routeId, routePathId);
-    }
+        this.props.searchStore!.removeSubLineItem(
+            this.props.routeId,
+            routePathId
+        );
+    };
 
     private isSelected = (routePathId: string) => {
-        return this.props.searchStore!.subLineItems.some((subLineItem: {
-            routePathId: string;
-            routeId: string;
-        }) => {
-            return subLineItem.routeId === this.props.routeId
-                && subLineItem.routePathId === routePathId;
-        });
-    }
+        return this.props.searchStore!.subLineItems.some(
+            (subLineItem: { routePathId: string; routeId: string }) => {
+                return (
+                    subLineItem.routeId === this.props.routeId &&
+                    subLineItem.routePathId === routePathId
+                );
+            }
+        );
+    };
 
     render() {
         if (!this.props.visible) {
             return null;
         }
         if (this.state.routePaths === null) {
-            return (
-                <Loader size={LoaderSize.SMALL}/>
-            );
+            return <Loader size={LoaderSize.SMALL} />;
         }
         return (
             <div>
                 {this.state.routePaths.map((routePath, index) => {
                     return (
-                        <div
-                            className={s.routePathView}
-                            key={index}
-                        >
+                        <div className={s.routePathView} key={index}>
                             <Checkbox
                                 onClick={this.toggle(routePath.internalId)}
                                 checked={this.isSelected(routePath.internalId)}
-                                content={`${routePath.originFi}-${routePath.destinationFi}`}
+                                content={`${routePath.originFi}-${
+                                    routePath.destinationFi
+                                }`}
                             />
                             <div className={s.routeDate}>
                                 {'Voim.ast: '}
@@ -126,9 +133,7 @@ class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuSta
                             </div>
                         </div>
                     );
-                })
-
-                }
+                })}
             </div>
         );
     }

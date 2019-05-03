@@ -5,7 +5,7 @@ import { FaEraser, FaRulerCombined, FaTrashAlt } from 'react-icons/fa';
 import * as s from './measurementControl.scss';
 import MapControlButton from './MapControlButton';
 
-interface IMeasurementControlProps{
+interface IMeasurementControlProps {
     leaflet?: any;
 }
 
@@ -19,10 +19,13 @@ enum Tools {
     DRAGGING,
     MEASURE = 'Aloita mittaus',
     DELETE = 'Poista mittaus',
-    CLEAR = 'Poista kaikki mittaukset',
+    CLEAR = 'Poista kaikki mittaukset'
 }
 
-class MeasurementControl extends Component<IMeasurementControlProps, IMeasurementControlState> {
+class MeasurementControl extends Component<
+    IMeasurementControlProps,
+    IMeasurementControlState
+> {
     private points: L.LatLng[];
     private distance: number;
     private tmpLine: L.FeatureGroup;
@@ -37,7 +40,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         super(props);
         this.state = {
             activeTool: Tools.NONE,
-            measurements: 0,
+            measurements: 0
         };
         this.points = Array<L.LatLng>();
         this.distance = 0;
@@ -54,36 +57,50 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     }
 
     private toggleMeasure = () => {
-        if (this.state.activeTool === Tools.MEASURE || this.state.activeTool === Tools.DRAGGING) {
+        if (
+            this.state.activeTool === Tools.MEASURE ||
+            this.state.activeTool === Tools.DRAGGING
+        ) {
             this.disableMeasure();
         } else {
             this.enableMeasure();
         }
-    }
+    };
 
     private enableMeasure = () => {
         this.disableRemove();
-        L.DomUtil.addClass(this.props.leaflet!.layerContainer.getContainer(), s.measurementCursor);
+        L.DomUtil.addClass(
+            this.props.leaflet!.layerContainer.getContainer(),
+            s.measurementCursor
+        );
         this.props.leaflet!.layerContainer.on('click', this.measurementClicked);
         this.props.leaflet!.layerContainer.doubleClickZoom.disable();
         this.setState({
-            activeTool: Tools.MEASURE,
+            activeTool: Tools.MEASURE
         });
-    }
+    };
 
     private disableMeasure = () => {
         L.DomUtil.removeClass(
-            this.props.leaflet!.layerContainer.getContainer(), s.measurementCursor);
-        this.props.leaflet!.layerContainer.off('click', this.measurementClicked);
-        this.props.leaflet!.layerContainer.off('mousemove', this.measurementMoving);
+            this.props.leaflet!.layerContainer.getContainer(),
+            s.measurementCursor
+        );
+        this.props.leaflet!.layerContainer.off(
+            'click',
+            this.measurementClicked
+        );
+        this.props.leaflet!.layerContainer.off(
+            'mousemove',
+            this.measurementMoving
+        );
         this.props.leaflet!.layerContainer.doubleClickZoom.enable();
         if (this.state.activeTool === Tools.DRAGGING) {
             this.finishMeasurement();
         }
         this.setState({
-            activeTool: Tools.NONE,
+            activeTool: Tools.NONE
         });
-    }
+    };
 
     private startNewMeasurement = () => {
         this.distance = 0;
@@ -93,32 +110,37 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         this.pointLayer = L.featureGroup().addTo(this.measurementLayer);
         this.tmpLine.addTo(this.measurementsLayer);
 
-        this.measurementLayer.on('click', this.removeMeasurement(this.measurementLayer));
+        this.measurementLayer.on(
+            'click',
+            this.removeMeasurement(this.measurementLayer)
+        );
         this.setState({
-            activeTool: Tools.DRAGGING,
+            activeTool: Tools.DRAGGING
         });
-    }
+    };
 
     private finishMeasurementClick = (e: L.LeafletMouseEvent) => {
         e.originalEvent.preventDefault();
         e.originalEvent.stopPropagation();
         this.finishMeasurement();
-    }
+    };
 
     private finishMeasurement = () => {
         this.setState({
-            activeTool: Tools.MEASURE,
+            activeTool: Tools.MEASURE
         });
         this.tmpLine.clearLayers();
         if (this.distance === 0) {
             this.measurementsLayer.removeLayer(this.measurementLayer);
         } else {
             this.setState({
-                measurements: this.state.measurements + 1,
+                measurements: this.state.measurements + 1
             });
-            this.lastMarker.off('click', this.finishMeasurementClick).openPopup();
+            this.lastMarker
+                .off('click', this.finishMeasurementClick)
+                .openPopup();
         }
-    }
+    };
 
     private measurementClicked = (e: L.LeafletMouseEvent) => {
         if (this.state.activeTool !== Tools.DRAGGING) {
@@ -126,55 +148,73 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         }
         const latLng = e.latlng;
         if (this.points.length > 0) {
-            const { x: x1, y: y1 } =
-                this.props.leaflet!.layerContainer.latLngToContainerPoint(
-                    this.points[this.points.length - 1]);
-            const { x: x2, y: y2 } =
-                this.props.leaflet!.layerContainer.latLngToContainerPoint(latLng);
-            const pxDistance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+            const {
+                x: x1,
+                y: y1
+            } = this.props.leaflet!.layerContainer.latLngToContainerPoint(
+                this.points[this.points.length - 1]
+            );
+            const {
+                x: x2,
+                y: y2
+            } = this.props.leaflet!.layerContainer.latLngToContainerPoint(
+                latLng
+            );
+            const pxDistance = Math.sqrt(
+                (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)
+            );
             if (pxDistance < 10) {
                 this.finishMeasurement();
                 return;
             }
-            this.distance +=
-                this.points[this.points.length - 1].distanceTo(latLng);
+            this.distance += this.points[this.points.length - 1].distanceTo(
+                latLng
+            );
         }
         this.points.push(e.latlng);
         if (this.points.length === 1) {
-            this.props.leaflet!.layerContainer.on('mousemove', this.measurementMoving);
+            this.props.leaflet!.layerContainer.on(
+                'mousemove',
+                this.measurementMoving
+            );
         }
         this.lineLayer.clearLayers();
-        L.polyline(this.points, { className: s.polyline }).addTo(this.lineLayer);
+        L.polyline(this.points, { className: s.polyline }).addTo(
+            this.lineLayer
+        );
         if (this.lastMarker) {
             this.lastMarker.off('click', this.finishMeasurementClick);
         }
         this.lastMarker = L.circleMarker(latLng, { className: s.circleMarker })
-            .bindPopup(
-                `${this.distance.toFixed(2)} meters`, {
-                    autoClose: false,
-                    closeOnClick: false,
-                })
+            .bindPopup(`${this.distance.toFixed(2)} meters`, {
+                autoClose: false,
+                closeOnClick: false
+            })
             .on('click', this.finishMeasurementClick)
             .addTo(this.pointLayer);
-    }
+    };
 
     private measurementMoving = (e: L.LeafletMouseEvent) => {
         if (this.state.activeTool !== Tools.DRAGGING) return;
         const movingLatLng = e.latlng;
         this.tmpLine.clearLayers();
         const prevPoint = this.points[this.points.length - 1];
-        L.polyline(
-            [prevPoint, movingLatLng],
-            { className: classnames(s.movingPolyline, s.polyline), interactive: false })
-            .addTo(this.tmpLine);
+        L.polyline([prevPoint, movingLatLng], {
+            className: classnames(s.movingPolyline, s.polyline),
+            interactive: false
+        }).addTo(this.tmpLine);
         L.circleMarker(movingLatLng, {
-            className: classnames(s.noEvents, s.measurementCursor, s.circleMarker),
-            interactive: false,
+            className: classnames(
+                s.noEvents,
+                s.measurementCursor,
+                s.circleMarker
+            ),
+            interactive: false
         })
             .bindTooltip(prevPoint.distanceTo(movingLatLng).toFixed(2))
             .addTo(this.tmpLine)
             .openTooltip();
-    }
+    };
 
     private toggleRemove = () => {
         if (this.state.activeTool === Tools.DELETE) {
@@ -182,75 +222,77 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         } else {
             this.enableRemove();
         }
-    }
+    };
 
     private enableRemove = () => {
         this.disableMeasure();
         this.setState({
-            activeTool: Tools.DELETE,
+            activeTool: Tools.DELETE
         });
-    }
+    };
 
     private disableRemove = () => {
         this.setState({
-            activeTool: Tools.NONE,
+            activeTool: Tools.NONE
         });
-    }
+    };
 
     private removeMeasurement = (measurement: L.Layer) => () => {
         if (this.state.activeTool === Tools.DELETE) {
             this.measurementsLayer.removeLayer(measurement);
             this.setState({
-                measurements: this.state.measurements - 1,
+                measurements: this.state.measurements - 1
             });
         }
         if (this.state.measurements === 0) {
             this.disableRemove();
         }
-    }
+    };
 
     private removeAllMeasurements = () => {
         if (window.confirm('Remove all measurements?')) {
             this.measurementsLayer.clearLayers();
             this.disableMeasure();
             this.setState({
-                measurements: 0,
+                measurements: 0
             });
         }
-    }
+    };
 
     render() {
-        return(
+        return (
             <div className={s.measurementControlView}>
                 <MapControlButton
                     label={Tools.MEASURE.toString()}
                     onClick={this.toggleMeasure}
-                    isActive={this.state.activeTool === Tools.MEASURE ||
-                                this.state.activeTool === Tools.DRAGGING}
+                    isActive={
+                        this.state.activeTool === Tools.MEASURE ||
+                        this.state.activeTool === Tools.DRAGGING
+                    }
                     isDisabled={false} // TODO when are these disabled?
                 >
                     <FaRulerCombined />
                 </MapControlButton>
-                {this.state.measurements > 0 &&
-                <>
-                    <MapControlButton
-                        label={Tools.DELETE.toString()}
-                        onClick={this.toggleRemove}
-                        isActive={this.state.activeTool === Tools.DELETE}
-                        isDisabled={false}
-                    >
-                        <FaEraser />
-                    </MapControlButton>
-                    <MapControlButton
-                        label={Tools.CLEAR.toString()}
-                        onClick={this.removeAllMeasurements}
-                        isActive={false}
-                        isDisabled={false}
-                    >
-                        <FaTrashAlt />
-                    </MapControlButton>
-                </>
-                }
+                {this.state.measurements > 0 && (
+                    <>
+                        <MapControlButton
+                            label={Tools.DELETE.toString()}
+                            onClick={this.toggleRemove}
+                            isActive={this.state.activeTool === Tools.DELETE}
+                            isDisabled={false}
+                        >
+                            <FaEraser />
+                        </MapControlButton>
+                        <MapControlButton
+                            label={Tools.CLEAR.toString()}
+                            onClick={this.removeAllMeasurements}
+                            isActive={false}
+                            isDisabled={false}
+                        >
+                            <FaTrashAlt />
+                        </MapControlButton>
+                    </>
+                )}
             </div>
         );
     }

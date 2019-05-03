@@ -18,10 +18,7 @@ const Checkbox = observer((props: ICheckboxProps) => {
     };
 
     return (
-        <label
-            onClick={onClick}
-            className={s.container}
-        >
+        <label onClick={onClick} className={s.container}>
             {props.content}
             <input
                 type='checkbox'

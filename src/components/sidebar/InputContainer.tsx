@@ -9,13 +9,13 @@ import * as s from './inputContainer.scss';
 type inputType = 'text' | 'number' | 'date';
 
 interface IInputProps {
-    label: string|JSX.Element;
+    label: string | JSX.Element;
     onChange?: (value: any) => void;
     validationResult?: IValidationResult;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
-    value?: string|number|Date;
+    value?: string | number | Date;
     validatorRule?: string;
     type?: inputType; // Defaults to text
     capitalizeInput?: boolean;
@@ -29,9 +29,7 @@ const renderEditableContent = (props: IInputProps) => {
         let value = e.currentTarget.value;
         if (props.type === 'number') {
             const parsedValue = parseFloat(value);
-            props.onChange!(
-                !isNaN(parsedValue) ? parsedValue : null,
-            );
+            props.onChange!(!isNaN(parsedValue) ? parsedValue : null);
         } else {
             if (props.capitalizeInput) {
                 value = value.toUpperCase();
@@ -43,7 +41,7 @@ const renderEditableContent = (props: IInputProps) => {
     if (type === 'date') {
         return (
             <DatePicker
-                value={(props.value! as Date)}
+                value={props.value! as Date}
                 onChange={props.onChange!}
                 isClearButtonVisible={props.isClearButtonVisibleOnDates}
             />
@@ -54,14 +52,18 @@ const renderEditableContent = (props: IInputProps) => {
         <input
             placeholder={props.disabled ? '' : props.placeholder}
             type={props.type === 'number' ? 'number' : 'text'}
-            className={
-                classnames(
-                    props.className,
-                    props.disabled ? s.disabled : null,
-                    (validationResult && !validationResult.isValid) ? s.invalidInput : null)
+            className={classnames(
+                props.className,
+                props.disabled ? s.disabled : null,
+                validationResult && !validationResult.isValid
+                    ? s.invalidInput
+                    : null
+            )}
+            value={
+                props.value !== null && props.value !== undefined
+                    ? (props.value as string | number)
+                    : ''
             }
-            value={props.value !== null && props.value !== undefined ?
-                (props.value as string | number) : ''}
             onChange={onChange}
         />
     );
@@ -71,27 +73,20 @@ const InputContainer = observer((props: IInputProps) => {
     const validationResult = props.validationResult;
 
     if (props.disabled) {
-        return (
-            <TextContainer
-                label={props.label}
-                value={props.value}
-            />
-        );
+        return <TextContainer label={props.label} value={props.value} />;
     }
 
     return (
         <div className={s.formItem}>
-            <div className={s.inputLabel}>
-                {props.label}
-            </div>
-            {
-                renderEditableContent(props)
-            }
-            { validationResult && validationResult.errorMessage && !props.disabled &&
-                <div className={s.errorMessage}>
-                    {validationResult.errorMessage}
-                </div>
-            }
+            <div className={s.inputLabel}>{props.label}</div>
+            {renderEditableContent(props)}
+            {validationResult &&
+                validationResult.errorMessage &&
+                !props.disabled && (
+                    <div className={s.errorMessage}>
+                        {validationResult.errorMessage}
+                    </div>
+                )}
         </div>
     );
 });

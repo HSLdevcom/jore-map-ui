@@ -52,7 +52,7 @@ const stores = {
     linkStore: LinkStore,
     alertStore: AlertStore,
     codeListStore: CodeListStore,
-    confirmStore: ConfirmStore,
+    confirmStore: ConfirmStore
 };
 
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());
@@ -65,5 +65,5 @@ ReactDOM.render(
             </Router>
         </ApolloProvider>
     </Provider>,
-    document.getElementById('root') as HTMLElement,
+    document.getElementById('root') as HTMLElement
 );

@@ -20,35 +20,36 @@ const TOOL_LIST = [
     new CopyRoutePathSegmentTool(),
     new RemoveRoutePathLinkTool(),
     new PrintTool(),
-    new SplitLinkTool(),
+    new SplitLinkTool()
 ];
 
 const TOOLS = {};
-TOOL_LIST.map((tool: BaseTool) => TOOLS[tool.toolType] = tool);
+TOOL_LIST.map((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
 
 export class ToolbarStore {
-    @observable private _selectedTool: BaseTool|null;
+    @observable private _selectedTool: BaseTool | null;
     @observable private _disabledTools: ToolbarTool[];
     constructor() {
-        this._disabledTools = [
-            ToolbarTool.Print,
-        ];
+        this._disabledTools = [ToolbarTool.Print];
         this.selectDefaultTool();
     }
 
     @computed
-    get selectedTool(): BaseTool | null {
+    get selectedTool(): BaseTool | null {
         return this._selectedTool;
     }
 
     @action
-    public selectTool = (tool: ToolbarTool | null) => {
+    public selectTool = (tool: ToolbarTool | null) => {
         if (this._selectedTool) {
             this._selectedTool.deactivate();
         }
 
         // deselect current tool
-        if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
+        if (
+            tool === null ||
+            (this._selectedTool && this._selectedTool.toolType === tool)
+        ) {
             this.selectDefaultTool();
             return;
         }
@@ -58,15 +59,17 @@ export class ToolbarStore {
             throw new Error('Tried to select tool that was not found');
         }
         this._selectedTool.activate();
-    }
+    };
 
     public isSelected = (tool: ToolbarTool): boolean => {
-        return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
-    }
+        return Boolean(
+            this._selectedTool && this._selectedTool.toolType === tool
+        );
+    };
 
     public isDisabled = (tool: ToolbarTool): boolean => {
         return this._disabledTools.indexOf(tool) > -1;
-    }
+    };
 
     @action
     private selectDefaultTool() {

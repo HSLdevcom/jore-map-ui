@@ -15,21 +15,21 @@ interface IButtonProps {
 const Button = observer((props: IButtonProps) => {
     const getTypeClass = (type: ButtonType) => {
         switch (type) {
-        case ButtonType.SQUARE: {
-            return s.square;
-        }
-        case ButtonType.SQUARE_SECONDARY: {
-            return s.squareSecondary;
-        }
-        case ButtonType.ROUND: {
-            return s.round;
-        }
-        case ButtonType.SAVE: {
-            return s.save;
-        }
-        default: {
-            return s.square;
-        }
+            case ButtonType.SQUARE: {
+                return s.square;
+            }
+            case ButtonType.SQUARE_SECONDARY: {
+                return s.squareSecondary;
+            }
+            case ButtonType.ROUND: {
+                return s.round;
+            }
+            case ButtonType.SAVE: {
+                return s.save;
+            }
+            default: {
+                return s.square;
+            }
         }
     };
 
@@ -41,14 +41,12 @@ const Button = observer((props: IButtonProps) => {
 
     return (
         <div
-            className={
-                classnames(
-                    s.button,
-                    props.className,
-                    getTypeClass(props.type),
-                    props.disabled ? s.disabled : null,
-                )
-            }
+            className={classnames(
+                s.button,
+                props.className,
+                getTypeClass(props.type),
+                props.disabled ? s.disabled : null
+            )}
             onClick={onClick}
         >
             {props.children}

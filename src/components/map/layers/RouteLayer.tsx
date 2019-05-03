@@ -25,18 +25,17 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         super(props);
         this.state = {
             selectedPolylines: [],
-            hoveredPolylines: [],
+            hoveredPolylines: []
         };
     }
 
     private calculateBounds() {
-        const bounds:L.LatLngBounds = new L.LatLngBounds([]);
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
 
-        this.props.routes.forEach((route) => {
-            route.routePaths.forEach((routePath) => {
-                routePath.routePathLinks!.forEach((routePathLink) => {
-                    routePathLink.geometry
-                        .forEach(pos => bounds.extend(pos));
+        this.props.routes.forEach(route => {
+            route.routePaths.forEach(routePath => {
+                routePath.routePathLinks!.forEach(routePathLink => {
+                    routePathLink.geometry.forEach(pos => bounds.extend(pos));
                 });
             });
         });
@@ -48,15 +47,21 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
 
     componentDidUpdate(prevProps: RouteLayerProps) {
         // TODO: Fix this check when calculateBounds() is called
-        const prevRoutePathIds = prevProps.routes.map(route =>
-            route.routePaths.map(rPath => rPath.internalId).join(':')).join(':');
-        const currentRoutePathIds = this.props.routes.map(route =>
-            route.routePaths.map(rPath => rPath.internalId).join(':')).join(':');
+        const prevRoutePathIds = prevProps.routes
+            .map(route =>
+                route.routePaths.map(rPath => rPath.internalId).join(':')
+            )
+            .join(':');
+        const currentRoutePathIds = this.props.routes
+            .map(route =>
+                route.routePaths.map(rPath => rPath.internalId).join(':')
+            )
+            .join(':');
         const routePathsChanged = prevRoutePathIds !== currentRoutePathIds;
         if (routePathsChanged) {
             this.calculateBounds();
             this.setState({
-                selectedPolylines: [],
+                selectedPolylines: []
             });
         }
     }
@@ -65,31 +70,34 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         let selectedPolylines = this.state.selectedPolylines;
 
         if (selectedPolylines.includes(internalId)) {
-            selectedPolylines =
-                selectedPolylines.filter(id => id !== internalId);
+            selectedPolylines = selectedPolylines.filter(
+                id => id !== internalId
+            );
         } else {
             selectedPolylines.push(internalId);
         }
 
         this.setState({
-            selectedPolylines,
+            selectedPolylines
         });
         target.current.leafletElement.bringToFront();
 
         // This moves (magically) ArrowDecorators on top of routePathLinks
         const map = this.props.leaflet.map;
         map!.setView(map!.getCenter(), map!.getZoom());
-    }
+    };
 
     private hasHighlight = (internalId: string) => {
-        return this.state.selectedPolylines.includes(internalId) ||
-            this.state.hoveredPolylines.includes(internalId);
-    }
+        return (
+            this.state.selectedPolylines.includes(internalId) ||
+            this.state.hoveredPolylines.includes(internalId)
+        );
+    };
 
     private hoverHighlight = (internalId: string) => (target: any) => () => {
         if (!this.state.hoveredPolylines.includes(internalId)) {
             this.setState({
-                hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
+                hoveredPolylines: this.state.hoveredPolylines.concat(internalId)
             });
             target.current.leafletElement.bringToFront();
 
@@ -97,11 +105,11 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
             const map = this.props.leaflet.map;
             map!.setView(map!.getCenter(), map!.getZoom());
         }
-    }
+    };
 
     private hoverHighlightOff = (internalId: string) => (target: any) => () => {
         this.setState({
-            hoveredPolylines: [],
+            hoveredPolylines: []
         });
         if (!this.state.selectedPolylines.includes(internalId)) {
             target.current.leafletElement.bringToBack();
@@ -110,22 +118,21 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
             const map = this.props.leaflet.map;
             map!.setView(map!.getCenter(), map!.getZoom());
         }
-    }
+    };
 
     render() {
-        return this.props.routes
-            .map((route) => {
-                return (
-                    <RoutePathLayer
-                        key={route.id}
-                        toggleHighlight={this.toggleHighlight}
-                        hoverHighlight={this.hoverHighlight}
-                        hoverHighlightOff={this.hoverHighlightOff}
-                        hasHighlight={this.hasHighlight}
-                        routePaths={route.routePaths}
-                    />
-                );
-            });
+        return this.props.routes.map(route => {
+            return (
+                <RoutePathLayer
+                    key={route.id}
+                    toggleHighlight={this.toggleHighlight}
+                    hoverHighlight={this.hoverHighlight}
+                    hoverHighlightOff={this.hoverHighlightOff}
+                    hasHighlight={this.hasHighlight}
+                    routePaths={route.routePaths}
+                />
+            );
+        });
     }
 }
 

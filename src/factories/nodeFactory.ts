@@ -11,17 +11,30 @@ class NodeFactory {
     public static mapExternalNode = (externalNode: IExternalNode): INode => {
         // Use less accurate location if measured location is missing.
         const coordinates = roundLatLng(
-                L.GeoJSON.coordsToLatLng((JSON.parse(
-                    externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual,
-                )).coordinates));
+            L.GeoJSON.coordsToLatLng(
+                JSON.parse(
+                    externalNode.geojson
+                        ? externalNode.geojson
+                        : externalNode.geojsonManual
+                ).coordinates
+            )
+        );
         const coordinatesManual = roundLatLng(
-                L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonManual)).coordinates));
+            L.GeoJSON.coordsToLatLng(
+                JSON.parse(externalNode.geojsonManual).coordinates
+            )
+        );
         const coordinatesProjection = roundLatLng(
-                L.GeoJSON.coordsToLatLng((JSON.parse(externalNode.geojsonProjection)).coordinates));
+            L.GeoJSON.coordsToLatLng(
+                JSON.parse(externalNode.geojsonProjection).coordinates
+            )
+        );
         const nodeStop = externalNode.pysakkiBySoltunnus;
-        let transitTypes: TransitType[] = [];
+        let transitTypes: TransitType[] = [];
         if (externalNode.transittypes) {
-            transitTypes = externalNode.transittypes.split(',') as TransitType[];
+            transitTypes = externalNode.transittypes.split(
+                ','
+            ) as TransitType[];
         }
 
         return {
@@ -30,17 +43,19 @@ class NodeFactory {
             coordinates,
             coordinatesManual,
             coordinatesProjection,
-            stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : undefined,
+            stop: nodeStop
+                ? NodeStopFactory.mapExternalStop(nodeStop)
+                : undefined,
             measurementDate: externalNode.mittpvm,
             modifiedOn: externalNode.solviimpvm,
-            modifiedBy: externalNode.solkuka,
+            modifiedBy: externalNode.solkuka
         };
-    }
+    };
 
     public static createNodeBase = (externalNode: IExternalNode): INodeBase => {
         const type = getNodeType(externalNode.soltyyppi);
         // TODO: Change this when creating abstraction layers for reading from postgis
-        if (type === NodeType.INVALID) {
+        if (type === NodeType.INVALID) {
             throw new Error(`Solmun (id: '${externalNode.soltunnus}') tyyppi on
             virheellinen: ${externalNode.soltyyppi}`);
         }
@@ -49,9 +64,9 @@ class NodeFactory {
             type,
             shortIdLetter: externalNode.solkirjain,
             shortIdString: externalNode.sollistunnus,
-            id: externalNode.soltunnus,
+            id: externalNode.soltunnus
         };
-    }
+    };
 
     public static createNewNode(coordinates: L.LatLng): INode {
         const newStop = NodeStopFactory.createNewStop();
@@ -65,21 +80,21 @@ class NodeFactory {
             coordinatesProjection: coordinates,
             measurementDate: '',
             modifiedOn: '',
-            modifiedBy: '',
+            modifiedBy: ''
         };
     }
 }
 
-const getNodeType = (type:any) => {
+const getNodeType = (type: any) => {
     switch (type) {
-    case 'X':
-        return NodeType.CROSSROAD;
-    case 'P':
-        return NodeType.STOP;
-    case '-':
-        return NodeType.MUNICIPALITY_BORDER;
-    default:
-        return NodeType.INVALID;
+        case 'X':
+            return NodeType.CROSSROAD;
+        case 'P':
+            return NodeType.STOP;
+        case '-':
+            return NodeType.MUNICIPALITY_BORDER;
+        default:
+            return NodeType.INVALID;
     }
 };
 

@@ -16,42 +16,54 @@ export interface IMultipleRoutesQueryResult {
 class RouteService {
     public static fetchRoute = async (routeId: string): Promise<IRoute> => {
         return await RouteService.runFetchRouteQuery(routeId);
-    }
+    };
 
-    public static fetchMultipleRoutes = async (routeIds: string[]): Promise<IRoute[]> => {
-        const routes = await Promise
-            .all(routeIds.map(id => RouteService.runFetchRouteQuery(id)));
+    public static fetchMultipleRoutes = async (
+        routeIds: string[]
+    ): Promise<IRoute[]> => {
+        const routes = await Promise.all(
+            routeIds.map(id => RouteService.runFetchRouteQuery(id))
+        );
 
         return routes.map((res: IRoute) => res!);
-    }
+    };
 
     public static fetchAllRouteIds = async (): Promise<string[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-            { query: GraphqlQueries.getAllRoutesQuery() },
-        );
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+            query: GraphqlQueries.getAllRoutesQuery()
+        });
 
-        return queryResult.data.allReittis.nodes.map((node: any) => node.reitunnus);
-    }
-
-    private static runFetchRouteQuery = async (routeId: string): Promise<IRoute> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query(
-            { query: GraphqlQueries.getRouteQuery(), variables: { routeId } },
+        return queryResult.data.allReittis.nodes.map(
+            (node: any) => node.reitunnus
         );
-        const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
+    };
+
+    private static runFetchRouteQuery = async (
+        routeId: string
+    ): Promise<IRoute> => {
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+            query: GraphqlQueries.getRouteQuery(),
+            variables: { routeId }
+        });
+        const line = await LineService.fetchLine(
+            queryResult.data.route.lintunnus
+        );
         return RouteFactory.mapExternalRoute(queryResult.data.route, line);
-    }
+    };
 
     public static updateRoute = async (route: IRoute) => {
         await ApiClient.updateObject(endpoints.ROUTE, route);
         await apolloClient.clearStore();
-    }
+    };
 
     public static createRoute = async (route: IRoute) => {
-        const response =
-            await ApiClient.createObject(endpoints.ROUTE, route) as IRoutePrimaryKey;
+        const response = (await ApiClient.createObject(
+            endpoints.ROUTE,
+            route
+        )) as IRoutePrimaryKey;
         await apolloClient.clearStore();
         return response.id;
-    }
+    };
 }
 
 export default RouteService;

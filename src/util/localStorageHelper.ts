@@ -12,8 +12,4 @@ const getItem = (name: itemNames) => {
     return localStorage.getItem(name);
 };
 
-export {
-    setItem,
-    clearItem,
-    getItem,
-};
+export { setItem, clearItem, getItem };

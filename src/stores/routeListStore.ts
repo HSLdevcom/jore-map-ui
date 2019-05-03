@@ -24,30 +24,31 @@ export class RouteListStore {
     @action
     public addToRoutes = (routes: IRoute[]) => {
         this._routes.push(...routes);
-    }
+    };
 
     @action
     public removeFromRoutes = (routeId: string) => {
         for (let i = 0; i < this._routes.length; i += 1) {
             if (this._routes[i].id === routeId) {
-                this._routes[i].routePaths
-                    .forEach(routePath => this.colorScale.releaseColor(routePath.color!));
+                this._routes[i].routePaths.forEach(routePath =>
+                    this.colorScale.releaseColor(routePath.color!)
+                );
                 this._routes.splice(i, 1);
             }
         }
-    }
+    };
 
     @action
     public clearRoutes = () => {
         this._routes = [];
         this.colorScale = new ColorScale();
-    }
+    };
 
     private getRoutePath = (internalId: string): IRoutePath | null => {
         let routePathObservable: IRoutePath | null = null;
-        this._routes.find((_route) => {
-            const found = _route.routePaths.find(_routePath =>
-                _routePath.internalId === internalId,
+        this._routes.find(_route => {
+            const found = _route.routePaths.find(
+                _routePath => _routePath.internalId === internalId
             );
             if (found) {
                 routePathObservable = found;
@@ -56,18 +57,18 @@ export class RouteListStore {
             return false;
         });
         return routePathObservable;
-    }
+    };
 
     @action
     public toggleRoutePathVisibility = (internalId: string) => {
         const routePathObservable = this.getRoutePath(internalId);
         if (routePathObservable) {
             routePathObservable.visible = !routePathObservable.visible;
-            routePathObservable.color = routePathObservable.visible ?
-                this.colorScale.reserveColor()
+            routePathObservable.color = routePathObservable.visible
+                ? this.colorScale.reserveColor()
                 : this.colorScale.releaseColor(routePathObservable.color!);
         }
-    }
+    };
 }
 
 const observableStoreStore = new RouteListStore();

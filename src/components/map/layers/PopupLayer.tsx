@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { Popup, withLeaflet } from 'react-leaflet';
 import { PopupStore } from '~/stores/popupStore';
 import { INode } from '~/models';
-import routeBuilder  from '~/routing/routeBuilder';
+import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import { LeafletContext } from '../Map';
@@ -19,7 +19,7 @@ interface PopupLayerProps {
 class PopupLayer extends Component<PopupLayerProps> {
     private onClose = () => {
         this.props.popupStore!.closePopup();
-    }
+    };
 
     render() {
         if (this.props.popupStore!.popupNode) {
@@ -53,7 +53,8 @@ class PopupLayer extends Component<PopupLayerProps> {
                     </div>
                 </Popup>
             );
-        } return null;
+        }
+        return null;
     }
 }
 export default withLeaflet(PopupLayer);

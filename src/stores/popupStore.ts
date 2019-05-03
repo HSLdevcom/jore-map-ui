@@ -16,12 +16,12 @@ export class PopupStore {
     @action
     public showPopup = (node: INode) => {
         this._node = node;
-    }
+    };
 
     @action
     public closePopup = () => {
         this._node = null;
-    }
+    };
 }
 
 const observablePopupStore = new PopupStore();

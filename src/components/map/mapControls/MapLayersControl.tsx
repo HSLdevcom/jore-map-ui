@@ -15,60 +15,66 @@ interface IMapLayersControlState {
     show: boolean;
 }
 
-interface IMapLayersControlProps {
-}
+interface IMapLayersControlProps {}
 
 enum option {
     MAP = 'Kartta',
     SATELLITE = 'Satelliitti',
-    TERRAIN = 'Maasto',
+    TERRAIN = 'Maasto'
 }
 
 @observer
-class MapLayersControl extends React.Component
-<IMapLayersControlProps, IMapLayersControlState> {
-    constructor (props: any) {
+class MapLayersControl extends React.Component<
+    IMapLayersControlProps,
+    IMapLayersControlState
+> {
+    constructor(props: any) {
         super(props);
         this.state = {
             selectedMapOption: option.MAP,
-            show: false,
+            show: false
         };
     }
 
     private toggleTransitType = (type: TransitType) => {
         NetworkStore.toggleTransitType(type);
-    }
+    };
 
     private toggleMapLayerVisibility = (mapLayer: MapLayer) => () => {
         NetworkStore.toggleMapLayerVisibility(mapLayer);
-    }
+    };
 
     private toggleMapFilter = (mapFilter: MapFilter) => () => {
         MapStore.toggleMapFilter(mapFilter);
-    }
+    };
 
     private toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => () => {
         MapStore.toggleNodeLabelVisibility(nodeLabel);
-    }
+    };
 
     private toggleMapOption = (option: option) => () => {
         this.setState({
-            selectedMapOption: option,
+            selectedMapOption: option
         });
-    }
+    };
 
     private selectDate = (e: ChangeEvent<HTMLInputElement>) => {
         NetworkStore.setSelectedDate(e.target.value);
-    }
-    private showControls = (show: boolean) => (e:MouseEvent<HTMLDivElement>) => {
+    };
+    private showControls = (show: boolean) => (
+        e: MouseEvent<HTMLDivElement>
+    ) => {
         // Fixes problem where clicking on anything causes mouse to 'leave' the element.
         if (!e.relatedTarget['innerHTML']) return;
         this.setState({ show });
-    }
+    };
     render() {
         return (
             <div
-                className={classnames(s.mapLayerControlView, this.state.show ? s.active : null)}
+                className={classnames(
+                    s.mapLayerControlView,
+                    this.state.show ? s.active : null
+                )}
                 onMouseEnter={this.showControls(true)}
                 onMouseLeave={this.showControls(false)}
             >
@@ -82,66 +88,98 @@ class MapLayersControl extends React.Component
                         toggleSelectedTransitType={this.toggleTransitType}
                         selectedTransitTypes={NetworkStore.selectedTransitTypes}
                     />
-                    <NetworkDateControl selectDate={this.selectDate}/>
+                    <NetworkDateControl selectDate={this.selectDate} />
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>GEOMETRIAT</div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(MapLayer.link)}
-                            checked={NetworkStore.isMapLayerVisible(MapLayer.link)}
+                            onClick={this.toggleMapLayerVisibility(
+                                MapLayer.link
+                            )}
+                            checked={NetworkStore.isMapLayerVisible(
+                                MapLayer.link
+                            )}
                             content='Alueen linkit'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(MapLayer.linkPoint)}
-                            checked={NetworkStore.isMapLayerVisible(MapLayer.linkPoint)}
+                            onClick={this.toggleMapLayerVisibility(
+                                MapLayer.linkPoint
+                            )}
+                            checked={NetworkStore.isMapLayerVisible(
+                                MapLayer.linkPoint
+                            )}
                             content='Linkkien pisteet'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(MapLayer.node)}
-                            checked={NetworkStore.isMapLayerVisible(MapLayer.node)}
+                            onClick={this.toggleMapLayerVisibility(
+                                MapLayer.node
+                            )}
+                            checked={NetworkStore.isMapLayerVisible(
+                                MapLayer.node
+                            )}
                             content='Alueen solmut'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(MapLayer.nodeWithoutLink)}
-                            checked={NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)}
+                            onClick={this.toggleMapLayerVisibility(
+                                MapLayer.nodeWithoutLink
+                            )}
+                            checked={NetworkStore.isMapLayerVisible(
+                                MapLayer.nodeWithoutLink
+                            )}
                             content='Linkittömät solmut'
                         />
                     </div>
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>SOLMUT</div>
-                        <div className={s.checkboxContainer}>
-                            <Checkbox
-                                onClick={this.toggleNodeLabelVisibility(NodeLabel.hastusId)}
-                                checked={MapStore.isNodeLabelVisible(NodeLabel.hastusId)}
-                                content='Hastus id'
-                            />
-                        </div>
-                        <div className={s.checkboxContainer}>
-                            <Checkbox
-                                onClick={this.toggleNodeLabelVisibility(NodeLabel.longNodeId)}
-                                checked={MapStore.isNodeLabelVisible(NodeLabel.longNodeId)}
-                                content='Pitkä solmun id'
-                            />
-                        </div>
-                        <div className={s.checkboxContainer}>
-                            <Checkbox
-                                onClick={this.toggleNodeLabelVisibility(NodeLabel.shortNodeId)}
-                                checked={MapStore.isNodeLabelVisible(NodeLabel.shortNodeId)}
-                                content='Lyhyt solmun id'
-                            />
-                        </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleNodeLabelVisibility(
+                                NodeLabel.hastusId
+                            )}
+                            checked={MapStore.isNodeLabelVisible(
+                                NodeLabel.hastusId
+                            )}
+                            content='Hastus id'
+                        />
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleNodeLabelVisibility(
+                                NodeLabel.longNodeId
+                            )}
+                            checked={MapStore.isNodeLabelVisible(
+                                NodeLabel.longNodeId
+                            )}
+                            content='Pitkä solmun id'
+                        />
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleNodeLabelVisibility(
+                                NodeLabel.shortNodeId
+                            )}
+                            checked={MapStore.isNodeLabelVisible(
+                                NodeLabel.shortNodeId
+                            )}
+                            content='Lyhyt solmun id'
+                        />
+                    </div>
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>LINKIT</div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapFilter(MapFilter.arrowDecorator)}
-                            checked={MapStore.isMapFilterEnabled(MapFilter.arrowDecorator)}
+                            onClick={this.toggleMapFilter(
+                                MapFilter.arrowDecorator
+                            )}
+                            checked={MapStore.isMapFilterEnabled(
+                                MapFilter.arrowDecorator
+                            )}
                             content='Linkkien suuntanuolet'
                         />
                     </div>
@@ -154,12 +192,16 @@ class MapLayersControl extends React.Component
                     />
                     <RadioButton
                         onClick={this.toggleMapOption(option.SATELLITE)}
-                        checked={this.state.selectedMapOption === option.SATELLITE}
+                        checked={
+                            this.state.selectedMapOption === option.SATELLITE
+                        }
                         text={option.SATELLITE}
                     />
                     <RadioButton
                         onClick={this.toggleMapOption(option.TERRAIN)}
-                        checked={this.state.selectedMapOption === option.TERRAIN}
+                        checked={
+                            this.state.selectedMapOption === option.TERRAIN
+                        }
                         text={option.TERRAIN}
                     />
                 </div>

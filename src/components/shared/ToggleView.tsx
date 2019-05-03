@@ -10,9 +10,7 @@ interface IToggleViewProps {
 const ToggleView = observer((props: IToggleViewProps) => {
     return (
         <div className={s.toggleView}>
-            <div className={s.buttonContainer}>
-                {props.children}
-            </div>
+            <div className={s.buttonContainer}>{props.children}</div>
         </div>
     );
 });
@@ -26,20 +24,16 @@ interface IToggleItemProps {
 
 export const ToggleItem = observer((props: IToggleItemProps) => {
     return (
-        <div
-            className={s.buttonContainer}
-        >
+        <div className={s.buttonContainer}>
             <div
                 className={classnames(
                     s.button,
-                    props.isActive ? s.active : null,
+                    props.isActive ? s.active : null
                 )}
                 onClick={props.onClick}
             >
                 {props.icon}
-                <div>
-                    {props.text}
-                </div>
+                <div>{props.text}</div>
             </div>
         </div>
     );

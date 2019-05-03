@@ -9,7 +9,6 @@ interface MapControlButtonProps {
     isDisabled: boolean;
     children: React.ReactNode;
     onClick: () => void;
-
 }
 
 const MapControlButton = observer((props: MapControlButtonProps) => {
@@ -22,18 +21,12 @@ const MapControlButton = observer((props: MapControlButtonProps) => {
     const classes = classnames(
         s.mapControlButton,
         props.isActive && !props.isDisabled ? s.active : null,
-        props.isDisabled ? s.disabled : null,
+        props.isDisabled ? s.disabled : null
     );
 
     return (
-        <div
-            className={classes}
-            onClick={onClick}
-            title={props.label}
-        >
-            {
-                props.children
-            }
+        <div className={classes} onClick={onClick} title={props.label}>
+            {props.children}
         </div>
     );
 });

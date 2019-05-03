@@ -13,10 +13,12 @@ interface ISearchInputProps {
 @inject('searchStore', 'searchResultStore')
 @observer
 class SearchInput extends React.Component<ISearchInputProps> {
-    private onSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+    private onSearchInputChange = (
+        event: React.FormEvent<HTMLInputElement>
+    ) => {
         const newValue = event.currentTarget.value;
         this.props.searchStore!.setSearchInput(newValue);
-    }
+    };
 
     render() {
         return (
@@ -28,11 +30,11 @@ class SearchInput extends React.Component<ISearchInputProps> {
                         value={this.props.searchStore!.searchInput}
                         onChange={this.onSearchInputChange}
                     />
-                    {this.props.searchResultStore!.isSearching &&
+                    {this.props.searchResultStore!.isSearching && (
                         <div className={s.loader}>
-                            <Loader size={LoaderSize.TINY}/>
+                            <Loader size={LoaderSize.TINY} />
                         </div>
-                    }
+                    )}
                 </div>
             </div>
         );

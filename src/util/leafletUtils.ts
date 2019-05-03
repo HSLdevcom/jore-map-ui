@@ -12,16 +12,19 @@ interface IDivIconOptions {
 const createDivIcon = (html: any, options: IDivIconOptions = {}) => {
     const renderedHtml = ReactDOMServer.renderToStaticMarkup(html);
 
-    const divIconOptions : L.DivIconOptions = {
+    const divIconOptions: L.DivIconOptions = {
         className: options.className ? options.className : s.iconClass,
         html: renderedHtml,
         // to make popup x amount (in px) above marker
-        popupAnchor: [0, options.popupOffset ? options.popupOffset : DEFAULT_POPUP_OFFSET],
+        popupAnchor: [
+            0,
+            options.popupOffset ? options.popupOffset : DEFAULT_POPUP_OFFSET
+        ]
     };
 
     return new L.DivIcon(divIconOptions);
 };
 
 export default {
-    createDivIcon,
+    createDivIcon
 };

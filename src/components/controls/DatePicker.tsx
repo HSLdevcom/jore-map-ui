@@ -13,13 +13,13 @@ interface IDatePickerProps {
 const DatePicker = observer((props: IDatePickerProps) => (
     <div className={s.datepickerContainer}>
         <ReactDatePicker
-            value={(props.value as Date)}
+            value={props.value as Date}
             onChange={props.onChange}
             locale='fi-FI'
             calendarIcon={<IoMdCalendar />}
             clearIcon={props.isClearButtonVisible ? undefined : null}
         />
-  </div>
+    </div>
 ));
 
 export default DatePicker;

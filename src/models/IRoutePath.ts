@@ -7,7 +7,7 @@ interface IRoutePathPrimaryKey {
     startTime: Date;
 }
 
-interface IViewOnlyProperties  {
+interface IViewOnlyProperties {
     internalId: string;
     color?: string;
     lastModified: Date;
@@ -16,7 +16,9 @@ interface IViewOnlyProperties  {
     modifiedBy: string;
 }
 
-export default interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyProperties {
+export default interface IRoutePath
+    extends IRoutePathPrimaryKey,
+        IViewOnlyProperties {
     lineId: string;
     routePathLinks?: IRoutePathLink[]; // TODO: change to be never undefined
     routePathName: string; // TODO: rename as name
@@ -32,6 +34,4 @@ export default interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyPrope
     exceptionPath: string;
 }
 
-export {
-    IRoutePathPrimaryKey,
-};
+export { IRoutePathPrimaryKey };

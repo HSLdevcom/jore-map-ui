@@ -30,7 +30,10 @@ interface IAddressSearchState {
 const SEARCH_RESULT_MARKER_COLOR = '#f44242';
 
 @observer
-class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> {
+class AddressSearch extends Component<
+    IAddressSearchProps,
+    IAddressSearchState
+> {
     private map: L.Map;
     private reactionDisposer: IReactionDisposer;
     private searchResultMarker: L.Marker;
@@ -42,14 +45,14 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             input: '',
             searchResults: [],
             searchIndex: -1,
-            selectedSearchResult: null,
+            selectedSearchResult: null
         };
         this.map = this.props.map.current.leafletElement;
     }
     componentDidMount() {
         this.reactionDisposer = reaction(
             () => this.state.selectedSearchResult,
-            this.onChangeSelectedSearchResult,
+            this.onChangeSelectedSearchResult
         );
 
         EventManager.on('enter', this.setSelectedSearchResult());
@@ -70,52 +73,67 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             this.unselectSearchResult();
             return;
         }
-        if (this.searchResultMarker) this.map.removeLayer(this.searchResultMarker);
+        if (this.searchResultMarker) {
+            this.map.removeLayer(this.searchResultMarker);
+        }
 
         const coordinates = selectedSearchResult.geometry.coordinates;
         const latLng = L.latLng(coordinates[1], coordinates[0]);
         this.setState({
             input: selectedSearchResult.properties.label,
             searchResults: [],
-            searchIndex: -1,
+            searchIndex: -1
         });
         this.map.setView(latLng, this.map.getZoom());
-        const marker = LeafletUtils.createDivIcon(<PinIcon color={SEARCH_RESULT_MARKER_COLOR}/>);
-        this.searchResultMarker = L.marker(latLng, { icon: marker }).addTo(this.map);
-    }
+        const marker = LeafletUtils.createDivIcon(
+            <PinIcon color={SEARCH_RESULT_MARKER_COLOR} />
+        );
+        this.searchResultMarker = L.marker(latLng, { icon: marker }).addTo(
+            this.map
+        );
+    };
 
     private unselectSearchResult = () => {
-        if (this.searchResultMarker) this.map.removeLayer(this.searchResultMarker);
+        if (this.searchResultMarker) {
+            this.map.removeLayer(this.searchResultMarker);
+        }
 
         this.setState({
             input: '',
             searchResults: [],
             searchIndex: -1,
-            selectedSearchResult: null,
+            selectedSearchResult: null
         });
-    }
+    };
 
     private moveSearchIndex = (direction: string) => () => {
         let searchIndex = this.state.searchIndex;
-        direction === 'arrowUp' ? searchIndex -= 1 : searchIndex += 1;
+        direction === 'arrowUp' ? (searchIndex -= 1) : (searchIndex += 1);
 
-        if (searchIndex < 0 || searchIndex > this.state.searchResults.length - 1) return;
+        if (
+            searchIndex < 0 ||
+            searchIndex > this.state.searchResults.length - 1
+        ) {
+            return;
+        }
         this.setState({
-            searchIndex,
+            searchIndex
         });
-    }
+    };
 
-    private onSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+    private onSearchInputChange = (
+        event: React.FormEvent<HTMLInputElement>
+    ) => {
         const newValue = event.currentTarget.value;
         if (newValue) {
             this.setState({
-                input: newValue,
+                input: newValue
             });
             this.requestAddress(newValue);
         } else {
             this.unselectSearchResult();
         }
-    }
+    };
     private requestAddress = async (value: string) => {
         const GEOCODER_ADDRESS = constants.GEOCODER_ADDRESS;
         const SEARCH_RESULT_COUNT = constants.ADDRESS_SEARCH_RESULT_COUNT;
@@ -124,15 +142,18 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         const lng = center.lng;
         const requestUrl = `${GEOCODER_ADDRESS}?text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`; // tslint:disable-line max-line-length
 
-        const response = await ApiClient
-            .sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
+        const response = await ApiClient.sendRequest(
+            RequestMethod.GET,
+            encodeURI(requestUrl),
+            {}
+        );
         const searchResults = response.features;
         if (searchResults) {
             this.setState({
-                searchResults,
+                searchResults
             });
         }
-    }
+    };
 
     private renderSearchResults = () => {
         const searchResults = this.state.searchResults;
@@ -140,54 +161,56 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
 
         return (
             <div className={s.searchResults}>
-                    {
-                        searchResults.map((searchResult: ISearchResultFeature, index) => {
-                            return this.renderSearchResult(searchResult, index);
-                        })
+                {searchResults.map(
+                    (searchResult: ISearchResultFeature, index) => {
+                        return this.renderSearchResult(searchResult, index);
                     }
+                )}
             </div>
         );
-    }
+    };
 
-    private renderSearchResult = (searchResult: ISearchResultFeature, searchIndex: number) => {
+    private renderSearchResult = (
+        searchResult: ISearchResultFeature,
+        searchIndex: number
+    ) => {
         const isHighlighted = this.state.searchIndex === searchIndex;
         return (
             <div
                 key={searchIndex}
-                className={
-                    classnames(
-                        s.searchResult,
-                        isHighlighted ? s.searchResultHighlight : null,
-                    )
-                }
+                className={classnames(
+                    s.searchResult,
+                    isHighlighted ? s.searchResultHighlight : null
+                )}
                 onClick={this.setSelectedSearchResult(searchIndex)}
             >
                 {searchResult.properties.label}
             </div>
         );
-    }
+    };
 
     private setSelectedSearchResult = (_searchIndex?: number) => () => {
-        const searchIndex = _searchIndex !== undefined ? _searchIndex : this.state.searchIndex;
+        const searchIndex =
+            _searchIndex !== undefined ? _searchIndex : this.state.searchIndex;
         if (searchIndex === -1) return;
 
         const selectedSearchResult = this.state.searchResults[searchIndex];
         this.setState({
-            selectedSearchResult,
+            selectedSearchResult
         });
-    }
+    };
 
     render() {
         return (
             <div className={s.addressSeachView}>
-                    <input
-                        className={s.searchInput}
-                        placeholder='Hae osoitetta'
-                        type='text'
-                        value={this.state.input}
-                        onChange={this.onSearchInputChange}
-                    />
-                    {this.renderSearchResults()}
+                <input
+                    className={s.searchInput}
+                    placeholder='Hae osoitetta'
+                    type='text'
+                    value={this.state.input}
+                    onChange={this.onSearchInputChange}
+                />
+                {this.renderSearchResults()}
             </div>
         );
     }

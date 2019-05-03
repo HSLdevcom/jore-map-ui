@@ -37,15 +37,15 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     private onContextMenu = (routePathLinkId: string) => () => {
         this.props.onContextMenu(routePathLinkId);
-    }
+    };
 
     private openPopup = (node: INode) => () => {
         this.props.popupStore!.showPopup(node);
-    }
+    };
 
     private renderRoutePathLinks() {
         const routePathLinks = this.props.routePathLinks;
-        return routePathLinks.map((routePathLink) => {
+        return routePathLinks.map(routePathLink => {
             return (
                 <Polyline
                     positions={routePathLink.geometry}
@@ -61,20 +61,23 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
     private renderNodes() {
         const routePathLinks = this.props.routePathLinks;
-        const nodes = routePathLinks
-            .map((routePathLink, index) => {
-                const node = routePathLink.startNode;
-                return (
-                    <NodeMarker
-                        key={`${routePathLink.orderNumber}-${index}`}
-                        node={node}
-                        isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                        isDisabled={routePathLink.startNodeType === NodeType.DISABLED}
-                        isTimeAlignmentStop={routePathLink.isStartNodeTimeAlignmentStop}
-                        onContextMenu={this.openPopup(routePathLink.startNode)}
-                    />
-                );
-            });
+        const nodes = routePathLinks.map((routePathLink, index) => {
+            const node = routePathLink.startNode;
+            return (
+                <NodeMarker
+                    key={`${routePathLink.orderNumber}-${index}`}
+                    node={node}
+                    isSelected={this.props.mapStore!.selectedNodeId === node.id}
+                    isDisabled={
+                        routePathLink.startNodeType === NodeType.DISABLED
+                    }
+                    isTimeAlignmentStop={
+                        routePathLink.isStartNodeTimeAlignmentStop
+                    }
+                    onContextMenu={this.openPopup(routePathLink.startNode)}
+                />
+            );
+        });
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
         const node = lastRoutePathLink.endNode;
         nodes.push(
@@ -85,7 +88,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isDisabled={false} // Last node can't be disabled
                 isTimeAlignmentStop={false} // Last node can't be a time alignment stop
                 onContextMenu={this.openPopup(lastRoutePathLink.endNode)}
-            />);
+            />
+        );
         return nodes;
     }
 
@@ -103,26 +107,29 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     private renderDirectionDecoration() {
-        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) return null;
+        if (
+            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
+        ) {
+            return null;
+        }
 
         const routePathLinks = this.props.routePathLinks;
 
-        const geoms = routePathLinks
-            .map(routePathLink => routePathLink.geometry);
-
-        return createCoherentLinesFromPolylines(geoms)
-            .map((geom, index) => (
-                <ArrowDecorator
-                    key={index}
-                    color={this.props.color}
-                    geometry={geom}
-                    onClick={this.props.onClick(this.layerRef)}
-                    onMouseOver={this.props.onMouseOver(this.layerRef)}
-                    onMouseOut={this.props.onMouseOut(this.layerRef)}
-                    isUpdatePrevented={true}
-                />
-            ),
+        const geoms = routePathLinks.map(
+            routePathLink => routePathLink.geometry
         );
+
+        return createCoherentLinesFromPolylines(geoms).map((geom, index) => (
+            <ArrowDecorator
+                key={index}
+                color={this.props.color}
+                geometry={geom}
+                onClick={this.props.onClick(this.layerRef)}
+                onMouseOver={this.props.onMouseOver(this.layerRef)}
+                onMouseOut={this.props.onMouseOut(this.layerRef)}
+                isUpdatePrevented={true}
+            />
+        ));
     }
 
     render() {
@@ -137,9 +144,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     {this.renderNodes()}
                     {this.renderStartMarker()}
                 </FeatureGroup>
-                <FeatureGroup>
-                    {this.renderDirectionDecoration()}
-                </FeatureGroup>
+                <FeatureGroup>{this.renderDirectionDecoration()}</FeatureGroup>
             </>
         );
     }

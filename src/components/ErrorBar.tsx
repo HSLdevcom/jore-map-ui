@@ -13,7 +13,7 @@ interface IErrorBarProps {
 class ErrorBar extends Component<IErrorBarProps> {
     private popError = () => {
         this.props.errorStore!.pop();
-    }
+    };
 
     render() {
         if (!this.props.errorStore!.latestError) {
@@ -25,12 +25,9 @@ class ErrorBar extends Component<IErrorBarProps> {
                 <div>
                     {this.props.errorStore!.latestError}
                     {this.props.errorStore!.errors.length > 1 &&
-                        (
-                            ` (${this.props.errorStore!.errors.length})`
-                        )
-                    }
+                        ` (${this.props.errorStore!.errors.length})`}
                 </div>
-                <IoMdClose onClick={this.popError}/>
+                <IoMdClose onClick={this.popError} />
             </div>
         );
     }

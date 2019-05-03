@@ -13,5 +13,5 @@ export {
     RadioButton,
     ToggleSwitch,
     TransitToggleButton,
-    TransitToggleButtonBar,
+    TransitToggleButtonBar
 };

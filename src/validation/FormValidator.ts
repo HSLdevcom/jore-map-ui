@@ -7,25 +7,26 @@ export interface IValidationResult {
 }
 
 class FormValidator {
-    public static validate = (value: any, rule: string) : IValidationResult => {
+    public static validate = (value: any, rule: string): IValidationResult => {
         const validator = new Validator(
             {
-                value,
+                value
             },
             {
-                value: rule,
+                value: rule
             },
-            ruleTranslations,
-            );
+            ruleTranslations
+        );
 
         const isValid = Boolean(validator.passes());
         const firstErrorMessage = validator.errors.first('value');
 
         return {
             isValid,
-            errorMessage: typeof firstErrorMessage === 'string' ? firstErrorMessage : '',
+            errorMessage:
+                typeof firstErrorMessage === 'string' ? firstErrorMessage : ''
         };
-    }
+    };
 }
 
 export default FormValidator;

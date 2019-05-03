@@ -20,7 +20,7 @@ export class LoginStore {
 
     @computed
     get hasWriteAccess() {
-        return this._hasWriteAccess  || !Constants.IS_LOGIN_REQUIRED;
+        return this._hasWriteAccess || !Constants.IS_LOGIN_REQUIRED;
     }
 
     @computed

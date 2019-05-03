@@ -45,58 +45,60 @@ export class LinkStore {
     public init = (link: ILink, nodes: INode[]) => {
         this.setLink(link);
         this.setNodes(nodes);
-    }
+    };
 
     @action
     public setLink = (link: ILink) => {
         this._link = link;
         const currentUndoState: UndoState = {
-            link,
+            link
         };
         this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldLink(link);
-    }
+    };
 
     @action
     public updateLinkGeometry = (latLngs: L.LatLng[]) => {
-        if (!this._link || !this._isLinkGeometryEditable) return;
+        if (!this._link || !this._isLinkGeometryEditable) return;
 
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = latLngs;
         this._link.geometry = latLngs;
 
         const currentUndoState: UndoState = {
-            link: updatedLink,
+            link: updatedLink
         };
         this._geometryUndoStore.addItem(currentUndoState);
-
-    }
+    };
 
     @action
     public setNodes = (nodes: INode[]) => {
         this._nodes = nodes;
-    }
+    };
 
     @action
     public setOldLink = (link: ILink) => {
         this._oldLink = _.cloneDeep(link);
-    }
+    };
 
     @action
     public setIsLinkGeometryEditable = (isEditable: boolean) => {
         this._isLinkGeometryEditable = isEditable;
-    }
+    };
 
     @action
-    public updateLinkProperty = (property: string, value: string|number|Date|LatLng[]) => {
+    public updateLinkProperty = (
+        property: string,
+        value: string | number | Date | LatLng[]
+    ) => {
         this._link![property] = value;
-    }
+    };
 
     @action
     public setMarkerCoordinates = (startMarkerCoordinates: LatLng | null) => {
         this._startMarkerCoordinates = startMarkerCoordinates;
-    }
+    };
 
     @action
     public clear = () => {
@@ -105,7 +107,7 @@ export class LinkStore {
         this._oldLink = null;
         this._startMarkerCoordinates = null;
         this._geometryUndoStore.clear();
-    }
+    };
 
     @computed
     get isLinkGeometryEditable() {
@@ -114,14 +116,18 @@ export class LinkStore {
 
     @computed
     get isDirty() {
-        return this._link && !_.isEqual(
-            {
-                ...this.link,
-                // Remapping geometry since edit initialization has added handlers
-                geometry: this.link!.geometry
-                    .map(coor => new LatLng(coor.lat, coor.lng)),
-            },
-            this._oldLink,
+        return (
+            this._link &&
+            !_.isEqual(
+                {
+                    ...this.link,
+                    // Remapping geometry since edit initialization has added handlers
+                    geometry: this.link!.geometry.map(
+                        coor => new LatLng(coor.lat, coor.lng)
+                    )
+                },
+                this._oldLink
+            )
         );
     }
 
@@ -130,21 +136,21 @@ export class LinkStore {
         if (this._oldLink) {
             this.setLink(this._oldLink);
         }
-    }
+    };
 
     @action
     public undo = () => {
         this._geometryUndoStore.undo((previousUndoState: UndoState) => {
             this._link!.geometry = previousUndoState.link.geometry;
         });
-    }
+    };
 
     @action
     public redo = () => {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._link!.geometry = nextUndoState.link.geometry;
         });
-    }
+    };
 }
 
 const observableLinkStore = new LinkStore();

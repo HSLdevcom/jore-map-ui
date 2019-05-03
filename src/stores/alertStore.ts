@@ -4,12 +4,12 @@ import Constants from '~/constants/constants';
 export enum AlertType {
     Success = 1,
     Info,
-    Loader,
+    Loader
 }
 
 export class AlertStore {
-    @observable private _message: string|null;
-    @observable private _type: AlertType|null;
+    @observable private _message: string | null;
+    @observable private _type: AlertType | null;
 
     constructor() {
         this._message = null;
@@ -31,37 +31,37 @@ export class AlertStore {
     }
 
     @action
-    public setFadeMessage = (message: string, type: AlertType = AlertType.Success) => {
+    public setFadeMessage = (
+        message: string,
+        type: AlertType = AlertType.Success
+    ) => {
         this._message = message;
         this._type = type;
 
-        return new Promise((resolve) => {
-            setTimeout(
-                () => {
-                    this.close();
-                    resolve();
-                },
-                Constants.FADE_ALERT_TIMEOUT,
-            );
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this.close();
+                resolve();
+            }, Constants.FADE_ALERT_TIMEOUT);
         });
-    }
+    };
 
     @action
     public setLoaderMessage = (message: string) => {
         this._message = message;
         this._type = AlertType.Loader;
-    }
+    };
 
     @action
     public closeLoaderMessage = () => {
         this.close();
-    }
+    };
 
     @action
     public close = () => {
         this._message = null;
         this._type = null;
-    }
+    };
 }
 
 export default new AlertStore();

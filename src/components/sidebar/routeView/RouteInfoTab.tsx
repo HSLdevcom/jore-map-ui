@@ -21,18 +21,24 @@ interface IRouteInfoTabProps {
     isNewRoute: boolean;
     onChangeRouteProperty: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
-    setValidatorResult: (property: string, validationResult: IValidationResult) => void;
+    setValidatorResult: (
+        property: string,
+        validationResult: IValidationResult
+    ) => void;
 }
 
 @inject('routeStore', 'errorStore')
 @observer
-class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabState>{
-    private existinRouteIds: string[] = [];
+class RouteInfoTab extends React.Component<
+    IRouteInfoTabProps,
+    IRouteInfoTabState
+> {
+    private existinRouteIds: string[] = [];
 
     constructor(props: IRouteInfoTabProps) {
         super(props);
         this.state = {
-            isLoading: true,
+            isLoading: true
         };
     }
 
@@ -54,24 +60,27 @@ class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabStat
         try {
             this.existinRouteIds = await RouteService.fetchAllRouteIds();
         } catch (e) {
-            this.props.errorStore!.addError('Olemassa olevien reittien haku ei onnistunut', e);
+            this.props.errorStore!.addError(
+                'Olemassa olevien reittien haku ei onnistunut',
+                e
+            );
         }
-    }
+    };
 
     private onChangeRouteId = (routeId: string) => {
         this.props.onChangeRouteProperty('id')(routeId);
         if (this.isRouteAlreadyFound(routeId)) {
             const validationResult: IValidationResult = {
                 isValid: false,
-                errorMessage: `Reitti ${routeId} on jo olemassa.`,
+                errorMessage: `Reitti ${routeId} on jo olemassa.`
             };
             this.props.setValidatorResult('id', validationResult);
         }
-    }
+    };
 
     private isRouteAlreadyFound = (routeId: string): boolean => {
         return Boolean(this.existinRouteIds.includes(routeId));
-    }
+    };
 
     render() {
         const route = this.props.routeStore!.route;
@@ -87,69 +96,75 @@ class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabStat
         const queryParamLineId = navigator.getQueryParam(QueryParams.lineId);
 
         return (
-        <div className={classnames(s.routeInfoTabView, s.form)}>
-            <div className={s.formSection}>
-                <div className={s.flexRow}>
-                    <InputContainer
-                        disabled={true}
-                        label='LINJAN TUNNUS'
-                        value={isNewRoute ? queryParamLineId : route.lineId}
-                    />
-                    <InputContainer
-                        disabled={isUpdating}
-                        label='REITIN TUNNUS'
-                        value={route.id}
-                        onChange={this.onChangeRouteId}
-                        validationResult={invalidPropertiesMap['id']}
-                        capitalizeInput={true}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <InputContainer
-                        disabled={isEditingDisabled}
-                        label='REITIN NIMI'
-                        value={route.routeName}
-                        onChange={onChange('routeName')}
-                        validationResult={invalidPropertiesMap['routeName']}
-                    />
-                    <InputContainer
-                        disabled={isEditingDisabled}
-                        label='REITIN NIMI RUOTSIKSI'
-                        value={route.routeNameSw}
-                        onChange={onChange('routeNameSw')}
-                        validationResult={invalidPropertiesMap['routeNameSw']}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <InputContainer
-                        disabled={isEditingDisabled}
-                        label='REITIN LYHYT NIMI'
-                        value={route.routeNameShort}
-                        onChange={onChange('routeNameShort')}
-                        validationResult={invalidPropertiesMap['routeNameShort']}
-                    />
-                    <InputContainer
-                        disabled={isEditingDisabled}
-                        label='REITIN LYHYT NIMI RUOTSIKSI'
-                        value={route.routeNameShortSw}
-                        onChange={onChange('routeNameShortSw')}
-                        validationResult={invalidPropertiesMap['routeNameShortSw']}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <InputContainer
-                        disabled={true}
-                        label='MUOKANNUT'
-                        value={'-'}
-                    />
-                    <InputContainer
-                        disabled={true}
-                        label='MUOKATTU PVM'
-                        value={'-'}
-                    />
+            <div className={classnames(s.routeInfoTabView, s.form)}>
+                <div className={s.formSection}>
+                    <div className={s.flexRow}>
+                        <InputContainer
+                            disabled={true}
+                            label='LINJAN TUNNUS'
+                            value={isNewRoute ? queryParamLineId : route.lineId}
+                        />
+                        <InputContainer
+                            disabled={isUpdating}
+                            label='REITIN TUNNUS'
+                            value={route.id}
+                            onChange={this.onChangeRouteId}
+                            validationResult={invalidPropertiesMap['id']}
+                            capitalizeInput={true}
+                        />
+                    </div>
+                    <div className={s.flexRow}>
+                        <InputContainer
+                            disabled={isEditingDisabled}
+                            label='REITIN NIMI'
+                            value={route.routeName}
+                            onChange={onChange('routeName')}
+                            validationResult={invalidPropertiesMap['routeName']}
+                        />
+                        <InputContainer
+                            disabled={isEditingDisabled}
+                            label='REITIN NIMI RUOTSIKSI'
+                            value={route.routeNameSw}
+                            onChange={onChange('routeNameSw')}
+                            validationResult={
+                                invalidPropertiesMap['routeNameSw']
+                            }
+                        />
+                    </div>
+                    <div className={s.flexRow}>
+                        <InputContainer
+                            disabled={isEditingDisabled}
+                            label='REITIN LYHYT NIMI'
+                            value={route.routeNameShort}
+                            onChange={onChange('routeNameShort')}
+                            validationResult={
+                                invalidPropertiesMap['routeNameShort']
+                            }
+                        />
+                        <InputContainer
+                            disabled={isEditingDisabled}
+                            label='REITIN LYHYT NIMI RUOTSIKSI'
+                            value={route.routeNameShortSw}
+                            onChange={onChange('routeNameShortSw')}
+                            validationResult={
+                                invalidPropertiesMap['routeNameShortSw']
+                            }
+                        />
+                    </div>
+                    <div className={s.flexRow}>
+                        <InputContainer
+                            disabled={true}
+                            label='MUOKANNUT'
+                            value={'-'}
+                        />
+                        <InputContainer
+                            disabled={true}
+                            label='MUOKATTU PVM'
+                            value={'-'}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
         );
     }
 }

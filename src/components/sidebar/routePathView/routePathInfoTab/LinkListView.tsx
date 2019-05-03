@@ -22,32 +22,40 @@ interface ILinkListViewState {
 
 @inject('codeListStore')
 @observer
-class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewState>{
+class ILinkListView extends React.Component<
+    ILinkListViewProps,
+    ILinkListViewState
+> {
     constructor(props: ILinkListViewProps) {
         super(props);
         this.state = {
-            linkTableFilter: EMPTY_FILTER_VALUE,
+            linkTableFilter: EMPTY_FILTER_VALUE
         };
     }
 
     private selectRoutePathLink = (id: string) => () => {
         this.setState({
-            selectedRoutePathLink: id,
+            selectedRoutePathLink: id
         });
-    }
+    };
 
     private getRoutePathLinks = () => {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return;
-        return routePathLinks.map((routePathLink) => {
-            if (routePathLink.startNodeType === this.state.linkTableFilter ||
-                this.state.linkTableFilter === EMPTY_FILTER_VALUE) {
-                return(
+        return routePathLinks.map(routePathLink => {
+            if (
+                routePathLink.startNodeType === this.state.linkTableFilter ||
+                this.state.linkTableFilter === EMPTY_FILTER_VALUE
+            ) {
+                return (
                     <div
                         key={routePathLink.id}
                         className={
-                            (this.state.selectedRoutePathLink === routePathLink.id)
-                            ? s.routePathLinkRowSelected : s.routePathLinkRow}
+                            this.state.selectedRoutePathLink ===
+                            routePathLink.id
+                                ? s.routePathLinkRowSelected
+                                : s.routePathLinkRow
+                        }
                         onClick={this.selectRoutePathLink(routePathLink.id)}
                     >
                         <div className={s.flexInnerRow}>
@@ -71,23 +79,23 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
                                 {routePathLink.startNodeType}
                             </div>
                         </div>
-                    </div>);
+                    </div>
+                );
             }
             return;
         });
-    }
+    };
 
     private getHastusId = (routePathLink: IRoutePathLink) => {
-        return (routePathLink.startNode.stop && routePathLink.startNode.stop.hastusId) ?
-            routePathLink.startNode.stop.hastusId :
-            '-';
-    }
+        return routePathLink.startNode.stop &&
+            routePathLink.startNode.stop.hastusId
+            ? routePathLink.startNode.stop.hastusId
+            : '-';
+    };
 
     private getNodeName = (node: INode) => {
-        return (node.stop) ?
-            node.stop.nameFi :
-            '-';
-    }
+        return node.stop ? node.stop.nameFi : '-';
+    };
 
     private openLinkView = () => {
         const link = this.state.selectedRoutePathLink;
@@ -105,7 +113,7 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
             //         .toLink();
             // window.open(linkViewLink);
         }
-    }
+    };
 
     private getLinkViewButtonTitle = () => {
         const routePathLinkId = this.state.selectedRoutePathLink;
@@ -113,50 +121,51 @@ class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewSta
             return `Avaa linkki (id: ${this.state.selectedRoutePathLink})`;
         }
         return `Ei valittua linkkiä`;
-    }
+    };
 
     private noRoutePathLinkSelected = () => {
         return !this.state.selectedRoutePathLink;
-    }
+    };
 
     private setLinkTableFilter = (filter: NodeType | EmptyFilterType) => {
         this.setState({
-            linkTableFilter: filter,
+            linkTableFilter: filter
         });
-    }
+    };
 
     render() {
         return (
-        <div className={s.linkListView}>
-            <div className={s.dropDownFilter}>
-                <Dropdown
-                    label='Alkusolmutyyppi'
-                    selected={this.state.linkTableFilter}
-                    emptyItem={{ value: EMPTY_FILTER_VALUE, label: 'Näytä kaikki' }}
-                    items={
-                        this.props.codeListStore!.getCodeList(
-                            'Solmutyyppi (P/E)')}
-                    onChange={this.setLinkTableFilter}
-                />
+            <div className={s.linkListView}>
+                <div className={s.dropDownFilter}>
+                    <Dropdown
+                        label='Alkusolmutyyppi'
+                        selected={this.state.linkTableFilter}
+                        emptyItem={{
+                            value: EMPTY_FILTER_VALUE,
+                            label: 'Näytä kaikki'
+                        }}
+                        items={this.props.codeListStore!.getCodeList(
+                            'Solmutyyppi (P/E)'
+                        )}
+                        onChange={this.setLinkTableFilter}
+                    />
+                </div>
+                <div className={s.columnTitleRow}>
+                    <div className={s.tableItemMedium}>Linkin id</div>
+                    <div className={s.tableItem}>Alkusolmu</div>
+                    <div className={s.tableItem}>Loppusolmu</div>
+                    <div className={s.tableItem}>Hastus id</div>
+                    <div className={s.tableItemSmall}>T</div>
+                </div>
+                <div className={s.linkList}>{this.getRoutePathLinks()}</div>
+                <Button
+                    type={ButtonType.SQUARE}
+                    disabled={this.noRoutePathLinkSelected()}
+                    onClick={this.openLinkView}
+                >
+                    {this.getLinkViewButtonTitle()}
+                </Button>
             </div>
-            <div className={s.columnTitleRow}>
-                <div className={s.tableItemMedium}>Linkin id</div>
-                <div className={s.tableItem}>Alkusolmu</div>
-                <div className={s.tableItem}>Loppusolmu</div>
-                <div className={s.tableItem}>Hastus id</div>
-                <div className={s.tableItemSmall}>T</div>
-            </ div>
-            <div className={s.linkList}>
-                {this.getRoutePathLinks()}
-            </div>
-            <Button
-                type={ButtonType.SQUARE}
-                disabled={this.noRoutePathLinkSelected()}
-                onClick={this.openLinkView}
-            >
-                {this.getLinkViewButtonTitle()}
-            </Button>
-        </div>
         );
     }
 }

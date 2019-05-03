@@ -23,9 +23,9 @@ export class SearchResultStore {
                 SearchStore.searchInput,
                 SearchStore.selectedTransitTypes,
                 SearchStore.isSearchingForLines,
-                SearchStore.isSearchingForNodes,
+                SearchStore.isSearchingForNodes
             ],
-            this.startUpdateTimer,
+            this.startUpdateTimer
         );
     }
 
@@ -52,12 +52,12 @@ export class SearchResultStore {
     @action
     public setAllLines = (lines: ISearchLine[]) => {
         this._allLines = lines;
-    }
+    };
 
     @action
     public setAllNodes = (nodes: INodeBase[]) => {
         this._allNodes = nodes;
-    }
+    };
 
     private matchWildcard(text: string, rule: string) {
         return new RegExp(`^${rule.split('*').join('.*')}$`).test(text);
@@ -74,18 +74,15 @@ export class SearchResultStore {
     private startUpdateTimer = () => {
         this._isSearching = true;
         clearTimeout(this.delayTimer);
-        this.delayTimer = setTimeout(
-            () => {
-                this.search();
-            },
-            500,
-        );
-    }
+        this.delayTimer = setTimeout(() => {
+            this.search();
+        }, 500);
+    };
 
     @action
     private setIsSearching = (isSearching: boolean) => {
         this._isSearching = isSearching;
-    }
+    };
 
     @action
     public search = async () => {
@@ -96,27 +93,24 @@ export class SearchResultStore {
         if (SearchStore.isSearchingForLines) {
             const lines = this.getFilteredLines(
                 searchInput,
-                SearchStore.selectedTransitTypes,
+                SearchStore.selectedTransitTypes
             );
-            list = [
-                ...list,
-                ...lines,
-            ];
+            list = [...list, ...lines];
         }
         if (SearchStore.isSearchingForNodes) {
             const nodes = this.getFilteredNodes(searchInput);
-            list = [
-                ...list,
-                ...nodes,
-            ];
+            list = [...list, ...nodes];
         }
 
-        this._filteredItems = list.sort((a, b) => a.id > b.id ? 1 : -1);
+        this._filteredItems = list.sort((a, b) => (a.id > b.id ? 1 : -1));
         this.setIsSearching(false);
-    }
+    };
 
-    private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
-        return this._allLines.filter((line) => {
+    private getFilteredLines = (
+        searchInput: string,
+        transitTypes: TransitType[]
+    ) => {
+        return this._allLines.filter(line => {
             // Filter by transitType
             if (!transitTypes.includes(line.transitType)) {
                 return false;
@@ -130,17 +124,17 @@ export class SearchResultStore {
                 .map(route => route.name.toLowerCase())
                 .some(name => this.matchText(name, searchInput.toLowerCase()));
         });
-    }
+    };
 
     private getFilteredNodes = (searchInput: string) => {
-        return this._allNodes.filter((node) => {
+        return this._allNodes.filter(node => {
             const shortId = NodeHelper.getShortId(node);
-            return this.matchText(node.id, searchInput)
-                || (
-                    Boolean(shortId) && this.matchText(shortId, searchInput)
-                );
+            return (
+                this.matchText(node.id, searchInput) ||
+                (Boolean(shortId) && this.matchText(shortId, searchInput))
+            );
         });
-    }
+    };
 }
 
 const observableSearchResultStore = new SearchResultStore();

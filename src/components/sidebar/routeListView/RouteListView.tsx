@@ -15,7 +15,7 @@ import SearchResults from '../../shared/searchView/SearchResults';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import * as s from './routeListView.scss';
 
-interface IRouteListViewProps{
+interface IRouteListViewProps {
     routeListStore?: RouteListStore;
     searchStore?: SearchStore;
 }
@@ -25,7 +25,7 @@ interface IRouteListViewProps{
 class RouteListView extends React.Component<IRouteListViewProps> {
     private toggleTransitType = (type: TransitType) => {
         this.props.searchStore!.toggleTransitType(type);
-    }
+    };
 
     componentDidUpdate() {
         if (!navigator.getQueryParam(QueryParams.routes)) {
@@ -41,20 +41,21 @@ class RouteListView extends React.Component<IRouteListViewProps> {
     render() {
         return (
             <div className={s.routeListView}>
-                <SearchInput/>
-                { this.props.searchStore!.searchInput === '' ? (
+                <SearchInput />
+                {this.props.searchStore!.searchInput === '' ? (
                     <Route component={RouteList} />
                 ) : (
                     <>
                         <EntityTypeToggles />
                         <TransitToggleButtonBar
                             toggleSelectedTransitType={this.toggleTransitType}
-                            selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
+                            selectedTransitTypes={
+                                this.props.searchStore!.selectedTransitTypes
+                            }
                         />
                         <SearchResults />
                     </>
-                )
-                }
+                )}
             </div>
         );
     }

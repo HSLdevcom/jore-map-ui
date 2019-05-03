@@ -10,7 +10,13 @@ import routeValidationModel from '~/models/validationModels/routeValidationModel
 import { ErrorStore } from '~/stores/errorStore';
 import { RouteStore } from '~/stores/routeStore';
 import { AlertStore } from '~/stores/alertStore';
-import { Tabs, TabList, Tab, ContentList, ContentItem } from '~/components/shared/Tabs';
+import {
+    Tabs,
+    TabList,
+    Tab,
+    ContentList,
+    ContentItem
+} from '~/components/shared/Tabs';
 import RouteService from '~/services/routeService';
 import RouteFactory from '~/factories/routeFactory';
 import routeBuilder from '~/routing/routeBuilder';
@@ -39,14 +45,14 @@ interface IRouteViewState {
 
 @inject('routeStore', 'errorStore', 'alertStore')
 @observer
-class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
+class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     constructor(props: IRouteViewProps) {
         super(props);
         this.state = {
             isLoading: true,
-            invalidPropertiesMap: {},
+            invalidPropertiesMap: {},
             isEditingDisabled: !props.isNewRoute,
-            selectedTabIndex: 0,
+            selectedTabIndex: 0
         };
     }
 
@@ -62,9 +68,9 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
 
     private setSelectedTabIndex = (index: number) => {
         this.setState({
-            selectedTabIndex: index,
+            selectedTabIndex: index
         });
-    }
+    };
 
     private initialize = async () => {
         if (this.props.isNewRoute) {
@@ -75,10 +81,10 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
         if (this.props.routeStore!.route) {
             this.validateRoute();
             this.setState({
-                isLoading: false,
+                isLoading: false
             });
         }
-    }
+    };
 
     private createNewRoute = async () => {
         try {
@@ -88,13 +94,16 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
                 this.props.routeStore!.setRoute(newRoute);
             }
         } catch (e) {
-            this.props.errorStore!.addError('Uuden reitin luonti epäonnistui', e);
+            this.props.errorStore!.addError(
+                'Uuden reitin luonti epäonnistui',
+                e
+            );
         }
-    }
+    };
 
     private initExistingRoute = async () => {
         await this.fetchRoute();
-    }
+    };
 
     private fetchRoute = async () => {
         const routeId = this.props.match!.params.id;
@@ -104,12 +113,12 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
         } catch (e) {
             this.props.errorStore!.addError('Reitin haku epäonnistui.', e);
         }
-    }
+    };
 
     private onChangeRouteProperty = (property: string) => (value: any) => {
         this.props.routeStore!.updateRouteProperty(property, value);
         this.validateProperty(routeValidationModel[property], property, value);
-    }
+    };
 
     private save = async () => {
         this.setState({ isLoading: true });
@@ -122,7 +131,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
                 await RouteService.updateRoute(route!);
             }
 
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;
@@ -134,9 +143,9 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
         this.setState({
             isEditingDisabled: true,
             invalidPropertiesMap: {},
-            isLoading: false,
+            isLoading: false
         });
-    }
+    };
 
     private navigateToNewRoute = () => {
         const route = this.props.routeStore!.route;
@@ -145,7 +154,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
             .toTarget(route!.id)
             .toLink();
         navigator.goTo(routeViewLink);
-    }
+    };
 
     private toggleIsEditing = () => {
         const isEditingDisabled = this.state.isEditingDisabled;
@@ -154,11 +163,14 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
         }
         this.toggleIsEditingDisabled();
         if (!isEditingDisabled) this.validateRoute();
-    }
+    };
 
     private validateRoute = () => {
-        this.validateAllProperties(routeValidationModel, this.props.routeStore!.route);
-    }
+        this.validateAllProperties(
+            routeValidationModel,
+            this.props.routeStore!.route
+        );
+    };
 
     private renderRouteViewHeader = () => {
         const lineId = navigator.getQueryParam(QueryParams.lineId);
@@ -168,31 +180,32 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
                     isEditButtonVisible={!this.props.isNewRoute}
                     onEditButtonClick={this.toggleIsEditing}
                     isEditing={!this.state.isEditingDisabled}
-                    shouldShowClosePromptMessage={this.props.routeStore!.isDirty}
-                >
-                    {
-                        this.props.isNewRoute ?
-                        `Luo uusi reitti linjalle ${lineId}` :
-                        `Reitti ${this.props.routeStore!.route!.id}`
+                    shouldShowClosePromptMessage={
+                        this.props.routeStore!.isDirty
                     }
+                >
+                    {this.props.isNewRoute
+                        ? `Luo uusi reitti linjalle ${lineId}`
+                        : `Reitti ${this.props.routeStore!.route!.id}`}
                 </SidebarHeader>
             </div>
         );
-    }
+    };
 
     render() {
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.routeView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.MEDIUM}/>
+                    <Loader size={LoaderSize.MEDIUM} />
                 </div>
             );
         }
         if (!this.props.routeStore!.route) return null;
 
-        const isSaveButtonDisabled = this.state.isEditingDisabled
-            || !this.props.routeStore!.isDirty
-            || !this.isFormValid();
+        const isSaveButtonDisabled =
+            this.state.isEditingDisabled ||
+            !this.props.routeStore!.isDirty ||
+            !this.isFormValid();
 
         return (
             <div className={s.routeView}>
@@ -203,16 +216,28 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
                             selectedTabIndex={this.state.selectedTabIndex}
                             setSelectedTabIndex={this.setSelectedTabIndex}
                         >
-                            <Tab><div>Reitin tiedot</div></Tab>
-                            <Tab isDisabled={this.props.isNewRoute}><div>Reitinsuunnat</div></Tab>
+                            <Tab>
+                                <div>Reitin tiedot</div>
+                            </Tab>
+                            <Tab isDisabled={this.props.isNewRoute}>
+                                <div>Reitinsuunnat</div>
+                            </Tab>
                         </TabList>
-                        <ContentList selectedTabIndex={this.state.selectedTabIndex}>
+                        <ContentList
+                            selectedTabIndex={this.state.selectedTabIndex}
+                        >
                             <ContentItem>
                                 <RouteInfoTab
-                                    isEditingDisabled={this.state.isEditingDisabled}
+                                    isEditingDisabled={
+                                        this.state.isEditingDisabled
+                                    }
                                     isNewRoute={this.props.isNewRoute}
-                                    onChangeRouteProperty={this.onChangeRouteProperty}
-                                    invalidPropertiesMap={this.state.invalidPropertiesMap}
+                                    onChangeRouteProperty={
+                                        this.onChangeRouteProperty
+                                    }
+                                    invalidPropertiesMap={
+                                        this.state.invalidPropertiesMap
+                                    }
                                     setValidatorResult={this.setValidatorResult}
                                 />
                             </ContentItem>
@@ -227,7 +252,9 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState>{
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
                 >
-                    {this.props.isNewRoute ? 'Luo uusi reitti' : 'Tallenna muutokset'}
+                    {this.props.isNewRoute
+                        ? 'Luo uusi reitti'
+                        : 'Tallenna muutokset'}
                 </Button>
             </div>
         );

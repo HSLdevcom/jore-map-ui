@@ -25,7 +25,7 @@ export class ConfirmStore {
     public openConfirm = (
         content: React.ReactNode,
         onConfirm: () => void,
-        onCancel?: () => void,
+        onCancel?: () => void
     ) => {
         this._content = content;
         this._onConfirm = onConfirm;
@@ -33,7 +33,7 @@ export class ConfirmStore {
         if (onCancel) {
             this._onCancel = onCancel;
         }
-    }
+    };
 
     @action
     public cancel = () => {
@@ -41,7 +41,7 @@ export class ConfirmStore {
             this._onCancel();
         }
         this.clear();
-    }
+    };
 
     @action
     public confirm = () => {
@@ -49,7 +49,7 @@ export class ConfirmStore {
             this._onConfirm();
         }
         this.clear();
-    }
+    };
 
     @action
     private clear = () => {
@@ -57,7 +57,7 @@ export class ConfirmStore {
         this._onCancel = null;
         this._onConfirm = null;
         this._isOpen = false;
-    }
+    };
 }
 
 export default new ConfirmStore();

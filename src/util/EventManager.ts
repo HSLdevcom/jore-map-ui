@@ -1,22 +1,20 @@
-
 type eventName =
-    'enter' |
-    'arrowUp' |
-    'arrowDown' |
-    'undo' |
-    'redo' |
-    'mapClick' |
-    'nodeClick' | // TODO: rename as onRoutePathNodeClick?
-    'networkNodeClick' |
-    'networkLinkClick' |
-    'geometryChange';
+    | 'enter'
+    | 'arrowUp'
+    | 'arrowDown'
+    | 'undo'
+    | 'redo'
+    | 'mapClick'
+    | 'nodeClick' // TODO: rename as onRoutePathNodeClick?
+    | 'networkNodeClick'
+    | 'networkLinkClick'
+    | 'geometryChange';
 
 class EventManager {
-
     public trigger(eventName: eventName, data?: any) {
         const event = new CustomEvent(eventName, {
             bubbles: true,
-            detail: data,
+            detail: data
         });
         document.dispatchEvent(event);
     }
@@ -27,7 +25,6 @@ class EventManager {
     public off(eventName: eventName, callback: (event: CustomEvent) => void) {
         document.removeEventListener(eventName, callback);
     }
-
 }
 
 export default new EventManager();
