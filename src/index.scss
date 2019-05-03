@@ -7,7 +7,8 @@ body {
     color: $fontColorDefault;
 }
 
-input, select {
+input,
+select {
     width: 100%;
     padding: 12px;
     border: 1px solid $mediumLightGrey;
@@ -19,6 +20,7 @@ input, select {
     color: $fontColorDefault;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     border: 1.5px solid $busBlue;
 }

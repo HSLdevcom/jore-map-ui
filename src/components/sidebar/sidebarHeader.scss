@@ -7,7 +7,6 @@
     align-items: center;
     padding: 8px;
 
-
     .topic {
         font-size: $largeFontSize;
         font-weight: bold;
@@ -20,9 +19,8 @@
         padding: 2px;
         cursor: pointer;
         margin: 3px;
-        transition: .5s;
+        transition: 0.5s;
     }
-
 
     .icon:hover {
         opacity: 1;

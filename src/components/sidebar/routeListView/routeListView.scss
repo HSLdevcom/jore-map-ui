@@ -1,11 +1,11 @@
 @import '../../shared/styles/common.scss';
 .routeListView {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: $sidebarNarrow;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: $sidebarNarrow;
 
-  .routesText {
-    font-weight: bold;
-  }
+    .routesText {
+        font-weight: bold;
+    }
 }

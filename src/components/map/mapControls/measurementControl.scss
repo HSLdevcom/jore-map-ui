@@ -2,30 +2,29 @@
 @import '../../shared/styles/mapControl';
 
 .measurementControlView {
-  @extend %soloControl;
-  color: $busBlue;
-  display: flex;
-
+    @extend %soloControl;
+    color: $busBlue;
+    display: flex;
 }
 .measurementCursor {
-  cursor: crosshair;
+    cursor: crosshair;
 }
 
 .movingPolyline {
-  @extend .no-events;
-  stroke: black;
-  stroke-dasharray: 10px;
+    @extend .no-events;
+    stroke: black;
+    stroke-dasharray: 10px;
 }
 
 .polyline {
-  stroke: $darkGrey;
+    stroke: $darkGrey;
 }
 
 .circleMarker {
-  stroke: black;
-  fill: $whiteOpaque;
+    stroke: black;
+    fill: $whiteOpaque;
 }
 
-.no-events{
-  pointer-events: none;
+.no-events {
+    pointer-events: none;
 }

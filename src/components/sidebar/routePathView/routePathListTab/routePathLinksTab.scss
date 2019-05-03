@@ -19,15 +19,14 @@
         .saveButton {
             padding: 20px;
             background-color: $saveButtonGreen;
-            color: #FFF;
+            color: #fff;
             text-align: center;
             font-size: $mediumFontSize;
             cursor: pointer;
         }
 
         .saveButton:hover {
-            background-color: darken($saveButtonGreen, 10)
+            background-color: darken($saveButtonGreen, 10);
         }
-
     }
 }

@@ -3,7 +3,7 @@
 .button {
     flex-grow: 1;
     border: hidden;
-    transition: .2s;
+    transition: 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,5 +17,5 @@
 
 .toggled {
     background-color: $darkGrey;
-    transition: .5s;
+    transition: 0.5s;
 }

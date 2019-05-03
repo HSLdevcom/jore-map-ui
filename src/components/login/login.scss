@@ -29,7 +29,7 @@ $formWidth: 225px;
         left: 50%;
         padding: 30px 90px;
         transform: translate(-50%, -50%);
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 3px 14px rgba(0, 0, 0, .4);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 3px 14px rgba(0, 0, 0, 0.4);
         border-radius: 2px;
         text-align: center;
         overflow-y: auto;
@@ -37,7 +37,7 @@ $formWidth: 225px;
         justify-content: center;
         flex-direction: column;
         align-items: center;
-        color: #FFF;
+        color: #fff;
         background-color: #007ac9a6;
 
         .header {
@@ -60,9 +60,9 @@ $formWidth: 225px;
             height: 20px;
             margin: 10px 0px 10px 0px;
             padding: 15px;
-            border: 1px solid #FFF;
+            border: 1px solid #fff;
             background: transparent;
-            color: #FFF;
+            color: #fff;
             border-radius: 2px;
         }
 
@@ -85,12 +85,13 @@ $formWidth: 225px;
         }
 
         .loginButton:hover {
-            background-color: #FFF;
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 3px 14px rgba(0, 0, 0, 0.4);
+            background-color: #fff;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
+                0 3px 14px rgba(0, 0, 0, 0.4);
         }
 
         ::placeholder {
-            color: #FFF;
+            color: #fff;
         }
     }
 }

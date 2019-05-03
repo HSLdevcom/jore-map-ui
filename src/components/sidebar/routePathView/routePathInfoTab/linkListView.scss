@@ -3,14 +3,13 @@
 @import '../../../shared/styles/form';
 
 .linkListView {
-
     .dropDownFilter {
         width: 50%;
     }
 
     .linkList {
         background-color: white;
-        height:  160px;
+        height: 160px;
         overflow: auto;
         cursor: pointer;
         margin-top: 5px;
@@ -42,7 +41,7 @@
         padding-top: 10px;
         margin-right: 19px; // Scrollbar width
         @supports (-ms-ime-align: auto) {
-          margin-right: 12px; // Scrollbar width in Edge
+            margin-right: 12px; // Scrollbar width in Edge
         }
     }
 

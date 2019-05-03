@@ -1,7 +1,7 @@
 $fontColorDefault: rgb(62, 62, 62);
 $fontColorLightGrey: rgb(128, 128, 128);
 
-$hslFont: Gotham Rounded SSm A,Gotham Rounded SSm B,Arial,Georgia,Serif;
+$hslFont: Gotham Rounded SSm A, Gotham Rounded SSm B, Arial, Georgia, Serif;
 
 $smallFontSize: 0.8rem;
 $mediumFontSize: 1rem;
@@ -9,35 +9,35 @@ $largeFontSize: 1.5rem;
 
 $busBlue: rgb(0, 122, 201);
 $tramGreen: rgb(0, 152, 95);
-$subwayOrange: rgb(255,99,25);
+$subwayOrange: rgb(255, 99, 25);
 $trainPurple: rgb(140, 71, 153);
-$ferryBlue: rgb(0,185,228);
+$ferryBlue: rgb(0, 185, 228);
 
 $blue: rgb(0, 122, 201);
 $red: rgb(201, 0, 0);
 $grey: rgb(102, 102, 102);
 $white: rgb(255, 255, 255);
 
-$errorRed: #D8000C;
-$errorRedLight: #FFD2D2;
-$warningYellow: #9F6000;
-$warningYellowLight: #FEEFB3;
-$successGreen: #4F8A10;
-$successGreenLight: #DFF2BF;
+$errorRed: #d8000c;
+$errorRedLight: #ffd2d2;
+$warningYellow: #9f6000;
+$warningYellowLight: #feefb3;
+$successGreen: #4f8a10;
+$successGreenLight: #dff2bf;
 
-$lightGrey: rgb(222,222,222);
-$mediumLightGrey: rgb(190,190,190);
+$lightGrey: rgb(222, 222, 222);
+$mediumLightGrey: rgb(190, 190, 190);
 $mediumGrey: rgb(137, 137, 137);
-$darkGrey: rgb(87,87,87);
+$darkGrey: rgb(87, 87, 87);
 $disabledGrey: #cccccc;
 
 $backgroundlightGrey: #eef1f3;
 
-$borderOpaque: rgba(0,0,0,0.2);
-$whiteOpaque: rgba(255,255,255,0.5);
+$borderOpaque: rgba(0, 0, 0, 0.2);
+$whiteOpaque: rgba(255, 255, 255, 0.5);
 
-$leafletControlBackgroundOpaque: rgba(255,255,255,0);
-$leafletControlBackgroundHover: rgba(255,255,255,0.5);
+$leafletControlBackgroundOpaque: rgba(255, 255, 255, 0);
+$leafletControlBackgroundHover: rgba(255, 255, 255, 0.5);
 
 $sidebarNarrow: 400px;
 $sidebarWide: 500px;
@@ -54,4 +54,3 @@ $nodeManualColor: rgba(4, 255, 0, 0.5);
 $nodeProjectionColor: rgba(255, 255, 0, 0.5);
 
 $linkHoverBackgroundColor: #e6e6e6;
-
