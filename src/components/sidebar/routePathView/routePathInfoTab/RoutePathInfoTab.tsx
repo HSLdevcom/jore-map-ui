@@ -90,7 +90,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
             const validationResult: IValidationResult = {
                 isValid: false,
                 errorMessage:
-                    'Reitinsuunta samalla reitin ID:llä, suunnalla ja alkupäivämäärä on jo olemassa'
+                    'Reitinsuunta samalla reitillä, suunnalla ja alkupäivämäärällä on jo olemassa.'
             };
             this.props.setValidatorResult('direction', validationResult);
         }
