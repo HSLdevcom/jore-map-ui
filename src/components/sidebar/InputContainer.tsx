@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import Moment from 'moment';
 import classnames from 'classnames';
 import { IValidationResult } from '~/validation/FormValidator';
 import DatePicker from '../controls/DatePicker';
@@ -73,6 +74,14 @@ const InputContainer = observer((props: IInputProps) => {
     const validationResult = props.validationResult;
 
     if (props.disabled) {
+        if (props.type === 'date') {
+            return (
+                <TextContainer
+                    label={props.label}
+                    value={Moment(props.value).format('DD.MM.YYYY HH:mm')}
+                />
+            );
+        }
         return <TextContainer label={props.label} value={props.value} />;
     }
 
