@@ -12,6 +12,7 @@ const routePathValidationModel = {
     routePathShortNameSw: shortNameRule,
     startTime: dateRule,
     endTime: dateRule,
+    direction: 'required',
     length: 'required|min:0|max:99999|numeric'
 };
 

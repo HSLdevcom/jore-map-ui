@@ -218,6 +218,43 @@ class RoutePathView extends ViewFormBase<
             property,
             value
         );
+        if (
+            this.props.isNewRoutePath &&
+            (property === 'direction' || property === 'startTime')
+        ) {
+            if (property === 'startTime') {
+                this.validateProperty(
+                    routePathValidationModel.direction,
+                    'direction',
+                    this.props.routePathStore!.routePath!.direction
+                );
+            }
+            this.checkForDuplicatePrimaryKey();
+        }
+    };
+
+    private checkForDuplicatePrimaryKey = () => {
+        const routePath = this.props.routePathStore!.routePath!;
+
+        const isThisNewRoutePathIdenticalToOld = this.existingRoutePathPrimaryKeys.some(
+            rp =>
+                routePath.routeId === rp.routeId &&
+                routePath.direction === rp.direction &&
+                routePath.startTime.getTime() === rp.startTime.getTime()
+        );
+
+        if (isThisNewRoutePathIdenticalToOld) {
+            this.setState({
+                invalidPropertiesMap: {
+                    ...this.state.invalidPropertiesMap,
+                    ['direction']: {
+                        isValid: false,
+                        errorMessage:
+                            'Reitinsuunta samalla reitin ID:llä, suunnalla ja alkupäivämäärä on jo olemassa'
+                    }
+                }
+            });
+        }
     };
 
     public renderTabContent = () => {

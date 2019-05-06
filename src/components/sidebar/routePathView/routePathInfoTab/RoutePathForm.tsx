@@ -190,6 +190,7 @@ class RoutePathForm extends React.Component<IRoutePathFormProps> {
                                 'Suunta'
                             )}
                             onChange={onChange('direction')}
+                            validationResult={invalidPropertiesMap['direction']}
                         />
                         <Dropdown
                             label='POIKKEUSREITTI'
@@ -199,6 +200,9 @@ class RoutePathForm extends React.Component<IRoutePathFormProps> {
                                 'Kyllä/Ei'
                             )}
                             onChange={onChange('exceptionPath')}
+                            validationResult={
+                                invalidPropertiesMap['exceptionPath']
+                            }
                         />
                     </div>
                     <div className={s.flexRow}>
