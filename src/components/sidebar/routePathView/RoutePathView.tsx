@@ -24,6 +24,7 @@ import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import SubSites from '~/routing/subSites';
+import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -68,6 +69,7 @@ class RoutePathView extends ViewFormBase<
     IRoutePathViewProps,
     IRoutePathViewState
 > {
+    existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
@@ -95,7 +97,10 @@ class RoutePathView extends ViewFormBase<
 
     private initialize = async () => {
         if (this.props.isNewRoutePath) {
-            await this.createNewRoutePath();
+            const queryParams = navigator.getQueryParamValues();
+            const routeId = queryParams[QueryParams.routeId];
+            await this.createNewRoutePath(routeId);
+            await this.fetchExistingPrimaryKeys(routeId);
         } else {
             await this.initExistingRoutePath();
         }
@@ -114,16 +119,19 @@ class RoutePathView extends ViewFormBase<
         }
     };
 
-    private createNewRoutePath = async () => {
+    private fetchExistingPrimaryKeys = async (routeId: string) => {
+        this.existingRoutePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(
+            routeId
+        );
+    };
+
+    private createNewRoutePath = async (routeId: string) => {
         try {
             if (!this.props.routePathStore!.routePath) {
-                const queryParams = navigator.getQueryParamValues();
-                const route = await RouteService.fetchRoute(
-                    queryParams[QueryParams.routeId]
-                );
+                const route = await RouteService.fetchRoute(routeId);
                 // TODO: add transitType to this call (if transitType is routePath's property)
                 const newRoutePath = RoutePathFactory.createNewRoutePath(
-                    queryParams[QueryParams.lineId],
+                    routeId,
                     route
                 );
                 this.props.routePathStore!.setRoutePath(newRoutePath);
