@@ -23,7 +23,7 @@
 
         .lineLabel:hover {
             background-color: $linkHoverBackgroundColor;
-            transition: .5s;
+            transition: 0.5s;
         }
 
         .icon {
@@ -46,13 +46,13 @@
                 font-size: 22px;
                 cursor: pointer;
                 color: $mediumGrey;
-                transition: .5s;
+                transition: 0.5s;
                 background-color: rgb(238, 241, 243);
 
                 :hover {
                     color: $ferryBlue;
                     border-radius: 5px;
-                    transition: .5s;
+                    transition: 0.5s;
                 }
             }
 
@@ -63,12 +63,12 @@
                 padding-bottom: 3px;
                 padding-left: 2px;
                 border-radius: 5px;
-                transition: .5s;
+                transition: 0.5s;
             }
 
             .routeName:hover {
                 background-color: $linkHoverBackgroundColor;
-                transition: .5s;
+                transition: 0.5s;
             }
 
             .routeDate {

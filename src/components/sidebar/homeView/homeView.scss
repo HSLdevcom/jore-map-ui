@@ -2,11 +2,11 @@
 @import '../../shared/styles/sidebar.scss';
 
 .homeView {
-  display: flex;
-  flex-direction: column;
-  width: $sidebarNarrow;
+    display: flex;
+    flex-direction: column;
+    width: $sidebarNarrow;
 
-  .routesText {
-    font-weight: bold;
-  }
+    .routesText {
+        font-weight: bold;
+    }
 }

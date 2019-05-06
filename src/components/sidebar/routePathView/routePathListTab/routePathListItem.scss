@@ -58,14 +58,14 @@
             top: 50%;
             left: 50%;
             margin: 0;
-            transform: translate(-50%, -50%)
+            transform: translate(-50%, -50%);
         }
     }
 
     .itemHeader {
         display: flex;
         flex-direction: row;
-        border-right: 3px solid rgba(255,255,255, 0);
+        border-right: 3px solid rgba(255, 255, 255, 0);
         cursor: pointer;
 
         .headerContent {
@@ -115,14 +115,14 @@
         .itemToggle {
             font-size: 22px;
             color: $mediumGrey;
-            transition: .5s;
+            transition: 0.5s;
             padding: 15px;
             text-align: end;
             align-self: center;
 
             :hover {
                 color: darken($mediumGrey, 10);
-                transition: .5s;
+                transition: 0.5s;
             }
         }
     }
@@ -168,7 +168,6 @@
             }
         }
     }
-
 
     .itemExtended {
         border-right: 3px solid $blue;

@@ -1,41 +1,40 @@
 @import '../../shared/styles/common';
 
 .nodeCoordinatesView {
-  padding-bottom: 10px;
-  input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0;
-  }
-  .nodeCoordinatesHeader {
-
-    .labelIcon {
-        height: 12px;
-        margin: 2px 14px;
-        width: 12px;
-        border-style: solid;
-        border-color: #3786cb;
-        border-width: 3px;
-        border-radius: 12px;
-        display: inline-block;
-        vertical-align: middle;
+    padding-bottom: 10px;
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
     }
+    .nodeCoordinatesHeader {
+        .labelIcon {
+            height: 12px;
+            margin: 2px 14px;
+            width: 12px;
+            border-style: solid;
+            border-color: #3786cb;
+            border-width: 3px;
+            border-radius: 12px;
+            display: inline-block;
+            vertical-align: middle;
+        }
 
-    .manual {
-        background-color: $nodeManualColor;
-    }
+        .manual {
+            background-color: $nodeManualColor;
+        }
 
-    .projected {
-        background-color: $nodeProjectionColor;
+        .projected {
+            background-color: $nodeProjectionColor;
+        }
     }
-  }
-  .coordinatesInputs {
-    display: flex;
+    .coordinatesInputs {
+        display: flex;
 
-    div {
-      margin: 0 0 0 5px;
+        div {
+            margin: 0 0 0 5px;
+        }
     }
-  }
 }
