@@ -24,7 +24,6 @@ import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import SubSites from '~/routing/subSites';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -69,7 +68,6 @@ class RoutePathView extends ViewFormBase<
     IRoutePathViewProps,
     IRoutePathViewState
 > {
-    existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
@@ -97,10 +95,7 @@ class RoutePathView extends ViewFormBase<
 
     private initialize = async () => {
         if (this.props.isNewRoutePath) {
-            const queryParams = navigator.getQueryParamValues();
-            const routeId = queryParams[QueryParams.routeId];
-            await this.createNewRoutePath(routeId);
-            await this.fetchExistingPrimaryKeys(routeId);
+            await this.createNewRoutePath();
         } else {
             await this.initExistingRoutePath();
         }
@@ -119,15 +114,11 @@ class RoutePathView extends ViewFormBase<
         }
     };
 
-    private fetchExistingPrimaryKeys = async (routeId: string) => {
-        this.existingRoutePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(
-            routeId
-        );
-    };
-
-    private createNewRoutePath = async (routeId: string) => {
+    private createNewRoutePath = async () => {
         try {
             if (!this.props.routePathStore!.routePath) {
+                const queryParams = navigator.getQueryParamValues();
+                const routeId = queryParams[QueryParams.routeId];
                 const route = await RouteService.fetchRoute(routeId);
                 // TODO: add transitType to this call (if transitType is routePath's property)
                 const newRoutePath = RoutePathFactory.createNewRoutePath(
@@ -218,43 +209,6 @@ class RoutePathView extends ViewFormBase<
             property,
             value
         );
-        if (
-            this.props.isNewRoutePath &&
-            (property === 'direction' || property === 'startTime')
-        ) {
-            if (property === 'startTime') {
-                this.validateProperty(
-                    routePathValidationModel.direction,
-                    'direction',
-                    this.props.routePathStore!.routePath!.direction
-                );
-            }
-            this.checkForDuplicatePrimaryKey();
-        }
-    };
-
-    private checkForDuplicatePrimaryKey = () => {
-        const routePath = this.props.routePathStore!.routePath!;
-
-        const isThisNewRoutePathIdenticalToOld = this.existingRoutePathPrimaryKeys.some(
-            rp =>
-                routePath.routeId === rp.routeId &&
-                routePath.direction === rp.direction &&
-                routePath.startTime.getTime() === rp.startTime.getTime()
-        );
-
-        if (isThisNewRoutePathIdenticalToOld) {
-            this.setState({
-                invalidPropertiesMap: {
-                    ...this.state.invalidPropertiesMap,
-                    ['direction']: {
-                        isValid: false,
-                        errorMessage:
-                            'Reitinsuunta samalla reitin ID:llä, suunnalla ja alkupäivämäärä on jo olemassa'
-                    }
-                }
-            });
-        }
     };
 
     public renderTabContent = () => {
@@ -266,6 +220,7 @@ class RoutePathView extends ViewFormBase<
                     isNewRoutePath={this.props.isNewRoutePath}
                     onChange={this.onChange}
                     invalidPropertiesMap={this.state.invalidPropertiesMap}
+                    setValidatorResult={this.setValidatorResult}
                 />
             );
         }
