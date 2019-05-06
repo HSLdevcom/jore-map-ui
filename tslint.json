@@ -1,7 +1,7 @@
 {
     "extends": ["tslint-config-airbnb", "tslint-config-prettier"],
     "linterOptions": {
-        "exclude": ["config/**/*.js", "node_modules/**/*.ts", "src/project/*"]
+        "exclude": ["config/**/*.js", "node_modules/**/*.ts", "/**/*.json"]
     },
     "rulesDirectory": ["node_modules/tslint-origin-ordered-imports-rule/dist"],
     "rules": {
