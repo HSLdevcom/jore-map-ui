@@ -270,6 +270,19 @@ class LineInfoTab extends React.Component<
                             }
                         />
                     </div>
+                    <div className={s.flexRow}>
+                        <InputContainer
+                            disabled={true}
+                            label='MUOKANNUT'
+                            value={line.modifiedBy}
+                        />
+                        <InputContainer
+                            disabled={true}
+                            label='MUOKATTU PVM'
+                            type={'date'}
+                            value={line.modifiedOn}
+                        />
+                    </div>
                 </div>
             </div>
         );
