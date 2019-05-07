@@ -16,6 +16,7 @@ import s from './routePathLinksTab.scss';
 interface IRoutePathLinksTabProps {
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
+    isEditingDisabled: boolean;
 }
 
 @inject('routePathStore')
@@ -76,6 +77,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         key={`${routePathLink.id}-${index}-link`}
                         reference={this.listObjectReferences[routePathLink.id]}
                         routePathLink={routePathLink}
+                        isEditingDisabled={this.props.isEditingDisabled}
                     />
                 ) : null
             ];

@@ -18,6 +18,9 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     orderNumber: number;
     startNodeType: NodeType;
     isStartNodeTimeAlignmentStop: boolean;
+    isStartNodeHastusStop: boolean;
+    isAtBookSchedule: boolean;
+    startNodeColumnNumber: number;
 }
 
 export { IRoutePathLinkPrimaryKey };

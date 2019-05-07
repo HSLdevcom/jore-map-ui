@@ -35,6 +35,7 @@ export class RoutePathStore {
     @observable private _extendedListItems: string[];
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
+    @observable private _invalidLinkOrderNumbers: number[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -44,6 +45,7 @@ export class RoutePathStore {
         this._activeTab = RoutePathViewTab.Info;
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore = new GeometryUndoStore();
+        this._invalidLinkOrderNumbers = [];
     }
 
     @computed
@@ -79,6 +81,11 @@ export class RoutePathStore {
     @computed
     get extendedObjects() {
         return this._extendedListItems;
+    }
+
+    @computed
+    get invalidLinkOrderNumbers() {
+        return this._invalidLinkOrderNumbers;
     }
 
     @action
@@ -188,6 +195,34 @@ export class RoutePathStore {
             ...this._routePath!,
             [property]: value
         };
+    };
+
+    @action
+    public updateRoutePathLinkProperty = (
+        orderNumber: number,
+        property: string,
+        value: string | number | boolean
+    ) => {
+        const rpLinkToUpdate:
+            | IRoutePathLink
+            | undefined = this._routePath!.routePathLinks!.find(
+            rpLink => rpLink.orderNumber === orderNumber
+        );
+        rpLinkToUpdate![property] = value;
+    };
+
+    @action
+    public setLinkFormValidity = (orderNumber: number, isValid: boolean) => {
+        if (isValid) {
+            this._invalidLinkOrderNumbers = this._invalidLinkOrderNumbers.filter(
+                item => item !== orderNumber
+            );
+        } else {
+            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            this._invalidLinkOrderNumbers = this._invalidLinkOrderNumbers.concat(
+                [orderNumber]
+            );
+        }
     };
 
     @action

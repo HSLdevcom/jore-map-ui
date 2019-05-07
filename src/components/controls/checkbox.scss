@@ -1,8 +1,10 @@
 @import '../shared/styles/common.scss';
 
 .container {
-    display: block;
+    display: flex;
     position: relative;
+    justify-content: center;
+    align-items: center;
     padding-left: 30px;
     cursor: pointer;
     font-size: $mediumFontSize;
@@ -10,6 +12,16 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.disabled {
+    pointer-events: none;
 }
 
 /* Hide the browser's default checkbox */
@@ -30,6 +42,11 @@
     width: 18px;
     border: 1px solid $busBlue;
     border-radius: 5px;
+    background-color: #fff;
+}
+
+.disabled .checkmark {
+    background-color: #eef1f3;
 }
 
 /* On mouse-over, add a slightly grey background color */

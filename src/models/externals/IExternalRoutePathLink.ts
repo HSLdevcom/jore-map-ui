@@ -8,6 +8,9 @@ export default interface IExternalRoutePathLink {
     solmuByLnkalkusolmu: IExternalNode;
     solmuByLnkloppusolmu: IExternalNode;
     ajantaspys: string;
+    paikka: string;
+    kirjaan: string;
+    kirjasarake: number;
     lnkverkko: TransitType;
     relid: string;
     reljarjnro: number;

@@ -32,9 +32,11 @@ class RoutePathLinkFactory {
             id: String(externalRoutePathLink.relid),
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeType: externalRoutePathLink.relpysakki,
-            isStartNodeTimeAlignmentStop: Boolean(
-                externalRoutePathLink.ajantaspys === '1'
-            ),
+            isStartNodeTimeAlignmentStop:
+                externalRoutePathLink.ajantaspys === '1',
+            isStartNodeHastusStop: externalRoutePathLink.paikka === '1',
+            isAtBookSchedule: externalRoutePathLink.kirjaan === '1',
+            startNodeColumnNumber: externalRoutePathLink.kirjasarake,
             routeId: externalRoutePathLink.reitunnus,
             routePathDirection: externalRoutePathLink.suusuunta,
             routePathStartDate: new Date(externalRoutePathLink.suuvoimast),
@@ -54,7 +56,10 @@ class RoutePathLinkFactory {
             orderNumber,
             endNode: NodeFactory.mapExternalNode(link.solmuByLnkloppusolmu),
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
-            isStartNodeTimeAlignmentStop: false,
+            isStartNodeTimeAlignmentStop: false, // TODO: fix?
+            isStartNodeHastusStop: false, // TODO: fix?
+            isAtBookSchedule: false, // TODO: fix?
+            startNodeColumnNumber: 0, // TODO: fix?
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             startNodeType: startNode.type,
             transitType: link.lnkverkko

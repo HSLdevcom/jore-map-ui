@@ -329,6 +329,9 @@ const routePathLinkQueryFields = `
     reljarjnro
     lnkverkko
     ajantaspys
+    paikka
+    kirjaan
+    kirjasarake
     suusuunta
     suuvoimast
     reitunnus

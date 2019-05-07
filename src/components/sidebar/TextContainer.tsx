@@ -11,11 +11,13 @@ interface IInputProps {
 const TextContainer = observer((props: IInputProps) => (
     <div className={s.formItem}>
         <div className={s.inputLabel}>{props.label}</div>
-        {props.value instanceof Date
-            ? Moment(props.value!).format('DD.MM.YYYY')
-            : props.value
-            ? props.value
-            : ''}
+        <div>
+            {props.value instanceof Date
+                ? Moment(props.value!).format('DD.MM.YYYY')
+                : props.value
+                ? props.value
+                : '-'}
+        </div>
     </div>
 ));
 

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { IRoutePathLink, INode, IStop } from '~/models';
 import { FiChevronRight } from 'react-icons/fi';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { Button } from '~/components/controls';
+import { Button, Checkbox } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import routeBuilder from '~/routing/routeBuilder';
@@ -14,6 +14,7 @@ import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
 import TextContainer from '../../TextContainer';
+import MultiTabTextarea from '../../linkView/MultiTabTextarea';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
@@ -27,6 +28,9 @@ interface IRoutePathListNodeProps {
 @inject('routePathStore')
 @observer
 class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
+    // TODO:
+    private onChange = () => {};
+
     private renderHeader = () => {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
@@ -103,6 +107,22 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                         value={stop.nameSe}
                     />
                 </div>
+                <div className={s.flexRow}>
+                    <Checkbox
+                        content='AJANTASAUSPYSÄKKI'
+                        checked={false}
+                        onClick={this.onChange}
+                    />
+                </div>
+                <div className={s.flexRow}>
+                    {/* rpLink.isStartNodeTimeAlignmentStop */}
+                    <Checkbox
+                        checked={false}
+                        content='Onko solmu hastus paikka?'
+                        onClick={this.onChange}
+                    />
+                </div>
+                <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
             </div>
         );
     };

@@ -1,18 +1,20 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FiChevronRight } from 'react-icons/fi';
+import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import classnames from 'classnames';
 import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
-import { Button, Checkbox, Dropdown } from '~/components/controls';
+import { Button, Checkbox } from '~/components/controls';
+import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import ButtonType from '~/enums/buttonType';
-import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
+import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import RoutePathListItem from './RoutePathListItem';
-import MultiTabTextarea from '../../linkView/MultiTabTextarea';
+import InputContainer from '../../InputContainer';
 import TextContainer from '../../TextContainer';
 import * as s from './routePathListItem.scss';
 
@@ -21,11 +23,87 @@ interface IRoutePathListLinkProps {
     codeListStore?: CodeListStore;
     routePathLink: IRoutePathLink;
     reference: React.RefObject<HTMLDivElement>;
+    isEditingDisabled: boolean;
+}
+
+interface IRoutePathListLinkState {
+    isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
+    invalidPropertiesMap: object;
+    isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
 }
 
 @inject('routePathStore', 'codeListStore')
 @observer
-class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
+class RoutePathListLink extends ViewFormBase<
+    IRoutePathListLinkProps,
+    IRoutePathListLinkState
+> {
+    constructor(props: IRoutePathListLinkProps) {
+        super(props);
+        this.state = {
+            isLoading: false,
+            invalidPropertiesMap: {},
+            isEditingDisabled: false
+        };
+    }
+
+    componentDidMount() {
+        this.validateLink();
+    }
+
+    componentDidUpdate(prevProps: IRoutePathListLinkProps) {
+        if (
+            prevProps.isEditingDisabled !== this.props.isEditingDisabled &&
+            !this.props.isEditingDisabled
+        ) {
+            this.validateLink();
+        }
+    }
+
+    private validateLink = () => {
+        this.validateAllProperties(
+            routePathLinkValidationModel,
+            this.props.routePathLink
+        );
+        const isLinkFormValid = this.isFormValid();
+        const orderNumber = this.props.routePathLink.orderNumber;
+        this.props.routePathStore!.setLinkFormValidity(
+            orderNumber,
+            isLinkFormValid
+        );
+    };
+
+    private onCheckboxChange = (property: string, value: boolean) => () => {
+        const orderNumber = this.props.routePathLink.orderNumber;
+        this.props.routePathStore!.updateRoutePathLinkProperty(
+            orderNumber,
+            property,
+            !value
+        );
+    };
+
+    private onRoutePathLinkPropertyChange = (property: string) => (
+        value: any
+    ) => {
+        const _value = value === '' ? null : value;
+        const orderNumber = this.props.routePathLink.orderNumber;
+        this.props.routePathStore!.updateRoutePathLinkProperty(
+            orderNumber,
+            property,
+            _value
+        );
+        this.validateProperty(
+            routePathLinkValidationModel[property],
+            property,
+            _value
+        );
+        const isLinkFormValid = this.isFormValid();
+        this.props.routePathStore!.setLinkFormValidity(
+            orderNumber,
+            isLinkFormValid
+        );
+    };
+
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
         const isExtended = this.props.routePathStore!.isListItemExtended(id);
@@ -68,6 +146,9 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     };
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
+        const isEditingDisabled = this.props.isEditingDisabled;
+        const invalidPropertiesMap = this.state.invalidPropertiesMap;
+        const routePathLink = this.props.routePathLink;
         return (
             <div className={s.nodeContent}>
                 Reitinlinkin tiedot
@@ -86,90 +167,46 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         label='JÄRJESTYSNUMERO'
                         value={rpLink.orderNumber.toString()}
                     />
-                    <TextContainer
-                        label='AJANTASAUSPYSÄKKI'
-                        value={
-                            rpLink.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'ei'
+                </div>
+                <div className={s.flexRow}>
+                    <Checkbox
+                        disabled={isEditingDisabled}
+                        checked={routePathLink.isAtBookSchedule}
+                        content='Laitetaanko ohitusaika kirja-aikatauluun?'
+                        onClick={this.onCheckboxChange(
+                            'isAtBookSchedule',
+                            routePathLink.isAtBookSchedule
+                        )}
+                    />
+                </div>
+                <div className={s.flexRow}>
+                    <InputContainer
+                        disabled={isEditingDisabled}
+                        label='ALKUSOLMUN SARAKENUMERO KIRJA-AIKATAULUSSA'
+                        onChange={this.onRoutePathLinkPropertyChange(
+                            'startNodeColumnNumber'
+                        )}
+                        value={routePathLink.startNodeColumnNumber}
+                        validationResult={
+                            invalidPropertiesMap['startNodeColumnNumber']
                         }
                     />
                 </div>
                 <div className={s.flexRow}>
-                    <div className={s.inputLabel}>ALKUSOLMUN SARAKE NRO</div>
-                </div>
-                <div className={s.flexRow}>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                        <Checkbox
-                            checked={false}
-                            content='Ohitusaika kirja-aikat.'
-                            onClick={this.onChange}
-                        />
-                    </div>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                        <Checkbox
-                            checked={false}
-                            content='Ohitusaika nettiaikat.'
-                            onClick={this.onChange}
-                        />
-                    </div>
-                </div>
-                <div className={s.flexRow}>
-                    <div className={s.inputLabel}>
-                        VIIM. LINKIN LOPPUSOLMU SARAKE NRO
-                    </div>
-                </div>
-                <div className={s.flexRow}>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                        <Checkbox
-                            checked={false}
-                            content='Ohitusaika nettiaikat.'
-                            onClick={this.onChange}
-                        />
-                    </div>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                        <Checkbox
-                            checked={false}
-                            content='Ohitusaika kirja-aikat.'
-                            onClick={this.onChange}
-                        />
-                    </div>
-                </div>
-                <div className={s.flexRow}>
-                    <Dropdown
-                        label='SOLMU HASTUS-PAIKKANA'
-                        items={this.props.codeListStore!.getCodeList(
-                            'Kyllä/Ei'
-                        )}
-                        selected='Kyllä'
-                        onChange={this.onChange}
+                    <InputContainer
+                        disabled={true}
+                        label='MUOKANNUT'
+                        value={'-'}
+                    />
+                    <InputContainer
+                        disabled={true}
+                        label='MUOKATTU PVM'
+                        value={'-'}
                     />
                 </div>
-                <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
             </div>
         );
     };
-
-    // TODO:
-    private onChange = () => {};
 
     private openInNetworkView = () => {
         const routeLink = this.props.routePathLink;
