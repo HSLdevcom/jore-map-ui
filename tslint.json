@@ -1,47 +1,44 @@
 {
-  "extends": ["tslint-config-airbnb", "tslint-config-prettier"],
-  "linterOptions": {
-    "exclude": [
-      "config/**/*.js",
-      "node_modules/**/*.ts",
-      "src/project/*"
-    ]
-  },
-  "rulesDirectory": [
-    "node_modules/tslint-origin-ordered-imports-rule/dist"
-  ],
-  "rules": {
-    "no-trailing-whitespace": true,
-    "jsx-no-multiline-js": false,
-    "no-console": {
-      "severity": "warning"
+    "extends": ["tslint-config-airbnb", "tslint-config-prettier"],
+    "linterOptions": {
+        "exclude": ["config/**/*.js", "node_modules/**/*.ts", "/**/*.json"]
     },
-    "quotemark": [true, "single", "avoid-escape"],
-    "import-name": false,
-    "variable-name": [
-      true,
-      "ban-keywords",
-      "check-format",
-      "allow-leading-underscore",
-      "allow-pascal-case"
-    ],
-    "origin-ordered-imports": [ true, "no-blank-lines" ],
-    "await-promise": true,
-    "only-arrow-functions": [true, "allow-declarations"],
-    "use-isnan": true,
-    "deprecation": true,
-    "member-ordering": [true, {
-      "order": [
-        "static-field",
-        "instance-field",
-        "constructor",
-        "instance-method",
-        "static-method"
-      ]
-    }],
-    "typedef-whitespace": true,
-    "no-implicit-dependencies": [true, ["~"]],
-    "no-object-literal-type-assertion": true,
-    "one-line": true
-  }
+    "rulesDirectory": ["node_modules/tslint-origin-ordered-imports-rule/dist"],
+    "rules": {
+        "no-trailing-whitespace": true,
+        "jsx-no-multiline-js": false,
+        "no-console": {
+            "severity": "warning"
+        },
+        "quotemark": [true, "single", "avoid-escape"],
+        "import-name": false,
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore",
+            "allow-pascal-case"
+        ],
+        "origin-ordered-imports": [true, "no-blank-lines"],
+        "await-promise": true,
+        "only-arrow-functions": [true, "allow-declarations"],
+        "use-isnan": true,
+        "deprecation": true,
+        "member-ordering": [
+            true,
+            {
+                "order": [
+                    "static-field",
+                    "instance-field",
+                    "constructor",
+                    "instance-method",
+                    "static-method"
+                ]
+            }
+        ],
+        "typedef-whitespace": true,
+        "no-implicit-dependencies": [true, ["~"]],
+        "no-object-literal-type-assertion": true,
+        "one-line": true
+    }
 }
