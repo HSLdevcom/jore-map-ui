@@ -78,7 +78,11 @@ const InputContainer = observer((props: IInputProps) => {
             return (
                 <TextContainer
                     label={props.label}
-                    value={Moment(props.value).format('DD.MM.YYYY HH:mm')}
+                    value={
+                        props.value
+                            ? Moment(props.value).format('DD.MM.YYYY HH:mm')
+                            : '-'
+                    }
                 />
             );
         }
