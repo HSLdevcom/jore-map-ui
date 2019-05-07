@@ -182,6 +182,7 @@ class RoutePathListLink extends ViewFormBase<
                 <div className={s.flexRow}>
                     <InputContainer
                         disabled={isEditingDisabled}
+                        type={'number'}
                         label='ALKUSOLMUN SARAKENUMERO KIRJA-AIKATAULUSSA'
                         onChange={this.onRoutePathLinkPropertyChange(
                             'startNodeColumnNumber'

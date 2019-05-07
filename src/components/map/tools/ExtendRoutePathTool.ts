@@ -1,4 +1,5 @@
 import RoutePathStore from '~/stores/routePathStore';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
@@ -16,6 +17,8 @@ class ExtendRoutePathTool implements BaseTool {
     public toolHelpText =
         'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista liilaksi merkittyjä linkkejä tai solmuja klikkailemalla.'; // tslint:disable-line max-line-length
     public activate() {
+        NetworkStore.showMapLayer(MapLayer.node);
+        NetworkStore.showMapLayer(MapLayer.link);
         EventManager.on('networkNodeClick', this.onNetworkNodeClick);
         EventManager.on('nodeClick', this.onNodeClick);
     }

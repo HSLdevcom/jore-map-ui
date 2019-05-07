@@ -1,6 +1,7 @@
 const commonConstants = {
     DECIMALS_IN_GEOMETRIES: 6,
-    INTEGER_MAX_VALUE: 2147483647, // Max value at PostgreSQL
+    INTEGER_MAX_VALUE: 2147483647, // Max value at PostgreSQL (4 bytes)
+    SMALL_INT_MAX_VALUE: 32767, // Max value at PostgreSQL (2 bytes)
     MAP_LAYERS_MIN_ZOOM_LEVEL: 15,
     NEW_OBJECT_TAG: 'new',
     GEOCODER_ADDRESS: 'https://api.digitransit.fi/geocoding/v1/search',
