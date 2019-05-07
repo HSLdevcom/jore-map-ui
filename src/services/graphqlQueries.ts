@@ -335,6 +335,8 @@ const routePathLinkQueryFields = `
     suusuunta
     suuvoimast
     reitunnus
+    relkuka
+    relviimpvm
     linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
         geojson
     }

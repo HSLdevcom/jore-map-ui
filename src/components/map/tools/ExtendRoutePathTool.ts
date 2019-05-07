@@ -35,9 +35,8 @@ class ExtendRoutePathTool implements BaseTool {
         if (params.nodeType !== NodeType.STOP) return;
         const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
             params.nodeId,
-            1,
-            RoutePathStore!.routePath!.transitType,
-            RoutePathStore!.routePath!.routePathLinks
+            RoutePathStore.routePath!,
+            1
         );
         if (queryResult) {
             RoutePathStore!.setNeighborRoutePathLinks(
@@ -55,9 +54,8 @@ class ExtendRoutePathTool implements BaseTool {
         const linkOrderNumber = params.linkOrderNumber;
         const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
             node.id,
-            linkOrderNumber,
-            RoutePathStore!.routePath!.transitType,
-            RoutePathStore!.routePath!.routePathLinks
+            RoutePathStore!.routePath!,
+            linkOrderNumber
         );
         if (queryResult) {
             RoutePathStore!.setNeighborRoutePathLinks(

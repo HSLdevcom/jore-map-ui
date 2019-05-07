@@ -15,7 +15,7 @@ interface IInputProps {
     placeholder?: string;
     className?: string;
     disabled?: boolean;
-    value?: string | number | Date;
+    value?: string | number | Date | null;
     validatorRule?: string;
     type?: inputType; // Defaults to text
     capitalizeInput?: boolean;

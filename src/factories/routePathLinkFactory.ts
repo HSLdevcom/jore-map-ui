@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { IRoutePathLink } from '~/models';
+import { IRoutePathLink, IRoutePath } from '~/models';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import NumberIterator from '~/util/NumberIterator';
 import IExternalLink from '~/models/externals/IExternalLink';
@@ -40,12 +40,21 @@ class RoutePathLinkFactory {
             routeId: externalRoutePathLink.reitunnus,
             routePathDirection: externalRoutePathLink.suusuunta,
             routePathStartDate: new Date(externalRoutePathLink.suuvoimast),
-            transitType: externalRoutePathLink.lnkverkko
+            transitType: externalRoutePathLink.lnkverkko,
+            modifiedBy: externalRoutePathLink.relkuka,
+            modifiedOn: new Date(externalRoutePathLink.relviimpvm)
         };
     };
 
+    /**
+     * @param {IExternalLink} link - link to use in convert
+     * @param {IRoutePath} routePath - routePath to use in convert
+     * @param {Number} orderNumber - routePathLink orderNumber
+     * @return {IRoutePathLink} routePathLink with hard coded default values
+     */
     public static mapExternalRoutePathLinkFromExternalLink = (
         link: IExternalLink,
+        routePath: IRoutePath,
         orderNumber: number
     ): IRoutePathLink => {
         const startNode = NodeFactory.mapExternalNode(link.solmuByLnkalkusolmu);
@@ -54,15 +63,20 @@ class RoutePathLinkFactory {
         return {
             startNode,
             orderNumber,
+            routeId: routePath.routeId,
+            routePathDirection: routePath.direction,
+            routePathStartDate: routePath.startTime,
             endNode: NodeFactory.mapExternalNode(link.solmuByLnkloppusolmu),
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
-            isStartNodeTimeAlignmentStop: false, // TODO: fix?
-            isStartNodeHastusStop: false, // TODO: fix?
-            isAtBookSchedule: false, // TODO: fix?
-            startNodeColumnNumber: 0, // TODO: fix?
+            isStartNodeTimeAlignmentStop: false,
+            isStartNodeHastusStop: false,
+            isAtBookSchedule: false,
+            startNodeColumnNumber: null,
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             startNodeType: startNode.type,
-            transitType: link.lnkverkko
+            transitType: link.lnkverkko,
+            modifiedBy: '',
+            modifiedOn: new Date()
         };
     };
 }

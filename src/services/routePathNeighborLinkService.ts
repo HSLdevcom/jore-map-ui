@@ -1,12 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
-import IRoutePathLink from '~/models/IRoutePathLink';
 import { NeighborToAddType } from '~/stores/routePathStore';
 import ErrorStore from '~/stores/errorStore';
-import TransitType from '~/enums/transitType';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import RoutePathFactory from '~/factories/routePathFactory';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
+import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import IGraphqlList from '~/models/externals/graphqlModelHelpers/IGraphqlList';
 import IExternalNode from '~/models/externals/IExternalNode';
@@ -29,6 +28,7 @@ interface IFetchNeighborLinksResponse {
 
 const getNeighborLinks = (
     queryResult: any,
+    routePath: IRoutePath,
     orderNumber: number,
     from: 'startNode' | 'endNode'
 ): INeighborLink[] => {
@@ -40,6 +40,7 @@ const getNeighborLinks = (
         from === 'startNode' ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
     return _parseNeighborLinks(
         queryResult,
+        routePath,
         orderNumber,
         linkPropertyName,
         nodePropertyName
@@ -48,6 +49,7 @@ const getNeighborLinks = (
 
 const _parseNeighborLinks = (
     queryResult: any,
+    routePath: IRoutePath,
     orderNumber: number,
     linkPropertyName: string,
     nodePropertyName: string
@@ -56,6 +58,7 @@ const _parseNeighborLinks = (
         (link: IExtendedExternalLink): INeighborLink => ({
             routePathLink: RoutePathLinkFactory.mapExternalRoutePathLinkFromExternalLink(
                 link,
+                routePath,
                 orderNumber
             ),
             nodeUsageRoutePaths: link[
@@ -71,8 +74,8 @@ class RoutePathNeighborLinkService {
     public static fetchAndCreateRoutePathLinksWithNodeId = async (
         nodeId: string,
         neighborToAddType: NeighborToAddType,
+        routePath: IRoutePath,
         orderNumber: number,
-        transitType: TransitType,
         date: Date
     ): Promise<INeighborLink[]> => {
         let res: INeighborLink[] = [];
@@ -85,7 +88,12 @@ class RoutePathNeighborLinkService {
                 query: GraphqlQueries.getLinksByStartNodeQuery(),
                 variables: { nodeId, date }
             });
-            res = getNeighborLinks(queryResult, orderNumber, 'startNode');
+            res = getNeighborLinks(
+                queryResult,
+                routePath,
+                orderNumber,
+                'startNode'
+            );
 
             // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
@@ -95,23 +103,28 @@ class RoutePathNeighborLinkService {
                 query: GraphqlQueries.getLinksByEndNodeQuery(),
                 variables: { nodeId, date }
             });
-            res = getNeighborLinks(queryResult, orderNumber, 'endNode');
+            res = getNeighborLinks(
+                queryResult,
+                routePath,
+                orderNumber,
+                'endNode'
+            );
         } else {
             throw new Error(
                 `neighborToAddType not supported: ${neighborToAddType}`
             );
         }
         return res.filter(
-            rpLink => rpLink.routePathLink.transitType === transitType
+            rpLink => rpLink.routePathLink.transitType === routePath.transitType
         );
     };
 
     public static fetchNeighborRoutePathLinks = async (
         nodeId: string,
-        linkOrderNumber: number,
-        transitType: TransitType,
-        routePathLinks?: IRoutePathLink[]
+        routePath: IRoutePath,
+        linkOrderNumber: number
     ): Promise<IFetchNeighborLinksResponse | null> => {
+        const routePathLinks = routePath.routePathLinks;
         const startNodeCount = routePathLinks!.filter(
             link => link.startNode.id === nodeId
         ).length;
@@ -132,8 +145,8 @@ class RoutePathNeighborLinkService {
             const neighborLinks = await RoutePathNeighborLinkService.fetchAndCreateRoutePathLinksWithNodeId(
                 nodeId,
                 neighborToAddType,
+                routePath,
                 orderNumber,
-                transitType,
                 new Date()
             );
             if (neighborLinks.length === 0) {

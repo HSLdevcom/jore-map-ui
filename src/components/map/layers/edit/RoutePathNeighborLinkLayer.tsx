@@ -140,9 +140,8 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
         if (this.hasNodeOddAmountOfNeighbors(nodeToFetch)) {
             const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
                 nodeToFetch.id,
-                routePathLink.orderNumber,
-                this.props.routePathStore!.routePath!.transitType,
-                this.props.routePathStore!.routePath!.routePathLinks
+                this.props.routePathStore!.routePath!,
+                routePathLink.orderNumber
             );
             if (queryResult) {
                 this.props.routePathStore!.setNeighborRoutePathLinks(

@@ -8,9 +8,9 @@ interface IRoutePathLinkPrimaryKey {
 }
 
 export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
-    routeId?: string;
-    routePathDirection?: string;
-    routePathStartDate?: Date;
+    routeId: string;
+    routePathDirection: string;
+    routePathStartDate: Date;
     transitType: TransitType;
     geometry: L.LatLng[];
     startNode: INode;
@@ -20,7 +20,9 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     isStartNodeTimeAlignmentStop: boolean;
     isStartNodeHastusStop: boolean;
     isAtBookSchedule: boolean;
-    startNodeColumnNumber: number;
+    startNodeColumnNumber: number | null;
+    modifiedBy: string;
+    modifiedOn: Date;
 }
 
 export { IRoutePathLinkPrimaryKey };
