@@ -2,49 +2,49 @@
 
 ## Git conventions
 
-* When making a PR, write closes #{*issue_id(s)*} or resolves #{*issue_id(s)*}
-* Branch name: {*issue_number*}-{*describing_name*}
+-   When making a PR, write closes #{_issue_id(s)_} or resolves #{_issue_id(s)_}
+-   Branch name: {_issue_number_}-{_describing_name_}
 
 **Git columns**
 
-* Backlog *- tasks that are blocked or need planning*
-* To do *- tasks that aren't blocked. These tasks should be in priority order.*
-* Sprint *- tasks to do in the current sprint*
-* In progress *- tasks that are in progress or need review fixes*
-* Done sprint *- completed tasks in the current sprint*
-* Done *- completed tasks from previous sprints*
+-   Backlog _- tasks that are blocked or need planning_
+-   To do _- tasks that aren't blocked. These tasks should be in priority order._
+-   Sprint _- tasks to do in the current sprint_
+-   In progress _- tasks that are in progress or need review fixes_
+-   Done sprint _- completed tasks in the current sprint_
+-   Done _- completed tasks from previous sprints_
 
 ## Code conventions
 
-* Indent 4 whitespaces
-* Use async await instead of promises
+-   Indent 4 whitespaces
+-   Use async await instead of promises
 
 ### React
 
-* Always use ```<div>``` instead of ```<span>``` (only use span if there is a reason to use it)
-* In a component, first div's className should be {*componentName*}View
-* Use classnames if there are multiple classes
-* Use arrow functions in components
-* Use render prefix in methods that return JSX or HTML
-* Use export default at the end of file
-* Put lifecycle methods on top of components after constructor
+-   Always use `<div>` instead of `<span>` (only use span if there is a reason to use it)
+-   In a component, first div's className should be {_componentName_}View
+-   Use classnames if there are multiple classes
+-   Use arrow functions in components
+-   Use render prefix in methods that return JSX or HTML
+-   Use export default at the end of file
+-   Put lifecycle methods on top of components after constructor
 
 ### IModels
 
-* **IDs** are in the same format as in jore.
-
+-   **IDs** are in the same format as in jore.
+-   IModel date properties have type Date
+    -   IExternalModel's date properties have type string
 
 ### MobX
 
-* Use @inject when importing stores whenever possible.
+-   Use @inject when importing stores whenever possible.
 
 **Annotations**
 
-* Use decorators
-* Place decorators above functions
-* Use @computed for getters https://mobx.js.org/refguide/computed-decorator.html
-* Use @action for functions that modify state ( do not use setters) https://mobx.js.org/refguide/action.html
-
+-   Use decorators
+-   Place decorators above functions
+-   Use @computed for getters https://mobx.js.org/refguide/computed-decorator.html
+-   Use @action for functions that modify state ( do not use setters) https://mobx.js.org/refguide/action.html
 
 Variables order:
 
