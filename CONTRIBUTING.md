@@ -32,8 +32,6 @@
 ### IModels
 
 -   **IDs** are in the same format as in jore.
--   IModel date properties have type Date
-    -   IExternalModel's date properties have type string
 
 ### MobX
 
