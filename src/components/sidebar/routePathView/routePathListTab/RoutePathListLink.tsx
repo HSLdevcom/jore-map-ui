@@ -197,12 +197,13 @@ class RoutePathListLink extends ViewFormBase<
                     <InputContainer
                         disabled={true}
                         label='MUOKANNUT'
-                        value={'-'}
+                        value={routePathLink.modifiedBy}
                     />
                     <InputContainer
                         disabled={true}
+                        type={'date'}
                         label='MUOKATTU PVM'
-                        value={'-'}
+                        value={routePathLink.modifiedOn}
                     />
                 </div>
             </div>
