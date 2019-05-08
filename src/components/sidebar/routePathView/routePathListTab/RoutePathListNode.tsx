@@ -201,11 +201,13 @@ class RoutePathListNode extends ViewFormBase<
                         type='number'
                         label='PYSÄKIN SARAKENUMERO KIRJA-AIKATAULUSSA'
                         onChange={this.onRoutePathLinkPropertyChange(
-                            'startNodeColumnNumber'
+                            'startNodeBookScheduleColumnNumber'
                         )}
-                        value={routePathLink.startNodeColumnNumber}
+                        value={routePathLink.startNodeBookScheduleColumnNumber}
                         validationResult={
-                            invalidPropertiesMap['startNodeColumnNumber']
+                            invalidPropertiesMap[
+                                'startNodeBookScheduleColumnNumber'
+                            ]
                         }
                     />
                 </div>

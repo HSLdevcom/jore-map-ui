@@ -9,7 +9,7 @@ const routePathLinkValidationModel = {
     isStartNodeTimeAlignmentStop: 'boolean',
     isStartNodeHastusStop: 'boolean',
     isStartNodeUsingBookSchedule: 'boolean',
-    startNodeColumnNumber: 'numeric|min:1|max:99'
+    startNodeBookScheduleColumnNumber: 'numeric|min:1|max:99'
 };
 
 export default routePathLinkValidationModel;

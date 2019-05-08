@@ -36,7 +36,8 @@ class RoutePathLinkFactory {
                 externalRoutePathLink.ajantaspys === '1',
             isStartNodeHastusStop: externalRoutePathLink.paikka === '1',
             isStartNodeUsingBookSchedule: externalRoutePathLink.kirjaan === '1',
-            startNodeColumnNumber: externalRoutePathLink.kirjasarake,
+            startNodeBookScheduleColumnNumber:
+                externalRoutePathLink.kirjasarake,
             routeId: externalRoutePathLink.reitunnus,
             routePathDirection: externalRoutePathLink.suusuunta,
             routePathStartDate: new Date(externalRoutePathLink.suuvoimast),
@@ -71,7 +72,7 @@ class RoutePathLinkFactory {
             isStartNodeTimeAlignmentStop: false,
             isStartNodeHastusStop: false,
             isStartNodeUsingBookSchedule: false,
-            startNodeColumnNumber: null,
+            startNodeBookScheduleColumnNumber: null,
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             startNodeType: startNode.type,
             transitType: link.lnkverkko,
