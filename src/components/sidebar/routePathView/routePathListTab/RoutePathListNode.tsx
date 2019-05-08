@@ -197,7 +197,10 @@ class RoutePathListNode extends ViewFormBase<
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
-                        disabled={isEditingDisabled}
+                        disabled={
+                            isEditingDisabled ||
+                            !routePathLink.isStartNodeUsingBookSchedule
+                        }
                         type='number'
                         label='PYSÄKIN SARAKENUMERO KIRJA-AIKATAULUSSA'
                         onChange={this.onRoutePathLinkPropertyChange(
