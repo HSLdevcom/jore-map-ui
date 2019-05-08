@@ -52,10 +52,7 @@ class RoutePathListLink extends ViewFormBase<
     }
 
     componentDidUpdate(prevProps: IRoutePathListLinkProps) {
-        if (
-            prevProps.isEditingDisabled !== this.props.isEditingDisabled &&
-            !this.props.isEditingDisabled
-        ) {
+        if (prevProps.isEditingDisabled && !this.props.isEditingDisabled) {
             this.validateLink();
         }
     }
@@ -85,17 +82,16 @@ class RoutePathListLink extends ViewFormBase<
     private onRoutePathLinkPropertyChange = (property: string) => (
         value: any
     ) => {
-        const _value = value === '' ? null : value;
         const orderNumber = this.props.routePathLink.orderNumber;
         this.props.routePathStore!.updateRoutePathLinkProperty(
             orderNumber,
             property,
-            _value
+            value
         );
         this.validateProperty(
             routePathLinkValidationModel[property],
             property,
-            _value
+            value
         );
         const isLinkFormValid = this.isFormValid();
         this.props.routePathStore!.setLinkFormValidity(
@@ -182,7 +178,7 @@ class RoutePathListLink extends ViewFormBase<
                 <div className={s.flexRow}>
                     <InputContainer
                         disabled={isEditingDisabled}
-                        type={'number'}
+                        type='number'
                         label='ALKUSOLMUN SARAKENUMERO KIRJA-AIKATAULUSSA'
                         onChange={this.onRoutePathLinkPropertyChange(
                             'startNodeColumnNumber'
@@ -201,7 +197,7 @@ class RoutePathListLink extends ViewFormBase<
                     />
                     <InputContainer
                         disabled={true}
-                        type={'date'}
+                        type='date'
                         label='MUOKATTU PVM'
                         value={routePathLink.modifiedOn}
                     />
