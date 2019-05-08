@@ -127,7 +127,22 @@ export class RoutePathStore {
     public undo = () => {
         this._geometryUndoStore.undo((nextUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
-            this._routePath!.routePathLinks = nextUndoState.routePathLinks;
+
+            const undoRoutePathLinks = nextUndoState.routePathLinks;
+            const oldRoutePathLinks = this._routePath!.routePathLinks;
+            // Undo only geometry if oldLink is found
+            const newRoutePathLinks = undoRoutePathLinks.map(undoRpLink => {
+                const oldRpLink = oldRoutePathLinks!.find(rpLink => {
+                    return rpLink.id === undoRpLink.id;
+                });
+                if (oldRpLink) {
+                    const rpLinkTemp = _.cloneDeep(oldRpLink);
+                    rpLinkTemp.geometry = undoRpLink.geometry;
+                    return rpLinkTemp;
+                }
+                return undoRpLink;
+            });
+            this._routePath!.routePathLinks = newRoutePathLinks;
         });
     };
 
@@ -135,7 +150,22 @@ export class RoutePathStore {
     public redo = () => {
         this._geometryUndoStore.redo((previousUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
-            this._routePath!.routePathLinks = previousUndoState.routePathLinks;
+
+            const redoRoutePathLinks = previousUndoState.routePathLinks;
+            const oldRoutePathLinks = this._routePath!.routePathLinks;
+            // Redo only geometry if oldLink is found
+            const newRoutePathLinks = redoRoutePathLinks.map(redoRpLink => {
+                const oldRpLink = oldRoutePathLinks!.find(rpLink => {
+                    return rpLink.id === redoRpLink.id;
+                });
+                if (oldRpLink) {
+                    const rpLinkTemp = _.cloneDeep(oldRpLink);
+                    rpLinkTemp.geometry = redoRpLink.geometry;
+                    return rpLinkTemp;
+                }
+                return redoRpLink;
+            });
+            this._routePath!.routePathLinks = newRoutePathLinks;
         });
     };
 
@@ -219,7 +249,8 @@ export class RoutePathStore {
             );
         } else {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
-            this._invalidLinkOrderNumbers = this._invalidLinkOrderNumbers.concat(
+            this._invalidLinkOrderNumbers = _.merge(
+                this._invalidLinkOrderNumbers,
                 [orderNumber]
             );
         }
