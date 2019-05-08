@@ -187,11 +187,11 @@ class RoutePathListNode extends ViewFormBase<
                 <div className={s.flexRow}>
                     <Checkbox
                         disabled={isEditingDisabled}
-                        checked={routePathLink.isAtBookSchedule}
+                        checked={routePathLink.isStartNodeUsingBookSchedule}
                         content='Ohitusaika kirja-aikataulussa'
                         onClick={this.onCheckboxChange(
-                            'isAtBookSchedule',
-                            routePathLink.isAtBookSchedule
+                            'isStartNodeUsingBookSchedule',
+                            routePathLink.isStartNodeUsingBookSchedule
                         )}
                     />
                 </div>

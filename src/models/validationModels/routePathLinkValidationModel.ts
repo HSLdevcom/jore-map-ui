@@ -8,7 +8,7 @@ const routePathLinkValidationModel = {
     transitType: 'required|min:1|max:1|string',
     isStartNodeTimeAlignmentStop: 'boolean',
     isStartNodeHastusStop: 'boolean',
-    isAtBookSchedule: 'boolean',
+    isStartNodeUsingBookSchedule: 'boolean',
     startNodeColumnNumber: 'numeric|min:1|max:99'
 };
 
