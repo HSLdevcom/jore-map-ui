@@ -130,15 +130,13 @@ export class RoutePathStore {
 
             const undoRoutePathLinks = nextUndoState.routePathLinks;
             const oldRoutePathLinks = this._routePath!.routePathLinks;
-            // Undo only geometry if oldLink is found
+            // Prevent undo if oldLink is found
             const newRoutePathLinks = undoRoutePathLinks.map(undoRpLink => {
                 const oldRpLink = oldRoutePathLinks!.find(rpLink => {
                     return rpLink.id === undoRpLink.id;
                 });
                 if (oldRpLink) {
-                    const rpLinkTemp = _.cloneDeep(oldRpLink);
-                    rpLinkTemp.geometry = undoRpLink.geometry;
-                    return rpLinkTemp;
+                    return _.cloneDeep(oldRpLink);
                 }
                 return undoRpLink;
             });
@@ -153,15 +151,13 @@ export class RoutePathStore {
 
             const redoRoutePathLinks = previousUndoState.routePathLinks;
             const oldRoutePathLinks = this._routePath!.routePathLinks;
-            // Redo only geometry if oldLink is found
+            // Prevent redo if oldLink is found
             const newRoutePathLinks = redoRoutePathLinks.map(redoRpLink => {
                 const oldRpLink = oldRoutePathLinks!.find(rpLink => {
                     return rpLink.id === redoRpLink.id;
                 });
                 if (oldRpLink) {
-                    const rpLinkTemp = _.cloneDeep(oldRpLink);
-                    rpLinkTemp.geometry = redoRpLink.geometry;
-                    return rpLinkTemp;
+                    return _.cloneDeep(oldRpLink);
                 }
                 return redoRpLink;
             });
