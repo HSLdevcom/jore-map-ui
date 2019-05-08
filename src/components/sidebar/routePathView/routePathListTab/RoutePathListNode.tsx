@@ -3,17 +3,20 @@ import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { IRoutePathLink, INode, IStop } from '~/models';
 import { FiChevronRight } from 'react-icons/fi';
+import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import { Button, Checkbox } from '~/components/controls';
+import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
+import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
 import TextContainer from '../../TextContainer';
+import InputContainer from '../../InputContainer';
 import MultiTabTextarea from '../../linkView/MultiTabTextarea';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
@@ -23,13 +26,61 @@ interface IRoutePathListNodeProps {
     node: INode;
     reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
+    isEditingDisabled: boolean;
+}
+
+interface RoutePathListNodeState {
+    isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
+    invalidPropertiesMap: object;
+    isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
 }
 
 @inject('routePathStore')
 @observer
-class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
-    // TODO:
-    private onChange = () => {};
+class RoutePathListNode extends ViewFormBase<
+    IRoutePathListNodeProps,
+    RoutePathListNodeState
+> {
+    constructor(props: IRoutePathListNodeProps) {
+        super(props);
+        this.state = {
+            isLoading: false,
+            invalidPropertiesMap: {},
+            isEditingDisabled: false
+        };
+    }
+
+    componentDidMount() {
+        this.validateLink();
+    }
+
+    componentDidUpdate(prevProps: IRoutePathListNodeProps) {
+        if (prevProps.isEditingDisabled && !this.props.isEditingDisabled) {
+            this.validateLink();
+        }
+    }
+
+    private validateLink = () => {
+        this.validateAllProperties(
+            routePathLinkValidationModel,
+            this.props.routePathLink
+        );
+        const isLinkFormValid = this.isFormValid();
+        const orderNumber = this.props.routePathLink.orderNumber;
+        this.props.routePathStore!.setLinkFormValidity(
+            orderNumber,
+            isLinkFormValid
+        );
+    };
+
+    private onCheckboxChange = (property: string, value: boolean) => () => {
+        const orderNumber = this.props.routePathLink.orderNumber;
+        this.props.routePathStore!.updateRoutePathLinkProperty(
+            orderNumber,
+            property,
+            !value
+        );
+    };
 
     private renderHeader = () => {
         const node = this.props.node;
@@ -69,34 +120,35 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     };
 
-    private renderBody = () => {
-        return (
-            <div className={s.extendedContent}>
-                {Boolean(this.props.node.stop) &&
-                    this.renderStopView(this.props.node.stop!)}
-                {this.renderNodeView(this.props.node)}
-                <div className={s.footer}>
-                    <Button
-                        onClick={this.openInNetworkView}
-                        type={ButtonType.SQUARE}
-                    >
-                        Avaa solmu verkkonäkymässä
-                        <FiChevronRight />
-                    </Button>
-                </div>
-            </div>
+    // TODO: remove this dummy function
+    private onChange = () => {};
+
+    private onRoutePathLinkPropertyChange = (property: string) => (
+        value: any
+    ) => {
+        const orderNumber = this.props.routePathLink.orderNumber;
+        this.props.routePathStore!.updateRoutePathLinkProperty(
+            orderNumber,
+            property,
+            value
+        );
+        this.validateProperty(
+            routePathLinkValidationModel[property],
+            property,
+            value
+        );
+        const isLinkFormValid = this.isFormValid();
+        this.props.routePathStore!.setLinkFormValidity(
+            orderNumber,
+            isLinkFormValid
         );
     };
 
-    private openInNetworkView = () => {
-        const editNetworkLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(this.props.node.id)
-            .toLink();
-        navigator.goTo(editNetworkLink);
-    };
-
     private renderStopView = (stop: IStop) => {
+        const isEditingDisabled = this.props.isEditingDisabled;
+        const invalidPropertiesMap = this.state.invalidPropertiesMap;
+        const routePathLink = this.props.routePathLink;
+
         return (
             <div className={s.stopContent}>
                 Pysäkin tiedot
@@ -109,7 +161,16 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 </div>
                 <div className={s.flexRow}>
                     <Checkbox
-                        content='AJANTASAUSPYSÄKKI'
+                        disabled={isEditingDisabled}
+                        content='Pysäkki ei käytössä'
+                        checked={false}
+                        onClick={this.onChange}
+                    />
+                </div>
+                <div className={s.flexRow}>
+                    <Checkbox
+                        disabled={isEditingDisabled}
+                        content='Ajantasauspysäkki'
                         checked={false}
                         onClick={this.onChange}
                     />
@@ -117,12 +178,51 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 <div className={s.flexRow}>
                     {/* rpLink.isStartNodeTimeAlignmentStop */}
                     <Checkbox
+                        disabled={isEditingDisabled}
                         checked={false}
-                        content='Onko solmu hastus paikka?'
+                        content='Hastus paikka'
                         onClick={this.onChange}
                     />
                 </div>
+                <div className={s.flexRow}>
+                    <Checkbox
+                        disabled={isEditingDisabled}
+                        checked={routePathLink.isAtBookSchedule}
+                        content='Ohitusaika kirja-aikataulussa'
+                        onClick={this.onCheckboxChange(
+                            'isAtBookSchedule',
+                            routePathLink.isAtBookSchedule
+                        )}
+                    />
+                </div>
+                <div className={s.flexRow}>
+                    <InputContainer
+                        disabled={isEditingDisabled}
+                        type='number'
+                        label='PYSÄKIN SARAKENUMERO KIRJA-AIKATAULUSSA'
+                        onChange={this.onRoutePathLinkPropertyChange(
+                            'startNodeColumnNumber'
+                        )}
+                        value={routePathLink.startNodeColumnNumber}
+                        validationResult={
+                            invalidPropertiesMap['startNodeColumnNumber']
+                        }
+                    />
+                </div>
                 <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
+                <div className={s.flexRow}>
+                    <InputContainer
+                        disabled={true}
+                        label='MUOKANNUT'
+                        value={routePathLink.modifiedBy}
+                    />
+                    <InputContainer
+                        disabled={true}
+                        type='date'
+                        label='MUOKATTU PVM'
+                        value={routePathLink.modifiedOn}
+                    />
+                </div>
             </div>
         );
     };
@@ -177,6 +277,33 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 {icon}
             </div>
         );
+    };
+
+    private renderBody = () => {
+        return (
+            <div className={s.extendedContent}>
+                {Boolean(this.props.node.stop) &&
+                    this.renderStopView(this.props.node.stop!)}
+                {this.renderNodeView(this.props.node)}
+                <div className={s.footer}>
+                    <Button
+                        onClick={this.openInNetworkView}
+                        type={ButtonType.SQUARE}
+                    >
+                        Avaa solmu verkkonäkymässä
+                        <FiChevronRight />
+                    </Button>
+                </div>
+            </div>
+        );
+    };
+
+    private openInNetworkView = () => {
+        const editNetworkLink = routeBuilder
+            .to(SubSites.node)
+            .toTarget(this.props.node.id)
+            .toLink();
+        navigator.goTo(editNetworkLink);
     };
 
     private getShadowClass() {

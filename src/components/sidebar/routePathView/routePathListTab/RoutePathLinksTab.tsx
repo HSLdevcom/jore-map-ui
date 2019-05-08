@@ -70,6 +70,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         }
                         node={routePathLink.startNode}
                         routePathLink={routePathLink}
+                        isEditingDisabled={this.props.isEditingDisabled}
                     />
                 ) : null,
                 this.isLinksVisible() ? (
@@ -77,7 +78,6 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         key={`${routePathLink.id}-${index}-link`}
                         reference={this.listObjectReferences[routePathLink.id]}
                         routePathLink={routePathLink}
-                        isEditingDisabled={this.props.isEditingDisabled}
                     />
                 ) : null
             ];
@@ -97,6 +97,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                             }
                             node={routePathLink.endNode}
                             routePathLink={routePathLink}
+                            isEditingDisabled={this.props.isEditingDisabled}
                         />
                     );
                 }

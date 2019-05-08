@@ -6,15 +6,12 @@ import classnames from 'classnames';
 import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
-import { Button, Checkbox } from '~/components/controls';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
+import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
-import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import RoutePathListItem from './RoutePathListItem';
-import InputContainer from '../../InputContainer';
 import TextContainer from '../../TextContainer';
 import * as s from './routePathListItem.scss';
 
@@ -23,83 +20,11 @@ interface IRoutePathListLinkProps {
     codeListStore?: CodeListStore;
     routePathLink: IRoutePathLink;
     reference: React.RefObject<HTMLDivElement>;
-    isEditingDisabled: boolean;
-}
-
-interface IRoutePathListLinkState {
-    isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
-    invalidPropertiesMap: object;
-    isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
 }
 
 @inject('routePathStore', 'codeListStore')
 @observer
-class RoutePathListLink extends ViewFormBase<
-    IRoutePathListLinkProps,
-    IRoutePathListLinkState
-> {
-    constructor(props: IRoutePathListLinkProps) {
-        super(props);
-        this.state = {
-            isLoading: false,
-            invalidPropertiesMap: {},
-            isEditingDisabled: false
-        };
-    }
-
-    componentDidMount() {
-        this.validateLink();
-    }
-
-    componentDidUpdate(prevProps: IRoutePathListLinkProps) {
-        if (prevProps.isEditingDisabled && !this.props.isEditingDisabled) {
-            this.validateLink();
-        }
-    }
-
-    private validateLink = () => {
-        this.validateAllProperties(
-            routePathLinkValidationModel,
-            this.props.routePathLink
-        );
-        const isLinkFormValid = this.isFormValid();
-        const orderNumber = this.props.routePathLink.orderNumber;
-        this.props.routePathStore!.setLinkFormValidity(
-            orderNumber,
-            isLinkFormValid
-        );
-    };
-
-    private onCheckboxChange = (property: string, value: boolean) => () => {
-        const orderNumber = this.props.routePathLink.orderNumber;
-        this.props.routePathStore!.updateRoutePathLinkProperty(
-            orderNumber,
-            property,
-            !value
-        );
-    };
-
-    private onRoutePathLinkPropertyChange = (property: string) => (
-        value: any
-    ) => {
-        const orderNumber = this.props.routePathLink.orderNumber;
-        this.props.routePathStore!.updateRoutePathLinkProperty(
-            orderNumber,
-            property,
-            value
-        );
-        this.validateProperty(
-            routePathLinkValidationModel[property],
-            property,
-            value
-        );
-        const isLinkFormValid = this.isFormValid();
-        this.props.routePathStore!.setLinkFormValidity(
-            orderNumber,
-            isLinkFormValid
-        );
-    };
-
+class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
         const isExtended = this.props.routePathStore!.isListItemExtended(id);
@@ -142,9 +67,6 @@ class RoutePathListLink extends ViewFormBase<
     };
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
-        const isEditingDisabled = this.props.isEditingDisabled;
-        const invalidPropertiesMap = this.state.invalidPropertiesMap;
-        const routePathLink = this.props.routePathLink;
         return (
             <div className={s.nodeContent}>
                 Reitinlinkin tiedot
@@ -162,44 +84,6 @@ class RoutePathListLink extends ViewFormBase<
                     <TextContainer
                         label='JÄRJESTYSNUMERO'
                         value={rpLink.orderNumber.toString()}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <Checkbox
-                        disabled={isEditingDisabled}
-                        checked={routePathLink.isAtBookSchedule}
-                        content='Laitetaanko ohitusaika kirja-aikatauluun?'
-                        onClick={this.onCheckboxChange(
-                            'isAtBookSchedule',
-                            routePathLink.isAtBookSchedule
-                        )}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <InputContainer
-                        disabled={isEditingDisabled}
-                        type='number'
-                        label='ALKUSOLMUN SARAKENUMERO KIRJA-AIKATAULUSSA'
-                        onChange={this.onRoutePathLinkPropertyChange(
-                            'startNodeColumnNumber'
-                        )}
-                        value={routePathLink.startNodeColumnNumber}
-                        validationResult={
-                            invalidPropertiesMap['startNodeColumnNumber']
-                        }
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <InputContainer
-                        disabled={true}
-                        label='MUOKANNUT'
-                        value={routePathLink.modifiedBy}
-                    />
-                    <InputContainer
-                        disabled={true}
-                        type='date'
-                        label='MUOKATTU PVM'
-                        value={routePathLink.modifiedOn}
                     />
                 </div>
             </div>
