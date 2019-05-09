@@ -44,13 +44,11 @@ class RoutePathFactory {
             ? externalRoutePath.poikkeusreitti
             : '0';
 
-        const routePathPrimaryKey = RoutePathFactory.mapExternalRoutePathToRoutePathPrimaryKey(
-            externalRoutePath
-        );
-
         return {
-            ...routePathPrimaryKey,
             exceptionPath,
+            routeId: externalRoutePath.reitunnus,
+            direction: externalRoutePath.suusuunta,
+            startTime: new Date(externalRoutePath.suuvoimast),
             routePathLinks:
                 routePathLinks !== undefined ? routePathLinks : undefined,
             lineId:

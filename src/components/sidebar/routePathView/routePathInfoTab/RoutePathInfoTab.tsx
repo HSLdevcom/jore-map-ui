@@ -76,32 +76,28 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
         );
     };
 
-    private checkForDuplicatePrimaryKey = () => {
+    private isPrimaryKeyDuplicated = () => {
         const routePath = this.props.routePathStore!.routePath!;
 
-        const isThisNewRoutePathIdenticalToOld = this.existingRoutePathPrimaryKeys.some(
+        return this.existingRoutePathPrimaryKeys.some(
             rp =>
                 routePath.routeId === rp.routeId &&
                 routePath.direction === rp.direction &&
                 routePath.startTime.getTime() === rp.startTime.getTime()
         );
-
-        if (isThisNewRoutePathIdenticalToOld) {
-            const validationResult: IValidationResult = {
-                isValid: false,
-                errorMessage:
-                    'Reitinsuunta samalla reitillä, suunnalla ja alkupäivämäärällä on jo olemassa.'
-            };
-            this.props.setValidatorResult('direction', validationResult);
-        }
     };
 
     private validatePrimaryKey = (direction: string, startTime: Date) => {
         this.props.onChange('direction')(direction);
         this.props.onChange('startTime')(startTime);
 
-        if (this.props.isNewRoutePath) {
-            this.checkForDuplicatePrimaryKey();
+        if (this.props.isNewRoutePath && this.isPrimaryKeyDuplicated()) {
+            const validationResult: IValidationResult = {
+                isValid: false,
+                errorMessage:
+                    'Reitinsuunta samalla reitillä, suunnalla ja alkupäivämäärällä on jo olemassa.'
+            };
+            this.props.setValidatorResult('direction', validationResult);
         }
     };
 
