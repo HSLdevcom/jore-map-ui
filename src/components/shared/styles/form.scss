@@ -2,6 +2,7 @@
 
 $marginRight: 10px;
 $labelColor: $mediumGrey;
+$darkLabelColor: #535353;
 
 .formItem {
     margin-right: $marginRight;
@@ -18,8 +19,17 @@ $labelColor: $mediumGrey;
 }
 
 .inputLabel {
-    font-weight: bold;
     color: $labelColor;
+    font-weight: bold;
+    font-size: $smallFontSize;
+    white-space: nowrap;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.darkerInputLabel {
+    color: $darkLabelColor;
+    font-weight: bold;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;

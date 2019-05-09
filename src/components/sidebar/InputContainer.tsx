@@ -21,6 +21,7 @@ interface IInputProps {
     type?: inputType; // Defaults to text
     capitalizeInput?: boolean;
     isClearButtonVisibleOnDates?: boolean;
+    darkerInputLabel?: boolean;
 }
 
 const renderEditableContent = (props: IInputProps) => {
@@ -93,6 +94,7 @@ const InputContainer = observer((props: IInputProps) => {
                                 ? Moment(props.value).format('DD.MM.YYYY HH:mm')
                                 : '-'
                         }
+                        darkerInputLabel={props.darkerInputLabel}
                     />
                     {renderValidatorResult(validationResult)}
                 </div>
@@ -100,7 +102,11 @@ const InputContainer = observer((props: IInputProps) => {
         }
         return (
             <div className={s.disabledContainerWrapper}>
-                <TextContainer label={props.label} value={props.value} />
+                <TextContainer
+                    label={props.label}
+                    value={props.value}
+                    darkerInputLabel={props.darkerInputLabel}
+                />
                 {renderValidatorResult(validationResult)}
             </div>
         );
@@ -108,7 +114,13 @@ const InputContainer = observer((props: IInputProps) => {
 
     return (
         <div className={s.formItem}>
-            <div className={s.inputLabel}>{props.label}</div>
+            <div
+                className={
+                    props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel
+                }
+            >
+                {props.label}
+            </div>
             {renderEditableContent(props)}
             {renderValidatorResult(validationResult)}
         </div>

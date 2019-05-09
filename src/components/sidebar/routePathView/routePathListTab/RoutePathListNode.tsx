@@ -151,12 +151,16 @@ class RoutePathListNode extends ViewFormBase<
 
         return (
             <div className={s.stopContent}>
-                Pysäkin tiedot
                 <div className={s.flexRow}>
-                    <TextContainer label='PYSÄKIN NIMI' value={stop.nameFi} />
+                    <TextContainer
+                        label='PYSÄKIN NIMI'
+                        value={stop.nameFi}
+                        darkerInputLabel={true}
+                    />
                     <TextContainer
                         label='PYSÄKIN NIMI RUOTSIKSI'
                         value={stop.nameSe}
+                        darkerInputLabel={true}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -212,6 +216,7 @@ class RoutePathListNode extends ViewFormBase<
                                 'startNodeBookScheduleColumnNumber'
                             ]
                         }
+                        darkerInputLabel={true}
                     />
                 </div>
                 <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
@@ -220,12 +225,14 @@ class RoutePathListNode extends ViewFormBase<
                         disabled={true}
                         label='MUOKANNUT'
                         value={routePathLink.modifiedBy}
+                        darkerInputLabel={true}
                     />
                     <InputContainer
                         disabled={true}
                         type='date'
                         label='MUOKATTU PVM'
                         value={routePathLink.modifiedOn}
+                        darkerInputLabel={true}
                     />
                 </div>
             </div>
@@ -235,13 +242,12 @@ class RoutePathListNode extends ViewFormBase<
     private renderNodeView = (node: INode) => {
         return (
             <div className={s.nodeContent}>
-                Solmun tiedot
                 <div className={s.flexRow}>
                     <TextContainer
                         label='MITTAUSPÄIVÄMÄÄRÄ'
                         value={node.measurementDate}
+                        darkerInputLabel={true}
                     />
-                    <TextContainer label='SOLMUN TYYPPI' value={node.type} />
                 </div>
             </div>
         );

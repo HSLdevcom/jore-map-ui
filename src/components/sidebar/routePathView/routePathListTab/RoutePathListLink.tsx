@@ -74,16 +74,19 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                     <TextContainer
                         label='ALKUSOLMU'
                         value={rpLink.startNode.id}
+                        darkerInputLabel={true}
                     />
                     <TextContainer
                         label='LOPPUSOLMU'
                         value={rpLink.endNode.id}
+                        darkerInputLabel={true}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <TextContainer
                         label='JÄRJESTYSNUMERO'
                         value={rpLink.orderNumber.toString()}
+                        darkerInputLabel={true}
                     />
                 </div>
             </div>
