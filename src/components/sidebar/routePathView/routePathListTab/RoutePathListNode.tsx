@@ -73,15 +73,6 @@ class RoutePathListNode extends ViewFormBase<
         );
     };
 
-    private onCheckboxChange = (property: string, value: boolean) => () => {
-        const orderNumber = this.props.routePathLink.orderNumber;
-        this.props.routePathStore!.updateRoutePathLinkProperty(
-            orderNumber,
-            property,
-            !value
-        );
-    };
-
     private renderHeader = () => {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
@@ -123,7 +114,7 @@ class RoutePathListNode extends ViewFormBase<
     // TODO: remove this dummy function
     private onChange = () => {};
 
-    private onRoutePathLinkPropertyChange = (property: string) => (
+    private onRoutePathNodePropertyChange = (property: string) => (
         value: any
     ) => {
         const orderNumber = this.props.routePathLink.orderNumber;
@@ -141,6 +132,15 @@ class RoutePathListNode extends ViewFormBase<
         this.props.routePathStore!.setLinkFormValidity(
             orderNumber,
             isLinkFormValid
+        );
+    };
+
+    private onCheckboxChange = (property: string, value: boolean) => () => {
+        const orderNumber = this.props.routePathLink.orderNumber;
+        this.props.routePathStore!.updateRoutePathLinkProperty(
+            orderNumber,
+            property,
+            !value
         );
     };
 
@@ -207,7 +207,7 @@ class RoutePathListNode extends ViewFormBase<
                         }
                         type='number'
                         label='PYSÄKIN SARAKENUMERO KIRJA-AIKATAULUSSA'
-                        onChange={this.onRoutePathLinkPropertyChange(
+                        onChange={this.onRoutePathNodePropertyChange(
                             'startNodeBookScheduleColumnNumber'
                         )}
                         value={routePathLink.startNodeBookScheduleColumnNumber}

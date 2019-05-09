@@ -244,11 +244,9 @@ export class RoutePathStore {
                 item => item !== orderNumber
             );
         } else {
-            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
-            this._invalidLinkOrderNumbers = _.merge(
-                this._invalidLinkOrderNumbers,
-                [orderNumber]
-            );
+            if (!this.invalidLinkOrderNumbers.includes(orderNumber)) {
+                this.invalidLinkOrderNumbers.push(orderNumber);
+            }
         }
     };
 
