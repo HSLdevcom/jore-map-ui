@@ -75,16 +75,15 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private isDateInRanges(
-        selectedDate: Moment.Moment,
+        selectedDate?: Moment.Moment,
         dateRanges?: Moment.Moment[][]
-    ) {
-        return (
-            selectedDate &&
-            (!dateRanges ||
-                !dateRanges.some(dr =>
-                    selectedDate.isBetween(dr[0], dr[1], 'day', '[]')
-                ))
-        );
+    ): Boolean {
+        return selectedDate
+            ? !dateRanges ||
+                  dateRanges.some(dr =>
+                      selectedDate.isBetween(dr[0], dr[1], 'day', '[]')
+                  )
+            : true;
     }
 
     private getLinkStyle = () => {
@@ -149,7 +148,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
         return (
             !selectedTransitTypes.includes(transitTypeCode) ||
-            this.isDateInRanges(selectedDate, dateRanges) ||
+            !this.isDateInRanges(selectedDate, dateRanges) ||
             isLinkOpen ||
             isLinkRelatedToOpenedNode
         );

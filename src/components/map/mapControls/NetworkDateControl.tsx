@@ -1,15 +1,21 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
+import DatePicker from '~/components/controls/DatePicker';
 import * as s from './NetworkDateControl.scss';
 
+interface INetworkDateControlProps {
+    selectedDate?: Date;
+    onChangeDate: (date: Date) => void;
+}
+
 const NetworkDateControl = observer(
-    ({ selectDate }: { selectDate: (e: ChangeEvent) => void }) => (
+    (props: INetworkDateControlProps) => (
         <div className={s.networkDateControlView}>
             <label>Tarkkailupäivämäärä</label>
-            <input
-                type='date'
-                className={s.networkDateControlInput}
-                onChange={selectDate}
+            <DatePicker
+                isClearButtonVisible={true}
+                value={props.selectedDate}
+                onChange={props.onChangeDate}
             />
         </div>
     )

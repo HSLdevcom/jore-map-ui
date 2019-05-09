@@ -1,5 +1,6 @@
-import React, { ChangeEvent, MouseEvent } from 'react';
+import React, { MouseEvent } from 'react';
 import { observer } from 'mobx-react';
+import Moment from 'moment';
 import { IoMdMap } from 'react-icons/io';
 import classnames from 'classnames';
 import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
@@ -58,8 +59,8 @@ class MapLayersControl extends React.Component<
         });
     };
 
-    private selectDate = (e: ChangeEvent<HTMLInputElement>) => {
-        NetworkStore.setSelectedDate(e.target.value);
+    private selectDate = (date: Date) => {
+        NetworkStore.setSelectedDate(date ? Moment(date) : undefined);
     };
     private showControls = (show: boolean) => (
         e: MouseEvent<HTMLDivElement>
@@ -88,7 +89,14 @@ class MapLayersControl extends React.Component<
                         toggleSelectedTransitType={this.toggleTransitType}
                         selectedTransitTypes={NetworkStore.selectedTransitTypes}
                     />
-                    <NetworkDateControl selectDate={this.selectDate} />
+                    <NetworkDateControl
+                        onChangeDate={this.selectDate}
+                        selectedDate={
+                            NetworkStore.selectedDate
+                                ? NetworkStore.selectedDate.toDate()
+                                : undefined
+                        }
+                    />
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>GEOMETRIAT</div>
                     <div className={s.checkboxContainer}>
