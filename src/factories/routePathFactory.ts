@@ -86,7 +86,7 @@ class RoutePathFactory {
             internalId: '',
             routePathName: route.routeName,
             routePathNameSw: route.routeNameSw,
-            direction: '1',
+            direction: '',
             visible: true,
             startTime: new Date(defaultDate.getTime()),
             endTime: new Date(defaultDate.getTime()),
