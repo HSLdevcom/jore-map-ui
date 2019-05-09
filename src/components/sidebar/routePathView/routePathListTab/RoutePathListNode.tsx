@@ -114,15 +114,28 @@ class RoutePathListNode extends ViewFormBase<
     // TODO: remove this dummy function
     private onChange = () => {};
 
-    private onRoutePathNodePropertyChange = (property: string) => (
+    /**
+     * A special onChange function for the following properties:
+     * isStartNodeUsingBookSchedule & startNodeBookScheduleColumnNumber
+     * note: the last rpLink link will change routePath's value instead of routePathLink's value
+     */
+    private onRoutePathBookSchedulePropertyChange = (property: string) => (
         value: any
     ) => {
         const orderNumber = this.props.routePathLink.orderNumber;
-        this.props.routePathStore!.updateRoutePathLinkProperty(
-            orderNumber,
-            property,
-            value
+        const isLastRoutePathLink = this.props.routePathStore!.isLastRoutePathLink(
+            this.props.routePathLink
         );
+
+        if (isLastRoutePathLink) {
+            this.props.routePathStore!.updateRoutePathProperty(property, value);
+        } else {
+            this.props.routePathStore!.updateRoutePathLinkProperty(
+                orderNumber,
+                property,
+                value
+            );
+        }
         this.validateProperty(
             routePathLinkValidationModel[property],
             property,
@@ -135,19 +148,29 @@ class RoutePathListNode extends ViewFormBase<
         );
     };
 
-    private onCheckboxChange = (property: string, value: boolean) => () => {
-        const orderNumber = this.props.routePathLink.orderNumber;
-        this.props.routePathStore!.updateRoutePathLinkProperty(
-            orderNumber,
-            property,
-            !value
-        );
+    private onIsStartNodeUsingBookScheduleChange = (value: boolean) => () => {
+        this.onRoutePathBookSchedulePropertyChange(
+            'isStartNodeUsingBookSchedule'
+        )(value);
     };
 
     private renderStopView = (stop: IStop) => {
         const isEditingDisabled = this.props.isEditingDisabled;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
+
+        const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
+
+        const isLastRoutePathLink = this.props.routePathStore!.isLastRoutePathLink(
+            routePathLink
+        );
+
+        const isStartNodeUsingBookSchedule = isLastRoutePathLink
+            ? routePath!.isStartNodeUsingBookSchedule
+            : routePathLink.isStartNodeUsingBookSchedule;
+        const startNodeBookScheduleColumnNumber = isLastRoutePathLink
+            ? routePath!.startNodeBookScheduleColumnNumber
+            : routePathLink.startNodeBookScheduleColumnNumber;
 
         return (
             <div className={s.stopContent}>
@@ -191,26 +214,24 @@ class RoutePathListNode extends ViewFormBase<
                 <div className={s.flexRow}>
                     <Checkbox
                         disabled={isEditingDisabled}
-                        checked={routePathLink.isStartNodeUsingBookSchedule}
+                        checked={isStartNodeUsingBookSchedule}
                         content='Ohitusaika kirja-aikataulussa'
-                        onClick={this.onCheckboxChange(
-                            'isStartNodeUsingBookSchedule',
-                            routePathLink.isStartNodeUsingBookSchedule
+                        onClick={this.onIsStartNodeUsingBookScheduleChange(
+                            !isStartNodeUsingBookSchedule
                         )}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         disabled={
-                            isEditingDisabled ||
-                            !routePathLink.isStartNodeUsingBookSchedule
+                            isEditingDisabled || !isStartNodeUsingBookSchedule
                         }
                         type='number'
                         label='PYSÄKIN SARAKENUMERO KIRJA-AIKATAULUSSA'
-                        onChange={this.onRoutePathNodePropertyChange(
+                        onChange={this.onRoutePathBookSchedulePropertyChange(
                             'startNodeBookScheduleColumnNumber'
                         )}
-                        value={routePathLink.startNodeBookScheduleColumnNumber}
+                        value={startNodeBookScheduleColumnNumber}
                         validationResult={
                             invalidPropertiesMap[
                                 'startNodeBookScheduleColumnNumber'

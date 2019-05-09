@@ -245,6 +245,8 @@ const routePathQueryFields = `
     suupaapaikr
     suupituus
     poikkeusreitti
+    kirjaan
+    kirjasarake
 `;
 
 const routePathSegmentQueryFields = `

@@ -32,6 +32,8 @@ export default interface IRoutePath
     routePathShortNameSw: string; // TODO: rename as shortNameSw
     length: number;
     exceptionPath: string;
+    isStartNodeUsingBookSchedule: boolean;
+    startNodeBookScheduleColumnNumber: number | null;
 }
 
 export { IRoutePathPrimaryKey };

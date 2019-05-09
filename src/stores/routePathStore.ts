@@ -331,18 +331,26 @@ export class RoutePathStore {
         this._geometryUndoStore.clear();
     };
 
-    public isMapItemHighlighted = (objectId: string) => {
+    public isLastRoutePathLink = (routePathLink: IRoutePathLink): boolean => {
+        const routePathLinks = this._routePath!.routePathLinks;
+        const index = routePathLinks!.findIndex(rpLink => {
+            return rpLink.id === routePathLink.id;
+        });
+        return index === routePathLinks!.length - 1;
+    };
+
+    public isMapItemHighlighted = (objectId: string): boolean => {
         return (
             this._highlightedMapItem === objectId ||
             (!this._highlightedMapItem && this.isListItemExtended(objectId))
         );
     };
 
-    public isListItemExtended = (objectId: string) => {
+    public isListItemExtended = (objectId: string): boolean => {
         return this._extendedListItems.some(n => n === objectId);
     };
 
-    public getCalculatedLength = () => {
+    public getCalculatedLength = (): number => {
         if (this.routePath && this.routePath.routePathLinks) {
             return Math.floor(
                 lengthCalculator.fromRoutePathLinks(
@@ -378,7 +386,7 @@ export class RoutePathStore {
         return [];
     };
 
-    public hasNodeOddAmountOfNeighbors = (nodeId: string) => {
+    public hasNodeOddAmountOfNeighbors = (nodeId: string): boolean => {
         const routePath = this.routePath;
         return (
             routePath!.routePathLinks!.filter(x => x.startNode.id === nodeId)
