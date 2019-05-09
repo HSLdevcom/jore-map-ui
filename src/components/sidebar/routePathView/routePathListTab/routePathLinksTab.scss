@@ -11,10 +11,10 @@
         display: flex;
         flex-direction: column;
         height: 100%;
-        font-weight: bold;
         color: $labelColor;
         font-size: $mediumFontSize;
         overflow-y: auto;
+        color: #535353; /* Custom darker color that works well with link/node item background*/
 
         .saveButton {
             padding: 20px;

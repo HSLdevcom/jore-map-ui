@@ -70,36 +70,47 @@ const renderEditableContent = (props: IInputProps) => {
     );
 };
 
+const renderValidatorResult = (validationResult?: IValidationResult) => {
+    if (!validationResult || !validationResult.errorMessage) {
+        return null;
+    }
+    return (
+        <div className={s.errorMessage}>{validationResult.errorMessage}</div>
+    );
+};
+
 const InputContainer = observer((props: IInputProps) => {
     const validationResult = props.validationResult;
 
     if (props.disabled) {
         if (props.type === 'date') {
             return (
-                <TextContainer
-                    label={props.label}
-                    value={
-                        props.value
-                            ? Moment(props.value).format('DD.MM.YYYY HH:mm')
-                            : '-'
-                    }
-                />
+                <div className={s.disabledContainerWrapper}>
+                    <TextContainer
+                        label={props.label}
+                        value={
+                            props.value
+                                ? Moment(props.value).format('DD.MM.YYYY HH:mm')
+                                : '-'
+                        }
+                    />
+                    {renderValidatorResult(validationResult)}
+                </div>
             );
         }
-        return <TextContainer label={props.label} value={props.value} />;
+        return (
+            <div className={s.disabledContainerWrapper}>
+                <TextContainer label={props.label} value={props.value} />
+                {renderValidatorResult(validationResult)}
+            </div>
+        );
     }
 
     return (
         <div className={s.formItem}>
             <div className={s.inputLabel}>{props.label}</div>
             {renderEditableContent(props)}
-            {validationResult &&
-                validationResult.errorMessage &&
-                !props.disabled && (
-                    <div className={s.errorMessage}>
-                        {validationResult.errorMessage}
-                    </div>
-                )}
+            {renderValidatorResult(validationResult)}
         </div>
     );
 });
