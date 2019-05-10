@@ -4,7 +4,6 @@ import { Polyline, FeatureGroup } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { INode, IRoutePathLink } from '~/models';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
-import NodeType from '~/enums/nodeType';
 import { PopupStore } from '~/stores/popupStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import NodeMarker from './markers/NodeMarker';
@@ -68,9 +67,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     key={`${routePathLink.orderNumber}-${index}`}
                     node={node}
                     isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                    isDisabled={
-                        routePathLink.startNodeType === NodeType.DISABLED
-                    }
+                    isDisabled={routePathLink.isStartNodeDisabled}
                     isTimeAlignmentStop={
                         routePathLink.isStartNodeTimeAlignmentStop
                     }

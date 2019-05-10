@@ -11,12 +11,13 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     routeId: string;
     routePathDirection: string;
     routePathStartDate: Date;
-    transitType: TransitType;
     geometry: L.LatLng[];
+    orderNumber: number;
+    transitType: TransitType;
     startNode: INode;
     endNode: INode;
-    orderNumber: number;
-    startNodeType: NodeType;
+    startNodeStopType: NodeType; // ei/otto/jättöpysäkki
+    isStartNodeDisabled: boolean;
     isStartNodeTimeAlignmentStop: boolean;
     isStartNodeHastusStop: boolean;
     isStartNodeUsingBookSchedule: boolean;

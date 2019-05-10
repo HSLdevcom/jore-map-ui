@@ -43,45 +43,35 @@ class ILinkListView extends React.Component<
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return;
         return routePathLinks.map(routePathLink => {
-            if (
-                routePathLink.startNodeType === this.state.linkTableFilter ||
-                this.state.linkTableFilter === EMPTY_FILTER_VALUE
-            ) {
-                return (
-                    <div
-                        key={routePathLink.id}
-                        className={
-                            this.state.selectedRoutePathLink ===
-                            routePathLink.id
-                                ? s.routePathLinkRowSelected
-                                : s.routePathLinkRow
-                        }
-                        onClick={this.selectRoutePathLink(routePathLink.id)}
-                    >
-                        <div className={s.flexInnerRow}>
-                            <div className={s.tableItemMedium}>
-                                {routePathLink.id}
-                            </div>
+            return (
+                <div
+                    key={routePathLink.id}
+                    className={
+                        this.state.selectedRoutePathLink === routePathLink.id
+                            ? s.routePathLinkRowSelected
+                            : s.routePathLinkRow
+                    }
+                    onClick={this.selectRoutePathLink(routePathLink.id)}
+                >
+                    <div className={s.flexInnerRow}>
+                        <div className={s.tableItemMedium}>
+                            {routePathLink.id}
+                        </div>
 
-                            <div className={s.tableItem}>
-                                {this.getNodeName(routePathLink.startNode)}
-                            </div>
+                        <div className={s.tableItem}>
+                            {this.getNodeName(routePathLink.startNode)}
+                        </div>
 
-                            <div className={s.tableItem}>
-                                {this.getNodeName(routePathLink.endNode)}
-                            </div>
+                        <div className={s.tableItem}>
+                            {this.getNodeName(routePathLink.endNode)}
+                        </div>
 
-                            <div className={s.tableItem}>
-                                {this.getHastusId(routePathLink)}
-                            </div>
-
-                            <div className={s.tableItemSmall}>
-                                {routePathLink.startNodeType}
-                            </div>
+                        <div className={s.tableItem}>
+                            {this.getHastusId(routePathLink)}
                         </div>
                     </div>
-                );
-            }
+                </div>
+            );
             return;
         });
     };
@@ -128,6 +118,9 @@ class ILinkListView extends React.Component<
     };
 
     private setLinkTableFilter = (filter: NodeType | EmptyFilterType) => {
+        window.alert(
+            'Tämä taulukko ei toimi kunnolla tällä hetkellä. Toteutuksen suunnittelu kesken.'
+        );
         this.setState({
             linkTableFilter: filter
         });
@@ -155,7 +148,6 @@ class ILinkListView extends React.Component<
                     <div className={s.tableItem}>Alkusolmu</div>
                     <div className={s.tableItem}>Loppusolmu</div>
                     <div className={s.tableItem}>Hastus id</div>
-                    <div className={s.tableItemSmall}>T</div>
                 </div>
                 <div className={s.linkList}>{this.getRoutePathLinks()}</div>
                 <Button

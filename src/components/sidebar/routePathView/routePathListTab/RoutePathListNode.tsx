@@ -5,13 +5,14 @@ import { IRoutePathLink, INode, IStop } from '~/models';
 import { FiChevronRight } from 'react-icons/fi';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { Button, Checkbox } from '~/components/controls';
+import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
+import ICodeListItem from '~/models/ICodeListItem';
 import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
@@ -111,8 +112,27 @@ class RoutePathListNode extends ViewFormBase<
         );
     };
 
-    // TODO: remove this dummy function
-    private onChange = () => {};
+    private onRoutePathLinkPropertyChange = (property: string) => (
+        value: any
+    ) => {
+        const orderNumber = this.props.routePathLink.orderNumber;
+
+        this.props.routePathStore!.updateRoutePathLinkProperty(
+            orderNumber,
+            property,
+            value
+        );
+        this.validateProperty(
+            routePathLinkValidationModel[property],
+            property,
+            value
+        );
+        const isLinkFormValid = this.isFormValid();
+        this.props.routePathStore!.setLinkFormValidity(
+            orderNumber,
+            isLinkFormValid
+        );
+    };
 
     /**
      * A special onChange function for the following properties:
@@ -175,6 +195,24 @@ class RoutePathListNode extends ViewFormBase<
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
 
+        const startNodeStopTypeOptions: ICodeListItem[] = [
+            {
+                orderNumber: 1,
+                value: '1',
+                label: '-'
+            },
+            {
+                orderNumber: 2,
+                value: '2',
+                label: 'Otto'
+            },
+            {
+                orderNumber: 3,
+                value: '3',
+                label: 'Jättö'
+            }
+        ];
+
         return (
             <div className={s.stopContent}>
                 <div className={s.flexRow}>
@@ -193,25 +231,30 @@ class RoutePathListNode extends ViewFormBase<
                     <Checkbox
                         disabled={isEditingDisabled}
                         content='Pysäkki ei käytössä'
-                        checked={false}
-                        onClick={this.onChange}
+                        checked={routePathLink.isStartNodeDisabled}
+                        onClick={this.onRoutePathLinkPropertyChange(
+                            'isStartNodeDisabled'
+                        )}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <Checkbox
                         disabled={isEditingDisabled}
                         content='Ajantasauspysäkki'
-                        checked={false}
-                        onClick={this.onChange}
+                        checked={routePathLink.isStartNodeTimeAlignmentStop}
+                        onClick={this.onRoutePathLinkPropertyChange(
+                            'isStartNodeTimeAlignmentStop'
+                        )}
                     />
                 </div>
                 <div className={s.flexRow}>
-                    {/* rpLink.isStartNodeTimeAlignmentStop */}
                     <Checkbox
                         disabled={isEditingDisabled}
-                        checked={false}
+                        checked={routePathLink.isStartNodeHastusStop}
                         content='Hastus paikka'
-                        onClick={this.onChange}
+                        onClick={this.onRoutePathLinkPropertyChange(
+                            'isStartNodeHastusStop'
+                        )}
                     />
                 </div>
                 <div className={s.flexRow}>
@@ -241,6 +284,17 @@ class RoutePathListNode extends ViewFormBase<
                             ]
                         }
                         darkerInputLabel={true}
+                    />
+                </div>
+                <div className={s.flexRow}>
+                    <Dropdown
+                        label='ERIKOISTYYPPI'
+                        onChange={this.onRoutePathLinkPropertyChange(
+                            'startNodeStopType'
+                        )}
+                        disabled={isEditingDisabled}
+                        selected={routePathLink.startNodeStopType}
+                        items={startNodeStopTypeOptions}
                     />
                 </div>
                 <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
