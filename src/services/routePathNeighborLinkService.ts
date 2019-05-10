@@ -150,7 +150,6 @@ class RoutePathNeighborLinkService {
                 new Date()
             );
             if (neighborLinks.length === 0) {
-                // tslint:disable-next-line:max-line-length
                 ErrorStore.addError(
                     `Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`
                 );

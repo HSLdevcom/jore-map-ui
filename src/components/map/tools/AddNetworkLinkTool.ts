@@ -15,7 +15,7 @@ class AddNetworkLinkTool implements BaseTool {
     public toolType = ToolbarTool.AddNetworkLink;
     public toolHelpHeader = 'Luo uusi linkki';
     public toolHelpText =
-        'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.'; // tslint:disable-line max-line-length
+        'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);

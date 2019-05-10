@@ -119,7 +119,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             }
         } catch (e) {
             this.props.errorStore!.addError(
-                // tslint:disable-next-line:max-line-length
                 `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
                 e
             );
@@ -139,7 +138,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         } catch (ex) {
             this.props.errorStore!.addError(
                 `Alkusolmun ${startNodeId} tai loppusolmun ${endNodeId} haku epäonnistui`
-            ); // tslint:disable-line max-line-length
+            );
             return;
         }
 

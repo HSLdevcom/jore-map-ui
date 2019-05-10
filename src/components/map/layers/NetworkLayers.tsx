@@ -58,7 +58,6 @@ interface INodeProperties {
 function getGeoServerUrl(layerName: string) {
     const GEOSERVER_URL =
         process.env.GEOSERVER_URL || 'http://localhost:8080/geoserver';
-    // tslint:disable-next-line:max-line-length
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
