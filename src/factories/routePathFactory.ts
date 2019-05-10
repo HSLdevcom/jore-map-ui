@@ -68,7 +68,9 @@ class RoutePathFactory {
             destinationSw: externalRoutePath.suupaapaikr,
             routePathShortName: externalRoutePath.suunimilyh,
             routePathShortNameSw: externalRoutePath.suunimilyhr,
-            length: externalRoutePath.suupituus
+            length: externalRoutePath.suupituus,
+            isStartNodeUsingBookSchedule: externalRoutePath.kirjaan === '1',
+            startNodeBookScheduleColumnNumber: externalRoutePath.kirjasarake
         };
     };
 
@@ -100,7 +102,9 @@ class RoutePathFactory {
             routePathShortNameSw: '',
             modifiedBy: '',
             length: 0,
-            exceptionPath: '0'
+            exceptionPath: '0',
+            isStartNodeUsingBookSchedule: false,
+            startNodeBookScheduleColumnNumber: null
         };
     }
 

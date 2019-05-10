@@ -1,18 +1,17 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { FiChevronRight } from 'react-icons/fi';
+import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import classnames from 'classnames';
 import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
-import { Button, Checkbox, Dropdown } from '~/components/controls';
+import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
-import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import RoutePathListItem from './RoutePathListItem';
-import MultiTabTextarea from '../../linkView/MultiTabTextarea';
 import TextContainer from '../../TextContainer';
 import * as s from './routePathListItem.scss';
 
@@ -28,6 +27,7 @@ interface IRoutePathListLinkProps {
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
+        const orderNumber = this.props.routePathLink.orderNumber;
         const isExtended = this.props.routePathStore!.isListItemExtended(id);
         return (
             <div
@@ -38,7 +38,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
             >
                 <div className={s.headerContent}>
                     <div className={s.headerNodeTypeContainer}>
-                        Reitinlinkki
+                        Reitinlinkki {orderNumber}
                     </div>
                     <div className={s.label} />
                 </div>
@@ -75,101 +75,24 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                     <TextContainer
                         label='ALKUSOLMU'
                         value={rpLink.startNode.id}
+                        darkerInputLabel={true}
                     />
                     <TextContainer
                         label='LOPPUSOLMU'
                         value={rpLink.endNode.id}
+                        darkerInputLabel={true}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <TextContainer
                         label='JÄRJESTYSNUMERO'
                         value={rpLink.orderNumber.toString()}
-                    />
-                    <TextContainer
-                        label='AJANTASAUSPYSÄKKI'
-                        value={
-                            rpLink.isStartNodeTimeAlignmentStop ? 'Kyllä' : 'ei'
-                        }
+                        darkerInputLabel={true}
                     />
                 </div>
-                <div className={s.flexRow}>
-                    <div className={s.inputLabel}>ALKUSOLMUN SARAKE NRO</div>
-                </div>
-                <div className={s.flexRow}>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                        <Checkbox
-                            checked={false}
-                            content='Ohitusaika kirja-aikat.'
-                            onClick={this.onChange}
-                        />
-                    </div>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                        <Checkbox
-                            checked={false}
-                            content='Ohitusaika nettiaikat.'
-                            onClick={this.onChange}
-                        />
-                    </div>
-                </div>
-                <div className={s.flexRow}>
-                    <div className={s.inputLabel}>
-                        VIIM. LINKIN LOPPUSOLMU SARAKE NRO
-                    </div>
-                </div>
-                <div className={s.flexRow}>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                        <Checkbox
-                            checked={false}
-                            content='Ohitusaika nettiaikat.'
-                            onClick={this.onChange}
-                        />
-                    </div>
-                    <div className={s.flexInnerRow}>
-                        <input
-                            placeholder='1'
-                            type='text'
-                            className={s.smallInput}
-                        />
-                        <Checkbox
-                            checked={false}
-                            content='Ohitusaika kirja-aikat.'
-                            onClick={this.onChange}
-                        />
-                    </div>
-                </div>
-                <div className={s.flexRow}>
-                    <Dropdown
-                        label='SOLMU HASTUS-PAIKKANA'
-                        items={this.props.codeListStore!.getCodeList(
-                            'Kyllä/Ei'
-                        )}
-                        selected='Kyllä'
-                        onChange={this.onChange}
-                    />
-                </div>
-                <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
             </div>
         );
     };
-
-    // TODO:
-    private onChange = () => {};
 
     private openInNetworkView = () => {
         const routeLink = this.props.routePathLink;

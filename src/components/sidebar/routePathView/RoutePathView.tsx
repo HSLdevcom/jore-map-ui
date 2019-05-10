@@ -227,6 +227,7 @@ class RoutePathView extends ViewFormBase<
         return (
             <RoutePathLinksTab
                 routePath={this.props.routePathStore!.routePath!}
+                isEditingDisabled={this.state.isEditingDisabled}
             />
         );
     };
@@ -306,11 +307,17 @@ class RoutePathView extends ViewFormBase<
             this.props.routePathStore!.routePath!.routePathLinks!
         );
 
+        const areLinkFormsValid =
+            this.props.routePathStore!.invalidLinkOrderNumbers.length === 0;
+        // TODO:
+        // are nodeFormsValid ...
+
         const isSaveButtonDisabled =
             this.state.isEditingDisabled ||
             !this.props.routePathStore!.isDirty ||
             !isGeometryValid ||
-            !this.isFormValid();
+            !this.isFormValid() ||
+            !areLinkFormsValid;
 
         const copySegmentStore = this.props.routePathCopySegmentStore;
         const isCopyRoutePathSegmentViewVisible =

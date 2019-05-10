@@ -279,7 +279,7 @@ class LineInfoTab extends React.Component<
                         <InputContainer
                             disabled={true}
                             label='MUOKATTU PVM'
-                            type={'date'}
+                            type='date'
                             value={line.modifiedOn}
                         />
                     </div>

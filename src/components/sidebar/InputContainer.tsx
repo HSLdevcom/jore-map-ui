@@ -16,11 +16,12 @@ interface IInputProps {
     placeholder?: string;
     className?: string;
     disabled?: boolean;
-    value?: string | number | Date;
+    value?: string | number | Date | null;
     validatorRule?: string;
     type?: inputType; // Defaults to text
     capitalizeInput?: boolean;
     isClearButtonVisibleOnDates?: boolean;
+    darkerInputLabel?: boolean;
 }
 
 const renderEditableContent = (props: IInputProps) => {
@@ -70,32 +71,58 @@ const renderEditableContent = (props: IInputProps) => {
     );
 };
 
+const renderValidatorResult = (validationResult?: IValidationResult) => {
+    if (!validationResult || !validationResult.errorMessage) {
+        return null;
+    }
+    return (
+        <div className={s.errorMessage}>{validationResult.errorMessage}</div>
+    );
+};
+
 const InputContainer = observer((props: IInputProps) => {
     const validationResult = props.validationResult;
 
     if (props.disabled) {
         if (props.type === 'date') {
             return (
-                <TextContainer
-                    label={props.label}
-                    value={Moment(props.value).format('DD.MM.YYYY HH:mm')}
-                />
+                <div className={s.disabledContainerWrapper}>
+                    <TextContainer
+                        label={props.label}
+                        value={
+                            props.value
+                                ? Moment(props.value).format('DD.MM.YYYY HH:mm')
+                                : '-'
+                        }
+                        darkerInputLabel={props.darkerInputLabel}
+                    />
+                    {renderValidatorResult(validationResult)}
+                </div>
             );
         }
-        return <TextContainer label={props.label} value={props.value} />;
+        return (
+            <div className={s.disabledContainerWrapper}>
+                <TextContainer
+                    label={props.label}
+                    value={props.value}
+                    darkerInputLabel={props.darkerInputLabel}
+                />
+                {renderValidatorResult(validationResult)}
+            </div>
+        );
     }
 
     return (
         <div className={s.formItem}>
-            <div className={s.inputLabel}>{props.label}</div>
+            <div
+                className={
+                    props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel
+                }
+            >
+                {props.label}
+            </div>
             {renderEditableContent(props)}
-            {validationResult &&
-                validationResult.errorMessage &&
-                !props.disabled && (
-                    <div className={s.errorMessage}>
-                        {validationResult.errorMessage}
-                    </div>
-                )}
+            {renderValidatorResult(validationResult)}
         </div>
     );
 });

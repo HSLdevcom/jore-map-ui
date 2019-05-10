@@ -1,8 +1,10 @@
 @import '../shared/styles/common.scss';
 
 .container {
-    display: block;
+    display: flex;
     position: relative;
+    justify-content: center;
+    align-items: center;
     padding-left: 30px;
     cursor: pointer;
     font-size: $mediumFontSize;
@@ -10,6 +12,20 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.disabled {
+    pointer-events: none;
+
+    .checkmark {
+        background-color: #eef1f3 !important;
+    }
 }
 
 /* Hide the browser's default checkbox */
@@ -30,11 +46,13 @@
     width: 18px;
     border: 1px solid $busBlue;
     border-radius: 5px;
+    background-color: #fff;
 }
 
 /* On mouse-over, add a slightly grey background color */
 .container:hover input ~ .checkmark {
-    background-color: #e0e0e0;
+    background-color: #fcfcfc;
+    box-shadow: 0 0 3px $busBlue;
 }
 
 /* When the checkbox is checked, add a blue background */
@@ -44,7 +62,8 @@
 
 /* On checked input mouse-over, add a slightly grey background color */
 .container input:checked:hover ~ .checkmark {
-    background-color: #e0e0e0;
+    background-color: #fcfcfc;
+    box-shadow: 0 0 3px $busBlue;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */

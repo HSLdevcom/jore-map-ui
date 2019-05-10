@@ -23,7 +23,7 @@ interface IStopFormProps {
 interface IStopFormState {
     isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
+    isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
 }
 
 @inject('nodeStore')

@@ -16,6 +16,7 @@ import s from './routePathLinksTab.scss';
 interface IRoutePathLinksTabProps {
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
+    isEditingDisabled: boolean;
 }
 
 @inject('routePathStore')
@@ -69,6 +70,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         }
                         node={routePathLink.startNode}
                         routePathLink={routePathLink}
+                        isEditingDisabled={this.props.isEditingDisabled}
                     />
                 ) : null,
                 this.isLinksVisible() ? (
@@ -95,6 +97,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                             }
                             node={routePathLink.endNode}
                             routePathLink={routePathLink}
+                            isEditingDisabled={this.props.isEditingDisabled}
                         />
                     );
                 }

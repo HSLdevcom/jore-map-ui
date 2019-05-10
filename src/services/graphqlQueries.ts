@@ -261,6 +261,8 @@ const routePathQueryFields = `
     suupaapaikr
     suupituus
     poikkeusreitti
+    kirjaan
+    kirjasarake
 `;
 
 const routePathSegmentQueryFields = `
@@ -345,9 +347,14 @@ const routePathLinkQueryFields = `
     reljarjnro
     lnkverkko
     ajantaspys
+    paikka
+    kirjaan
+    kirjasarake
     suusuunta
     suuvoimast
     reitunnus
+    relkuka
+    relviimpvm
     linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu {
         geojson
     }

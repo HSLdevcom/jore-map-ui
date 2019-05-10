@@ -12,8 +12,10 @@ const routePathValidationModel = {
     routePathShortNameSw: shortNameRule,
     startTime: dateRule,
     endTime: dateRule,
-    direction: 'required|min:1|max:1|string',
-    length: 'required|min:0|max:99999|numeric'
+    length: 'required|min:0|max:99999|numeric',
+    isStartNodeUsingBookSchedule: 'boolean',
+    startNodeBookScheduleColumnNumber: 'numeric|min:1|max:99',
+    direction: 'required|min:1|max:1|string'
 };
 
 export default routePathValidationModel;

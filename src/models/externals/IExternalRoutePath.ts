@@ -23,4 +23,6 @@ export default interface IExternalRoutePath {
     suuvoimast: string;
     suuvoimviimpvm: string;
     suupituus: number;
+    kirjaan: string;
+    kirjasarake: number;
 }

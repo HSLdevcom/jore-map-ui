@@ -133,6 +133,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     render() {
+        if (this.props.routePathLinks.length === 0) return null;
+
         return (
             <>
                 <FeatureGroup

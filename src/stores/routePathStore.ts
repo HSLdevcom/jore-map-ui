@@ -35,6 +35,7 @@ export class RoutePathStore {
     @observable private _extendedListItems: string[];
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
+    @observable private _invalidLinkOrderNumbers: number[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -44,6 +45,7 @@ export class RoutePathStore {
         this._activeTab = RoutePathViewTab.Info;
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore = new GeometryUndoStore();
+        this._invalidLinkOrderNumbers = [];
     }
 
     @computed
@@ -79,6 +81,11 @@ export class RoutePathStore {
     @computed
     get extendedObjects() {
         return this._extendedListItems;
+    }
+
+    @computed
+    get invalidLinkOrderNumbers() {
+        return this._invalidLinkOrderNumbers;
     }
 
     @action
@@ -120,7 +127,21 @@ export class RoutePathStore {
     public undo = () => {
         this._geometryUndoStore.undo((nextUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
-            this._routePath!.routePathLinks = nextUndoState.routePathLinks;
+
+            const undoRoutePathLinks = nextUndoState.routePathLinks;
+            const oldRoutePathLinks = this._routePath!.routePathLinks;
+            // Prevent undo if oldLink is found
+            const newRoutePathLinks = undoRoutePathLinks.map(undoRpLink => {
+                const oldRpLink = oldRoutePathLinks!.find(rpLink => {
+                    return rpLink.id === undoRpLink.id;
+                });
+                if (oldRpLink) {
+                    return _.cloneDeep(oldRpLink);
+                }
+                return undoRpLink;
+            });
+            this._routePath!.routePathLinks = newRoutePathLinks;
+            this.recalculateOrderNumbers();
         });
     };
 
@@ -128,7 +149,21 @@ export class RoutePathStore {
     public redo = () => {
         this._geometryUndoStore.redo((previousUndoState: UndoState) => {
             this._neighborRoutePathLinks = [];
-            this._routePath!.routePathLinks = previousUndoState.routePathLinks;
+
+            const redoRoutePathLinks = previousUndoState.routePathLinks;
+            const oldRoutePathLinks = this._routePath!.routePathLinks;
+            // Prevent redo if oldLink is found
+            const newRoutePathLinks = redoRoutePathLinks.map(redoRpLink => {
+                const oldRpLink = oldRoutePathLinks!.find(rpLink => {
+                    return rpLink.id === redoRpLink.id;
+                });
+                if (oldRpLink) {
+                    return _.cloneDeep(oldRpLink);
+                }
+                return redoRpLink;
+            });
+            this._routePath!.routePathLinks = newRoutePathLinks;
+            this.recalculateOrderNumbers();
         });
     };
 
@@ -188,6 +223,33 @@ export class RoutePathStore {
             ...this._routePath!,
             [property]: value
         };
+    };
+
+    @action
+    public updateRoutePathLinkProperty = (
+        orderNumber: number,
+        property: string,
+        value: string | number | boolean
+    ) => {
+        const rpLinkToUpdate:
+            | IRoutePathLink
+            | undefined = this._routePath!.routePathLinks!.find(
+            rpLink => rpLink.orderNumber === orderNumber
+        );
+        rpLinkToUpdate![property] = value;
+    };
+
+    @action
+    public setLinkFormValidity = (orderNumber: number, isValid: boolean) => {
+        if (isValid) {
+            this._invalidLinkOrderNumbers = this._invalidLinkOrderNumbers.filter(
+                item => item !== orderNumber
+            );
+        } else {
+            if (!this.invalidLinkOrderNumbers.includes(orderNumber)) {
+                this.invalidLinkOrderNumbers.push(orderNumber);
+            }
+        }
     };
 
     @action
@@ -271,18 +333,26 @@ export class RoutePathStore {
         this._geometryUndoStore.clear();
     };
 
-    public isMapItemHighlighted = (objectId: string) => {
+    public isLastRoutePathLink = (routePathLink: IRoutePathLink): boolean => {
+        const routePathLinks = this._routePath!.routePathLinks;
+        const index = routePathLinks!.findIndex(rpLink => {
+            return rpLink.id === routePathLink.id;
+        });
+        return index === routePathLinks!.length - 1;
+    };
+
+    public isMapItemHighlighted = (objectId: string): boolean => {
         return (
             this._highlightedMapItem === objectId ||
             (!this._highlightedMapItem && this.isListItemExtended(objectId))
         );
     };
 
-    public isListItemExtended = (objectId: string) => {
+    public isListItemExtended = (objectId: string): boolean => {
         return this._extendedListItems.some(n => n === objectId);
     };
 
-    public getCalculatedLength = () => {
+    public getCalculatedLength = (): number => {
         if (this.routePath && this.routePath.routePathLinks) {
             return Math.floor(
                 lengthCalculator.fromRoutePathLinks(
@@ -318,7 +388,7 @@ export class RoutePathStore {
         return [];
     };
 
-    public hasNodeOddAmountOfNeighbors = (nodeId: string) => {
+    public hasNodeOddAmountOfNeighbors = (nodeId: string): boolean => {
         const routePath = this.routePath;
         return (
             routePath!.routePathLinks!.filter(x => x.startNode.id === nodeId)
