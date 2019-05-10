@@ -18,7 +18,6 @@ import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
 import TextContainer from '../../TextContainer';
 import InputContainer from '../../InputContainer';
-import MultiTabTextarea from '../../linkView/MultiTabTextarea';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
@@ -297,7 +296,6 @@ class RoutePathListNode extends ViewFormBase<
                         items={startNodeStopTypeOptions}
                     />
                 </div>
-                <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
                 <div className={s.flexRow}>
                     <InputContainer
                         disabled={true}
