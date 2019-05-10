@@ -213,7 +213,7 @@ class RoutePathListNode extends ViewFormBase<
         ];
 
         return (
-            <div className={s.stopContent}>
+            <div>
                 <div className={s.flexRow}>
                     <TextContainer
                         label='PYSÄKIN NIMI'
@@ -317,14 +317,12 @@ class RoutePathListNode extends ViewFormBase<
 
     private renderNodeView = (node: INode) => {
         return (
-            <div className={s.nodeContent}>
-                <div className={s.flexRow}>
-                    <TextContainer
-                        label='MITTAUSPÄIVÄMÄÄRÄ'
-                        value={node.measurementDate}
-                        darkerInputLabel={true}
-                    />
-                </div>
+            <div className={s.flexRow}>
+                <TextContainer
+                    label='MITTAUSPÄIVÄMÄÄRÄ'
+                    value={node.measurementDate}
+                    darkerInputLabel={true}
+                />
             </div>
         );
     };

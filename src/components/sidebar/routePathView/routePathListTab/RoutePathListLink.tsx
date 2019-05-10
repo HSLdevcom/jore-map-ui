@@ -69,8 +69,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
         return (
-            <div className={s.nodeContent}>
-                Reitinlinkin tiedot
+            <div>
                 <div className={s.flexRow}>
                     <TextContainer
                         label='ALKUSOLMU'
