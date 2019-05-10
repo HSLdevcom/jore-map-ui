@@ -2,9 +2,20 @@ import { IRoutePath, IRoute, IRoutePathLink } from '~/models';
 import HashHelper from '~/util/hashHelper';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
+import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
+    public static mapExternalRoutePathToRoutePathPrimaryKey = (
+        externalRoutePath: IExternalRoutePath
+    ): IRoutePathPrimaryKey => {
+        return {
+            routeId: externalRoutePath.reitunnus,
+            direction: externalRoutePath.suusuunta,
+            startTime: new Date(externalRoutePath.suuvoimast)
+        };
+    };
+
     public static mapExternalRoutePath = (
         externalRoutePath: IExternalRoutePath
     ): IRoutePath => {
@@ -32,9 +43,12 @@ class RoutePathFactory {
         const exceptionPath = externalRoutePath.poikkeusreitti
             ? externalRoutePath.poikkeusreitti
             : '0';
+
         return {
             exceptionPath,
             routeId: externalRoutePath.reitunnus,
+            direction: externalRoutePath.suusuunta,
+            startTime: new Date(externalRoutePath.suuvoimast),
             routePathLinks:
                 routePathLinks !== undefined ? routePathLinks : undefined,
             lineId:
@@ -44,8 +58,6 @@ class RoutePathFactory {
             internalId: internalRoutePathId,
             routePathName: externalRoutePath.suunimi,
             routePathNameSw: externalRoutePath.suunimir,
-            direction: externalRoutePath.suusuunta,
-            startTime: new Date(externalRoutePath.suuvoimast),
             endTime: new Date(externalRoutePath.suuvoimviimpvm),
             lastModified: new Date(externalRoutePath.suuviimpvm),
             modifiedBy: externalRoutePath.suukuka,
@@ -74,7 +86,7 @@ class RoutePathFactory {
             internalId: '',
             routePathName: route.routeName,
             routePathNameSw: route.routeNameSw,
-            direction: '1',
+            direction: '',
             visible: true,
             startTime: new Date(defaultDate.getTime()),
             endTime: new Date(defaultDate.getTime()),

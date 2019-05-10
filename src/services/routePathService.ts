@@ -28,6 +28,21 @@ class RoutePathService {
         );
     };
 
+    public static fetchAllRoutePathPrimaryKeys = async (
+        routeId: string
+    ): Promise<IRoutePathPrimaryKey[]> => {
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+            query: GraphqlQueries.getAllRoutePathPrimaryKeysQuery(),
+            variables: {
+                routeId
+            }
+        });
+        return queryResult.data.routePathPrimaryKeys.nodes.map(
+            (rp: IExternalRoutePath) =>
+                RoutePathFactory.mapExternalRoutePathToRoutePathPrimaryKey(rp)
+        );
+    };
+
     public static fetchRoutePathsUsingLinkFromDate = async (
         startNodeId: string,
         endNodeId: string,
