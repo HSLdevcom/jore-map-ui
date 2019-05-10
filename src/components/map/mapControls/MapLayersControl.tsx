@@ -5,10 +5,10 @@ import { IoMdMap } from 'react-icons/io';
 import classnames from 'classnames';
 import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
 import TransitType from '~/enums/transitType';
+import InputContainer from '~/components/sidebar/InputContainer';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import MapStore, { NodeLabel, MapFilter } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
-import NetworkDateControl from './NetworkDateControl';
 import * as s from './mapLayersControl.scss';
 
 interface IMapLayersControlState {
@@ -60,8 +60,9 @@ class MapLayersControl extends React.Component<
     };
 
     private selectDate = (date: Date) => {
-        NetworkStore.setSelectedDate(date ? Moment(date) : undefined);
+        NetworkStore.setSelectedDate(date ? Moment(date) : null);
     };
+
     private showControls = (show: boolean) => (
         e: MouseEvent<HTMLDivElement>
     ) => {
@@ -69,6 +70,7 @@ class MapLayersControl extends React.Component<
         if (!e.relatedTarget['innerHTML']) return;
         this.setState({ show });
     };
+
     render() {
         return (
             <div
@@ -89,13 +91,20 @@ class MapLayersControl extends React.Component<
                         toggleSelectedTransitType={this.toggleTransitType}
                         selectedTransitTypes={NetworkStore.selectedTransitTypes}
                     />
-                    <NetworkDateControl
-                        onChangeDate={this.selectDate}
-                        selectedDate={
+                    <InputContainer
+                        label={
+                            <div className={s.inputTitle}>
+                                Tarkkailupäivämäärä
+                            </div>
+                        }
+                        onChange={this.selectDate}
+                        type='date'
+                        value={
                             NetworkStore.selectedDate
                                 ? NetworkStore.selectedDate.toDate()
                                 : undefined
                         }
+                        isClearButtonVisibleOnDates={true}
                     />
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>GEOMETRIAT</div>

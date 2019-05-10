@@ -75,7 +75,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     }
 
     private isDateInRanges(
-        selectedDate?: Moment.Moment,
+        selectedDate: Moment.Moment | null,
         dateRanges?: Moment.Moment[][]
     ): Boolean {
         return selectedDate
