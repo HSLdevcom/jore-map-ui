@@ -27,6 +27,7 @@ interface IRoutePathListLinkProps {
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
+        const orderNumber = this.props.routePathLink.orderNumber;
         const isExtended = this.props.routePathStore!.isListItemExtended(id);
         return (
             <div
@@ -37,7 +38,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
             >
                 <div className={s.headerContent}>
                     <div className={s.headerNodeTypeContainer}>
-                        Reitinlinkki
+                        Reitinlinkki {orderNumber}
                     </div>
                     <div className={s.label} />
                 </div>
