@@ -141,6 +141,7 @@ export class RoutePathStore {
                 return undoRpLink;
             });
             this._routePath!.routePathLinks = newRoutePathLinks;
+            this.recalculateOrderNumbers();
         });
     };
 
@@ -162,6 +163,7 @@ export class RoutePathStore {
                 return redoRpLink;
             });
             this._routePath!.routePathLinks = newRoutePathLinks;
+            this.recalculateOrderNumbers();
         });
     };
 
