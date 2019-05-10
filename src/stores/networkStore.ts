@@ -24,7 +24,7 @@ export enum MapLayer { // TODO change name to something better
 
 export class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
-    @observable private _selectedDate: Moment.Moment;
+    @observable private _selectedDate: Moment.Moment | null;
     @observable private _visibleMapLayers: MapLayer[];
     @observable private _nodeSize: NodeSize;
     private _savedMapLayers: MapLayer[];
@@ -34,6 +34,7 @@ export class NetworkStore {
         this._visibleMapLayers = [];
         this._nodeSize = NodeSize.normal;
         this._savedMapLayers = [];
+        this._selectedDate = Moment();
     }
 
     @computed
@@ -42,17 +43,13 @@ export class NetworkStore {
     }
 
     @computed
-    get selectedDate(): Moment.Moment {
+    get selectedDate(): Moment.Moment | null {
         return this._selectedDate;
     }
 
     @action
-    public setSelectedDate = (value: Moment.Moment | string) => {
-        if (typeof value === 'string') {
-            this._selectedDate = Moment(value);
-        } else {
-            this._selectedDate = value;
-        }
+    public setSelectedDate = (value: Moment.Moment | null) => {
+        this._selectedDate = value;
     };
 
     @computed
