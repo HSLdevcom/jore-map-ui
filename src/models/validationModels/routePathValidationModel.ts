@@ -14,7 +14,8 @@ const routePathValidationModel = {
     endTime: dateRule,
     length: 'required|min:0|max:99999|numeric',
     isStartNodeUsingBookSchedule: 'boolean',
-    startNodeBookScheduleColumnNumber: 'numeric|min:1|max:99'
+    startNodeBookScheduleColumnNumber: 'numeric|min:1|max:99',
+    direction: 'required|min:1|max:1|string'
 };
 
 export default routePathValidationModel;

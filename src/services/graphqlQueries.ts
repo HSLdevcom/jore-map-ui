@@ -74,6 +74,22 @@ const getAllRoutesQuery = () => {
     `;
 };
 
+const getAllRoutePathPrimaryKeysQuery = () => {
+    return gql`
+        query routePathPrimaryKeys($routeId: String) {
+            routePathPrimaryKeys: allReitinsuuntas(
+                condition: { reitunnus: $routeId }
+            ) {
+                nodes {
+                    reitunnus
+                    suusuunta
+                    suuvoimast
+                }
+            }
+        }
+    `;
+};
+
 const getRoutePathQuery = () => {
     return gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
             routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
@@ -473,5 +489,6 @@ export default {
     getAllNodesQuery,
     getLinksByEndNodeQuery,
     getAllCodeLists,
-    getRoutePathsUsingLinkFromDate
+    getRoutePathsUsingLinkFromDate,
+    getAllRoutePathPrimaryKeysQuery
 };

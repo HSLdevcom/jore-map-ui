@@ -118,12 +118,11 @@ class RoutePathView extends ViewFormBase<
         try {
             if (!this.props.routePathStore!.routePath) {
                 const queryParams = navigator.getQueryParamValues();
-                const route = await RouteService.fetchRoute(
-                    queryParams[QueryParams.routeId]
-                );
+                const routeId = queryParams[QueryParams.routeId];
+                const route = await RouteService.fetchRoute(routeId);
                 // TODO: add transitType to this call (if transitType is routePath's property)
                 const newRoutePath = RoutePathFactory.createNewRoutePath(
-                    queryParams[QueryParams.lineId],
+                    routeId,
                     route
                 );
                 this.props.routePathStore!.setRoutePath(newRoutePath);
@@ -221,6 +220,7 @@ class RoutePathView extends ViewFormBase<
                     isNewRoutePath={this.props.isNewRoutePath}
                     onChange={this.onChange}
                     invalidPropertiesMap={this.state.invalidPropertiesMap}
+                    setValidatorResult={this.setValidatorResult}
                 />
             );
         }
