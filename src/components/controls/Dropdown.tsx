@@ -62,12 +62,10 @@ const Dropdown = observer((props: IDropdownProps) => {
                 ) : (
                     <select
                         className={s.dropdown}
-                        value={selectedItem ? selectedItem.value : undefined}
+                        value={selectedItem ? selectedItem.value : ''}
                         onChange={onChange}
                     >
-                        {!selectedItem &&
-                            <option disabled selected></option>
-                        }
+                        {!selectedItem && <option disabled value='' />}
                         {dropDownItemList.map(item => {
                             return (
                                 <option
