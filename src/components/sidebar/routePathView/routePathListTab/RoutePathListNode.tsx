@@ -296,7 +296,7 @@ class RoutePathListNode extends ViewFormBase<
                         items={startNodeStopTypeOptions}
                     />
                 </div>
-                <div className={s.flexRow}>
+                <div className={s.flexInnerRow}>
                     <InputContainer
                         disabled={true}
                         label='MUOKANNUT'
