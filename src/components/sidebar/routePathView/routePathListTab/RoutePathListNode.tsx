@@ -123,11 +123,8 @@ class RoutePathListNode extends ViewFormBase<
         value: any
     ) => {
         const orderNumber = this.props.routePathLink.orderNumber;
-        const isLastRoutePathLink = this.props.routePathStore!.isLastRoutePathLink(
-            this.props.routePathLink
-        );
 
-        if (isLastRoutePathLink) {
+        if (this.isLastRoutePathNode()) {
             this.props.routePathStore!.updateRoutePathProperty(property, value);
         } else {
             this.props.routePathStore!.updateRoutePathLinkProperty(
@@ -154,6 +151,16 @@ class RoutePathListNode extends ViewFormBase<
         )(value);
     };
 
+    private isLastRoutePathNode = () => {
+        const routePathLink = this.props.routePathLink;
+        const isLastRoutePathLink = this.props.routePathStore!.isLastRoutePathLink(
+            routePathLink
+        );
+        if (!isLastRoutePathLink) return false;
+        const node = this.props.node;
+        return routePathLink.endNode.id === node.id;
+    };
+
     private renderStopView = (stop: IStop) => {
         const isEditingDisabled = this.props.isEditingDisabled;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
@@ -161,14 +168,10 @@ class RoutePathListNode extends ViewFormBase<
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
 
-        const isLastRoutePathLink = this.props.routePathStore!.isLastRoutePathLink(
-            routePathLink
-        );
-
-        const isStartNodeUsingBookSchedule = isLastRoutePathLink
+        const isStartNodeUsingBookSchedule = this.isLastRoutePathNode()
             ? routePath!.isStartNodeUsingBookSchedule
             : routePathLink.isStartNodeUsingBookSchedule;
-        const startNodeBookScheduleColumnNumber = isLastRoutePathLink
+        const startNodeBookScheduleColumnNumber = this.isLastRoutePathNode()
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
 
