@@ -31,8 +31,8 @@ class RoutePathLinkFactory {
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
             id: String(externalRoutePathLink.relid),
             orderNumber: externalRoutePathLink.reljarjnro,
-            startNodeStopType: externalRoutePathLink.relpysakki,
-            isStartNodeDisabled: externalRoutePathLink.relpysakki !== 'E',
+            startNodeStopType: externalRoutePathLink.relohaikpys,
+            isStartNodeDisabled: externalRoutePathLink.relpysakki === 'E',
             isStartNodeTimeAlignmentStop:
                 externalRoutePathLink.ajantaspys === '1',
             isStartNodeHastusStop: externalRoutePathLink.paikka === '1',

@@ -1,4 +1,3 @@
-import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IExternalNode from './IExternalNode';
 import IExternalLink from './IExternalLink';
@@ -13,7 +12,7 @@ export default interface IExternalRoutePathLink {
     relid: number;
     reljarjnro: number;
     relohaikpys: string;
-    relpysakki: NodeType;
+    relpysakki: string;
     lnkverkko: TransitType;
     ajantaspys: string;
     paikka: string;

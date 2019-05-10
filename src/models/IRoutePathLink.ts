@@ -1,6 +1,5 @@
 import * as L from 'leaflet';
 import TransitType from '~/enums/transitType';
-import NodeType from '~/enums/nodeType';
 import INode from './INode';
 
 interface IRoutePathLinkPrimaryKey {
@@ -16,7 +15,7 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     transitType: TransitType;
     startNode: INode;
     endNode: INode;
-    startNodeStopType: NodeType; // ei/otto/jättöpysäkki
+    startNodeStopType: string; // -/otto/jättöpysäkki
     isStartNodeDisabled: boolean;
     isStartNodeTimeAlignmentStop: boolean;
     isStartNodeHastusStop: boolean;
