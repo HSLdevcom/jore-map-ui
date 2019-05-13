@@ -34,10 +34,12 @@ class KeyEventHandler {
             switch (event.code) {
                 case KEYCODES.Z: {
                     EventManager.trigger('undo');
+                    event.preventDefault(); // to disable native undo event
                     break;
                 }
                 case KEYCODES.Y: {
                     EventManager.trigger('redo');
+                    event.preventDefault(); // to disable native undo event
                     break;
                 }
             }
@@ -45,8 +47,10 @@ class KeyEventHandler {
         } else if (event.metaKey && event.code === KEYCODES.Z) {
             if (event.shiftKey) {
                 EventManager.trigger('redo');
+                event.preventDefault(); // to disable native undo event
             } else {
                 EventManager.trigger('undo');
+                event.preventDefault(); // to disable native undo event
             }
         }
     };
