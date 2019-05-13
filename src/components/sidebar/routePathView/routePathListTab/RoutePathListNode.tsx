@@ -187,10 +187,12 @@ class RoutePathListNode extends ViewFormBase<
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
 
-        const isStartNodeUsingBookSchedule = this.isLastRoutePathNode()
+        const isLastRoutePathNode = this.isLastRoutePathNode();
+
+        const isStartNodeUsingBookSchedule = isLastRoutePathNode
             ? routePath!.isStartNodeUsingBookSchedule
             : routePathLink.isStartNodeUsingBookSchedule;
-        const startNodeBookScheduleColumnNumber = this.isLastRoutePathNode()
+        const startNodeBookScheduleColumnNumber = isLastRoutePathNode
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
 
@@ -226,36 +228,53 @@ class RoutePathListNode extends ViewFormBase<
                         darkerInputLabel={true}
                     />
                 </div>
-                <div className={s.flexRow}>
-                    <Checkbox
-                        disabled={isEditingDisabled}
-                        content='Pysäkki ei käytössä'
-                        checked={routePathLink.isStartNodeDisabled}
-                        onClick={this.onRoutePathLinkPropertyChange(
-                            'isStartNodeDisabled'
-                        )}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <Checkbox
-                        disabled={isEditingDisabled}
-                        content='Ajantasauspysäkki'
-                        checked={routePathLink.isStartNodeTimeAlignmentStop}
-                        onClick={this.onRoutePathLinkPropertyChange(
-                            'isStartNodeTimeAlignmentStop'
-                        )}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <Checkbox
-                        disabled={isEditingDisabled}
-                        checked={routePathLink.isStartNodeHastusStop}
-                        content='Hastus paikka'
-                        onClick={this.onRoutePathLinkPropertyChange(
-                            'isStartNodeHastusStop'
-                        )}
-                    />
-                </div>
+                {!isLastRoutePathNode && (
+                    <>
+                        <div className={s.flexRow}>
+                            <Checkbox
+                                disabled={isEditingDisabled}
+                                content='Pysäkki ei käytössä'
+                                checked={routePathLink.isStartNodeDisabled}
+                                onClick={this.onRoutePathLinkPropertyChange(
+                                    'isStartNodeDisabled'
+                                )}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <Checkbox
+                                disabled={isEditingDisabled}
+                                content='Ajantasauspysäkki'
+                                checked={
+                                    routePathLink.isStartNodeTimeAlignmentStop
+                                }
+                                onClick={this.onRoutePathLinkPropertyChange(
+                                    'isStartNodeTimeAlignmentStop'
+                                )}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <Checkbox
+                                disabled={isEditingDisabled}
+                                checked={routePathLink.isStartNodeHastusStop}
+                                content='Hastus paikka'
+                                onClick={this.onRoutePathLinkPropertyChange(
+                                    'isStartNodeHastusStop'
+                                )}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <Dropdown
+                                label='ERIKOISTYYPPI'
+                                onChange={this.onRoutePathLinkPropertyChange(
+                                    'startNodeStopType'
+                                )}
+                                disabled={isEditingDisabled}
+                                selected={routePathLink.startNodeStopType}
+                                items={startNodeStopTypeOptions}
+                            />
+                        </div>
+                    </>
+                )}
                 <div className={s.flexRow}>
                     <Checkbox
                         disabled={isEditingDisabled}
@@ -283,17 +302,6 @@ class RoutePathListNode extends ViewFormBase<
                             ]
                         }
                         darkerInputLabel={true}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <Dropdown
-                        label='ERIKOISTYYPPI'
-                        onChange={this.onRoutePathLinkPropertyChange(
-                            'startNodeStopType'
-                        )}
-                        disabled={isEditingDisabled}
-                        selected={routePathLink.startNodeStopType}
-                        items={startNodeStopTypeOptions}
                     />
                 </div>
                 <div className={s.flexInnerRow}>
