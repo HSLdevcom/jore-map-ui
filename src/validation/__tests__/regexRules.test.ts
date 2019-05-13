@@ -11,7 +11,7 @@ describe('Validator.validate - regexRules', () => {
         expect(validationResult.isValid).toEqual(true);
     });
 
-    it('works with invalid input using rule: upperCaseOrNumbersOrSpace', () => {
+    it('throws on invalid input using rule: upperCaseOrNumbersOrSpace', () => {
         const validationResult = FormValidator.validate(
             'a123',
             regexRules.upperCaseOrNumbersOrSpace
