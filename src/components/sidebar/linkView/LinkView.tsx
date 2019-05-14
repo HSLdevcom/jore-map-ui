@@ -355,24 +355,24 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         </div>
                         <div className={s.flexRow}>
                             <InputContainer
-                                label='LASKETTU PITUUS (m)'
+                                label='MITATTU PITUUS (m)'
                                 disabled={isEditingDisabled}
                                 value={link.length}
                                 type='number'
                                 validationResult={
-                                    invalidPropertiesMap['length']
+                                    invalidPropertiesMap['measuredLength']
                                 }
-                                onChange={this.onChange('length')}
+                                onChange={this.onChange('measuredLength')}
                             />
                             <CalculatedInputField
-                                label='MITATTU PITUUS (m)'
+                                label='PITUUS (m)'
                                 isDisabled={isEditingDisabled}
                                 value={link.measuredLength}
                                 calculatedValue={calVal}
                                 useCalculatedValue={useCalVal}
-                                onChange={this.onChange('measuredLength')}
+                                onChange={this.onChange('length')}
                                 validationResult={
-                                    invalidPropertiesMap['measuredLength']
+                                    invalidPropertiesMap['length']
                                 }
                                 // validatorRule
                             />
