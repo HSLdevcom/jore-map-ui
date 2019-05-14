@@ -242,6 +242,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.validateProperty(linkValidationModel[property], property, value);
     };
 
+    private useCalculatedLength = () => {
+        const length = this.props.linkStore!.getCalculatedLength();
+        this.onChange('length')(length);
+    };
+
     render() {
         const link = this.props.linkStore!.link;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
@@ -281,8 +286,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
         }
 
-        const calVal = 1000;
-        const useCalVal = () => {};
+        const calculatedLength = this.props.linkStore!.getCalculatedLength();
 
         return (
             <div className={s.linkView}>
@@ -357,7 +361,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             <InputContainer
                                 label='MITATTU PITUUS (m)'
                                 disabled={isEditingDisabled}
-                                value={link.length}
+                                value={link.measuredLength}
                                 type='number'
                                 validationResult={
                                     invalidPropertiesMap['measuredLength']
@@ -367,9 +371,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             <CalculatedInputField
                                 label='PITUUS (m)'
                                 isDisabled={isEditingDisabled}
-                                value={link.measuredLength}
-                                calculatedValue={calVal}
-                                useCalculatedValue={useCalVal}
+                                value={link.length}
+                                calculatedValue={calculatedLength}
+                                useCalculatedValue={this.useCalculatedLength}
                                 onChange={this.onChange('length')}
                                 validationResult={
                                     invalidPropertiesMap['length']

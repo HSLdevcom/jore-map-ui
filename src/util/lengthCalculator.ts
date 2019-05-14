@@ -17,5 +17,6 @@ const fromRoutePathLinks = (rpLinks: IRoutePathLink[]) => {
 };
 
 export default {
-    fromRoutePathLinks
+    fromRoutePathLinks,
+    fromPositions
 };
