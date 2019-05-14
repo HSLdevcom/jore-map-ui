@@ -32,9 +32,8 @@ class RoutePathLinkFactory {
             id: String(externalRoutePathLink.relid),
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeStopType: externalRoutePathLink.relohaikpys,
+            startNodeTimeAlignmentStop: externalRoutePathLink.ajantaspys,
             isStartNodeDisabled: externalRoutePathLink.relpysakki === 'E',
-            isStartNodeTimeAlignmentStop:
-                externalRoutePathLink.ajantaspys === '1',
             isStartNodeHastusStop: externalRoutePathLink.paikka === '1',
             isStartNodeUsingBookSchedule: externalRoutePathLink.kirjaan === '1',
             startNodeBookScheduleColumnNumber:
@@ -72,7 +71,7 @@ class RoutePathLinkFactory {
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
             startNodeStopType: startNode.type,
             isStartNodeDisabled: false,
-            isStartNodeTimeAlignmentStop: false,
+            startNodeTimeAlignmentStop: '0',
             isStartNodeHastusStop: false,
             isStartNodeUsingBookSchedule: false,
             startNodeBookScheduleColumnNumber: null,

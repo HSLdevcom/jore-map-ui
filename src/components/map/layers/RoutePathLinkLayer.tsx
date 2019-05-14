@@ -69,7 +69,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     isSelected={this.props.mapStore!.selectedNodeId === node.id}
                     isDisabled={routePathLink.isStartNodeDisabled}
                     isTimeAlignmentStop={
-                        routePathLink.isStartNodeTimeAlignmentStop
+                        routePathLink.startNodeTimeAlignmentStop !== '0'
                     }
                     onContextMenu={this.openPopup(routePathLink.startNode)}
                 />

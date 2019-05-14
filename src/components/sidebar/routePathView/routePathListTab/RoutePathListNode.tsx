@@ -12,6 +12,7 @@ import NodeType from '~/enums/nodeType';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { CodeListStore } from '~/stores/codeListStore';
 import ICodeListItem from '~/models/ICodeListItem';
 import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import NodeHelper from '~/util/nodeHelper';
@@ -23,6 +24,7 @@ import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
     routePathStore?: RoutePathStore;
+    codeListStore?: CodeListStore;
     node: INode;
     reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
@@ -35,7 +37,7 @@ interface RoutePathListNodeState {
     isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'codeListStore')
 @observer
 class RoutePathListNode extends ViewFormBase<
     IRoutePathListNodeProps,
@@ -243,18 +245,6 @@ class RoutePathListNode extends ViewFormBase<
                         <div className={s.flexRow}>
                             <Checkbox
                                 disabled={isEditingDisabled}
-                                content='Ajantasauspysäkki'
-                                checked={
-                                    routePathLink.isStartNodeTimeAlignmentStop
-                                }
-                                onClick={this.onRoutePathLinkPropertyChange(
-                                    'isStartNodeTimeAlignmentStop'
-                                )}
-                            />
-                        </div>
-                        <div className={s.flexRow}>
-                            <Checkbox
-                                disabled={isEditingDisabled}
                                 checked={routePathLink.isStartNodeHastusStop}
                                 content='Hastus paikka'
                                 onClick={this.onRoutePathLinkPropertyChange(
@@ -263,6 +253,19 @@ class RoutePathListNode extends ViewFormBase<
                             />
                         </div>
                         <div className={s.flexRow}>
+                            <Dropdown
+                                label='AJANTASAUSPYSÄKKI'
+                                onChange={this.onRoutePathLinkPropertyChange(
+                                    'startNodeTimeAlignmentStop'
+                                )}
+                                disabled={isEditingDisabled}
+                                selected={
+                                    routePathLink.startNodeTimeAlignmentStop
+                                }
+                                items={this.props.codeListStore!.getCodeList(
+                                    'Ajantasaus pysakki'
+                                )}
+                            />
                             <Dropdown
                                 label='ERIKOISTYYPPI'
                                 onChange={this.onRoutePathLinkPropertyChange(
@@ -342,7 +345,7 @@ class RoutePathListNode extends ViewFormBase<
             <div
                 className={classnames(
                     s.nodeIcon,
-                    routePathLink.isStartNodeTimeAlignmentStop
+                    routePathLink.startNodeTimeAlignmentStop !== '0'
                         ? s.timeAlignmentIcon
                         : undefined
                 )}
