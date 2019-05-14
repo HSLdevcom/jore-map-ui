@@ -10,7 +10,6 @@ interface ICalculatedInputFieldProps {
     value: number;
     calculatedValue: number;
     isDisabled: boolean;
-    validatorRule?: string;
     validationResult?: IValidationResult;
     onChange: (value: number) => void;
     useCalculatedValue: () => void;
@@ -22,7 +21,6 @@ const CalculatedInputField = (props: ICalculatedInputFieldProps) => (
             label={props.label}
             value={props.value}
             disabled={props.isDisabled}
-            validatorRule={props.validatorRule}
             type='number'
             onChange={props.onChange}
             validationResult={props.validationResult}

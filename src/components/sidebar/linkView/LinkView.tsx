@@ -378,7 +378,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 validationResult={
                                     invalidPropertiesMap['length']
                                 }
-                                // validatorRule
                             />
                         </div>
                         <div className={s.flexRow}>
