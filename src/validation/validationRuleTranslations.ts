@@ -9,7 +9,8 @@ const ruleTranslations = {
     },
     required: 'Kenttä ei saa olla tyhjä',
     string: 'Kentän arvon tulee olla merkkijono',
-    numeric: 'Kentän arvon tulee olla numero'
+    numeric: 'Kentän arvon tulee olla numero',
+    regex: 'Kentän arvo on väärässä formaatissa'
 };
 
 export default ruleTranslations;
