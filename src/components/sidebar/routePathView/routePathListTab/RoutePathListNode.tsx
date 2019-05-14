@@ -201,8 +201,8 @@ class RoutePathListNode extends ViewFormBase<
         const startNodeStopTypeOptions: ICodeListItem[] = [
             {
                 orderNumber: 1,
-                value: '1',
-                label: '-'
+                value: '0',
+                label: 'Ei'
             },
             {
                 orderNumber: 2,

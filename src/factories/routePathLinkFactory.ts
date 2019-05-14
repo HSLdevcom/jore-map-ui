@@ -69,7 +69,7 @@ class RoutePathLinkFactory {
             routePathStartDate: routePath.startTime,
             endNode: NodeFactory.mapExternalNode(link.solmuByLnkloppusolmu),
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
-            startNodeStopType: startNode.type,
+            startNodeStopType: '0',
             isStartNodeDisabled: false,
             startNodeTimeAlignmentStop: '0',
             isStartNodeHastusStop: false,
