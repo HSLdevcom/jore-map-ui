@@ -11,6 +11,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import { INode } from '~/models';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
@@ -280,6 +281,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
         }
 
+        const calVal = 1000;
+        const useCalVal = () => {};
+
         return (
             <div className={s.linkView}>
                 <div className={s.content}>
@@ -360,15 +364,17 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 }
                                 onChange={this.onChange('length')}
                             />
-                            <InputContainer
+                            <CalculatedInputField
                                 label='MITATTU PITUUS (m)'
-                                disabled={isEditingDisabled}
+                                isDisabled={isEditingDisabled}
                                 value={link.measuredLength}
-                                type='number'
+                                calculatedValue={calVal}
+                                useCalculatedValue={useCalVal}
+                                onChange={this.onChange('measuredLength')}
                                 validationResult={
                                     invalidPropertiesMap['measuredLength']
                                 }
-                                onChange={this.onChange('measuredLength')}
+                                // validatorRule
                             />
                         </div>
                         <div className={s.flexRow}>
