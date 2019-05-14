@@ -1,7 +1,5 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { FiRefreshCw } from 'react-icons/fi';
-import classnames from 'classnames';
 import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
@@ -9,6 +7,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
+import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import { IValidationResult } from '~/validation/FormValidator';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import RoutePathService from '~/services/routePathService';
@@ -109,25 +108,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
     private onChangeStartTime = (startTime: Date) => {
         const direction = this.props.routePathStore!.routePath!.direction;
         this.validatePrimaryKey(direction, startTime);
-    };
-
-    private renderLengthLabel = () => {
-        const isEditingDisabled = this.props.isEditingDisabled;
-
-        return (
-            <>
-                PITUUS
-                <div
-                    className={classnames(
-                        s.lengthIcon,
-                        isEditingDisabled ? s.disabled : ''
-                    )}
-                    onClick={this.updateLength}
-                >
-                    <FiRefreshCw />
-                </div>
-            </>
-        );
     };
 
     render() {
@@ -233,20 +213,17 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                     invalidPropertiesMap['endTime']
                                 }
                             />
-                            <InputContainer
-                                label={this.renderLengthLabel()}
-                                value={routePath.length}
-                                disabled={isEditingDisabled}
-                                validatorRule={routePathValidationModel.length}
-                                type='number'
+                            <CalculatedInputField
+                                label='PITUUS (m)'
+                                calculatedValue={this.props.routePathStore!.getCalculatedLength()}
+                                isDisabled={isEditingDisabled}
                                 onChange={onChange('length')}
+                                useCalculatedValue={this.updateLength}
+                                validatorRule={routePathValidationModel.length}
                                 validationResult={
                                     invalidPropertiesMap['length']
                                 }
-                            />
-                            <TextContainer
-                                label='Laskettu'
-                                value={this.props.routePathStore!.getCalculatedLength()}
+                                value={routePath.length}
                             />
                         </div>
                         <div className={s.flexRow}>
