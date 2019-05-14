@@ -4,7 +4,6 @@ import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import routeBuilder from '~/routing/routeBuilder';
-import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import CalculatedInputField from '~/components/controls/CalculatedInputField';
@@ -219,7 +218,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 isDisabled={isEditingDisabled}
                                 onChange={onChange('length')}
                                 useCalculatedValue={this.updateLength}
-                                validatorRule={routePathValidationModel.length}
                                 validationResult={
                                     invalidPropertiesMap['length']
                                 }
