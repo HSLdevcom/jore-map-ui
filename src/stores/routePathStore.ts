@@ -140,8 +140,8 @@ export class RoutePathStore {
                 }
                 return undoRpLink;
             });
-            this._routePath!.routePathLinks = newRoutePathLinks;
-            this.recalculateOrderNumbers();
+
+            this.setRoutePathLinks(newRoutePathLinks);
         });
     };
 
@@ -162,15 +162,10 @@ export class RoutePathStore {
                 }
                 return redoRpLink;
             });
-            this._routePath!.routePathLinks = newRoutePathLinks;
-            this.recalculateOrderNumbers();
+
+            this.setRoutePathLinks(newRoutePathLinks);
         });
     };
-
-    @action
-    public onRoutePathLinksChanged() {
-        this.recalculateOrderNumbers();
-    }
 
     @action
     public setHighlightedObject = (objectId: string | null) => {
@@ -196,17 +191,26 @@ export class RoutePathStore {
     @action
     public setRoutePath = (routePath: IRoutePath) => {
         this._routePath = routePath;
-        // Need to recalculate orderNumbers to ensure that they are correct
-        this.recalculateOrderNumbers();
+
         const routePathLinks = routePath.routePathLinks
             ? routePath.routePathLinks
             : [];
+        this.setRoutePathLinks(routePathLinks);
         const currentUndoState: UndoState = {
             routePathLinks
         };
         this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldRoutePath(this._routePath);
+    };
+
+    @action
+    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
+        this._routePath!.routePathLinks = routePathLinks;
+
+        // Need to recalculate orderNumbers to ensure that they are correct
+        this.recalculateOrderNumbers();
+        this.sortRoutePathLinks();
     };
 
     @action
@@ -217,7 +221,7 @@ export class RoutePathStore {
     @action
     public updateRoutePathProperty = (
         property: string,
-        value: string | number | Date
+        value: string | number | Date | boolean | null
     ) => {
         this._routePath = {
             ...this._routePath!,
@@ -277,6 +281,10 @@ export class RoutePathStore {
 
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
+
+        if (this.isLastRoutePathLink(routePathLink)) {
+            this.resetBookScheduleInformation();
+        }
     };
 
     @action
@@ -289,6 +297,10 @@ export class RoutePathStore {
 
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
+
+        if (linkToRemoveIndex === this._routePath!.routePathLinks!.length) {
+            this.resetBookScheduleInformation();
+        }
     };
 
     @action
@@ -304,13 +316,6 @@ export class RoutePathStore {
         };
         this._geometryUndoStore.addItem(currentUndoState);
     }
-
-    @action
-    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
-        this._routePath!.routePathLinks = routePathLinks;
-        this.recalculateOrderNumbers();
-        this.sortRoutePathLinks();
-    };
 
     @action
     public sortRoutePathLinks = () => {
@@ -403,6 +408,11 @@ export class RoutePathStore {
             // Order numbers start from 1
             rpLink.orderNumber = index + 1;
         });
+    };
+
+    private resetBookScheduleInformation = () => {
+        this.updateRoutePathProperty('isStartNodeUsingBookSchedule', false);
+        this.updateRoutePathProperty('startNodeBookScheduleColumnNumber', null);
     };
 }
 
