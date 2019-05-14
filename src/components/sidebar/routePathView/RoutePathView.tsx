@@ -1,7 +1,6 @@
 import React from 'react';
 import Moment from 'moment';
 import classnames from 'classnames';
-// import { observe } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
 import ButtonType from '~/enums/buttonType';
@@ -101,12 +100,6 @@ class RoutePathView extends ViewFormBase<
         }
         await this.initializeMap();
         if (this.props.routePathStore!.routePath) {
-            // observe(
-            //     this.props.routePathStore!.routePath!.routePathLinks!,
-            //     () => {
-            //         this.props.routePathStore!.onRoutePathLinksChanged();
-            //     }
-            // );
             this.validateRoutePath();
             this.setState({
                 isLoading: false
