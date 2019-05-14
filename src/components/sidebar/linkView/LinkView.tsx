@@ -350,27 +350,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <Dropdown
-                                label='SUUNTA'
-                                disabled={isEditingDisabled}
-                                selected={link.direction}
-                                onChange={this.onChange('direction')}
-                                items={this.props.codeListStore!.getCodeList(
-                                    'Suunta'
-                                )}
-                            />
                             <InputContainer
-                                label='OS. NRO'
-                                disabled={isEditingDisabled}
-                                value={link.osNumber}
-                                type='number'
-                                validationResult={
-                                    invalidPropertiesMap['osNumber']
-                                }
-                                onChange={this.onChange('osNumber')}
-                            />
-                            <InputContainer
-                                label='LINKIN PITUUS (m)'
+                                label='LASKETTU PITUUS (m)'
                                 disabled={isEditingDisabled}
                                 value={link.length}
                                 type='number'
@@ -378,6 +359,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                     invalidPropertiesMap['length']
                                 }
                                 onChange={this.onChange('length')}
+                            />
+                            <InputContainer
+                                label='MITATTU PITUUS (m)'
+                                disabled={isEditingDisabled}
+                                value={link.measuredLength}
+                                type='number'
+                                validationResult={
+                                    invalidPropertiesMap['measuredLength']
+                                }
+                                onChange={this.onChange('measuredLength')}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -389,16 +380,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                     invalidPropertiesMap['streetName']
                                 }
                                 onChange={this.onChange('streetName')}
-                            />
-                            <InputContainer
-                                label='KATUOSAN OS. NRO'
-                                disabled={isEditingDisabled}
-                                value={link.streetNumber}
-                                type='number'
-                                validationResult={
-                                    invalidPropertiesMap['streetNumber']
-                                }
-                                onChange={this.onChange('streetNumber')}
                             />
                             <Dropdown
                                 onChange={this.onChange('municipalityCode')}
