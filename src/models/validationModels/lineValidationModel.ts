@@ -1,7 +1,8 @@
 import Constants from '~/constants/constants';
+import regexRules from '~/validation/regexRules';
 
 const lineValidationModel = {
-    id: 'required|min:4|max:6|string',
+    id: `required|min:4|max:6|string|${regexRules.upperCaseOrNumbersOrSpace}`,
     lineBasicRoute: 'required|min:4|max:6|string',
     lineStartDate: 'required|date',
     lineEndDate: 'required|date',
