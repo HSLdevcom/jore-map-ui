@@ -13,7 +13,6 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
-import ICodeListItem from '~/models/ICodeListItem';
 import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
@@ -198,24 +197,6 @@ class RoutePathListNode extends ViewFormBase<
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
 
-        const startNodeStopTypeOptions: ICodeListItem[] = [
-            {
-                orderNumber: 1,
-                value: '0',
-                label: 'Ei'
-            },
-            {
-                orderNumber: 2,
-                value: '2',
-                label: 'Otto'
-            },
-            {
-                orderNumber: 3,
-                value: '3',
-                label: 'Jättö'
-            }
-        ];
-
         return (
             <div>
                 <div className={s.flexRow}>
@@ -273,7 +254,9 @@ class RoutePathListNode extends ViewFormBase<
                                 )}
                                 disabled={isEditingDisabled}
                                 selected={routePathLink.startNodeStopType}
-                                items={startNodeStopTypeOptions}
+                                items={this.props.codeListStore!.getCodeList(
+                                    'Pysäkin käyttö'
+                                )}
                             />
                         </div>
                     </>
