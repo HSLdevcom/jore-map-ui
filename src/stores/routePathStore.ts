@@ -18,6 +18,8 @@ export enum RoutePathViewTab {
 
 export interface UndoState {
     routePathLinks: IRoutePathLink[];
+    isStartNodeUsingBookSchedule: boolean;
+    startNodeBookScheduleColumnNumber: number | null;
 }
 
 export enum ListFilter {
@@ -141,6 +143,7 @@ export class RoutePathStore {
                 return undoRpLink;
             });
 
+            this.restoreBookScheduleProperties(nextUndoState);
             this.setRoutePathLinks(newRoutePathLinks);
         });
     };
@@ -163,6 +166,7 @@ export class RoutePathStore {
                 return redoRpLink;
             });
 
+            this.restoreBookScheduleProperties(previousUndoState);
             this.setRoutePathLinks(newRoutePathLinks);
         });
     };
@@ -197,7 +201,11 @@ export class RoutePathStore {
             : [];
         this.setRoutePathLinks(routePathLinks);
         const currentUndoState: UndoState = {
-            routePathLinks
+            routePathLinks,
+            isStartNodeUsingBookSchedule: this.routePath!
+                .isStartNodeUsingBookSchedule,
+            startNodeBookScheduleColumnNumber: this.routePath!
+                .startNodeBookScheduleColumnNumber
         };
         this._geometryUndoStore.addItem(currentUndoState);
 
@@ -282,9 +290,6 @@ export class RoutePathStore {
             routePathLink
         );
 
-        this.recalculateOrderNumbers();
-        this.addCurrentStateToUndoStore();
-
         // Copy bookSchedule properties from routePath to last routePathLink
         if (this.isLastRoutePathLink(routePathLink) && rpLinks.length > 1) {
             const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
@@ -297,6 +302,9 @@ export class RoutePathStore {
                 'startNodeBookScheduleColumnNumber'
             );
         }
+
+        this.recalculateOrderNumbers();
+        this.addCurrentStateToUndoStore();
     };
 
     @action
@@ -309,9 +317,6 @@ export class RoutePathStore {
         // Need to do splice to trigger ReactionDisposer watcher
         rpLinks.splice(linkToRemoveIndex, 1);
 
-        this.recalculateOrderNumbers();
-        this.addCurrentStateToUndoStore();
-
         // Copy bookSchedule properties from last routePathLink to routePath
         if (linkToRemoveIndex === this._routePath!.routePathLinks!.length) {
             this.copyPropertyToRoutePathFromRoutePathLink(
@@ -323,6 +328,9 @@ export class RoutePathStore {
                 'startNodeBookScheduleColumnNumber'
             );
         }
+
+        this.recalculateOrderNumbers();
+        this.addCurrentStateToUndoStore();
     };
 
     @action
@@ -334,7 +342,11 @@ export class RoutePathStore {
                 ? this._routePath.routePathLinks
                 : [];
         const currentUndoState: UndoState = {
-            routePathLinks: _.cloneDeep(routePathLinks)
+            routePathLinks: _.cloneDeep(routePathLinks),
+            isStartNodeUsingBookSchedule: this._routePath!
+                .isStartNodeUsingBookSchedule,
+            startNodeBookScheduleColumnNumber: this._routePath!
+                .startNodeBookScheduleColumnNumber
         };
         this._geometryUndoStore.addItem(currentUndoState);
     }
@@ -357,11 +369,6 @@ export class RoutePathStore {
     public clear = () => {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
-        this._geometryUndoStore.clear();
-    };
-
-    @action
-    public clearUndoStore = () => {
         this._geometryUndoStore.clear();
     };
 
@@ -459,6 +466,18 @@ export class RoutePathStore {
         );
         this.updateRoutePathProperty(property, null);
     };
+
+    @action
+    private restoreBookScheduleProperties(undoState: UndoState) {
+        this.updateRoutePathProperty(
+            'isStartNodeUsingBookSchedule',
+            undoState.isStartNodeUsingBookSchedule
+        );
+        this.updateRoutePathProperty(
+            'startNodeBookScheduleColumnNumber',
+            undoState.startNodeBookScheduleColumnNumber
+        );
+    }
 }
 
 const observableStoreStore = new RoutePathStore();
