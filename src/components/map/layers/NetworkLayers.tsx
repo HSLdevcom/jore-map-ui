@@ -257,7 +257,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             }
         }
         const selectedDate = this.props.networkStore!.selectedDate;
-        return selectedDate && this.isDateInRanges(selectedDate, dateRanges);
+        return !selectedDate || !this.isDateInRanges(selectedDate, dateRanges);
     };
 
     private isNodePartOfLinks(transitTypeCodes: string) {
