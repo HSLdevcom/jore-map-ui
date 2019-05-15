@@ -122,7 +122,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             return await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         } catch (e) {
             this.props.errorStore!.addError(
-                // tslint:disable-next-line:max-line-length
                 `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${
                     node.id
                 } (soltunnus), ei onnistunut.`,

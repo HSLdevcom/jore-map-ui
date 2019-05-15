@@ -171,7 +171,6 @@ class LeafletMap extends React.Component<IMapProps> {
                     editable={true}
                 >
                     <TileLayer
-                        // tslint:disable:max-line-length
                         url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
                         attribution={`
                                 Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
@@ -185,7 +184,6 @@ class LeafletMap extends React.Component<IMapProps> {
                         detectRetina={true}
                         tileSize={512}
                         zoomOffset={-1}
-                        // tslint:enable:max-line-length
                     />
                     <NetworkLayers />
                     {node && <EditNodeLayer />}
