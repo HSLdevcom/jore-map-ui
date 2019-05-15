@@ -43,7 +43,7 @@ interface IRoutePathLayerState {
     'routePathCopySegmentStore'
 )
 @observer
-class UpsertRoutePathLayer extends Component<
+class EditRoutePathLayer extends Component<
     IRoutePathLayerProps,
     IRoutePathLayerState
 > {
@@ -284,6 +284,6 @@ class UpsertRoutePathLayer extends Component<
     }
 }
 
-export default UpsertRoutePathLayer;
+export default EditRoutePathLayer;
 
 export { IEditRoutePathLayerNodeClickParams };
