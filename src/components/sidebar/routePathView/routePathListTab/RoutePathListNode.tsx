@@ -146,6 +146,9 @@ class RoutePathListNode extends ViewFormBase<
 
         if (this.isLastRoutePathNode()) {
             this.props.routePathStore!.updateRoutePathProperty(property, value);
+
+            // Need to clear undoStore if book schedule properties are changed to prevent unwanted bugs
+            this.props.routePathStore!.clearUndoStore();
         } else {
             this.props.routePathStore!.updateRoutePathLinkProperty(
                 orderNumber,

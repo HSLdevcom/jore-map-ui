@@ -360,6 +360,11 @@ export class RoutePathStore {
         this._geometryUndoStore.clear();
     };
 
+    @action
+    public clearUndoStore = () => {
+        this._geometryUndoStore.clear();
+    };
+
     public isLastRoutePathLink = (routePathLink: IRoutePathLink): boolean => {
         const routePathLinks = this._routePath!.routePathLinks;
         const index = routePathLinks!.findIndex(rpLink => {
