@@ -6,7 +6,7 @@ const routePathLinkValidationModel = {
     orderNumber: `required|min:1|max:${Constants.SMALL_INT_MAX_VALUE}|numeric`,
     transitType: 'required|min:1|max:1|string',
     startNodeUsage: 'min:1|max:1|string',
-    isStartNodeDisabled: 'required|boolean',
+    startNodeType: 'required|boolean',
     startNodeTimeAlignmentStop: 'required|min:1|max:1|string',
     isStartNodeHastusStop: 'boolean',
     isStartNodeUsingBookSchedule: 'boolean',

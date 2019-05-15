@@ -16,7 +16,7 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     startNode: INode;
     endNode: INode;
     startNodeUsage: string;
-    isStartNodeDisabled: boolean;
+    startNodeType: boolean;
     startNodeTimeAlignmentStop: string;
     isStartNodeHastusStop: boolean;
     isStartNodeUsingBookSchedule: boolean;

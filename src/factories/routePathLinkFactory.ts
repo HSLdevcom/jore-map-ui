@@ -33,7 +33,7 @@ class RoutePathLinkFactory {
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeUsage: externalRoutePathLink.relohaikpys,
             startNodeTimeAlignmentStop: externalRoutePathLink.ajantaspys,
-            isStartNodeDisabled: externalRoutePathLink.relpysakki === 'E',
+            startNodeType: externalRoutePathLink.relpysakki === 'E',
             isStartNodeHastusStop: externalRoutePathLink.paikka === '1',
             isStartNodeUsingBookSchedule: externalRoutePathLink.kirjaan === '1',
             startNodeBookScheduleColumnNumber:
@@ -70,7 +70,7 @@ class RoutePathLinkFactory {
             endNode: NodeFactory.mapExternalNode(link.solmuByLnkloppusolmu),
             geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
             startNodeUsage: '0',
-            isStartNodeDisabled: false,
+            startNodeType: false,
             startNodeTimeAlignmentStop: '0',
             isStartNodeHastusStop: false,
             isStartNodeUsingBookSchedule: false,

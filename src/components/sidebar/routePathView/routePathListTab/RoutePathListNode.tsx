@@ -220,9 +220,9 @@ class RoutePathListNode extends ViewFormBase<
                             <Checkbox
                                 disabled={isEditingDisabled}
                                 content='Pysäkki ei käytössä'
-                                checked={routePathLink.isStartNodeDisabled}
+                                checked={routePathLink.startNodeType}
                                 onClick={this.onRoutePathLinkPropertyChange(
-                                    'isStartNodeDisabled'
+                                    'startNodeType'
                                 )}
                             />
                         </div>

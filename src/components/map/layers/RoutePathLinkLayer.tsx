@@ -67,7 +67,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     key={`${routePathLink.orderNumber}-${index}`}
                     node={node}
                     isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                    isDisabled={routePathLink.isStartNodeDisabled}
+                    isDisabled={routePathLink.startNodeType}
                     isTimeAlignmentStop={
                         routePathLink.startNodeTimeAlignmentStop !== '0'
                     }
