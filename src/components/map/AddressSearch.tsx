@@ -140,7 +140,7 @@ class AddressSearch extends Component<
         const center = this.map.getCenter();
         const lat = center.lat;
         const lng = center.lng;
-        const requestUrl = `${GEOCODER_ADDRESS}?text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`; // tslint:disable-line max-line-length
+        const requestUrl = `${GEOCODER_ADDRESS}?text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`;
 
         const response = await ApiClient.sendRequest(
             RequestMethod.GET,

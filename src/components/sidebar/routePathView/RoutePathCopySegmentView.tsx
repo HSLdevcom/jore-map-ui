@@ -140,7 +140,7 @@ class RoutePathCopySegmentView extends React.Component<
             }
         } else {
             // Should not occur
-            throw 'Node with odd neighbors not found from current routePath by startNodeId or endNodeId.'; // tslint:disable-line max-line-length
+            throw 'Node with odd neighbors not found from current routePath by startNodeId or endNodeId.';
         }
 
         this.props.routePathCopySegmentStore!.clear();

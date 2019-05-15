@@ -14,7 +14,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
     public toolType = ToolbarTool.CopyRoutePathSegmentTool;
     public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
     public toolHelpText =
-        'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.'; // tslint:disable-line max-line-length
+        'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.';
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
@@ -77,7 +77,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         ) {
             ErrorStore.addError(
                 'Ainakin toisen kopioitavan välin alku- tai loppusolmuista on kuuluttava reitinsuuntaan, johon segmentti kopioidaan.'
-            ); // tslint:disable-line max-line-length
+            );
             RoutePathCopySegmentStore.setNodePositionValidity(false);
             return;
         }
