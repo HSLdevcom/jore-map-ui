@@ -1,7 +1,7 @@
 import React from 'react';
 import * as L from 'leaflet';
 import classnames from 'classnames';
-import InputContainer from '~/components/sidebar/InputContainer';
+import InputContainer from '~/components/controls/InputContainer';
 import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeHelper from '~/util/nodeHelper';

@@ -9,7 +9,7 @@ import LineService from '~/services/lineService';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import { IValidationResult } from '~/validation/FormValidator';
 import { TransitToggleButtonBar, Dropdown } from '~/components/controls';
-import InputContainer from '../InputContainer';
+import InputContainer from '../../controls/InputContainer';
 import * as s from './lineInfoTab.scss';
 
 interface ILineInfoTabState {
