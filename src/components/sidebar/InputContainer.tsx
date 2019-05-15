@@ -54,6 +54,9 @@ const renderEditableContent = (props: IInputProps) => {
         <input
             placeholder={props.disabled ? '' : props.placeholder}
             type={props.type === 'number' ? 'number' : 'text'}
+            onWheel={event => {
+                event.preventDefault();
+            }}
             className={classnames(
                 props.className,
                 props.disabled ? s.disabled : null,

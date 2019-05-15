@@ -272,7 +272,10 @@ export class RoutePathStore {
      */
     @action
     public addLink = (routePathLink: IRoutePathLink) => {
-        this._routePath!.routePathLinks!.splice(
+        const rpLinks = this._routePath!.routePathLinks!;
+
+        // Need to do splice to trigger ReactionDisposer watcher
+        rpLinks.splice(
             // Order numbers start from 1
             routePathLink.orderNumber - 1,
             0,
@@ -282,24 +285,43 @@ export class RoutePathStore {
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
 
-        if (this.isLastRoutePathLink(routePathLink)) {
-            this.resetBookScheduleInformation();
+        // Copy bookSchedule properties from routePath to last routePathLink
+        if (this.isLastRoutePathLink(routePathLink) && rpLinks.length > 1) {
+            const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
+            this.copyPropertyToRoutePathLinkFromRoutePath(
+                routePathLinkToCopyFor,
+                'isStartNodeUsingBookSchedule'
+            );
+            this.copyPropertyToRoutePathLinkFromRoutePath(
+                routePathLinkToCopyFor,
+                'startNodeBookScheduleColumnNumber'
+            );
         }
     };
 
     @action
     public removeLink = (id: string) => {
+        const rpLinks = this._routePath!.routePathLinks!;
+
+        const linkToRemoveIndex = rpLinks.findIndex(link => link.id === id);
+        const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
+
         // Need to do splice to trigger ReactionDisposer watcher
-        const linkToRemoveIndex = this._routePath!.routePathLinks!.findIndex(
-            link => link.id === id
-        );
-        this._routePath!.routePathLinks!.splice(linkToRemoveIndex, 1);
+        rpLinks.splice(linkToRemoveIndex, 1);
 
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
 
+        // Copy bookSchedule properties from last routePathLink to routePath
         if (linkToRemoveIndex === this._routePath!.routePathLinks!.length) {
-            this.resetBookScheduleInformation();
+            this.copyPropertyToRoutePathFromRoutePathLink(
+                routePathLinkToCopyFor,
+                'isStartNodeUsingBookSchedule'
+            );
+            this.copyPropertyToRoutePathFromRoutePathLink(
+                routePathLinkToCopyFor,
+                'startNodeBookScheduleColumnNumber'
+            );
         }
     };
 
@@ -410,9 +432,27 @@ export class RoutePathStore {
         });
     };
 
-    private resetBookScheduleInformation = () => {
-        this.updateRoutePathProperty('isStartNodeUsingBookSchedule', false);
-        this.updateRoutePathProperty('startNodeBookScheduleColumnNumber', null);
+    // Expects that both routePath and routePathLink have property to copy with the same name
+    private copyPropertyToRoutePathFromRoutePathLink = (
+        routePathLink: IRoutePathLink,
+        property: string
+    ) => {
+        const valueToCopy = routePathLink[property];
+        this.updateRoutePathProperty(property, valueToCopy);
+    };
+
+    // Expects that both routePath and routePathLink have property to copy with the same name
+    private copyPropertyToRoutePathLinkFromRoutePath = (
+        routePathLink: IRoutePathLink,
+        property: string
+    ) => {
+        const valueToCopy = this.routePath![property];
+        this.updateRoutePathLinkProperty(
+            routePathLink.orderNumber,
+            property,
+            valueToCopy
+        );
+        this.updateRoutePathProperty(property, null);
     };
 }
 
