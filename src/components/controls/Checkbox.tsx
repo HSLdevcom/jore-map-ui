@@ -30,7 +30,7 @@ const Checkbox = observer((props: ICheckboxProps) => {
             <div className={s.content}>{props.content}</div>
             <input
                 type='checkbox'
-                checked={props.checked}
+                checked={Boolean(props.checked)}
                 onChange={doNothing}
             />
             <span className={s.checkmark} />
