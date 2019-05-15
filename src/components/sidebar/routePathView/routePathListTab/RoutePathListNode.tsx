@@ -253,10 +253,10 @@ class RoutePathListNode extends ViewFormBase<
                             <Dropdown
                                 label='ERIKOISTYYPPI'
                                 onChange={this.onRoutePathLinkPropertyChange(
-                                    'startNodeStopType'
+                                    'startNodeUsage'
                                 )}
                                 disabled={isEditingDisabled}
-                                selected={routePathLink.startNodeStopType}
+                                selected={routePathLink.startNodeUsage}
                                 items={this.props.codeListStore!.getCodeList(
                                     'Pysäkin käyttö'
                                 )}

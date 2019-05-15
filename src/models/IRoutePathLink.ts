@@ -15,7 +15,7 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     transitType: TransitType;
     startNode: INode;
     endNode: INode;
-    startNodeStopType: string;
+    startNodeUsage: string;
     isStartNodeDisabled: boolean;
     startNodeTimeAlignmentStop: string;
     isStartNodeHastusStop: boolean;
