@@ -9,6 +9,7 @@ import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
+import StartNodeType from '~/enums/startNodeType';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -110,6 +111,10 @@ class RoutePathListNode extends ViewFormBase<
                 </div>
             </div>
         );
+    };
+
+    private onRoutePathLinkStartNodeTypeChange = () => (value: any) => {
+        this.onRoutePathLinkPropertyChange('startNodeType')(value ? 'E' : 'P');
     };
 
     private onRoutePathLinkPropertyChange = (property: string) => (
@@ -220,10 +225,11 @@ class RoutePathListNode extends ViewFormBase<
                             <Checkbox
                                 disabled={isEditingDisabled}
                                 content='Pysäkki ei käytössä'
-                                checked={routePathLink.startNodeType}
-                                onClick={this.onRoutePathLinkPropertyChange(
-                                    'startNodeType'
-                                )}
+                                checked={
+                                    routePathLink.startNodeType ===
+                                    StartNodeType.DISABLED
+                                }
+                                onClick={this.onRoutePathLinkStartNodeTypeChange()}
                             />
                         </div>
                         <div className={s.flexRow}>
