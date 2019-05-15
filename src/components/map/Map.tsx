@@ -15,7 +15,7 @@ import Control from './mapControls/CustomControl';
 import CoordinateControl from './mapControls/CoordinateControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import RouteLayer from './layers/RouteLayer';
-import UpsertRoutePathLayer from './layers/edit/UpsertRoutePathLayer';
+import EditRoutePathLayer from './layers/edit/EditRoutePathLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
 import MapLayersControl from './mapControls/MapLayersControl';
@@ -189,7 +189,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     {node && <EditNodeLayer />}
                     <EditLinkLayer />
                     <RouteLayer routes={routes} />
-                    <UpsertRoutePathLayer />
+                    <EditRoutePathLayer />
                     <PopupLayer />
                     <Control position='topleft'>
                         <div className={s.mapLayersContainer}>
