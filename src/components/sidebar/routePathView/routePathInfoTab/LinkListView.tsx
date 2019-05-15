@@ -42,38 +42,33 @@ class ILinkListView extends React.Component<
     private getRoutePathLinks = () => {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return;
-        return routePathLinks.map(routePathLink => {
-            return (
-                <div
-                    key={routePathLink.id}
-                    className={
-                        this.state.selectedRoutePathLink === routePathLink.id
-                            ? s.routePathLinkRowSelected
-                            : s.routePathLinkRow
-                    }
-                    onClick={this.selectRoutePathLink(routePathLink.id)}
-                >
-                    <div className={s.flexInnerRow}>
-                        <div className={s.tableItemMedium}>
-                            {routePathLink.id}
-                        </div>
+        return routePathLinks.map(routePathLink => (
+            <div
+                key={routePathLink.id}
+                className={
+                    this.state.selectedRoutePathLink === routePathLink.id
+                        ? s.routePathLinkRowSelected
+                        : s.routePathLinkRow
+                }
+                onClick={this.selectRoutePathLink(routePathLink.id)}
+            >
+                <div className={s.flexInnerRow}>
+                    <div className={s.tableItemMedium}>{routePathLink.id}</div>
 
-                        <div className={s.tableItem}>
-                            {this.getNodeName(routePathLink.startNode)}
-                        </div>
+                    <div className={s.tableItem}>
+                        {this.getNodeName(routePathLink.startNode)}
+                    </div>
 
-                        <div className={s.tableItem}>
-                            {this.getNodeName(routePathLink.endNode)}
-                        </div>
+                    <div className={s.tableItem}>
+                        {this.getNodeName(routePathLink.endNode)}
+                    </div>
 
-                        <div className={s.tableItem}>
-                            {this.getHastusId(routePathLink)}
-                        </div>
+                    <div className={s.tableItem}>
+                        {this.getHastusId(routePathLink)}
                     </div>
                 </div>
-            );
-            return;
-        });
+            </div>
+        ));
     };
 
     private getHastusId = (routePathLink: IRoutePathLink) => {
