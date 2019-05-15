@@ -253,7 +253,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                         <div className={s.flexRow}>
                             <TextContainer
                                 label='PÄIVITYSPVM'
-                                value={routePath.lastModified}
+                                value={routePath.modifiedOn}
                             />
                             <TextContainer
                                 label='PÄIVITTÄJÄ'

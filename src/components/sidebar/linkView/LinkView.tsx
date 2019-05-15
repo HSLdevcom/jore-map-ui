@@ -237,14 +237,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         return this.existingTransitTypes.includes(transitType);
     };
 
-    private onChange = (property: string) => (value: any) => {
+    private onChangeLinkProperty = (property: string) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
         this.validateProperty(linkValidationModel[property], property, value);
     };
 
     private useCalculatedLength = () => {
         const length = this.props.linkStore!.getCalculatedLength();
-        this.onChange('length')(length);
+        this.onChangeLinkProperty('length')(length);
     };
 
     render() {
@@ -366,7 +366,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 validationResult={
                                     invalidPropertiesMap['measuredLength']
                                 }
-                                onChange={this.onChange('measuredLength')}
+                                onChange={this.onChangeLinkProperty(
+                                    'measuredLength'
+                                )}
                             />
                             <CalculatedInputField
                                 label='PITUUS (m)'
@@ -374,7 +376,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 value={link.length}
                                 calculatedValue={calculatedLength}
                                 useCalculatedValue={this.useCalculatedLength}
-                                onChange={this.onChange('length')}
+                                onChange={this.onChangeLinkProperty('length')}
                                 validationResult={
                                     invalidPropertiesMap['length']
                                 }
@@ -388,10 +390,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 validationResult={
                                     invalidPropertiesMap['streetName']
                                 }
-                                onChange={this.onChange('streetName')}
+                                onChange={this.onChangeLinkProperty(
+                                    'streetName'
+                                )}
                             />
                             <Dropdown
-                                onChange={this.onChange('municipalityCode')}
+                                onChange={this.onChangeLinkProperty(
+                                    'municipalityCode'
+                                )}
                                 disabled={isEditingDisabled}
                                 items={this.props.codeListStore!.getCodeList(
                                     'Kunta (ris/pys)'
@@ -400,18 +406,20 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 label='KUNTA'
                             />
                         </div>
-                        <div className={s.flexRow}>
-                            <TextContainer
-                                label='PÄIVITTÄJÄ'
-                                value={link.modifiedBy}
-                            />
-                            <TextContainer
-                                label='PÄIVITYSPVM'
-                                value={Moment(link.modifiedOn).format(
-                                    datetimeStringDisplayFormat
-                                )}
-                            />
-                        </div>
+                        {!this.props.isNewLink && (
+                            <div className={s.flexRow}>
+                                <TextContainer
+                                    label='PÄIVITTÄJÄ'
+                                    value={link.modifiedBy}
+                                />
+                                <TextContainer
+                                    label='PÄIVITYSPVM'
+                                    value={Moment(link.modifiedOn).format(
+                                        datetimeStringDisplayFormat
+                                    )}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className={s.buttonBar}>

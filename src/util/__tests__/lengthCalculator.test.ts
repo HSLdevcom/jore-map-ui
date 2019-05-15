@@ -11,7 +11,7 @@ describe('lengthCalculator.fromPositions', () => {
         // https://gps-coordinates.org/distance-between-coordinates.php
         // calculated distance to 3711.12 meters
         const expectedLength = 3711;
-        expect(Math.floor(lengthCalculator.fromPositions(positions))).toEqual(
+        expect(Math.floor(lengthCalculator.fromLatLngs(positions))).toEqual(
             expectedLength
         );
     });

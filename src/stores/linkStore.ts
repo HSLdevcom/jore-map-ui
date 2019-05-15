@@ -155,9 +155,7 @@ export class LinkStore {
 
     public getCalculatedLength = (): number => {
         if (this.link && this.link.geometry) {
-            return Math.floor(
-                lengthCalculator.fromPositions(this.link.geometry)
-            );
+            return Math.floor(lengthCalculator.fromLatLngs(this.link.geometry));
         }
         return 0;
     };

@@ -26,7 +26,7 @@ const CalculatedInputField = (props: ICalculatedInputFieldProps) => (
             validationResult={props.validationResult}
         />
         <Button
-            disabled={props.isDisabled}
+            disabled={props.isDisabled || props.value === props.calculatedValue}
             onClick={props.useCalculatedValue}
             type={ButtonType.SQUARE}
             className={s.calulateButton}

@@ -10,7 +10,7 @@ interface IRoutePathPrimaryKey {
 interface IViewOnlyProperties {
     internalId: string;
     color?: string;
-    lastModified: Date;
+    modifiedOn: Date;
     visible: boolean;
     transitType: TransitType;
     modifiedBy: string;
