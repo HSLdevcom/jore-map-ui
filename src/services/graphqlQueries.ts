@@ -1,7 +1,5 @@
 import gql from 'graphql-tag';
 
-// tslint:disable:max-line-length
-
 const getLineQuery = () => {
     return gql`query getLineByLintunnus ($lineId: String!) {
             linjaByLintunnus(lintunnus:$lineId) {
@@ -469,8 +467,6 @@ linkkisByLnkloppusolmu {
         }
     }
 }`;
-
-// tslint:enable:max-line-length
 
 export default {
     getLineQuery,

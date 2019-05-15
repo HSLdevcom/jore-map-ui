@@ -112,7 +112,6 @@ class SplitLinkView extends React.Component<
             }
         } catch (e) {
             this.props.errorStore!.addError(
-                // tslint:disable-next-line:max-line-length
                 `Jaettavan linkin ja solmun haussa tapahtui virhe.`,
                 e
             );
@@ -154,7 +153,6 @@ class SplitLinkView extends React.Component<
     };
 
     private openSaveConfirm = () => {
-        // tslint:disable:max-line-length
         let confirmText =
             'Oletko varma, että haluat jakaa tämän linkin? Tätä toimenpidettä ei pysty peruutamaan tämän varmistuksen jälkeen.';
         if (this.getNode()!.type === NodeType.STOP && this.state.selectedDate) {
@@ -164,7 +162,6 @@ class SplitLinkView extends React.Component<
         } else {
             confirmText = `${confirmText} Tämä toimenpide vaikuttaa kaikkiin tätä linkkiä käyttäviin reitinsuuntiin.`;
         }
-        // tslint:enable:max-line-length
         this.props.confirmStore!.openConfirm(confirmText, this.save);
     };
 

@@ -13,7 +13,7 @@ class AddNetworkNodeTool implements BaseTool {
     public toolType = ToolbarTool.AddNetworkNode;
     public toolHelpHeader = 'Luo uusi solmu';
     public toolHelpText =
-        'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.'; // tslint:disable-line max-line-length
+        'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.';
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);

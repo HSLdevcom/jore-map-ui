@@ -15,7 +15,7 @@ class ExtendRoutePathTool implements BaseTool {
     public toolType = ToolbarTool.AddNewRoutePathLink;
     public toolHelpHeader = 'Laajenna reitinsuuntaa';
     public toolHelpText =
-        'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista liilaksi merkittyjä linkkejä tai solmuja klikkailemalla.'; // tslint:disable-line max-line-length
+        'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista liilaksi merkittyjä linkkejä tai solmuja klikkailemalla.';
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
