@@ -3,8 +3,8 @@
 
 .editingDisabled {
     white-space: nowrap;
-    height: 43px;
-    line-height: 43px;
+    height: $inputFieldHeight;
+    line-height: $inputFieldHeight;
 }
 
 .disabledContainerWrapper {
