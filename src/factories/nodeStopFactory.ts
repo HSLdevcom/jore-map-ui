@@ -4,7 +4,6 @@ import IExternalStop from '~/models/externals/IExternalStop';
 class StopFactory {
     public static mapExternalStop = (node: IExternalStop): IStop => {
         return {
-            id: node.id,
             nameFi: node.pysnimi,
             nameSe: node.pysnimir,
             radius: node.pyssade,
@@ -12,12 +11,7 @@ class StopFactory {
             addressFi: node.pysosoite,
             addressSe: node.pysosoiter,
             areaId: node.pysalueid,
-            direction: node.pyssuunta,
             elyNumber: node.elynumero,
-            exchangeStop: node.pysvaihtopys,
-            kutsuplus: node.kutsuplus,
-            kutsuplusPriority: node.kutsuplusprior,
-            kutsuplusSection: node.kutsuplusvyo,
             modifiedBy: node.pyskuka,
             modifiedOn: new Date(node.pysviimpvm),
             municipality: node.pyskunta,
@@ -29,18 +23,12 @@ class StopFactory {
             placeNameSe: node.pyspaikannimir,
             platform: node.pyslaituri,
             postalNumber: node.postinro,
-            rate: node.tariffi,
-            roof: node.pyskatos,
-            section: node.vyohyke,
-            terminal: node.terminaali,
-            type: node.pystyyppi,
-            courseDirection: node.kulkusuunta
+            section: node.vyohyke
         };
     };
 
     public static createNewStop = (): IStop => {
         return {
-            id: -1,
             nameFi: '',
             nameSe: '',
             radius: 10,
@@ -48,12 +36,7 @@ class StopFactory {
             addressFi: '',
             addressSe: '',
             areaId: '',
-            direction: '1',
             elyNumber: '',
-            exchangeStop: '',
-            kutsuplus: '',
-            kutsuplusPriority: '',
-            kutsuplusSection: '',
             modifiedBy: '',
             modifiedOn: new Date(),
             municipality: '',
@@ -65,12 +48,7 @@ class StopFactory {
             placeNameSe: '',
             platform: '',
             postalNumber: '',
-            rate: '',
-            roof: '',
-            section: '',
-            terminal: '',
-            type: '',
-            courseDirection: ''
+            section: ''
         };
     };
 }
