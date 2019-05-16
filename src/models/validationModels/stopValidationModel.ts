@@ -2,6 +2,7 @@ import IStop from '../IStop';
 import constants from '../../constants/constants';
 
 const nameRule = 'required|min:1|max:20|string';
+const placeNameRule = 'min:1|max:20|string';
 const longNameRule = 'min:1|max:60|string';
 
 type StopKeys = keyof IStop;
@@ -12,8 +13,8 @@ const stopValidationModel: IStopValidationModel = {
     municipality: 'required|min:1|max:3|string',
     nameFi: nameRule,
     nameSe: nameRule,
-    placeNameFi: nameRule,
-    placeNameSe: nameRule,
+    placeNameFi: placeNameRule,
+    placeNameSe: placeNameRule,
     addressFi: nameRule,
     addressSe: nameRule,
     modifiedBy: '',
