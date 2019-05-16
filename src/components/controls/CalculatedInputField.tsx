@@ -1,8 +1,8 @@
 import React from 'react';
 import { IValidationResult } from '~/validation/FormValidator';
 import ButtonType from '~/enums/buttonType';
-import InputContainer from '../sidebar/InputContainer';
 import Button from './Button';
+import InputContainer from './InputContainer';
 import * as s from './calculatedInputField.scss';
 
 interface ICalculatedInputFieldProps {
