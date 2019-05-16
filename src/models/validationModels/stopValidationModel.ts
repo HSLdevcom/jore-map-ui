@@ -1,3 +1,4 @@
+import regexRules from '~/validation/regexRules';
 import IStop from '../IStop';
 import constants from '../../constants/constants';
 
@@ -23,7 +24,7 @@ const stopValidationModel: IStopValidationModel = {
     radius: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     hastusId: 'min:0|max:6|string',
     areaId: 'min:0|max:6|string',
-    elyNumber: 'min:0|max:10|string',
+    elyNumber: `min:0|max:10|string|${regexRules.numbers}`,
     nameLongFi: longNameRule,
     nameLongSe: longNameRule,
     nameModifiedOn: '',
