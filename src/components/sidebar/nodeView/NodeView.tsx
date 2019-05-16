@@ -251,6 +251,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     onChange={this.onNodePropertyChange(
                                         'measurementDate'
                                     )}
+                                    isClearButtonVisibleOnDates={true}
                                     validationResult={
                                         invalidPropertiesMap['measurementDate']
                                     }

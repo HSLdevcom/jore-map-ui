@@ -324,6 +324,7 @@ const nodeQueryFields = `
     geojsonManual
     geojsonProjection
     transittypes
+    solmapiste
     pysakkiBySoltunnus {
         ${stopQueryFields}
     }
