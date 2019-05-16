@@ -184,7 +184,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.validateProperty(nodeValidationModel[property], property, value);
     };
 
-    private onNodePropertyChange = (property: string) => (value: any) => {
+    private onNodePropertyChange = (property: keyof INode) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
         this.validateProperty(nodeValidationModel[property], property, value);
         if (property === 'type') {

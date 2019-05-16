@@ -24,6 +24,7 @@ import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import SubSites from '~/routing/subSites';
+import { IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -202,7 +203,7 @@ class RoutePathView extends ViewFormBase<
         }
     };
 
-    private onChange = (property: string) => (value: any) => {
+    private onChange = (property: keyof IRoutePath) => (value: any) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
         this.validateProperty(
             routePathValidationModel[property],

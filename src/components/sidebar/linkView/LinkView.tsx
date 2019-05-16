@@ -11,7 +11,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
-import { INode } from '~/models';
+import { INode, ILink } from '~/models';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import linkValidationModel from '~/models/validationModels/linkValidationModel';
@@ -235,7 +235,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         return this.existingTransitTypes.includes(transitType);
     };
 
-    private onChange = (property: string) => (value: any) => {
+    private onChange = (property: keyof ILink) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
         this.validateProperty(linkValidationModel[property], property, value);
     };

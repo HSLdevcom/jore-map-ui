@@ -63,7 +63,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
     };
 
-    private onStopPropertyChange = (property: string) => (value: any) => {
+    private onStopPropertyChange = (property: keyof IStop) => (value: any) => {
         this.props.nodeStore!.updateStop(property, value);
         this.validateProperty(stopValidationModel[property], property, value);
         const isStopFormValid = this.isFormValid();

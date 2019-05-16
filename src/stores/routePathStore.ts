@@ -216,7 +216,7 @@ export class RoutePathStore {
 
     @action
     public updateRoutePathProperty = (
-        property: string,
+        property: keyof IRoutePath,
         value: string | number | Date
     ) => {
         this._routePath = {

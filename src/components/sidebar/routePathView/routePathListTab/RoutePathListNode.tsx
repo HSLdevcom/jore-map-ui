@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import { IRoutePathLink, INode, IStop } from '~/models';
+import { IRoutePathLink, INode, IStop, IRoutePath } from '~/models';
 import { FiChevronRight } from 'react-icons/fi';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
@@ -119,9 +119,9 @@ class RoutePathListNode extends ViewFormBase<
      * isStartNodeUsingBookSchedule & startNodeBookScheduleColumnNumber
      * note: the last rpLink link will change routePath's value instead of routePathLink's value
      */
-    private onRoutePathBookSchedulePropertyChange = (property: string) => (
-        value: any
-    ) => {
+    private onRoutePathBookSchedulePropertyChange = (
+        property: keyof IRoutePath
+    ) => (value: any) => {
         const orderNumber = this.props.routePathLink.orderNumber;
 
         if (this.isLastRoutePathNode()) {

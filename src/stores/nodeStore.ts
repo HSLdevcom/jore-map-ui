@@ -148,8 +148,8 @@ export class NodeStore {
 
     @action
     public updateNode = (
-        property: string,
-        value: string | number | Date | LatLng
+        property: keyof INode,
+        value: string | Date | LatLng
     ) => {
         if (!this._node) return;
 
