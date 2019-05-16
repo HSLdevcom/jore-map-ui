@@ -16,7 +16,6 @@ interface IInputProps {
     className?: string;
     disabled?: boolean;
     value?: string | number | Date | null;
-    validatorRule?: string;
     type?: inputType; // Defaults to text
     capitalizeInput?: boolean;
     isClearButtonVisibleOnDates?: boolean;
@@ -88,7 +87,7 @@ const renderUneditableContent = (props: IInputProps) => (
         >
             {props.label}
         </div>
-        <div className={props.disabled ? s.editingDisabled : undefined}>
+        <div className={props.disabled ? s.staticHeight : undefined}>
             {props.value instanceof Date
                 ? Moment(props.value!).format('DD.MM.YYYY')
                 : props.value

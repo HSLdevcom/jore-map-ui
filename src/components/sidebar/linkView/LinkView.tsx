@@ -11,6 +11,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import { INode } from '~/models';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
@@ -235,9 +236,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         return this.existingTransitTypes.includes(transitType);
     };
 
-    private onChange = (property: string) => (value: any) => {
+    private onChangeLinkProperty = (property: string) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
         this.validateProperty(linkValidationModel[property], property, value);
+    };
+
+    private useCalculatedLength = () => {
+        const length = this.props.linkStore!.getCalculatedLength();
+        this.onChangeLinkProperty('length')(length);
     };
 
     render() {
@@ -278,6 +284,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             transitTypeError =
                 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
         }
+
+        const calculatedLength = this.props.linkStore!.getCalculatedLength();
 
         return (
             <div className={s.linkView}>
@@ -349,34 +357,28 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <Dropdown
-                                label='SUUNTA'
-                                disabled={isEditingDisabled}
-                                selected={link.direction}
-                                onChange={this.onChange('direction')}
-                                items={this.props.codeListStore!.getCodeList(
-                                    'Suunta'
-                                )}
-                            />
                             <InputContainer
-                                label='OS. NRO'
+                                label='MITATTU PITUUS (m)'
                                 disabled={isEditingDisabled}
-                                value={link.osNumber}
+                                value={link.measuredLength}
                                 type='number'
                                 validationResult={
-                                    invalidPropertiesMap['osNumber']
+                                    invalidPropertiesMap['measuredLength']
                                 }
-                                onChange={this.onChange('osNumber')}
+                                onChange={this.onChangeLinkProperty(
+                                    'measuredLength'
+                                )}
                             />
-                            <InputContainer
-                                label='LINKIN PITUUS (m)'
-                                disabled={isEditingDisabled}
+                            <CalculatedInputField
+                                label='PITUUS (m)'
+                                isDisabled={isEditingDisabled}
                                 value={link.length}
-                                type='number'
+                                calculatedValue={calculatedLength}
+                                useCalculatedValue={this.useCalculatedLength}
+                                onChange={this.onChangeLinkProperty('length')}
                                 validationResult={
                                     invalidPropertiesMap['length']
                                 }
-                                onChange={this.onChange('length')}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -387,20 +389,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 validationResult={
                                     invalidPropertiesMap['streetName']
                                 }
-                                onChange={this.onChange('streetName')}
-                            />
-                            <InputContainer
-                                label='KATUOSAN OS. NRO'
-                                disabled={isEditingDisabled}
-                                value={link.streetNumber}
-                                type='number'
-                                validationResult={
-                                    invalidPropertiesMap['streetNumber']
-                                }
-                                onChange={this.onChange('streetNumber')}
+                                onChange={this.onChangeLinkProperty(
+                                    'streetName'
+                                )}
                             />
                             <Dropdown
-                                onChange={this.onChange('municipalityCode')}
+                                onChange={this.onChangeLinkProperty(
+                                    'municipalityCode'
+                                )}
                                 disabled={isEditingDisabled}
                                 items={this.props.codeListStore!.getCodeList(
                                     'Kunta (ris/pys)'
@@ -409,18 +405,20 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 label='KUNTA'
                             />
                         </div>
-                        <div className={s.flexRow}>
-                            <TextContainer
-                                label='PÄIVITTÄJÄ'
-                                value={link.modifiedBy}
-                            />
-                            <TextContainer
-                                label='PÄIVITYSPVM'
-                                value={Moment(link.modifiedOn).format(
-                                    datetimeStringDisplayFormat
-                                )}
-                            />
-                        </div>
+                        {!this.props.isNewLink && (
+                            <div className={s.flexRow}>
+                                <TextContainer
+                                    label='PÄIVITTÄJÄ'
+                                    value={link.modifiedBy}
+                                />
+                                <TextContainer
+                                    label='PÄIVITYSPVM'
+                                    value={Moment(link.modifiedOn).format(
+                                        datetimeStringDisplayFormat
+                                    )}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className={s.buttonBar}>

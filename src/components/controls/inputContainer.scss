@@ -1,8 +1,8 @@
 @import '../shared/styles/common';
 @import '../shared/styles/form';
 
-.editingDisabled {
-    white-space: nowrap;
+.staticHeight {
+    display: flex;
+    align-items: center;
     height: $inputFieldHeight;
-    line-height: $inputFieldHeight;
 }

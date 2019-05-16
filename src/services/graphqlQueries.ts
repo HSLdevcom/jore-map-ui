@@ -392,10 +392,9 @@ const linkQueryFields = `
     lnkmitpituus
     lnkpituus
     katnimi
-    lnksuunta
-    lnkosnro
     katkunta
-    kaoosnro
+    lnkkuka
+    lnkviimpvm
     solmuByLnkalkusolmu {
         ${startNodeQueryFields}
     }

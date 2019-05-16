@@ -7,7 +7,6 @@ interface IInputProps {
     label: string | JSX.Element;
     value?: string | number | null | Date;
     darkerInputLabel?: boolean;
-    disabled?: boolean;
 }
 
 const TextContainer = observer((props: IInputProps) => (
@@ -19,7 +18,7 @@ const TextContainer = observer((props: IInputProps) => (
         >
             {props.label}
         </div>
-        <div className={props.disabled ? s.editingDisabled : undefined}>
+        <div className={s.staticHeight}>
             {props.value instanceof Date
                 ? Moment(props.value!).format('DD.MM.YYYY')
                 : props.value

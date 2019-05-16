@@ -1,8 +1,10 @@
+import constants from '~/constants/constants';
+
 const linkValidationModel = {
-    osNumber: 'required|min:0|max:99999|numeric', // TODO: These are just made up
-    streetName: 'required|min:0|max:99999|string', // TODO: These are just made up
-    streetNumber: 'required|min:0|max:99999|numeric', // TODO: These are just made up
-    length: 'required|min:0|max:99999|numeric' // TODO: These are just made up
+    municipalityCode: 'min:0|max:3|string',
+    streetName: 'min:0|max:40|string',
+    length: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
+    measuredLength: `min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`
 };
 
 export default linkValidationModel;
