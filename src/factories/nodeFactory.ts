@@ -51,7 +51,7 @@ class NodeFactory {
                 ? new Date(externalNode.solviimpvm)
                 : undefined,
             modifiedBy: externalNode.solkuka,
-            tripTimePoint: externalNode.solmapiste || '0'
+            tripTimePoint: externalNode.solmapiste
         };
     };
 
