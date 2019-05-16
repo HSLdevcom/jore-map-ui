@@ -43,12 +43,11 @@ class NodeFactory {
             coordinates,
             coordinatesManual,
             coordinatesProjection,
-            stop: nodeStop
-                ? NodeStopFactory.mapExternalStop(nodeStop)
-                : undefined,
-            measurementDate: externalNode.mittpvm,
-            modifiedOn: externalNode.solviimpvm,
-            modifiedBy: externalNode.solkuka
+            stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
+            measurementDate: new Date(externalNode.mittpvm),
+            modifiedOn: new Date(externalNode.solviimpvm),
+            modifiedBy: externalNode.solkuka,
+            tripTimePoint: '1' // TODO: Not sure if 1 means anything
         };
     };
 
@@ -78,9 +77,10 @@ class NodeFactory {
             transitTypes: [],
             coordinatesManual: coordinates,
             coordinatesProjection: coordinates,
-            measurementDate: '',
-            modifiedOn: '',
-            modifiedBy: ''
+            measurementDate: new Date(),
+            modifiedOn: new Date(),
+            modifiedBy: '',
+            tripTimePoint: '1' // TODO: Not sure if 1 means anything
         };
     }
 }
