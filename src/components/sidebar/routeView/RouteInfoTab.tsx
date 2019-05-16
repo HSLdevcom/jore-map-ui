@@ -7,7 +7,7 @@ import RouteService from '~/services/routeService';
 import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import InputContainer from '../InputContainer';
+import InputContainer from '../../controls/InputContainer';
 import * as s from './routeInfoTab.scss';
 
 interface IRouteInfoTabState {

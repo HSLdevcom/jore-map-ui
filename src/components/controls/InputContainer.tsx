@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import Moment from 'moment';
 import classnames from 'classnames';
 import { IValidationResult } from '~/validation/FormValidator';
-import DatePicker from '../controls/DatePicker';
+import DatePicker from './DatePicker';
 import TextContainer from './TextContainer';
 import * as s from './inputContainer.scss';
 

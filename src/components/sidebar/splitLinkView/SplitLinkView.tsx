@@ -19,7 +19,7 @@ import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import { AlertStore, AlertType } from '~/stores/alertStore';
 import SidebarHeader from '../SidebarHeader';
-import InputContainer from '../InputContainer';
+import InputContainer from '../../controls/InputContainer';
 import RoutePathSelector from './RoutePathSelector';
 import SplitLinkInfo from './SplitLinkInfo';
 import * as s from './splitLinkView.scss';

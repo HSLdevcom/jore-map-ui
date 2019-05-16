@@ -5,7 +5,7 @@ import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import BaseTool from './BaseTool';
-import { IEditRoutePathLayerNodeClickParams } from '../layers/edit/UpsertRoutePathLayer';
+import { IEditRoutePathLayerNodeClickParams } from '../layers/edit/EditRoutePathLayer';
 import { NetworkNodeClickParams } from '../layers/NetworkLayers';
 
 /**
