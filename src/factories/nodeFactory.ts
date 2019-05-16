@@ -44,10 +44,14 @@ class NodeFactory {
             coordinatesManual,
             coordinatesProjection,
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
-            measurementDate: new Date(externalNode.mittpvm),
-            modifiedOn: new Date(externalNode.solviimpvm),
+            measurementDate: externalNode.mittpvm
+                ? new Date(externalNode.mittpvm)
+                : undefined,
+            modifiedOn: externalNode.solviimpvm
+                ? new Date(externalNode.solviimpvm)
+                : undefined,
             modifiedBy: externalNode.solkuka,
-            tripTimePoint: '1' // TODO: Not sure if 1 means anything
+            tripTimePoint: externalNode.solmapiste || '0'
         };
     };
 
@@ -80,7 +84,7 @@ class NodeFactory {
             measurementDate: new Date(),
             modifiedOn: new Date(),
             modifiedBy: '',
-            tripTimePoint: '1' // TODO: Not sure if 1 means anything
+            tripTimePoint: '0'
         };
     }
 }

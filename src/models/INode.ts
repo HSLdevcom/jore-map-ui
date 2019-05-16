@@ -18,11 +18,11 @@ export default interface INode extends INodeBase {
     coordinates: L.LatLng;
     coordinatesManual: L.LatLng;
     coordinatesProjection: L.LatLng;
-    measurementDate: Date;
-    tripTimePoint: string;
-    modifiedOn: Date;
-    modifiedBy: string;
-    transitTypes: TransitType[];
+    measurementDate?: Date;
+    tripTimePoint?: string;
+    modifiedOn?: Date;
+    modifiedBy?: string;
+    transitTypes?: TransitType[];
 }
 
 export { INodePrimaryKey, INodeBase };

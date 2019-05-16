@@ -235,38 +235,36 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         <div className={s.formSection}>
                             <div className={s.flexRow}>
                                 <Dropdown
-                                    label='LYHYTTUNNUS (2 kirj.'
-                                    onChange={this.onNodePropertyChange(
-                                        'shortIdLetter'
-                                    )}
-                                    disabled={isEditingDisabled}
-                                    selected={node.shortIdLetter}
-                                    isValueIncludedInLabel={true}
-                                    emptyItem={{
-                                        value: '',
-                                        label: ''
-                                    }}
-                                    items={this.props.codeListStore!.getCodeList(
-                                        'Lyhyttunnus'
-                                    )}
-                                />
-                                <InputContainer
-                                    label='+ 4 num.)'
-                                    disabled={isEditingDisabled}
-                                    value={node.shortIdString}
-                                    onChange={this.onNodePropertyChange(
-                                        'shortIdString'
-                                    )}
-                                    validationResult={
-                                        invalidPropertiesMap['shortIdString']
-                                    }
-                                />
-                                <Dropdown
                                     label='TYYPPI'
                                     onChange={this.onNodePropertyChange('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
                                     items={nodeTypeCodeList}
+                                />
+                            </div>
+                            <div className={s.flexRow}>
+                                <InputContainer
+                                    type='date'
+                                    label='MITTAUSPVM'
+                                    value={node.measurementDate}
+                                    disabled={isEditingDisabled}
+                                    onChange={this.onNodePropertyChange(
+                                        'measurementDate'
+                                    )}
+                                    validationResult={
+                                        invalidPropertiesMap['measurementDate']
+                                    }
+                                />
+                                <Dropdown
+                                    label='MATKA-AIKAPISTE'
+                                    disabled={isEditingDisabled}
+                                    items={this.props.codeListStore!.getCodeList(
+                                        'Kyllä/Ei'
+                                    )}
+                                    selected={node.tripTimePoint}
+                                    onChange={this.onNodePropertyChange(
+                                        'tripTimePoint'
+                                    )}
                                 />
                             </div>
                         </div>
@@ -278,15 +276,50 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             />
                         </div>
                         {node.type === NodeType.STOP && node.stop && (
-                            <StopForm
-                                isEditingDisabled={isEditingDisabled}
-                                stop={node.stop!}
-                                isNewStop={this.props.isNewNode}
-                                invalidPropertiesMap={invalidPropertiesMap}
-                                getDropDownItems={
-                                    this.props.codeListStore!.getCodeList
-                                }
-                            />
+                            <>
+                                <div className={s.formSection}>
+                                    <div className={s.flexRow}>
+                                        <Dropdown
+                                            label='LYHYTTUNNUS (2 kirj.'
+                                            onChange={this.onNodePropertyChange(
+                                                'shortIdLetter'
+                                            )}
+                                            disabled={isEditingDisabled}
+                                            selected={node.shortIdLetter}
+                                            isValueIncludedInLabel={true}
+                                            emptyItem={{
+                                                value: '',
+                                                label: ''
+                                            }}
+                                            items={this.props.codeListStore!.getCodeList(
+                                                'Lyhyttunnus'
+                                            )}
+                                        />
+                                        <InputContainer
+                                            label='+ 4 num.)'
+                                            disabled={isEditingDisabled}
+                                            value={node.shortIdString}
+                                            onChange={this.onNodePropertyChange(
+                                                'shortIdString'
+                                            )}
+                                            validationResult={
+                                                invalidPropertiesMap[
+                                                    'shortIdString'
+                                                ]
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <StopForm
+                                    isEditingDisabled={isEditingDisabled}
+                                    stop={node.stop!}
+                                    isNewStop={this.props.isNewNode}
+                                    invalidPropertiesMap={invalidPropertiesMap}
+                                    getDropDownItems={
+                                        this.props.codeListStore!.getCodeList
+                                    }
+                                />
+                            </>
                         )}
                     </div>
                 </div>

@@ -28,12 +28,6 @@ import TextContainer from '../TextContainer';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './linkView.scss';
 
-interface ILinkViewState {
-    isLoading: boolean;
-    isEditingDisabled: boolean;
-    invalidPropertiesMap: object;
-}
-
 interface ILinkViewProps extends RouteComponentProps<any> {
     isNewLink: boolean;
     codeListStore?: CodeListStore;

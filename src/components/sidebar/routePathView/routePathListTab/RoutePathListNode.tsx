@@ -296,7 +296,7 @@ class RoutePathListNode extends ViewFormBase<
         } else if (node.type === NodeType.DISABLED) {
             icon = this.addBorder(icon, '#353333');
         } else if (node.type === NodeType.STOP) {
-            node.transitTypes.forEach(type => {
+            node.transitTypes!.forEach(type => {
                 icon = this.addBorder(icon, TransitTypeHelper.getColor(type));
             });
         } else if (node.type === NodeType.CROSSROAD) {

@@ -6,7 +6,6 @@ import { IRoutePath } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import routeBuilder from '~/routing/routeBuilder';
-import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import { IValidationResult } from '~/validation/FormValidator';
@@ -237,7 +236,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 label={this.renderLengthLabel()}
                                 value={routePath.length}
                                 disabled={isEditingDisabled}
-                                validatorRule={routePathValidationModel.length}
                                 type='number'
                                 onChange={onChange('length')}
                                 validationResult={
