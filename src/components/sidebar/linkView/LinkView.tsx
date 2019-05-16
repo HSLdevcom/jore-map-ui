@@ -23,8 +23,8 @@ import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { Dropdown, Button, TransitToggleButtonBar } from '../../controls';
-import InputContainer from '../InputContainer';
-import TextContainer from '../TextContainer';
+import InputContainer from '../../controls/InputContainer';
+import TextContainer from '../../controls/TextContainer';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './linkView.scss';
 

@@ -17,8 +17,8 @@ import { CodeListStore } from '~/stores/codeListStore';
 import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
-import TextContainer from '../../TextContainer';
-import InputContainer from '../../InputContainer';
+import TextContainer from '../../../controls/TextContainer';
+import InputContainer from '../../../controls/InputContainer';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 

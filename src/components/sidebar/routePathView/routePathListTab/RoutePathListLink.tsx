@@ -12,7 +12,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import RoutePathListItem from './RoutePathListItem';
-import TextContainer from '../../TextContainer';
+import TextContainer from '../../../controls/TextContainer';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {

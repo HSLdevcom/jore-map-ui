@@ -26,7 +26,7 @@ import Loader from '~/components/shared/loader/Loader';
 import NodeCoordinatesListView from './NodeCoordinatesListView';
 import SidebarHeader from '../SidebarHeader';
 import StopForm from './StopForm';
-import InputContainer from '../InputContainer';
+import InputContainer from '../../controls/InputContainer';
 import * as s from './nodeView.scss';
 
 interface INodeViewProps {

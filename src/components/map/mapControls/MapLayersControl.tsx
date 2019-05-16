@@ -5,7 +5,7 @@ import { IoMdMap } from 'react-icons/io';
 import classnames from 'classnames';
 import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
 import TransitType from '~/enums/transitType';
-import InputContainer from '~/components/sidebar/InputContainer';
+import InputContainer from '~/components/controls/InputContainer';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import MapStore, { NodeLabel, MapFilter } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
