@@ -14,14 +14,15 @@ interface INodeBase extends INodePrimaryKey {
 }
 
 export default interface INode extends INodeBase {
-    stop?: IStop; // TODO: change as IStop|null
-    transitTypes: TransitType[];
+    stop: IStop | null;
     coordinates: L.LatLng;
     coordinatesManual: L.LatLng;
     coordinatesProjection: L.LatLng;
-    measurementDate: string;
-    modifiedOn: string;
+    measurementDate: Date;
+    tripTimePoint: string;
+    modifiedOn: Date;
     modifiedBy: string;
+    transitTypes: TransitType[];
 }
 
 export { INodePrimaryKey, INodeBase };
