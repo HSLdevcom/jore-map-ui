@@ -20,11 +20,8 @@ class LinkFactory {
             measuredLength: externalLink.lnkmitpituus,
             municipalityCode: externalLink.katkunta,
             streetName: externalLink.katnimi,
-            streetNumber: externalLink.kaoosnro,
             modifiedBy: externalLink.lnkkuka,
-            modifiedOn: new Date(externalLink.lnkviimpvm),
-            direction: externalLink.lnksuunta,
-            osNumber: externalLink.lnkosnro
+            modifiedOn: new Date(externalLink.lnkviimpvm)
         };
     };
 
@@ -38,11 +35,8 @@ class LinkFactory {
             measuredLength: 0,
             municipalityCode: '',
             streetName: '',
-            streetNumber: '',
             modifiedBy: '',
-            modifiedOn: new Date(),
-            direction: '0',
-            osNumber: ''
+            modifiedOn: new Date()
         };
     };
 }
