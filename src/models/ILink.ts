@@ -14,9 +14,6 @@ export default interface ILink extends ILinkPrimaryKey {
     streetName: string;
     length: number;
     measuredLength: number;
-    streetNumber: string;
-    osNumber: string;
-    direction: string;
     modifiedBy: string;
     modifiedOn: Date;
 }

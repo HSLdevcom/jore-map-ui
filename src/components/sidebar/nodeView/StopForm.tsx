@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import InputContainer from '~/components/sidebar/InputContainer';
+import InputContainer from '~/components/controls/InputContainer';
 import { IStop } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import { codeListName } from '~/stores/codeListStore';

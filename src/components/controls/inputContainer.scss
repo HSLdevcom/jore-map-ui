@@ -1,0 +1,8 @@
+@import '../shared/styles/common';
+@import '../shared/styles/form';
+
+.staticHeight {
+    display: flex;
+    align-items: center;
+    height: $inputFieldHeight;
+}

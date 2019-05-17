@@ -7,7 +7,7 @@ import RoutePathStore from '~/stores/routePathStore';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
 import BaseTool from './BaseTool';
-import { IEditRoutePathLayerNodeClickParams } from '../layers/edit/UpsertRoutePathLayer';
+import { IEditRoutePathLayerNodeClickParams } from '../layers/edit/EditRoutePathLayer';
 import { NetworkNodeClickParams } from '../layers/NetworkLayers';
 
 class CopyRoutePathSegmentTool implements BaseTool {

@@ -1,7 +1,7 @@
 import * as L from 'leaflet';
 import IRoutePathLink from '../models/IRoutePathLink';
 
-const fromPositions = (geometry: L.LatLng[]) => {
+const fromLatLngs = (geometry: L.LatLng[]) => {
     let length = 0;
     geometry.forEach((position, index) => {
         if (index === 0) return;
@@ -12,10 +12,11 @@ const fromPositions = (geometry: L.LatLng[]) => {
 
 const fromRoutePathLinks = (rpLinks: IRoutePathLink[]) => {
     return rpLinks.reduce((total, rpLink) => {
-        return total + fromPositions(rpLink.geometry);
+        return total + fromLatLngs(rpLink.geometry);
     }, 0);
 };
 
 export default {
-    fromRoutePathLinks
+    fromRoutePathLinks,
+    fromLatLngs
 };

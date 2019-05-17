@@ -3,7 +3,7 @@ import { ILink, INode } from '~/models';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import NodeHelper from '~/util/nodeHelper';
 import NodeType from '~/enums/nodeType';
-import TextContainer from '../TextContainer';
+import TextContainer from '../../controls/TextContainer';
 import * as s from './splitLinkInfo.scss';
 
 interface ISplitLinkInfoProps {

@@ -3,8 +3,7 @@ import { observer } from 'mobx-react';
 import Moment from 'moment';
 import classnames from 'classnames';
 import { IValidationResult } from '~/validation/FormValidator';
-import DatePicker from '../controls/DatePicker';
-import TextContainer from './TextContainer';
+import DatePicker from './DatePicker';
 import * as s from './inputContainer.scss';
 
 type inputType = 'text' | 'number' | 'date';
@@ -79,36 +78,29 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
     );
 };
 
-const InputContainer = observer((props: IInputProps) => {
-    const validationResult = props.validationResult;
+const renderUneditableContent = (props: IInputProps) => (
+    <div className={s.formItem}>
+        <div
+            className={
+                props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel
+            }
+        >
+            {props.label}
+        </div>
+        <div className={props.disabled ? s.staticHeight : undefined}>
+            {props.value instanceof Date
+                ? Moment(props.value!).format('DD.MM.YYYY')
+                : props.value
+                ? props.value
+                : '-'}
+        </div>
+        {renderValidatorResult(props.validationResult)}
+    </div>
+);
 
+const InputContainer = observer((props: IInputProps) => {
     if (props.disabled) {
-        if (props.type === 'date') {
-            return (
-                <div className={s.disabledContainerWrapper}>
-                    <TextContainer
-                        label={props.label}
-                        value={
-                            props.value
-                                ? Moment(props.value).format('DD.MM.YYYY HH:mm')
-                                : '-'
-                        }
-                        darkerInputLabel={props.darkerInputLabel}
-                    />
-                    {renderValidatorResult(validationResult)}
-                </div>
-            );
-        }
-        return (
-            <div className={s.disabledContainerWrapper}>
-                <TextContainer
-                    label={props.label}
-                    value={props.value}
-                    darkerInputLabel={props.darkerInputLabel}
-                />
-                {renderValidatorResult(validationResult)}
-            </div>
-        );
+        return renderUneditableContent(props);
     }
 
     return (
@@ -121,7 +113,7 @@ const InputContainer = observer((props: IInputProps) => {
                 {props.label}
             </div>
             {renderEditableContent(props)}
-            {renderValidatorResult(validationResult)}
+            {renderValidatorResult(props.validationResult)}
         </div>
     );
 });
