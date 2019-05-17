@@ -330,11 +330,13 @@ class RoutePathListNode extends ViewFormBase<
     private renderListIcon = () => {
         const node = this.props.node;
         const routePathLink = this.props.routePathLink;
+        const isLastRoutePathNode = this.isLastRoutePathNode();
         let icon = (
             <div
                 className={classnames(
                     s.nodeIcon,
-                    routePathLink.startNodeTimeAlignmentStop !== '0'
+                    !isLastRoutePathNode &&
+                        routePathLink.startNodeTimeAlignmentStop !== '0'
                         ? s.timeAlignmentIcon
                         : undefined
                 )}
