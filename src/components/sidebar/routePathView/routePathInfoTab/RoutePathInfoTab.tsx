@@ -124,11 +124,11 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                         <div className={s.flexRow}>
                             <TextContainer
                                 label='REITIN NIMI SUOMEKSI'
-                                value={routePath.routePathName}
+                                value={routePath.name}
                             />
                             <TextContainer
                                 label='REITIN NIMI RUOTSIKSI'
-                                value={routePath.routePathNameSw}
+                                value={routePath.nameSw}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -175,19 +175,19 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <InputContainer
                                 label='LYHENNE SUOMEKSI'
                                 disabled={isEditingDisabled}
-                                value={routePath.routePathShortName}
-                                onChange={onChange('routePathShortName')}
+                                value={routePath.shortName}
+                                onChange={onChange('shortName')}
                                 validationResult={
-                                    invalidPropertiesMap['routePathShortName']
+                                    invalidPropertiesMap['shortName']
                                 }
                             />
                             <InputContainer
                                 label='LYHENNE RUOTSIKSI'
                                 disabled={isEditingDisabled}
-                                value={routePath.routePathShortNameSw}
-                                onChange={onChange('routePathShortNameSw')}
+                                value={routePath.shortNameSw}
+                                onChange={onChange('shortNameSw')}
                                 validationResult={
-                                    invalidPropertiesMap['routePathShortNameSw']
+                                    invalidPropertiesMap['shortNameSw']
                                 }
                             />
                         </div>

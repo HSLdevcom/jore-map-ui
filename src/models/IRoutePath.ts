@@ -21,15 +21,15 @@ export default interface IRoutePath
         IViewOnlyProperties {
     lineId: string;
     routePathLinks?: IRoutePathLink[]; // TODO: change to be never undefined
-    routePathName: string; // TODO: rename as name
-    routePathNameSw: string; // TODO: rename as nameSw
+    name: string;
+    nameSw: string;
     endTime: Date;
     originFi: string;
     originSw: string;
     destinationFi: string;
     destinationSw: string;
-    routePathShortName: string; // TODO: rename as shortName
-    routePathShortNameSw: string; // TODO: rename as shortNameSw
+    shortName: string;
+    shortNameSw: string;
     length: number;
     exceptionPath: string;
     isStartNodeUsingBookSchedule: boolean;
