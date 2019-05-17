@@ -1,12 +1,15 @@
 import ApiClient from '~/util/ApiClient';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import ErrorStore from '~/stores/errorStore';
 import LoginStore from '~/stores/loginStore';
 import endpoints from '~/enums/endpoints';
+import text from '~/util/text';
 
 export interface IAuthorizationResponse {
     isOk: boolean;
     hasWriteAccess: boolean;
+    errorTextKey?: string;
     email?: string;
 }
 
@@ -16,12 +19,35 @@ class AuthService {
         onError: () => void
     ) {
         const code = navigator.getQueryParam(QueryParams.code);
-        const response = (await ApiClient.authorizeUsingCode(
-            code
-        )) as IAuthorizationResponse;
-        LoginStore.setAuthenticationInfo(response);
 
-        response.isOk ? onSuccess() : onError();
+        let authorizationResponse: IAuthorizationResponse;
+        try {
+            authorizationResponse = (await ApiClient.authorizeUsingCode(
+                code
+            )) as IAuthorizationResponse;
+        } catch (error) {
+            const errorResponse = JSON.parse(
+                error.message
+            ) as IAuthorizationResponse;
+            authorizationResponse = {
+                isOk: errorResponse.isOk,
+                hasWriteAccess: errorResponse.hasWriteAccess
+            };
+            if (errorResponse.errorTextKey) {
+                let errorMessage;
+                if (errorResponse.email) {
+                    errorMessage = text(errorResponse.errorTextKey, {
+                        email: errorResponse.email
+                    });
+                } else {
+                    errorMessage = text(errorResponse.errorTextKey);
+                }
+                ErrorStore.addError(errorMessage);
+            }
+        }
+        LoginStore.setAuthenticationInfo(authorizationResponse);
+
+        authorizationResponse.isOk ? onSuccess() : onError();
     }
 
     public static async logout() {
