@@ -1,5 +1,5 @@
 export default interface ICodeListItem {
-    listId: string;
+    listId?: string;
     orderNumber: number;
     value: string;
     label: string;

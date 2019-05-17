@@ -7,14 +7,14 @@ interface ICheckboxProps {
     disabled?: boolean;
     checked: boolean;
     content: React.ReactNode;
-    onClick(): void;
+    onClick: (value: any) => void;
 }
 
 const Checkbox = observer((props: ICheckboxProps) => {
     const doNothing = () => {};
 
     const onClick = (event: React.MouseEvent<HTMLElement>) => {
-        props.onClick();
+        props.onClick(!props.checked);
         event.stopPropagation();
         event.preventDefault();
     };
@@ -30,7 +30,7 @@ const Checkbox = observer((props: ICheckboxProps) => {
             <div className={s.content}>{props.content}</div>
             <input
                 type='checkbox'
-                checked={props.checked}
+                checked={Boolean(props.checked)}
                 onChange={doNothing}
             />
             <span className={s.checkmark} />

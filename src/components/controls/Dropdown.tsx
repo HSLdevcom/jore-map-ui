@@ -20,6 +20,8 @@ interface IDropdownProps {
     validationResult?: IValidationResult;
 }
 
+const EMPTY_VALUE_LABEL = '-';
+
 const Dropdown = observer((props: IDropdownProps) => {
     const validationResult = props.validationResult;
     const onChange = (event: any) => {
@@ -57,7 +59,9 @@ const Dropdown = observer((props: IDropdownProps) => {
                 )}
                 {props.disabled ? (
                     <div className={s.disableEditing}>
-                        {Boolean(selectedItem) ? selectedItem!.label : ''}
+                        {Boolean(selectedItem)
+                            ? selectedItem!.label
+                            : EMPTY_VALUE_LABEL}
                     </div>
                 ) : (
                     <select
