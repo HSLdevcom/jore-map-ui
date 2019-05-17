@@ -297,7 +297,7 @@ class RoutePathView extends ViewFormBase<
         if (!this.props.routePathStore!.routePath) return null;
 
         const isGeometryValid = validateRoutePathLinks(
-            this.props.routePathStore!.routePath!.routePathLinks!
+            this.props.routePathStore!.routePath!.routePathLinks
         );
 
         const areLinkFormsValid =

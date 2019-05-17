@@ -134,7 +134,7 @@ export class RoutePathStore {
             const oldRoutePathLinks = this._routePath!.routePathLinks;
             // Prevent undo if oldLink is found
             const newRoutePathLinks = undoRoutePathLinks.map(undoRpLink => {
-                const oldRpLink = oldRoutePathLinks!.find(rpLink => {
+                const oldRpLink = oldRoutePathLinks.find(rpLink => {
                     return rpLink.id === undoRpLink.id;
                 });
                 if (oldRpLink) {
@@ -157,7 +157,7 @@ export class RoutePathStore {
             const oldRoutePathLinks = this._routePath!.routePathLinks;
             // Prevent redo if oldLink is found
             const newRoutePathLinks = redoRoutePathLinks.map(redoRpLink => {
-                const oldRpLink = oldRoutePathLinks!.find(rpLink => {
+                const oldRpLink = oldRoutePathLinks.find(rpLink => {
                     return rpLink.id === redoRpLink.id;
                 });
                 if (oldRpLink) {
@@ -245,7 +245,7 @@ export class RoutePathStore {
     ) => {
         const rpLinkToUpdate:
             | IRoutePathLink
-            | undefined = this._routePath!.routePathLinks!.find(
+            | undefined = this._routePath!.routePathLinks.find(
             rpLink => rpLink.orderNumber === orderNumber
         );
         rpLinkToUpdate![property] = value;
@@ -280,7 +280,7 @@ export class RoutePathStore {
      */
     @action
     public addLink = (routePathLink: IRoutePathLink) => {
-        const rpLinks = this._routePath!.routePathLinks!;
+        const rpLinks = this._routePath!.routePathLinks;
 
         // Need to do splice to trigger ReactionDisposer watcher
         rpLinks.splice(
@@ -309,7 +309,7 @@ export class RoutePathStore {
 
     @action
     public removeLink = (id: string) => {
-        const rpLinks = this._routePath!.routePathLinks!;
+        const rpLinks = this._routePath!.routePathLinks;
 
         const linkToRemoveIndex = rpLinks.findIndex(link => link.id === id);
         const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
@@ -318,7 +318,7 @@ export class RoutePathStore {
         rpLinks.splice(linkToRemoveIndex, 1);
 
         // Copy bookSchedule properties from last routePathLink to routePath
-        if (linkToRemoveIndex === this._routePath!.routePathLinks!.length) {
+        if (linkToRemoveIndex === this._routePath!.routePathLinks.length) {
             this.copyPropertyToRoutePathFromRoutePathLink(
                 routePathLinkToCopyFor,
                 'isStartNodeUsingBookSchedule'
@@ -353,7 +353,7 @@ export class RoutePathStore {
 
     @action
     public sortRoutePathLinks = () => {
-        this._routePath!.routePathLinks = this._routePath!.routePathLinks!.slice().sort(
+        this._routePath!.routePathLinks = this._routePath!.routePathLinks.slice().sort(
             (a, b) => a.orderNumber - b.orderNumber
         );
     };
@@ -374,10 +374,10 @@ export class RoutePathStore {
 
     public isLastRoutePathLink = (routePathLink: IRoutePathLink): boolean => {
         const routePathLinks = this._routePath!.routePathLinks;
-        const index = routePathLinks!.findIndex(rpLink => {
+        const index = routePathLinks.findIndex(rpLink => {
             return rpLink.id === routePathLink.id;
         });
-        return index === routePathLinks!.length - 1;
+        return index === routePathLinks.length - 1;
     };
 
     public isMapItemHighlighted = (objectId: string): boolean => {
@@ -395,7 +395,7 @@ export class RoutePathStore {
         if (this.routePath && this.routePath.routePathLinks) {
             return Math.floor(
                 lengthCalculator.fromRoutePathLinks(
-                    this.routePath!.routePathLinks!
+                    this.routePath!.routePathLinks
                 )
             );
         }
@@ -403,9 +403,7 @@ export class RoutePathStore {
     };
 
     public getLinkGeom = (linkId: string): L.LatLng[] => {
-        const link = this._routePath!.routePathLinks!.find(
-            l => l.id === linkId
-        );
+        const link = this._routePath!.routePathLinks.find(l => l.id === linkId);
         if (link) {
             return link.geometry;
         }
@@ -413,11 +411,11 @@ export class RoutePathStore {
     };
 
     public getNodeGeom = (nodeId: string): L.LatLng[] => {
-        let node = this._routePath!.routePathLinks!.find(
+        let node = this._routePath!.routePathLinks.find(
             l => l.startNode.id === nodeId
         );
         if (!node) {
-            node = this._routePath!.routePathLinks!.find(
+            node = this._routePath!.routePathLinks.find(
                 l => l.endNode.id === nodeId
             );
         }
@@ -430,15 +428,15 @@ export class RoutePathStore {
     public hasNodeOddAmountOfNeighbors = (nodeId: string): boolean => {
         const routePath = this.routePath;
         return (
-            routePath!.routePathLinks!.filter(x => x.startNode.id === nodeId)
+            routePath!.routePathLinks.filter(x => x.startNode.id === nodeId)
                 .length !==
-            routePath!.routePathLinks!.filter(x => x.endNode.id === nodeId)
+            routePath!.routePathLinks.filter(x => x.endNode.id === nodeId)
                 .length
         );
     };
 
     private recalculateOrderNumbers = () => {
-        this._routePath!.routePathLinks!.forEach((rpLink, index) => {
+        this._routePath!.routePathLinks.forEach((rpLink, index) => {
             // Order numbers start from 1
             rpLink.orderNumber = index + 1;
         });

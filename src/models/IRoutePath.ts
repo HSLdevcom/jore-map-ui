@@ -20,7 +20,7 @@ export default interface IRoutePath
     extends IRoutePathPrimaryKey,
         IViewOnlyProperties {
     lineId: string;
-    routePathLinks?: IRoutePathLink[]; // TODO: change to be never undefined
+    routePathLinks: IRoutePathLink[]; // TODO: change to be never undefined
     name: string;
     nameSw: string;
     endTime: Date;

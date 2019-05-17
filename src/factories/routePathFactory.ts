@@ -27,7 +27,7 @@ class RoutePathFactory {
             ].join('-')
         ).toString();
 
-        let routePathLinks: IRoutePathLink[] | undefined = undefined;
+        let routePathLinks: IRoutePathLink[] = [];
         if (
             externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
         ) {
@@ -49,8 +49,7 @@ class RoutePathFactory {
             routeId: externalRoutePath.reitunnus,
             direction: externalRoutePath.suusuunta,
             startTime: new Date(externalRoutePath.suuvoimast),
-            routePathLinks:
-                routePathLinks !== undefined ? routePathLinks : undefined,
+            routePathLinks: routePathLinks ? routePathLinks : [],
             lineId:
                 externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
             transitType:

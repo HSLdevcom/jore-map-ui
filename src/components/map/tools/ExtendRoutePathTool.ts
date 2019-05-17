@@ -71,7 +71,7 @@ class ExtendRoutePathTool implements BaseTool {
     private isNetworkNodesInteractive() {
         return (
             RoutePathStore!.routePath &&
-            RoutePathStore!.routePath!.routePathLinks!.length === 0
+            RoutePathStore!.routePath!.routePathLinks.length === 0
         );
     }
 }

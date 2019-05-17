@@ -105,15 +105,13 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
     private isStartNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
-        return Boolean(
-            routePathLinks!.find(link => link.endNode.id === nodeId)
-        );
+        return Boolean(routePathLinks.find(link => link.endNode.id === nodeId));
     }
 
     private isEndNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
         return Boolean(
-            routePathLinks!.find(link => link.startNode.id === nodeId)
+            routePathLinks.find(link => link.startNode.id === nodeId)
         );
     }
 }

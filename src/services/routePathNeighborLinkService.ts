@@ -125,10 +125,10 @@ class RoutePathNeighborLinkService {
         linkOrderNumber: number
     ): Promise<IFetchNeighborLinksResponse | null> => {
         const routePathLinks = routePath.routePathLinks;
-        const startNodeCount = routePathLinks!.filter(
+        const startNodeCount = routePathLinks.filter(
             link => link.startNode.id === nodeId
         ).length;
-        const endNodeCount = routePathLinks!.filter(
+        const endNodeCount = routePathLinks.filter(
             link => link.endNode.id === nodeId
         ).length;
         let neighborToAddType;

@@ -96,10 +96,10 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private renderStartMarker() {
         const color = this.props.color;
         const routePathLinks = this.props.routePathLinks;
-        if (routePathLinks!.length === 0) return;
+        if (routePathLinks.length === 0) return;
         return (
             <Marker
-                latLng={routePathLinks![0].startNode.coordinates}
+                latLng={routePathLinks[0].startNode.coordinates}
                 color={color}
                 isClickDisabled={true}
             />

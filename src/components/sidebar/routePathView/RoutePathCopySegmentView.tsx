@@ -118,7 +118,7 @@ class RoutePathCopySegmentView extends React.Component<
         if (isNaturalDirection) {
             // orderNumbers start from 1
             let orderNumber =
-                this.props.routePathStore!.routePath!.routePathLinks!.find(
+                this.props.routePathStore!.routePath!.routePathLinks.find(
                     link => link.endNode.id === copyStartNodeId
                 )!.orderNumber + 1;
             for (let i = 0; i < segmentsToCopy.length; i += 1) {
@@ -129,7 +129,7 @@ class RoutePathCopySegmentView extends React.Component<
                 orderNumber += 1;
             }
         } else if (isOppositeDirection) {
-            const orderNumber = this.props.routePathStore!.routePath!.routePathLinks!.find(
+            const orderNumber = this.props.routePathStore!.routePath!.routePathLinks.find(
                 link => link.startNode.id === copyEndNodeId
             )!.orderNumber;
             for (let i = segmentsToCopy.length - 1; i >= 0; i -= 1) {
