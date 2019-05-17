@@ -1,9 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 import InputContainer from '~/components/controls/InputContainer';
-import { IStop } from '~/models';
+import { IStop, INode } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
-import { codeListName } from '~/stores/codeListStore';
+import { codeListName, CodeListStore } from '~/stores/codeListStore';
 import ICodeListItem from '~/models/ICodeListItem';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
@@ -12,11 +13,12 @@ import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
 
 interface IStopFormProps {
-    stop: IStop;
+    node: INode;
     isNewStop: boolean;
     isEditingDisabled: boolean;
-    invalidPropertiesMap: object;
     nodeStore?: NodeStore;
+    codeListStore?: CodeListStore;
+    onNodePropertyChange: (property: keyof INode) => (value: any) => void;
     getDropDownItems: (codeListIdentifier: codeListName) => ICodeListItem[];
 }
 
@@ -26,7 +28,7 @@ interface IStopFormState {
     isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
 }
 
-@inject('nodeStore')
+@inject('nodeStore', 'codeListStore')
 @observer
 class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     constructor(props: IStopFormProps) {
@@ -43,7 +45,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     }
 
     componentDidUpdate(prevProps: IStopFormProps) {
-        if (prevProps.stop.nodeId !== this.props.stop.nodeId) {
+        if (prevProps.node.stop!.nodeId !== this.props.node.stop!.nodeId) {
             this.validateStop();
         }
         if (
@@ -72,16 +74,48 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
-        const stop = this.props.stop;
+        const node = this.props.node;
+        const stop = node.stop!;
         const onChange = this.onStopPropertyChange;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         const getDropDownItems = this.props.getDropDownItems;
 
         return (
-            <div className={s.stopView}>
+            <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader hideCloseButton={true}>
                     Pysäkkitiedot
                 </SidebarHeader>
+                <div className={s.formSection}>
+                    <div className={s.flexRow}>
+                        <Dropdown
+                            label='LYHYTTUNNUS (2 kirj.'
+                            onChange={this.props.onNodePropertyChange(
+                                'shortIdLetter'
+                            )}
+                            disabled={isEditingDisabled}
+                            selected={node.shortIdLetter}
+                            isValueIncludedInLabel={true}
+                            emptyItem={{
+                                value: '',
+                                label: ''
+                            }}
+                            items={this.props.codeListStore!.getCodeList(
+                                'Lyhyttunnus'
+                            )}
+                        />
+                        <InputContainer
+                            label='+ 4 num.)'
+                            disabled={isEditingDisabled}
+                            value={node.shortIdString}
+                            onChange={this.props.onNodePropertyChange(
+                                'shortIdString'
+                            )}
+                            validationResult={
+                                invalidPropertiesMap['shortIdString']
+                            }
+                        />
+                    </div>
+                </div>
                 <div className={s.formSection}>
                     {this.props.isNewStop && (
                         <div className={s.flexRow}>
