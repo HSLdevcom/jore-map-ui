@@ -1,19 +1,8 @@
 @import '../shared/styles/common';
 @import '../shared/styles/form';
 
-.editingDisabled {
-    white-space: nowrap;
-    height: 43px;
-    line-height: 43px;
-}
-
-.disabledContainerWrapper {
+.staticHeight {
     display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-right: 10px;
-}
-
-.disabledContainerWrapper:last-of-type {
-    margin-right: 0px;
+    align-items: center;
+    height: $inputFieldHeight;
 }

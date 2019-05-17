@@ -18,7 +18,7 @@ const TextContainer = observer((props: IInputProps) => (
         >
             {props.label}
         </div>
-        <div>
+        <div className={s.staticHeight}>
             {props.value instanceof Date
                 ? Moment(props.value!).format('DD.MM.YYYY')
                 : props.value
