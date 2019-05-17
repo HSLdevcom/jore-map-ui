@@ -285,6 +285,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 getDropDownItems={
                                     this.props.codeListStore!.getCodeList
                                 }
+                                nodeInvalidPropertiesMap={invalidPropertiesMap}
                             />
                         )}
                     </div>

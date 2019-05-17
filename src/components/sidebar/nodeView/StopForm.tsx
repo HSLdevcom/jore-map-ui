@@ -18,6 +18,7 @@ interface IStopFormProps {
     isEditingDisabled: boolean;
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
+    nodeInvalidPropertiesMap: object;
     onNodePropertyChange: (property: keyof INode) => (value: any) => void;
     getDropDownItems: (codeListIdentifier: codeListName) => ICodeListItem[];
 }
@@ -111,7 +112,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                                 'shortIdString'
                             )}
                             validationResult={
-                                invalidPropertiesMap['shortIdString']
+                                this.props.nodeInvalidPropertiesMap[
+                                    'shortIdString'
+                                ]
                             }
                         />
                     </div>
