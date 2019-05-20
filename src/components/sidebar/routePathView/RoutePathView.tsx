@@ -112,10 +112,10 @@ class RoutePathView extends ViewFormBase<
             if (!this.props.routePathStore!.routePath) {
                 const queryParams = navigator.getQueryParamValues();
                 const routeId = queryParams[QueryParams.routeId];
+                const lineId = queryParams[QueryParams.lineId];
                 const route = await RouteService.fetchRoute(routeId);
-                // TODO: add transitType to this call (if transitType is routePath's property)
                 const newRoutePath = RoutePathFactory.createNewRoutePath(
-                    routeId,
+                    lineId,
                     route
                 );
                 this.props.routePathStore!.setRoutePath(newRoutePath);
