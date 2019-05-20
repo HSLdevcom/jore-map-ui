@@ -29,6 +29,7 @@ interface IRoutePathListNodeProps {
     reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
     isEditingDisabled: boolean;
+    isLastNode?: boolean;
 }
 
 interface RoutePathListNodeState {
@@ -151,7 +152,7 @@ class RoutePathListNode extends ViewFormBase<
     ) => (value: any) => {
         const orderNumber = this.props.routePathLink.orderNumber;
 
-        if (this.isLastRoutePathNode()) {
+        if (this.props.isLastNode) {
             this.props.routePathStore!.updateRoutePathProperty(property, value);
         } else {
             this.props.routePathStore!.updateRoutePathLinkProperty(
@@ -178,16 +179,6 @@ class RoutePathListNode extends ViewFormBase<
         )(value);
     };
 
-    private isLastRoutePathNode = () => {
-        const routePathLink = this.props.routePathLink;
-        const isLastRoutePathLink = this.props.routePathStore!.isLastRoutePathLink(
-            routePathLink
-        );
-        if (!isLastRoutePathLink) return false;
-        const node = this.props.node;
-        return routePathLink.endNode.id === node.id;
-    };
-
     private renderStopView = (stop: IStop) => {
         const isEditingDisabled = this.props.isEditingDisabled;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
@@ -195,12 +186,10 @@ class RoutePathListNode extends ViewFormBase<
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
 
-        const isLastRoutePathNode = this.isLastRoutePathNode();
-
-        const isStartNodeUsingBookSchedule = isLastRoutePathNode
+        const isStartNodeUsingBookSchedule = this.props.isLastNode
             ? routePath!.isStartNodeUsingBookSchedule
             : routePathLink.isStartNodeUsingBookSchedule;
-        const startNodeBookScheduleColumnNumber = isLastRoutePathNode
+        const startNodeBookScheduleColumnNumber = this.props.isLastNode
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
 
@@ -218,7 +207,7 @@ class RoutePathListNode extends ViewFormBase<
                         darkerInputLabel={true}
                     />
                 </div>
-                {!isLastRoutePathNode && (
+                {!this.props.isLastNode && (
                     <>
                         <div className={s.flexRow}>
                             <Checkbox
@@ -336,7 +325,8 @@ class RoutePathListNode extends ViewFormBase<
             <div
                 className={classnames(
                     s.nodeIcon,
-                    routePathLink.startNodeTimeAlignmentStop !== '0'
+                    !this.props.isLastNode &&
+                        routePathLink.startNodeTimeAlignmentStop !== '0'
                         ? s.timeAlignmentIcon
                         : undefined
                 )}
