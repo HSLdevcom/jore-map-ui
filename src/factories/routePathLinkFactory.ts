@@ -32,7 +32,9 @@ class RoutePathLinkFactory {
             id: String(externalRoutePathLink.relid),
             orderNumber: externalRoutePathLink.reljarjnro,
             startNodeUsage: externalRoutePathLink.relohaikpys,
-            startNodeTimeAlignmentStop: externalRoutePathLink.ajantaspys,
+            startNodeTimeAlignmentStop: externalRoutePathLink.ajantaspys
+                ? externalRoutePathLink.ajantaspys
+                : '0',
             startNodeType: externalRoutePathLink.relpysakki,
             isStartNodeHastusStop: externalRoutePathLink.paikka === '1',
             isStartNodeUsingBookSchedule: externalRoutePathLink.kirjaan === '1',

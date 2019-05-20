@@ -97,6 +97,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                             }
                             node={routePathLink.endNode}
                             routePathLink={routePathLink}
+                            isLastNode={true}
                             isEditingDisabled={this.props.isEditingDisabled}
                         />
                     );
