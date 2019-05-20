@@ -16,6 +16,7 @@ import NodeLocationType from '~/types/NodeLocationType';
 import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
+import StartNodeType from '~/enums/startNodeType';
 import { ErrorStore } from '~/stores/errorStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import NodeService from '~/services/nodeService';
@@ -217,7 +218,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             isStopFormInvalid;
         const nodeTypeCodeList = this.props
             .codeListStore!.getCodeList('Solmutyyppi (P/E)')
-            .filter(item => item.value !== 'E');
+            .filter(item => item.value !== StartNodeType.DISABLED);
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>

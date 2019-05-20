@@ -1,28 +1,30 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import { IRoutePathLink, INode, IStop, IRoutePath } from '~/models';
+import { IRoutePathLink, INode, IStop } from '~/models';
 import { FiChevronRight } from 'react-icons/fi';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { Button, Checkbox } from '~/components/controls';
+import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
+import StartNodeType from '~/enums/startNodeType';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { CodeListStore } from '~/stores/codeListStore';
 import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
 import TextContainer from '../../../controls/TextContainer';
 import InputContainer from '../../../controls/InputContainer';
-import MultiTabTextarea from '../../linkView/MultiTabTextarea';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
     routePathStore?: RoutePathStore;
+    codeListStore?: CodeListStore;
     node: INode;
     reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
@@ -35,7 +37,7 @@ interface RoutePathListNodeState {
     isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'codeListStore')
 @observer
 class RoutePathListNode extends ViewFormBase<
     IRoutePathListNodeProps,
@@ -111,8 +113,31 @@ class RoutePathListNode extends ViewFormBase<
         );
     };
 
-    // TODO: remove this dummy function
-    private onChange = () => {};
+    private onRoutePathLinkStartNodeTypeChange = () => (value: any) => {
+        this.onRoutePathLinkPropertyChange('startNodeType')(value ? 'E' : 'P');
+    };
+
+    private onRoutePathLinkPropertyChange = (
+        property: keyof IRoutePathLink
+    ) => (value: any) => {
+        const orderNumber = this.props.routePathLink.orderNumber;
+
+        this.props.routePathStore!.updateRoutePathLinkProperty(
+            orderNumber,
+            property,
+            value
+        );
+        this.validateProperty(
+            routePathLinkValidationModel[property],
+            property,
+            value
+        );
+        const isLinkFormValid = this.isFormValid();
+        this.props.routePathStore!.setLinkFormValidity(
+            orderNumber,
+            isLinkFormValid
+        );
+    };
 
     /**
      * A special onChange function for the following properties:
@@ -120,7 +145,9 @@ class RoutePathListNode extends ViewFormBase<
      * note: the last rpLink link will change routePath's value instead of routePathLink's value
      */
     private onRoutePathBookSchedulePropertyChange = (
-        property: keyof IRoutePath
+        property:
+            | 'startNodeBookScheduleColumnNumber'
+            | 'isStartNodeUsingBookSchedule'
     ) => (value: any) => {
         const orderNumber = this.props.routePathLink.orderNumber;
 
@@ -168,15 +195,17 @@ class RoutePathListNode extends ViewFormBase<
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
 
-        const isStartNodeUsingBookSchedule = this.isLastRoutePathNode()
+        const isLastRoutePathNode = this.isLastRoutePathNode();
+
+        const isStartNodeUsingBookSchedule = isLastRoutePathNode
             ? routePath!.isStartNodeUsingBookSchedule
             : routePathLink.isStartNodeUsingBookSchedule;
-        const startNodeBookScheduleColumnNumber = this.isLastRoutePathNode()
+        const startNodeBookScheduleColumnNumber = isLastRoutePathNode
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
 
         return (
-            <div className={s.stopContent}>
+            <div>
                 <div className={s.flexRow}>
                     <TextContainer
                         label='PYSÄKIN NIMI'
@@ -189,31 +218,57 @@ class RoutePathListNode extends ViewFormBase<
                         darkerInputLabel={true}
                     />
                 </div>
-                <div className={s.flexRow}>
-                    <Checkbox
-                        disabled={isEditingDisabled}
-                        content='Pysäkki ei käytössä'
-                        checked={false}
-                        onClick={this.onChange}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <Checkbox
-                        disabled={isEditingDisabled}
-                        content='Ajantasauspysäkki'
-                        checked={false}
-                        onClick={this.onChange}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    {/* rpLink.isStartNodeTimeAlignmentStop */}
-                    <Checkbox
-                        disabled={isEditingDisabled}
-                        checked={false}
-                        content='Hastus paikka'
-                        onClick={this.onChange}
-                    />
-                </div>
+                {!isLastRoutePathNode && (
+                    <>
+                        <div className={s.flexRow}>
+                            <Checkbox
+                                disabled={isEditingDisabled}
+                                content='Pysäkki ei käytössä'
+                                checked={
+                                    routePathLink.startNodeType ===
+                                    StartNodeType.DISABLED
+                                }
+                                onClick={this.onRoutePathLinkStartNodeTypeChange()}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <Checkbox
+                                disabled={isEditingDisabled}
+                                checked={routePathLink.isStartNodeHastusStop}
+                                content='Hastus paikka'
+                                onClick={this.onRoutePathLinkPropertyChange(
+                                    'isStartNodeHastusStop'
+                                )}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <Dropdown
+                                label='AJANTASAUSPYSÄKKI'
+                                onChange={this.onRoutePathLinkPropertyChange(
+                                    'startNodeTimeAlignmentStop'
+                                )}
+                                disabled={isEditingDisabled}
+                                selected={
+                                    routePathLink.startNodeTimeAlignmentStop
+                                }
+                                items={this.props.codeListStore!.getCodeList(
+                                    'Ajantasaus pysakki'
+                                )}
+                            />
+                            <Dropdown
+                                label='ERIKOISTYYPPI'
+                                onChange={this.onRoutePathLinkPropertyChange(
+                                    'startNodeUsage'
+                                )}
+                                disabled={isEditingDisabled}
+                                selected={routePathLink.startNodeUsage}
+                                items={this.props.codeListStore!.getCodeList(
+                                    'Pysäkin käyttö'
+                                )}
+                            />
+                        </div>
+                    </>
+                )}
                 <div className={s.flexRow}>
                     <Checkbox
                         disabled={isEditingDisabled}
@@ -243,8 +298,7 @@ class RoutePathListNode extends ViewFormBase<
                         darkerInputLabel={true}
                     />
                 </div>
-                <MultiTabTextarea tabs={['Tariffialueet', 'Määränpäät']} />
-                <div className={s.flexRow}>
+                <div className={s.flexInnerRow}>
                     <InputContainer
                         disabled={true}
                         label='MUOKANNUT'
@@ -265,14 +319,12 @@ class RoutePathListNode extends ViewFormBase<
 
     private renderNodeView = (node: INode) => {
         return (
-            <div className={s.nodeContent}>
-                <div className={s.flexRow}>
-                    <TextContainer
-                        label='MITTAUSPÄIVÄMÄÄRÄ'
-                        value={node.measurementDate}
-                        darkerInputLabel={true}
-                    />
-                </div>
+            <div className={s.flexRow}>
+                <TextContainer
+                    label='MITTAUSPÄIVÄMÄÄRÄ'
+                    value={node.measurementDate}
+                    darkerInputLabel={true}
+                />
             </div>
         );
     };
@@ -284,7 +336,7 @@ class RoutePathListNode extends ViewFormBase<
             <div
                 className={classnames(
                     s.nodeIcon,
-                    routePathLink.isStartNodeTimeAlignmentStop
+                    routePathLink.startNodeTimeAlignmentStop !== '0'
                         ? s.timeAlignmentIcon
                         : undefined
                 )}

@@ -344,6 +344,7 @@ const routePathLinkQueryFields = `
     lnkloppusolmu
     relpysakki
     reljarjnro
+    relohaikpys
     lnkverkko
     ajantaspys
     paikka

@@ -11,7 +11,9 @@ export type codeListName =
     | 'Solmutyyppi (P/E)'
     | 'Kunta (ris/pys)'
     | 'Lyhyttunnus'
-    | 'Suunta';
+    | 'Suunta'
+    | 'Ajantasaus pysakki'
+    | 'Pysäkin käyttö';
 
 export class CodeListStore {
     @observable private _codeListItems: ICodeListItem[];
