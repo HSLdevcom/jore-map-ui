@@ -4,7 +4,7 @@ import QueryParams from '~/routing/queryParams';
 import ErrorStore from '~/stores/errorStore';
 import LoginStore from '~/stores/loginStore';
 import endpoints from '~/enums/endpoints';
-import text from '~/util/text';
+import CodeListHelper from '~/util/CodeListHelper';
 
 export interface IAuthorizationResponse {
     isOk: boolean;
@@ -36,11 +36,16 @@ class AuthService {
             if (errorResponse.errorTextKey) {
                 let errorMessage;
                 if (errorResponse.email) {
-                    errorMessage = text(errorResponse.errorTextKey, {
-                        email: errorResponse.email
-                    });
+                    errorMessage = CodeListHelper.getText(
+                        errorResponse.errorTextKey,
+                        {
+                            email: errorResponse.email
+                        }
+                    );
                 } else {
-                    errorMessage = text(errorResponse.errorTextKey);
+                    errorMessage = CodeListHelper.getText(
+                        errorResponse.errorTextKey
+                    );
                 }
                 ErrorStore.addError(errorMessage);
             }
