@@ -11,7 +11,7 @@ export interface IDropdownItem {
 
 interface IDropdownProps {
     label?: string;
-    selected?: string;
+    selected?: string | null;
     disabled?: boolean;
     items: ICodeListItem[];
     emptyItem?: IDropdownItem;
