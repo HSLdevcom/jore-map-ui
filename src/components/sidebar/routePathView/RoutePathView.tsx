@@ -18,6 +18,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import { ErrorStore } from '~/stores/errorStore';
 import navigator from '~/routing/navigator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
+import { IRoutePath } from '~/models';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
@@ -195,7 +196,9 @@ class RoutePathView extends ViewFormBase<
         }
     };
 
-    private onChange = (property: string) => (value: any) => {
+    private onChangeRoutePathProperty = (property: keyof IRoutePath) => (
+        value: any
+    ) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
         this.validateProperty(
             routePathValidationModel[property],
@@ -211,7 +214,7 @@ class RoutePathView extends ViewFormBase<
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
-                    onChange={this.onChange}
+                    onChangeRoutePathProperty={this.onChangeRoutePathProperty}
                     invalidPropertiesMap={this.state.invalidPropertiesMap}
                     setValidatorResult={this.setValidatorResult}
                 />

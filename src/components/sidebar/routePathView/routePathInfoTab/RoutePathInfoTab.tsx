@@ -24,7 +24,9 @@ interface IRoutePathInfoTabProps {
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    onChange: (property: string) => (value: any) => void;
+    onChangeRoutePathProperty: (
+        property: keyof IRoutePath
+    ) => (value: any) => void;
     invalidPropertiesMap: object;
     setValidatorResult: (
         property: string,
@@ -86,8 +88,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
     };
 
     private validatePrimaryKey = (direction: string, startTime: Date) => {
-        this.props.onChange('direction')(direction);
-        this.props.onChange('startTime')(startTime);
+        this.props.onChangeRoutePathProperty('direction')(direction);
+        this.props.onChangeRoutePathProperty('startTime')(startTime);
 
         if (this.props.isNewRoutePath && this.isPrimaryKeyDuplicated()) {
             const validationResult: IValidationResult = {
@@ -114,7 +116,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
         const isUpdating =
             !this.props.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
-        const onChange = this.props.onChange;
+        const onChange = this.props.onChangeRoutePathProperty;
 
         const routePath = this.props.routePath;
         return (
@@ -297,7 +299,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <div className={s.flexInnerRow}>
                                 {/* TODO */}
                                 <Dropdown
-                                    onChange={onChange('foo')}
+                                    onChange={() => void 0}
                                     disabled={isEditingDisabled}
                                     items={this.props.codeListStore!.getCodeList(
                                         'Suunta'
@@ -306,7 +308,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 />
                                 {/* TODO */}
                                 <Dropdown
-                                    onChange={onChange('foo')}
+                                    onChange={() => void 0}
                                     disabled={isEditingDisabled}
                                     items={this.props.codeListStore!.getCodeList(
                                         'Suunta'
