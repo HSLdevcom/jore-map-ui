@@ -1,11 +1,11 @@
 import * as L from 'leaflet';
 import IRoutePathLink from '../models/IRoutePathLink';
 
-const fromLatLngs = (geometry: L.LatLng[]) => {
+const fromLatLngs = (latLngs: L.LatLng[]) => {
     let length = 0;
-    geometry.forEach((position, index) => {
+    latLngs.forEach((latLng, index) => {
         if (index === 0) return;
-        length += geometry[index - 1].distanceTo(position);
+        length += latLngs[index - 1].distanceTo(latLng);
     });
     return length;
 };
