@@ -7,9 +7,6 @@ interface IRoutePathLinkPrimaryKey {
 }
 
 export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
-    routeId: string;
-    routePathDirection: string;
-    routePathStartDate: Date;
     geometry: L.LatLng[];
     orderNumber: number;
     transitType: TransitType;

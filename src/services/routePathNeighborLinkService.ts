@@ -28,7 +28,6 @@ interface IFetchNeighborLinksResponse {
 
 const getNeighborLinks = (
     queryResult: any,
-    routePath: IRoutePath,
     orderNumber: number,
     from: 'startNode' | 'endNode'
 ): INeighborLink[] => {
@@ -40,7 +39,6 @@ const getNeighborLinks = (
         from === 'startNode' ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
     return _parseNeighborLinks(
         queryResult,
-        routePath,
         orderNumber,
         linkPropertyName,
         nodePropertyName
@@ -49,7 +47,6 @@ const getNeighborLinks = (
 
 const _parseNeighborLinks = (
     queryResult: any,
-    routePath: IRoutePath,
     orderNumber: number,
     linkPropertyName: string,
     nodePropertyName: string
@@ -58,7 +55,6 @@ const _parseNeighborLinks = (
         (link: IExtendedExternalLink): INeighborLink => ({
             routePathLink: RoutePathLinkFactory.mapExternalRoutePathLinkFromExternalLink(
                 link,
-                routePath,
                 orderNumber
             ),
             nodeUsageRoutePaths: link[
@@ -88,12 +84,7 @@ class RoutePathNeighborLinkService {
                 query: GraphqlQueries.getLinksByStartNodeQuery(),
                 variables: { nodeId, date }
             });
-            res = getNeighborLinks(
-                queryResult,
-                routePath,
-                orderNumber,
-                'startNode'
-            );
+            res = getNeighborLinks(queryResult, orderNumber, 'startNode');
 
             // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
@@ -103,12 +94,7 @@ class RoutePathNeighborLinkService {
                 query: GraphqlQueries.getLinksByEndNodeQuery(),
                 variables: { nodeId, date }
             });
-            res = getNeighborLinks(
-                queryResult,
-                routePath,
-                orderNumber,
-                'endNode'
-            );
+            res = getNeighborLinks(queryResult, orderNumber, 'endNode');
         } else {
             throw new Error(
                 `neighborToAddType not supported: ${neighborToAddType}`
