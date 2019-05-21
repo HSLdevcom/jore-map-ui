@@ -369,6 +369,8 @@ export class RoutePathStore {
     public clear = () => {
         this._routePath = null;
         this._neighborRoutePathLinks = [];
+        this._invalidLinkOrderNumbers = [];
+        this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
     };
 
