@@ -87,10 +87,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
         );
     };
 
-    private validatePrimaryKey = (direction: string, startTime: Date) => {
-        this.props.onChangeRoutePathProperty('direction')(direction);
-        this.props.onChangeRoutePathProperty('startTime')(startTime);
-
+    private validatePrimaryKey = () => {
         if (this.props.isNewRoutePath && this.isPrimaryKeyDuplicated()) {
             const validationResult: IValidationResult = {
                 isValid: false,
@@ -103,12 +100,16 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
 
     private onChangeDirection = (direction: string) => {
         const startTime = this.props.routePathStore!.routePath!.startTime;
-        this.validatePrimaryKey(direction, startTime);
+        this.props.onChangeRoutePathProperty('direction')(direction);
+        this.props.onChangeRoutePathProperty('startTime')(startTime);
+        this.validatePrimaryKey();
     };
 
     private onChangeStartTime = (startTime: Date) => {
         const direction = this.props.routePathStore!.routePath!.direction;
-        this.validatePrimaryKey(direction, startTime);
+        this.props.onChangeRoutePathProperty('direction')(direction);
+        this.props.onChangeRoutePathProperty('startTime')(startTime);
+        this.validatePrimaryKey();
     };
 
     render() {
