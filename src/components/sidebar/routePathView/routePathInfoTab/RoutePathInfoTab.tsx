@@ -297,7 +297,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <div className={s.flexInnerRow}>
                                 {/* TODO */}
                                 <Dropdown
-                                    onChange={onChange('direction')}
+                                    onChange={() => void 0}
                                     disabled={true}
                                     items={this.props.codeListStore!.getCodeList(
                                         'Suunta'
@@ -306,7 +306,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 />
                                 {/* TODO */}
                                 <Dropdown
-                                    onChange={onChange('direction')}
+                                    onChange={() => void 0}
                                     disabled={true}
                                     items={this.props.codeListStore!.getCodeList(
                                         'Suunta'
