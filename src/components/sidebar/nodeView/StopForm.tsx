@@ -210,7 +210,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             disabled={isEditingDisabled}
                             value={stop.addressSw}
                             onChange={onChange('addressSw')}
-                            validationResult={invalidPropertiesMap['addressSe']}
+                            validationResult={invalidPropertiesMap['addressSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
