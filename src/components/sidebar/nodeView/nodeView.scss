@@ -15,6 +15,31 @@
         .noBorder {
             border: none;
         }
+
+        .sectionHeader {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .labelIcon {
+            height: 12px;
+            margin: 2px 14px;
+            width: 12px;
+            border-style: solid;
+            border-color: #3786cb;
+            border-width: 3px;
+            border-radius: 12px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .manual {
+            background-color: $nodeManualColor;
+        }
+
+        .projected {
+            background-color: $nodeProjectionColor;
+        }
     }
 
     &.loaderContainer > div {
