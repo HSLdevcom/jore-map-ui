@@ -150,8 +150,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
                             value={stop.nameSw}
-                            onChange={onChange('nameSe')}
-                            validationResult={invalidPropertiesMap['nameSe']}
+                            onChange={onChange('nameSw')}
+                            validationResult={invalidPropertiesMap['nameSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -168,9 +168,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='PITKÄ NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
                             value={stop.nameLongSw}
-                            onChange={onChange('nameLongSe')}
+                            onChange={onChange('nameLongSw')}
                             validationResult={
-                                invalidPropertiesMap['nameLongSe']
+                                invalidPropertiesMap['nameLongSw']
                             }
                         />
                     </div>
@@ -191,9 +191,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='PAIKAN NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
                             value={stop.placeNameSw}
-                            onChange={onChange('placeNameSe')}
+                            onChange={onChange('placeNameSw')}
                             validationResult={
-                                invalidPropertiesMap['placeNameSe']
+                                invalidPropertiesMap['placeNameSw']
                             }
                         />
                     </div>
