@@ -7,6 +7,7 @@ import NodeLocationType from '~/types/NodeLocationType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { roundLatLng } from '~/util/geomHelper';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 
 export interface UndoState {
     links: ILink[];
@@ -94,7 +95,8 @@ export class NodeStore {
     @action
     public updateNodeGeometry = (
         nodeLocationType: NodeLocationType,
-        newCoordinates: LatLng
+        newCoordinates: LatLng,
+        measurementType: NodeMeasurementType
     ) => {
         if (!this._node) throw new Error('Node was null.'); // Should not occur
 
@@ -136,6 +138,10 @@ export class NodeStore {
             coordinateName =>
                 (this._node![coordinateName] = newNode[coordinateName])
         );
+
+        if (nodeLocationType === 'coordinates') {
+            this.updateNode('measurementType', measurementType.toString());
+        }
     };
 
     @action

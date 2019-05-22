@@ -16,6 +16,8 @@ import NodeLocationType from '~/types/NodeLocationType';
 import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import TextContainer from '~/components/controls/TextContainer';
 import StartNodeType from '~/enums/startNodeType';
 import { ErrorStore } from '~/stores/errorStore';
 import { CodeListStore } from '~/stores/codeListStore';
@@ -181,7 +183,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private onNodeGeometryChange = (property: NodeLocationType) => (
         value: any
     ) => {
-        this.props.nodeStore!.updateNodeGeometry(property, value);
+        this.props.nodeStore!.updateNodeGeometry(
+            property,
+            value,
+            NodeMeasurementType.Measured
+        );
         this.validateProperty(nodeValidationModel[property], property, value);
     };
 
@@ -268,6 +274,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                         'tripTimePoint'
                                     )}
                                 />
+                                {node.type === NodeType.STOP && (
+                                    <TextContainer
+                                        label='LASKETTU/MITATTU'
+                                        value={node.measurementType}
+                                    />
+                                )}
                             </div>
                         </div>
                         <div className={classnames(s.formSection, s.noBorder)}>

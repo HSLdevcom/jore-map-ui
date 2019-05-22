@@ -4,6 +4,7 @@ import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { roundLatLng } from '~/util/geomHelper';
 import { INodeBase } from '~/models/INode';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import IExternalNode from '~/models/externals/IExternalNode';
 import NodeStopFactory from './nodeStopFactory';
 
@@ -47,6 +48,7 @@ class NodeFactory {
             measurementDate: externalNode.mittpvm
                 ? new Date(externalNode.mittpvm)
                 : undefined,
+            measurementType: externalNode.solotapa,
             modifiedOn: externalNode.solviimpvm
                 ? new Date(externalNode.solviimpvm)
                 : undefined,
@@ -83,7 +85,8 @@ class NodeFactory {
             coordinatesProjection: coordinates,
             modifiedOn: new Date(),
             modifiedBy: '',
-            tripTimePoint: '0'
+            tripTimePoint: '0',
+            measurementType: NodeMeasurementType.Calculated
         };
     }
 }

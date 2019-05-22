@@ -19,6 +19,7 @@ export default interface INode extends INodeBase {
     coordinatesManual: L.LatLng;
     coordinatesProjection: L.LatLng;
     measurementDate?: Date;
+    measurementType?: string;
     tripTimePoint?: string;
     modifiedOn?: Date;
     modifiedBy?: string;

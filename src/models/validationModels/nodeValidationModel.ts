@@ -14,6 +14,7 @@ const nodeValidationModel: INodeValidationModel = {
     coordinates: '',
     coordinatesManual: '',
     coordinatesProjection: '',
+    measurementType: 'min:0|max:1|string',
     measurementDate: 'date',
     stop: '',
     transitTypes: ''

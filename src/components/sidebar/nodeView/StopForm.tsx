@@ -87,6 +87,23 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     Pysäkkitiedot
                 </SidebarHeader>
                 <div className={s.formSection}>
+                    {this.props.isNewStop && (
+                        <div className={s.flexRow}>
+                            <div className={s.formItem}>
+                                <div className={s.inputLabel}>VERKKO</div>
+                                <TransitToggleButtonBar
+                                    selectedTransitTypes={
+                                        stop.transitType
+                                            ? [stop.transitType]
+                                            : []
+                                    }
+                                    toggleSelectedTransitType={this.onChangeStopProperty(
+                                        'transitType'
+                                    )}
+                                />
+                            </div>
+                        </div>
+                    )}
                     <div className={s.flexRow}>
                         <Dropdown
                             label='LYHYTTUNNUS (2 kirj.'
@@ -120,23 +137,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     </div>
                 </div>
                 <div className={s.formSection}>
-                    {this.props.isNewStop && (
-                        <div className={s.flexRow}>
-                            <div className={s.formItem}>
-                                <div className={s.inputLabel}>VERKKO</div>
-                                <TransitToggleButtonBar
-                                    selectedTransitTypes={
-                                        stop.transitType
-                                            ? [stop.transitType]
-                                            : []
-                                    }
-                                    toggleSelectedTransitType={this.onChangeStopProperty(
-                                        'transitType'
-                                    )}
-                                />
-                            </div>
-                        </div>
-                    )}
                     <div className={s.sectionHeader}>Nimitiedot</div>
                     <div className={s.flexRow}>
                         <InputContainer

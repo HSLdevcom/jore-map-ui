@@ -8,6 +8,7 @@ import navigator from '~/routing/navigator';
 import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
 import { ILink } from '~/models';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import EventManager from '~/util/EventManager';
 import NodeLocationType from '~/types/NodeLocationType';
 import { NodeStore } from '~/stores/nodeStore';
@@ -84,7 +85,11 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         nodeLocationType: NodeLocationType,
         coordinates: L.LatLng
     ) => {
-        this.props.nodeStore!.updateNodeGeometry(nodeLocationType, coordinates);
+        this.props.nodeStore!.updateNodeGeometry(
+            nodeLocationType,
+            coordinates,
+            NodeMeasurementType.Calculated
+        );
     };
 
     private drawEditableLinks = () => {
