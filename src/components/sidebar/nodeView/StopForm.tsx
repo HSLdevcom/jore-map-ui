@@ -83,7 +83,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
 
         return (
             <div className={classnames(s.stopView, s.form)}>
-                <SidebarHeader hideCloseButton={true}>Pysäkki</SidebarHeader>
+                <SidebarHeader hideCloseButton={true}>
+                    Pysäkin tiedot
+                </SidebarHeader>
                 <div className={s.formSection}>
                     {this.props.isNewStop && (
                         <div className={s.flexRow}>
