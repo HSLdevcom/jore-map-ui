@@ -270,21 +270,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     selected={node.type}
                                     items={nodeTypeCodeList}
                                 />
-                            </div>
-                            <div className={s.flexRow}>
-                                <InputContainer
-                                    type='date'
-                                    label='MITTAUSPVM'
-                                    value={node.measurementDate}
-                                    disabled={isEditingDisabled}
-                                    onChange={this.onChangeNodeProperty(
-                                        'measurementDate'
-                                    )}
-                                    isClearButtonVisibleOnDates={true}
-                                    validationResult={
-                                        invalidPropertiesMap['measurementDate']
-                                    }
-                                />
                                 <Dropdown
                                     label='MATKA-AIKAPISTE'
                                     disabled={isEditingDisabled}
@@ -296,12 +281,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                         'tripTimePoint'
                                     )}
                                 />
-                                {node.type === NodeType.STOP && (
-                                    <TextContainer
-                                        label='LASKETTU/MITATTU'
-                                        value={node.measurementType}
-                                    />
-                                )}
                             </div>
                         </div>
                         <div className={classnames(s.formSection, s.noBorder)}>
@@ -335,6 +314,27 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     type='number'
                                     disabled={isEditingDisabled}
                                 />
+                            </div>
+                            <div className={s.flexRow}>
+                                <InputContainer
+                                    type='date'
+                                    label='MITTAUSPVM'
+                                    value={node.measurementDate}
+                                    disabled={isEditingDisabled}
+                                    onChange={this.onChangeNodeProperty(
+                                        'measurementDate'
+                                    )}
+                                    isClearButtonVisibleOnDates={true}
+                                    validationResult={
+                                        invalidPropertiesMap['measurementDate']
+                                    }
+                                />
+                                {node.type === NodeType.STOP && (
+                                    <TextContainer
+                                        label='LASKETTU/MITATTU'
+                                        value={node.measurementType}
+                                    />
+                                )}
                             </div>
                             <div className={s.sectionHeader}>
                                 Sovitettu piste
