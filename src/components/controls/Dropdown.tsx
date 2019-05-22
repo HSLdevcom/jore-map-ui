@@ -49,6 +49,13 @@ const Dropdown = observer((props: IDropdownProps) => {
         selectedItem = dropDownItemList.find(
             item => item.value === props.selected!.trim()
         );
+        if (!selectedItem) {
+            selectedItem = {
+                label: props.selected,
+                value: props.selected
+            };
+            dropDownItemList.push(selectedItem);
+        }
     }
 
     return (
