@@ -21,7 +21,7 @@ const stopValidationModel: IStopValidationModel = {
     addressSw: addressRule,
     modifiedBy: '',
     modifiedOn: '',
-    platform: `min:0|max:3|string|${regexRules.numbers}`,
+    platform: `min:0|max:3|string`,
     radius: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     hastusId: 'min:0|max:6|string',
     areaId: 'min:0|max:6|string',
