@@ -331,8 +331,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 />
                                 {node.type === NodeType.STOP && (
                                     <TextContainer
-                                        label='LASKETTU/MITATTU'
-                                        value={node.measurementType}
+                                        label='MITTAUSTAPA'
+                                        value={NodeHelper.getMeasurementTypeLabel(
+                                            node.measurementType
+                                        )}
                                     />
                                 )}
                             </div>

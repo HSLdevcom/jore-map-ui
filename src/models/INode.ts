@@ -1,6 +1,7 @@
 import * as L from 'leaflet';
 import TransitType from '~/enums/transitType';
 import NodeType from '~/enums/nodeType';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import IStop from './IStop';
 
 interface INodePrimaryKey {
@@ -19,7 +20,7 @@ export default interface INode extends INodeBase {
     coordinatesManual: L.LatLng;
     coordinatesProjection: L.LatLng;
     measurementDate?: Date;
-    measurementType?: string;
+    measurementType?: NodeMeasurementType;
     tripTimePoint?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
