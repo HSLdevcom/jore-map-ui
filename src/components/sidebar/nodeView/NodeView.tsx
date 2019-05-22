@@ -185,7 +185,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.validateProperty(nodeValidationModel[property], property, value);
     };
 
-    private onNodePropertyChange = (property: keyof INode) => (value: any) => {
+    private onChangeNodeProperty = (property: keyof INode) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
         this.validateProperty(nodeValidationModel[property], property, value);
         if (property === 'type') {
@@ -237,7 +237,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             <div className={s.flexRow}>
                                 <Dropdown
                                     label='TYYPPI'
-                                    onChange={this.onNodePropertyChange('type')}
+                                    onChange={this.onChangeNodeProperty('type')}
                                     disabled={isEditingDisabled}
                                     selected={node.type}
                                     items={nodeTypeCodeList}
@@ -249,7 +249,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     label='MITTAUSPVM'
                                     value={node.measurementDate}
                                     disabled={isEditingDisabled}
-                                    onChange={this.onNodePropertyChange(
+                                    onChange={this.onChangeNodeProperty(
                                         'measurementDate'
                                     )}
                                     isClearButtonVisibleOnDates={true}
@@ -264,7 +264,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                         'Kyllä/Ei'
                                     )}
                                     selected={node.tripTimePoint}
-                                    onChange={this.onNodePropertyChange(
+                                    onChange={this.onChangeNodeProperty(
                                         'tripTimePoint'
                                     )}
                                 />
@@ -281,7 +281,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             <StopForm
                                 isEditingDisabled={isEditingDisabled}
                                 node={node}
-                                onNodePropertyChange={this.onNodePropertyChange}
+                                onNodePropertyChange={this.onChangeNodeProperty}
                                 isNewStop={this.props.isNewNode}
                                 getDropDownItems={
                                     this.props.codeListStore!.getCodeList

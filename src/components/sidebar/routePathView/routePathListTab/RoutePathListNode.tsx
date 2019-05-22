@@ -203,7 +203,7 @@ class RoutePathListNode extends ViewFormBase<
                     />
                     <TextContainer
                         label='PYSÄKIN NIMI RUOTSIKSI'
-                        value={stop.nameSe}
+                        value={stop.nameSw}
                         darkerInputLabel={true}
                     />
                 </div>

@@ -7,24 +7,24 @@ interface IStopPrimaryKey {
 export default interface IStop extends IStopPrimaryKey {
     municipality: string;
     nameFi: string;
-    nameSe: string;
-    placeNameFi: string;
-    placeNameSe: string;
+    nameSw: string;
+    placeNameFi?: string;
+    placeNameSw?: string;
     addressFi: string;
-    addressSe: string;
-    modifiedBy: string;
-    modifiedOn: Date;
-    platform: string;
+    addressSw: string;
+    modifiedBy?: string;
+    modifiedOn?: Date;
+    platform?: string;
     radius: number;
-    hastusId: string;
-    areaId: string;
-    elyNumber: string;
-    nameLongFi: string;
-    nameLongSe: string;
-    nameModifiedOn: Date;
+    hastusId?: string;
+    areaId?: string;
+    elyNumber?: string;
+    nameLongFi?: string;
+    nameLongSw?: string;
+    nameModifiedOn?: Date;
     section: string;
-    postalNumber: string;
-    transitType?: TransitType;
+    postalNumber?: string;
+    transitType?: TransitType; // Only used for creating a soltunnus
 }
 
 export { IStopPrimaryKey };

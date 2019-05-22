@@ -66,7 +66,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
     };
 
-    private onStopPropertyChange = (property: keyof IStop) => (value: any) => {
+    private onChangeStopProperty = (property: keyof IStop) => (value: any) => {
         this.props.nodeStore!.updateStop(property, value);
         this.validateProperty(stopValidationModel[property], property, value);
         const isStopFormValid = this.isFormValid();
@@ -77,7 +77,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const isEditingDisabled = this.props.isEditingDisabled;
         const node = this.props.node;
         const stop = node.stop!;
-        const onChange = this.onStopPropertyChange;
+        const onChange = this.onChangeStopProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         const getDropDownItems = this.props.getDropDownItems;
 
@@ -95,7 +95,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             )}
                             disabled={isEditingDisabled}
                             selected={node.shortIdLetter}
-                            isValueIncludedInLabel={true}
+                            isValueIncludedInOptionLabel={true}
                             emptyItem={{
                                 value: '',
                                 label: ''
@@ -130,7 +130,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                                             ? [stop.transitType]
                                             : []
                                     }
-                                    toggleSelectedTransitType={this.onStopPropertyChange(
+                                    toggleSelectedTransitType={this.onChangeStopProperty(
                                         'transitType'
                                     )}
                                 />
@@ -149,7 +149,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         <InputContainer
                             label='NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
-                            value={stop.nameSe}
+                            value={stop.nameSw}
                             onChange={onChange('nameSe')}
                             validationResult={invalidPropertiesMap['nameSe']}
                         />
@@ -167,7 +167,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         <InputContainer
                             label='PITKÄ NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
-                            value={stop.nameLongSe}
+                            value={stop.nameLongSw}
                             onChange={onChange('nameLongSe')}
                             validationResult={
                                 invalidPropertiesMap['nameLongSe']
@@ -190,7 +190,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         <InputContainer
                             label='PAIKAN NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
-                            value={stop.placeNameSe}
+                            value={stop.placeNameSw}
                             onChange={onChange('placeNameSe')}
                             validationResult={
                                 invalidPropertiesMap['placeNameSe']
@@ -208,8 +208,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         <InputContainer
                             label='OSOITE RUOTSIKSI'
                             disabled={isEditingDisabled}
-                            value={stop.addressSe}
-                            onChange={onChange('addressSe')}
+                            value={stop.addressSw}
+                            onChange={onChange('addressSw')}
                             validationResult={invalidPropertiesMap['addressSe']}
                         />
                     </div>
@@ -263,7 +263,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             validationResult={invalidPropertiesMap['section']}
                         />
                         <InputContainer
-                            label='HASTUSPAIKKA'
+                            label='HASTUS-PAIKKA'
                             disabled={isEditingDisabled}
                             value={stop.hastusId}
                             validationResult={invalidPropertiesMap['hastusId']}

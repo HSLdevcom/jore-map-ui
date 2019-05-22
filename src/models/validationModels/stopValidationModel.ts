@@ -3,6 +3,7 @@ import IStop from '../IStop';
 import constants from '../../constants/constants';
 
 const nameRule = 'required|min:1|max:20|string';
+const addressRule = 'required|min:1|max:20|string';
 const placeNameRule = 'min:1|max:20|string';
 const longNameRule = 'min:1|max:60|string';
 
@@ -16,11 +17,11 @@ const stopValidationModel: IStopValidationModel = {
     nameSe: nameRule,
     placeNameFi: placeNameRule,
     placeNameSe: placeNameRule,
-    addressFi: nameRule,
-    addressSe: nameRule,
+    addressFi: addressRule,
+    addressSw: addressRule,
     modifiedBy: '',
     modifiedOn: '',
-    platform: 'min:0|max:3|string',
+    platform: `min:0|max:3|string|${regexRules.numbers}`,
     radius: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     hastusId: 'min:0|max:6|string',
     areaId: 'min:0|max:6|string',

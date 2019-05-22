@@ -81,7 +81,6 @@ class NodeFactory {
             transitTypes: [],
             coordinatesManual: coordinates,
             coordinatesProjection: coordinates,
-            measurementDate: new Date(),
             modifiedOn: new Date(),
             modifiedBy: '',
             tripTimePoint: '0'
