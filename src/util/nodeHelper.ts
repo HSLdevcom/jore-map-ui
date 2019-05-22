@@ -67,10 +67,8 @@ class NodeHelper {
                 return 'Laskettu';
             case NodeMeasurementType.Measured:
                 return 'Mitattu';
-            case undefined:
-                return '-';
             default:
-                return measurementType.toString();
+                return measurementType ? measurementType.toString() : '-';
         }
     };
 }
