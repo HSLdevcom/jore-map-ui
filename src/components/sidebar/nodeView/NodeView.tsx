@@ -336,68 +336,76 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     />
                                 )}
                             </div>
-                            <div className={s.sectionHeader}>
-                                Sovitettu piste
-                                <div
-                                    className={classnames(
-                                        s.labelIcon,
-                                        s.manual
-                                    )}
-                                />
-                            </div>
-                            <div className={s.flexRow}>
-                                <InputContainer
-                                    value={node.coordinatesManual.lat}
-                                    onChange={this.latChange(
-                                        node.coordinatesManual,
-                                        'coordinatesManual'
-                                    )}
-                                    label='LATITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                />
-                                <InputContainer
-                                    value={node.coordinatesManual.lng}
-                                    onChange={this.lngChange(
-                                        node.coordinatesManual,
-                                        'coordinatesManual'
-                                    )}
-                                    label='LONGITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                />
-                            </div>
-                            <div className={s.sectionHeader}>
-                                Projektoitu piste
-                                <div
-                                    className={classnames(
-                                        s.labelIcon,
-                                        s.projected
-                                    )}
-                                />
-                            </div>
-                            <div className={s.flexRow}>
-                                <InputContainer
-                                    value={node.coordinatesProjection.lat}
-                                    onChange={this.latChange(
-                                        node.coordinatesProjection,
-                                        'coordinatesProjection'
-                                    )}
-                                    label='LATITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                />
-                                <InputContainer
-                                    value={node.coordinatesProjection.lng}
-                                    onChange={this.lngChange(
-                                        node.coordinatesProjection,
-                                        'coordinatesProjection'
-                                    )}
-                                    label='LONGITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                />
-                            </div>
+                            {node.type === NodeType.STOP && (
+                                <>
+                                    <div className={s.sectionHeader}>
+                                        Sovitettu piste
+                                        <div
+                                            className={classnames(
+                                                s.labelIcon,
+                                                s.manual
+                                            )}
+                                        />
+                                    </div>
+                                    <div className={s.flexRow}>
+                                        <InputContainer
+                                            value={node.coordinatesManual.lat}
+                                            onChange={this.latChange(
+                                                node.coordinatesManual,
+                                                'coordinatesManual'
+                                            )}
+                                            label='LATITUDE'
+                                            type='number'
+                                            disabled={isEditingDisabled}
+                                        />
+                                        <InputContainer
+                                            value={node.coordinatesManual.lng}
+                                            onChange={this.lngChange(
+                                                node.coordinatesManual,
+                                                'coordinatesManual'
+                                            )}
+                                            label='LONGITUDE'
+                                            type='number'
+                                            disabled={isEditingDisabled}
+                                        />
+                                    </div>
+                                    <div className={s.sectionHeader}>
+                                        Projektoitu piste
+                                        <div
+                                            className={classnames(
+                                                s.labelIcon,
+                                                s.projected
+                                            )}
+                                        />
+                                    </div>
+                                    <div className={s.flexRow}>
+                                        <InputContainer
+                                            value={
+                                                node.coordinatesProjection.lat
+                                            }
+                                            onChange={this.latChange(
+                                                node.coordinatesProjection,
+                                                'coordinatesProjection'
+                                            )}
+                                            label='LATITUDE'
+                                            type='number'
+                                            disabled={isEditingDisabled}
+                                        />
+                                        <InputContainer
+                                            value={
+                                                node.coordinatesProjection.lng
+                                            }
+                                            onChange={this.lngChange(
+                                                node.coordinatesProjection,
+                                                'coordinatesProjection'
+                                            )}
+                                            label='LONGITUDE'
+                                            type='number'
+                                            disabled={isEditingDisabled}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
                         {node.type === NodeType.STOP && node.stop && (
                             <StopForm
