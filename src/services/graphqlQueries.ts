@@ -326,6 +326,8 @@ const nodeQueryFields = `
     transittypes
     solmapiste
     solotapa
+    solkuka
+    solviimpvm
     pysakkiBySoltunnus {
         ${stopQueryFields}
     }

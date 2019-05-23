@@ -2,6 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import InputContainer from '~/components/controls/InputContainer';
+import TextContainer from '~/components/controls/TextContainer';
 import { IStop, INode } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
 import { codeListName, CodeListStore } from '~/stores/codeListStore';
@@ -172,6 +173,13 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             validationResult={
                                 invalidPropertiesMap['nameLongSw']
                             }
+                        />
+                    </div>
+                    <div className={s.flexRow}>
+                        <TextContainer
+                            label='PITKÄ NIMI MUOKATTU PVM'
+                            value={stop.nameModifiedOn}
+                            isTimeIncluded={true}
                         />
                     </div>
                 </div>

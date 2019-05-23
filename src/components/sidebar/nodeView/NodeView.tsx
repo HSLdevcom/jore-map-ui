@@ -282,6 +282,19 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     )}
                                 />
                             </div>
+                            {!this.props.isNewNode && (
+                                <div className={s.flexRow}>
+                                    <TextContainer
+                                        label='MUOKANNUT'
+                                        value={node.modifiedBy}
+                                    />
+                                    <TextContainer
+                                        label='MUOKATTU PVM'
+                                        value={node.modifiedOn}
+                                        isTimeIncluded={true}
+                                    />
+                                </div>
+                            )}
                         </div>
                         <div className={classnames(s.formSection, s.noBorder)}>
                             <div className={s.sectionHeader}>
