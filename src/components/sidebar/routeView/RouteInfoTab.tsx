@@ -8,6 +8,7 @@ import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import InputContainer from '../../controls/InputContainer';
+import TextContainer from '../../controls/TextContainer';
 import * as s from './routeInfoTab.scss';
 
 interface IRouteInfoTabState {
@@ -152,15 +153,13 @@ class RouteInfoTab extends React.Component<
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <InputContainer
-                            disabled={true}
+                        <TextContainer
                             label='MUOKANNUT'
-                            value={'-'}
+                            value={route.modifiedBy}
                         />
-                        <InputContainer
-                            disabled={true}
+                        <TextContainer
                             label='MUOKATTU PVM'
-                            value={'-'}
+                            value={route.modifiedOn}
                         />
                     </div>
                 </div>
