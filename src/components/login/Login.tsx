@@ -8,6 +8,7 @@ import hslLogo from '~/assets/hsl-logo.png';
 import SubSites from '~/routing/subSites';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
+import ErrorBar from '../ErrorBar';
 import * as s from './login.scss';
 
 interface ILoginProps {
@@ -36,6 +37,7 @@ class Login extends React.Component<ILoginProps> {
 
         return (
             <div className={s.loginView}>
+                <ErrorBar />
                 <div className={s.wrapper}>
                     <div className={s.header}>
                         <img className={s.logo} src={hslLogo} alt='HSL Logo' />

@@ -14,8 +14,7 @@ enum SubSites {
     node = '/node/:id',
     newNode = '/node/new/:id',
     login = '/login',
-    afterLogin = '/afterLogin',
-    loginError = '/loginError'
+    afterLogin = '/afterLogin'
 }
 
 export default SubSites;

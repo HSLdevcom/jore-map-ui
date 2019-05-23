@@ -38,8 +38,8 @@ export class LoginStore {
     @action
     public clear(redirectToLogin: boolean = true) {
         this._isAuthenticated = false;
-        this._userEmail = undefined;
         this._hasWriteAccess = false;
+        this._userEmail = undefined;
         if (redirectToLogin) {
             navigator.goTo(SubSites.login);
         }
