@@ -34,7 +34,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
 
         this.props.routes.forEach(route => {
             route.routePaths.forEach(routePath => {
-                routePath.routePathLinks!.forEach(routePathLink => {
+                routePath.routePathLinks.forEach(routePathLink => {
                     routePathLink.geometry.forEach(pos => bounds.extend(pos));
                 });
             });

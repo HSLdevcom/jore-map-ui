@@ -24,7 +24,9 @@ interface IRoutePathInfoTabProps {
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    onChange: (property: keyof IRoutePath) => (value: any) => void;
+    onChangeRoutePathProperty: (
+        property: keyof IRoutePath
+    ) => (value: any) => void;
     invalidPropertiesMap: object;
     setValidatorResult: (
         property: string,
@@ -85,10 +87,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
         );
     };
 
-    private validatePrimaryKey = (direction: string, startTime: Date) => {
-        this.props.onChange('direction')(direction);
-        this.props.onChange('startTime')(startTime);
-
+    private validatePrimaryKey = () => {
         if (this.props.isNewRoutePath && this.isPrimaryKeyDuplicated()) {
             const validationResult: IValidationResult = {
                 isValid: false,
@@ -101,12 +100,16 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
 
     private onChangeDirection = (direction: string) => {
         const startTime = this.props.routePathStore!.routePath!.startTime;
-        this.validatePrimaryKey(direction, startTime);
+        this.props.onChangeRoutePathProperty('direction')(direction);
+        this.props.onChangeRoutePathProperty('startTime')(startTime);
+        this.validatePrimaryKey();
     };
 
     private onChangeStartTime = (startTime: Date) => {
         const direction = this.props.routePathStore!.routePath!.direction;
-        this.validatePrimaryKey(direction, startTime);
+        this.props.onChangeRoutePathProperty('direction')(direction);
+        this.props.onChangeRoutePathProperty('startTime')(startTime);
+        this.validatePrimaryKey();
     };
 
     render() {
@@ -114,7 +117,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
         const isUpdating =
             !this.props.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
-        const onChange = this.props.onChange;
+        const onChange = this.props.onChangeRoutePathProperty;
 
         const routePath = this.props.routePath;
         return (
@@ -122,13 +125,21 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                 <div className={s.form}>
                     <div className={s.formSection}>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='REITIN NIMI SUOMEKSI'
-                                value={routePath.routePathName}
+                            <InputContainer
+                                label='NIMI SUOMEKSI'
+                                disabled={isEditingDisabled}
+                                value={routePath.name}
+                                onChange={onChange('name')}
+                                validationResult={invalidPropertiesMap['name']}
                             />
-                            <TextContainer
-                                label='REITIN NIMI RUOTSIKSI'
-                                value={routePath.routePathNameSw}
+                            <InputContainer
+                                label='NIMI RUOTSIKSI'
+                                disabled={isEditingDisabled}
+                                value={routePath.nameSw}
+                                onChange={onChange('nameSw')}
+                                validationResult={
+                                    invalidPropertiesMap['nameSw']
+                                }
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -175,19 +186,19 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <InputContainer
                                 label='LYHENNE SUOMEKSI'
                                 disabled={isEditingDisabled}
-                                value={routePath.routePathShortName}
-                                onChange={onChange('routePathShortName')}
+                                value={routePath.shortName}
+                                onChange={onChange('shortName')}
                                 validationResult={
-                                    invalidPropertiesMap['routePathShortName']
+                                    invalidPropertiesMap['shortName']
                                 }
                             />
                             <InputContainer
                                 label='LYHENNE RUOTSIKSI'
                                 disabled={isEditingDisabled}
-                                value={routePath.routePathShortNameSw}
-                                onChange={onChange('routePathShortNameSw')}
+                                value={routePath.shortNameSw}
+                                onChange={onChange('shortNameSw')}
                                 validationResult={
-                                    invalidPropertiesMap['routePathShortNameSw']
+                                    invalidPropertiesMap['shortNameSw']
                                 }
                             />
                         </div>
@@ -254,6 +265,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <TextContainer
                                 label='PÄIVITYSPVM'
                                 value={routePath.modifiedOn}
+                                isTimeIncluded={true}
                             />
                             <TextContainer
                                 label='PÄIVITTÄJÄ'

@@ -6,9 +6,6 @@ type IRoutePathLinkValidationModel = { [key in RoutePathLinkKeys]: string };
 
 const routePathLinkValidationModel: IRoutePathLinkValidationModel = {
     id: '',
-    routeId: '',
-    routePathDirection: 'required|min:1|max:1|string',
-    routePathStartDate: 'required|date',
     geometry: '',
     orderNumber: `required|min:1|max:${Constants.SMALL_INT_MAX_VALUE}|numeric`,
     transitType: 'required|min:1|max:1|string',

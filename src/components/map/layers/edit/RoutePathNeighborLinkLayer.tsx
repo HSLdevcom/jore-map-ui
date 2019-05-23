@@ -29,9 +29,9 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
     public hasNodeOddAmountOfNeighbors = (node: INode) => {
         const routePath = this.props.routePathStore!.routePath;
         return (
-            routePath!.routePathLinks!.filter(x => x.startNode.id === node.id)
+            routePath!.routePathLinks.filter(x => x.startNode.id === node.id)
                 .length !==
-            routePath!.routePathLinks!.filter(x => x.endNode.id === node.id)
+            routePath!.routePathLinks.filter(x => x.endNode.id === node.id)
                 .length
         );
     };

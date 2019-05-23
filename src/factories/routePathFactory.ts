@@ -27,7 +27,7 @@ class RoutePathFactory {
             ].join('-')
         ).toString();
 
-        let routePathLinks: IRoutePathLink[] | undefined = undefined;
+        let routePathLinks: IRoutePathLink[] = [];
         if (
             externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
         ) {
@@ -49,15 +49,14 @@ class RoutePathFactory {
             routeId: externalRoutePath.reitunnus,
             direction: externalRoutePath.suusuunta,
             startTime: new Date(externalRoutePath.suuvoimast),
-            routePathLinks:
-                routePathLinks !== undefined ? routePathLinks : undefined,
+            routePathLinks: routePathLinks ? routePathLinks : [],
             lineId:
                 externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
             transitType:
                 externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
             internalId: internalRoutePathId,
-            routePathName: externalRoutePath.suunimi,
-            routePathNameSw: externalRoutePath.suunimir,
+            name: externalRoutePath.suunimi,
+            nameSw: externalRoutePath.suunimir,
             endTime: new Date(externalRoutePath.suuvoimviimpvm),
             modifiedOn: new Date(externalRoutePath.suuviimpvm),
             modifiedBy: externalRoutePath.suukuka,
@@ -66,8 +65,8 @@ class RoutePathFactory {
             originSw: externalRoutePath.suulahpaikr,
             destinationFi: externalRoutePath.suupaapaik,
             destinationSw: externalRoutePath.suupaapaikr,
-            routePathShortName: externalRoutePath.suunimilyh,
-            routePathShortNameSw: externalRoutePath.suunimilyhr,
+            shortName: externalRoutePath.suunimilyh,
+            shortNameSw: externalRoutePath.suunimilyhr,
             length: externalRoutePath.suupituus,
             isStartNodeUsingBookSchedule: externalRoutePath.kirjaan === '1',
             startNodeBookScheduleColumnNumber: externalRoutePath.kirjasarake
@@ -86,8 +85,8 @@ class RoutePathFactory {
             transitType: route.line!.transitType!,
             routeId: route.id,
             internalId: '',
-            routePathName: route.routeName,
-            routePathNameSw: route.routeNameSw,
+            name: '',
+            nameSw: '',
             direction: '',
             visible: true,
             startTime: new Date(defaultDate.getTime()),
@@ -98,8 +97,8 @@ class RoutePathFactory {
             originSw: '',
             destinationFi: '',
             destinationSw: '',
-            routePathShortName: '',
-            routePathShortNameSw: '',
+            shortName: '',
+            shortNameSw: '',
             modifiedBy: '',
             length: 0,
             exceptionPath: '0',

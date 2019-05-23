@@ -18,12 +18,12 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import { ErrorStore } from '~/stores/errorStore';
 import navigator from '~/routing/navigator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
+import { IRoutePath } from '~/models';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import SubSites from '~/routing/subSites';
-import { IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -113,10 +113,10 @@ class RoutePathView extends ViewFormBase<
             if (!this.props.routePathStore!.routePath) {
                 const queryParams = navigator.getQueryParamValues();
                 const routeId = queryParams[QueryParams.routeId];
+                const lineId = queryParams[QueryParams.lineId];
                 const route = await RouteService.fetchRoute(routeId);
-                // TODO: add transitType to this call (if transitType is routePath's property)
                 const newRoutePath = RoutePathFactory.createNewRoutePath(
-                    routeId,
+                    lineId,
                     route
                 );
                 this.props.routePathStore!.setRoutePath(newRoutePath);
@@ -196,7 +196,9 @@ class RoutePathView extends ViewFormBase<
         }
     };
 
-    private onChange = (property: keyof IRoutePath) => (value: any) => {
+    private onChangeRoutePathProperty = (property: keyof IRoutePath) => (
+        value: any
+    ) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
         this.validateProperty(
             routePathValidationModel[property],
@@ -212,7 +214,7 @@ class RoutePathView extends ViewFormBase<
                     isEditingDisabled={this.state.isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
-                    onChange={this.onChange}
+                    onChangeRoutePathProperty={this.onChangeRoutePathProperty}
                     invalidPropertiesMap={this.state.invalidPropertiesMap}
                     setValidatorResult={this.setValidatorResult}
                 />
@@ -298,7 +300,7 @@ class RoutePathView extends ViewFormBase<
         if (!this.props.routePathStore!.routePath) return null;
 
         const isGeometryValid = validateRoutePathLinks(
-            this.props.routePathStore!.routePath!.routePathLinks!
+            this.props.routePathStore!.routePath!.routePathLinks
         );
 
         const areLinkFormsValid =

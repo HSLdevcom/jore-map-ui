@@ -47,7 +47,7 @@ class RoutePathLayer extends Component<RoutePathLayerProps> {
                     onContextMenu={this.openLinkView(routePath)}
                     onMouseOver={this.props.hoverHighlight(internalId)}
                     onMouseOut={this.props.hoverHighlightOff(internalId)}
-                    routePathLinks={routePath.routePathLinks!}
+                    routePathLinks={routePath.routePathLinks}
                     color={routePath.color!}
                     opacity={this.props.hasHighlight(internalId) ? 1 : 0.6}
                     weight={this.props.hasHighlight(internalId) ? 8 : 6}

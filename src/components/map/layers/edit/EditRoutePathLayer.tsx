@@ -181,7 +181,7 @@ class EditRoutePathLayer extends Component<
     private calculateBounds = () => {
         const bounds: L.LatLngBounds = new L.LatLngBounds([]);
 
-        this.props.routePathStore!.routePath!.routePathLinks!.forEach(link => {
+        this.props.routePathStore!.routePath!.routePathLinks.forEach(link => {
             link.geometry.forEach(pos => bounds.extend(pos));
         });
 
@@ -235,7 +235,7 @@ class EditRoutePathLayer extends Component<
 
         return (
             <Marker
-                latLng={routePathLinks![0].startNode.coordinates}
+                latLng={routePathLinks[0].startNode.coordinates}
                 color={START_MARKER_COLOR}
                 isClickDisabled={true}
             />
@@ -250,7 +250,7 @@ class EditRoutePathLayer extends Component<
         }
 
         const routePathLinks = this.props.routePathStore!.routePath!
-            .routePathLinks!;
+            .routePathLinks;
         const coherentPolylines = createCoherentLinesFromPolylines(
             routePathLinks.map(rpLink => rpLink.geometry)
         );
