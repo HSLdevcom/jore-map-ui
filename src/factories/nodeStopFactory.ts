@@ -4,73 +4,51 @@ import IExternalStop from '~/models/externals/IExternalStop';
 class StopFactory {
     public static mapExternalStop = (node: IExternalStop): IStop => {
         return {
-            id: node.id,
             nameFi: node.pysnimi,
-            nameSe: node.pysnimir,
+            nameSw: node.pysnimir,
             radius: node.pyssade,
             hastusId: node.paitunnus,
             addressFi: node.pysosoite,
-            addressSe: node.pysosoiter,
+            addressSw: node.pysosoiter,
             areaId: node.pysalueid,
-            direction: node.pyssuunta,
             elyNumber: node.elynumero,
-            exchangeStop: node.pysvaihtopys,
-            kutsuplus: node.kutsuplus,
-            kutsuplusPriority: node.kutsuplusprior,
-            kutsuplusSection: node.kutsuplusvyo,
             modifiedBy: node.pyskuka,
             modifiedOn: new Date(node.pysviimpvm),
             municipality: node.pyskunta,
             nameLongFi: node.pysnimipitka,
-            nameLongSe: node.pysnimipitkar,
+            nameLongSw: node.pysnimipitkar,
             nameModifiedOn: new Date(node.nimiviimpvm),
             nodeId: node.soltunnus,
             placeNameFi: node.pyspaikannimi,
-            placeNameSe: node.pyspaikannimir,
+            placeNameSw: node.pyspaikannimir,
             platform: node.pyslaituri,
             postalNumber: node.postinro,
-            rate: node.tariffi,
-            roof: node.pyskatos,
-            section: node.vyohyke,
-            terminal: node.terminaali,
-            type: node.pystyyppi,
-            courseDirection: node.kulkusuunta
+            section: node.vyohyke
         };
     };
 
     public static createNewStop = (): IStop => {
         return {
-            id: -1,
             nameFi: '',
-            nameSe: '',
+            nameSw: '',
             radius: 10,
             hastusId: '',
             addressFi: '',
-            addressSe: '',
+            addressSw: '',
             areaId: '',
-            direction: '1',
             elyNumber: '',
-            exchangeStop: '',
-            kutsuplus: '',
-            kutsuplusPriority: '',
-            kutsuplusSection: '',
             modifiedBy: '',
             modifiedOn: new Date(),
             municipality: '',
             nameLongFi: '',
-            nameLongSe: '',
+            nameLongSw: '',
             nameModifiedOn: new Date(),
             nodeId: '',
             placeNameFi: '',
-            placeNameSe: '',
+            placeNameSw: '',
             platform: '',
             postalNumber: '',
-            rate: '',
-            roof: '',
-            section: '',
-            terminal: '',
-            type: '',
-            courseDirection: ''
+            section: ''
         };
     };
 }

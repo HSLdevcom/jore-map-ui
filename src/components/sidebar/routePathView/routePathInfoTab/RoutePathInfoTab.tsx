@@ -24,7 +24,7 @@ interface IRoutePathInfoTabProps {
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    onChange: (property: string) => (value: any) => void;
+    onChange: (property: keyof IRoutePath) => (value: any) => void;
     invalidPropertiesMap: object;
     setValidatorResult: (
         property: string,
@@ -297,8 +297,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <div className={s.flexInnerRow}>
                                 {/* TODO */}
                                 <Dropdown
-                                    onChange={onChange('foo')}
-                                    disabled={isEditingDisabled}
+                                    onChange={() => void 0}
+                                    disabled={true}
                                     items={this.props.codeListStore!.getCodeList(
                                         'Suunta'
                                     )}
@@ -306,8 +306,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 />
                                 {/* TODO */}
                                 <Dropdown
-                                    onChange={onChange('foo')}
-                                    disabled={isEditingDisabled}
+                                    onChange={() => void 0}
+                                    disabled={true}
                                     items={this.props.codeListStore!.getCodeList(
                                         'Suunta'
                                     )}

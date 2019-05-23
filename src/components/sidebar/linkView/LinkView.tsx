@@ -11,8 +11,8 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import { INode, ILink } from '~/models';
 import CalculatedInputField from '~/components/controls/CalculatedInputField';
-import { INode } from '~/models';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import linkValidationModel from '~/models/validationModels/linkValidationModel';
@@ -28,12 +28,6 @@ import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './linkView.scss';
-
-interface ILinkViewState {
-    isLoading: boolean;
-    isEditingDisabled: boolean;
-    invalidPropertiesMap: object;
-}
 
 interface ILinkViewProps extends RouteComponentProps<any> {
     isNewLink: boolean;
@@ -236,7 +230,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         return this.existingTransitTypes.includes(transitType);
     };
 
-    private onChangeLinkProperty = (property: string) => (value: any) => {
+    private onChangeLinkProperty = (property: keyof ILink) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
         this.validateProperty(linkValidationModel[property], property, value);
     };

@@ -34,7 +34,7 @@ class RouteStore {
 
     @action
     public updateRouteProperty = (
-        property: string,
+        property: keyof IRoute,
         value: string | number | Date
     ) => {
         this._route = {

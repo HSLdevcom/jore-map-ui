@@ -19,6 +19,7 @@ import {
 } from '~/components/shared/Tabs';
 import LineService from '~/services/lineService';
 import LineFactory from '~/factories/lineFactory';
+import { ILine } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
@@ -113,7 +114,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         }
     };
 
-    private onChangeLineProperty = (property: string) => (value: any) => {
+    private onChangeLineProperty = (property: keyof ILine) => (value: any) => {
         this.props.lineStore!.updateLineProperty(property, value);
         this.validateProperty(lineValidationModel[property], property, value);
     };

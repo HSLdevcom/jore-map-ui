@@ -90,7 +90,7 @@ export class LinkStore {
 
     @action
     public updateLinkProperty = (
-        property: string,
+        property: keyof ILink,
         value: string | number | Date | LatLng[]
     ) => {
         this._link![property] = value;

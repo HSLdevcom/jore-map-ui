@@ -1,5 +1,6 @@
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import * as s from './nodeTypeColors.scss';
 
 class NodeHelper {
@@ -56,6 +57,19 @@ class NodeHelper {
                 : node.shortIdString;
         }
         return '';
+    };
+
+    public static getMeasurementTypeLabel = (
+        measurementType: string | undefined
+    ) => {
+        switch (measurementType) {
+            case NodeMeasurementType.Calculated:
+                return 'Laskettu';
+            case NodeMeasurementType.Measured:
+                return 'Mitattu';
+            default:
+                return measurementType ? measurementType.toString() : '-';
+        }
     };
 }
 
