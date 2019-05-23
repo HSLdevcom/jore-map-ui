@@ -125,13 +125,21 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                 <div className={s.form}>
                     <div className={s.formSection}>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='REITIN NIMI SUOMEKSI'
+                            <InputContainer
+                                label='NIMI SUOMEKSI'
+                                disabled={isEditingDisabled}
                                 value={routePath.name}
+                                onChange={onChange('name')}
+                                validationResult={invalidPropertiesMap['name']}
                             />
-                            <TextContainer
-                                label='REITIN NIMI RUOTSIKSI'
+                            <InputContainer
+                                label='NIMI RUOTSIKSI'
+                                disabled={isEditingDisabled}
                                 value={routePath.nameSw}
+                                onChange={onChange('nameSw')}
+                                validationResult={
+                                    invalidPropertiesMap['nameSw']
+                                }
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -257,6 +265,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <TextContainer
                                 label='PÄIVITYSPVM'
                                 value={routePath.modifiedOn}
+                                isTimeIncluded={true}
                             />
                             <TextContainer
                                 label='PÄIVITTÄJÄ'
