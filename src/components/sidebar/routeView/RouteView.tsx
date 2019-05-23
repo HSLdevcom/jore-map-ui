@@ -21,6 +21,7 @@ import RouteService from '~/services/routeService';
 import RouteFactory from '~/factories/routeFactory';
 import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
+import { IRoute } from '~/models';
 import SubSites from '~/routing/subSites';
 import QueryParams from '~/routing/queryParams';
 import RoutePathTab from './RoutePathTab';
@@ -115,7 +116,9 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
         }
     };
 
-    private onChangeRouteProperty = (property: string) => (value: any) => {
+    private onChangeRouteProperty = (property: keyof IRoute) => (
+        value: any
+    ) => {
         this.props.routeStore!.updateRouteProperty(property, value);
         this.validateProperty(routeValidationModel[property], property, value);
     };

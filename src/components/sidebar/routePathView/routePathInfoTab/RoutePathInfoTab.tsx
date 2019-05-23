@@ -301,7 +301,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 {/* TODO */}
                                 <Dropdown
                                     onChange={() => void 0}
-                                    disabled={isEditingDisabled}
+                                    disabled={true}
                                     items={this.props.codeListStore!.getCodeList(
                                         'Suunta'
                                     )}
@@ -310,7 +310,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 {/* TODO */}
                                 <Dropdown
                                     onChange={() => void 0}
-                                    disabled={isEditingDisabled}
+                                    disabled={true}
                                     items={this.props.codeListStore!.getCodeList(
                                         'Suunta'
                                     )}

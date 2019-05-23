@@ -118,9 +118,9 @@ class RoutePathListNode extends ViewFormBase<
         this.onRoutePathLinkPropertyChange('startNodeType')(value ? 'E' : 'P');
     };
 
-    private onRoutePathLinkPropertyChange = (property: string) => (
-        value: any
-    ) => {
+    private onRoutePathLinkPropertyChange = (
+        property: keyof IRoutePathLink
+    ) => (value: any) => {
         const orderNumber = this.props.routePathLink.orderNumber;
 
         this.props.routePathStore!.updateRoutePathLinkProperty(
@@ -145,9 +145,11 @@ class RoutePathListNode extends ViewFormBase<
      * isStartNodeUsingBookSchedule & startNodeBookScheduleColumnNumber
      * note: the last rpLink link will change routePath's value instead of routePathLink's value
      */
-    private onRoutePathBookSchedulePropertyChange = (property: string) => (
-        value: any
-    ) => {
+    private onRoutePathBookSchedulePropertyChange = (
+        property:
+            | 'startNodeBookScheduleColumnNumber'
+            | 'isStartNodeUsingBookSchedule'
+    ) => (value: any) => {
         const orderNumber = this.props.routePathLink.orderNumber;
 
         if (this.props.isLastNode) {
@@ -201,7 +203,7 @@ class RoutePathListNode extends ViewFormBase<
                     />
                     <TextContainer
                         label='PYSÄKIN NIMI RUOTSIKSI'
-                        value={stop.nameSe}
+                        value={stop.nameSw}
                         darkerInputLabel={true}
                     />
                 </div>
@@ -336,7 +338,7 @@ class RoutePathListNode extends ViewFormBase<
         } else if (node.type === NodeType.DISABLED) {
             icon = this.addBorder(icon, '#353333');
         } else if (node.type === NodeType.STOP) {
-            node.transitTypes.forEach(type => {
+            node.transitTypes!.forEach(type => {
                 icon = this.addBorder(icon, TransitTypeHelper.getColor(type));
             });
         } else if (node.type === NodeType.CROSSROAD) {

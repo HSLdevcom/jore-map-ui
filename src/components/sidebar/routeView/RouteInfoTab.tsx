@@ -6,6 +6,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import RouteService from '~/services/routeService';
 import { IValidationResult } from '~/validation/FormValidator';
 import navigator from '~/routing/navigator';
+import { IRoute } from '~/models';
 import QueryParams from '~/routing/queryParams';
 import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';
@@ -20,7 +21,7 @@ interface IRouteInfoTabProps {
     errorStore?: ErrorStore;
     isEditingDisabled: boolean;
     isNewRoute: boolean;
-    onChangeRouteProperty: (property: string) => (value: any) => void;
+    onChangeRouteProperty: (property: keyof IRoute) => (value: any) => void;
     invalidPropertiesMap: object;
     setValidatorResult: (
         property: string,

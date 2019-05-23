@@ -7,20 +7,18 @@ interface IRoutePathPrimaryKey {
     startTime: Date;
 }
 
-interface IViewOnlyProperties {
+interface IViewOnlyRoutePathProperties {
     internalId: string;
     color?: string;
-    modifiedOn: Date;
     visible: boolean;
     transitType: TransitType;
-    modifiedBy: string;
+    lineId: string;
 }
 
 export default interface IRoutePath
     extends IRoutePathPrimaryKey,
-        IViewOnlyProperties {
-    lineId: string;
-    routePathLinks: IRoutePathLink[]; // TODO: change to be never undefined
+        IViewOnlyRoutePathProperties {
+    routePathLinks: IRoutePathLink[];
     name: string;
     nameSw: string;
     endTime: Date;
@@ -31,9 +29,11 @@ export default interface IRoutePath
     shortName: string;
     shortNameSw: string;
     length: number;
-    exceptionPath: string;
     isStartNodeUsingBookSchedule: boolean;
     startNodeBookScheduleColumnNumber: number | null;
+    exceptionPath: string;
+    modifiedOn: Date;
+    modifiedBy: string;
 }
 
-export { IRoutePathPrimaryKey };
+export { IRoutePathPrimaryKey, IViewOnlyRoutePathProperties };

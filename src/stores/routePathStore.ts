@@ -228,7 +228,7 @@ export class RoutePathStore {
 
     @action
     public updateRoutePathProperty = (
-        property: string,
+        property: keyof IRoutePath | keyof IRoutePathLink,
         value: string | number | Date | boolean | null
     ) => {
         this._routePath = {
@@ -240,7 +240,7 @@ export class RoutePathStore {
     @action
     public updateRoutePathLinkProperty = (
         orderNumber: number,
-        property: string,
+        property: keyof IRoutePathLink,
         value: string | number | boolean
     ) => {
         const rpLinkToUpdate:
@@ -447,7 +447,7 @@ export class RoutePathStore {
     // Expects that both routePath and routePathLink have property to copy with the same name
     private copyPropertyToRoutePathFromRoutePathLink = (
         routePathLink: IRoutePathLink,
-        property: string
+        property: keyof IRoutePathLink | keyof IRoutePath
     ) => {
         const valueToCopy = routePathLink[property];
         this.updateRoutePathProperty(property, valueToCopy);
@@ -456,7 +456,7 @@ export class RoutePathStore {
     // Expects that both routePath and routePathLink have property to copy with the same name
     private copyPropertyToRoutePathLinkFromRoutePath = (
         routePathLink: IRoutePathLink,
-        property: string
+        property: keyof IRoutePathLink
     ) => {
         const valueToCopy = this.routePath![property];
         this.updateRoutePathLinkProperty(

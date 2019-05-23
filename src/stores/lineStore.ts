@@ -28,7 +28,7 @@ export class LineStore {
 
     @action
     public updateLineProperty = (
-        property: string,
+        property: keyof ILine,
         value: string | number | Date
     ) => {
         this._line = {
