@@ -117,7 +117,9 @@ class App extends React.Component<IAppProps, IAppState> {
             },
             () => {
                 // On error
-                navigator.goTo(SubSites.loginError);
+                navigator.goTo(SubSites.login);
+                AuthService.logout();
+                return null;
             }
         );
         return <div>Kirjaudutaan sisään...</div>;
