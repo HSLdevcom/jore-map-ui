@@ -12,7 +12,7 @@ ENV GEOSERVER_URL=${BACKEND_GEOSERVER_URL}
 ARG APP_BUILD_DATE
 ENV BUILD_DATE=${APP_BUILD_DATE}
 
-RUN yarn install
+RUN yarn --pure-lockfile
 RUN yarn test:ci
 RUN yarn build
 RUN yarn add serve
