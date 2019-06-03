@@ -13,11 +13,11 @@ export default interface ILine extends ILinePrimaryKey {
     lineEndDate: Date;
     publicTransportType: string;
     clientOrganization: string;
-    modifiedBy: string;
-    modifiedOn: string;
-    publicTransportDestination: string;
-    exchangeTime: number;
-    lineReplacementType: string;
+    modifiedBy?: string;
+    modifiedOn?: string;
+    publicTransportDestination?: string;
+    exchangeTime?: number;
+    lineReplacementType?: string;
 }
 
 export { ILinePrimaryKey };
