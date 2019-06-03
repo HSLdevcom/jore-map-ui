@@ -58,7 +58,9 @@ class RoutePathFactory {
             name: externalRoutePath.suunimi,
             nameSw: externalRoutePath.suunimir,
             endTime: new Date(externalRoutePath.suuvoimviimpvm),
-            modifiedOn: new Date(externalRoutePath.suuviimpvm),
+            modifiedOn: externalRoutePath.suuviimpvm
+                ? new Date(externalRoutePath.suuviimpvm)
+                : undefined,
             modifiedBy: externalRoutePath.suukuka,
             visible: false,
             originFi: externalRoutePath.suulahpaik,
@@ -103,7 +105,7 @@ class RoutePathFactory {
             length: 0,
             exceptionPath: '0',
             isStartNodeUsingBookSchedule: false,
-            startNodeBookScheduleColumnNumber: null
+            startNodeBookScheduleColumnNumber: undefined
         };
     }
 

@@ -30,10 +30,10 @@ export default interface IRoutePath
     shortNameSw: string;
     length: number;
     isStartNodeUsingBookSchedule: boolean;
-    startNodeBookScheduleColumnNumber: number | null;
+    startNodeBookScheduleColumnNumber?: number;
     exceptionPath: string;
-    modifiedOn: Date;
-    modifiedBy: string;
+    modifiedOn?: Date;
+    modifiedBy?: string;
 }
 
 export { IRoutePathPrimaryKey, IViewOnlyRoutePathProperties };

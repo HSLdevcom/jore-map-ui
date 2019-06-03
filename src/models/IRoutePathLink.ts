@@ -17,7 +17,7 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     startNodeTimeAlignmentStop?: string;
     isStartNodeHastusStop?: boolean;
     isStartNodeUsingBookSchedule?: boolean;
-    startNodeBookScheduleColumnNumber?: number | null;
+    startNodeBookScheduleColumnNumber?: number;
     modifiedBy?: string;
     modifiedOn?: Date;
 }

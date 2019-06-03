@@ -223,7 +223,9 @@ class RoutePathListNode extends ViewFormBase<
                         <div className={s.flexRow}>
                             <Checkbox
                                 disabled={isEditingDisabled}
-                                checked={routePathLink.isStartNodeHastusStop}
+                                checked={Boolean(
+                                    routePathLink.isStartNodeHastusStop
+                                )}
                                 content='Hastus paikka'
                                 onClick={this.onRoutePathLinkPropertyChange(
                                     'isStartNodeHastusStop'
@@ -261,7 +263,7 @@ class RoutePathListNode extends ViewFormBase<
                 <div className={s.flexRow}>
                     <Checkbox
                         disabled={isEditingDisabled}
-                        checked={isStartNodeUsingBookSchedule}
+                        checked={Boolean(isStartNodeUsingBookSchedule)}
                         content='Ohitusaika kirja-aikataulussa'
                         onClick={this.onIsStartNodeUsingBookScheduleChange(
                             !isStartNodeUsingBookSchedule

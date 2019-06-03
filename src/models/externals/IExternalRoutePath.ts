@@ -18,8 +18,8 @@ export default interface IExternalRoutePath {
     suunimilyh: string;
     suunimilyhr: string;
     suusuunta: string;
-    suukuka: string;
-    suuviimpvm: string;
+    suukuka?: string;
+    suuviimpvm?: string;
     suuvoimast: string;
     suuvoimviimpvm: string;
     suupituus: number;

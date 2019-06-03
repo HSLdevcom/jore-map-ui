@@ -13,11 +13,13 @@ class StopFactory {
             areaId: node.pysalueid,
             elyNumber: node.elynumero,
             modifiedBy: node.pyskuka,
-            modifiedOn: new Date(node.pysviimpvm),
+            modifiedOn: node.pysviimpvm ? new Date(node.pysviimpvm) : undefined,
             municipality: node.pyskunta,
             nameLongFi: node.pysnimipitka,
             nameLongSw: node.pysnimipitkar,
-            nameModifiedOn: new Date(node.nimiviimpvm),
+            nameModifiedOn: node.nimiviimpvm
+                ? new Date(node.nimiviimpvm)
+                : undefined,
             nodeId: node.soltunnus,
             placeNameFi: node.pyspaikannimi,
             placeNameSw: node.pyspaikannimir,
