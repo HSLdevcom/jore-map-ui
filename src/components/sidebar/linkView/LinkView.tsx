@@ -1,5 +1,4 @@
 import React from 'react';
-import Moment from 'moment';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { RouteComponentProps } from 'react-router-dom';
@@ -256,7 +255,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const isEditingDisabled = this.state.isEditingDisabled;
         const startNode = link!.startNode;
         const endNode = link!.endNode;
-        const datetimeStringDisplayFormat = 'YYYY-MM-DD HH:mm:ss';
 
         const transitType = this.props.linkStore!.link.transitType;
 
@@ -402,14 +400,13 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         {!this.props.isNewLink && (
                             <div className={s.flexRow}>
                                 <TextContainer
-                                    label='PÄIVITTÄJÄ'
+                                    label='MUOKANNUT'
                                     value={link.modifiedBy}
                                 />
                                 <TextContainer
-                                    label='PÄIVITYSPVM'
-                                    value={Moment(link.modifiedOn).format(
-                                        datetimeStringDisplayFormat
-                                    )}
+                                    label='MUOKATTU PVM'
+                                    isTimeIncluded={true}
+                                    value={link.modifiedOn}
                                 />
                             </div>
                         )}

@@ -27,6 +27,8 @@ class RouteFactory {
             id: externalRoute.reitunnus,
             modifiedBy: externalRoute.reikuka,
             modifiedOn: externalRoute.reiviimpvm
+                ? new Date(externalRoute.reiviimpvm)
+                : undefined
         };
     };
 

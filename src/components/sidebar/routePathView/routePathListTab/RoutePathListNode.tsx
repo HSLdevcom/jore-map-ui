@@ -290,16 +290,14 @@ class RoutePathListNode extends ViewFormBase<
                     />
                 </div>
                 <div className={s.flexInnerRow}>
-                    <InputContainer
-                        disabled={true}
+                    <TextContainer
                         label='MUOKANNUT'
                         value={routePathLink.modifiedBy}
                         darkerInputLabel={true}
                     />
-                    <InputContainer
-                        disabled={true}
-                        type='date'
+                    <TextContainer
                         label='MUOKATTU PVM'
+                        isTimeIncluded={true}
                         value={routePathLink.modifiedOn}
                         darkerInputLabel={true}
                     />

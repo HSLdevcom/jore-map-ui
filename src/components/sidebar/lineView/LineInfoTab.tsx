@@ -1,6 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
+import TextContainer from '~/components/controls/TextContainer';
+import InputContainer from '~/components/controls/InputContainer';
 import TransitType from '~/enums/transitType';
 import { LineStore } from '~/stores/lineStore';
 import { CodeListStore } from '~/stores/codeListStore';
@@ -9,7 +11,6 @@ import LineService from '~/services/lineService';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import { IValidationResult } from '~/validation/FormValidator';
 import { TransitToggleButtonBar, Dropdown } from '~/components/controls';
-import InputContainer from '../../controls/InputContainer';
 import * as s from './lineInfoTab.scss';
 
 interface ILineInfoTabState {
@@ -271,15 +272,13 @@ class LineInfoTab extends React.Component<
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <InputContainer
-                            disabled={true}
+                        <TextContainer
                             label='MUOKANNUT'
                             value={line.modifiedBy}
                         />
-                        <InputContainer
-                            disabled={true}
+                        <TextContainer
                             label='MUOKATTU PVM'
-                            type='date'
+                            isTimeIncluded={true}
                             value={line.modifiedOn}
                         />
                     </div>
