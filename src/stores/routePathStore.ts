@@ -202,8 +202,9 @@ export class RoutePathStore {
         this.setRoutePathLinks(routePathLinks);
         const currentUndoState: UndoState = {
             routePathLinks,
-            isStartNodeUsingBookSchedule: this.routePath!
-                .isStartNodeUsingBookSchedule,
+            isStartNodeUsingBookSchedule: Boolean(
+                this.routePath!.isStartNodeUsingBookSchedule
+            ),
             startNodeBookScheduleColumnNumber: this.routePath!
                 .startNodeBookScheduleColumnNumber
         };
@@ -343,8 +344,9 @@ export class RoutePathStore {
                 : [];
         const currentUndoState: UndoState = {
             routePathLinks: _.cloneDeep(routePathLinks),
-            isStartNodeUsingBookSchedule: this._routePath!
-                .isStartNodeUsingBookSchedule,
+            isStartNodeUsingBookSchedule: Boolean(
+                this._routePath!.isStartNodeUsingBookSchedule
+            ),
             startNodeBookScheduleColumnNumber: this._routePath!
                 .startNodeBookScheduleColumnNumber
         };
