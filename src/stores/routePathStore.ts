@@ -19,7 +19,7 @@ export enum RoutePathViewTab {
 export interface UndoState {
     routePathLinks: IRoutePathLink[];
     isStartNodeUsingBookSchedule: boolean;
-    startNodeBookScheduleColumnNumber: number | null;
+    startNodeBookScheduleColumnNumber?: number;
 }
 
 export enum ListFilter {
@@ -202,8 +202,9 @@ export class RoutePathStore {
         this.setRoutePathLinks(routePathLinks);
         const currentUndoState: UndoState = {
             routePathLinks,
-            isStartNodeUsingBookSchedule: this.routePath!
-                .isStartNodeUsingBookSchedule,
+            isStartNodeUsingBookSchedule: Boolean(
+                this.routePath!.isStartNodeUsingBookSchedule
+            ),
             startNodeBookScheduleColumnNumber: this.routePath!
                 .startNodeBookScheduleColumnNumber
         };
@@ -229,7 +230,7 @@ export class RoutePathStore {
     @action
     public updateRoutePathProperty = (
         property: keyof IRoutePath | keyof IRoutePathLink,
-        value: string | number | Date | boolean | null
+        value?: string | number | Date | boolean | null
     ) => {
         this._routePath = {
             ...this._routePath!,
@@ -343,8 +344,9 @@ export class RoutePathStore {
                 : [];
         const currentUndoState: UndoState = {
             routePathLinks: _.cloneDeep(routePathLinks),
-            isStartNodeUsingBookSchedule: this._routePath!
-                .isStartNodeUsingBookSchedule,
+            isStartNodeUsingBookSchedule: Boolean(
+                this._routePath!.isStartNodeUsingBookSchedule
+            ),
             startNodeBookScheduleColumnNumber: this._routePath!
                 .startNodeBookScheduleColumnNumber
         };

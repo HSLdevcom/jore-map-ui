@@ -42,7 +42,9 @@ class RoutePathLinkFactory {
                 externalRoutePathLink.kirjasarake,
             transitType: externalRoutePathLink.lnkverkko,
             modifiedBy: externalRoutePathLink.relkuka,
-            modifiedOn: new Date(externalRoutePathLink.relviimpvm)
+            modifiedOn: externalRoutePathLink.relviimpvm
+                ? new Date(externalRoutePathLink.relviimpvm)
+                : undefined
         };
     };
 
@@ -68,7 +70,7 @@ class RoutePathLinkFactory {
             startNodeTimeAlignmentStop: '0',
             isStartNodeHastusStop: false,
             isStartNodeUsingBookSchedule: false,
-            startNodeBookScheduleColumnNumber: null,
+            startNodeBookScheduleColumnNumber: undefined,
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             transitType: link.lnkverkko,
             modifiedBy: '',

@@ -4,7 +4,7 @@ interface ISearchLineRoutePrimaryKey {
 
 export default interface ISearchLineRoute extends ISearchLineRoutePrimaryKey {
     name: string;
-    date: Date;
+    date?: Date;
 }
 
 export { ISearchLineRoutePrimaryKey };

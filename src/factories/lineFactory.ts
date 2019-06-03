@@ -51,7 +51,9 @@ class LineFactory {
                 return {
                     id: route.reitunnus,
                     name: _getRouteName(route),
-                    date: new Date(route.reiviimpvm)
+                    date: route.reiviimpvm
+                        ? new Date(route.reiviimpvm)
+                        : undefined
                 };
             }
         );

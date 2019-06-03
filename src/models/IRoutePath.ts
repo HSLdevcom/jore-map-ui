@@ -29,11 +29,11 @@ export default interface IRoutePath
     shortName: string;
     shortNameSw: string;
     length: number;
-    isStartNodeUsingBookSchedule: boolean;
-    startNodeBookScheduleColumnNumber: number | null;
-    exceptionPath: string;
-    modifiedOn: Date;
-    modifiedBy: string;
+    isStartNodeUsingBookSchedule?: boolean;
+    startNodeBookScheduleColumnNumber?: number;
+    exceptionPath?: string;
+    modifiedOn?: Date;
+    modifiedBy?: string;
 }
 
 export { IRoutePathPrimaryKey, IViewOnlyRoutePathProperties };

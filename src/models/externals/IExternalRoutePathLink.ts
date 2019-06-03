@@ -11,13 +11,13 @@ export default interface IExternalRoutePathLink {
     suuvoimast: string;
     relid: number;
     reljarjnro: number;
-    relohaikpys: string;
+    relohaikpys?: string;
     relpysakki: string;
     lnkverkko: TransitType;
-    ajantaspys: string;
-    paikka: string;
-    kirjaan: string;
-    kirjasarake: number;
-    relkuka: string;
-    relviimpvm: string;
+    ajantaspys?: string;
+    paikka?: string;
+    kirjaan?: string;
+    kirjasarake?: number;
+    relkuka?: string;
+    relviimpvm?: string;
 }

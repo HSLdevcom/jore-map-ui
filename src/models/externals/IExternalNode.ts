@@ -17,8 +17,6 @@ export default interface IExternalNode {
     solomy: number;
     solotapa?: string;
     mittpvm?: string;
-    mkjmx?: number;
-    mkjmy?: number;
     pysakkiBySoltunnus?: IExternalStop;
     geojson?: string;
     transittypes: string;

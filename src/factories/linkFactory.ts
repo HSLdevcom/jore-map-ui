@@ -21,7 +21,9 @@ class LinkFactory {
             municipalityCode: externalLink.katkunta,
             streetName: externalLink.katnimi,
             modifiedBy: externalLink.lnkkuka,
-            modifiedOn: new Date(externalLink.lnkviimpvm)
+            modifiedOn: externalLink.lnkviimpvm
+                ? new Date(externalLink.lnkviimpvm)
+                : undefined
         };
     };
 
