@@ -29,9 +29,9 @@ export default interface IRoutePath
     shortName: string;
     shortNameSw: string;
     length: number;
-    isStartNodeUsingBookSchedule: boolean;
+    isStartNodeUsingBookSchedule?: boolean;
     startNodeBookScheduleColumnNumber?: number;
-    exceptionPath: string;
+    exceptionPath?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
 }

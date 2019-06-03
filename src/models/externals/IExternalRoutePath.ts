@@ -3,7 +3,6 @@ import IGraphqlList from './graphqlModelHelpers/IGraphqlList';
 import IExternalRoute from './IExternalRoute';
 
 export default interface IExternalRoutePath {
-    poikkeusreitti: string;
     reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta: IGraphqlList<
         IExternalRoutePathLink
     >;
@@ -23,6 +22,7 @@ export default interface IExternalRoutePath {
     suuvoimast: string;
     suuvoimviimpvm: string;
     suupituus: number;
-    kirjaan: string;
-    kirjasarake: number;
+    kirjaan?: string;
+    kirjasarake?: number;
+    poikkeusreitti?: string;
 }
