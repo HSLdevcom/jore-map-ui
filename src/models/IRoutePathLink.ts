@@ -12,14 +12,14 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     transitType: TransitType;
     startNode: INode;
     endNode: INode;
-    startNodeUsage: string;
+    startNodeUsage?: string;
     startNodeType: string;
-    startNodeTimeAlignmentStop: string;
-    isStartNodeHastusStop: boolean;
-    isStartNodeUsingBookSchedule: boolean;
-    startNodeBookScheduleColumnNumber: number | null;
-    modifiedBy: string;
-    modifiedOn: Date;
+    startNodeTimeAlignmentStop?: string;
+    isStartNodeHastusStop?: boolean;
+    isStartNodeUsingBookSchedule?: boolean;
+    startNodeBookScheduleColumnNumber?: number | null;
+    modifiedBy?: string;
+    modifiedOn?: Date;
 }
 
 export { IRoutePathLinkPrimaryKey };
