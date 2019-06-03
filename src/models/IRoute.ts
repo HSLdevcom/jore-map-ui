@@ -12,8 +12,8 @@ export default interface IRoute extends IRoutePrimaryKey {
     routeNameShortSw: string;
     lineId: string;
     line?: ILine;
-    modifiedBy: string;
-    modifiedOn: Date;
+    modifiedBy?: string;
+    modifiedOn?: Date;
 }
 
 export { IRoutePrimaryKey };

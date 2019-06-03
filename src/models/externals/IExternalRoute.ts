@@ -11,6 +11,6 @@ export default interface IExternalRoute {
     reinimir: string;
     reinimilyhr: string;
     lintunnus: string;
-    reikuka: string;
-    reiviimpvm: Date;
+    reikuka?: string;
+    reiviimpvm?: Date;
 }
