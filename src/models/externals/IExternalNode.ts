@@ -8,7 +8,7 @@ export default interface IExternalNode {
     solx: number;
     soly: number;
     solkuka?: string;
-    solviimpvm?: string;
+    solviimpvm?: Date;
     solstx: number;
     solsty: number;
     solkirjain?: string;
@@ -16,7 +16,7 @@ export default interface IExternalNode {
     solomx: number;
     solomy: number;
     solotapa?: string;
-    mittpvm?: string;
+    mittpvm?: Date;
     pysakkiBySoltunnus?: IExternalStop;
     geojson?: string;
     transittypes: string;

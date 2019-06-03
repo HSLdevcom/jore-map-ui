@@ -6,8 +6,12 @@ export default interface IExternalRoutePath {
     reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta: IGraphqlList<
         IExternalRoutePathLink
     >;
+
     reittiByReitunnus: IExternalRoute;
     reitunnus: string;
+    suusuunta: string;
+    suuvoimast: Date;
+    suuvoimviimpvm: Date;
     suulahpaik: string;
     suunimi: string;
     suunimir: string;
@@ -16,11 +20,8 @@ export default interface IExternalRoutePath {
     suulahpaikr: string;
     suunimilyh: string;
     suunimilyhr: string;
-    suusuunta: string;
     suukuka?: string;
-    suuviimpvm?: string;
-    suuvoimast: string;
-    suuvoimviimpvm: string;
+    suuviimpvm?: Date;
     suupituus: number;
     kirjaan?: string;
     kirjasarake?: number;

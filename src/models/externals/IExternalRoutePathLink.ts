@@ -19,5 +19,5 @@ export default interface IExternalRoutePathLink {
     kirjaan?: string;
     kirjasarake?: number;
     relkuka?: string;
-    relviimpvm?: string;
+    relviimpvm?: Date;
 }

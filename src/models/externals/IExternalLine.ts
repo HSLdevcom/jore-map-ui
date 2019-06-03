@@ -6,8 +6,8 @@ export default interface IExternalLine {
     reittisByLintunnus: IGraphqlList<IExternalRoute>;
     lintunnus: string;
     linperusreitti: string;
-    linvoimast: string;
-    linvoimviimpvm: string;
+    linvoimast: Date;
+    linvoimviimpvm: Date;
     linjoukkollaji: string;
     lintilorg: string;
     linverkko: TransitType;
