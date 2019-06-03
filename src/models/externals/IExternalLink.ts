@@ -6,14 +6,14 @@ export default interface IExternalLink {
     geojson: string;
     solmuByLnkalkusolmu: IExternalNode;
     solmuByLnkloppusolmu: IExternalNode;
-    lnkmitpituus: number;
+    lnkmitpituus?: number;
     lnkpituus: number;
-    katkunta: string;
-    katnimi: string;
+    katkunta?: string;
+    katnimi?: string;
     kaoosnro: string;
     lnkosnro: string;
     lnksuunta: string;
     lnkstid: string;
-    lnkkuka: string;
-    lnkviimpvm: string;
+    lnkkuka?: string;
+    lnkviimpvm?: string;
 }
