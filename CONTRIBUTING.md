@@ -19,9 +19,13 @@
 -   Indent 4 whitespaces
 -   Use async await instead of promises
 
+### Typescript
+
+-   Use Date type if property's type is date
+
 ### React
 
--   Always use `<div>` instead of `<span>` (only use span if there is a reason to use it)
+-   Use `<div>` instead of `<span>` (only use span if there is a reason to use it)
 -   In a component, first div's className should be {_componentName_}View
 -   Use classnames if there are multiple classes
 -   Use arrow functions in components
