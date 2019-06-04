@@ -58,12 +58,11 @@ class NodeFactory {
     };
 
     public static createNodeBase = (externalNode: IExternalNode): INodeBase => {
-        const type = getNodeType(externalNode.soltyyppi);
+        const type = getNodeType(
+            externalNode.soltyyppi,
+            externalNode.soltunnus
+        );
         // TODO: Change this when creating abstraction layers for reading from postgis
-        if (type === NodeType.INVALID) {
-            throw new Error(`Solmun (id: '${externalNode.soltunnus}') tyyppi on
-            virheellinen: ${externalNode.soltyyppi}`);
-        }
 
         return {
             type,
@@ -91,8 +90,8 @@ class NodeFactory {
     }
 }
 
-const getNodeType = (type: any) => {
-    switch (type) {
+const getNodeType = (nodeType: string, nodeId: string) => {
+    switch (nodeType) {
         case 'X':
             return NodeType.CROSSROAD;
         case 'P':
@@ -100,7 +99,8 @@ const getNodeType = (type: any) => {
         case '-':
             return NodeType.MUNICIPALITY_BORDER;
         default:
-            return NodeType.INVALID;
+            throw new Error(`Solmun (id: '${nodeId}') tyyppi on
+                virheellinen: ${nodeType}`);
     }
 };
 

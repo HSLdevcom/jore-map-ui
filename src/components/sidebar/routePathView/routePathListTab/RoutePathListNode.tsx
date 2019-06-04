@@ -332,17 +332,20 @@ class RoutePathListNode extends ViewFormBase<
                 )}
             />
         );
+        const isNodeDisabled =
+            !this.props.isLastNode &&
+            this.props.routePathLink.startNodeType === StartNodeType.DISABLED;
 
         if (node.type === NodeType.MUNICIPALITY_BORDER) {
             icon = this.addBorder(icon, '#c900ff');
-        } else if (node.type === NodeType.DISABLED) {
+        } else if (node.type === NodeType.CROSSROAD) {
+            icon = this.addBorder(icon, '#727272');
+        } else if (isNodeDisabled) {
             icon = this.addBorder(icon, '#353333');
         } else if (node.type === NodeType.STOP) {
             node.transitTypes!.forEach(type => {
                 icon = this.addBorder(icon, TransitTypeHelper.getColor(type));
             });
-        } else if (node.type === NodeType.CROSSROAD) {
-            icon = this.addBorder(icon, '#727272');
         }
 
         return icon;
