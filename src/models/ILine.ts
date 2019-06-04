@@ -14,7 +14,7 @@ export default interface ILine extends ILinePrimaryKey {
     publicTransportType: string;
     clientOrganization: string;
     modifiedBy?: string;
-    modifiedOn?: string;
+    modifiedOn?: Date;
     publicTransportDestination?: string;
     exchangeTime?: number;
     lineReplacementType?: string;

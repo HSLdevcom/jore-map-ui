@@ -16,7 +16,9 @@ class LineFactory {
             publicTransportType: externalLine.linjoukkollaji,
             clientOrganization: externalLine.lintilorg,
             modifiedBy: externalLine.linkuka,
-            modifiedOn: externalLine.linviimpvm,
+            modifiedOn: externalLine.linviimpvm
+                ? new Date(externalLine.linviimpvm)
+                : undefined,
             publicTransportDestination: externalLine.linjlkohde,
             exchangeTime: externalLine.vaihtoaika,
             lineReplacementType: externalLine.linkorvtyyppi
@@ -36,7 +38,7 @@ class LineFactory {
             publicTransportType: '',
             clientOrganization: 'HSL',
             modifiedBy: '',
-            modifiedOn: '',
+            modifiedOn: undefined,
             publicTransportDestination: '',
             exchangeTime: 0,
             lineReplacementType: ''

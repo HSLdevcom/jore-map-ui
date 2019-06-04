@@ -15,5 +15,5 @@ export default interface IExternalLink {
     lnksuunta: string;
     lnkstid: string;
     lnkkuka?: string;
-    lnkviimpvm?: string;
+    lnkviimpvm?: Date;
 }

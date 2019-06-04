@@ -9,7 +9,7 @@ export default interface IExternalStop {
     pysosoiter: string;
     pysvaihtopys: string;
     pyskuka?: string;
-    pysviimpvm?: string;
+    pysviimpvm?: Date;
     pyslaituri?: string;
     pyskatos: string;
     pystyyppi: string;
@@ -27,7 +27,7 @@ export default interface IExternalStop {
     elynumero: string;
     pysnimipitka?: string;
     pysnimipitkar?: string;
-    nimiviimpvm?: string;
+    nimiviimpvm?: Date;
     vyohyke: string;
     postinro?: string;
 }

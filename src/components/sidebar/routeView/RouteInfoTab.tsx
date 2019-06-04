@@ -160,6 +160,7 @@ class RouteInfoTab extends React.Component<
                         />
                         <TextContainer
                             label='MUOKATTU PVM'
+                            isTimeIncluded={true}
                             value={route.modifiedOn}
                         />
                     </div>
