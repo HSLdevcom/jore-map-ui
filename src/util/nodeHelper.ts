@@ -4,26 +4,40 @@ import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import * as s from './nodeTypeColors.scss';
 
 class NodeHelper {
-    public static getTypeClass = (type: NodeType, highlight?: boolean) => {
-        switch (type) {
+    public static getNodeTypeClass = (
+        nodeType: NodeType,
+        {
+            isNodeDisabled,
+            isNodeTimeAlignment,
+            isNodeHighlighted
+        }: {
+            isNodeDisabled?: boolean;
+            isNodeTimeAlignment?: boolean;
+            isNodeHighlighted?: boolean;
+        }
+    ) => {
+        if (isNodeDisabled) {
+            return isNodeHighlighted
+                ? s.disabledMarkerHighlight
+                : s.disabledMarker;
+        }
+        if (isNodeTimeAlignment) {
+            return s.timeAlignmentMarker;
+        }
+
+        switch (nodeType) {
             case NodeType.STOP:
-                return highlight ? s.stopMarkerHighlight : s.stopMarker;
+                return isNodeHighlighted ? s.stopMarkerHighlight : s.stopMarker;
             case NodeType.CROSSROAD:
-                return highlight
+                return isNodeHighlighted
                     ? s.crossroadMarkerHighlight
                     : s.crossroadMarker;
             case NodeType.MUNICIPALITY_BORDER:
-                return highlight
+                return isNodeHighlighted
                     ? s.municipalityMarkerHighlight
                     : s.municipalityMarker;
-            case NodeType.DISABLED:
-                return highlight ? s.disabledMarkerHighlight : s.disabledMarker;
-            case NodeType.TIME_ALIGNMENT:
-                return s.timeAlignmentMarker;
-            case NodeType.INVALID:
-                return s.unknownMarker;
             default:
-                throw new Error(`TransitType not supported: ${type}`);
+                throw new Error(`NodeType not supported: ${nodeType}`);
         }
     };
 
@@ -38,14 +52,11 @@ class NodeHelper {
             case NodeType.CROSSROAD: {
                 return 'Risteys';
             }
-            case NodeType.DISABLED: {
-                return 'Ei käytössä';
-            }
             case NodeType.MUNICIPALITY_BORDER: {
                 return 'Kuntaraja';
             }
             default: {
-                return nodeType.toString();
+                throw new Error(`NodeType not supported: ${nodeType}`);
             }
         }
     };

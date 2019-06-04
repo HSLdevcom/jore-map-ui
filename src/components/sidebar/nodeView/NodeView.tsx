@@ -302,7 +302,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 <div
                                     className={classnames(
                                         s.labelIcon,
-                                        NodeHelper.getTypeClass(node.type, true)
+                                        NodeHelper.getNodeTypeClass(node.type, {
+                                            isNodeHighlighted: true
+                                        })
                                     )}
                                 />
                             </div>

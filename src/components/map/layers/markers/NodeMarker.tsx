@@ -103,20 +103,16 @@ class NodeMarker extends Component<INodeMarkerProps> {
         const isSelected = this.props.isSelected;
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
-        if (this.props.isDisabled) {
-            res.push(NodeHelper.getTypeClass(NodeType.DISABLED, isSelected));
-        }
-        if (this.props.isTimeAlignmentStop) {
-            res.push(
-                NodeHelper.getTypeClass(NodeType.TIME_ALIGNMENT, isSelected)
-            );
-        }
-
+        res.push(
+            NodeHelper.getNodeTypeClass(this.props.node.type, {
+                isNodeDisabled: this.props.isDisabled,
+                isNodeTimeAlignment: this.props.isTimeAlignmentStop,
+                isNodeHighlighted: isSelected
+            })
+        );
         if (this.props.isHighlighted) {
             res.push(s.highlight);
         }
-
-        res.push(NodeHelper.getTypeClass(this.props.node.type, isSelected));
         return res;
     };
 
