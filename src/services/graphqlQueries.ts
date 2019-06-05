@@ -45,14 +45,18 @@ const getAllSearchLinesQuery = () => {
         }`;
 };
 
-const getRouteQuery = () => {
+const getRouteQuery = (areRoutePathLinksExcluded: boolean) => {
     return gql`query getLineDetails($routeId: String!) {
             route: reittiByReitunnus(reitunnus: $routeId) {
                 ${routeQueryFields}
                 reitinsuuntasByReitunnus{
                     nodes {
                         ${routePathQueryFields}
-                        ${routePathLinksForRoutePathQuery}
+                        ${
+                            areRoutePathLinksExcluded
+                                ? ''
+                                : routePathLinksForRoutePathQuery
+                        }
                         ${routeForRoutePathQuery}
                     }
                 }

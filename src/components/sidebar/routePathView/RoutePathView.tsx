@@ -180,11 +180,10 @@ class RoutePathView extends ViewFormBase<
             startTimeString,
             direction
         ] = this.props.match!.params.id.split(',');
-        const startTime = Moment(startTimeString);
         try {
             const routePath = await RoutePathService.fetchRoutePath(
                 routeId,
-                startTime,
+                startTimeString,
                 direction
             );
             this.props.routePathStore!.setRoutePath(routePath);

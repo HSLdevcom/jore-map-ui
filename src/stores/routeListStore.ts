@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '~/models';
 import ColorScale from '~/util/colorScale';
+import RoutePathService from '~/services/routePathService';
 
 export class RouteListStore {
     @observable private _routes: IRoute[];
@@ -45,28 +46,50 @@ export class RouteListStore {
     };
 
     private getRoutePath = (internalId: string): IRoutePath | null => {
-        let routePathObservable: IRoutePath | null = null;
+        let foundRoutePath: IRoutePath | null = null;
         this._routes.find(_route => {
             const found = _route.routePaths.find(
                 _routePath => _routePath.internalId === internalId
             );
             if (found) {
-                routePathObservable = found;
+                foundRoutePath = found;
                 return true;
             }
             return false;
         });
-        return routePathObservable;
+        return foundRoutePath;
     };
 
     @action
-    public toggleRoutePathVisibility = (internalId: string) => {
-        const routePathObservable = this.getRoutePath(internalId);
-        if (routePathObservable) {
-            routePathObservable.visible = !routePathObservable.visible;
-            routePathObservable.color = routePathObservable.visible
+    public toggleRoutePathVisibility = async (internalId: string) => {
+        const currentRoutePath = this.getRoutePath(internalId);
+        if (currentRoutePath) {
+            currentRoutePath.visible = !currentRoutePath.visible;
+            currentRoutePath.color = currentRoutePath.visible
                 ? this.colorScale.reserveColor()
-                : this.colorScale.releaseColor(routePathObservable.color!);
+                : this.colorScale.releaseColor(currentRoutePath.color!);
+            if (
+                currentRoutePath.visible &&
+                currentRoutePath.routePathLinks.length === 0
+            ) {
+                const newRoutePath = await RoutePathService.fetchRoutePath(
+                    currentRoutePath.routeId,
+                    currentRoutePath.startTime,
+                    currentRoutePath.direction
+                );
+                this.updateRoutePathLinks(newRoutePath, internalId);
+            }
+        }
+    };
+
+    @action
+    private updateRoutePathLinks = (
+        newRoutePath: IRoutePath,
+        internalId: string
+    ) => {
+        const oldRoutePath = this.getRoutePath(internalId);
+        if (oldRoutePath) {
+            oldRoutePath.routePathLinks = newRoutePath.routePathLinks;
         }
     };
 }
