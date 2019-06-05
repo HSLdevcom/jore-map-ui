@@ -22,7 +22,6 @@ export class MapStore {
     @observable private _coordinates: L.LatLng;
     @observable private _displayCoordinateSystem: CoordinateSystem;
     @observable private _isMapFullscreen: boolean;
-    @observable private _routes: MapRoute[];
     @observable private _zoom: number;
     @observable private _selectedNodeId: string | null;
     @observable private _visibleNodeLabels: NodeLabel[];
@@ -35,7 +34,6 @@ export class MapStore {
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._zoom = INITIAL_ZOOM;
         this._isMapFullscreen = false;
-        this._routes = [];
         this._visibleNodeLabels = [NodeLabel.hastusId];
         this._mapFilters = [MapFilter.arrowDecorator];
         this._mapCursor = '';
@@ -59,11 +57,6 @@ export class MapStore {
     @computed
     get isMapFullscreen(): boolean {
         return this._isMapFullscreen;
-    }
-
-    @computed
-    get routes(): MapRoute[] {
-        return this._routes;
     }
 
     @computed
