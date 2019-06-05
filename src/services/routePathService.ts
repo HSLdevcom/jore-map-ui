@@ -12,7 +12,7 @@ import GraphqlQueries from './graphqlQueries';
 class RoutePathService {
     public static fetchRoutePath = async (
         routeId: string,
-        startDate: Moment.Moment,
+        startTime: Date,
         direction: string
     ): Promise<IRoutePath> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
@@ -20,9 +20,10 @@ class RoutePathService {
             variables: {
                 routeId,
                 direction,
-                startDate: startDate.format()
+                startDate: Moment(startTime).format()
             }
         });
+
         return RoutePathFactory.mapExternalRoutePath(
             queryResult.data.routePath
         );

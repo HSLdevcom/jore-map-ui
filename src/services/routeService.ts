@@ -22,7 +22,11 @@ class RouteService {
         routeIds: string[]
     ): Promise<IRoute[]> => {
         const routes = await Promise.all(
-            routeIds.map(id => RouteService.runFetchRouteQuery(id))
+            routeIds.map(id =>
+                RouteService.runFetchRouteQuery(id, {
+                    areRoutePathLinksExcluded: true
+                })
+            )
         );
 
         return routes.map((res: IRoute) => res!);
@@ -39,10 +43,15 @@ class RouteService {
     };
 
     private static runFetchRouteQuery = async (
-        routeId: string
+        routeId: string,
+        {
+            areRoutePathLinksExcluded
+        }: { areRoutePathLinksExcluded?: boolean } = {}
     ): Promise<IRoute> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
-            query: GraphqlQueries.getRouteQuery(),
+            query: GraphqlQueries.getRouteQuery(
+                Boolean(areRoutePathLinksExcluded)
+            ),
             variables: { routeId }
         });
         const line = await LineService.fetchLine(
