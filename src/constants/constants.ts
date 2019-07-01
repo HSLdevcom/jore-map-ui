@@ -17,7 +17,7 @@ const developmentConstants = {
 
 const productionConstants = {
     ...commonConstants,
-    AFTER_LOGIN_URL: 'https://jore-map-dev.hsldev.com/afterLogin',
+    AFTER_LOGIN_URL: 'https://jore-map-test.hsldev.com/afterLogin',
     FADE_ALERT_TIMEOUT: 2500, // milliseconds
     IS_LOGIN_REQUIRED: true // set always true in production
 };
