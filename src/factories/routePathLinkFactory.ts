@@ -8,7 +8,7 @@ import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {
     private static getTemporaryRoutePathLinkId = () => {
-        return `${Constants.NEW_OBJECT_TAG}-${NumberIterator.getNumber()}`;
+        return `${Constants.NEW_OBJECT_TAG}${NumberIterator.getNumber()}`;
     };
 
     public static mapExternalRoutePathLink = (
