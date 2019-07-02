@@ -95,7 +95,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
                 return {
                     color: TransitTypeHelper.getColor(properties.lnkverkko),
-                    weight: 2,
+                    weight: 3,
                     fillOpacity: 1,
                     fill: true
                 };
@@ -182,7 +182,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 let radius: any;
                 switch (this.props.networkStore!.nodeSize) {
                     case NodeSize.normal:
-                        radius = 4;
+                        radius = 5;
                         break;
                     case NodeSize.large:
                         radius = 6;

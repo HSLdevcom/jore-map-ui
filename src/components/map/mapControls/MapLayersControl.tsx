@@ -122,17 +122,6 @@ class MapLayersControl extends React.Component<
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleMapLayerVisibility(
-                                MapLayer.linkPoint
-                            )}
-                            checked={NetworkStore.isMapLayerVisible(
-                                MapLayer.linkPoint
-                            )}
-                            content='Linkkien pisteet'
-                        />
-                    </div>
-                    <div className={s.checkboxContainer}>
-                        <Checkbox
-                            onClick={this.toggleMapLayerVisibility(
                                 MapLayer.node
                             )}
                             checked={NetworkStore.isMapLayerVisible(
@@ -150,6 +139,17 @@ class MapLayersControl extends React.Component<
                                 MapLayer.nodeWithoutLink
                             )}
                             content='Linkittömät solmut'
+                        />
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleMapLayerVisibility(
+                                MapLayer.linkPoint
+                            )}
+                            checked={NetworkStore.isMapLayerVisible(
+                                MapLayer.linkPoint
+                            )}
+                            content='Linkkien pisteet'
                         />
                     </div>
                     <div className={s.sectionDivider} />
