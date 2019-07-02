@@ -148,7 +148,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         );
     };
 
-    private renderMarker = () => {
+    private renderStartMarker = () => {
         const startMarkerCoordinates = this.props.linkStore!
             .startMarkerCoordinates;
         if (!startMarkerCoordinates) return null;
@@ -164,7 +164,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     render() {
         const link = this.props.linkStore!.link;
         if (!link || !link.geometry) {
-            return null;
+            return <>{this.renderStartMarker()}</>;
         }
 
         this.drawEditableLink();
@@ -173,7 +173,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             <>
                 {this.renderLinkDecorator()}
                 {this.renderNodes()}
-                {this.renderMarker()}
+                {this.renderStartMarker()}
             </>
         );
     }
