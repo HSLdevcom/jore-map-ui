@@ -8,7 +8,6 @@ import { INode } from '~/models/index';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
 import LeafletUtils from '~/util/leafletUtils';
 import MarkerPopup from './MarkerPopup';
@@ -22,7 +21,6 @@ interface INodeMarkerProps {
     onClick?: Function;
     isDraggable?: boolean;
     isHighlighted?: boolean;
-    onClickEventParams?: any;
     forcedVisibleNodeLabels?: NodeLabel[];
     markerClasses?: string[];
     // static markup language (HTML)
@@ -197,12 +195,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private onMarkerClick = () => {
         if (this.props.onClick) {
             this.props.onClick();
-        }
-        if (this.props.onClickEventParams) {
-            EventManager.trigger(
-                'routePathNodeClick',
-                this.props.onClickEventParams
-            );
         }
     };
 
