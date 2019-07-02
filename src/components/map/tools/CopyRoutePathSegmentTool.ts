@@ -1,5 +1,5 @@
 import EventManager, {
-    INodeClickParams,
+    IRoutePathNodeClickParams,
     INetworkNodeClickParams
 } from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -21,17 +21,17 @@ class CopyRoutePathSegmentTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventManager.on('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.on('nodeClick', this.onNodeClick);
+        EventManager.on('routePathNodeClick', this.onRoutePathNodeClick);
     }
     public deactivate() {
         EventManager.off('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.off('nodeClick', this.onNodeClick);
+        EventManager.off('routePathNodeClick', this.onRoutePathNodeClick);
         RoutePathCopySegmentStore.clear();
     }
 
-    private onNodeClick = (clickEvent: CustomEvent) => {
+    private onRoutePathNodeClick = (clickEvent: CustomEvent) => {
         const setNodeType = RoutePathCopySegmentStore.setNodeType;
-        const params: INodeClickParams = clickEvent.detail;
+        const params: IRoutePathNodeClickParams = clickEvent.detail;
 
         if (setNodeType === 'startNode') this.selectStartNode(params.node.id);
         else this.selectEndNode(params.node.id);

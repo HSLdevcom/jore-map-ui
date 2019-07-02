@@ -199,7 +199,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
             this.props.onClick();
         }
         if (this.props.onClickEventParams) {
-            EventManager.trigger('nodeClick', this.props.onClickEventParams);
+            EventManager.trigger(
+                'routePathNodeClick',
+                this.props.onClickEventParams
+            );
         }
     };
 

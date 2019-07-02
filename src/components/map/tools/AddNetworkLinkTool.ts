@@ -2,7 +2,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import EventManager, {
-    INodeClickParams,
+    IRoutePathNodeClickParams,
     INetworkNodeClickParams
 } from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -24,16 +24,16 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventManager.on('nodeClick', this.onNodeClick);
+        EventManager.on('routePathNodeClick', this.onRoutePathNodeClick);
         EventManager.on('networkNodeClick', this.onNetworkNodeClick);
     }
     public deactivate() {
         this.resetTool();
-        EventManager.off('nodeClick', this.onNodeClick);
+        EventManager.off('routePathNodeClick', this.onRoutePathNodeClick);
         EventManager.off('networkNodeClick', this.onNetworkNodeClick);
     }
-    private onNodeClick = async (clickEvent: CustomEvent) => {
-        const nodeClickParams: INodeClickParams = clickEvent.detail;
+    private onRoutePathNodeClick = async (clickEvent: CustomEvent) => {
+        const nodeClickParams: IRoutePathNodeClickParams = clickEvent.detail;
         this.setStartOrEndNode(nodeClickParams.node.id);
     };
 
