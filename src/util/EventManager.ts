@@ -9,7 +9,7 @@ type eventName =
     | 'undo'
     | 'redo'
     | 'mapClick'
-    | 'routePathNodeClick'
+    | 'nodeClick'
     | 'networkNodeClick'
     | 'networkLinkClick'
     | 'geometryChange';
@@ -31,7 +31,7 @@ class EventManager {
     }
 }
 
-interface IRoutePathNodeClickParams {
+interface INodeClickParams {
     node: INode;
 }
 
@@ -48,8 +48,4 @@ interface INetworkLinkClickParams {
 
 export default new EventManager();
 
-export {
-    IRoutePathNodeClickParams,
-    INetworkNodeClickParams,
-    INetworkLinkClickParams
-};
+export { INodeClickParams, INetworkNodeClickParams, INetworkLinkClickParams };

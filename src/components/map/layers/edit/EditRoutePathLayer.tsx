@@ -11,7 +11,7 @@ import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
-import EventManager, { IRoutePathNodeClickParams } from '~/util/EventManager';
+import EventManager, { INodeClickParams } from '~/util/EventManager';
 import NodeMarker from '../markers/NodeMarker';
 import Marker from '../markers/Marker';
 import ArrowDecorator from '../ArrowDecorator';
@@ -118,15 +118,15 @@ class EditRoutePathLayer extends Component<
             if (isNodeHighlighted) {
                 onNodeClick = () => {
                     this.fetchNeighborRoutePathLinks(node, linkOrderNumber);
-                    const clickParams: IRoutePathNodeClickParams = { node };
-                    EventManager.trigger('routePathNodeClick', clickParams);
+                    const clickParams: INodeClickParams = { node };
+                    EventManager.trigger('nodeClick', clickParams);
                 };
             }
         } else {
             onNodeClick = () => {
                 this.highlightItemById(node.id);
-                const clickParams: IRoutePathNodeClickParams = { node };
-                EventManager.trigger('routePathNodeClick', clickParams);
+                const clickParams: INodeClickParams = { node };
+                EventManager.trigger('nodeClick', clickParams);
             };
             isNodeHighlighted = this.props.routePathStore!.isMapItemHighlighted(
                 node.id

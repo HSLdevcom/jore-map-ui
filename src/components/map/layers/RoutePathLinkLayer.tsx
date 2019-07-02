@@ -7,7 +7,7 @@ import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import { PopupStore } from '~/stores/popupStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import StartNodeType from '~/enums/startNodeType';
-import EventManager, { IRoutePathNodeClickParams } from '~/util/EventManager';
+import EventManager, { INodeClickParams } from '~/util/EventManager';
 import NodeMarker from './markers/NodeMarker';
 import Marker from './markers/Marker';
 import ArrowDecorator from './ArrowDecorator';
@@ -63,8 +63,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private renderNodes() {
         const routePathLinks = this.props.routePathLinks;
         const onNodeClick = (node: INode) => () => {
-            const clickParams: IRoutePathNodeClickParams = { node };
-            EventManager.trigger('routePathNodeClick', clickParams);
+            const clickParams: INodeClickParams = { node };
+            EventManager.trigger('nodeClick', clickParams);
         };
 
         const nodes = routePathLinks.map((routePathLink, index) => {

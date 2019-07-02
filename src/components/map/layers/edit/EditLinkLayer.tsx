@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { withLeaflet } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
-import EventManager, { IRoutePathNodeClickParams } from '~/util/EventManager';
+import EventManager, { INodeClickParams } from '~/util/EventManager';
 import { LoginStore } from '~/stores/loginStore';
 import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
@@ -137,8 +137,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private renderNode = (node: INode) => {
         if (!node) return null;
         const onNodeClick = () => {
-            const clickParams: IRoutePathNodeClickParams = { node };
-            EventManager.trigger('routePathNodeClick', clickParams);
+            const clickParams: INodeClickParams = { node };
+            EventManager.trigger('nodeClick', clickParams);
         };
 
         return (
