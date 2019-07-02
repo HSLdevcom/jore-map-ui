@@ -7,6 +7,7 @@ import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import { PopupStore } from '~/stores/popupStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import StartNodeType from '~/enums/startNodeType';
+import EventManager, { IRoutePathNodeClickParams } from '~/util/EventManager';
 import NodeMarker from './markers/NodeMarker';
 import Marker from './markers/Marker';
 import ArrowDecorator from './ArrowDecorator';
@@ -61,6 +62,11 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
     private renderNodes() {
         const routePathLinks = this.props.routePathLinks;
+        const onNodeClick = (node: INode) => () => {
+            const clickParams: IRoutePathNodeClickParams = { node };
+            EventManager.trigger('routePathNodeClick', clickParams);
+        };
+
         const nodes = routePathLinks.map((routePathLink, index) => {
             const node = routePathLink.startNode;
             return (
@@ -75,6 +81,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                         routePathLink.startNodeTimeAlignmentStop !== '0'
                     }
                     onContextMenu={this.openPopup(routePathLink.startNode)}
+                    onClick={onNodeClick(node)}
                 />
             );
         });
@@ -88,6 +95,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isDisabled={false} // Last node can't be disabled
                 isTimeAlignmentStop={false} // Last node can't be a time alignment stop
                 onContextMenu={this.openPopup(lastRoutePathLink.endNode)}
+                onClick={onNodeClick(node)}
             />
         );
         return nodes;
