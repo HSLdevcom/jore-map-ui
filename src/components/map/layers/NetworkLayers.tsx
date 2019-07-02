@@ -9,7 +9,10 @@ import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import EventManager from '~/util/EventManager';
+import EventManager, {
+    INetworkNodeClickParams,
+    INetworkLinkClickParams
+} from '~/util/EventManager';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import TransitType from '~/enums/transitType';
 import NodeType from '~/enums/nodeType';
@@ -20,17 +23,6 @@ enum GeoserverLayer {
     Node = 'solmu',
     Link = 'linkki',
     Point = 'piste'
-}
-
-interface NetworkNodeClickParams {
-    nodeId: string;
-    nodeType: NodeType;
-}
-
-interface NetworkLinkClickParams {
-    startNodeId: string;
-    endNodeId: NodeType;
-    transitType: TransitType;
 }
 
 interface INetworkLayersProps {
@@ -270,7 +262,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private onNetworkNodeClick = (clickEvent: any) => {
         const properties = clickEvent.sourceTarget.properties;
-        const clickParams: NetworkNodeClickParams = {
+        const clickParams: INetworkNodeClickParams = {
             nodeId: properties.soltunnus,
             nodeType: properties.soltyyppi
         };
@@ -279,7 +271,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private onNetworkLinkClick = (clickEvent: any) => {
         const properties = clickEvent.sourceTarget.properties;
-        const clickParams: NetworkLinkClickParams = {
+        const clickParams: INetworkLinkClickParams = {
             startNodeId: properties.lnkalkusolmu,
             endNodeId: properties.lnkloppusolmu,
             transitType: properties.lnkverkko
@@ -363,5 +355,3 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 }
 
 export default NetworkLayers;
-
-export { NetworkNodeClickParams, NetworkLinkClickParams };

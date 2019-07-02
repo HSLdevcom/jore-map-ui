@@ -1,13 +1,12 @@
 import ToolbarTool from '~/enums/toolbarTool';
-import EventManager from '~/util/EventManager';
+import EventManager, {
+    INetworkNodeClickParams,
+    INetworkLinkClickParams
+} from '~/util/EventManager';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import BaseTool from './BaseTool';
-import {
-    NetworkNodeClickParams,
-    NetworkLinkClickParams
-} from '../layers/NetworkLayers';
 
 /**
  * Tool for creating new routePath
@@ -24,7 +23,7 @@ class SelectNetworkEntityTool implements BaseTool {
     }
 
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
-        const params: NetworkNodeClickParams = clickEvent.detail;
+        const params: INetworkNodeClickParams = clickEvent.detail;
 
         const nodeViewLink = routeBuilder
             .to(SubSites.node)
@@ -33,7 +32,7 @@ class SelectNetworkEntityTool implements BaseTool {
         navigator.goTo(nodeViewLink);
     };
     private onNetworkLinkClick = async (clickEvent: CustomEvent) => {
-        const params: NetworkLinkClickParams = clickEvent.detail;
+        const params: INetworkLinkClickParams = clickEvent.detail;
 
         const linkViewLink = routeBuilder
             .to(SubSites.link)
