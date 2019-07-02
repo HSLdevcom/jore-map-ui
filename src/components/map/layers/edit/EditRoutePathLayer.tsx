@@ -10,7 +10,8 @@ import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
-import EventManager from '~/util/EventManager';
+import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
+import EventManager, { INodeClickParams } from '~/util/EventManager';
 import NodeMarker from '../markers/NodeMarker';
 import Marker from '../markers/Marker';
 import ArrowDecorator from '../ArrowDecorator';
@@ -19,11 +20,6 @@ import RoutePathCopySegmentLayer from './routePathCopySegmentLayer';
 
 const START_MARKER_COLOR = '#00df0b';
 const ROUTE_COLOR = '#000';
-
-interface IEditRoutePathLayerNodeClickParams {
-    node: INode;
-    linkOrderNumber: number;
-}
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
@@ -63,7 +59,7 @@ class EditRoutePathLayer extends Component<
         this.setBounds();
     }
 
-    private defaultActionOnObjectClick = (id: string) => {
+    private highlightItemById = (id: string) => {
         // Switch to info tab
         this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
         // Close all extended objects, in order to be able to calculate final height of items
@@ -120,15 +116,18 @@ class EditRoutePathLayer extends Component<
             );
             // Allow click event for highlighted nodes only
             if (isNodeHighlighted) {
-                const clickParams: IEditRoutePathLayerNodeClickParams = {
-                    node,
-                    linkOrderNumber
-                };
-                onNodeClick = () =>
+                onNodeClick = () => {
+                    this.fetchNeighborRoutePathLinks(node, linkOrderNumber);
+                    const clickParams: INodeClickParams = { node };
                     EventManager.trigger('nodeClick', clickParams);
+                };
             }
         } else {
-            onNodeClick = () => this.defaultActionOnObjectClick(node.id);
+            onNodeClick = () => {
+                this.highlightItemById(node.id);
+                const clickParams: INodeClickParams = { node };
+                EventManager.trigger('nodeClick', clickParams);
+            };
             isNodeHighlighted = this.props.routePathStore!.isMapItemHighlighted(
                 node.id
             );
@@ -145,6 +144,25 @@ class EditRoutePathLayer extends Component<
         );
     };
 
+    private fetchNeighborRoutePathLinks = async (
+        node: INode,
+        linkOrderNumber: number
+    ) => {
+        const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
+            node.id,
+            this.props.routePathStore!.routePath!,
+            linkOrderNumber
+        );
+        if (queryResult) {
+            this.props.routePathStore!.setNeighborRoutePathLinks(
+                queryResult.neighborLinks
+            );
+            this.props.routePathStore!.setNeighborToAddType(
+                queryResult.neighborToAddType
+            );
+        }
+    };
+
     private renderLink = (routePathLink: IRoutePathLink) => {
         const onRoutePathLinkClick =
             this.props.toolbarStore!.selectedTool &&
@@ -152,7 +170,7 @@ class EditRoutePathLayer extends Component<
                 ? this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(
                       routePathLink.id
                   )
-                : () => this.defaultActionOnObjectClick(routePathLink.id);
+                : () => this.highlightItemById(routePathLink.id);
 
         return [
             <Polyline
@@ -285,5 +303,3 @@ class EditRoutePathLayer extends Component<
 }
 
 export default EditRoutePathLayer;
-
-export { IEditRoutePathLayerNodeClickParams };

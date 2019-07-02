@@ -1,3 +1,7 @@
+import { INode } from '~/models';
+import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
+
 type eventName =
     | 'enter'
     | 'arrowUp'
@@ -5,7 +9,7 @@ type eventName =
     | 'undo'
     | 'redo'
     | 'mapClick'
-    | 'nodeClick' // TODO: rename as onRoutePathNodeClick?
+    | 'nodeClick'
     | 'networkNodeClick'
     | 'networkLinkClick'
     | 'geometryChange';
@@ -27,4 +31,21 @@ class EventManager {
     }
 }
 
+interface INodeClickParams {
+    node: INode;
+}
+
+interface INetworkNodeClickParams {
+    nodeId: string;
+    nodeType: NodeType;
+}
+
+interface INetworkLinkClickParams {
+    startNodeId: string;
+    endNodeId: NodeType;
+    transitType: TransitType;
+}
+
 export default new EventManager();
+
+export { INodeClickParams, INetworkNodeClickParams, INetworkLinkClickParams };

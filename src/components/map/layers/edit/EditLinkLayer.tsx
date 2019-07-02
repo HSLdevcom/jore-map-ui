@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { withLeaflet } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
-import EventManager from '~/util/EventManager';
+import EventManager, { INodeClickParams } from '~/util/EventManager';
 import { LoginStore } from '~/stores/loginStore';
 import { INode, ILink } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
@@ -136,19 +136,23 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     private renderNode = (node: INode) => {
         if (!node) return null;
+        const onNodeClick = () => {
+            const clickParams: INodeClickParams = { node };
+            EventManager.trigger('nodeClick', clickParams);
+        };
 
         return (
             <NodeMarker
                 key={node.id}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDraggable={false}
-                onClickEventParams={{ nodeId: node.id }}
+                onClick={onNodeClick}
                 node={node}
             />
         );
     };
 
-    private renderMarker = () => {
+    private renderStartMarker = () => {
         const startMarkerCoordinates = this.props.linkStore!
             .startMarkerCoordinates;
         if (!startMarkerCoordinates) return null;
@@ -164,7 +168,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     render() {
         const link = this.props.linkStore!.link;
         if (!link || !link.geometry) {
-            return null;
+            return <>{this.renderStartMarker()}</>;
         }
 
         this.drawEditableLink();
@@ -173,7 +177,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             <>
                 {this.renderLinkDecorator()}
                 {this.renderNodes()}
-                {this.renderMarker()}
+                {this.renderStartMarker()}
             </>
         );
     }

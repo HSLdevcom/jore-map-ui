@@ -1,7 +1,10 @@
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import EventManager from '~/util/EventManager';
+import EventManager, {
+    INodeClickParams,
+    INetworkNodeClickParams
+} from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
 import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
@@ -12,6 +15,7 @@ import BaseTool from './BaseTool';
 
 class AddNetworkLinkTool implements BaseTool {
     private startNodeId: string | null = null;
+    private endNodeId: string | null = null;
     public toolType = ToolbarTool.AddNetworkLink;
     public toolHelpHeader = 'Luo uusi linkki';
     public toolHelpText =
@@ -20,16 +24,26 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventManager.on('nodeClick', this.onNodeClick);
-        EventManager.on('networkNodeClick', this.onNodeClick);
+        EventManager.on('nodeClick', this.onnodeClick);
+        EventManager.on('networkNodeClick', this.onNetworkNodeClick);
     }
     public deactivate() {
         this.resetTool();
-        EventManager.off('nodeClick', this.onNodeClick);
-        EventManager.off('networkNodeClick', this.onNodeClick);
+        EventManager.off('nodeClick', this.onnodeClick);
+        EventManager.off('networkNodeClick', this.onNetworkNodeClick);
     }
-    private onNodeClick = async (clickEvent: CustomEvent) => {
-        const nodeId = clickEvent.detail.nodeId;
+    private onnodeClick = async (clickEvent: CustomEvent) => {
+        const nodeClickParams: INodeClickParams = clickEvent.detail;
+        this.setStartOrEndNode(nodeClickParams.node.id);
+    };
+
+    private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
+        const networkNodeClickParams: INetworkNodeClickParams =
+            clickEvent.detail;
+        this.setStartOrEndNode(networkNodeClickParams.nodeId);
+    };
+
+    private setStartOrEndNode = async (nodeId: string) => {
         if (!this.startNodeId) {
             this.startNodeId = nodeId;
             try {
@@ -39,20 +53,22 @@ class AddNetworkLinkTool implements BaseTool {
                 ErrorStore.addError(`Alkusolmun ${nodeId} haku epäonnistui`);
             }
         } else {
-            const startNodeId = this.startNodeId;
-            const endNodeId = nodeId;
-            if (startNodeId === endNodeId) return;
+            this.endNodeId = nodeId;
+            if (this.startNodeId === this.endNodeId) return;
             // TODO?
             // if (!this.isNewLinkValid(clickEvent, startNodeId, endNodeId)) return;
-
-            const newLinkViewLink = routeBuilder
-                .to(SubSites.newLink)
-                .toTarget([startNodeId, endNodeId].join(','))
-                .toLink();
-            navigator.goTo(newLinkViewLink);
-
-            ToolbarStore.selectTool(null);
+            this.redirectToNewLinkView();
         }
+    };
+
+    private redirectToNewLinkView = () => {
+        const newLinkViewLink = routeBuilder
+            .to(SubSites.newLink)
+            .toTarget([this.startNodeId, this.endNodeId].join(','))
+            .toLink();
+        navigator.goTo(newLinkViewLink);
+
+        ToolbarStore.selectTool(null);
     };
 
     // TODO?
@@ -74,6 +90,7 @@ class AddNetworkLinkTool implements BaseTool {
 
     private resetTool = () => {
         this.startNodeId = null;
+        this.endNodeId = null;
         LinkStore.setMarkerCoordinates(null);
     };
 }
