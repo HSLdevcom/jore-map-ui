@@ -376,6 +376,18 @@ export class RoutePathStore {
         this._geometryUndoStore.clear();
     };
 
+    @action
+    private restoreBookScheduleProperties(undoState: UndoState) {
+        this.updateRoutePathProperty(
+            'isStartNodeUsingBookSchedule',
+            undoState.isStartNodeUsingBookSchedule
+        );
+        this.updateRoutePathProperty(
+            'startNodeBookScheduleColumnNumber',
+            undoState.startNodeBookScheduleColumnNumber
+        );
+    }
+
     public isLastRoutePathLink = (routePathLink: IRoutePathLink): boolean => {
         const routePathLinks = this._routePath!.routePathLinks;
         const index = routePathLinks.findIndex(rpLink => {
@@ -439,6 +451,12 @@ export class RoutePathStore {
         );
     };
 
+    public hasRoutePathLinksChanged = () => {
+        const newRoutePathLinks = this.routePath!.routePathLinks;
+        const oldRoutePathLinks = this._oldRoutePath!.routePathLinks;
+        return !_.isEqual(newRoutePathLinks, oldRoutePathLinks);
+    };
+
     private recalculateOrderNumbers = () => {
         this._routePath!.routePathLinks.forEach((rpLink, index) => {
             // Order numbers start from 1
@@ -468,18 +486,6 @@ export class RoutePathStore {
         );
         this.updateRoutePathProperty(property, null);
     };
-
-    @action
-    private restoreBookScheduleProperties(undoState: UndoState) {
-        this.updateRoutePathProperty(
-            'isStartNodeUsingBookSchedule',
-            undoState.isStartNodeUsingBookSchedule
-        );
-        this.updateRoutePathProperty(
-            'startNodeBookScheduleColumnNumber',
-            undoState.startNodeBookScheduleColumnNumber
-        );
-    }
 }
 
 const observableStoreStore = new RoutePathStore();

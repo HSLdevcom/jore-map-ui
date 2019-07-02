@@ -1,6 +1,7 @@
 import React from 'react';
 import Moment from 'moment';
 import classnames from 'classnames';
+import _ from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
 import ButtonType from '~/enums/buttonType';
@@ -248,9 +249,16 @@ class RoutePathView extends ViewFormBase<
                     )
                     .toLink();
             } else {
-                await RoutePathService.updateRoutePath(
+                const routePathToUpdate = _.cloneDeep(
                     this.props.routePathStore!.routePath!
                 );
+                const hasRoutePathLinksChanged = this.props.routePathStore!.hasRoutePathLinksChanged();
+
+                // If routePathLinks are not changed, no need to update them (optimizing save time in backend)
+                if (!hasRoutePathLinksChanged) {
+                    routePathToUpdate.routePathLinks = [];
+                }
+                await RoutePathService.updateRoutePath(routePathToUpdate);
             }
             this.props.routePathStore!.setOldRoutePath(
                 this.props.routePathStore!.routePath!
