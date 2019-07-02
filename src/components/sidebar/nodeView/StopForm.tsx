@@ -281,8 +281,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <div className={s.flexRow}>
                         <InputContainer
                             label='PYSÄKKIALUE'
-                            disabled={isEditingDisabled}
-                            value={stop.areaId}
+                            disabled={true} // TODO: change: sEditingDisabled
+                            value={110001} // TODO: change: stop.areaId when really this works
                             validationResult={invalidPropertiesMap['areaId']}
                             onChange={onChange('areaId')}
                         />

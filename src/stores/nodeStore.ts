@@ -221,7 +221,7 @@ export class NodeStore {
         });
     };
 
-    getDirtyLinks() {
+    public getDirtyLinks() {
         // All links are dirty if the node coordinate has changed
         if (
             !_.isEqual(
