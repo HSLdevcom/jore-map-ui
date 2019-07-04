@@ -245,7 +245,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             isNodeFormInvalid ||
             isStopFormInvalid;
         const nodeTypeCodeList = this.props
-            .codeListStore!.getCodeList('Solmutyyppi (P/E)')
+            .codeListStore!.getDropdownItemList('Solmutyyppi (P/E)')
             .filter(item => item.value !== StartNodeType.DISABLED);
         return (
             <div className={s.nodeView}>
@@ -273,7 +273,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 <Dropdown
                                     label='MATKA-AIKAPISTE'
                                     disabled={isEditingDisabled}
-                                    items={this.props.codeListStore!.getCodeList(
+                                    items={this.props.codeListStore!.getDropdownItemList(
                                         'Kyllä/Ei'
                                     )}
                                     selected={node.tripTimePoint}

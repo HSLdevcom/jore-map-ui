@@ -28,12 +28,6 @@ export class CodeListStore {
         this._codeListItems = codeListItems;
     }
 
-    public getCodeList = (codeListName: codeListName): ICodeListItem[] => {
-        return this._codeListItems
-            .filter(item => item.listId === codeListName)
-            .sort((a, b) => a.orderNumber - b.orderNumber);
-    };
-
     public getDropdownItemList = (
         codeListName: codeListName
     ): IDropdownItem[] => {
