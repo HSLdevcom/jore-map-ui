@@ -27,7 +27,7 @@ const Dropdown = observer((props: IDropdownProps) => {
     const onChange = (event: any) => {
         props.onChange(event.target.value);
     };
-    let dropdownItemList = _.cloneDeep(props.items);
+    const dropdownItemList = _.cloneDeep(props.items);
 
     if (props.isValueIncludedInOptionLabel) {
         dropdownItemList.forEach(
@@ -52,11 +52,6 @@ const Dropdown = observer((props: IDropdownProps) => {
             };
             dropdownItemList.push(selectedItem);
         }
-    }
-
-    // Show max 100 items
-    if (dropdownItemList.length > 100) {
-        dropdownItemList = dropdownItemList.slice(0, 100);
     }
 
     return (
