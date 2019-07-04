@@ -202,7 +202,7 @@ class LineInfoTab extends React.Component<
                                 value: '',
                                 label: ''
                             }}
-                            items={this.props.codeListStore!.getCodeList(
+                            items={this.props.codeListStore!.getDropdownItemList(
                                 'Joukkoliikennelaji'
                             )}
                             onChange={onChange('publicTransportType')}
@@ -214,7 +214,7 @@ class LineInfoTab extends React.Component<
                             label='TILAAJAORGANISAATIO'
                             disabled={isEditingDisabled}
                             selected={line.clientOrganization}
-                            items={this.props.codeListStore!.getCodeList(
+                            items={this.props.codeListStore!.getDropdownItemList(
                                 'Tilaajaorganisaatio'
                             )}
                             onChange={onChange('clientOrganization')}
@@ -232,7 +232,7 @@ class LineInfoTab extends React.Component<
                                 value: '',
                                 label: ''
                             }}
-                            items={this.props.codeListStore!.getCodeList(
+                            items={this.props.codeListStore!.getDropdownItemList(
                                 'Joukkoliikennekohde'
                             )}
                             onChange={onChange('publicTransportDestination')}
@@ -250,7 +250,7 @@ class LineInfoTab extends React.Component<
                                 value: '',
                                 label: ''
                             }}
-                            items={this.props.codeListStore!.getCodeList(
+                            items={this.props.codeListStore!.getDropdownItemList(
                                 'LinjanKorvaavaTyyppi'
                             )}
                             onChange={onChange('lineReplacementType')}

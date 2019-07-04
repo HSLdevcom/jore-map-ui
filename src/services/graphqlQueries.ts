@@ -76,22 +76,6 @@ const getAllRoutesQuery = () => {
     `;
 };
 
-const getAllRoutePathPrimaryKeysQuery = () => {
-    return gql`
-        query routePathPrimaryKeys($routeId: String) {
-            routePathPrimaryKeys: allReitinsuuntas(
-                condition: { reitunnus: $routeId }
-            ) {
-                nodes {
-                    reitunnus
-                    suusuunta
-                    suuvoimast
-                }
-            }
-        }
-    `;
-};
-
 const getRoutePathQuery = () => {
     return gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
             routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
@@ -163,6 +147,15 @@ const getLinksByStartNodeAndEndNodeQuery = () => {
         }`;
 };
 
+const getNodeQuery = () => {
+    return gql`
+        query getNodeDetails($nodeId: String!) {
+            node: solmuBySoltunnus(soltunnus: $nodeId) {
+                ${nodeQueryFields}
+            }
+        }`;
+};
+
 const getAllNodesQuery = () => {
     return gql`
         query getAllNodes {
@@ -176,15 +169,6 @@ const getAllNodesQuery = () => {
             }
         }
     `;
-};
-
-const getNodeQuery = () => {
-    return gql`
-        query getNodeDetails($nodeId: String!) {
-            node: solmuBySoltunnus(soltunnus: $nodeId) {
-                ${nodeQueryFields}
-            }
-        }`;
 };
 
 const getAllCodeLists = () => {
@@ -212,6 +196,35 @@ const getRoutePathsUsingLinkFromDate = () => {
                 }
             }
         }`;
+};
+
+const getAllRoutePathPrimaryKeysQuery = () => {
+    return gql`
+        query routePathPrimaryKeys($routeId: String) {
+            routePathPrimaryKeys: allReitinsuuntas(
+                condition: { reitunnus: $routeId }
+            ) {
+                nodes {
+                    reitunnus
+                    suusuunta
+                    suuvoimast
+                }
+            }
+        }
+    `;
+};
+
+const getAllStopAreas = () => {
+    return gql`
+        query getAllStopAreas {
+            node: allPysakkialues {
+                nodes {
+                    nimi
+                    pysalueid
+                }
+            }
+        }
+    `;
 };
 
 const lineQueryFields = `
@@ -494,5 +507,6 @@ export default {
     getLinksByEndNodeQuery,
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
-    getAllRoutePathPrimaryKeysQuery
+    getAllRoutePathPrimaryKeysQuery,
+    getAllStopAreas
 };

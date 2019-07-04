@@ -390,7 +390,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                     'municipalityCode'
                                 )}
                                 disabled={isEditingDisabled}
-                                items={this.props.codeListStore!.getCodeList(
+                                items={this.props.codeListStore!.getDropdownItemList(
                                     'Kunta (ris/pys)'
                                 )}
                                 selected={link.municipalityCode}

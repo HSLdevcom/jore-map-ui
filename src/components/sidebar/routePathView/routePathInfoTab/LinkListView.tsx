@@ -132,7 +132,7 @@ class ILinkListView extends React.Component<
                             value: EMPTY_FILTER_VALUE,
                             label: 'Näytä kaikki'
                         }}
-                        items={this.props.codeListStore!.getCodeList(
+                        items={this.props.codeListStore!.getDropdownItemList(
                             'Solmutyyppi (P/E)'
                         )}
                         onChange={this.setLinkTableFilter}

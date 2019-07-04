@@ -240,7 +240,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 label='SUUNTA'
                                 disabled={isUpdating}
                                 selected={this.props.routePath.direction}
-                                items={this.props.codeListStore!.getCodeList(
+                                items={this.props.codeListStore!.getDropdownItemList(
                                     'Suunta'
                                 )}
                                 onChange={this.onChangeDirection}
@@ -252,7 +252,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 label='POIKKEUSREITTI'
                                 disabled={isEditingDisabled}
                                 selected={this.props.routePath.exceptionPath}
-                                items={this.props.codeListStore!.getCodeList(
+                                items={this.props.codeListStore!.getDropdownItemList(
                                     'Kyllä/Ei'
                                 )}
                                 onChange={onChange('exceptionPath')}
@@ -311,7 +311,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 <Dropdown
                                     onChange={() => void 0}
                                     disabled={true}
-                                    items={this.props.codeListStore!.getCodeList(
+                                    items={this.props.codeListStore!.getDropdownItemList(
                                         'Suunta'
                                     )}
                                     selected='Suunta 1'
@@ -320,7 +320,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 <Dropdown
                                     onChange={() => void 0}
                                     disabled={true}
-                                    items={this.props.codeListStore!.getCodeList(
+                                    items={this.props.codeListStore!.getDropdownItemList(
                                         'Suunta'
                                     )}
                                     selected='Suunta 2'

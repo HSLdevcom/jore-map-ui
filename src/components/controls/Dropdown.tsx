@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import _ from 'lodash';
 import { IValidationResult } from '~/validation/FormValidator';
-import ICodeListItem from '~/models/ICodeListItem';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
@@ -13,7 +13,7 @@ interface IDropdownProps {
     label?: string;
     selected?: string | null;
     disabled?: boolean;
-    items: ICodeListItem[];
+    items: IDropdownItem[];
     emptyItem?: IDropdownItem;
     isValueIncludedInOptionLabel?: boolean;
     onChange: (value: any) => void;
@@ -27,26 +27,22 @@ const Dropdown = observer((props: IDropdownProps) => {
     const onChange = (event: any) => {
         props.onChange(event.target.value);
     };
-    const dropDownItemList = props.items.map(
-        (item): IDropdownItem => ({
-            value: item.value,
-            label: item.label
-        })
-    );
+    const dropdownItemList = _.cloneDeep(props.items);
 
     if (props.isValueIncludedInOptionLabel) {
-        dropDownItemList.forEach(
+        dropdownItemList.forEach(
             item => (item.label = `${item.value} - ${item.label}`)
         );
     }
 
     if (props.emptyItem) {
-        dropDownItemList.unshift(props.emptyItem);
+        dropdownItemList.unshift(props.emptyItem);
     }
 
+    // Push selectedItem into dropdownItemList if it doesn't exist in dropdownItemList
     let selectedItem: IDropdownItem | undefined;
     if (props.selected) {
-        selectedItem = dropDownItemList.find(
+        selectedItem = dropdownItemList.find(
             item => item.value === props.selected!.trim()
         );
         if (!selectedItem) {
@@ -54,7 +50,7 @@ const Dropdown = observer((props: IDropdownProps) => {
                 label: props.selected,
                 value: props.selected
             };
-            dropDownItemList.push(selectedItem);
+            dropdownItemList.push(selectedItem);
         }
     }
 
@@ -77,7 +73,7 @@ const Dropdown = observer((props: IDropdownProps) => {
                         onChange={onChange}
                     >
                         {!selectedItem && <option disabled value='' />}
-                        {dropDownItemList.map(item => {
+                        {dropdownItemList.map(item => {
                             return (
                                 <option
                                     key={item.value ? item.value : item.value}

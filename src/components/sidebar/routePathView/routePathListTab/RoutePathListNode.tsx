@@ -242,7 +242,7 @@ class RoutePathListNode extends ViewFormBase<
                                 selected={
                                     routePathLink.startNodeTimeAlignmentStop
                                 }
-                                items={this.props.codeListStore!.getCodeList(
+                                items={this.props.codeListStore!.getDropdownItemList(
                                     'Ajantasaus pysakki'
                                 )}
                             />
@@ -253,7 +253,7 @@ class RoutePathListNode extends ViewFormBase<
                                 )}
                                 disabled={isEditingDisabled}
                                 selected={routePathLink.startNodeUsage}
-                                items={this.props.codeListStore!.getCodeList(
+                                items={this.props.codeListStore!.getDropdownItemList(
                                     'Pysäkin käyttö'
                                 )}
                             />
