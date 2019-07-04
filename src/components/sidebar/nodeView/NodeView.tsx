@@ -430,9 +430,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 node={node}
                                 onNodePropertyChange={this.onChangeNodeProperty}
                                 isNewStop={this.props.isNewNode}
-                                getDropDownItems={
-                                    this.props.codeListStore!.getCodeList
-                                }
                                 nodeInvalidPropertiesMap={invalidPropertiesMap}
                             />
                         )}

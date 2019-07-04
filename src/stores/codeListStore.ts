@@ -1,5 +1,6 @@
 import { observable, action } from 'mobx';
 import ICodeListItem from '~/models/ICodeListItem';
+import { IDropdownItem } from '~/components/controls/Dropdown';
 
 export type codeListName =
     | 'Joukkoliikennelaji'
@@ -31,6 +32,20 @@ export class CodeListStore {
         return this._codeListItems
             .filter(item => item.listId === codeListName)
             .sort((a, b) => a.orderNumber - b.orderNumber);
+    };
+
+    public getDropdownItemList = (
+        codeListName: codeListName
+    ): IDropdownItem[] => {
+        return this._codeListItems
+            .filter(item => item.listId === codeListName)
+            .sort((a, b) => a.orderNumber - b.orderNumber)
+            .map((codeListItem: ICodeListItem) => {
+                return {
+                    value: codeListItem.value,
+                    label: codeListItem.label
+                };
+            });
     };
 
     public getCodeListLabel = (codeListName: codeListName, value: string) => {

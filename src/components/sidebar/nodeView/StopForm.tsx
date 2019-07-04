@@ -5,9 +5,10 @@ import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import { IStop, INode } from '~/models';
 import { NodeStore } from '~/stores/nodeStore';
-import { codeListName, CodeListStore } from '~/stores/codeListStore';
-import ICodeListItem from '~/models/ICodeListItem';
+import { CodeListStore } from '~/stores/codeListStore';
+import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
+import { IDropdownItem } from '~/components/controls/Dropdown';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
@@ -21,13 +22,13 @@ interface IStopFormProps {
     codeListStore?: CodeListStore;
     nodeInvalidPropertiesMap: object;
     onNodePropertyChange: (property: keyof INode) => (value: any) => void;
-    getDropDownItems: (codeListIdentifier: codeListName) => ICodeListItem[];
 }
 
 interface IStopFormState {
     isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
     invalidPropertiesMap: object;
     isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
+    stopAreas: IDropdownItem[];
 }
 
 @inject('nodeStore', 'codeListStore')
@@ -38,8 +39,16 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         this.state = {
             isLoading: false,
             invalidPropertiesMap: {},
-            isEditingDisabled: false
+            isEditingDisabled: false,
+            stopAreas: []
         };
+    }
+
+    async componentWillMount() {
+        const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
+        this.setState({
+            stopAreas: this.createStopAreaDropdownItems(stopAreas)
+        });
     }
 
     componentDidMount() {
@@ -57,6 +66,18 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
             this.validateStop();
         }
     }
+
+    private createStopAreaDropdownItems = (
+        stopAreas: IStopAreaItem[]
+    ): IDropdownItem[] => {
+        return stopAreas.map((stopArea: IStopAreaItem) => {
+            const item: IDropdownItem = {
+                value: `${stopArea.pysalueid}`,
+                label: `${stopArea.pysalueid} - ${stopArea.nimi}`
+            };
+            return item;
+        });
+    };
 
     private validateStop = () => {
         const node = this.props.nodeStore!.node;
@@ -80,8 +101,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const stop = node.stop!;
         const onChange = this.onChangeStopProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
-        const getDropDownItems = this.props.getDropDownItems;
-
         return (
             <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader hideCloseButton={true}>
@@ -118,7 +137,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                                 value: '',
                                 label: ''
                             }}
-                            items={this.props.codeListStore!.getCodeList(
+                            items={this.props.codeListStore!.getDropdownItemList(
                                 'Lyhyttunnus'
                             )}
                         />
@@ -233,7 +252,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         />
                         <Dropdown
                             onChange={onChange('municipality')}
-                            items={getDropDownItems('Kunta (ris/pys)')}
+                            items={this.props.codeListStore!.getDropdownItemList(
+                                'Kunta (ris/pys)'
+                            )}
                             selected={stop.municipality}
                             disabled={isEditingDisabled}
                             label='KUNTA'
@@ -279,12 +300,13 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <InputContainer
-                            label='PYSÄKKIALUE'
-                            disabled={true} // TODO: change: sEditingDisabled
-                            value={110001} // TODO: change: stop.areaId when really this works
-                            validationResult={invalidPropertiesMap['areaId']}
+                        <Dropdown
                             onChange={onChange('areaId')}
+                            items={this.state.stopAreas}
+                            selected={stop.areaId}
+                            disabled={isEditingDisabled}
+                            label='PYSÄKKIALUE'
+                            validationResult={invalidPropertiesMap['areaId']}
                         />
                         <InputContainer
                             label='ELYNUMERO'
