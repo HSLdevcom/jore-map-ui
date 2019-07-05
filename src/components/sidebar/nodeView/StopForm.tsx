@@ -286,7 +286,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             disabled={isEditingDisabled}
                             label='PYSÄKKIALUE'
                             validationResult={invalidPropertiesMap['areaId']}
-                            isSearchable={true}
                         />
                         <Button
                             // TODO: implement the button functionality

@@ -14,7 +14,6 @@ interface IDropdownProps {
     label?: string;
     selected?: string | null;
     disabled?: boolean;
-    isSearchable?: boolean;
     items: IDropdownItem[];
     emptyItem?: IDropdownItem;
     onChange: (value: any) => void;
@@ -153,7 +152,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                                 onInputChange={this.handleInputChange}
                                 options={displayedItems}
                                 isDisabled={props.disabled}
-                                isSearchable={Boolean(props.isSearchable)}
+                                isSearchable={true}
                                 placeholder={'Valitse...'}
                                 styles={customStyles}
                                 noOptionsMessage={() => 'Ei hakutuloksia'}
