@@ -100,6 +100,16 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
     };
 
+    private getShortIdLetterItems = () => {
+        const shortIdLetterItems = this.props.codeListStore!.getDropdownItemList(
+            'Lyhyttunnus'
+        );
+        shortIdLetterItems.forEach(
+            item => (item.label = `${item.value} - ${item.label}`)
+        );
+        return shortIdLetterItems;
+    };
+
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
         const node = this.props.node;
@@ -137,14 +147,11 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             )}
                             disabled={isEditingDisabled}
                             selected={node.shortIdLetter}
-                            isValueIncludedInOptionLabel={true}
                             emptyItem={{
                                 value: '',
                                 label: ''
                             }}
-                            items={this.props.codeListStore!.getDropdownItemList(
-                                'Lyhyttunnus'
-                            )}
+                            items={this.getShortIdLetterItems()}
                         />
                         <InputContainer
                             label='+ 4 num.)'

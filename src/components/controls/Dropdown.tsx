@@ -17,7 +17,6 @@ interface IDropdownProps {
     isSearchable?: boolean;
     items: IDropdownItem[];
     emptyItem?: IDropdownItem;
-    isValueIncludedInOptionLabel?: boolean;
     onChange: (value: any) => void;
     validationResult?: IValidationResult;
 }
@@ -58,7 +57,8 @@ const customStyles = {
             : state.isFocused
             ? '#aaddff' // Color when something is highlighted
             : 0, // Unselected item color
-        height: s.inputFieldHeight,
+        height: 30,
+        fontSize: s.smallFontSize,
         padding: '0px 10px',
         display: 'flex',
         alignItems: 'center'
@@ -70,6 +70,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
     constructor(props: IDropdownProps) {
         super(props);
         const searchString = '';
+
         this.state = {
             searchString,
             displayedItems: this.filterItems(searchString)
@@ -95,11 +96,6 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                 )
                 .slice(0, MAX_DISPLAYED)
         );
-        if (this.props.isValueIncludedInOptionLabel) {
-            displayedItems.forEach(
-                item => (item.label = `${item.value} - ${item.label}`)
-            );
-        }
 
         if (this.props.emptyItem) {
             displayedItems.unshift(this.props.emptyItem);
@@ -136,6 +132,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                 displayedItems.push(selectedItem);
             }
         }
+
         return (
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
