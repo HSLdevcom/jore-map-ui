@@ -1,6 +1,10 @@
 @import './styles/common';
 
 .tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
     .tabList {
         display: flex;
 
@@ -42,9 +46,13 @@
 
     .contentList {
         height: 100%;
+        display: flex;
+        flex-direction: column;
 
         .contentItem {
             height: 100%;
+            display: flex;
+            flex-direction: column;
         }
     }
 }

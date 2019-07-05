@@ -75,3 +75,7 @@ $inputFieldHeight: 42px;
 .disabled {
     pointer-events: none;
 }
+
+:export {
+    inputFieldHeight: $inputFieldHeight;
+}

@@ -9,4 +9,13 @@
         margin-top: 15px;
         font-weight: bold;
     }
+
+    .createNewStopAreaButton {
+        width: 100px;
+        white-space: pre-wrap;
+    }
+
+    .formSection:last-of-type {
+        padding-bottom: 50px; /* To prevent dropdown from causing a scrollbar */
+    }
 }

@@ -4,13 +4,18 @@ import classnames from 'classnames';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import { IStop, INode } from '~/models';
+import ButtonType from '~/enums/buttonType';
 import { NodeStore } from '~/stores/nodeStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
+import {
+    Dropdown,
+    TransitToggleButtonBar,
+    Button
+} from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
 
@@ -267,6 +272,28 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                 <div className={s.formSection}>
                     <div className={s.sectionHeader}>Muu tiedot</div>
                     <div className={s.flexRow}>
+                        <Dropdown
+                            onChange={onChange('areaId')}
+                            items={this.state.stopAreas}
+                            selected={stop.areaId}
+                            disabled={isEditingDisabled}
+                            label='PYSÄKKIALUE'
+                            validationResult={invalidPropertiesMap['areaId']}
+                            isSearchable={true}
+                        />
+                        <Button
+                            // TODO: implement the button functionality
+                            onClick={() =>
+                                window.alert('Toteutuksen suunnittelu kesken.')
+                            }
+                            disabled={isEditingDisabled}
+                            type={ButtonType.SQUARE}
+                            className={s.createNewStopAreaButton}
+                        >
+                            Luo uusi pysäkkialue
+                        </Button>
+                    </div>
+                    <div className={s.flexRow}>
                         <InputContainer
                             label='LAITURI'
                             disabled={isEditingDisabled}
@@ -300,14 +327,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <Dropdown
-                            onChange={onChange('areaId')}
-                            items={this.state.stopAreas}
-                            selected={stop.areaId}
-                            disabled={isEditingDisabled}
-                            label='PYSÄKKIALUE'
-                            validationResult={invalidPropertiesMap['areaId']}
-                        />
                         <InputContainer
                             label='ELYNUMERO'
                             disabled={isEditingDisabled}
