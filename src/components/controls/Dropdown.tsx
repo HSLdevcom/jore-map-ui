@@ -26,7 +26,7 @@ interface IDropdownState {
 }
 
 const EMPTY_VALUE_LABEL = '-';
-const MAX_DISPLAYED = 200;
+const MAX_DISPLAYED = 500; // With large amount of items, the dropdown seems to lag
 
 // Giving styles with style object (TODO: better way would be to use classnames)
 const customStyles = {
@@ -131,6 +131,8 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                 displayedItems.push(selectedItem);
             }
         }
+        // <Select/> works with null values instead of undefined
+        const selectValue = selectedItem ? selectedItem : null;
 
         return (
             <div className={s.formItem}>
@@ -147,7 +149,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                     ) : (
                         <>
                             <Select
-                                value={selectedItem}
+                                value={selectValue}
                                 onChange={onChange}
                                 onInputChange={this.handleInputChange}
                                 options={displayedItems}

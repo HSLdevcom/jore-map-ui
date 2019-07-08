@@ -39,6 +39,8 @@ interface IStopFormState {
 @inject('nodeStore', 'codeListStore')
 @observer
 class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
+    private mounted: boolean;
+
     constructor(props: IStopFormProps) {
         super(props);
         this.state = {
@@ -51,12 +53,19 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
 
     async componentWillMount() {
         const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
-        this.setState({
-            stopAreas: this.createStopAreaDropdownItems(stopAreas)
-        });
+        if (this.mounted) {
+            this.setState({
+                stopAreas: this.createStopAreaDropdownItems(stopAreas)
+            });
+        }
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     componentDidMount() {
+        this.mounted = true;
         this.validateStop();
     }
 
@@ -283,6 +292,10 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             onChange={onChange('areaId')}
                             items={this.state.stopAreas}
                             selected={stop.areaId}
+                            emptyItem={{
+                                value: '',
+                                label: ''
+                            }}
                             disabled={isEditingDisabled}
                             label='PYSÄKKIALUE'
                             validationResult={invalidPropertiesMap['areaId']}
