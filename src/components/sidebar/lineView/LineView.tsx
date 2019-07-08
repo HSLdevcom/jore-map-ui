@@ -242,16 +242,16 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                             </ContentItem>
                         </ContentList>
                     </Tabs>
+                    <Button
+                        onClick={this.save}
+                        type={ButtonType.SAVE}
+                        disabled={isSaveButtonDisabled}
+                    >
+                        {this.props.isNewLine
+                            ? 'Luo uusi linja'
+                            : 'Tallenna muutokset'}
+                    </Button>
                 </div>
-                <Button
-                    onClick={this.save}
-                    type={ButtonType.SAVE}
-                    disabled={isSaveButtonDisabled}
-                >
-                    {this.props.isNewLine
-                        ? 'Luo uusi linja'
-                        : 'Tallenna muutokset'}
-                </Button>
             </div>
         );
     }
