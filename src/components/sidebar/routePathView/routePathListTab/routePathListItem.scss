@@ -140,11 +140,11 @@
             }
 
             .footer {
+                display: flex;
                 margin-top: 15px;
 
                 svg {
-                    position: absolute;
-                    right: 15px;
+                    margin-left: 15px;
                 }
             }
 

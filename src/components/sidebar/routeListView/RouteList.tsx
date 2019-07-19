@@ -98,6 +98,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                         onClick={this.redirectToNewRoutePathView(route)}
                         className={s.createRoutePathButton}
                         type={ButtonType.SQUARE}
+                        isWide={true}
                     >
                         {`Luo uusi reitin suunta reitille ${route.id}`}
                     </Button>

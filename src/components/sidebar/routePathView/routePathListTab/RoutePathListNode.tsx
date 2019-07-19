@@ -370,7 +370,7 @@ class RoutePathListNode extends ViewFormBase<
                         onClick={this.openInNetworkView}
                         type={ButtonType.SQUARE}
                     >
-                        Avaa solmu verkkonäkymässä
+                        <div>Avaa solmu verkkonäkymässä</div>
                         <FiChevronRight />
                     </Button>
                 </div>

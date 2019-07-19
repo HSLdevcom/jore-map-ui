@@ -12,7 +12,6 @@ import QueryParams from '~/routing/queryParams';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import { IRoutePath, IRoute } from '~/models';
-import ButtonType from '~/enums/buttonType';
 import { Button } from '~/components/controls';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import SidebarHeader from '../SidebarHeader';
@@ -152,7 +151,8 @@ class RouteItem extends React.Component<IRouteItemProps> {
                             }
                         />
                         <Button
-                            type={ButtonType.HOVER}
+                            className={s.openRoutePathViewButton}
+                            hasReverseColor={true}
                             onClick={openRoutePathView}
                         >
                             <FiInfo />

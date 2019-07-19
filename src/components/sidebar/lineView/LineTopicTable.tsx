@@ -88,7 +88,10 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
                                             </td>
                                             <td>
                                                 <Button
-                                                    type={ButtonType.HOVER}
+                                                    className={
+                                                        s.editLineTopicButton
+                                                    }
+                                                    hasReverseColor={true}
                                                     onClick={
                                                         this
                                                             .redirectToEditLineTopicView
