@@ -12,6 +12,8 @@ import QueryParams from '~/routing/queryParams';
 import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import { IRoutePath, IRoute } from '~/models';
+import ButtonType from '~/enums/buttonType';
+import { Button } from '~/components/controls';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './routeItem.scss';
@@ -149,12 +151,12 @@ class RouteItem extends React.Component<IRouteItemProps> {
                                 routePath.visible ? routePath.color! : '#898989'
                             }
                         />
-                        <div
-                            className={s.routeInfoButton}
+                        <Button
+                            type={ButtonType.HOVER}
                             onClick={openRoutePathView}
                         >
                             <FiInfo />
-                        </div>
+                        </Button>
                     </div>
                 </div>
             );

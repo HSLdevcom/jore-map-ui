@@ -3,14 +3,14 @@ import { observer } from 'mobx-react';
 import Moment from 'moment';
 import * as s from './inputContainer.scss';
 
-interface IInputProps {
+interface ITextContainerProps {
     label: string | JSX.Element;
     value?: string | number | null | Date;
     isTimeIncluded?: boolean;
     darkerInputLabel?: boolean;
 }
 
-const TextContainer = observer((props: IInputProps) => (
+const TextContainer = observer((props: ITextContainerProps) => (
     <div className={s.formItem}>
         <div
             className={

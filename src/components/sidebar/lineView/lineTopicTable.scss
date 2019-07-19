@@ -1,0 +1,39 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/form';
+
+.lineTopicTableView {
+    width: 100%;
+
+    .lineTopicTable {
+        width: 100%;
+        font-size: $smallFontSize;
+        border-collapse: separate;
+        border-spacing: 0 5px; /* Padding top/bottom between table rows */
+
+        td {
+            padding-left: 10px;
+        }
+        td:first-of-type {
+            padding: 0px;
+        }
+        .columnHeader {
+            white-space: nowrap;
+            text-align: start;
+            padding-left: 10px;
+        }
+        .columnHeader:first-of-type {
+            padding-left: 0px;
+        }
+        .timestampRow {
+            white-space: nowrap;
+        }
+
+        .lineTopicRowHighlight {
+            background-color: $lightblue;
+        }
+    }
+
+    .newLineTopicButton  {
+        margin-top: 20px;
+    }
+}

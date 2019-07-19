@@ -8,13 +8,17 @@ import { LineStore } from '~/stores/lineStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import LineService from '~/services/lineService';
+import LineTopicService, { ILineTopic } from '~/services/lineTopicService';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import { IValidationResult } from '~/validation/FormValidator';
 import { TransitToggleButtonBar, Dropdown } from '~/components/controls';
 import * as s from './lineInfoTab.scss';
+import LineTopicTable from './LineTopicTable';
 
 interface ILineInfoTabState {
     isLoading: boolean;
+    lineTopics: ILineTopic[];
+    currentLineTopic?: ILineTopic;
 }
 
 interface ILineInfoTabProps {
@@ -38,18 +42,33 @@ class LineInfoTab extends React.Component<
     ILineInfoTabState
 > {
     private existingLines: ISearchLine[] = [];
+    private mounted: boolean;
 
     constructor(props: any) {
         super(props);
         this.state = {
-            isLoading: true
+            isLoading: true,
+            lineTopics: []
         };
+    }
+
+    async componentWillMount() {
+        const lineId = this.props.lineStore!.line!.id;
+        const lineTopics: ILineTopic[] = await LineTopicService.fetchLineTopicsForLineId(
+            lineId
+        );
+        this.initLineTopicItems(lineTopics);
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     componentDidMount() {
         if (this.props.isNewLine) {
             this.fetchAllLines();
         }
+        this.mounted = true;
     }
 
     componentDidUpdate() {
@@ -57,6 +76,21 @@ class LineInfoTab extends React.Component<
             this.fetchAllLines();
         }
     }
+
+    private initLineTopicItems = (lineTopics: ILineTopic[]) => {
+        if (this.mounted) {
+            const currentTime = new Date().getTime();
+            const currentLineTopic = lineTopics.find(
+                (lineTopic: ILineTopic) =>
+                    currentTime > lineTopic.lineStartTime.getTime() &&
+                    currentTime < lineTopic.lineEndTime.getTime()
+            );
+            this.setState({
+                lineTopics,
+                currentLineTopic
+            });
+        }
+    };
 
     private selectTransitType = (transitType: TransitType) => {
         this.props.onChangeLineProperty('transitType')(transitType);
@@ -172,7 +206,7 @@ class LineInfoTab extends React.Component<
                     <div className={s.flexRow}>
                         <InputContainer
                             disabled={isEditingDisabled}
-                            label='LINJAN VOIMAANASTUMISPÄIVÄ'
+                            label='LINJAN VOIM.AST.PVM'
                             type='date'
                             value={line.lineStartDate}
                             onChange={this.onChangeStartDate}
@@ -180,16 +214,24 @@ class LineInfoTab extends React.Component<
                                 invalidPropertiesMap['lineStartDate']
                             }
                         />
-                    </div>
-                    <div className={s.flexRow}>
                         <InputContainer
                             disabled={isEditingDisabled}
-                            label='LINJAN VIIMEINEN VOIMASSAOLOPÄIVÄ'
+                            label='LINJAN VIIM. VOIM.OLOPVM'
                             type='date'
                             value={line.lineEndDate}
                             onChange={this.onChangeEndDate}
                             validationResult={
                                 invalidPropertiesMap['lineEndDate']
+                            }
+                        />
+                    </div>
+                    <div className={s.flexRow}>
+                        <TextContainer
+                            label={'LINJAN VOIMASSAOLEVA OTSIKKO'}
+                            value={
+                                this.state.currentLineTopic
+                                    ? this.state.currentLineTopic.lineName
+                                    : 'Ei voimassa olevaa otsikkoa.'
                             }
                         />
                     </div>
@@ -280,6 +322,15 @@ class LineInfoTab extends React.Component<
                             label='MUOKATTU PVM'
                             isTimeIncluded={true}
                             value={line.modifiedOn}
+                        />
+                    </div>
+                </div>
+                <div className={s.formSection}>
+                    <div className={s.flexRow}>
+                        <LineTopicTable
+                            lineTopics={this.state.lineTopics}
+                            currentLineTopic={this.state.currentLineTopic}
+                            lineId={this.props.lineStore!.line!.id}
                         />
                     </div>
                 </div>
