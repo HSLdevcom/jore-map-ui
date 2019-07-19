@@ -64,6 +64,25 @@
     background-color: darken($saveButtonGreen, 10);
 }
 
+.hover {
+    position: relative;
+    color: $busBlue;
+    font-size: 1.8rem;
+    line-height: 1.8rem;
+    height: 29px;
+    width: 29px;
+    cursor: pointer;
+    border: none;
+    transition: 0.5s;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.hover:hover {
+    color: #fff;
+    background-color: $busBlue;
+}
+
 .disabled {
     background-color: $disabledGrey;
     cursor: default;

@@ -32,7 +32,8 @@ const MAX_DISPLAYED = 500; // With large amount of items, the dropdown seems to 
 const customStyles = {
     container: (styles: any) => ({
         ...styles,
-        height: s.inputFieldHeight
+        height: s.inputFieldHeight,
+        fontSize: s.smallFontSize
     }),
     control: (styles: any, state: any) => ({
         ...styles,
@@ -54,7 +55,7 @@ const customStyles = {
         backgroundColor: state.isSelected
             ? s.busBlue // Selected item color
             : state.isFocused
-            ? state.lightblue // Color when something is highlighted
+            ? s.lightblue // Color when something is highlighted
             : 0, // Unselected item color
         height: 30,
         fontSize: s.smallFontSize,

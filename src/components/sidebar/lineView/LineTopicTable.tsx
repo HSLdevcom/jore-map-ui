@@ -1,7 +1,8 @@
 import React from 'react';
 import Moment from 'moment';
 import _ from 'lodash';
-import { FiEdit3 } from 'react-icons/fi';
+import classnames from 'classnames';
+import { FiInfo } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
 import { ILineTopic } from '~/services/lineTopicService';
 import { Button } from '~/components/controls';
@@ -33,10 +34,29 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
                     <table className={s.lineTopicTable}>
                         <tbody>
                             <tr>
-                                <th className={s.columnHeader}>Linjan nimi</th>
-                                <th className={s.columnHeader}>Voim. ast</th>
-                                <th className={s.columnHeader}>
-                                    Viim. voim. olo
+                                <th
+                                    className={classnames(
+                                        s.inputLabel,
+                                        s.columnHeader
+                                    )}
+                                >
+                                    LINJAN NIMI
+                                </th>
+                                <th
+                                    className={classnames(
+                                        s.inputLabel,
+                                        s.columnHeader
+                                    )}
+                                >
+                                    VOIM. AST.
+                                </th>
+                                <th
+                                    className={classnames(
+                                        s.inputLabel,
+                                        s.columnHeader
+                                    )}
+                                >
+                                    VIIM. VOIM.
                                 </th>
                                 <th className={s.columnHeader} />
                             </tr>
@@ -67,13 +87,15 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
                                                 ).format('DD-MM-YYYY')}
                                             </td>
                                             <td>
-                                                <FiEdit3
+                                                <Button
+                                                    type={ButtonType.HOVER}
                                                     onClick={
                                                         this
                                                             .redirectToEditLineTopicView
                                                     }
-                                                    className={s.editIcon}
-                                                />
+                                                >
+                                                    <FiInfo />
+                                                </Button>
                                             </td>
                                         </tr>
                                     );

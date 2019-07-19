@@ -27,6 +27,9 @@ const Button = observer((props: IButtonProps) => {
             case ButtonType.SAVE: {
                 return s.save;
             }
+            case ButtonType.HOVER: {
+                return s.hover;
+            }
             default: {
                 return s.square;
             }
