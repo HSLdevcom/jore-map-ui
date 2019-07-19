@@ -5,21 +5,20 @@ import ButtonType from '~/enums/buttonType';
 import * as s from './button.scss';
 
 interface IButtonProps {
-    type: ButtonType;
-    className?: string;
-    disabled?: boolean;
     children: React.ReactNode;
     onClick: () => void;
+    type?: ButtonType;
+    className?: string;
+    disabled?: boolean;
+    isWide?: boolean;
+    hasReverseColor?: boolean;
 }
 
 const Button = observer((props: IButtonProps) => {
-    const getTypeClass = (type: ButtonType) => {
+    const getTypeClass = (type?: ButtonType) => {
         switch (type) {
             case ButtonType.SQUARE: {
-                return s.square;
-            }
-            case ButtonType.SQUARE_SECONDARY: {
-                return s.squareSecondary;
+                return undefined; // default button type is square
             }
             case ButtonType.ROUND: {
                 return s.round;
@@ -27,13 +26,8 @@ const Button = observer((props: IButtonProps) => {
             case ButtonType.SAVE: {
                 return s.save;
             }
-            case ButtonType.HOVER: {
-                return s.hover;
-            }
-            default: {
-                return s.square;
-            }
         }
+        return undefined;
     };
 
     const onClick = () => {
@@ -43,16 +37,20 @@ const Button = observer((props: IButtonProps) => {
     };
 
     return (
-        <div
-            className={classnames(
-                s.button,
-                props.className,
-                getTypeClass(props.type),
-                props.disabled ? s.disabled : null
-            )}
-            onClick={onClick}
-        >
-            {props.children}
+        <div className={s.buttonContainer}>
+            <div
+                className={classnames(
+                    s.button,
+                    props.className,
+                    getTypeClass(props.type),
+                    props.disabled ? s.disabled : null,
+                    props.isWide ? s.wide : null,
+                    props.hasReverseColor ? s.reverseColor : null
+                )}
+                onClick={onClick}
+            >
+                {props.children}
+            </div>
         </div>
     );
 });

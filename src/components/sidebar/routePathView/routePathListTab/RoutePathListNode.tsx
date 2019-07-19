@@ -101,6 +101,11 @@ class RoutePathListNode extends ViewFormBase<
                     </div>
                     <div className={s.label}>
                         <div className={s.headerContentDescription}>
+                            <div className={s.hastusId}>
+                                {node.stop && node.stop.hastusId
+                                    ? node.stop.hastusId
+                                    : ''}
+                            </div>
                             <div className={s.longId}>{node.id}</div>
                             <div className={s.shortId}>{shortId || '?'}</div>
                         </div>
@@ -370,7 +375,7 @@ class RoutePathListNode extends ViewFormBase<
                         onClick={this.openInNetworkView}
                         type={ButtonType.SQUARE}
                     >
-                        Avaa solmu verkkonäkymässä
+                        <div>Avaa solmu verkkonäkymässä</div>
                         <FiChevronRight />
                     </Button>
                 </div>

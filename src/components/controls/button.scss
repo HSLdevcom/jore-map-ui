@@ -1,5 +1,12 @@
 @import '../shared/styles/common.scss';
 
+$defaultColor: #fff;
+$defaultBackgroundColor: $busBlue;
+
+.buttonContainer {
+    display: flex;
+}
+
 .button {
     display: flex;
     position: relative;
@@ -15,42 +22,25 @@
     border: hidden;
     border-radius: 5px;
     margin-right: 15px;
+    color: $defaultColor;
+    background-color: $defaultBackgroundColor;
+    transition: 0.5s;
+}
+.button:hover {
+    background-color: darken($defaultBackgroundColor, 10);
 }
 
 .button:last-of-type {
     margin-right: 0px;
 }
 
-.square {
-    background-color: $busBlue;
-    color: #fff;
-}
-
-.square:hover {
-    background-color: darken($busBlue, 10);
-}
-
-.squareSecondary {
-    background-color: #fff;
-    color: $fontColorDefault;
-    border: 1px solid $darkGrey;
-}
-
-.squareSecondary:hover {
-    background-color: darken(#fff, 10);
-}
-
 .round {
-    background-color: $busBlue;
     color: #fff;
     border-radius: 20px;
 }
 
-.round:hover {
-    background-color: darken($busBlue, 10);
-}
-
 .save {
+    width: 100%;
     padding: 20px;
     background-color: #00ba11;
     color: #fff;
@@ -64,23 +54,18 @@
     background-color: darken($saveButtonGreen, 10);
 }
 
-.hover {
-    position: relative;
-    color: $busBlue;
-    font-size: 1.8rem;
-    line-height: 1.8rem;
-    height: 29px;
-    width: 29px;
-    cursor: pointer;
-    border: none;
-    transition: 0.5s;
-    border-radius: 5px;
-    padding: 3px;
+.reverseColor {
+    color: $defaultBackgroundColor;
+    background-color: unset;
 }
 
-.hover:hover {
-    color: #fff;
-    background-color: $busBlue;
+.reverseColor:hover {
+    color: $defaultColor;
+    background-color: $defaultBackgroundColor;
+}
+
+.wide {
+    width: 100%;
 }
 
 .disabled {
