@@ -1,0 +1,47 @@
+@import '../../shared/styles/common';
+
+.lineTopicTableView {
+    width: 100%;
+
+    .lineTopicTable {
+        width: 100%;
+        font-size: $smallFontSize;
+        border-collapse: separate;
+        border-spacing: 0 5px;
+
+        td {
+            padding-left: 5px;
+        }
+        .columnHeader {
+            white-space: nowrap;
+            font-size: $mediumFontSize;
+            text-align: start;
+            font-weight: normal;
+            padding-left: 5px;
+        }
+        .columnHeader:first-of-type {
+            padding-left: 0px;
+        }
+        .timestampRow {
+            white-space: nowrap;
+        }
+
+        .editIcon {
+            font-size: 30px;
+            opacity: 0.8;
+            border-radius: 4px;
+            padding: 2px;
+            cursor: pointer;
+            margin: 3px;
+            transition: 0.5s;
+        }
+
+        .lineTopicRowHighlight {
+            background-color: $lightblue;
+        }
+    }
+
+    .newLineTopicButton  {
+        margin-top: 20px;
+    }
+}

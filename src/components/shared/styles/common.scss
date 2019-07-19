@@ -55,6 +55,8 @@ $nodeProjectionColor: rgba(255, 255, 0, 0.5);
 
 $linkHoverBackgroundColor: #e6e6e6;
 
+$lightblue: #aaddff;
+
 :export {
     smallFontSize: $smallFontSize;
     mediumFontSize: $mediumFontSize;
@@ -63,4 +65,5 @@ $linkHoverBackgroundColor: #e6e6e6;
     lightGrey: $lightGrey;
     mediumLightGrey: $mediumLightGrey;
     darkGrey: $darkGrey;
+    lightblue: $lightblue;
 }

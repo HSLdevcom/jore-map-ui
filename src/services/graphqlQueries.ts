@@ -227,6 +227,21 @@ const getAllStopAreas = () => {
     `;
 };
 
+const getAllLineTopics = () => {
+    return gql`
+        query getAllLineTopics {
+            node: allLinjannimets {
+                nodes {
+                    lintunnus
+                    linnimi
+                    linalkupvm
+                    linloppupvm
+                }
+            }
+        }
+    `;
+};
+
 const lineQueryFields = `
     lintunnus
     linperusreitti
@@ -508,5 +523,6 @@ export default {
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
     getAllRoutePathPrimaryKeysQuery,
-    getAllStopAreas
+    getAllStopAreas,
+    getAllLineTopics
 };

@@ -54,7 +54,7 @@ const customStyles = {
         backgroundColor: state.isSelected
             ? s.busBlue // Selected item color
             : state.isFocused
-            ? '#aaddff' // Color when something is highlighted
+            ? state.lightblue // Color when something is highlighted
             : 0, // Unselected item color
         height: 30,
         fontSize: s.smallFontSize,
