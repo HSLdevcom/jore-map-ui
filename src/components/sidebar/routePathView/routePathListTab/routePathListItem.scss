@@ -69,27 +69,39 @@
         cursor: pointer;
 
         .headerContent {
-            padding: 15px;
+            padding: 15px 0px 15px 40px;
             position: relative;
             display: flex;
-            padding-left: 40px;
             align-items: center;
             width: 100%;
             justify-content: space-between;
 
             .label {
+                display: flex;
+                flex-grow: 1;
                 color: $blue;
                 font-weight: bold;
 
                 .headerContentDescription {
+                    width: 100%;
                     display: flex;
+                    justify-content: flex-end;
                     align-items: center;
-                    .shortId {
-                        font-size: $largeFontSize;
+                    div {
                         margin-left: 10px;
+                    }
+                    div:first-of-type {
+                        margin-left: 0px;
+                    }
+                    .hastusId {
+                        font-size: $smallFontSize;
                     }
                     .longId {
                         font-size: $smallFontSize;
+                    }
+                    .shortId {
+                        width: 55px; /* To align items vertically */
+                        font-size: $mediumFontSize;
                     }
                 }
             }

@@ -101,6 +101,11 @@ class RoutePathListNode extends ViewFormBase<
                     </div>
                     <div className={s.label}>
                         <div className={s.headerContentDescription}>
+                            <div className={s.hastusId}>
+                                {node.stop && node.stop.hastusId
+                                    ? node.stop.hastusId
+                                    : ''}
+                            </div>
                             <div className={s.longId}>{node.id}</div>
                             <div className={s.shortId}>{shortId || '?'}</div>
                         </div>
