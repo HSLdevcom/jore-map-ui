@@ -3,14 +3,13 @@ import SubSites from './subSites';
 import QueryParams from './queryParams';
 
 class RouteBuilderContext {
-    private currentLocation: string;
-    private target: string;
-    private targetId: string;
-    private values: Object;
+    private currentLocation: string; // current link (rename as currentLink?)
+    private target: string; // link to be built (rename as linkToBuild?)
+    private values: Object; // TODO: rename as queryString
 
     constructor(currentLocation: string, target: SubSites, values: any) {
         this.currentLocation = currentLocation;
-        this.target = target.replace(':id', '');
+        this.target = target; // target.replace(':id', '');
         this.values = this.jsonCopy(values);
     }
 
@@ -18,8 +17,20 @@ class RouteBuilderContext {
         return JSON.parse(JSON.stringify(jsonObject));
     };
 
-    public toTarget = (targetId: string) => {
-        this.targetId = targetId;
+    public toTarget = (value: string) => {
+        this.target = this.target.replace(':id', value);
+        return this;
+    };
+
+    // TODO: remove (edit toTarget)
+    public toTarget2 = (targetId: string, value: string) => {
+        if (!targetId) {
+            this.target = this.target.replace(':id', value);
+        } else {
+            this.target = this.target.replace(targetId, value);
+        }
+        // TODO: show error if :targetId is not found
+
         return this;
     };
 
@@ -28,9 +39,7 @@ class RouteBuilderContext {
             this.target !== SubSites.current
                 ? this.target.toString()
                 : this.currentLocation;
-        if (this.targetId) {
-            link += `${this.targetId}/`;
-        }
+
         if (Object.keys(this.values).length !== 0) {
             link += `?${qs.stringify(this.values, { encode: false })}`;
         }

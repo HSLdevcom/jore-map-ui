@@ -4,7 +4,10 @@ import _ from 'lodash';
 import classnames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
-import { ILineTopic } from '~/services/lineTopicService';
+import ILineTopic from '~/models/ILineTopic';
+import SubSites from '~/routing/subSites';
+import routeBuilder from '~/routing/routeBuilder';
+import navigator from '~/routing/navigator';
 import { Button } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './lineTopicTable.scss';
@@ -16,13 +19,22 @@ interface ILineTopicListProps {
 }
 
 class LineTopicTable extends React.Component<ILineTopicListProps> {
-    private redirectToEditLineTopicView = () => {
-        // TODO
-        window.alert('Toiminnon suunnittelu kesken.');
+    private redirectToEditLineTopicView = (startDate: Date) => () => {
+        const editLineTopicLink = routeBuilder
+            .to(SubSites.lineTopic)
+            .toTarget(this.props.lineId)
+            .toTarget2(':startDate', Moment(startDate).format())
+            .toLink();
+
+        navigator.goTo(editLineTopicLink);
     };
     private redirectToNewLineTopicView = () => {
-        // TODO
-        window.alert('Toiminnon suunnittelu kesken.');
+        const newLineTopicLink = routeBuilder
+            .to(SubSites.newLineTopic)
+            .toTarget(this.props.lineId)
+            .toLink();
+
+        navigator.goTo(newLineTopicLink);
     };
     render() {
         return (
@@ -75,15 +87,15 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
                                                     : undefined
                                             }
                                         >
-                                            <td>{lineTopic.lineName}</td>
+                                            <td>{lineTopic.lineNameFi}</td>
                                             <td className={s.timestampRow}>
                                                 {Moment(
-                                                    lineTopic.lineStartTime
+                                                    lineTopic.startDate
                                                 ).format('DD-MM-YYYY')}
                                             </td>
                                             <td className={s.timestampRow}>
                                                 {Moment(
-                                                    lineTopic.lineEndTime
+                                                    lineTopic.endDate
                                                 ).format('DD-MM-YYYY')}
                                             </td>
                                             <td>
@@ -92,10 +104,9 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
                                                         s.editLineTopicButton
                                                     }
                                                     hasReverseColor={true}
-                                                    onClick={
-                                                        this
-                                                            .redirectToEditLineTopicView
-                                                    }
+                                                    onClick={this.redirectToEditLineTopicView(
+                                                        lineTopic.startDate
+                                                    )}
                                                 >
                                                     <FiInfo />
                                                 </Button>

@@ -8,7 +8,8 @@ import { LineStore } from '~/stores/lineStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import LineService from '~/services/lineService';
-import LineTopicService, { ILineTopic } from '~/services/lineTopicService';
+import LineTopicService from '~/services/lineTopicService';
+import ILineTopic from '~/models/ILineTopic';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import { IValidationResult } from '~/validation/FormValidator';
 import { TransitToggleButtonBar, Dropdown } from '~/components/controls';
@@ -82,8 +83,8 @@ class LineInfoTab extends React.Component<
             const currentTime = new Date().getTime();
             const currentLineTopic = lineTopics.find(
                 (lineTopic: ILineTopic) =>
-                    currentTime > lineTopic.lineStartTime.getTime() &&
-                    currentTime < lineTopic.lineEndTime.getTime()
+                    currentTime > lineTopic.startDate.getTime() &&
+                    currentTime < lineTopic.endDate.getTime()
             );
             this.setState({
                 lineTopics,
@@ -230,7 +231,7 @@ class LineInfoTab extends React.Component<
                             label={'LINJAN VOIMASSAOLEVA OTSIKKO'}
                             value={
                                 this.state.currentLineTopic
-                                    ? this.state.currentLineTopic.lineName
+                                    ? this.state.currentLineTopic.lineNameFi
                                     : 'Ei voimassa olevaa otsikkoa.'
                             }
                         />

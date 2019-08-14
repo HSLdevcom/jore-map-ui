@@ -1,22 +1,12 @@
 import { ApolloQueryResult } from 'apollo-client';
+import Moment from 'moment';
 import apolloClient from '~/util/ApolloClient';
+import ILineTopic from '~/models/ILineTopic';
+import IExternalLineTopic from '~/models/externals/IExternalLineTopic';
+import LineTopicFactory from '~/factories/lineTopicFactory';
 import GraphqlQueries from './graphqlQueries';
 
-interface IExternalLineTopic {
-    lintunnus: string;
-    linnimi: string;
-    linalkupvm: string;
-    linloppupvm: string;
-}
-
-interface ILineTopic {
-    lineId: string;
-    lineName: string;
-    lineStartTime: Date;
-    lineEndTime: Date;
-}
-
-class LineNameService {
+class LineTopicService {
     /**
      * Returns filtered list of line topic names
      * @param lineId - lineId to used to filter topic names
@@ -26,7 +16,7 @@ class LineNameService {
         lineId: string
     ): Promise<ILineTopic[]> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
-            query: GraphqlQueries.getAllLineTopics()
+            query: GraphqlQueries.getAllLineTopicsQuery()
         });
         const allExtLineNames: IExternalLineTopic[] =
             queryResult.data.node.nodes;
@@ -35,21 +25,31 @@ class LineNameService {
                 extLineName.lintunnus === lineId
         );
         return filteredExtLineNames
-            .map((extLineName: IExternalLineTopic) => {
-                return {
-                    lineId: extLineName.lintunnus,
-                    lineName: extLineName.linnimi,
-                    lineStartTime: new Date(extLineName.linalkupvm),
-                    lineEndTime: new Date(extLineName.linloppupvm)
-                };
+            .map((externalLineTopic: IExternalLineTopic) => {
+                return LineTopicFactory.mapExternalLineTopic(externalLineTopic);
             })
             .sort(
                 (a: ILineTopic, b: ILineTopic) =>
-                    a.lineStartTime.getTime() - b.lineStartTime.getTime()
+                    a.startDate.getTime() - b.startDate.getTime()
             );
+    };
+
+    public static fetchLineTopic = async (
+        lineId: string,
+        startDate: string
+    ): Promise<ILineTopic> => {
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+            query: GraphqlQueries.getLineTopicQuery(),
+            variables: {
+                lineId,
+                startDate: Moment(startDate).format()
+            }
+        });
+
+        return LineTopicFactory.mapExternalLineTopic(
+            queryResult.data.lineTopic
+        );
     };
 }
 
-export default LineNameService;
-
-export { ILineTopic };
+export default LineTopicService;

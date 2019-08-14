@@ -227,15 +227,20 @@ const getAllStopAreas = () => {
     `;
 };
 
-const getAllLineTopics = () => {
+const getLineTopicQuery = () => {
+    return gql`query getLineTopic($lineId: String!, $startDate: Datetime!) {
+            lineTopic: linjannimetByLintunnusAndLinalkupvm(lintunnus: $lineId, linalkupvm: $startDate) {
+                ${lineTopicQueryFields}
+            }
+        }`;
+};
+
+const getAllLineTopicsQuery = () => {
     return gql`
         query getAllLineTopics {
             node: allLinjannimets {
                 nodes {
-                    lintunnus
-                    linnimi
-                    linalkupvm
-                    linloppupvm
+                    ${lineTopicQueryFields}
                 }
             }
         }
@@ -401,6 +406,22 @@ const routePathLinkQueryFields = `
     }
 `;
 
+const lineTopicQueryFields = `
+    lintunnus
+    linalkupvm
+    linloppupvm
+    linnimi
+    linnimilyh
+    linnimir
+    linnimilyhr
+    linlahtop1
+    linlahtop1R
+    linlahtop2
+    linlahtop2R
+    linkuka
+    linviimpvm
+`;
+
 const routePathLinksForRoutePathQuery = `
 reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
     nodes {
@@ -524,5 +545,6 @@ export default {
     getRoutePathsUsingLinkFromDate,
     getAllRoutePathPrimaryKeysQuery,
     getAllStopAreas,
-    getAllLineTopics
+    getLineTopicQuery,
+    getAllLineTopicsQuery
 };

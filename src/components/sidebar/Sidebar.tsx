@@ -13,6 +13,7 @@ import LinkView from './linkView/LinkView';
 import RouteListView from './routeListView/RouteListView';
 import HomeView from './homeView/HomeView';
 import LineView from './lineView/LineView';
+import LineTopicView from './lineView/lineTopicView/LineTopicView';
 import RouteView from './routeView/RouteView';
 import RoutePathView from './routePathView/RoutePathView';
 import NodeView from './nodeView/NodeView';
@@ -46,6 +47,12 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     );
     private renderLineView = (props: any) => (
         <LineView {...props} isNewLine={false} />
+    );
+    private renderNewLineTopicView = (props: any) => (
+        <LineTopicView {...props} isNewLineTopic={true} />
+    );
+    private renderLineTopicView = (props: any) => (
+        <LineTopicView {...props} isNewLineTopic={false} />
     );
     private renderNewRouteView = (props: any) => (
         <RouteView {...props} isNewRoute={true} />
@@ -91,6 +98,16 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             exact={true}
                             path={subSites.line}
                             component={this.renderLineView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.newLineTopic}
+                            component={this.renderNewLineTopicView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.lineTopic}
+                            component={this.renderLineTopicView}
                         />
                         <Route
                             exact={true}
