@@ -55,7 +55,7 @@ class LineInfoTab extends React.Component<
 
     async componentWillMount() {
         const lineId = this.props.lineStore!.line!.id;
-        const lineTopics: ILineTopic[] = await LineTopicService.fetchLineTopicsForLineId(
+        const lineTopics: ILineTopic[] = await LineTopicService.fetchLineTopics(
             lineId
         );
         this.initLineTopicItems(lineTopics);
@@ -83,8 +83,8 @@ class LineInfoTab extends React.Component<
             const currentTime = new Date().getTime();
             const currentLineTopic = lineTopics.find(
                 (lineTopic: ILineTopic) =>
-                    currentTime > lineTopic.startDate.getTime() &&
-                    currentTime < lineTopic.endDate.getTime()
+                    currentTime > lineTopic.startDate!.getTime() &&
+                    currentTime < lineTopic.endDate!.getTime()
             );
             this.setState({
                 lineTopics,

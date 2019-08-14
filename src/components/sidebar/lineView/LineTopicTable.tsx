@@ -105,7 +105,7 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
                                                     }
                                                     hasReverseColor={true}
                                                     onClick={this.redirectToEditLineTopicView(
-                                                        lineTopic.startDate
+                                                        lineTopic.startDate!
                                                     )}
                                                 >
                                                     <FiInfo />

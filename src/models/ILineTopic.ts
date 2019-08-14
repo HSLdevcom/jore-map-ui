@@ -1,7 +1,7 @@
 export default interface ILineTopic {
     lineId: string;
-    startDate: Date;
-    endDate: Date;
+    startDate?: Date;
+    endDate?: Date;
     lineNameFi: string;
     lineShortNameFi?: string;
     lineNameSw?: string;

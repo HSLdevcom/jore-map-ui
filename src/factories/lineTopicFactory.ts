@@ -28,8 +28,8 @@ class LineTopicFactory {
 
         return {
             lineId,
-            startDate: defaultDate,
-            endDate: defaultDate,
+            startDate: undefined,
+            endDate: undefined,
             lineNameFi: '',
             lineShortNameFi: '',
             lineNameSw: '',

@@ -12,7 +12,7 @@ class LineTopicService {
      * @param lineId - lineId to used to filter topic names
      * @return filtered list of line topic names sorted by startTime
      */
-    public static fetchLineTopicsForLineId = async (
+    public static fetchLineTopics = async (
         lineId: string
     ): Promise<ILineTopic[]> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
@@ -30,7 +30,7 @@ class LineTopicService {
             })
             .sort(
                 (a: ILineTopic, b: ILineTopic) =>
-                    a.startDate.getTime() - b.startDate.getTime()
+                    a.startDate!.getTime() - b.startDate!.getTime()
             );
     };
 
@@ -49,6 +49,14 @@ class LineTopicService {
         return LineTopicFactory.mapExternalLineTopic(
             queryResult.data.lineTopic
         );
+    };
+
+    public static createLineTopic = async (lineTopic: ILineTopic) => {
+        console.log('todo: create lineTopic: ', lineTopic);
+    };
+
+    public static updateLineTopic = async (lineTopic: ILineTopic) => {
+        console.log('todo: update lineTopic ', lineTopic);
     };
 }
 
