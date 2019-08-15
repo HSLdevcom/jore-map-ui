@@ -3,78 +3,71 @@ import SubSites from './subSites';
 import QueryParams from './queryParams';
 
 class RouteBuilderContext {
-    private currentLocation: string; // current link (rename as currentLink?)
-    private target: string; // link to be built (rename as linkToBuild?)
-    private values: Object; // TODO: rename as queryString
+    private currentLink: string;
+    private linkToBuild: string;
+    private queryValues: Object;
 
-    constructor(currentLocation: string, target: SubSites, values: any) {
-        this.currentLocation = currentLocation;
-        this.target = target; // target.replace(':id', '');
-        this.values = this.jsonCopy(values);
+    constructor(currentLink: string, linkToBuild: SubSites, queryValues: any) {
+        this.currentLink = currentLink;
+        this.linkToBuild = linkToBuild;
+        this.queryValues = this.jsonCopy(queryValues);
     }
 
     private jsonCopy = (jsonObject: JSON) => {
         return JSON.parse(JSON.stringify(jsonObject));
     };
 
-    public toTarget = (value: string) => {
-        this.target = this.target.replace(':id', value);
-        return this;
-    };
-
-    // TODO: remove (edit toTarget)
-    public toTarget2 = (targetId: string, value: string) => {
-        if (!targetId) {
-            this.target = this.target.replace(':id', value);
-        } else {
-            this.target = this.target.replace(targetId, value);
+    public toTarget = (targetId: string, value: string) => {
+        if (this.linkToBuild.indexOf(targetId) === -1) {
+            throw new Error(
+                `Link building error, targetId to replace with value (${value}) not found: ${targetId}`
+            );
         }
-        // TODO: show error if :targetId is not found
-
+        this.linkToBuild = this.linkToBuild.replace(targetId, value);
         return this;
     };
 
     public toLink = () => {
         let link =
-            this.target !== SubSites.current
-                ? this.target.toString()
-                : this.currentLocation;
+            this.linkToBuild !== SubSites.current
+                ? this.linkToBuild.toString()
+                : this.currentLink;
 
-        if (Object.keys(this.values).length !== 0) {
-            link += `?${qs.stringify(this.values, { encode: false })}`;
+        if (Object.keys(this.queryValues).length !== 0) {
+            link += `?${qs.stringify(this.queryValues, { encode: false })}`;
         }
         return link;
     };
 
     public append = (param: QueryParams, value: string) => {
-        if (param in this.values) {
-            this.values[param].push(value);
+        if (param in this.queryValues) {
+            this.queryValues[param].push(value);
         } else {
-            this.values[param] = [value];
+            this.queryValues[param] = [value];
         }
         return this;
     };
 
     public remove = (param: QueryParams, value: string) => {
-        if (param in this.values) {
-            if (Array.isArray(this.values[param])) {
-                this.values[param] = this.values[param].filter(
+        if (param in this.queryValues) {
+            if (Array.isArray(this.queryValues[param])) {
+                this.queryValues[param] = this.queryValues[param].filter(
                     (v: string) => v !== value
                 );
             } else {
-                this.values[param] = null;
+                this.queryValues[param] = null;
             }
         }
         return this;
     };
 
     public set = (param: QueryParams, value: string) => {
-        this.values[param] = value;
+        this.queryValues[param] = value;
         return this;
     };
 
     public clear = () => {
-        this.values = {};
+        this.queryValues = {};
         return this;
     };
 }

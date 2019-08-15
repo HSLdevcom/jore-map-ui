@@ -23,7 +23,7 @@ class RoutePathLayer extends Component<RoutePathLayerProps> {
     ) => {
         const routePathViewLink = routeBuilder
             .to(subSites.routePath)
-            .toTarget(
+            .toTarget(':id',
                 [
                     routePath.routeId,
                     Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),

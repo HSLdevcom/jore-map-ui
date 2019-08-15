@@ -171,8 +171,8 @@ class LineTopicView extends ViewFormBase<
         const lineTopic = this.props.lineTopicStore!.lineTopic;
         const lineTopicViewLink = routeBuilder
             .to(SubSites.lineTopic)
-            .toTarget(lineTopic!.lineId)
-            .toTarget2(':startDate', Moment(lineTopic!.startDate).format())
+            .toTarget(':id', lineTopic!.lineId)
+            .toTarget(':startDate', Moment(lineTopic!.startDate).format())
             .toLink();
         navigator.goTo(lineTopicViewLink);
     };

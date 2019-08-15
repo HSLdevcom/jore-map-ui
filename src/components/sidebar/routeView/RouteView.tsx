@@ -154,7 +154,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
         const route = this.props.routeStore!.route;
         const routeViewLink = routeBuilder
             .to(SubSites.route)
-            .toTarget(route!.id)
+            .toTarget(':id', route!.id)
             .toLink();
         navigator.goTo(routeViewLink);
     };

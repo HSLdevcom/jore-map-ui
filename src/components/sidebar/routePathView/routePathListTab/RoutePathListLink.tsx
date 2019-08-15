@@ -97,7 +97,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         const routeLink = this.props.routePathLink;
         const routeLinkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget(
+            .toTarget(':id',
                 [
                     routeLink.startNode.id,
                     routeLink.endNode.id,

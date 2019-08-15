@@ -183,7 +183,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const link = this.props.linkStore!.link;
         const linkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget(
+            .toTarget(':id',
                 [link.startNode.id, link.endNode.id, link.transitType].join(',')
             )
             .toLink();
@@ -193,7 +193,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     private navigateToNode = (nodeId: string) => () => {
         const editNetworkLink = routeBuilder
             .to(SubSites.node)
-            .toTarget(nodeId)
+            .toTarget(':id', nodeId)
             .toLink();
         navigator.goTo(editNetworkLink);
     };

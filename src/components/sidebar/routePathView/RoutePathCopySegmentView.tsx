@@ -170,7 +170,7 @@ class RoutePathCopySegmentView extends React.Component<
     ) => () => {
         const routePathLink = routeBuilder
             .to(SubSites.routePath)
-            .toTarget(
+            .toTarget(':id',
                 [
                     routePath.routeId,
                     Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),

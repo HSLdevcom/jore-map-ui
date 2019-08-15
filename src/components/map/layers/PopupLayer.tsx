@@ -32,7 +32,7 @@ class PopupLayer extends Component<PopupLayerProps> {
                 this.onClose();
                 const nodeLink = routeBuilder
                     .to(subSites.node)
-                    .toTarget(node.id)
+                    .toTarget(':id', node.id)
                     .toLink();
                 navigator.goTo(nodeLink);
             };

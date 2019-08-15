@@ -113,7 +113,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
 
     private redirectToLineView = (lineId: string) => () => {
         const url = RouteBuilder.to(SubSites.line)
-            .toTarget(lineId)
+            .toTarget(':id', lineId)
             .toLink();
         navigator.goTo(url);
     };

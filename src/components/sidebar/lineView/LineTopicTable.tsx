@@ -22,8 +22,8 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
     private redirectToEditLineTopicView = (startDate: Date) => () => {
         const editLineTopicLink = routeBuilder
             .to(SubSites.lineTopic)
-            .toTarget(this.props.lineId)
-            .toTarget2(':startDate', Moment(startDate).format())
+            .toTarget(':id', this.props.lineId)
+            .toTarget(':startDate', Moment(startDate).format())
             .toLink();
 
         navigator.goTo(editLineTopicLink);
@@ -31,7 +31,7 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
     private redirectToNewLineTopicView = () => {
         const newLineTopicLink = routeBuilder
             .to(SubSites.newLineTopic)
-            .toTarget(this.props.lineId)
+            .toTarget(':id', this.props.lineId)
             .toLink();
 
         navigator.goTo(newLineTopicLink);
