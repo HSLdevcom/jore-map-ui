@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import Moment from 'moment';
-import _ from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { match } from 'react-router';
 import { ErrorStore } from '~/stores/errorStore';
@@ -37,6 +36,7 @@ interface ILineTopicViewState {
     invalidPropertiesMap: object;
     isEditingDisabled: boolean;
     reservedStartDates: string[];
+    originalStartDate: string | null;
 }
 
 @inject('lineTopicStore', 'errorStore', 'alertStore')
@@ -51,7 +51,8 @@ class LineTopicView extends ViewFormBase<
             isLoading: true,
             invalidPropertiesMap: {},
             isEditingDisabled: !props.isNewLineTopic,
-            reservedStartDates: []
+            reservedStartDates: [],
+            originalStartDate: null
         };
     }
 
@@ -85,13 +86,17 @@ class LineTopicView extends ViewFormBase<
         const allLineTopics: ILineTopic[] = await LineTopicService.fetchLineTopics(
             lineTopic!.lineId
         );
-        const reservedStartDates = _.chain(allLineTopics)
-            .map((lt: ILineTopic) => Moment(lt.startDate).format())
-            .filter(
+        let reservedStartDates = allLineTopics.map((lt: ILineTopic) =>
+            Moment(lt.startDate).format()
+        );
+
+        // if is editing, filter the current lineTopic date out from reserved dates
+        if (!this.props.isNewLineTopic) {
+            reservedStartDates = reservedStartDates.filter(
                 (startDate: string) =>
                     startDate !== Moment(lineTopic!.startDate).format()
-            )
-            .value();
+            );
+        }
 
         this.setState({
             reservedStartDates
@@ -99,32 +104,43 @@ class LineTopicView extends ViewFormBase<
     };
 
     private createNewLine = async () => {
-        try {
-            const lineId = this.props.match!.params.id;
-            const newLineTopic = LineTopicFactory.createNewLineTopic(lineId);
-            this.props.lineTopicStore!.setLineTopic(newLineTopic);
-        } catch (e) {
-            this.props.errorStore!.addError(
-                'Uuden linjan nimen luonti epäonnistui',
-                e
-            );
+        const lineId = this.props.match!.params.id;
+        const startDate = navigator.getQueryParamValues().startDate;
+
+        if (startDate) {
+            await this.fetchLine(lineId, Moment(startDate).format());
+        } else {
+            try {
+                const newLineTopic = LineTopicFactory.createNewLineTopic(
+                    lineId
+                );
+                this.props.lineTopicStore!.setLineTopic(newLineTopic);
+            } catch (e) {
+                this.props.errorStore!.addError(
+                    'Uuden linjan nimen luonti epäonnistui',
+                    e
+                );
+            }
         }
     };
 
     private initExistingLine = async () => {
-        await this.fetchLine();
-    };
-
-    private fetchLine = async () => {
         const lineId = this.props.match!.params.id;
         const startDate = this.props.match!.params.startDate;
+        await this.fetchLine(lineId, startDate);
+    };
 
+    private fetchLine = async (lineId: string, startDate: string) => {
         try {
             const lineTopic = await LineTopicService.fetchLineTopic(
                 lineId,
                 startDate
             );
+
             this.props.lineTopicStore!.setLineTopic(lineTopic);
+            this.setState({
+                originalStartDate: Moment(lineTopic.startDate).format()
+            });
         } catch (e) {
             this.props.errorStore!.addError(
                 'Linja otsikon haku epäonnistui.',
@@ -138,6 +154,7 @@ class LineTopicView extends ViewFormBase<
             lineTopicValidationModel,
             this.props.lineTopicStore!.lineTopic
         );
+        this.validateDates();
     };
 
     private save = async () => {
@@ -194,12 +211,14 @@ class LineTopicView extends ViewFormBase<
     ) => {
         this.onChangeLineTopicProperty('startDate')(startDate);
         this.onChangeLineTopicProperty('endDate')(endDate);
-        this.validateDates(startDate, endDate);
+        this.validateDates();
     };
-    private validateDates = (
-        startDate: Date | undefined,
-        endDate: Date | undefined
-    ) => {
+
+    // a custom date validator
+    private validateDates = () => {
+        const lineTopic = this.props.lineTopicStore!.lineTopic;
+        const startDate = lineTopic!.startDate;
+        const endDate = lineTopic!.endDate;
         // is startDate (for current lineId) unique?
         if (
             startDate &&
@@ -260,6 +279,20 @@ class LineTopicView extends ViewFormBase<
                 </SidebarHeader>
             </div>
         );
+    };
+
+    private redirectToNewLineTopicView = () => {
+        const lineId = this.props.match!.params.id;
+        const originalStartDate = this.state.originalStartDate;
+
+        const newLineTopicLink = routeBuilder
+            .to(SubSites.newLineTopic, {
+                startDate: new Date(originalStartDate!).toISOString()
+            })
+            .toTarget(':id', lineId)
+            .toLink();
+
+        navigator.goTo(newLineTopicLink);
     };
 
     render() {
@@ -407,6 +440,16 @@ class LineTopicView extends ViewFormBase<
                             />
                         </div>
                     </div>
+                    {!this.props.isNewLineTopic && isEditingDisabled && (
+                        <Button
+                            className={s.newLineTopicButton}
+                            type={ButtonType.SQUARE}
+                            disabled={false}
+                            onClick={() => this.redirectToNewLineTopicView()}
+                        >
+                            Luo uusi linjan otsikko käyttäen tätä pohjana
+                        </Button>
+                    )}
                     <Button
                         onClick={this.save}
                         type={ButtonType.SAVE}

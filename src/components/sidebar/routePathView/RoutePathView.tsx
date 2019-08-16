@@ -238,7 +238,8 @@ class RoutePathView extends ViewFormBase<
                 );
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
-                    .toTarget(':id',
+                    .toTarget(
+                        ':id',
                         [
                             routePathPrimaryKey.routeId,
                             Moment(routePathPrimaryKey.startTime).format(
