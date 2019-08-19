@@ -1,8 +1,9 @@
-export default interface ILineTopic {
+interface ILineTopic {
     lineId: string;
-    startDate?: Date;
-    endDate?: Date;
-    lineNameFi: string;
+    originalStartDate?: Date;
+    startDate: Date;
+    endDate: Date;
+    lineNameFi?: string;
     lineShortNameFi?: string;
     lineNameSw?: string;
     lineShortNameSw?: string;
@@ -13,3 +14,5 @@ export default interface ILineTopic {
     modifiedBy?: string;
     modifiedOn?: Date;
 }
+
+export default ILineTopic;

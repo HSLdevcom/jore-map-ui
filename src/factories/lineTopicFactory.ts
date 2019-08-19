@@ -7,6 +7,7 @@ class LineTopicFactory {
     ): ILineTopic => {
         return {
             lineId: externalLineTopic.lintunnus,
+            originalStartDate: new Date(externalLineTopic.linalkupvm),
             startDate: new Date(externalLineTopic.linalkupvm),
             endDate: new Date(externalLineTopic.linloppupvm),
             lineNameFi: externalLineTopic.linnimi,
@@ -14,11 +15,13 @@ class LineTopicFactory {
             lineNameSw: externalLineTopic.linnimir,
             lineShortNameSw: externalLineTopic.linnimilyhr,
             lineStartPlace1Fi: externalLineTopic.linlahtop1,
-            lineStartPlace1Sw: externalLineTopic.linlahtop1r,
+            lineStartPlace1Sw: externalLineTopic.linlahtop1R,
             lineStartPlace2Fi: externalLineTopic.linlahtop2,
-            lineStartPlace2Sw: externalLineTopic.linlahtop2r,
+            lineStartPlace2Sw: externalLineTopic.linlahtop2R,
             modifiedBy: externalLineTopic.linkuka,
-            modifiedOn: new Date(externalLineTopic.linviimpvm)
+            modifiedOn: externalLineTopic.linviimpvm
+                ? new Date(externalLineTopic.linviimpvm)
+                : undefined
         };
     };
 
@@ -28,8 +31,9 @@ class LineTopicFactory {
 
         return {
             lineId,
-            startDate: undefined,
-            endDate: undefined,
+            originalStartDate: undefined,
+            startDate: new Date(defaultDate.getTime()),
+            endDate: new Date(defaultDate.getTime()),
             lineNameFi: '',
             lineShortNameFi: '',
             lineNameSw: '',

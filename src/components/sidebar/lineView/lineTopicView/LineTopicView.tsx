@@ -36,7 +36,6 @@ interface ILineTopicViewState {
     invalidPropertiesMap: object;
     isEditingDisabled: boolean;
     reservedStartDates: string[];
-    originalStartDate: string | null;
 }
 
 @inject('lineTopicStore', 'errorStore', 'alertStore')
@@ -51,14 +50,22 @@ class LineTopicView extends ViewFormBase<
             isLoading: true,
             invalidPropertiesMap: {},
             isEditingDisabled: !props.isNewLineTopic,
-            reservedStartDates: [],
-            originalStartDate: null
+            reservedStartDates: []
         };
     }
 
     componentDidMount() {
         super.componentDidMount();
         this.initialize();
+    }
+
+    componentDidUpdate(prevProps: ILineTopicViewProps) {
+        if (
+            this.props.match!.params.startDate !==
+            prevProps.match!.params.startDate
+        ) {
+            this.initialize();
+        }
     }
 
     componentWillUnmount() {
@@ -138,9 +145,6 @@ class LineTopicView extends ViewFormBase<
             );
 
             this.props.lineTopicStore!.setLineTopic(lineTopic);
-            this.setState({
-                originalStartDate: Moment(lineTopic.startDate).format()
-            });
         } catch (e) {
             this.props.errorStore!.addError(
                 'Linja otsikon haku epäonnistui.',
@@ -161,6 +165,9 @@ class LineTopicView extends ViewFormBase<
         this.setState({ isLoading: true });
 
         const lineTopic = this.props.lineTopicStore!.lineTopic;
+        const isStartDateChanged =
+            lineTopic!.startDate !== lineTopic!.originalStartDate;
+
         try {
             if (this.props.isNewLineTopic) {
                 await LineTopicService.createLineTopic(lineTopic!);
@@ -173,7 +180,7 @@ class LineTopicView extends ViewFormBase<
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;
         }
-        if (this.props.isNewLineTopic) {
+        if (this.props.isNewLineTopic || isStartDateChanged) {
             this.navigateToNewLineTopic();
             return;
         }
@@ -283,11 +290,11 @@ class LineTopicView extends ViewFormBase<
 
     private redirectToNewLineTopicView = () => {
         const lineId = this.props.match!.params.id;
-        const originalStartDate = this.state.originalStartDate;
+        const lineTopic = this.props.lineTopicStore!.lineTopic;
 
         const newLineTopicLink = routeBuilder
             .to(SubSites.newLineTopic, {
-                startDate: new Date(originalStartDate!).toISOString()
+                startDate: new Date(lineTopic!.originalStartDate!).toISOString()
             })
             .toTarget(':id', lineId)
             .toLink();

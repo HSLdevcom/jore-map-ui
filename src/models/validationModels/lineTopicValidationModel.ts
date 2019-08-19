@@ -8,6 +8,7 @@ const lineTopicValidationModel: ILineTopicValidationModel = {
     lineId: `required|min:4|max:6|string|${
         regexRules.upperCaseOrNumbersOrSpace
     }`,
+    originalStartDate: '',
     startDate: 'required|date',
     endDate: 'required|date',
     lineNameFi: 'min:0|max:60|string',

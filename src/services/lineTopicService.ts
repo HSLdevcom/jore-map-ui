@@ -1,6 +1,8 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
+import ApiClient from '~/util/ApiClient';
 import apolloClient from '~/util/ApolloClient';
+import endpoints from '~/enums/endpoints';
 import ILineTopic from '~/models/ILineTopic';
 import IExternalLineTopic from '~/models/externals/IExternalLineTopic';
 import LineTopicFactory from '~/factories/lineTopicFactory';
@@ -51,12 +53,22 @@ class LineTopicService {
         );
     };
 
-    public static createLineTopic = async (lineTopic: ILineTopic) => {
-        console.log('todo: create lineTopic: ', lineTopic);
+    public static updateLineTopic = async (lineTopic: ILineTopic) => {
+        await ApiClient.updateObject(endpoints.LINE_TOPIC, lineTopic);
+        await apolloClient.clearStore();
     };
 
-    public static updateLineTopic = async (lineTopic: ILineTopic) => {
-        console.log('todo: update lineTopic ', lineTopic);
+    public static createLineTopic = async (lineTopic: ILineTopic) => {
+        const newLineTopic = {
+            ...lineTopic,
+            originalStartDate: lineTopic.startDate
+        };
+        const response = await ApiClient.createObject(
+            endpoints.LINE_TOPIC,
+            newLineTopic
+        );
+        await apolloClient.clearStore();
+        return response.id;
     };
 }
 
