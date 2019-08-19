@@ -4,46 +4,46 @@ import _ from 'lodash';
 import classnames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
 import ButtonType from '~/enums/buttonType';
-import ILineTopic from '~/models/ILineTopic';
+import ILineHeader from '~/models/ILineHeader';
 import SubSites from '~/routing/subSites';
 import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
 import { Button } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
-import * as s from './lineTopicTable.scss';
+import * as s from './lineHeaderTable.scss';
 
-interface ILineTopicListProps {
-    lineTopics: ILineTopic[];
-    currentLineTopic?: ILineTopic;
+interface ILineHeaderListProps {
+    lineHeaders: ILineHeader[];
+    currentLineHeader?: ILineHeader;
     lineId: string;
 }
 
-class LineTopicTable extends React.Component<ILineTopicListProps> {
-    private redirectToEditLineTopicView = (startDate: Date) => () => {
-        const editLineTopicLink = routeBuilder
-            .to(SubSites.lineTopic)
+class LineHeaderTable extends React.Component<ILineHeaderListProps> {
+    private redirectToEditLineHeaderView = (startDate: Date) => () => {
+        const editLineHeaderLink = routeBuilder
+            .to(SubSites.lineHeader)
             .toTarget(':id', this.props.lineId)
             .toTarget(':startDate', Moment(startDate).format())
             .toLink();
 
-        navigator.goTo(editLineTopicLink);
+        navigator.goTo(editLineHeaderLink);
     };
-    private redirectToNewLineTopicView = () => {
-        const newLineTopicLink = routeBuilder
-            .to(SubSites.newLineTopic)
+    private redirectToNewLineHeaderView = () => {
+        const newLineHeaderLink = routeBuilder
+            .to(SubSites.newLineHeader)
             .toTarget(':id', this.props.lineId)
             .toLink();
 
-        navigator.goTo(newLineTopicLink);
+        navigator.goTo(newLineHeaderLink);
     };
     render() {
         return (
-            <div className={s.lineTopicTableView}>
+            <div className={s.lineHeaderTableView}>
                 <SidebarHeader hideCloseButton={true}>
                     Linjan otsikot
                 </SidebarHeader>
-                {this.props.lineTopics.length > 0 ? (
-                    <table className={s.lineTopicTable}>
+                {this.props.lineHeaders.length > 0 ? (
+                    <table className={s.lineHeaderTable}>
                         <tbody>
                             <tr>
                                 <th
@@ -72,40 +72,40 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
                                 </th>
                                 <th className={s.columnHeader} />
                             </tr>
-                            {this.props.lineTopics.map(
-                                (lineTopic: ILineTopic, index: number) => {
-                                    const isCurrentLineTopic = _.isEqual(
-                                        this.props.currentLineTopic,
-                                        lineTopic
+                            {this.props.lineHeaders.map(
+                                (lineHeader: ILineHeader, index: number) => {
+                                    const isCurrentLineHeader = _.isEqual(
+                                        this.props.currentLineHeader,
+                                        lineHeader
                                     );
                                     return (
                                         <tr
                                             key={index}
                                             className={
-                                                isCurrentLineTopic
-                                                    ? s.lineTopicRowHighlight
+                                                isCurrentLineHeader
+                                                    ? s.lineHeaderRowHighlight
                                                     : undefined
                                             }
                                         >
-                                            <td>{lineTopic.lineNameFi}</td>
+                                            <td>{lineHeader.lineNameFi}</td>
                                             <td className={s.timestampRow}>
                                                 {Moment(
-                                                    lineTopic.startDate
+                                                    lineHeader.startDate
                                                 ).format('DD-MM-YYYY')}
                                             </td>
                                             <td className={s.timestampRow}>
                                                 {Moment(
-                                                    lineTopic.endDate
+                                                    lineHeader.endDate
                                                 ).format('DD-MM-YYYY')}
                                             </td>
                                             <td>
                                                 <Button
                                                     className={
-                                                        s.editLineTopicButton
+                                                        s.editLineHeaderButton
                                                     }
                                                     hasReverseColor={true}
-                                                    onClick={this.redirectToEditLineTopicView(
-                                                        lineTopic.startDate!
+                                                    onClick={this.redirectToEditLineHeaderView(
+                                                        lineHeader.startDate!
                                                     )}
                                                 >
                                                     <FiInfo />
@@ -123,10 +123,10 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
                     </div>
                 )}
                 <Button
-                    className={s.newLineTopicButton}
+                    className={s.newLineHeaderButton}
                     type={ButtonType.SQUARE}
                     disabled={false}
-                    onClick={() => this.redirectToNewLineTopicView()}
+                    onClick={() => this.redirectToNewLineHeaderView()}
                 >
                     Luo uusi linjan otsikko
                 </Button>
@@ -135,4 +135,4 @@ class LineTopicTable extends React.Component<ILineTopicListProps> {
     }
 }
 
-export default LineTopicTable;
+export default LineHeaderTable;

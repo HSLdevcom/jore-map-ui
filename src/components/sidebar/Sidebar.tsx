@@ -13,7 +13,7 @@ import LinkView from './linkView/LinkView';
 import RouteListView from './routeListView/RouteListView';
 import HomeView from './homeView/HomeView';
 import LineView from './lineView/LineView';
-import LineTopicView from './lineView/lineTopicView/LineTopicView';
+import LineHeaderView from './lineView/lineHeaderView/LineHeaderView';
 import RouteView from './routeView/RouteView';
 import RoutePathView from './routePathView/RoutePathView';
 import NodeView from './nodeView/NodeView';
@@ -48,11 +48,11 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     private renderLineView = (props: any) => (
         <LineView {...props} isNewLine={false} />
     );
-    private renderNewLineTopicView = (props: any) => (
-        <LineTopicView {...props} isNewLineTopic={true} />
+    private renderNewLineHeaderView = (props: any) => (
+        <LineHeaderView {...props} isNewLineHeader={true} />
     );
-    private renderLineTopicView = (props: any) => (
-        <LineTopicView {...props} isNewLineTopic={false} />
+    private renderLineHeaderView = (props: any) => (
+        <LineHeaderView {...props} isNewLineHeader={false} />
     );
     private renderNewRouteView = (props: any) => (
         <RouteView {...props} isNewRoute={true} />
@@ -101,13 +101,13 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         />
                         <Route
                             exact={true}
-                            path={subSites.newLineTopic}
-                            component={this.renderNewLineTopicView}
+                            path={subSites.newLineHeader}
+                            component={this.renderNewLineHeaderView}
                         />
                         <Route
                             exact={true}
-                            path={subSites.lineTopic}
-                            component={this.renderLineTopicView}
+                            path={subSites.lineHeader}
+                            component={this.renderLineHeaderView}
                         />
                         <Route
                             exact={true}

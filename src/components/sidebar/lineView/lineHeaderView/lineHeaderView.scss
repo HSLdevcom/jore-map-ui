@@ -3,7 +3,7 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/form';
 
-.lineTopicView {
+.lineHeaderView {
     width: $sidebarExtraWide;
     height: 100%;
     display: flex;
@@ -20,7 +20,7 @@
         display: flex;
         flex-direction: column;
 
-        .lineTopicForm {
+        .lineHeaderForm {
             display: flex;
             flex-direction: column;
             overflow-y: auto;
@@ -28,7 +28,7 @@
             padding: 15px;
         }
 
-        .newLineTopicButton {
+        .newLineHeaderButton {
             width: 100%;
             padding: 20px;
         }

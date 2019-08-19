@@ -1,5 +1,5 @@
 import ILine from './ILine';
-import ILineTopic from './ILineTopic';
+import ILineHeader from './ILineHeader';
 import INode from './INode';
 import IStop from './IStop';
 import ILink from './ILink';
@@ -9,7 +9,7 @@ import IRoutePathLink from './IRoutePathLink';
 
 export {
     ILine,
-    ILineTopic,
+    ILineHeader,
     INode,
     IStop,
     ILink,

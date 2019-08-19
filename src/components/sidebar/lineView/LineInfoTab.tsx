@@ -8,18 +8,18 @@ import { LineStore } from '~/stores/lineStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import LineService from '~/services/lineService';
-import LineTopicService from '~/services/lineTopicService';
-import ILineTopic from '~/models/ILineTopic';
+import LineHeaderService from '~/services/lineHeaderService';
+import ILineHeader from '~/models/ILineHeader';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import { IValidationResult } from '~/validation/FormValidator';
 import { TransitToggleButtonBar, Dropdown } from '~/components/controls';
 import * as s from './lineInfoTab.scss';
-import LineTopicTable from './LineTopicTable';
+import LineHeaderTable from './LineHeaderTable';
 
 interface ILineInfoTabState {
     isLoading: boolean;
-    lineTopics: ILineTopic[];
-    currentLineTopic?: ILineTopic;
+    lineHeaders: ILineHeader[];
+    currentLineHeader?: ILineHeader;
 }
 
 interface ILineInfoTabProps {
@@ -49,16 +49,16 @@ class LineInfoTab extends React.Component<
         super(props);
         this.state = {
             isLoading: true,
-            lineTopics: []
+            lineHeaders: []
         };
     }
 
     async componentWillMount() {
         const lineId = this.props.lineStore!.line!.id;
-        const lineTopics: ILineTopic[] = await LineTopicService.fetchLineTopics(
+        const lineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(
             lineId
         );
-        this.initLineTopicItems(lineTopics);
+        this.initLineHeaderItems(lineHeaders);
     }
 
     componentWillUnmount() {
@@ -78,17 +78,17 @@ class LineInfoTab extends React.Component<
         }
     }
 
-    private initLineTopicItems = (lineTopics: ILineTopic[]) => {
+    private initLineHeaderItems = (lineHeaders: ILineHeader[]) => {
         if (this.mounted) {
             const currentTime = new Date().getTime();
-            const currentLineTopic = lineTopics.find(
-                (lineTopic: ILineTopic) =>
-                    currentTime > lineTopic.startDate!.getTime() &&
-                    currentTime < lineTopic.endDate!.getTime()
+            const currentLineHeader = lineHeaders.find(
+                (lineHeader: ILineHeader) =>
+                    currentTime > lineHeader.startDate!.getTime() &&
+                    currentTime < lineHeader.endDate!.getTime()
             );
             this.setState({
-                lineTopics,
-                currentLineTopic
+                lineHeaders,
+                currentLineHeader
             });
         }
     };
@@ -230,8 +230,8 @@ class LineInfoTab extends React.Component<
                         <TextContainer
                             label={'LINJAN VOIMASSAOLEVA OTSIKKO'}
                             value={
-                                this.state.currentLineTopic
-                                    ? this.state.currentLineTopic.lineNameFi
+                                this.state.currentLineHeader
+                                    ? this.state.currentLineHeader.lineNameFi
                                     : 'Ei voimassa olevaa otsikkoa.'
                             }
                         />
@@ -328,9 +328,9 @@ class LineInfoTab extends React.Component<
                 </div>
                 <div className={s.formSection}>
                     <div className={s.flexRow}>
-                        <LineTopicTable
-                            lineTopics={this.state.lineTopics}
-                            currentLineTopic={this.state.currentLineTopic}
+                        <LineHeaderTable
+                            lineHeaders={this.state.lineHeaders}
+                            currentLineHeader={this.state.currentLineHeader}
                             lineId={this.props.lineStore!.line!.id}
                         />
                     </div>

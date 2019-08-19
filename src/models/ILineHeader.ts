@@ -1,4 +1,4 @@
-interface ILineTopic {
+interface ILineHeader {
     lineId: string;
     originalStartDate?: Date;
     startDate: Date;
@@ -15,4 +15,4 @@ interface ILineTopic {
     modifiedOn?: Date;
 }
 
-export default ILineTopic;
+export default ILineHeader;

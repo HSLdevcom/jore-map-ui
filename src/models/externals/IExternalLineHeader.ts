@@ -1,4 +1,4 @@
-export default interface IExternalLineTopic {
+export default interface IExternalLineHeader {
     lintunnus: string;
     linalkupvm: Date;
     linloppupvm: Date;

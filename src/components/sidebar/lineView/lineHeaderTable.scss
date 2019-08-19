@@ -1,10 +1,10 @@
 @import '../../shared/styles/common';
 @import '../../shared/styles/form';
 
-.lineTopicTableView {
+.lineHeaderTableView {
     width: 100%;
 
-    .lineTopicTable {
+    .lineHeaderTable {
         width: 100%;
         font-size: $smallFontSize;
         border-collapse: separate;
@@ -28,17 +28,17 @@
             white-space: nowrap;
         }
 
-        .lineTopicRowHighlight {
+        .lineHeaderRowHighlight {
             background-color: $lightblue;
         }
     }
 
-    .editLineTopicButton {
+    .editLineHeaderButton {
         font-size: 1.8em;
         padding: 3px;
     }
 
-    .newLineTopicButton  {
+    .newLineHeaderButton  {
         margin-top: 20px;
     }
 }

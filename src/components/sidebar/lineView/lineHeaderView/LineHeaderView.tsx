@@ -9,47 +9,47 @@ import InputContainer from '~/components/controls/InputContainer';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import { ILineTopic } from '~/models';
-import lineTopicValidationModel from '~/models/validationModels/lineTopicValidationModel';
+import { ILineHeader } from '~/models';
+import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import ButtonType from '~/enums/buttonType';
 import { Button } from '~/components/controls';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import TextContainer from '~/components/controls/TextContainer';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import LineTopicFactory from '~/factories/lineTopicFactory';
-import LineTopicService from '~/services/lineTopicService';
-import { LineTopicStore } from '~/stores/lineTopicStore';
+import LineHeaderFactory from '~/factories/lineHeaderFactory';
+import LineHeaderService from '~/services/lineHeaderService';
+import { LineHeaderStore } from '~/stores/lineHeaderStore';
 import SidebarHeader from '../../SidebarHeader';
-import * as s from './lineTopicView.scss';
+import * as s from './lineHeaderView.scss';
 
-interface ILineTopicViewProps {
+interface ILineHeaderViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
-    lineTopicStore?: LineTopicStore;
+    lineHeaderStore?: LineHeaderStore;
     match?: match<any>;
-    isNewLineTopic: boolean;
+    isNewLineHeader: boolean;
 }
 
-interface ILineTopicViewState {
+interface ILineHeaderViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
     isEditingDisabled: boolean;
     reservedStartDates: string[];
 }
 
-@inject('lineTopicStore', 'errorStore', 'alertStore')
+@inject('lineHeaderStore', 'errorStore', 'alertStore')
 @observer
-class LineTopicView extends ViewFormBase<
-    ILineTopicViewProps,
-    ILineTopicViewState
+class LineHeaderView extends ViewFormBase<
+    ILineHeaderViewProps,
+    ILineHeaderViewState
 > {
-    constructor(props: ILineTopicViewProps) {
+    constructor(props: ILineHeaderViewProps) {
         super(props);
         this.state = {
             isLoading: true,
             invalidPropertiesMap: {},
-            isEditingDisabled: !props.isNewLineTopic,
+            isEditingDisabled: !props.isNewLineHeader,
             reservedStartDates: []
         };
     }
@@ -59,7 +59,7 @@ class LineTopicView extends ViewFormBase<
         this.initialize();
     }
 
-    componentDidUpdate(prevProps: ILineTopicViewProps) {
+    componentDidUpdate(prevProps: ILineHeaderViewProps) {
         if (
             this.props.match!.params.startDate !==
             prevProps.match!.params.startDate
@@ -70,38 +70,38 @@ class LineTopicView extends ViewFormBase<
 
     componentWillUnmount() {
         super.componentWillUnmount();
-        this.props.lineTopicStore!.clear();
+        this.props.lineHeaderStore!.clear();
     }
 
     private initialize = async () => {
-        if (this.props.isNewLineTopic) {
+        if (this.props.isNewLineHeader) {
             await this.createNewLine();
         } else {
             await this.initExistingLine();
         }
-        if (this.props.lineTopicStore!.lineTopic) {
-            await this.queryOtherLineTopics();
-            this.validateLineTopic();
+        if (this.props.lineHeaderStore!.lineHeader) {
+            await this.queryOtherLineHeaders();
+            this.validateLineHeader();
             this.setState({
                 isLoading: false
             });
         }
     };
 
-    private queryOtherLineTopics = async () => {
-        const lineTopic = this.props.lineTopicStore!.lineTopic;
-        const allLineTopics: ILineTopic[] = await LineTopicService.fetchLineTopics(
-            lineTopic!.lineId
+    private queryOtherLineHeaders = async () => {
+        const lineHeader = this.props.lineHeaderStore!.lineHeader;
+        const allLineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(
+            lineHeader!.lineId
         );
-        let reservedStartDates = allLineTopics.map((lt: ILineTopic) =>
+        let reservedStartDates = allLineHeaders.map((lt: ILineHeader) =>
             Moment(lt.startDate).format()
         );
 
-        // if is editing, filter the current lineTopic date out from reserved dates
-        if (!this.props.isNewLineTopic) {
+        // if is editing, filter the current lineHeader date out from reserved dates
+        if (!this.props.isNewLineHeader) {
             reservedStartDates = reservedStartDates.filter(
                 (startDate: string) =>
-                    startDate !== Moment(lineTopic!.startDate).format()
+                    startDate !== Moment(lineHeader!.startDate).format()
             );
         }
 
@@ -118,10 +118,10 @@ class LineTopicView extends ViewFormBase<
             await this.fetchLine(lineId, Moment(startDate).format());
         } else {
             try {
-                const newLineTopic = LineTopicFactory.createNewLineTopic(
+                const newLineHeader = LineHeaderFactory.createNewLineHeader(
                     lineId
                 );
-                this.props.lineTopicStore!.setLineTopic(newLineTopic);
+                this.props.lineHeaderStore!.setLineHeader(newLineHeader);
             } catch (e) {
                 this.props.errorStore!.addError(
                     'Uuden linjan nimen luonti epäonnistui',
@@ -139,12 +139,12 @@ class LineTopicView extends ViewFormBase<
 
     private fetchLine = async (lineId: string, startDate: string) => {
         try {
-            const lineTopic = await LineTopicService.fetchLineTopic(
+            const lineHeader = await LineHeaderService.fetchLineHeader(
                 lineId,
                 startDate
             );
 
-            this.props.lineTopicStore!.setLineTopic(lineTopic);
+            this.props.lineHeaderStore!.setLineHeader(lineHeader);
         } catch (e) {
             this.props.errorStore!.addError(
                 'Linja otsikon haku epäonnistui.',
@@ -153,10 +153,10 @@ class LineTopicView extends ViewFormBase<
         }
     };
 
-    private validateLineTopic = () => {
+    private validateLineHeader = () => {
         this.validateAllProperties(
-            lineTopicValidationModel,
-            this.props.lineTopicStore!.lineTopic
+            lineHeaderValidationModel,
+            this.props.lineHeaderStore!.lineHeader
         );
         this.validateDates();
     };
@@ -164,15 +164,15 @@ class LineTopicView extends ViewFormBase<
     private save = async () => {
         this.setState({ isLoading: true });
 
-        const lineTopic = this.props.lineTopicStore!.lineTopic;
+        const lineHeader = this.props.lineHeaderStore!.lineHeader;
         const isStartDateChanged =
-            lineTopic!.startDate !== lineTopic!.originalStartDate;
+            lineHeader!.startDate !== lineHeader!.originalStartDate;
 
         try {
-            if (this.props.isNewLineTopic) {
-                await LineTopicService.createLineTopic(lineTopic!);
+            if (this.props.isNewLineHeader) {
+                await LineHeaderService.createLineHeader(lineHeader!);
             } else {
-                await LineTopicService.updateLineTopic(lineTopic!);
+                await LineHeaderService.updateLineHeader(lineHeader!);
             }
 
             this.props.alertStore!.setFadeMessage('Tallennettu!');
@@ -180,8 +180,8 @@ class LineTopicView extends ViewFormBase<
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;
         }
-        if (this.props.isNewLineTopic || isStartDateChanged) {
-            this.navigateToNewLineTopic();
+        if (this.props.isNewLineHeader || isStartDateChanged) {
+            this.navigateToNewLineHeader();
             return;
         }
         this.setState({
@@ -191,22 +191,22 @@ class LineTopicView extends ViewFormBase<
         });
     };
 
-    private navigateToNewLineTopic = () => {
-        const lineTopic = this.props.lineTopicStore!.lineTopic;
-        const lineTopicViewLink = routeBuilder
-            .to(SubSites.lineTopic)
-            .toTarget(':id', lineTopic!.lineId)
-            .toTarget(':startDate', Moment(lineTopic!.startDate).format())
+    private navigateToNewLineHeader = () => {
+        const lineHeader = this.props.lineHeaderStore!.lineHeader;
+        const lineHeaderViewLink = routeBuilder
+            .to(SubSites.lineHeader)
+            .toTarget(':id', lineHeader!.lineId)
+            .toTarget(':startDate', Moment(lineHeader!.startDate).format())
             .toLink();
-        navigator.goTo(lineTopicViewLink);
+        navigator.goTo(lineHeaderViewLink);
     };
 
-    private onChangeLineTopicProperty = (property: keyof ILineTopic) => (
+    private onChangeLineHeaderProperty = (property: keyof ILineHeader) => (
         value: any
     ) => {
-        this.props.lineTopicStore!.updateLineTopicProperty(property, value);
+        this.props.lineHeaderStore!.updateLineHeaderProperty(property, value);
         this.validateProperty(
-            lineTopicValidationModel[property],
+            lineHeaderValidationModel[property],
             property,
             value
         );
@@ -216,16 +216,16 @@ class LineTopicView extends ViewFormBase<
         startDate: Date | undefined,
         endDate: Date | undefined
     ) => {
-        this.onChangeLineTopicProperty('startDate')(startDate);
-        this.onChangeLineTopicProperty('endDate')(endDate);
+        this.onChangeLineHeaderProperty('startDate')(startDate);
+        this.onChangeLineHeaderProperty('endDate')(endDate);
         this.validateDates();
     };
 
     // a custom date validator
     private validateDates = () => {
-        const lineTopic = this.props.lineTopicStore!.lineTopic;
-        const startDate = lineTopic!.startDate;
-        const endDate = lineTopic!.endDate;
+        const lineHeader = this.props.lineHeaderStore!.lineHeader;
+        const startDate = lineHeader!.startDate;
+        const endDate = lineHeader!.endDate;
         // is startDate (for current lineId) unique?
         if (
             startDate &&
@@ -252,35 +252,35 @@ class LineTopicView extends ViewFormBase<
     };
 
     private onChangeStartDate = (startDate: Date) => {
-        const endDate = this.props.lineTopicStore!.lineTopic!.endDate;
+        const endDate = this.props.lineHeaderStore!.lineHeader!.endDate;
         this.changeDates(startDate, endDate);
     };
 
     private onChangeEndDate = (endDate: Date) => {
-        const startDate = this.props.lineTopicStore!.lineTopic!.startDate;
+        const startDate = this.props.lineHeaderStore!.lineHeader!.startDate;
         this.changeDates(startDate, endDate);
     };
 
     private toggleIsEditing = () => {
         const isEditingDisabled = this.state.isEditingDisabled;
         if (!isEditingDisabled) {
-            this.props.lineTopicStore!.resetChanges();
+            this.props.lineHeaderStore!.resetChanges();
         }
         this.toggleIsEditingDisabled();
-        if (!isEditingDisabled) this.validateLineTopic();
+        if (!isEditingDisabled) this.validateLineHeader();
     };
 
-    private renderLineTopicViewHeader = () => {
-        const lineTopicStore = this.props.lineTopicStore;
+    private renderLineHeaderViewHeader = () => {
+        const lineHeaderStore = this.props.lineHeaderStore;
         return (
             <div className={s.sidebarHeaderSection}>
                 <SidebarHeader
-                    isEditButtonVisible={!this.props.isNewLineTopic}
+                    isEditButtonVisible={!this.props.isNewLineHeader}
                     onEditButtonClick={this.toggleIsEditing}
                     isEditing={!this.state.isEditingDisabled}
-                    shouldShowClosePromptMessage={lineTopicStore!.isDirty}
+                    shouldShowClosePromptMessage={lineHeaderStore!.isDirty}
                 >
-                    {this.props.isNewLineTopic
+                    {this.props.isNewLineHeader
                         ? 'Luo uusi linjan otsikko'
                         : `Linjan otsikkotiedot`}
                 </SidebarHeader>
@@ -288,49 +288,49 @@ class LineTopicView extends ViewFormBase<
         );
     };
 
-    private redirectToNewLineTopicView = () => {
+    private redirectToNewLineHeaderView = () => {
         const lineId = this.props.match!.params.id;
-        const lineTopic = this.props.lineTopicStore!.lineTopic;
+        const lineHeader = this.props.lineHeaderStore!.lineHeader;
 
-        const newLineTopicLink = routeBuilder
-            .to(SubSites.newLineTopic, {
-                startDate: new Date(lineTopic!.originalStartDate!).toISOString()
+        const newLineHeaderLink = routeBuilder
+            .to(SubSites.newLineHeader, {
+                startDate: new Date(lineHeader!.originalStartDate!).toISOString()
             })
             .toTarget(':id', lineId)
             .toLink();
 
-        navigator.goTo(newLineTopicLink);
+        navigator.goTo(newLineHeaderLink);
     };
 
     render() {
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.lineTopicView, s.loaderContainer)}>
+                <div className={classnames(s.lineHeaderView, s.loaderContainer)}>
                     <Loader size={LoaderSize.MEDIUM} />
                 </div>
             );
         }
-        const lineTopic = this.props.lineTopicStore!.lineTopic;
+        const lineHeader = this.props.lineHeaderStore!.lineHeader;
 
-        if (!lineTopic) return null;
+        if (!lineHeader) return null;
 
         const isEditingDisabled = this.state.isEditingDisabled;
-        const onChange = this.onChangeLineTopicProperty;
+        const onChange = this.onChangeLineHeaderProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         const isSaveButtonDisabled =
             this.state.isEditingDisabled ||
-            !this.props.lineTopicStore!.isDirty ||
+            !this.props.lineHeaderStore!.isDirty ||
             !this.isFormValid();
 
         return (
-            <div className={s.lineTopicView}>
+            <div className={s.lineHeaderView}>
                 <div className={s.content}>
-                    {this.renderLineTopicViewHeader()}
-                    <div className={classnames(s.lineTopicForm, s.form)}>
+                    {this.renderLineHeaderViewHeader()}
+                    <div className={classnames(s.lineHeaderForm, s.form)}>
                         <div className={s.flexRow}>
                             <TextContainer
                                 label='LINJAN TUNNUS'
-                                value={lineTopic.lineId}
+                                value={lineHeader.lineId}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -338,7 +338,7 @@ class LineTopicView extends ViewFormBase<
                                 disabled={isEditingDisabled}
                                 label='VOIM.AST.PVM'
                                 type='date'
-                                value={lineTopic.startDate}
+                                value={lineHeader.startDate}
                                 onChange={this.onChangeStartDate}
                                 validationResult={
                                     invalidPropertiesMap['startDate']
@@ -348,7 +348,7 @@ class LineTopicView extends ViewFormBase<
                                 disabled={isEditingDisabled}
                                 label='VIIM. VOIM.OLOPVM'
                                 type='date'
-                                value={lineTopic.endDate}
+                                value={lineHeader.endDate}
                                 onChange={this.onChangeEndDate}
                                 validationResult={
                                     invalidPropertiesMap['endDate']
@@ -359,7 +359,7 @@ class LineTopicView extends ViewFormBase<
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LINJAN NIMI'
-                                value={lineTopic.lineNameFi}
+                                value={lineHeader.lineNameFi}
                                 onChange={onChange('lineNameFi')}
                                 validationResult={
                                     invalidPropertiesMap['lineNameFi']
@@ -368,7 +368,7 @@ class LineTopicView extends ViewFormBase<
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LINJAN LYHYT NIMI'
-                                value={lineTopic.lineShortNameFi}
+                                value={lineHeader.lineShortNameFi}
                                 onChange={onChange('lineShortNameFi')}
                                 validationResult={
                                     invalidPropertiesMap['lineShortNameFi']
@@ -379,7 +379,7 @@ class LineTopicView extends ViewFormBase<
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LINJAN NIMI RUOTSIKSI'
-                                value={lineTopic.lineNameSw}
+                                value={lineHeader.lineNameSw}
                                 onChange={onChange('lineNameSw')}
                                 validationResult={
                                     invalidPropertiesMap['lineNameSw']
@@ -388,7 +388,7 @@ class LineTopicView extends ViewFormBase<
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LINJAN LYHYT NIMI RUOTSIKSI'
-                                value={lineTopic.lineShortNameSw}
+                                value={lineHeader.lineShortNameSw}
                                 onChange={onChange('lineShortNameSw')}
                                 validationResult={
                                     invalidPropertiesMap['lineShortNameSw']
@@ -399,7 +399,7 @@ class LineTopicView extends ViewFormBase<
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LÄHTÖPAIKKA SUUNNASSA 1'
-                                value={lineTopic.lineStartPlace1Fi}
+                                value={lineHeader.lineStartPlace1Fi}
                                 onChange={onChange('lineStartPlace1Fi')}
                                 validationResult={
                                     invalidPropertiesMap['lineStartPlace1Fi']
@@ -408,7 +408,7 @@ class LineTopicView extends ViewFormBase<
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LÄHTÖPAIKKA SUUNNASSA 1 RUOTSIKSI'
-                                value={lineTopic.lineStartPlace1Sw}
+                                value={lineHeader.lineStartPlace1Sw}
                                 onChange={onChange('lineStartPlace1Sw')}
                                 validationResult={
                                     invalidPropertiesMap['lineStartPlace1Sw']
@@ -419,7 +419,7 @@ class LineTopicView extends ViewFormBase<
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LÄHTÖPAIKKA SUUNNASSA 2'
-                                value={lineTopic.lineStartPlace2Fi}
+                                value={lineHeader.lineStartPlace2Fi}
                                 onChange={onChange('lineStartPlace2Fi')}
                                 validationResult={
                                     invalidPropertiesMap['lineStartPlace2Fi']
@@ -428,7 +428,7 @@ class LineTopicView extends ViewFormBase<
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LÄHTÖPAIKKA SUUNNASSA 2 RUOTSIKSI'
-                                value={lineTopic.lineStartPlace2Sw}
+                                value={lineHeader.lineStartPlace2Sw}
                                 onChange={onChange('lineStartPlace2Sw')}
                                 validationResult={
                                     invalidPropertiesMap['lineStartPlace2Sw']
@@ -438,21 +438,21 @@ class LineTopicView extends ViewFormBase<
                         <div className={s.flexRow}>
                             <TextContainer
                                 label='MUOKANNUT'
-                                value={lineTopic.modifiedBy}
+                                value={lineHeader.modifiedBy}
                             />
                             <TextContainer
                                 label='MUOKATTU PVM'
                                 isTimeIncluded={true}
-                                value={lineTopic.modifiedOn}
+                                value={lineHeader.modifiedOn}
                             />
                         </div>
                     </div>
-                    {!this.props.isNewLineTopic && isEditingDisabled && (
+                    {!this.props.isNewLineHeader && isEditingDisabled && (
                         <Button
-                            className={s.newLineTopicButton}
+                            className={s.newLineHeaderButton}
                             type={ButtonType.SQUARE}
                             disabled={false}
-                            onClick={() => this.redirectToNewLineTopicView()}
+                            onClick={() => this.redirectToNewLineHeaderView()}
                         >
                             Luo uusi linjan otsikko käyttäen tätä pohjana
                         </Button>
@@ -462,7 +462,7 @@ class LineTopicView extends ViewFormBase<
                         type={ButtonType.SAVE}
                         disabled={isSaveButtonDisabled}
                     >
-                        {this.props.isNewLineTopic
+                        {this.props.isNewLineHeader
                             ? 'Luo uusi linjan otsikko'
                             : 'Tallenna muutokset'}
                     </Button>
@@ -472,4 +472,4 @@ class LineTopicView extends ViewFormBase<
     }
 }
 
-export default LineTopicView;
+export default LineHeaderView;

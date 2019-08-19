@@ -1,10 +1,10 @@
 import regexRules from '~/validation/regexRules';
-import { ILineTopic } from '..';
+import { ILineHeader } from '..';
 
-type LineTopicKeys = keyof ILineTopic;
-type ILineTopicValidationModel = { [key in LineTopicKeys]: string };
+type LineHeaderKeys = keyof ILineHeader;
+type ILineHeaderValidationModel = { [key in LineHeaderKeys]: string };
 
-const lineTopicValidationModel: ILineTopicValidationModel = {
+const lineHeaderValidationModel: ILineHeaderValidationModel = {
     lineId: `required|min:4|max:6|string|${
         regexRules.upperCaseOrNumbersOrSpace
     }`,
@@ -23,4 +23,4 @@ const lineTopicValidationModel: ILineTopicValidationModel = {
     modifiedOn: ''
 };
 
-export default lineTopicValidationModel;
+export default lineHeaderValidationModel;
