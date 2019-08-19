@@ -165,8 +165,10 @@ class LineHeaderView extends ViewFormBase<
         this.setState({ isLoading: true });
 
         const lineHeader = this.props.lineHeaderStore!.lineHeader;
-        const isStartDateChanged =
-            lineHeader!.startDate !== lineHeader!.originalStartDate;
+        const isStartDateChanged = lineHeader!.originalStartDate
+            ? lineHeader!.startDate.toDateString() !==
+              lineHeader!.originalStartDate!.toDateString()
+            : false;
 
         try {
             if (this.props.isNewLineHeader) {
@@ -181,7 +183,7 @@ class LineHeaderView extends ViewFormBase<
             return;
         }
         if (this.props.isNewLineHeader || isStartDateChanged) {
-            this.navigateToNewLineHeader();
+            this.navigateToUpdatedLineHeaderView();
             return;
         }
         this.setState({
@@ -191,14 +193,14 @@ class LineHeaderView extends ViewFormBase<
         });
     };
 
-    private navigateToNewLineHeader = () => {
+    private navigateToUpdatedLineHeaderView = () => {
         const lineHeader = this.props.lineHeaderStore!.lineHeader;
         const lineHeaderViewLink = routeBuilder
-            .to(SubSites.lineHeader)
+            .to(SubSites.lineHeader, {})
             .toTarget(':id', lineHeader!.lineId)
             .toTarget(':startDate', Moment(lineHeader!.startDate).format())
             .toLink();
-        navigator.goTo(lineHeaderViewLink);
+        navigator.replace(lineHeaderViewLink);
     };
 
     private onChangeLineHeaderProperty = (property: keyof ILineHeader) => (
@@ -294,7 +296,9 @@ class LineHeaderView extends ViewFormBase<
 
         const newLineHeaderLink = routeBuilder
             .to(SubSites.newLineHeader, {
-                startDate: new Date(lineHeader!.originalStartDate!).toISOString()
+                startDate: new Date(
+                    lineHeader!.originalStartDate!
+                ).toISOString()
             })
             .toTarget(':id', lineId)
             .toLink();
@@ -305,7 +309,9 @@ class LineHeaderView extends ViewFormBase<
     render() {
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.lineHeaderView, s.loaderContainer)}>
+                <div
+                    className={classnames(s.lineHeaderView, s.loaderContainer)}
+                >
                     <Loader size={LoaderSize.MEDIUM} />
                 </div>
             );
