@@ -26,6 +26,7 @@ interface INodeMarkerProps {
     // static markup language (HTML)
     popupContent?: string;
     node: INode;
+    isClickDisabled?: boolean;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
     onMoveMarker?: (
@@ -148,6 +149,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     private renderAdditionalLocations = (node: INode) => {
+        const nodeBaseClass = this.props.isClickDisabled
+            ? s.nodeNotClickable
+            : s.node;
+
         return (
             <>
                 <LeafletMarker
@@ -159,13 +164,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
                                 ...this.getMarkerClasses()
                             )}
                         />,
-                        { className: s.node }
+                        { className: nodeBaseClass }
                     )}
-                    draggable={this.isInteractive()}
+                    draggable={this.isDraggable()}
                     onDragEnd={
                         this.props.onMoveMarker &&
                         this.onMoveMarker('coordinatesManual')
                     }
+                    interactive={!this.props.isClickDisabled}
                 />
                 <LeafletMarker
                     position={node.coordinatesProjection}
@@ -176,19 +182,20 @@ class NodeMarker extends Component<INodeMarkerProps> {
                                 ...this.getMarkerClasses()
                             )}
                         />,
-                        { className: s.node }
+                        { className: nodeBaseClass }
                     )}
-                    draggable={this.isInteractive()}
+                    draggable={this.isDraggable()}
                     onDragEnd={
                         this.props.onMoveMarker &&
                         this.onMoveMarker('coordinatesProjection')
                     }
+                    interactive={!this.props.isClickDisabled}
                 />
             </>
         );
     };
 
-    private isInteractive = () =>
+    private isDraggable = () =>
         // TODO this should probably check other stuff too...
         this.props.isSelected && this.props.isDraggable;
 
@@ -199,6 +206,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     render() {
+        const nodeBaseClass = this.props.isClickDisabled
+            ? s.nodeNotClickable
+            : s.node;
+
         const icon = LeafletUtils.createDivIcon(
             <div
                 className={classnames(...this.getMarkerClasses())}
@@ -211,7 +222,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 {this.renderMarkerLabel()}
             </div>,
             {
-                className: s.node,
+                className: nodeBaseClass,
                 popupOffset: -15
             }
         );
@@ -229,6 +240,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                         this.props.onMoveMarker &&
                         this.onMoveMarker('coordinates')
                     }
+                    interactive={!this.props.isClickDisabled}
                 >
                     {this.renderStopRadiusCircle()}
                 </LeafletMarker>

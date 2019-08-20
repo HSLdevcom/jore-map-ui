@@ -28,6 +28,11 @@
     }
 }
 
+.nodeNotClickable {
+    @extend .node;
+    pointer-events: none !important;
+}
+
 .crossroadCircle {
     stroke: none;
     fill: #727272;
