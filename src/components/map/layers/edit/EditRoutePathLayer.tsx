@@ -109,6 +109,7 @@ class EditRoutePathLayer extends Component<
 
         let onNodeClick;
         let isNodeHighlighted;
+        let isClickDisabled = false;
         // Check if AddNewRoutePathLink is active
         if (areNodesClickable) {
             isNodeHighlighted = this.props.routePathStore!.hasNodeOddAmountOfNeighbors(
@@ -121,6 +122,8 @@ class EditRoutePathLayer extends Component<
                     const clickParams: INodeClickParams = { node };
                     EventManager.trigger('nodeClick', clickParams);
                 };
+            } else {
+                isClickDisabled = true;
             }
         } else {
             onNodeClick = () => {
@@ -140,6 +143,7 @@ class EditRoutePathLayer extends Component<
                 onClick={onNodeClick}
                 node={node}
                 isHighlighted={isNodeHighlighted}
+                isClickDisabled={isClickDisabled}
             />
         );
     };
