@@ -416,6 +416,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                     <Button
                         onClick={this.navigateToNode(link.startNode.id)}
                         type={ButtonType.SQUARE}
+                        isWide={true}
                     >
                         <div className={s.buttonContent}>
                             <FiChevronLeft className={s.startNodeButton} />
@@ -428,6 +429,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                     <Button
                         onClick={this.navigateToNode(link.endNode.id)}
                         type={ButtonType.SQUARE}
+                        isWide={true}
                     >
                         <div className={s.buttonContent}>
                             <div className={s.contentText}>
