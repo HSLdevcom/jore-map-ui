@@ -59,12 +59,12 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         linkOrderNumber: number,
         index: number
     ) => {
-        const highlightedNodeIds = this.props.routePathStore!
-            .highlightedClickableNodeIds;
-        const isNodeHighlighted =
+        const toolHighlightedNodeIds = this.props.routePathStore!
+            .toolHighlightedNodeIds;
+        const isNodeHighlightedByTool =
             this.props.routePathStore!.neighborLinks.length === 0 &&
-            highlightedNodeIds.includes(node.id);
-        const isNodeHighlightedMapItem = this.props.routePathStore!.isMapItemHighlighted(
+            toolHighlightedNodeIds.includes(node.id);
+        const isNodeHighlightedByList = this.props.routePathStore!.listHighlightedNodeIds.includes(
             node.id
         );
         const isClickDisabled = this.props.routePathStore!.disabledNodeIds.includes(
@@ -72,7 +72,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         );
 
         let onNodeClick;
-        if (isNodeHighlighted) {
+        if (isNodeHighlightedByTool) {
             onNodeClick = () => {
                 const clickParams: IEditRoutePathLayerNodeClickParams = {
                     node,
@@ -95,10 +95,10 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             isHighlighted: false,
             color: NodeHighlightColor.BLUE
         };
-        if (isNodeHighlighted) {
+        if (isNodeHighlightedByTool) {
             highlight.isHighlighted = true;
             highlight.color = NodeHighlightColor.GREEN;
-        } else if (isNodeHighlightedMapItem) {
+        } else if (isNodeHighlightedByList) {
             highlight.isHighlighted = true;
             highlight.color = NodeHighlightColor.BLUE;
         }

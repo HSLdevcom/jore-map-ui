@@ -57,7 +57,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 opacity={0.8}
                 onClick={onRoutePathLinkClick}
             />,
-            this.props.routePathStore!.isMapItemHighlighted(
+            this.props.routePathStore!.listHighlightedNodeIds.includes(
                 routePathLink.id
             ) && (
                 <Polyline

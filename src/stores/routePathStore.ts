@@ -33,30 +33,24 @@ export class RoutePathStore {
     @observable private _oldRoutePath: IRoutePath | null;
     @observable private _neighborRoutePathLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
-    @observable private _highlightedMapItem: string | null; // rename as highlightedMapItemId?
-    @observable private _extendedListItems: string[]; // rename as extendedListItemIds?
+    @observable private _extendedListItems: string[];
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
-    // TODO: have only one highlightedNodes variable:
-    // @observable private highlightedNodes: {
-    //     ids: string[];
-    //     color: NodeHighlightColor
-    // }
-    @observable private _highlightedClickableNodeIds: string[];
-    // rename as clickDisabledNodeIds?
+    @observable private _listHighlightedNodeIds: string[];
+    @observable private _toolHighlightedNodeIds: string[];
     @observable private _disabledNodeIds: string[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
         this._neighborRoutePathLinks = [];
-        this._highlightedMapItem = null;
         this._extendedListItems = [];
         this._activeTab = RoutePathViewTab.Info;
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore = new GeometryUndoStore();
         this._invalidLinkOrderNumbers = [];
-        this._highlightedClickableNodeIds = [];
+        this._listHighlightedNodeIds = [];
+        this._toolHighlightedNodeIds = [];
         this._disabledNodeIds = [];
     }
 
@@ -101,8 +95,13 @@ export class RoutePathStore {
     }
 
     @computed
-    get highlightedClickableNodeIds() {
-        return this._highlightedClickableNodeIds;
+    get listHighlightedNodeIds() {
+        return this._listHighlightedNodeIds;
+    }
+
+    @computed
+    get toolHighlightedNodeIds() {
+        return this._toolHighlightedNodeIds;
     }
 
     @computed
@@ -192,11 +191,6 @@ export class RoutePathStore {
     };
 
     @action
-    public setHighlightedObject = (objectId: string | null) => {
-        this._highlightedMapItem = objectId;
-    };
-
-    @action
     public toggleExtendedListItem = (objectId: string) => {
         if (this._extendedListItems.some(o => o === objectId)) {
             this._extendedListItems = this._extendedListItems.filter(
@@ -213,10 +207,13 @@ export class RoutePathStore {
     };
 
     @action
-    public setHighlightedClickableNodeIds = (
-        highlightedClickableNodeIds: string[]
-    ) => {
-        this._highlightedClickableNodeIds = highlightedClickableNodeIds;
+    public setListHighlightedNodeIds = (nodeIds: string[]) => {
+        return (this._listHighlightedNodeIds = nodeIds);
+    };
+
+    @action
+    public setToolHighlightedNodeIds = (nodeIds: string[]) => {
+        return (this._toolHighlightedNodeIds = nodeIds);
     };
 
     @action
@@ -426,13 +423,6 @@ export class RoutePathStore {
             return rpLink.id === routePathLink.id;
         });
         return index === routePathLinks.length - 1;
-    };
-
-    public isMapItemHighlighted = (objectId: string): boolean => {
-        return (
-            this._highlightedMapItem === objectId ||
-            (!this._highlightedMapItem && this.isListItemExtended(objectId))
-        );
     };
 
     public isListItemExtended = (objectId: string): boolean => {
