@@ -9,6 +9,8 @@ import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
+import ModelHelper from '~/util/ModelHelper';
+import { INode } from '~/models';
 import BaseTool from './BaseTool';
 
 class CopyRoutePathSegmentTool implements BaseTool {
@@ -21,15 +23,19 @@ class CopyRoutePathSegmentTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventManager.on('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.on('nodeClick', this.onnodeClick);
+        EventManager.on('nodeClick', this.onNodeClick);
+        EventManager.on('editRoutePathLayerNodeClick', this.onNodeClick);
+        this.highlightClickableNodes();
     }
     public deactivate() {
         EventManager.off('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.off('nodeClick', this.onnodeClick);
+        EventManager.off('nodeClick', this.onNodeClick);
+        EventManager.off('editRoutePathLayerNodeClick', this.onNodeClick);
         RoutePathCopySegmentStore.clear();
+        this.unhighlightClickableNodes();
     }
 
-    private onnodeClick = (clickEvent: CustomEvent) => {
+    private onNodeClick = (clickEvent: CustomEvent) => {
         const setNodeType = RoutePathCopySegmentStore.setNodeType;
         const params: INodeClickParams = clickEvent.detail;
 
@@ -45,17 +51,6 @@ class CopyRoutePathSegmentTool implements BaseTool {
         else this.selectEndNode(params.nodeId);
     };
 
-    private selectEndNode = async (nodeId: string) => {
-        const node = await NodeService.fetchNode(nodeId);
-        RoutePathCopySegmentStore.setEndNode(node);
-
-        await this.fetchRoutePathLinkSegment();
-
-        if (!RoutePathCopySegmentStore.startNode) {
-            RoutePathCopySegmentStore.setSetNodeType('startNode');
-        }
-    };
-
     private selectStartNode = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
         RoutePathCopySegmentStore.setStartNode(node);
@@ -64,6 +59,17 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         if (!RoutePathCopySegmentStore.endNode) {
             RoutePathCopySegmentStore.setSetNodeType('endNode');
+        }
+    };
+
+    private selectEndNode = async (nodeId: string) => {
+        const node = await NodeService.fetchNode(nodeId);
+        RoutePathCopySegmentStore.setEndNode(node);
+
+        await this.fetchRoutePathLinkSegment();
+
+        if (!RoutePathCopySegmentStore.startNode) {
+            RoutePathCopySegmentStore.setSetNodeType('startNode');
         }
     };
 
@@ -112,6 +118,27 @@ class CopyRoutePathSegmentTool implements BaseTool {
     private isEndNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
         return routePathLinks.some(link => link.startNode.id === nodeId);
+    }
+
+    private highlightClickableNodes() {
+        const routePath = RoutePathStore!.routePath!;
+
+        const clickableNodeIds: string[] = [];
+        const unclickableNodeIds: string[] = [];
+        ModelHelper.loopRoutePathNodes(routePath, (node: INode) => {
+            if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
+                clickableNodeIds.push(node.id);
+            } else {
+                unclickableNodeIds.push(node.id);
+            }
+        });
+        RoutePathStore!.setHighlightedClickableNodeIds(clickableNodeIds);
+        RoutePathStore!.setDisabledNodeIds(unclickableNodeIds);
+    }
+
+    private unhighlightClickableNodes() {
+        RoutePathStore!.setHighlightedClickableNodeIds([]);
+        RoutePathStore.setDisabledNodeIds([]);
     }
 }
 

@@ -5,5 +5,15 @@ import ILink from './ILink';
 import IRoute from './IRoute';
 import IRoutePath from './IRoutePath';
 import IRoutePathLink from './IRoutePathLink';
+import INeighborLink from './INeighborLink';
 
-export { ILine, INode, IStop, ILink, IRoute, IRoutePath, IRoutePathLink };
+export {
+    ILine,
+    INode,
+    IStop,
+    ILink,
+    IRoute,
+    IRoutePath,
+    IRoutePathLink,
+    INeighborLink
+};

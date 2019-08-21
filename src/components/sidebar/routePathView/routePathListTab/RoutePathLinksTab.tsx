@@ -34,7 +34,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
 
     componentDidMount() {
         this.reactionDisposer = reaction(
-            () => this.props.routePathStore!.extendedObjects,
+            () => this.props.routePathStore!.extendedListItems,
             this.onExtend
         );
         const showItemParam = navigator.getQueryParamValues()[
@@ -125,9 +125,9 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     };
 
     private onExtend = () => {
-        const extendedObjects = this.props.routePathStore!.extendedObjects;
-        if (extendedObjects.length === 1) {
-            const listItemId = extendedObjects[0];
+        const extendedListItems = this.props.routePathStore!.extendedListItems;
+        if (extendedListItems.length === 1) {
+            const listItemId = extendedListItems[0];
             this.scrollIntoListItem(listItemId);
         }
     };

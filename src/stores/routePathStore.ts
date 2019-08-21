@@ -33,11 +33,19 @@ export class RoutePathStore {
     @observable private _oldRoutePath: IRoutePath | null;
     @observable private _neighborRoutePathLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
-    @observable private _highlightedMapItem: string | null;
-    @observable private _extendedListItems: string[];
+    @observable private _highlightedMapItem: string | null; // rename as highlightedMapItemId?
+    @observable private _extendedListItems: string[]; // rename as extendedListItemIds?
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
+    // TODO: have only one highlightedNodes variable:
+    // @observable private highlightedNodes: {
+    //     ids: string[];
+    //     color: NodeHighlightColor
+    // }
+    @observable private _highlightedClickableNodeIds: string[];
+    // rename as clickDisabledNodeIds?
+    @observable private _disabledNodeIds: string[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -48,6 +56,8 @@ export class RoutePathStore {
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore = new GeometryUndoStore();
         this._invalidLinkOrderNumbers = [];
+        this._highlightedClickableNodeIds = [];
+        this._disabledNodeIds = [];
     }
 
     @computed
@@ -81,13 +91,23 @@ export class RoutePathStore {
     }
 
     @computed
-    get extendedObjects() {
+    get extendedListItems() {
         return this._extendedListItems;
     }
 
     @computed
     get invalidLinkOrderNumbers() {
         return this._invalidLinkOrderNumbers;
+    }
+
+    @computed
+    get highlightedClickableNodeIds() {
+        return this._highlightedClickableNodeIds;
+    }
+
+    @computed
+    get disabledNodeIds() {
+        return this._disabledNodeIds;
     }
 
     @action
@@ -190,6 +210,18 @@ export class RoutePathStore {
     @action
     public setExtendedListItems = (objectIds: string[]) => {
         this._extendedListItems = objectIds;
+    };
+
+    @action
+    public setHighlightedClickableNodeIds = (
+        highlightedClickableNodeIds: string[]
+    ) => {
+        this._highlightedClickableNodeIds = highlightedClickableNodeIds;
+    };
+
+    @action
+    public setDisabledNodeIds = (disabledNodeIds: string[]) => {
+        this._disabledNodeIds = disabledNodeIds;
     };
 
     @action
