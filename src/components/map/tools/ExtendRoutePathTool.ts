@@ -49,24 +49,10 @@ class ExtendRoutePathTool implements BaseTool {
     // Node click
     private onNodeClick = (clickEvent: CustomEvent) => {
         const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
-        this.fetchNeighborRoutePathLinks(params.node, params.linkOrderNumber);
-    };
-
-    private fetchNeighborRoutePathLinks = async (
-        node: INode,
-        linkOrderNumber: number
-    ) => {
-        const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
-            node.id,
-            RoutePathStore!.routePath!,
-            linkOrderNumber
+        this.fetchNeighborRoutePathLinks(
+            params.node.id,
+            params.linkOrderNumber
         );
-        if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(
-                queryResult.neighborLinks
-            );
-            RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
-        }
     };
 
     // Network node click
@@ -74,19 +60,8 @@ class ExtendRoutePathTool implements BaseTool {
         if (!this.isNetworkNodesInteractive()) return;
         const params: INetworkNodeClickParams = clickEvent.detail;
         if (params.nodeType !== NodeType.STOP) return;
-        const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
-            params.nodeId,
-            RoutePathStore.routePath!,
-            1
-        );
-        if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(
-                queryResult!.neighborLinks
-            );
-            RoutePathStore!.setNeighborToAddType(
-                queryResult!.neighborToAddType
-            );
-        }
+
+        this.fetchNeighborRoutePathLinks(params.nodeId, 1);
     };
 
     private isNetworkNodesInteractive() {
@@ -109,21 +84,30 @@ class ExtendRoutePathTool implements BaseTool {
                 : routePathLink.startNode;
         if (RoutePathStore.hasNodeOddAmountOfNeighbors(nodeToFetch.id)) {
             this.unhighlightClickableNodes();
-            const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
+            this.fetchNeighborRoutePathLinks(
                 nodeToFetch.id,
-                RoutePathStore!.routePath!,
                 routePathLink.orderNumber
             );
-            if (queryResult) {
-                RoutePathStore!.setNeighborRoutePathLinks(
-                    queryResult.neighborLinks
-                );
-                RoutePathStore!.setNeighborToAddType(
-                    queryResult.neighborToAddType
-                );
-            } else {
-                this.highlightClickableNodes();
-            }
+        } else {
+            this.highlightClickableNodes();
+        }
+    };
+
+    private fetchNeighborRoutePathLinks = async (
+        nodeId: string,
+        linkOrderNumber: number
+    ) => {
+        const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
+            nodeId,
+            RoutePathStore!.routePath!,
+            linkOrderNumber
+        );
+        if (queryResult) {
+            RoutePathStore!.setNeighborRoutePathLinks(
+                queryResult.neighborLinks
+            );
+            RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
+            this.unhighlightClickableNodes();
         } else {
             this.highlightClickableNodes();
         }
@@ -142,12 +126,10 @@ class ExtendRoutePathTool implements BaseTool {
             }
         });
         RoutePathStore!.setToolHighlightedNodeIds(clickableNodeIds);
-        RoutePathStore!.setDisabledNodeIds(unclickableNodeIds);
     }
 
     private unhighlightClickableNodes() {
         RoutePathStore!.setToolHighlightedNodeIds([]);
-        RoutePathStore.setDisabledNodeIds([]);
     }
 }
 

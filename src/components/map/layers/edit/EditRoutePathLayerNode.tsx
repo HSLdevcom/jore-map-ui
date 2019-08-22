@@ -61,15 +61,16 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     ) => {
         const toolHighlightedNodeIds = this.props.routePathStore!
             .toolHighlightedNodeIds;
-        const isNodeHighlightedByTool =
-            this.props.routePathStore!.neighborLinks.length === 0 &&
-            toolHighlightedNodeIds.includes(node.id);
+        const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(
+            node.id
+        );
         const isNodeHighlightedByList = this.props.routePathStore!.listHighlightedNodeIds.includes(
             node.id
         );
-        const isClickDisabled = this.props.routePathStore!.disabledNodeIds.includes(
-            node.id
-        );
+
+        // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted
+        const isClickDisabled =
+            toolHighlightedNodeIds.length > 0 && !isNodeHighlightedByTool;
 
         let onNodeClick;
         if (isNodeHighlightedByTool) {

@@ -133,12 +133,10 @@ class CopyRoutePathSegmentTool implements BaseTool {
             }
         });
         RoutePathStore!.setToolHighlightedNodeIds(clickableNodeIds);
-        RoutePathStore!.setDisabledNodeIds(unclickableNodeIds);
     }
 
     private unhighlightClickableNodes() {
         RoutePathStore!.setToolHighlightedNodeIds([]);
-        RoutePathStore.setDisabledNodeIds([]);
     }
 }
 

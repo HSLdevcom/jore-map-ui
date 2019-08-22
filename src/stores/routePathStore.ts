@@ -29,6 +29,7 @@ export enum ListFilter {
 }
 
 export class RoutePathStore {
+    private _geometryUndoStore: GeometryUndoStore<UndoState>;
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
     @observable private _neighborRoutePathLinks: INeighborLink[];
@@ -38,20 +39,17 @@ export class RoutePathStore {
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
     @observable private _listHighlightedNodeIds: string[];
-    @observable private _toolHighlightedNodeIds: string[];
-    @observable private _disabledNodeIds: string[];
-    private _geometryUndoStore: GeometryUndoStore<UndoState>;
+    @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
 
     constructor() {
+        this._geometryUndoStore = new GeometryUndoStore();
         this._neighborRoutePathLinks = [];
         this._extendedListItems = [];
         this._activeTab = RoutePathViewTab.Info;
         this._listFilters = [ListFilter.link];
-        this._geometryUndoStore = new GeometryUndoStore();
         this._invalidLinkOrderNumbers = [];
         this._listHighlightedNodeIds = [];
         this._toolHighlightedNodeIds = [];
-        this._disabledNodeIds = [];
     }
 
     @computed
@@ -70,8 +68,8 @@ export class RoutePathStore {
     }
 
     @computed
-    get isDirty() {
-        return !_.isEqual(this._routePath, this._oldRoutePath);
+    get extendedListItems() {
+        return this._extendedListItems;
     }
 
     @computed
@@ -82,11 +80,6 @@ export class RoutePathStore {
     @computed
     get listFilters() {
         return this._listFilters;
-    }
-
-    @computed
-    get extendedListItems() {
-        return this._extendedListItems;
     }
 
     @computed
@@ -105,8 +98,8 @@ export class RoutePathStore {
     }
 
     @computed
-    get disabledNodeIds() {
-        return this._disabledNodeIds;
+    get isDirty() {
+        return !_.isEqual(this._routePath, this._oldRoutePath);
     }
 
     @action
@@ -214,11 +207,6 @@ export class RoutePathStore {
     @action
     public setToolHighlightedNodeIds = (nodeIds: string[]) => {
         return (this._toolHighlightedNodeIds = nodeIds);
-    };
-
-    @action
-    public setDisabledNodeIds = (disabledNodeIds: string[]) => {
-        this._disabledNodeIds = disabledNodeIds;
     };
 
     @action
