@@ -7,7 +7,7 @@ import { IStop, INode } from '~/models';
 import ButtonType from '~/enums/buttonType';
 import { NodeStore } from '~/stores/nodeStore';
 import { CodeListStore } from '~/stores/codeListStore';
-import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
+import StopService, { IStopAreaItem } from '~/services/stopService';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
@@ -52,7 +52,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     }
 
     async componentWillMount() {
-        const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
+        const stopAreas: IStopAreaItem[] = await StopService.fetchAllStopAreas();
         if (this.mounted) {
             this.setState({
                 stopAreas: this.createStopAreaDropdownItems(stopAreas)

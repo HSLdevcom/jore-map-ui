@@ -7,7 +7,7 @@ interface IStopAreaItem {
     nimi: string;
 }
 
-class StopAreaService {
+class StopService {
     public static fetchAllStopAreas = async (): Promise<IStopAreaItem[]> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
             query: GraphqlQueries.getAllStopAreas()
@@ -17,6 +17,6 @@ class StopAreaService {
     };
 }
 
-export default StopAreaService;
+export default StopService;
 
 export { IStopAreaItem };
