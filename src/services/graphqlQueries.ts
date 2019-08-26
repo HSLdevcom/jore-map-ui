@@ -227,6 +227,18 @@ const getAllStopAreas = () => {
     `;
 };
 
+const getAllStopSections = () => {
+    return gql`
+        query getAllStopSections {
+            node: allVyohykes {
+                nodes {
+                    selite
+                }
+            }
+        }
+    `;
+};
+
 const getAllLineTopics = () => {
     return gql`
         query getAllLineTopics {
@@ -524,5 +536,6 @@ export default {
     getRoutePathsUsingLinkFromDate,
     getAllRoutePathPrimaryKeysQuery,
     getAllStopAreas,
+    getAllStopSections,
     getAllLineTopics
 };
