@@ -90,7 +90,7 @@ class ILinkListView extends React.Component<
             // const linkViewLink =
             //     routeBuilder
             //         .to(subSites.link)
-            //         .toTarget([
+            //         .toTarget(':id', [
             //             link.startNode.id,
             //             link.endNode.id,
             //             link.transitType,

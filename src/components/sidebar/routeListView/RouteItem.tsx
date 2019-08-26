@@ -74,7 +74,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
     private openRouteView = () => {
         const routeViewLink = routeBuilder
             .to(subSites.route)
-            .toTarget(this.props.route.id)
+            .toTarget(':id', this.props.route.id)
             .clear()
             .toLink();
         navigator.goTo(routeViewLink);
@@ -109,7 +109,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
             const openRoutePathView = () => {
                 const routePathViewLink = routeBuilder
                     .to(subSites.routePath)
-                    .toTarget(
+                    .toTarget(':id',
                         [
                             routePath.routeId,
                             Moment(routePath.startTime).format(

@@ -386,7 +386,7 @@ class RoutePathListNode extends ViewFormBase<
     private openInNetworkView = () => {
         const editNetworkLink = routeBuilder
             .to(SubSites.node)
-            .toTarget(this.props.node.id)
+            .toTarget(':id', this.props.node.id)
             .toLink();
         navigator.goTo(editNetworkLink);
     };

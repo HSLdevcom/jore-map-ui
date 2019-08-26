@@ -5,13 +5,13 @@ import Navigator from './navigator';
 export class RouteBuilder {
     /**
      * @param {string} subSites
-     * @param {Object} values - { field: value, ... }
+     * @param {Object} queryValues - { field: value, ... }
      */
-    public to = (subSites: subSites, values?: any) => {
+    public to = (subSites: subSites, queryValues?: any) => {
         return new RouteBuilderContext(
             Navigator.getPathName(),
             subSites,
-            values ? values : Navigator.getQueryParamValues()
+            queryValues ? queryValues : Navigator.getQueryParamValues()
         );
     };
 }

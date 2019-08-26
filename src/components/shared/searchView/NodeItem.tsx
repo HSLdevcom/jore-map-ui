@@ -16,7 +16,7 @@ const NodeItem = observer((props: INodeItemProps) => {
     const openNode = () => {
         const nodeLink = routeBuilder
             .to(SubSites.node)
-            .toTarget(props.node.id)
+            .toTarget(':id', props.node.id)
             .toLink();
         navigator.goTo(nodeLink);
     };

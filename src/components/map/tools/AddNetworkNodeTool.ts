@@ -32,7 +32,7 @@ class AddNetworkNodeTool implements BaseTool {
         const coordinate = roundLatLng(clickEvent.detail.latlng);
         const url = RouteBuilder.to(SubSites.newNode)
             .clear()
-            .toTarget(`${coordinate.lat}:${coordinate.lng}`)
+            .toTarget(':id', `${coordinate.lat}:${coordinate.lng}`)
             .toLink();
         navigator.goTo(url);
     };
