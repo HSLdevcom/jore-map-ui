@@ -227,6 +227,18 @@ const getAllStopAreas = () => {
     `;
 };
 
+const getAllStopSections = () => {
+    return gql`
+        query getAllStopSections {
+            node: allVyohykes {
+                nodes {
+                    selite
+                }
+            }
+        }
+    `;
+};
+
 const getLineHeaderQuery = () => {
     return gql`query getLineHeader($lineId: String!, $startDate: Datetime!) {
             lineHeader: linjannimetByLintunnusAndLinalkupvm(lintunnus: $lineId, linalkupvm: $startDate) {
@@ -546,5 +558,6 @@ export default {
     getAllRoutePathPrimaryKeysQuery,
     getAllStopAreas,
     getLineHeaderQuery,
-    getAllLineHeadersQuery
+    getAllLineHeadersQuery,
+    getAllStopSections
 };
