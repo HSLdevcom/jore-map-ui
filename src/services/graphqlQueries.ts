@@ -259,6 +259,32 @@ const getAllLineHeadersQuery = () => {
     `;
 };
 
+const getViaKilpiName = () => {
+  return gql`
+      query getViaKilpiName($relid: BigFloat!) {
+        kilpiVia: viaKilpiNimetByRelid(relid: $relid) {
+          relid
+          viasuomi
+          viaruotsi
+        }
+      }
+  `;
+};
+
+const getAllViaKilpiNimets = () => {
+    return gql`
+        query getAllViaKilpiNimets {
+          allViaKilpiNimets {
+          nodes {
+            relid
+            viasuomi
+            viaruotsi
+          }
+          }
+        }
+    `;
+};
+
 const lineQueryFields = `
     lintunnus
     linperusreitti
@@ -559,5 +585,7 @@ export default {
     getAllStopAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,
-    getAllStopSections
+    getAllStopSections,
+    getAllViaKilpiNimets,
+    getViaKilpiName
 };

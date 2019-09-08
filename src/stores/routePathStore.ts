@@ -1,6 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
-import { IRoutePath, IRoutePathLink } from '~/models';
+import { IRoutePath, IRoutePathLink, IKilpiVia } from '~/models';
 import lengthCalculator from '~/util/lengthCalculator';
 import INeighborLink from '~/models/INeighborLink';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
@@ -22,6 +22,10 @@ export interface UndoState {
     startNodeBookScheduleColumnNumber?: number;
 }
 
+export interface IKilpiViaHash {
+    [key: string]: IKilpiVia
+}
+
 export enum ListFilter {
     stop,
     otherNodes,
@@ -38,6 +42,8 @@ export class RoutePathStore {
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
+    @observable private _kilpiViaNamesHash: IKilpiViaHash;
+    @observable private _oldKilpiViaNamesHash: IKilpiViaHash;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -48,6 +54,8 @@ export class RoutePathStore {
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore = new GeometryUndoStore();
         this._invalidLinkOrderNumbers = [];
+        this._kilpiViaNamesHash = {};
+        this._oldKilpiViaNamesHash = {};
     }
 
     @computed
@@ -67,7 +75,9 @@ export class RoutePathStore {
 
     @computed
     get isDirty() {
-        return !_.isEqual(this._routePath, this._oldRoutePath);
+      const isViaKilpiDirty = !_.isEqual(this._oldKilpiViaNamesHash, this._kilpiViaNamesHash);
+      const isRoutePathDirty = !_.isEqual(this._routePath, this._oldRoutePath);
+      return (isRoutePathDirty || isViaKilpiDirty);
     }
 
     @computed
@@ -90,10 +100,50 @@ export class RoutePathStore {
         return this._invalidLinkOrderNumbers;
     }
 
+    @computed
+    get kilpiViaNamesHash(): IKilpiViaHash {
+        return this._kilpiViaNamesHash;
+    }
+
+    @computed
+    get kilpiViaNames(): IKilpiVia[] {
+        const kilpiViaNames: IKilpiVia[] = [];
+        const kilpiViaNamesHash = this._kilpiViaNamesHash;
+        for (const k in kilpiViaNamesHash) {
+          kilpiViaNames.push(kilpiViaNamesHash[k]);
+        }
+        return kilpiViaNames;
+    }
+
+    @action
+    public setKilpiViaNamesHash = (kilpiViaNames: IKilpiVia[]) => {
+        kilpiViaNames.forEach((kilpiViaName: IKilpiVia) => {
+          this._kilpiViaNamesHash[kilpiViaName.relid] = kilpiViaName;
+        });
+        this.setOldKilpiViaNames(this._kilpiViaNamesHash);
+    };
+
+    @action
+    public setKilpiViaName = (kilpiViaName: IKilpiVia) => {
+      this._kilpiViaNamesHash[kilpiViaName.relid] = kilpiViaName;
+    };
+
+    @action
+    public setOldKilpiViaNames = (kilpiViaNames: IKilpiViaHash) => {
+        this._oldKilpiViaNamesHash = _.cloneDeep(kilpiViaNames);
+    };
+
+    @action
+    public clearKilpiViaNamesHash = () => {
+        this._kilpiViaNamesHash = {};
+    };
+
     @action
     public setActiveTab = (tab: RoutePathViewTab) => {
         this._activeTab = tab;
     };
+
+
 
     @action
     public toggleActiveTab = () => {
@@ -195,7 +245,6 @@ export class RoutePathStore {
     @action
     public setRoutePath = (routePath: IRoutePath) => {
         this._routePath = routePath;
-
         const routePathLinks = routePath.routePathLinks
             ? routePath.routePathLinks
             : [];
@@ -211,6 +260,7 @@ export class RoutePathStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldRoutePath(this._routePath);
+        this.clearKilpiViaNamesHash();
     };
 
     @action

@@ -19,13 +19,14 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import { ErrorStore } from '~/stores/errorStore';
 import navigator from '~/routing/navigator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import { IRoutePath } from '~/models';
+import { IRoutePath, IKilpiVia, IRoutePathLink } from '~/models';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import SubSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
+import KilpiViaService from '~/services/kilpiViaService';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
@@ -54,6 +55,7 @@ interface IRoutePathViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
     isEditingDisabled: boolean;
+    selectedKilpiViaNames: IKilpiVia[];
 }
 
 @inject(
@@ -74,7 +76,8 @@ class RoutePathView extends ViewFormBase<
         this.state = {
             isLoading: true,
             invalidPropertiesMap: {},
-            isEditingDisabled: !props.isNewRoutePath
+            isEditingDisabled: !props.isNewRoutePath,
+            selectedKilpiViaNames: []
         };
     }
 
@@ -176,6 +179,7 @@ class RoutePathView extends ViewFormBase<
     };
 
     private fetchRoutePath = async () => {
+        this.setState({ isLoading: true });
         const [
             routeId,
             startTimeString,
@@ -193,6 +197,36 @@ class RoutePathView extends ViewFormBase<
                 'Reitinsuunnan haku ei onnistunut.',
                 e
             );
+        }
+        try {
+          const routePathLinks: IRoutePathLink[] = this.props.routePathStore!.routePath!.routePathLinks;
+          const promises: any[] = [];
+          const kilpiViaNames: IKilpiVia[] = [];
+
+          routePathLinks.forEach((routePathLink: IRoutePathLink) => {
+            const createPromise = async () => {
+              try {
+                const kilpiViaName: IKilpiVia | null = await KilpiViaService.fetchKilpiViaName(routePathLink.id);
+                if (kilpiViaName) kilpiViaNames.push(kilpiViaName);
+              } catch (err) {
+                this.props.errorStore!.addError(
+                    'KilpiVia haku ei onnistunut.',
+                    err
+                )
+              }
+            };
+
+            promises.push(createPromise());
+          });
+
+          await Promise.all(promises);
+          this.props.routePathStore!.setKilpiViaNamesHash(kilpiViaNames);
+
+        } catch(err) {
+          this.props.errorStore!.addError(
+              'KilpiVia haku ei onnistunut.',
+              err
+          )
         }
     };
 
@@ -224,6 +258,7 @@ class RoutePathView extends ViewFormBase<
             <RoutePathLinksTab
                 routePath={this.props.routePathStore!.routePath!}
                 isEditingDisabled={this.state.isEditingDisabled}
+                routePathLinkKilpiViaNames={this.state.selectedKilpiViaNames}
             />
         );
     };
@@ -231,10 +266,11 @@ class RoutePathView extends ViewFormBase<
     private save = async () => {
         this.setState({ isLoading: true });
         let redirectUrl: string | undefined;
+        const routePath = this.props.routePathStore!.routePath;
         try {
             if (this.props.isNewRoutePath) {
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
-                    this.props.routePathStore!.routePath!
+                    routePath!
                 );
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
@@ -249,9 +285,12 @@ class RoutePathView extends ViewFormBase<
                         ].join(',')
                     )
                     .toLink();
+                    await KilpiViaService.updateKilpiViaNames(
+                      this.props.routePathStore!.kilpiViaNames
+                    );
             } else {
                 const routePathToUpdate = _.cloneDeep(
-                    this.props.routePathStore!.routePath!
+                    routePath!
                 );
                 const hasRoutePathLinksChanged = this.props.routePathStore!.hasRoutePathLinksChanged();
 
@@ -260,9 +299,12 @@ class RoutePathView extends ViewFormBase<
                     routePathToUpdate.routePathLinks = [];
                 }
                 await RoutePathService.updateRoutePath(routePathToUpdate);
+                await KilpiViaService.updateKilpiViaNames(
+                  this.props.routePathStore!.kilpiViaNames
+                );
             }
             this.props.routePathStore!.setOldRoutePath(
-                this.props.routePathStore!.routePath!
+                routePath!
             );
 
             this.props.alertStore!.setFadeMessage('Tallennettu!');
@@ -324,6 +366,7 @@ class RoutePathView extends ViewFormBase<
             !areLinkFormsValid;
 
         const copySegmentStore = this.props.routePathCopySegmentStore;
+
         const isCopyRoutePathSegmentViewVisible =
             copySegmentStore!.startNode && copySegmentStore!.endNode;
 

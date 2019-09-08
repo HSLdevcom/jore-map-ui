@@ -8,7 +8,8 @@ enum endpoints { // TODO: rename as endpointPath
     ROUTEPATH = 'routePath',
     ROUTELINK = 'routeLink',
     NODE = 'node',
-    LINK = 'link'
+    LINK = 'link',
+    KILPI_VIA = 'kilpivia'
 }
 
 export default endpoints;

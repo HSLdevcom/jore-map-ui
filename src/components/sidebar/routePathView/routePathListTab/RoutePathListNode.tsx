@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import { IRoutePathLink, INode, IStop } from '~/models';
@@ -49,7 +50,7 @@ class RoutePathListNode extends ViewFormBase<
         this.state = {
             isLoading: false,
             invalidPropertiesMap: {},
-            isEditingDisabled: false
+            isEditingDisabled: false,
         };
     }
 
@@ -178,6 +179,25 @@ class RoutePathListNode extends ViewFormBase<
         );
     };
 
+    private onKilpiViaNameChange = (value: string, language: string) => {
+      const kilpiViaNamesHash = _.cloneDeep(this.props.routePathStore!.kilpiViaNamesHash);
+      const routePathLinkId = +this.props.routePathLink.id;
+      let kilpiViaName = kilpiViaNamesHash[routePathLinkId];
+      if (!kilpiViaName) {
+        kilpiViaName = {
+          relid: routePathLinkId,
+          viasuomi: '',
+          viaruotsi: ''
+        }
+      }
+      if (language === 'fi') {
+        kilpiViaName.viasuomi = value;
+      } else {
+        kilpiViaName.viaruotsi = value;
+      }
+      this.props.routePathStore!.setKilpiViaName(kilpiViaName);
+    }
+
     private onIsStartNodeUsingBookScheduleChange = (value: boolean) => () => {
         this.onRoutePathBookSchedulePropertyChange(
             'isStartNodeUsingBookSchedule'
@@ -190,6 +210,8 @@ class RoutePathListNode extends ViewFormBase<
 
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
+        const kilpiViaNamesHash = this.props.routePathStore!.kilpiViaNamesHash;
+        const kilpiViaName = kilpiViaNamesHash[+routePathLink.id];
 
         const isStartNodeUsingBookSchedule = this.props.isLastNode
             ? routePath!.isStartNodeUsingBookSchedule
@@ -305,6 +327,26 @@ class RoutePathListNode extends ViewFormBase<
                         isTimeIncluded={true}
                         value={routePathLink.modifiedOn}
                         darkerInputLabel={true}
+                    />
+                </div>
+                <div className={s.flexInnerRow}>
+                    <InputContainer
+                        label='VIA KILPI SUOMEKSI'
+                        disabled={isEditingDisabled}
+                        value={kilpiViaName ? kilpiViaName.viasuomi : ''}
+                        validationResult={
+                            invalidPropertiesMap['kilpiViaName']
+                        }
+                        onChange={(e) => this.onKilpiViaNameChange(e, 'fi')}
+                    />
+                    <InputContainer
+                        label='VIA KILPI RUOTSIKSI'
+                        disabled={isEditingDisabled}
+                        value={kilpiViaName ? kilpiViaName.viaruotsi : ''}
+                        validationResult={
+                            invalidPropertiesMap['kilpiViaName']
+                        }
+                        onChange={(e) => this.onKilpiViaNameChange(e, 'swe')}
                     />
                 </div>
             </div>
