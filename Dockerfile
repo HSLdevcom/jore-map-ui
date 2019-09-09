@@ -22,8 +22,4 @@ ENV BUILD_DATE=${APP_BUILD_DATE}
 RUN yarn test:ci
 RUN yarn build
 
-# TODO: remove? Is this really needed:
-EXPOSE 5000
-
-ENTRYPOINT ["yarn", "run"]
-CMD ["serve", "-s", "build"]
+CMD ["yarn", "run", "serve", "-s", "build"]
