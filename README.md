@@ -30,11 +30,10 @@ Runs at http://localhost:3000/
 $ # Specify location of API:s
 
 $ # stage urls example
-$ # ${FRONTEND_URL} = "https://stage.jore-map.hsldev.com"
 $ # ${API_URL} = "http://jore-map-dev.hsldev.com/api/graphql"
 $ # ${GEOSERVER_URL} = "http://jore-map-dev.hsldev.com/geoserver"
 
-$ docker build --build-arg FRONTEND_URL={$FRONTEND_URL} BACKEND_API_URL=${API_URL} --build-arg BACKEND_GEOSERVER_URL=${GEOSERVER_URL} --tag=$DOCKER_IMAGE .
+$ docker build BACKEND_API_URL=${API_URL} --build-arg BACKEND_GEOSERVER_URL=${GEOSERVER_URL} --tag=$DOCKER_IMAGE .
 
 $ # Use default API:s locations (localhost)
 
