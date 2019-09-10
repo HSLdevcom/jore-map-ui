@@ -1,14 +1,17 @@
 FROM node:10-alpine
 
-WORKDIR /build
+ENV WORK /build
+
+RUN mkdir -p ${WORK}
+WORKDIR ${WORK}
 
 # Install app dependencies
-COPY yarn.lock ./
-COPY package.json ./
-COPY .yarnrc ./
+COPY yarn.lock ${WORK}
+COPY package.json ${WORK}
+COPY .yarnrc ${WORK}
 RUN yarn
 
-COPY . ./
+COPY . ${WORK}
 
 ARG BACKEND_API_URL
 ENV API_URL=${BACKEND_API_URL}
@@ -22,4 +25,4 @@ ENV BUILD_DATE=${APP_BUILD_DATE}
 RUN yarn test:ci
 RUN yarn build
 
-CMD ["yarn", "run", "serve", "-s", "build"]
+CMD yarn run production
