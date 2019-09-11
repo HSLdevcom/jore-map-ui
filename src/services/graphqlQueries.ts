@@ -271,9 +271,9 @@ const getViaKilpiName = () => {
   `;
 };
 
-const getAllViaKilpiNimets = () => {
+const getAllKilpiViaNames = () => {
     return gql`
-        query getAllViaKilpiNimets {
+        query getAllKilpiViaNames {
           allViaKilpiNimets {
           nodes {
             relid
@@ -586,6 +586,6 @@ export default {
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
-    getAllViaKilpiNimets,
+    getAllKilpiViaNames,
     getViaKilpiName
 };

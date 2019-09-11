@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
 import apolloClient from '~/util/ApolloClient';
-import { IRoutePath } from '~/models';
+import { IRoutePath, IKilpiVia } from '~/models';
 import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
@@ -65,15 +65,24 @@ class RoutePathService {
         );
     };
 
-    public static updateRoutePath = async (routePath: IRoutePath) => {
-        await ApiClient.updateObject(endpoints.ROUTEPATH, routePath);
+    public static updateRoutePath = async (routePath: IRoutePath, kilpiViaNames: IKilpiVia[]) => {
+        const requestBody = {
+            routePath,
+            kilpiViaNames
+        };
+
+        await ApiClient.updateObject(endpoints.ROUTEPATH, requestBody);
         await apolloClient.clearStore();
     };
 
-    public static createRoutePath = async (routePath: IRoutePath) => {
+    public static createRoutePath = async (routePath: IRoutePath, kilpiViaNames: IKilpiVia[]) => {
+        const requestBody = {
+            routePath,
+            kilpiViaNames
+        };
         const response = (await ApiClient.createObject(
             endpoints.ROUTEPATH,
-            routePath
+            requestBody
         )) as IRoutePathPrimaryKey;
         await apolloClient.clearStore();
         return response;

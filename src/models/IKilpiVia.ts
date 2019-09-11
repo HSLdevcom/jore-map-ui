@@ -3,8 +3,8 @@ interface IKilpiViaPrimaryKey {
 }
 
 export default interface IKilpiVia extends IKilpiViaPrimaryKey {
-    viaruotsi: string,
-    viasuomi: string
+    nameSw: string,
+    nameFi: string
 }
 
 

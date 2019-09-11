@@ -1,10 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/util/ApolloClient';
-import { IKilpiViaPrimaryKey, IKilpiVia } from '~/models/IKilpiVia';
-import ApiClient from '~/util/ApiClient';
-import endpoints from '~/enums/endpoints';
+import { IKilpiVia } from '~/models/IKilpiVia';
 import GraphqlQueries from './graphqlQueries';
-
 
 class KilpiViaService {
 
@@ -15,21 +12,12 @@ class KilpiViaService {
                 relid: id
             }
         });
-        return queryResult.data.kilpiVia ? queryResult.data.kilpiVia : null;
-    };
 
-    public static updateKilpiViaNames = async (kilpiViaNames: IKilpiVia[]) => {
-        await ApiClient.updateObject(endpoints.KILPI_VIA, kilpiViaNames);
-        await apolloClient.clearStore();
-    };
-
-    public static createKilpiViaNames = async (kilpiViaNames: IKilpiVia[]) => {
-        const response = (await ApiClient.createObject(
-            endpoints.KILPI_VIA,
-            kilpiViaNames
-        )) as IKilpiViaPrimaryKey;
-        await apolloClient.clearStore();
-        return response;
+        return queryResult.data.kilpiVia ? {
+            relid: queryResult.data.kilpiVia.relid,
+            nameFi: queryResult.data.kilpiVia.viasuomi,
+            nameSw: queryResult.data.kilpiVia.viaruotsi
+        } : null;
     };
 
 };

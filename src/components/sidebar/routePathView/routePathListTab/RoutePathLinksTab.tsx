@@ -4,7 +4,7 @@ import { IReactionDisposer, reaction } from 'mobx';
 import { TiLink } from 'react-icons/ti';
 import { IoIosRadioButtonOn } from 'react-icons/io';
 import NodeType from '~/enums/nodeType';
-import { IRoutePath, IRoutePathLink, INode, IKilpiVia } from '~/models';
+import { IRoutePath, IRoutePathLink, INode } from '~/models';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
 import { RoutePathStore, ListFilter } from '~/stores/routePathStore';
 import navigator from '~/routing/navigator';
@@ -17,7 +17,6 @@ interface IRoutePathLinksTabProps {
     routePathStore?: RoutePathStore;
     routePath: IRoutePath;
     isEditingDisabled: boolean;
-    routePathLinkKilpiViaNames: IKilpiVia[];
 }
 
 @inject('routePathStore')
