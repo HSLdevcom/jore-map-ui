@@ -269,7 +269,8 @@ class RoutePathView extends ViewFormBase<
         const kilpiViaNames = this.props.routePathStore!.kilpiViaNames;
         try {
             if (this.props.isNewRoutePath) {
-                const dirtyKilpiViaNames = this.props.routePathStore!.dirtyKilpiViaNames;
+                const dirtyKilpiViaNames = this.props.routePathStore!
+                    .dirtyKilpiViaNames;
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
                     routePath!,
                     dirtyKilpiViaNames
@@ -295,8 +296,12 @@ class RoutePathView extends ViewFormBase<
                 if (!hasRoutePathLinksChanged) {
                     routePathToUpdate.routePathLinks = [];
                 }
-                const dirtyKilpiViaNames = this.props.routePathStore!.dirtyKilpiViaNames;
-                await RoutePathService.updateRoutePath(routePathToUpdate, dirtyKilpiViaNames);
+                const dirtyKilpiViaNames = this.props.routePathStore!
+                    .dirtyKilpiViaNames;
+                await RoutePathService.updateRoutePath(
+                    routePathToUpdate,
+                    dirtyKilpiViaNames
+                );
             }
             this.props.routePathStore!.setOldRoutePath(routePath!);
             this.props.routePathStore!.setOldKilpiViaNames(kilpiViaNames);

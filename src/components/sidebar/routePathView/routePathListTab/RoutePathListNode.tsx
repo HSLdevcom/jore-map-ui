@@ -73,7 +73,9 @@ class RoutePathListNode extends ViewFormBase<
         );
         const orderNumber = this.props.routePathLink.orderNumber;
 
-        const kilpiVia = this.props.routePathStore!.getKilpiViaName(+this.props.routePathLink.id);
+        const kilpiVia = this.props.routePathStore!.getKilpiViaName(
+            +this.props.routePathLink.id
+        );
         let isKilpiViaNameFiValid = true;
         if (kilpiVia && kilpiVia.nameFi) {
             const validationResult: IValidationResult = FormValidator.validate(
@@ -93,7 +95,10 @@ class RoutePathListNode extends ViewFormBase<
             isKilpiViaNameSwValid = validationResult.isValid;
         }
 
-        const isLinkFormValid = this.isFormValid() && isKilpiViaNameFiValid && isKilpiViaNameSwValid;
+        const isLinkFormValid =
+            this.isFormValid() &&
+            isKilpiViaNameFiValid &&
+            isKilpiViaNameSwValid;
 
         this.props.routePathStore!.setLinkFormValidity(
             orderNumber,
@@ -205,7 +210,9 @@ class RoutePathListNode extends ViewFormBase<
 
     private onKilpiViaNameChange = (value: string, language: string) => {
         const routePathLinkId = +this.props.routePathLink.id;
-        let kilpiViaName = _.cloneDeep(this.props.routePathStore!.getKilpiViaName(routePathLinkId));
+        let kilpiViaName = _.cloneDeep(
+            this.props.routePathStore!.getKilpiViaName(routePathLinkId)
+        );
 
         if (!kilpiViaName) {
             kilpiViaName = {
@@ -235,7 +242,9 @@ class RoutePathListNode extends ViewFormBase<
 
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
-        const kilpiViaName = this.props.routePathStore!.getKilpiViaName(+routePathLink.id);
+        const kilpiViaName = this.props.routePathStore!.getKilpiViaName(
+            +routePathLink.id
+        );
 
         const isStartNodeUsingBookSchedule = this.props.isLastNode
             ? routePath!.isStartNodeUsingBookSchedule
