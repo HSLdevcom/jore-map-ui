@@ -126,7 +126,7 @@ export class RoutePathStore {
                 kilpiViaNamesHash[k],
                 oldKilpiViaNamesHash[k]
             );
-            if (!isEqual) dirtyKilpiViaNames.push(kilpiViaNamesHash[k])
+            if (!isEqual) dirtyKilpiViaNames.push(kilpiViaNamesHash[k]);
         }
         return dirtyKilpiViaNames;
     }

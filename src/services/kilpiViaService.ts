@@ -4,8 +4,9 @@ import { IKilpiVia } from '~/models/IKilpiVia';
 import GraphqlQueries from './graphqlQueries';
 
 class KilpiViaService {
-
-    public static fetchKilpiViaName = async (id: string): Promise<IKilpiVia | null> => {
+    public static fetchKilpiViaName = async (
+        id: string
+    ): Promise<IKilpiVia | null> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
             query: GraphqlQueries.getViaKilpiName(),
             variables: {
@@ -13,14 +14,14 @@ class KilpiViaService {
             }
         });
 
-        return queryResult.data.kilpiVia ? {
-            relid: queryResult.data.kilpiVia.relid,
-            nameFi: queryResult.data.kilpiVia.viasuomi,
-            nameSw: queryResult.data.kilpiVia.viaruotsi
-        } : null;
+        return queryResult.data.kilpiVia
+            ? {
+                  relid: queryResult.data.kilpiVia.relid,
+                  nameFi: queryResult.data.kilpiVia.viasuomi,
+                  nameSw: queryResult.data.kilpiVia.viaruotsi
+              }
+            : null;
     };
-
-};
-
+}
 
 export default KilpiViaService;
