@@ -12,7 +12,7 @@ if [[ $TRAVIS_BRANCH == "develop" ]]; then
 fi
 DOCKER_IMAGE=$ORG/jore-map-ui${DOCKER_TAG}
 
-docker build --build-arg BACKEND_API_URL=${API_URL} --build-arg BACKEND_GEOSERVER_URL=${GEOSERVER_URL} --build-arg APP_BUILD_DATE=${APP_BUILD_DATE} --tag=$DOCKER_IMAGE .
+docker build --build-arg FRONTEND_AFTER_LOGIN_URL=${AFTER_LOGIN_URL} --build-arg BACKEND_API_URL=${API_URL} --build-arg BACKEND_GEOSERVER_URL=${GEOSERVER_URL} --build-arg APP_BUILD_DATE=${APP_BUILD_DATE} --tag=$DOCKER_IMAGE .
 
 if [ $TRAVIS_PULL_REQUEST == "false" ] && ([ $TRAVIS_BRANCH == "master" ] || [ $TRAVIS_BRANCH == "develop" ]); then
   docker login -u $DOCKER_USER -p $DOCKER_AUTH
