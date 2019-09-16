@@ -1,8 +1,9 @@
 sudo: required
 
 branches:
-  only:
-    - master
+    only:
+        - master
+        - develop
 
 services: docker
 
