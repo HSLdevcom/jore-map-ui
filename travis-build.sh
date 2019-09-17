@@ -16,7 +16,7 @@ if [ $TRAVIS_BRANCH == "master" ]; then
   DOCKER_TAG=':stage'
 fi
 if [ $TRAVIS_BRANCH == "develop" ]; then
-  APP_ENVIRONMENT='develop'
+  APP_ENVIRONMENT='dev'
   DOCKER_TAG=':develop'
 fi
 DOCKER_IMAGE=$ORG/jore-map-ui${DOCKER_TAG}
