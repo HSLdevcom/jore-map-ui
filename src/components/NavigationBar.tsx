@@ -3,6 +3,7 @@ import { IoMdContact } from 'react-icons/io';
 import hslLogo from '~/assets/hsl-logo.png';
 import routeBuilder from '~/routing/routeBuilder';
 import { observer, inject } from 'mobx-react';
+import constants from '~/constants/constants';
 import { LoginStore } from '~/stores/loginStore';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
@@ -28,7 +29,7 @@ class NavigationBar extends Component<INavigationBarProps> {
     };
 
     render() {
-        const buildDate = process.env.BUILD_DATE;
+        const buildDate = constants.BUILD_DATE;
         const buildDateInfo = buildDate ? `Date: ${buildDate}` : '';
 
         return (

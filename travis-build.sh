@@ -1,20 +1,35 @@
 #!/bin/bash
 set -e
 
-# Note: values to these variables are defined at travis: https://travis-ci.org/HSLdevcom/jore-map-ui/settings
+# APP_DOMAIN_NAME, DOCKER_AUTH, DOCKER_USER env values are defined here:
+# https://travis-ci.org/HSLdevcom/jore-map-ui/settings
 
 ORG=${ORG:-hsldevcom}
 APP_BUILD_DATE=$(date +'%d.%m.%Y')
 
-DOCKER_TAG=':latest'
-if [[ $TRAVIS_BRANCH == "develop" ]]; then
+if [ $TRAVIS_BRANCH == "release-prod" ]; then
+  APP_ENVIRONMENT='prod'
+  DOCKER_TAG=':prod'
+fi
+if [ $TRAVIS_BRANCH == "master" ]; then
+  APP_ENVIRONMENT='stage'
+  DOCKER_TAG=':stage'
+fi
+if [ $TRAVIS_BRANCH == "develop" ]; then
+  APP_ENVIRONMENT='develop'
   DOCKER_TAG=':develop'
 fi
 DOCKER_IMAGE=$ORG/jore-map-ui${DOCKER_TAG}
 
+echo "Travis branch is $TRAVIS_BRANCH"
+echo "Environment is $APP_ENVIRONMENT"
+echo "Domain name is $APP_DOMAIN_NAME"
 echo "Docker tag is $DOCKER_TAG"
+echo "Docker image is $DOCKER_IMAGE"
 
-docker build --build-arg FRONTEND_AFTER_LOGIN_URL=${AFTER_LOGIN_URL} --build-arg BACKEND_API_URL=${API_URL} --build-arg BACKEND_GEOSERVER_URL=${GEOSERVER_URL} --build-arg APP_BUILD_DATE=${APP_BUILD_DATE} --tag=$DOCKER_IMAGE .
+docker build --build-arg APP_ENVIRONMENT=${APP_ENVIRONMENT} --build-arg APP_DOMAIN_NAME=${APP_DOMAIN_NAME} --build-arg APP_BUILD_DATE=${APP_BUILD_DATE} --tag=$DOCKER_IMAGE .
+
+# docker build --build-arg FRONTEND_AFTER_LOGIN_URL=${AFTER_LOGIN_URL} --build-arg BACKEND_API_URL=${API_URL} --build-arg BACKEND_GEOSERVER_URL=${GEOSERVER_URL} --build-arg APP_BUILD_DATE=${APP_BUILD_DATE} --tag=$DOCKER_IMAGE .
 
 if [ $TRAVIS_PULL_REQUEST == "false" ] && ([ $TRAVIS_BRANCH == "master" ] || [ $TRAVIS_BRANCH == "develop" ]); then
   docker login -u $DOCKER_USER -p $DOCKER_AUTH
