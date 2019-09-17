@@ -24,6 +24,14 @@ $ yarn start
 
 Runs at http://localhost:3000/
 
+## Release
+
+### Travis builds docker image automatically with
+
+-   `:prod` tag, when code is pushed to `release-prod` branch
+-   `:stage` tag, when code is pushed to `master` branch
+-   `:dev` tag, when code is pushed to `develop` branch
+
 ## License
 
 MIT © [HSL](https://github.com/HSLdevcom)
