@@ -2,7 +2,7 @@ let APP_URL = '';
 if (process.env.NODE_ENV === 'development') {
     APP_URL = 'http://localhost:3000';
 } else {
-    APP_URL = `${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
+    APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
 }
 
 const commonConstants = {
