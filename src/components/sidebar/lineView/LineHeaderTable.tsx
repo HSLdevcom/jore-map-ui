@@ -36,6 +36,47 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
 
         navigator.goTo(newLineHeaderLink);
     };
+
+    private renderLineHeaderRows = () => {
+        return this.props.lineHeaders.map(
+            (lineHeader: ILineHeader, index: number) => {
+                const isCurrentLineHeader = _.isEqual(
+                    this.props.currentLineHeader,
+                    lineHeader
+                );
+                return (
+                    <tr
+                        key={index}
+                        className={
+                            isCurrentLineHeader
+                                ? s.lineHeaderRowHighlight
+                                : undefined
+                        }
+                    >
+                        <td>{lineHeader.lineNameFi}</td>
+                        <td className={s.timestampRow}>
+                            {Moment(lineHeader.startDate).format('DD-MM-YYYY')}
+                        </td>
+                        <td className={s.timestampRow}>
+                            {Moment(lineHeader.endDate).format('DD-MM-YYYY')}
+                        </td>
+                        <td>
+                            <Button
+                                className={s.editLineHeaderButton}
+                                hasReverseColor={true}
+                                onClick={this.redirectToEditLineHeaderView(
+                                    lineHeader.startDate!
+                                )}
+                            >
+                                <FiInfo />
+                            </Button>
+                        </td>
+                    </tr>
+                );
+            }
+        );
+    };
+
     render() {
         return (
             <div className={s.lineHeaderTableView}>
@@ -72,49 +113,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                                 </th>
                                 <th className={s.columnHeader} />
                             </tr>
-                            {this.props.lineHeaders.map(
-                                (lineHeader: ILineHeader, index: number) => {
-                                    const isCurrentLineHeader = _.isEqual(
-                                        this.props.currentLineHeader,
-                                        lineHeader
-                                    );
-                                    return (
-                                        <tr
-                                            key={index}
-                                            className={
-                                                isCurrentLineHeader
-                                                    ? s.lineHeaderRowHighlight
-                                                    : undefined
-                                            }
-                                        >
-                                            <td>{lineHeader.lineNameFi}</td>
-                                            <td className={s.timestampRow}>
-                                                {Moment(
-                                                    lineHeader.startDate
-                                                ).format('DD-MM-YYYY')}
-                                            </td>
-                                            <td className={s.timestampRow}>
-                                                {Moment(
-                                                    lineHeader.endDate
-                                                ).format('DD-MM-YYYY')}
-                                            </td>
-                                            <td>
-                                                <Button
-                                                    className={
-                                                        s.editLineHeaderButton
-                                                    }
-                                                    hasReverseColor={true}
-                                                    onClick={this.redirectToEditLineHeaderView(
-                                                        lineHeader.startDate!
-                                                    )}
-                                                >
-                                                    <FiInfo />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    );
-                                }
-                            )}
+                            {this.renderLineHeaderRows()}
                         </tbody>
                     </table>
                 ) : (
