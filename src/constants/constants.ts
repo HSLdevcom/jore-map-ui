@@ -1,4 +1,13 @@
+let APP_URL = '';
+if (process.env.NODE_ENV === 'development') {
+    APP_URL = 'http://localhost:3000';
+} else {
+    APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
+}
+
 const commonConstants = {
+    BUILD_DATE: process.env.BUILD_DATE,
+    AFTER_LOGIN_URL: `${APP_URL}/afterLogin`,
     DECIMALS_IN_GEOMETRIES: 6,
     INTEGER_MAX_VALUE: 2147483647, // Max value at PostgreSQL (4 bytes)
     SMALL_INT_MAX_VALUE: 32767, // Max value at PostgreSQL (2 bytes)
@@ -10,14 +19,16 @@ const commonConstants = {
 
 const developmentConstants = {
     ...commonConstants,
-    AFTER_LOGIN_URL: 'http://localhost:3000/afterLogin',
+    API_URL: 'http://localhost:3040',
+    GEOSERVER_URL: 'http://localhost:8080/geoserver',
     FADE_ALERT_TIMEOUT: 500, // milliseconds
     IS_LOGIN_REQUIRED: true
 };
 
 const productionConstants = {
     ...commonConstants,
-    AFTER_LOGIN_URL: 'https://stage.jore-map.hsldev.com/afterLogin', // TODO: use env variable
+    API_URL: `${APP_URL}/api`,
+    GEOSERVER_URL: `${APP_URL}/geoserver`,
     FADE_ALERT_TIMEOUT: 2500, // milliseconds
     IS_LOGIN_REQUIRED: true // set always true in production
 };

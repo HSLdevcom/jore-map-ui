@@ -24,23 +24,13 @@ $ yarn start
 
 Runs at http://localhost:3000/
 
-### Build and run in Docker container
+## Release
 
-```bash
-$ # Specify location of API:s
+### Travis builds docker image automatically with
 
-$ # stage urls example
-$ # ${API_URL} = "http://jore-map-dev.hsldev.com/api/graphql"
-$ # ${GEOSERVER_URL} = "http://jore-map-dev.hsldev.com/geoserver"
-
-$ docker build BACKEND_API_URL=${API_URL} --build-arg BACKEND_GEOSERVER_URL=${GEOSERVER_URL} --tag=$DOCKER_IMAGE .
-
-$ # Use default API:s locations (localhost)
-
-$ docker build -t jore-map-ui .
-
-$ docker run -d -p 0.0.0.0:5000:5000 jore-map-ui
-```
+-   `:prod` tag, when code is pushed to `release-prod` branch
+-   `:stage` tag, when code is pushed to `master` branch
+-   `:dev` tag, when code is pushed to `develop` branch
 
 ## License
 

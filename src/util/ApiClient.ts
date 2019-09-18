@@ -1,3 +1,4 @@
+import constants from '~/constants/constants';
 import endpoints from '~/enums/endpoints';
 import IError from '~/models/IError';
 import FetchStatusCode from '~/enums/fetchStatusCode';
@@ -18,8 +19,6 @@ interface IAuthorizationRequest {
 }
 
 type credentials = 'include';
-
-const BACKEND_API_URL = process.env.API_URL || 'http://localhost:3040';
 
 class ApiClient {
     public updateObject = async (entityName: endpoints, object: any) => {
@@ -68,7 +67,7 @@ class ApiClient {
         endpoint: endpoints,
         object: any
     ) => {
-        const entityUrl = `${BACKEND_API_URL}/${endpoint}`;
+        const entityUrl = `${constants.API_URL}/${endpoint}`;
         return this.sendRequest(method, entityUrl, object, 'include');
     };
 
