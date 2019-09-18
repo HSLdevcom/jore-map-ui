@@ -227,15 +227,32 @@ const getAllStopAreas = () => {
     `;
 };
 
-const getAllLineTopics = () => {
+const getAllStopSections = () => {
     return gql`
-        query getAllLineTopics {
+        query getAllStopSections {
+            node: allVyohykes {
+                nodes {
+                    selite
+                }
+            }
+        }
+    `;
+};
+
+const getLineHeaderQuery = () => {
+    return gql`query getLineHeader($lineId: String!, $startDate: Datetime!) {
+            lineHeader: linjannimetByLintunnusAndLinalkupvm(lintunnus: $lineId, linalkupvm: $startDate) {
+                ${lineHeaderQueryFields}
+            }
+        }`;
+};
+
+const getAllLineHeadersQuery = () => {
+    return gql`
+        query getAllLineHeaders {
             node: allLinjannimets {
                 nodes {
-                    lintunnus
-                    linnimi
-                    linalkupvm
-                    linloppupvm
+                    ${lineHeaderQueryFields}
                 }
             }
         }
@@ -401,6 +418,22 @@ const routePathLinkQueryFields = `
     }
 `;
 
+const lineHeaderQueryFields = `
+    lintunnus
+    linalkupvm
+    linloppupvm
+    linnimi
+    linnimilyh
+    linnimir
+    linnimilyhr
+    linlahtop1
+    linlahtop1R
+    linlahtop2
+    linlahtop2R
+    linkuka
+    linviimpvm
+`;
+
 const routePathLinksForRoutePathQuery = `
 reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
     nodes {
@@ -524,5 +557,7 @@ export default {
     getRoutePathsUsingLinkFromDate,
     getAllRoutePathPrimaryKeysQuery,
     getAllStopAreas,
-    getAllLineTopics
+    getLineHeaderQuery,
+    getAllLineHeadersQuery,
+    getAllStopSections
 };

@@ -35,7 +35,7 @@ class SplitLinkTool implements BaseTool {
         if (!link) throw 'Valittua linkkiä ei löytynyt.';
         const url = RouteBuilder.to(SubSites.splitLink)
             .clear()
-            .toTarget(
+            .toTarget(':id',
                 [
                     link.startNode.id,
                     link.endNode.id,

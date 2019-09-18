@@ -11,6 +11,7 @@ import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
 import SearchResultStore from './stores/searchResultStore';
 import LineStore from './stores/lineStore';
+import LineHeaderStore from './stores/lineHeaderStore';
 import RouteStore from './stores/routeStore';
 import RouteListStore from './stores/routeListStore';
 import RoutePathStore from './stores/routePathStore';
@@ -40,6 +41,7 @@ const stores = {
     searchResultStore: SearchResultStore,
     loginStore: LoginStore,
     lineStore: LineStore,
+    lineHeaderStore: LineHeaderStore,
     routeStore: RouteStore,
     routeListStore: RouteListStore,
     routePathStore: RoutePathStore,

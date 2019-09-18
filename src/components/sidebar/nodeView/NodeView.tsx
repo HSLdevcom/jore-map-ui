@@ -146,7 +146,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
                 const url = routeBuilder
                     .to(SubSites.node)
-                    .toTarget(nodeId)
+                    .toTarget(':id', nodeId)
                     .toLink();
                 navigator.goTo(url);
             } else {

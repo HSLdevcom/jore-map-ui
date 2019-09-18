@@ -7,7 +7,10 @@ import { IStop, INode } from '~/models';
 import ButtonType from '~/enums/buttonType';
 import { NodeStore } from '~/stores/nodeStore';
 import { CodeListStore } from '~/stores/codeListStore';
-import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
+import StopService, {
+    IStopAreaItem,
+    IStopSectionItem
+} from '~/services/stopService';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
@@ -34,6 +37,7 @@ interface IStopFormState {
     invalidPropertiesMap: object;
     isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
     stopAreas: IDropdownItem[];
+    stopSections: IDropdownItem[];
 }
 
 @inject('nodeStore', 'codeListStore')
@@ -47,15 +51,18 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
             isLoading: false,
             invalidPropertiesMap: {},
             isEditingDisabled: false,
-            stopAreas: []
+            stopAreas: [],
+            stopSections: []
         };
     }
 
     async componentWillMount() {
-        const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
+        const stopAreas: IStopAreaItem[] = await StopService.fetchAllStopAreas();
+        const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
         if (this.mounted) {
             this.setState({
-                stopAreas: this.createStopAreaDropdownItems(stopAreas)
+                stopAreas: this.createStopAreaDropdownItems(stopAreas),
+                stopSections: this.createStopSectionDropdownItems(stopSections)
             });
         }
     }
@@ -88,6 +95,18 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
             const item: IDropdownItem = {
                 value: `${stopArea.pysalueid}`,
                 label: `${stopArea.pysalueid} - ${stopArea.nimi}`
+            };
+            return item;
+        });
+    };
+
+    private createStopSectionDropdownItems = (
+        stopSections: IStopSectionItem[]
+    ): IDropdownItem[] => {
+        return stopSections.map((stopSection: IStopSectionItem) => {
+            const item: IDropdownItem = {
+                value: `${stopSection.selite}`,
+                label: `${stopSection.selite}`
             };
             return item;
         });
@@ -289,6 +308,27 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <div className={s.sectionHeader}>Muu tiedot</div>
                     <div className={s.flexRow}>
                         <Dropdown
+                            onChange={onChange('section')}
+                            items={this.state.stopSections}
+                            selected={stop.section}
+                            emptyItem={{
+                                value: '',
+                                label: ''
+                            }}
+                            disabled={isEditingDisabled}
+                            label='VYÖHYKE'
+                            validationResult={invalidPropertiesMap['section']}
+                        />
+                        <InputContainer
+                            label='HASTUS-PAIKKA'
+                            disabled={isEditingDisabled}
+                            value={stop.hastusId}
+                            validationResult={invalidPropertiesMap['hastusId']}
+                            onChange={onChange('hastusId')}
+                        />
+                    </div>
+                    <div className={s.flexRow}>
+                        <Dropdown
                             onChange={onChange('areaId')}
                             items={this.state.stopAreas}
                             selected={stop.areaId}
@@ -327,22 +367,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             type='number'
                             onChange={onChange('radius')}
                             validationResult={invalidPropertiesMap['radius']}
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <InputContainer
-                            label='VYÖHYKE'
-                            disabled={isEditingDisabled}
-                            value={stop.section}
-                            onChange={onChange('section')}
-                            validationResult={invalidPropertiesMap['section']}
-                        />
-                        <InputContainer
-                            label='HASTUS-PAIKKA'
-                            disabled={isEditingDisabled}
-                            value={stop.hastusId}
-                            validationResult={invalidPropertiesMap['hastusId']}
-                            onChange={onChange('hastusId')}
                         />
                     </div>
                     <div className={s.flexRow}>

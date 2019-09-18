@@ -64,7 +64,7 @@ class AddNetworkLinkTool implements BaseTool {
     private redirectToNewLinkView = () => {
         const newLinkViewLink = routeBuilder
             .to(SubSites.newLink)
-            .toTarget([this.startNodeId, this.endNodeId].join(','))
+            .toTarget(':id', [this.startNodeId, this.endNodeId].join(','))
             .toLink();
         navigator.goTo(newLinkViewLink);
 

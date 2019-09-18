@@ -1,4 +1,5 @@
 import ILine from './ILine';
+import ILineHeader from './ILineHeader';
 import INode from './INode';
 import IStop from './IStop';
 import ILink from './ILink';
@@ -9,6 +10,7 @@ import INeighborLink from './INeighborLink';
 
 export {
     ILine,
+    ILineHeader,
     INode,
     IStop,
     ILink,

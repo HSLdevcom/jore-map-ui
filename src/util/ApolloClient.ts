@@ -1,11 +1,10 @@
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import * as Apollo from 'apollo-client';
 import { BatchHttpLink } from 'apollo-link-batch-http';
+import constants from '~/constants/constants';
 import LoginStore from '~/stores/loginStore';
 import AlertStore from '~/stores/alertStore';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
-
-const API_URL = process.env.API_URL || 'http://localhost:3040';
 
 const cache = new InMemoryCache();
 
@@ -16,7 +15,7 @@ class ApolloClient {
         this.client = new Apollo.ApolloClient({
             cache,
             link: new BatchHttpLink({
-                uri: `${API_URL}/graphql`,
+                uri: `${constants.API_URL}/graphql`,
                 // To keep the same express session information with each request
                 credentials: 'include'
             })

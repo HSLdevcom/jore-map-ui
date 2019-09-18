@@ -38,7 +38,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                     .map((routePath, index) => {
                         const link = routeBuilder
                             .to(SubSites.routePath)
-                            .toTarget(
+                            .toTarget(':id',
                                 [
                                     routePath.routeId,
                                     Moment(routePath.startTime).format(

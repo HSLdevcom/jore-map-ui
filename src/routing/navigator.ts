@@ -14,10 +14,18 @@ class Navigator {
     };
 
     public goTo = (url: string) => {
-        // prevent new pushing url if the current rl is already the right one
+        // prevent new pushing url if the current url is already the right one
         if (this.store.location.pathname === url) return;
 
         this.store.history.push(url);
+    };
+
+    // Instead of pushing to a stack (goTo function), replace current url
+    public replace = (url: string) => {
+        // prevent new pushing url if the current url is already the right one
+        if (this.store.location.pathname === url) return;
+
+        this.store.history.replace(url);
     };
 
     /**
