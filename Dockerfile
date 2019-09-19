@@ -1,23 +1,28 @@
 FROM node:10-alpine
 
-WORKDIR /build
-COPY . ./
+ENV WORK /build
 
-ARG BACKEND_API_URL
-ENV API_URL=${BACKEND_API_URL}
+RUN mkdir -p ${WORK}
+WORKDIR ${WORK}
 
-ARG BACKEND_GEOSERVER_URL
-ENV GEOSERVER_URL=${BACKEND_GEOSERVER_URL}
+# Install app dependencies
+COPY yarn.lock ${WORK}
+COPY package.json ${WORK}
+COPY .yarnrc ${WORK}
+RUN yarn
+
+COPY . ${WORK}
+
+ARG APP_ENVIRONMENT
+ENV ENVIRONMENT=${APP_ENVIRONMENT}
+
+ARG APP_DOMAIN_NAME
+ENV DOMAIN_NAME=${APP_DOMAIN_NAME}
 
 ARG APP_BUILD_DATE
 ENV BUILD_DATE=${APP_BUILD_DATE}
 
-RUN yarn --pure-lockfile
 RUN yarn test:ci
 RUN yarn build
-RUN yarn add serve
 
-EXPOSE 5000
-
-ENTRYPOINT ["yarn", "run"]
-CMD ["serve", "-s", "build"]
+CMD yarn run production
