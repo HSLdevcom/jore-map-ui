@@ -28,26 +28,6 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         };
     }
 
-    componentDidUpdate(prevProps: RouteLayerProps) {
-        // TODO: Fix this check when calculateBounds() is called
-        const prevRoutePathIds = prevProps.routes
-            .map(route =>
-                route.routePaths.map(rPath => rPath.internalId).join(':')
-            )
-            .join(':');
-        const currentRoutePathIds = this.props.routes
-            .map(route =>
-                route.routePaths.map(rPath => rPath.internalId).join(':')
-            )
-            .join(':');
-        const routePathsChanged = prevRoutePathIds !== currentRoutePathIds;
-        if (routePathsChanged) {
-            this.setState({
-                selectedPolylines: []
-            });
-        }
-    }
-
     private toggleHighlight = (internalId: string) => (target: any) => () => {
         let selectedPolylines = this.state.selectedPolylines;
 
