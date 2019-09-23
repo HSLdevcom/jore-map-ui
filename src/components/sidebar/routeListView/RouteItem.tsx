@@ -30,14 +30,17 @@ interface IRouteItemProps {
 class RouteItem extends React.Component<IRouteItemProps> {
     async componentDidMount() {
         let index = 0;
+        const promises: Promise<void>[] = [];
         for (const routePath of this.props.route.routePaths) {
             if (index < 2) {
-                await this.props.routeListStore!.toggleRoutePathVisibility(
+                const promise = this.props.routeListStore!.toggleRoutePathVisibility(
                     routePath.internalId
                 );
+                promises.push(promise);
             }
             index += 1;
         }
+        await Promise.all(promises);
         this.calculateBounds();
     }
 
