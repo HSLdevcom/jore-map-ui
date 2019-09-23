@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import { IRoutePathLink, INode, IStop } from '~/models';
+import { IRoutePathLink, INode, IStop, IViaName } from '~/models';
 import { FiChevronRight } from 'react-icons/fi';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
@@ -76,34 +76,43 @@ class RoutePathListNode extends ViewFormBase<
         const viaName = this.props.routePathStore!.getViaName(
             +this.props.routePathLink.id
         );
+
         let isViaNameDestinationFi1Valid = true;
-        if (viaName && viaName.destinationFi1) {
-            const validationResult: IValidationResult = FormValidator.validate(
-                viaName!.destinationFi1,
-                viaNameValidationModel['destinationFi1']
-            );
-            this.setValidatorResult('destinationFi1', validationResult);
-            isViaNameDestinationFi1Valid = validationResult.isValid;
-        }
-        let isKilpiViadestinationSwValid = true;
-        if (viaName && viaName.destinationSw1) {
-            const validationResult: IValidationResult = FormValidator.validate(
-                viaName!.destinationSw1,
-                viaNameValidationModel['destinationSw1']
-            );
-            this.setValidatorResult('destinationSw1', validationResult);
-            isKilpiViadestinationSwValid = validationResult.isValid;
+        if (viaName) {
+            isViaNameDestinationFi1Valid = this.validateViaNames(viaName);
         }
 
         const isLinkFormValid =
             this.isFormValid() &&
-            isViaNameDestinationFi1Valid &&
-            isKilpiViadestinationSwValid;
+            isViaNameDestinationFi1Valid;
 
         this.props.routePathStore!.setLinkFormValidity(
             orderNumber,
             isLinkFormValid
         );
+    };
+
+    private validateViaNames = (viaName: IViaName) => {
+        const attributeNames = [
+            'destinationFi1',
+            'destinationSw1',
+            'destinationFi2',
+            'destinationSw2'
+        ];
+
+        let isValid = true;
+        attributeNames.forEach((attribute: string) => {
+            if (viaName[attribute]) {
+                const validationResult: IValidationResult = FormValidator.validate(
+                    viaName![attribute],
+                    viaNameValidationModel[attribute]
+                );
+                this.setValidatorResult(attribute, validationResult);
+                if (!validationResult.isValid) isValid = false;
+            };
+        });
+
+        return isValid;
     };
 
     private renderHeader = () => {
@@ -364,15 +373,23 @@ class RoutePathListNode extends ViewFormBase<
                         label='1. MÄÄRÄNPÄÄ SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={viaName ? viaName.destinationFi1 : ''}
-                        validationResult={invalidPropertiesMap['destinationFi']}
-                        onChange={e => this.onViaNameChange(e, 'destinationFi1')}
+                        validationResult={
+                            invalidPropertiesMap['destinationFi1']
+                        }
+                        onChange={e =>
+                            this.onViaNameChange(e, 'destinationFi1')
+                        }
                     />
                     <InputContainer
                         label='2. MÄÄRÄNPÄÄ SUOMEKSI'
                         disabled={isEditingDisabled}
                         value={viaName ? viaName.destinationFi2 : ''}
-                        validationResult={invalidPropertiesMap['destinationFi']}
-                        onChange={e => this.onViaNameChange(e, 'destinationFi2')}
+                        validationResult={
+                            invalidPropertiesMap['destinationFi2']
+                        }
+                        onChange={e =>
+                            this.onViaNameChange(e, 'destinationFi2')
+                        }
                     />
                 </div>
                 <div className={s.flexInnerRow}>
@@ -380,15 +397,23 @@ class RoutePathListNode extends ViewFormBase<
                         label='1. MÄÄRÄNPÄÄ RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={viaName ? viaName.destinationSw1 : ''}
-                        validationResult={invalidPropertiesMap['destinationSw']}
-                        onChange={e => this.onViaNameChange(e, 'destinationSw1')}
+                        validationResult={
+                            invalidPropertiesMap['destinationSw1']
+                        }
+                        onChange={e =>
+                            this.onViaNameChange(e, 'destinationSw1')
+                        }
                     />
                     <InputContainer
                         label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
                         disabled={isEditingDisabled}
                         value={viaName ? viaName.destinationSw2 : ''}
-                        validationResult={invalidPropertiesMap['destinationSw']}
-                        onChange={e => this.onViaNameChange(e, 'destinationSw2')}
+                        validationResult={
+                            invalidPropertiesMap['destinationSw2']
+                        }
+                        onChange={e =>
+                            this.onViaNameChange(e, 'destinationSw2')
+                        }
                     />
                 </div>
             </div>
