@@ -6,7 +6,7 @@ import ILink from './ILink';
 import IRoute from './IRoute';
 import IRoutePath from './IRoutePath';
 import IRoutePathLink from './IRoutePathLink';
-import IKilpiVia from './IKilpiVia';
+import IViaName from './IViaName';
 
 export {
     ILine,
@@ -17,5 +17,5 @@ export {
     IRoute,
     IRoutePath,
     IRoutePathLink,
-    IKilpiVia
+    IViaName
 };

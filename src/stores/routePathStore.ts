@@ -1,6 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
-import { IRoutePath, IRoutePathLink, IKilpiVia } from '~/models';
+import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
 import lengthCalculator from '~/util/lengthCalculator';
 import INeighborLink from '~/models/INeighborLink';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
@@ -22,8 +22,8 @@ export interface UndoState {
     startNodeBookScheduleColumnNumber?: number;
 }
 
-export interface IKilpiViaHash {
-    [key: string]: IKilpiVia;
+export interface IViaNameHash {
+    [key: string]: IViaName;
 }
 
 export enum ListFilter {
@@ -42,8 +42,8 @@ export class RoutePathStore {
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
-    @observable private _kilpiViaNamesHash: IKilpiViaHash;
-    @observable private _oldKilpiViaNamesHash: IKilpiViaHash;
+    @observable private _viaNamesHash: IViaNameHash;
+    @observable private _oldViaNamesHash: IViaNameHash;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -54,8 +54,8 @@ export class RoutePathStore {
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore = new GeometryUndoStore();
         this._invalidLinkOrderNumbers = [];
-        this._kilpiViaNamesHash = {};
-        this._oldKilpiViaNamesHash = {};
+        this._viaNamesHash = {};
+        this._oldViaNamesHash = {};
     }
 
     @computed
@@ -76,8 +76,8 @@ export class RoutePathStore {
     @computed
     get isDirty() {
         const isViaKilpiDirty = !_.isEqual(
-            this._oldKilpiViaNamesHash,
-            this._kilpiViaNamesHash
+            this._oldViaNamesHash,
+            this._viaNamesHash
         );
         const isRoutePathDirty = !_.isEqual(
             this._routePath,
@@ -107,61 +107,61 @@ export class RoutePathStore {
     }
 
     @computed
-    get kilpiViaNames(): IKilpiVia[] {
-        const kilpiViaNames: IKilpiVia[] = [];
-        const kilpiViaNamesHash = this._kilpiViaNamesHash;
-        for (const k in kilpiViaNamesHash) {
-            kilpiViaNames.push(kilpiViaNamesHash[k]);
+    get viaNames(): IViaName[] {
+        const viaNames: IViaName[] = [];
+        const viaNamesHash = this._viaNamesHash;
+        for (const k in viaNamesHash) {
+            viaNames.push(viaNamesHash[k]);
         }
-        return kilpiViaNames;
+        return viaNames;
     }
 
     @computed
-    get dirtyKilpiViaNames(): IKilpiVia[] {
-        const dirtyKilpiViaNames: IKilpiVia[] = [];
-        const kilpiViaNamesHash = this._kilpiViaNamesHash;
-        const oldKilpiViaNamesHash = this._oldKilpiViaNamesHash;
-        for (const k in kilpiViaNamesHash) {
+    get dirtyViaNames(): IViaName[] {
+        const dirtyViaNames: IViaName[] = [];
+        const viaNamesHash = this._viaNamesHash;
+        const oldViaNamesHash = this._oldViaNamesHash;
+        for (const k in viaNamesHash) {
             const isEqual = _.isEqual(
-                kilpiViaNamesHash[k],
-                oldKilpiViaNamesHash[k]
+                viaNamesHash[k],
+                oldViaNamesHash[k]
             );
-            if (!isEqual) dirtyKilpiViaNames.push(kilpiViaNamesHash[k]);
+            if (!isEqual) dirtyViaNames.push(viaNamesHash[k]);
         }
-        return dirtyKilpiViaNames;
+        return dirtyViaNames;
     }
 
-    public getKilpiViaName(relid: number): IKilpiVia | null {
-        const kilpiViaName = _.cloneDeep(this._kilpiViaNamesHash[relid]);
+    public getKilpiViaName(relid: number): IViaName | null {
+        const kilpiViaName = _.cloneDeep(this._viaNamesHash[relid]);
         return kilpiViaName;
     }
 
     @action
-    public setKilpiViaNames = (kilpiViaNames: IKilpiVia[]) => {
-        kilpiViaNames.forEach((kilpiViaName: IKilpiVia) => {
-            this._kilpiViaNamesHash[kilpiViaName.relid] = kilpiViaName;
+    public setViaNames = (viaNames: IViaName[]) => {
+        viaNames.forEach((kilpiViaName: IViaName) => {
+            this._viaNamesHash[kilpiViaName.relid] = kilpiViaName;
         });
-        this.setOldKilpiViaNames(kilpiViaNames);
+        this.setOldViaNames(viaNames);
     };
 
     @action
-    public setKilpiViaName = (kilpiViaName: IKilpiVia) => {
-        this._kilpiViaNamesHash[kilpiViaName.relid] = kilpiViaName;
+    public setKilpiViaName = (kilpiViaName: IViaName) => {
+        this._viaNamesHash[kilpiViaName.relid] = kilpiViaName;
     };
 
     @action
-    public setOldKilpiViaNames = (kilpiViaNames: IKilpiVia[]) => {
-        const kilpiViaNamesHash = {};
-        kilpiViaNames.forEach((kilpiViaName: IKilpiVia) => {
-            kilpiViaNamesHash[kilpiViaName.relid] = kilpiViaName;
+    public setOldViaNames = (viaNames: IViaName[]) => {
+        const viaNamesHash = {};
+        viaNames.forEach((kilpiViaName: IViaName) => {
+            viaNamesHash[kilpiViaName.relid] = kilpiViaName;
         });
-        this._oldKilpiViaNamesHash = _.cloneDeep(kilpiViaNamesHash);
+        this._oldViaNamesHash = _.cloneDeep(viaNamesHash);
     };
 
     @action
-    public clearKilpiViaNames = () => {
-        this._kilpiViaNamesHash = {};
-        this._oldKilpiViaNamesHash = {};
+    public clearViaNames = () => {
+        this._viaNamesHash = {};
+        this._oldViaNamesHash = {};
     };
 
     @action
@@ -284,7 +284,7 @@ export class RoutePathStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldRoutePath(this._routePath);
-        this.clearKilpiViaNames();
+        this.clearViaNames();
     };
 
     @action

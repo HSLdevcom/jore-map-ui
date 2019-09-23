@@ -19,14 +19,14 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import { ErrorStore } from '~/stores/errorStore';
 import navigator from '~/routing/navigator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import { IRoutePath, IKilpiVia, IRoutePathLink } from '~/models';
+import { IRoutePath, IViaName, IRoutePathLink } from '~/models';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import SubSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
-import KilpiViaService from '~/services/kilpiViaService';
+import ViaNameService from '~/services/viaNameService';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
@@ -200,15 +200,15 @@ class RoutePathView extends ViewFormBase<
             const routePathLinks: IRoutePathLink[] = this.props.routePathStore!
                 .routePath!.routePathLinks;
             const promises: any[] = [];
-            const kilpiViaNames: IKilpiVia[] = [];
+            const viaNames: IViaName[] = [];
 
             routePathLinks.forEach((routePathLink: IRoutePathLink) => {
                 const createPromise = async () => {
                     try {
-                        const kilpiViaName: IKilpiVia | null = await KilpiViaService.fetchKilpiViaName(
+                        const viaName: IViaName | null = await ViaNameService.fetchViaName(
                             routePathLink.id
                         );
-                        if (kilpiViaName) kilpiViaNames.push(kilpiViaName);
+                        if (viaName) viaNames.push(viaName);
                     } catch (err) {
                         this.props.errorStore!.addError(
                             'KilpiVia haku ei onnistunut.',
@@ -221,7 +221,7 @@ class RoutePathView extends ViewFormBase<
             });
 
             await Promise.all(promises);
-            this.props.routePathStore!.setKilpiViaNames(kilpiViaNames);
+            this.props.routePathStore!.setViaNames(viaNames);
         } catch (err) {
             this.props.errorStore!.addError(
                 'KilpiVia haku ei onnistunut.',
@@ -266,14 +266,14 @@ class RoutePathView extends ViewFormBase<
         this.setState({ isLoading: true });
         let redirectUrl: string | undefined;
         const routePath = this.props.routePathStore!.routePath;
-        const kilpiViaNames = this.props.routePathStore!.kilpiViaNames;
+        const viaNames = this.props.routePathStore!.viaNames;
         try {
             if (this.props.isNewRoutePath) {
-                const dirtyKilpiViaNames = this.props.routePathStore!
-                    .dirtyKilpiViaNames;
+                const dirtyViaNames = this.props.routePathStore!
+                    .dirtyViaNames;
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
                     routePath!,
-                    dirtyKilpiViaNames
+                    dirtyViaNames
                 );
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
@@ -296,15 +296,15 @@ class RoutePathView extends ViewFormBase<
                 if (!hasRoutePathLinksChanged) {
                     routePathToUpdate.routePathLinks = [];
                 }
-                const dirtyKilpiViaNames = this.props.routePathStore!
-                    .dirtyKilpiViaNames;
+                const dirtyViaNames = this.props.routePathStore!
+                    .dirtyViaNames;
                 await RoutePathService.updateRoutePath(
                     routePathToUpdate,
-                    dirtyKilpiViaNames
+                    dirtyViaNames
                 );
             }
             this.props.routePathStore!.setOldRoutePath(routePath!);
-            this.props.routePathStore!.setOldKilpiViaNames(kilpiViaNames);
+            this.props.routePathStore!.setOldViaNames(viaNames);
             this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);

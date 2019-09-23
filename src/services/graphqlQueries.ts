@@ -259,30 +259,18 @@ const getAllLineHeadersQuery = () => {
     `;
 };
 
-const getViaKilpiName = () => {
+const getViaName = () => {
   return gql`
-      query getViaKilpiName($relid: BigFloat!) {
-        kilpiVia: viaKilpiNimetByRelid(relid: $relid) {
+      query getViaName($relid: Int!) {
+        viaName: viaNimetByRelid(relid: $relid) {
           relid
-          viasuomi
-          viaruotsi
+          maaranpaa1
+          maaranpaa2
+          maaranpaa1R
+          maaranpaa2R
         }
       }
   `;
-};
-
-const getAllKilpiViaNames = () => {
-    return gql`
-        query getAllKilpiViaNames {
-          allViaKilpiNimets {
-          nodes {
-            relid
-            viasuomi
-            viaruotsi
-          }
-          }
-        }
-    `;
 };
 
 const lineQueryFields = `
@@ -586,6 +574,5 @@ export default {
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
-    getAllKilpiViaNames,
-    getViaKilpiName
+    getViaName
 };

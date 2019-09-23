@@ -16,7 +16,7 @@ import SubSites from '~/routing/subSites';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
-import kilpiViaValidationModel from '~/models/validationModels/kilpiViaValidationModel';
+import viaNameValidationModel from '~/models/validationModels/viaNameValidationModel';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import NodeHelper from '~/util/nodeHelper';
 import navigator from '~/routing/navigator';
@@ -73,32 +73,32 @@ class RoutePathListNode extends ViewFormBase<
         );
         const orderNumber = this.props.routePathLink.orderNumber;
 
-        const kilpiVia = this.props.routePathStore!.getKilpiViaName(
+        const viaName = this.props.routePathStore!.getKilpiViaName(
             +this.props.routePathLink.id
         );
-        let isKilpiViaNameFiValid = true;
-        if (kilpiVia && kilpiVia.nameFi) {
+        let isViaNameDestinationFi1Valid = true;
+        if (viaName && viaName.destinationFi1) {
             const validationResult: IValidationResult = FormValidator.validate(
-                kilpiVia!.nameFi,
-                kilpiViaValidationModel['nameFi']
+                viaName!.destinationFi1,
+                viaNameValidationModel['destinationFi1']
             );
-            this.setValidatorResult('nameFi', validationResult);
-            isKilpiViaNameFiValid = validationResult.isValid;
+            this.setValidatorResult('destinationFi1', validationResult);
+            isViaNameDestinationFi1Valid = validationResult.isValid;
         }
-        let isKilpiViaNameSwValid = true;
-        if (kilpiVia && kilpiVia.nameSw) {
+        let isKilpiViadestinationSwValid = true;
+        if (viaName && viaName.destinationSw1) {
             const validationResult: IValidationResult = FormValidator.validate(
-                kilpiVia!.nameSw,
-                kilpiViaValidationModel['nameSw']
+                viaName!.destinationSw1,
+                viaNameValidationModel['destinationSw1']
             );
-            this.setValidatorResult('nameSw', validationResult);
-            isKilpiViaNameSwValid = validationResult.isValid;
+            this.setValidatorResult('destinationSw1', validationResult);
+            isKilpiViadestinationSwValid = validationResult.isValid;
         }
 
         const isLinkFormValid =
             this.isFormValid() &&
-            isKilpiViaNameFiValid &&
-            isKilpiViaNameSwValid;
+            isViaNameDestinationFi1Valid &&
+            isKilpiViadestinationSwValid;
 
         this.props.routePathStore!.setLinkFormValidity(
             orderNumber,
@@ -208,25 +208,23 @@ class RoutePathListNode extends ViewFormBase<
         );
     };
 
-    private onKilpiViaNameChange = (value: string, language: string) => {
+    private onViaNameChange = (value: string, attributeName: string) => {
         const routePathLinkId = +this.props.routePathLink.id;
-        let kilpiViaName = _.cloneDeep(
+        let viaName = _.cloneDeep(
             this.props.routePathStore!.getKilpiViaName(routePathLinkId)
         );
 
-        if (!kilpiViaName) {
-            kilpiViaName = {
+        if (!viaName) {
+            viaName = {
                 relid: routePathLinkId,
-                nameFi: '',
-                nameSw: ''
+                destinationFi1: '',
+                destinationFi2: '',
+                destinationSw1: '',
+                destinationSw2: ''
             };
         }
-        if (language === 'fi') {
-            kilpiViaName.nameFi = value;
-        } else {
-            kilpiViaName.nameSw = value;
-        }
-        this.props.routePathStore!.setKilpiViaName(kilpiViaName);
+        viaName[attributeName] = value;
+        this.props.routePathStore!.setKilpiViaName(viaName);
         this.validateLink();
     };
 
@@ -242,10 +240,9 @@ class RoutePathListNode extends ViewFormBase<
 
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
-        const kilpiViaName = this.props.routePathStore!.getKilpiViaName(
+        const viaName = this.props.routePathStore!.getKilpiViaName(
             +routePathLink.id
         );
-
         const isStartNodeUsingBookSchedule = this.props.isLastNode
             ? routePath!.isStartNodeUsingBookSchedule
             : routePathLink.isStartNodeUsingBookSchedule;
@@ -364,18 +361,34 @@ class RoutePathListNode extends ViewFormBase<
                 </div>
                 <div className={s.flexInnerRow}>
                     <InputContainer
-                        label='VIA KILPI SUOMEKSI'
+                        label='1. MÄÄRÄNPÄÄ SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={kilpiViaName ? kilpiViaName.nameFi : ''}
-                        validationResult={invalidPropertiesMap['nameFi']}
-                        onChange={e => this.onKilpiViaNameChange(e, 'fi')}
+                        value={viaName ? viaName.destinationFi1 : ''}
+                        validationResult={invalidPropertiesMap['destinationFi']}
+                        onChange={e => this.onViaNameChange(e, 'destinationFi1')}
                     />
                     <InputContainer
-                        label='VIA KILPI RUOTSIKSI'
+                        label='2. MÄÄRÄNPÄÄ SUOMEKSI'
                         disabled={isEditingDisabled}
-                        value={kilpiViaName ? kilpiViaName.nameSw : ''}
-                        validationResult={invalidPropertiesMap['nameSw']}
-                        onChange={e => this.onKilpiViaNameChange(e, 'swe')}
+                        value={viaName ? viaName.destinationFi2 : ''}
+                        validationResult={invalidPropertiesMap['destinationFi']}
+                        onChange={e => this.onViaNameChange(e, 'destinationFi2')}
+                    />
+                </div>
+                <div className={s.flexInnerRow}>
+                    <InputContainer
+                        label='1. MÄÄRÄNPÄÄ RUOTSIKSI'
+                        disabled={isEditingDisabled}
+                        value={viaName ? viaName.destinationSw1 : ''}
+                        validationResult={invalidPropertiesMap['destinationSw']}
+                        onChange={e => this.onViaNameChange(e, 'destinationSw1')}
+                    />
+                    <InputContainer
+                        label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
+                        disabled={isEditingDisabled}
+                        value={viaName ? viaName.destinationSw2 : ''}
+                        validationResult={invalidPropertiesMap['destinationSw']}
+                        onChange={e => this.onViaNameChange(e, 'destinationSw2')}
                     />
                 </div>
             </div>
