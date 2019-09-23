@@ -73,7 +73,7 @@ class RoutePathListNode extends ViewFormBase<
         );
         const orderNumber = this.props.routePathLink.orderNumber;
 
-        const viaName = this.props.routePathStore!.getKilpiViaName(
+        const viaName = this.props.routePathStore!.getViaName(
             +this.props.routePathLink.id
         );
         let isViaNameDestinationFi1Valid = true;
@@ -211,7 +211,7 @@ class RoutePathListNode extends ViewFormBase<
     private onViaNameChange = (value: string, attributeName: string) => {
         const routePathLinkId = +this.props.routePathLink.id;
         let viaName = _.cloneDeep(
-            this.props.routePathStore!.getKilpiViaName(routePathLinkId)
+            this.props.routePathStore!.getViaName(routePathLinkId)
         );
 
         if (!viaName) {
@@ -224,7 +224,7 @@ class RoutePathListNode extends ViewFormBase<
             };
         }
         viaName[attributeName] = value;
-        this.props.routePathStore!.setKilpiViaName(viaName);
+        this.props.routePathStore!.setViaName(viaName);
         this.validateLink();
     };
 
@@ -240,7 +240,7 @@ class RoutePathListNode extends ViewFormBase<
 
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
-        const viaName = this.props.routePathStore!.getKilpiViaName(
+        const viaName = this.props.routePathStore!.getViaName(
             +routePathLink.id
         );
         const isStartNodeUsingBookSchedule = this.props.isLastNode

@@ -131,37 +131,31 @@ export class RoutePathStore {
         return dirtyViaNames;
     }
 
-    public getKilpiViaName(relid: number): IViaName | null {
-        const kilpiViaName = _.cloneDeep(this._viaNamesHash[relid]);
-        return kilpiViaName;
+    public getViaName(relid: number): IViaName | null {
+        const viaName = _.cloneDeep(this._viaNamesHash[relid]);
+        return viaName;
     }
 
     @action
     public setViaNames = (viaNames: IViaName[]) => {
-        viaNames.forEach((kilpiViaName: IViaName) => {
-            this._viaNamesHash[kilpiViaName.relid] = kilpiViaName;
+        viaNames.forEach((viaName: IViaName) => {
+            this._viaNamesHash[viaName.relid] = viaName;
         });
         this.setOldViaNames(viaNames);
     };
 
     @action
-    public setKilpiViaName = (kilpiViaName: IViaName) => {
-        this._viaNamesHash[kilpiViaName.relid] = kilpiViaName;
+    public setViaName = (viaName: IViaName) => {
+        this._viaNamesHash[viaName.relid] = viaName;
     };
 
     @action
     public setOldViaNames = (viaNames: IViaName[]) => {
         const viaNamesHash = {};
-        viaNames.forEach((kilpiViaName: IViaName) => {
-            viaNamesHash[kilpiViaName.relid] = kilpiViaName;
+        viaNames.forEach((viaName: IViaName) => {
+            viaNamesHash[viaName.relid] = viaName;
         });
         this._oldViaNamesHash = _.cloneDeep(viaNamesHash);
-    };
-
-    @action
-    public clearViaNames = () => {
-        this._viaNamesHash = {};
-        this._oldViaNamesHash = {};
     };
 
     @action
@@ -284,7 +278,6 @@ export class RoutePathStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldRoutePath(this._routePath);
-        this.clearViaNames();
     };
 
     @action
@@ -448,6 +441,8 @@ export class RoutePathStore {
         this._invalidLinkOrderNumbers = [];
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
+        this._viaNamesHash = {};
+        this._oldViaNamesHash = {};
     };
 
     @action
