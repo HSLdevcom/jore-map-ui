@@ -196,6 +196,10 @@ class RoutePathView extends ViewFormBase<
                 e
             );
         }
+        await this.fetchKilpiViaNames();
+    };
+
+    private fetchKilpiViaNames = async () => {
         try {
             const routePathLinks: IRoutePathLink[] = this.props.routePathStore!
                 .routePath!.routePathLinks;
