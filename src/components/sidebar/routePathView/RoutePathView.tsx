@@ -269,8 +269,7 @@ class RoutePathView extends ViewFormBase<
         const viaNames = this.props.routePathStore!.viaNames;
         try {
             if (this.props.isNewRoutePath) {
-                const dirtyViaNames = this.props.routePathStore!
-                    .dirtyViaNames;
+                const dirtyViaNames = this.props.routePathStore!.dirtyViaNames;
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
                     routePath!,
                     dirtyViaNames
@@ -296,8 +295,7 @@ class RoutePathView extends ViewFormBase<
                 if (!hasRoutePathLinksChanged) {
                     routePathToUpdate.routePathLinks = [];
                 }
-                const dirtyViaNames = this.props.routePathStore!
-                    .dirtyViaNames;
+                const dirtyViaNames = this.props.routePathStore!.dirtyViaNames;
                 await RoutePathService.updateRoutePath(
                     routePathToUpdate,
                     dirtyViaNames

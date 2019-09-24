@@ -428,6 +428,7 @@ export class RoutePathStore {
     public undoChanges = () => {
         if (this._oldRoutePath) {
             this.setRoutePath(this._oldRoutePath);
+            this._viaNamesHash = _.cloneDeep(this._oldViaNamesHash);
         }
     };
 
