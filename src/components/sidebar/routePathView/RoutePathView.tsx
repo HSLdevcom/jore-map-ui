@@ -199,7 +199,7 @@ class RoutePathView extends ViewFormBase<
         try {
             const routePathLinks: IRoutePathLink[] = this.props.routePathStore!
                 .routePath!.routePathLinks;
-            const promises: any[] = [];
+            const promises: Promise<void>[] = [];
             const viaNames: IViaName[] = [];
 
             routePathLinks.forEach((routePathLink: IRoutePathLink) => {
