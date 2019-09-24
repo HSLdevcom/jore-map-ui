@@ -376,6 +376,7 @@ class RoutePathListNode extends ViewFormBase<
                         onChange={e =>
                             this.onViaNameChange(e, 'destinationFi1')
                         }
+                        darkerInputLabel={true}
                     />
                     <InputContainer
                         label='2. MÄÄRÄNPÄÄ SUOMEKSI'
@@ -387,6 +388,7 @@ class RoutePathListNode extends ViewFormBase<
                         onChange={e =>
                             this.onViaNameChange(e, 'destinationFi2')
                         }
+                        darkerInputLabel={true}
                     />
                 </div>
                 <div className={s.flexInnerRow}>
@@ -400,6 +402,7 @@ class RoutePathListNode extends ViewFormBase<
                         onChange={e =>
                             this.onViaNameChange(e, 'destinationSw1')
                         }
+                        darkerInputLabel={true}
                     />
                     <InputContainer
                         label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
@@ -411,6 +414,7 @@ class RoutePathListNode extends ViewFormBase<
                         onChange={e =>
                             this.onViaNameChange(e, 'destinationSw2')
                         }
+                        darkerInputLabel={true}
                     />
                 </div>
             </div>
