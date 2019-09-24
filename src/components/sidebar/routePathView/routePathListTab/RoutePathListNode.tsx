@@ -83,8 +83,7 @@ class RoutePathListNode extends ViewFormBase<
         }
 
         const isLinkFormValid =
-            this.isFormValid() &&
-            isViaNameDestinationFi1Valid;
+            this.isFormValid() && isViaNameDestinationFi1Valid;
 
         this.props.routePathStore!.setLinkFormValidity(
             orderNumber,
@@ -102,14 +101,12 @@ class RoutePathListNode extends ViewFormBase<
 
         let isValid = true;
         attributeNames.forEach((attribute: string) => {
-            if (viaName[attribute]) {
-                const validationResult: IValidationResult = FormValidator.validate(
-                    viaName![attribute],
-                    viaNameValidationModel[attribute]
-                );
-                this.setValidatorResult(attribute, validationResult);
-                if (!validationResult.isValid) isValid = false;
-            };
+            const validationResult: IValidationResult = FormValidator.validate(
+                viaName[attribute],
+                viaNameValidationModel[attribute]
+            );
+            this.setValidatorResult(attribute, validationResult);
+            if (!validationResult.isValid) isValid = false;
         });
 
         return isValid;

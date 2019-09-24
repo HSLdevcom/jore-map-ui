@@ -122,10 +122,7 @@ export class RoutePathStore {
         const viaNamesHash = this._viaNamesHash;
         const oldViaNamesHash = this._oldViaNamesHash;
         for (const k in viaNamesHash) {
-            const isEqual = _.isEqual(
-                viaNamesHash[k],
-                oldViaNamesHash[k]
-            );
+            const isEqual = _.isEqual(viaNamesHash[k], oldViaNamesHash[k]);
             if (!isEqual) dirtyViaNames.push(viaNamesHash[k]);
         }
         return dirtyViaNames;
