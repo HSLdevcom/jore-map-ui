@@ -308,6 +308,7 @@ class RoutePathListNode extends ViewFormBase<
                                 items={this.props.codeListStore!.getDropdownItemList(
                                     'Ajantasaus pysakki'
                                 )}
+                                darkerInputLabel={true}
                             />
                             <Dropdown
                                 label='ERIKOISTYYPPI'
@@ -319,6 +320,7 @@ class RoutePathListNode extends ViewFormBase<
                                 items={this.props.codeListStore!.getDropdownItemList(
                                     'Pysäkin käyttö'
                                 )}
+                                darkerInputLabel={true}
                             />
                         </div>
                     </>
