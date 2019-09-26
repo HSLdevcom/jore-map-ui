@@ -34,17 +34,17 @@ const createCoherentLinesFromPolylines = (
     return result;
 };
 
-const _roundNumber = (num: number) => {
-    const DECIMALS = Constants.DECIMALS_IN_GEOMETRIES;
-    return Math.round(num * Math.pow(10, DECIMALS)) / Math.pow(10, DECIMALS);
-};
-
 const roundLatLngs = (latLngs: LatLng[]) => {
     return latLngs.map(latLng => roundLatLng(latLng));
 };
 
 const roundLatLng = (latLng: LatLng) => {
     return new LatLng(_roundNumber(latLng.lat), _roundNumber(latLng.lng));
+};
+
+const _roundNumber = (num: number) => {
+    const DECIMALS = Constants.DECIMALS_IN_GEOMETRIES;
+    return Math.round(num * Math.pow(10, DECIMALS)) / Math.pow(10, DECIMALS);
 };
 
 export { createCoherentLinesFromPolylines, roundLatLngs, roundLatLng };
