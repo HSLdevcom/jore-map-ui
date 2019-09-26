@@ -39,11 +39,12 @@ const _roundNumber = (num: number) => {
     return Math.round(num * Math.pow(10, DECIMALS)) / Math.pow(10, DECIMALS);
 };
 
-const roundLatLng = (coordinate: LatLng) => {
-    return new LatLng(
-        _roundNumber(coordinate.lat),
-        _roundNumber(coordinate.lng)
-    );
+const roundLatLngs = (latLngs: LatLng[]) => {
+    return latLngs.map(latLng => roundLatLng(latLng));
 };
 
-export { createCoherentLinesFromPolylines, roundLatLng };
+const roundLatLng = (latLng: LatLng) => {
+    return new LatLng(_roundNumber(latLng.lat), _roundNumber(latLng.lng));
+};
+
+export { createCoherentLinesFromPolylines, roundLatLngs, roundLatLng };

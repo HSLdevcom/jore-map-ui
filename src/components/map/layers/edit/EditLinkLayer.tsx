@@ -79,8 +79,8 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     };
 
     private refreshEditableLink() {
-        const latlngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
-        this.props.linkStore!.updateLinkGeometry(latlngs);
+        const latLngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
+        this.props.linkStore!.updateLinkGeometry(latLngs);
     }
 
     private drawLinkToMap = (link: ILink, isEditable: boolean) => {
