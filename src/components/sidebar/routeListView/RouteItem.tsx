@@ -1,9 +1,11 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import L from 'leaflet';
 import classNames from 'classnames';
 import { FiInfo } from 'react-icons/fi';
 import Moment from 'moment';
 import { RouteListStore } from '~/stores/routeListStore';
+import { MapStore } from '~/stores/mapStore';
 import LineHelper from '~/util/lineHelper';
 import { dateToDateString } from '~/util/dateFormatHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
@@ -19,21 +21,46 @@ import * as s from './routeItem.scss';
 
 interface IRouteItemProps {
     routeListStore?: RouteListStore;
+    mapStore?: MapStore;
     route: IRoute;
 }
 
-@inject('routeListStore')
+@inject('routeListStore', 'mapStore')
 @observer
 class RouteItem extends React.Component<IRouteItemProps> {
     async componentDidMount() {
-        this.props.route.routePaths.forEach((routePath, index) => {
-            // Make two first route paths visible by default
+        let index = 0;
+        const promises: Promise<void>[] = [];
+        for (const routePath of this.props.route.routePaths) {
             if (index < 2) {
-                this.props.routeListStore!.toggleRoutePathVisibility(
+                const promise = this.props.routeListStore!.toggleRoutePathVisibility(
                     routePath.internalId
                 );
+                promises.push(promise);
             }
+            index += 1;
+        }
+        await Promise.all(promises);
+        this.calculateBounds();
+    }
+
+    private calculateBounds() {
+        const routes = this.props.routeListStore!.routes;
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+
+        routes.forEach(route => {
+            route.routePaths.forEach(routePath => {
+                routePath.routePathLinks.forEach(routePathLink => {
+                    routePathLink.geometry.forEach(pos => {
+                        bounds.extend(pos);
+                    });
+                });
+            });
         });
+
+        if (bounds.isValid()) {
+            this.props.mapStore!.setMapBounds(bounds);
+        }
     }
 
     private closeRoute = () => {
@@ -104,12 +131,14 @@ class RouteItem extends React.Component<IRouteItemProps> {
                 this.props.routeListStore!.toggleRoutePathVisibility(
                     routePath.internalId
                 );
+                this.calculateBounds();
             };
 
             const openRoutePathView = () => {
                 const routePathViewLink = routeBuilder
                     .to(subSites.routePath)
-                    .toTarget(':id',
+                    .toTarget(
+                        ':id',
                         [
                             routePath.routeId,
                             Moment(routePath.startTime).format(

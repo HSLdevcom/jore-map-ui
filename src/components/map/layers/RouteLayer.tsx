@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import L from 'leaflet';
 import { withLeaflet } from 'react-leaflet';
 import { observer, inject } from 'mobx-react';
 import { MapStore } from '~/stores/mapStore';
@@ -27,43 +26,6 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
             selectedPolylines: [],
             hoveredPolylines: []
         };
-    }
-
-    private calculateBounds() {
-        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-
-        this.props.routes.forEach(route => {
-            route.routePaths.forEach(routePath => {
-                routePath.routePathLinks.forEach(routePathLink => {
-                    routePathLink.geometry.forEach(pos => bounds.extend(pos));
-                });
-            });
-        });
-
-        if (bounds.isValid()) {
-            this.props.mapStore!.setMapBounds(bounds);
-        }
-    }
-
-    componentDidUpdate(prevProps: RouteLayerProps) {
-        // TODO: Fix this check when calculateBounds() is called
-        const prevRoutePathIds = prevProps.routes
-            .map(route =>
-                route.routePaths.map(rPath => rPath.internalId).join(':')
-            )
-            .join(':');
-        const currentRoutePathIds = this.props.routes
-            .map(route =>
-                route.routePaths.map(rPath => rPath.internalId).join(':')
-            )
-            .join(':');
-        const routePathsChanged = prevRoutePathIds !== currentRoutePathIds;
-        if (routePathsChanged) {
-            this.calculateBounds();
-            this.setState({
-                selectedPolylines: []
-            });
-        }
     }
 
     private toggleHighlight = (internalId: string) => (target: any) => () => {
