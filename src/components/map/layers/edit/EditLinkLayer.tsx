@@ -204,7 +204,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             <Polyline
                 positions={[startCoordinates, endCoordinates]}
                 key={key}
-                color={'#325aa8'}
+                color={'#EFC210'}
                 weight={5}
                 opacity={0.75}
                 dashArray={'10, 10'}
