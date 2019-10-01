@@ -75,7 +75,7 @@ export class RoutePathStore {
 
     @computed
     get isDirty() {
-        const isKilpiViaDirty = !_.isEqual(
+        const isViaNameDirty = !_.isEqual(
             this._oldViaNamesHash,
             this._viaNamesHash
         );
@@ -83,7 +83,7 @@ export class RoutePathStore {
             this._routePath,
             this._oldRoutePath
         );
-        return isRoutePathDirty || isKilpiViaDirty;
+        return isRoutePathDirty || isViaNameDirty;
     }
 
     @computed

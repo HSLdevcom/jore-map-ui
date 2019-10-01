@@ -196,10 +196,10 @@ class RoutePathView extends ViewFormBase<
                 e
             );
         }
-        await this.fetchKilpiViaNames();
+        await this.fetchViaNames();
     };
 
-    private fetchKilpiViaNames = async () => {
+    private fetchViaNames = async () => {
         try {
             const routePathLinks: IRoutePathLink[] = this.props.routePathStore!
                 .routePath!.routePathLinks;
@@ -215,7 +215,7 @@ class RoutePathView extends ViewFormBase<
                         if (viaName) viaNames.push(viaName);
                     } catch (err) {
                         this.props.errorStore!.addError(
-                            'KilpiVia haku ei onnistunut.',
+                            'Via haku ei onnistunut.',
                             err
                         );
                     }
@@ -227,10 +227,7 @@ class RoutePathView extends ViewFormBase<
             await Promise.all(promises);
             this.props.routePathStore!.setViaNames(viaNames);
         } catch (err) {
-            this.props.errorStore!.addError(
-                'KilpiVia haku ei onnistunut.',
-                err
-            );
+            this.props.errorStore!.addError('Via haku ei onnistunut.', err);
         }
     };
 
