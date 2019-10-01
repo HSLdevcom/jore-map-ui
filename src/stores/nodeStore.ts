@@ -8,6 +8,7 @@ import NodeStopFactory from '~/factories/nodeStopFactory';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { roundLatLng } from '~/util/geomHelper';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import GeocodingService from '~/services/geocodingService';
 
 export interface UndoState {
     links: ILink[];
@@ -149,6 +150,10 @@ export class NodeStore {
         if (nodeLocationType === 'coordinates') {
             this.updateNode('measurementType', measurementType.toString());
         }
+
+        if (nodeLocationType === 'coordinatesProjection') {
+            this.fetchAddressData();
+        }
     };
 
     @action
@@ -157,6 +162,24 @@ export class NodeStore {
             node.coordinatesProjection = node.coordinates;
             node.coordinatesManual = node.coordinates;
         }
+    };
+
+    @action
+    public fetchAddressData = async () => {
+        if (!this.node || !this.node.stop) return;
+
+        const coordinates = this.node.coordinatesProjection;
+        const addressDataFi = await GeocodingService.getAddressData(
+            coordinates,
+            'fi'
+        );
+        const addressDataSw = await GeocodingService.getAddressData(
+            coordinates,
+            'sv'
+        );
+        this.updateStop('addressFi', addressDataFi.address);
+        this.updateStop('postalNumber', addressDataFi.postalNumber);
+        this.updateStop('addressSw', addressDataSw.address);
     };
 
     @action

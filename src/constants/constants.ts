@@ -14,7 +14,7 @@ const commonConstants = {
     MAP_LAYERS_MIN_ZOOM_LEVEL: 15,
     NEW_OBJECT_TAG: 'new-',
     ADDRESS_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/search',
-    REVERSE_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/reverse',
+    REVERSE_GEOCODING_URL: 'https://nominatim.openstreetmap.org/reverse',
     ADDRESS_SEARCH_RESULT_COUNT: 10
 };
 
