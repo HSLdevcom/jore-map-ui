@@ -6,7 +6,7 @@ import NodeType from '~/enums/nodeType';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import { roundLatLng } from '~/util/geomHelper';
+import { roundLatLng, roundLatLngs } from '~/util/geomHelper';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 
 export interface UndoState {
@@ -82,7 +82,7 @@ export class NodeStore {
         if (!this._node) throw new Error('Node was null.'); // Should not occur
 
         const newLinks = _.cloneDeep(this._links);
-        newLinks[index].geometry = latLngs;
+        newLinks[index].geometry = roundLatLngs(latLngs);
         const currentUndoState: UndoState = {
             links: newLinks,
             node: this._node
