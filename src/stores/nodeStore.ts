@@ -20,6 +20,7 @@ export class NodeStore {
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
     @observable private _isStopFormValid: boolean;
+    @observable private _isEditingDisabled: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -28,6 +29,7 @@ export class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
+        this._isEditingDisabled = true;
     }
 
     @computed
@@ -51,6 +53,11 @@ export class NodeStore {
     @computed
     get isStopFormValid() {
         return this._isStopFormValid;
+    }
+
+    @computed
+    get isEditingDisabled() {
+        return this._isEditingDisabled;
     }
 
     @action
@@ -180,6 +187,16 @@ export class NodeStore {
     @action
     public setIsStopFormValid = (isStopFormValid: boolean) => {
         this._isStopFormValid = isStopFormValid;
+    };
+
+    @action
+    public setIsEditingDisabled = (isEditingDisabled: boolean) => {
+        this._isEditingDisabled = isEditingDisabled;
+    };
+
+    @action
+    public toggleIsEditingDisabled = () => {
+        this._isEditingDisabled = !this._isEditingDisabled;
     };
 
     @action

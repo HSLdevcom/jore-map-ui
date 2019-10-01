@@ -5,7 +5,7 @@ import EventManager from '~/util/EventManager';
 interface IViewFormBaseState {
     isLoading: boolean;
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
+    isEditingDisabled: boolean; // TODO: remove
 }
 
 // TODO: refactor to use composition?
@@ -15,10 +15,12 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
     Props,
     State
 > {
+    // TODO: remove
     componentDidMount() {
         EventManager.on('geometryChange', this.enableEditing);
     }
 
+    // TODO: remove
     componentWillUnmount() {
         EventManager.off('geometryChange', this.enableEditing);
     }
@@ -74,6 +76,7 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
         });
     };
 
+    // TODO: remove
     protected toggleIsEditingDisabled = () => {
         const isEditingDisabled = !this.state.isEditingDisabled;
         if (isEditingDisabled) {
@@ -88,6 +91,13 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
         }
     };
 
+    protected clearInvalidPropertiesMap = () => {
+        this.setState({
+            invalidPropertiesMap: {}
+        });
+    };
+
+    // TODO: remove
     protected enableEditing = () => {
         this.setState({ isEditingDisabled: false });
     };

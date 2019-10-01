@@ -1,5 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { IReactionDisposer, reaction } from 'mobx';
 import classnames from 'classnames';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
@@ -11,6 +12,7 @@ import StopService, {
     IStopAreaItem,
     IStopSectionItem
 } from '~/services/stopService';
+import GeocodingService from '~/services/geocodingService';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
@@ -35,7 +37,7 @@ interface IStopFormProps {
 interface IStopFormState {
     isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
+    isEditingDisabled: boolean;
     stopAreas: IDropdownItem[];
     stopSections: IDropdownItem[];
 }
@@ -43,6 +45,9 @@ interface IStopFormState {
 @inject('nodeStore', 'codeListStore')
 @observer
 class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
+    private isEditingDisabledListener: IReactionDisposer;
+    private coordinatesProjectionListener: IReactionDisposer;
+    private nodeListener: IReactionDisposer;
     private mounted: boolean;
 
     constructor(props: IStopFormProps) {
@@ -67,26 +72,72 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         }
     }
 
-    componentWillUnmount() {
-        this.mounted = false;
-    }
-
     componentDidMount() {
         this.mounted = true;
         this.validateStop();
+        if (this.props.isNewStop) {
+            this.fetchAddressData();
+        }
+        this.isEditingDisabledListener = reaction(
+            () => this.props.nodeStore!.isEditingDisabled,
+            this.onChangeIsEditingDisabled
+        );
+        this.nodeListener = reaction(
+            () => this.props.nodeStore!.node,
+            this.onNodeChange
+        );
+        this.coordinatesProjectionListener = reaction(
+            () =>
+                this.props.nodeStore!.node &&
+                this.props.nodeStore!.node.coordinatesProjection,
+            this.fetchAddressData
+        );
     }
 
-    componentDidUpdate(prevProps: IStopFormProps) {
-        if (prevProps.node.stop!.nodeId !== this.props.node.stop!.nodeId) {
-            this.validateStop();
-        }
-        if (
-            prevProps.isEditingDisabled !== this.props.isEditingDisabled &&
-            !this.props.isEditingDisabled
-        ) {
-            this.validateStop();
-        }
+    componentWillUnmount() {
+        this.mounted = false;
+        this.isEditingDisabledListener();
+        this.coordinatesProjectionListener();
+        this.nodeListener();
     }
+
+    private onChangeIsEditingDisabled = () => {
+        this.clearInvalidPropertiesMap();
+        if (!this.props.nodeStore!.isEditingDisabled) this.validateStop();
+    };
+
+    private onNodeChange = () => {
+        this.validateStop();
+        this.fetchAddressData();
+    };
+
+    private fetchAddressData = async () => {
+        if (
+            !this.props.nodeStore!.node ||
+            (!this.props.isNewStop && this.props.nodeStore!.isEditingDisabled)
+        ) {
+            return;
+        }
+
+        const coordinates = this.props.nodeStore!.node.coordinatesProjection;
+        const addressDataFi = await GeocodingService.getAddressData(
+            coordinates,
+            'fi'
+        );
+        if (addressDataFi) {
+            this.onChangeStopProperty('addressFi')(addressDataFi.address);
+            this.onChangeStopProperty('postalNumber')(
+                addressDataFi.postalNumber
+            );
+        }
+        const addressDataSw = await GeocodingService.getAddressData(
+            coordinates,
+            'sv'
+        );
+        if (addressDataSw) {
+            this.onChangeStopProperty('addressSw')(addressDataSw.address);
+        }
+    };
 
     private createStopAreaDropdownItems = (
         stopAreas: IStopAreaItem[]
@@ -139,7 +190,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     };
 
     render() {
-        const isEditingDisabled = this.props.isEditingDisabled;
+        const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const node = this.props.node;
         const stop = node.stop!;
         const onChange = this.onChangeStopProperty;

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import { IReactionDisposer, reaction } from 'mobx';
 import classnames from 'classnames';
 import { match } from 'react-router';
 import { LatLng } from 'leaflet';
@@ -18,6 +19,7 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import NodeType from '~/enums/nodeType';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import TextContainer from '~/components/controls/TextContainer';
+import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
 import StartNodeType from '~/enums/startNodeType';
 import { ErrorStore } from '~/stores/errorStore';
@@ -43,18 +45,19 @@ interface INodeViewProps {
 
 interface INodeViewState {
     isLoading: boolean;
-    isEditingDisabled: boolean;
+    isEditingDisabled: boolean; // TODO: remove
     invalidPropertiesMap: object;
 }
 
 @inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
+    private isEditingDisabledListener: IReactionDisposer;
     constructor(props: INodeViewProps) {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: !props.isNewNode,
+            isEditingDisabled: !props.isNewNode, // TODO: remove
             invalidPropertiesMap: {}
         };
     }
@@ -67,11 +70,18 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         } else {
             this.initExistingNode(params);
         }
+        this.setIsEditingDisabled(!this.props.isNewNode);
+        this.isEditingDisabledListener = reaction(
+            () => this.props.nodeStore!.isEditingDisabled,
+            this.onChangeIsEditingDisabled
+        );
+        EventManager.on('geometryChange', () =>
+            this.setIsEditingDisabled(false)
+        );
     }
 
     componentDidUpdate(prevProps: INodeViewProps) {
         const params = this.props.match!.params.id;
-
         if (prevProps.match!.params.id !== params) {
             if (this.props.isNewNode) {
                 this.initNewNode(params);
@@ -85,6 +95,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         super.componentWillUnmount();
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
+        this.isEditingDisabledListener();
+        EventManager.off('geometryChange', () =>
+            this.setIsEditingDisabled(false)
+        );
     }
 
     private initNewNode = async (params: any) => {
@@ -125,9 +139,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             return await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         } catch (e) {
             this.props.errorStore!.addError(
-                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${
-                    node.id
-                } (soltunnus), ei onnistunut.`,
+                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
                 e
             );
             return null;
@@ -166,13 +178,21 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.setState({ isLoading: false });
     };
 
+    private setIsEditingDisabled = (isEditingDisabled: boolean) => {
+        this.props.nodeStore!.setIsEditingDisabled(isEditingDisabled);
+    };
+
     private toggleIsEditingEnabled = () => {
-        const isEditingDisabled = this.state.isEditingDisabled;
-        if (!isEditingDisabled) {
+        this.props.nodeStore!.toggleIsEditingDisabled();
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        this.clearInvalidPropertiesMap();
+        if (this.props.nodeStore!.isEditingDisabled) {
             this.props.nodeStore!.resetChanges();
+        } else {
+            this.validateNode();
         }
-        this.toggleIsEditingDisabled();
-        if (!isEditingDisabled) this.validateNode();
     };
 
     private validateNode = () => {
@@ -233,14 +253,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         // TODO: show some indicator to user of an empty page
         if (!node) return null;
 
-        const isEditingDisabled = this.state.isEditingDisabled;
+        const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         const isNodeFormInvalid = !this.isFormValid();
         const isStopFormInvalid =
             node.type === NodeType.STOP &&
             !this.props.nodeStore!.isStopFormValid;
         const isSaveButtonDisabled =
-            this.state.isEditingDisabled ||
+            isEditingDisabled ||
             !this.props.nodeStore!.isDirty ||
             isNodeFormInvalid ||
             isStopFormInvalid;
