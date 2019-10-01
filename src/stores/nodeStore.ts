@@ -8,7 +8,7 @@ import NodeStopFactory from '~/factories/nodeStopFactory';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { roundLatLng } from '~/util/geomHelper';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
-import GeocodingService from '~/services/geocodingService';
+import GeocodingService, { IAddressData } from '~/services/geocodingService';
 
 export interface UndoState {
     links: ILink[];
@@ -169,11 +169,11 @@ export class NodeStore {
         if (!this.node || !this.node.stop) return;
 
         const coordinates = this.node.coordinatesProjection;
-        const addressDataFi = await GeocodingService.getAddressData(
+        const addressDataFi: IAddressData = await GeocodingService.fetchAddressDataFromCoordinates(
             coordinates,
             'fi'
         );
-        const addressDataSw = await GeocodingService.getAddressData(
+        const addressDataSw: IAddressData = await GeocodingService.fetchAddressDataFromCoordinates(
             coordinates,
             'sv'
         );

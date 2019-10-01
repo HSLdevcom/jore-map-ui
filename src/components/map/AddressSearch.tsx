@@ -3,10 +3,9 @@ import { IReactionDisposer, reaction } from 'mobx';
 import * as L from 'leaflet';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import ApiClient, { RequestMethod } from '~/util/ApiClient';
 import EventManager from '~/util/EventManager';
+import GeocodingService, { IAddressFeature } from '~/services/geocodingService';
 import PinIcon from '~/icons/PinIcon';
-import constants from '~/constants/constants';
 import LeafletUtils from '~/util/leafletUtils';
 import * as s from './addressSearch.scss';
 
@@ -14,17 +13,11 @@ interface IAddressSearchProps {
     map?: any;
 }
 
-interface ISearchResultFeature {
-    geometry: any;
-    properties: any;
-    type: string;
-}
-
 interface IAddressSearchState {
     input: string;
-    searchResults: ISearchResultFeature[];
+    searchResults: IAddressFeature[];
     searchIndex: number;
-    selectedSearchResult: ISearchResultFeature | null;
+    selectedSearchResult: IAddressFeature | null;
 }
 
 const SEARCH_RESULT_MARKER_COLOR = '#f44242';
@@ -135,22 +128,13 @@ class AddressSearch extends Component<
         }
     };
     private requestAddress = async (value: string) => {
-        const ADDRESS_GEOCODING_URL = constants.ADDRESS_GEOCODING_URL;
-        const SEARCH_RESULT_COUNT = constants.ADDRESS_SEARCH_RESULT_COUNT;
-        const center = this.map.getCenter();
-        const lat = center.lat;
-        const lng = center.lng;
-        const requestUrl = `${ADDRESS_GEOCODING_URL}?text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`;
-
-        const response = await ApiClient.sendRequest(
-            RequestMethod.GET,
-            encodeURI(requestUrl),
-            {}
+        const searchResultFeatures = await GeocodingService.fetchAddressFeaturesFromString(
+            value,
+            this.map.getCenter()
         );
-        const searchResults = response.features;
-        if (searchResults) {
+        if (searchResultFeatures) {
             this.setState({
-                searchResults
+                searchResults: searchResultFeatures
             });
         }
     };
@@ -161,17 +145,15 @@ class AddressSearch extends Component<
 
         return (
             <div className={s.searchResults}>
-                {searchResults.map(
-                    (searchResult: ISearchResultFeature, index) => {
-                        return this.renderSearchResult(searchResult, index);
-                    }
-                )}
+                {searchResults.map((searchResult: IAddressFeature, index) => {
+                    return this.renderSearchResult(searchResult, index);
+                })}
             </div>
         );
     };
 
     private renderSearchResult = (
-        searchResult: ISearchResultFeature,
+        searchResult: IAddressFeature,
         searchIndex: number
     ) => {
         const isHighlighted = this.state.searchIndex === searchIndex;
