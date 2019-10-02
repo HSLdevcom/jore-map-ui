@@ -65,7 +65,10 @@ class RoutePathService {
         );
     };
 
-    public static updateRoutePath = async (routePath: IRoutePath, viaNames: IViaName[]) => {
+    public static updateRoutePath = async (
+        routePath: IRoutePath,
+        viaNames: IViaName[]
+    ) => {
         const requestBody = {
             routePath,
             viaNames
@@ -75,7 +78,10 @@ class RoutePathService {
         await apolloClient.clearStore();
     };
 
-    public static createRoutePath = async (routePath: IRoutePath, viaNames: IViaName[]) => {
+    public static createRoutePath = async (
+        routePath: IRoutePath,
+        viaNames: IViaName[]
+    ) => {
         const requestBody = {
             routePath,
             viaNames
