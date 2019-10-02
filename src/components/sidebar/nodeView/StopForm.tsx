@@ -46,9 +46,7 @@ interface IStopFormState {
 class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     private isEditingDisabledListener: IReactionDisposer;
     private nodeListener: IReactionDisposer;
-    private addressFiListener: IReactionDisposer;
-    private addressSwListener: IReactionDisposer;
-    private postalCodeListener: IReactionDisposer;
+    private stopPropertyListeners: IReactionDisposer[];
     private mounted: boolean;
 
     constructor(props: IStopFormProps) {
@@ -60,6 +58,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
             stopAreas: [],
             stopSections: []
         };
+        this.stopPropertyListeners = [];
     }
 
     async componentWillMount() {
@@ -87,28 +86,43 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
             () => this.props.nodeStore!.node,
             this.onNodeChange
         );
-        this.createListener('addressFiListener', 'addressFi');
-        this.createListener('addressSwListener', 'addressSw');
-        this.createListener('postalCodeListener', 'postalNumber');
+        this.createStopPropertyListeners();
     }
 
     componentWillUnmount() {
         this.mounted = false;
         this.isEditingDisabledListener();
-        this.addressFiListener();
-        this.addressSwListener();
-        this.postalCodeListener();
+        this.removeStopPropertyListeners();
         this.nodeListener();
     }
 
-    private createListener = (listenerName: string, property: string) => {
-        this[listenerName] = reaction(
+    private createStopPropertyListeners = () => {
+        const nodeStore = this.props.nodeStore;
+        if (!nodeStore!.node) return;
+
+        const stop = nodeStore!.node.stop;
+        for (const property in stop!) {
+            if (Object.prototype.hasOwnProperty.call(stop, property)) {
+                const listener = this.createListener(property);
+                this.stopPropertyListeners.push(listener);
+            }
+        }
+    };
+
+    private createListener = (property: string) => {
+        return reaction(
             () =>
                 this.props.nodeStore!.node &&
-                this.props.nodeStore!.node!.stop &&
                 this.props.nodeStore!.node!.stop![property],
             this.validateStopProperty(property)
         );
+    };
+
+    private removeStopPropertyListeners = () => {
+        this.stopPropertyListeners.forEach((listener: IReactionDisposer) =>
+            listener()
+        );
+        this.stopPropertyListeners = [];
     };
 
     private onChangeIsEditingDisabled = () => {
@@ -118,6 +132,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
 
     private onNodeChange = async () => {
         this.validateStop();
+        this.removeStopPropertyListeners();
+        this.createStopPropertyListeners();
         if (
             !this.props.nodeStore!.node ||
             (!this.props.isNewStop && this.props.nodeStore!.isEditingDisabled)
@@ -128,13 +144,12 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     };
 
     private validateStopProperty = (property: string) => () => {
-        if (!this.props.nodeStore!.node || !this.props.nodeStore!.node.stop) {
-            return;
-        }
-        const value = this.props.nodeStore!.node!.stop![property];
+        const nodeStore = this.props.nodeStore;
+        if (!nodeStore!.node) return;
+        const value = nodeStore!.node!.stop![property];
         this.validateProperty(stopValidationModel[property], property, value);
         const isStopFormValid = this.isFormValid();
-        this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
+        nodeStore!.setIsStopFormValid(isStopFormValid);
     };
 
     private createStopAreaDropdownItems = (
@@ -170,11 +185,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
     };
 
-    private onChangeStopProperty = (property: keyof IStop) => (value: any) => {
+    private updateStopProperty = (property: keyof IStop) => (value: any) => {
         this.props.nodeStore!.updateStop(property, value);
-        this.validateProperty(stopValidationModel[property], property, value);
-        const isStopFormValid = this.isFormValid();
-        this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
     };
 
     private getShortIdLetterItems = () => {
@@ -191,7 +203,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const node = this.props.node;
         const stop = node.stop!;
-        const onChange = this.onChangeStopProperty;
+        const onChange = this.updateStopProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         return (
             <div className={classnames(s.stopView, s.form)}>
@@ -209,7 +221,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                                             ? [stop.transitType]
                                             : []
                                     }
-                                    toggleSelectedTransitType={this.onChangeStopProperty(
+                                    toggleSelectedTransitType={this.updateStopProperty(
                                         'transitType'
                                     )}
                                 />
