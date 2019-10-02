@@ -1,11 +1,15 @@
 import * as L from 'leaflet';
 import { ILink, INode } from '~/models';
 import IExternalLink from '~/models/externals/IExternalLink';
+import { roundLatLngs } from '~/util/geomHelper';
 import NodeFactory from './nodeFactory';
 
 class LinkFactory {
     public static mapExternalLink = (externalLink: IExternalLink): ILink => {
-        const geoJson = JSON.parse(externalLink.geojson);
+        const geojson = JSON.parse(externalLink.geojson);
+        const latLngs: L.LatLng[] = L.GeoJSON.coordsToLatLngs(
+            geojson.coordinates
+        );
 
         return {
             startNode: NodeFactory.mapExternalNode(
@@ -14,7 +18,7 @@ class LinkFactory {
             endNode: NodeFactory.mapExternalNode(
                 externalLink.solmuByLnkloppusolmu
             ),
-            geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
+            geometry: roundLatLngs(latLngs),
             transitType: externalLink.lnkverkko,
             length: externalLink.lnkpituus,
             measuredLength: externalLink.lnkmitpituus,
