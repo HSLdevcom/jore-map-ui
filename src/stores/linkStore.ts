@@ -4,6 +4,7 @@ import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import lengthCalculator from '~/util/lengthCalculator';
+import { roundLatLngs } from '~/util/geomHelper';
 
 export interface UndoState {
     link: ILink;
@@ -64,8 +65,8 @@ export class LinkStore {
         if (!this._link || !this._isLinkGeometryEditable) return;
 
         const updatedLink = _.cloneDeep(this._link);
-        updatedLink.geometry = latLngs;
-        this._link.geometry = latLngs;
+        updatedLink.geometry = roundLatLngs(latLngs);
+        this._link.geometry = roundLatLngs(latLngs);
 
         const currentUndoState: UndoState = {
             link: updatedLink

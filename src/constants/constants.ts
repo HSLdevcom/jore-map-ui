@@ -8,10 +8,10 @@ if (process.env.NODE_ENV === 'development') {
 const commonConstants = {
     BUILD_DATE: process.env.BUILD_DATE,
     AFTER_LOGIN_URL: `${APP_URL}/afterLogin`,
-    DECIMALS_IN_GEOMETRIES: 6,
+    DECIMALS_IN_GEOMETRIES: 8,
     INTEGER_MAX_VALUE: 2147483647, // Max value at PostgreSQL (4 bytes)
     SMALL_INT_MAX_VALUE: 32767, // Max value at PostgreSQL (2 bytes)
-    MAP_LAYERS_MIN_ZOOM_LEVEL: 15,
+    MAP_LAYERS_MIN_ZOOM_LEVEL: 13,
     NEW_OBJECT_TAG: 'new-',
     GEOCODER_ADDRESS: 'https://api.digitransit.fi/geocoding/v1/search',
     ADDRESS_SEARCH_RESULT_COUNT: 10
@@ -35,4 +35,4 @@ const productionConstants = {
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-export default (isDevelopment ? developmentConstants : productionConstants);
+export default isDevelopment ? developmentConstants : productionConstants;
