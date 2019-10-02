@@ -35,4 +35,4 @@ const productionConstants = {
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-export default (isDevelopment ? developmentConstants : productionConstants);
+export default isDevelopment ? developmentConstants : productionConstants;
