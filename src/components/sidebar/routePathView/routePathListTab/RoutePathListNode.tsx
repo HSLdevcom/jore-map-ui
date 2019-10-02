@@ -222,7 +222,7 @@ class RoutePathListNode extends ViewFormBase<
 
         if (!viaName) {
             viaName = {
-                relid: routePathLinkId,
+                id: routePathLinkId,
                 destinationFi1: '',
                 destinationFi2: '',
                 destinationSw1: '',

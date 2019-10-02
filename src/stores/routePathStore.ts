@@ -128,29 +128,29 @@ export class RoutePathStore {
         return dirtyViaNames;
     }
 
-    public getViaName(relid: number): IViaName | null {
-        const viaName = _.cloneDeep(this._viaNamesHash[relid]);
+    public getViaName(id: number): IViaName | null {
+        const viaName = _.cloneDeep(this._viaNamesHash[id]);
         return viaName;
     }
 
     @action
     public setViaNames = (viaNames: IViaName[]) => {
         viaNames.forEach((viaName: IViaName) => {
-            this._viaNamesHash[viaName.relid] = viaName;
+            this._viaNamesHash[viaName.id] = viaName;
         });
         this.setOldViaNames(viaNames);
     };
 
     @action
     public setViaName = (viaName: IViaName) => {
-        this._viaNamesHash[viaName.relid] = viaName;
+        this._viaNamesHash[viaName.id] = viaName;
     };
 
     @action
     public setOldViaNames = (viaNames: IViaName[]) => {
         const viaNamesHash = {};
         viaNames.forEach((viaName: IViaName) => {
-            viaNamesHash[viaName.relid] = viaName;
+            viaNamesHash[viaName.id] = viaName;
         });
         this._oldViaNamesHash = _.cloneDeep(viaNamesHash);
     };
