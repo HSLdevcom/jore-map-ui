@@ -16,7 +16,7 @@ class ViaNameService {
 
         return queryResult.data.viaName
             ? {
-                  id: queryResult.data.viaName.relid,
+                  id: `${queryResult.data.viaName.relid}`,
                   destinationFi1: queryResult.data.viaName.maaranpaa1,
                   destinationFi2: queryResult.data.viaName.maaranpaa2,
                   destinationSw1: queryResult.data.viaName.maaranpaa1R,

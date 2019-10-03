@@ -215,7 +215,7 @@ class RoutePathView extends ViewFormBase<
                         if (viaName) viaNames.push(viaName);
                     } catch (err) {
                         this.props.errorStore!.addError(
-                            'Via haku ei onnistunut.',
+                            'Määränpää tietojen (via nimet) haku ei onnistunut.',
                             err
                         );
                     }
@@ -227,7 +227,10 @@ class RoutePathView extends ViewFormBase<
             await Promise.all(promises);
             this.props.routePathStore!.setViaNames(viaNames);
         } catch (err) {
-            this.props.errorStore!.addError('Via haku ei onnistunut.', err);
+            this.props.errorStore!.addError(
+                'Määränpää tietojen (via nimet) haku ei onnistunut.',
+                err
+            );
         }
     };
 

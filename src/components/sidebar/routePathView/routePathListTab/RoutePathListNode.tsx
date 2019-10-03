@@ -73,17 +73,17 @@ class RoutePathListNode extends ViewFormBase<
         );
         const orderNumber = this.props.routePathLink.orderNumber;
 
-        const viaName = this.props.routePathStore!.getViaName(
-            +this.props.routePathLink.id
-        );
-
-        let isViaNameDestinationFi1Valid = true;
-        if (viaName) {
-            isViaNameDestinationFi1Valid = this.validateViaNames(viaName);
+        let isViaNameValid = true;
+        if (!this.props.isLastNode) {
+            const viaName = this.props.routePathStore!.getViaName(
+                this.props.routePathLink.id
+            );
+            if (viaName) {
+                isViaNameValid = this.validateViaNames(viaName);
+            }
         }
 
-        const isLinkFormValid =
-            this.isFormValid() && isViaNameDestinationFi1Valid;
+        const isLinkFormValid = this.isFormValid() && isViaNameValid;
 
         this.props.routePathStore!.setLinkFormValidity(
             orderNumber,
@@ -215,14 +215,14 @@ class RoutePathListNode extends ViewFormBase<
     };
 
     private onViaNameChange = (value: string, attributeName: string) => {
-        const routePathLinkId = +this.props.routePathLink.id;
+        const routePathLinkId = this.props.routePathLink.id;
         let viaName = _.cloneDeep(
             this.props.routePathStore!.getViaName(routePathLinkId)
         );
 
         if (!viaName) {
             viaName = {
-                id: routePathLinkId,
+                id: `${routePathLinkId}`,
                 destinationFi1: '',
                 destinationFi2: '',
                 destinationSw1: '',
@@ -246,9 +246,7 @@ class RoutePathListNode extends ViewFormBase<
 
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
-        const viaName = this.props.routePathStore!.getViaName(
-            +routePathLink.id
-        );
+        const viaName = this.props.routePathStore!.getViaName(routePathLink.id);
         const isStartNodeUsingBookSchedule = this.props.isLastNode
             ? routePath!.isStartNodeUsingBookSchedule
             : routePathLink.isStartNodeUsingBookSchedule;
@@ -323,6 +321,58 @@ class RoutePathListNode extends ViewFormBase<
                                 darkerInputLabel={true}
                             />
                         </div>
+                        <div className={s.flexInnerRow}>
+                            <InputContainer
+                                label='1. MÄÄRÄNPÄÄ SUOMEKSI'
+                                disabled={isEditingDisabled}
+                                value={viaName ? viaName.destinationFi1 : ''}
+                                validationResult={
+                                    invalidPropertiesMap['destinationFi1']
+                                }
+                                onChange={e =>
+                                    this.onViaNameChange(e, 'destinationFi1')
+                                }
+                                darkerInputLabel={true}
+                            />
+                            <InputContainer
+                                label='2. MÄÄRÄNPÄÄ SUOMEKSI'
+                                disabled={isEditingDisabled}
+                                value={viaName ? viaName.destinationFi2 : ''}
+                                validationResult={
+                                    invalidPropertiesMap['destinationFi2']
+                                }
+                                onChange={e =>
+                                    this.onViaNameChange(e, 'destinationFi2')
+                                }
+                                darkerInputLabel={true}
+                            />
+                        </div>
+                        <div className={s.flexInnerRow}>
+                            <InputContainer
+                                label='1. MÄÄRÄNPÄÄ RUOTSIKSI'
+                                disabled={isEditingDisabled}
+                                value={viaName ? viaName.destinationSw1 : ''}
+                                validationResult={
+                                    invalidPropertiesMap['destinationSw1']
+                                }
+                                onChange={e =>
+                                    this.onViaNameChange(e, 'destinationSw1')
+                                }
+                                darkerInputLabel={true}
+                            />
+                            <InputContainer
+                                label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
+                                disabled={isEditingDisabled}
+                                value={viaName ? viaName.destinationSw2 : ''}
+                                validationResult={
+                                    invalidPropertiesMap['destinationSw2']
+                                }
+                                onChange={e =>
+                                    this.onViaNameChange(e, 'destinationSw2')
+                                }
+                                darkerInputLabel={true}
+                            />
+                        </div>
                     </>
                 )}
                 <div className={s.flexRow}>
@@ -364,58 +414,6 @@ class RoutePathListNode extends ViewFormBase<
                         label='MUOKATTU PVM'
                         isTimeIncluded={true}
                         value={routePathLink.modifiedOn}
-                        darkerInputLabel={true}
-                    />
-                </div>
-                <div className={s.flexInnerRow}>
-                    <InputContainer
-                        label='1. MÄÄRÄNPÄÄ SUOMEKSI'
-                        disabled={isEditingDisabled}
-                        value={viaName ? viaName.destinationFi1 : ''}
-                        validationResult={
-                            invalidPropertiesMap['destinationFi1']
-                        }
-                        onChange={e =>
-                            this.onViaNameChange(e, 'destinationFi1')
-                        }
-                        darkerInputLabel={true}
-                    />
-                    <InputContainer
-                        label='2. MÄÄRÄNPÄÄ SUOMEKSI'
-                        disabled={isEditingDisabled}
-                        value={viaName ? viaName.destinationFi2 : ''}
-                        validationResult={
-                            invalidPropertiesMap['destinationFi2']
-                        }
-                        onChange={e =>
-                            this.onViaNameChange(e, 'destinationFi2')
-                        }
-                        darkerInputLabel={true}
-                    />
-                </div>
-                <div className={s.flexInnerRow}>
-                    <InputContainer
-                        label='1. MÄÄRÄNPÄÄ RUOTSIKSI'
-                        disabled={isEditingDisabled}
-                        value={viaName ? viaName.destinationSw1 : ''}
-                        validationResult={
-                            invalidPropertiesMap['destinationSw1']
-                        }
-                        onChange={e =>
-                            this.onViaNameChange(e, 'destinationSw1')
-                        }
-                        darkerInputLabel={true}
-                    />
-                    <InputContainer
-                        label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
-                        disabled={isEditingDisabled}
-                        value={viaName ? viaName.destinationSw2 : ''}
-                        validationResult={
-                            invalidPropertiesMap['destinationSw2']
-                        }
-                        onChange={e =>
-                            this.onViaNameChange(e, 'destinationSw2')
-                        }
                         darkerInputLabel={true}
                     />
                 </div>

@@ -1,5 +1,5 @@
 interface IViaNamePrimaryKey {
-    id: number;
+    id: string;
 }
 
 export default interface IViaName extends IViaNamePrimaryKey {

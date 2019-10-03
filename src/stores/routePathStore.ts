@@ -128,7 +128,7 @@ export class RoutePathStore {
         return dirtyViaNames;
     }
 
-    public getViaName(id: number): IViaName | null {
+    public getViaName(id: string): IViaName | null {
         const viaName = _.cloneDeep(this._viaNamesHash[id]);
         return viaName;
     }
@@ -521,7 +521,10 @@ export class RoutePathStore {
     public hasRoutePathLinksChanged = () => {
         const newRoutePathLinks = this.routePath!.routePathLinks;
         const oldRoutePathLinks = this._oldRoutePath!.routePathLinks;
-        return !_.isEqual(newRoutePathLinks, oldRoutePathLinks);
+        return (
+            !_.isEqual(newRoutePathLinks, oldRoutePathLinks) ||
+            this.dirtyViaNames.length > 0
+        );
     };
 
     private recalculateOrderNumbers = () => {
