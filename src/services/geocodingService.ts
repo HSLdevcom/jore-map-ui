@@ -4,11 +4,6 @@ import constants from '~/constants/constants';
 
 type langOptions = 'fi' | 'sv';
 
-interface IAddressData {
-    address: string;
-    postalNumber: string;
-}
-
 interface IAddressFeature {
     geometry: any;
     properties: any;
@@ -16,11 +11,15 @@ interface IAddressFeature {
 }
 
 class GeocodingService {
-    public static fetchAddressDataFromCoordinates = async (
+    public static fetchStreetNameFromCoordinates = async (
         coordinates: L.LatLng,
         lang: langOptions
-    ): Promise<IAddressData> => {
-        const requestUrl = `${constants.REVERSE_GEOCODING_URL}?lat=${coordinates.lat}&lon=${coordinates.lng}&format=geojson&accept-language=${lang}`;
+    ): Promise<string> => {
+        const requestUrl = `${
+            constants.STREET_NAME_REVERSE_GEOCODING_URL
+        }?lat=${coordinates.lat}&lon=${
+            coordinates.lng
+        }&format=geojson&accept-language=${lang}`;
 
         const response = await ApiClient.sendRequest(
             RequestMethod.GET,
@@ -35,16 +34,34 @@ class GeocodingService {
             response.features[0].properties &&
             response.features[0].properties.address
         ) {
-            const address = response.features[0].properties.address;
-            return {
-                address: address.road,
-                postalNumber: address.postcode
-            };
+            return response.features[0].properties.address.road;
         }
-        return {
-            address: '',
-            postalNumber: ''
-        };
+        return '';
+    };
+
+    public static fetchPostalNumberFromCoordinates = async (
+        coordinates: L.LatLng
+    ): Promise<string> => {
+        const requestUrl = `${
+            constants.POSTAL_NUMBER_REVERSE_GEOCODING_URL
+        }?point.lat=${coordinates.lat}&point.lon=${coordinates.lng}`;
+
+        const response = await ApiClient.sendRequest(
+            RequestMethod.GET,
+            encodeURI(requestUrl),
+            {}
+        );
+
+        if (
+            response &&
+            response.features &&
+            response.features[0] &&
+            response.features[0].properties &&
+            response.features[0].properties.postalcode
+        ) {
+            return response.features[0].properties.postalcode;
+        }
+        return '';
     };
 
     public static fetchAddressFeaturesFromString = async (
@@ -67,4 +84,4 @@ class GeocodingService {
 }
 export default GeocodingService;
 
-export { IAddressData, IAddressFeature };
+export { IAddressFeature };
