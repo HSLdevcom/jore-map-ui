@@ -22,10 +22,6 @@ export interface UndoState {
     startNodeBookScheduleColumnNumber?: number;
 }
 
-export interface IViaNameHash {
-    [key: string]: IViaName;
-}
-
 export enum ListFilter {
     stop,
     otherNodes,
@@ -42,8 +38,8 @@ export class RoutePathStore {
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
-    @observable private _viaNamesHash: IViaNameHash;
-    @observable private _oldViaNamesHash: IViaNameHash;
+    @observable private _viaNames: IViaName[];
+    @observable private _oldViaNames: IViaName[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -54,8 +50,8 @@ export class RoutePathStore {
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore = new GeometryUndoStore();
         this._invalidLinkOrderNumbers = [];
-        this._viaNamesHash = {};
-        this._oldViaNamesHash = {};
+        this._viaNames = [];
+        this._oldViaNames = [];
     }
 
     @computed
@@ -75,10 +71,7 @@ export class RoutePathStore {
 
     @computed
     get isDirty() {
-        const isViaNameDirty = !_.isEqual(
-            this._oldViaNamesHash,
-            this._viaNamesHash
-        );
+        const isViaNameDirty = !_.isEqual(this._oldViaNames, this._viaNames);
         const isRoutePathDirty = !_.isEqual(
             this._routePath,
             this._oldRoutePath
@@ -108,52 +101,74 @@ export class RoutePathStore {
 
     @computed
     get viaNames(): IViaName[] {
-        const viaNames: IViaName[] = [];
-        const viaNamesHash = this._viaNamesHash;
-        for (const k in viaNamesHash) {
-            viaNames.push(viaNamesHash[k]);
-        }
-        return viaNames;
+        return this._viaNames;
     }
 
     @computed
     get dirtyViaNames(): IViaName[] {
         const dirtyViaNames: IViaName[] = [];
-        const viaNamesHash = this._viaNamesHash;
-        const oldViaNamesHash = this._oldViaNamesHash;
-        for (const k in viaNamesHash) {
-            const isEqual = _.isEqual(viaNamesHash[k], oldViaNamesHash[k]);
-            if (!isEqual) dirtyViaNames.push(viaNamesHash[k]);
+        for (const viaName of this._viaNames) {
+            const oldViaName = _.find(this._oldViaNames, { id: viaName.id });
+            if (!_.isEqual(viaName, oldViaName)) dirtyViaNames.push(viaName);
         }
         return dirtyViaNames;
     }
 
-    public getViaName(id: string): IViaName | null {
-        const viaName = _.cloneDeep(this._viaNamesHash[id]);
-        return viaName;
-    }
+    @action
+    public init = (routePath: IRoutePath, viaNames: IViaName[]) => {
+        this.clear();
+        this._routePath = routePath;
+        const routePathLinks = routePath.routePathLinks
+            ? routePath.routePathLinks
+            : [];
+        this.setRoutePathLinks(routePathLinks);
+        const currentUndoState: UndoState = {
+            routePathLinks,
+            isStartNodeUsingBookSchedule: Boolean(
+                this.routePath!.isStartNodeUsingBookSchedule
+            ),
+            startNodeBookScheduleColumnNumber: this.routePath!
+                .startNodeBookScheduleColumnNumber
+        };
+        this._geometryUndoStore.addItem(currentUndoState);
+
+        this.setOldRoutePath(this._routePath);
+        this.setViaNames(viaNames);
+    };
+
+    @action
+    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
+        this._routePath!.routePathLinks = routePathLinks;
+
+        // Need to recalculate orderNumbers to ensure that they are correct
+        this.recalculateOrderNumbers();
+        this.sortRoutePathLinks();
+    };
 
     @action
     public setViaNames = (viaNames: IViaName[]) => {
-        viaNames.forEach((viaName: IViaName) => {
-            this._viaNamesHash[viaName.id] = viaName;
-        });
-        this.setOldViaNames(viaNames);
+        this._viaNames = viaNames;
+        this._oldViaNames = _.cloneDeep(viaNames);
     };
 
     @action
     public setViaName = (viaName: IViaName) => {
-        this._viaNamesHash[viaName.id] = viaName;
+        const viaNameToSet = _.cloneDeep(viaName);
+        const oldViaNameIndex = _.findIndex(this._viaNames, {
+            id: viaNameToSet.id
+        });
+        if (oldViaNameIndex === -1) {
+            this._viaNames.push(viaNameToSet);
+        } else {
+            this._viaNames[oldViaNameIndex] = viaNameToSet;
+        }
     };
 
     @action
-    public setOldViaNames = (viaNames: IViaName[]) => {
-        const viaNamesHash = {};
-        viaNames.forEach((viaName: IViaName) => {
-            viaNamesHash[viaName.id] = viaName;
-        });
-        this._oldViaNamesHash = _.cloneDeep(viaNamesHash);
-    };
+    public getViaName(id: string): IViaName | null {
+        const viaName = _.find(this._viaNames, { id });
+        return viaName ? _.cloneDeep(viaName) : null;
+    }
 
     @action
     public setActiveTab = (tab: RoutePathViewTab) => {
@@ -255,35 +270,6 @@ export class RoutePathStore {
     @action
     public setExtendedListItems = (objectIds: string[]) => {
         this._extendedListItems = objectIds;
-    };
-
-    @action
-    public setRoutePath = (routePath: IRoutePath) => {
-        this._routePath = routePath;
-        const routePathLinks = routePath.routePathLinks
-            ? routePath.routePathLinks
-            : [];
-        this.setRoutePathLinks(routePathLinks);
-        const currentUndoState: UndoState = {
-            routePathLinks,
-            isStartNodeUsingBookSchedule: Boolean(
-                this.routePath!.isStartNodeUsingBookSchedule
-            ),
-            startNodeBookScheduleColumnNumber: this.routePath!
-                .startNodeBookScheduleColumnNumber
-        };
-        this._geometryUndoStore.addItem(currentUndoState);
-
-        this.setOldRoutePath(this._routePath);
-    };
-
-    @action
-    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
-        this._routePath!.routePathLinks = routePathLinks;
-
-        // Need to recalculate orderNumbers to ensure that they are correct
-        this.recalculateOrderNumbers();
-        this.sortRoutePathLinks();
     };
 
     @action
@@ -427,8 +413,7 @@ export class RoutePathStore {
     @action
     public resetChanges = () => {
         if (this._oldRoutePath) {
-            this.setRoutePath(this._oldRoutePath);
-            this._viaNamesHash = _.cloneDeep(this._oldViaNamesHash);
+            this.init(this._oldRoutePath, this._oldViaNames);
         }
     };
 
@@ -439,8 +424,8 @@ export class RoutePathStore {
         this._invalidLinkOrderNumbers = [];
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
-        this._viaNamesHash = {};
-        this._oldViaNamesHash = {};
+        this._viaNames = [];
+        this._oldViaNames = [];
     };
 
     @action
