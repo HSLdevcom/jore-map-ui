@@ -67,6 +67,7 @@ export class LinkStore {
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = roundLatLngs(latLngs);
         this._link.geometry = roundLatLngs(latLngs);
+        this._link.length = this.getCalculatedLength();
 
         const currentUndoState: UndoState = {
             link: updatedLink

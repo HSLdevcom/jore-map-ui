@@ -11,7 +11,6 @@ import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import { INode, ILink } from '~/models';
-import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import linkValidationModel from '~/models/validationModels/linkValidationModel';
@@ -183,7 +182,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const link = this.props.linkStore!.link;
         const linkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget(':id',
+            .toTarget(
+                ':id',
                 [link.startNode.id, link.endNode.id, link.transitType].join(',')
             )
             .toLink();
@@ -234,11 +234,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.validateProperty(linkValidationModel[property], property, value);
     };
 
-    private useCalculatedLength = () => {
-        const length = this.props.linkStore!.getCalculatedLength();
-        this.onChangeLinkProperty('length')(length);
-    };
-
     render() {
         const link = this.props.linkStore!.link;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
@@ -276,8 +271,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             transitTypeError =
                 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
         }
-
-        const calculatedLength = this.props.linkStore!.getCalculatedLength();
 
         return (
             <div className={s.linkView}>
@@ -361,13 +354,10 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                     'measuredLength'
                                 )}
                             />
-                            <CalculatedInputField
-                                label='PITUUS (m)'
-                                isDisabled={isEditingDisabled}
+                            <InputContainer
+                                label='LASKETTU PITUUS (m)'
+                                disabled={true}
                                 value={link.length}
-                                calculatedValue={calculatedLength}
-                                useCalculatedValue={this.useCalculatedLength}
-                                onChange={this.onChangeLinkProperty('length')}
                                 validationResult={
                                     invalidPropertiesMap['length']
                                 }
