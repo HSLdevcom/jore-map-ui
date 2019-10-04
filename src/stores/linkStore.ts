@@ -134,7 +134,7 @@ export class LinkStore {
     }
 
     @action
-    public undoChanges = () => {
+    public resetChanges = () => {
         if (this._oldLink) {
             this.setLink(this._oldLink);
         }

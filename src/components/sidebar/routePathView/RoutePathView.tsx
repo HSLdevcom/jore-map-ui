@@ -326,7 +326,7 @@ class RoutePathView extends ViewFormBase<
 
         this.props.routePathStore!.setNeighborRoutePathLinks([]);
         if (!isEditingDisabled) {
-            this.props.routePathStore!.undoChanges();
+            this.props.routePathStore!.resetChanges();
         }
         this.toggleIsEditingDisabled();
         if (!isEditingDisabled) this.validateRoutePath();

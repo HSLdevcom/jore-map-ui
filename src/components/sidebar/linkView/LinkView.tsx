@@ -201,7 +201,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     private toggleIsEditingEnabled = () => {
         const isEditingDisabled = this.state.isEditingDisabled;
         if (!isEditingDisabled) {
-            this.props.linkStore!.undoChanges();
+            this.props.linkStore!.resetChanges();
         }
         this.toggleIsEditingDisabled();
         if (!isEditingDisabled) this.validateLink();
