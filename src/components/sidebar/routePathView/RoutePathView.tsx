@@ -273,10 +273,10 @@ class RoutePathView extends ViewFormBase<
         const routePath = this.props.routePathStore!.routePath;
         try {
             if (this.props.isNewRoutePath) {
-                const dirtyViaNames = this.props.routePathStore!.dirtyViaNames;
+                const viaNames = this.props.routePathStore!.viaNames;
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
                     routePath!,
-                    dirtyViaNames
+                    viaNames
                 );
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
@@ -299,10 +299,10 @@ class RoutePathView extends ViewFormBase<
                 if (!hasRoutePathLinksChanged) {
                     routePathToUpdate.routePathLinks = [];
                 }
-                const dirtyViaNames = this.props.routePathStore!.dirtyViaNames;
+                const viaNames = this.props.routePathStore!.viaNames;
                 await RoutePathService.updateRoutePath(
                     routePathToUpdate,
-                    dirtyViaNames
+                    viaNames
                 );
             }
             this.props.alertStore!.setFadeMessage('Tallennettu!');
