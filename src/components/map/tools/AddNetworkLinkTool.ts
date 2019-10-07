@@ -24,15 +24,15 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventManager.on('nodeClick', this.onnodeClick);
+        EventManager.on('nodeClick', this.onNodeClick);
         EventManager.on('networkNodeClick', this.onNetworkNodeClick);
     }
     public deactivate() {
         this.resetTool();
-        EventManager.off('nodeClick', this.onnodeClick);
+        EventManager.off('nodeClick', this.onNodeClick);
         EventManager.off('networkNodeClick', this.onNetworkNodeClick);
     }
-    private onnodeClick = async (clickEvent: CustomEvent) => {
+    private onNodeClick = async (clickEvent: CustomEvent) => {
         const nodeClickParams: INodeClickParams = clickEvent.detail;
         this.setStartOrEndNode(nodeClickParams.node.id);
     };

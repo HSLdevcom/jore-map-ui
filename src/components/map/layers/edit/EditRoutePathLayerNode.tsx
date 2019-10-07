@@ -6,9 +6,11 @@ import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { MapStore } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
-import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
-import EventManager, { INodeClickParams } from '~/util/EventManager';
-import NodeMarker from '../markers/NodeMarker';
+import EventManager, {
+    IEditRoutePathLayerNodeClickParams,
+    INodeClickParams
+} from '~/util/EventManager';
+import NodeMarker, { NodeHighlightColor } from '../markers/NodeMarker';
 import Marker from '../markers/Marker';
 
 const START_MARKER_COLOR = '#00df0b';
@@ -57,41 +59,49 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         linkOrderNumber: number,
         index: number
     ) => {
-        const selectedTool = this.props.toolbarStore!.selectedTool;
+        const toolHighlightedNodeIds = this.props.routePathStore!
+            .toolHighlightedNodeIds;
+        const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(
+            node.id
+        );
+        const isNodeHighlightedByList = this.props.routePathStore!.listHighlightedNodeIds.includes(
+            node.id
+        );
 
-        const areNodesClickable =
-            selectedTool &&
-            ((selectedTool.toolType === ToolbarTool.AddNewRoutePathLink &&
-                this.props.routePathStore!.neighborLinks.length === 0) ||
-                selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool);
+        // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted
+        const isClickDisabled =
+            toolHighlightedNodeIds.length > 0 && !isNodeHighlightedByTool;
 
         let onNodeClick;
-        let isNodeHighlighted;
-        let isClickDisabled = false;
-        // Check if AddNewRoutePathLink is active
-        if (areNodesClickable) {
-            isNodeHighlighted = this.props.routePathStore!.hasNodeOddAmountOfNeighbors(
-                node.id
-            );
-            // Allow click event for highlighted nodes only
-            if (isNodeHighlighted) {
-                onNodeClick = () => {
-                    this.fetchNeighborRoutePathLinks(node, linkOrderNumber);
-                    const clickParams: INodeClickParams = { node };
-                    EventManager.trigger('nodeClick', clickParams);
+        if (isNodeHighlightedByTool) {
+            onNodeClick = () => {
+                const clickParams: IEditRoutePathLayerNodeClickParams = {
+                    node,
+                    linkOrderNumber
                 };
-            } else {
-                isClickDisabled = true;
-            }
+                EventManager.trigger(
+                    'editRoutePathLayerNodeClick',
+                    clickParams
+                );
+            };
         } else {
             onNodeClick = () => {
                 this.props.highlightItemById(node.id);
                 const clickParams: INodeClickParams = { node };
                 EventManager.trigger('nodeClick', clickParams);
             };
-            isNodeHighlighted = this.props.routePathStore!.isMapItemHighlighted(
-                node.id
-            );
+        }
+
+        const highlight = {
+            isHighlighted: false,
+            color: NodeHighlightColor.BLUE
+        };
+        if (isNodeHighlightedByTool) {
+            highlight.isHighlighted = true;
+            highlight.color = NodeHighlightColor.GREEN;
+        } else if (isNodeHighlightedByList) {
+            highlight.isHighlighted = true;
+            highlight.color = NodeHighlightColor.BLUE;
         }
 
         return (
@@ -100,29 +110,10 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 onClick={onNodeClick}
                 node={node}
-                isHighlighted={isNodeHighlighted}
+                highlight={highlight}
                 isClickDisabled={isClickDisabled}
             />
         );
-    };
-
-    private fetchNeighborRoutePathLinks = async (
-        node: INode,
-        linkOrderNumber: number
-    ) => {
-        const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
-            node.id,
-            this.props.routePathStore!.routePath!,
-            linkOrderNumber
-        );
-        if (queryResult) {
-            this.props.routePathStore!.setNeighborRoutePathLinks(
-                queryResult.neighborLinks
-            );
-            this.props.routePathStore!.setNeighborToAddType(
-                queryResult.neighborToAddType
-            );
-        }
     };
 
     private renderStartMarker = () => {

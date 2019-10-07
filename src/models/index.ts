@@ -6,6 +6,7 @@ import ILink from './ILink';
 import IRoute from './IRoute';
 import IRoutePath from './IRoutePath';
 import IRoutePathLink from './IRoutePathLink';
+import INeighborLink from './INeighborLink';
 
 export {
     ILine,
@@ -15,5 +16,6 @@ export {
     ILink,
     IRoute,
     IRoutePath,
-    IRoutePathLink
+    IRoutePathLink,
+    INeighborLink
 };
