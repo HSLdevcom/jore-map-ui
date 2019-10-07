@@ -121,12 +121,13 @@ class RoutePathView extends ViewFormBase<
                     lineId,
                     route
                 );
-                this.props.routePathStore!.setRoutePath(newRoutePath);
+                this.props.routePathStore!.init(newRoutePath, []);
             } else {
-                this.props.routePathStore!.setRoutePath(
+                this.props.routePathStore!.init(
                     RoutePathFactory.createNewRoutePathFromOld(
                         this.props.routePathStore!.routePath!
-                    )
+                    ),
+                    []
                 );
             }
             this.props.toolbarStore!.selectTool(
@@ -189,20 +190,19 @@ class RoutePathView extends ViewFormBase<
                 startTimeString,
                 direction
             );
-            this.props.routePathStore!.setRoutePath(routePath);
+            const viaNames = await this.fetchViaNames(routePath);
+            this.props.routePathStore!.init(routePath, viaNames);
         } catch (e) {
             this.props.errorStore!.addError(
                 'Reitinsuunnan haku ei onnistunut.',
                 e
             );
         }
-        await this.fetchViaNames();
     };
 
-    private fetchViaNames = async () => {
+    private fetchViaNames = async (routePath: IRoutePath) => {
         try {
-            const routePathLinks: IRoutePathLink[] = this.props.routePathStore!
-                .routePath!.routePathLinks;
+            const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
             const promises: Promise<void>[] = [];
             const viaNames: IViaName[] = [];
 
@@ -225,13 +225,14 @@ class RoutePathView extends ViewFormBase<
             });
 
             await Promise.all(promises);
-            this.props.routePathStore!.setViaNames(viaNames);
+            return viaNames;
         } catch (err) {
             this.props.errorStore!.addError(
                 'Määränpää tietojen (via nimet) haku ei onnistunut.',
                 err
             );
         }
+        return [];
     };
 
     private onChangeRoutePathProperty = (property: keyof IRoutePath) => (
@@ -270,13 +271,12 @@ class RoutePathView extends ViewFormBase<
         this.setState({ isLoading: true });
         let redirectUrl: string | undefined;
         const routePath = this.props.routePathStore!.routePath;
-        const viaNames = this.props.routePathStore!.viaNames;
         try {
             if (this.props.isNewRoutePath) {
-                const dirtyViaNames = this.props.routePathStore!.dirtyViaNames;
+                const viaNames = this.props.routePathStore!.viaNames;
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
                     routePath!,
-                    dirtyViaNames
+                    viaNames
                 );
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
@@ -299,26 +299,25 @@ class RoutePathView extends ViewFormBase<
                 if (!hasRoutePathLinksChanged) {
                     routePathToUpdate.routePathLinks = [];
                 }
-                const dirtyViaNames = this.props.routePathStore!.dirtyViaNames;
+                const viaNames = this.props.routePathStore!.viaNames;
                 await RoutePathService.updateRoutePath(
                     routePathToUpdate,
-                    dirtyViaNames
+                    viaNames
                 );
             }
-            this.props.routePathStore!.setOldRoutePath(routePath!);
-            this.props.routePathStore!.setOldViaNames(viaNames);
             this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
+        if (redirectUrl) {
+            navigator.goTo(redirectUrl);
+        }
+        await this.fetchRoutePath();
         this.setState({
             isEditingDisabled: true,
             invalidPropertiesMap: {},
             isLoading: false
         });
-        if (redirectUrl) {
-            navigator.goTo(redirectUrl);
-        }
     };
 
     private toggleIsEditing = () => {
