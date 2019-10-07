@@ -6,6 +6,7 @@ import AlertStore from '~/stores/alertStore';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import LoginStore from '~/stores/loginStore';
 import ApiClientHelper from './apiClientHelper';
+import CodeListHelper from './CodeListHelper';
 
 enum RequestMethod {
     GET = 'GET',
@@ -113,11 +114,24 @@ class ApiClient {
                     });
                 return;
             }
+            let responseJson;
+            try {
+                responseJson = JSON.parse(await response.text());
+            } catch {
+                responseJson = await response.text();
+            }
+            let errorMessage;
+            if (responseJson.errorKey) {
+                errorMessage = CodeListHelper.getText(
+                    responseJson.errorKey,
+                    responseJson.keyValueMap
+                );
+            } else {
+                errorMessage = responseJson
+                    ? responseJson
+                    : response.statusText;
+            }
 
-            const responseText = await response.text();
-            const errorMessage = responseText
-                ? responseText
-                : response.statusText;
             error = {
                 message: errorMessage,
                 name: 'Failed to fetch',

@@ -2,7 +2,8 @@ import textCodeList from '~/codeLists/textCodeList';
 
 class CodeListHelper {
     /**
-     * @param {keyValueMap} { key: value } - key is the same as ${key} in textCodeListKey, ${key} is replaced with value
+     * @param {String} errorKey corresponding value needs to be declared in textCodeList
+     * @param {Object} keyValueMap { key: value } key is the same as ${key} in textCodeListKey, ${key} is replaced with value
      **/
     public static getText = (textCodeListKey: string, keyValueMap?: Object) => {
         let lineString = textCodeList[textCodeListKey];
