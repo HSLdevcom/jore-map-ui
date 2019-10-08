@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/util/ApolloClient';
 import ApiClient from '~/util/ApiClient';
 import LineFactory from '~/factories/lineFactory';
 import { ILine } from '~/models';
@@ -10,7 +10,7 @@ import GraphqlQueries from './graphqlQueries';
 
 class LineService {
     public static fetchLine = async (lintunnus: string): Promise<ILine> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLineQuery(),
             variables: { lineId: lintunnus }
         });
@@ -25,7 +25,7 @@ class LineService {
     };
 
     public static fetchAllSearchLines = async (): Promise<ISearchLine[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllSearchLinesQuery()
         });
 
@@ -37,7 +37,7 @@ class LineService {
     public static fetchSearchLine = async (
         lintunnus: string
     ): Promise<ISearchLine> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getSearchLineQuery(),
             variables: { lineId: lintunnus }
         });

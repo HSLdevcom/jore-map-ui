@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/util/ApolloClient';
 import { NeighborToAddType } from '~/stores/routePathStore';
 import ErrorStore from '~/stores/errorStore';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
@@ -80,7 +80,7 @@ class RoutePathNeighborLinkService {
         if (neighborToAddType === NeighborToAddType.AfterNode) {
             const queryResult: ApolloQueryResult<
                 any
-            > = await apolloClient.query({
+            > = await ApolloClient.query({
                 query: GraphqlQueries.getLinksByStartNodeQuery(),
                 variables: { nodeId, date }
             });
@@ -90,7 +90,7 @@ class RoutePathNeighborLinkService {
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
             const queryResult: ApolloQueryResult<
                 any
-            > = await apolloClient.query({
+            > = await ApolloClient.query({
                 query: GraphqlQueries.getLinksByEndNodeQuery(),
                 variables: { nodeId, date }
             });

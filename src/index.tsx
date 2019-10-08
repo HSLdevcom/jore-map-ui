@@ -26,7 +26,7 @@ import NodeStore from './stores/nodeStore';
 import LinkStore from './stores/linkStore';
 import AlertStore from './stores/alertStore';
 import ConfirmStore from './stores/confirmStore';
-import apolloClient from './util/ApolloClient';
+import ApolloClient from './util/ApolloClient';
 import navigator from './routing/navigator';
 import './index.scss';
 
@@ -61,7 +61,7 @@ const history = syncHistoryWithStore(browserHistory, navigator.getStore());
 
 ReactDOM.render(
     <Provider {...stores}>
-        <ApolloProvider client={apolloClient.getClient()}>
+        <ApolloProvider client={ApolloClient.getClient()}>
             <Router history={history}>
                 <App />
             </Router>

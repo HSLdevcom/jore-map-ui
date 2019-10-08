@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
 import ApiClient from '~/util/ApiClient';
-import apolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/util/ApolloClient';
 import endpoints from '~/enums/endpoints';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
@@ -17,7 +17,7 @@ class LineHeaderService {
     public static fetchLineHeaders = async (
         lineId: string
     ): Promise<ILineHeader[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllLineHeadersQuery()
         });
         const allExtLineNames: IExternalLineHeader[] =
@@ -42,7 +42,7 @@ class LineHeaderService {
         lineId: string,
         startDate: string
     ): Promise<ILineHeader> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLineHeaderQuery(),
             variables: {
                 lineId,
