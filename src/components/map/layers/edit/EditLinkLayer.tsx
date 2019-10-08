@@ -12,7 +12,7 @@ import { MapStore, MapFilter } from '~/stores/mapStore';
 import NodeMarker from '../markers/NodeMarker';
 import Marker from '../markers/Marker';
 import { LeafletContext } from '../../Map';
-import ArrowDecorator from '../ArrowDecorator';
+import ArrowDecorator from '../utils/ArrowDecorator';
 import LinkDashedLines from '../utils/LinkDashedLines';
 
 const START_MARKER_COLOR = '#00df0b';

@@ -10,7 +10,7 @@ import StartNodeType from '~/enums/startNodeType';
 import EventManager, { INodeClickParams } from '~/util/EventManager';
 import NodeMarker from './markers/NodeMarker';
 import Marker from './markers/Marker';
-import ArrowDecorator from './ArrowDecorator';
+import ArrowDecorator from './utils/ArrowDecorator';
 
 interface RoutePathLinkLayerProps {
     popupStore?: PopupStore;

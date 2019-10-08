@@ -15,7 +15,7 @@ import { NodeStore } from '~/stores/nodeStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import NodeMarker from '../markers/NodeMarker';
 import { LeafletContext } from '../../Map';
-import ArrowDecorator from '../ArrowDecorator';
+import ArrowDecorator from '../utils/ArrowDecorator';
 
 interface IEditNodeLayerProps {
     nodeStore?: NodeStore;

@@ -7,7 +7,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import ArrowDecorator from '../ArrowDecorator';
+import ArrowDecorator from '../utils/ArrowDecorator';
 import LinkDashedLines from '../utils/LinkDashedLines';
 
 const ROUTE_COLOR = '#000';
