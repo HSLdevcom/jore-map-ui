@@ -13,6 +13,11 @@ import LeafletUtils from '~/util/leafletUtils';
 import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
 
+enum NodeHighlightColor {
+    BLUE, // default color
+    GREEN
+}
+
 interface INodeMarkerProps {
     mapStore?: MapStore;
     isSelected: boolean;
@@ -20,7 +25,7 @@ interface INodeMarkerProps {
     onContextMenu?: Function;
     onClick?: Function;
     isDraggable?: boolean;
-    isHighlighted?: boolean;
+    highlight?: { isHighlighted: boolean; color?: NodeHighlightColor };
     forcedVisibleNodeLabels?: NodeLabel[];
     markerClasses?: string[];
     // static markup language (HTML)
@@ -42,7 +47,7 @@ const NODE_LABEL_MIN_ZOOM = 14;
 class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isDraggable: false,
-        isHighlighted: false,
+        highlight: { isHighlighted: false },
         forcedVisibleNodeLabels: [],
         markerClasses: []
     };
@@ -109,8 +114,21 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 isNodeHighlighted: isSelected
             })
         );
-        if (this.props.isHighlighted) {
-            res.push(s.highlight);
+        const highlight = this.props.highlight;
+        if (highlight && highlight.isHighlighted) {
+            switch (highlight.color) {
+                case NodeHighlightColor.BLUE: {
+                    res.push(s.highlightBlue);
+                    break;
+                }
+                case NodeHighlightColor.GREEN: {
+                    res.push(s.highlightGreen);
+                    break;
+                }
+                default: {
+                    res.push(s.highlightBlue);
+                }
+            }
         }
         return res;
     };
@@ -253,3 +271,5 @@ class NodeMarker extends Component<INodeMarkerProps> {
 }
 
 export default NodeMarker;
+
+export { NodeHighlightColor };

@@ -85,7 +85,7 @@ class EditRoutePathLayer extends Component<
         // Set extended object, which will trigger automatic scroll
         this.props.routePathStore!.setExtendedListItems([id]);
         // Set highlight
-        this.props.routePathStore!.setHighlightedObject(id);
+        this.props.routePathStore!.setListHighlightedNodeIds([id]);
     };
 
     render() {

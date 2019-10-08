@@ -3,14 +3,15 @@ import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
 import Moment from 'moment';
 import { inject, observer } from 'mobx-react';
-import IRoutePathLink from '~/models/IRoutePathLink';
 import INode from '~/models/INode';
 import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { IRoutePath } from '~/models';
+import EventManager, {
+    IEditRoutePathNeighborLinkClickParams
+} from '~/util/EventManager';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import INeighborLink from '~/models/INeighborLink';
 import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
@@ -26,16 +27,6 @@ interface IRoutePathLayerProps {
 @inject('routePathStore', 'mapStore')
 @observer
 class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
-    public hasNodeOddAmountOfNeighbors = (node: INode) => {
-        const routePath = this.props.routePathStore!.routePath;
-        return (
-            routePath!.routePathLinks.filter(x => x.startNode.id === node.id)
-                .length !==
-            routePath!.routePathLinks.filter(x => x.endNode.id === node.id)
-                .length
-        );
-    };
-
     private getNodeUsageViewMarkup = (routePaths: IRoutePath[]) => {
         if (!routePaths || routePaths.length === 0) return;
         return ReactDOMServer.renderToStaticMarkup(
@@ -81,13 +72,18 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
         neighborLink: INeighborLink,
         key: number
     ) => {
+        const onNeighborLinkClick = () => {
+            const clickParams: IEditRoutePathNeighborLinkClickParams = {
+                neighborLink
+            };
+            EventManager.trigger('editRoutePathNeighborLinkClick', clickParams);
+        };
+
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                onClick={this.addNeighborLinkToRoutePath(
-                    neighborLink.routePathLink
-                )}
+                onClick={onNeighborLinkClick}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
                 popupContent={this.getNodeUsageViewMarkup(
@@ -110,6 +106,13 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
     };
 
     private renderNeighborLink = (neighborLink: INeighborLink) => {
+        const onNeighborLinkClick = () => {
+            const clickParams: IEditRoutePathNeighborLinkClickParams = {
+                neighborLink
+            };
+            EventManager.trigger('editRoutePathNeighborLinkClick', clickParams);
+        };
+
         return (
             <Polyline
                 positions={neighborLink.routePathLink.geometry}
@@ -121,37 +124,9 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 }
                 weight={5}
                 opacity={0.8}
-                onClick={this.addNeighborLinkToRoutePath(
-                    neighborLink.routePathLink
-                )}
+                onClick={onNeighborLinkClick}
             />
         );
-    };
-
-    private addNeighborLinkToRoutePath = (
-        routePathLink: IRoutePathLink
-    ) => async () => {
-        this.props.routePathStore!.addLink(routePathLink);
-        const neighborToAddType = this.props.routePathStore!.neighborToAddType;
-        const nodeToFetch =
-            neighborToAddType === NeighborToAddType.AfterNode
-                ? routePathLink.endNode
-                : routePathLink.startNode;
-        if (this.hasNodeOddAmountOfNeighbors(nodeToFetch)) {
-            const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
-                nodeToFetch.id,
-                this.props.routePathStore!.routePath!,
-                routePathLink.orderNumber
-            );
-            if (queryResult) {
-                this.props.routePathStore!.setNeighborRoutePathLinks(
-                    queryResult.neighborLinks
-                );
-                this.props.routePathStore!.setNeighborToAddType(
-                    queryResult.neighborToAddType
-                );
-            }
-        }
     };
 
     render() {

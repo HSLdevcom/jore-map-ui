@@ -1,4 +1,4 @@
-import { INode } from '~/models';
+import { INode, INeighborLink } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 
@@ -12,7 +12,9 @@ type eventName =
     | 'nodeClick'
     | 'networkNodeClick'
     | 'networkLinkClick'
-    | 'geometryChange';
+    | 'geometryChange'
+    | 'editRoutePathLayerNodeClick'
+    | 'editRoutePathNeighborLinkClick';
 
 class EventManager {
     public trigger(eventName: eventName, data?: any) {
@@ -46,6 +48,21 @@ interface INetworkLinkClickParams {
     transitType: TransitType;
 }
 
+interface IEditRoutePathLayerNodeClickParams {
+    node: INode;
+    linkOrderNumber: number;
+}
+
+interface IEditRoutePathNeighborLinkClickParams {
+    neighborLink: INeighborLink;
+}
+
 export default new EventManager();
 
-export { INodeClickParams, INetworkNodeClickParams, INetworkLinkClickParams };
+export {
+    INodeClickParams,
+    INetworkNodeClickParams,
+    INetworkLinkClickParams,
+    IEditRoutePathLayerNodeClickParams,
+    IEditRoutePathNeighborLinkClickParams
+};
