@@ -1,6 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
-import { IRoutePath, IRoutePathLink } from '~/models';
+import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
 import lengthCalculator from '~/util/lengthCalculator';
 import INeighborLink from '~/models/INeighborLink';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
@@ -29,7 +29,6 @@ export enum ListFilter {
 }
 
 export class RoutePathStore {
-    private _geometryUndoStore: GeometryUndoStore<UndoState>;
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
     @observable private _neighborRoutePathLinks: INeighborLink[];
@@ -38,8 +37,11 @@ export class RoutePathStore {
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
+    @observable private _viaNames: IViaName[];
+    @observable private _oldViaNames: IViaName[];
     @observable private _listHighlightedNodeIds: string[];
     @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
+    private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
         this._geometryUndoStore = new GeometryUndoStore();
@@ -48,6 +50,8 @@ export class RoutePathStore {
         this._activeTab = RoutePathViewTab.Info;
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
+        this._viaNames = [];
+        this._oldViaNames = [];
         this._listHighlightedNodeIds = [];
         this._toolHighlightedNodeIds = [];
     }
@@ -68,6 +72,15 @@ export class RoutePathStore {
     }
 
     @computed
+    get isDirty() {
+        const isViaNameDirty = !_.isEqual(this._oldViaNames, this._viaNames);
+        const isRoutePathDirty = !_.isEqual(
+            this._routePath,
+            this._oldRoutePath
+        );
+        return isRoutePathDirty || isViaNameDirty;
+    }
+
     get extendedListItems() {
         return this._extendedListItems;
     }
@@ -98,8 +111,74 @@ export class RoutePathStore {
     }
 
     @computed
-    get isDirty() {
-        return !_.isEqual(this._routePath, this._oldRoutePath);
+    get viaNames(): IViaName[] {
+        return this._viaNames;
+    }
+
+    @computed
+    get dirtyViaNames(): IViaName[] {
+        const dirtyViaNames: IViaName[] = [];
+        for (const viaName of this._viaNames) {
+            const oldViaName = _.find(this._oldViaNames, { id: viaName.id });
+            if (!_.isEqual(viaName, oldViaName)) dirtyViaNames.push(viaName);
+        }
+        return dirtyViaNames;
+    }
+
+    @action
+    public init = (routePath: IRoutePath, viaNames: IViaName[]) => {
+        this.clear();
+        this._routePath = routePath;
+        const routePathLinks = routePath.routePathLinks
+            ? routePath.routePathLinks
+            : [];
+        this.setRoutePathLinks(routePathLinks);
+        const currentUndoState: UndoState = {
+            routePathLinks,
+            isStartNodeUsingBookSchedule: Boolean(
+                this.routePath!.isStartNodeUsingBookSchedule
+            ),
+            startNodeBookScheduleColumnNumber: this.routePath!
+                .startNodeBookScheduleColumnNumber
+        };
+        this._geometryUndoStore.addItem(currentUndoState);
+
+        this.setOldRoutePath(this._routePath);
+        this.setViaNames(viaNames);
+    };
+
+    @action
+    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
+        this._routePath!.routePathLinks = routePathLinks;
+
+        // Need to recalculate orderNumbers to ensure that they are correct
+        this.recalculateOrderNumbers();
+        this.sortRoutePathLinks();
+    };
+
+    @action
+    public setViaNames = (viaNames: IViaName[]) => {
+        this._viaNames = viaNames;
+        this._oldViaNames = _.cloneDeep(viaNames);
+    };
+
+    @action
+    public setViaName = (viaName: IViaName) => {
+        const viaNameToSet = _.cloneDeep(viaName);
+        const oldViaNameIndex = _.findIndex(this._viaNames, {
+            id: viaNameToSet.id
+        });
+        if (oldViaNameIndex === -1) {
+            this._viaNames.push(viaNameToSet);
+        } else {
+            this._viaNames[oldViaNameIndex] = viaNameToSet;
+        }
+    };
+
+    @action
+    public getViaName(id: string): IViaName | null {
+        const viaName = _.find(this._viaNames, { id });
+        return viaName ? _.cloneDeep(viaName) : null;
     }
 
     @action
@@ -228,15 +307,6 @@ export class RoutePathStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldRoutePath(this._routePath);
-    };
-
-    @action
-    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
-        this._routePath!.routePathLinks = routePathLinks;
-
-        // Need to recalculate orderNumbers to ensure that they are correct
-        this.recalculateOrderNumbers();
-        this.sortRoutePathLinks();
     };
 
     @action
@@ -378,9 +448,9 @@ export class RoutePathStore {
     };
 
     @action
-    public undoChanges = () => {
+    public resetChanges = () => {
         if (this._oldRoutePath) {
-            this.setRoutePath(this._oldRoutePath);
+            this.init(this._oldRoutePath, this._oldViaNames);
         }
     };
 
@@ -391,6 +461,8 @@ export class RoutePathStore {
         this._invalidLinkOrderNumbers = [];
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
+        this._viaNames = [];
+        this._oldViaNames = [];
     };
 
     @action
@@ -464,7 +536,10 @@ export class RoutePathStore {
     public hasRoutePathLinksChanged = () => {
         const newRoutePathLinks = this.routePath!.routePathLinks;
         const oldRoutePathLinks = this._oldRoutePath!.routePathLinks;
-        return !_.isEqual(newRoutePathLinks, oldRoutePathLinks);
+        return (
+            !_.isEqual(newRoutePathLinks, oldRoutePathLinks) ||
+            this.dirtyViaNames.length > 0
+        );
     };
 
     private recalculateOrderNumbers = () => {

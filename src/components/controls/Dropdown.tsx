@@ -18,6 +18,7 @@ interface IDropdownProps {
     emptyItem?: IDropdownItem;
     onChange: (value: any) => void;
     validationResult?: IValidationResult;
+    darkerInputLabel?: boolean;
 }
 
 interface IDropdownState {
@@ -139,7 +140,15 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
                     {props.label && (
-                        <div className={s.inputLabel}>{props.label}</div>
+                        <div
+                            className={
+                                props.darkerInputLabel
+                                    ? s.darkerInputLabel
+                                    : s.inputLabel
+                            }
+                        >
+                            {props.label}
+                        </div>
                     )}
                     {props.disabled ? (
                         <div className={s.disableEditing}>

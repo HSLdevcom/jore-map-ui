@@ -6,6 +6,7 @@ import ILink from './ILink';
 import IRoute from './IRoute';
 import IRoutePath from './IRoutePath';
 import IRoutePathLink from './IRoutePathLink';
+import IViaName from './IViaName';
 import INeighborLink from './INeighborLink';
 
 export {
@@ -17,5 +18,6 @@ export {
     IRoute,
     IRoutePath,
     IRoutePathLink,
+    IViaName,
     INeighborLink
 };
