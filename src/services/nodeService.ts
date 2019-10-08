@@ -39,7 +39,6 @@ class NodeService {
         };
 
         await ApiClient.updateObject(endpoints.NODE, requestBody);
-        await apolloClient.clearStore();
     };
 
     public static createNode = async (node: INode) => {
@@ -47,7 +46,6 @@ class NodeService {
             endpoints.NODE,
             node
         )) as INodePrimaryKey;
-        await apolloClient.clearStore();
         return response.id;
     };
 }

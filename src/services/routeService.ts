@@ -62,7 +62,6 @@ class RouteService {
 
     public static updateRoute = async (route: IRoute) => {
         await ApiClient.updateObject(endpoints.ROUTE, route);
-        await apolloClient.clearStore();
     };
 
     public static createRoute = async (route: IRoute) => {
@@ -70,7 +69,6 @@ class RouteService {
             endpoints.ROUTE,
             route
         )) as IRoutePrimaryKey;
-        await apolloClient.clearStore();
         return response.id;
     };
 }

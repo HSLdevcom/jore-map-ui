@@ -67,7 +67,6 @@ class RoutePathService {
 
     public static updateRoutePath = async (routePath: IRoutePath) => {
         await ApiClient.updateObject(endpoints.ROUTEPATH, routePath);
-        await apolloClient.clearStore();
     };
 
     public static createRoutePath = async (routePath: IRoutePath) => {
@@ -75,7 +74,6 @@ class RoutePathService {
             endpoints.ROUTEPATH,
             routePath
         )) as IRoutePathPrimaryKey;
-        await apolloClient.clearStore();
         return response;
     };
 }

@@ -47,7 +47,6 @@ class LineService {
 
     public static updateLine = async (line: ILine) => {
         await ApiClient.updateObject(endpoints.LINE, line);
-        await apolloClient.clearStore();
     };
 
     public static createLine = async (Line: ILine) => {
@@ -55,7 +54,6 @@ class LineService {
             endpoints.LINE,
             Line
         )) as ILinePrimaryKey;
-        await apolloClient.clearStore();
         return response.id;
     };
 }

@@ -57,12 +57,10 @@ class LinkService {
             geometry: link.geometry.map(coor => new LatLng(coor.lat, coor.lng))
         };
         await ApiClient.updateObject(endpoints.LINK, simplifiedLink);
-        await apolloClient.clearStore();
     };
 
     public static createLink = async (link: ILink) => {
         await ApiClient.createObject(endpoints.LINK, link);
-        await apolloClient.clearStore();
     };
 }
 

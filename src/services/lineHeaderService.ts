@@ -57,7 +57,6 @@ class LineHeaderService {
 
     public static updateLineHeader = async (lineHeader: ILineHeader) => {
         await ApiClient.updateObject(endpoints.LINE_HEADER, lineHeader);
-        await apolloClient.clearStore();
     };
 
     public static createLineHeader = async (lineHeader: ILineHeader) => {
@@ -69,7 +68,6 @@ class LineHeaderService {
             endpoints.LINE_HEADER,
             newLineHeader
         );
-        await apolloClient.clearStore();
         return response.id;
     };
 }
