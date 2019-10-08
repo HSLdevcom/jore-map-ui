@@ -69,16 +69,16 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
         map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
-            this.refreshEditableLink();
+            this.updateLinkGeometry();
         });
 
         map!.off('editable:vertex:deleted');
         map!.on('editable:vertex:deleted', (data: any) => {
-            this.refreshEditableLink();
+            this.updateLinkGeometry();
         });
     };
 
-    private refreshEditableLink() {
+    private updateLinkGeometry() {
         const latLngs = this.editableLinks[0].getLatLngs()[0] as L.LatLng[];
         this.props.linkStore!.updateLinkGeometry(latLngs);
     }
