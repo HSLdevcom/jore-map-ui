@@ -17,7 +17,8 @@ class NodeService {
     public static fetchNode = async (nodeId: string) => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
             query: GraphqlQueries.getNodeQuery(),
-            variables: { nodeId }
+            variables: { nodeId },
+            fetchPolicy: 'no-cache' // no-cache is needed because otherwise nested data fetch does not always work
         });
         return NodeFactory.mapExternalNode(queryResult.data.node);
     };
