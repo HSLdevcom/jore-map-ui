@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
@@ -32,11 +32,14 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             .routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
 
-        let res: ReactNode[] = [];
-        routePathLinks.forEach((rpLink, index) => {
-            res = res.concat(this.renderLink(rpLink));
+        return routePathLinks.map((rpLink, index) => {
+            return (
+                <div key={index}>
+                    {this.renderLink(rpLink)}
+                    {this.renderDashedLines(rpLink)}{' '}
+                </div>
+            );
         });
-        return res;
     };
 
     private renderLink = (routePathLink: IRoutePathLink) => {
@@ -70,6 +73,52 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 />
             )
         ];
+    };
+
+    private renderDashedLines = (routePathLink: IRoutePathLink) => {
+        const startNodeCoordinates = routePathLink.startNode.coordinates;
+        const endNodeCoordinates = routePathLink.endNode.coordinates;
+
+        const linkStartCoordinates = routePathLink.geometry[0];
+        const linkEndCoordinates =
+            routePathLink.geometry[routePathLink.geometry.length - 1];
+        const dashedLines = [];
+        if (!startNodeCoordinates.equals(linkStartCoordinates)) {
+            dashedLines.push(
+                this.renderDashedLine(
+                    startNodeCoordinates,
+                    linkStartCoordinates,
+                    `startNodeDashedLine-${routePathLink.orderNumber}`
+                )
+            );
+        }
+        if (!endNodeCoordinates.equals(linkEndCoordinates)) {
+            dashedLines.push(
+                this.renderDashedLine(
+                    endNodeCoordinates,
+                    linkEndCoordinates,
+                    `endNodeDashedLine-${routePathLink.orderNumber}`
+                )
+            );
+        }
+        return dashedLines;
+    };
+
+    private renderDashedLine = (
+        startCoordinates: L.LatLng,
+        endCoordinates: L.LatLng,
+        key: string
+    ) => {
+        return (
+            <Polyline
+                positions={[startCoordinates, endCoordinates]}
+                key={key}
+                color={'#007ac9'}
+                weight={5}
+                opacity={0.75}
+                dashArray={'10, 10'}
+            />
+        );
     };
 
     private renderLinkDecorator = () => {
