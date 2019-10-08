@@ -8,6 +8,7 @@ import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ArrowDecorator from '../ArrowDecorator';
+import LinkDashedLines from '../utils/LinkDashedLines';
 
 const ROUTE_COLOR = '#000';
 
@@ -36,7 +37,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             return (
                 <div key={index}>
                     {this.renderLink(rpLink)}
-                    {this.renderDashedLines(rpLink)}{' '}
+                    {this.renderDashedLines(rpLink)}
                 </div>
             );
         });
@@ -76,47 +77,12 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     private renderDashedLines = (routePathLink: IRoutePathLink) => {
-        const startNodeCoordinates = routePathLink.startNode.coordinates;
-        const endNodeCoordinates = routePathLink.endNode.coordinates;
-
-        const linkStartCoordinates = routePathLink.geometry[0];
-        const linkEndCoordinates =
-            routePathLink.geometry[routePathLink.geometry.length - 1];
-        const dashedLines = [];
-        if (!startNodeCoordinates.equals(linkStartCoordinates)) {
-            dashedLines.push(
-                this.renderDashedLine(
-                    startNodeCoordinates,
-                    linkStartCoordinates,
-                    `startNodeDashedLine-${routePathLink.orderNumber}`
-                )
-            );
-        }
-        if (!endNodeCoordinates.equals(linkEndCoordinates)) {
-            dashedLines.push(
-                this.renderDashedLine(
-                    endNodeCoordinates,
-                    linkEndCoordinates,
-                    `endNodeDashedLine-${routePathLink.orderNumber}`
-                )
-            );
-        }
-        return dashedLines;
-    };
-
-    private renderDashedLine = (
-        startCoordinates: L.LatLng,
-        endCoordinates: L.LatLng,
-        key: string
-    ) => {
         return (
-            <Polyline
-                positions={[startCoordinates, endCoordinates]}
-                key={key}
-                color={'#007ac9'}
-                weight={5}
-                opacity={0.75}
-                dashArray={'10, 10'}
+            <LinkDashedLines
+                geometry={routePathLink.geometry}
+                startNode={routePathLink.startNode}
+                endNode={routePathLink.endNode}
+                color={'#efc210'}
             />
         );
     };

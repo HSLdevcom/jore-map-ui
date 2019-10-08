@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as L from 'leaflet';
 import _ from 'lodash';
-import { withLeaflet, Polyline } from 'react-leaflet';
+import { withLeaflet } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
 import EventManager, { INodeClickParams } from '~/util/EventManager';
@@ -13,6 +13,7 @@ import NodeMarker from '../markers/NodeMarker';
 import Marker from '../markers/Marker';
 import { LeafletContext } from '../../Map';
 import ArrowDecorator from '../ArrowDecorator';
+import LinkDashedLines from '../utils/LinkDashedLines';
 
 const START_MARKER_COLOR = '#00df0b';
 
@@ -167,47 +168,12 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     private renderDashedLines = () => {
         const link = this.props.linkStore!.link;
-        const startNodeCoordinates = link.startNode.coordinates;
-        const endNodeCoordinates = link.endNode.coordinates;
-
-        const linkStartCoordinates = link.geometry[0];
-        const linkEndCoordinates = link.geometry[link.geometry.length - 1];
-
-        const dashedLines = [];
-        if (!startNodeCoordinates.equals(linkStartCoordinates)) {
-            dashedLines.push(
-                this.renderDashedLine(
-                    startNodeCoordinates,
-                    linkStartCoordinates,
-                    'startNodeDashedLine'
-                )
-            );
-        }
-        if (!endNodeCoordinates.equals(linkEndCoordinates)) {
-            dashedLines.push(
-                this.renderDashedLine(
-                    endNodeCoordinates,
-                    linkEndCoordinates,
-                    'endNodeDashedLine'
-                )
-            );
-        }
-        return dashedLines;
-    };
-
-    private renderDashedLine = (
-        startCoordinates: L.LatLng,
-        endCoordinates: L.LatLng,
-        key: string
-    ) => {
         return (
-            <Polyline
-                positions={[startCoordinates, endCoordinates]}
-                key={key}
-                color={'#EFC210'}
-                weight={5}
-                opacity={0.75}
-                dashArray={'10, 10'}
+            <LinkDashedLines
+                geometry={link.geometry}
+                startNode={link.startNode}
+                endNode={link.endNode}
+                color={'#efc210'}
             />
         );
     };
