@@ -27,7 +27,7 @@ class ApolloClient {
     }
 
     public clearStore = async () => {
-        // Remove all data from the store. Unlike resetStore, clearStore will not refetch any active queries.
+        // Remove all data from the store.
         await this.client.clearStore();
     };
 
