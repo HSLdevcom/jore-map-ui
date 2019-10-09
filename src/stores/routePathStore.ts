@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
-import lengthCalculator from '~/util/lengthCalculator';
+import LeafletUtils from '~/util/leafletUtils';
 import INeighborLink from '~/models/INeighborLink';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 
@@ -492,7 +492,7 @@ export class RoutePathStore {
     public getCalculatedLength = (): number => {
         if (this.routePath && this.routePath.routePathLinks) {
             return Math.floor(
-                lengthCalculator.fromRoutePathLinks(
+                LeafletUtils.calculateLength.fromRoutePathLinks(
                     this.routePath!.routePathLinks
                 )
             );

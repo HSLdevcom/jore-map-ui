@@ -199,12 +199,15 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     };
 
     private toggleIsEditingEnabled = () => {
+        const linkStore = this.props.linkStore;
         const isEditingDisabled = this.state.isEditingDisabled;
         if (!isEditingDisabled) {
-            this.props.linkStore!.resetChanges();
+            linkStore!.resetChanges();
+        } else {
+            linkStore!.updateLinkGeometry(linkStore!.link.geometry);
+            this.validateLink();
         }
         this.toggleIsEditingDisabled();
-        if (!isEditingDisabled) this.validateLink();
     };
 
     private validateLink = () => {
