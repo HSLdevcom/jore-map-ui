@@ -157,7 +157,7 @@ export class LinkStore {
 
     public getCalculatedLength = (): number => {
         if (this.link && this.link.geometry) {
-            return LeafletUtils.calculateLength.fromLatLngs(this.link.geometry);
+            return LeafletUtils.calculateLengthFromLatLngs(this.link.geometry);
         }
         return 0;
     };

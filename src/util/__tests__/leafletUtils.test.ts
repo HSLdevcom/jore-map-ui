@@ -1,7 +1,7 @@
 import { LatLng } from 'leaflet';
 import LeafletUtils from '../leafletUtils';
 
-describe('leafletUtils.calculateLength.fromLatLngs', () => {
+describe('leafletUtils.calculateLengthFromLatLngs', () => {
     it('Calculates length between two points', () => {
         const positions: LatLng[] = [
             new LatLng(60.165958, 24.9436),
@@ -11,7 +11,7 @@ describe('leafletUtils.calculateLength.fromLatLngs', () => {
         // https://gps-coordinates.org/distance-between-coordinates.php
         // calculated distance to 3711.12 meters, rounds to 3711
         const expectedLength = 3711;
-        expect(LeafletUtils.calculateLength.fromLatLngs(positions)).toEqual(
+        expect(LeafletUtils.calculateLengthFromLatLngs(positions)).toEqual(
             expectedLength
         );
     });
