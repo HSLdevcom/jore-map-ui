@@ -1,6 +1,5 @@
 import ReactDOMServer from 'react-dom/server';
 import * as L from 'leaflet';
-import { IRoutePathLink } from '~/models';
 import * as s from './leafletUtils.scss';
 
 const DEFAULT_POPUP_OFFSET = -30;
@@ -34,11 +33,6 @@ const calculateLength = {
             length += latLngs[index - 1].distanceTo(latLng);
         });
         return Math.round(length);
-    },
-    fromRoutePathLinks: (rpLinks: IRoutePathLink[]) => {
-        return rpLinks.reduce((total, rpLink) => {
-            return total + calculateLength.fromLatLngs(rpLink.geometry);
-        }, 0);
     }
 };
 
