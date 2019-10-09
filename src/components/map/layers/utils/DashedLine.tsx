@@ -7,7 +7,7 @@ interface IDashedLineProps {
     color: string;
 }
 
-class LinkDashedLines extends Component<IDashedLineProps> {
+class DashedLine extends Component<IDashedLineProps> {
     render() {
         const { startPoint, endPoint, color } = this.props;
 
@@ -26,4 +26,4 @@ class LinkDashedLines extends Component<IDashedLineProps> {
     }
 }
 
-export default LinkDashedLines;
+export default DashedLine;

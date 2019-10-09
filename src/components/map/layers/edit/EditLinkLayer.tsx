@@ -170,13 +170,13 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         const link = this.props.linkStore!.link;
         return [
             <DashedLine
-                startPoint={link.geometry[link.geometry.length - 1]}
+                startPoint={link.geometry[0]}
                 endPoint={link.startNode.coordinates}
                 color={'#efc210'}
             />,
             <DashedLine
-                startPoint={link.geometry[0]}
-                endPoint={link.startNode.coordinates}
+                startPoint={link.geometry[link.geometry.length - 1]}
+                endPoint={link.endNode.coordinates}
                 color={'#efc210'}
             />
         ];
