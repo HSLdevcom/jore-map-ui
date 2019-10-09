@@ -36,12 +36,16 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
     };
 
     private onMouseEnter = () => {
-        this.props.routePathStore!.setHighlightedObject(this.props.id);
+        this.props.routePathStore!.setListHighlightedNodeIds([this.props.id]);
     };
 
     private onMouseLeave = () => {
-        if (this.props.routePathStore!.isMapItemHighlighted(this.props.id)) {
-            this.props.routePathStore!.setHighlightedObject(null);
+        if (
+            this.props.routePathStore!.listHighlightedNodeIds.includes(
+                this.props.id
+            )
+        ) {
+            this.props.routePathStore!.setListHighlightedNodeIds([]);
         }
     };
 
