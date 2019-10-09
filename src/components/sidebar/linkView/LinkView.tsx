@@ -11,7 +11,6 @@ import Loader from '~/components/shared/loader/Loader';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import { INode, ILink } from '~/models';
-import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import linkValidationModel from '~/models/validationModels/linkValidationModel';
@@ -183,7 +182,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const link = this.props.linkStore!.link;
         const linkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget(':id',
+            .toTarget(
+                ':id',
                 [link.startNode.id, link.endNode.id, link.transitType].join(',')
             )
             .toLink();
@@ -199,12 +199,15 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     };
 
     private toggleIsEditingEnabled = () => {
+        const linkStore = this.props.linkStore;
         const isEditingDisabled = this.state.isEditingDisabled;
         if (!isEditingDisabled) {
-            this.props.linkStore!.resetChanges();
+            linkStore!.resetChanges();
+        } else {
+            linkStore!.updateLinkGeometry(linkStore!.link.geometry);
+            this.validateLink();
         }
         this.toggleIsEditingDisabled();
-        if (!isEditingDisabled) this.validateLink();
     };
 
     private validateLink = () => {
@@ -232,11 +235,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     private onChangeLinkProperty = (property: keyof ILink) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
         this.validateProperty(linkValidationModel[property], property, value);
-    };
-
-    private useCalculatedLength = () => {
-        const length = this.props.linkStore!.getCalculatedLength();
-        this.onChangeLinkProperty('length')(length);
     };
 
     render() {
@@ -276,8 +274,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             transitTypeError =
                 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
         }
-
-        const calculatedLength = this.props.linkStore!.getCalculatedLength();
 
         return (
             <div className={s.linkView}>
@@ -361,13 +357,10 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                     'measuredLength'
                                 )}
                             />
-                            <CalculatedInputField
-                                label='PITUUS (m)'
-                                isDisabled={isEditingDisabled}
+                            <InputContainer
+                                label='LASKETTU PITUUS (m)'
+                                disabled={true}
                                 value={link.length}
-                                calculatedValue={calculatedLength}
-                                useCalculatedValue={this.useCalculatedLength}
-                                onChange={this.onChangeLinkProperty('length')}
                                 validationResult={
                                     invalidPropertiesMap['length']
                                 }

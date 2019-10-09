@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { IRoutePath } from '~/models';
+import { IRoutePath, ILink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import routeBuilder from '~/routing/routeBuilder';
@@ -10,6 +10,7 @@ import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import { IValidationResult } from '~/validation/FormValidator';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import RoutePathService from '~/services/routePathService';
+import LinkService from '~/services/linkService';
 import QueryParams from '~/routing/queryParams';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
@@ -69,11 +70,33 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
         window.alert('Toteutuksen suunnittelu kesken.');
     };
 
-    private updateLength = () => {
-        this.props.routePathStore!.updateRoutePathProperty(
-            'length',
-            this.props.routePathStore!.getCalculatedLength()
-        );
+    private updateLength = async () => {
+        const routePathStore = this.props.routePathStore;
+        const length = await this.getCalculatedLength();
+        routePathStore!.updateRoutePathProperty('length', length);
+    };
+
+    private getCalculatedLength = async () => {
+        const routePathStore = this.props.routePathStore;
+        const routePath = routePathStore!.routePath;
+        const promises: Promise<ILink>[] = [];
+        routePath!.routePathLinks.forEach(routePathLink => {
+            promises.push(
+                LinkService.fetchLink(
+                    routePathLink.startNode.id,
+                    routePathLink.endNode.id,
+                    routePath!.transitType
+                )
+            );
+        });
+        const links = await Promise.all(promises);
+        // RoutePath length is calculated by summing up length & measuredLength values of each link.
+        // If measured length is missing for a link, use length instead.
+        let length = 0;
+        links.forEach(link => {
+            length += link.measuredLength ? link.measuredLength : link.length;
+        });
+        return length;
     };
 
     private isPrimaryKeyDuplicated = () => {
@@ -118,7 +141,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
             !this.props.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const onChange = this.props.onChangeRoutePathProperty;
-
         const routePath = this.props.routePath;
         return (
             <div className={s.routePathInfoTabView}>
@@ -225,7 +247,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             />
                             <CalculatedInputField
                                 label='PITUUS (m)'
-                                calculatedValue={this.props.routePathStore!.getCalculatedLength()}
                                 isDisabled={isEditingDisabled}
                                 onChange={onChange('length')}
                                 useCalculatedValue={this.updateLength}

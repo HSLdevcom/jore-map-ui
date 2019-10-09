@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import lengthCalculator from '~/util/lengthCalculator';
+import LeafletUtils from '~/util/leafletUtils';
 import { roundLatLngs } from '~/util/geomHelper';
 
 export interface UndoState {
@@ -67,6 +67,7 @@ export class LinkStore {
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = roundLatLngs(latLngs);
         this._link.geometry = roundLatLngs(latLngs);
+        this._link.length = this.getCalculatedLength();
 
         const currentUndoState: UndoState = {
             link: updatedLink
@@ -156,7 +157,7 @@ export class LinkStore {
 
     public getCalculatedLength = (): number => {
         if (this.link && this.link.geometry) {
-            return Math.floor(lengthCalculator.fromLatLngs(this.link.geometry));
+            return LeafletUtils.calculateLengthFromLatLngs(this.link.geometry);
         }
         return 0;
     };

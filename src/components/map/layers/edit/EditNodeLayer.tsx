@@ -102,14 +102,14 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         const map = this.props.leaflet.map;
 
         map!.on('editable:vertex:dragend', (data: any) => {
-            this.refreshEditableLink(data.layer._leaflet_id);
+            this.updateLinkGeometry(data.layer._leaflet_id);
         });
         map!.on('editable:vertex:deleted', (data: any) => {
-            this.refreshEditableLink(data.layer._leaflet_id);
+            this.updateLinkGeometry(data.layer._leaflet_id);
         });
     };
 
-    private refreshEditableLink(leafletId: number) {
+    private updateLinkGeometry(leafletId: number) {
         const editableLink = this.editableLinks.find(
             (link: any) => link._leaflet_id === leafletId
         );
@@ -118,7 +118,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
             const editableLinkIndex = this.editableLinks.findIndex(
                 (link: any) => link._leaflet_id === leafletId
             );
-            this.props.nodeStore!.changeLinkGeometry(
+            this.props.nodeStore!.updateLinkGeometry(
                 latlngs,
                 editableLinkIndex
             );

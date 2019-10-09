@@ -1,7 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
-import lengthCalculator from '~/util/lengthCalculator';
 import INeighborLink from '~/models/INeighborLink';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 
@@ -487,17 +486,6 @@ export class RoutePathStore {
 
     public isListItemExtended = (objectId: string): boolean => {
         return this._extendedListItems.some(n => n === objectId);
-    };
-
-    public getCalculatedLength = (): number => {
-        if (this.routePath && this.routePath.routePathLinks) {
-            return Math.floor(
-                lengthCalculator.fromRoutePathLinks(
-                    this.routePath!.routePathLinks
-                )
-            );
-        }
-        return 0;
     };
 
     public getLinkGeom = (linkId: string): L.LatLng[] => {
