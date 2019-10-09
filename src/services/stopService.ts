@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 interface IStopAreaItem {
@@ -13,7 +13,7 @@ interface IStopSectionItem {
 
 class StopService {
     public static fetchAllStopAreas = async (): Promise<IStopAreaItem[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopAreas()
         });
 
@@ -23,7 +23,7 @@ class StopService {
     public static fetchAllStopSections = async (): Promise<
         IStopSectionItem[]
     > => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopSections()
         });
 

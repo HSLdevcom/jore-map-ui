@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
-import apolloClient from '~/util/ApolloClient';
-import { IRoutePath } from '~/models';
+import ApolloClient from '~/util/ApolloClient';
+import { IRoutePath, IViaName } from '~/models';
 import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
@@ -15,7 +15,7 @@ class RoutePathService {
         startTime: Date,
         direction: string
     ): Promise<IRoutePath> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathQuery(),
             variables: {
                 routeId,
@@ -32,7 +32,7 @@ class RoutePathService {
     public static fetchAllRoutePathPrimaryKeys = async (
         routeId: string
     ): Promise<IRoutePathPrimaryKey[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllRoutePathPrimaryKeysQuery(),
             variables: {
                 routeId
@@ -50,7 +50,7 @@ class RoutePathService {
         transitType: string,
         date: Date
     ): Promise<IRoutePath[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingLinkFromDate(),
             variables: {
                 startNodeId,
@@ -65,17 +65,30 @@ class RoutePathService {
         );
     };
 
-    public static updateRoutePath = async (routePath: IRoutePath) => {
-        await ApiClient.updateObject(endpoints.ROUTEPATH, routePath);
-        await apolloClient.clearStore();
+    public static updateRoutePath = async (
+        routePath: IRoutePath,
+        viaNames: IViaName[]
+    ) => {
+        const requestBody = {
+            routePath,
+            viaNames
+        };
+
+        await ApiClient.updateObject(endpoints.ROUTEPATH, requestBody);
     };
 
-    public static createRoutePath = async (routePath: IRoutePath) => {
+    public static createRoutePath = async (
+        routePath: IRoutePath,
+        viaNames: IViaName[]
+    ) => {
+        const requestBody = {
+            routePath,
+            viaNames
+        };
         const response = (await ApiClient.createObject(
             endpoints.ROUTEPATH,
-            routePath
+            requestBody
         )) as IRoutePathPrimaryKey;
-        await apolloClient.clearStore();
         return response;
     };
 }

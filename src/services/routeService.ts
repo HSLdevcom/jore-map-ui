@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/util/ApolloClient';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute, INode } from '~/models';
 import { IRoutePrimaryKey } from '~/models/IRoute';
@@ -33,7 +33,7 @@ class RouteService {
     };
 
     public static fetchAllRouteIds = async (): Promise<string[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllRoutesQuery()
         });
 
@@ -48,7 +48,7 @@ class RouteService {
             areRoutePathLinksExcluded
         }: { areRoutePathLinksExcluded?: boolean } = {}
     ): Promise<IRoute> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRouteQuery(
                 Boolean(areRoutePathLinksExcluded)
             ),
@@ -62,7 +62,6 @@ class RouteService {
 
     public static updateRoute = async (route: IRoute) => {
         await ApiClient.updateObject(endpoints.ROUTE, route);
-        await apolloClient.clearStore();
     };
 
     public static createRoute = async (route: IRoute) => {
@@ -70,7 +69,6 @@ class RouteService {
             endpoints.ROUTE,
             route
         )) as IRoutePrimaryKey;
-        await apolloClient.clearStore();
         return response.id;
     };
 }

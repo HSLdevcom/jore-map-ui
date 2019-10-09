@@ -259,6 +259,20 @@ const getAllLineHeadersQuery = () => {
     `;
 };
 
+const getViaName = () => {
+  return gql`
+      query getViaName($relid: Int!) {
+        viaName: viaNimetByRelid(relid: $relid) {
+          relid
+          maaranpaa1
+          maaranpaa2
+          maaranpaa1R
+          maaranpaa2R
+        }
+      }
+  `;
+};
+
 const lineQueryFields = `
     lintunnus
     linperusreitti
@@ -559,5 +573,6 @@ export default {
     getAllStopAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,
-    getAllStopSections
+    getAllStopSections,
+    getViaName
 };

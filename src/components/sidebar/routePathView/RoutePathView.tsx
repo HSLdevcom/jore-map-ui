@@ -19,13 +19,14 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import { ErrorStore } from '~/stores/errorStore';
 import navigator from '~/routing/navigator';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import { IRoutePath } from '~/models';
+import { IRoutePath, IViaName, IRoutePathLink } from '~/models';
 import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import RouteService from '~/services/routeService';
 import routeBuilder from '~/routing/routeBuilder';
 import QueryParams from '~/routing/queryParams';
 import SubSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
+import ViaNameService from '~/services/viaNameService';
 import LineService from '~/services/lineService';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventManager from '~/util/EventManager';
@@ -120,12 +121,13 @@ class RoutePathView extends ViewFormBase<
                     lineId,
                     route
                 );
-                this.props.routePathStore!.setRoutePath(newRoutePath);
+                this.props.routePathStore!.init(newRoutePath, []);
             } else {
-                this.props.routePathStore!.setRoutePath(
+                this.props.routePathStore!.init(
                     RoutePathFactory.createNewRoutePathFromOld(
                         this.props.routePathStore!.routePath!
-                    )
+                    ),
+                    []
                 );
             }
             this.props.toolbarStore!.selectTool(
@@ -176,6 +178,7 @@ class RoutePathView extends ViewFormBase<
     };
 
     private fetchRoutePath = async () => {
+        this.setState({ isLoading: true });
         const [
             routeId,
             startTimeString,
@@ -187,13 +190,49 @@ class RoutePathView extends ViewFormBase<
                 startTimeString,
                 direction
             );
-            this.props.routePathStore!.setRoutePath(routePath);
+            const viaNames = await this.fetchViaNames(routePath);
+            this.props.routePathStore!.init(routePath, viaNames);
         } catch (e) {
             this.props.errorStore!.addError(
                 'Reitinsuunnan haku ei onnistunut.',
                 e
             );
         }
+    };
+
+    private fetchViaNames = async (routePath: IRoutePath) => {
+        try {
+            const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
+            const promises: Promise<void>[] = [];
+            const viaNames: IViaName[] = [];
+
+            routePathLinks.forEach((routePathLink: IRoutePathLink) => {
+                const createPromise = async () => {
+                    try {
+                        const viaName: IViaName | null = await ViaNameService.fetchViaName(
+                            routePathLink.id
+                        );
+                        if (viaName) viaNames.push(viaName);
+                    } catch (err) {
+                        this.props.errorStore!.addError(
+                            'Määränpää tietojen (via nimet) haku ei onnistunut.',
+                            err
+                        );
+                    }
+                };
+
+                promises.push(createPromise());
+            });
+
+            await Promise.all(promises);
+            return viaNames;
+        } catch (err) {
+            this.props.errorStore!.addError(
+                'Määränpää tietojen (via nimet) haku ei onnistunut.',
+                err
+            );
+        }
+        return [];
     };
 
     private onChangeRoutePathProperty = (property: keyof IRoutePath) => (
@@ -231,10 +270,13 @@ class RoutePathView extends ViewFormBase<
     private save = async () => {
         this.setState({ isLoading: true });
         let redirectUrl: string | undefined;
+        const routePath = this.props.routePathStore!.routePath;
         try {
             if (this.props.isNewRoutePath) {
+                const viaNames = this.props.routePathStore!.viaNames;
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
-                    this.props.routePathStore!.routePath!
+                    routePath!,
+                    viaNames
                 );
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
@@ -250,33 +292,32 @@ class RoutePathView extends ViewFormBase<
                     )
                     .toLink();
             } else {
-                const routePathToUpdate = _.cloneDeep(
-                    this.props.routePathStore!.routePath!
-                );
+                const routePathToUpdate = _.cloneDeep(routePath!);
                 const hasRoutePathLinksChanged = this.props.routePathStore!.hasRoutePathLinksChanged();
 
                 // If routePathLinks are not changed, no need to update them (optimizing save time in backend)
                 if (!hasRoutePathLinksChanged) {
                     routePathToUpdate.routePathLinks = [];
                 }
-                await RoutePathService.updateRoutePath(routePathToUpdate);
+                const viaNames = this.props.routePathStore!.viaNames;
+                await RoutePathService.updateRoutePath(
+                    routePathToUpdate,
+                    viaNames
+                );
             }
-            this.props.routePathStore!.setOldRoutePath(
-                this.props.routePathStore!.routePath!
-            );
-
             this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
+        if (redirectUrl) {
+            navigator.goTo(redirectUrl);
+        }
+        await this.fetchRoutePath();
         this.setState({
             isEditingDisabled: true,
             invalidPropertiesMap: {},
             isLoading: false
         });
-        if (redirectUrl) {
-            navigator.goTo(redirectUrl);
-        }
     };
 
     private toggleIsEditing = () => {
@@ -284,7 +325,7 @@ class RoutePathView extends ViewFormBase<
 
         this.props.routePathStore!.setNeighborRoutePathLinks([]);
         if (!isEditingDisabled) {
-            this.props.routePathStore!.undoChanges();
+            this.props.routePathStore!.resetChanges();
         }
         this.toggleIsEditingDisabled();
         if (!isEditingDisabled) this.validateRoutePath();
@@ -315,7 +356,6 @@ class RoutePathView extends ViewFormBase<
             this.props.routePathStore!.invalidLinkOrderNumbers.length === 0;
         // TODO:
         // are nodeFormsValid ...
-
         const isSaveButtonDisabled =
             this.state.isEditingDisabled ||
             !this.props.routePathStore!.isDirty ||
@@ -324,6 +364,7 @@ class RoutePathView extends ViewFormBase<
             !areLinkFormsValid;
 
         const copySegmentStore = this.props.routePathCopySegmentStore;
+
         const isCopyRoutePathSegmentViewVisible =
             copySegmentStore!.startNode && copySegmentStore!.endNode;
 
