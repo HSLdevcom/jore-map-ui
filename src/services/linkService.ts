@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/util/ApolloClient';
 import ILink from '~/models/ILink';
 import ApiClient from '~/util/ApiClient';
 import { LatLng } from 'leaflet';
@@ -12,7 +12,7 @@ class LinkService {
     public static fetchLinksWithStartNodeOrEndNode = async (
         nodeId: string
     ): Promise<ILink[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLinksByStartNodeAndEndNodeQuery(),
             variables: { nodeId }
         });
@@ -30,7 +30,7 @@ class LinkService {
         endNodeId: string,
         transitTypeCode: string
     ): Promise<ILink> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLinkQuery(),
             variables: { startNodeId, endNodeId, transitType: transitTypeCode }
         });
@@ -41,7 +41,7 @@ class LinkService {
         startNodeId: string,
         endNodeId: string
     ): Promise<ILink[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLinksQuery(),
             variables: { startNodeId, endNodeId }
         });
@@ -57,12 +57,10 @@ class LinkService {
             geometry: link.geometry.map(coor => new LatLng(coor.lat, coor.lng))
         };
         await ApiClient.updateObject(endpoints.LINK, simplifiedLink);
-        await apolloClient.clearStore();
     };
 
     public static createLink = async (link: ILink) => {
         await ApiClient.createObject(endpoints.LINK, link);
-        await apolloClient.clearStore();
     };
 }
 

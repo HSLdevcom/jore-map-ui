@@ -4,6 +4,7 @@ import IError from '~/models/IError';
 import FetchStatusCode from '~/enums/fetchStatusCode';
 import AlertStore from '~/stores/alertStore';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
+import ApolloClient from '~/util/ApolloClient';
 import LoginStore from '~/stores/loginStore';
 import ApiClientHelper from './apiClientHelper';
 
@@ -22,15 +23,19 @@ type credentials = 'include';
 
 class ApiClient {
     public updateObject = async (entityName: endpoints, object: any) => {
-        return this.postRequest(entityName, object);
+        const response = this.postRequest(entityName, object);
+        ApolloClient.clearStore();
+        return response;
     };
 
     public createObject = async (entityName: endpoints, object: any) => {
-        return await this.sendBackendRequest(
+        const response = await this.sendBackendRequest(
             RequestMethod.PUT,
             entityName,
             object
         );
+        ApolloClient.clearStore();
+        return response;
     };
 
     public deleteObject = async (entityName: endpoints, object: any) => {

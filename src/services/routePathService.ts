@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
-import apolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/util/ApolloClient';
 import { IRoutePath, IViaName } from '~/models';
 import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
@@ -15,7 +15,7 @@ class RoutePathService {
         startTime: Date,
         direction: string
     ): Promise<IRoutePath> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathQuery(),
             variables: {
                 routeId,
@@ -32,7 +32,7 @@ class RoutePathService {
     public static fetchAllRoutePathPrimaryKeys = async (
         routeId: string
     ): Promise<IRoutePathPrimaryKey[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllRoutePathPrimaryKeysQuery(),
             variables: {
                 routeId
@@ -50,7 +50,7 @@ class RoutePathService {
         transitType: string,
         date: Date
     ): Promise<IRoutePath[]> => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingLinkFromDate(),
             variables: {
                 startNodeId,
@@ -75,7 +75,6 @@ class RoutePathService {
         };
 
         await ApiClient.updateObject(endpoints.ROUTEPATH, requestBody);
-        await apolloClient.clearStore();
     };
 
     public static createRoutePath = async (
@@ -90,7 +89,6 @@ class RoutePathService {
             endpoints.ROUTEPATH,
             requestBody
         )) as IRoutePathPrimaryKey;
-        await apolloClient.clearStore();
         return response;
     };
 }

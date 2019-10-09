@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/util/ApolloClient';
 import IExternalNode from '~/models/externals/IExternalNode';
 import NodeFactory from '~/factories/nodeFactory';
 import { INode, ILink } from '~/models';
@@ -15,15 +15,16 @@ interface INodeSavingModel {
 
 class NodeService {
     public static fetchNode = async (nodeId: string) => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getNodeQuery(),
-            variables: { nodeId }
+            variables: { nodeId },
+            fetchPolicy: 'no-cache' // no-cache is needed because otherwise nested data fetch does not always work
         });
         return NodeFactory.mapExternalNode(queryResult.data.node);
     };
 
     public static fetchAllNodes = async () => {
-        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllNodesQuery()
         });
         return queryResult.data.allNodes.nodes.map((node: IExternalNode) =>
@@ -38,7 +39,6 @@ class NodeService {
         };
 
         await ApiClient.updateObject(endpoints.NODE, requestBody);
-        await apolloClient.clearStore();
     };
 
     public static createNode = async (node: INode) => {
@@ -46,7 +46,6 @@ class NodeService {
             endpoints.NODE,
             node
         )) as INodePrimaryKey;
-        await apolloClient.clearStore();
         return response.id;
     };
 }
