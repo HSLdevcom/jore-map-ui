@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
 import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
@@ -7,7 +7,8 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import ArrowDecorator from '../ArrowDecorator';
+import ArrowDecorator from '../utils/ArrowDecorator';
+import DashedLine from '../utils/DashedLine';
 
 const ROUTE_COLOR = '#000';
 
@@ -32,11 +33,14 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             .routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
 
-        let res: ReactNode[] = [];
-        routePathLinks.forEach((rpLink, index) => {
-            res = res.concat(this.renderLink(rpLink));
+        return routePathLinks.map((rpLink, index) => {
+            return (
+                <div key={index}>
+                    {this.renderLink(rpLink)}
+                    {this.renderDashedLines(rpLink)}
+                </div>
+            );
         });
-        return res;
     };
 
     private renderLink = (routePathLink: IRoutePathLink) => {
@@ -69,6 +73,23 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                     onClick={onRoutePathLinkClick}
                 />
             )
+        ];
+    };
+
+    private renderDashedLines = (routePathLink: IRoutePathLink) => {
+        return [
+            <DashedLine
+                startPoint={
+                    routePathLink.geometry[routePathLink.geometry.length - 1]
+                }
+                endPoint={routePathLink.startNode.coordinates}
+                color={'#efc210'}
+            />,
+            <DashedLine
+                startPoint={routePathLink.geometry[0]}
+                endPoint={routePathLink.startNode.coordinates}
+                color={'#efc210'}
+            />
         ];
     };
 
