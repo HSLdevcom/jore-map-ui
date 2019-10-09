@@ -8,6 +8,7 @@ import NodeStopFactory from '~/factories/nodeStopFactory';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelper';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import GeocodingService from '~/services/geocodingService';
 
 export interface UndoState {
     links: ILink[];
@@ -20,6 +21,7 @@ export class NodeStore {
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
     @observable private _isStopFormValid: boolean;
+    @observable private _isEditingDisabled: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -28,6 +30,7 @@ export class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
+        this._isEditingDisabled = true;
     }
 
     @computed
@@ -51,6 +54,11 @@ export class NodeStore {
     @computed
     get isStopFormValid() {
         return this._isStopFormValid;
+    }
+
+    @computed
+    get isEditingDisabled() {
+        return this._isEditingDisabled;
     }
 
     @action
@@ -142,6 +150,10 @@ export class NodeStore {
         if (nodeLocationType === 'coordinates') {
             this.updateNode('measurementType', measurementType.toString());
         }
+
+        if (nodeLocationType === 'coordinatesProjection') {
+            this.fetchAddressData();
+        }
     };
 
     @action
@@ -150,6 +162,27 @@ export class NodeStore {
             node.coordinatesProjection = node.coordinates;
             node.coordinatesManual = node.coordinates;
         }
+    };
+
+    @action
+    public fetchAddressData = async () => {
+        if (!this.node || !this.node.stop) return;
+
+        const coordinates = this.node.coordinatesProjection;
+        const addressFi: string = await GeocodingService.fetchStreetNameFromCoordinates(
+            coordinates,
+            'fi'
+        );
+        const addressSw: string = await GeocodingService.fetchStreetNameFromCoordinates(
+            coordinates,
+            'sv'
+        );
+        const postalNumber: string = await GeocodingService.fetchPostalNumberFromCoordinates(
+            coordinates
+        );
+        this.updateStop('addressFi', addressFi);
+        this.updateStop('addressSw', addressSw);
+        this.updateStop('postalNumber', postalNumber);
     };
 
     @action
@@ -180,6 +213,16 @@ export class NodeStore {
     @action
     public setIsStopFormValid = (isStopFormValid: boolean) => {
         this._isStopFormValid = isStopFormValid;
+    };
+
+    @action
+    public setIsEditingDisabled = (isEditingDisabled: boolean) => {
+        this._isEditingDisabled = isEditingDisabled;
+    };
+
+    @action
+    public toggleIsEditingDisabled = () => {
+        this._isEditingDisabled = !this._isEditingDisabled;
     };
 
     @action

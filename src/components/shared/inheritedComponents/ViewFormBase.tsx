@@ -5,20 +5,22 @@ import EventManager from '~/util/EventManager';
 interface IViewFormBaseState {
     isLoading: boolean;
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
+    isEditingDisabled: boolean; // TODO: remove
 }
 
-// TODO: refactor to use composition?
+// TODO: refactor to use composition / refactor to its own store?
 // Inheritance is considered as a bad practice, react doesn't really support inheritance:
 // https://stackoverflow.com/questions/31072841/componentdidmount-method-not-triggered-when-using-inherited-es6-react-class
 class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
     Props,
     State
 > {
+    // TODO: remove
     componentDidMount() {
         EventManager.on('geometryChange', this.enableEditing);
     }
 
+    // TODO: remove
     componentWillUnmount() {
         EventManager.off('geometryChange', this.enableEditing);
     }
@@ -74,6 +76,7 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
         });
     };
 
+    // TODO: remove
     protected toggleIsEditingDisabled = () => {
         const isEditingDisabled = !this.state.isEditingDisabled;
         if (isEditingDisabled) {
@@ -88,6 +91,13 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
         }
     };
 
+    protected clearInvalidPropertiesMap = () => {
+        this.setState({
+            invalidPropertiesMap: {}
+        });
+    };
+
+    // TODO: remove
     protected enableEditing = () => {
         this.setState({ isEditingDisabled: false });
     };
