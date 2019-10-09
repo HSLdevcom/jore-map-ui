@@ -13,7 +13,7 @@ import NodeMarker from '../markers/NodeMarker';
 import Marker from '../markers/Marker';
 import { LeafletContext } from '../../Map';
 import ArrowDecorator from '../utils/ArrowDecorator';
-import LinkDashedLines from '../utils/LinkDashedLines';
+import DashedLine from '../utils/DashedLine';
 
 const START_MARKER_COLOR = '#00df0b';
 
@@ -168,14 +168,18 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     private renderDashedLines = () => {
         const link = this.props.linkStore!.link;
-        return (
-            <LinkDashedLines
-                geometry={link.geometry}
-                startNode={link.startNode}
-                endNode={link.endNode}
+        return [
+            <DashedLine
+                startPoint={link.geometry[link.geometry.length - 1]}
+                endPoint={link.startNode.coordinates}
+                color={'#efc210'}
+            />,
+            <DashedLine
+                startPoint={link.geometry[0]}
+                endPoint={link.startNode.coordinates}
                 color={'#efc210'}
             />
-        );
+        ];
     };
 
     render() {

@@ -8,7 +8,7 @@ import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { MapStore, MapFilter } from '~/stores/mapStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import ArrowDecorator from '../utils/ArrowDecorator';
-import LinkDashedLines from '../utils/LinkDashedLines';
+import DashedLine from '../utils/DashedLine';
 
 const ROUTE_COLOR = '#000';
 
@@ -77,14 +77,20 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     private renderDashedLines = (routePathLink: IRoutePathLink) => {
-        return (
-            <LinkDashedLines
-                geometry={routePathLink.geometry}
-                startNode={routePathLink.startNode}
-                endNode={routePathLink.endNode}
+        return [
+            <DashedLine
+                startPoint={
+                    routePathLink.geometry[routePathLink.geometry.length - 1]
+                }
+                endPoint={routePathLink.startNode.coordinates}
+                color={'#efc210'}
+            />,
+            <DashedLine
+                startPoint={routePathLink.geometry[0]}
+                endPoint={routePathLink.startNode.coordinates}
                 color={'#efc210'}
             />
-        );
+        ];
     };
 
     private renderLinkDecorator = () => {
