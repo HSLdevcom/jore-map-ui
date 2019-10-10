@@ -1,12 +1,12 @@
 import ToolbarTool from '~/enums/toolbarTool';
 import navigator from '~/routing/navigator';
-import EventManager from '~/util/EventManager';
+import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import { roundLatLng } from '~/util/geomHelper';
-import RouteBuilder from '~/routing/routeBuilder';
 import ToolbarStore from '~/stores/toolbarStore';
+import EventManager from '~/util/EventManager';
+import { roundLatLng } from '~/util/geomHelper';
 import BaseTool from './BaseTool';
 
 class AddNetworkNodeTool implements BaseTool {

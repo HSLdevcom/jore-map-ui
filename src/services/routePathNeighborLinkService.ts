@@ -1,15 +1,15 @@
 import { ApolloQueryResult } from 'apollo-client';
-import ApolloClient from '~/util/ApolloClient';
-import { NeighborToAddType } from '~/stores/routePathStore';
-import ErrorStore from '~/stores/errorStore';
-import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import RoutePathFactory from '~/factories/routePathFactory';
-import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
+import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
-import IGraphqlList from '~/models/externals/graphqlModelHelpers/IGraphqlList';
-import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalLink from '~/models/externals/IExternalLink';
+import IExternalNode from '~/models/externals/IExternalNode';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
+import IGraphqlList from '~/models/externals/graphqlModelHelpers/IGraphqlList';
+import ErrorStore from '~/stores/errorStore';
+import { NeighborToAddType } from '~/stores/routePathStore';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 interface IExtendedExternalNode extends IExternalNode {

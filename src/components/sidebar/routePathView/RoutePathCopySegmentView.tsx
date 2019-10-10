@@ -1,19 +1,19 @@
-import React from 'react';
 import { inject, observer } from 'mobx-react';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
-import { FiCopy, FiExternalLink } from 'react-icons/fi';
 import Moment from 'moment';
-import RoutePathLinkService from '~/services/routePathLinkService';
+import React from 'react';
+import { FiCopy, FiExternalLink } from 'react-icons/fi';
+import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import { IRoutePathLink } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import {
-    RoutePathCopySegmentStore,
-    ICopySegmentRoutePath
-} from '~/stores/routePathCopySegmentStore';
+import RoutePathLinkService from '~/services/routePathLinkService';
 import { AlertStore, AlertType } from '~/stores/alertStore';
+import {
+    ICopySegmentRoutePath,
+    RoutePathCopySegmentStore
+} from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import { IRoutePathLink } from '~/models';
 import * as s from './routePathCopySegmentView.scss';
 
 interface IRoutePathCopySegmentViewProps {

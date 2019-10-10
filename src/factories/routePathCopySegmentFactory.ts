@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { ICopySegmentRoutePath, ICopySegmentLink } from '~/stores/routePathCopySegmentStore';
+import { ICopySegmentLink, ICopySegmentRoutePath } from '~/stores/routePathCopySegmentStore';
 
 interface IExternalLinkWithRoutePathInfo {
     reitunnus: string;

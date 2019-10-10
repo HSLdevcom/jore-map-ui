@@ -1,6 +1,6 @@
 import * as L from 'leaflet';
-import ApiClient, { RequestMethod } from '~/util/ApiClient';
 import constants from '~/constants/constants';
+import ApiClient, { RequestMethod } from '~/util/ApiClient';
 
 type langOptions = 'fi' | 'sv';
 
@@ -15,7 +15,9 @@ class GeocodingService {
         coordinates: L.LatLng,
         lang: langOptions
     ): Promise<string> => {
-        const requestUrl = `${constants.STREET_NAME_REVERSE_GEOCODING_URL}?lat=${coordinates.lat}&lon=${coordinates.lng}&format=geojson&accept-language=${lang}`;
+        const requestUrl = `${constants.STREET_NAME_REVERSE_GEOCODING_URL}?lat=${
+            coordinates.lat
+        }&lon=${coordinates.lng}&format=geojson&accept-language=${lang}`;
 
         const response = await ApiClient.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
 
@@ -34,7 +36,9 @@ class GeocodingService {
     public static fetchPostalNumberFromCoordinates = async (
         coordinates: L.LatLng
     ): Promise<string> => {
-        const requestUrl = `${constants.POSTAL_NUMBER_REVERSE_GEOCODING_URL}?point.lat=${coordinates.lat}&point.lon=${coordinates.lng}`;
+        const requestUrl = `${constants.POSTAL_NUMBER_REVERSE_GEOCODING_URL}?point.lat=${
+            coordinates.lat
+        }&point.lon=${coordinates.lng}`;
 
         const response = await ApiClient.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
 

@@ -1,6 +1,6 @@
 import * as L from 'leaflet';
-import TransitType from '~/enums/transitType';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import IStop from './IStop';
 
 interface INodePrimaryKey {

@@ -1,6 +1,6 @@
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import ReactMoment from 'react-moment';
-import { observer, inject } from 'mobx-react';
 import { IRoutePath } from '~/models';
 import RouteService from '~/services/routeService';
 import { ErrorStore } from '~/stores/errorStore';

@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
-import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import { FiXCircle, FiEdit3 } from 'react-icons/fi';
-import { LoginStore } from '~/stores/loginStore';
+import { inject, observer } from 'mobx-react';
+import React, { ReactNode } from 'react';
+import { FiEdit3, FiXCircle } from 'react-icons/fi';
 import navigator from '~/routing/navigator';
+import { LoginStore } from '~/stores/loginStore';
 import * as s from './sidebarHeader.scss';
 
 interface ISidebarHeaderProps {

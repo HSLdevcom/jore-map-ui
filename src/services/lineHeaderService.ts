@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
 import endpoints from '~/enums/endpoints';
+import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
-import LineHeaderFactory from '~/factories/lineHeaderFactory';
+import ApiClient from '~/util/ApiClient';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class LineHeaderService {

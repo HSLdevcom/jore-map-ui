@@ -1,6 +1,6 @@
-import React from 'react';
-import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import { observer } from 'mobx-react';
+import React from 'react';
 import * as s from './checkbox.scss';
 
 interface ICheckboxProps {

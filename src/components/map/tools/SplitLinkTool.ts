@@ -1,17 +1,17 @@
-import ToolbarTool from '~/enums/toolbarTool';
-import EventManager from '~/util/EventManager';
-import ConfirmStore from '~/stores/confirmStore';
-import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import NodeService from '~/services/nodeService';
 import SplitConfirmContent from '~/components/sidebar/splitLinkView/SplitConfirmContent';
+import NodeType from '~/enums/nodeType';
+import ToolbarTool from '~/enums/toolbarTool';
+import navigator from '~/routing/navigator';
+import RouteBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import NodeService from '~/services/nodeService';
+import ConfirmStore from '~/stores/confirmStore';
 import ErrorStore from '~/stores/errorStore';
 import LinkStore from '~/stores/linkStore';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
-import NodeType from '~/enums/nodeType';
+import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
-import RouteBuilder from '~/routing/routeBuilder';
-import navigator from '~/routing/navigator';
-import SubSites from '~/routing/subSites';
 import BaseTool from './BaseTool';
 
 class SplitLinkTool implements BaseTool {

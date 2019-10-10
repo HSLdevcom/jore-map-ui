@@ -1,4 +1,4 @@
-import { IRoutePath, INode } from '~/models';
+import { INode, IRoutePath } from '~/models';
 
 const loopRoutePathNodes = (
     routePath: IRoutePath,

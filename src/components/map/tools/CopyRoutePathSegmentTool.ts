@@ -1,13 +1,13 @@
-import EventManager, { INodeClickParams, INetworkNodeClickParams } from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
+import { INode } from '~/models';
+import NodeService from '~/services/nodeService';
+import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
-import NodeService from '~/services/nodeService';
-import RoutePathSegmentService from '~/services/routePathSegmentService';
+import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/util/EventManager';
 import ModelHelper from '~/util/ModelHelper';
-import { INode } from '~/models';
 import BaseTool from './BaseTool';
 
 class CopyRoutePathSegmentTool implements BaseTool {

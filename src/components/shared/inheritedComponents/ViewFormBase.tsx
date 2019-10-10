@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import EventManager from '~/util/EventManager';
+import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 
 interface IViewFormBaseState {
     isLoading: boolean;

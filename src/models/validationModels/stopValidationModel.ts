@@ -1,6 +1,6 @@
 import regexRules from '~/validation/regexRules';
-import IStop from '../IStop';
 import constants from '../../constants/constants';
+import IStop from '../IStop';
 
 const nameRule = 'required|min:1|max:20|string';
 const addressRule = 'required|min:1|max:20|string';

@@ -1,13 +1,13 @@
 import L from 'leaflet';
 import 'leaflet.vectorgrid';
 import _ from 'lodash';
-import { IReactionDisposer, reaction } from 'mobx';
-import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
+import { reaction, IReactionDisposer } from 'mobx';
 import { Moment } from 'moment';
+import { withLeaflet, GridLayer, GridLayerProps } from 'react-leaflet';
 import TransitType from '~/enums/transitType';
-import NetworkStore, { NodeSize, MapLayer } from '~/stores/networkStore';
-import NodeStore from '~/stores/nodeStore';
 import LinkStore from '~/stores/linkStore';
+import NetworkStore, { MapLayer, NodeSize } from '~/stores/networkStore';
+import NodeStore from '~/stores/nodeStore';
 
 declare module 'leaflet' {
     let vectorGrid: any;

@@ -1,15 +1,15 @@
-import RoutePathStore, { NeighborToAddType } from '~/stores/routePathStore';
-import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
 import { INode } from '~/models';
+import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
+import RoutePathStore, { NeighborToAddType } from '~/stores/routePathStore';
 import EventManager, {
-    INetworkNodeClickParams,
     IEditRoutePathLayerNodeClickParams,
-    IEditRoutePathNeighborLinkClickParams
+    IEditRoutePathNeighborLinkClickParams,
+    INetworkNodeClickParams
 } from '~/util/EventManager';
 import ModelHelper from '~/util/ModelHelper';
-import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import BaseTool from './BaseTool';
 
 /**

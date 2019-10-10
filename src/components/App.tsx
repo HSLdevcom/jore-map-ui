@@ -1,27 +1,27 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Route, RouteComponentProps } from 'react-router-dom';
 import { matchPath, withRouter, Switch } from 'react-router';
-import '~/util/KeyEventHandler';
+import { Route, RouteComponentProps } from 'react-router-dom';
+import constants from '~/constants/constants';
 import endpoints from '~/enums/endpoints';
-import { LoginStore } from '~/stores/loginStore';
-import { MapStore } from '~/stores/mapStore';
+import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
-import ApiClient from '~/util/ApiClient';
-import navigator from '~/routing/navigator';
-import constants from '~/constants/constants';
 import CodeListService from '~/services/codeListService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
+import { MapStore } from '~/stores/mapStore';
+import ApiClient from '~/util/ApiClient';
+import '~/util/KeyEventHandler';
 import * as localStorageHelper from '~/util/localStorageHelper';
-import OverlayContainer from './overlays/OverlayContainer';
 import ErrorBar from './ErrorBar';
-import Map from './map/Map';
-import Sidebar from './sidebar/Sidebar';
-import Login from './login/Login';
 import NavigationBar from './NavigationBar';
 import * as s from './app.scss';
+import Login from './login/Login';
+import Map from './map/Map';
+import OverlayContainer from './overlays/OverlayContainer';
+import Sidebar from './sidebar/Sidebar';
 
 interface IAppState {
     isLoginInProgress: boolean;

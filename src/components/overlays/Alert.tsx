@@ -1,5 +1,5 @@
-import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { IoMdInformationCircle } from 'react-icons/io';

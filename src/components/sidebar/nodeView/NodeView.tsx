@@ -1,36 +1,36 @@
-import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
 import classnames from 'classnames';
-import { match } from 'react-router';
 import { LatLng } from 'leaflet';
+import { reaction, IReactionDisposer } from 'mobx';
+import { inject, observer } from 'mobx-react';
+import * as React from 'react';
+import { match } from 'react-router';
+import { Button, Dropdown } from '~/components/controls';
+import TextContainer from '~/components/controls/TextContainer';
+import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
+import Loader from '~/components/shared/loader/Loader';
+import ButtonType from '~/enums/buttonType';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import NodeType from '~/enums/nodeType';
+import StartNodeType from '~/enums/startNodeType';
 import NodeFactory from '~/factories/nodeFactory';
 import { INode } from '~/models';
-import { AlertStore } from '~/stores/alertStore';
-import { NodeStore } from '~/stores/nodeStore';
-import { MapStore } from '~/stores/mapStore';
-import LinkService from '~/services/linkService';
-import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import { Button, Dropdown } from '~/components/controls';
-import NodeLocationType from '~/types/NodeLocationType';
 import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import NodeType from '~/enums/nodeType';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
-import TextContainer from '~/components/controls/TextContainer';
+import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import LinkService from '~/services/linkService';
+import NodeService from '~/services/nodeService';
+import { AlertStore } from '~/stores/alertStore';
+import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
+import { NodeStore } from '~/stores/nodeStore';
+import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
-import StartNodeType from '~/enums/startNodeType';
-import { ErrorStore } from '~/stores/errorStore';
-import { CodeListStore } from '~/stores/codeListStore';
-import NodeService from '~/services/nodeService';
-import routeBuilder from '~/routing/routeBuilder';
-import ButtonType from '~/enums/buttonType';
-import Loader from '~/components/shared/loader/Loader';
+import InputContainer from '../../controls/InputContainer';
 import SidebarHeader from '../SidebarHeader';
 import StopForm from './StopForm';
-import InputContainer from '../../controls/InputContainer';
 import * as s from './nodeView.scss';
 
 interface INodeViewProps {
@@ -135,7 +135,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             return await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         } catch (e) {
             this.props.errorStore!.addError(
-                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
+                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${
+                    node.id
+                } (soltunnus), ei onnistunut.`,
                 e
             );
             return null;

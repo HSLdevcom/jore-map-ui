@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { Popup, withLeaflet } from 'react-leaflet';
-import { PopupStore } from '~/stores/popupStore';
+import React, { Component } from 'react';
+import { withLeaflet, Popup } from 'react-leaflet';
 import { INode } from '~/models';
+import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
+import { PopupStore } from '~/stores/popupStore';
 import { LeafletContext } from '../Map';
 import * as s from './popupLayer.scss';
 

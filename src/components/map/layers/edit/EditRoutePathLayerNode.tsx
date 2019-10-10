@@ -1,17 +1,17 @@
-import React, { Component, ReactNode } from 'react';
 import { inject, observer } from 'mobx-react';
-import INode from '~/models/INode';
-import { RoutePathStore } from '~/stores/routePathStore';
-import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
-import { MapStore } from '~/stores/mapStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
+import React, { Component, ReactNode } from 'react';
 import ToolbarTool from '~/enums/toolbarTool';
+import INode from '~/models/INode';
+import { MapStore } from '~/stores/mapStore';
+import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager, {
     IEditRoutePathLayerNodeClickParams,
     INodeClickParams
 } from '~/util/EventManager';
-import NodeMarker, { NodeHighlightColor } from '../markers/NodeMarker';
 import Marker from '../markers/Marker';
+import NodeMarker, { NodeHighlightColor } from '../markers/NodeMarker';
 
 const START_MARKER_COLOR = '#00df0b';
 

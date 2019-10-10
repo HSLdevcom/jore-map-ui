@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
-import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
-import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import React, { Component } from 'react';
 import { MapStore } from '~/stores/mapStore';
-import EditRoutePathLayerNode from './EditRoutePathLayerNode';
+import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import EditRoutePathLayerLink from './EditRoutePathLayerLink';
+import EditRoutePathLayerNode from './EditRoutePathLayerNode';
 import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
 import RoutePathCopySegmentLayer from './routePathCopySegmentLayer';
 

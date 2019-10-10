@@ -1,24 +1,24 @@
+import classnames from 'classnames';
+import { Location } from 'history';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router';
-import { Location } from 'history';
-import classnames from 'classnames';
+import { Redirect, Route, Switch } from 'react-router';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
+import subSites from '~/routing/subSites';
 import { RouteListStore } from '~/stores/routeListStore';
 import { SearchStore } from '~/stores/searchStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import subSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
-import LinkView from './linkView/LinkView';
-import RouteListView from './routeListView/RouteListView';
 import HomeView from './homeView/HomeView';
 import LineView from './lineView/LineView';
 import LineHeaderView from './lineView/lineHeaderView/LineHeaderView';
-import RouteView from './routeView/RouteView';
-import RoutePathView from './routePathView/RoutePathView';
+import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
-import SplitLinkView from './splitLinkView/SplitLinkView';
+import RouteListView from './routeListView/RouteListView';
+import RoutePathView from './routePathView/RoutePathView';
+import RouteView from './routeView/RouteView';
 import * as s from './sidebar.scss';
+import SplitLinkView from './splitLinkView/SplitLinkView';
 
 // Requiring location to force update on location change
 // This is due to blocked updates issue

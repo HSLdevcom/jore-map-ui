@@ -1,14 +1,14 @@
-import { action, computed, observable } from 'mobx';
-import _ from 'lodash';
-import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
-import NodeType from '~/enums/nodeType';
-import NodeLocationType from '~/types/NodeLocationType';
-import NodeStopFactory from '~/factories/nodeStopFactory';
-import GeometryUndoStore from '~/stores/geometryUndoStore';
-import { roundLatLng, roundLatLngs } from '~/util/geomHelper';
+import _ from 'lodash';
+import { action, computed, observable } from 'mobx';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import NodeType from '~/enums/nodeType';
+import NodeStopFactory from '~/factories/nodeStopFactory';
+import { ILink, INode } from '~/models';
 import GeocodingService from '~/services/geocodingService';
+import GeometryUndoStore from '~/stores/geometryUndoStore';
+import NodeLocationType from '~/types/NodeLocationType';
+import { roundLatLng, roundLatLngs } from '~/util/geomHelper';
 
 export interface UndoState {
     links: ILink[];

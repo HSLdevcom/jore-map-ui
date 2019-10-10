@@ -1,8 +1,8 @@
 import { ILine } from '~/models';
 import IExternalLine from '~/models/externals/IExternalLine.ts';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
-import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 import ISearchLine from '~/models/searchModels/ISearchLine';
+import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 
 class LineFactory {
     public static createLine = (externalLine: IExternalLine): ILine => {

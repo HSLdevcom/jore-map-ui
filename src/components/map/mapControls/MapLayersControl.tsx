@@ -1,13 +1,13 @@
-import React, { MouseEvent } from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
+import React, { MouseEvent } from 'react';
 import { IoMdMap } from 'react-icons/io';
-import classnames from 'classnames';
-import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
-import TransitType from '~/enums/transitType';
+import { Checkbox, TransitToggleButtonBar } from '~/components/controls/';
 import InputContainer from '~/components/controls/InputContainer';
+import TransitType from '~/enums/transitType';
+import MapStore, { MapFilter, NodeLabel } from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import MapStore, { NodeLabel, MapFilter } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
 import * as s from './mapLayersControl.scss';
 

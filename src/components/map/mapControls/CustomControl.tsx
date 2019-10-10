@@ -1,6 +1,6 @@
-import { render, unmountComponentAtNode } from 'react-dom';
-import { MapControl, MapControlProps, withLeaflet } from 'react-leaflet';
 import React from 'react';
+import { render, unmountComponentAtNode } from 'react-dom';
+import { withLeaflet, MapControl, MapControlProps } from 'react-leaflet';
 import DivControl from './DivControl';
 
 // Custom control wrapper

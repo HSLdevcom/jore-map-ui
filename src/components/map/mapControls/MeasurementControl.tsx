@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import * as L from 'leaflet';
 import classnames from 'classnames';
+import * as L from 'leaflet';
+import React, { Component } from 'react';
 import { FaEraser, FaRulerCombined, FaTrashAlt } from 'react-icons/fa';
-import * as s from './measurementControl.scss';
 import MapControlButton from './MapControlButton';
+import * as s from './measurementControl.scss';
 
 interface IMeasurementControlProps {
     leaflet?: any;

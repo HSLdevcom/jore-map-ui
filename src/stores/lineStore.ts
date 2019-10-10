@@ -1,5 +1,5 @@
-import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
+import { action, computed, observable } from 'mobx';
 import { ILine } from '~/models';
 
 export class LineStore {

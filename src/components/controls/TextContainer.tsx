@@ -1,6 +1,6 @@
-import React from 'react';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
+import React from 'react';
 import * as s from './inputContainer.scss';
 
 interface ITextContainerProps {

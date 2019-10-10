@@ -1,5 +1,5 @@
-import IError from '~/models/IError';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
+import IError from '~/models/IError';
 import { ErrorStore } from '../errorStore';
 
 describe('errorStore.addError', () => {

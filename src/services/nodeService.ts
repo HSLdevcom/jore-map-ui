@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
-import ApolloClient from '~/util/ApolloClient';
-import IExternalNode from '~/models/externals/IExternalNode';
-import NodeFactory from '~/factories/nodeFactory';
-import { INode, ILink } from '~/models';
-import { INodePrimaryKey, INodeBase } from '~/models/INode';
-import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
+import NodeFactory from '~/factories/nodeFactory';
+import { ILink, INode } from '~/models';
+import { INodeBase, INodePrimaryKey } from '~/models/INode';
+import IExternalNode from '~/models/externals/IExternalNode';
+import ApiClient from '~/util/ApiClient';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 interface INodeSavingModel {

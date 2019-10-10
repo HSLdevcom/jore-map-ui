@@ -1,6 +1,6 @@
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import * as s from './nodeTypeColors.scss';
 
 class NodeHelper {

@@ -1,16 +1,16 @@
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import ReactMoment from 'react-moment';
-import lineHelper from '~/util/lineHelper';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
-import searchStore from '~/stores/searchStore';
-import RouteBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import RouteBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import searchStore from '~/stores/searchStore';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
+import lineHelper from '~/util/lineHelper';
 import LineItemSubMenu from './LineItemSubMenu';
 import * as s from './lineItem.scss';
 

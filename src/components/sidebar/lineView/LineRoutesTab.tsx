@@ -1,12 +1,12 @@
-import React from 'react';
 import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
-import { LineStore } from '~/stores/lineStore';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import QueryParams from '~/routing/queryParams';
-import navigator from '~/routing/navigator';
+import { LineStore } from '~/stores/lineStore';
 import s from './lineRoutesTab.scss';
 
 interface ILineRoutesTabProps {

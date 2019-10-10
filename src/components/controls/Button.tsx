@@ -1,6 +1,6 @@
-import React from 'react';
-import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import { observer } from 'mobx-react';
+import React from 'react';
 import ButtonType from '~/enums/buttonType';
 import * as s from './button.scss';
 

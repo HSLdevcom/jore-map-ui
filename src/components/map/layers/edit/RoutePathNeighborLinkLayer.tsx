@@ -1,16 +1,16 @@
+import { inject, observer } from 'mobx-react';
+import Moment from 'moment';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
-import Moment from 'moment';
-import { inject, observer } from 'mobx-react';
-import INode from '~/models/INode';
-import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
-import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { IRoutePath } from '~/models';
-import EventManager, { IEditRoutePathNeighborLinkClickParams } from '~/util/EventManager';
+import INeighborLink from '~/models/INeighborLink';
+import INode from '~/models/INode';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import INeighborLink from '~/models/INeighborLink';
+import { MapStore, NodeLabel } from '~/stores/mapStore';
+import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
+import EventManager, { IEditRoutePathNeighborLinkClickParams } from '~/util/EventManager';
 import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
 

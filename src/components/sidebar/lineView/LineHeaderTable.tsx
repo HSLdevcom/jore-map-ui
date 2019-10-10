@@ -1,14 +1,14 @@
-import React from 'react';
-import Moment from 'moment';
-import _ from 'lodash';
 import classnames from 'classnames';
+import _ from 'lodash';
+import Moment from 'moment';
+import React from 'react';
 import { FiInfo } from 'react-icons/fi';
+import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import ILineHeader from '~/models/ILineHeader';
-import SubSites from '~/routing/subSites';
-import routeBuilder from '~/routing/routeBuilder';
 import navigator from '~/routing/navigator';
-import { Button } from '~/components/controls';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './lineHeaderTable.scss';
 

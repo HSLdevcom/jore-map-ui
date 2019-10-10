@@ -1,7 +1,7 @@
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import { ErrorStore } from '~/stores/errorStore';
-import { observer, inject } from 'mobx-react';
 import { IoMdClose } from 'react-icons/io';
+import { ErrorStore } from '~/stores/errorStore';
 import * as s from './errorBar.scss';
 
 interface IErrorBarProps {

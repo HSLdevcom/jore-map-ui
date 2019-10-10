@@ -1,7 +1,7 @@
+import _ from 'lodash';
+import { observer } from 'mobx-react';
 import React from 'react';
 import Select from 'react-select';
-import { observer } from 'mobx-react';
-import _ from 'lodash';
 import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './dropdown.scss';
 

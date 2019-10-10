@@ -1,13 +1,13 @@
 import ILine from './ILine';
 import ILineHeader from './ILineHeader';
-import INode from './INode';
-import IStop from './IStop';
 import ILink from './ILink';
+import INeighborLink from './INeighborLink';
+import INode from './INode';
 import IRoute from './IRoute';
 import IRoutePath from './IRoutePath';
 import IRoutePathLink from './IRoutePathLink';
+import IStop from './IStop';
 import IViaName from './IViaName';
-import INeighborLink from './INeighborLink';
 
 export {
     ILine,

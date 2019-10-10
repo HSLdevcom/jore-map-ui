@@ -1,22 +1,22 @@
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { observer, inject } from 'mobx-react';
-import { IRoutePath, ILink } from '~/models';
-import { RoutePathStore } from '~/stores/routePathStore';
-import { CodeListStore } from '~/stores/codeListStore';
+import CalculatedInputField from '~/components/controls/CalculatedInputField';
+import { ILink, IRoutePath } from '~/models';
+import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import CalculatedInputField from '~/components/controls/CalculatedInputField';
-import { IValidationResult } from '~/validation/FormValidator';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
-import RoutePathService from '~/services/routePathService';
 import LinkService from '~/services/linkService';
-import QueryParams from '~/routing/queryParams';
+import RoutePathService from '~/services/routePathService';
+import { CodeListStore } from '~/stores/codeListStore';
+import { RoutePathStore } from '~/stores/routePathStore';
+import { IValidationResult } from '~/validation/FormValidator';
+import ButtonType from '../../../../enums/buttonType';
+import { Button, Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
 import LinkListView from './LinkListView';
-import { Button, Dropdown } from '../../../controls';
-import ButtonType from '../../../../enums/buttonType';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabProps {

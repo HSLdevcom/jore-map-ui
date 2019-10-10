@@ -1,5 +1,5 @@
-import React from 'react';
 import { observer } from 'mobx-react';
+import React from 'react';
 import TransitType from '~/enums/transitType';
 import TransitToggleButton from './TransitToggleButton';
 import * as s from './transitToggleButtonBar.scss';

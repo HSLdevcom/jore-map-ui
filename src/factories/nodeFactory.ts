@@ -1,11 +1,11 @@
 import * as L from 'leaflet';
-import { INode } from '~/models';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
-import { roundLatLng } from '~/util/geomHelper';
+import { INode } from '~/models';
 import { INodeBase } from '~/models/INode';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import IExternalNode from '~/models/externals/IExternalNode';
+import { roundLatLng } from '~/util/geomHelper';
 import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {

@@ -1,12 +1,12 @@
 import { ApolloQueryResult } from 'apollo-client';
-import ApolloClient from '~/util/ApolloClient';
+import endpoints from '~/enums/endpoints';
 import RouteFactory from '~/factories/routeFactory';
-import { IRoute, INode } from '~/models';
+import { INode, IRoute } from '~/models';
 import { IRoutePrimaryKey } from '~/models/IRoute';
 import ApiClient from '~/util/ApiClient';
-import endpoints from '~/enums/endpoints';
-import LineService from './lineService';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
+import LineService from './lineService';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];

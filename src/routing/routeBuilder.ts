@@ -1,6 +1,6 @@
+import Navigator from './navigator';
 import RouteBuilderContext from './routeBuilderContext';
 import subSites from './subSites';
-import Navigator from './navigator';
 
 export class RouteBuilder {
     /**

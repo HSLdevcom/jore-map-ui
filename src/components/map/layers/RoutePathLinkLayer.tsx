@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
 import 'leaflet-polylinedecorator';
-import { Polyline, FeatureGroup } from 'react-leaflet';
-import { observer, inject } from 'mobx-react';
-import { INode, IRoutePathLink } from '~/models';
-import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
-import { PopupStore } from '~/stores/popupStore';
-import { MapStore, MapFilter } from '~/stores/mapStore';
+import { inject, observer } from 'mobx-react';
+import React, { Component } from 'react';
+import { FeatureGroup, Polyline } from 'react-leaflet';
 import StartNodeType from '~/enums/startNodeType';
+import { INode, IRoutePathLink } from '~/models';
+import { MapFilter, MapStore } from '~/stores/mapStore';
+import { PopupStore } from '~/stores/popupStore';
 import EventManager, { INodeClickParams } from '~/util/EventManager';
-import NodeMarker from './markers/NodeMarker';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import Marker from './markers/Marker';
+import NodeMarker from './markers/NodeMarker';
 import ArrowDecorator from './utils/ArrowDecorator';
 
 interface RoutePathLinkLayerProps {
