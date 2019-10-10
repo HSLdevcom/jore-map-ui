@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Polyline } from 'react-leaflet';
-import {
-    RoutePathCopySegmentStore,
-    ICopySegmentLink
-} from '~/stores/routePathCopySegmentStore';
+import { RoutePathCopySegmentStore, ICopySegmentLink } from '~/stores/routePathCopySegmentStore';
 import Marker from '../markers/Marker';
 
 interface IRoutePathCopySegmentLayerProps {
@@ -18,9 +15,7 @@ const HIGHLIGHTED_LINK_NOT_TO_COPY_COLOR = '#f7e200';
 
 @inject('routePathCopySegmentStore')
 @observer
-class RoutePathCopySegmentLayer extends Component<
-    IRoutePathCopySegmentLayerProps
-> {
+class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProps> {
     private renderHighlightedRoutePath = () => {
         const copySegmentStore = this.props.routePathCopySegmentStore;
         const startNode = copySegmentStore!.startNode;
@@ -43,21 +38,15 @@ class RoutePathCopySegmentLayer extends Component<
         );
         return (
             <>
-                {segmentsToCopy.map(
-                    this.renderCopySegmentLink(HIGHLIGHTED_LINK_TO_COPY_COLOR)
-                )}
+                {segmentsToCopy.map(this.renderCopySegmentLink(HIGHLIGHTED_LINK_TO_COPY_COLOR))}
                 {segmentsNotToCopy.map(
-                    this.renderCopySegmentLink(
-                        HIGHLIGHTED_LINK_NOT_TO_COPY_COLOR
-                    )
+                    this.renderCopySegmentLink(HIGHLIGHTED_LINK_NOT_TO_COPY_COLOR)
                 )}
             </>
         );
     };
 
-    private renderCopySegmentLink = (color: string) => (
-        link: ICopySegmentLink
-    ) => {
+    private renderCopySegmentLink = (color: string) => (link: ICopySegmentLink) => {
         return (
             <Polyline
                 positions={link.geometry}

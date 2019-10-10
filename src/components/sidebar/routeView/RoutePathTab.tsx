@@ -14,10 +14,7 @@ interface IRoutePathTabProps {
 
 @inject('routeStore', 'errorStore')
 @observer
-class RoutePathTab extends React.Component<
-    IRoutePathTabProps,
-    IRoutePathTabState
-> {
+class RoutePathTab extends React.Component<IRoutePathTabProps, IRoutePathTabState> {
     constructor(props: IRoutePathTabProps) {
         super(props);
         this.state = {

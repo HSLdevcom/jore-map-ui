@@ -19,43 +19,25 @@ class ToolbarLineButtons extends React.Component {
                 {/* First toolbar row */}
                 <div className={s.toolbarButtonRow}>
                     <MapControlButton
-                        onClick={this.selectTool(
-                            ToolbarTool.AddNewRoutePathLink
-                        )}
-                        isActive={ToolbarStore.isSelected(
-                            ToolbarTool.AddNewRoutePathLink
-                        )}
-                        isDisabled={ToolbarStore.isDisabled(
-                            ToolbarTool.AddNewRoutePathLink
-                        )}
+                        onClick={this.selectTool(ToolbarTool.AddNewRoutePathLink)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.AddNewRoutePathLink)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.AddNewRoutePathLink)}
                         label='Laajenna reitinsuuntaa'
                     >
                         <IoMdGitCommit />
                     </MapControlButton>
                     <MapControlButton
-                        onClick={this.selectTool(
-                            ToolbarTool.RemoveRoutePathLink
-                        )}
-                        isActive={ToolbarStore.isSelected(
-                            ToolbarTool.RemoveRoutePathLink
-                        )}
-                        isDisabled={ToolbarStore.isDisabled(
-                            ToolbarTool.RemoveRoutePathLink
-                        )}
+                        onClick={this.selectTool(ToolbarTool.RemoveRoutePathLink)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.RemoveRoutePathLink)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.RemoveRoutePathLink)}
                         label='Poista reitinsuunnan linkki'
                     >
                         <FiDelete />
                     </MapControlButton>
                     <MapControlButton
-                        onClick={this.selectTool(
-                            ToolbarTool.CopyRoutePathSegmentTool
-                        )}
-                        isActive={ToolbarStore.isSelected(
-                            ToolbarTool.CopyRoutePathSegmentTool
-                        )}
-                        isDisabled={ToolbarStore.isDisabled(
-                            ToolbarTool.CopyRoutePathSegmentTool
-                        )}
+                        onClick={this.selectTool(ToolbarTool.CopyRoutePathSegmentTool)}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.CopyRoutePathSegmentTool)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.CopyRoutePathSegmentTool)}
                         label='Kopioi reitinsuunnan segmentti toiselta reitinsuunnalta'
                     >
                         <FiCopy />

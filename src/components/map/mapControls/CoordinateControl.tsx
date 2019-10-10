@@ -24,10 +24,7 @@ class CoordinateControl extends L.Control {
 
     onAdd(map: L.Map) {
         const [lat, lon] = this.getDisplayCoordinates();
-        const container = L.DomUtil.create(
-            'div',
-            'leaflet-bar leaflet-control'
-        );
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
         container.id = s.coordinateControl;
         const xDiv = L.DomUtil.create('div');
         this.xButton = L.DomUtil.create('button');
@@ -57,9 +54,7 @@ class CoordinateControl extends L.Control {
                 this.setInputAsCenter(newX, newY);
             }
         };
-        this.xInput.onkeypress = this.yInput.onkeypress = (
-            e: KeyboardEvent
-        ) => {
+        this.xInput.onkeypress = this.yInput.onkeypress = (e: KeyboardEvent) => {
             if (e.key === 'Enter') {
                 this.xInput.blur();
                 this.yInput.blur();
@@ -67,9 +62,7 @@ class CoordinateControl extends L.Control {
         };
         this.xButton.onclick = this.yButton.onclick = () => {
             this.mapStore!.setDisplayCoordinateSystem(
-                GeometryService.nextCoordinateSystem(
-                    this.mapStore!.displayCoordinateSystem
-                )
+                GeometryService.nextCoordinateSystem(this.mapStore!.displayCoordinateSystem)
             );
         };
         L.DomEvent.disableClickPropagation(container);
@@ -82,16 +75,10 @@ class CoordinateControl extends L.Control {
     };
 
     private updateCoordinates() {
-        [
-            this.xInput.value,
-            this.yInput.value
-        ] = this.getDisplayCoordinates().map(coord =>
+        [this.xInput.value, this.yInput.value] = this.getDisplayCoordinates().map(coord =>
             coord.toPrecision(this.options['precision'])
         );
-        ({
-            x: this.xButton.innerText,
-            y: this.yButton.innerText
-        } = GeometryService.coordinateNames(
+        ({ x: this.xButton.innerText, y: this.yButton.innerText } = GeometryService.coordinateNames(
             this.mapStore!.displayCoordinateSystem
         ));
     }

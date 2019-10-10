@@ -43,10 +43,7 @@ interface RoutePathListNodeState {
 
 @inject('routePathStore', 'codeListStore')
 @observer
-class RoutePathListNode extends ViewFormBase<
-    IRoutePathListNodeProps,
-    RoutePathListNodeState
-> {
+class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathListNodeState> {
     constructor(props: IRoutePathListNodeProps) {
         super(props);
         this.state = {
@@ -67,17 +64,12 @@ class RoutePathListNode extends ViewFormBase<
     }
 
     private validateLink = () => {
-        this.validateAllProperties(
-            routePathLinkValidationModel,
-            this.props.routePathLink
-        );
+        this.validateAllProperties(routePathLinkValidationModel, this.props.routePathLink);
         const orderNumber = this.props.routePathLink.orderNumber;
 
         let isViaNameValid = true;
         if (!this.props.isLastNode) {
-            const viaName = this.props.routePathStore!.getViaName(
-                this.props.routePathLink.id
-            );
+            const viaName = this.props.routePathStore!.getViaName(this.props.routePathLink.id);
             if (viaName) {
                 isViaNameValid = this.validateViaNames(viaName);
             }
@@ -85,10 +77,7 @@ class RoutePathListNode extends ViewFormBase<
 
         const isLinkFormValid = this.isFormValid() && isViaNameValid;
 
-        this.props.routePathStore!.setLinkFormValidity(
-            orderNumber,
-            isLinkFormValid
-        );
+        this.props.routePathStore!.setLinkFormValidity(orderNumber, isLinkFormValid);
     };
 
     private validateViaNames = (viaName: IViaName) => {
@@ -115,32 +104,19 @@ class RoutePathListNode extends ViewFormBase<
     private renderHeader = () => {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
-        const isExtended = this.props.routePathStore!.isListItemExtended(
-            node.id
-        );
+        const isExtended = this.props.routePathStore!.isListItemExtended(node.id);
         const nodeTypeName = NodeHelper.getNodeTypeName(node.type);
         const shortId = NodeHelper.getShortId(node);
         return (
-            <div
-                className={classnames(
-                    s.itemHeader,
-                    isExtended ? s.itemExtended : null
-                )}
-            >
+            <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
                 <div className={s.headerContent}>
                     <div className={s.headerNodeTypeContainer}>
-                        <div>
-                            {node.type === NodeType.STOP
-                                ? stopName
-                                : nodeTypeName}
-                        </div>
+                        <div>{node.type === NodeType.STOP ? stopName : nodeTypeName}</div>
                     </div>
                     <div className={s.label}>
                         <div className={s.headerContentDescription}>
                             <div className={s.hastusId}>
-                                {node.stop && node.stop.hastusId
-                                    ? node.stop.hastusId
-                                    : ''}
+                                {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
                             </div>
                             <div className={s.longId}>{node.id}</div>
                             <div className={s.shortId}>{shortId || '?'}</div>
@@ -159,26 +135,13 @@ class RoutePathListNode extends ViewFormBase<
         this.onRoutePathLinkPropertyChange('startNodeType')(value ? 'E' : 'P');
     };
 
-    private onRoutePathLinkPropertyChange = (
-        property: keyof IRoutePathLink
-    ) => (value: any) => {
+    private onRoutePathLinkPropertyChange = (property: keyof IRoutePathLink) => (value: any) => {
         const orderNumber = this.props.routePathLink.orderNumber;
 
-        this.props.routePathStore!.updateRoutePathLinkProperty(
-            orderNumber,
-            property,
-            value
-        );
-        this.validateProperty(
-            routePathLinkValidationModel[property],
-            property,
-            value
-        );
+        this.props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value);
+        this.validateProperty(routePathLinkValidationModel[property], property, value);
         const isLinkFormValid = this.isFormValid();
-        this.props.routePathStore!.setLinkFormValidity(
-            orderNumber,
-            isLinkFormValid
-        );
+        this.props.routePathStore!.setLinkFormValidity(orderNumber, isLinkFormValid);
     };
 
     /**
@@ -187,38 +150,23 @@ class RoutePathListNode extends ViewFormBase<
      * note: the last rpLink link will change routePath's value instead of routePathLink's value
      */
     private onRoutePathBookSchedulePropertyChange = (
-        property:
-            | 'startNodeBookScheduleColumnNumber'
-            | 'isStartNodeUsingBookSchedule'
+        property: 'startNodeBookScheduleColumnNumber' | 'isStartNodeUsingBookSchedule'
     ) => (value: any) => {
         const orderNumber = this.props.routePathLink.orderNumber;
 
         if (this.props.isLastNode) {
             this.props.routePathStore!.updateRoutePathProperty(property, value);
         } else {
-            this.props.routePathStore!.updateRoutePathLinkProperty(
-                orderNumber,
-                property,
-                value
-            );
+            this.props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value);
         }
-        this.validateProperty(
-            routePathLinkValidationModel[property],
-            property,
-            value
-        );
+        this.validateProperty(routePathLinkValidationModel[property], property, value);
         const isLinkFormValid = this.isFormValid();
-        this.props.routePathStore!.setLinkFormValidity(
-            orderNumber,
-            isLinkFormValid
-        );
+        this.props.routePathStore!.setLinkFormValidity(orderNumber, isLinkFormValid);
     };
 
     private onViaNameChange = (value: string, attributeName: string) => {
         const routePathLinkId = this.props.routePathLink.id;
-        let viaName = _.cloneDeep(
-            this.props.routePathStore!.getViaName(routePathLinkId)
-        );
+        let viaName = _.cloneDeep(this.props.routePathStore!.getViaName(routePathLinkId));
 
         if (!viaName) {
             viaName = {
@@ -235,9 +183,7 @@ class RoutePathListNode extends ViewFormBase<
     };
 
     private onIsStartNodeUsingBookScheduleChange = (value: boolean) => () => {
-        this.onRoutePathBookSchedulePropertyChange(
-            'isStartNodeUsingBookSchedule'
-        )(value);
+        this.onRoutePathBookSchedulePropertyChange('isStartNodeUsingBookSchedule')(value);
     };
 
     private renderStopView = (stop: IStop) => {
@@ -274,19 +220,14 @@ class RoutePathListNode extends ViewFormBase<
                             <Checkbox
                                 disabled={isEditingDisabled}
                                 content='Pysäkki ei käytössä'
-                                checked={
-                                    routePathLink.startNodeType ===
-                                    StartNodeType.DISABLED
-                                }
+                                checked={routePathLink.startNodeType === StartNodeType.DISABLED}
                                 onClick={this.onRoutePathLinkStartNodeTypeChange()}
                             />
                         </div>
                         <div className={s.flexRow}>
                             <Checkbox
                                 disabled={isEditingDisabled}
-                                checked={Boolean(
-                                    routePathLink.isStartNodeHastusStop
-                                )}
+                                checked={Boolean(routePathLink.isStartNodeHastusStop)}
                                 content='Hastus paikka'
                                 onClick={this.onRoutePathLinkPropertyChange(
                                     'isStartNodeHastusStop'
@@ -300,9 +241,7 @@ class RoutePathListNode extends ViewFormBase<
                                     'startNodeTimeAlignmentStop'
                                 )}
                                 disabled={isEditingDisabled}
-                                selected={
-                                    routePathLink.startNodeTimeAlignmentStop
-                                }
+                                selected={routePathLink.startNodeTimeAlignmentStop}
                                 items={this.props.codeListStore!.getDropdownItemList(
                                     'Ajantasaus pysakki'
                                 )}
@@ -310,9 +249,7 @@ class RoutePathListNode extends ViewFormBase<
                             />
                             <Dropdown
                                 label='ERIKOISTYYPPI'
-                                onChange={this.onRoutePathLinkPropertyChange(
-                                    'startNodeUsage'
-                                )}
+                                onChange={this.onRoutePathLinkPropertyChange('startNodeUsage')}
                                 disabled={isEditingDisabled}
                                 selected={routePathLink.startNodeUsage}
                                 items={this.props.codeListStore!.getDropdownItemList(
@@ -326,24 +263,16 @@ class RoutePathListNode extends ViewFormBase<
                                 label='1. MÄÄRÄNPÄÄ SUOMEKSI'
                                 disabled={isEditingDisabled}
                                 value={viaName ? viaName.destinationFi1 : ''}
-                                validationResult={
-                                    invalidPropertiesMap['destinationFi1']
-                                }
-                                onChange={e =>
-                                    this.onViaNameChange(e, 'destinationFi1')
-                                }
+                                validationResult={invalidPropertiesMap['destinationFi1']}
+                                onChange={e => this.onViaNameChange(e, 'destinationFi1')}
                                 darkerInputLabel={true}
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ SUOMEKSI'
                                 disabled={isEditingDisabled}
                                 value={viaName ? viaName.destinationFi2 : ''}
-                                validationResult={
-                                    invalidPropertiesMap['destinationFi2']
-                                }
-                                onChange={e =>
-                                    this.onViaNameChange(e, 'destinationFi2')
-                                }
+                                validationResult={invalidPropertiesMap['destinationFi2']}
+                                onChange={e => this.onViaNameChange(e, 'destinationFi2')}
                                 darkerInputLabel={true}
                             />
                         </div>
@@ -352,24 +281,16 @@ class RoutePathListNode extends ViewFormBase<
                                 label='1. MÄÄRÄNPÄÄ RUOTSIKSI'
                                 disabled={isEditingDisabled}
                                 value={viaName ? viaName.destinationSw1 : ''}
-                                validationResult={
-                                    invalidPropertiesMap['destinationSw1']
-                                }
-                                onChange={e =>
-                                    this.onViaNameChange(e, 'destinationSw1')
-                                }
+                                validationResult={invalidPropertiesMap['destinationSw1']}
+                                onChange={e => this.onViaNameChange(e, 'destinationSw1')}
                                 darkerInputLabel={true}
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
                                 disabled={isEditingDisabled}
                                 value={viaName ? viaName.destinationSw2 : ''}
-                                validationResult={
-                                    invalidPropertiesMap['destinationSw2']
-                                }
-                                onChange={e =>
-                                    this.onViaNameChange(e, 'destinationSw2')
-                                }
+                                validationResult={invalidPropertiesMap['destinationSw2']}
+                                onChange={e => this.onViaNameChange(e, 'destinationSw2')}
                                 darkerInputLabel={true}
                             />
                         </div>
@@ -387,20 +308,14 @@ class RoutePathListNode extends ViewFormBase<
                 </div>
                 <div className={s.flexRow}>
                     <InputContainer
-                        disabled={
-                            isEditingDisabled || !isStartNodeUsingBookSchedule
-                        }
+                        disabled={isEditingDisabled || !isStartNodeUsingBookSchedule}
                         type='number'
                         label='PYSÄKIN SARAKENUMERO KIRJA-AIKATAULUSSA'
                         onChange={this.onRoutePathBookSchedulePropertyChange(
                             'startNodeBookScheduleColumnNumber'
                         )}
                         value={startNodeBookScheduleColumnNumber}
-                        validationResult={
-                            invalidPropertiesMap[
-                                'startNodeBookScheduleColumnNumber'
-                            ]
-                        }
+                        validationResult={invalidPropertiesMap['startNodeBookScheduleColumnNumber']}
                         darkerInputLabel={true}
                     />
                 </div>
@@ -440,8 +355,7 @@ class RoutePathListNode extends ViewFormBase<
             <div
                 className={classnames(
                     s.nodeIcon,
-                    !this.props.isLastNode &&
-                        routePathLink.startNodeTimeAlignmentStop !== '0'
+                    !this.props.isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0'
                         ? s.timeAlignmentIcon
                         : undefined
                 )}
@@ -477,14 +391,10 @@ class RoutePathListNode extends ViewFormBase<
     private renderBody = () => {
         return (
             <div className={s.extendedContent}>
-                {Boolean(this.props.node.stop) &&
-                    this.renderStopView(this.props.node.stop!)}
+                {Boolean(this.props.node.stop) && this.renderStopView(this.props.node.stop!)}
                 {this.renderNodeView(this.props.node)}
                 <div className={s.footer}>
-                    <Button
-                        onClick={this.openInNetworkView}
-                        type={ButtonType.SQUARE}
-                    >
+                    <Button onClick={this.openInNetworkView} type={ButtonType.SQUARE}>
                         <div>Avaa solmu verkkonäkymässä</div>
                         <FiChevronRight />
                     </Button>
@@ -512,9 +422,7 @@ class RoutePathListNode extends ViewFormBase<
     }
 
     render() {
-        const geometry = this.props.routePathStore!.getNodeGeom(
-            this.props.node.id
-        );
+        const geometry = this.props.routePathStore!.getNodeGeom(this.props.node.id);
         return (
             <RoutePathListItem
                 reference={this.props.reference}

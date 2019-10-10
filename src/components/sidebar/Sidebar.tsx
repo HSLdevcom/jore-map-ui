@@ -42,36 +42,20 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RouteListView /> : <Redirect to='/' />;
     };
-    private renderNewLineView = (props: any) => (
-        <LineView {...props} isNewLine={true} />
-    );
-    private renderLineView = (props: any) => (
-        <LineView {...props} isNewLine={false} />
-    );
+    private renderNewLineView = (props: any) => <LineView {...props} isNewLine={true} />;
+    private renderLineView = (props: any) => <LineView {...props} isNewLine={false} />;
     private renderNewLineHeaderView = (props: any) => (
         <LineHeaderView {...props} isNewLineHeader={true} />
     );
     private renderLineHeaderView = (props: any) => (
         <LineHeaderView {...props} isNewLineHeader={false} />
     );
-    private renderNewRouteView = (props: any) => (
-        <RouteView {...props} isNewRoute={true} />
-    );
-    private renderRouteView = (props: any) => (
-        <RouteView {...props} isNewRoute={false} />
-    );
-    private renderNewNodeView = (props: any) => (
-        <NodeView {...props} isNewNode={true} />
-    );
-    private renderNodeView = (props: any) => (
-        <NodeView {...props} isNewNode={false} />
-    );
-    private renderNewLinkView = (props: any) => (
-        <LinkView {...props} isNewLink={true} />
-    );
-    private renderLinkView = (props: any) => (
-        <LinkView {...props} isNewLink={false} />
-    );
+    private renderNewRouteView = (props: any) => <RouteView {...props} isNewRoute={true} />;
+    private renderRouteView = (props: any) => <RouteView {...props} isNewRoute={false} />;
+    private renderNewNodeView = (props: any) => <NodeView {...props} isNewNode={true} />;
+    private renderNodeView = (props: any) => <NodeView {...props} isNewNode={false} />;
+    private renderNewLinkView = (props: any) => <LinkView {...props} isNewLink={true} />;
+    private renderLinkView = (props: any) => <LinkView {...props} isNewLink={false} />;
     private renderNewRoutePathView = (props: any) => (
         <RoutePathView {...props} isNewRoutePath={true} />
     );
@@ -84,21 +68,13 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             <div className={classnames(s.sidebarView)}>
                 <div className={s.content}>
                     <Switch>
-                        <Route
-                            exact={true}
-                            path={subSites.home}
-                            component={HomeView}
-                        />
+                        <Route exact={true} path={subSites.home} component={HomeView} />
                         <Route
                             exact={true}
                             path={subSites.newLine}
                             component={this.renderNewLineView}
                         />
-                        <Route
-                            exact={true}
-                            path={subSites.line}
-                            component={this.renderLineView}
-                        />
+                        <Route exact={true} path={subSites.line} component={this.renderLineView} />
                         <Route
                             exact={true}
                             path={subSites.newLineHeader}
@@ -129,26 +105,14 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             path={subSites.newLink}
                             component={this.renderNewLinkView}
                         />
-                        <Route
-                            exact={true}
-                            path={subSites.link}
-                            component={this.renderLinkView}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.splitLink}
-                            component={SplitLinkView}
-                        />
+                        <Route exact={true} path={subSites.link} component={this.renderLinkView} />
+                        <Route exact={true} path={subSites.splitLink} component={SplitLinkView} />
                         <Route
                             exact={true}
                             path={subSites.newNode}
                             component={this.renderNewNodeView}
                         />
-                        <Route
-                            exact={true}
-                            path={subSites.node}
-                            component={this.renderNodeView}
-                        />
+                        <Route exact={true} path={subSites.node} component={this.renderNodeView} />
                         <Route
                             exact={true}
                             path={subSites.newRoutePath}

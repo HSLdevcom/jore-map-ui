@@ -58,24 +58,16 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                     {this.props.hasWriteAccess && (
                         <>
                             <MapControlButton
-                                onClick={this.selectTool(
-                                    ToolbarTool.AddNetworkNode
-                                )}
-                                isActive={ToolbarStore.isSelected(
-                                    ToolbarTool.AddNetworkNode
-                                )}
+                                onClick={this.selectTool(ToolbarTool.AddNetworkNode)}
+                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkNode)}
                                 isDisabled={false}
                                 label='Lisää solmu'
                             >
                                 <FiPlus />
                             </MapControlButton>
                             <MapControlButton
-                                onClick={this.selectTool(
-                                    ToolbarTool.AddNetworkLink
-                                )}
-                                isActive={ToolbarStore.isSelected(
-                                    ToolbarTool.AddNetworkLink
-                                )}
+                                onClick={this.selectTool(ToolbarTool.AddNetworkLink)}
+                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkLink)}
                                 isDisabled={false}
                                 label='Lisää linkki'
                             >

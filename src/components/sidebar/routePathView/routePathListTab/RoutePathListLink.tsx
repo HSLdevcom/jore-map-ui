@@ -30,16 +30,9 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         const orderNumber = this.props.routePathLink.orderNumber;
         const isExtended = this.props.routePathStore!.isListItemExtended(id);
         return (
-            <div
-                className={classnames(
-                    s.itemHeader,
-                    isExtended ? s.itemExtended : null
-                )}
-            >
+            <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
                 <div className={s.headerContent}>
-                    <div className={s.headerNodeTypeContainer}>
-                        Reitinlinkki {orderNumber}
-                    </div>
+                    <div className={s.headerNodeTypeContainer}>Reitinlinkki {orderNumber}</div>
                     <div className={s.label} />
                 </div>
                 <div className={s.itemToggle}>
@@ -55,10 +48,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
             <div className={s.extendedContent}>
                 {this.renderRoutePathLinkView(this.props.routePathLink)}
                 <div className={s.footer}>
-                    <Button
-                        onClick={this.openInNetworkView}
-                        type={ButtonType.SQUARE}
-                    >
+                    <Button onClick={this.openInNetworkView} type={ButtonType.SQUARE}>
                         Avaa linkki verkkonäkymässä
                         <FiChevronRight />
                     </Button>
@@ -97,12 +87,9 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         const routeLink = this.props.routePathLink;
         const routeLinkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget(':id',
-                [
-                    routeLink.startNode.id,
-                    routeLink.endNode.id,
-                    routeLink.transitType
-                ].join(',')
+            .toTarget(
+                ':id',
+                [routeLink.startNode.id, routeLink.endNode.id, routeLink.transitType].join(',')
             )
             .toLink();
         navigator.goTo(routeLinkViewLink);
@@ -111,9 +98,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderListIcon = () => <div className={s.linkIcon} />;
 
     render() {
-        const geometry = this.props.routePathStore!.getLinkGeom(
-            this.props.routePathLink.id
-        );
+        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
         return (
             <RoutePathListItem
                 reference={this.props.reference}

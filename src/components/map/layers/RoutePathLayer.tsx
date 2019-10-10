@@ -18,12 +18,11 @@ interface RoutePathLayerProps {
 
 @observer
 class RoutePathLayer extends Component<RoutePathLayerProps> {
-    private openLinkView = (routePath: IRoutePath) => (
-        routePathLinkId: string
-    ) => {
+    private openLinkView = (routePath: IRoutePath) => (routePathLinkId: string) => {
         const routePathViewLink = routeBuilder
             .to(subSites.routePath)
-            .toTarget(':id',
+            .toTarget(
+                ':id',
                 [
                     routePath.routeId,
                     Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),

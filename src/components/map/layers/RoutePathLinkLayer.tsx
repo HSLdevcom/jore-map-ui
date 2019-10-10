@@ -74,12 +74,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     key={`${routePathLink.orderNumber}-${index}`}
                     node={node}
                     isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                    isDisabled={
-                        routePathLink.startNodeType === StartNodeType.DISABLED
-                    }
-                    isTimeAlignmentStop={
-                        routePathLink.startNodeTimeAlignmentStop !== '0'
-                    }
+                    isDisabled={routePathLink.startNodeType === StartNodeType.DISABLED}
+                    isTimeAlignmentStop={routePathLink.startNodeTimeAlignmentStop !== '0'}
                     onContextMenu={this.openPopup(routePathLink.startNode)}
                     onClick={onNodeClick(node)}
                 />
@@ -115,17 +111,13 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     private renderDirectionDecoration() {
-        if (
-            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
-        ) {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
             return null;
         }
 
         const routePathLinks = this.props.routePathLinks;
 
-        const geoms = routePathLinks.map(
-            routePathLink => routePathLink.geometry
-        );
+        const geoms = routePathLinks.map(routePathLink => routePathLink.geometry);
 
         return createCoherentLinesFromPolylines(geoms).map((geom, index) => (
             <ArrowDecorator

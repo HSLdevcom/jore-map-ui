@@ -18,12 +18,8 @@ class ToolbarLinkButtons extends React.Component {
                 <div className={s.toolbarButtonRow}>
                     <MapControlButton
                         onClick={this.selectTool(ToolbarTool.SplitLink)}
-                        isActive={ToolbarStore.isSelected(
-                            ToolbarTool.SplitLink
-                        )}
-                        isDisabled={ToolbarStore.isDisabled(
-                            ToolbarTool.SplitLink
-                        )}
+                        isActive={ToolbarStore.isSelected(ToolbarTool.SplitLink)}
+                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.SplitLink)}
                         label='Jaa linkki solmulla'
                     >
                         <FiScissors />

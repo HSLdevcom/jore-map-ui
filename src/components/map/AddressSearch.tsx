@@ -23,10 +23,7 @@ interface IAddressSearchState {
 const SEARCH_RESULT_MARKER_COLOR = '#f44242';
 
 @observer
-class AddressSearch extends Component<
-    IAddressSearchProps,
-    IAddressSearchState
-> {
+class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> {
     private map: L.Map;
     private reactionDisposer: IReactionDisposer;
     private searchResultMarker: L.Marker;
@@ -78,12 +75,8 @@ class AddressSearch extends Component<
             searchIndex: -1
         });
         this.map.setView(latLng, this.map.getZoom());
-        const marker = LeafletUtils.createDivIcon(
-            <PinIcon color={SEARCH_RESULT_MARKER_COLOR} />
-        );
-        this.searchResultMarker = L.marker(latLng, { icon: marker }).addTo(
-            this.map
-        );
+        const marker = LeafletUtils.createDivIcon(<PinIcon color={SEARCH_RESULT_MARKER_COLOR} />);
+        this.searchResultMarker = L.marker(latLng, { icon: marker }).addTo(this.map);
     };
 
     private unselectSearchResult = () => {
@@ -103,10 +96,7 @@ class AddressSearch extends Component<
         let searchIndex = this.state.searchIndex;
         direction === 'arrowUp' ? (searchIndex -= 1) : (searchIndex += 1);
 
-        if (
-            searchIndex < 0 ||
-            searchIndex > this.state.searchResults.length - 1
-        ) {
+        if (searchIndex < 0 || searchIndex > this.state.searchResults.length - 1) {
             return;
         }
         this.setState({
@@ -114,9 +104,7 @@ class AddressSearch extends Component<
         });
     };
 
-    private onSearchInputChange = (
-        event: React.FormEvent<HTMLInputElement>
-    ) => {
+    private onSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
         if (newValue) {
             this.setState({
@@ -152,10 +140,7 @@ class AddressSearch extends Component<
         );
     };
 
-    private renderSearchResult = (
-        searchResult: IAddressFeature,
-        searchIndex: number
-    ) => {
+    private renderSearchResult = (searchResult: IAddressFeature, searchIndex: number) => {
         const isHighlighted = this.state.searchIndex === searchIndex;
         return (
             <div
@@ -172,8 +157,7 @@ class AddressSearch extends Component<
     };
 
     private setSelectedSearchResult = (_searchIndex?: number) => () => {
-        const searchIndex =
-            _searchIndex !== undefined ? _searchIndex : this.state.searchIndex;
+        const searchIndex = _searchIndex !== undefined ? _searchIndex : this.state.searchIndex;
         if (searchIndex === -1) return;
 
         const selectedSearchResult = this.state.searchResults[searchIndex];

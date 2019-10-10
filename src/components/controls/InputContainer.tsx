@@ -55,9 +55,7 @@ const renderEditableContent = (props: IInputProps) => {
             className={classnames(
                 props.className,
                 props.disabled ? s.disabled : null,
-                validationResult && !validationResult.isValid
-                    ? s.invalidInput
-                    : null
+                validationResult && !validationResult.isValid ? s.invalidInput : null
             )}
             value={
                 props.value !== null && props.value !== undefined
@@ -73,18 +71,12 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
     if (!validationResult || !validationResult.errorMessage) {
         return null;
     }
-    return (
-        <div className={s.errorMessage}>{validationResult.errorMessage}</div>
-    );
+    return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
 };
 
 const renderUneditableContent = (props: IInputProps) => (
     <div className={s.formItem}>
-        <div
-            className={
-                props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel
-            }
-        >
+        <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
             {props.label}
         </div>
         <div className={props.disabled ? s.staticHeight : undefined}>
@@ -105,11 +97,7 @@ const InputContainer = observer((props: IInputProps) => {
 
     return (
         <div className={s.formItem}>
-            <div
-                className={
-                    props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel
-                }
-            >
+            <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
                 {props.label}
             </div>
             {renderEditableContent(props)}

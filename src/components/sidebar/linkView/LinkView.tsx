@@ -90,22 +90,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         this.setState({ isLoading: true });
         this.props.linkStore!.clear();
 
-        const [
-            startNodeId,
-            endNodeId,
-            transitTypeCode
-        ] = this.props.match!.params.id.split(',');
+        const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
         try {
             if (startNodeId && endNodeId && transitTypeCode) {
-                const link = await LinkService.fetchLink(
-                    startNodeId,
-                    endNodeId,
-                    transitTypeCode
-                );
-                this.props.linkStore!.init(link, [
-                    link.startNode,
-                    link.endNode
-                ]);
+                const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
+                this.props.linkStore!.init(link, [link.startNode, link.endNode]);
                 this.props.linkStore!.setIsLinkGeometryEditable(true);
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
@@ -136,14 +125,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         }
 
         const link = this.props.linkStore!.link;
-        const existingLinks = await LinkService.fetchLinks(
-            link.startNode.id,
-            link.endNode.id
-        );
+        const existingLinks = await LinkService.fetchLinks(link.startNode.id, link.endNode.id);
         if (existingLinks.length > 0) {
-            this.existingTransitTypes = existingLinks.map(
-                link => link.transitType!
-            );
+            this.existingTransitTypes = existingLinks.map(link => link.transitType!);
         }
         this.validateLink();
 
@@ -182,10 +166,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const link = this.props.linkStore!.link;
         const linkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget(
-                ':id',
-                [link.startNode.id, link.endNode.id, link.transitType].join(',')
-            )
+            .toTarget(':id', [link.startNode.id, link.endNode.id, link.transitType].join(','))
             .toLink();
         navigator.goTo(linkViewLink);
     };
@@ -211,19 +192,12 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     };
 
     private validateLink = () => {
-        this.validateAllProperties(
-            linkValidationModel,
-            this.props.linkStore!.link
-        );
+        this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
     };
 
     private selectTransitType = (transitType: TransitType) => {
         this.props.linkStore!.updateLinkProperty('transitType', transitType);
-        this.validateProperty(
-            linkValidationModel['transitType'],
-            'transitType',
-            transitType
-        );
+        this.validateProperty(linkValidationModel['transitType'], 'transitType', transitType);
     };
 
     private transitTypeAlreadyExists = (transitType: TransitType) => {
@@ -260,19 +234,15 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             !transitType ||
             this.state.isEditingDisabled ||
             !this.props.linkStore!.isDirty ||
-            (this.props.isNewLink &&
-                this.transitTypeAlreadyExists(transitType)) ||
+            (this.props.isNewLink && this.transitTypeAlreadyExists(transitType)) ||
             !this.isFormValid();
-        const selectedTransitTypes = link!.transitType
-            ? [link!.transitType!]
-            : [];
+        const selectedTransitTypes = link!.transitType ? [link!.transitType!] : [];
 
         let transitTypeError;
         if (!transitType) {
             transitTypeError = 'Verkon tyyppi täytyy valita.';
         } else if (transitType && this.transitTypeAlreadyExists(transitType)) {
-            transitTypeError =
-                'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
+            transitTypeError = 'Linkki on jo olemassa (sama alkusolmu, loppusolmu ja verkko).';
         }
 
         return (
@@ -281,9 +251,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewLink}
                         isEditing={!isEditingDisabled}
-                        shouldShowClosePromptMessage={
-                            this.props.linkStore!.isDirty!
-                        }
+                        shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
                         onEditButtonClick={this.toggleIsEditingEnabled}
                     >
                         Linkki
@@ -294,9 +262,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 <div className={s.inputLabel}>VERKKO</div>
                                 <TransitToggleButtonBar
                                     selectedTransitTypes={selectedTransitTypes}
-                                    toggleSelectedTransitType={
-                                        this.selectTransitType
-                                    }
+                                    toggleSelectedTransitType={this.selectTransitType}
                                     disabled={!this.props.isNewLink}
                                     errorMessage={transitTypeError}
                                 />
@@ -316,18 +282,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             />
                             <TextContainer
                                 label='NIMI'
-                                value={
-                                    startNode && startNode.stop
-                                        ? startNode.stop!.nameFi
-                                        : '-'
-                                }
+                                value={startNode && startNode.stop ? startNode.stop!.nameFi : '-'}
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='LOPPUSOLMU'
-                                value={endNode ? endNode.id : '-'}
-                            />
+                            <TextContainer label='LOPPUSOLMU' value={endNode ? endNode.id : '-'} />
                             <TextContainer
                                 label='TYYPPI'
                                 value={this.props.codeListStore!.getCodeListLabel(
@@ -337,11 +296,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             />
                             <TextContainer
                                 label='NIMI'
-                                value={
-                                    endNode && endNode.stop
-                                        ? endNode.stop!.nameFi
-                                        : '-'
-                                }
+                                value={endNode && endNode.stop ? endNode.stop!.nameFi : '-'}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -350,20 +305,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 disabled={isEditingDisabled}
                                 value={link.measuredLength}
                                 type='number'
-                                validationResult={
-                                    invalidPropertiesMap['measuredLength']
-                                }
-                                onChange={this.onChangeLinkProperty(
-                                    'measuredLength'
-                                )}
+                                validationResult={invalidPropertiesMap['measuredLength']}
+                                onChange={this.onChangeLinkProperty('measuredLength')}
                             />
                             <InputContainer
                                 label='LASKETTU PITUUS (m)'
                                 disabled={true}
                                 value={link.length}
-                                validationResult={
-                                    invalidPropertiesMap['length']
-                                }
+                                validationResult={invalidPropertiesMap['length']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -371,17 +320,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 label='KATU'
                                 disabled={isEditingDisabled}
                                 value={link.streetName}
-                                validationResult={
-                                    invalidPropertiesMap['streetName']
-                                }
-                                onChange={this.onChangeLinkProperty(
-                                    'streetName'
-                                )}
+                                validationResult={invalidPropertiesMap['streetName']}
+                                onChange={this.onChangeLinkProperty('streetName')}
                             />
                             <Dropdown
-                                onChange={this.onChangeLinkProperty(
-                                    'municipalityCode'
-                                )}
+                                onChange={this.onChangeLinkProperty('municipalityCode')}
                                 disabled={isEditingDisabled}
                                 items={this.props.codeListStore!.getDropdownItemList(
                                     'Kunta (ris/pys)'
@@ -392,10 +335,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         </div>
                         {!this.props.isNewLink && (
                             <div className={s.flexRow}>
-                                <TextContainer
-                                    label='MUOKANNUT'
-                                    value={link.modifiedBy}
-                                />
+                                <TextContainer label='MUOKANNUT' value={link.modifiedBy} />
                                 <TextContainer
                                     label='MUOKATTU PVM'
                                     isTimeIncluded={true}
@@ -433,11 +373,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         </div>
                     </Button>
                 </div>
-                <Button
-                    type={ButtonType.SAVE}
-                    disabled={isSaveButtonDisabled}
-                    onClick={this.save}
-                >
+                <Button type={ButtonType.SAVE} disabled={isSaveButtonDisabled} onClick={this.save}>
                     Tallenna muutokset
                 </Button>
             </div>

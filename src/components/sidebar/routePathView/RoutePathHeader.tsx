@@ -26,8 +26,7 @@ const RoutePathHeader = observer((props: IRoutePathHeaderProps) => (
                 : `${props.routePath.lineId} > ${props.routePath.routeId}`}
         </SidebarHeader>
         <div className={s.topic}>
-            <ReactMoment date={props.routePath.startTime} format='DD.MM.YYYY' />{' '}
-            - &nbsp;
+            <ReactMoment date={props.routePath.startTime} format='DD.MM.YYYY' /> - &nbsp;
             <ReactMoment date={props.routePath.endTime} format='DD.MM.YYYY' />
             <br />
             Suunta {props.routePath.direction}:&nbsp;

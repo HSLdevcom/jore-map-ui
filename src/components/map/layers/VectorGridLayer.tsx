@@ -60,19 +60,13 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         return _.isEqual(array1.slice().sort(), array2.slice().sort());
     }
 
-    updateLeafletElement(
-        fromProps: IVectorGridLayerProps,
-        toProps: IVectorGridLayerProps
-    ) {
+    updateLeafletElement(fromProps: IVectorGridLayerProps, toProps: IVectorGridLayerProps) {
         super.updateLeafletElement(fromProps, toProps);
         // TODO: consider passing a single value "shouldUpdate"
         // OR even better: pass ref to updateLeafletElement and call from parent
         // redraw layers according to that variable
         if (
-            !this.areArraysEqual(
-                fromProps.selectedTransitTypes,
-                toProps.selectedTransitTypes
-            ) ||
+            !this.areArraysEqual(fromProps.selectedTransitTypes, toProps.selectedTransitTypes) ||
             fromProps.nodeSize !== toProps.nodeSize ||
             (!fromProps.selectedDate !== !toProps.selectedDate ||
                 (fromProps.selectedDate &&

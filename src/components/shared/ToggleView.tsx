@@ -26,10 +26,7 @@ export const ToggleItem = observer((props: IToggleItemProps) => {
     return (
         <div className={s.buttonContainer}>
             <div
-                className={classnames(
-                    s.button,
-                    props.isActive ? s.active : null
-                )}
+                className={classnames(s.button, props.isActive ? s.active : null)}
                 onClick={props.onClick}
             >
                 {props.icon}

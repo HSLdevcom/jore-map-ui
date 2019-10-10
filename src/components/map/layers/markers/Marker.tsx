@@ -40,9 +40,7 @@ class Marker extends Component<IMarkerProps> {
 
     render() {
         const { latLng, color, isClickDisabled }: IMarkerProps = this.props;
-        const iconBaseClass = isClickDisabled
-            ? s.iconBaseNotClickable
-            : s.iconBase;
+        const iconBaseClass = isClickDisabled ? s.iconBaseNotClickable : s.iconBase;
 
         return (
             <LeafletMarker
