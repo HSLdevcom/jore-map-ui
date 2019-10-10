@@ -16,9 +16,7 @@ class LineFactory {
             publicTransportType: externalLine.linjoukkollaji,
             clientOrganization: externalLine.lintilorg,
             modifiedBy: externalLine.linkuka,
-            modifiedOn: externalLine.linviimpvm
-                ? new Date(externalLine.linviimpvm)
-                : undefined,
+            modifiedOn: externalLine.linviimpvm ? new Date(externalLine.linviimpvm) : undefined,
             publicTransportDestination: externalLine.linjlkohde,
             exchangeTime: externalLine.vaihtoaika,
             lineReplacementType: externalLine.linkorvtyyppi
@@ -45,17 +43,13 @@ class LineFactory {
         };
     };
 
-    public static createSearchLine = (
-        externalLine: IExternalLine
-    ): ISearchLine => {
+    public static createSearchLine = (externalLine: IExternalLine): ISearchLine => {
         const routes = externalLine.reittisByLintunnus.nodes.map(
             (route: IExternalRoute): ISearchLineRoute => {
                 return {
                     id: route.reitunnus,
                     name: _getRouteName(route),
-                    date: route.reiviimpvm
-                        ? new Date(route.reiviimpvm)
-                        : undefined
+                    date: route.reiviimpvm ? new Date(route.reiviimpvm) : undefined
                 };
             }
         );

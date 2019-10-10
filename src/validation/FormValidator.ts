@@ -23,8 +23,7 @@ class FormValidator {
 
         return {
             isValid,
-            errorMessage:
-                typeof firstErrorMessage === 'string' ? firstErrorMessage : ''
+            errorMessage: typeof firstErrorMessage === 'string' ? firstErrorMessage : ''
         };
     };
 }

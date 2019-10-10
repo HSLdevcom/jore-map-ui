@@ -91,10 +91,7 @@ export class SearchResultStore {
 
         let list: (INodeBase | ISearchLine)[] = [];
         if (SearchStore.isSearchingForLines) {
-            const lines = this.getFilteredLines(
-                searchInput,
-                SearchStore.selectedTransitTypes
-            );
+            const lines = this.getFilteredLines(searchInput, SearchStore.selectedTransitTypes);
             list = [...list, ...lines];
         }
         if (SearchStore.isSearchingForNodes) {
@@ -106,10 +103,7 @@ export class SearchResultStore {
         this.setIsSearching(false);
     };
 
-    private getFilteredLines = (
-        searchInput: string,
-        transitTypes: TransitType[]
-    ) => {
+    private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
         return this._allLines.filter(line => {
             // Filter by transitType
             if (!transitTypes.includes(line.transitType)) {

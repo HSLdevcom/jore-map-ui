@@ -11,8 +11,6 @@ describe('leafletUtils.calculateLengthFromLatLngs', () => {
         // https://gps-coordinates.org/distance-between-coordinates.php
         // calculated distance to 3711.12 meters, rounds to 3711
         const expectedLength = 3711;
-        expect(LeafletUtils.calculateLengthFromLatLngs(positions)).toEqual(
-            expectedLength
-        );
+        expect(LeafletUtils.calculateLengthFromLatLngs(positions)).toEqual(expectedLength);
     });
 });

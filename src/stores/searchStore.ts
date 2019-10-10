@@ -46,10 +46,7 @@ export class SearchStore {
     @action
     public removeSubLineItem = (routeId: string, routePathId: string) => {
         this._subLineItems = this._subLineItems.filter(subLineItem => {
-            return !(
-                subLineItem.routeId === routeId &&
-                subLineItem.routePathId === routePathId
-            );
+            return !(subLineItem.routeId === routeId && subLineItem.routePathId === routePathId);
         });
     };
 
@@ -91,9 +88,7 @@ export class SearchStore {
     @action
     public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(
-                t => t !== type
-            );
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
             this._selectedTransitTypes.push(type);
         }

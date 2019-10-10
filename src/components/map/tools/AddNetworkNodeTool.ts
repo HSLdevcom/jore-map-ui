@@ -12,8 +12,7 @@ import BaseTool from './BaseTool';
 class AddNetworkNodeTool implements BaseTool {
     public toolType = ToolbarTool.AddNetworkNode;
     public toolHelpHeader = 'Luo uusi solmu';
-    public toolHelpText =
-        'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.';
+    public toolHelpText = 'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.';
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);

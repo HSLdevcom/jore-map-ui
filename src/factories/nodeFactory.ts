@@ -13,29 +13,20 @@ class NodeFactory {
         // Use less accurate location if measured location is missing.
         const coordinates = roundLatLng(
             L.GeoJSON.coordsToLatLng(
-                JSON.parse(
-                    externalNode.geojson
-                        ? externalNode.geojson
-                        : externalNode.geojsonManual
-                ).coordinates
+                JSON.parse(externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual)
+                    .coordinates
             )
         );
         const coordinatesManual = roundLatLng(
-            L.GeoJSON.coordsToLatLng(
-                JSON.parse(externalNode.geojsonManual).coordinates
-            )
+            L.GeoJSON.coordsToLatLng(JSON.parse(externalNode.geojsonManual).coordinates)
         );
         const coordinatesProjection = roundLatLng(
-            L.GeoJSON.coordsToLatLng(
-                JSON.parse(externalNode.geojsonProjection).coordinates
-            )
+            L.GeoJSON.coordsToLatLng(JSON.parse(externalNode.geojsonProjection).coordinates)
         );
         const nodeStop = externalNode.pysakkiBySoltunnus;
         let transitTypes: TransitType[] = [];
         if (externalNode.transittypes) {
-            transitTypes = externalNode.transittypes.split(
-                ','
-            ) as TransitType[];
+            transitTypes = externalNode.transittypes.split(',') as TransitType[];
         }
 
         return {
@@ -45,23 +36,16 @@ class NodeFactory {
             coordinatesManual,
             coordinatesProjection,
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
-            measurementDate: externalNode.mittpvm
-                ? new Date(externalNode.mittpvm)
-                : undefined,
+            measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
             measurementType: externalNode.solotapa,
-            modifiedOn: externalNode.solviimpvm
-                ? new Date(externalNode.solviimpvm)
-                : undefined,
+            modifiedOn: externalNode.solviimpvm ? new Date(externalNode.solviimpvm) : undefined,
             modifiedBy: externalNode.solkuka,
             tripTimePoint: externalNode.solmapiste
         };
     };
 
     public static createNodeBase = (externalNode: IExternalNode): INodeBase => {
-        const type = getNodeType(
-            externalNode.soltyyppi,
-            externalNode.soltunnus
-        );
+        const type = getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
         // TODO: Change this when creating abstraction layers for reading from postgis
 
         return {

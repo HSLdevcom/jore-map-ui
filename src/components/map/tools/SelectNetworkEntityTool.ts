@@ -36,11 +36,7 @@ class SelectNetworkEntityTool implements BaseTool {
 
         const linkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget(':id',
-                [params.startNodeId, params.endNodeId, params.transitType].join(
-                    ','
-                )
-            )
+            .toTarget(':id', [params.startNodeId, params.endNodeId, params.transitType].join(','))
             .toLink();
         navigator.goTo(linkViewLink);
     };

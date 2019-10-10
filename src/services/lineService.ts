@@ -34,9 +34,7 @@ class LineService {
         });
     };
 
-    public static fetchSearchLine = async (
-        lintunnus: string
-    ): Promise<ISearchLine> => {
+    public static fetchSearchLine = async (lintunnus: string): Promise<ISearchLine> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getSearchLineQuery(),
             variables: { lineId: lintunnus }
@@ -50,10 +48,7 @@ class LineService {
     };
 
     public static createLine = async (Line: ILine) => {
-        const response = (await ApiClient.createObject(
-            endpoints.LINE,
-            Line
-        )) as ILinePrimaryKey;
+        const response = (await ApiClient.createObject(endpoints.LINE, Line)) as ILinePrimaryKey;
         return response.id;
     };
 }

@@ -15,8 +15,7 @@ class ApiClientHelper {
         const dates = entries
             .filter(([key, value]: [string, any]) => value instanceof Date)
             .map(
-                ([key, value]: [string, Date]) =>
-                    [key, Moment(value).format()] as [string, string]
+                ([key, value]: [string, Date]) => [key, Moment(value).format()] as [string, string]
             );
 
         return {

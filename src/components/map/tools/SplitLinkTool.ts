@@ -17,8 +17,7 @@ import BaseTool from './BaseTool';
 class SplitLinkTool implements BaseTool {
     public toolType = ToolbarTool.SplitLink;
     public toolHelpHeader = 'Jaa linkki solmulla';
-    public toolHelpText =
-        'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
+    public toolHelpText = 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
@@ -35,13 +34,9 @@ class SplitLinkTool implements BaseTool {
         if (!link) throw 'Valittua linkkiä ei löytynyt.';
         const url = RouteBuilder.to(SubSites.splitLink)
             .clear()
-            .toTarget(':id',
-                [
-                    link.startNode.id,
-                    link.endNode.id,
-                    link.transitType,
-                    nodeId
-                ].join(',')
+            .toTarget(
+                ':id',
+                [link.startNode.id, link.endNode.id, link.transitType, nodeId].join(',')
             )
             .toLink();
         navigator.goTo(url);

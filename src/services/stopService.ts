@@ -20,9 +20,7 @@ class StopService {
         return queryResult.data.node.nodes;
     };
 
-    public static fetchAllStopSections = async (): Promise<
-        IStopSectionItem[]
-    > => {
+    public static fetchAllStopSections = async (): Promise<IStopSectionItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopSections()
         });

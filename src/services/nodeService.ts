@@ -42,10 +42,7 @@ class NodeService {
     };
 
     public static createNode = async (node: INode) => {
-        const response = (await ApiClient.createObject(
-            endpoints.NODE,
-            node
-        )) as INodePrimaryKey;
+        const response = (await ApiClient.createObject(endpoints.NODE, node)) as INodePrimaryKey;
         return response.id;
     };
 }

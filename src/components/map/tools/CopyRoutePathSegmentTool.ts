@@ -1,7 +1,4 @@
-import EventManager, {
-    INodeClickParams,
-    INetworkNodeClickParams
-} from '~/util/EventManager';
+import EventManager, { INodeClickParams, INetworkNodeClickParams } from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
@@ -90,9 +87,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         }
 
         if (startNode.nodeId === endNode.nodeId) {
-            ErrorStore.addError(
-                'Kopioitavan välin alkusolmu ei saa olla sama kuin loppusolmu.'
-            );
+            ErrorStore.addError('Kopioitavan välin alkusolmu ei saa olla sama kuin loppusolmu.');
             RoutePathCopySegmentStore.setNodePositionValidity(false);
             return;
         }

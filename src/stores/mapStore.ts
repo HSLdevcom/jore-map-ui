@@ -105,10 +105,7 @@ export class MapStore {
 
     // TODO: move logic out of store? You can setCoordinates() instead
     @action
-    public setCoordinatesFromDisplayCoordinateSystem = (
-        lat: number,
-        lon: number
-    ) => {
+    public setCoordinatesFromDisplayCoordinateSystem = (lat: number, lon: number) => {
         const [wgsLat, wgsLon] = GeometryService.reprojectToCrs(
             lat,
             lon,
@@ -131,14 +128,10 @@ export class MapStore {
     @action
     public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => {
         if (this._visibleNodeLabels.includes(nodeLabel)) {
-            this._visibleNodeLabels = this._visibleNodeLabels.filter(
-                t => t !== nodeLabel
-            );
+            this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
         } else {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
-            this._visibleNodeLabels = this._visibleNodeLabels.concat([
-                nodeLabel
-            ]);
+            this._visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
         }
     };
 

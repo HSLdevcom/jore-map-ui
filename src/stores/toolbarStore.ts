@@ -46,10 +46,7 @@ export class ToolbarStore {
         }
 
         // deselect current tool
-        if (
-            tool === null ||
-            (this._selectedTool && this._selectedTool.toolType === tool)
-        ) {
+        if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
             this.selectDefaultTool();
             return;
         }
@@ -62,9 +59,7 @@ export class ToolbarStore {
     };
 
     public isSelected = (tool: ToolbarTool): boolean => {
-        return Boolean(
-            this._selectedTool && this._selectedTool.toolType === tool
-        );
+        return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
     };
 
     public isDisabled = (tool: ToolbarTool): boolean => {

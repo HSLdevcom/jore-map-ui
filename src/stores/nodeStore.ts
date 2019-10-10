@@ -45,10 +45,7 @@ export class NodeStore {
 
     @computed
     get isDirty() {
-        return (
-            !_.isEqual(this._node, this._oldNode) ||
-            !_.isEqual(this._links, this._oldLinks)
-        );
+        return !_.isEqual(this._node, this._oldNode) || !_.isEqual(this._links, this._oldLinks);
     }
 
     @computed
@@ -123,12 +120,7 @@ export class NodeStore {
         // Update the last link geometry of endNodes to coordinatesProjection
         newLinks
             .filter(link => link.endNode.id === newNode!.id)
-            .map(
-                link =>
-                    (link.geometry[
-                        link.geometry.length - 1
-                    ] = coordinatesProjection)
-            );
+            .map(link => (link.geometry[link.geometry.length - 1] = coordinatesProjection));
 
         const currentUndoState: UndoState = {
             links: newLinks,
@@ -143,8 +135,7 @@ export class NodeStore {
             'coordinatesProjection'
         ];
         geometryVariables.forEach(
-            coordinateName =>
-                (this._node![coordinateName] = newNode[coordinateName])
+            coordinateName => (this._node![coordinateName] = newNode[coordinateName])
         );
 
         if (nodeLocationType === 'coordinates') {
@@ -186,10 +177,7 @@ export class NodeStore {
     };
 
     @action
-    public updateNode = (
-        property: keyof INode,
-        value: string | Date | LatLng
-    ) => {
+    public updateNode = (property: keyof INode, value: string | Date | LatLng) => {
         if (!this._node) return;
 
         this._node[property] = value;
@@ -245,10 +233,8 @@ export class NodeStore {
         this._geometryUndoStore.undo((previousUndoState: UndoState) => {
             this._links! = previousUndoState.links;
             this._node!.coordinates = previousUndoState.node.coordinates;
-            this._node!.coordinatesManual =
-                previousUndoState.node.coordinatesManual;
-            this._node!.coordinatesProjection =
-                previousUndoState.node.coordinatesProjection;
+            this._node!.coordinatesManual = previousUndoState.node.coordinatesManual;
+            this._node!.coordinatesProjection = previousUndoState.node.coordinatesProjection;
         });
     };
 
@@ -257,21 +243,14 @@ export class NodeStore {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._links! = nextUndoState.links;
             this._node!.coordinates = nextUndoState.node.coordinates;
-            this._node!.coordinatesManual =
-                nextUndoState.node.coordinatesManual;
-            this._node!.coordinatesProjection =
-                nextUndoState.node.coordinatesProjection;
+            this._node!.coordinatesManual = nextUndoState.node.coordinatesManual;
+            this._node!.coordinatesProjection = nextUndoState.node.coordinatesProjection;
         });
     };
 
     public getDirtyLinks() {
         // All links are dirty if the node coordinate has changed
-        if (
-            !_.isEqual(
-                this._node!.coordinatesProjection,
-                this._oldNode!.coordinatesProjection
-            )
-        ) {
+        if (!_.isEqual(this._node!.coordinatesProjection, this._oldNode!.coordinatesProjection)) {
             return this._links;
         }
         return this._links.filter(link => {

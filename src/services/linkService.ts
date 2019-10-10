@@ -9,9 +9,7 @@ import IExternalLink from '~/models/externals/IExternalLink';
 import GraphqlQueries from './graphqlQueries';
 
 class LinkService {
-    public static fetchLinksWithStartNodeOrEndNode = async (
-        nodeId: string
-    ): Promise<ILink[]> => {
+    public static fetchLinksWithStartNodeOrEndNode = async (nodeId: string): Promise<ILink[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLinksByStartNodeAndEndNodeQuery(),
             variables: { nodeId }
@@ -20,9 +18,7 @@ class LinkService {
             ...queryResult.data.solmuBySoltunnus.linkkisByLnkalkusolmu.nodes,
             ...queryResult.data.solmuBySoltunnus.linkkisByLnkloppusolmu.nodes
         ];
-        return queriedLinks.map((link: IExternalLink) =>
-            LinkFactory.mapExternalLink(link)
-        );
+        return queriedLinks.map((link: IExternalLink) => LinkFactory.mapExternalLink(link));
     };
 
     public static fetchLink = async (
@@ -37,18 +33,13 @@ class LinkService {
         return LinkFactory.mapExternalLink(queryResult.data.link);
     };
 
-    public static fetchLinks = async (
-        startNodeId: string,
-        endNodeId: string
-    ): Promise<ILink[]> => {
+    public static fetchLinks = async (startNodeId: string, endNodeId: string): Promise<ILink[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLinksQuery(),
             variables: { startNodeId, endNodeId }
         });
         const queriedLinks = queryResult.data.getLinks.nodes;
-        return queriedLinks.map((link: IExternalLink) =>
-            LinkFactory.mapExternalLink(link)
-        );
+        return queriedLinks.map((link: IExternalLink) => LinkFactory.mapExternalLink(link));
     };
 
     public static updateLink = async (link: ILink) => {
