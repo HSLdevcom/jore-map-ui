@@ -311,7 +311,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         />
                         <Dropdown
                             onChange={onChange('municipality')}
-                            items={this.props.codeListStore!.getDropdownItemList('Kunta (ris/pys)')}
+                            items={this.props.codeListStore!.getDropdownItemList('Kunta (KELA)')}
                             selected={stop.municipality}
                             disabled={isEditingDisabled}
                             label='KUNTA'
