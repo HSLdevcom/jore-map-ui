@@ -23,18 +23,12 @@ interface IRouteInfoTabProps {
     isNewRoute: boolean;
     onChangeRouteProperty: (property: keyof IRoute) => (value: any) => void;
     invalidPropertiesMap: object;
-    setValidatorResult: (
-        property: string,
-        validationResult: IValidationResult
-    ) => void;
+    setValidatorResult: (property: string, validationResult: IValidationResult) => void;
 }
 
 @inject('routeStore', 'errorStore')
 @observer
-class RouteInfoTab extends React.Component<
-    IRouteInfoTabProps,
-    IRouteInfoTabState
-> {
+class RouteInfoTab extends React.Component<IRouteInfoTabProps, IRouteInfoTabState> {
     private existinRouteIds: string[] = [];
 
     constructor(props: IRouteInfoTabProps) {
@@ -62,10 +56,7 @@ class RouteInfoTab extends React.Component<
         try {
             this.existinRouteIds = await RouteService.fetchAllRouteIds();
         } catch (e) {
-            this.props.errorStore!.addError(
-                'Olemassa olevien reittien haku ei onnistunut',
-                e
-            );
+            this.props.errorStore!.addError('Olemassa olevien reittien haku ei onnistunut', e);
         }
     };
 
@@ -128,9 +119,7 @@ class RouteInfoTab extends React.Component<
                             label='REITIN NIMI RUOTSIKSI'
                             value={route.routeNameSw}
                             onChange={onChange('routeNameSw')}
-                            validationResult={
-                                invalidPropertiesMap['routeNameSw']
-                            }
+                            validationResult={invalidPropertiesMap['routeNameSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -139,25 +128,18 @@ class RouteInfoTab extends React.Component<
                             label='REITIN LYHYT NIMI'
                             value={route.routeNameShort}
                             onChange={onChange('routeNameShort')}
-                            validationResult={
-                                invalidPropertiesMap['routeNameShort']
-                            }
+                            validationResult={invalidPropertiesMap['routeNameShort']}
                         />
                         <InputContainer
                             disabled={isEditingDisabled}
                             label='REITIN LYHYT NIMI RUOTSIKSI'
                             value={route.routeNameShortSw}
                             onChange={onChange('routeNameShortSw')}
-                            validationResult={
-                                invalidPropertiesMap['routeNameShortSw']
-                            }
+                            validationResult={invalidPropertiesMap['routeNameShortSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <TextContainer
-                            label='MUOKANNUT'
-                            value={route.modifiedBy}
-                        />
+                        <TextContainer label='MUOKANNUT' value={route.modifiedBy} />
                         <TextContainer
                             label='MUOKATTU PVM'
                             isTimeIncluded={true}

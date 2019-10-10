@@ -12,11 +12,7 @@ interface ITextContainerProps {
 
 const TextContainer = observer((props: ITextContainerProps) => (
     <div className={s.formItem}>
-        <div
-            className={
-                props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel
-            }
-        >
+        <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
             {props.label}
         </div>
         <div className={s.staticHeight}>

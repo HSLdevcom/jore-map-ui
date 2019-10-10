@@ -33,10 +33,7 @@ const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half 
 
 @inject('searchResultStore', 'searchStore', 'errorStore')
 @observer
-class SearchResults extends React.Component<
-    ISearchResultsProps,
-    ISearchResultsState
-> {
+class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
     private paginatedDiv: React.RefObject<HTMLDivElement>;
 
     private reactionDisposer: IReactionDisposer;
@@ -69,12 +66,10 @@ class SearchResults extends React.Component<
 
     private fetchAll = async () => {
         this.setState({ isLoading: true });
-        return Promise.all([this.fetchAllLines(), this.fetchAllNodes()]).then(
-            () => {
-                this.setState({ isLoading: false });
-                this.props.searchResultStore!.search();
-            }
-        );
+        return Promise.all([this.fetchAllLines(), this.fetchAllNodes()]).then(() => {
+            this.setState({ isLoading: false });
+            this.props.searchResultStore!.search();
+        });
     };
 
     private fetchAllLines = async () => {
@@ -96,9 +91,7 @@ class SearchResults extends React.Component<
     };
 
     private getFilteredItems = () => {
-        return this.props
-            .searchResultStore!.filteredItems.slice()
-            .splice(0, this.state.showLimit);
+        return this.props.searchResultStore!.filteredItems.slice().splice(0, this.state.showLimit);
     };
 
     private closeSearchResults = () => {
@@ -108,10 +101,8 @@ class SearchResults extends React.Component<
     private showMoreResults = () => {
         if (
             this.paginatedDiv.current &&
-            this.paginatedDiv.current.scrollTop +
-                this.paginatedDiv.current.offsetHeight >=
-                this.paginatedDiv.current.scrollHeight /
-                    SCROLL_PAGINATION_TRIGGER_POINT
+            this.paginatedDiv.current.scrollTop + this.paginatedDiv.current.offsetHeight >=
+                this.paginatedDiv.current.scrollHeight / SCROLL_PAGINATION_TRIGGER_POINT
         ) {
             this.setState({
                 showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT
@@ -146,10 +137,7 @@ class SearchResults extends React.Component<
                 </div>
             );
         }
-        const isRouteListView = matchPath(
-            Navigator.getPathName(),
-            subSites.routes
-        );
+        const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
         const filteredItems = this.getFilteredItems();
         return (
             <div className={s.searchResultsView}>
@@ -170,10 +158,7 @@ class SearchResults extends React.Component<
                     )}
                 </div>
                 {isRouteListView && (
-                    <div
-                        className={s.largeButton}
-                        onClick={this.closeSearchResults}
-                    >
+                    <div className={s.largeButton} onClick={this.closeSearchResults}>
                         Sulje
                     </div>
                 )}

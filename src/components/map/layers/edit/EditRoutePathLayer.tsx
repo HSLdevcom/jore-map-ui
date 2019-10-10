@@ -21,10 +21,7 @@ interface IEditRoutePathLayerState {
 
 @inject('routePathStore', 'routePathCopySegmentStore', 'mapStore')
 @observer
-class EditRoutePathLayer extends Component<
-    IEditRoutePathLayerProps,
-    IEditRoutePathLayerState
-> {
+class EditRoutePathLayer extends Component<IEditRoutePathLayerProps, IEditRoutePathLayerState> {
     constructor(props: IEditRoutePathLayerProps) {
         super(props);
 
@@ -56,16 +53,12 @@ class EditRoutePathLayer extends Component<
 
         if (routePathStore!.routePath) {
             // Only automatic refocus if user opened new routepath
-            if (
-                routePathStore!.routePath!.internalId !==
-                this.state.focusedRoutePathId
-            ) {
+            if (routePathStore!.routePath!.internalId !== this.state.focusedRoutePathId) {
                 const bounds = this.calculateBounds();
                 if (bounds.isValid()) {
                     this.props.mapStore!.setMapBounds(bounds);
                     this.setState({
-                        focusedRoutePathId: routePathStore!.routePath!
-                            .internalId
+                        focusedRoutePathId: routePathStore!.routePath!.internalId
                     });
                 }
             }
@@ -97,16 +90,10 @@ class EditRoutePathLayer extends Component<
             this.props.routePathCopySegmentStore!.endNode;
         return (
             <div>
-                <EditRoutePathLayerNode
-                    highlightItemById={this.highlightItemById}
-                />
-                <EditRoutePathLayerLink
-                    highlightItemById={this.highlightItemById}
-                />
+                <EditRoutePathLayerNode highlightItemById={this.highlightItemById} />
+                <EditRoutePathLayerLink highlightItemById={this.highlightItemById} />
                 {neighborLinks && <RoutePathNeighborLinkLayer />}
-                {isRoutePathCopySegmentLayerVisible && (
-                    <RoutePathCopySegmentLayer />
-                )}
+                {isRoutePathCopySegmentLayerVisible && <RoutePathCopySegmentLayer />}
             </div>
         );
     }

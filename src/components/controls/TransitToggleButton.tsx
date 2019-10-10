@@ -18,10 +18,7 @@ const TransitToggleButton = observer((props: ITransitToggleButtonProps) => {
         props.toggleActivity(props.type);
     };
 
-    const getToggledButtonClass = (
-        transitType: TransitType,
-        isToggled: boolean
-    ) => {
+    const getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
         if (isToggled) {
             return TransitTypeHelper.getBackgroundColorClass(transitType);
         }

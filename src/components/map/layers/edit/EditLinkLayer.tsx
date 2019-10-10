@@ -64,8 +64,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
         this.removeOldLinks();
         const isEditable =
-            this.props.loginStore!.hasWriteAccess &&
-            this.props.linkStore!.isLinkGeometryEditable;
+            this.props.loginStore!.hasWriteAccess && this.props.linkStore!.isLinkGeometryEditable;
         this.drawLinkToMap(link, isEditable);
 
         map.off('editable:vertex:dragend');
@@ -113,9 +112,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     };
 
     private renderLinkDecorator = () => {
-        if (
-            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
-        ) {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
             return null;
         }
 
@@ -154,16 +151,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     };
 
     private renderStartMarker = () => {
-        const startMarkerCoordinates = this.props.linkStore!
-            .startMarkerCoordinates;
+        const startMarkerCoordinates = this.props.linkStore!.startMarkerCoordinates;
         if (!startMarkerCoordinates) return null;
 
-        return (
-            <Marker
-                latLng={startMarkerCoordinates}
-                color={START_MARKER_COLOR}
-            />
-        );
+        return <Marker latLng={startMarkerCoordinates} color={START_MARKER_COLOR} />;
     };
 
     private renderDashedLines = () => {

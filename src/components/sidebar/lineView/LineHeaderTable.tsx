@@ -38,77 +38,49 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
     };
 
     private renderLineHeaderRows = () => {
-        return this.props.lineHeaders.map(
-            (lineHeader: ILineHeader, index: number) => {
-                const isCurrentLineHeader = _.isEqual(
-                    this.props.currentLineHeader,
-                    lineHeader
-                );
-                return (
-                    <tr
-                        key={index}
-                        className={
-                            isCurrentLineHeader
-                                ? s.lineHeaderRowHighlight
-                                : undefined
-                        }
-                    >
-                        <td>{lineHeader.lineNameFi}</td>
-                        <td className={s.timestampRow}>
-                            {Moment(lineHeader.startDate).format('DD-MM-YYYY')}
-                        </td>
-                        <td className={s.timestampRow}>
-                            {Moment(lineHeader.endDate).format('DD-MM-YYYY')}
-                        </td>
-                        <td>
-                            <Button
-                                className={s.editLineHeaderButton}
-                                hasReverseColor={true}
-                                onClick={this.redirectToEditLineHeaderView(
-                                    lineHeader.startDate!
-                                )}
-                            >
-                                <FiInfo />
-                            </Button>
-                        </td>
-                    </tr>
-                );
-            }
-        );
+        return this.props.lineHeaders.map((lineHeader: ILineHeader, index: number) => {
+            const isCurrentLineHeader = _.isEqual(this.props.currentLineHeader, lineHeader);
+            return (
+                <tr
+                    key={index}
+                    className={isCurrentLineHeader ? s.lineHeaderRowHighlight : undefined}
+                >
+                    <td>{lineHeader.lineNameFi}</td>
+                    <td className={s.timestampRow}>
+                        {Moment(lineHeader.startDate).format('DD-MM-YYYY')}
+                    </td>
+                    <td className={s.timestampRow}>
+                        {Moment(lineHeader.endDate).format('DD-MM-YYYY')}
+                    </td>
+                    <td>
+                        <Button
+                            className={s.editLineHeaderButton}
+                            hasReverseColor={true}
+                            onClick={this.redirectToEditLineHeaderView(lineHeader.startDate!)}
+                        >
+                            <FiInfo />
+                        </Button>
+                    </td>
+                </tr>
+            );
+        });
     };
 
     render() {
         return (
             <div className={s.lineHeaderTableView}>
-                <SidebarHeader hideCloseButton={true}>
-                    Linjan otsikot
-                </SidebarHeader>
+                <SidebarHeader hideCloseButton={true}>Linjan otsikot</SidebarHeader>
                 {this.props.lineHeaders.length > 0 ? (
                     <table className={s.lineHeaderTable}>
                         <tbody>
                             <tr>
-                                <th
-                                    className={classnames(
-                                        s.inputLabel,
-                                        s.columnHeader
-                                    )}
-                                >
+                                <th className={classnames(s.inputLabel, s.columnHeader)}>
                                     LINJAN NIMI
                                 </th>
-                                <th
-                                    className={classnames(
-                                        s.inputLabel,
-                                        s.columnHeader
-                                    )}
-                                >
+                                <th className={classnames(s.inputLabel, s.columnHeader)}>
                                     VOIM. AST.
                                 </th>
-                                <th
-                                    className={classnames(
-                                        s.inputLabel,
-                                        s.columnHeader
-                                    )}
-                                >
+                                <th className={classnames(s.inputLabel, s.columnHeader)}>
                                     VIIM. VOIM.
                                 </th>
                                 <th className={s.columnHeader} />
@@ -117,9 +89,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                         </tbody>
                     </table>
                 ) : (
-                    <div>
-                        Linjalle {this.props.lineId} ei löytynyt otsikoita.
-                    </div>
+                    <div>Linjalle {this.props.lineId} ei löytynyt otsikoita.</div>
                 )}
                 <Button
                     className={s.newLineHeaderButton}

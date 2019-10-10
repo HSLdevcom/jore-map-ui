@@ -64,27 +64,19 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     private renderNode() {
         const node = this.props.nodeStore!.node;
 
-        const isNewNodeView = Boolean(
-            matchPath(navigator.getPathName(), SubSites.newNode)
-        );
+        const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
         return (
             <NodeMarker
                 key={node.id}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
-                isSelected={
-                    isNewNodeView ||
-                    this.props.mapStore!.selectedNodeId === node.id
-                }
+                isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
                 node={node}
                 onMoveMarker={this.onMoveMarker()}
             />
         );
     }
 
-    private onMoveMarker = () => (
-        nodeLocationType: NodeLocationType,
-        coordinates: L.LatLng
-    ) => {
+    private onMoveMarker = () => (nodeLocationType: NodeLocationType, coordinates: L.LatLng) => {
         this.props.nodeStore!.updateNodeGeometry(
             nodeLocationType,
             coordinates,
@@ -95,9 +87,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     private drawEditableLinks = () => {
         this.removeOldLinks();
 
-        this.props.nodeStore!.links.forEach(link =>
-            this.drawEditableLink(link)
-        );
+        this.props.nodeStore!.links.forEach(link => this.drawEditableLink(link));
 
         const map = this.props.leaflet.map;
 
@@ -110,25 +100,18 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     };
 
     private updateLinkGeometry(leafletId: number) {
-        const editableLink = this.editableLinks.find(
-            (link: any) => link._leaflet_id === leafletId
-        );
+        const editableLink = this.editableLinks.find((link: any) => link._leaflet_id === leafletId);
         if (editableLink) {
             const latlngs = editableLink!.getLatLngs()[0] as L.LatLng[];
             const editableLinkIndex = this.editableLinks.findIndex(
                 (link: any) => link._leaflet_id === leafletId
             );
-            this.props.nodeStore!.updateLinkGeometry(
-                latlngs,
-                editableLinkIndex
-            );
+            this.props.nodeStore!.updateLinkGeometry(latlngs, editableLinkIndex);
         }
     }
 
     private drawEditableLink = (link: ILink) => {
-        const isNodeView = Boolean(
-            matchPath(navigator.getPathName(), SubSites.node)
-        );
+        const isNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.node));
         if (!isNodeView || !link) return;
 
         this.drawEditableLinkToMap(link);
@@ -162,9 +145,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     };
 
     private renderLinkDecorators = () => {
-        if (
-            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
-        ) {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
             return null;
         }
 
@@ -180,9 +161,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     };
 
     render() {
-        const isNodeViewVisible = Boolean(
-            matchPath(navigator.getPathName(), SubSites.node)
-        );
+        const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.node));
         if (!isNodeViewVisible) return null;
 
         this.drawEditableLinks();

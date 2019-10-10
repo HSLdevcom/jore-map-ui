@@ -49,9 +49,7 @@ class RouteListView extends React.Component<IRouteListViewProps> {
                         <EntityTypeToggles />
                         <TransitToggleButtonBar
                             toggleSelectedTransitType={this.toggleTransitType}
-                            selectedTransitTypes={
-                                this.props.searchStore!.selectedTransitTypes
-                            }
+                            selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
                         />
                         <SearchResults />
                     </>

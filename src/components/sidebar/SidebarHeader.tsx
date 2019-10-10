@@ -26,22 +26,14 @@ const revertPromptMessage =
 @observer
 class SidebarHeader extends React.Component<ISidebarHeaderProps> {
     onCloseButtonClick = () => {
-        if (
-            !this.props.shouldShowClosePromptMessage ||
-            confirm(closePromptMessage)
-        ) {
-            this.props.onCloseButtonClick
-                ? this.props.onCloseButtonClick()
-                : navigator.goBack();
+        if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
+            this.props.onCloseButtonClick ? this.props.onCloseButtonClick() : navigator.goBack();
         }
     };
 
     onEditButtonClick = () => {
         if (this.props.isEditing!) {
-            if (
-                !this.props.shouldShowClosePromptMessage ||
-                confirm(revertPromptMessage)
-            ) {
+            if (!this.props.shouldShowClosePromptMessage || confirm(revertPromptMessage)) {
                 this.props.onEditButtonClick!();
             }
         } else {
@@ -54,21 +46,14 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
             <div className={s.sidebarHeaderView}>
                 <div className={s.topic}>{this.props.children}</div>
                 <div>
-                    {this.props.isEditButtonVisible &&
-                        this.props.loginStore!.hasWriteAccess && (
-                            <FiEdit3
-                                onClick={this.onEditButtonClick}
-                                className={classnames(
-                                    s.icon,
-                                    this.props.isEditing && s.active
-                                )}
-                            />
-                        )}
-                    {!this.props.hideCloseButton && (
-                        <FiXCircle
-                            className={s.icon}
-                            onClick={this.onCloseButtonClick}
+                    {this.props.isEditButtonVisible && this.props.loginStore!.hasWriteAccess && (
+                        <FiEdit3
+                            onClick={this.onEditButtonClick}
+                            className={classnames(s.icon, this.props.isEditing && s.active)}
                         />
+                    )}
+                    {!this.props.hideCloseButton && (
+                        <FiXCircle className={s.icon} onClick={this.onCloseButtonClick} />
                     )}
                 </div>
             </div>

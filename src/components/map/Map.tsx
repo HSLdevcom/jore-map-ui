@@ -65,9 +65,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     private getMap() {
-        return this.mapReference.current
-            ? this.mapReference.current.leafletElement
-            : null;
+        return this.mapReference.current ? this.mapReference.current.leafletElement : null;
     }
 
     componentDidMount() {
@@ -98,21 +96,14 @@ class LeafletMap extends React.Component<IMapProps> {
             reaction(() => this.props.mapStore!.coordinates, this.centerMap)
         );
 
-        this.reactionDisposers.push(
-            reaction(() => this.props.mapStore!.mapBounds, this.fitBounds)
-        );
+        this.reactionDisposers.push(reaction(() => this.props.mapStore!.mapBounds, this.fitBounds));
 
         this.reactionDisposers.push(
             reaction(() => this.props.mapStore!.mapCursor, this.setMapCursor)
         );
 
-        map.setView(
-            this.props.mapStore!.coordinates,
-            this.props.mapStore!.zoom
-        );
-        map.on('click', (e: L.LeafletEvent) =>
-            EventManager.trigger('mapClick', e)
-        );
+        map.setView(this.props.mapStore!.coordinates, this.props.mapStore!.zoom);
+        map.on('click', (e: L.LeafletEvent) => EventManager.trigger('mapClick', e));
     }
 
     private centerMap = () => {
@@ -157,19 +148,12 @@ class LeafletMap extends React.Component<IMapProps> {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
-        const fullScreenMapViewClass = this.props.mapStore!.isMapFullscreen
-            ? ''
-            : '';
+        const fullScreenMapViewClass = this.props.mapStore!.isMapFullscreen ? '' : '';
         const routes = toJS(this.props.routeListStore!.routes);
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 {this.props.children}
-                <Map
-                    ref={this.mapReference}
-                    zoomControl={false}
-                    id={s.mapLeaflet}
-                    editable={true}
-                >
+                <Map ref={this.mapReference} zoomControl={false} id={s.mapLeaflet} editable={true}>
                     <TileLayer
                         url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
                         attribution={`

@@ -13,9 +13,7 @@ interface ISearchInputProps {
 @inject('searchStore', 'searchResultStore')
 @observer
 class SearchInput extends React.Component<ISearchInputProps> {
-    private onSearchInputChange = (
-        event: React.FormEvent<HTMLInputElement>
-    ) => {
+    private onSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
         this.props.searchStore!.setSearchInput(newValue);
     };

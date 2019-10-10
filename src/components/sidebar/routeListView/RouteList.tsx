@@ -30,13 +30,7 @@ interface IRouteListProps {
     routePathStore?: RoutePathStore;
 }
 
-@inject(
-    'searchStore',
-    'routeListStore',
-    'networkStore',
-    'routePathStore',
-    'errorStore'
-)
+@inject('searchStore', 'routeListStore', 'networkStore', 'routePathStore', 'errorStore')
 @observer
 class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     constructor(props: any) {
@@ -53,31 +47,21 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     }
 
     private queryRoutes = async () => {
-        const routeIds = navigator.getQueryParam(
-            QueryParams.routes
-        ) as string[];
+        const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
             this.setState({ isLoading: true });
-            const currentRouteIds = this.props.routeListStore!.routes.map(
-                r => r.id
-            );
-            const missingRouteIds = routeIds.filter(
-                id => !currentRouteIds.includes(id)
-            );
+            const currentRouteIds = this.props.routeListStore!.routes.map(r => r.id);
+            const missingRouteIds = routeIds.filter(id => !currentRouteIds.includes(id));
             currentRouteIds
                 .filter(id => !routeIds.includes(id))
                 .forEach(id => this.props.routeListStore!.removeFromRoutes(id));
 
             try {
-                const routes = await RouteService.fetchMultipleRoutes(
-                    missingRouteIds
-                );
+                const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
                 this.props.routeListStore!.addToRoutes(routes);
             } catch (e) {
                 this.props.errorStore!.addError(
-                    `Reittien (soltunnus ${routeIds.join(
-                        ', '
-                    )}) haku epäonnistui.`,
+                    `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
                     e
                 );
             }

@@ -42,17 +42,12 @@ class HomeView extends React.Component<IHomeViewProps> {
                 <EntityTypeToggles />
                 <TransitToggleButtonBar
                     toggleSelectedTransitType={this.toggleTransitType}
-                    selectedTransitTypes={
-                        this.props.searchStore!.selectedTransitTypes
-                    }
+                    selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
                     disabled={!this.props.searchStore!.isSearchingForLines}
                     blurred={!this.props.searchStore!.isSearchingForLines}
                 />
                 <SearchResults />
-                <div
-                    className={s.largeButton}
-                    onClick={this.redirectToNewLineView}
-                >
+                <div className={s.largeButton} onClick={this.redirectToNewLineView}>
                     Luo uusi linja
                 </div>
             </div>

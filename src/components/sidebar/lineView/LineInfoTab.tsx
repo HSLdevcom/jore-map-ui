@@ -30,18 +30,12 @@ interface ILineInfoTabProps {
     isNewLine: boolean;
     onChangeLineProperty: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
-    setValidatorResult: (
-        property: string,
-        validationResult: IValidationResult
-    ) => void;
+    setValidatorResult: (property: string, validationResult: IValidationResult) => void;
 }
 
 @inject('lineStore', 'codeListStore', 'errorStore')
 @observer
-class LineInfoTab extends React.Component<
-    ILineInfoTabProps,
-    ILineInfoTabState
-> {
+class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> {
     private existingLines: ISearchLine[] = [];
     private mounted: boolean;
 
@@ -55,9 +49,7 @@ class LineInfoTab extends React.Component<
 
     async componentWillMount() {
         const lineId = this.props.lineStore!.line!.id;
-        const lineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(
-            lineId
-        );
+        const lineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(lineId);
         this.initLineHeaderItems(lineHeaders);
     }
 
@@ -99,9 +91,7 @@ class LineInfoTab extends React.Component<
 
     private isLineAlreadyFound = (lineId: string): boolean => {
         return Boolean(
-            this.existingLines.find(
-                (searchLine: ISearchLine) => searchLine.id === lineId
-            )
+            this.existingLines.find((searchLine: ISearchLine) => searchLine.id === lineId)
         );
     };
 
@@ -111,10 +101,7 @@ class LineInfoTab extends React.Component<
         try {
             this.existingLines = await LineService.fetchAllSearchLines();
         } catch (e) {
-            this.props.errorStore!.addError(
-                'Olemassa olevien linjojen haku ei onnistunut',
-                e
-            );
+            this.props.errorStore!.addError('Olemassa olevien linjojen haku ei onnistunut', e);
         }
     };
 
@@ -157,13 +144,10 @@ class LineInfoTab extends React.Component<
         if (!line) return null;
 
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating =
-            !this.props.isNewLine || this.props.isEditingDisabled;
+        const isUpdating = !this.props.isNewLine || this.props.isEditingDisabled;
         const onChange = this.props.onChangeLineProperty;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
-        const selectedTransitTypes = line!.transitType
-            ? [line!.transitType!]
-            : [];
+        const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
 
         return (
             <div className={classnames(s.lineInfoTabView, s.form)}>
@@ -173,14 +157,10 @@ class LineInfoTab extends React.Component<
                             <div className={s.inputLabel}>VERKKO</div>
                             <TransitToggleButtonBar
                                 selectedTransitTypes={selectedTransitTypes}
-                                toggleSelectedTransitType={
-                                    this.selectTransitType
-                                }
+                                toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLine}
                                 errorMessage={
-                                    !line!.transitType
-                                        ? 'Verkon tyyppi täytyy valita.'
-                                        : undefined
+                                    !line!.transitType ? 'Verkon tyyppi täytyy valita.' : undefined
                                 }
                             />
                         </div>
@@ -199,9 +179,7 @@ class LineInfoTab extends React.Component<
                             label='LINJAN PERUS REITTI'
                             value={line.lineBasicRoute}
                             onChange={onChange('lineBasicRoute')}
-                            validationResult={
-                                invalidPropertiesMap['lineBasicRoute']
-                            }
+                            validationResult={invalidPropertiesMap['lineBasicRoute']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -211,9 +189,7 @@ class LineInfoTab extends React.Component<
                             type='date'
                             value={line.lineStartDate}
                             onChange={this.onChangeStartDate}
-                            validationResult={
-                                invalidPropertiesMap['lineStartDate']
-                            }
+                            validationResult={invalidPropertiesMap['lineStartDate']}
                         />
                         <InputContainer
                             disabled={isEditingDisabled}
@@ -221,9 +197,7 @@ class LineInfoTab extends React.Component<
                             type='date'
                             value={line.lineEndDate}
                             onChange={this.onChangeEndDate}
-                            validationResult={
-                                invalidPropertiesMap['lineEndDate']
-                            }
+                            validationResult={invalidPropertiesMap['lineEndDate']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -249,9 +223,7 @@ class LineInfoTab extends React.Component<
                                 'Joukkoliikennelaji'
                             )}
                             onChange={onChange('publicTransportType')}
-                            validationResult={
-                                invalidPropertiesMap['publicTransportType']
-                            }
+                            validationResult={invalidPropertiesMap['publicTransportType']}
                         />
                         <Dropdown
                             label='TILAAJAORGANISAATIO'
@@ -261,9 +233,7 @@ class LineInfoTab extends React.Component<
                                 'Tilaajaorganisaatio'
                             )}
                             onChange={onChange('clientOrganization')}
-                            validationResult={
-                                invalidPropertiesMap['clientOrganization']
-                            }
+                            validationResult={invalidPropertiesMap['clientOrganization']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -279,11 +249,7 @@ class LineInfoTab extends React.Component<
                                 'Joukkoliikennekohde'
                             )}
                             onChange={onChange('publicTransportDestination')}
-                            validationResult={
-                                invalidPropertiesMap[
-                                    'publicTransportDestination'
-                                ]
-                            }
+                            validationResult={invalidPropertiesMap['publicTransportDestination']}
                         />
                         <Dropdown
                             label='LINJAN KORVAAVA TYYPPI'
@@ -297,9 +263,7 @@ class LineInfoTab extends React.Component<
                                 'LinjanKorvaavaTyyppi'
                             )}
                             onChange={onChange('lineReplacementType')}
-                            validationResult={
-                                invalidPropertiesMap['lineReplacementType']
-                            }
+                            validationResult={invalidPropertiesMap['lineReplacementType']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -309,16 +273,11 @@ class LineInfoTab extends React.Component<
                             type='number'
                             value={line.exchangeTime}
                             onChange={onChange('exchangeTime')}
-                            validationResult={
-                                invalidPropertiesMap['exchangeTime']
-                            }
+                            validationResult={invalidPropertiesMap['exchangeTime']}
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <TextContainer
-                            label='MUOKANNUT'
-                            value={line.modifiedBy}
-                        />
+                        <TextContainer label='MUOKANNUT' value={line.modifiedBy} />
                         <TextContainer
                             label='MUOKATTU PVM'
                             isTimeIncluded={true}

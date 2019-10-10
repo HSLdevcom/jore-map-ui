@@ -52,10 +52,7 @@ interface ISplitLinkViewProps extends RouteComponentProps<any> {
     'confirmStore'
 )
 @observer
-class SplitLinkView extends React.Component<
-    ISplitLinkViewProps,
-    ISplitLinkViewState
-> {
+class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewState> {
     constructor(props: ISplitLinkViewProps) {
         super(props);
         this.state = {
@@ -111,10 +108,7 @@ class SplitLinkView extends React.Component<
                 this.hideAllMapLayers();
             }
         } catch (e) {
-            this.props.errorStore!.addError(
-                `Jaettavan linkin ja solmun haussa tapahtui virhe.`,
-                e
-            );
+            this.props.errorStore!.addError(`Jaettavan linkin ja solmun haussa tapahtui virhe.`, e);
         }
         this.setState({ isLoading: false });
     };
@@ -173,10 +167,7 @@ class SplitLinkView extends React.Component<
             link: this.props.linkStore!.link,
             node: this.props.linkStore!.nodes[0]
         });
-        this.props.alertStore!.setFadeMessage(
-            'Linkin jaon kehitys kesken.',
-            AlertType.Info
-        );
+        this.props.alertStore!.setFadeMessage('Linkin jaon kehitys kesken.', AlertType.Info);
     };
 
     private selectAllRoutePaths = () => {
@@ -195,9 +186,7 @@ class SplitLinkView extends React.Component<
     };
 
     private getNode = () => {
-        return this.props.linkStore!.nodes.length > 0
-            ? this.props.linkStore!.nodes[0]
-            : null;
+        return this.props.linkStore!.nodes.length > 0 ? this.props.linkStore!.nodes[0] : null;
     };
 
     private getRoutepathsBeingSplit = () => {
@@ -208,8 +197,7 @@ class SplitLinkView extends React.Component<
 
     render() {
         const isSaveButtonDisabled =
-            this.state.selectedDate &&
-            this.getRoutepathsBeingSplit().length === 0;
+            this.state.selectedDate && this.getRoutepathsBeingSplit().length === 0;
         const node = this.getNode();
 
         const link = this.props.linkStore!.link;
@@ -239,31 +227,23 @@ class SplitLinkView extends React.Component<
                             />
                         </div>
                     )}
-                    {!this.state.selectedDate &&
-                        node.type === NodeType.STOP && (
-                            <div className={s.section}>
-                                Tyhjä päivämäärä jakaa kaikki reitinsuunnat.
-                            </div>
-                        )}
+                    {!this.state.selectedDate && node.type === NodeType.STOP && (
+                        <div className={s.section}>
+                            Tyhjä päivämäärä jakaa kaikki reitinsuunnat.
+                        </div>
+                    )}
                     {this.state.selectedDate && (
                         <div className={classnames(s.section, s.expanded)}>
-                            <div className={s.inputLabel}>
-                                Mitkä reitinsuunnat jaetaan?
-                            </div>
+                            <div className={s.inputLabel}>Mitkä reitinsuunnat jaetaan?</div>
                             <RoutePathSelector
-                                toggleIsRoutePathSelected={
-                                    this.toggleIsRoutePathSelected
-                                }
+                                toggleIsRoutePathSelected={this.toggleIsRoutePathSelected}
                                 routePaths={this.state.routePaths}
                                 selectedIds={this.state.selectedRoutePathIds}
                                 isLoading={this.state.isLoadingRoutePaths}
                                 selectedDate={this.state.selectedDate}
                             />
                             <div className={s.toggleButtons}>
-                                <Button
-                                    onClick={this.selectAllRoutePaths}
-                                    type={ButtonType.SQUARE}
-                                >
+                                <Button onClick={this.selectAllRoutePaths} type={ButtonType.SQUARE}>
                                     Valitse kaikki
                                 </Button>
                                 <Button

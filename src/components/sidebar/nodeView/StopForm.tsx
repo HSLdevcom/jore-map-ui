@@ -8,18 +8,11 @@ import { IStop, INode } from '~/models';
 import ButtonType from '~/enums/buttonType';
 import { NodeStore } from '~/stores/nodeStore';
 import { CodeListStore } from '~/stores/codeListStore';
-import StopService, {
-    IStopAreaItem,
-    IStopSectionItem
-} from '~/services/stopService';
+import StopService, { IStopAreaItem, IStopSectionItem } from '~/services/stopService';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import {
-    Dropdown,
-    TransitToggleButtonBar,
-    Button
-} from '~/components/controls';
+import { Dropdown, TransitToggleButtonBar, Button } from '~/components/controls';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './stopForm.scss';
 
@@ -82,10 +75,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
             () => this.props.nodeStore!.isEditingDisabled,
             this.onChangeIsEditingDisabled
         );
-        this.nodeListener = reaction(
-            () => this.props.nodeStore!.node,
-            this.onNodeChange
-        );
+        this.nodeListener = reaction(() => this.props.nodeStore!.node, this.onNodeChange);
         this.createStopPropertyListeners();
     }
 
@@ -111,17 +101,13 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
 
     private createListener = (property: string) => {
         return reaction(
-            () =>
-                this.props.nodeStore!.node &&
-                this.props.nodeStore!.node!.stop![property],
+            () => this.props.nodeStore!.node && this.props.nodeStore!.node!.stop![property],
             this.validateStopProperty(property)
         );
     };
 
     private removeStopPropertyListeners = () => {
-        this.stopPropertyListeners.forEach((listener: IReactionDisposer) =>
-            listener()
-        );
+        this.stopPropertyListeners.forEach((listener: IReactionDisposer) => listener());
         this.stopPropertyListeners = [];
     };
 
@@ -152,9 +138,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         nodeStore!.setIsStopFormValid(isStopFormValid);
     };
 
-    private createStopAreaDropdownItems = (
-        stopAreas: IStopAreaItem[]
-    ): IDropdownItem[] => {
+    private createStopAreaDropdownItems = (stopAreas: IStopAreaItem[]): IDropdownItem[] => {
         return stopAreas.map((stopArea: IStopAreaItem) => {
             const item: IDropdownItem = {
                 value: `${stopArea.pysalueid}`,
@@ -190,12 +174,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     };
 
     private getShortIdLetterItems = () => {
-        const shortIdLetterItems = this.props.codeListStore!.getDropdownItemList(
-            'Lyhyttunnus'
-        );
-        shortIdLetterItems.forEach(
-            item => (item.label = `${item.value} - ${item.label}`)
-        );
+        const shortIdLetterItems = this.props.codeListStore!.getDropdownItemList('Lyhyttunnus');
+        shortIdLetterItems.forEach(item => (item.label = `${item.value} - ${item.label}`));
         return shortIdLetterItems;
     };
 
@@ -207,9 +187,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         return (
             <div className={classnames(s.stopView, s.form)}>
-                <SidebarHeader hideCloseButton={true}>
-                    Pysäkin tiedot
-                </SidebarHeader>
+                <SidebarHeader hideCloseButton={true}>Pysäkin tiedot</SidebarHeader>
                 <div className={s.formSection}>
                     {this.props.isNewStop && (
                         <div className={s.flexRow}>
@@ -217,9 +195,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                                 <div className={s.inputLabel}>VERKKO</div>
                                 <TransitToggleButtonBar
                                     selectedTransitTypes={
-                                        stop.transitType
-                                            ? [stop.transitType]
-                                            : []
+                                        stop.transitType ? [stop.transitType] : []
                                     }
                                     toggleSelectedTransitType={this.updateStopProperty(
                                         'transitType'
@@ -231,9 +207,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <div className={s.flexRow}>
                         <Dropdown
                             label='LYHYTTUNNUS (2 kirj.'
-                            onChange={this.props.onNodePropertyChange(
-                                'shortIdLetter'
-                            )}
+                            onChange={this.props.onNodePropertyChange('shortIdLetter')}
                             disabled={isEditingDisabled}
                             selected={node.shortIdLetter}
                             emptyItem={{
@@ -246,14 +220,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='+ 4 num.)'
                             disabled={isEditingDisabled}
                             value={node.shortIdString}
-                            onChange={this.props.onNodePropertyChange(
-                                'shortIdString'
-                            )}
-                            validationResult={
-                                this.props.nodeInvalidPropertiesMap[
-                                    'shortIdString'
-                                ]
-                            }
+                            onChange={this.props.onNodePropertyChange('shortIdString')}
+                            validationResult={this.props.nodeInvalidPropertiesMap['shortIdString']}
                         />
                     </div>
                 </div>
@@ -281,18 +249,14 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             disabled={isEditingDisabled}
                             value={stop.nameLongFi}
                             onChange={onChange('nameLongFi')}
-                            validationResult={
-                                invalidPropertiesMap['nameLongFi']
-                            }
+                            validationResult={invalidPropertiesMap['nameLongFi']}
                         />
                         <InputContainer
                             label='PITKÄ NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
                             value={stop.nameLongSw}
                             onChange={onChange('nameLongSw')}
-                            validationResult={
-                                invalidPropertiesMap['nameLongSw']
-                            }
+                            validationResult={invalidPropertiesMap['nameLongSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -311,18 +275,14 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             disabled={isEditingDisabled}
                             value={stop.placeNameFi}
                             onChange={onChange('placeNameFi')}
-                            validationResult={
-                                invalidPropertiesMap['placeNameFi']
-                            }
+                            validationResult={invalidPropertiesMap['placeNameFi']}
                         />
                         <InputContainer
                             label='PAIKAN NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
                             value={stop.placeNameSw}
                             onChange={onChange('placeNameSw')}
-                            validationResult={
-                                invalidPropertiesMap['placeNameSw']
-                            }
+                            validationResult={invalidPropertiesMap['placeNameSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -347,21 +307,15 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             disabled={isEditingDisabled}
                             value={stop.postalNumber}
                             onChange={onChange('postalNumber')}
-                            validationResult={
-                                invalidPropertiesMap['postalNumber']
-                            }
+                            validationResult={invalidPropertiesMap['postalNumber']}
                         />
                         <Dropdown
                             onChange={onChange('municipality')}
-                            items={this.props.codeListStore!.getDropdownItemList(
-                                'Kunta (ris/pys)'
-                            )}
+                            items={this.props.codeListStore!.getDropdownItemList('Kunta (ris/pys)')}
                             selected={stop.municipality}
                             disabled={isEditingDisabled}
                             label='KUNTA'
-                            validationResult={
-                                invalidPropertiesMap['municipality']
-                            }
+                            validationResult={invalidPropertiesMap['municipality']}
                         />
                     </div>
                 </div>
@@ -403,9 +357,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         />
                         <Button
                             // TODO: implement the button functionality
-                            onClick={() =>
-                                window.alert('Toteutuksen suunnittelu kesken.')
-                            }
+                            onClick={() => window.alert('Toteutuksen suunnittelu kesken.')}
                             disabled={isEditingDisabled}
                             type={ButtonType.SQUARE}
                             className={s.createNewStopAreaButton}

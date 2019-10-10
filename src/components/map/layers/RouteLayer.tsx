@@ -32,9 +32,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         let selectedPolylines = this.state.selectedPolylines;
 
         if (selectedPolylines.includes(internalId)) {
-            selectedPolylines = selectedPolylines.filter(
-                id => id !== internalId
-            );
+            selectedPolylines = selectedPolylines.filter(id => id !== internalId);
         } else {
             selectedPolylines.push(internalId);
         }

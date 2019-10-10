@@ -34,10 +34,7 @@ interface INodeMarkerProps {
     isClickDisabled?: boolean;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
-    onMoveMarker?: (
-        coordinatesType: NodeLocationType,
-        coordinates: L.LatLng
-    ) => void;
+    onMoveMarker?: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
 }
 
 const NODE_LABEL_MIN_ZOOM = 14;
@@ -65,9 +62,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private onMoveMarker = (coordinatesType: NodeLocationType) => (
-        e: L.DragEndEvent
-    ) => {
+    private onMoveMarker = (coordinatesType: NodeLocationType) => (e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
             this.props.onMoveMarker(coordinatesType, e.target.getLatLng());
         }
@@ -167,45 +162,29 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     private renderAdditionalLocations = (node: INode) => {
-        const nodeBaseClass = this.props.isClickDisabled
-            ? s.nodeNotClickable
-            : s.node;
+        const nodeBaseClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
 
         return (
             <>
                 <LeafletMarker
                     position={node.coordinatesManual}
                     icon={LeafletUtils.createDivIcon(
-                        <div
-                            className={classnames(
-                                s.manual,
-                                ...this.getMarkerClasses()
-                            )}
-                        />,
+                        <div className={classnames(s.manual, ...this.getMarkerClasses())} />,
                         { className: nodeBaseClass }
                     )}
                     draggable={this.isDraggable()}
-                    onDragEnd={
-                        this.props.onMoveMarker &&
-                        this.onMoveMarker('coordinatesManual')
-                    }
+                    onDragEnd={this.props.onMoveMarker && this.onMoveMarker('coordinatesManual')}
                     interactive={!this.props.isClickDisabled}
                 />
                 <LeafletMarker
                     position={node.coordinatesProjection}
                     icon={LeafletUtils.createDivIcon(
-                        <div
-                            className={classnames(
-                                s.projection,
-                                ...this.getMarkerClasses()
-                            )}
-                        />,
+                        <div className={classnames(s.projection, ...this.getMarkerClasses())} />,
                         { className: nodeBaseClass }
                     )}
                     draggable={this.isDraggable()}
                     onDragEnd={
-                        this.props.onMoveMarker &&
-                        this.onMoveMarker('coordinatesProjection')
+                        this.props.onMoveMarker && this.onMoveMarker('coordinatesProjection')
                     }
                     interactive={!this.props.isClickDisabled}
                 />
@@ -224,9 +203,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     render() {
-        const nodeBaseClass = this.props.isClickDisabled
-            ? s.nodeNotClickable
-            : s.node;
+        const nodeBaseClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
 
         const icon = LeafletUtils.createDivIcon(
             <div
@@ -254,10 +231,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     draggable={this.props.isDraggable}
                     icon={icon}
                     position={this.props.node.coordinates}
-                    onDragEnd={
-                        this.props.onMoveMarker &&
-                        this.onMoveMarker('coordinates')
-                    }
+                    onDragEnd={this.props.onMoveMarker && this.onMoveMarker('coordinates')}
                     interactive={!this.props.isClickDisabled}
                 >
                     {this.renderStopRadiusCircle()}

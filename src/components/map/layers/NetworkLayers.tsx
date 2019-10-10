@@ -70,9 +70,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     ): Boolean {
         return selectedDate
             ? !dateRanges ||
-                  dateRanges.some(dr =>
-                      selectedDate.isBetween(dr[0], dr[1], 'day', '[]')
-                  )
+                  dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'))
             : true;
     }
 
@@ -117,8 +115,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         lnkloppusolmu: endNodeId
     }: ILinkProperties) => {
         const dateRanges = this.parseDateRangesString(dateRangesString);
-        const selectedTransitTypes = this.props.networkStore!
-            .selectedTransitTypes;
+        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;
 
         const link = this.props.linkStore!.link;
@@ -180,9 +177,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         break;
                     default:
                         throw new Error(
-                            `nodeSize not supported ${
-                                this.props.networkStore!.nodeSize
-                            }`
+                            `nodeSize not supported ${this.props.networkStore!.nodeSize}`
                         );
                 }
                 if (transitTypeCodes && transitTypeCodes.length === 1) {
@@ -223,27 +218,17 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             return true;
         }
 
-        const selectedTransitTypes = toJS(
-            this.props.networkStore!.selectedTransitTypes
-        );
+        const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
         if (this.isNodePartOfLinks(transitTypeCodes)) {
             if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
                 return true;
             }
             const nodeTransitTypes = transitTypeCodes.split(',');
-            if (
-                !selectedTransitTypes.some(type =>
-                    nodeTransitTypes.includes(type)
-                )
-            ) {
+            if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
                 return true;
             }
         } else {
-            if (
-                !this.props.networkStore!.isMapLayerVisible(
-                    MapLayer.nodeWithoutLink
-                )
-            ) {
+            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
                 return true;
             }
         }
@@ -295,8 +280,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             return null;
         }
 
-        const selectedTransitTypes = this.props.networkStore!
-            .selectedTransitTypes;
+        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;
         const nodeSize = this.props.networkStore!.nodeSize;
         return (
@@ -315,9 +299,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
                 )}
-                {this.props.networkStore!.isMapLayerVisible(
-                    MapLayer.linkPoint
-                ) && (
+                {this.props.networkStore!.isMapLayerVisible(MapLayer.linkPoint) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
@@ -331,9 +313,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     />
                 )}
                 {(this.props.networkStore!.isMapLayerVisible(MapLayer.node) ||
-                    this.props.networkStore!.isMapLayerVisible(
-                        MapLayer.nodeWithoutLink
-                    )) && (
+                    this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
