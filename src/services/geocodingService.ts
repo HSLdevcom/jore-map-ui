@@ -15,17 +15,9 @@ class GeocodingService {
         coordinates: L.LatLng,
         lang: langOptions
     ): Promise<string> => {
-        const requestUrl = `${
-            constants.STREET_NAME_REVERSE_GEOCODING_URL
-        }?lat=${coordinates.lat}&lon=${
-            coordinates.lng
-        }&format=geojson&accept-language=${lang}`;
+        const requestUrl = `${constants.STREET_NAME_REVERSE_GEOCODING_URL}?lat=${coordinates.lat}&lon=${coordinates.lng}&format=geojson&accept-language=${lang}`;
 
-        const response = await ApiClient.sendRequest(
-            RequestMethod.GET,
-            encodeURI(requestUrl),
-            {}
-        );
+        const response = await ApiClient.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
 
         if (
             response &&
@@ -42,15 +34,9 @@ class GeocodingService {
     public static fetchPostalNumberFromCoordinates = async (
         coordinates: L.LatLng
     ): Promise<string> => {
-        const requestUrl = `${
-            constants.POSTAL_NUMBER_REVERSE_GEOCODING_URL
-        }?point.lat=${coordinates.lat}&point.lon=${coordinates.lng}`;
+        const requestUrl = `${constants.POSTAL_NUMBER_REVERSE_GEOCODING_URL}?point.lat=${coordinates.lat}&point.lon=${coordinates.lng}`;
 
-        const response = await ApiClient.sendRequest(
-            RequestMethod.GET,
-            encodeURI(requestUrl),
-            {}
-        );
+        const response = await ApiClient.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
 
         if (
             response &&
@@ -74,11 +60,7 @@ class GeocodingService {
         const lng = coordinates.lng;
         const requestUrl = `${ADDRESS_GEOCODING_URL}?text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`;
 
-        const response = await ApiClient.sendRequest(
-            RequestMethod.GET,
-            encodeURI(requestUrl),
-            {}
-        );
+        const response = await ApiClient.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
         return response.features;
     };
 }

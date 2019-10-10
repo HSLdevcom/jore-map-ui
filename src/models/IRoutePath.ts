@@ -15,9 +15,7 @@ interface IViewOnlyRoutePathProperties {
     lineId: string;
 }
 
-export default interface IRoutePath
-    extends IRoutePathPrimaryKey,
-        IViewOnlyRoutePathProperties {
+export default interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties {
     routePathLinks: IRoutePathLink[];
     name: string;
     nameSw: string;

@@ -52,11 +52,7 @@ const getRouteQuery = (areRoutePathLinksExcluded: boolean) => {
                 reitinsuuntasByReitunnus{
                     nodes {
                         ${routePathQueryFields}
-                        ${
-                            areRoutePathLinksExcluded
-                                ? ''
-                                : routePathLinksForRoutePathQuery
-                        }
+                        ${areRoutePathLinksExcluded ? '' : routePathLinksForRoutePathQuery}
                         ${routeForRoutePathQuery}
                     }
                 }
@@ -201,9 +197,7 @@ const getRoutePathsUsingLinkFromDate = () => {
 const getAllRoutePathPrimaryKeysQuery = () => {
     return gql`
         query routePathPrimaryKeys($routeId: String) {
-            routePathPrimaryKeys: allReitinsuuntas(
-                condition: { reitunnus: $routeId }
-            ) {
+            routePathPrimaryKeys: allReitinsuuntas(condition: { reitunnus: $routeId }) {
                 nodes {
                     reitunnus
                     suusuunta
@@ -260,17 +254,17 @@ const getAllLineHeadersQuery = () => {
 };
 
 const getViaName = () => {
-  return gql`
-      query getViaName($relid: Int!) {
-        viaName: viaNimetByRelid(relid: $relid) {
-          relid
-          maaranpaa1
-          maaranpaa2
-          maaranpaa1R
-          maaranpaa2R
+    return gql`
+        query getViaName($relid: Int!) {
+            viaName: viaNimetByRelid(relid: $relid) {
+                relid
+                maaranpaa1
+                maaranpaa2
+                maaranpaa1R
+                maaranpaa2R
+            }
         }
-      }
-  `;
+    `;
 };
 
 const lineQueryFields = `

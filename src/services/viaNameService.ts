@@ -4,9 +4,7 @@ import { IViaName } from '~/models/IViaName';
 import GraphqlQueries from './graphqlQueries';
 
 class ViaNameService {
-    public static fetchViaName = async (
-        id: string
-    ): Promise<IViaName | null> => {
+    public static fetchViaName = async (id: string): Promise<IViaName | null> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
             query: GraphqlQueries.getViaName(),
             variables: {

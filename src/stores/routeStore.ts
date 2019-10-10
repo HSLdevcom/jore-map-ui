@@ -33,10 +33,7 @@ class RouteStore {
     };
 
     @action
-    public updateRouteProperty = (
-        property: keyof IRoute,
-        value: string | number | Date
-    ) => {
+    public updateRouteProperty = (property: keyof IRoute, value: string | number | Date) => {
         this._route = {
             ...this._route!,
             [property]: value

@@ -29,30 +29,18 @@ class ApiClient {
     };
 
     public createObject = async (entityName: endpoints, object: any) => {
-        const response = await this.sendBackendRequest(
-            RequestMethod.PUT,
-            entityName,
-            object
-        );
+        const response = await this.sendBackendRequest(RequestMethod.PUT, entityName, object);
         ApolloClient.clearStore();
         return response;
     };
 
     public deleteObject = async (entityName: endpoints, object: any) => {
-        return await this.sendBackendRequest(
-            RequestMethod.DELETE,
-            entityName,
-            object
-        );
+        return await this.sendBackendRequest(RequestMethod.DELETE, entityName, object);
     };
 
     public authorizeUsingCode = async (code: string) => {
         const requestBody: IAuthorizationRequest = { code };
-        return await this.sendBackendRequest(
-            RequestMethod.POST,
-            endpoints.AUTH,
-            requestBody
-        );
+        return await this.sendBackendRequest(RequestMethod.POST, endpoints.AUTH, requestBody);
     };
 
     public getRequest = async (endpoint: endpoints) => {
@@ -60,11 +48,7 @@ class ApiClient {
     };
 
     public postRequest = async (endpoint: endpoints, requestBody: any) => {
-        return await this.sendBackendRequest(
-            RequestMethod.POST,
-            endpoint,
-            requestBody
-        );
+        return await this.sendBackendRequest(RequestMethod.POST, endpoint, requestBody);
     };
 
     private sendBackendRequest = async (
@@ -88,10 +72,7 @@ class ApiClient {
         try {
             const response = await fetch(url, {
                 method,
-                body:
-                    method === RequestMethod.GET
-                        ? undefined
-                        : JSON.stringify(formattedObject),
+                body: method === RequestMethod.GET ? undefined : JSON.stringify(formattedObject),
                 // To keep the same express session information with each request
                 credentials: credentials ? credentials : undefined,
                 headers: {
@@ -102,27 +83,20 @@ class ApiClient {
 
             if (response.status >= 200 && response.status < 300) {
                 const contentType = response.headers.get('content-type');
-                if (
-                    contentType &&
-                    contentType.indexOf('application/json') !== -1
-                ) {
+                if (contentType && contentType.indexOf('application/json') !== -1) {
                     return await response.json();
                 }
                 return await response.text();
             }
             if (response.status === 403) {
-                AlertStore!
-                    .setFadeMessage(httpStatusDescriptionCodeList[403])
-                    .then(() => {
-                        LoginStore.clear();
-                    });
+                AlertStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
+                    LoginStore.clear();
+                });
                 return;
             }
 
             const responseText = await response.text();
-            const errorMessage = responseText
-                ? responseText
-                : response.statusText;
+            const errorMessage = responseText ? responseText : response.statusText;
             error = {
                 message: errorMessage,
                 name: 'Failed to fetch',

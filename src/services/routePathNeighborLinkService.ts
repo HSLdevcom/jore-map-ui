@@ -32,17 +32,9 @@ const getNeighborLinks = (
     from: 'startNode' | 'endNode'
 ): INeighborLink[] => {
     const linkPropertyName =
-        from === 'startNode'
-            ? 'linkkisByLnkalkusolmu'
-            : 'linkkisByLnkloppusolmu';
-    const nodePropertyName =
-        from === 'startNode' ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
-    return _parseNeighborLinks(
-        queryResult,
-        orderNumber,
-        linkPropertyName,
-        nodePropertyName
-    );
+        from === 'startNode' ? 'linkkisByLnkalkusolmu' : 'linkkisByLnkloppusolmu';
+    const nodePropertyName = from === 'startNode' ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
+    return _parseNeighborLinks(queryResult, orderNumber, linkPropertyName, nodePropertyName);
 };
 
 const _parseNeighborLinks = (
@@ -57,10 +49,8 @@ const _parseNeighborLinks = (
                 link,
                 orderNumber
             ),
-            nodeUsageRoutePaths: link[
-                nodePropertyName
-            ].usageDuringDate!.nodes.map((rp: IExternalRoutePath) =>
-                RoutePathFactory.mapExternalRoutePath(rp)
+            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes.map(
+                (rp: IExternalRoutePath) => RoutePathFactory.mapExternalRoutePath(rp)
             )
         })
     );
@@ -78,9 +68,7 @@ class RoutePathNeighborLinkService {
 
         // If new routePathLinks should be created after the node
         if (neighborToAddType === NeighborToAddType.AfterNode) {
-            const queryResult: ApolloQueryResult<
-                any
-            > = await ApolloClient.query({
+            const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
                 query: GraphqlQueries.getLinksByStartNodeQuery(),
                 variables: { nodeId, date }
             });
@@ -88,21 +76,15 @@ class RoutePathNeighborLinkService {
 
             // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
-            const queryResult: ApolloQueryResult<
-                any
-            > = await ApolloClient.query({
+            const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
                 query: GraphqlQueries.getLinksByEndNodeQuery(),
                 variables: { nodeId, date }
             });
             res = getNeighborLinks(queryResult, orderNumber, 'endNode');
         } else {
-            throw new Error(
-                `neighborToAddType not supported: ${neighborToAddType}`
-            );
+            throw new Error(`neighborToAddType not supported: ${neighborToAddType}`);
         }
-        return res.filter(
-            rpLink => rpLink.routePathLink.transitType === routePath.transitType
-        );
+        return res.filter(rpLink => rpLink.routePathLink.transitType === routePath.transitType);
     };
 
     public static fetchNeighborRoutePathLinks = async (
@@ -111,12 +93,8 @@ class RoutePathNeighborLinkService {
         linkOrderNumber: number
     ): Promise<IFetchNeighborLinksResponse | null> => {
         const routePathLinks = routePath.routePathLinks;
-        const startNodeCount = routePathLinks.filter(
-            link => link.startNode.id === nodeId
-        ).length;
-        const endNodeCount = routePathLinks.filter(
-            link => link.endNode.id === nodeId
-        ).length;
+        const startNodeCount = routePathLinks.filter(link => link.startNode.id === nodeId).length;
+        const endNodeCount = routePathLinks.filter(link => link.endNode.id === nodeId).length;
         let neighborToAddType;
         let orderNumber;
         if (startNodeCount <= endNodeCount) {

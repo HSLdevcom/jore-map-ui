@@ -1,10 +1,7 @@
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
-import EventManager, {
-    INodeClickParams,
-    INetworkNodeClickParams
-} from '~/util/EventManager';
+import EventManager, { INodeClickParams, INetworkNodeClickParams } from '~/util/EventManager';
 import ToolbarTool from '~/enums/toolbarTool';
 import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
@@ -38,8 +35,7 @@ class AddNetworkLinkTool implements BaseTool {
     };
 
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
-        const networkNodeClickParams: INetworkNodeClickParams =
-            clickEvent.detail;
+        const networkNodeClickParams: INetworkNodeClickParams = clickEvent.detail;
         this.setStartOrEndNode(networkNodeClickParams.nodeId);
     };
 

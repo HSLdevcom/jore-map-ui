@@ -29,9 +29,7 @@ class RouteBuilderContext {
 
     public toLink = () => {
         let link =
-            this.linkToBuild !== SubSites.current
-                ? this.linkToBuild.toString()
-                : this.currentLink;
+            this.linkToBuild !== SubSites.current ? this.linkToBuild.toString() : this.currentLink;
 
         if (Object.keys(this.queryValues).length !== 0) {
             link += `?${qs.stringify(this.queryValues, { encode: false })}`;

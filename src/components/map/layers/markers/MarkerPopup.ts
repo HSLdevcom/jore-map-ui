@@ -25,12 +25,7 @@ class MarkerPopup {
                 if (markerRef.current) {
                     const leafletMarker = markerRef.current.leafletElement;
                     // detach the event
-                    L.DomEvent.off(
-                        leafletMarker._popup,
-                        'mouseout',
-                        _popupMouseOut,
-                        this
-                    );
+                    L.DomEvent.off(leafletMarker._popup, 'mouseout', _popupMouseOut, this);
 
                     // get the element that the mouse hovered onto
                     const target = e.toElement || e.relatedTarget;
@@ -64,9 +59,7 @@ class MarkerPopup {
                 'mouseover',
                 (e: any) => {
                     // get the element that the mouse hovered onto
-                    const target =
-                        e.originalEvent.fromElement ||
-                        e.originalEvent.relatedTarget;
+                    const target = e.originalEvent.fromElement || e.originalEvent.relatedTarget;
                     const parent = _getParent(target, 'leaflet-popup');
 
                     // check to see if the element is a popup, and if it is this marker's popup
@@ -87,23 +80,15 @@ class MarkerPopup {
                 'mouseout',
                 (e: any) => {
                     // get the element that the mouse hovered onto
-                    const target =
-                        e.originalEvent.toElement ||
-                        e.originalEvent.relatedTarget;
+                    const target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
 
-                    const isTargetOtherPopup = Boolean(
-                        _getParent(target, 'leaflet-popup')
-                    );
+                    const isTargetOtherPopup = Boolean(_getParent(target, 'leaflet-popup'));
                     const isTargetThisMarker =
-                        _getParent(target, 'leaflet-marker-icon') ===
-                        leafletMarker;
+                        _getParent(target, 'leaflet-marker-icon') === leafletMarker;
 
                     // check to see if the element is a popup
                     if (isTargetOtherPopup || isTargetThisMarker) {
-                        if (
-                            leafletMarker._popup &&
-                            leafletMarker._popup._container
-                        ) {
+                        if (leafletMarker._popup && leafletMarker._popup._container) {
                             L.DomEvent.on(
                                 leafletMarker._popup._container,
                                 'mouseout',

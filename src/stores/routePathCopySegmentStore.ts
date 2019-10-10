@@ -107,9 +107,7 @@ class RoutePathCopySegmentStore {
     };
 
     @action
-    public setHighlightedRoutePath = (
-        highlightedRoutePath: ICopySegmentRoutePath | null
-    ) => {
+    public setHighlightedRoutePath = (highlightedRoutePath: ICopySegmentRoutePath | null) => {
         this._highlightedRoutePath = highlightedRoutePath;
     };
 
@@ -137,19 +135,12 @@ class RoutePathCopySegmentStore {
         startNodeId: string,
         endNodeId: string
     ) => {
-        const startLinkOrderNumber = this._getStartLinkOrderNumber(
-            routePath.links,
-            startNodeId
-        );
-        const endLinkOrderNumber = this._getEndLinkOrderNumber(
-            routePath.links,
-            endNodeId
-        );
+        const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);
+        const endLinkOrderNumber = this._getEndLinkOrderNumber(routePath.links, endNodeId);
 
         return routePath.links.filter((link: ICopySegmentLink) => {
             return (
-                link.orderNumber >= startLinkOrderNumber &&
-                link.orderNumber <= endLinkOrderNumber
+                link.orderNumber >= startLinkOrderNumber && link.orderNumber <= endLinkOrderNumber
             );
         });
     };
@@ -159,39 +150,21 @@ class RoutePathCopySegmentStore {
         startNodeId: string,
         endNodeId: string
     ) => {
-        const startLinkOrderNumber = this._getStartLinkOrderNumber(
-            routePath.links,
-            startNodeId
-        );
-        const endLinkOrderNumber = this._getEndLinkOrderNumber(
-            routePath.links,
-            endNodeId
-        );
+        const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);
+        const endLinkOrderNumber = this._getEndLinkOrderNumber(routePath.links, endNodeId);
 
         return routePath.links.filter((link: ICopySegmentLink) => {
-            return (
-                link.orderNumber < startLinkOrderNumber ||
-                link.orderNumber > endLinkOrderNumber
-            );
+            return link.orderNumber < startLinkOrderNumber || link.orderNumber > endLinkOrderNumber;
         });
     };
 
-    private _getStartLinkOrderNumber = (
-        links: ICopySegmentLink[],
-        startNodeId: string
-    ) => {
-        return links.find(
-            (link: ICopySegmentLink) => link.startNodeId === startNodeId
-        )!.orderNumber;
+    private _getStartLinkOrderNumber = (links: ICopySegmentLink[], startNodeId: string) => {
+        return links.find((link: ICopySegmentLink) => link.startNodeId === startNodeId)!
+            .orderNumber;
     };
 
-    private _getEndLinkOrderNumber = (
-        links: ICopySegmentLink[],
-        endNodeId: string
-    ) => {
-        return links.find(
-            (link: ICopySegmentLink) => link.endNodeId === endNodeId
-        )!.orderNumber;
+    private _getEndLinkOrderNumber = (links: ICopySegmentLink[], endNodeId: string) => {
+        return links.find((link: ICopySegmentLink) => link.endNodeId === endNodeId)!.orderNumber;
     };
 }
 

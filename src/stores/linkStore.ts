@@ -125,9 +125,7 @@ export class LinkStore {
                 {
                     ...this.link,
                     // Remapping geometry since edit initialization has added handlers
-                    geometry: this.link!.geometry.map(
-                        coor => new LatLng(coor.lat, coor.lng)
-                    )
+                    geometry: this.link!.geometry.map(coor => new LatLng(coor.lat, coor.lng))
                 },
                 this._oldLink
             )

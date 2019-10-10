@@ -16,10 +16,7 @@ const createDivIcon = (html: any, options: IDivIconOptions = {}) => {
         className: options.className ? options.className : s.iconClass,
         html: renderedHtml,
         // to make popup x amount (in px) above marker
-        popupAnchor: [
-            0,
-            options.popupOffset ? options.popupOffset : DEFAULT_POPUP_OFFSET
-        ]
+        popupAnchor: [0, options.popupOffset ? options.popupOffset : DEFAULT_POPUP_OFFSET]
     };
 
     return new L.DivIcon(divIconOptions);

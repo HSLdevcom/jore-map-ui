@@ -24,9 +24,7 @@ class RoutePathService {
             }
         });
 
-        return RoutePathFactory.mapExternalRoutePath(
-            queryResult.data.routePath
-        );
+        return RoutePathFactory.mapExternalRoutePath(queryResult.data.routePath);
     };
 
     public static fetchAllRoutePathPrimaryKeys = async (
@@ -38,9 +36,8 @@ class RoutePathService {
                 routeId
             }
         });
-        return queryResult.data.routePathPrimaryKeys.nodes.map(
-            (rp: IExternalRoutePath) =>
-                RoutePathFactory.mapExternalRoutePathToRoutePathPrimaryKey(rp)
+        return queryResult.data.routePathPrimaryKeys.nodes.map((rp: IExternalRoutePath) =>
+            RoutePathFactory.mapExternalRoutePathToRoutePathPrimaryKey(rp)
         );
     };
 
@@ -59,16 +56,12 @@ class RoutePathService {
                 date
             }
         });
-        return queryResult.data.routePaths.nodes.map(
-            (externalRp: IExternalRoutePath) =>
-                RoutePathFactory.mapExternalRoutePath(externalRp)
+        return queryResult.data.routePaths.nodes.map((externalRp: IExternalRoutePath) =>
+            RoutePathFactory.mapExternalRoutePath(externalRp)
         );
     };
 
-    public static updateRoutePath = async (
-        routePath: IRoutePath,
-        viaNames: IViaName[]
-    ) => {
+    public static updateRoutePath = async (routePath: IRoutePath, viaNames: IViaName[]) => {
         const requestBody = {
             routePath,
             viaNames
@@ -77,10 +70,7 @@ class RoutePathService {
         await ApiClient.updateObject(endpoints.ROUTEPATH, requestBody);
     };
 
-    public static createRoutePath = async (
-        routePath: IRoutePath,
-        viaNames: IViaName[]
-    ) => {
+    public static createRoutePath = async (routePath: IRoutePath, viaNames: IViaName[]) => {
         const requestBody = {
             routePath,
             viaNames

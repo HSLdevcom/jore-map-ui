@@ -57,10 +57,7 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator> {
         return decorator;
     }
 
-    updateLeafletElement(
-        fromProps: IArrowDecoratorProps,
-        toProps: IArrowDecoratorProps
-    ) {
+    updateLeafletElement(fromProps: IArrowDecoratorProps, toProps: IArrowDecoratorProps) {
         /**
          * Need to prevent updating in certain situations or else leaflet throws an error
          * For example when highlighting route on/off, this.leafletElement.removeFrom causes

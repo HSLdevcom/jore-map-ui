@@ -17,9 +17,7 @@ class StopFactory {
             municipality: node.pyskunta,
             nameLongFi: node.pysnimipitka,
             nameLongSw: node.pysnimipitkar,
-            nameModifiedOn: node.nimiviimpvm
-                ? new Date(node.nimiviimpvm)
-                : undefined,
+            nameModifiedOn: node.nimiviimpvm ? new Date(node.nimiviimpvm) : undefined,
             nodeId: node.soltunnus,
             placeNameFi: node.pyspaikannimi,
             placeNameSw: node.pyspaikannimir,

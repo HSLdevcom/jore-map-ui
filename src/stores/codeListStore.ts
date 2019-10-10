@@ -28,9 +28,7 @@ export class CodeListStore {
         this._codeListItems = codeListItems;
     }
 
-    public getDropdownItemList = (
-        codeListName: codeListName
-    ): IDropdownItem[] => {
+    public getDropdownItemList = (codeListName: codeListName): IDropdownItem[] => {
         return this._codeListItems
             .filter(item => item.listId === codeListName)
             .sort((a, b) => a.orderNumber - b.orderNumber)
