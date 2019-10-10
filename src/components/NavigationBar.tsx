@@ -1,16 +1,16 @@
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { IoMdContact } from 'react-icons/io';
 import hslLogo from '~/assets/hsl-logo.png';
-import routeBuilder from '~/routing/routeBuilder';
-import { observer, inject } from 'mobx-react';
 import constants from '~/constants/constants';
-import { LoginStore } from '~/stores/loginStore';
-import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import AuthService from '~/services/authService';
 import ButtonType from '~/enums/buttonType';
-import { Button } from './controls/index';
+import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import AuthService from '~/services/authService';
+import { LoginStore } from '~/stores/loginStore';
 import packageVersion from '../project/version.json';
+import { Button } from './controls/index';
 import * as s from './navigationBar.scss';
 
 interface INavigationBarProps {

@@ -1,5 +1,5 @@
-import React from 'react';
 import { observer } from 'mobx-react';
+import React from 'react';
 import { FaExclamationCircle } from 'react-icons/fa';
 import Constants from '~/constants/constants';
 import mapStore from '~/stores/mapStore';

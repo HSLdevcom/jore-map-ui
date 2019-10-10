@@ -1,5 +1,5 @@
-import { Path, PathProps, withLeaflet } from 'react-leaflet';
-import L, { PolylineDecorator, LatLng } from 'leaflet';
+import L, { LatLng, PolylineDecorator } from 'leaflet';
+import { withLeaflet, Path, PathProps } from 'react-leaflet';
 import { LeafletContext } from '../../Map';
 
 interface IArrowDecoratorProps extends PathProps {

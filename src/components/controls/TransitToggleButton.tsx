@@ -1,9 +1,9 @@
-import React from 'react';
-import { observer } from 'mobx-react';
 import classNames from 'classnames';
-import lineHelper from '~/util/lineHelper';
+import { observer } from 'mobx-react';
+import React from 'react';
 import TransitType from '~/enums/transitType';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
+import lineHelper from '~/util/lineHelper';
 import * as s from './transitToggleButton.scss';
 
 interface ITransitToggleButtonProps {

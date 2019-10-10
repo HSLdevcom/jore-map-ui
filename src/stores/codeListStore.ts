@@ -1,6 +1,6 @@
-import { observable, action } from 'mobx';
-import ICodeListItem from '~/models/ICodeListItem';
+import { action, observable } from 'mobx';
 import { IDropdownItem } from '~/components/controls/Dropdown';
+import ICodeListItem from '~/models/ICodeListItem';
 
 export type codeListName =
     | 'Joukkoliikennelaji'

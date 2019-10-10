@@ -1,8 +1,8 @@
-import * as React from 'react';
 import Moment from 'moment';
-import { IRoutePath } from '~/models';
+import * as React from 'react';
 import { Checkbox } from '~/components/controls';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import { IRoutePath } from '~/models';
 import * as s from './routePathSelector.scss';
 
 interface IRoutePathSelectorProps {

@@ -1,6 +1,6 @@
 import qs from 'qs';
-import SubSites from './subSites';
 import QueryParams from './queryParams';
+import SubSites from './subSites';
 
 class RouteBuilderContext {
     private currentLink: string;

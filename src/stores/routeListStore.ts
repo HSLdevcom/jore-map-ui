@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '~/models';
-import ColorScale from '~/util/colorScale';
 import RoutePathService from '~/services/routePathService';
+import ColorScale from '~/util/colorScale';
 
 export class RouteListStore {
     @observable private _routes: IRoute[];

@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
-import ApolloClient from '~/util/ApolloClient';
-import ILink from '~/models/ILink';
-import ApiClient from '~/util/ApiClient';
 import { LatLng } from 'leaflet';
 import endpoints from '~/enums/endpoints';
 import LinkFactory from '~/factories/linkFactory';
+import ILink from '~/models/ILink';
 import IExternalLink from '~/models/externals/IExternalLink';
+import ApiClient from '~/util/ApiClient';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class LinkService {

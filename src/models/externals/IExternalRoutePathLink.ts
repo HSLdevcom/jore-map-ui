@@ -1,6 +1,6 @@
 import TransitType from '~/enums/transitType';
-import IExternalNode from './IExternalNode';
 import IExternalLink from './IExternalLink';
+import IExternalNode from './IExternalNode';
 
 export default interface IExternalRoutePathLink {
     linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu: IExternalLink;

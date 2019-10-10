@@ -1,5 +1,5 @@
-import React from 'react';
 import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { RouteStore } from '~/stores/routeStore';
 import RouteItem from '../routeListView/RouteItem';
 import * as s from './routePathTab.scss';

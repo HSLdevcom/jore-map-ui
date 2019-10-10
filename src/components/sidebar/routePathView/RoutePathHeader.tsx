@@ -1,5 +1,5 @@
-import React from 'react';
 import { observer } from 'mobx-react';
+import React from 'react';
 import ReactMoment from 'react-moment';
 import { IRoutePath } from '~/models';
 import SidebarHeader from '../SidebarHeader';

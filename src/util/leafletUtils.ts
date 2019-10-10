@@ -1,5 +1,5 @@
-import ReactDOMServer from 'react-dom/server';
 import * as L from 'leaflet';
+import ReactDOMServer from 'react-dom/server';
 import * as s from './leafletUtils.scss';
 
 const DEFAULT_POPUP_OFFSET = -30;

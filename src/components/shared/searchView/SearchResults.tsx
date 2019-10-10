@@ -1,18 +1,18 @@
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
 import React from 'react';
 import { matchPath } from 'react-router';
-import { SearchResultStore } from '~/stores/searchResultStore';
-import LineService from '~/services/lineService';
-import NodeService from '~/services/nodeService';
 import { INodeBase } from '~/models/INode';
 import ISearchLine from '~/models/searchModels/ISearchLine';
-import { ErrorStore } from '~/stores/errorStore';
-import { SearchStore } from '~/stores/searchStore';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
-import LineItem from './LineItem';
+import LineService from '~/services/lineService';
+import NodeService from '~/services/nodeService';
+import { ErrorStore } from '~/stores/errorStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
+import { SearchStore } from '~/stores/searchStore';
 import Loader from '../loader/Loader';
+import LineItem from './LineItem';
 import NodeItem from './NodeItem';
 import * as s from './searchResults.scss';
 

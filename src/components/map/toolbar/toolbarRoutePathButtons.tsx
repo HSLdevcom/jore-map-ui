@@ -1,9 +1,9 @@
+import { observer } from 'mobx-react';
 import React from 'react';
 import { FiCopy, FiDelete } from 'react-icons/fi';
 import { IoMdGitCommit } from 'react-icons/io';
-import { observer } from 'mobx-react';
-import ToolbarStore from '~/stores/toolbarStore';
 import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarStore from '~/stores/toolbarStore';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
 

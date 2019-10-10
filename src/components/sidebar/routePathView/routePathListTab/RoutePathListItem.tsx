@@ -1,7 +1,7 @@
-import React from 'react';
 import classnames from 'classnames';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import * as s from './routePathListItem.scss';

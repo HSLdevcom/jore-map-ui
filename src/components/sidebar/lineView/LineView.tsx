@@ -1,25 +1,25 @@
-import React from 'react';
 import classnames from 'classnames';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { match } from 'react-router';
-import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import lineValidationModel from '~/models/validationModels/lineValidationModel';
-import { ErrorStore } from '~/stores/errorStore';
-import { LineStore } from '~/stores/lineStore';
-import { AlertStore } from '~/stores/alertStore';
-import { Tabs, TabList, Tab, ContentList, ContentItem } from '~/components/shared/Tabs';
-import LineService from '~/services/lineService';
+import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import ButtonType from '~/enums/buttonType';
 import LineFactory from '~/factories/lineFactory';
 import { ILine } from '~/models';
-import routeBuilder from '~/routing/routeBuilder';
+import lineValidationModel from '~/models/validationModels/lineValidationModel';
 import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import LineRoutesTab from './LineRoutesTab';
-import LineInfoTab from './LineInfoTab';
+import LineService from '~/services/lineService';
+import { AlertStore } from '~/stores/alertStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { LineStore } from '~/stores/lineStore';
 import SidebarHeader from '../SidebarHeader';
+import LineInfoTab from './LineInfoTab';
+import LineRoutesTab from './LineRoutesTab';
 import * as s from './lineView.scss';
 
 interface ILineViewProps {

@@ -1,20 +1,20 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-import TextContainer from '~/components/controls/TextContainer';
+import { inject, observer } from 'mobx-react';
+import React from 'react';
+import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
+import TextContainer from '~/components/controls/TextContainer';
 import TransitType from '~/enums/transitType';
-import { LineStore } from '~/stores/lineStore';
-import { CodeListStore } from '~/stores/codeListStore';
-import { ErrorStore } from '~/stores/errorStore';
-import LineService from '~/services/lineService';
-import LineHeaderService from '~/services/lineHeaderService';
 import ILineHeader from '~/models/ILineHeader';
 import ISearchLine from '~/models/searchModels/ISearchLine';
+import LineHeaderService from '~/services/lineHeaderService';
+import LineService from '~/services/lineService';
+import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { LineStore } from '~/stores/lineStore';
 import { IValidationResult } from '~/validation/FormValidator';
-import { TransitToggleButtonBar, Dropdown } from '~/components/controls';
-import * as s from './lineInfoTab.scss';
 import LineHeaderTable from './LineHeaderTable';
+import * as s from './lineInfoTab.scss';
 
 interface ILineInfoTabState {
     isLoading: boolean;

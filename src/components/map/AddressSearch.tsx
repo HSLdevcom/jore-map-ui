@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { IReactionDisposer, reaction } from 'mobx';
-import * as L from 'leaflet';
 import classnames from 'classnames';
+import * as L from 'leaflet';
+import { reaction, IReactionDisposer } from 'mobx';
 import { observer } from 'mobx-react';
-import EventManager from '~/util/EventManager';
-import GeocodingService, { IAddressFeature } from '~/services/geocodingService';
+import React, { Component } from 'react';
 import PinIcon from '~/icons/PinIcon';
+import GeocodingService, { IAddressFeature } from '~/services/geocodingService';
+import EventManager from '~/util/EventManager';
 import LeafletUtils from '~/util/leafletUtils';
 import * as s from './addressSearch.scss';
 

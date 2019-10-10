@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { Marker as LeafletMarker, Circle } from 'react-leaflet';
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import _ from 'lodash';
-import { observer, inject } from 'mobx-react';
-import classnames from 'classnames';
-import { INode } from '~/models/index';
-import NodeLocationType from '~/types/NodeLocationType';
+import { inject, observer } from 'mobx-react';
+import React, { Component } from 'react';
+import { Circle, Marker as LeafletMarker } from 'react-leaflet';
 import NodeType from '~/enums/nodeType';
+import { INode } from '~/models/index';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
-import NodeHelper from '~/util/nodeHelper';
+import NodeLocationType from '~/types/NodeLocationType';
 import LeafletUtils from '~/util/leafletUtils';
+import NodeHelper from '~/util/nodeHelper';
 import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
 

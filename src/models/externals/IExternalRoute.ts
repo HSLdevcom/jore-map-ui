@@ -1,6 +1,6 @@
+import IExternalLine from './IExternalLine';
 import IExternalRoutePath from './IExternalRoutePath';
 import IGraphqlList from './graphqlModelHelpers/IGraphqlList';
-import IExternalLine from './IExternalLine';
 
 export default interface IExternalRoute {
     reitinsuuntasByReitunnus: IGraphqlList<IExternalRoutePath>;

@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { SearchStore } from '~/stores/searchStore';
 import { SearchResultStore } from '~/stores/searchResultStore';
+import { SearchStore } from '~/stores/searchStore';
 import Loader, { LoaderSize } from '../loader/Loader';
 import * as s from './searchInput.scss';
 

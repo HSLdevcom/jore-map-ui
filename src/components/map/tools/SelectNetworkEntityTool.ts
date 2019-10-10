@@ -1,11 +1,11 @@
 import ToolbarTool from '~/enums/toolbarTool';
-import EventManager, {
-    INetworkNodeClickParams,
-    INetworkLinkClickParams
-} from '~/util/EventManager';
+import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
+import EventManager, {
+    INetworkLinkClickParams,
+    INetworkNodeClickParams
+} from '~/util/EventManager';
 import BaseTool from './BaseTool';
 
 /**

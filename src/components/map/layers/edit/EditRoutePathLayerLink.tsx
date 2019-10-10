@@ -1,12 +1,12 @@
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
-import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
-import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
-import { RoutePathStore } from '~/stores/routePathStore';
+import { MapFilter, MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
-import { MapStore, MapFilter } from '~/stores/mapStore';
+import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 

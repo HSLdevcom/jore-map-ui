@@ -1,5 +1,5 @@
-import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
+import { action, computed, observable } from 'mobx';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import GeometryUndoStore from '~/stores/geometryUndoStore';

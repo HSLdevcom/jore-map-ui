@@ -1,10 +1,10 @@
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { observer, inject } from 'mobx-react';
-import { CodeListStore } from '~/stores/codeListStore';
-import { IRoutePath, INode, IRoutePathLink } from '~/models';
-import NodeType from '~/enums/nodeType';
 import ButtonType from '~/enums/buttonType';
-import { Dropdown, Button } from '../../../controls';
+import NodeType from '~/enums/nodeType';
+import { INode, IRoutePath, IRoutePathLink } from '~/models';
+import { CodeListStore } from '~/stores/codeListStore';
+import { Button, Dropdown } from '../../../controls';
 import * as s from './linkListView.scss';
 
 interface ILinkListViewProps {

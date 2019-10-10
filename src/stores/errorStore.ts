@@ -1,4 +1,4 @@
-import { computed, observable, action } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import IError from '~/models/IError';
 

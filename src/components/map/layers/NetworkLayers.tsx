@@ -1,23 +1,23 @@
-import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
-import { toJS, IReactionDisposer } from 'mobx';
 import classNames from 'classnames';
+import { toJS, IReactionDisposer } from 'mobx';
+import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
+import React, { Component } from 'react';
 import Constants from '~/constants/constants';
-import { NodeStore } from '~/stores/nodeStore';
+import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
+import { NodeStore } from '~/stores/nodeStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import EventManager, {
-    INetworkNodeClickParams,
-    INetworkLinkClickParams
+    INetworkLinkClickParams,
+    INetworkNodeClickParams
 } from '~/util/EventManager';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import TransitType from '~/enums/transitType';
-import NodeType from '~/enums/nodeType';
-import VectorGridLayer from './VectorGridLayer';
 import * as s from './NetworkLayers.scss';
+import VectorGridLayer from './VectorGridLayer';
 
 enum GeoserverLayer {
     Node = 'solmu',

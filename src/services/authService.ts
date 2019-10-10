@@ -1,9 +1,9 @@
-import ApiClient from '~/util/ApiClient';
+import endpoints from '~/enums/endpoints';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import ErrorStore from '~/stores/errorStore';
 import LoginStore from '~/stores/loginStore';
-import endpoints from '~/enums/endpoints';
+import ApiClient from '~/util/ApiClient';
 import CodeListHelper from '~/util/CodeListHelper';
 
 export interface IAuthorizationResponse {

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import ToolbarStore from '~/stores/toolbarStore';
-import RoutePathCopySegmentStore, { setNodeType } from '~/stores/routePathCopySegmentStore';
-import ToolbarTool from '~/enums/toolbarTool';
+import React, { Component } from 'react';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import ToolbarTool from '~/enums/toolbarTool';
+import RoutePathCopySegmentStore, { setNodeType } from '~/stores/routePathCopySegmentStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import * as s from './toolbarHelp.scss';
 
 @observer

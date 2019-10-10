@@ -1,5 +1,5 @@
-import React from 'react';
 import { observer } from 'mobx-react';
+import React from 'react';
 import * as s from './toggleSwitch.scss';
 
 interface IToggleSwitchProps {

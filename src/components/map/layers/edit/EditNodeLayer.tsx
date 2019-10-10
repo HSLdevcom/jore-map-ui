@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
 import * as L from 'leaflet';
 import _ from 'lodash';
+import { inject, observer } from 'mobx-react';
+import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
-import { inject, observer } from 'mobx-react';
-import navigator from '~/routing/navigator';
-import { LoginStore } from '~/stores/loginStore';
-import SubSites from '~/routing/subSites';
-import { ILink } from '~/models';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
-import EventManager from '~/util/EventManager';
-import NodeLocationType from '~/types/NodeLocationType';
+import { ILink } from '~/models';
+import navigator from '~/routing/navigator';
+import SubSites from '~/routing/subSites';
+import { LoginStore } from '~/stores/loginStore';
+import { MapFilter, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
-import { MapStore, MapFilter } from '~/stores/mapStore';
-import NodeMarker from '../markers/NodeMarker';
+import NodeLocationType from '~/types/NodeLocationType';
+import EventManager from '~/util/EventManager';
 import { LeafletContext } from '../../Map';
+import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
 
 interface IEditNodeLayerProps {

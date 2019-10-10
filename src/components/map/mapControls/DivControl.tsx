@@ -1,4 +1,4 @@
-import { Control, DomUtil, DomEvent } from 'leaflet';
+import { Control, DomEvent, DomUtil } from 'leaflet';
 
 const divControl: any = Control.extend({
     options: {},

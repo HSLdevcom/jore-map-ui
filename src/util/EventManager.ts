@@ -1,6 +1,6 @@
-import { INode, INeighborLink } from '~/models';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
+import { INeighborLink, INode } from '~/models';
 
 type eventName =
     | 'enter'

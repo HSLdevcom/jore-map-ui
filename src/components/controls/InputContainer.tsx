@@ -1,7 +1,7 @@
-import React from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
-import classnames from 'classnames';
+import React from 'react';
 import { IValidationResult } from '~/validation/FormValidator';
 import DatePicker from './DatePicker';
 import * as s from './inputContainer.scss';

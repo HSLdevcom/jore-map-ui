@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
-import { RoutePathCopySegmentStore, ICopySegmentLink } from '~/stores/routePathCopySegmentStore';
+import { ICopySegmentLink, RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import Marker from '../markers/Marker';
 
 interface IRoutePathCopySegmentLayerProps {
