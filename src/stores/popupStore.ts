@@ -1,4 +1,4 @@
-import { computed, observable, action } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { INode } from '~/models';
 
 export class PopupStore {

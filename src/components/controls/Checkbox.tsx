@@ -1,6 +1,6 @@
-import React from 'react';
-import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import { observer } from 'mobx-react';
+import React from 'react';
 import * as s from './checkbox.scss';
 
 interface ICheckboxProps {
@@ -22,17 +22,10 @@ const Checkbox = observer((props: ICheckboxProps) => {
     return (
         <label
             onClick={onClick}
-            className={classnames(
-                s.container,
-                props.disabled ? s.disabled : undefined
-            )}
+            className={classnames(s.container, props.disabled ? s.disabled : undefined)}
         >
             <div className={s.content}>{props.content}</div>
-            <input
-                type='checkbox'
-                checked={Boolean(props.checked)}
-                onChange={doNothing}
-            />
+            <input type='checkbox' checked={Boolean(props.checked)} onChange={doNothing} />
             <span className={s.checkmark} />
         </label>
     );

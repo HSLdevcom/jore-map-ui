@@ -1,6 +1,6 @@
-import React from 'react';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
+import React from 'react';
 import * as s from './inputContainer.scss';
 
 interface ITextContainerProps {
@@ -12,11 +12,7 @@ interface ITextContainerProps {
 
 const TextContainer = observer((props: ITextContainerProps) => (
     <div className={s.formItem}>
-        <div
-            className={
-                props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel
-            }
-        >
+        <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
             {props.label}
         </div>
         <div className={s.staticHeight}>

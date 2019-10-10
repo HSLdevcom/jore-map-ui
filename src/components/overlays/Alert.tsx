@@ -1,5 +1,5 @@
-import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { IoMdInformationCircle } from 'react-icons/io';
@@ -22,14 +22,10 @@ class Alert extends React.Component<IAlertProps> {
             <Modal>
                 <div className={s.alertView}>
                     {this.props.alertStore!.type === AlertType.Success && (
-                        <FaCheckCircle
-                            className={classnames(s.icon, s.success)}
-                        />
+                        <FaCheckCircle className={classnames(s.icon, s.success)} />
                     )}
                     {this.props.alertStore!.type === AlertType.Info && (
-                        <IoMdInformationCircle
-                            className={classnames(s.icon, s.info)}
-                        />
+                        <IoMdInformationCircle className={classnames(s.icon, s.info)} />
                     )}
                     {this.props.alertStore!.type === AlertType.Loader && (
                         <div className={s.icon}>

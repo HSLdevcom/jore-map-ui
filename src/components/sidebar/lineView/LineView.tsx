@@ -1,31 +1,25 @@
-import React from 'react';
 import classnames from 'classnames';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { match } from 'react-router';
-import ButtonType from '~/enums/buttonType';
 import Button from '~/components/controls/Button';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import lineValidationModel from '~/models/validationModels/lineValidationModel';
-import { ErrorStore } from '~/stores/errorStore';
-import { LineStore } from '~/stores/lineStore';
-import { AlertStore } from '~/stores/alertStore';
-import {
-    Tabs,
-    TabList,
-    Tab,
-    ContentList,
-    ContentItem
-} from '~/components/shared/Tabs';
-import LineService from '~/services/lineService';
+import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import ButtonType from '~/enums/buttonType';
 import LineFactory from '~/factories/lineFactory';
 import { ILine } from '~/models';
-import routeBuilder from '~/routing/routeBuilder';
+import lineValidationModel from '~/models/validationModels/lineValidationModel';
 import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import LineRoutesTab from './LineRoutesTab';
-import LineInfoTab from './LineInfoTab';
+import LineService from '~/services/lineService';
+import { AlertStore } from '~/stores/alertStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { LineStore } from '~/stores/lineStore';
 import SidebarHeader from '../SidebarHeader';
+import LineInfoTab from './LineInfoTab';
+import LineRoutesTab from './LineRoutesTab';
 import * as s from './lineView.scss';
 
 interface ILineViewProps {
@@ -93,10 +87,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                 this.props.lineStore!.setLine(newLine);
             }
         } catch (e) {
-            this.props.errorStore!.addError(
-                'Uuden linjan luonti epäonnistui',
-                e
-            );
+            this.props.errorStore!.addError('Uuden linjan luonti epäonnistui', e);
         }
     };
 
@@ -165,10 +156,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     };
 
     private validateLine = () => {
-        this.validateAllProperties(
-            lineValidationModel,
-            this.props.lineStore!.line
-        );
+        this.validateAllProperties(lineValidationModel, this.props.lineStore!.line);
     };
 
     private renderLineViewHeader = () => {
@@ -199,9 +187,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         if (!this.props.lineStore!.line) return null;
 
         const isSaveButtonDisabled =
-            this.state.isEditingDisabled ||
-            !this.props.lineStore!.isDirty ||
-            !this.isFormValid();
+            this.state.isEditingDisabled || !this.props.lineStore!.isDirty || !this.isFormValid();
 
         return (
             <div className={s.lineView}>
@@ -219,21 +205,13 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                                 <div>Reitit</div>
                             </Tab>
                         </TabList>
-                        <ContentList
-                            selectedTabIndex={this.state.selectedTabIndex}
-                        >
+                        <ContentList selectedTabIndex={this.state.selectedTabIndex}>
                             <ContentItem>
                                 <LineInfoTab
-                                    isEditingDisabled={
-                                        this.state.isEditingDisabled
-                                    }
+                                    isEditingDisabled={this.state.isEditingDisabled}
                                     isNewLine={this.props.isNewLine}
-                                    onChangeLineProperty={
-                                        this.onChangeLineProperty
-                                    }
-                                    invalidPropertiesMap={
-                                        this.state.invalidPropertiesMap
-                                    }
+                                    onChangeLineProperty={this.onChangeLineProperty}
+                                    invalidPropertiesMap={this.state.invalidPropertiesMap}
                                     setValidatorResult={this.setValidatorResult}
                                 />
                             </ContentItem>
@@ -247,9 +225,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                         type={ButtonType.SAVE}
                         disabled={isSaveButtonDisabled}
                     >
-                        {this.props.isNewLine
-                            ? 'Luo uusi linja'
-                            : 'Tallenna muutokset'}
+                        {this.props.isNewLine ? 'Luo uusi linja' : 'Tallenna muutokset'}
                     </Button>
                 </div>
             </div>

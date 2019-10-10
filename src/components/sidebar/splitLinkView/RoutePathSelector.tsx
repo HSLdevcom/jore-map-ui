@@ -1,8 +1,8 @@
-import * as React from 'react';
 import Moment from 'moment';
-import { IRoutePath } from '~/models';
+import * as React from 'react';
 import { Checkbox } from '~/components/controls';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import { IRoutePath } from '~/models';
 import * as s from './routePathSelector.scss';
 
 interface IRoutePathSelectorProps {
@@ -47,9 +47,7 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
         <div className={s.routePathSelectorView}>
             {props.routePaths.length === 0 && (
                 <div>
-                    {`Päivämääränä ${Moment(props.selectedDate).format(
-                        'DD.MM.YYYY'
-                    )} tai sen
+                    {`Päivämääränä ${Moment(props.selectedDate).format('DD.MM.YYYY')} tai sen
                          jälkeen voimassa olevia reitinsuuntia ei löytynyt.`}
                 </div>
             )}

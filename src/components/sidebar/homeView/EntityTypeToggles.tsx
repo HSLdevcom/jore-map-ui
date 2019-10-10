@@ -1,8 +1,8 @@
-import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { IoMdAnalytics, IoIosRadioButtonOn } from 'react-icons/io';
-import { SearchStore } from '~/stores/searchStore';
+import React from 'react';
+import { IoIosRadioButtonOn, IoMdAnalytics } from 'react-icons/io';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
+import { SearchStore } from '~/stores/searchStore';
 
 interface IEntityTypeToggleProps {
     searchStore?: SearchStore;

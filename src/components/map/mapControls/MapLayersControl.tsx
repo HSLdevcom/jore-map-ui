@@ -1,13 +1,13 @@
-import React, { MouseEvent } from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
+import React, { MouseEvent } from 'react';
 import { IoMdMap } from 'react-icons/io';
-import classnames from 'classnames';
-import { TransitToggleButtonBar, Checkbox } from '~/components/controls/';
-import TransitType from '~/enums/transitType';
+import { Checkbox, TransitToggleButtonBar } from '~/components/controls/';
 import InputContainer from '~/components/controls/InputContainer';
+import TransitType from '~/enums/transitType';
+import MapStore, { MapFilter, NodeLabel } from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import MapStore, { NodeLabel, MapFilter } from '~/stores/mapStore';
 import { RadioButton } from '../../controls';
 import * as s from './mapLayersControl.scss';
 
@@ -25,10 +25,7 @@ enum option {
 }
 
 @observer
-class MapLayersControl extends React.Component<
-    IMapLayersControlProps,
-    IMapLayersControlState
-> {
+class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayersControlState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -63,9 +60,7 @@ class MapLayersControl extends React.Component<
         NetworkStore.setSelectedDate(date ? Moment(date) : null);
     };
 
-    private showControls = (show: boolean) => (
-        e: MouseEvent<HTMLDivElement>
-    ) => {
+    private showControls = (show: boolean) => (e: MouseEvent<HTMLDivElement>) => {
         // Fixes problem where clicking on anything causes mouse to 'leave' the element.
         if (!e.relatedTarget['innerHTML']) return;
         this.setState({ show });
@@ -74,10 +69,7 @@ class MapLayersControl extends React.Component<
     render() {
         return (
             <div
-                className={classnames(
-                    s.mapLayerControlView,
-                    this.state.show ? s.active : null
-                )}
+                className={classnames(s.mapLayerControlView, this.state.show ? s.active : null)}
                 onMouseEnter={this.showControls(true)}
                 onMouseLeave={this.showControls(false)}
             >
@@ -92,11 +84,7 @@ class MapLayersControl extends React.Component<
                         selectedTransitTypes={NetworkStore.selectedTransitTypes}
                     />
                     <InputContainer
-                        label={
-                            <div className={s.inputTitle}>
-                                Tarkkailupäivämäärä
-                            </div>
-                        }
+                        label={<div className={s.inputTitle}>Tarkkailupäivämäärä</div>}
                         onChange={this.selectDate}
                         type='date'
                         value={
@@ -110,45 +98,29 @@ class MapLayersControl extends React.Component<
                     <div className={s.inputTitle}>GEOMETRIAT</div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(
-                                MapLayer.link
-                            )}
-                            checked={NetworkStore.isMapLayerVisible(
-                                MapLayer.link
-                            )}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.link)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.link)}
                             content='Alueen linkit'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(
-                                MapLayer.node
-                            )}
-                            checked={NetworkStore.isMapLayerVisible(
-                                MapLayer.node
-                            )}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.node)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.node)}
                             content='Alueen solmut'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(
-                                MapLayer.nodeWithoutLink
-                            )}
-                            checked={NetworkStore.isMapLayerVisible(
-                                MapLayer.nodeWithoutLink
-                            )}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.nodeWithoutLink)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)}
                             content='Linkittömät solmut'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(
-                                MapLayer.linkPoint
-                            )}
-                            checked={NetworkStore.isMapLayerVisible(
-                                MapLayer.linkPoint
-                            )}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.linkPoint)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.linkPoint)}
                             content='Linkkien pisteet'
                         />
                     </div>
@@ -156,34 +128,22 @@ class MapLayersControl extends React.Component<
                     <div className={s.inputTitle}>SOLMUT</div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleNodeLabelVisibility(
-                                NodeLabel.hastusId
-                            )}
-                            checked={MapStore.isNodeLabelVisible(
-                                NodeLabel.hastusId
-                            )}
+                            onClick={this.toggleNodeLabelVisibility(NodeLabel.hastusId)}
+                            checked={MapStore.isNodeLabelVisible(NodeLabel.hastusId)}
                             content='Hastus id'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleNodeLabelVisibility(
-                                NodeLabel.longNodeId
-                            )}
-                            checked={MapStore.isNodeLabelVisible(
-                                NodeLabel.longNodeId
-                            )}
+                            onClick={this.toggleNodeLabelVisibility(NodeLabel.longNodeId)}
+                            checked={MapStore.isNodeLabelVisible(NodeLabel.longNodeId)}
                             content='Pitkä solmun id'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleNodeLabelVisibility(
-                                NodeLabel.shortNodeId
-                            )}
-                            checked={MapStore.isNodeLabelVisible(
-                                NodeLabel.shortNodeId
-                            )}
+                            onClick={this.toggleNodeLabelVisibility(NodeLabel.shortNodeId)}
+                            checked={MapStore.isNodeLabelVisible(NodeLabel.shortNodeId)}
                             content='Lyhyt solmun id'
                         />
                     </div>
@@ -191,12 +151,8 @@ class MapLayersControl extends React.Component<
                     <div className={s.inputTitle}>LINKIT</div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapFilter(
-                                MapFilter.arrowDecorator
-                            )}
-                            checked={MapStore.isMapFilterEnabled(
-                                MapFilter.arrowDecorator
-                            )}
+                            onClick={this.toggleMapFilter(MapFilter.arrowDecorator)}
+                            checked={MapStore.isMapFilterEnabled(MapFilter.arrowDecorator)}
                             content='Linkkien suuntanuolet'
                         />
                     </div>
@@ -209,16 +165,12 @@ class MapLayersControl extends React.Component<
                     />
                     <RadioButton
                         onClick={this.toggleMapOption(option.SATELLITE)}
-                        checked={
-                            this.state.selectedMapOption === option.SATELLITE
-                        }
+                        checked={this.state.selectedMapOption === option.SATELLITE}
                         text={option.SATELLITE}
                     />
                     <RadioButton
                         onClick={this.toggleMapOption(option.TERRAIN)}
-                        checked={
-                            this.state.selectedMapOption === option.TERRAIN
-                        }
+                        checked={this.state.selectedMapOption === option.TERRAIN}
                         text={option.TERRAIN}
                     />
                 </div>

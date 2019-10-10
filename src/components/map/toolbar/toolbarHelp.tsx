@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import ToolbarStore from '~/stores/toolbarStore';
-import RoutePathCopySegmentStore, {
-    setNodeType
-} from '~/stores/routePathCopySegmentStore';
-import ToolbarTool from '~/enums/toolbarTool';
+import React, { Component } from 'react';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import ToolbarTool from '~/enums/toolbarTool';
+import RoutePathCopySegmentStore, { setNodeType } from '~/stores/routePathCopySegmentStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import * as s from './toolbarHelp.scss';
 
 @observer
@@ -22,22 +20,14 @@ class ToolbarHelp extends Component {
                 <Button
                     onClick={setSetNodeType('startNode')}
                     type={ButtonType.SQUARE}
-                    className={
-                        setNodeType === 'startNode'
-                            ? s.startButtonSelected
-                            : s.startButton
-                    }
+                    className={setNodeType === 'startNode' ? s.startButtonSelected : s.startButton}
                 >
                     Alkusolmu
                 </Button>
                 <Button
                     onClick={setSetNodeType('endNode')}
                     type={ButtonType.SQUARE}
-                    className={
-                        setNodeType === 'endNode'
-                            ? s.endButtonSelected
-                            : s.endButton
-                    }
+                    className={setNodeType === 'endNode' ? s.endButtonSelected : s.endButton}
                 >
                     Loppusolmu
                 </Button>
@@ -51,12 +41,9 @@ class ToolbarHelp extends Component {
 
         return (
             <div className={s.toolbarHelp}>
-                <div className={s.toolbarHelpHeader}>
-                    {selectedTool.toolHelpHeader}
-                </div>
+                <div className={s.toolbarHelpHeader}>{selectedTool.toolHelpHeader}</div>
                 {selectedTool.toolHelpText}
-                {selectedTool.toolType ===
-                    ToolbarTool.CopyRoutePathSegmentTool &&
+                {selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool &&
                     this.renderCopyRoutePathToolToolHelpContent()}
             </div>
         );

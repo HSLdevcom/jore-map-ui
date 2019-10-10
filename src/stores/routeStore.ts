@@ -1,5 +1,5 @@
-import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
+import { action, computed, observable } from 'mobx';
 import { IRoute } from '~/models';
 
 class RouteStore {
@@ -33,10 +33,7 @@ class RouteStore {
     };
 
     @action
-    public updateRouteProperty = (
-        property: keyof IRoute,
-        value: string | number | Date
-    ) => {
+    public updateRouteProperty = (property: keyof IRoute, value: string | number | Date) => {
         this._route = {
             ...this._route!,
             [property]: value

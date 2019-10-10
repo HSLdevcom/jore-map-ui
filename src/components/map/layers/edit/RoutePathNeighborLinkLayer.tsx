@@ -1,18 +1,16 @@
+import { inject, observer } from 'mobx-react';
+import Moment from 'moment';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
-import Moment from 'moment';
-import { inject, observer } from 'mobx-react';
-import INode from '~/models/INode';
-import { RoutePathStore, NeighborToAddType } from '~/stores/routePathStore';
-import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { IRoutePath } from '~/models';
-import EventManager, {
-    IEditRoutePathNeighborLinkClickParams
-} from '~/util/EventManager';
+import INeighborLink from '~/models/INeighborLink';
+import INode from '~/models/INode';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import INeighborLink from '~/models/INeighborLink';
+import { MapStore, NodeLabel } from '~/stores/mapStore';
+import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
+import EventManager, { IEditRoutePathNeighborLinkClickParams } from '~/util/EventManager';
 import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
 
@@ -38,12 +36,11 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                     .map((routePath, index) => {
                         const link = routeBuilder
                             .to(SubSites.routePath)
-                            .toTarget(':id',
+                            .toTarget(
+                                ':id',
                                 [
                                     routePath.routeId,
-                                    Moment(routePath.startTime).format(
-                                        'YYYY-MM-DDTHH:mm:ss'
-                                    ),
+                                    Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
                                     routePath.direction
                                 ].join(',')
                             )
@@ -52,8 +49,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                         return (
                             <div className={s.usageListItem} key={index}>
                                 <div className={s.usageListItemTitle}>
-                                    {routePath.originFi}-
-                                    {routePath.destinationFi}
+                                    {routePath.originFi}-{routePath.destinationFi}
                                 </div>
                                 <div className={s.usageListItemId}>
                                     <a href={link} target='_blank'>
@@ -67,11 +63,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
         );
     };
 
-    private renderNeighborNode = (
-        node: INode,
-        neighborLink: INeighborLink,
-        key: number
-    ) => {
+    private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
         const onNeighborLinkClick = () => {
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
                 neighborLink
@@ -86,9 +78,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 onClick={onNeighborLinkClick}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
-                popupContent={this.getNodeUsageViewMarkup(
-                    neighborLink.nodeUsageRoutePaths
-                )}
+                popupContent={this.getNodeUsageViewMarkup(neighborLink.nodeUsageRoutePaths)}
                 color={
                     neighborLink.nodeUsageRoutePaths.length > 0
                         ? USED_NEIGHBOR_COLOR
@@ -132,8 +122,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
     render() {
         const neighborLinks = this.props.routePathStore!.neighborLinks;
         return neighborLinks.map((neighborLink, index) => {
-            const neighborToAddType = this.props.routePathStore!
-                .neighborToAddType;
+            const neighborToAddType = this.props.routePathStore!.neighborToAddType;
             const nodeToRender =
                 neighborToAddType === NeighborToAddType.AfterNode
                     ? neighborLink.routePathLink.endNode

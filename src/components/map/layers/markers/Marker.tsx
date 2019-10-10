@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
 import * as L from 'leaflet';
+import React, { Component } from 'react';
 import { Marker as LeafletMarker } from 'react-leaflet';
 import PinIcon from '~/icons/PinIcon';
 import LeafletUtils from '~/util/leafletUtils';
@@ -40,9 +40,7 @@ class Marker extends Component<IMarkerProps> {
 
     render() {
         const { latLng, color, isClickDisabled }: IMarkerProps = this.props;
-        const iconBaseClass = isClickDisabled
-            ? s.iconBaseNotClickable
-            : s.iconBase;
+        const iconBaseClass = isClickDisabled ? s.iconBaseNotClickable : s.iconBase;
 
         return (
             <LeafletMarker

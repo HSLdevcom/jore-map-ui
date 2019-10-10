@@ -1,6 +1,6 @@
-import React from 'react';
-import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import { observer } from 'mobx-react';
+import React from 'react';
 import * as s from './toggleView.scss';
 
 interface IToggleViewProps {
@@ -26,10 +26,7 @@ export const ToggleItem = observer((props: IToggleItemProps) => {
     return (
         <div className={s.buttonContainer}>
             <div
-                className={classnames(
-                    s.button,
-                    props.isActive ? s.active : null
-                )}
+                className={classnames(s.button, props.isActive ? s.active : null)}
                 onClick={props.onClick}
             >
                 {props.icon}

@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
 import * as L from 'leaflet';
 import _ from 'lodash';
-import { withLeaflet } from 'react-leaflet';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
-import EventManager, { INodeClickParams } from '~/util/EventManager';
-import { LoginStore } from '~/stores/loginStore';
-import { INode, ILink } from '~/models';
+import React, { Component } from 'react';
+import { withLeaflet } from 'react-leaflet';
+import { ILink, INode } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
-import { MapStore, MapFilter } from '~/stores/mapStore';
-import NodeMarker from '../markers/NodeMarker';
-import Marker from '../markers/Marker';
+import { LoginStore } from '~/stores/loginStore';
+import { MapFilter, MapStore } from '~/stores/mapStore';
+import EventManager, { INodeClickParams } from '~/util/EventManager';
 import { LeafletContext } from '../../Map';
+import Marker from '../markers/Marker';
+import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 
@@ -64,8 +64,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
         this.removeOldLinks();
         const isEditable =
-            this.props.loginStore!.hasWriteAccess &&
-            this.props.linkStore!.isLinkGeometryEditable;
+            this.props.loginStore!.hasWriteAccess && this.props.linkStore!.isLinkGeometryEditable;
         this.drawLinkToMap(link, isEditable);
 
         map.off('editable:vertex:dragend');
@@ -113,9 +112,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     };
 
     private renderLinkDecorator = () => {
-        if (
-            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
-        ) {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
             return null;
         }
 
@@ -154,16 +151,10 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     };
 
     private renderStartMarker = () => {
-        const startMarkerCoordinates = this.props.linkStore!
-            .startMarkerCoordinates;
+        const startMarkerCoordinates = this.props.linkStore!.startMarkerCoordinates;
         if (!startMarkerCoordinates) return null;
 
-        return (
-            <Marker
-                latLng={startMarkerCoordinates}
-                color={START_MARKER_COLOR}
-            />
-        );
+        return <Marker latLng={startMarkerCoordinates} color={START_MARKER_COLOR} />;
     };
 
     private renderDashedLines = () => {

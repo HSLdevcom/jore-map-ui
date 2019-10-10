@@ -1,5 +1,5 @@
-import React from 'react';
 import { observer } from 'mobx-react';
+import React from 'react';
 import ReactDatePicker from 'react-date-picker';
 import { IoMdCalendar } from 'react-icons/io';
 import * as s from './datePicker.scss';

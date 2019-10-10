@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { SearchStore } from '~/stores/searchStore';
 import { SearchResultStore } from '~/stores/searchResultStore';
+import { SearchStore } from '~/stores/searchStore';
 import Loader, { LoaderSize } from '../loader/Loader';
 import * as s from './searchInput.scss';
 
@@ -13,9 +13,7 @@ interface ISearchInputProps {
 @inject('searchStore', 'searchResultStore')
 @observer
 class SearchInput extends React.Component<ISearchInputProps> {
-    private onSearchInputChange = (
-        event: React.FormEvent<HTMLInputElement>
-    ) => {
+    private onSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
         this.props.searchStore!.setSearchInput(newValue);
     };

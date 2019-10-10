@@ -1,14 +1,14 @@
 import { action, computed, observable } from 'mobx';
-import ToolbarTool from '~/enums/toolbarTool';
-import BaseTool from '~/components/map/tools/BaseTool';
-import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
 import AddNetworkLinkTool from '~/components/map/tools/AddNetworkLinkTool';
-import ExtendRoutePathTool from '~/components/map/tools/ExtendRoutePathTool';
+import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
+import BaseTool from '~/components/map/tools/BaseTool';
 import CopyRoutePathSegmentTool from '~/components/map/tools/CopyRoutePathSegmentTool';
+import ExtendRoutePathTool from '~/components/map/tools/ExtendRoutePathTool';
 import PrintTool from '~/components/map/tools/PrintTool';
 import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkTool';
 import SelectNetworkEntityTool from '~/components/map/tools/SelectNetworkEntityTool';
 import SplitLinkTool from '~/components/map/tools/SplitLinkTool';
+import ToolbarTool from '~/enums/toolbarTool';
 
 const defaultTool = new SelectNetworkEntityTool();
 
@@ -46,10 +46,7 @@ export class ToolbarStore {
         }
 
         // deselect current tool
-        if (
-            tool === null ||
-            (this._selectedTool && this._selectedTool.toolType === tool)
-        ) {
+        if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
             this.selectDefaultTool();
             return;
         }
@@ -62,9 +59,7 @@ export class ToolbarStore {
     };
 
     public isSelected = (tool: ToolbarTool): boolean => {
-        return Boolean(
-            this._selectedTool && this._selectedTool.toolType === tool
-        );
+        return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
     };
 
     public isDisabled = (tool: ToolbarTool): boolean => {

@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
 import endpoints from '~/enums/endpoints';
+import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
-import LineHeaderFactory from '~/factories/lineHeaderFactory';
+import ApiClient from '~/util/ApiClient';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class LineHeaderService {
@@ -14,27 +14,20 @@ class LineHeaderService {
      * @param lineId - lineId to used to filter topic names
      * @return filtered list of line topic names sorted by startTime
      */
-    public static fetchLineHeaders = async (
-        lineId: string
-    ): Promise<ILineHeader[]> => {
+    public static fetchLineHeaders = async (lineId: string): Promise<ILineHeader[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllLineHeadersQuery()
         });
-        const allExtLineNames: IExternalLineHeader[] =
-            queryResult.data.node.nodes;
+        const allExtLineNames: IExternalLineHeader[] = queryResult.data.node.nodes;
         const filteredExtLineNames: IExternalLineHeader[] = allExtLineNames.filter(
-            (extLineName: IExternalLineHeader) =>
-                extLineName.lintunnus === lineId
+            (extLineName: IExternalLineHeader) => extLineName.lintunnus === lineId
         );
         return filteredExtLineNames
             .map((externalLineHeader: IExternalLineHeader) => {
-                return LineHeaderFactory.mapExternalLineHeader(
-                    externalLineHeader
-                );
+                return LineHeaderFactory.mapExternalLineHeader(externalLineHeader);
             })
             .sort(
-                (a: ILineHeader, b: ILineHeader) =>
-                    a.startDate!.getTime() - b.startDate!.getTime()
+                (a: ILineHeader, b: ILineHeader) => a.startDate!.getTime() - b.startDate!.getTime()
             );
     };
 
@@ -50,9 +43,7 @@ class LineHeaderService {
             }
         });
 
-        return LineHeaderFactory.mapExternalLineHeader(
-            queryResult.data.lineHeader
-        );
+        return LineHeaderFactory.mapExternalLineHeader(queryResult.data.lineHeader);
     };
 
     public static updateLineHeader = async (lineHeader: ILineHeader) => {
@@ -64,10 +55,7 @@ class LineHeaderService {
             ...lineHeader,
             originalStartDate: lineHeader.startDate
         };
-        const response = await ApiClient.createObject(
-            endpoints.LINE_HEADER,
-            newLineHeader
-        );
+        const response = await ApiClient.createObject(endpoints.LINE_HEADER, newLineHeader);
         return response.id;
     };
 }

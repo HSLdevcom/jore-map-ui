@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { IRoute, IRoutePath } from '~/models';
-import ColorScale from '~/util/colorScale';
 import RoutePathService from '~/services/routePathService';
+import ColorScale from '~/util/colorScale';
 
 export class RouteListStore {
     @observable private _routes: IRoute[];
@@ -68,10 +68,7 @@ export class RouteListStore {
             currentRoutePath.color = currentRoutePath.visible
                 ? this.colorScale.reserveColor()
                 : this.colorScale.releaseColor(currentRoutePath.color!);
-            if (
-                currentRoutePath.visible &&
-                currentRoutePath.routePathLinks.length === 0
-            ) {
+            if (currentRoutePath.visible && currentRoutePath.routePathLinks.length === 0) {
                 const newRoutePath = await RoutePathService.fetchRoutePath(
                     currentRoutePath.routeId,
                     currentRoutePath.startTime,
@@ -83,10 +80,7 @@ export class RouteListStore {
     };
 
     @action
-    private updateRoutePathLinks = (
-        newRoutePath: IRoutePath,
-        internalId: string
-    ) => {
+    private updateRoutePathLinks = (newRoutePath: IRoutePath, internalId: string) => {
         const oldRoutePath = this.getRoutePath(internalId);
         if (oldRoutePath) {
             oldRoutePath.routePathLinks = newRoutePath.routePathLinks;

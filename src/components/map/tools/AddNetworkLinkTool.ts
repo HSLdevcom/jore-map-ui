@@ -1,16 +1,13 @@
+import ToolbarTool from '~/enums/toolbarTool';
+import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import EventManager, {
-    INodeClickParams,
-    INetworkNodeClickParams
-} from '~/util/EventManager';
-import ToolbarTool from '~/enums/toolbarTool';
 import NodeService from '~/services/nodeService';
 import ErrorStore from '~/stores/errorStore';
+import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
-import LinkStore from '~/stores/linkStore';
+import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/util/EventManager';
 import BaseTool from './BaseTool';
 
 class AddNetworkLinkTool implements BaseTool {
@@ -38,8 +35,7 @@ class AddNetworkLinkTool implements BaseTool {
     };
 
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
-        const networkNodeClickParams: INetworkNodeClickParams =
-            clickEvent.detail;
+        const networkNodeClickParams: INetworkNodeClickParams = clickEvent.detail;
         this.setStartOrEndNode(networkNodeClickParams.nodeId);
     };
 

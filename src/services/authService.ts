@@ -1,9 +1,9 @@
-import ApiClient from '~/util/ApiClient';
+import endpoints from '~/enums/endpoints';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import ErrorStore from '~/stores/errorStore';
 import LoginStore from '~/stores/loginStore';
-import endpoints from '~/enums/endpoints';
+import ApiClient from '~/util/ApiClient';
 import CodeListHelper from '~/util/CodeListHelper';
 
 export interface IAuthorizationResponse {
@@ -14,10 +14,7 @@ export interface IAuthorizationResponse {
 }
 
 class AuthService {
-    public static async authenticate(
-        onSuccess: () => void,
-        onError: () => void
-    ) {
+    public static async authenticate(onSuccess: () => void, onError: () => void) {
         const code = navigator.getQueryParam(QueryParams.code);
 
         let authorizationResponse: IAuthorizationResponse;
@@ -26,9 +23,7 @@ class AuthService {
                 code
             )) as IAuthorizationResponse;
         } catch (error) {
-            const errorResponse = JSON.parse(
-                error.message
-            ) as IAuthorizationResponse;
+            const errorResponse = JSON.parse(error.message) as IAuthorizationResponse;
             authorizationResponse = {
                 isOk: errorResponse.isOk,
                 hasWriteAccess: errorResponse.hasWriteAccess
@@ -36,16 +31,11 @@ class AuthService {
             if (errorResponse.errorTextKey) {
                 let errorMessage;
                 if (errorResponse.email) {
-                    errorMessage = CodeListHelper.getText(
-                        errorResponse.errorTextKey,
-                        {
-                            email: errorResponse.email
-                        }
-                    );
+                    errorMessage = CodeListHelper.getText(errorResponse.errorTextKey, {
+                        email: errorResponse.email
+                    });
                 } else {
-                    errorMessage = CodeListHelper.getText(
-                        errorResponse.errorTextKey
-                    );
+                    errorMessage = CodeListHelper.getText(errorResponse.errorTextKey);
                 }
                 ErrorStore.addError(errorMessage);
             }

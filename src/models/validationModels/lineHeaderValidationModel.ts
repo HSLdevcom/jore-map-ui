@@ -5,9 +5,7 @@ type LineHeaderKeys = keyof ILineHeader;
 type ILineHeaderValidationModel = { [key in LineHeaderKeys]: string };
 
 const lineHeaderValidationModel: ILineHeaderValidationModel = {
-    lineId: `required|min:4|max:6|string|${
-        regexRules.upperCaseOrNumbersOrSpace
-    }`,
+    lineId: `required|min:4|max:6|string|${regexRules.upperCaseOrNumbersOrSpace}`,
     originalStartDate: '',
     startDate: 'required|date',
     endDate: 'required|date',

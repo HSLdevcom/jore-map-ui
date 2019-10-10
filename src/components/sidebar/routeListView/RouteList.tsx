@@ -1,21 +1,21 @@
-import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { RouteListStore } from '~/stores/routeListStore';
-import { SearchStore } from '~/stores/searchStore';
-import { NetworkStore } from '~/stores/networkStore';
-import { RoutePathStore } from '~/stores/routePathStore';
+import Button from '~/components/controls/Button';
+import ButtonType from '~/enums/buttonType';
 import { IRoute } from '~/models';
+import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import { ErrorStore } from '~/stores/errorStore';
-import ButtonType from '~/enums/buttonType';
-import Button from '~/components/controls/Button';
 import RouteService from '~/services/routeService';
-import RouteItem from './RouteItem';
+import { ErrorStore } from '~/stores/errorStore';
+import { NetworkStore } from '~/stores/networkStore';
+import { RouteListStore } from '~/stores/routeListStore';
+import { RoutePathStore } from '~/stores/routePathStore';
+import { SearchStore } from '~/stores/searchStore';
 import Loader from '../../shared/loader/Loader';
+import RouteItem from './RouteItem';
 import * as s from './routeList.scss';
 
 interface IRouteListState {
@@ -30,13 +30,7 @@ interface IRouteListProps {
     routePathStore?: RoutePathStore;
 }
 
-@inject(
-    'searchStore',
-    'routeListStore',
-    'networkStore',
-    'routePathStore',
-    'errorStore'
-)
+@inject('searchStore', 'routeListStore', 'networkStore', 'routePathStore', 'errorStore')
 @observer
 class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     constructor(props: any) {
@@ -53,31 +47,21 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     }
 
     private queryRoutes = async () => {
-        const routeIds = navigator.getQueryParam(
-            QueryParams.routes
-        ) as string[];
+        const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
             this.setState({ isLoading: true });
-            const currentRouteIds = this.props.routeListStore!.routes.map(
-                r => r.id
-            );
-            const missingRouteIds = routeIds.filter(
-                id => !currentRouteIds.includes(id)
-            );
+            const currentRouteIds = this.props.routeListStore!.routes.map(r => r.id);
+            const missingRouteIds = routeIds.filter(id => !currentRouteIds.includes(id));
             currentRouteIds
                 .filter(id => !routeIds.includes(id))
                 .forEach(id => this.props.routeListStore!.removeFromRoutes(id));
 
             try {
-                const routes = await RouteService.fetchMultipleRoutes(
-                    missingRouteIds
-                );
+                const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
                 this.props.routeListStore!.addToRoutes(routes);
             } catch (e) {
                 this.props.errorStore!.addError(
-                    `Reittien (soltunnus ${routeIds.join(
-                        ', '
-                    )}) haku epäonnistui.`,
+                    `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
                     e
                 );
             }

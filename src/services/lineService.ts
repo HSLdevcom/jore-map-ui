@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
-import ApolloClient from '~/util/ApolloClient';
-import ApiClient from '~/util/ApiClient';
+import endpoints from '~/enums/endpoints';
 import LineFactory from '~/factories/lineFactory';
 import { ILine } from '~/models';
-import ISearchLine from '~/models/searchModels/ISearchLine';
 import { ILinePrimaryKey } from '~/models/ILine';
-import endpoints from '~/enums/endpoints';
+import ISearchLine from '~/models/searchModels/ISearchLine';
+import ApiClient from '~/util/ApiClient';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class LineService {
@@ -34,9 +34,7 @@ class LineService {
         });
     };
 
-    public static fetchSearchLine = async (
-        lintunnus: string
-    ): Promise<ISearchLine> => {
+    public static fetchSearchLine = async (lintunnus: string): Promise<ISearchLine> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getSearchLineQuery(),
             variables: { lineId: lintunnus }
@@ -50,10 +48,7 @@ class LineService {
     };
 
     public static createLine = async (Line: ILine) => {
-        const response = (await ApiClient.createObject(
-            endpoints.LINE,
-            Line
-        )) as ILinePrimaryKey;
+        const response = (await ApiClient.createObject(endpoints.LINE, Line)) as ILinePrimaryKey;
         return response.id;
     };
 }

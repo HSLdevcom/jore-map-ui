@@ -14,10 +14,8 @@ const commonConstants = {
     MAP_LAYERS_MIN_ZOOM_LEVEL: 13,
     NEW_OBJECT_TAG: 'new-',
     ADDRESS_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/search',
-    STREET_NAME_REVERSE_GEOCODING_URL:
-        'https://nominatim.openstreetmap.org/reverse',
-    POSTAL_NUMBER_REVERSE_GEOCODING_URL:
-        'https://api.digitransit.fi/geocoding/v1/reverse',
+    STREET_NAME_REVERSE_GEOCODING_URL: 'https://nominatim.openstreetmap.org/reverse',
+    POSTAL_NUMBER_REVERSE_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/reverse',
     ADDRESS_SEARCH_RESULT_COUNT: 10
 };
 
@@ -39,4 +37,4 @@ const productionConstants = {
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-export default isDevelopment ? developmentConstants : productionConstants;
+export default (isDevelopment ? developmentConstants : productionConstants);

@@ -1,4 +1,4 @@
-import { IRoutePath, ILine } from '.';
+import { ILine, IRoutePath } from '.';
 
 interface IRoutePrimaryKey {
     id: string;

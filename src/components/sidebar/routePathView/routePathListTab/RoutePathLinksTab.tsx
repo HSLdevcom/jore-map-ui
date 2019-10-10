@@ -1,16 +1,16 @@
-import React from 'react';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
-import { TiLink } from 'react-icons/ti';
+import React from 'react';
 import { IoIosRadioButtonOn } from 'react-icons/io';
-import NodeType from '~/enums/nodeType';
-import { IRoutePath, IRoutePathLink, INode } from '~/models';
+import { TiLink } from 'react-icons/ti';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
-import { RoutePathStore, ListFilter } from '~/stores/routePathStore';
+import NodeType from '~/enums/nodeType';
+import { INode, IRoutePath, IRoutePathLink } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import RoutePathListNode from './RoutePathListNode';
+import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import RoutePathListLink from './RoutePathListLink';
+import RoutePathListNode from './RoutePathListNode';
 import s from './routePathLinksTab.scss';
 
 interface IRoutePathLinksTabProps {
@@ -37,14 +37,10 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
             () => this.props.routePathStore!.extendedListItems,
             this.onExtend
         );
-        const showItemParam = navigator.getQueryParamValues()[
-            QueryParams.showItem
-        ];
+        const showItemParam = navigator.getQueryParamValues()[QueryParams.showItem];
         if (showItemParam) {
             const itemId = showItemParam[0];
-            const isExtended = this.props.routePathStore!.isListItemExtended(
-                itemId
-            );
+            const isExtended = this.props.routePathStore!.isListItemExtended(itemId);
             if (isExtended) this.scrollIntoListItem(itemId);
         }
     }
@@ -55,19 +51,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
 
     private renderList = (routePathLinks: IRoutePathLink[]) => {
         return routePathLinks.map((routePathLink, index) => {
-            this.listObjectReferences[
-                routePathLink.startNode.id
-            ] = React.createRef();
+            this.listObjectReferences[routePathLink.startNode.id] = React.createRef();
             this.listObjectReferences[routePathLink.id] = React.createRef();
             const result = [
                 this.isNodeVisible(routePathLink.startNode) ? (
                     <RoutePathListNode
                         key={`${routePathLink.id}-${index}-startNode`}
-                        reference={
-                            this.listObjectReferences[
-                                routePathLink.startNode.id
-                            ]
-                        }
+                        reference={this.listObjectReferences[routePathLink.startNode.id]}
                         node={routePathLink.startNode}
                         routePathLink={routePathLink}
                         isEditingDisabled={this.props.isEditingDisabled}
@@ -83,18 +73,12 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
             ];
 
             if (index === routePathLinks.length - 1) {
-                this.listObjectReferences[
-                    routePathLink.endNode.id
-                ] = React.createRef();
+                this.listObjectReferences[routePathLink.endNode.id] = React.createRef();
                 if (this.isNodeVisible(routePathLink.endNode)) {
                     result.push(
                         <RoutePathListNode
                             key={`${routePathLink.id}-${index}-endNode`}
-                            reference={
-                                this.listObjectReferences[
-                                    routePathLink.endNode.id
-                                ]
-                            }
+                            reference={this.listObjectReferences[routePathLink.endNode.id]}
                             node={routePathLink.endNode}
                             routePathLink={routePathLink}
                             isLastNode={true}
@@ -109,19 +93,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
 
     private isNodeVisible = (node: INode) => {
         if (node.type === NodeType.STOP) {
-            return !this.props.routePathStore!.listFilters.includes(
-                ListFilter.stop
-            );
+            return !this.props.routePathStore!.listFilters.includes(ListFilter.stop);
         }
-        return !this.props.routePathStore!.listFilters.includes(
-            ListFilter.otherNodes
-        );
+        return !this.props.routePathStore!.listFilters.includes(ListFilter.otherNodes);
     };
 
     private isLinksVisible = () => {
-        return !this.props.routePathStore!.listFilters.includes(
-            ListFilter.link
-        );
+        return !this.props.routePathStore!.listFilters.includes(ListFilter.link);
     };
 
     private onExtend = () => {
@@ -156,28 +134,19 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         icon={<IoIosRadioButtonOn />}
                         text='Pysäkit'
                         isActive={!listFilters.includes(ListFilter.stop)}
-                        onClick={this.toggleListFilter.bind(
-                            this,
-                            ListFilter.stop
-                        )}
+                        onClick={this.toggleListFilter.bind(this, ListFilter.stop)}
                     />
                     <ToggleItem
                         icon={<IoIosRadioButtonOn />}
                         text='Muut solmut'
                         isActive={!listFilters.includes(ListFilter.otherNodes)}
-                        onClick={this.toggleListFilter.bind(
-                            this,
-                            ListFilter.otherNodes
-                        )}
+                        onClick={this.toggleListFilter.bind(this, ListFilter.otherNodes)}
                     />
                     <ToggleItem
                         icon={<TiLink />}
                         text='Linkit'
                         isActive={!listFilters.includes(ListFilter.link)}
-                        onClick={this.toggleListFilter.bind(
-                            this,
-                            ListFilter.link
-                        )}
+                        onClick={this.toggleListFilter.bind(this, ListFilter.link)}
                     />
                 </ToggleView>
                 <div className={s.list}>{this.renderList(routePathLinks)}</div>

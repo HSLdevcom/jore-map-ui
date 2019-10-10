@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
 import 'leaflet-polylinedecorator';
-import { Polyline, FeatureGroup } from 'react-leaflet';
-import { observer, inject } from 'mobx-react';
-import { INode, IRoutePathLink } from '~/models';
-import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
-import { PopupStore } from '~/stores/popupStore';
-import { MapStore, MapFilter } from '~/stores/mapStore';
+import { inject, observer } from 'mobx-react';
+import React, { Component } from 'react';
+import { FeatureGroup, Polyline } from 'react-leaflet';
 import StartNodeType from '~/enums/startNodeType';
+import { INode, IRoutePathLink } from '~/models';
+import { MapFilter, MapStore } from '~/stores/mapStore';
+import { PopupStore } from '~/stores/popupStore';
 import EventManager, { INodeClickParams } from '~/util/EventManager';
-import NodeMarker from './markers/NodeMarker';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import Marker from './markers/Marker';
+import NodeMarker from './markers/NodeMarker';
 import ArrowDecorator from './utils/ArrowDecorator';
 
 interface RoutePathLinkLayerProps {
@@ -74,12 +74,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     key={`${routePathLink.orderNumber}-${index}`}
                     node={node}
                     isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                    isDisabled={
-                        routePathLink.startNodeType === StartNodeType.DISABLED
-                    }
-                    isTimeAlignmentStop={
-                        routePathLink.startNodeTimeAlignmentStop !== '0'
-                    }
+                    isDisabled={routePathLink.startNodeType === StartNodeType.DISABLED}
+                    isTimeAlignmentStop={routePathLink.startNodeTimeAlignmentStop !== '0'}
                     onContextMenu={this.openPopup(routePathLink.startNode)}
                     onClick={onNodeClick(node)}
                 />
@@ -115,17 +111,13 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 
     private renderDirectionDecoration() {
-        if (
-            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
-        ) {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
             return null;
         }
 
         const routePathLinks = this.props.routePathLinks;
 
-        const geoms = routePathLinks.map(
-            routePathLink => routePathLink.geometry
-        );
+        const geoms = routePathLinks.map(routePathLink => routePathLink.geometry);
 
         return createCoherentLinesFromPolylines(geoms).map((geom, index) => (
             <ArrowDecorator

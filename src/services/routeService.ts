@@ -1,12 +1,12 @@
 import { ApolloQueryResult } from 'apollo-client';
-import ApolloClient from '~/util/ApolloClient';
+import endpoints from '~/enums/endpoints';
 import RouteFactory from '~/factories/routeFactory';
-import { IRoute, INode } from '~/models';
+import { INode, IRoute } from '~/models';
 import { IRoutePrimaryKey } from '~/models/IRoute';
 import ApiClient from '~/util/ApiClient';
-import endpoints from '~/enums/endpoints';
-import LineService from './lineService';
+import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
+import LineService from './lineService';
 
 export interface IMultipleRoutesQueryResult {
     routes: IRoute[];
@@ -18,9 +18,7 @@ class RouteService {
         return await RouteService.runFetchRouteQuery(routeId);
     };
 
-    public static fetchMultipleRoutes = async (
-        routeIds: string[]
-    ): Promise<IRoute[]> => {
+    public static fetchMultipleRoutes = async (routeIds: string[]): Promise<IRoute[]> => {
         const routes = await Promise.all(
             routeIds.map(id =>
                 RouteService.runFetchRouteQuery(id, {
@@ -37,26 +35,18 @@ class RouteService {
             query: GraphqlQueries.getAllRoutesQuery()
         });
 
-        return queryResult.data.allReittis.nodes.map(
-            (node: any) => node.reitunnus
-        );
+        return queryResult.data.allReittis.nodes.map((node: any) => node.reitunnus);
     };
 
     private static runFetchRouteQuery = async (
         routeId: string,
-        {
-            areRoutePathLinksExcluded
-        }: { areRoutePathLinksExcluded?: boolean } = {}
+        { areRoutePathLinksExcluded }: { areRoutePathLinksExcluded?: boolean } = {}
     ): Promise<IRoute> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getRouteQuery(
-                Boolean(areRoutePathLinksExcluded)
-            ),
+            query: GraphqlQueries.getRouteQuery(Boolean(areRoutePathLinksExcluded)),
             variables: { routeId }
         });
-        const line = await LineService.fetchLine(
-            queryResult.data.route.lintunnus
-        );
+        const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
         return RouteFactory.mapExternalRoute(queryResult.data.route, line);
     };
 
@@ -65,10 +55,7 @@ class RouteService {
     };
 
     public static createRoute = async (route: IRoute) => {
-        const response = (await ApiClient.createObject(
-            endpoints.ROUTE,
-            route
-        )) as IRoutePrimaryKey;
+        const response = (await ApiClient.createObject(endpoints.ROUTE, route)) as IRoutePrimaryKey;
         return response.id;
     };
 }

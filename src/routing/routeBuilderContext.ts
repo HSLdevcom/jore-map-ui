@@ -1,6 +1,6 @@
 import qs from 'qs';
-import SubSites from './subSites';
 import QueryParams from './queryParams';
+import SubSites from './subSites';
 
 class RouteBuilderContext {
     private currentLink: string;
@@ -29,9 +29,7 @@ class RouteBuilderContext {
 
     public toLink = () => {
         let link =
-            this.linkToBuild !== SubSites.current
-                ? this.linkToBuild.toString()
-                : this.currentLink;
+            this.linkToBuild !== SubSites.current ? this.linkToBuild.toString() : this.currentLink;
 
         if (Object.keys(this.queryValues).length !== 0) {
             link += `?${qs.stringify(this.queryValues, { encode: false })}`;

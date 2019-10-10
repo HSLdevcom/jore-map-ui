@@ -1,25 +1,25 @@
-import React from 'react';
 import classnames from 'classnames';
 import * as L from 'leaflet';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { MapStore } from '~/stores/mapStore';
-import { ErrorStore } from '~/stores/errorStore';
-import { LinkStore } from '~/stores/linkStore';
-import { NodeStore } from '~/stores/nodeStore';
-import { ConfirmStore } from '~/stores/confirmStore';
-import RoutePathService from '~/services/routePathService';
-import { IRoutePath } from '~/models';
+import { Button } from '~/components/controls';
+import Loader from '~/components/shared/loader/Loader';
+import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
+import { IRoutePath } from '~/models';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
-import { NetworkStore } from '~/stores/networkStore';
-import Loader from '~/components/shared/loader/Loader';
-import { Button } from '~/components/controls';
-import ButtonType from '~/enums/buttonType';
+import RoutePathService from '~/services/routePathService';
 import { AlertStore, AlertType } from '~/stores/alertStore';
-import SidebarHeader from '../SidebarHeader';
+import { ConfirmStore } from '~/stores/confirmStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { LinkStore } from '~/stores/linkStore';
+import { MapStore } from '~/stores/mapStore';
+import { NetworkStore } from '~/stores/networkStore';
+import { NodeStore } from '~/stores/nodeStore';
 import InputContainer from '../../controls/InputContainer';
+import SidebarHeader from '../SidebarHeader';
 import RoutePathSelector from './RoutePathSelector';
 import SplitLinkInfo from './SplitLinkInfo';
 import * as s from './splitLinkView.scss';
@@ -52,10 +52,7 @@ interface ISplitLinkViewProps extends RouteComponentProps<any> {
     'confirmStore'
 )
 @observer
-class SplitLinkView extends React.Component<
-    ISplitLinkViewProps,
-    ISplitLinkViewState
-> {
+class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewState> {
     constructor(props: ISplitLinkViewProps) {
         super(props);
         this.state = {
@@ -111,10 +108,7 @@ class SplitLinkView extends React.Component<
                 this.hideAllMapLayers();
             }
         } catch (e) {
-            this.props.errorStore!.addError(
-                `Jaettavan linkin ja solmun haussa tapahtui virhe.`,
-                e
-            );
+            this.props.errorStore!.addError(`Jaettavan linkin ja solmun haussa tapahtui virhe.`, e);
         }
         this.setState({ isLoading: false });
     };
@@ -173,10 +167,7 @@ class SplitLinkView extends React.Component<
             link: this.props.linkStore!.link,
             node: this.props.linkStore!.nodes[0]
         });
-        this.props.alertStore!.setFadeMessage(
-            'Linkin jaon kehitys kesken.',
-            AlertType.Info
-        );
+        this.props.alertStore!.setFadeMessage('Linkin jaon kehitys kesken.', AlertType.Info);
     };
 
     private selectAllRoutePaths = () => {
@@ -195,9 +186,7 @@ class SplitLinkView extends React.Component<
     };
 
     private getNode = () => {
-        return this.props.linkStore!.nodes.length > 0
-            ? this.props.linkStore!.nodes[0]
-            : null;
+        return this.props.linkStore!.nodes.length > 0 ? this.props.linkStore!.nodes[0] : null;
     };
 
     private getRoutepathsBeingSplit = () => {
@@ -208,8 +197,7 @@ class SplitLinkView extends React.Component<
 
     render() {
         const isSaveButtonDisabled =
-            this.state.selectedDate &&
-            this.getRoutepathsBeingSplit().length === 0;
+            this.state.selectedDate && this.getRoutepathsBeingSplit().length === 0;
         const node = this.getNode();
 
         const link = this.props.linkStore!.link;
@@ -239,31 +227,23 @@ class SplitLinkView extends React.Component<
                             />
                         </div>
                     )}
-                    {!this.state.selectedDate &&
-                        node.type === NodeType.STOP && (
-                            <div className={s.section}>
-                                Tyhjä päivämäärä jakaa kaikki reitinsuunnat.
-                            </div>
-                        )}
+                    {!this.state.selectedDate && node.type === NodeType.STOP && (
+                        <div className={s.section}>
+                            Tyhjä päivämäärä jakaa kaikki reitinsuunnat.
+                        </div>
+                    )}
                     {this.state.selectedDate && (
                         <div className={classnames(s.section, s.expanded)}>
-                            <div className={s.inputLabel}>
-                                Mitkä reitinsuunnat jaetaan?
-                            </div>
+                            <div className={s.inputLabel}>Mitkä reitinsuunnat jaetaan?</div>
                             <RoutePathSelector
-                                toggleIsRoutePathSelected={
-                                    this.toggleIsRoutePathSelected
-                                }
+                                toggleIsRoutePathSelected={this.toggleIsRoutePathSelected}
                                 routePaths={this.state.routePaths}
                                 selectedIds={this.state.selectedRoutePathIds}
                                 isLoading={this.state.isLoadingRoutePaths}
                                 selectedDate={this.state.selectedDate}
                             />
                             <div className={s.toggleButtons}>
-                                <Button
-                                    onClick={this.selectAllRoutePaths}
-                                    type={ButtonType.SQUARE}
-                                >
+                                <Button onClick={this.selectAllRoutePaths} type={ButtonType.SQUARE}>
                                     Valitse kaikki
                                 </Button>
                                 <Button

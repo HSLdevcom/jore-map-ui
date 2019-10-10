@@ -1,16 +1,16 @@
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import ReactMoment from 'react-moment';
-import lineHelper from '~/util/lineHelper';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
-import searchStore from '~/stores/searchStore';
-import RouteBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import RouteBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import searchStore from '~/stores/searchStore';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
+import lineHelper from '~/util/lineHelper';
 import LineItemSubMenu from './LineItemSubMenu';
 import * as s from './lineItem.scss';
 
@@ -68,23 +68,14 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
         return (
             <div key={route.id} className={s.routeItem}>
                 <div className={s.routeItemHeader}>
-                    <div
-                        className={s.routePathToggle}
-                        onClick={this.toggleRouteMenu(route.id)}
-                    >
-                        {this.isRouteOpen(route.id) ? (
-                            <FaAngleDown />
-                        ) : (
-                            <FaAngleRight />
-                        )}
+                    <div className={s.routePathToggle} onClick={this.toggleRouteMenu(route.id)}>
+                        {this.isRouteOpen(route.id) ? <FaAngleDown /> : <FaAngleRight />}
                     </div>
                     <div>
                         <div
                             className={classNames(
                                 s.routeName,
-                                TransitTypeHelper.getColorClass(
-                                    this.props.line.transitType
-                                )
+                                TransitTypeHelper.getColorClass(this.props.line.transitType)
                             )}
                             onClick={this.openRoute(route.id)}
                         >
@@ -93,10 +84,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
                         </div>
                         <div className={s.routeDate}>
                             {'Muokattu: '}
-                            <ReactMoment
-                                date={route.date}
-                                format='DD.MM.YYYY HH:mm'
-                            />
+                            <ReactMoment date={route.date} format='DD.MM.YYYY HH:mm' />
                         </div>
                     </div>
                 </div>
@@ -123,16 +111,11 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
             <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
-                        {lineHelper.getTransitIcon(
-                            this.props.line.transitType,
-                            false
-                        )}
+                        {lineHelper.getTransitIcon(this.props.line.transitType, false)}
                     </div>
                     <div
                         className={classNames(
-                            TransitTypeHelper.getColorClass(
-                                this.props.line.transitType
-                            ),
+                            TransitTypeHelper.getColorClass(this.props.line.transitType),
                             s.lineLabel
                         )}
                         onClick={this.redirectToLineView(this.props.line.id)}

@@ -1,9 +1,9 @@
-import React from 'react';
-import { observer } from 'mobx-react';
 import classNames from 'classnames';
-import lineHelper from '~/util/lineHelper';
+import { observer } from 'mobx-react';
+import React from 'react';
 import TransitType from '~/enums/transitType';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
+import lineHelper from '~/util/lineHelper';
 import * as s from './transitToggleButton.scss';
 
 interface ITransitToggleButtonProps {
@@ -18,10 +18,7 @@ const TransitToggleButton = observer((props: ITransitToggleButtonProps) => {
         props.toggleActivity(props.type);
     };
 
-    const getToggledButtonClass = (
-        transitType: TransitType,
-        isToggled: boolean
-    ) => {
+    const getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
         if (isToggled) {
             return TransitTypeHelper.getBackgroundColorClass(transitType);
         }

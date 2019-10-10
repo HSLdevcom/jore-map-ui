@@ -1,10 +1,10 @@
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { observer, inject } from 'mobx-react';
-import { CodeListStore } from '~/stores/codeListStore';
-import { IRoutePath, INode, IRoutePathLink } from '~/models';
-import NodeType from '~/enums/nodeType';
 import ButtonType from '~/enums/buttonType';
-import { Dropdown, Button } from '../../../controls';
+import NodeType from '~/enums/nodeType';
+import { INode, IRoutePath, IRoutePathLink } from '~/models';
+import { CodeListStore } from '~/stores/codeListStore';
+import { Button, Dropdown } from '../../../controls';
 import * as s from './linkListView.scss';
 
 interface ILinkListViewProps {
@@ -22,10 +22,7 @@ interface ILinkListViewState {
 
 @inject('codeListStore')
 @observer
-class ILinkListView extends React.Component<
-    ILinkListViewProps,
-    ILinkListViewState
-> {
+class ILinkListView extends React.Component<ILinkListViewProps, ILinkListViewState> {
     constructor(props: ILinkListViewProps) {
         super(props);
         this.state = {
@@ -55,25 +52,18 @@ class ILinkListView extends React.Component<
                 <div className={s.flexInnerRow}>
                     <div className={s.tableItemMedium}>{routePathLink.id}</div>
 
-                    <div className={s.tableItem}>
-                        {this.getNodeName(routePathLink.startNode)}
-                    </div>
+                    <div className={s.tableItem}>{this.getNodeName(routePathLink.startNode)}</div>
 
-                    <div className={s.tableItem}>
-                        {this.getNodeName(routePathLink.endNode)}
-                    </div>
+                    <div className={s.tableItem}>{this.getNodeName(routePathLink.endNode)}</div>
 
-                    <div className={s.tableItem}>
-                        {this.getHastusId(routePathLink)}
-                    </div>
+                    <div className={s.tableItem}>{this.getHastusId(routePathLink)}</div>
                 </div>
             </div>
         ));
     };
 
     private getHastusId = (routePathLink: IRoutePathLink) => {
-        return routePathLink.startNode.stop &&
-            routePathLink.startNode.stop.hastusId
+        return routePathLink.startNode.stop && routePathLink.startNode.stop.hastusId
             ? routePathLink.startNode.stop.hastusId
             : '-';
     };
@@ -132,9 +122,7 @@ class ILinkListView extends React.Component<
                             value: EMPTY_FILTER_VALUE,
                             label: 'Näytä kaikki'
                         }}
-                        items={this.props.codeListStore!.getDropdownItemList(
-                            'Solmutyyppi (P/E)'
-                        )}
+                        items={this.props.codeListStore!.getDropdownItemList('Solmutyyppi (P/E)')}
                         onChange={this.setLinkTableFilter}
                     />
                 </div>

@@ -14,13 +14,7 @@ const pinIcon = ({ color }: { color: string }) => {
     };
     return (
         <div style={divStyle}>
-            <svg
-                data-prefix='fas'
-                viewBox='0 0 384 512'
-                width='35'
-                height='35'
-                color={color}
-            >
+            <svg data-prefix='fas' viewBox='0 0 384 512' width='35' height='35' color={color}>
                 <path
                     fill='currentColor'
                     d='M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97

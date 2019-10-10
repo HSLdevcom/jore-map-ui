@@ -1,13 +1,13 @@
 import L from 'leaflet';
 import 'leaflet.vectorgrid';
 import _ from 'lodash';
-import { IReactionDisposer, reaction } from 'mobx';
-import { GridLayer, GridLayerProps, withLeaflet } from 'react-leaflet';
+import { reaction, IReactionDisposer } from 'mobx';
 import { Moment } from 'moment';
+import { withLeaflet, GridLayer, GridLayerProps } from 'react-leaflet';
 import TransitType from '~/enums/transitType';
-import NetworkStore, { NodeSize, MapLayer } from '~/stores/networkStore';
-import NodeStore from '~/stores/nodeStore';
 import LinkStore from '~/stores/linkStore';
+import NetworkStore, { MapLayer, NodeSize } from '~/stores/networkStore';
+import NodeStore from '~/stores/nodeStore';
 
 declare module 'leaflet' {
     let vectorGrid: any;
@@ -60,19 +60,13 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         return _.isEqual(array1.slice().sort(), array2.slice().sort());
     }
 
-    updateLeafletElement(
-        fromProps: IVectorGridLayerProps,
-        toProps: IVectorGridLayerProps
-    ) {
+    updateLeafletElement(fromProps: IVectorGridLayerProps, toProps: IVectorGridLayerProps) {
         super.updateLeafletElement(fromProps, toProps);
         // TODO: consider passing a single value "shouldUpdate"
         // OR even better: pass ref to updateLeafletElement and call from parent
         // redraw layers according to that variable
         if (
-            !this.areArraysEqual(
-                fromProps.selectedTransitTypes,
-                toProps.selectedTransitTypes
-            ) ||
+            !this.areArraysEqual(fromProps.selectedTransitTypes, toProps.selectedTransitTypes) ||
             fromProps.nodeSize !== toProps.nodeSize ||
             (!fromProps.selectedDate !== !toProps.selectedDate ||
                 (fromProps.selectedDate &&

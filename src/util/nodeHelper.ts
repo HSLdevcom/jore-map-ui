@@ -1,6 +1,6 @@
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import * as s from './nodeTypeColors.scss';
 
 class NodeHelper {
@@ -17,9 +17,7 @@ class NodeHelper {
         }
     ) => {
         if (isNodeDisabled) {
-            return isNodeHighlighted
-                ? s.disabledMarkerHighlight
-                : s.disabledMarker;
+            return isNodeHighlighted ? s.disabledMarkerHighlight : s.disabledMarker;
         }
         if (isNodeTimeAlignment) {
             return s.timeAlignmentMarker;
@@ -29,13 +27,9 @@ class NodeHelper {
             case NodeType.STOP:
                 return isNodeHighlighted ? s.stopMarkerHighlight : s.stopMarker;
             case NodeType.CROSSROAD:
-                return isNodeHighlighted
-                    ? s.crossroadMarkerHighlight
-                    : s.crossroadMarker;
+                return isNodeHighlighted ? s.crossroadMarkerHighlight : s.crossroadMarker;
             case NodeType.MUNICIPALITY_BORDER:
-                return isNodeHighlighted
-                    ? s.municipalityMarkerHighlight
-                    : s.municipalityMarker;
+                return isNodeHighlighted ? s.municipalityMarkerHighlight : s.municipalityMarker;
             default:
                 throw new Error(`NodeType not supported: ${nodeType}`);
         }
@@ -70,9 +64,7 @@ class NodeHelper {
         return '';
     };
 
-    public static getMeasurementTypeLabel = (
-        measurementType: string | undefined
-    ) => {
+    public static getMeasurementTypeLabel = (measurementType: string | undefined) => {
         switch (measurementType) {
             case NodeMeasurementType.Calculated:
                 return 'Laskettu';

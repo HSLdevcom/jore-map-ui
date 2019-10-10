@@ -1,22 +1,22 @@
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { observer, inject } from 'mobx-react';
-import { IRoutePath, ILink } from '~/models';
-import { RoutePathStore } from '~/stores/routePathStore';
-import { CodeListStore } from '~/stores/codeListStore';
+import CalculatedInputField from '~/components/controls/CalculatedInputField';
+import { ILink, IRoutePath } from '~/models';
+import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import CalculatedInputField from '~/components/controls/CalculatedInputField';
-import { IValidationResult } from '~/validation/FormValidator';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
-import RoutePathService from '~/services/routePathService';
 import LinkService from '~/services/linkService';
-import QueryParams from '~/routing/queryParams';
+import RoutePathService from '~/services/routePathService';
+import { CodeListStore } from '~/stores/codeListStore';
+import { RoutePathStore } from '~/stores/routePathStore';
+import { IValidationResult } from '~/validation/FormValidator';
+import ButtonType from '../../../../enums/buttonType';
+import { Button, Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
 import LinkListView from './LinkListView';
-import { Button, Dropdown } from '../../../controls';
-import ButtonType from '../../../../enums/buttonType';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabProps {
@@ -25,14 +25,9 @@ interface IRoutePathInfoTabProps {
     isEditingDisabled: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
-    onChangeRoutePathProperty: (
-        property: keyof IRoutePath
-    ) => (value: any) => void;
+    onChangeRoutePathProperty: (property: keyof IRoutePath) => (value: any) => void;
     invalidPropertiesMap: object;
-    setValidatorResult: (
-        property: string,
-        validationResult: IValidationResult
-    ) => void;
+    setValidatorResult: (property: string, validationResult: IValidationResult) => void;
 }
 
 @inject('routePathStore', 'codeListStore')
@@ -137,8 +132,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating =
-            !this.props.isNewRoutePath || this.props.isEditingDisabled;
+        const isUpdating = !this.props.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const onChange = this.props.onChangeRoutePathProperty;
         const routePath = this.props.routePath;
@@ -159,9 +153,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 disabled={isEditingDisabled}
                                 value={routePath.nameSw}
                                 onChange={onChange('nameSw')}
-                                validationResult={
-                                    invalidPropertiesMap['nameSw']
-                                }
+                                validationResult={invalidPropertiesMap['nameSw']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -170,18 +162,14 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 disabled={isEditingDisabled}
                                 value={routePath.originFi}
                                 onChange={onChange('originFi')}
-                                validationResult={
-                                    invalidPropertiesMap['originFi']
-                                }
+                                validationResult={invalidPropertiesMap['originFi']}
                             />
                             <InputContainer
                                 label='PÄÄTEPAIKKA SUOMEKSI'
                                 disabled={isEditingDisabled}
                                 value={routePath.destinationFi}
                                 onChange={onChange('destinationFi')}
-                                validationResult={
-                                    invalidPropertiesMap['destinationFi']
-                                }
+                                validationResult={invalidPropertiesMap['destinationFi']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -190,18 +178,14 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 disabled={isEditingDisabled}
                                 value={routePath.originSw}
                                 onChange={onChange('originSw')}
-                                validationResult={
-                                    invalidPropertiesMap['originSw']
-                                }
+                                validationResult={invalidPropertiesMap['originSw']}
                             />
                             <InputContainer
                                 label='PÄÄTEPAIKKA RUOTSIKSI'
                                 disabled={isEditingDisabled}
                                 value={routePath.destinationSw}
                                 onChange={onChange('destinationSw')}
-                                validationResult={
-                                    invalidPropertiesMap['destinationSw']
-                                }
+                                validationResult={invalidPropertiesMap['destinationSw']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -210,18 +194,14 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 disabled={isEditingDisabled}
                                 value={routePath.shortName}
                                 onChange={onChange('shortName')}
-                                validationResult={
-                                    invalidPropertiesMap['shortName']
-                                }
+                                validationResult={invalidPropertiesMap['shortName']}
                             />
                             <InputContainer
                                 label='LYHENNE RUOTSIKSI'
                                 disabled={isEditingDisabled}
                                 value={routePath.shortNameSw}
                                 onChange={onChange('shortNameSw')}
-                                validationResult={
-                                    invalidPropertiesMap['shortNameSw']
-                                }
+                                validationResult={invalidPropertiesMap['shortNameSw']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -231,9 +211,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 type='date'
                                 value={routePath.startTime}
                                 onChange={this.onChangeStartTime}
-                                validationResult={
-                                    invalidPropertiesMap['startTime']
-                                }
+                                validationResult={invalidPropertiesMap['startTime']}
                             />
                             <InputContainer
                                 label='VIIM.VOIM.OLO'
@@ -241,18 +219,14 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 type='date'
                                 value={routePath.endTime}
                                 onChange={onChange('endTime')}
-                                validationResult={
-                                    invalidPropertiesMap['endTime']
-                                }
+                                validationResult={invalidPropertiesMap['endTime']}
                             />
                             <CalculatedInputField
                                 label='PITUUS (m)'
                                 isDisabled={isEditingDisabled}
                                 onChange={onChange('length')}
                                 useCalculatedValue={this.updateLength}
-                                validationResult={
-                                    invalidPropertiesMap['length']
-                                }
+                                validationResult={invalidPropertiesMap['length']}
                                 value={routePath.length}
                             />
                         </div>
@@ -261,32 +235,21 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 label='SUUNTA'
                                 disabled={isUpdating}
                                 selected={this.props.routePath.direction}
-                                items={this.props.codeListStore!.getDropdownItemList(
-                                    'Suunta'
-                                )}
+                                items={this.props.codeListStore!.getDropdownItemList('Suunta')}
                                 onChange={this.onChangeDirection}
-                                validationResult={
-                                    invalidPropertiesMap['direction']
-                                }
+                                validationResult={invalidPropertiesMap['direction']}
                             />
                             <Dropdown
                                 label='POIKKEUSREITTI'
                                 disabled={isEditingDisabled}
                                 selected={this.props.routePath.exceptionPath}
-                                items={this.props.codeListStore!.getDropdownItemList(
-                                    'Kyllä/Ei'
-                                )}
+                                items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
                                 onChange={onChange('exceptionPath')}
-                                validationResult={
-                                    invalidPropertiesMap['exceptionPath']
-                                }
+                                validationResult={invalidPropertiesMap['exceptionPath']}
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='MUOKANNUT'
-                                value={routePath.modifiedBy}
-                            />
+                            <TextContainer label='MUOKANNUT' value={routePath.modifiedBy} />
                             <TextContainer
                                 label='MUOKATTU PVM'
                                 isTimeIncluded={true}
@@ -325,25 +288,21 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                     <div className={s.formSection}>
                         <div className={s.formItem}>KARTTA</div>
                         <div className={s.formItem}>
-                            Esitettävien ajoaikojen kausi ja aikajakso (Toteutus
-                            / suunnittelu kesken)
+                            Esitettävien ajoaikojen kausi ja aikajakso (Toteutus / suunnittelu
+                            kesken)
                             <div className={s.flexInnerRow}>
                                 {/* TODO */}
                                 <Dropdown
                                     onChange={() => void 0}
                                     disabled={true}
-                                    items={this.props.codeListStore!.getDropdownItemList(
-                                        'Suunta'
-                                    )}
+                                    items={this.props.codeListStore!.getDropdownItemList('Suunta')}
                                     selected='Suunta 1'
                                 />
                                 {/* TODO */}
                                 <Dropdown
                                     onChange={() => void 0}
                                     disabled={true}
-                                    items={this.props.codeListStore!.getDropdownItemList(
-                                        'Suunta'
-                                    )}
+                                    items={this.props.codeListStore!.getDropdownItemList('Suunta')}
                                     selected='Suunta 2'
                                 />
                             </div>

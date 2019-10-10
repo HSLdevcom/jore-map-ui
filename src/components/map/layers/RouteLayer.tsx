@@ -1,10 +1,10 @@
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
-import { observer, inject } from 'mobx-react';
-import { MapStore } from '~/stores/mapStore';
 import { IRoute } from '~/models';
-import RoutePathLayer from './RoutePathLayer';
+import { MapStore } from '~/stores/mapStore';
 import { LeafletContext } from '../Map';
+import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
     mapStore?: MapStore;
@@ -32,9 +32,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         let selectedPolylines = this.state.selectedPolylines;
 
         if (selectedPolylines.includes(internalId)) {
-            selectedPolylines = selectedPolylines.filter(
-                id => id !== internalId
-            );
+            selectedPolylines = selectedPolylines.filter(id => id !== internalId);
         } else {
             selectedPolylines.push(internalId);
         }

@@ -1,7 +1,7 @@
-import React from 'react';
 import classnames from 'classnames';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import * as s from './routePathListItem.scss';
@@ -40,19 +40,13 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
     };
 
     private onMouseLeave = () => {
-        if (
-            this.props.routePathStore!.listHighlightedNodeIds.includes(
-                this.props.id
-            )
-        ) {
+        if (this.props.routePathStore!.listHighlightedNodeIds.includes(this.props.id)) {
             this.props.routePathStore!.setListHighlightedNodeIds([]);
         }
     };
 
     render() {
-        const isExtended = this.props.routePathStore!.isListItemExtended(
-            this.props.id
-        );
+        const isExtended = this.props.routePathStore!.isListItemExtended(this.props.id);
         return (
             <div
                 ref={this.props.reference}
@@ -62,9 +56,7 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
             >
                 <div className={s.listIcon}>{this.props.listIcon}</div>
                 <div onClick={this.toggleIsExtended}>{this.props.header}</div>
-                {isExtended && (
-                    <div className={s.itemContent}>{this.props.body}</div>
-                )}
+                {isExtended && <div className={s.itemContent}>{this.props.body}</div>}
             </div>
         );
     }

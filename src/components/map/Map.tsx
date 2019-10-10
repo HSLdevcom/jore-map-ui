@@ -1,32 +1,32 @@
-import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import 'leaflet-editable';
-import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction, toJS } from 'mobx';
-import React from 'react';
-import classnames from 'classnames';
 import 'leaflet/dist/leaflet.css';
+import { reaction, toJS, IReactionDisposer } from 'mobx';
+import { inject, observer } from 'mobx-react';
+import React from 'react';
+import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
 import { MapStore } from '~/stores/mapStore';
-import { RouteListStore } from '~/stores/routeListStore';
 import { NodeStore } from '~/stores/nodeStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
-import Control from './mapControls/CustomControl';
-import CoordinateControl from './mapControls/CoordinateControl';
-import FullscreenControl from './mapControls/FullscreenControl';
+import AddressSearch from './AddressSearch';
+import NetworkLayers from './layers/NetworkLayers';
+import PopupLayer from './layers/PopupLayer';
 import RouteLayer from './layers/RouteLayer';
-import EditRoutePathLayer from './layers/edit/EditRoutePathLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
+import EditRoutePathLayer from './layers/edit/EditRoutePathLayer';
+import './map.css';
+import * as s from './map.scss';
+import CoordinateControl from './mapControls/CoordinateControl';
+import Control from './mapControls/CustomControl';
+import FullscreenControl from './mapControls/FullscreenControl';
 import MapLayersControl from './mapControls/MapLayersControl';
 import MapLayersZoomHint from './mapControls/MapLayersZoomHint';
-import Toolbar from './toolbar/Toolbar';
-import AddressSearch from './AddressSearch';
-import PopupLayer from './layers/PopupLayer';
 import MeasurementControl from './mapControls/MeasurementControl';
-import NetworkLayers from './layers/NetworkLayers';
-import * as s from './map.scss';
-import './map.css';
+import Toolbar from './toolbar/Toolbar';
 
 interface IMapProps {
     mapStore?: MapStore;
@@ -65,9 +65,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     private getMap() {
-        return this.mapReference.current
-            ? this.mapReference.current.leafletElement
-            : null;
+        return this.mapReference.current ? this.mapReference.current.leafletElement : null;
     }
 
     componentDidMount() {
@@ -98,21 +96,14 @@ class LeafletMap extends React.Component<IMapProps> {
             reaction(() => this.props.mapStore!.coordinates, this.centerMap)
         );
 
-        this.reactionDisposers.push(
-            reaction(() => this.props.mapStore!.mapBounds, this.fitBounds)
-        );
+        this.reactionDisposers.push(reaction(() => this.props.mapStore!.mapBounds, this.fitBounds));
 
         this.reactionDisposers.push(
             reaction(() => this.props.mapStore!.mapCursor, this.setMapCursor)
         );
 
-        map.setView(
-            this.props.mapStore!.coordinates,
-            this.props.mapStore!.zoom
-        );
-        map.on('click', (e: L.LeafletEvent) =>
-            EventManager.trigger('mapClick', e)
-        );
+        map.setView(this.props.mapStore!.coordinates, this.props.mapStore!.zoom);
+        map.on('click', (e: L.LeafletEvent) => EventManager.trigger('mapClick', e));
     }
 
     private centerMap = () => {
@@ -157,19 +148,12 @@ class LeafletMap extends React.Component<IMapProps> {
         // TODO Changing the class is no longer needed but the component needs to be
         // rendered after changes to mapStore!.isMapFullscreen so there won't be any
         // grey tiles
-        const fullScreenMapViewClass = this.props.mapStore!.isMapFullscreen
-            ? ''
-            : '';
+        const fullScreenMapViewClass = this.props.mapStore!.isMapFullscreen ? '' : '';
         const routes = toJS(this.props.routeListStore!.routes);
         return (
             <div className={classnames(s.mapView, fullScreenMapViewClass)}>
                 {this.props.children}
-                <Map
-                    ref={this.mapReference}
-                    zoomControl={false}
-                    id={s.mapLeaflet}
-                    editable={true}
-                >
+                <Map ref={this.mapReference} zoomControl={false} id={s.mapLeaflet} editable={true}>
                     <TileLayer
                         url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
                         attribution={`

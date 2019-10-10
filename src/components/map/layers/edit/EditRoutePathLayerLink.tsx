@@ -1,12 +1,12 @@
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
-import { inject, observer } from 'mobx-react';
 import IRoutePathLink from '~/models/IRoutePathLink';
-import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
-import { RoutePathStore } from '~/stores/routePathStore';
+import { MapFilter, MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
-import { MapStore, MapFilter } from '~/stores/mapStore';
+import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 
@@ -20,17 +20,11 @@ interface IRoutePathLayerProps {
     highlightItemById: (id: string) => void;
 }
 
-@inject(
-    'routePathStore',
-    'toolbarStore',
-    'mapStore',
-    'routePathCopySegmentStore'
-)
+@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
 @observer
 class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathLinks = () => {
-        const routePathLinks = this.props.routePathStore!.routePath!
-            .routePathLinks;
+        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
 
         return routePathLinks.map((rpLink, index) => {
@@ -47,9 +41,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         const onRoutePathLinkClick =
             this.props.toolbarStore!.selectedTool &&
             this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick
-                ? this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(
-                      routePathLink.id
-                  )
+                ? this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
                 : () => this.props.highlightItemById(routePathLink.id);
 
         return [
@@ -61,9 +53,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 opacity={0.8}
                 onClick={onRoutePathLinkClick}
             />,
-            this.props.routePathStore!.listHighlightedNodeIds.includes(
-                routePathLink.id
-            ) && (
+            this.props.routePathStore!.listHighlightedNodeIds.includes(routePathLink.id) && (
                 <Polyline
                     positions={routePathLink.geometry}
                     key={`${routePathLink.id}-highlight`}
@@ -84,9 +74,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 color={'#efc210'}
             />,
             <DashedLine
-                startPoint={
-                    routePathLink.geometry[routePathLink.geometry.length - 1]
-                }
+                startPoint={routePathLink.geometry[routePathLink.geometry.length - 1]}
                 endPoint={routePathLink.endNode.coordinates}
                 color={'#efc210'}
             />
@@ -94,23 +82,16 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     private renderLinkDecorator = () => {
-        if (
-            !this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)
-        ) {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
             return null;
         }
 
-        const routePathLinks = this.props.routePathStore!.routePath!
-            .routePathLinks;
+        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         const coherentPolylines = createCoherentLinesFromPolylines(
             routePathLinks.map(rpLink => rpLink.geometry)
         );
         return coherentPolylines.map((polyline, index) => (
-            <ArrowDecorator
-                key={index}
-                color={ROUTE_COLOR}
-                geometry={polyline}
-            />
+            <ArrowDecorator key={index} color={ROUTE_COLOR} geometry={polyline} />
         ));
     };
 

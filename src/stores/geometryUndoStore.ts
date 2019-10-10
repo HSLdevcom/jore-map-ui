@@ -31,10 +31,7 @@ class GeometryUndoStore<UndoObject> {
     };
 
     public redo = (undoCallback: (undoObject: UndoObject) => void): any => {
-        if (
-            this._undoObjects.length <= 1 ||
-            this._undoIndex >= this._undoObjects.length - 1
-        ) {
+        if (this._undoObjects.length <= 1 || this._undoIndex >= this._undoObjects.length - 1) {
             return;
         }
         this._undoIndex += 1;

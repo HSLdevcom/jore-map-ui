@@ -1,11 +1,11 @@
 import ToolbarTool from '~/enums/toolbarTool';
-import EventManager, {
-    INetworkNodeClickParams,
-    INetworkLinkClickParams
-} from '~/util/EventManager';
+import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
+import EventManager, {
+    INetworkLinkClickParams,
+    INetworkNodeClickParams
+} from '~/util/EventManager';
 import BaseTool from './BaseTool';
 
 /**
@@ -36,11 +36,7 @@ class SelectNetworkEntityTool implements BaseTool {
 
         const linkViewLink = routeBuilder
             .to(SubSites.link)
-            .toTarget(':id',
-                [params.startNodeId, params.endNodeId, params.transitType].join(
-                    ','
-                )
-            )
+            .toTarget(':id', [params.startNodeId, params.endNodeId, params.transitType].join(','))
             .toLink();
         navigator.goTo(linkViewLink);
     };

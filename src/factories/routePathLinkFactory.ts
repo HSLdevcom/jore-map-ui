@@ -1,9 +1,9 @@
 import * as L from 'leaflet';
+import Constants from '~/constants/constants';
 import { IRoutePathLink } from '~/models';
+import IExternalLink from '~/models/externals/IExternalLink';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import NumberIterator from '~/util/NumberIterator';
-import IExternalLink from '~/models/externals/IExternalLink';
-import Constants from '~/constants/constants';
 import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {
@@ -14,15 +14,10 @@ class RoutePathLinkFactory {
     public static mapExternalRoutePathLink = (
         externalRoutePathLink: IExternalRoutePathLink
     ): IRoutePathLink => {
-        const startNode = NodeFactory.mapExternalNode(
-            externalRoutePathLink.solmuByLnkalkusolmu
-        );
-        const endNode = NodeFactory.mapExternalNode(
-            externalRoutePathLink.solmuByLnkloppusolmu
-        );
+        const startNode = NodeFactory.mapExternalNode(externalRoutePathLink.solmuByLnkalkusolmu);
+        const endNode = NodeFactory.mapExternalNode(externalRoutePathLink.solmuByLnkloppusolmu);
         const geoJson = JSON.parse(
-            externalRoutePathLink
-                .linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson
+            externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson
         );
 
         return {
@@ -38,8 +33,7 @@ class RoutePathLinkFactory {
             startNodeType: externalRoutePathLink.relpysakki,
             isStartNodeHastusStop: externalRoutePathLink.paikka === '1',
             isStartNodeUsingBookSchedule: externalRoutePathLink.kirjaan === '1',
-            startNodeBookScheduleColumnNumber:
-                externalRoutePathLink.kirjasarake,
+            startNodeBookScheduleColumnNumber: externalRoutePathLink.kirjasarake,
             transitType: externalRoutePathLink.lnkverkko,
             modifiedBy: externalRoutePathLink.relkuka,
             modifiedOn: externalRoutePathLink.relviimpvm

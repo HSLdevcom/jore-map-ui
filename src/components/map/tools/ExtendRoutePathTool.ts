@@ -1,15 +1,15 @@
-import RoutePathStore, { NeighborToAddType } from '~/stores/routePathStore';
-import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
 import { INode } from '~/models';
+import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
+import RoutePathStore, { NeighborToAddType } from '~/stores/routePathStore';
 import EventManager, {
-    INetworkNodeClickParams,
     IEditRoutePathLayerNodeClickParams,
-    IEditRoutePathNeighborLinkClickParams
+    IEditRoutePathNeighborLinkClickParams,
+    INetworkNodeClickParams
 } from '~/util/EventManager';
 import ModelHelper from '~/util/ModelHelper';
-import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import BaseTool from './BaseTool';
 
 /**
@@ -25,20 +25,14 @@ class ExtendRoutePathTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.link);
         EventManager.on('networkNodeClick', this.onNetworkNodeClick);
         EventManager.on('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventManager.on(
-            'editRoutePathNeighborLinkClick',
-            this.addNeighborLinkToRoutePath
-        );
+        EventManager.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         this.highlightClickableNodes();
     }
     public deactivate() {
         this.reset();
         EventManager.off('networkNodeClick', this.onNetworkNodeClick);
         EventManager.off('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventManager.off(
-            'editRoutePathNeighborLinkClick',
-            this.addNeighborLinkToRoutePath
-        );
+        EventManager.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
     }
 
     private reset() {
@@ -49,10 +43,7 @@ class ExtendRoutePathTool implements BaseTool {
     // Node click
     private onNodeClick = (clickEvent: CustomEvent) => {
         const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
-        this.fetchNeighborRoutePathLinks(
-            params.node.id,
-            params.linkOrderNumber
-        );
+        this.fetchNeighborRoutePathLinks(params.node.id, params.linkOrderNumber);
     };
 
     // Network node click
@@ -65,10 +56,7 @@ class ExtendRoutePathTool implements BaseTool {
     };
 
     private isNetworkNodesInteractive() {
-        return (
-            RoutePathStore!.routePath &&
-            RoutePathStore!.routePath!.routePathLinks.length === 0
-        );
+        return RoutePathStore!.routePath && RoutePathStore!.routePath!.routePathLinks.length === 0;
     }
 
     // Neighbor link click
@@ -84,28 +72,20 @@ class ExtendRoutePathTool implements BaseTool {
                 : routePathLink.startNode;
         if (RoutePathStore.hasNodeOddAmountOfNeighbors(nodeToFetch.id)) {
             this.unhighlightClickableNodes();
-            this.fetchNeighborRoutePathLinks(
-                nodeToFetch.id,
-                routePathLink.orderNumber
-            );
+            this.fetchNeighborRoutePathLinks(nodeToFetch.id, routePathLink.orderNumber);
         } else {
             this.highlightClickableNodes();
         }
     };
 
-    private fetchNeighborRoutePathLinks = async (
-        nodeId: string,
-        linkOrderNumber: number
-    ) => {
+    private fetchNeighborRoutePathLinks = async (nodeId: string, linkOrderNumber: number) => {
         const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
             nodeId,
             RoutePathStore!.routePath!,
             linkOrderNumber
         );
         if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(
-                queryResult.neighborLinks
-            );
+            RoutePathStore!.setNeighborRoutePathLinks(queryResult.neighborLinks);
             RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
             this.unhighlightClickableNodes();
         } else {

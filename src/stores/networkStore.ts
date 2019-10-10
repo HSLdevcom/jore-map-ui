@@ -98,9 +98,7 @@ export class NetworkStore {
 
     @action
     public hideMapLayer = (mapLayer: MapLayer) => {
-        this._visibleMapLayers = this._visibleMapLayers.filter(
-            mL => mL !== mapLayer
-        );
+        this._visibleMapLayers = this._visibleMapLayers.filter(mL => mL !== mapLayer);
     };
 
     @action
@@ -122,14 +120,10 @@ export class NetworkStore {
     @action
     public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(
-                t => t !== type
-            );
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
             // Need to do concat (instead of push) to trigger ReactionDisposer watcher
-            this._selectedTransitTypes = this._selectedTransitTypes.concat([
-                type
-            ]);
+            this._selectedTransitTypes = this._selectedTransitTypes.concat([type]);
         }
     };
 

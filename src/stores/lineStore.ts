@@ -1,5 +1,5 @@
-import { action, computed, observable } from 'mobx';
 import _ from 'lodash';
+import { action, computed, observable } from 'mobx';
 import { ILine } from '~/models';
 
 export class LineStore {
@@ -27,10 +27,7 @@ export class LineStore {
     };
 
     @action
-    public updateLineProperty = (
-        property: keyof ILine,
-        value: string | number | Date
-    ) => {
+    public updateLineProperty = (property: keyof ILine, value: string | number | Date) => {
         this._line = {
             ...this._line!,
             [property]: value

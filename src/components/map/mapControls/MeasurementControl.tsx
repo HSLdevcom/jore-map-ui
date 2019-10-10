@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import * as L from 'leaflet';
 import classnames from 'classnames';
+import * as L from 'leaflet';
+import React, { Component } from 'react';
 import { FaEraser, FaRulerCombined, FaTrashAlt } from 'react-icons/fa';
-import * as s from './measurementControl.scss';
 import MapControlButton from './MapControlButton';
+import * as s from './measurementControl.scss';
 
 interface IMeasurementControlProps {
     leaflet?: any;
@@ -22,10 +22,7 @@ enum Tools {
     CLEAR = 'Poista kaikki mittaukset'
 }
 
-class MeasurementControl extends Component<
-    IMeasurementControlProps,
-    IMeasurementControlState
-> {
+class MeasurementControl extends Component<IMeasurementControlProps, IMeasurementControlState> {
     private points: L.LatLng[];
     private distance: number;
     private tmpLine: L.FeatureGroup;
@@ -57,10 +54,7 @@ class MeasurementControl extends Component<
     }
 
     private toggleMeasure = () => {
-        if (
-            this.state.activeTool === Tools.MEASURE ||
-            this.state.activeTool === Tools.DRAGGING
-        ) {
+        if (this.state.activeTool === Tools.MEASURE || this.state.activeTool === Tools.DRAGGING) {
             this.disableMeasure();
         } else {
             this.enableMeasure();
@@ -69,10 +63,7 @@ class MeasurementControl extends Component<
 
     private enableMeasure = () => {
         this.disableRemove();
-        L.DomUtil.addClass(
-            this.props.leaflet!.layerContainer.getContainer(),
-            s.measurementCursor
-        );
+        L.DomUtil.addClass(this.props.leaflet!.layerContainer.getContainer(), s.measurementCursor);
         this.props.leaflet!.layerContainer.on('click', this.measurementClicked);
         this.props.leaflet!.layerContainer.doubleClickZoom.disable();
         this.setState({
@@ -85,14 +76,8 @@ class MeasurementControl extends Component<
             this.props.leaflet!.layerContainer.getContainer(),
             s.measurementCursor
         );
-        this.props.leaflet!.layerContainer.off(
-            'click',
-            this.measurementClicked
-        );
-        this.props.leaflet!.layerContainer.off(
-            'mousemove',
-            this.measurementMoving
-        );
+        this.props.leaflet!.layerContainer.off('click', this.measurementClicked);
+        this.props.leaflet!.layerContainer.off('mousemove', this.measurementMoving);
         this.props.leaflet!.layerContainer.doubleClickZoom.enable();
         if (this.state.activeTool === Tools.DRAGGING) {
             this.finishMeasurement();
@@ -110,10 +95,7 @@ class MeasurementControl extends Component<
         this.pointLayer = L.featureGroup().addTo(this.measurementLayer);
         this.tmpLine.addTo(this.measurementsLayer);
 
-        this.measurementLayer.on(
-            'click',
-            this.removeMeasurement(this.measurementLayer)
-        );
+        this.measurementLayer.on('click', this.removeMeasurement(this.measurementLayer));
         this.setState({
             activeTool: Tools.DRAGGING
         });
@@ -136,9 +118,7 @@ class MeasurementControl extends Component<
             this.setState({
                 measurements: this.state.measurements + 1
             });
-            this.lastMarker
-                .off('click', this.finishMeasurementClick)
-                .openPopup();
+            this.lastMarker.off('click', this.finishMeasurementClick).openPopup();
         }
     };
 
@@ -148,40 +128,25 @@ class MeasurementControl extends Component<
         }
         const latLng = e.latlng;
         if (this.points.length > 0) {
-            const {
-                x: x1,
-                y: y1
-            } = this.props.leaflet!.layerContainer.latLngToContainerPoint(
+            const { x: x1, y: y1 } = this.props.leaflet!.layerContainer.latLngToContainerPoint(
                 this.points[this.points.length - 1]
             );
-            const {
-                x: x2,
-                y: y2
-            } = this.props.leaflet!.layerContainer.latLngToContainerPoint(
+            const { x: x2, y: y2 } = this.props.leaflet!.layerContainer.latLngToContainerPoint(
                 latLng
             );
-            const pxDistance = Math.sqrt(
-                (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)
-            );
+            const pxDistance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
             if (pxDistance < 10) {
                 this.finishMeasurement();
                 return;
             }
-            this.distance += this.points[this.points.length - 1].distanceTo(
-                latLng
-            );
+            this.distance += this.points[this.points.length - 1].distanceTo(latLng);
         }
         this.points.push(e.latlng);
         if (this.points.length === 1) {
-            this.props.leaflet!.layerContainer.on(
-                'mousemove',
-                this.measurementMoving
-            );
+            this.props.leaflet!.layerContainer.on('mousemove', this.measurementMoving);
         }
         this.lineLayer.clearLayers();
-        L.polyline(this.points, { className: s.polyline }).addTo(
-            this.lineLayer
-        );
+        L.polyline(this.points, { className: s.polyline }).addTo(this.lineLayer);
         if (this.lastMarker) {
             this.lastMarker.off('click', this.finishMeasurementClick);
         }
@@ -204,11 +169,7 @@ class MeasurementControl extends Component<
             interactive: false
         }).addTo(this.tmpLine);
         L.circleMarker(movingLatLng, {
-            className: classnames(
-                s.noEvents,
-                s.measurementCursor,
-                s.circleMarker
-            ),
+            className: classnames(s.noEvents, s.measurementCursor, s.circleMarker),
             interactive: false
         })
             .bindTooltip(prevPoint.distanceTo(movingLatLng).toFixed(2))

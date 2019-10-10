@@ -1,20 +1,20 @@
-import { inject, observer } from 'mobx-react';
-import React from 'react';
-import L from 'leaflet';
 import classNames from 'classnames';
-import { FiInfo } from 'react-icons/fi';
+import L from 'leaflet';
+import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
-import { RouteListStore } from '~/stores/routeListStore';
-import { MapStore } from '~/stores/mapStore';
-import LineHelper from '~/util/lineHelper';
-import { dateToDateString } from '~/util/dateFormatHelper';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
-import routeBuilder from '~/routing/routeBuilder';
-import QueryParams from '~/routing/queryParams';
-import subSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import { IRoutePath, IRoute } from '~/models';
+import React from 'react';
+import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
+import { IRoute, IRoutePath } from '~/models';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
+import routeBuilder from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
+import { MapStore } from '~/stores/mapStore';
+import { RouteListStore } from '~/stores/routeListStore';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
+import { dateToDateString } from '~/util/dateFormatHelper';
+import LineHelper from '~/util/lineHelper';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './routeItem.scss';
@@ -76,16 +76,11 @@ class RouteItem extends React.Component<IRouteItemProps> {
         return (
             <SidebarHeader onCloseButtonClick={this.closeRoute}>
                 <div className={s.routeName}>
-                    {LineHelper.getTransitIcon(
-                        this.props.route.line!.transitType!,
-                        false
-                    )}
+                    {LineHelper.getTransitIcon(this.props.route.line!.transitType!, false)}
                     <div
                         className={classNames(
                             s.label,
-                            TransitTypeHelper.getColorClass(
-                                this.props.route.line!.transitType!
-                            )
+                            TransitTypeHelper.getColorClass(this.props.route.line!.transitType!)
                         )}
                     >
                         <div className={s.routeId} onClick={this.openRouteView}>
@@ -110,9 +105,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]) => {
         const res = {};
         routePaths.forEach(rp => {
-            const identifier =
-                rp.startTime.toLocaleDateString() +
-                rp.endTime.toLocaleDateString();
+            const identifier = rp.startTime.toLocaleDateString() + rp.endTime.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
 
@@ -128,9 +121,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
     private renderRoutePathList = (routePaths: IRoutePath[]) => {
         return routePaths.map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
-                this.props.routeListStore!.toggleRoutePathVisibility(
-                    routePath.internalId
-                );
+                this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
                 this.calculateBounds();
             };
 
@@ -141,9 +132,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
                         ':id',
                         [
                             routePath.routeId,
-                            Moment(routePath.startTime).format(
-                                'YYYY-MM-DDTHH:mm:ss'
-                            ),
+                            Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
                             routePath.direction
                         ].join(',')
                     )
@@ -156,10 +145,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
                 Moment(routePath.endTime).isAfter(Moment());
 
             return (
-                <div
-                    className={s.routePathContainer}
-                    key={routePath.internalId}
-                >
+                <div className={s.routePathContainer} key={routePath.internalId}>
                     <div
                         className={
                             isWithinTimeSpan
@@ -167,17 +153,13 @@ class RouteItem extends React.Component<IRouteItemProps> {
                                 : s.routePathInfo
                         }
                     >
-                        <div>
-                            {`${routePath.originFi}-${routePath.destinationFi}`}
-                        </div>
+                        <div>{`${routePath.originFi}-${routePath.destinationFi}`}</div>
                     </div>
                     <div className={s.routePathControls}>
                         <ToggleSwitch
                             onClick={toggleRoutePathVisibility}
                             value={routePath.visible}
-                            color={
-                                routePath.visible ? routePath.color! : '#898989'
-                            }
+                            color={routePath.visible ? routePath.color! : '#898989'}
                         />
                         <Button
                             className={s.openRoutePathViewButton}
@@ -198,17 +180,14 @@ class RouteItem extends React.Component<IRouteItemProps> {
 
         return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
             const first = routePaths[0];
-            const header = `${dateToDateString(
-                first.startTime
-            )} - ${dateToDateString(first.endTime)}`;
+            const header = `${dateToDateString(first.startTime)} - ${dateToDateString(
+                first.endTime
+            )}`;
 
             return (
                 <div
                     key={header}
-                    className={classNames(
-                        s.groupedRoutes,
-                        index % 2 ? undefined : s.shadow
-                    )}
+                    className={classNames(s.groupedRoutes, index % 2 ? undefined : s.shadow)}
                 >
                     <div className={s.groupedRoutesDate}>{header}</div>
                     <div className={s.groupedRoutesContent}>

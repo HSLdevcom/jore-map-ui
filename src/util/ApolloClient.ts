@@ -1,10 +1,10 @@
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import * as Apollo from 'apollo-client';
 import { BatchHttpLink } from 'apollo-link-batch-http';
-import constants from '~/constants/constants';
-import LoginStore from '~/stores/loginStore';
-import AlertStore from '~/stores/alertStore';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
+import constants from '~/constants/constants';
+import AlertStore from '~/stores/alertStore';
+import LoginStore from '~/stores/loginStore';
 
 const cache = new InMemoryCache();
 
@@ -41,11 +41,9 @@ class ApolloClient {
             if (err.networkError) {
                 switch (err.networkError['statusCode']) {
                     case 403:
-                        AlertStore!
-                            .setFadeMessage(httpStatusDescriptionCodeList[403])
-                            .then(() => {
-                                LoginStore.clear();
-                            });
+                        AlertStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
+                            LoginStore.clear();
+                        });
                 }
             }
             throw e;

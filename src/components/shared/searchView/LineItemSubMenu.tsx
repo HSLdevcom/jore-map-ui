@@ -1,6 +1,6 @@
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import ReactMoment from 'react-moment';
-import { observer, inject } from 'mobx-react';
 import { IRoutePath } from '~/models';
 import RouteService from '~/services/routeService';
 import { ErrorStore } from '~/stores/errorStore';
@@ -23,10 +23,7 @@ interface LineItemSubMenuState {
 
 @inject('errorStore', 'searchStore')
 @observer
-class LineItemSubMenu extends Component<
-    LineItemSubMenuProps,
-    LineItemSubMenuState
-> {
+class LineItemSubMenu extends Component<LineItemSubMenuProps, LineItemSubMenuState> {
     private mounted: boolean;
 
     constructor(props: LineItemSubMenuProps) {
@@ -61,10 +58,7 @@ class LineItemSubMenu extends Component<
                 });
             }
         } catch (e) {
-            this.props.errorStore!.addError(
-                'Reitinsuuntien haussa tapahtui virhe.',
-                e
-            );
+            this.props.errorStore!.addError('Reitinsuuntien haussa tapahtui virhe.', e);
         }
     };
 
@@ -81,10 +75,7 @@ class LineItemSubMenu extends Component<
     };
 
     private unSelect = (routePathId: string) => {
-        this.props.searchStore!.removeSubLineItem(
-            this.props.routeId,
-            routePathId
-        );
+        this.props.searchStore!.removeSubLineItem(this.props.routeId, routePathId);
     };
 
     private isSelected = (routePathId: string) => {
@@ -113,23 +104,15 @@ class LineItemSubMenu extends Component<
                             <Checkbox
                                 onClick={this.toggle(routePath.internalId)}
                                 checked={this.isSelected(routePath.internalId)}
-                                content={`${routePath.originFi}-${
-                                    routePath.destinationFi
-                                }`}
+                                content={`${routePath.originFi}-${routePath.destinationFi}`}
                             />
                             <div className={s.routeDate}>
                                 {'Voim.ast: '}
-                                <ReactMoment
-                                    date={routePath.startTime}
-                                    format='DD.MM.YYYY HH:mm'
-                                />
+                                <ReactMoment date={routePath.startTime} format='DD.MM.YYYY HH:mm' />
                             </div>
                             <div className={s.routeDate}>
                                 {'Viim.voim.olo: '}
-                                <ReactMoment
-                                    date={routePath.endTime}
-                                    format='DD.MM.YYYY HH:mm'
-                                />
+                                <ReactMoment date={routePath.endTime} format='DD.MM.YYYY HH:mm' />
                             </div>
                         </div>
                     );

@@ -7,17 +7,11 @@ import NodeFactory from './nodeFactory';
 class LinkFactory {
     public static mapExternalLink = (externalLink: IExternalLink): ILink => {
         const geojson = JSON.parse(externalLink.geojson);
-        const latLngs: L.LatLng[] = L.GeoJSON.coordsToLatLngs(
-            geojson.coordinates
-        );
+        const latLngs: L.LatLng[] = L.GeoJSON.coordsToLatLngs(geojson.coordinates);
 
         return {
-            startNode: NodeFactory.mapExternalNode(
-                externalLink.solmuByLnkalkusolmu
-            ),
-            endNode: NodeFactory.mapExternalNode(
-                externalLink.solmuByLnkloppusolmu
-            ),
+            startNode: NodeFactory.mapExternalNode(externalLink.solmuByLnkalkusolmu),
+            endNode: NodeFactory.mapExternalNode(externalLink.solmuByLnkloppusolmu),
             geometry: roundLatLngs(latLngs),
             transitType: externalLink.lnkverkko,
             length: externalLink.lnkpituus,
@@ -25,9 +19,7 @@ class LinkFactory {
             municipalityCode: externalLink.katkunta,
             streetName: externalLink.katnimi,
             modifiedBy: externalLink.lnkkuka,
-            modifiedOn: externalLink.lnkviimpvm
-                ? new Date(externalLink.lnkviimpvm)
-                : undefined
+            modifiedOn: externalLink.lnkviimpvm ? new Date(externalLink.lnkviimpvm) : undefined
         };
     };
 

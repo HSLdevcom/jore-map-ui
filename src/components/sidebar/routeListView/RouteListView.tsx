@@ -1,18 +1,18 @@
-import React from 'react';
 import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { Route } from 'react-router';
-import { RouteListStore } from '~/stores/routeListStore';
+import TransitType from '~/enums/transitType';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
+import { RouteListStore } from '~/stores/routeListStore';
 import { SearchStore } from '~/stores/searchStore';
-import QueryParams from '~/routing/queryParams';
-import TransitType from '~/enums/transitType';
-import EntityTypeToggles from '../homeView/EntityTypeToggles';
-import SearchInput from '../../shared/searchView/SearchInput';
-import RouteList from './RouteList';
-import SearchResults from '../../shared/searchView/SearchResults';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
+import SearchInput from '../../shared/searchView/SearchInput';
+import SearchResults from '../../shared/searchView/SearchResults';
+import EntityTypeToggles from '../homeView/EntityTypeToggles';
+import RouteList from './RouteList';
 import * as s from './routeListView.scss';
 
 interface IRouteListViewProps {
@@ -49,9 +49,7 @@ class RouteListView extends React.Component<IRouteListViewProps> {
                         <EntityTypeToggles />
                         <TransitToggleButtonBar
                             toggleSelectedTransitType={this.toggleTransitType}
-                            selectedTransitTypes={
-                                this.props.searchStore!.selectedTransitTypes
-                            }
+                            selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
                         />
                         <SearchResults />
                     </>

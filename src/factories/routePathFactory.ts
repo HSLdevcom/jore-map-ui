@@ -1,8 +1,8 @@
-import { IRoutePath, IRoute, IRoutePathLink } from '~/models';
-import HashHelper from '~/util/hashHelper';
+import { IRoute, IRoutePath, IRoutePathLink } from '~/models';
+import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import HashHelper from '~/util/hashHelper';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
@@ -16,9 +16,7 @@ class RoutePathFactory {
         };
     };
 
-    public static mapExternalRoutePath = (
-        externalRoutePath: IExternalRoutePath
-    ): IRoutePath => {
+    public static mapExternalRoutePath = (externalRoutePath: IExternalRoutePath): IRoutePath => {
         const internalRoutePathId = HashHelper.getHashFromString(
             [
                 externalRoutePath.reitunnus,
@@ -28,14 +26,10 @@ class RoutePathFactory {
         ).toString();
 
         let routePathLinks: IRoutePathLink[] = [];
-        if (
-            externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta
-        ) {
+        if (externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta) {
             routePathLinks = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes
                 .map((externalRoutePathLink: IExternalRoutePathLink) => {
-                    return RoutePathLinkFactory.mapExternalRoutePathLink(
-                        externalRoutePathLink
-                    );
+                    return RoutePathLinkFactory.mapExternalRoutePathLink(externalRoutePathLink);
                 })
                 .sort((a, b) => a.orderNumber - b.orderNumber);
         }
@@ -50,10 +44,8 @@ class RoutePathFactory {
             direction: externalRoutePath.suusuunta,
             startTime: new Date(externalRoutePath.suuvoimast),
             routePathLinks: routePathLinks ? routePathLinks : [],
-            lineId:
-                externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
-            transitType:
-                externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
+            lineId: externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
+            transitType: externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
             internalId: internalRoutePathId,
             name: externalRoutePath.suunimi,
             nameSw: externalRoutePath.suunimir,
@@ -75,10 +67,7 @@ class RoutePathFactory {
         };
     };
 
-    public static createNewRoutePath(
-        lineId: string,
-        route: IRoute
-    ): IRoutePath {
+    public static createNewRoutePath(lineId: string, route: IRoute): IRoutePath {
         const defaultDate = new Date();
         defaultDate.setHours(0, 0, 0, 0);
 

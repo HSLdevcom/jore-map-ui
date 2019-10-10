@@ -1,36 +1,36 @@
-import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
 import classnames from 'classnames';
-import { match } from 'react-router';
 import { LatLng } from 'leaflet';
+import { reaction, IReactionDisposer } from 'mobx';
+import { inject, observer } from 'mobx-react';
+import * as React from 'react';
+import { match } from 'react-router';
+import { Button, Dropdown } from '~/components/controls';
+import TextContainer from '~/components/controls/TextContainer';
+import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
+import Loader from '~/components/shared/loader/Loader';
+import ButtonType from '~/enums/buttonType';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import NodeType from '~/enums/nodeType';
+import StartNodeType from '~/enums/startNodeType';
 import NodeFactory from '~/factories/nodeFactory';
 import { INode } from '~/models';
-import { AlertStore } from '~/stores/alertStore';
-import { NodeStore } from '~/stores/nodeStore';
-import { MapStore } from '~/stores/mapStore';
-import LinkService from '~/services/linkService';
-import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import { Button, Dropdown } from '~/components/controls';
-import NodeLocationType from '~/types/NodeLocationType';
 import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import NodeType from '~/enums/nodeType';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
-import TextContainer from '~/components/controls/TextContainer';
+import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
+import LinkService from '~/services/linkService';
+import NodeService from '~/services/nodeService';
+import { AlertStore } from '~/stores/alertStore';
+import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
+import { NodeStore } from '~/stores/nodeStore';
+import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
 import NodeHelper from '~/util/nodeHelper';
-import StartNodeType from '~/enums/startNodeType';
-import { ErrorStore } from '~/stores/errorStore';
-import { CodeListStore } from '~/stores/codeListStore';
-import NodeService from '~/services/nodeService';
-import routeBuilder from '~/routing/routeBuilder';
-import ButtonType from '~/enums/buttonType';
-import Loader from '~/components/shared/loader/Loader';
+import InputContainer from '../../controls/InputContainer';
 import SidebarHeader from '../SidebarHeader';
 import StopForm from './StopForm';
-import InputContainer from '../../controls/InputContainer';
 import * as s from './nodeView.scss';
 
 interface INodeViewProps {
@@ -75,9 +75,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             () => this.props.nodeStore!.isEditingDisabled,
             this.onChangeIsEditingDisabled
         );
-        EventManager.on('geometryChange', () =>
-            this.setIsEditingDisabled(false)
-        );
+        EventManager.on('geometryChange', () => this.setIsEditingDisabled(false));
     }
 
     componentDidUpdate(prevProps: INodeViewProps) {
@@ -96,9 +94,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
         this.isEditingDisabledListener();
-        EventManager.off('geometryChange', () =>
-            this.setIsEditingDisabled(false)
-        );
+        EventManager.off('geometryChange', () => this.setIsEditingDisabled(false));
     }
 
     private initNewNode = async (params: any) => {
@@ -139,7 +135,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             return await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         } catch (e) {
             this.props.errorStore!.addError(
-                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
+                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${
+                    node.id
+                } (soltunnus), ei onnistunut.`,
                 e
             );
             return null;
@@ -151,9 +149,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         let preventSetState = false;
         try {
             if (this.props.isNewNode) {
-                const nodeId = await NodeService.createNode(
-                    this.props.nodeStore!.node
-                );
+                const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
                 preventSetState = true;
 
                 const url = routeBuilder
@@ -201,11 +197,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     };
 
     private onNodeGeometryChange = (property: NodeLocationType, value: any) => {
-        this.props.nodeStore!.updateNodeGeometry(
-            property,
-            value,
-            NodeMeasurementType.Measured
-        );
+        this.props.nodeStore!.updateNodeGeometry(property, value, NodeMeasurementType.Measured);
         this.validateProperty(nodeValidationModel[property], property, value);
     };
 
@@ -217,28 +209,20 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         }
     };
 
-    private latChange = (
-        previousLatLng: LatLng,
-        coordinateType: NodeLocationType
-    ) => (value: string) => {
+    private latChange = (previousLatLng: LatLng, coordinateType: NodeLocationType) => (
+        value: string
+    ) => {
         const lat = Number(value);
         if (lat === previousLatLng.lat) return;
-        this.onNodeGeometryChange(
-            coordinateType,
-            new LatLng(lat, previousLatLng.lng)
-        );
+        this.onNodeGeometryChange(coordinateType, new LatLng(lat, previousLatLng.lng));
     };
 
-    private lngChange = (
-        previousLatLng: LatLng,
-        coordinateType: NodeLocationType
-    ) => (value: string) => {
+    private lngChange = (previousLatLng: LatLng, coordinateType: NodeLocationType) => (
+        value: string
+    ) => {
         const lng = Number(value);
         if (lng === previousLatLng.lng) return;
-        this.onNodeGeometryChange(
-            coordinateType,
-            new LatLng(previousLatLng.lat, lng)
-        );
+        this.onNodeGeometryChange(coordinateType, new LatLng(previousLatLng.lat, lng));
     };
 
     render() {
@@ -257,8 +241,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         const isNodeFormInvalid = !this.isFormValid();
         const isStopFormInvalid =
-            node.type === NodeType.STOP &&
-            !this.props.nodeStore!.isStopFormValid;
+            node.type === NodeType.STOP && !this.props.nodeStore!.isStopFormValid;
         const isSaveButtonDisabled =
             isEditingDisabled ||
             !this.props.nodeStore!.isDirty ||
@@ -272,9 +255,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewNode}
-                        shouldShowClosePromptMessage={
-                            this.props.nodeStore!.isDirty
-                        }
+                        shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={this.toggleIsEditingEnabled}
                     >
@@ -297,17 +278,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                         'Kyllä/Ei'
                                     )}
                                     selected={node.tripTimePoint}
-                                    onChange={this.onChangeNodeProperty(
-                                        'tripTimePoint'
-                                    )}
+                                    onChange={this.onChangeNodeProperty('tripTimePoint')}
                                 />
                             </div>
                             {!this.props.isNewNode && (
                                 <div className={s.flexRow}>
-                                    <TextContainer
-                                        label='MUOKANNUT'
-                                        value={node.modifiedBy}
-                                    />
+                                    <TextContainer label='MUOKANNUT' value={node.modifiedBy} />
                                     <TextContainer
                                         label='MUOKATTU PVM'
                                         value={node.modifiedOn}
@@ -331,20 +307,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             <div className={s.flexRow}>
                                 <InputContainer
                                     value={node.coordinates.lat}
-                                    onChange={this.latChange(
-                                        node.coordinates,
-                                        'coordinates'
-                                    )}
+                                    onChange={this.latChange(node.coordinates, 'coordinates')}
                                     label='LATITUDE'
                                     type='number'
                                     disabled={isEditingDisabled}
                                 />
                                 <InputContainer
                                     value={node.coordinates.lng}
-                                    onChange={this.lngChange(
-                                        node.coordinates,
-                                        'coordinates'
-                                    )}
+                                    onChange={this.lngChange(node.coordinates, 'coordinates')}
                                     label='LONGITUDE'
                                     type='number'
                                     disabled={isEditingDisabled}
@@ -356,13 +326,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     label='MITTAUSPVM'
                                     value={node.measurementDate}
                                     disabled={isEditingDisabled}
-                                    onChange={this.onChangeNodeProperty(
-                                        'measurementDate'
-                                    )}
+                                    onChange={this.onChangeNodeProperty('measurementDate')}
                                     isClearButtonVisibleOnDates={true}
-                                    validationResult={
-                                        invalidPropertiesMap['measurementDate']
-                                    }
+                                    validationResult={invalidPropertiesMap['measurementDate']}
                                 />
                                 {node.type === NodeType.STOP && (
                                     <TextContainer
@@ -377,12 +343,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                 <>
                                     <div className={s.sectionHeader}>
                                         Sovitettu piste
-                                        <div
-                                            className={classnames(
-                                                s.labelIcon,
-                                                s.manual
-                                            )}
-                                        />
+                                        <div className={classnames(s.labelIcon, s.manual)} />
                                     </div>
                                     <div className={s.flexRow}>
                                         <InputContainer
@@ -408,18 +369,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     </div>
                                     <div className={s.sectionHeader}>
                                         Projektoitu piste
-                                        <div
-                                            className={classnames(
-                                                s.labelIcon,
-                                                s.projected
-                                            )}
-                                        />
+                                        <div className={classnames(s.labelIcon, s.projected)} />
                                     </div>
                                     <div className={s.flexRow}>
                                         <InputContainer
-                                            value={
-                                                node.coordinatesProjection.lat
-                                            }
+                                            value={node.coordinatesProjection.lat}
                                             onChange={this.latChange(
                                                 node.coordinatesProjection,
                                                 'coordinatesProjection'
@@ -429,9 +383,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                             disabled={isEditingDisabled}
                                         />
                                         <InputContainer
-                                            value={
-                                                node.coordinatesProjection.lng
-                                            }
+                                            value={node.coordinatesProjection.lng}
                                             onChange={this.lngChange(
                                                 node.coordinatesProjection,
                                                 'coordinatesProjection'
@@ -455,11 +407,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         )}
                     </div>
                 </div>
-                <Button
-                    type={ButtonType.SAVE}
-                    disabled={isSaveButtonDisabled}
-                    onClick={this.save}
-                >
+                <Button type={ButtonType.SAVE} disabled={isSaveButtonDisabled} onClick={this.save}>
                     Tallenna muutokset
                 </Button>
             </div>

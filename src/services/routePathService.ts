@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
-import ApolloClient from '~/util/ApolloClient';
-import { IRoutePath, IViaName } from '~/models';
-import ApiClient from '~/util/ApiClient';
 import endpoints from '~/enums/endpoints';
-import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
+import { IRoutePath, IViaName } from '~/models';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
+import ApiClient from '~/util/ApiClient';
+import ApolloClient from '~/util/ApolloClient';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 
@@ -24,9 +24,7 @@ class RoutePathService {
             }
         });
 
-        return RoutePathFactory.mapExternalRoutePath(
-            queryResult.data.routePath
-        );
+        return RoutePathFactory.mapExternalRoutePath(queryResult.data.routePath);
     };
 
     public static fetchAllRoutePathPrimaryKeys = async (
@@ -38,9 +36,8 @@ class RoutePathService {
                 routeId
             }
         });
-        return queryResult.data.routePathPrimaryKeys.nodes.map(
-            (rp: IExternalRoutePath) =>
-                RoutePathFactory.mapExternalRoutePathToRoutePathPrimaryKey(rp)
+        return queryResult.data.routePathPrimaryKeys.nodes.map((rp: IExternalRoutePath) =>
+            RoutePathFactory.mapExternalRoutePathToRoutePathPrimaryKey(rp)
         );
     };
 
@@ -59,16 +56,12 @@ class RoutePathService {
                 date
             }
         });
-        return queryResult.data.routePaths.nodes.map(
-            (externalRp: IExternalRoutePath) =>
-                RoutePathFactory.mapExternalRoutePath(externalRp)
+        return queryResult.data.routePaths.nodes.map((externalRp: IExternalRoutePath) =>
+            RoutePathFactory.mapExternalRoutePath(externalRp)
         );
     };
 
-    public static updateRoutePath = async (
-        routePath: IRoutePath,
-        viaNames: IViaName[]
-    ) => {
+    public static updateRoutePath = async (routePath: IRoutePath, viaNames: IViaName[]) => {
         const requestBody = {
             routePath,
             viaNames
@@ -77,10 +70,7 @@ class RoutePathService {
         await ApiClient.updateObject(endpoints.ROUTEPATH, requestBody);
     };
 
-    public static createRoutePath = async (
-        routePath: IRoutePath,
-        viaNames: IViaName[]
-    ) => {
+    public static createRoutePath = async (routePath: IRoutePath, viaNames: IViaName[]) => {
         const requestBody = {
             routePath,
             viaNames

@@ -1,5 +1,5 @@
-import { Path, PathProps, withLeaflet } from 'react-leaflet';
-import L, { PolylineDecorator, LatLng } from 'leaflet';
+import L, { LatLng, PolylineDecorator } from 'leaflet';
+import { withLeaflet, Path, PathProps } from 'react-leaflet';
 import { LeafletContext } from '../../Map';
 
 interface IArrowDecoratorProps extends PathProps {
@@ -57,10 +57,7 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator> {
         return decorator;
     }
 
-    updateLeafletElement(
-        fromProps: IArrowDecoratorProps,
-        toProps: IArrowDecoratorProps
-    ) {
+    updateLeafletElement(fromProps: IArrowDecoratorProps, toProps: IArrowDecoratorProps) {
         /**
          * Need to prevent updating in certain situations or else leaflet throws an error
          * For example when highlighting route on/off, this.leafletElement.removeFrom causes

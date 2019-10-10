@@ -1,8 +1,8 @@
 import { action, computed, observable } from 'mobx';
 import Constants from '~/constants/constants';
-import { IAuthorizationResponse } from '~/services/authService';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
+import { IAuthorizationResponse } from '~/services/authService';
 
 export class LoginStore {
     @observable private _isAuthenticated: boolean;

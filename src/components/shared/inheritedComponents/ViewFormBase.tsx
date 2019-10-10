@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import EventManager from '~/util/EventManager';
+import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 
 interface IViewFormBaseState {
     isLoading: boolean;
@@ -11,10 +11,7 @@ interface IViewFormBaseState {
 // TODO: refactor to use composition / refactor to its own store?
 // Inheritance is considered as a bad practice, react doesn't really support inheritance:
 // https://stackoverflow.com/questions/31072841/componentdidmount-method-not-triggered-when-using-inherited-es6-react-class
-class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
-    Props,
-    State
-> {
+class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Props, State> {
     // TODO: remove
     componentDidMount() {
         EventManager.on('geometryChange', this.enableEditing);
@@ -25,16 +22,9 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
         EventManager.off('geometryChange', this.enableEditing);
     }
 
-    private _validateUsingModel = (
-        validationModel: object,
-        validationEntity: any
-    ) => {
+    private _validateUsingModel = (validationModel: object, validationEntity: any) => {
         Object.entries(validationModel).forEach(([property, validatorRule]) => {
-            this.validateProperty(
-                validatorRule,
-                property,
-                validationEntity[property]
-            );
+            this.validateProperty(validatorRule, property, validationEntity[property]);
         });
     };
 
@@ -44,31 +34,18 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<
         );
     };
 
-    protected validateAllProperties = (
-        validationModel: object,
-        validationEntity: any
-    ) => {
+    protected validateAllProperties = (validationModel: object, validationEntity: any) => {
         this._validateUsingModel(validationModel, validationEntity);
     };
 
-    protected validateProperty = (
-        validatorRule: string,
-        property: string,
-        value: any
-    ) => {
+    protected validateProperty = (validatorRule: string, property: string, value: any) => {
         if (!validatorRule) return;
 
-        const validatorResult: IValidationResult = FormValidator.validate(
-            value,
-            validatorRule
-        );
+        const validatorResult: IValidationResult = FormValidator.validate(value, validatorRule);
         this.setValidatorResult(property, validatorResult);
     };
 
-    protected setValidatorResult = (
-        property: string,
-        validatorResult: IValidationResult
-    ) => {
+    protected setValidatorResult = (property: string, validatorResult: IValidationResult) => {
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         invalidPropertiesMap[property] = validatorResult;
         this.setState({

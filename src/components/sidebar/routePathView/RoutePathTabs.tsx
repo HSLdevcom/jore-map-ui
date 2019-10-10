@@ -1,6 +1,6 @@
-import React from 'react';
 import classnames from 'classnames';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
+import React from 'react';
 import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import * as s from './routePathTabs.scss';
 
@@ -21,8 +21,7 @@ class RoutePathTabs extends React.Component<IRoutePathTabsProps> {
                 <div
                     className={classnames(
                         s.routePathTabButton,
-                        this.props.routePathStore!.activeTab ===
-                            RoutePathViewTab.Info
+                        this.props.routePathStore!.activeTab === RoutePathViewTab.Info
                             ? s.selected
                             : undefined
                     )}
@@ -33,8 +32,7 @@ class RoutePathTabs extends React.Component<IRoutePathTabsProps> {
                 <div
                     className={classnames(
                         s.routePathTabButton,
-                        this.props.routePathStore!.activeTab ===
-                            RoutePathViewTab.List
+                        this.props.routePathStore!.activeTab === RoutePathViewTab.List
                             ? s.selected
                             : undefined
                     )}

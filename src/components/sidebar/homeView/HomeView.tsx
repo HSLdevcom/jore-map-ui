@@ -1,13 +1,13 @@
-import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { SearchStore } from '~/stores/searchStore';
-import { RoutePathStore } from '~/stores/routePathStore';
+import React from 'react';
 import TransitType from '~/enums/transitType';
+import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import SearchInput from '../../shared/searchView/SearchInput';
+import { RoutePathStore } from '~/stores/routePathStore';
+import { SearchStore } from '~/stores/searchStore';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
+import SearchInput from '../../shared/searchView/SearchInput';
 import SearchResults from '../../shared/searchView/SearchResults';
 import EntityTypeToggles from './EntityTypeToggles';
 import * as s from './homeView.scss';
@@ -42,17 +42,12 @@ class HomeView extends React.Component<IHomeViewProps> {
                 <EntityTypeToggles />
                 <TransitToggleButtonBar
                     toggleSelectedTransitType={this.toggleTransitType}
-                    selectedTransitTypes={
-                        this.props.searchStore!.selectedTransitTypes
-                    }
+                    selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
                     disabled={!this.props.searchStore!.isSearchingForLines}
                     blurred={!this.props.searchStore!.isSearchingForLines}
                 />
                 <SearchResults />
-                <div
-                    className={s.largeButton}
-                    onClick={this.redirectToNewLineView}
-                >
+                <div className={s.largeButton} onClick={this.redirectToNewLineView}>
                     Luo uusi linja
                 </div>
             </div>

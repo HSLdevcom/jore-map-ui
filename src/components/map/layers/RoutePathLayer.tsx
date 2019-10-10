@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import Moment from 'moment';
 import { observer } from 'mobx-react';
+import Moment from 'moment';
+import React, { Component } from 'react';
 import { IRoutePath } from '~/models';
-import routeBuilder from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import routeBuilder from '~/routing/routeBuilder';
+import subSites from '~/routing/subSites';
 import RoutePathLinkLayer from './RoutePathLinkLayer';
 
 interface RoutePathLayerProps {
@@ -18,12 +18,11 @@ interface RoutePathLayerProps {
 
 @observer
 class RoutePathLayer extends Component<RoutePathLayerProps> {
-    private openLinkView = (routePath: IRoutePath) => (
-        routePathLinkId: string
-    ) => {
+    private openLinkView = (routePath: IRoutePath) => (routePathLinkId: string) => {
         const routePathViewLink = routeBuilder
             .to(subSites.routePath)
-            .toTarget(':id',
+            .toTarget(
+                ':id',
                 [
                     routePath.routeId,
                     Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),

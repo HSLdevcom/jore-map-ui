@@ -1,5 +1,5 @@
-import IExternalCodeListItem from '~/models/externals/IExternalCodeListItem';
 import ICodeListItem from '~/models/ICodeListItem';
+import IExternalCodeListItem from '~/models/externals/IExternalCodeListItem';
 
 class CodeListFactory {
     public static createCodeListItem = (

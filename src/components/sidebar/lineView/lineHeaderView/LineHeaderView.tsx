@@ -1,25 +1,25 @@
-import React from 'react';
 import classnames from 'classnames';
+import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
-import { observer, inject } from 'mobx-react';
+import React from 'react';
 import { match } from 'react-router';
-import { ErrorStore } from '~/stores/errorStore';
-import { AlertStore } from '~/stores/alertStore';
-import InputContainer from '~/components/controls/InputContainer';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
-import navigator from '~/routing/navigator';
-import { ILineHeader } from '~/models';
-import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
-import { IValidationResult } from '~/validation/FormValidator';
-import ButtonType from '~/enums/buttonType';
 import { Button } from '~/components/controls';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
+import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import ButtonType from '~/enums/buttonType';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
+import { ILineHeader } from '~/models';
+import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
+import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import LineHeaderService from '~/services/lineHeaderService';
+import { AlertStore } from '~/stores/alertStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderStore } from '~/stores/lineHeaderStore';
+import { IValidationResult } from '~/validation/FormValidator';
 import SidebarHeader from '../../SidebarHeader';
 import * as s from './lineHeaderView.scss';
 
@@ -40,10 +40,7 @@ interface ILineHeaderViewState {
 
 @inject('lineHeaderStore', 'errorStore', 'alertStore')
 @observer
-class LineHeaderView extends ViewFormBase<
-    ILineHeaderViewProps,
-    ILineHeaderViewState
-> {
+class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewState> {
     constructor(props: ILineHeaderViewProps) {
         super(props);
         this.state = {
@@ -60,10 +57,7 @@ class LineHeaderView extends ViewFormBase<
     }
 
     componentDidUpdate(prevProps: ILineHeaderViewProps) {
-        if (
-            this.props.match!.params.startDate !==
-            prevProps.match!.params.startDate
-        ) {
+        if (this.props.match!.params.startDate !== prevProps.match!.params.startDate) {
             this.initialize();
         }
     }
@@ -100,8 +94,7 @@ class LineHeaderView extends ViewFormBase<
         // if is editing, filter the current lineHeader date out from reserved dates
         if (!this.props.isNewLineHeader) {
             reservedStartDates = reservedStartDates.filter(
-                (startDate: string) =>
-                    startDate !== Moment(lineHeader!.startDate).format()
+                (startDate: string) => startDate !== Moment(lineHeader!.startDate).format()
             );
         }
 
@@ -118,15 +111,10 @@ class LineHeaderView extends ViewFormBase<
             await this.fetchLine(lineId, Moment(startDate).format());
         } else {
             try {
-                const newLineHeader = LineHeaderFactory.createNewLineHeader(
-                    lineId
-                );
+                const newLineHeader = LineHeaderFactory.createNewLineHeader(lineId);
                 this.props.lineHeaderStore!.setLineHeader(newLineHeader);
             } catch (e) {
-                this.props.errorStore!.addError(
-                    'Uuden linjan nimen luonti epäonnistui',
-                    e
-                );
+                this.props.errorStore!.addError('Uuden linjan nimen luonti epäonnistui', e);
             }
         }
     };
@@ -139,17 +127,11 @@ class LineHeaderView extends ViewFormBase<
 
     private fetchLine = async (lineId: string, startDate: string) => {
         try {
-            const lineHeader = await LineHeaderService.fetchLineHeader(
-                lineId,
-                startDate
-            );
+            const lineHeader = await LineHeaderService.fetchLineHeader(lineId, startDate);
 
             this.props.lineHeaderStore!.setLineHeader(lineHeader);
         } catch (e) {
-            this.props.errorStore!.addError(
-                'Linja otsikon haku epäonnistui.',
-                e
-            );
+            this.props.errorStore!.addError('Linja otsikon haku epäonnistui.', e);
         }
     };
 
@@ -166,8 +148,7 @@ class LineHeaderView extends ViewFormBase<
 
         const lineHeader = this.props.lineHeaderStore!.lineHeader;
         const isStartDateChanged = lineHeader!.originalStartDate
-            ? lineHeader!.startDate.toDateString() !==
-              lineHeader!.originalStartDate!.toDateString()
+            ? lineHeader!.startDate.toDateString() !== lineHeader!.originalStartDate!.toDateString()
             : false;
 
         try {
@@ -203,21 +184,12 @@ class LineHeaderView extends ViewFormBase<
         navigator.replace(lineHeaderViewLink);
     };
 
-    private onChangeLineHeaderProperty = (property: keyof ILineHeader) => (
-        value: any
-    ) => {
+    private onChangeLineHeaderProperty = (property: keyof ILineHeader) => (value: any) => {
         this.props.lineHeaderStore!.updateLineHeaderProperty(property, value);
-        this.validateProperty(
-            lineHeaderValidationModel[property],
-            property,
-            value
-        );
+        this.validateProperty(lineHeaderValidationModel[property], property, value);
     };
 
-    private changeDates = (
-        startDate: Date | undefined,
-        endDate: Date | undefined
-    ) => {
+    private changeDates = (startDate: Date | undefined, endDate: Date | undefined) => {
         this.onChangeLineHeaderProperty('startDate')(startDate);
         this.onChangeLineHeaderProperty('endDate')(endDate);
         this.validateDates();
@@ -229,10 +201,7 @@ class LineHeaderView extends ViewFormBase<
         const startDate = lineHeader!.startDate;
         const endDate = lineHeader!.endDate;
         // is startDate (for current lineId) unique?
-        if (
-            startDate &&
-            this.state.reservedStartDates.includes(Moment(startDate).format())
-        ) {
+        if (startDate && this.state.reservedStartDates.includes(Moment(startDate).format())) {
             const validationResult: IValidationResult = {
                 isValid: false,
                 errorMessage: `Asetettu voimaanastumispäivä on jo käytössä toisella tälle linjalle kuuluvalla linjan otsikolla.`
@@ -240,11 +209,7 @@ class LineHeaderView extends ViewFormBase<
             this.setValidatorResult('startDate', validationResult);
         }
         // is end date before start date?
-        else if (
-            startDate &&
-            endDate &&
-            endDate.getTime() < startDate.getTime()
-        ) {
+        else if (startDate && endDate && endDate.getTime() < startDate.getTime()) {
             const validationResult: IValidationResult = {
                 isValid: false,
                 errorMessage: `Viimeinen voimassaolopäivä ei voi olla ennen voimaanastumispäivää.`
@@ -296,9 +261,7 @@ class LineHeaderView extends ViewFormBase<
 
         const newLineHeaderLink = routeBuilder
             .to(SubSites.newLineHeader, {
-                startDate: new Date(
-                    lineHeader!.originalStartDate!
-                ).toISOString()
+                startDate: new Date(lineHeader!.originalStartDate!).toISOString()
             })
             .toTarget(':id', lineId)
             .toLink();
@@ -309,9 +272,7 @@ class LineHeaderView extends ViewFormBase<
     render() {
         if (this.state.isLoading) {
             return (
-                <div
-                    className={classnames(s.lineHeaderView, s.loaderContainer)}
-                >
+                <div className={classnames(s.lineHeaderView, s.loaderContainer)}>
                     <Loader size={LoaderSize.MEDIUM} />
                 </div>
             );
@@ -334,10 +295,7 @@ class LineHeaderView extends ViewFormBase<
                     {this.renderLineHeaderViewHeader()}
                     <div className={classnames(s.lineHeaderForm, s.form)}>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='LINJAN TUNNUS'
-                                value={lineHeader.lineId}
-                            />
+                            <TextContainer label='LINJAN TUNNUS' value={lineHeader.lineId} />
                         </div>
                         <div className={s.flexRow}>
                             <InputContainer
@@ -346,9 +304,7 @@ class LineHeaderView extends ViewFormBase<
                                 type='date'
                                 value={lineHeader.startDate}
                                 onChange={this.onChangeStartDate}
-                                validationResult={
-                                    invalidPropertiesMap['startDate']
-                                }
+                                validationResult={invalidPropertiesMap['startDate']}
                             />
                             <InputContainer
                                 disabled={isEditingDisabled}
@@ -356,9 +312,7 @@ class LineHeaderView extends ViewFormBase<
                                 type='date'
                                 value={lineHeader.endDate}
                                 onChange={this.onChangeEndDate}
-                                validationResult={
-                                    invalidPropertiesMap['endDate']
-                                }
+                                validationResult={invalidPropertiesMap['endDate']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -367,18 +321,14 @@ class LineHeaderView extends ViewFormBase<
                                 label='LINJAN NIMI'
                                 value={lineHeader.lineNameFi}
                                 onChange={onChange('lineNameFi')}
-                                validationResult={
-                                    invalidPropertiesMap['lineNameFi']
-                                }
+                                validationResult={invalidPropertiesMap['lineNameFi']}
                             />
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LINJAN LYHYT NIMI'
                                 value={lineHeader.lineShortNameFi}
                                 onChange={onChange('lineShortNameFi')}
-                                validationResult={
-                                    invalidPropertiesMap['lineShortNameFi']
-                                }
+                                validationResult={invalidPropertiesMap['lineShortNameFi']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -387,18 +337,14 @@ class LineHeaderView extends ViewFormBase<
                                 label='LINJAN NIMI RUOTSIKSI'
                                 value={lineHeader.lineNameSw}
                                 onChange={onChange('lineNameSw')}
-                                validationResult={
-                                    invalidPropertiesMap['lineNameSw']
-                                }
+                                validationResult={invalidPropertiesMap['lineNameSw']}
                             />
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LINJAN LYHYT NIMI RUOTSIKSI'
                                 value={lineHeader.lineShortNameSw}
                                 onChange={onChange('lineShortNameSw')}
-                                validationResult={
-                                    invalidPropertiesMap['lineShortNameSw']
-                                }
+                                validationResult={invalidPropertiesMap['lineShortNameSw']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -407,18 +353,14 @@ class LineHeaderView extends ViewFormBase<
                                 label='LÄHTÖPAIKKA SUUNNASSA 1'
                                 value={lineHeader.lineStartPlace1Fi}
                                 onChange={onChange('lineStartPlace1Fi')}
-                                validationResult={
-                                    invalidPropertiesMap['lineStartPlace1Fi']
-                                }
+                                validationResult={invalidPropertiesMap['lineStartPlace1Fi']}
                             />
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LÄHTÖPAIKKA SUUNNASSA 1 RUOTSIKSI'
                                 value={lineHeader.lineStartPlace1Sw}
                                 onChange={onChange('lineStartPlace1Sw')}
-                                validationResult={
-                                    invalidPropertiesMap['lineStartPlace1Sw']
-                                }
+                                validationResult={invalidPropertiesMap['lineStartPlace1Sw']}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -427,25 +369,18 @@ class LineHeaderView extends ViewFormBase<
                                 label='LÄHTÖPAIKKA SUUNNASSA 2'
                                 value={lineHeader.lineStartPlace2Fi}
                                 onChange={onChange('lineStartPlace2Fi')}
-                                validationResult={
-                                    invalidPropertiesMap['lineStartPlace2Fi']
-                                }
+                                validationResult={invalidPropertiesMap['lineStartPlace2Fi']}
                             />
                             <InputContainer
                                 disabled={isEditingDisabled}
                                 label='LÄHTÖPAIKKA SUUNNASSA 2 RUOTSIKSI'
                                 value={lineHeader.lineStartPlace2Sw}
                                 onChange={onChange('lineStartPlace2Sw')}
-                                validationResult={
-                                    invalidPropertiesMap['lineStartPlace2Sw']
-                                }
+                                validationResult={invalidPropertiesMap['lineStartPlace2Sw']}
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='MUOKANNUT'
-                                value={lineHeader.modifiedBy}
-                            />
+                            <TextContainer label='MUOKANNUT' value={lineHeader.modifiedBy} />
                             <TextContainer
                                 label='MUOKATTU PVM'
                                 isTimeIncluded={true}

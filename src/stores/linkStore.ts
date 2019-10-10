@@ -1,10 +1,10 @@
-import { action, computed, observable } from 'mobx';
-import _ from 'lodash';
-import { ILink, INode } from '~/models';
 import { LatLng } from 'leaflet';
+import _ from 'lodash';
+import { action, computed, observable } from 'mobx';
+import { ILink, INode } from '~/models';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import LeafletUtils from '~/util/leafletUtils';
 import { roundLatLngs } from '~/util/geomHelper';
+import LeafletUtils from '~/util/leafletUtils';
 
 export interface UndoState {
     link: ILink;
@@ -125,9 +125,7 @@ export class LinkStore {
                 {
                     ...this.link,
                     // Remapping geometry since edit initialization has added handlers
-                    geometry: this.link!.geometry.map(
-                        coor => new LatLng(coor.lat, coor.lng)
-                    )
+                    geometry: this.link!.geometry.map(coor => new LatLng(coor.lat, coor.lng))
                 },
                 this._oldLink
             )

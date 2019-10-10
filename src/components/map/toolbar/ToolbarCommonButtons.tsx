@@ -1,11 +1,11 @@
-import React from 'react';
-import { FiPrinter, FiExternalLink, FiPlus } from 'react-icons/fi';
-import { IoMdUndo, IoMdRedo } from 'react-icons/io';
-import { TiLink } from 'react-icons/ti';
 import { observer } from 'mobx-react';
-import ToolbarStore from '~/stores/toolbarStore';
+import React from 'react';
+import { FiExternalLink, FiPlus, FiPrinter } from 'react-icons/fi';
+import { IoMdRedo, IoMdUndo } from 'react-icons/io';
+import { TiLink } from 'react-icons/ti';
 import ToolbarTool from '~/enums/toolbarTool';
 import Navigator from '~/routing/navigator';
+import ToolbarStore from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
 import MapControlButton from '../mapControls/MapControlButton';
 import * as s from './toolbarToolButtons.scss';
@@ -58,24 +58,16 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                     {this.props.hasWriteAccess && (
                         <>
                             <MapControlButton
-                                onClick={this.selectTool(
-                                    ToolbarTool.AddNetworkNode
-                                )}
-                                isActive={ToolbarStore.isSelected(
-                                    ToolbarTool.AddNetworkNode
-                                )}
+                                onClick={this.selectTool(ToolbarTool.AddNetworkNode)}
+                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkNode)}
                                 isDisabled={false}
                                 label='Lisää solmu'
                             >
                                 <FiPlus />
                             </MapControlButton>
                             <MapControlButton
-                                onClick={this.selectTool(
-                                    ToolbarTool.AddNetworkLink
-                                )}
-                                isActive={ToolbarStore.isSelected(
-                                    ToolbarTool.AddNetworkLink
-                                )}
+                                onClick={this.selectTool(ToolbarTool.AddNetworkLink)}
+                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkLink)}
                                 isDisabled={false}
                                 label='Lisää linkki'
                             >

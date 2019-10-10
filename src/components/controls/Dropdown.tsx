@@ -1,7 +1,7 @@
+import _ from 'lodash';
+import { observer } from 'mobx-react';
 import React from 'react';
 import Select from 'react-select';
-import { observer } from 'mobx-react';
-import _ from 'lodash';
 import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './dropdown.scss';
 
@@ -91,9 +91,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         const displayedItems = _.cloneDeep(
             this.props.items
                 .filter((dropdownItem: IDropdownItem) =>
-                    dropdownItem.label
-                        .toLowerCase()
-                        .includes(searchString.toLowerCase())
+                    dropdownItem.label.toLowerCase().includes(searchString.toLowerCase())
                 )
                 .slice(0, MAX_DISPLAYED)
         );
@@ -122,9 +120,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         // Push selectedItem into dropdownItemList if it doesn't exist in dropdownItemList
         let selectedItem: IDropdownItem | undefined;
         if (props.selected) {
-            selectedItem = this.props.items.find(
-                item => item.value === props.selected!.trim()
-            );
+            selectedItem = this.props.items.find(item => item.value === props.selected!.trim());
             if (!selectedItem) {
                 selectedItem = {
                     label: props.selected,
@@ -140,21 +136,13 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
                     {props.label && (
-                        <div
-                            className={
-                                props.darkerInputLabel
-                                    ? s.darkerInputLabel
-                                    : s.inputLabel
-                            }
-                        >
+                        <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
                             {props.label}
                         </div>
                     )}
                     {props.disabled ? (
                         <div className={s.disableEditing}>
-                            {Boolean(selectedItem)
-                                ? selectedItem!.label
-                                : EMPTY_VALUE_LABEL}
+                            {Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}
                         </div>
                     ) : (
                         <>
