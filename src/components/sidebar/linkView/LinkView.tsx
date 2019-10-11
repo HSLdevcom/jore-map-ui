@@ -327,7 +327,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 onChange={this.onChangeLinkProperty('municipalityCode')}
                                 disabled={isEditingDisabled}
                                 items={this.props.codeListStore!.getDropdownItemList(
-                                    'Kunta (ris/pys)'
+                                    'Kunta (KELA)'
                                 )}
                                 selected={link.municipalityCode}
                                 label='KUNTA'

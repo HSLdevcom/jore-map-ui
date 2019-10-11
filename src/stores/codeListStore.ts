@@ -10,7 +10,7 @@ export type codeListName =
     | 'LinjanKorvaavaTyyppi'
     | 'Kyllä/Ei'
     | 'Solmutyyppi (P/E)'
-    | 'Kunta (ris/pys)'
+    | 'Kunta (KELA)'
     | 'Lyhyttunnus'
     | 'Suunta'
     | 'Ajantasaus pysakki'
