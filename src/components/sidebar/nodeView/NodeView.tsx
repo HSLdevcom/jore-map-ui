@@ -63,7 +63,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
-        super.componentDidMount();
         const params = this.props.match!.params.id;
         if (this.props.isNewNode) {
             this.initNewNode(params);
@@ -90,7 +89,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount();
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
         this.isEditingDisabledListener();
@@ -178,10 +176,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.setIsEditingDisabled(isEditingDisabled);
     };
 
-    private toggleIsEditingEnabled = () => {
-        this.props.nodeStore!.toggleIsEditingDisabled();
-    };
-
     private onChangeIsEditingDisabled = () => {
         this.clearInvalidPropertiesMap();
         if (this.props.nodeStore!.isEditingDisabled) {
@@ -257,7 +251,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         isEditButtonVisible={!this.props.isNewNode}
                         shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
-                        onEditButtonClick={this.toggleIsEditingEnabled}
+                        onEditButtonClick={this.props.nodeStore!.toggleIsEditingDisabled}
                     >
                         Solmu {node.id}
                     </SidebarHeader>

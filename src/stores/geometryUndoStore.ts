@@ -8,6 +8,10 @@ class GeometryUndoStore<UndoObject> {
         this.clear();
     }
 
+    public getUndoObjectsLength = () => {
+        return this._undoObjects.length;
+    };
+
     public addItem = (undoObject: UndoObject) => {
         if (this._undoObjects.length !== 0) {
             EventManager.trigger('geometryChange');

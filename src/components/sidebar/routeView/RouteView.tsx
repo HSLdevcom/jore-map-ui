@@ -52,12 +52,10 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     }
 
     componentDidMount() {
-        super.componentDidMount();
         this.initialize();
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount();
         this.props.routeStore!.clear();
     }
 
