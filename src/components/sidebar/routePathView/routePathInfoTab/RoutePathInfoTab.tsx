@@ -1,3 +1,4 @@
+import { autorun, reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import CalculatedInputField from '~/components/controls/CalculatedInputField';
@@ -30,16 +31,48 @@ interface IRoutePathInfoTabProps {
     setValidatorResult: (property: string, validationResult: IValidationResult) => void;
 }
 
+interface IRoutePathInfoTabState {
+    calculatedValue: number | null;
+}
+
 @inject('routePathStore', 'codeListStore')
 @observer
-class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
+class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState> {
+    isRoutePathLinksChangedListener: IReactionDisposer;
     existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
+    constructor(props: IRoutePathInfoTabProps) {
+        super(props);
+        this.state = {
+            calculatedValue: null
+        };
+    }
+
+    async componentWillMount() {
+        this.updateCalculatedLength();
+    }
 
     componentDidMount() {
         const queryParams = navigator.getQueryParamValues();
         const routeId = queryParams[QueryParams.routeId];
         this.fetchExistingPrimaryKeys(routeId);
+
+        this.isRoutePathLinksChangedListener = reaction(
+            () => this.props.routePathStore!.routePath!.routePathLinks.length,
+            this.updateCalculatedLength
+        );
+        autorun(() => this.updateCalculatedLength);
     }
+
+    componentWillUnmount() {
+        this.isRoutePathLinksChangedListener();
+    }
+
+    private updateCalculatedLength = async () => {
+        const calculatedValue = await this.getCalculatedLength();
+        this.setState({
+            calculatedValue
+        });
+    };
 
     private redirectToNewRoutePathView = () => {
         const routePath = this.props.routePathStore!.routePath;
@@ -228,6 +261,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 useCalculatedValue={this.updateLength}
                                 validationResult={invalidPropertiesMap['length']}
                                 value={routePath.length}
+                                calculatedValue={this.state.calculatedValue}
                             />
                         </div>
                         <div className={s.flexRow}>

@@ -8,6 +8,7 @@ import * as s from './calculatedInputField.scss';
 interface ICalculatedInputFieldProps {
     label: string;
     value: number;
+    calculatedValue: number | null;
     isDisabled: boolean;
     validationResult?: IValidationResult;
     onChange: (value: number) => void;
@@ -31,6 +32,7 @@ const CalculatedInputField = (props: ICalculatedInputFieldProps) => (
             className={s.calulateButton}
         >
             Laske
+            <span>{props.calculatedValue ? `${props.calculatedValue}m` : ''}</span>
         </Button>
     </div>
 );
