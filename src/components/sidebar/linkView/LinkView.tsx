@@ -71,12 +71,12 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.props.mapStore!.setMapBounds(bounds);
             this.validateLink();
         }
-        this.setIsEditingDisabled(!this.props.isNewLink);
+        this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
         this.isEditingDisabledListener = reaction(
             () => this.props.linkStore!.isEditingDisabled,
             this.onChangeIsEditingDisabled
         );
-        EventManager.on('geometryChange', () => this.setIsEditingDisabled(false));
+        EventManager.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
     componentDidUpdate(prevProps: ILinkViewProps) {
@@ -92,7 +92,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     componentWillUnmount() {
         this.props.linkStore!.clear();
         this.isEditingDisabledListener();
-        EventManager.off('geometryChange', () => this.setIsEditingDisabled(false));
+        EventManager.off('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
     private initExistingLink = async () => {
@@ -168,11 +168,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.navigateToNewLink();
         } else {
             this.setState({ isLoading: false });
+            this.props.linkStore!.setIsEditingDisabled(true);
         }
-    };
-
-    private setIsEditingDisabled = (isEditingDisabled: boolean) => {
-        this.props.linkStore!.setIsEditingDisabled(isEditingDisabled);
     };
 
     private onChangeIsEditingDisabled = () => {
