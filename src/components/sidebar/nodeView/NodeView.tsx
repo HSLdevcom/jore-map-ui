@@ -96,11 +96,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
         this.isEditingDisabledListener();
-        this.removeStopPropertyListeners();
+        this.removeNodePropertyListeners();
         EventManager.off('geometryChange', () => this.setIsEditingDisabled(false));
     }
 
-    private createStopPropertyListeners = () => {
+    private createNodePropertyListeners = () => {
         const nodeStore = this.props.nodeStore!;
         if (!nodeStore!.node) return;
 
@@ -120,7 +120,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         );
     };
 
-    private removeStopPropertyListeners = () => {
+    private removeNodePropertyListeners = () => {
         this.nodePropertyListeners.forEach((listener: IReactionDisposer) => listener());
         this.nodePropertyListeners = [];
     };
@@ -131,7 +131,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const newNode = NodeFactory.createNewNode(coordinate);
         this.props.nodeStore!.init(newNode, []);
         this.validateNode();
-        this.createStopPropertyListeners();
+        this.createNodePropertyListeners();
     };
 
     private initExistingNode = async (selectedNodeId: string) => {
@@ -146,7 +146,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                 this.props.nodeStore!.init(node, links);
             }
             this.validateNode();
-            this.createStopPropertyListeners();
+            this.createNodePropertyListeners();
         }
         this.setState({ isLoading: false });
     };
