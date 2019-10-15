@@ -32,7 +32,7 @@ const CalculatedInputField = (props: ICalculatedInputFieldProps) => (
             className={s.calulateButton}
         >
             Laske
-            <span>{props.calculatedValue ? `${props.calculatedValue}m` : ''}</span>
+            <span>{props.calculatedValue ? `${props.calculatedValue}m` : '0m'}</span>
         </Button>
     </div>
 );
