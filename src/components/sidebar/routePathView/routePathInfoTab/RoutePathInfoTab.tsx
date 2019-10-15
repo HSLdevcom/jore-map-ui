@@ -38,8 +38,10 @@ interface IRoutePathInfoTabState {
 @inject('routePathStore', 'codeListStore')
 @observer
 class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState> {
-    isRoutePathLinksChangedListener: IReactionDisposer;
-    existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
+    private isRoutePathLinksChangedListener: IReactionDisposer;
+    private existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
+    private mounted: boolean;
+
     constructor(props: IRoutePathInfoTabProps) {
         super(props);
         this.state = {
@@ -57,21 +59,30 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         this.fetchExistingPrimaryKeys(routeId);
 
         this.isRoutePathLinksChangedListener = reaction(
-            () => this.props.routePathStore!.routePath!.routePathLinks.length,
+            () =>
+                this.props.routePathStore!.routePath &&
+                this.props.routePathStore!.routePath!.routePathLinks.length,
             this.updateCalculatedLength
         );
         autorun(() => this.updateCalculatedLength);
+        this.mounted = true;
     }
 
     componentWillUnmount() {
         this.isRoutePathLinksChangedListener();
+        this.mounted = false;
     }
 
     private updateCalculatedLength = async () => {
+        if (!this.props.routePathStore!.routePath) {
+            return;
+        }
         const calculatedValue = await this.getCalculatedLength();
-        this.setState({
-            calculatedValue
-        });
+        if (this.mounted) {
+            this.setState({
+                calculatedValue
+            });
+        }
     };
 
     private redirectToNewRoutePathView = () => {
