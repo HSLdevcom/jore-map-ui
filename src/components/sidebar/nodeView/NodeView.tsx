@@ -63,19 +63,18 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentDidMount() {
-        super.componentDidMount();
         const params = this.props.match!.params.id;
         if (this.props.isNewNode) {
             this.initNewNode(params);
         } else {
             this.initExistingNode(params);
         }
-        this.setIsEditingDisabled(!this.props.isNewNode);
+        this.props.nodeStore!.setIsEditingDisabled(!this.props.isNewNode);
         this.isEditingDisabledListener = reaction(
             () => this.props.nodeStore!.isEditingDisabled,
             this.onChangeIsEditingDisabled
         );
-        EventManager.on('geometryChange', () => this.setIsEditingDisabled(false));
+        EventManager.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
     componentDidUpdate(prevProps: INodeViewProps) {
@@ -90,11 +89,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount();
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
         this.isEditingDisabledListener();
-        EventManager.off('geometryChange', () => this.setIsEditingDisabled(false));
+        EventManager.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
     private initNewNode = async (params: any) => {
@@ -172,14 +170,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
         if (preventSetState) return;
         this.setState({ isLoading: false });
-    };
-
-    private setIsEditingDisabled = (isEditingDisabled: boolean) => {
-        this.props.nodeStore!.setIsEditingDisabled(isEditingDisabled);
-    };
-
-    private toggleIsEditingEnabled = () => {
-        this.props.nodeStore!.toggleIsEditingDisabled();
+        this.props.nodeStore!.setIsEditingDisabled(true);
     };
 
     private onChangeIsEditingDisabled = () => {
@@ -257,7 +248,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         isEditButtonVisible={!this.props.isNewNode}
                         shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
                         isEditing={!isEditingDisabled}
-                        onEditButtonClick={this.toggleIsEditingEnabled}
+                        onEditButtonClick={this.props.nodeStore!.toggleIsEditingDisabled}
                     >
                         Solmu {node.id}
                     </SidebarHeader>

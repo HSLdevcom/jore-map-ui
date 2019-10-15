@@ -69,11 +69,13 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderDashedLines = (routePathLink: IRoutePathLink) => {
         return [
             <DashedLine
+                key={'startNodeDashedLine'}
                 startPoint={routePathLink.geometry[0]}
                 endPoint={routePathLink.startNode.coordinates}
                 color={'#efc210'}
             />,
             <DashedLine
+                key={'endNodeDashedLine'}
                 startPoint={routePathLink.geometry[routePathLink.geometry.length - 1]}
                 endPoint={routePathLink.endNode.coordinates}
                 color={'#efc210'}

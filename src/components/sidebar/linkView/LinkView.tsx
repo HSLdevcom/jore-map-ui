@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import L from 'leaflet';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
@@ -21,6 +22,7 @@ import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
+import EventManager from '~/util/EventManager';
 import { Button, Dropdown, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';
@@ -38,26 +40,26 @@ interface ILinkViewProps extends RouteComponentProps<any> {
 
 interface ILinkViewState {
     isLoading: boolean;
-    isEditingDisabled: boolean;
+    isEditingDisabled: boolean; // TODO: remove
     invalidPropertiesMap: object;
 }
 
 @inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
+    private isEditingDisabledListener: IReactionDisposer;
     private existingTransitTypes: TransitType[] = [];
 
     constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: !props.isNewLink,
+            isEditingDisabled: !props.isNewLink, // TODO: remove
             invalidPropertiesMap: {}
         };
     }
 
     async componentDidMount() {
-        super.componentDidMount();
         if (this.props.isNewLink) {
             await this.initNewLink();
         } else {
@@ -69,6 +71,12 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.props.mapStore!.setMapBounds(bounds);
             this.validateLink();
         }
+        this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
+        this.isEditingDisabledListener = reaction(
+            () => this.props.linkStore!.isEditingDisabled,
+            this.onChangeIsEditingDisabled
+        );
+        EventManager.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
     componentDidUpdate(prevProps: ILinkViewProps) {
@@ -82,8 +90,9 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount();
         this.props.linkStore!.clear();
+        this.isEditingDisabledListener();
+        EventManager.off('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
     private initExistingLink = async () => {
@@ -159,6 +168,17 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.navigateToNewLink();
         } else {
             this.setState({ isLoading: false });
+            this.props.linkStore!.setIsEditingDisabled(true);
+        }
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        this.clearInvalidPropertiesMap();
+        const linkStore = this.props.linkStore;
+        if (linkStore!.isEditingDisabled) {
+            linkStore!.resetChanges();
+        } else {
+            this.validateLink();
         }
     };
 
@@ -177,18 +197,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             .toTarget(':id', nodeId)
             .toLink();
         navigator.goTo(editNetworkLink);
-    };
-
-    private toggleIsEditingEnabled = () => {
-        const linkStore = this.props.linkStore;
-        const isEditingDisabled = this.state.isEditingDisabled;
-        if (!isEditingDisabled) {
-            linkStore!.resetChanges();
-        } else {
-            linkStore!.updateLinkGeometry(linkStore!.link.geometry);
-            this.validateLink();
-        }
-        this.toggleIsEditingDisabled();
     };
 
     private validateLink = () => {
@@ -224,7 +232,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         // TODO: show some indicator to user of an empty page
         if (!link) return null;
 
-        const isEditingDisabled = this.state.isEditingDisabled;
+        const isEditingDisabled = this.props.linkStore!.isEditingDisabled;
         const startNode = link!.startNode;
         const endNode = link!.endNode;
 
@@ -232,7 +240,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
         const isSaveButtonDisabled =
             !transitType ||
-            this.state.isEditingDisabled ||
+            isEditingDisabled ||
             !this.props.linkStore!.isDirty ||
             (this.props.isNewLink && this.transitTypeAlreadyExists(transitType)) ||
             !this.isFormValid();
@@ -252,7 +260,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         isEditButtonVisible={!this.props.isNewLink}
                         isEditing={!isEditingDisabled}
                         shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
-                        onEditButtonClick={this.toggleIsEditingEnabled}
+                        onEditButtonClick={this.props.linkStore!.toggleIsEditingDisabled}
                     >
                         Linkki
                     </SidebarHeader>
