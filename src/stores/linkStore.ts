@@ -17,6 +17,7 @@ export class LinkStore {
     // variable for creating new link:
     @observable private _startMarkerCoordinates: LatLng | null;
     @observable private _isLinkGeometryEditable: boolean;
+    @observable private _isEditingDisabled: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -25,6 +26,7 @@ export class LinkStore {
         this._oldLink = null;
         this._startMarkerCoordinates = null;
         this._isLinkGeometryEditable = true;
+        this._isEditingDisabled = true;
         this._geometryUndoStore = new GeometryUndoStore();
     }
 
@@ -43,41 +45,40 @@ export class LinkStore {
         return this._startMarkerCoordinates;
     }
 
+    @computed
+    get isEditingDisabled() {
+        return this._isEditingDisabled;
+    }
+
     @action
     public init = (link: ILink, nodes: INode[]) => {
-        this.setLink(link);
-        this.setNodes(nodes);
-    };
-
-    @action
-    public setLink = (link: ILink) => {
+        this.clear();
         this._link = link;
-        const currentUndoState: UndoState = {
-            link
-        };
-        this._geometryUndoStore.addItem(currentUndoState);
-
         this.setOldLink(link);
+        this._nodes = nodes;
     };
 
     @action
     public updateLinkGeometry = (latLngs: L.LatLng[]) => {
         if (!this._link || !this._isLinkGeometryEditable) return;
 
+        if (this._geometryUndoStore.getUndoObjectsLength() === 0) {
+            // Add initial link to undoStore
+            const currentLink = _.cloneDeep(this._link);
+            const currentUndoState: UndoState = {
+                link: currentLink
+            };
+            this._geometryUndoStore.addItem(currentUndoState);
+        }
+
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = roundLatLngs(latLngs);
         this._link.geometry = roundLatLngs(latLngs);
         this._link.length = this.getCalculatedLength();
-
-        const currentUndoState: UndoState = {
+        const newUndoState: UndoState = {
             link: updatedLink
         };
-        this._geometryUndoStore.addItem(currentUndoState);
-    };
-
-    @action
-    public setNodes = (nodes: INode[]) => {
-        this._nodes = nodes;
+        this._geometryUndoStore.addItem(newUndoState);
     };
 
     @action
@@ -104,12 +105,23 @@ export class LinkStore {
     };
 
     @action
+    public setIsEditingDisabled = (isEditingDisabled: boolean) => {
+        this._isEditingDisabled = isEditingDisabled;
+    };
+
+    @action
+    public toggleIsEditingDisabled = () => {
+        this._isEditingDisabled = !this._isEditingDisabled;
+    };
+
+    @action
     public clear = () => {
         this._link = null;
         this._nodes = [];
         this._oldLink = null;
         this._startMarkerCoordinates = null;
         this._geometryUndoStore.clear();
+        this._isEditingDisabled = true;
     };
 
     @computed
@@ -134,9 +146,7 @@ export class LinkStore {
 
     @action
     public resetChanges = () => {
-        if (this._oldLink) {
-            this.setLink(this._oldLink);
-        }
+        this.init(this._oldLink!, this._nodes);
     };
 
     @action

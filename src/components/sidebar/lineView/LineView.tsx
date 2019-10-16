@@ -51,12 +51,10 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     }
 
     componentDidMount() {
-        super.componentDidMount();
         this.initialize();
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount();
         this.props.lineStore!.clear();
     }
 

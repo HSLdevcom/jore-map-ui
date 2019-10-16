@@ -99,9 +99,8 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                     linkTransitType
                 );
                 const node = await NodeService.fetchNode(nodeId);
-                this.props.linkStore!.setLink(link);
                 this.props.linkStore!.setIsLinkGeometryEditable(false);
-                this.props.linkStore!.setNodes([node]);
+                this.props.linkStore!.init(link, [node]);
                 const bounds = L.latLngBounds(link.geometry);
                 bounds.extend(node.coordinates);
                 this.props.mapStore!.setMapBounds(bounds);
