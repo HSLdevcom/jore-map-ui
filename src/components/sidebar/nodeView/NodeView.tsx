@@ -232,10 +232,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private onChangeNodeProperty = (property: keyof INode) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
-        this.validateProperty(nodeValidationModel[property], property, value);
-        if (property === 'type') {
-            this.validateNode();
-        }
     };
 
     private latChange = (previousLatLng: LatLng, coordinateType: NodeLocationType) => (
