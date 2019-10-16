@@ -1,0 +1,22 @@
+@import '../shared/styles/common';
+@import '../shared/styles/flexbox';
+@import '../shared/styles/form';
+
+.savePromptView {
+    .oldAttribute {
+        background-color: #ffeef0;
+        padding: 3px;
+        border-radius: 5px;
+    }
+
+    .newAttribute {
+        background-color: #e6ffed;
+        padding: 3px;
+        border-radius: 5px;
+    }
+
+    .arrowRight {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}

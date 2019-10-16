@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
+import SavePrompt from '~/components/overlays/SavePrompt';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -19,6 +20,7 @@ import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -36,6 +38,7 @@ interface ILinkViewProps extends RouteComponentProps<any> {
     linkStore?: LinkStore;
     mapStore?: MapStore;
     alertStore?: AlertStore;
+    confirmStore?: ConfirmStore;
 }
 
 interface ILinkViewState {
@@ -44,7 +47,7 @@ interface ILinkViewState {
     invalidPropertiesMap: object;
 }
 
-@inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore')
+@inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -170,6 +173,20 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.setState({ isLoading: false });
             this.props.linkStore!.setIsEditingDisabled(true);
         }
+    };
+
+    private renderConfirmContent = () => {
+        const currentLink = this.props.linkStore!.link;
+        const oldLink = this.props.linkStore!.oldLink;
+
+        return <SavePrompt current={currentLink} old={oldLink} />;
+    };
+
+    private savePrompt = () => {
+        const confirmStore = this.props.confirmStore!;
+        confirmStore.openConfirm(this.renderConfirmContent(), () => {
+            this.save();
+        });
     };
 
     private onChangeIsEditingDisabled = () => {
@@ -381,7 +398,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         </div>
                     </Button>
                 </div>
-                <Button type={ButtonType.SAVE} disabled={isSaveButtonDisabled} onClick={this.save}>
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                    onClick={this.savePrompt}
+                >
                     Tallenna muutokset
                 </Button>
             </div>
