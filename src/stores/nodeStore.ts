@@ -60,10 +60,11 @@ export class NodeStore {
 
     @action
     public init = (node: INode, links: ILink[]) => {
+        this.clear();
+
         const newNode = _.cloneDeep(node);
         const newLinks = _.cloneDeep(links);
 
-        this.clear();
         const currentUndoState: UndoState = {
             links: newLinks,
             node: newNode
@@ -219,6 +220,7 @@ export class NodeStore {
         this._node = null;
         this._oldNode = null;
         this._geometryUndoStore.clear();
+        this._isEditingDisabled = true;
     };
 
     @action

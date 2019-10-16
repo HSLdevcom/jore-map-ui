@@ -52,7 +52,6 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
     }
 
     componentDidMount() {
-        super.componentDidMount();
         this.initialize();
     }
 
@@ -63,7 +62,6 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount();
         this.props.lineHeaderStore!.clear();
     }
 
