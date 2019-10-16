@@ -175,18 +175,16 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         }
     };
 
-    private renderConfirmContent = () => {
-        const currentLink = this.props.linkStore!.link;
-        const oldLink = this.props.linkStore!.oldLink;
-
-        return <SavePrompt current={currentLink} old={oldLink} />;
-    };
-
     private savePrompt = () => {
         const confirmStore = this.props.confirmStore!;
-        confirmStore.openConfirm(this.renderConfirmContent(), () => {
-            this.save();
-        });
+        const currentLink = this.props.linkStore!.link;
+        const oldLink = this.props.linkStore!.oldLink;
+        confirmStore.openConfirm(
+            <SavePrompt current={currentLink} old={oldLink} type={'link'} />,
+            () => {
+                this.save();
+            }
+        );
     };
 
     private onChangeIsEditingDisabled = () => {
