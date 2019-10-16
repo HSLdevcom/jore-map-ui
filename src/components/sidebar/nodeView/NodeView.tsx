@@ -53,6 +53,7 @@ interface INodeViewState {
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private isEditingDisabledListener: IReactionDisposer;
+    private nodePropertyListeners: IReactionDisposer[];
     constructor(props: INodeViewProps) {
         super(props);
         this.state = {
@@ -60,6 +61,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             isEditingDisabled: !props.isNewNode, // TODO: remove
             invalidPropertiesMap: {}
         };
+        this.nodePropertyListeners = [];
     }
 
     componentDidMount() {
@@ -92,8 +94,34 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
         this.isEditingDisabledListener();
+        this.removeNodePropertyListeners();
         EventManager.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
+
+    private createNodePropertyListeners = () => {
+        const nodeStore = this.props.nodeStore!;
+        if (!nodeStore!.node) return;
+
+        const node = nodeStore!.node;
+        for (const property in node!) {
+            if (Object.prototype.hasOwnProperty.call(node, property)) {
+                const listener = this.createListener(property);
+                this.nodePropertyListeners.push(listener);
+            }
+        }
+    };
+
+    private createListener = (property: string) => {
+        return reaction(
+            () => this.props.nodeStore!.node && this.props.nodeStore!.node![property],
+            this.validateNode
+        );
+    };
+
+    private removeNodePropertyListeners = () => {
+        this.nodePropertyListeners.forEach((listener: IReactionDisposer) => listener());
+        this.nodePropertyListeners = [];
+    };
 
     private initNewNode = async (params: any) => {
         const [lat, lng] = params.split(':');
@@ -101,6 +129,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const newNode = NodeFactory.createNewNode(coordinate);
         this.props.nodeStore!.init(newNode, []);
         this.validateNode();
+        this.createNodePropertyListeners();
     };
 
     private initExistingNode = async (selectedNodeId: string) => {
@@ -115,6 +144,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                 this.props.nodeStore!.init(node, links);
             }
             this.validateNode();
+            this.createNodePropertyListeners();
         }
         this.setState({ isLoading: false });
     };
@@ -189,15 +219,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private onNodeGeometryChange = (property: NodeLocationType, value: any) => {
         this.props.nodeStore!.updateNodeGeometry(property, value, NodeMeasurementType.Measured);
-        this.validateProperty(nodeValidationModel[property], property, value);
     };
 
     private onChangeNodeProperty = (property: keyof INode) => (value: any) => {
         this.props.nodeStore!.updateNode(property, value);
-        this.validateProperty(nodeValidationModel[property], property, value);
-        if (property === 'type') {
-            this.validateNode();
-        }
     };
 
     private latChange = (previousLatLng: LatLng, coordinateType: NodeLocationType) => (
@@ -302,6 +327,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     label='LATITUDE'
                                     type='number'
                                     disabled={isEditingDisabled}
+                                    validationResult={invalidPropertiesMap['coordinates']}
                                 />
                                 <InputContainer
                                     value={node.coordinates.lng}
@@ -309,6 +335,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                     label='LONGITUDE'
                                     type='number'
                                     disabled={isEditingDisabled}
+                                    validationResult={invalidPropertiesMap['coordinates']}
                                 />
                             </div>
                             <div className={s.flexRow}>
@@ -346,6 +373,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                             label='LATITUDE'
                                             type='number'
                                             disabled={isEditingDisabled}
+                                            validationResult={
+                                                invalidPropertiesMap['coordinatesManual']
+                                            }
                                         />
                                         <InputContainer
                                             value={node.coordinatesManual.lng}
@@ -356,10 +386,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                             label='LONGITUDE'
                                             type='number'
                                             disabled={isEditingDisabled}
+                                            validationResult={
+                                                invalidPropertiesMap['coordinatesManual']
+                                            }
                                         />
                                     </div>
                                     <div className={s.sectionHeader}>
-                                        Projektoitu piste
+                                        Projisoitu piste
                                         <div className={classnames(s.labelIcon, s.projected)} />
                                     </div>
                                     <div className={s.flexRow}>
@@ -372,6 +405,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                             label='LATITUDE'
                                             type='number'
                                             disabled={isEditingDisabled}
+                                            validationResult={
+                                                invalidPropertiesMap['coordinatesProjection']
+                                            }
                                         />
                                         <InputContainer
                                             value={node.coordinatesProjection.lng}
@@ -382,6 +418,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                                             label='LONGITUDE'
                                             type='number'
                                             disabled={isEditingDisabled}
+                                            validationResult={
+                                                invalidPropertiesMap['coordinatesProjection']
+                                            }
                                         />
                                     </div>
                                 </>
