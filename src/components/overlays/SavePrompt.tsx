@@ -1,8 +1,9 @@
+import classnames from 'classnames';
 import _ from 'lodash';
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 import { getLabel } from '~/codeLists/labelCodes';
-import * as s from './modal.scss'; // should use savePrompt.scss
+import * as s from './savePrompt.scss'; // should use savePrompt.scss
 
 const SavePrompt = (props: any) => {
     const changesContent = () => {
@@ -22,17 +23,23 @@ const SavePrompt = (props: any) => {
         for (const property in old) {
             const propertyLabel = getLabel(props.type, property);
             divs.push(
-                <div className={s.formItem} key={property}>
+                <div className={classnames(s.formItem, s.savePromptRow)}>
                     <div className={s.inputLabel}>{propertyLabel}</div>
-                    <div className={s.flexRowSpaceEvenly}>
-                        <div className={s.oldAttribute}>{old[property]}</div>
-                        <FiArrowRight className={s.arrowRight} />
-                        <div className={s.newAttribute}>{current[property]}</div>
+                    <div className={s.flexInnerRow}>
+                        <div className={s.attributeWrapper}>
+                            <div className={s.oldAttribute}>{old[property]}</div>
+                        </div>
+                        <div className={s.arrowRightWrapper}>
+                            <FiArrowRight />
+                        </div>
+                        <div className={s.attributeWrapper}>
+                            <div className={s.newAttribute}>{current[property]}</div>
+                        </div>
                     </div>
                 </div>
             );
         }
-        return <div>{divs}</div>;
+        return <div className={s.savePromptView}>{divs}</div>;
     };
 
     return <div>{changesContent()}</div>;

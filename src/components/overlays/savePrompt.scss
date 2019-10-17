@@ -1,24 +1,36 @@
 @import '../shared/styles/common';
-@import '../shared/styles/flexbox';
 @import '../shared/styles/form';
+@import '../shared/styles/flexbox';
 
 .savePromptView {
-    .oldAttribute {
-        background-color: #ffeef0;
-        padding: 3px;
-        border-radius: 5px;
-    }
+    width: 500px;
 
-    .newAttribute {
-        background-color: #e6ffed;
-        padding: 3px;
-        border-radius: 5px;
-    }
+    .savePromptRow {
+        .inputLabel {
+            text-align: center;
+        }
 
-    .arrowRight {
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-top: auto;
-        margin-bottom: auto;
+        .attributeWrapper {
+            flex-grow: 1;
+            width: 50%;
+
+            .oldAttribute {
+                display: inline-block;
+                background-color: #ffeef0;
+                padding: 3px;
+            }
+
+            .newAttribute {
+                display: inline-block;
+                background-color: #e6ffed;
+                padding: 3px;
+            }
+        }
+        .arrowRightWrapper {
+            padding-left: 10px;
+            padding-right: 10px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
     }
 }
