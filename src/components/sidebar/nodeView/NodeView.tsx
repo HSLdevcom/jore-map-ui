@@ -130,6 +130,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.init(newNode, []);
         this.validateNode();
         this.createNodePropertyListeners();
+        this.props.nodeStore!.setIsEditingDisabled(false);
     };
 
     private initExistingNode = async (selectedNodeId: string) => {
@@ -145,6 +146,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             }
             this.validateNode();
             this.createNodePropertyListeners();
+            this.props.nodeStore!.setIsEditingDisabled(true);
         }
         this.setState({ isLoading: false });
     };
