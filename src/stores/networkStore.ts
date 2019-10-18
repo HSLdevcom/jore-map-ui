@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import Moment from 'moment';
 import TransitType from '~/enums/transitType';
+import LocalStorageHelper from '~/util/localStorageHelper';
 
 const TRANSIT_TYPES = [
     TransitType.BUS,
@@ -31,7 +32,7 @@ export class NetworkStore {
 
     constructor() {
         this._selectedTransitTypes = TRANSIT_TYPES;
-        this._visibleMapLayers = [];
+        this._visibleMapLayers = _getLocalStorageVisibleLayers();
         this._nodeSize = NodeSize.normal;
         this._savedMapLayers = [];
         this._selectedDate = Moment();
@@ -80,8 +81,14 @@ export class NetworkStore {
     public toggleMapLayerVisibility = (mapLayer: MapLayer) => {
         if (this._visibleMapLayers.includes(mapLayer)) {
             this.hideMapLayer(mapLayer);
+            if (mapLayer === MapLayer.node || mapLayer === MapLayer.link) {
+                _setLocalStorageLayerVisibility({ mapLayer, isVisible: false });
+            }
         } else {
             this.showMapLayer(mapLayer);
+            if (mapLayer === MapLayer.node || mapLayer === MapLayer.link) {
+                _setLocalStorageLayerVisibility({ mapLayer, isVisible: true });
+            }
         }
     };
 
@@ -137,6 +144,43 @@ export class NetworkStore {
         this._savedMapLayers = this._visibleMapLayers;
     }
 }
+
+const _getLocalStorageVisibleLayers = (): MapLayer[] => {
+    const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
+    if (!Array.isArray(localStorageVisibleLayers)) return [];
+
+    const layers = [];
+    if (localStorageVisibleLayers.includes('node')) {
+        layers.push(MapLayer.node);
+    }
+    if (localStorageVisibleLayers.includes('link')) {
+        layers.push(MapLayer.link);
+    }
+    return layers;
+};
+
+const _setLocalStorageLayerVisibility = ({
+    mapLayer,
+    isVisible
+}: {
+    mapLayer: MapLayer;
+    isVisible: boolean;
+}) => {
+    if (mapLayer !== MapLayer.node && mapLayer !== MapLayer.link) {
+        throw `Unsupported mapLayer: ${mapLayer}`;
+    }
+    const mapLayerName = mapLayer === MapLayer.node ? 'node' : 'link';
+    const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
+    let layers: string[] = Array.isArray(localStorageVisibleLayers)
+        ? localStorageVisibleLayers
+        : [];
+    if (isVisible) {
+        layers.push(mapLayerName);
+    } else {
+        layers = layers.filter(l => l !== mapLayerName);
+    }
+    LocalStorageHelper.setItem('visible_layers', layers);
+};
 
 const observableNetworkStore = new NetworkStore();
 

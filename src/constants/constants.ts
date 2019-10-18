@@ -16,7 +16,8 @@ const commonConstants = {
     ADDRESS_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/search',
     STREET_NAME_REVERSE_GEOCODING_URL: 'https://nominatim.openstreetmap.org/reverse',
     POSTAL_NUMBER_REVERSE_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/reverse',
-    ADDRESS_SEARCH_RESULT_COUNT: 10
+    ADDRESS_SEARCH_RESULT_COUNT: 10,
+    LOCAL_STORAGE_KEY_PREFIX: 'jore_map_'
 };
 
 const developmentConstants = {
