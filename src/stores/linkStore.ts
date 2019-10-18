@@ -51,11 +51,20 @@ export class LinkStore {
     }
 
     @action
-    public init = (link: ILink, nodes: INode[]) => {
+    public init = ({
+        link,
+        nodes,
+        isNewLink
+    }: {
+        link: ILink;
+        nodes: INode[];
+        isNewLink: boolean;
+    }) => {
         this.clear();
         this._link = link;
         this.setOldLink(link);
         this._nodes = nodes;
+        this._isEditingDisabled = !isNewLink;
     };
 
     @action
@@ -146,7 +155,7 @@ export class LinkStore {
 
     @action
     public resetChanges = () => {
-        this.init(this._oldLink!, this._nodes);
+        this.init({ link: this._oldLink!, nodes: this._nodes, isNewLink: false });
     };
 
     @action

@@ -103,7 +103,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         try {
             if (startNodeId && endNodeId && transitTypeCode) {
                 const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-                this.props.linkStore!.init(link, [link.startNode, link.endNode]);
+                this.props.linkStore!.init({
+                    link,
+                    nodes: [link.startNode, link.endNode],
+                    isNewLink: false
+                });
                 this.props.linkStore!.setIsLinkGeometryEditable(true);
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
@@ -145,7 +149,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private createNewLink = (startNode: INode, endNode: INode) => {
         const link = LinkFactory.createNewLink(startNode, endNode);
-        this.props.linkStore!.init(link, [startNode, endNode]);
+        this.props.linkStore!.init({ link, nodes: [startNode, endNode], isNewLink: true });
     };
 
     private save = async () => {
