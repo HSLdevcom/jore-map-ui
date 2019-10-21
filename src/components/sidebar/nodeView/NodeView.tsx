@@ -127,7 +127,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const [lat, lng] = params.split(':');
         const coordinate = new LatLng(lat, lng);
         const newNode = NodeFactory.createNewNode(coordinate);
-        this.props.nodeStore!.init(newNode, []);
+        this.props.nodeStore!.init({ node: newNode, links: [], isNewNode: true });
         this.validateNode();
         this.createNodePropertyListeners();
     };
@@ -141,7 +141,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         if (node) {
             const links = await this.fetchLinksForNode(node);
             if (links) {
-                this.props.nodeStore!.init(node, links);
+                this.props.nodeStore!.init({ node, links, isNewNode: false });
             }
             this.validateNode();
             this.createNodePropertyListeners();
