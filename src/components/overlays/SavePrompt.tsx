@@ -7,31 +7,31 @@ import * as s from './savePrompt.scss';
 
 const SavePrompt = (props: any) => {
     const renderChangesContent = () => {
-        const current = _.cloneDeep(props.current);
-        const old = _.cloneDeep(props.old);
-        for (const property in current) {
-            const linkAttribute = current[property];
-            const oldLinkAttribute = old[property];
+        const newLink = _.cloneDeep(props.current);
+        const oldLink = _.cloneDeep(props.old);
+        for (const property in newLink) {
+            const linkAttribute = newLink[property];
+            const oldLinkAttribute = oldLink[property];
             if (_.isEqual(linkAttribute, oldLinkAttribute)) {
-                delete old[property];
-                delete old[property];
+                delete oldLink[property];
+                delete oldLink[property];
             }
         }
 
-        return Object.keys(old).map((property: string, index: number) => {
+        return Object.keys(oldLink).map((property: string, index: number) => {
             const propertyLabel = getLabel(props.type, property);
             return (
                 <div key={index} className={classnames(s.formItem, s.savePromptRow)}>
                     <div className={s.inputLabel}>{propertyLabel}</div>
                     {property === 'geometry'
                         ? renderGeometryChangeRow()
-                        : renderChangeRow(old[property], current[property])}
+                        : renderChangeRow(oldLink[property], newLink[property])}
                 </div>
             );
         });
     };
 
-    const renderChangeRow = (oldValue: string, currentValue: string) => {
+    const renderChangeRow = (oldValue: string, newValue: string) => {
         return (
             <div className={s.flexInnerRow}>
                 <div className={s.attributeWrapper}>
@@ -41,7 +41,7 @@ const SavePrompt = (props: any) => {
                     <FiArrowRight />
                 </div>
                 <div className={s.attributeWrapper}>
-                    <div className={s.newAttribute}>{currentValue}</div>
+                    <div className={s.newAttribute}>{newValue}</div>
                 </div>
             </div>
         );
