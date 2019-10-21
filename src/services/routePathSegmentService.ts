@@ -15,7 +15,7 @@ class RoutePathSegmentService {
             variables: { startNodeId, endNodeId, transitType }
         });
         return RoutePathCopySegmentFactory.mapExternalLinksWithRoutePathInfo(
-            queryResult.data.linkswithroutepathinfo.nodes
+            queryResult.data.links_with_route_path_info.nodes
         );
     };
 }
