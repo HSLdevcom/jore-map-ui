@@ -18,8 +18,8 @@ const _getLinkLabel = (property: string) => {
         geometry: 'GEOMETRIA',
         municipalityCode: 'KUNTA',
         streetName: 'KATU',
-        length: 'PITUUS',
-        measuredLength: 'LASKETTU PITUUS (m)',
+        length: 'LASKETTU PITUUS (m)',
+        measuredLength: 'MITATTU PITUUS (m)',
         modifiedBy: 'MUOKANNUT',
         modifiedOn: 'MUOKATTU PVM'
     };
