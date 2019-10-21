@@ -14,6 +14,7 @@ import StopService, { IStopAreaItem, IStopSectionItem } from '~/services/stopSer
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import SidebarHeader from '../SidebarHeader';
+import ShortIdInput from './ShortIdInput';
 import * as s from './stopForm.scss';
 
 interface IStopFormProps {
@@ -54,7 +55,18 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         this.stopPropertyListeners = [];
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
+        this.mounted = true;
+        this.validateStop();
+        this.isEditingDisabledListener = reaction(
+            () => this.props.nodeStore!.isEditingDisabled,
+            this.onChangeIsEditingDisabled
+        );
+        this.nodeListener = reaction(() => this.props.nodeStore!.node, this.onNodeChange);
+        this.createStopPropertyListeners();
+        if (this.props.isNewStop) {
+            this.props.nodeStore!.fetchAddressData();
+        }
         const stopAreas: IStopAreaItem[] = await StopService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
         if (this.mounted) {
@@ -63,20 +75,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                 stopSections: this.createStopSectionDropdownItems(stopSections)
             });
         }
-    }
-
-    componentDidMount() {
-        this.mounted = true;
-        this.validateStop();
-        if (this.props.isNewStop) {
-            this.props.nodeStore!.fetchAddressData();
-        }
-        this.isEditingDisabledListener = reaction(
-            () => this.props.nodeStore!.isEditingDisabled,
-            this.onChangeIsEditingDisabled
-        );
-        this.nodeListener = reaction(() => this.props.nodeStore!.node, this.onNodeChange);
-        this.createStopPropertyListeners();
     }
 
     componentWillUnmount() {
@@ -216,12 +214,11 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             }}
                             items={this.getShortIdLetterItems()}
                         />
-                        <InputContainer
-                            label='+ 4 num.)'
-                            disabled={isEditingDisabled}
-                            value={node.shortIdString}
-                            onChange={this.props.onNodePropertyChange('shortIdString')}
-                            validationResult={this.props.nodeInvalidPropertiesMap['shortIdString']}
+                        <ShortIdInput
+                            node={node}
+                            isEditingDisabled={isEditingDisabled}
+                            nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
+                            onNodePropertyChange={this.props.onNodePropertyChange}
                         />
                     </div>
                 </div>

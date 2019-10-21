@@ -49,6 +49,11 @@ export class NodeStore {
     }
 
     @computed
+    get isShortIdDirty() {
+        return this._node!.shortIdString !== this._oldNode!.shortIdString;
+    }
+
+    @computed
     get isStopFormValid() {
         return this._isStopFormValid;
     }

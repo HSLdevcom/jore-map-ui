@@ -7,7 +7,7 @@ type INodeValidationModel = { [key in NodeKeys]: string };
 const nodeValidationModel: INodeValidationModel = {
     id: '',
     type: 'required|min:1|max:1|string',
-    shortIdString: `min:0|max:4|string|${regexRules.numbers}`,
+    shortIdString: `min:4|max:4|string|${regexRules.numbers}`,
     tripTimePoint: 'min:0|max:1|string',
     modifiedBy: '',
     modifiedOn: '',

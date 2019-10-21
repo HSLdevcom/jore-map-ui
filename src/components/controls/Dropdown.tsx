@@ -19,6 +19,7 @@ interface IDropdownProps {
     onChange: (value: any) => void;
     validationResult?: IValidationResult;
     darkerInputLabel?: boolean;
+    isDropdownOpen?: boolean;
 }
 
 interface IDropdownState {
@@ -156,6 +157,8 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                                 placeholder={'Valitse...'}
                                 styles={customStyles}
                                 noOptionsMessage={() => 'Ei hakutuloksia'}
+                                menuIsOpen={this.props.isDropdownOpen}
+                                autoFocus={this.props.isDropdownOpen}
                             />
                             <div>
                                 {validationResult &&

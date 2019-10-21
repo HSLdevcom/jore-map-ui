@@ -92,7 +92,7 @@ const getRoutePathLinkQuery = () => {
 
 const getRoutePathSegmentQuery = () => {
     return gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String) {
-            linkswithroutepathinfo: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
+        linkswithroutepathinfo: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
                 nodes {
                     ${routePathSegmentQueryFields}
                 }
@@ -227,6 +227,18 @@ const getAllStopSections = () => {
             node: allVyohykes {
                 nodes {
                     selite
+                }
+            }
+        }
+    `;
+};
+
+const getReservedShortIds = () => {
+    return gql`
+        query getReservedShortIds($shortIdLetter: String) {
+            getReservedShortIds: allSolmus(condition: { solkirjain: $shortIdLetter }) {
+                nodes {
+                    sollistunnus
                 }
             }
         }
@@ -568,5 +580,6 @@ export default {
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
+    getReservedShortIds,
     getViaName
 };
