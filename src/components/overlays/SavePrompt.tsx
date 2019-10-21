@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import { LatLng } from 'leaflet';
 import _ from 'lodash';
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
@@ -25,7 +24,7 @@ const SavePrompt = (props: any) => {
                 <div key={index} className={classnames(s.formItem, s.savePromptRow)}>
                     <div className={s.inputLabel}>{propertyLabel}</div>
                     {property === 'geometry'
-                        ? renderGeometryChangeRows(old[property], current[property])
+                        ? renderGeometryChangeRow()
                         : renderChangeRow(old[property], current[property])}
                 </div>
             );
@@ -48,39 +47,12 @@ const SavePrompt = (props: any) => {
         );
     };
 
-    const renderGeometryChangeRow = (oldCoordinate: LatLng, currentCoordinate: LatLng) => {
+    const renderGeometryChangeRow = () => {
         return (
             <div className={s.flexInnerRow}>
-                <div className={s.attributeWrapper}>
-                    <div className={s.oldAttribute}>{`${oldCoordinate.lat}, ${
-                        oldCoordinate.lng
-                    }`}</div>
-                </div>
-                <div className={s.arrowRightWrapper}>
-                    <FiArrowRight />
-                </div>
-                <div className={s.attributeWrapper}>
-                    <div className={s.newAttribute}>{`${currentCoordinate.lat}, ${
-                        currentCoordinate.lng
-                    }`}</div>
-                </div>
+                <div>Linkin geometria muuttunut.</div>
             </div>
         );
-    };
-
-    const renderGeometryChangeRows = (oldGeometry: LatLng[], currentGeometry: LatLng[]) => {
-        return oldGeometry.map((coordinate: LatLng, index: number) => {
-            const currentCoordinate = currentGeometry[index];
-            if (!_.isEqual(coordinate, currentCoordinate)) {
-                return (
-                    <div key={index} className={classnames(s.formItem, s.savePromptRow)}>
-                        <div className={s.inputLabel}>{`Linkin ${index}. solmu.`}</div>
-                        {renderGeometryChangeRow(coordinate, currentCoordinate)}
-                    </div>
-                );
-            }
-            return null;
-        });
     };
 
     return (
