@@ -21,10 +21,18 @@ class Confirm extends React.Component<IConfirmProps> {
                 <div className={s.confirmView}>
                     <div className={s.content}>{this.props.confirmStore!.content}</div>
                     <div className={s.buttons}>
-                        <Button type={ButtonType.SQUARE} onClick={this.props.confirmStore!.cancel}>
+                        <Button
+                            type={ButtonType.SQUARE}
+                            onClick={this.props.confirmStore!.cancel}
+                            isWide={true}
+                        >
                             Peruuta
                         </Button>
-                        <Button type={ButtonType.SQUARE} onClick={this.props.confirmStore!.confirm}>
+                        <Button
+                            type={ButtonType.SQUARE}
+                            onClick={this.props.confirmStore!.confirm}
+                            isWide={true}
+                        >
                             Hyväksy
                         </Button>
                     </div>

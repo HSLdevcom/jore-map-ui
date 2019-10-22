@@ -37,20 +37,18 @@ const Button = observer((props: IButtonProps) => {
     };
 
     return (
-        <div className={s.buttonContainer}>
-            <div
-                className={classnames(
-                    s.button,
-                    props.className,
-                    getTypeClass(props.type),
-                    props.disabled ? s.disabled : null,
-                    props.isWide ? s.wide : null,
-                    props.hasReverseColor ? s.reverseColor : null
-                )}
-                onClick={onClick}
-            >
-                {props.children}
-            </div>
+        <div
+            className={classnames(
+                s.button,
+                props.className,
+                getTypeClass(props.type),
+                props.disabled ? s.disabled : null,
+                props.isWide ? s.wide : null,
+                props.hasReverseColor ? s.reverseColor : null
+            )}
+            onClick={onClick}
+        >
+            {props.children}
         </div>
     );
 });

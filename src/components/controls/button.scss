@@ -3,10 +3,6 @@
 $defaultColor: #fff;
 $defaultBackgroundColor: $busBlue;
 
-.buttonContainer {
-    display: flex;
-}
-
 .button {
     display: flex;
     position: relative;
@@ -40,14 +36,13 @@ $defaultBackgroundColor: $busBlue;
 }
 
 .save {
-    width: 100%;
-    padding: 20px;
     background-color: #00ba11;
     color: #fff;
     text-align: center;
     font-size: 1rem;
     cursor: pointer;
     border-radius: 0;
+    padding: 20px;
 }
 
 .save:hover {

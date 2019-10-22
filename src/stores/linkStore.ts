@@ -36,6 +36,11 @@ export class LinkStore {
     }
 
     @computed
+    get oldLink() {
+        return this._oldLink!;
+    }
+
+    @computed
     get nodes() {
         return this._nodes;
     }
