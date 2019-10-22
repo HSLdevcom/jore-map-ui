@@ -150,9 +150,9 @@ export class NetworkStore {
     private lazyLoadLocalStorageVisibleLayers = async () => {
         setTimeout(() => {
             const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
-            if (!Array.isArray(localStorageVisibleLayers)) return [];
+            const layers: MapLayer[] = [];
+            if (!Array.isArray(localStorageVisibleLayers)) return layers;
 
-            const layers = [];
             if (localStorageVisibleLayers.includes('node')) {
                 layers.push(MapLayer.node);
             }
@@ -186,7 +186,7 @@ const _setLocalStorageLayerVisibility = ({
         ? localStorageVisibleLayers
         : [];
     if (isVisible) {
-        if (layers.indexOf(mapLayerName) === -1) {
+        if (!layers.includes(mapLayerName)) {
             layers.push(mapLayerName);
         }
     } else {
