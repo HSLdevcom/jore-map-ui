@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import _ from 'lodash';
+import { observer } from 'mobx-react';
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 import { getLabel } from '~/codeLists/labelCodes';
@@ -12,51 +13,37 @@ interface ISavePromptProps {
     type: string;
 }
 
-const SavePrompt = (props: ISavePromptProps) => {
-    const callRenderByProperty = (property: string, oldLink: Object, newLink: Object) => {
-        switch (property) {
-            case 'geometry':
-                return renderGeometryChangeRow();
-            case 'municipalityCode':
-                return renderChangeRow(
-                    codeListStore!.getCodeListLabel('Kunta (KELA)', oldLink[property]),
-                    codeListStore!.getCodeListLabel('Kunta (KELA)', newLink[property])
-                );
-            default:
-                return renderChangeRow(oldLink[property], newLink[property]);
-        }
-    };
+const callRenderByProperty = (property: string, oldLink: Object, newLink: Object) => {
+    switch (property) {
+        case 'geometry':
+            return renderChangeRow('Vanha geometria', 'Uusi geometria');
+        case 'municipalityCode':
+            return renderChangeRow(
+                codeListStore!.getCodeListLabel('Kunta (KELA)', oldLink[property]),
+                codeListStore!.getCodeListLabel('Kunta (KELA)', newLink[property])
+            );
+        default:
+            return renderChangeRow(oldLink[property], newLink[property]);
+    }
+};
 
-    const renderChangeRow = (oldValue: string, newValue: string) => {
-        return (
-            <div className={s.flexInnerRow}>
-                <div className={s.attributeWrapper}>
-                    <div className={s.oldAttribute}>{oldValue}</div>
-                </div>
-                <div className={s.arrowRightWrapper}>
-                    <FiArrowRight />
-                </div>
-                <div className={s.attributeWrapper}>
-                    <div className={s.newAttribute}>{newValue}</div>
-                </div>
+const renderChangeRow = (oldValue: string, newValue: string) => {
+    return (
+        <div className={s.flexInnerRow}>
+            <div className={s.attributeWrapper}>
+                <div className={s.oldAttribute}>{oldValue}</div>
             </div>
-        );
-    };
-
-    const renderGeometryChangeRow = () => {
-        return (
-            <div className={s.flexInnerRow}>
-                <div className={s.attributeWrapper} />
-                <div className={s.arrowRightWrapper}>
-                    <FiArrowRight />
-                </div>
-                <div className={s.attributeWrapper}>
-                    <div className={s.newAttribute}>Uusi geometria</div>
-                </div>
+            <div className={s.arrowRightWrapper}>
+                <FiArrowRight />
             </div>
-        );
-    };
+            <div className={s.attributeWrapper}>
+                <div className={s.newAttribute}>{newValue}</div>
+            </div>
+        </div>
+    );
+};
 
+const SavePrompt = observer((props: ISavePromptProps) => {
     const newLink = _.cloneDeep(props.newData);
     const oldLink = _.cloneDeep(props.oldData);
     for (const property in newLink) {
@@ -67,7 +54,6 @@ const SavePrompt = (props: ISavePromptProps) => {
             delete oldLink[property];
         }
     }
-
     return (
         <div className={s.savePromptView}>
             <div className={s.topic}>Tallennettavat muutokset</div>
@@ -82,6 +68,6 @@ const SavePrompt = (props: ISavePromptProps) => {
             })}
         </div>
     );
-};
+});
 
 export default SavePrompt;
