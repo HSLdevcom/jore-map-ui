@@ -175,12 +175,12 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         }
     };
 
-    private savePrompt = () => {
+    private showSavePrompt = () => {
         const confirmStore = this.props.confirmStore!;
         const currentLink = this.props.linkStore!.link;
         const oldLink = this.props.linkStore!.oldLink;
         confirmStore.openConfirm(
-            <SavePrompt current={currentLink} old={oldLink} type={'link'} />,
+            <SavePrompt newData={currentLink} oldData={oldLink} type={'link'} />,
             () => {
                 this.save();
             }
@@ -394,7 +394,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 <Button
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
-                    onClick={this.savePrompt}
+                    onClick={() => (this.props.isNewLink ? this.save() : this.showSavePrompt())}
                 >
                     Tallenna muutokset
                 </Button>
