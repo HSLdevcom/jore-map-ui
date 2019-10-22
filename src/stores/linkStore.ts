@@ -61,9 +61,17 @@ export class LinkStore {
         isNewLink: boolean;
     }) => {
         this.clear();
-        this._link = link;
-        this.setOldLink(link);
-        this._nodes = nodes;
+
+        const oldLink = _.cloneDeep(link);
+        const newLink = _.cloneDeep(link);
+        newLink.length = LeafletUtils.calculateLengthFromLatLngs(newLink.geometry);
+        const newNodes = _.cloneDeep(nodes);
+
+        this._link = newLink;
+        this._nodes = newNodes;
+
+        this.setOldLink(oldLink);
+
         this._isEditingDisabled = !isNewLink;
     };
 
@@ -83,7 +91,7 @@ export class LinkStore {
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = roundLatLngs(latLngs);
         this._link.geometry = roundLatLngs(latLngs);
-        this._link.length = this.getCalculatedLength();
+        this._link.length = LeafletUtils.calculateLengthFromLatLngs(this._link.geometry);
         const newUndoState: UndoState = {
             link: updatedLink
         };
@@ -155,7 +163,9 @@ export class LinkStore {
 
     @action
     public resetChanges = () => {
-        this.init({ link: this._oldLink!, nodes: this._nodes, isNewLink: false });
+        if (this._oldLink) {
+            this.init({ link: this._oldLink, nodes: this._nodes, isNewLink: false });
+        }
     };
 
     @action
@@ -170,13 +180,6 @@ export class LinkStore {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._link!.geometry = nextUndoState.link.geometry;
         });
-    };
-
-    public getCalculatedLength = (): number => {
-        if (this.link && this.link.geometry) {
-            return LeafletUtils.calculateLengthFromLatLngs(this.link.geometry);
-        }
-        return 0;
     };
 }
 

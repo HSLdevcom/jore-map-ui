@@ -22,6 +22,7 @@ const createDivIcon = (html: any, options: IDivIconOptions = {}) => {
     return new L.DivIcon(divIconOptions);
 };
 
+// TODO: move to geomHelpers
 const calculateLengthFromLatLngs = (latLngs: L.LatLng[]) => {
     let length = 0;
     latLngs.forEach((latLng, index) => {
@@ -31,7 +32,4 @@ const calculateLengthFromLatLngs = (latLngs: L.LatLng[]) => {
     return Math.round(length);
 };
 
-export default {
-    createDivIcon,
-    calculateLengthFromLatLngs
-};
+export default { createDivIcon, calculateLengthFromLatLngs };
