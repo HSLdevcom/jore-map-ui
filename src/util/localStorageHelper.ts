@@ -1,15 +1,26 @@
-type itemNames = 'origin_url';
+import constants from '~/constants/constants';
 
-const setItem = (name: itemNames, value: any) => {
-    localStorage.setItem(name, value);
-};
+type itemNames = 'origin_url' | 'visible_layers';
+const KEY_PREFIX = constants.LOCAL_STORAGE_KEY_PREFIX;
 
-const clearItem = (name: itemNames) => {
-    localStorage.removeItem(name);
-};
+class LocalStorageHelper {
+    public static setItem = (name: itemNames, value: any) => {
+        localStorage.setItem(KEY_PREFIX + name, JSON.stringify(value));
+    };
 
-const getItem = (name: itemNames) => {
-    return localStorage.getItem(name);
-};
+    public static removeItem = (name: itemNames) => {
+        localStorage.removeItem(KEY_PREFIX + name);
+    };
 
-export { setItem, clearItem, getItem };
+    public static getItem = (name: itemNames) => {
+        const item = localStorage.getItem(KEY_PREFIX + name);
+        if (item) {
+            try {
+                return JSON.parse(item);
+            } catch {}
+        }
+        return null;
+    };
+}
+
+export default LocalStorageHelper;
