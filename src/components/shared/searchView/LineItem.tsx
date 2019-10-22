@@ -10,7 +10,7 @@ import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import lineHelper from '~/util/lineHelper';
+import LineHelper from '~/util/lineHelper';
 import LineItemSubMenu from './LineItemSubMenu';
 import * as s from './lineItem.scss';
 
@@ -111,7 +111,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
             <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
-                        {lineHelper.getTransitIcon(this.props.line.transitType, false)}
+                        {LineHelper.getTransitIcon(this.props.line.transitType, false)}
                     </div>
                     <div
                         className={classNames(
