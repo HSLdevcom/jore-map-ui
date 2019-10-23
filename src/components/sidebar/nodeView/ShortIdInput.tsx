@@ -7,7 +7,7 @@ import Dropdown, { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import ButtonType from '~/enums/buttonType';
 import { INode } from '~/models';
-import StopService, { IReservedShortIdItem } from '~/services/stopService';
+import StopService from '~/services/stopService';
 import { NodeStore } from '~/stores/nodeStore';
 import * as s from './shortIdInput.scss';
 
@@ -24,8 +24,6 @@ interface IStopFormState {
     availableShortIdDropdownItems: IDropdownItem[];
     isAvailableShortIdsDropdownVisible: boolean;
 }
-
-const SHORT_ID_LENGTH = 4;
 
 @inject('nodeStore')
 @observer
@@ -61,10 +59,10 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         if (!node) return;
 
         const shortIdLetter = node.shortIdLetter;
-        const reservedShortIdItems: IReservedShortIdItem[] = await StopService.fetchReservedShortIds(
+        const availableShortIds: string[] = await StopService.fetchAvailableShortIds(
+            node.id,
             shortIdLetter
         );
-        const availableShortIds: string[] = _getAvailableShortIds(reservedShortIdItems, node.id);
         if (this.mounted) {
             this.setState({
                 availableShortIds,
@@ -167,40 +165,5 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         );
     }
 }
-
-const _getAvailableShortIds = (
-    reservedShortIdItems: IReservedShortIdItem[],
-    currentNodeId: string
-): string[] => {
-    const allShortIdVariations = _generateAllShortIdVariations(SHORT_ID_LENGTH);
-    return allShortIdVariations.filter(
-        shortIdVariation =>
-            !reservedShortIdItems.find((reservedShortIdItem: IReservedShortIdItem) => {
-                return (
-                    reservedShortIdItem.shortId === shortIdVariation &&
-                    // Prevent currently opened node to affect available ids
-                    reservedShortIdItem.nodeId !== currentNodeId
-                );
-            })
-    );
-};
-
-/**
- * @param numberCount - e.g. with numberCount 4, generates ["0000", "0001", "0002", ..., "9998", "9999"]
- **/
-const _generateAllShortIdVariations = (numberCount: number) => {
-    const allNumbers: string[] = [];
-    let max = '';
-    for (let i = 0; i < numberCount; i += 1) {
-        max += '9';
-    }
-    for (let i = 0; i <= parseInt(max, 10); i += 1) {
-        const current = String(i);
-        const missingZeroCount = numberCount - current.length;
-        const missingZeros = '0'.repeat(missingZeroCount);
-        allNumbers.push(missingZeros + current);
-    }
-    return allNumbers;
-};
 
 export default ShortIdInput;
