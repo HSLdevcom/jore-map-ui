@@ -121,6 +121,8 @@ class App extends React.Component<IAppProps, IAppState> {
             return <div>Ladataan sovellusta...</div>;
         }
 
+        this.props.mapStore!.isMapFullscreen;
+
         return (
             <div className={s.appView}>
                 <Switch>
