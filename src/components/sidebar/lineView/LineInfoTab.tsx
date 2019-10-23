@@ -33,7 +33,7 @@ interface ILineInfoTabProps {
     setValidatorResult: (property: string, validationResult: IValidationResult) => void;
 }
 
-const transitTypeMap = {
+const transitTypeDefaultValueMap = {
     '1': '01',
     '3': '02',
     '4': '12',
@@ -95,7 +95,9 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
 
     private selectTransitType = (transitType: TransitType) => {
         this.props.onChangeLineProperty('transitType')(transitType);
-        this.props.onChangeLineProperty('publicTransportType')(transitTypeMap[transitType]);
+        this.props.onChangeLineProperty('publicTransportType')(
+            transitTypeDefaultValueMap[transitType]
+        );
     };
 
     private isLineAlreadyFound = (lineId: string): boolean => {
