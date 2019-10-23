@@ -48,14 +48,14 @@ class App extends React.Component<IAppProps, IAppState> {
         this.init();
     }
 
-    private renderApp = () => {
+    private renderApp = (isMapFullscreen: boolean) => {
         this.initCodeLists();
 
         return (
             <>
                 <NavigationBar />
                 <div className={s.appContent}>
-                    <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
+                    <div className={isMapFullscreen ? s.hidden : ''}>
                         <Sidebar location={this.props.location} />
                     </div>
                     <Map>
@@ -121,12 +121,13 @@ class App extends React.Component<IAppProps, IAppState> {
             return <div>Ladataan sovellusta...</div>;
         }
 
+        const isMapFullscreen = this.props.mapStore!.isMapFullscreen;
         return (
             <div className={s.appView}>
                 <Switch>
                     <Route exact={true} path={SubSites.afterLogin} render={this.renderAfterLogin} />
                     <Route path='/login' component={Login} />
-                    <Route component={this.renderApp} />
+                    <Route component={() => this.renderApp(isMapFullscreen)} />
                 </Switch>
             </div>
         );
