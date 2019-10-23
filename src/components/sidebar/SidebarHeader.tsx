@@ -1,8 +1,10 @@
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React, { ReactNode } from 'react';
-import { FiEdit3, FiXCircle } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit3, FiXCircle } from 'react-icons/fi';
 import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import { LoginStore } from '~/stores/loginStore';
 import * as s from './sidebarHeader.scss';
 
@@ -41,6 +43,14 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
         }
     };
 
+    goToHomeView = () => {
+        const homeLink = routeBuilder
+            .to(SubSites.home)
+            .clear()
+            .toLink();
+        navigator.goTo(homeLink);
+    };
+
     render() {
         return (
             <div className={s.sidebarHeaderView}>
@@ -53,7 +63,10 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
                         />
                     )}
                     {!this.props.hideCloseButton && (
-                        <FiXCircle className={s.icon} onClick={this.onCloseButtonClick} />
+                        <FiArrowLeft className={s.icon} onClick={this.onCloseButtonClick} />
+                    )}
+                    {!this.props.hideCloseButton && (
+                        <FiXCircle className={s.icon} onClick={this.goToHomeView} />
                     )}
                 </div>
             </div>
