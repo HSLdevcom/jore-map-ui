@@ -233,6 +233,19 @@ const getAllStopSections = () => {
     `;
 };
 
+const getReservedShortIds = () => {
+    return gql`
+        query getReservedShortIds($shortIdLetter: String) {
+            getReservedShortIds: allSolmus(condition: { solkirjain: $shortIdLetter }) {
+                nodes {
+                    soltunnus
+                    sollistunnus
+                }
+            }
+        }
+    `;
+};
+
 const getLineHeaderQuery = () => {
     return gql`query getLineHeader($lineId: String!, $startDate: Datetime!) {
             lineHeader: linjannimetByLintunnusAndLinalkupvm(lintunnus: $lineId, linalkupvm: $startDate) {
@@ -568,5 +581,6 @@ export default {
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
+    getReservedShortIds,
     getViaName
 };

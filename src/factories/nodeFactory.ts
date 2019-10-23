@@ -46,8 +46,6 @@ class NodeFactory {
 
     public static createNodeBase = (externalNode: IExternalNode): INodeBase => {
         const type = getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
-        // TODO: Change this when creating abstraction layers for reading from postgis
-
         return {
             type,
             shortIdLetter: externalNode.solkirjain,
