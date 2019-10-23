@@ -43,7 +43,6 @@ interface ILinkViewProps extends RouteComponentProps<any> {
 
 interface ILinkViewState {
     isLoading: boolean;
-    isEditingDisabled: boolean; // TODO: remove
     invalidPropertiesMap: object;
 }
 
@@ -57,7 +56,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: !props.isNewLink, // TODO: remove
             invalidPropertiesMap: {}
         };
     }

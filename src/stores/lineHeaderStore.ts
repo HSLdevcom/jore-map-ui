@@ -5,14 +5,25 @@ import { ILineHeader } from '~/models';
 export class LineHeaderStore {
     @observable private _lineHeader: ILineHeader | null;
     @observable private _oldlineHeader: ILineHeader | null;
+    @observable private _isEditingDisabled: boolean;
+
+    constructor() {
+        this._isEditingDisabled = true;
+    }
 
     @computed
     get lineHeader(): ILineHeader | null {
         return this._lineHeader;
     }
 
+    @computed
     get isDirty() {
         return !_.isEqual(this._lineHeader, this._oldlineHeader);
+    }
+
+    @computed
+    get isEditingDisabled() {
+        return this._isEditingDisabled;
     }
 
     @action
@@ -38,15 +49,25 @@ export class LineHeaderStore {
     };
 
     @action
-    public resetChanges = () => {
-        if (this._oldlineHeader) {
-            this.setLineHeader(this._oldlineHeader);
-        }
+    public setIsEditingDisabled = (isEditingDisabled: boolean) => {
+        this._isEditingDisabled = isEditingDisabled;
+    };
+
+    @action
+    public toggleIsEditingDisabled = () => {
+        this._isEditingDisabled = !this._isEditingDisabled;
     };
 
     @action
     public clear = () => {
         this._lineHeader = null;
+    };
+
+    @action
+    public resetChanges = () => {
+        if (this._oldlineHeader) {
+            this.setLineHeader(this._oldlineHeader);
+        }
     };
 }
 

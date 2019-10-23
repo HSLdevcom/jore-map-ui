@@ -4,7 +4,6 @@ import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 interface IViewFormBaseState {
     isLoading: boolean;
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean; // TODO: remove
 }
 
 // TODO: refactor to use composition / refactor to its own store?
@@ -24,6 +23,8 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
     };
 
     protected validateAllProperties = (validationModel: object, validationEntity: any) => {
+        if (!validationEntity) return;
+
         this._validateUsingModel(validationModel, validationEntity);
     };
 
@@ -40,21 +41,6 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
         this.setState({
             invalidPropertiesMap
         });
-    };
-
-    // TODO: remove
-    protected toggleIsEditingDisabled = () => {
-        const isEditingDisabled = !this.state.isEditingDisabled;
-        if (isEditingDisabled) {
-            this.setState({
-                isEditingDisabled,
-                invalidPropertiesMap: {}
-            });
-        } else {
-            this.setState({
-                isEditingDisabled
-            });
-        }
     };
 
     protected clearInvalidPropertiesMap = () => {

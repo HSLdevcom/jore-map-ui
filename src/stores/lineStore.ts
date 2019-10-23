@@ -5,14 +5,25 @@ import { ILine } from '~/models';
 export class LineStore {
     @observable private _line: ILine | null;
     @observable private _oldline: ILine | null;
+    @observable private _isEditingDisabled: boolean;
+
+    constructor() {
+        this._isEditingDisabled = true;
+    }
 
     @computed
     get line(): ILine | null {
         return this._line;
     }
 
+    @computed
     get isDirty() {
         return !_.isEqual(this._line, this._oldline);
+    }
+
+    @computed
+    get isEditingDisabled() {
+        return this._isEditingDisabled;
     }
 
     @action
@@ -35,15 +46,25 @@ export class LineStore {
     };
 
     @action
-    public resetChanges = () => {
-        if (this._oldline) {
-            this.setLine(this._oldline);
-        }
+    public setIsEditingDisabled = (isEditingDisabled: boolean) => {
+        this._isEditingDisabled = isEditingDisabled;
+    };
+
+    @action
+    public toggleIsEditingDisabled = () => {
+        this._isEditingDisabled = !this._isEditingDisabled;
     };
 
     @action
     public clear = () => {
         this._line = null;
+    };
+
+    @action
+    public resetChanges = () => {
+        if (this._oldline) {
+            this.setLine(this._oldline);
+        }
     };
 }
 

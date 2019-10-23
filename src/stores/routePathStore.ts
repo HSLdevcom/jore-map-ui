@@ -40,6 +40,7 @@ export class RoutePathStore {
     @observable private _oldViaNames: IViaName[];
     @observable private _listHighlightedNodeIds: string[];
     @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
+    @observable private _isEditingDisabled: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -53,6 +54,7 @@ export class RoutePathStore {
         this._oldViaNames = [];
         this._listHighlightedNodeIds = [];
         this._toolHighlightedNodeIds = [];
+        this._isEditingDisabled = true;
     }
 
     @computed
@@ -119,6 +121,11 @@ export class RoutePathStore {
             if (!_.isEqual(viaName, oldViaName)) dirtyViaNames.push(viaName);
         }
         return dirtyViaNames;
+    }
+
+    @computed
+    get isEditingDisabled() {
+        return this._isEditingDisabled;
     }
 
     @action
@@ -421,10 +428,13 @@ export class RoutePathStore {
     };
 
     @action
-    public resetChanges = () => {
-        if (this._oldRoutePath) {
-            this.init(this._oldRoutePath, this._oldViaNames);
-        }
+    public setIsEditingDisabled = (isEditingDisabled: boolean) => {
+        this._isEditingDisabled = isEditingDisabled;
+    };
+
+    @action
+    public toggleIsEditingDisabled = () => {
+        this._isEditingDisabled = !this._isEditingDisabled;
     };
 
     @action
@@ -436,6 +446,13 @@ export class RoutePathStore {
         this._geometryUndoStore.clear();
         this._viaNames = [];
         this._oldViaNames = [];
+    };
+
+    @action
+    public resetChanges = () => {
+        if (this._oldRoutePath) {
+            this.init(this._oldRoutePath, this._oldViaNames);
+        }
     };
 
     @action

@@ -51,6 +51,26 @@ export class LinkStore {
     }
 
     @computed
+    get isLinkGeometryEditable() {
+        return this._isLinkGeometryEditable;
+    }
+
+    @computed
+    get isDirty() {
+        return (
+            this._link &&
+            !_.isEqual(
+                {
+                    ...this.link,
+                    // Remapping geometry since edit initialization has added handlers
+                    geometry: this.link!.geometry.map(coor => new LatLng(coor.lat, coor.lng))
+                },
+                this._oldLink
+            )
+        );
+    }
+
+    @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
     }
@@ -145,26 +165,6 @@ export class LinkStore {
         this._geometryUndoStore.clear();
         this._isEditingDisabled = true;
     };
-
-    @computed
-    get isLinkGeometryEditable() {
-        return this._isLinkGeometryEditable;
-    }
-
-    @computed
-    get isDirty() {
-        return (
-            this._link &&
-            !_.isEqual(
-                {
-                    ...this.link,
-                    // Remapping geometry since edit initialization has added handlers
-                    geometry: this.link!.geometry.map(coor => new LatLng(coor.lat, coor.lng))
-                },
-                this._oldLink
-            )
-        );
-    }
 
     @action
     public resetChanges = () => {
