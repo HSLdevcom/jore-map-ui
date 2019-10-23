@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import _ from 'lodash';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
@@ -50,7 +51,6 @@ interface IRoutePathViewProps {
 interface IRoutePathViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
 }
 
 @inject(
@@ -63,12 +63,13 @@ interface IRoutePathViewState {
 )
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState> {
+    private isEditingDisabledListener: IReactionDisposer;
+
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
             isLoading: true,
-            invalidPropertiesMap: {},
-            isEditingDisabled: !props.isNewRoutePath
+            invalidPropertiesMap: {}
         };
     }
 
@@ -76,6 +77,11 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         EventManager.on('undo', this.props.routePathStore!.undo);
         EventManager.on('redo', this.props.routePathStore!.redo);
         this.initialize();
+        this.isEditingDisabledListener = reaction(
+            () => this.props.routePathStore!.isEditingDisabled,
+            this.onChangeIsEditingDisabled
+        );
+        this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
 
     componentWillUnmount() {
@@ -84,6 +90,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.props.routePathStore!.clear();
         EventManager.off('undo', this.props.routePathStore!.undo);
         EventManager.off('redo', this.props.routePathStore!.redo);
+        this.isEditingDisabledListener();
     }
 
     private initialize = async () => {
@@ -213,10 +220,11 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     };
 
     public renderTabContent = () => {
+        const isEditingDisabled = this.props.routePathStore!.isEditingDisabled;
         if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
             return (
                 <RoutePathInfoTab
-                    isEditingDisabled={this.state.isEditingDisabled}
+                    isEditingDisabled={isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
                     onChangeRoutePathProperty={this.onChangeRoutePathProperty}
@@ -228,7 +236,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         return (
             <RoutePathLinksTab
                 routePath={this.props.routePathStore!.routePath!}
-                isEditingDisabled={this.state.isEditingDisabled}
+                isEditingDisabled={isEditingDisabled}
             />
         );
     };
@@ -275,21 +283,22 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
         await this.fetchRoutePath();
         this.setState({
-            isEditingDisabled: true,
             invalidPropertiesMap: {},
             isLoading: false
         });
+        this.props.routePathStore!.setIsEditingDisabled(true);
     };
 
-    private toggleIsEditing = () => {
-        const isEditingDisabled = this.state.isEditingDisabled;
+    private onChangeIsEditingDisabled = () => {
+        this.clearInvalidPropertiesMap();
 
         this.props.routePathStore!.setNeighborRoutePathLinks([]);
-        if (!isEditingDisabled) {
+
+        if (this.props.routePathStore!.isEditingDisabled) {
             this.props.routePathStore!.resetChanges();
+        } else {
+            this.validateRoutePath();
         }
-        this.toggleIsEditingDisabled();
-        if (!isEditingDisabled) this.validateRoutePath();
     };
 
     private validateRoutePath = () => {
@@ -297,6 +306,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     };
 
     render() {
+        const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.routePathView, s.loaderContainer)}>
@@ -304,17 +314,16 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 </div>
             );
         }
-        if (!this.props.routePathStore!.routePath) return null;
+        if (!routePathStore!.routePath) return null;
 
-        const isGeometryValid = validateRoutePathLinks(
-            this.props.routePathStore!.routePath!.routePathLinks
-        );
+        const isGeometryValid = validateRoutePathLinks(routePathStore!.routePath!.routePathLinks);
 
         const areLinkFormsValid = this.props.routePathStore!.invalidLinkOrderNumbers.length === 0;
+        const isEditingDisabled = routePathStore!.isEditingDisabled;
         // TODO:
         // are nodeFormsValid ...
         const isSaveButtonDisabled =
-            this.state.isEditingDisabled ||
+            isEditingDisabled ||
             !this.props.routePathStore!.isDirty ||
             !isGeometryValid ||
             !this.isFormValid() ||
@@ -328,11 +337,11 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         return (
             <div className={s.routePathView}>
                 <RoutePathHeader
-                    hasModifications={this.props.routePathStore!.isDirty}
-                    routePath={this.props.routePathStore!.routePath!}
+                    hasModifications={routePathStore!.isDirty}
+                    routePath={routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
-                    isEditing={!this.state.isEditingDisabled}
-                    onEditButtonClick={this.toggleIsEditing}
+                    isEditing={!routePathStore!.isEditingDisabled}
+                    onEditButtonClick={routePathStore!.toggleIsEditingDisabled}
                 />
                 {isCopyRoutePathSegmentViewVisible ? (
                     <RoutePathCopySegmentView />

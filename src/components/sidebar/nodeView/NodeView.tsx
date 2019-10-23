@@ -45,7 +45,6 @@ interface INodeViewProps {
 
 interface INodeViewState {
     isLoading: boolean;
-    isEditingDisabled: boolean; // TODO: remove
     invalidPropertiesMap: object;
 }
 
@@ -58,7 +57,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: !props.isNewNode, // TODO: remove
             invalidPropertiesMap: {}
         };
         this.nodePropertyListeners = [];
@@ -213,9 +211,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     };
 
     private validateNode = () => {
-        const node = this.props.nodeStore!.node;
-        if (!node) return;
-        this.validateAllProperties(nodeValidationModel, node);
+        this.validateAllProperties(nodeValidationModel, this.props.nodeStore!.node);
     };
 
     private onNodeGeometryChange = (property: NodeLocationType, value: any) => {

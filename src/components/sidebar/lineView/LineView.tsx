@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
@@ -33,29 +34,35 @@ interface ILineViewProps {
 interface ILineViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
     selectedTabIndex: number;
 }
 
 @inject('lineStore', 'errorStore', 'alertStore')
 @observer
 class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
+    private isEditingDisabledListener: IReactionDisposer;
+
     constructor(props: ILineViewProps) {
         super(props);
         this.state = {
             isLoading: true,
             invalidPropertiesMap: {},
-            isEditingDisabled: !props.isNewLine,
             selectedTabIndex: 0
         };
     }
 
     componentDidMount() {
         this.initialize();
+        this.isEditingDisabledListener = reaction(
+            () => this.props.lineStore!.isEditingDisabled,
+            this.onChangeIsEditingDisabled
+        );
+        this.props.lineStore!.setIsEditingDisabled(!this.props.isNewLine);
     }
 
     componentWillUnmount() {
         this.props.lineStore!.clear();
+        this.isEditingDisabledListener();
     }
 
     private setSelectedTabIndex = (index: number) => {
@@ -128,11 +135,21 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
             this.navigateToNewLine();
             return;
         }
+        this.props.lineStore!.setOldLine(line!);
         this.setState({
-            isEditingDisabled: true,
             invalidPropertiesMap: {},
             isLoading: false
         });
+        this.props.lineStore!.setIsEditingDisabled(true);
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        this.clearInvalidPropertiesMap();
+        if (this.props.lineStore!.isEditingDisabled) {
+            this.props.lineStore!.resetChanges();
+        } else {
+            this.validateLine();
+        }
     };
 
     private navigateToNewLine = () => {
@@ -144,15 +161,6 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         navigator.goTo(lineViewLink);
     };
 
-    private toggleIsEditing = () => {
-        const isEditingDisabled = this.state.isEditingDisabled;
-        if (!isEditingDisabled) {
-            this.props.lineStore!.resetChanges();
-        }
-        this.toggleIsEditingDisabled();
-        if (!isEditingDisabled) this.validateLine();
-    };
-
     private validateLine = () => {
         this.validateAllProperties(lineValidationModel, this.props.lineStore!.line);
     };
@@ -162,8 +170,8 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
             <div className={s.sidebarHeaderSection}>
                 <SidebarHeader
                     isEditButtonVisible={!this.props.isNewLine}
-                    onEditButtonClick={this.toggleIsEditing}
-                    isEditing={!this.state.isEditingDisabled}
+                    onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
+                    isEditing={!this.props.lineStore!.isEditingDisabled}
                     shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
                 >
                     {this.props.isNewLine
@@ -175,6 +183,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     };
 
     render() {
+        const lineStore = this.props.lineStore;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.lineView, s.loaderContainer)}>
@@ -183,9 +192,9 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
             );
         }
         if (!this.props.lineStore!.line) return null;
-
+        const isEditingDisabled = lineStore!.isEditingDisabled;
         const isSaveButtonDisabled =
-            this.state.isEditingDisabled || !this.props.lineStore!.isDirty || !this.isFormValid();
+            isEditingDisabled || !lineStore!.isDirty || !this.isFormValid();
 
         return (
             <div className={s.lineView}>
@@ -206,7 +215,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                         <ContentList selectedTabIndex={this.state.selectedTabIndex}>
                             <ContentItem>
                                 <LineInfoTab
-                                    isEditingDisabled={this.state.isEditingDisabled}
+                                    isEditingDisabled={isEditingDisabled}
                                     isNewLine={this.props.isNewLine}
                                     onChangeLineProperty={this.onChangeLineProperty}
                                     invalidPropertiesMap={this.state.invalidPropertiesMap}

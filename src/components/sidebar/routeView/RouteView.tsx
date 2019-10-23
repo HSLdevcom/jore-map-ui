@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
@@ -34,29 +35,35 @@ interface IRouteViewProps {
 interface IRouteViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
     selectedTabIndex: number;
 }
 
 @inject('routeStore', 'errorStore', 'alertStore')
 @observer
 class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
+    private isEditingDisabledListener: IReactionDisposer;
+
     constructor(props: IRouteViewProps) {
         super(props);
         this.state = {
             isLoading: true,
             invalidPropertiesMap: {},
-            isEditingDisabled: !props.isNewRoute,
             selectedTabIndex: 0
         };
     }
 
     componentDidMount() {
         this.initialize();
+        this.isEditingDisabledListener = reaction(
+            () => this.props.routeStore!.isEditingDisabled,
+            this.onChangeIsEditingDisabled
+        );
+        this.props.routeStore!.setIsEditingDisabled(!this.props.isNewRoute);
     }
 
     componentWillUnmount() {
         this.props.routeStore!.clear();
+        this.isEditingDisabledListener();
     }
 
     private setSelectedTabIndex = (index: number) => {
@@ -130,11 +137,21 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
             this.navigateToNewRoute();
             return;
         }
+        this.props.routeStore!.setOldRoute(route!);
         this.setState({
-            isEditingDisabled: true,
             invalidPropertiesMap: {},
             isLoading: false
         });
+        this.props.routeStore!.setIsEditingDisabled(true);
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        this.clearInvalidPropertiesMap();
+        if (this.props.routeStore!.isEditingDisabled) {
+            this.props.routeStore!.resetChanges();
+        } else {
+            this.validateRoute();
+        }
     };
 
     private navigateToNewRoute = () => {
@@ -144,15 +161,6 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
             .toTarget(':id', route!.id)
             .toLink();
         navigator.goTo(routeViewLink);
-    };
-
-    private toggleIsEditing = () => {
-        const isEditingDisabled = this.state.isEditingDisabled;
-        if (!isEditingDisabled) {
-            this.props.routeStore!.resetChanges();
-        }
-        this.toggleIsEditingDisabled();
-        if (!isEditingDisabled) this.validateRoute();
     };
 
     private validateRoute = () => {
@@ -165,8 +173,8 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
             <div className={s.sidebarHeaderSection}>
                 <SidebarHeader
                     isEditButtonVisible={!this.props.isNewRoute}
-                    onEditButtonClick={this.toggleIsEditing}
-                    isEditing={!this.state.isEditingDisabled}
+                    onEditButtonClick={this.props.routeStore!.toggleIsEditingDisabled}
+                    isEditing={!this.props.routeStore!.isEditingDisabled}
                     shouldShowClosePromptMessage={this.props.routeStore!.isDirty}
                 >
                     {this.props.isNewRoute
@@ -178,6 +186,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     };
 
     render() {
+        const routeStore = this.props.routeStore;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.routeView, s.loaderContainer)}>
@@ -187,8 +196,9 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
         }
         if (!this.props.routeStore!.route) return null;
 
+        const isEditingDisabled = routeStore!.isEditingDisabled;
         const isSaveButtonDisabled =
-            this.state.isEditingDisabled || !this.props.routeStore!.isDirty || !this.isFormValid();
+            isEditingDisabled || !this.props.routeStore!.isDirty || !this.isFormValid();
 
         return (
             <div className={s.routeView}>
@@ -209,7 +219,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
                         <ContentList selectedTabIndex={this.state.selectedTabIndex}>
                             <ContentItem>
                                 <RouteInfoTab
-                                    isEditingDisabled={this.state.isEditingDisabled}
+                                    isEditingDisabled={isEditingDisabled}
                                     isNewRoute={this.props.isNewRoute}
                                     onChangeRouteProperty={this.onChangeRouteProperty}
                                     invalidPropertiesMap={this.state.invalidPropertiesMap}

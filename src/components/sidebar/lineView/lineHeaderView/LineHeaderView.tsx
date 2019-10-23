@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
@@ -34,25 +35,29 @@ interface ILineHeaderViewProps {
 interface ILineHeaderViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
     reservedStartDates: string[];
 }
 
 @inject('lineHeaderStore', 'errorStore', 'alertStore')
 @observer
 class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewState> {
+    private isEditingDisabledListener: IReactionDisposer;
     constructor(props: ILineHeaderViewProps) {
         super(props);
         this.state = {
             isLoading: true,
             invalidPropertiesMap: {},
-            isEditingDisabled: !props.isNewLineHeader,
             reservedStartDates: []
         };
     }
 
     componentDidMount() {
         this.initialize();
+        this.isEditingDisabledListener = reaction(
+            () => this.props.lineHeaderStore!.isEditingDisabled,
+            this.onChangeIsEditingDisabled
+        );
+        this.props.lineHeaderStore!.setIsEditingDisabled(!this.props.isNewLineHeader);
     }
 
     componentDidUpdate(prevProps: ILineHeaderViewProps) {
@@ -63,6 +68,7 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
 
     componentWillUnmount() {
         this.props.lineHeaderStore!.clear();
+        this.isEditingDisabledListener();
     }
 
     private initialize = async () => {
@@ -134,6 +140,8 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
     };
 
     private validateLineHeader = () => {
+        if (!this.props.lineHeaderStore!.lineHeader) return;
+
         this.validateAllProperties(
             lineHeaderValidationModel,
             this.props.lineHeaderStore!.lineHeader
@@ -165,11 +173,20 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
             this.navigateToUpdatedLineHeaderView();
             return;
         }
+        this.props.lineHeaderStore!.setOldLineHeader(lineHeader!);
         this.setState({
-            isEditingDisabled: true,
-            invalidPropertiesMap: {},
             isLoading: false
         });
+        this.props.lineHeaderStore!.setIsEditingDisabled(true);
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        this.clearInvalidPropertiesMap();
+        if (this.props.lineHeaderStore!.isEditingDisabled) {
+            this.props.lineHeaderStore!.resetChanges();
+        } else {
+            this.validateLineHeader();
+        }
     };
 
     private navigateToUpdatedLineHeaderView = () => {
@@ -226,23 +243,14 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
         this.changeDates(startDate, endDate);
     };
 
-    private toggleIsEditing = () => {
-        const isEditingDisabled = this.state.isEditingDisabled;
-        if (!isEditingDisabled) {
-            this.props.lineHeaderStore!.resetChanges();
-        }
-        this.toggleIsEditingDisabled();
-        if (!isEditingDisabled) this.validateLineHeader();
-    };
-
     private renderLineHeaderViewHeader = () => {
         const lineHeaderStore = this.props.lineHeaderStore;
         return (
             <div className={s.sidebarHeaderSection}>
                 <SidebarHeader
                     isEditButtonVisible={!this.props.isNewLineHeader}
-                    onEditButtonClick={this.toggleIsEditing}
-                    isEditing={!this.state.isEditingDisabled}
+                    onEditButtonClick={lineHeaderStore!.toggleIsEditingDisabled}
+                    isEditing={!lineHeaderStore!.isEditingDisabled}
                     shouldShowClosePromptMessage={lineHeaderStore!.isDirty}
                 >
                     {this.props.isNewLineHeader
@@ -279,13 +287,11 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
 
         if (!lineHeader) return null;
 
-        const isEditingDisabled = this.state.isEditingDisabled;
+        const isEditingDisabled = this.props.lineHeaderStore!.isEditingDisabled;
         const onChange = this.onChangeLineHeaderProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         const isSaveButtonDisabled =
-            this.state.isEditingDisabled ||
-            !this.props.lineHeaderStore!.isDirty ||
-            !this.isFormValid();
+            isEditingDisabled || !this.props.lineHeaderStore!.isDirty || !this.isFormValid();
 
         return (
             <div className={s.lineHeaderView}>
