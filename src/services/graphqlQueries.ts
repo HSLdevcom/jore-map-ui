@@ -238,6 +238,7 @@ const getReservedShortIds = () => {
         query getReservedShortIds($shortIdLetter: String) {
             getReservedShortIds: allSolmus(condition: { solkirjain: $shortIdLetter }) {
                 nodes {
+                    soltunnus
                     sollistunnus
                 }
             }

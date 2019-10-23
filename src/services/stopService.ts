@@ -13,7 +13,13 @@ interface IStopSectionItem {
     selite: string;
 }
 
+interface IReservedShortIdItem {
+    nodeId: string;
+    shortId: string;
+}
+
 class StopService {
+    // Expose function for testing
     public static fetchAllStopAreas = async (): Promise<IStopAreaItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopAreas()
@@ -30,41 +36,31 @@ class StopService {
         return queryResult.data.node.nodes;
     };
 
-    public static fetchAvailableShortIds = async (shortIdLetter?: string): Promise<string[]> => {
+    public static fetchReservedShortIds = async (
+        shortIdLetter?: string
+    ): Promise<IReservedShortIdItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getReservedShortIds(),
             variables: {
-                shortIdLetter
+                shortIdLetter,
+                fetchPolicy: 'no-cache' // no-cache is needed because otherwise nested data fetch does not always work
             }
         });
-        const reservedShortIds = _.chain(queryResult.data.getReservedShortIds.nodes)
+        const reservedShortIds: IReservedShortIdItem[] = _.chain(
+            queryResult.data.getReservedShortIds.nodes
+        )
             .filter(node => node !== null)
-            .map((node: IExternalNode) => node.sollistunnus)
-            .uniq()
+            .map((node: IExternalNode) => {
+                return {
+                    nodeId: node.soltunnus,
+                    shortId: node.sollistunnus
+                };
+            })
             .value();
-        const allNumberVariations = _generateAllNumberVariations(4);
-        return allNumberVariations.filter(num => !reservedShortIds.includes(num));
+        return reservedShortIds;
     };
 }
 
-/**
- * @param numberCount - e.g. with numberCount 4, generates ["0000", "0001", "0002", ..., "9998", "9999"]
- **/
-const _generateAllNumberVariations = (numberCount: number) => {
-    const allNumbers: string[] = [];
-    let max = '';
-    for (let i = 0; i < numberCount; i += 1) {
-        max += '9';
-    }
-    for (let i = 0; i <= parseInt(max, 10); i += 1) {
-        const current = String(i);
-        const missingZeroCount = numberCount - current.length;
-        const missingZeros = '0'.repeat(missingZeroCount);
-        allNumbers.push(missingZeros + current);
-    }
-    return allNumbers;
-};
-
 export default StopService;
 
-export { IStopAreaItem, IStopSectionItem };
+export { IStopAreaItem, IStopSectionItem, IReservedShortIdItem };

@@ -7,7 +7,7 @@ import Dropdown, { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import ButtonType from '~/enums/buttonType';
 import { INode } from '~/models';
-import StopService from '~/services/stopService';
+import StopService, { IReservedShortIdItem } from '~/services/stopService';
 import { NodeStore } from '~/stores/nodeStore';
 import * as s from './shortIdInput.scss';
 
@@ -24,6 +24,8 @@ interface IStopFormState {
     availableShortIdDropdownItems: IDropdownItem[];
     isAvailableShortIdsDropdownVisible: boolean;
 }
+
+const SHORT_ID_LENGTH = 4;
 
 @inject('nodeStore')
 @observer
@@ -43,10 +45,10 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
     componentDidMount() {
         this.mounted = true;
         this.isShortIdLetterListener = reaction(
-            () => this.props.nodeStore!.node.shortIdLetter,
-            this.fetchAvailableShortIds
+            () => this.props.nodeStore!.node && this.props.nodeStore!.node.shortIdLetter,
+            this.updateAvailableShortIds
         );
-        this.fetchAvailableShortIds();
+        this.updateAvailableShortIds();
     }
 
     componentWillUnmount() {
@@ -54,9 +56,15 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         this.isShortIdLetterListener();
     }
 
-    private fetchAvailableShortIds = async () => {
-        const shortIdLetter = this.props.nodeStore!.node.shortIdLetter;
-        const availableShortIds: string[] = await StopService.fetchAvailableShortIds(shortIdLetter);
+    private updateAvailableShortIds = async () => {
+        const node = this.props.nodeStore!.node;
+        if (!node) return;
+
+        const shortIdLetter = node.shortIdLetter;
+        const reservedShortIdItems: IReservedShortIdItem[] = await StopService.fetchReservedShortIds(
+            shortIdLetter
+        );
+        const availableShortIds: string[] = _getAvailableShortIds(reservedShortIdItems, node.id);
         if (this.mounted) {
             this.setState({
                 availableShortIds,
@@ -113,7 +121,6 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         if (this.props.isEditingDisabled || validationResult.errorMessage) return null;
         const selectedShortId = this.props.node.shortIdString;
         if (!selectedShortId) return null;
-        if (!this.props.nodeStore!.isShortIdDirty) return null;
 
         const isAvailable = this.state.availableShortIds.includes(selectedShortId);
         return isAvailable ? (
@@ -160,5 +167,40 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         );
     }
 }
+
+const _getAvailableShortIds = (
+    reservedShortIdItems: IReservedShortIdItem[],
+    currentNodeId: string
+): string[] => {
+    const allShortIdVariations = _generateAllShortIdVariations(SHORT_ID_LENGTH);
+    return allShortIdVariations.filter(
+        shortIdVariation =>
+            !reservedShortIdItems.find((reservedShortIdItem: IReservedShortIdItem) => {
+                return (
+                    reservedShortIdItem.shortId === shortIdVariation &&
+                    // Prevent currently opened node to affect available ids
+                    reservedShortIdItem.nodeId !== currentNodeId
+                );
+            })
+    );
+};
+
+/**
+ * @param numberCount - e.g. with numberCount 4, generates ["0000", "0001", "0002", ..., "9998", "9999"]
+ **/
+const _generateAllShortIdVariations = (numberCount: number) => {
+    const allNumbers: string[] = [];
+    let max = '';
+    for (let i = 0; i < numberCount; i += 1) {
+        max += '9';
+    }
+    for (let i = 0; i <= parseInt(max, 10); i += 1) {
+        const current = String(i);
+        const missingZeroCount = numberCount - current.length;
+        const missingZeros = '0'.repeat(missingZeroCount);
+        allNumbers.push(missingZeros + current);
+    }
+    return allNumbers;
+};
 
 export default ShortIdInput;
