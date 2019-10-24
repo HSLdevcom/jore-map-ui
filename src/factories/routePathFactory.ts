@@ -2,7 +2,7 @@ import { IRoute, IRoutePath, IRoutePathLink } from '~/models';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
-import HashHelper from '~/util/hashHelper';
+import HashHelper from '~/util/HashHelper';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
