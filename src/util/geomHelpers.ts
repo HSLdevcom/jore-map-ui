@@ -41,4 +41,13 @@ const _roundNumber = (num: number) => {
     return Math.round(num * Math.pow(10, DECIMALS)) / Math.pow(10, DECIMALS);
 };
 
-export { createCoherentLinesFromPolylines, roundLatLngs, roundLatLng };
+const calculateLengthFromLatLngs = (latLngs: L.LatLng[]) => {
+    let length = 0;
+    latLngs.forEach((latLng, index) => {
+        if (index === 0) return;
+        length += latLngs[index - 1].distanceTo(latLng);
+    });
+    return Math.round(length);
+};
+
+export { createCoherentLinesFromPolylines, roundLatLngs, roundLatLng, calculateLengthFromLatLngs };
