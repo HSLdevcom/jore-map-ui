@@ -13,7 +13,7 @@ import subSites from '~/routing/subSites';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { dateToDateString } from '~/util/dateFormatHelper';
+import { dateToDateString } from '~/util/dateFormatHelpers';
 import LineHelper from '~/util/lineHelper';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import SidebarHeader from '../SidebarHeader';

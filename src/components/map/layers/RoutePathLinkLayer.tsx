@@ -7,7 +7,7 @@ import { INode, IRoutePathLink } from '~/models';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { PopupStore } from '~/stores/popupStore';
 import EventManager, { INodeClickParams } from '~/util/EventManager';
-import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelpers';
 import Marker from './markers/Marker';
 import NodeMarker from './markers/NodeMarker';
 import ArrowDecorator from './utils/ArrowDecorator';

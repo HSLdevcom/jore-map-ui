@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import { ILink, INode } from '~/models';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import { roundLatLngs } from '~/util/geomHelper';
+import { roundLatLngs } from '~/util/geomHelpers';
 import LeafletUtils from '~/util/leafletUtils';
 
 export interface UndoState {

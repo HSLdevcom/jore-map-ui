@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import constants from '~/constants/constants';
-import * as GeomHelper from '../geomHelper';
+import * as GeomHelper from '../geomHelpers';
 
 describe('geomHelper.createCoherentLinesFromPolylines', () => {
     it('Concatenates 1 line into 1 line', () => {
