@@ -27,7 +27,7 @@ import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
-import NodeHelper from '~/util/nodeHelper';
+import NodeHelper from '~/util/NodeHelper';
 import InputContainer from '../../controls/InputContainer';
 import SidebarHeader from '../SidebarHeader';
 import StopForm from './StopForm';

@@ -1,3 +1,4 @@
+import Moment from 'moment';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import constants from '~/constants/constants';
 import endpoints from '~/enums/endpoints';
@@ -6,7 +7,6 @@ import IError from '~/models/IError';
 import AlertStore from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
 import ApolloClient from '~/util/ApolloClient';
-import ApiClientHelper from './apiClientHelper';
 
 enum RequestMethod {
     GET = 'GET',
@@ -66,7 +66,7 @@ class ApiClient {
         object: any,
         credentials?: credentials
     ) => {
-        const formattedObject = ApiClientHelper.format(object);
+        const formattedObject = _format(object);
         let error: IError | null = null;
 
         try {
@@ -115,6 +115,27 @@ class ApiClient {
         }
     };
 }
+
+// Formats the object to include dates as formatted strings, instead of Date objects
+const _format = (obj: object) => {
+    const entries = Object.entries(obj);
+    const dates = entries
+        .filter(([key, value]: [string, any]) => value instanceof Date)
+        .map(([key, value]: [string, Date]) => [key, Moment(value).format()] as [string, string]);
+
+    return {
+        ...obj,
+        ..._arrayToObject(dates)
+    };
+};
+
+const _arrayToObject = (arr: [string, any][]) => {
+    const res = {};
+    arr.forEach(([key, value]: [string, any]) => {
+        res[key] = value;
+    });
+    return res;
+};
 
 export default new ApiClient();
 

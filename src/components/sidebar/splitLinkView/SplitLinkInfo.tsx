@@ -1,8 +1,8 @@
 import * as React from 'react';
 import NodeType from '~/enums/nodeType';
 import { ILink, INode } from '~/models';
+import NodeHelper from '~/util/NodeHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import NodeHelper from '~/util/nodeHelper';
 import TextContainer from '../../controls/TextContainer';
 import * as s from './splitLinkInfo.scss';
 

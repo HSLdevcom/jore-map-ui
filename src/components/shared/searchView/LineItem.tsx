@@ -9,8 +9,8 @@ import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
+import LineHelper from '~/util/LineHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import LineHelper from '~/util/lineHelper';
 import LineItemSubMenu from './LineItemSubMenu';
 import * as s from './lineItem.scss';
 

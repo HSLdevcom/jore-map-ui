@@ -5,7 +5,7 @@ import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
 import { INodeBase } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
-import { roundLatLng } from '~/util/geomHelper';
+import { roundLatLng } from '~/util/geomHelpers';
 import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {
