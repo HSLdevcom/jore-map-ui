@@ -382,8 +382,6 @@ const stopQueryFields = `
 `;
 
 const nodeQueryFields = `
-    solx
-    soly
     soltunnus
     sollistunnus
     solkirjain
