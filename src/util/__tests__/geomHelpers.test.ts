@@ -1,12 +1,16 @@
 import { LatLng } from 'leaflet';
 import constants from '~/constants/constants';
-import * as GeomHelpers from '../geomHelpers';
+import {
+    calculateLengthFromLatLngs,
+    createCoherentLinesFromPolylines,
+    roundLatLng
+} from '../geomHelpers';
 
 describe('geomHelpers.createCoherentLinesFromPolylines', () => {
     it('Concatenates 1 line into 1 line', () => {
         const line: LatLng[] = [new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 3)];
         const expectedResult: LatLng[][] = [[new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 3)]];
-        expect(GeomHelpers.createCoherentLinesFromPolylines([line])).toEqual(expectedResult);
+        expect(createCoherentLinesFromPolylines([line])).toEqual(expectedResult);
     });
 
     it('Concatenates 2 lines into 1 line', () => {
@@ -15,9 +19,7 @@ describe('geomHelpers.createCoherentLinesFromPolylines', () => {
         const expectedResult: LatLng[][] = [
             [new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 2), new LatLng(2, 3)]
         ];
-        expect(GeomHelpers.createCoherentLinesFromPolylines([line1, line2])).toEqual(
-            expectedResult
-        );
+        expect(createCoherentLinesFromPolylines([line1, line2])).toEqual(expectedResult);
     });
 
     it('Concatenates multiple lines into 2 lines', () => {
@@ -30,9 +32,9 @@ describe('geomHelpers.createCoherentLinesFromPolylines', () => {
             [new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 2), new LatLng(3, 2)],
             [new LatLng(3, 3), new LatLng(3, 4), new LatLng(4, 5)]
         ];
-        expect(
-            GeomHelpers.createCoherentLinesFromPolylines([line1, line2, line3, line4, line5])
-        ).toEqual(expectedResult);
+        expect(createCoherentLinesFromPolylines([line1, line2, line3, line4, line5])).toEqual(
+            expectedResult
+        );
     });
 });
 
@@ -43,7 +45,7 @@ describe('geomHelpers.roundLatLng', () => {
         const lat = 1.11111111111;
         const lng = 2.222222222222;
         const coordinate = new LatLng(lat, lng);
-        const roundedCoordinate = GeomHelpers.roundLatLng(coordinate);
+        const roundedCoordinate = roundLatLng(coordinate);
 
         expect(roundedCoordinate.lat.toString()).toEqual(lat.toFixed(DECIMALS_IN_GEOMETRIES));
         expect(roundedCoordinate.lng.toString()).toEqual(lng.toFixed(DECIMALS_IN_GEOMETRIES));
@@ -60,7 +62,7 @@ describe('geomHelpers.calculateLengthFromLatLngs', () => {
         // https://gps-coordinates.org/distance-between-coordinates.php
         // calculated distance to 3711.12 meters, rounds to 3711
         const expectedLength = 3711;
-        expect(GeomHelpers.calculateLengthFromLatLngs(positions)).toEqual(expectedLength);
+        expect(calculateLengthFromLatLngs(positions)).toEqual(expectedLength);
     });
 
     it('Calculates length between two points - round up', () => {
@@ -72,6 +74,6 @@ describe('geomHelpers.calculateLengthFromLatLngs', () => {
         // https://gps-coordinates.org/distance-between-coordinates.php
         // calculated distance to 336.77 meters, rounds to 337
         const expectedLength = 337;
-        expect(GeomHelpers.calculateLengthFromLatLngs(positions)).toEqual(expectedLength);
+        expect(calculateLengthFromLatLngs(positions)).toEqual(expectedLength);
     });
 });
