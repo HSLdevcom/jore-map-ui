@@ -210,8 +210,10 @@ const getAllRoutePathPrimaryKeysQuery = () => {
 
 const getStopAreaQuery = () => {
     return gql`
-        query getStopArea {
-            // TODO
+        query getStopArea($stopAreaId: String!) {
+            stopArea: pysakkialueByPysalueid(pysalueid: $stopAreaId) {
+                ${stopAreaQueryFields}
+            }
         }
     `;
 };
@@ -387,6 +389,17 @@ const stopQueryFields = `
     nimiviimpvm
     vyohyke
     postinro
+`;
+
+const stopAreaQueryFields = `
+    pysalueid
+    verkko
+    nimi
+    nimir
+    termid
+    tallpvm
+    tallentaja
+    pysakkialueryhma
 `;
 
 const nodeQueryFields = `

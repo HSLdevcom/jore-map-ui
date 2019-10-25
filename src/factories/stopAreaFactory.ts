@@ -8,6 +8,7 @@ class StopAreaFactory {
             transitType: externalStopArea.verkko,
             nameFi: externalStopArea.nimi,
             nameSw: externalStopArea.nimir,
+            terminalAreaId: externalStopArea.termid,
             modifiedBy: externalStopArea.tallentaja,
             modifiedOn: externalStopArea.tallpvm ? new Date(externalStopArea.tallpvm) : undefined,
             stopAreaGroupId: externalStopArea.pysakkialueryhma
@@ -20,6 +21,7 @@ class StopAreaFactory {
             transitType: undefined,
             nameFi: '',
             nameSw: '',
+            terminalAreaId: '',
             modifiedBy: '',
             modifiedOn: new Date(),
             stopAreaGroupId: undefined

@@ -4,8 +4,7 @@
 @import '../../shared/styles/form';
 
 .stopAreaView {
-    width: $sidebarExtraWide;
-    height: 100%;
+    width: $sidebarWide;
     display: flex;
     flex-direction: column;
 
@@ -14,10 +13,8 @@
     }
 
     .content {
+        padding: 20px;
         overflow-y: auto;
         flex-grow: 1;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
     }
 }

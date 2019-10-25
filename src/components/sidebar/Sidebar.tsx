@@ -56,7 +56,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     private renderNewNodeView = (props: any) => <NodeView {...props} isNewNode={true} />;
     private renderNodeView = (props: any) => <NodeView {...props} isNewNode={false} />;
     private renderNewStopAreaView = (props: any) => {
-        return <StopAreaView {...props} />;
+        return <StopAreaView {...props} isNewStopArea={true} />;
     };
     private renderStopAreaView = (props: any) => <StopAreaView {...props} isNewStopArea={false} />;
     private renderNewLinkView = (props: any) => <LinkView {...props} isNewLink={true} />;

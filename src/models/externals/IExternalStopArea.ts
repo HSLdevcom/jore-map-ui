@@ -6,7 +6,7 @@ export default interface IExternalStopArea {
     nimi: string;
     nimir: string;
     termid: string;
-    tallpvm: Date;
-    tallentaja: string;
+    tallpvm?: Date;
+    tallentaja?: string;
     pysakkialueryhma: string;
 }

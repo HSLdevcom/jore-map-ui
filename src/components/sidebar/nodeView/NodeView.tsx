@@ -109,9 +109,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         }
     };
 
+    // TODO: rename as nodePropertyListener
     private createListener = (property: string) => {
         return reaction(
             () => this.props.nodeStore!.node && this.props.nodeStore!.node![property],
+            // TODO: this should validate node[propety] instead of all node properties
             this.validateNode
         );
     };

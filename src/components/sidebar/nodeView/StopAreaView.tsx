@@ -42,6 +42,7 @@ interface IStopAreaViewState {
 @observer
 class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> {
     private isEditingDisabledListener: IReactionDisposer;
+    private stopAreaPropertyListeners: IReactionDisposer[];
 
     constructor(props: IStopAreaViewProps) {
         super(props);
@@ -49,6 +50,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             isLoading: false,
             invalidPropertiesMap: {}
         };
+        this.stopAreaPropertyListeners = [];
     }
 
     async componentDidMount() {
@@ -82,6 +84,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
     componentWillUnmount() {
         this.props.stopAreaStore!.clear();
         this.isEditingDisabledListener();
+        this.removeNodePropertyListeners();
     }
 
     private initExistingStopArea = async () => {
@@ -95,6 +98,9 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                     stopArea,
                     isNewStopArea: false
                 });
+
+                this.validateStopArea();
+                this.createStopAreaPropertyListeners();
             }
         } catch (e) {
             this.props.errorStore!.addError(
@@ -116,8 +122,32 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         });
 
         this.validateStopArea();
+        this.createStopAreaPropertyListeners();
 
         this.setState({ isLoading: false });
+    };
+
+    private createStopAreaPropertyListeners = () => {
+        const stopArea: IStopArea = this.props.stopAreaStore!.stopArea;
+        if (!stopArea) return;
+
+        for (const property in stopArea) {
+            const listener = this.createStopAreaPropertyListener(property);
+            this.stopAreaPropertyListeners.push(listener);
+        }
+    };
+
+    private createStopAreaPropertyListener = (property: string) => {
+        return reaction(
+            () =>
+                this.props.stopAreaStore!.stopArea && this.props.stopAreaStore!.stopArea![property],
+            this.validateStopAreaProperty(property)
+        );
+    };
+
+    private removeNodePropertyListeners = () => {
+        this.stopAreaPropertyListeners.forEach((listener: IReactionDisposer) => listener());
+        this.stopAreaPropertyListeners = [];
     };
 
     private save = async () => {
@@ -165,13 +195,18 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         this.validateAllProperties(stopAreaValidationModel, this.props.stopAreaStore!.stopArea);
     };
 
+    private validateStopAreaProperty = (property: string) => () => {
+        const stopArea = this.props.stopAreaStore!.stopArea;
+        if (!stopArea) return;
+
+        const value = stopArea[property];
+        this.validateProperty(stopAreaValidationModel[property], property, value);
+    };
+
     private selectTransitType = (transitType: TransitType) => {
         this.props.stopAreaStore!.updateStopAreaProperty('transitType', transitType);
         this.validateProperty(stopAreaValidationModel['transitType'], 'transitType', transitType);
     };
-
-    // TODO: onChangeProperty listener with:
-    // this.validateProperty(stopAreaValidationModel[property], property, value);
 
     private onChangeStopAreaProperty = (property: keyof IStopArea) => (value: any) => {
         this.props.stopAreaStore!.updateStopAreaProperty(property, value);
@@ -249,7 +284,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                 label='PYSÄKKIALUE'
                             />
                             {/* TODO: */}
-                            <div>TERMINAALI</div>
+                            {/* <div>TERMINAALI</div> */}
                         </div>
                         {!this.props.isNewStopArea && (
                             <div className={s.flexRow}>
