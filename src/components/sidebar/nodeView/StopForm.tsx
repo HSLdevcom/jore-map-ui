@@ -10,6 +10,9 @@ import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import ButtonType from '~/enums/buttonType';
 import { INode, IStop } from '~/models';
 import stopValidationModel from '~/models/validationModels/stopValidationModel';
+import navigator from '~/routing/navigator';
+import RouteBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import StopService, { IStopAreaItem, IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -175,6 +178,13 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const shortIdLetterItems = this.props.codeListStore!.getDropdownItemList('Lyhyttunnus');
         shortIdLetterItems.forEach(item => (item.label = `${item.value} - ${item.label}`));
         return shortIdLetterItems;
+    };
+
+    private redirectToNewStopArea = () => {
+        const url = RouteBuilder.to(SubSites.newStopArea)
+            .clear()
+            .toLink();
+        navigator.goTo(url);
     };
 
     render() {
@@ -353,8 +363,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             validationResult={invalidPropertiesMap['areaId']}
                         />
                         <Button
-                            // TODO: implement the button functionality
-                            onClick={() => window.alert('Toteutuksen suunnittelu kesken.')}
+                            onClick={() => this.redirectToNewStopArea()}
                             disabled={isEditingDisabled}
                             type={ButtonType.SQUARE}
                             className={s.createNewStopAreaButton}

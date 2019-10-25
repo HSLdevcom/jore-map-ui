@@ -172,12 +172,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private save = async () => {
         this.setState({ isLoading: true });
-        let preventSetState = false;
         try {
             if (this.props.isNewNode) {
                 const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
-                preventSetState = true;
-
                 const url = routeBuilder
                     .to(SubSites.node)
                     .toTarget(':id', nodeId)
@@ -189,14 +186,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     this.props.nodeStore!.getDirtyLinks()
                 );
             }
-
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
 
-        if (preventSetState) return;
+        if (this.props.isNewNode) return;
         this.setState({ isLoading: false });
         this.props.nodeStore!.setIsEditingDisabled(true);
     };

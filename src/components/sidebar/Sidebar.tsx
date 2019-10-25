@@ -14,6 +14,7 @@ import LineView from './lineView/LineView';
 import LineHeaderView from './lineView/lineHeaderView/LineHeaderView';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
+import StopAreaView from './nodeView/StopAreaView';
 import RouteListView from './routeListView/RouteListView';
 import RoutePathView from './routePathView/RoutePathView';
 import RouteView from './routeView/RouteView';
@@ -54,6 +55,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     private renderRouteView = (props: any) => <RouteView {...props} isNewRoute={false} />;
     private renderNewNodeView = (props: any) => <NodeView {...props} isNewNode={true} />;
     private renderNodeView = (props: any) => <NodeView {...props} isNewNode={false} />;
+    private renderNewStopAreaView = (props: any) => {
+        return <StopAreaView {...props} />;
+    };
+    private renderStopAreaView = (props: any) => <StopAreaView {...props} isNewStopArea={false} />;
     private renderNewLinkView = (props: any) => <LinkView {...props} isNewLink={true} />;
     private renderLinkView = (props: any) => <LinkView {...props} isNewLink={false} />;
     private renderNewRoutePathView = (props: any) => (
@@ -97,6 +102,22 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         />
                         <Route
                             exact={true}
+                            path={subSites.newNode}
+                            component={this.renderNewNodeView}
+                        />
+                        <Route exact={true} path={subSites.node} component={this.renderNodeView} />
+                        <Route
+                            exact={true}
+                            path={subSites.newStopArea}
+                            component={this.renderNewStopAreaView}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.stopArea}
+                            component={this.renderStopAreaView}
+                        />
+                        <Route
+                            exact={true}
                             path={subSites.routes}
                             component={this.renderRouteListView}
                         />
@@ -107,12 +128,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         />
                         <Route exact={true} path={subSites.link} component={this.renderLinkView} />
                         <Route exact={true} path={subSites.splitLink} component={SplitLinkView} />
-                        <Route
-                            exact={true}
-                            path={subSites.newNode}
-                            component={this.renderNewNodeView}
-                        />
-                        <Route exact={true} path={subSites.node} component={this.renderNodeView} />
                         <Route
                             exact={true}
                             path={subSites.newRoutePath}

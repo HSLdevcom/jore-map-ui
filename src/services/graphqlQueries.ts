@@ -208,6 +208,14 @@ const getAllRoutePathPrimaryKeysQuery = () => {
     `;
 };
 
+const getStopAreaQuery = () => {
+    return gql`
+        query getStopArea {
+            // TODO
+        }
+    `;
+};
+
 const getAllStopAreas = () => {
     return gql`
         query getAllStopAreas {
@@ -577,6 +585,7 @@ export default {
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
     getAllRoutePathPrimaryKeysQuery,
+    getStopAreaQuery,
     getAllStopAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,

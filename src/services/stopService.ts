@@ -21,7 +21,7 @@ interface IReservedShortIdItem {
 const SHORT_ID_LENGTH = 4;
 
 class StopService {
-    // Expose function for testing
+    // TODO: move to stopAreaService
     public static fetchAllStopAreas = async (): Promise<IStopAreaItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopAreas()
