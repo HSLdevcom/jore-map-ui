@@ -305,7 +305,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                     'Pysäkkialueid'
                                 )}
                                 selected={stopArea.stopAreaGroupId}
-                                label='PYSÄKKIALUE'
+                                label='PYSÄKKIALUE RYHMÄ'
                             />
                             <Dropdown
                                 onChange={this.onChangeStopAreaProperty('terminalAreaId')}
