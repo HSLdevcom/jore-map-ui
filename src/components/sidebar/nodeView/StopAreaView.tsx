@@ -3,6 +3,7 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
+import { IDropdownItem } from '~/components/controls/Dropdown';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -13,7 +14,7 @@ import stopAreaValidationModel from '~/models/validationModels/stopAreaValidatio
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import StopAreaService from '~/services/stopAreaService';
+import StopAreaService, { ITerminalAreaItem } from '~/services/stopAreaService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -36,6 +37,7 @@ interface IStopAreaViewProps {
 interface IStopAreaViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
+    terminalAreas: IDropdownItem[];
 }
 
 @inject('stopAreaStore', 'errorStore', 'alertStore', 'codeListStore')
@@ -43,17 +45,20 @@ interface IStopAreaViewState {
 class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> {
     private isEditingDisabledListener: IReactionDisposer;
     private stopAreaPropertyListeners: IReactionDisposer[];
+    private mounted: boolean;
 
     constructor(props: IStopAreaViewProps) {
         super(props);
         this.state = {
             isLoading: false,
-            invalidPropertiesMap: {}
+            invalidPropertiesMap: {},
+            terminalAreas: []
         };
         this.stopAreaPropertyListeners = [];
     }
 
     async componentDidMount() {
+        this.mounted = true;
         if (this.props.isNewStopArea) {
             await this.initNewStopArea();
         } else {
@@ -68,6 +73,12 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             () => this.props.stopAreaStore!.isEditingDisabled,
             this.onChangeIsEditingDisabled
         );
+        const terminalAreas: ITerminalAreaItem[] = await StopAreaService.fetchAllTerminalAreas();
+        if (this.mounted) {
+            this.setState({
+                terminalAreas: this.createTerminalAreaDropdownItems(terminalAreas)
+            });
+        }
     }
 
     componentDidUpdate(prevProps: IStopAreaViewProps) {
@@ -82,6 +93,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
     }
 
     componentWillUnmount() {
+        this.mounted = false;
         this.props.stopAreaStore!.clear();
         this.isEditingDisabledListener();
         this.removeNodePropertyListeners();
@@ -203,6 +215,18 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         this.validateProperty(stopAreaValidationModel[property], property, value);
     };
 
+    private createTerminalAreaDropdownItems = (
+        terminalAreas: ITerminalAreaItem[]
+    ): IDropdownItem[] => {
+        return terminalAreas.map((terminalArea: ITerminalAreaItem) => {
+            const item: IDropdownItem = {
+                value: `${terminalArea.id}`,
+                label: `${terminalArea.name}`
+            };
+            return item;
+        });
+    };
+
     private selectTransitType = (transitType: TransitType) => {
         this.props.stopAreaStore!.updateStopAreaProperty('transitType', transitType);
         this.validateProperty(stopAreaValidationModel['transitType'], 'transitType', transitType);
@@ -283,8 +307,18 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                 selected={stopArea.stopAreaGroupId}
                                 label='PYSÄKKIALUE'
                             />
-                            {/* TODO: */}
-                            {/* <div>TERMINAALI</div> */}
+                            <Dropdown
+                                onChange={this.onChangeStopAreaProperty('terminalAreaId')}
+                                items={this.state.terminalAreas}
+                                selected={stopArea.terminalAreaId}
+                                emptyItem={{
+                                    value: '',
+                                    label: ''
+                                }}
+                                disabled={isEditingDisabled}
+                                label='TERMINAALIALUE'
+                                validationResult={invalidPropertiesMap['terminalAreaId']}
+                            />
                         </div>
                         {!this.props.isNewStopArea && (
                             <div className={s.flexRow}>

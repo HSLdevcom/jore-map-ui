@@ -6,6 +6,16 @@ import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
+interface ITerminalAreaItem {
+    id: string;
+    name: string;
+}
+
+interface IExternalTerminalArea {
+    termid: string;
+    nimi: string;
+}
+
 class StopAreaService {
     public static fetchStopArea = async (stopAreaId: string): Promise<IStopArea> => {
         // TODO: remove this hardcoded value
@@ -24,6 +34,25 @@ class StopAreaService {
     public static createStopArea = async (stopArea: IStopArea) => {
         await ApiClient.createObject(endpoints.STOP_AREA, stopArea);
     };
+
+    public static fetchAllTerminalAreas = async (): Promise<ITerminalAreaItem[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllTerminalAreas()
+        });
+
+        const terminalAreaItems: ITerminalAreaItem[] = queryResult.data.node.nodes.map(
+            (externalTerminalArea: IExternalTerminalArea) => {
+                return {
+                    id: externalTerminalArea.termid,
+                    name: externalTerminalArea.nimi
+                };
+            }
+        );
+
+        return terminalAreaItems;
+    };
 }
 
 export default StopAreaService;
+
+export { ITerminalAreaItem };

@@ -231,6 +231,19 @@ const getAllStopAreas = () => {
     `;
 };
 
+const getAllTerminalAreas = () => {
+    return gql`
+        query getAllTerminalAreas {
+            node: allTerminaalialues {
+                nodes {
+                    termid
+                    nimi
+                }
+            }
+        }
+    `;
+};
+
 const getAllStopSections = () => {
     return gql`
         query getAllStopSections {
@@ -600,6 +613,7 @@ export default {
     getAllRoutePathPrimaryKeysQuery,
     getStopAreaQuery,
     getAllStopAreas,
+    getAllTerminalAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
