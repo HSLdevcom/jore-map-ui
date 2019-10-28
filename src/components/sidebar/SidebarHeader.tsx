@@ -10,13 +10,13 @@ import * as s from './sidebarHeader.scss';
 
 interface ISidebarHeaderProps {
     children: ReactNode;
-    hideCloseButton?: boolean;
+    hideNavigationButtons?: boolean;
     isEditButtonVisible?: boolean;
     loginStore?: LoginStore;
     isEditing?: boolean;
     shouldShowClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
-    onCloseButtonClick?: () => void;
+    onBackButtonClick?: () => void;
 }
 
 const closePromptMessage =
@@ -27,9 +27,9 @@ const revertPromptMessage =
 @inject('loginStore')
 @observer
 class SidebarHeader extends React.Component<ISidebarHeaderProps> {
-    onCloseButtonClick = () => {
+    onBackButtonClick = () => {
         if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
-            this.props.onCloseButtonClick ? this.props.onCloseButtonClick() : navigator.goBack();
+            this.props.onBackButtonClick ? this.props.onBackButtonClick() : navigator.goBack();
         }
     };
 
@@ -43,7 +43,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
         }
     };
 
-    goToHomeView = () => {
+    onCloseButtonClick = () => {
         const homeLink = routeBuilder
             .to(SubSites.home)
             .clear()
@@ -62,11 +62,11 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
                             className={classnames(s.icon, this.props.isEditing && s.active)}
                         />
                     )}
-                    {!this.props.hideCloseButton && (
-                        <FiArrowLeft className={s.icon} onClick={this.onCloseButtonClick} />
+                    {!this.props.hideNavigationButtons && (
+                        <FiArrowLeft className={s.icon} onClick={this.onBackButtonClick} />
                     )}
-                    {!this.props.hideCloseButton && (
-                        <FiXCircle className={s.icon} onClick={this.goToHomeView} />
+                    {!this.props.hideNavigationButtons && (
+                        <FiXCircle className={s.icon} onClick={this.onCloseButtonClick} />
                     )}
                 </div>
             </div>

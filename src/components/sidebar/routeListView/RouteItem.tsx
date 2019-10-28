@@ -74,7 +74,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
 
     private renderRouteName = () => {
         return (
-            <SidebarHeader onCloseButtonClick={this.closeRoute}>
+            <SidebarHeader onBackButtonClick={this.closeRoute}>
                 <div className={s.routeName}>
                     {LineHelper.getTransitIcon(this.props.route.line!.transitType!, false)}
                     <div

@@ -69,7 +69,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
     render() {
         return (
             <div className={s.lineHeaderTableView}>
-                <SidebarHeader hideCloseButton={true}>Linjan otsikot</SidebarHeader>
+                <SidebarHeader hideNavigationButtons={true}>Linjan otsikot</SidebarHeader>
                 {this.props.lineHeaders.length > 0 ? (
                     <table className={s.lineHeaderTable}>
                         <tbody>
