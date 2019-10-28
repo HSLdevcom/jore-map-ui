@@ -43,6 +43,7 @@ const renderChangeRow = (oldValue: string, newValue: string) => {
     );
 };
 
+// TODO: move to shared folder. This isn't really an overlay
 const SavePrompt = observer((props: ISavePromptProps) => {
     const newLink = _.cloneDeep(props.newData);
     const oldLink = _.cloneDeep(props.oldData);

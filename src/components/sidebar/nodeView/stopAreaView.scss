@@ -1,0 +1,20 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/sidebar';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.stopAreaView {
+    width: $sidebarWide;
+    display: flex;
+    flex-direction: column;
+
+    &.loaderContainer > div {
+        margin: 30px auto;
+    }
+
+    .content {
+        padding: 20px;
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+}

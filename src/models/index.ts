@@ -7,6 +7,7 @@ import IRoute from './IRoute';
 import IRoutePath from './IRoutePath';
 import IRoutePathLink from './IRoutePathLink';
 import IStop from './IStop';
+import IStopArea from './IStopArea';
 import IViaName from './IViaName';
 
 export {
@@ -14,6 +15,7 @@ export {
     ILineHeader,
     INode,
     IStop,
+    IStopArea,
     ILink,
     IRoute,
     IRoutePath,
