@@ -103,18 +103,16 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const node = nodeStore!.node;
         for (const property in node!) {
             if (Object.prototype.hasOwnProperty.call(node, property)) {
-                const listener = this.createListener(property);
+                const listener = this.nodePropertyListener(property);
                 this.nodePropertyListeners.push(listener);
             }
         }
     };
 
-    // TODO: rename as nodePropertyListener
-    private createListener = (property: string) => {
+    private nodePropertyListener = (property: string) => {
         return reaction(
             () => this.props.nodeStore!.node && this.props.nodeStore!.node![property],
-            // TODO: this should validate node[propety] instead of all node properties
-            this.validateNode
+            this.validateNodeProperty(property)
         );
     };
 
@@ -210,6 +208,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private validateNode = () => {
         this.validateAllProperties(nodeValidationModel, this.props.nodeStore!.node);
+    };
+
+    private validateNodeProperty = (property: string) => () => {
+        const node = this.props.nodeStore!.node;
+        if (!node) return;
+
+        const value = node[property];
+        this.validateProperty(nodeValidationModel[property], property, value);
     };
 
     private onNodeGeometryChange = (property: NodeLocationType, value: any) => {

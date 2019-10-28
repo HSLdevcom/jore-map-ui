@@ -116,7 +116,9 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
 
     private renderValidationNotification = () => {
         const validationResult = this.props.nodeInvalidPropertiesMap['shortIdString'];
-        if (this.props.isEditingDisabled || validationResult.errorMessage) return null;
+        if (this.props.isEditingDisabled || (validationResult && validationResult.errorMessage)) {
+            return null;
+        }
         const selectedShortId = this.props.node.shortIdString;
         if (!selectedShortId) return null;
 
