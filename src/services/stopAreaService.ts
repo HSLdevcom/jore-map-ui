@@ -11,6 +11,11 @@ interface ITerminalAreaItem {
     name: string;
 }
 
+interface IStopAreaItem {
+    pysalueid: string;
+    nimi: string;
+}
+
 interface IExternalTerminalArea {
     termid: string;
     nimi: string;
@@ -23,6 +28,14 @@ class StopAreaService {
             variables: { stopAreaId }
         });
         return StopAreaFactory.mapExternalStopArea(queryResult.data.stopArea);
+    };
+
+    public static fetchAllStopAreas = async (): Promise<IStopAreaItem[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllStopAreas()
+        });
+
+        return queryResult.data.node.nodes;
     };
 
     public static updateStopArea = async (stopArea: IStopArea) => {
@@ -53,4 +66,4 @@ class StopAreaService {
 
 export default StopAreaService;
 
-export { ITerminalAreaItem };
+export { IStopAreaItem, ITerminalAreaItem };

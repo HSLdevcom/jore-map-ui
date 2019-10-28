@@ -13,7 +13,8 @@ import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import StopService, { IStopAreaItem, IStopSectionItem } from '~/services/stopService';
+import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
+import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import SidebarHeader from '../SidebarHeader';
@@ -70,7 +71,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         if (this.props.isNewStop) {
             this.props.nodeStore!.fetchAddressData();
         }
-        const stopAreas: IStopAreaItem[] = await StopService.fetchAllStopAreas();
+        const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
         if (this.mounted) {
             this.setState({
