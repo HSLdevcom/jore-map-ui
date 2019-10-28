@@ -125,7 +125,6 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
 
     private initNewStopArea = async () => {
         this.setState({ isLoading: true });
-        this.props.stopAreaStore!.clear();
 
         const stopArea = StopAreaFactory.createNewStopArea();
         this.props.stopAreaStore!.init({
@@ -201,6 +200,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             .toTarget(':id', stopArea.id)
             .toLink();
         navigator.goTo(stopAreaViewStopArea);
+        console.log(stopAreaViewStopArea);
     };
 
     private validateStopArea = () => {
