@@ -187,7 +187,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
         return (
             <div className={classnames(s.stopView, s.form)}>
-                <SidebarHeader hideNavigationButtons={true}>Pysäkin tiedot</SidebarHeader>
+                <SidebarHeader hideCloseButton={true} hideBackButton={true}>
+                    Pysäkin tiedot
+                </SidebarHeader>
                 <div className={s.formSection}>
                     {this.props.isNewStop && (
                         <div className={s.flexRow}>
