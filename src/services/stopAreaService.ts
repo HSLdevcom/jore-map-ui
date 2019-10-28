@@ -18,11 +18,9 @@ interface IExternalTerminalArea {
 
 class StopAreaService {
     public static fetchStopArea = async (stopAreaId: string): Promise<IStopArea> => {
-        // TODO: remove this hardcoded value
-        const tempStopAreaId = '110001';
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getStopAreaQuery(),
-            variables: { stopAreaId: tempStopAreaId }
+            variables: { stopAreaId }
         });
         return StopAreaFactory.mapExternalStopArea(queryResult.data.stopArea);
     };
