@@ -12,8 +12,6 @@ import StopAreaFactory from '~/factories/stopAreaFactory';
 import { IStopArea } from '~/models';
 import stopAreaValidationModel from '~/models/validationModels/stopAreaValidationModel';
 import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import StopAreaService, { ITerminalAreaItem } from '~/services/stopAreaService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
@@ -165,7 +163,11 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         this.setState({ isLoading: true });
         try {
             if (this.props.isNewStopArea) {
-                await StopAreaService.createStopArea(this.props.stopAreaStore!.stopArea);
+                const stopAreaId = await StopAreaService.createStopArea(
+                    this.props.stopAreaStore!.stopArea
+                );
+                // TODO stopAreaId to stopForm and have it selected in stopArea dropdown
+                console.log(stopAreaId);
             } else {
                 await StopAreaService.updateStopArea(this.props.stopAreaStore!.stopArea);
                 this.props.stopAreaStore!.setOldStopArea(this.props.stopAreaStore!.stopArea);
@@ -174,11 +176,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-
-        if (this.props.isNewStopArea) {
-            this.navigateToNewStopArea();
-            return;
-        }
+        navigator.goBack();
         this.setState({ isLoading: false });
         this.props.stopAreaStore!.setIsEditingDisabled(true);
     };
@@ -191,16 +189,6 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         } else {
             this.validateStopArea();
         }
-    };
-
-    private navigateToNewStopArea = () => {
-        const stopArea = this.props.stopAreaStore!.stopArea;
-        const stopAreaViewStopArea = routeBuilder
-            .to(SubSites.stopArea)
-            .toTarget(':id', stopArea.id)
-            .toLink();
-        navigator.goTo(stopAreaViewStopArea);
-        console.log(stopAreaViewStopArea);
     };
 
     private validateStopArea = () => {

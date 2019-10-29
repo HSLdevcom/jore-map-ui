@@ -18,4 +18,16 @@
     .formSection:last-of-type {
         padding-bottom: 50px; /* To prevent dropdown from causing a scrollbar */
     }
+
+    .icon {
+        font-size: 40px;
+        cursor: pointer;
+        margin: 3px;
+        transition: 0.5s;
+        align-self: flex-end;
+    }
+
+    .icon:hover {
+        opacity: 1;
+    }
 }
