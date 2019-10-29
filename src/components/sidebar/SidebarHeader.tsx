@@ -18,6 +18,7 @@ interface ISidebarHeaderProps {
     shouldShowClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onBackButtonClick?: () => void;
+    onCloseButtonClick?: () => void;
 }
 
 const closePromptMessage =
@@ -49,7 +50,12 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
             .to(SubSites.home)
             .clear()
             .toLink();
-        navigator.goTo(homeLink);
+
+        if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
+            this.props.onCloseButtonClick
+                ? this.props.onCloseButtonClick()
+                : navigator.goTo(homeLink);
+        }
     };
 
     render() {
