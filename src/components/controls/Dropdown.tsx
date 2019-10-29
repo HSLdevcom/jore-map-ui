@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { observer } from 'mobx-react';
 import React from 'react';
 import Select from 'react-select';
+import { InputActionMeta } from 'react-select/src/types';
 import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './dropdown.scss';
 
@@ -19,7 +20,9 @@ interface IDropdownProps {
     onChange: (value: any) => void;
     validationResult?: IValidationResult;
     darkerInputLabel?: boolean;
-    isDropdownOpen?: boolean;
+    isAnyInputValueAllowed?: boolean; // Can user give any input as dropdown field value
+    isNoOptionsMessageHidden?: boolean;
+    isSelectedOptionHidden?: boolean;
 }
 
 interface IDropdownState {
@@ -104,9 +107,21 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         return displayedItems;
     }
 
-    handleInputChange(searchString: string) {
+    handleInputChange(searchString: string, action: InputActionMeta) {
+        if (
+            this.props.isAnyInputValueAllowed &&
+            (action.action === 'input-blur' || action.action === 'menu-close')
+        ) {
+            // Return to prevent input from clearing out in onBlur / close menu events
+            return;
+        }
+
         const displayedItems = this.filterItems(searchString);
         this.setState({ searchString, displayedItems });
+
+        if (this.props.isAnyInputValueAllowed) {
+            this.props.onChange(searchString);
+        }
     }
 
     render() {
@@ -130,9 +145,9 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                 displayedItems.push(selectedItem);
             }
         }
-        // <Select/> works with null values instead of undefined
-        const selectValue = selectedItem ? selectedItem : null;
 
+        // <Select/> works with null values instead of undefined
+        const selectValue: IDropdownItem | null = selectedItem ? selectedItem : null;
         return (
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
@@ -156,9 +171,10 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                                 isSearchable={true}
                                 placeholder={'Valitse...'}
                                 styles={customStyles}
-                                noOptionsMessage={() => 'Ei hakutuloksia'}
-                                menuIsOpen={this.props.isDropdownOpen}
-                                autoFocus={this.props.isDropdownOpen}
+                                noOptionsMessage={() =>
+                                    props.isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
+                                }
+                                hideSelectedOptions={Boolean(this.props.isSelectedOptionHidden)}
                             />
                             <div>
                                 {validationResult &&

@@ -1,11 +1,7 @@
-import classnames from 'classnames';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Button } from '~/components/controls';
 import Dropdown, { IDropdownItem } from '~/components/controls/Dropdown';
-import InputContainer from '~/components/controls/InputContainer';
-import ButtonType from '~/enums/buttonType';
 import { INode } from '~/models';
 import StopService from '~/services/stopService';
 import { NodeStore } from '~/stores/nodeStore';
@@ -20,9 +16,7 @@ interface IStopFormProps {
 }
 
 interface IStopFormState {
-    availableShortIds: string[];
     availableShortIdDropdownItems: IDropdownItem[];
-    isAvailableShortIdsDropdownVisible: boolean;
 }
 
 @inject('nodeStore')
@@ -34,9 +28,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
     constructor(props: IStopFormProps) {
         super(props);
         this.state = {
-            availableShortIds: [],
-            availableShortIdDropdownItems: [],
-            isAvailableShortIdsDropdownVisible: false
+            availableShortIdDropdownItems: []
         };
     }
 
@@ -65,7 +57,6 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         );
         if (this.mounted) {
             this.setState({
-                availableShortIds,
                 availableShortIdDropdownItems: this.createAvailableShortIdDropdownItems(
                     availableShortIds
                 )
@@ -86,32 +77,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
     };
 
     private onNodeShortIdChange = (value: string) => {
-        this.setState({
-            isAvailableShortIdsDropdownVisible: false
-        });
         this.props.onNodePropertyChange('shortIdString')(value);
-    };
-
-    private renderToggleDropdownButton = () => {
-        const text = this.state.isAvailableShortIdsDropdownVisible ? 'X' : 'Hae';
-        return (
-            <Button
-                onClick={() => this.toggleDropdownVisibility()}
-                type={ButtonType.SQUARE}
-                className={classnames(
-                    s.shortIdInputButton,
-                    this.state.isAvailableShortIdsDropdownVisible ? s.redBackground : null
-                )}
-            >
-                {text}
-            </Button>
-        );
-    };
-
-    private toggleDropdownVisibility = () => {
-        this.setState({
-            isAvailableShortIdsDropdownVisible: !this.state.isAvailableShortIdsDropdownVisible
-        });
     };
 
     private renderValidationNotification = () => {
@@ -120,7 +86,9 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         const selectedShortId = this.props.node.shortIdString;
         if (!selectedShortId) return null;
 
-        const isAvailable = this.state.availableShortIds.includes(selectedShortId);
+        const isAvailable = this.state.availableShortIdDropdownItems.find(
+            (item: IDropdownItem) => item.value === selectedShortId
+        );
         return isAvailable ? (
             <div className={s.isValidMessage}>Lyhyttunnus on vapaa</div>
         ) : (
@@ -135,30 +103,17 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         return (
             <div className={s.shortIdInputView}>
                 <div className={s.shortIdInputContainer}>
-                    {this.state.isAvailableShortIdsDropdownVisible ? (
-                        <Dropdown
-                            label={shortIdLabel}
-                            onChange={this.onNodeShortIdChange}
-                            items={this.state.availableShortIdDropdownItems}
-                            selected={node.shortIdString}
-                            emptyItem={{
-                                value: '',
-                                label: ''
-                            }}
-                            disabled={isEditingDisabled}
-                            validationResult={this.props.nodeInvalidPropertiesMap['shortIdString']}
-                            isDropdownOpen={true}
-                        />
-                    ) : (
-                        <InputContainer
-                            label={shortIdLabel}
-                            onChange={this.onNodeShortIdChange}
-                            disabled={isEditingDisabled}
-                            value={node.shortIdString}
-                            validationResult={this.props.nodeInvalidPropertiesMap['shortIdString']}
-                        />
-                    )}
-                    {!isEditingDisabled && this.renderToggleDropdownButton()}
+                    <Dropdown
+                        label={shortIdLabel}
+                        onChange={this.onNodeShortIdChange}
+                        items={this.state.availableShortIdDropdownItems}
+                        selected={node.shortIdString}
+                        disabled={isEditingDisabled}
+                        validationResult={this.props.nodeInvalidPropertiesMap['shortIdString']}
+                        isAnyInputValueAllowed={true}
+                        isNoOptionsMessageHidden={true}
+                        isSelectedOptionHidden={true}
+                    />
                 </div>
                 <div>{this.renderValidationNotification()}</div>
             </div>
