@@ -20,6 +20,7 @@ interface IDropdownProps {
     onChange: (value: any) => void;
     validationResult?: IValidationResult;
     darkerInputLabel?: boolean;
+    isBackgroundGrey?: boolean;
     isAnyInputValueAllowed?: boolean; // Can user give any input as dropdown field value
     isNoOptionsMessageHidden?: boolean;
     isSelectedOptionHidden?: boolean;
@@ -32,43 +33,6 @@ interface IDropdownState {
 
 const EMPTY_VALUE_LABEL = '-';
 const MAX_DISPLAYED = 500; // With large amount of items, the dropdown seems to lag
-
-// Giving styles with style object (TODO: better way would be to use classnames)
-const customStyles = {
-    container: (styles: any) => ({
-        ...styles,
-        height: s.inputFieldHeight,
-        fontSize: s.smallFontSize
-    }),
-    control: (styles: any, state: any) => ({
-        ...styles,
-        borderColor: state.isFocused ? s.busBlue : s.mediumLightGrey,
-        borderWidth: state.isFocused ? '1.5px' : '1px',
-        boxShadow: 'none',
-        height: s.inputFieldHeight,
-        transition: 'none',
-        '&:hover': {
-            boxShadow: 'none',
-            borderWidth: state.isFocused ? '1.5px' : '1px',
-            borderColor: state.isFocused ? s.busBlue : s.mediumLightGrey,
-            cursor: 'pointer'
-        }
-    }),
-    option: (styles: any, state: any) => ({
-        ...styles,
-        cursor: 'pointer',
-        backgroundColor: state.isSelected
-            ? s.busBlue // Selected item color
-            : state.isFocused
-            ? s.lightblue // Color when something is highlighted
-            : 0, // Unselected item color
-        height: 30,
-        fontSize: s.smallFontSize,
-        padding: '0px 10px',
-        display: 'flex',
-        alignItems: 'center'
-    })
-};
 
 @observer
 class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
@@ -170,11 +134,12 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                                 isDisabled={props.disabled}
                                 isSearchable={true}
                                 placeholder={'Valitse...'}
-                                styles={customStyles}
+                                styles={_getCustomStyles(this.props)}
                                 noOptionsMessage={() =>
                                     props.isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
                                 }
                                 hideSelectedOptions={Boolean(this.props.isSelectedOptionHidden)}
+                                className={this.props.isBackgroundGrey ? s.greyBackground : ''}
                             />
                             <div>
                                 {validationResult &&
@@ -192,5 +157,58 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         );
     }
 }
+
+const _getCustomStyles = (props: IDropdownProps) => {
+    // Giving styles with style object (TODO: better way would be to use classnames)
+    return {
+        container: (styles: any) => ({
+            ...styles,
+            height: s.inputFieldHeight,
+            fontSize: s.smallFontSize
+        }),
+        control: (styles: any, state: any) => ({
+            ...styles,
+            backgroundColor: _getInputBackgroundColor(props.isBackgroundGrey),
+            borderColor: state.isFocused ? s.busBlue : s.mediumLightGrey,
+            borderWidth: state.isFocused ? '1.5px' : '1px',
+            boxShadow: 'none',
+            height: s.inputFieldHeight,
+            transition: 'none',
+            '&:hover': {
+                boxShadow: 'none',
+                borderWidth: state.isFocused ? '1.5px' : '1px',
+                borderColor: state.isFocused ? s.busBlue : s.mediumLightGrey,
+                cursor: 'pointer'
+            }
+        }),
+        option: (styles: any, state: any) => ({
+            ...styles,
+            cursor: 'pointer',
+            backgroundColor: _getMenuOptionBackgroundColor(state.isSelected, state.isFocused),
+            height: 30,
+            fontSize: s.smallFontSize,
+            padding: '0px 10px',
+            display: 'flex',
+            alignItems: 'center'
+        })
+    };
+};
+
+const _getMenuOptionBackgroundColor = (isSelected: boolean, isFocused: boolean) => {
+    if (isSelected) {
+        return s.busBlue; // Selected item color
+    }
+    if (isFocused) {
+        return s.lightblue; // Color when something is highlighted
+    }
+    return 0; // Unselected item color
+};
+
+const _getInputBackgroundColor = (isBackgroundGrey?: boolean) => {
+    if (isBackgroundGrey) {
+        return s.greyBackground;
+    }
+    return '#fff';
+};
 
 export default Dropdown;

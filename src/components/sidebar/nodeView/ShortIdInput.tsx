@@ -9,6 +9,7 @@ import * as s from './shortIdInput.scss';
 
 interface IStopFormProps {
     node: INode;
+    isBackgroundGrey: boolean;
     isEditingDisabled: boolean;
     nodeInvalidPropertiesMap: object;
     nodeStore?: NodeStore;
@@ -109,6 +110,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
                         items={this.state.availableShortIdDropdownItems}
                         selected={node.shortIdString}
                         disabled={isEditingDisabled}
+                        isBackgroundGrey={this.props.isBackgroundGrey}
                         validationResult={this.props.nodeInvalidPropertiesMap['shortIdString']}
                         isAnyInputValueAllowed={true}
                         isNoOptionsMessageHidden={true}
