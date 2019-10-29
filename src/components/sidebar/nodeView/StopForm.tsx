@@ -181,6 +181,13 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         return shortIdLetterItems;
     };
 
+    private onShortIdLetterChange = (value: string) => {
+        this.props.onNodePropertyChange('shortIdLetter')(value);
+        if (!value) {
+            this.props.onNodePropertyChange('shortIdString')(null);
+        }
+    };
+
     private redirectToNewStopArea = () => {
         const url = RouteBuilder.to(SubSites.newStopArea)
             .clear()
@@ -216,7 +223,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <div className={s.flexRow}>
                         <Dropdown
                             label='LYHYTTUNNUS (2 kirj.'
-                            onChange={this.props.onNodePropertyChange('shortIdLetter')}
+                            onChange={this.onShortIdLetterChange}
                             disabled={isEditingDisabled}
                             selected={node.shortIdLetter}
                             emptyItem={{
@@ -227,7 +234,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         />
                         <ShortIdInput
                             node={node}
-                            isEditingDisabled={isEditingDisabled}
+                            isBackgroundGrey={!isEditingDisabled && !Boolean(node.shortIdLetter)}
+                            isEditingDisabled={isEditingDisabled || !Boolean(node.shortIdLetter)}
                             nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
                             onNodePropertyChange={this.props.onNodePropertyChange}
                         />
