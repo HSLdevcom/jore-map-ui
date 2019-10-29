@@ -10,19 +10,12 @@ import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {
     public static mapExternalNode = (externalNode: IExternalNode): INode => {
-        // Use less accurate location if measured location is missing.
-        const coordinates = roundLatLng(
-            L.GeoJSON.coordsToLatLng(
-                JSON.parse(externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual)
-                    .coordinates
-            )
+        // Use less accurate location if measured location (solomx, solomy) is missing.
+        const coordinates = _getLatLng(
+            externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
         );
-        const coordinatesManual = roundLatLng(
-            L.GeoJSON.coordsToLatLng(JSON.parse(externalNode.geojsonManual).coordinates)
-        );
-        const coordinatesProjection = roundLatLng(
-            L.GeoJSON.coordsToLatLng(JSON.parse(externalNode.geojsonProjection).coordinates)
-        );
+        const coordinatesManual = _getLatLng(externalNode.geojsonManual);
+        const coordinatesProjection = _getLatLng(externalNode.geojsonProjection);
         const nodeStop = externalNode.pysakkiBySoltunnus;
         let transitTypes: TransitType[] = [];
         if (externalNode.transittypes) {
@@ -45,7 +38,7 @@ class NodeFactory {
     };
 
     public static createNodeBase = (externalNode: IExternalNode): INodeBase => {
-        const type = getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
+        const type = _getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
         return {
             type,
             shortIdLetter: externalNode.solkirjain,
@@ -72,7 +65,11 @@ class NodeFactory {
     }
 }
 
-const getNodeType = (nodeType: string, nodeId: string) => {
+const _getLatLng = (coordinates: string) => {
+    return roundLatLng(L.GeoJSON.coordsToLatLng(JSON.parse(coordinates).coordinates));
+};
+
+const _getNodeType = (nodeType: string, nodeId: string) => {
     switch (nodeType) {
         case 'X':
             return NodeType.CROSSROAD;
