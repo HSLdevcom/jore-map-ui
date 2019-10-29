@@ -97,10 +97,6 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     };
 
     private initExistingLine = async () => {
-        await this.fetchLine();
-    };
-
-    private fetchLine = async () => {
         const lineId = this.props.match!.params.id;
         try {
             const line = await LineService.fetchLine(lineId);

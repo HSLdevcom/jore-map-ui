@@ -4,11 +4,6 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
-interface IStopAreaItem {
-    pysalueid: string;
-    nimi: string;
-}
-
 interface IStopSectionItem {
     selite: string;
 }
@@ -21,15 +16,6 @@ interface IReservedShortIdItem {
 const SHORT_ID_LENGTH = 4;
 
 class StopService {
-    // Expose function for testing
-    public static fetchAllStopAreas = async (): Promise<IStopAreaItem[]> => {
-        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllStopAreas()
-        });
-
-        return queryResult.data.node.nodes;
-    };
-
     public static fetchAllStopSections = async (): Promise<IStopSectionItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopSections()
@@ -102,4 +88,4 @@ const _generateAllShortIdVariations = (numberCount: number) => {
 
 export default StopService;
 
-export { IStopAreaItem, IStopSectionItem };
+export { IStopSectionItem };

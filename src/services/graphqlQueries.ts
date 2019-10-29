@@ -208,6 +208,16 @@ const getAllRoutePathPrimaryKeysQuery = () => {
     `;
 };
 
+const getStopAreaQuery = () => {
+    return gql`
+        query getStopArea($stopAreaId: String!) {
+            stopArea: pysakkialueByPysalueid(pysalueid: $stopAreaId) {
+                ${stopAreaQueryFields}
+            }
+        }
+    `;
+};
+
 const getAllStopAreas = () => {
     return gql`
         query getAllStopAreas {
@@ -215,6 +225,19 @@ const getAllStopAreas = () => {
                 nodes {
                     nimi
                     pysalueid
+                }
+            }
+        }
+    `;
+};
+
+const getAllTerminalAreas = () => {
+    return gql`
+        query getAllTerminalAreas {
+            node: allTerminaalialues {
+                nodes {
+                    termid
+                    nimi
                 }
             }
         }
@@ -379,6 +402,17 @@ const stopQueryFields = `
     nimiviimpvm
     vyohyke
     postinro
+`;
+
+const stopAreaQueryFields = `
+    pysalueid
+    verkko
+    nimi
+    nimir
+    termid
+    tallpvm
+    tallentaja
+    pysakkialueryhma
 `;
 
 const nodeQueryFields = `
@@ -577,7 +611,9 @@ export default {
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
     getAllRoutePathPrimaryKeysQuery,
+    getStopAreaQuery,
     getAllStopAreas,
+    getAllTerminalAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
