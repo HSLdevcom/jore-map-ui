@@ -168,14 +168,11 @@ const _getCustomStyles = (props: IDropdownProps) => {
         }),
         control: (styles: any, state: any) => ({
             ...styles,
-            backgroundColor: _getInputBackgroundColor(props.isBackgroundGrey),
+            backgroundColor: props.isBackgroundGrey ? s.greyBackground : '#fff',
             borderColor: state.isFocused ? s.busBlue : s.mediumLightGrey,
             borderWidth: state.isFocused ? '1.5px' : '1px',
-            boxShadow: 'none',
             height: s.inputFieldHeight,
-            transition: 'none',
             '&:hover': {
-                boxShadow: 'none',
                 borderWidth: state.isFocused ? '1.5px' : '1px',
                 borderColor: state.isFocused ? s.busBlue : s.mediumLightGrey,
                 cursor: 'pointer'
@@ -202,13 +199,6 @@ const _getMenuOptionBackgroundColor = (isSelected: boolean, isFocused: boolean) 
         return s.lightblue; // Color when something is highlighted
     }
     return 0; // Unselected item color
-};
-
-const _getInputBackgroundColor = (isBackgroundGrey?: boolean) => {
-    if (isBackgroundGrey) {
-        return s.greyBackground;
-    }
-    return '#fff';
 };
 
 export default Dropdown;
