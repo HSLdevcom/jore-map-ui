@@ -200,7 +200,6 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             .toTarget(':id', stopArea.id)
             .toLink();
         navigator.goTo(stopAreaViewStopArea);
-        console.log(stopAreaViewStopArea);
     };
 
     private validateStopArea = () => {
