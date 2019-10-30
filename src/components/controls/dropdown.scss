@@ -7,4 +7,10 @@
         height: $inputFieldHeight;
         line-height: $inputFieldHeight;
     }
+
+    .greyBackground {
+        background-color: $disabledGrey;
+        pointer-events: none;
+        cursor: default;
+    }
 }

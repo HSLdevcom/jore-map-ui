@@ -10,20 +10,6 @@
     .shortIdInputContainer {
         display: flex;
         width: 100%;
-
-        .shortIdInputButton {
-            margin-top: 30px;
-            margin-bottom: auto;
-            width: 30px;
-        }
-
-        & .redBackground {
-            background-color: $red;
-        }
-
-        & .redBackground:hover {
-            background-color: darken($red, 10);
-        }
     }
 
     .warningMessage {
