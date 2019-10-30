@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
@@ -41,26 +40,6 @@ class RouteItem extends React.Component<IRouteItemProps> {
             index += 1;
         }
         await Promise.all(promises);
-        this.calculateBounds();
-    }
-
-    private calculateBounds() {
-        const routes = this.props.routeListStore!.routes;
-        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-
-        routes.forEach(route => {
-            route.routePaths.forEach(routePath => {
-                routePath.routePathLinks.forEach(routePathLink => {
-                    routePathLink.geometry.forEach(pos => {
-                        bounds.extend(pos);
-                    });
-                });
-            });
-        });
-
-        if (bounds.isValid()) {
-            this.props.mapStore!.setMapBounds(bounds);
-        }
     }
 
     private closeRoute = () => {
@@ -122,7 +101,6 @@ class RouteItem extends React.Component<IRouteItemProps> {
         return routePaths.map((routePath: IRoutePath) => {
             const toggleRoutePathVisibility = () => {
                 this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
-                this.calculateBounds();
             };
 
             const openRoutePathView = () => {
