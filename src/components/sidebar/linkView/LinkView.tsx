@@ -61,15 +61,13 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     }
 
     async componentDidMount() {
+        this.props.mapStore!.setIsMapCenteringPrevented(true);
         if (this.props.isNewLink) {
             await this.initNewLink();
         } else {
             await this.initExistingLink();
         }
-
         if (this.props.linkStore!.link) {
-            const bounds = L.latLngBounds(this.props.linkStore!.link!.geometry);
-            this.props.mapStore!.setMapBounds(bounds);
             this.validateLink();
         }
         this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
@@ -80,12 +78,12 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         EventManager.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
-    componentDidUpdate(prevProps: ILinkViewProps) {
+    async componentDidUpdate(prevProps: ILinkViewProps) {
         if (this.props.location.pathname !== prevProps.location.pathname) {
             if (this.props.isNewLink) {
-                this.initNewLink();
+                await this.initNewLink();
             } else {
-                this.initExistingLink();
+                await this.initExistingLink();
             }
         }
     }
@@ -104,6 +102,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         try {
             if (startNodeId && endNodeId && transitTypeCode) {
                 const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
+                this.centerMapToLink(link);
                 this.props.linkStore!.init({
                     link,
                     nodes: [link.startNode, link.endNode],
@@ -150,7 +149,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private createNewLink = (startNode: INode, endNode: INode) => {
         const link = LinkFactory.createNewLink(startNode, endNode);
+        this.centerMapToLink(link);
         this.props.linkStore!.init({ link, nodes: [startNode, endNode], isNewLink: true });
+    };
+
+    private centerMapToLink = (link: ILink) => {
+        const bounds = L.latLngBounds(link.geometry);
+        this.props.mapStore!.setIsMapCenteringPrevented(false);
+        this.props.mapStore!.setMapBounds(bounds);
     };
 
     private save = async () => {

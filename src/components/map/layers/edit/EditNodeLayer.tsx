@@ -29,10 +29,6 @@ interface IEditNodeLayerProps {
 class EditNodeLayer extends Component<IEditNodeLayerProps> {
     private editableLinks: L.Polyline[] = [];
 
-    componentWillMount() {
-        this.centerNode();
-    }
-
     componentDidMount() {
         EventManager.on('undo', this.props.nodeStore!.undo);
         EventManager.on('redo', this.props.nodeStore!.redo);
@@ -54,11 +50,6 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
             editableLink.remove();
         });
         this.editableLinks = [];
-    };
-
-    private centerNode = () => {
-        const node = this.props.nodeStore!.node;
-        this.props.mapStore!.setCoordinates(node.coordinates);
     };
 
     private renderNode() {
@@ -161,6 +152,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     };
 
     render() {
+        if (!this.props.nodeStore!.node) return null;
+
         const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.node));
         if (!isNodeViewVisible) return null;
 

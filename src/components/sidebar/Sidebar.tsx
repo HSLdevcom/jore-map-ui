@@ -1,11 +1,11 @@
 import classnames from 'classnames';
-import { Location } from 'history';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Redirect, Route, Switch } from 'react-router';
+import { withRouter, Redirect, Route, RouteComponentProps, Switch } from 'react-router';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import subSites from '~/routing/subSites';
+import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { SearchStore } from '~/stores/searchStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -20,48 +20,47 @@ import RouteView from './routeView/RouteView';
 import * as s from './sidebar.scss';
 import SplitLinkView from './splitLinkView/SplitLinkView';
 
-// Requiring location to force update on location change
-// This is due to blocked updates issue
-// tslint:disable-next-line
-// https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
-interface ISidebarProps {
+interface ISidebarProps extends RouteComponentProps {
     routeListStore?: RouteListStore;
     searchStore?: SearchStore;
     toolbarStore?: ToolbarStore;
-    location: Location;
+    mapStore?: MapStore;
 }
 
 interface ILinelistState {
     searchInput: string;
 }
 
-@inject('routeListStore', 'searchStore', 'toolbarStore')
+type view = 'line' | 'lineHeader' | 'route' | 'node' | 'link' | 'routePath';
+
+@inject('routeListStore', 'searchStore', 'toolbarStore', 'mapStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
+    componentDidMount() {
+        this.props.mapStore!.setInitCoordinates();
+    }
+
     private renderRouteListView = () => {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
         return queryParams ? <RouteListView /> : <Redirect to='/' />;
     };
-    private renderNewLineView = (props: any) => <LineView {...props} isNewLine={true} />;
-    private renderLineView = (props: any) => <LineView {...props} isNewLine={false} />;
-    private renderNewLineHeaderView = (props: any) => (
-        <LineHeaderView {...props} isNewLineHeader={true} />
-    );
-    private renderLineHeaderView = (props: any) => (
-        <LineHeaderView {...props} isNewLineHeader={false} />
-    );
-    private renderNewRouteView = (props: any) => <RouteView {...props} isNewRoute={true} />;
-    private renderRouteView = (props: any) => <RouteView {...props} isNewRoute={false} />;
-    private renderNewNodeView = (props: any) => <NodeView {...props} isNewNode={true} />;
-    private renderNodeView = (props: any) => <NodeView {...props} isNewNode={false} />;
-    private renderNewLinkView = (props: any) => <LinkView {...props} isNewLink={true} />;
-    private renderLinkView = (props: any) => <LinkView {...props} isNewLink={false} />;
-    private renderNewRoutePathView = (props: any) => (
-        <RoutePathView {...props} isNewRoutePath={true} />
-    );
-    private renderRoutePathView = (props: any) => (
-        <RoutePathView {...props} isNewRoutePath={false} />
-    );
+
+    private renderView = ({ view, isNew }: { view: view; isNew: boolean }) => (props: any) => {
+        switch (view) {
+            case 'line':
+                return <LineView {...props} isNewLine={isNew} />;
+            case 'lineHeader':
+                return <LineHeaderView {...props} isNewLineHeader={isNew} />;
+            case 'route':
+                return <RouteView {...props} isNewRoute={isNew} />;
+            case 'node':
+                return <NodeView {...props} isNewNode={isNew} />;
+            case 'link':
+                return <LinkView {...props} isNewLink={isNew} />;
+            case 'routePath':
+                return <RoutePathView {...props} isNewRoutePath={isNew} />;
+        }
+    };
 
     render() {
         return (
@@ -72,28 +71,32 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         <Route
                             exact={true}
                             path={subSites.newLine}
-                            component={this.renderNewLineView}
+                            component={this.renderView({ view: 'line', isNew: true })}
                         />
-                        <Route exact={true} path={subSites.line} component={this.renderLineView} />
+                        <Route
+                            exact={true}
+                            path={subSites.line}
+                            component={this.renderView({ view: 'line', isNew: false })}
+                        />
                         <Route
                             exact={true}
                             path={subSites.newLineHeader}
-                            component={this.renderNewLineHeaderView}
+                            component={this.renderView({ view: 'lineHeader', isNew: true })}
                         />
                         <Route
                             exact={true}
                             path={subSites.lineHeader}
-                            component={this.renderLineHeaderView}
+                            component={this.renderView({ view: 'lineHeader', isNew: false })}
                         />
                         <Route
                             exact={true}
                             path={subSites.newRoute}
-                            component={this.renderNewRouteView}
+                            component={this.renderView({ view: 'route', isNew: true })}
                         />
                         <Route
                             exact={true}
                             path={subSites.route}
-                            component={this.renderRouteView}
+                            component={this.renderView({ view: 'route', isNew: false })}
                         />
                         <Route
                             exact={true}
@@ -103,25 +106,33 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                         <Route
                             exact={true}
                             path={subSites.newLink}
-                            component={this.renderNewLinkView}
+                            component={this.renderView({ view: 'link', isNew: true })}
                         />
-                        <Route exact={true} path={subSites.link} component={this.renderLinkView} />
+                        <Route
+                            exact={true}
+                            path={subSites.link}
+                            component={this.renderView({ view: 'link', isNew: false })}
+                        />
                         <Route exact={true} path={subSites.splitLink} component={SplitLinkView} />
                         <Route
                             exact={true}
                             path={subSites.newNode}
-                            component={this.renderNewNodeView}
+                            component={this.renderView({ view: 'node', isNew: true })}
                         />
-                        <Route exact={true} path={subSites.node} component={this.renderNodeView} />
+                        <Route
+                            exact={true}
+                            path={subSites.node}
+                            component={this.renderView({ view: 'node', isNew: false })}
+                        />
                         <Route
                             exact={true}
                             path={subSites.newRoutePath}
-                            render={this.renderNewRoutePathView}
+                            render={this.renderView({ view: 'routePath', isNew: true })}
                         />
                         <Route
                             exact={true}
                             path={subSites.routePath}
-                            render={this.renderRoutePathView}
+                            render={this.renderView({ view: 'routePath', isNew: false })}
                         />
                     </Switch>
                 </div>
@@ -130,4 +141,4 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     }
 }
 
-export default Sidebar;
+export default withRouter(Sidebar);

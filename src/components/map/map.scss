@@ -16,4 +16,8 @@
     .mapLayersContainer {
         display: flex;
     }
+
+    .disableInteraction {
+        pointer-events: none;
+    }
 }

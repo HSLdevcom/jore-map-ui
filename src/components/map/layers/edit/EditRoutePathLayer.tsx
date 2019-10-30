@@ -1,4 +1,3 @@
-import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { MapStore } from '~/stores/mapStore';
@@ -15,61 +14,9 @@ interface IEditRoutePathLayerProps {
     mapStore?: MapStore;
 }
 
-interface IEditRoutePathLayerState {
-    focusedRoutePathId: string;
-}
-
 @inject('routePathStore', 'routePathCopySegmentStore', 'mapStore')
 @observer
-class EditRoutePathLayer extends Component<IEditRoutePathLayerProps, IEditRoutePathLayerState> {
-    constructor(props: IEditRoutePathLayerProps) {
-        super(props);
-
-        this.state = {
-            focusedRoutePathId: ''
-        };
-    }
-
-    componentDidMount() {
-        this.setBounds();
-    }
-
-    componentDidUpdate() {
-        this.setBounds();
-    }
-
-    private calculateBounds = () => {
-        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-
-        this.props.routePathStore!.routePath!.routePathLinks.forEach(link => {
-            link.geometry.forEach(pos => bounds.extend(pos));
-        });
-
-        return bounds;
-    };
-
-    private setBounds = () => {
-        const routePathStore = this.props.routePathStore!;
-
-        if (routePathStore!.routePath) {
-            // Only automatic refocus if user opened new routepath
-            if (routePathStore!.routePath!.internalId !== this.state.focusedRoutePathId) {
-                const bounds = this.calculateBounds();
-                if (bounds.isValid()) {
-                    this.props.mapStore!.setMapBounds(bounds);
-                    this.setState({
-                        focusedRoutePathId: routePathStore!.routePath!.internalId
-                    });
-                }
-            }
-        } else if (this.state.focusedRoutePathId) {
-            // Reset focused id if user clears the chosen routepath, if he leaves the routepathview
-            this.setState({
-                focusedRoutePathId: ''
-            });
-        }
-    };
-
+class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
     private highlightItemById = (id: string) => {
         // Switch to info tab
         this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);

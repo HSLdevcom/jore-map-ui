@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import L from 'leaflet';
 import _ from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
@@ -23,6 +24,7 @@ import RouteService from '~/services/routeService';
 import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { ListFilter, RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
@@ -43,7 +45,7 @@ interface IRoutePathViewProps {
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
     errorStore?: ErrorStore;
-    AlertStore?: AlertStore;
+    mapStore?: MapStore;
     match?: match<any>;
     isNewRoutePath: boolean;
 }
@@ -59,7 +61,8 @@ interface IRoutePathViewState {
     'networkStore',
     'toolbarStore',
     'errorStore',
-    'alertStore'
+    'alertStore',
+    'mapStore'
 )
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState> {
@@ -74,6 +77,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     }
 
     componentDidMount() {
+        this.props.mapStore!.setIsMapCenteringPrevented(true);
         EventManager.on('undo', this.props.routePathStore!.undo);
         EventManager.on('redo', this.props.routePathStore!.redo);
         this.initialize();
@@ -115,8 +119,9 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 const routeId = queryParams[QueryParams.routeId];
                 const lineId = queryParams[QueryParams.lineId];
                 const route = await RouteService.fetchRoute(routeId);
-                const newRoutePath = RoutePathFactory.createNewRoutePath(lineId, route);
-                this.props.routePathStore!.init(newRoutePath, []);
+                const routePath = RoutePathFactory.createNewRoutePath(lineId, route);
+                this.centerMapToRoutePath(routePath);
+                this.props.routePathStore!.init(routePath, []);
             } else {
                 this.props.routePathStore!.init(
                     RoutePathFactory.createNewRoutePathFromOld(
@@ -173,6 +178,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 direction
             );
             const viaNames = await this.fetchViaNames(routePath);
+            this.centerMapToRoutePath(routePath);
             this.props.routePathStore!.init(routePath, viaNames);
         } catch (e) {
             this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.', e);
@@ -212,6 +218,17 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             );
         }
         return [];
+    };
+
+    private centerMapToRoutePath = (routePath: IRoutePath) => {
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+
+        routePath!.routePathLinks.forEach(link => {
+            link.geometry.forEach(pos => bounds.extend(pos));
+        });
+
+        this.props.mapStore!.setIsMapCenteringPrevented(false);
+        this.props.mapStore!.setMapBounds(bounds);
     };
 
     private onChangeRoutePathProperty = (property: keyof IRoutePath) => (value: any) => {
