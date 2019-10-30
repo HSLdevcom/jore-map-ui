@@ -1,7 +1,7 @@
 import * as L from 'leaflet';
 import { ILink, INode } from '~/models';
 import IExternalLink from '~/models/externals/IExternalLink';
-import { roundLatLngs } from '~/util/geomHelper';
+import { roundLatLngs } from '~/util/geomHelpers';
 import NodeFactory from './nodeFactory';
 
 class LinkFactory {
@@ -24,7 +24,7 @@ class LinkFactory {
     };
 
     public static createNewLink = (startNode: INode, endNode: INode): ILink => {
-        const geometry = [startNode.coordinates, endNode.coordinates];
+        const geometry = [startNode.coordinatesProjection, endNode.coordinatesProjection];
         return {
             geometry,
             startNode,

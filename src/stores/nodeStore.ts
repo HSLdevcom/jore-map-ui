@@ -8,7 +8,7 @@ import { ILink, INode } from '~/models';
 import GeocodingService from '~/services/geocodingService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import { roundLatLng, roundLatLngs } from '~/util/geomHelper';
+import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
 
 export interface UndoState {
     links: ILink[];
@@ -59,7 +59,15 @@ export class NodeStore {
     }
 
     @action
-    public init = (node: INode, links: ILink[]) => {
+    public init = ({
+        node,
+        links,
+        isNewNode
+    }: {
+        node: INode;
+        links: ILink[];
+        isNewNode: boolean;
+    }) => {
         this.clear();
 
         const newNode = _.cloneDeep(node);
@@ -75,6 +83,7 @@ export class NodeStore {
         this._oldNode = newNode;
         this._links = newLinks;
         this._oldLinks = newLinks;
+        this._isEditingDisabled = !isNewNode;
     };
 
     @action
@@ -226,7 +235,7 @@ export class NodeStore {
     @action
     public resetChanges = () => {
         if (this._oldNode) {
-            this.init(this._oldNode, this._oldLinks);
+            this.init({ node: this._oldNode, links: this._oldLinks, isNewNode: false });
         }
     };
 

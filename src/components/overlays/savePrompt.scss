@@ -1,0 +1,49 @@
+@import '../shared/styles/common';
+@import '../shared/styles/form';
+@import '../shared/styles/flexbox';
+
+.savePromptView {
+    width: 500px;
+
+    .topic {
+        color: #898989;
+        font-weight: bold;
+        font-size: 1.1rem;
+        white-space: nowrap;
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 10px;
+        border-bottom: 1.5px solid #dedede;
+        text-align: center;
+    }
+
+    .savePromptRow {
+        .inputLabel {
+            text-align: center;
+        }
+
+        .attributeWrapper {
+            flex-grow: 1;
+            width: 50%;
+
+            .oldAttribute {
+                display: inline-block;
+                background-color: #ffeef0;
+                padding: 3px;
+                border-radius: 5px;
+            }
+
+            .newAttribute {
+                display: inline-block;
+                background-color: #e6ffed;
+                padding: 3px;
+                border-radius: 5px;
+            }
+        }
+        .arrowRightWrapper {
+            padding-right: 10px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+    }
+}

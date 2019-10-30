@@ -1,0 +1,24 @@
+@import '../../shared/styles/common.scss';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.shortIdInputView {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .shortIdInputContainer {
+        display: flex;
+        width: 100%;
+    }
+
+    .warningMessage {
+        color: $warningYellow;
+        font-size: 12px;
+    }
+
+    .isValidMessage {
+        color: $successGreen;
+        font-size: 12px;
+    }
+}

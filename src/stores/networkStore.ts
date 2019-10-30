@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import Moment from 'moment';
 import TransitType from '~/enums/transitType';
+import LocalStorageHelper from '~/util/LocalStorageHelper';
 
 const TRANSIT_TYPES = [
     TransitType.BUS,
@@ -35,6 +36,7 @@ export class NetworkStore {
         this._nodeSize = NodeSize.normal;
         this._savedMapLayers = [];
         this._selectedDate = Moment();
+        this.lazyLoadLocalStorageVisibleLayers();
     }
 
     @computed
@@ -80,8 +82,14 @@ export class NetworkStore {
     public toggleMapLayerVisibility = (mapLayer: MapLayer) => {
         if (this._visibleMapLayers.includes(mapLayer)) {
             this.hideMapLayer(mapLayer);
+            if (mapLayer === MapLayer.node || mapLayer === MapLayer.link) {
+                _setLocalStorageLayerVisibility({ mapLayer, isVisible: false });
+            }
         } else {
             this.showMapLayer(mapLayer);
+            if (mapLayer === MapLayer.node || mapLayer === MapLayer.link) {
+                _setLocalStorageLayerVisibility({ mapLayer, isVisible: true });
+            }
         }
     };
 
@@ -128,15 +136,64 @@ export class NetworkStore {
     };
 
     @action
-    restoreSavedMapLayers() {
+    public restoreSavedMapLayers() {
         this.setVisibleMapLayers(this._savedMapLayers);
         this._savedMapLayers = [];
     }
 
-    saveMapLayers() {
+    @action
+    public saveMapLayers() {
         this._savedMapLayers = this._visibleMapLayers;
     }
+
+    // TODO: Remove this lazy load hack when map's initial position is immediately at target element after page reload
+    private lazyLoadLocalStorageVisibleLayers = async () => {
+        setTimeout(() => {
+            const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
+            const layers: MapLayer[] = [];
+            if (!Array.isArray(localStorageVisibleLayers)) return layers;
+
+            if (localStorageVisibleLayers.includes('node')) {
+                layers.push(MapLayer.node);
+            }
+            if (localStorageVisibleLayers.includes('link')) {
+                layers.push(MapLayer.link);
+            }
+            this.setLocalStorageVisibleLayers(layers);
+            return;
+        }, 2000);
+    };
+
+    @action
+    private setLocalStorageVisibleLayers = (layers: MapLayer[]) => {
+        this._visibleMapLayers = layers;
+    };
 }
+
+const _setLocalStorageLayerVisibility = ({
+    mapLayer,
+    isVisible
+}: {
+    mapLayer: MapLayer;
+    isVisible: boolean;
+}) => {
+    if (mapLayer !== MapLayer.node && mapLayer !== MapLayer.link) {
+        throw `Unsupported mapLayer: ${mapLayer}`;
+    }
+    const mapLayerName = mapLayer === MapLayer.node ? 'node' : 'link';
+    const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
+    let layers: string[] = Array.isArray(localStorageVisibleLayers)
+        ? localStorageVisibleLayers
+        : [];
+    if (isVisible) {
+        if (!layers.includes(mapLayerName)) {
+            layers.push(mapLayerName);
+        }
+    } else {
+        layers = layers.filter(l => l !== mapLayerName);
+    }
+    LocalStorageHelper.setItem('visible_layers', layers);
+};
 
 const observableNetworkStore = new NetworkStore();
 

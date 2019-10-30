@@ -14,7 +14,7 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import ApiClient from '~/util/ApiClient';
 import '~/util/KeyEventHandler';
-import * as localStorageHelper from '~/util/localStorageHelper';
+import LocalStorageHelper from '~/util/LocalStorageHelper';
 import ErrorBar from './ErrorBar';
 import NavigationBar from './NavigationBar';
 import * as s from './app.scss';
@@ -48,14 +48,14 @@ class App extends React.Component<IAppProps, IAppState> {
         this.init();
     }
 
-    private renderApp = () => {
+    private renderApp = (isMapFullscreen: boolean) => {
         this.initCodeLists();
 
         return (
             <>
                 <NavigationBar />
                 <div className={s.appContent}>
-                    <div className={this.props.mapStore!.isMapFullscreen ? s.hidden : ''}>
+                    <div className={isMapFullscreen ? s.hidden : ''}>
                         <Sidebar location={this.props.location} />
                     </div>
                     <Map>
@@ -87,7 +87,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 this.props.loginStore!.setAuthenticationInfo(response);
             } else {
                 // Redirect to login
-                localStorageHelper.setItem('origin_url', navigator.getFullPath());
+                LocalStorageHelper.setItem('origin_url', navigator.getFullPath());
                 navigator.goTo(SubSites.login);
             }
         }
@@ -101,9 +101,9 @@ class App extends React.Component<IAppProps, IAppState> {
         AuthService.authenticate(
             () => {
                 // On success: Redirecting user to where she left off.
-                const originUrl = localStorageHelper.getItem('origin_url');
+                const originUrl = LocalStorageHelper.getItem('origin_url');
                 const destination = originUrl ? originUrl : SubSites.home;
-                localStorageHelper.clearItem('origin_url');
+                LocalStorageHelper.removeItem('origin_url');
                 navigator.goTo(destination);
             },
             () => {
@@ -121,12 +121,13 @@ class App extends React.Component<IAppProps, IAppState> {
             return <div>Ladataan sovellusta...</div>;
         }
 
+        const isMapFullscreen = this.props.mapStore!.isMapFullscreen;
         return (
             <div className={s.appView}>
                 <Switch>
                     <Route exact={true} path={SubSites.afterLogin} render={this.renderAfterLogin} />
                     <Route path='/login' component={Login} />
-                    <Route component={this.renderApp} />
+                    <Route component={() => this.renderApp(isMapFullscreen)} />
                 </Switch>
             </div>
         );

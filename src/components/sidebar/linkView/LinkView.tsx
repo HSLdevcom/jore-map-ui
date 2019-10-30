@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
+import SavePrompt from '~/components/overlays/SavePrompt';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -19,6 +20,7 @@ import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -36,15 +38,15 @@ interface ILinkViewProps extends RouteComponentProps<any> {
     linkStore?: LinkStore;
     mapStore?: MapStore;
     alertStore?: AlertStore;
+    confirmStore?: ConfirmStore;
 }
 
 interface ILinkViewState {
     isLoading: boolean;
-    isEditingDisabled: boolean; // TODO: remove
     invalidPropertiesMap: object;
 }
 
-@inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore')
+@inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
 @observer
 class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -54,7 +56,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         super(props);
         this.state = {
             isLoading: false,
-            isEditingDisabled: !props.isNewLink, // TODO: remove
             invalidPropertiesMap: {}
         };
     }
@@ -103,7 +104,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         try {
             if (startNodeId && endNodeId && transitTypeCode) {
                 const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-                this.props.linkStore!.init(link, [link.startNode, link.endNode]);
+                this.props.linkStore!.init({
+                    link,
+                    nodes: [link.startNode, link.endNode],
+                    isNewLink: false
+                });
                 this.props.linkStore!.setIsLinkGeometryEditable(true);
                 const bounds = L.latLngBounds(link.geometry);
                 this.props.mapStore!.setMapBounds(bounds);
@@ -145,16 +150,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private createNewLink = (startNode: INode, endNode: INode) => {
         const link = LinkFactory.createNewLink(startNode, endNode);
-        this.props.linkStore!.init(link, [startNode, endNode]);
+        this.props.linkStore!.init({ link, nodes: [startNode, endNode], isNewLink: true });
     };
 
     private save = async () => {
         this.setState({ isLoading: true });
-        let shouldNavigateToNewLink = false;
         try {
             if (this.props.isNewLink) {
                 await LinkService.createLink(this.props.linkStore!.link);
-                shouldNavigateToNewLink = true;
             } else {
                 await LinkService.updateLink(this.props.linkStore!.link);
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
@@ -164,12 +167,24 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
 
-        if (shouldNavigateToNewLink) {
+        if (this.props.isNewLink) {
             this.navigateToNewLink();
-        } else {
-            this.setState({ isLoading: false });
-            this.props.linkStore!.setIsEditingDisabled(true);
+            return;
         }
+        this.setState({ isLoading: false });
+        this.props.linkStore!.setIsEditingDisabled(true);
+    };
+
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore!;
+        const currentLink = this.props.linkStore!.link;
+        const oldLink = this.props.linkStore!.oldLink;
+        confirmStore.openConfirm(
+            <SavePrompt newData={currentLink} oldData={oldLink} type={'link'} />,
+            () => {
+                this.save();
+            }
+        );
     };
 
     private onChangeIsEditingDisabled = () => {
@@ -357,7 +372,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                     <Button
                         onClick={this.navigateToNode(link.startNode.id)}
                         type={ButtonType.SQUARE}
-                        isWide={true}
                     >
                         <div className={s.buttonContent}>
                             <FiChevronLeft className={s.startNodeButton} />
@@ -367,11 +381,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                             </div>
                         </div>
                     </Button>
-                    <Button
-                        onClick={this.navigateToNode(link.endNode.id)}
-                        type={ButtonType.SQUARE}
-                        isWide={true}
-                    >
+                    <Button onClick={this.navigateToNode(link.endNode.id)} type={ButtonType.SQUARE}>
                         <div className={s.buttonContent}>
                             <div className={s.contentText}>
                                 Loppusolmu
@@ -381,7 +391,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                         </div>
                     </Button>
                 </div>
-                <Button type={ButtonType.SAVE} disabled={isSaveButtonDisabled} onClick={this.save}>
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                    onClick={() => (this.props.isNewLink ? this.save() : this.showSavePrompt())}
+                >
                     Tallenna muutokset
                 </Button>
             </div>

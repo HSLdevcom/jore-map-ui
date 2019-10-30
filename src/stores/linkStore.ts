@@ -3,8 +3,7 @@ import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import { ILink, INode } from '~/models';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import { roundLatLngs } from '~/util/geomHelper';
-import LeafletUtils from '~/util/leafletUtils';
+import { calculateLengthFromLatLngs, roundLatLngs } from '~/util/geomHelpers';
 
 export interface UndoState {
     link: ILink;
@@ -36,6 +35,11 @@ export class LinkStore {
     }
 
     @computed
+    get oldLink() {
+        return this._oldLink!;
+    }
+
+    @computed
     get nodes() {
         return this._nodes;
     }
@@ -46,16 +50,53 @@ export class LinkStore {
     }
 
     @computed
+    get isLinkGeometryEditable() {
+        return this._isLinkGeometryEditable;
+    }
+
+    @computed
+    get isDirty() {
+        return (
+            this._link &&
+            !_.isEqual(
+                {
+                    ...this.link,
+                    // Remapping geometry since edit initialization has added handlers
+                    geometry: this.link!.geometry.map(coor => new LatLng(coor.lat, coor.lng))
+                },
+                this._oldLink
+            )
+        );
+    }
+
+    @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
     }
 
     @action
-    public init = (link: ILink, nodes: INode[]) => {
+    public init = ({
+        link,
+        nodes,
+        isNewLink
+    }: {
+        link: ILink;
+        nodes: INode[];
+        isNewLink: boolean;
+    }) => {
         this.clear();
-        this._link = link;
-        this.setOldLink(link);
-        this._nodes = nodes;
+
+        const oldLink = _.cloneDeep(link);
+        const newLink = _.cloneDeep(link);
+        newLink.length = calculateLengthFromLatLngs(newLink.geometry);
+        const newNodes = _.cloneDeep(nodes);
+
+        this._link = newLink;
+        this._nodes = newNodes;
+
+        this.setOldLink(oldLink);
+
+        this._isEditingDisabled = !isNewLink;
     };
 
     @action
@@ -74,7 +115,7 @@ export class LinkStore {
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = roundLatLngs(latLngs);
         this._link.geometry = roundLatLngs(latLngs);
-        this._link.length = this.getCalculatedLength();
+        this._link.length = calculateLengthFromLatLngs(this._link.geometry);
         const newUndoState: UndoState = {
             link: updatedLink
         };
@@ -124,29 +165,11 @@ export class LinkStore {
         this._isEditingDisabled = true;
     };
 
-    @computed
-    get isLinkGeometryEditable() {
-        return this._isLinkGeometryEditable;
-    }
-
-    @computed
-    get isDirty() {
-        return (
-            this._link &&
-            !_.isEqual(
-                {
-                    ...this.link,
-                    // Remapping geometry since edit initialization has added handlers
-                    geometry: this.link!.geometry.map(coor => new LatLng(coor.lat, coor.lng))
-                },
-                this._oldLink
-            )
-        );
-    }
-
     @action
     public resetChanges = () => {
-        this.init(this._oldLink!, this._nodes);
+        if (this._oldLink) {
+            this.init({ link: this._oldLink, nodes: this._nodes, isNewLink: false });
+        }
     };
 
     @action
@@ -161,13 +184,6 @@ export class LinkStore {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._link!.geometry = nextUndoState.link.geometry;
         });
-    };
-
-    public getCalculatedLength = (): number => {
-        if (this.link && this.link.geometry) {
-            return LeafletUtils.calculateLengthFromLatLngs(this.link.geometry);
-        }
-        return 0;
     };
 }
 

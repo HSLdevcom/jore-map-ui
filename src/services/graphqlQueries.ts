@@ -92,7 +92,7 @@ const getRoutePathLinkQuery = () => {
 
 const getRoutePathSegmentQuery = () => {
     return gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String) {
-            linkswithroutepathinfo: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
+            links_with_route_path_info: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
                 nodes {
                     ${routePathSegmentQueryFields}
                 }
@@ -208,6 +208,16 @@ const getAllRoutePathPrimaryKeysQuery = () => {
     `;
 };
 
+const getStopAreaQuery = () => {
+    return gql`
+        query getStopArea($stopAreaId: String!) {
+            stopArea: pysakkialueByPysalueid(pysalueid: $stopAreaId) {
+                ${stopAreaQueryFields}
+            }
+        }
+    `;
+};
+
 const getAllStopAreas = () => {
     return gql`
         query getAllStopAreas {
@@ -221,12 +231,38 @@ const getAllStopAreas = () => {
     `;
 };
 
+const getAllTerminalAreas = () => {
+    return gql`
+        query getAllTerminalAreas {
+            node: allTerminaalialues {
+                nodes {
+                    termid
+                    nimi
+                }
+            }
+        }
+    `;
+};
+
 const getAllStopSections = () => {
     return gql`
         query getAllStopSections {
             node: allVyohykes {
                 nodes {
                     selite
+                }
+            }
+        }
+    `;
+};
+
+const getReservedShortIds = () => {
+    return gql`
+        query getReservedShortIds($shortIdLetter: String) {
+            getReservedShortIds: allSolmus(condition: { solkirjain: $shortIdLetter }) {
+                nodes {
+                    soltunnus
+                    sollistunnus
                 }
             }
         }
@@ -368,9 +404,18 @@ const stopQueryFields = `
     postinro
 `;
 
+const stopAreaQueryFields = `
+    pysalueid
+    verkko
+    nimi
+    nimir
+    termid
+    tallpvm
+    tallentaja
+    pysakkialueryhma
+`;
+
 const nodeQueryFields = `
-    solx
-    soly
     soltunnus
     sollistunnus
     solkirjain
@@ -564,9 +609,12 @@ export default {
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
     getAllRoutePathPrimaryKeysQuery,
+    getStopAreaQuery,
     getAllStopAreas,
+    getAllTerminalAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
+    getReservedShortIds,
     getViaName
 };

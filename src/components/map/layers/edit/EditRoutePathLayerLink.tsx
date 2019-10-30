@@ -6,7 +6,7 @@ import { MapFilter, MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import { createCoherentLinesFromPolylines } from '~/util/geomHelper';
+import { createCoherentLinesFromPolylines } from '~/util/geomHelpers';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 

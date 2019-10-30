@@ -5,6 +5,11 @@ import { IRoute } from '~/models';
 class RouteStore {
     @observable private _route: IRoute | null;
     @observable private _oldRoute: IRoute | null;
+    @observable private _isEditingDisabled: boolean;
+
+    constructor() {
+        this._isEditingDisabled = true;
+    }
 
     @computed
     get route(): IRoute | null {
@@ -19,6 +24,11 @@ class RouteStore {
             _.omit(this._route, ['line', 'routePaths']),
             _.omit(this._oldRoute, ['line', 'routePaths'])
         );
+    }
+
+    @computed
+    get isEditingDisabled() {
+        return this._isEditingDisabled;
     }
 
     @action
@@ -41,15 +51,25 @@ class RouteStore {
     };
 
     @action
-    public resetChanges = () => {
-        if (this._oldRoute) {
-            this.setRoute(this._oldRoute);
-        }
+    public setIsEditingDisabled = (isEditingDisabled: boolean) => {
+        this._isEditingDisabled = isEditingDisabled;
+    };
+
+    @action
+    public toggleIsEditingDisabled = () => {
+        this._isEditingDisabled = !this._isEditingDisabled;
     };
 
     @action
     public clear = () => {
         this._route = null;
+    };
+
+    @action
+    public resetChanges = () => {
+        if (this._oldRoute) {
+            this.setRoute(this._oldRoute);
+        }
     };
 }
 

@@ -6,9 +6,16 @@
 }
 
 .leaflet-popup-content {
+    padding: 10px 5px 10px 10px;
+    font-family: Gotham Rounded SSm A, Gotham Rounded SSm B, Arial, Georgia, Serif;
+    color: #3e3e3e;
     margin: 0;
 }
 
 .leaflet-popup-content > div {
     padding: 13px 19px;
+}
+
+.leaflet-popup-close-button {
+    color: red;
 }
