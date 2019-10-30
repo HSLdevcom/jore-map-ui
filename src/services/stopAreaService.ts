@@ -14,6 +14,7 @@ interface ITerminalAreaItem {
 interface IStopAreaItem {
     pysalueid: string;
     nimi: string;
+    nimir: string;
 }
 
 interface IExternalTerminalArea {

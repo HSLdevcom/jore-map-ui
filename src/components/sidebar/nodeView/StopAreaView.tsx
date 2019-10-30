@@ -163,11 +163,9 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         this.setState({ isLoading: true });
         try {
             if (this.props.isNewStopArea) {
-                const stopAreaId = await StopAreaService.createStopArea(
-                    this.props.stopAreaStore!.stopArea
-                );
-                // TODO stopAreaId to stopForm and have it selected in stopArea dropdown
-                console.log(stopAreaId);
+                await StopAreaService.createStopArea(this.props.stopAreaStore!.stopArea);
+                // TODO: createStopArea returns id which should be given to stopForm for selecting the newly created stopArea
+                // const stopAreaId = await StopAreaService.createStopArea(this.props.stopAreaStore!.stopArea);
             } else {
                 await StopAreaService.updateStopArea(this.props.stopAreaStore!.stopArea);
                 this.props.stopAreaStore!.setOldStopArea(this.props.stopAreaStore!.stopArea);
@@ -264,7 +262,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                 <TransitToggleButtonBar
                                     selectedTransitTypes={selectedTransitTypes}
                                     toggleSelectedTransitType={this.selectTransitType}
-                                    disabled={!this.props.isNewStopArea}
+                                    disabled={isEditingDisabled}
                                 />
                             </div>
                         </div>
@@ -288,7 +286,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                         <div className={s.flexRow}>
                             <Dropdown
                                 onChange={this.onChangeStopAreaProperty('stopAreaGroupId')}
-                                disabled={isEditingDisabled}
+                                disabled={isEditingDisabled || !this.props.isNewStopArea}
                                 items={this.props.codeListStore!.getDropdownItemList(
                                     'Pysäkkialueid'
                                 )}

@@ -27,7 +27,45 @@
         align-self: flex-end;
     }
 
+    .disabled {
+        color: white;
+    }
+
     .icon:hover {
         opacity: 1;
+    }
+
+    .stopTableView {
+        width: 100%;
+
+        .stopHeaderTable {
+            width: 100%;
+            font-size: $smallFontSize;
+            border-collapse: separate;
+            border-spacing: 0 5px; /* Padding top/bottom between table rows */
+
+            td {
+                padding-left: 10px;
+            }
+            td:first-of-type {
+                padding: 0px;
+            }
+            .columnHeader {
+                white-space: nowrap;
+                text-align: start;
+                padding-left: 10px;
+            }
+            .columnHeader:first-of-type {
+                padding-left: 0px;
+            }
+
+            .stopHeaderRowHighlight {
+                background-color: $lightblue;
+            }
+        }
+        .editStopHeaderButton {
+            font-size: 1.8em;
+            padding: 3px;
+        }
     }
 }
