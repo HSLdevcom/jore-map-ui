@@ -3,8 +3,7 @@ import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import { ILink, INode } from '~/models';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import { roundLatLngs } from '~/util/geomHelper';
-import LeafletUtils from '~/util/leafletUtils';
+import { calculateLengthFromLatLngs, roundLatLngs } from '~/util/geomHelpers';
 
 export interface UndoState {
     link: ILink;
@@ -89,7 +88,7 @@ export class LinkStore {
 
         const oldLink = _.cloneDeep(link);
         const newLink = _.cloneDeep(link);
-        newLink.length = LeafletUtils.calculateLengthFromLatLngs(newLink.geometry);
+        newLink.length = calculateLengthFromLatLngs(newLink.geometry);
         const newNodes = _.cloneDeep(nodes);
 
         this._link = newLink;
@@ -116,7 +115,7 @@ export class LinkStore {
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = roundLatLngs(latLngs);
         this._link.geometry = roundLatLngs(latLngs);
-        this._link.length = LeafletUtils.calculateLengthFromLatLngs(this._link.geometry);
+        this._link.length = calculateLengthFromLatLngs(this._link.geometry);
         const newUndoState: UndoState = {
             link: updatedLink
         };

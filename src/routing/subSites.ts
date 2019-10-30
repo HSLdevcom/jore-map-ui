@@ -15,6 +15,8 @@ enum SubSites {
     newRoutePath = '/routePath/new',
     node = '/node/:id',
     newNode = '/node/new/:id',
+    stopArea = '/stopArea/:id',
+    newStopArea = '/stopArea/new',
     login = '/login',
     afterLogin = '/afterLogin'
 }

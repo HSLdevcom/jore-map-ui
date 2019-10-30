@@ -8,8 +8,8 @@ import NodeType from '~/enums/nodeType';
 import { INode } from '~/models/index';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import NodeLocationType from '~/types/NodeLocationType';
+import NodeHelper from '~/util/NodeHelper';
 import LeafletUtils from '~/util/leafletUtils';
-import NodeHelper from '~/util/nodeHelper';
 import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
 

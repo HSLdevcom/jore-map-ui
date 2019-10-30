@@ -1,7 +1,7 @@
 import * as L from 'leaflet';
 import { ILink, INode } from '~/models';
 import IExternalLink from '~/models/externals/IExternalLink';
-import { roundLatLngs } from '~/util/geomHelper';
+import { roundLatLngs } from '~/util/geomHelpers';
 import NodeFactory from './nodeFactory';
 
 class LinkFactory {

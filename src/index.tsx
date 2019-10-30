@@ -23,6 +23,7 @@ import RoutePathStore from './stores/routePathStore';
 import RouteStore from './stores/routeStore';
 import SearchResultStore from './stores/searchResultStore';
 import SearchStore from './stores/searchStore';
+import StopAreaStore from './stores/stopAreaStore';
 import ToolbarStore from './stores/toolbarStore';
 import ApolloClient from './util/ApolloClient';
 
@@ -45,6 +46,7 @@ const stores = {
     toolbarStore: ToolbarStore,
     networkStore: NetworkStore,
     nodeStore: NodeStore,
+    stopAreaStore: StopAreaStore,
     linkStore: LinkStore,
     alertStore: AlertStore,
     codeListStore: CodeListStore,

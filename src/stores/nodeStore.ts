@@ -8,7 +8,7 @@ import { ILink, INode } from '~/models';
 import GeocodingService from '~/services/geocodingService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import { roundLatLng, roundLatLngs } from '~/util/geomHelper';
+import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
 
 export interface UndoState {
     links: ILink[];

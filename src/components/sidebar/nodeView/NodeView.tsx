@@ -27,7 +27,7 @@ import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
-import NodeHelper from '~/util/nodeHelper';
+import NodeHelper from '~/util/NodeHelper';
 import InputContainer from '../../controls/InputContainer';
 import SidebarHeader from '../SidebarHeader';
 import StopForm from './StopForm';
@@ -104,16 +104,16 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const node = nodeStore!.node;
         for (const property in node!) {
             if (Object.prototype.hasOwnProperty.call(node, property)) {
-                const listener = this.createListener(property);
+                const listener = this.nodePropertyListener(property);
                 this.nodePropertyListeners.push(listener);
             }
         }
     };
 
-    private createListener = (property: string) => {
+    private nodePropertyListener = (property: string) => {
         return reaction(
             () => this.props.nodeStore!.node && this.props.nodeStore!.node![property],
-            this.validateNode
+            this.validateNodeProperty(property)
         );
     };
 
@@ -189,12 +189,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private save = async () => {
         this.setState({ isLoading: true });
-        let preventSetState = false;
         try {
             if (this.props.isNewNode) {
                 const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
-                preventSetState = true;
-
                 const url = routeBuilder
                     .to(SubSites.node)
                     .toTarget(':id', nodeId)
@@ -206,14 +203,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     this.props.nodeStore!.getDirtyLinks()
                 );
             }
-
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
 
-        if (preventSetState) return;
+        if (this.props.isNewNode) return;
         this.setState({ isLoading: false });
         this.props.nodeStore!.setIsEditingDisabled(true);
     };
@@ -229,6 +225,14 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private validateNode = () => {
         this.validateAllProperties(nodeValidationModel, this.props.nodeStore!.node);
+    };
+
+    private validateNodeProperty = (property: string) => () => {
+        const node = this.props.nodeStore!.node;
+        if (!node) return;
+
+        const value = node[property];
+        this.validateProperty(nodeValidationModel[property], property, value);
     };
 
     private onNodeGeometryChange = (property: NodeLocationType, value: any) => {

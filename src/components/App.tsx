@@ -16,7 +16,7 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import ApiClient from '~/util/ApiClient';
 import '~/util/KeyEventHandler';
-import LocalStorageHelper from '~/util/localStorageHelper';
+import LocalStorageHelper from '~/util/LocalStorageHelper';
 import ErrorBar from './ErrorBar';
 import NavigationBar from './NavigationBar';
 import * as s from './app.scss';

@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import Moment from 'moment';
 import TransitType from '~/enums/transitType';
-import LocalStorageHelper from '~/util/localStorageHelper';
+import LocalStorageHelper from '~/util/LocalStorageHelper';
 
 const TRANSIT_TYPES = [
     TransitType.BUS,

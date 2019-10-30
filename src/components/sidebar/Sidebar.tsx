@@ -14,6 +14,7 @@ import LineView from './lineView/LineView';
 import LineHeaderView from './lineView/lineHeaderView/LineHeaderView';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
+import StopAreaView from './nodeView/StopAreaView';
 import RouteListView from './routeListView/RouteListView';
 import RoutePathView from './routePathView/RoutePathView';
 import RouteView from './routeView/RouteView';
@@ -31,7 +32,7 @@ interface ILinelistState {
     searchInput: string;
 }
 
-type view = 'line' | 'lineHeader' | 'route' | 'node' | 'link' | 'routePath';
+type view = 'line' | 'lineHeader' | 'route' | 'node' | 'stopArea' | 'link' | 'routePath';
 
 @inject('routeListStore', 'searchStore', 'toolbarStore', 'mapStore')
 @observer
@@ -55,6 +56,8 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 return <RouteView {...props} isNewRoute={isNew} />;
             case 'node':
                 return <NodeView {...props} isNewNode={isNew} />;
+            case 'stopArea':
+                return <StopAreaView {...props} isNewStopArea={isNew} />;
             case 'link':
                 return <LinkView {...props} isNewLink={isNew} />;
             case 'routePath':
@@ -123,6 +126,16 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             exact={true}
                             path={subSites.node}
                             component={this.renderView({ view: 'node', isNew: false })}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.newStopArea}
+                            component={this.renderView({ view: 'stopArea', isNew: true })}
+                        />
+                        <Route
+                            exact={true}
+                            path={subSites.stopArea}
+                            component={this.renderView({ view: 'stopArea', isNew: false })}
                         />
                         <Route
                             exact={true}
