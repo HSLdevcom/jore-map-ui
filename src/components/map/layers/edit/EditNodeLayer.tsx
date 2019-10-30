@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import _ from 'lodash';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
@@ -27,14 +28,20 @@ interface IEditNodeLayerProps {
 @inject('mapStore', 'nodeStore', 'loginStore')
 @observer
 class EditNodeLayer extends Component<IEditNodeLayerProps> {
+    private nodeListener: IReactionDisposer;
     private editableLinks: L.Polyline[] = [];
 
     componentDidMount() {
+        this.nodeListener = reaction(
+            () => this.props.nodeStore!.node,
+            () => this.props.nodeStore!.node === null && this.removeOldLinks()
+        );
         EventManager.on('undo', this.props.nodeStore!.undo);
         EventManager.on('redo', this.props.nodeStore!.redo);
     }
 
     componentWillUnmount() {
+        this.nodeListener();
         this.removeOldLinks();
 
         const map = this.props.leaflet.map;

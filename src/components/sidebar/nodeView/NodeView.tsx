@@ -78,13 +78,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         EventManager.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
-    componentDidUpdate(prevProps: INodeViewProps) {
+    async componentDidUpdate(prevProps: INodeViewProps) {
         const params = this.props.match!.params.id;
         if (prevProps.match!.params.id !== params) {
             if (this.props.isNewNode) {
-                this.createNewNode(params);
+                await this.createNewNode(params);
             } else {
-                this.initExistingNode(params);
+                await this.initExistingNode(params);
             }
         }
     }
