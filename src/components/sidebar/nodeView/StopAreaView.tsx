@@ -189,18 +189,6 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         }
     };
 
-<<<<<<< HEAD
-=======
-    private navigateToNewStopArea = () => {
-        const stopArea = this.props.stopAreaStore!.stopArea;
-        const stopAreaViewStopArea = routeBuilder
-            .to(SubSites.stopArea)
-            .toTarget(':id', stopArea.id)
-            .toLink();
-        navigator.goTo(stopAreaViewStopArea);
-    };
-
->>>>>>> develop
     private validateStopArea = () => {
         this.validateAllProperties(stopAreaValidationModel, this.props.stopAreaStore!.stopArea);
     };
