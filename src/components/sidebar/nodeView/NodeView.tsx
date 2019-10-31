@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { LatLng } from 'leaflet';
+import * as L from 'leaflet';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
@@ -13,7 +13,7 @@ import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import NodeFactory from '~/factories/nodeFactory';
-import { INode } from '~/models';
+import { ILink, INode } from '~/models';
 import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
@@ -62,12 +62,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.nodePropertyListeners = [];
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        this.props.mapStore!.setIsMapCenteringPrevented(true);
         const params = this.props.match!.params.id;
         if (this.props.isNewNode) {
-            this.initNewNode(params);
+            await this.createNewNode(params);
         } else {
-            this.initExistingNode(params);
+            await this.initExistingNode(params);
         }
         this.props.nodeStore!.setIsEditingDisabled(!this.props.isNewNode);
         this.isEditingDisabledListener = reaction(
@@ -77,13 +78,13 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         EventManager.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
-    componentDidUpdate(prevProps: INodeViewProps) {
+    async componentDidUpdate(prevProps: INodeViewProps) {
         const params = this.props.match!.params.id;
         if (prevProps.match!.params.id !== params) {
             if (this.props.isNewNode) {
-                this.initNewNode(params);
+                await this.createNewNode(params);
             } else {
-                this.initExistingNode(params);
+                await this.initExistingNode(params);
             }
         }
     }
@@ -121,11 +122,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.nodePropertyListeners = [];
     };
 
-    private initNewNode = async (params: any) => {
+    private createNewNode = async (params: any) => {
         const [lat, lng] = params.split(':');
-        const coordinate = new LatLng(lat, lng);
-        const newNode = NodeFactory.createNewNode(coordinate);
-        this.props.nodeStore!.init({ node: newNode, links: [], isNewNode: true });
+        const coordinate = new L.LatLng(lat, lng);
+        const node = NodeFactory.createNewNode(coordinate);
+        this.centerMapToNode(node, []);
+        this.props.nodeStore!.init({ node, links: [], isNewNode: true });
         this.validateNode();
         this.createNodePropertyListeners();
     };
@@ -139,6 +141,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         if (node) {
             const links = await this.fetchLinksForNode(node);
             if (links) {
+                this.centerMapToNode(node, links);
                 this.props.nodeStore!.init({ node, links, isNewNode: false });
             }
             this.validateNode();
@@ -169,6 +172,20 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             return null;
         }
     }
+
+    private centerMapToNode = (node: INode, links: ILink[]) => {
+        this.props.mapStore!.setIsMapCenteringPrevented(false);
+        let latLngs: L.LatLng[] = [
+            node.coordinates,
+            node.coordinatesManual,
+            node.coordinatesProjection
+        ];
+        links.forEach((link: ILink) => {
+            latLngs = latLngs.concat(link.geometry);
+        });
+        const bounds = L.latLngBounds(latLngs);
+        this.props.mapStore!.setMapBounds(bounds);
+    };
 
     private save = async () => {
         this.setState({ isLoading: true });
@@ -226,20 +243,20 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.updateNode(property, value);
     };
 
-    private latChange = (previousLatLng: LatLng, coordinateType: NodeLocationType) => (
+    private latChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
         value: string
     ) => {
         const lat = Number(value);
         if (lat === previousLatLng.lat) return;
-        this.onNodeGeometryChange(coordinateType, new LatLng(lat, previousLatLng.lng));
+        this.onNodeGeometryChange(coordinateType, new L.LatLng(lat, previousLatLng.lng));
     };
 
-    private lngChange = (previousLatLng: LatLng, coordinateType: NodeLocationType) => (
+    private lngChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
         value: string
     ) => {
         const lng = Number(value);
         if (lng === previousLatLng.lng) return;
-        this.onNodeGeometryChange(coordinateType, new LatLng(previousLatLng.lat, lng));
+        this.onNodeGeometryChange(coordinateType, new L.LatLng(previousLatLng.lat, lng));
     };
 
     render() {

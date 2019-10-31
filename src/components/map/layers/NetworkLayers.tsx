@@ -10,7 +10,6 @@ import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
-import { RoutePathStore } from '~/stores/routePathStore';
 import EventManager, {
     INetworkLinkClickParams,
     INetworkNodeClickParams
@@ -30,7 +29,6 @@ interface INetworkLayersProps {
     networkStore?: NetworkStore;
     nodeStore?: NodeStore;
     linkStore?: LinkStore;
-    routePathStore?: RoutePathStore;
 }
 
 interface ILinkProperties {
@@ -52,7 +50,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'routePathStore')
+@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
     private reactionDisposer = {};
@@ -279,6 +277,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         if (mapZoomLevel <= Constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
             return null;
         }
+        const isMapLoading = Boolean(
+            this.props.mapStore!.isMapCenteringPrevented || !this.props.mapStore!.coordinates
+        );
+        if (isMapLoading) return null;
 
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;

@@ -32,11 +32,10 @@ export class NetworkStore {
 
     constructor() {
         this._selectedTransitTypes = TRANSIT_TYPES;
-        this._visibleMapLayers = [];
+        this._visibleMapLayers = this.getInitialVisibleMapLayers();
         this._nodeSize = NodeSize.normal;
         this._savedMapLayers = [];
         this._selectedDate = Moment();
-        this.lazyLoadLocalStorageVisibleLayers();
     }
 
     @computed
@@ -146,27 +145,18 @@ export class NetworkStore {
         this._savedMapLayers = this._visibleMapLayers;
     }
 
-    // TODO: Remove this lazy load hack when map's initial position is immediately at target element after page reload
-    private lazyLoadLocalStorageVisibleLayers = async () => {
-        setTimeout(() => {
-            const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
-            const layers: MapLayer[] = [];
-            if (!Array.isArray(localStorageVisibleLayers)) return layers;
+    private getInitialVisibleMapLayers = () => {
+        const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
+        const layers: MapLayer[] = [];
+        if (!Array.isArray(localStorageVisibleLayers)) return [];
 
-            if (localStorageVisibleLayers.includes('node')) {
-                layers.push(MapLayer.node);
-            }
-            if (localStorageVisibleLayers.includes('link')) {
-                layers.push(MapLayer.link);
-            }
-            this.setLocalStorageVisibleLayers(layers);
-            return;
-        }, 2000);
-    };
-
-    @action
-    private setLocalStorageVisibleLayers = (layers: MapLayer[]) => {
-        this._visibleMapLayers = layers;
+        if (localStorageVisibleLayers.includes('node')) {
+            layers.push(MapLayer.node);
+        }
+        if (localStorageVisibleLayers.includes('link')) {
+            layers.push(MapLayer.link);
+        }
+        return layers;
     };
 }
 

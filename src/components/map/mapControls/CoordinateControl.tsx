@@ -8,6 +8,7 @@ interface ICoordinateControlOptions extends L.ControlOptions {
     precision?: number;
 }
 
+// TODO: Convert as react-component
 class CoordinateControl extends L.Control {
     private mapStore: MapStore;
     private xButton: HTMLElement;
@@ -87,8 +88,8 @@ class CoordinateControl extends L.Control {
         const coordinates = this.mapStore!.coordinates;
         const displayCoordinateSystem = this.mapStore!.displayCoordinateSystem;
         return GeometryService.reprojectToCrs(
-            coordinates.lat,
-            coordinates.lng,
+            coordinates!.lat,
+            coordinates!.lng,
             displayCoordinateSystem
         );
     }
