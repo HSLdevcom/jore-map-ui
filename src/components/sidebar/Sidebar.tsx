@@ -66,8 +66,10 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     };
 
     render() {
+        const isMapFullscreen = this.props.mapStore!.isMapFullscreen;
+
         return (
-            <div className={classnames(s.sidebarView)}>
+            <div className={classnames(s.sidebarView, isMapFullscreen ? s.hidden : null)}>
                 <div className={s.content}>
                     <Switch>
                         <Route exact={true} path={subSites.home} component={HomeView} />
