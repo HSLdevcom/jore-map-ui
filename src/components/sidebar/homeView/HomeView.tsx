@@ -4,6 +4,7 @@ import TransitType from '~/enums/transitType';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { SearchStore } from '~/stores/searchStore';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
@@ -15,9 +16,10 @@ import * as s from './homeView.scss';
 interface IHomeViewProps {
     searchStore?: SearchStore;
     routePathStore?: RoutePathStore;
+    mapStore?: MapStore;
 }
 
-@inject('searchStore', 'routePathStore')
+@inject('searchStore', 'routePathStore', 'mapStore')
 @observer
 class HomeView extends React.Component<IHomeViewProps> {
     public toggleTransitType = (type: TransitType) => {

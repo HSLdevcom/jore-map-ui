@@ -1,7 +1,9 @@
+import { createBrowserHistory } from 'history';
 import { inject, observer } from 'mobx-react';
+import { syncHistoryWithStore } from 'mobx-react-router';
 import React from 'react';
-import { matchPath, withRouter, Switch } from 'react-router';
-import { Route, RouteComponentProps } from 'react-router-dom';
+import { matchPath, Router, Switch } from 'react-router';
+import { Route } from 'react-router-dom';
 import constants from '~/constants/constants';
 import endpoints from '~/enums/endpoints';
 import navigator from '~/routing/navigator';
@@ -27,12 +29,15 @@ interface IAppState {
     isLoginInProgress: boolean;
 }
 
-interface IAppProps extends RouteComponentProps<any> {
+interface IAppProps {
     loginStore?: LoginStore;
     mapStore?: MapStore;
     codeListStore?: CodeListStore;
     errorStore?: ErrorStore;
 }
+
+const browserHistory = createBrowserHistory();
+const history = syncHistoryWithStore(browserHistory, navigator.getStore());
 
 @inject('mapStore', 'loginStore', 'codeListStore', 'errorStore')
 @observer
@@ -48,16 +53,14 @@ class App extends React.Component<IAppProps, IAppState> {
         this.init();
     }
 
-    private renderApp = (isMapFullscreen: boolean) => {
+    private renderApp = () => {
         this.initCodeLists();
 
         return (
             <>
                 <NavigationBar />
                 <div className={s.appContent}>
-                    <div className={isMapFullscreen ? s.hidden : ''}>
-                        <Sidebar location={this.props.location} />
-                    </div>
+                    <Sidebar />
                     <Map>
                         <ErrorBar />
                     </Map>
@@ -120,18 +123,22 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.state.isLoginInProgress) {
             return <div>Ladataan sovellusta...</div>;
         }
-
-        const isMapFullscreen = this.props.mapStore!.isMapFullscreen;
         return (
             <div className={s.appView}>
-                <Switch>
-                    <Route exact={true} path={SubSites.afterLogin} render={this.renderAfterLogin} />
-                    <Route path='/login' component={Login} />
-                    <Route component={() => this.renderApp(isMapFullscreen)} />
-                </Switch>
+                <Router history={history}>
+                    <Switch>
+                        <Route
+                            exact={true}
+                            path={SubSites.afterLogin}
+                            render={this.renderAfterLogin}
+                        />
+                        <Route path='/login' component={Login} />
+                        <Route component={() => this.renderApp()} />
+                    </Switch>
+                </Router>
             </div>
         );
     }
 }
 
-export default withRouter(App);
+export default App;
