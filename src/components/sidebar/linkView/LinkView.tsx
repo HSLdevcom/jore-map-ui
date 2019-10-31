@@ -199,6 +199,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         if (linkStore!.isEditingDisabled) {
             linkStore!.resetChanges();
         } else {
+            linkStore!.updateLinkLength();
             this.validateLink();
         }
     };
