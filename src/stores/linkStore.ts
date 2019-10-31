@@ -88,7 +88,6 @@ export class LinkStore {
 
         const oldLink = _.cloneDeep(link);
         const newLink = _.cloneDeep(link);
-        newLink.length = calculateLengthFromLatLngs(newLink.geometry);
         const newNodes = _.cloneDeep(nodes);
 
         this._link = newLink;
@@ -138,6 +137,13 @@ export class LinkStore {
         value: string | number | Date | LatLng[]
     ) => {
         this._link![property] = value;
+    };
+
+    @action
+    public updateLinkLength = () => {
+        if (!this._link) return;
+
+        this._link.length = calculateLengthFromLatLngs(this._link.geometry);
     };
 
     @action
