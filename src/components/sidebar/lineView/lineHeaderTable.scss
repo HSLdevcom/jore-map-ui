@@ -3,6 +3,7 @@
 
 .lineHeaderTableView {
     width: 100%;
+    padding-top: 20px;
 
     .lineHeaderTable {
         width: 100%;
@@ -31,14 +32,25 @@
         .lineHeaderRowHighlight {
             background-color: $lightblue;
         }
+
+        .editLineHeaderButton {
+            font-size: 1.8em;
+            padding: 3px;
+        }
     }
 
-    .editLineHeaderButton {
-        font-size: 1.8em;
-        padding: 3px;
-    }
+    .buttonContainer {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
 
-    .newLineHeaderButton  {
-        border-radius: 0px;
+        .createNewLineHeaderButton {
+            width: 50%;
+            padding: 10px 20px 10px 20px;
+            margin: 0px 0px 10px auto;
+        }
+        .saveLineHeadersButton {
+            margin-top: auto;
+        }
     }
 }

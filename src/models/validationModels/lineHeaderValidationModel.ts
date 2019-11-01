@@ -9,7 +9,7 @@ const lineHeaderValidationModel: ILineHeaderValidationModel = {
     originalStartDate: '',
     startDate: 'required|date',
     endDate: 'required|date',
-    lineNameFi: 'min:0|max:60|string',
+    lineNameFi: 'required|min:0|max:60|string',
     lineShortNameFi: 'min:0|max:20|string',
     lineNameSw: 'min:0|max:60|string',
     lineShortNameSw: 'min:0|max:20|string',

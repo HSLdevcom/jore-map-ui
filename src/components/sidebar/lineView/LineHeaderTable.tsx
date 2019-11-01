@@ -16,6 +16,7 @@ interface ILineHeaderListProps {
     lineHeaders: ILineHeader[];
     currentLineHeader?: ILineHeader;
     lineId: string;
+    saveLineHeaders: (lineHeaders: ILineHeader[]) => void;
 }
 
 class LineHeaderTable extends React.Component<ILineHeaderListProps> {
@@ -66,10 +67,24 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
         });
     };
 
+    private toggleIsEditing = () => {
+        // TODO
+    };
+
+    private saveLineHeaders = () => {
+        this.props.saveLineHeaders([]);
+    };
+
     render() {
+        const isSaveLineHeadersButtonDisabled = true;
         return (
             <div className={s.lineHeaderTableView}>
-                <SidebarHeader hideCloseButton={true} hideBackButton={true}>
+                <SidebarHeader
+                    hideCloseButton={true}
+                    hideBackButton={true}
+                    isEditButtonVisible={true}
+                    onEditButtonClick={this.toggleIsEditing}
+                >
                     Linjan otsikot
                 </SidebarHeader>
                 {this.props.lineHeaders.length > 0 ? (
@@ -93,14 +108,25 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                 ) : (
                     <div>Linjalle {this.props.lineId} ei löytynyt otsikoita.</div>
                 )}
-                <Button
-                    className={s.newLineHeaderButton}
-                    type={ButtonType.SQUARE}
-                    disabled={false}
-                    onClick={() => this.redirectToNewLineHeaderView()}
-                >
-                    Luo uusi linjan otsikko
-                </Button>
+                <div className={s.buttonContainer}>
+                    <Button
+                        className={s.createNewLineHeaderButton}
+                        type={ButtonType.SQUARE}
+                        disabled={false}
+                        hasPadding={true}
+                        onClick={() => this.redirectToNewLineHeaderView()}
+                    >
+                        Luo uusi linjan otsikko
+                    </Button>
+                    <Button
+                        className={s.saveLineHeadersButton}
+                        onClick={this.saveLineHeaders}
+                        type={ButtonType.SAVE}
+                        disabled={isSaveLineHeadersButtonDisabled}
+                    >
+                        Tallenna linjan otsikot
+                    </Button>
+                </div>
             </div>
         );
     }
