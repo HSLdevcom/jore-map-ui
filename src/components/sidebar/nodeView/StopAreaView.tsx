@@ -313,7 +313,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                         <div className={s.flexRow}>
                             <Dropdown
                                 onChange={this.onChangeStopAreaProperty('stopAreaGroupId')}
-                                disabled={isEditingDisabled || !this.props.isNewStopArea}
+                                disabled={isEditingDisabled}
                                 items={this.props.codeListStore!.getDropdownItemList(
                                     'Pysäkkialueid'
                                 )}
@@ -371,7 +371,11 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                     </tbody>
                                 </table>
                             ) : (
-                                <div>Pysäkkialueella ei pysäkkejä.</div>
+                                <div>
+                                    {this.props.isNewStopArea
+                                        ? ''
+                                        : 'Pysäkkialueella ei pysäkkejä.'}
+                                </div>
                             )}
                         </div>
                     </div>
