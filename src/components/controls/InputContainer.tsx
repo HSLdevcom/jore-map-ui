@@ -2,8 +2,9 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
+import ReactDatePicker from 'react-date-picker';
+import { IoMdCalendar } from 'react-icons/io';
 import { IValidationResult } from '~/validation/FormValidator';
-import DatePicker from './DatePicker';
 import * as s from './inputContainer.scss';
 
 type inputType = 'text' | 'number' | 'date';
@@ -39,13 +40,11 @@ const renderEditableContent = (props: IInputProps) => {
     };
 
     if (type === 'date') {
-        return (
-            <DatePicker
-                value={props.value! as Date}
-                onChange={props.onChange!}
-                isClearButtonVisible={props.isClearButtonVisibleOnDates}
-            />
-        );
+        return renderDatePicker({
+            value: props.value! as Date,
+            onChange: props.onChange!,
+            isClearButtonVisible: props.isClearButtonVisibleOnDates
+        });
     }
 
     return (
@@ -54,7 +53,7 @@ const renderEditableContent = (props: IInputProps) => {
             type={props.type === 'number' ? 'number' : 'text'}
             className={classnames(
                 s.staticHeight,
-                s.inputContainer,
+                s.inputField,
                 props.disabled ? s.disabled : null,
                 validationResult && !validationResult.isValid ? s.invalidInput : null
             )}
@@ -68,6 +67,28 @@ const renderEditableContent = (props: IInputProps) => {
     );
 };
 
+const renderDatePicker = ({
+    value,
+    onChange,
+    isClearButtonVisible
+}: {
+    value?: Date;
+    isClearButtonVisible?: boolean;
+    onChange: (date: Date) => void;
+}) => {
+    return (
+        <div className={classnames(s.staticHeight, s.datePickerContainer)}>
+            <ReactDatePicker
+                value={value}
+                onChange={onChange}
+                locale='fi-FI'
+                calendarIcon={<IoMdCalendar />}
+                clearIcon={isClearButtonVisible ? undefined : null}
+            />
+        </div>
+    );
+};
+
 const renderValidatorResult = (validationResult?: IValidationResult) => {
     if (!validationResult || !validationResult.errorMessage) {
         return null;
@@ -76,7 +97,7 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
 };
 
 const renderUneditableContent = (props: IInputProps) => (
-    <div className={classnames(s.inputContainer, props.disabled ? s.staticHeight : null)}>
+    <div className={classnames(s.inputField, props.disabled ? s.staticHeight : null)}>
         {props.value instanceof Date
             ? Moment(props.value!).format('DD.MM.YYYY')
             : props.value
@@ -87,7 +108,7 @@ const renderUneditableContent = (props: IInputProps) => (
 
 const InputContainer = observer((props: IInputProps) => {
     return (
-        <div className={classnames(props.className, s.formItem)}>
+        <div className={classnames(s.formItem, s.inputContainer, props.className)}>
             {props.label && (
                 <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
                     {props.label}
