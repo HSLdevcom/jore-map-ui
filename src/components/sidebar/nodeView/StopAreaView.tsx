@@ -13,6 +13,7 @@ import { IStopArea } from '~/models';
 import stopAreaValidationModel from '~/models/validationModels/stopAreaValidationModel';
 import navigator from '~/routing/navigator';
 import StopAreaService, { ITerminalAreaItem } from '~/services/stopAreaService';
+import StopService, { IStopItem } from '~/services/stopService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -36,6 +37,7 @@ interface IStopAreaViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
     terminalAreas: IDropdownItem[];
+    stops: IStopItem[];
 }
 
 @inject('stopAreaStore', 'errorStore', 'alertStore', 'codeListStore')
@@ -50,7 +52,8 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         this.state = {
             isLoading: false,
             invalidPropertiesMap: {},
-            terminalAreas: []
+            terminalAreas: [],
+            stops: []
         };
         this.stopAreaPropertyListeners = [];
     }
@@ -72,8 +75,11 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             this.onChangeIsEditingDisabled
         );
         const terminalAreas: ITerminalAreaItem[] = await StopAreaService.fetchAllTerminalAreas();
+        const stops: IStopItem[] = await StopService.fetchAllStops();
+
         if (this.mounted) {
             this.setState({
+                stops,
                 terminalAreas: this.createTerminalAreaDropdownItems(terminalAreas)
             });
         }
@@ -222,6 +228,26 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         this.props.stopAreaStore!.updateStopAreaProperty(property, value);
     };
 
+    private renderStopsByStopArea = (stops: IStopItem[]) => {
+        return stops.map((stop: IStopItem, index: number) => {
+            return (
+                <tr key={index} className={s.stopTableRow}>
+                    <td>{stop.soltunnus}</td>
+                    <td>{stop.pysnimi}</td>
+                    <td>{stop.pysnimir}</td>
+                </tr>
+            );
+        });
+    };
+
+    private getStopsByStopAreaId = (stopAreaId: string | undefined) => {
+        if (!stopAreaId) return [];
+        const stopsByStopAreaId = this.state.stops.filter(iterable => {
+            return iterable.pysalueid === stopAreaId;
+        });
+        return stopsByStopAreaId;
+    };
+
     render() {
         const stopArea = this.props.stopAreaStore!.stopArea;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
@@ -243,6 +269,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             !this.props.stopAreaStore!.isDirty ||
             !this.isFormValid();
         const selectedTransitTypes = stopArea!.transitType ? [stopArea!.transitType!] : [];
+        const stopsByStopArea = this.getStopsByStopAreaId(stopArea.id);
 
         return (
             <div className={s.stopAreaView}>
@@ -316,6 +343,37 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                 />
                             </div>
                         )}
+                    </div>
+                    <div className={s.flexRow}>
+                        <div className={s.stopTableView}>
+                            {stopsByStopArea.length > 0 ? (
+                                <table className={s.stopHeaderTable}>
+                                    <tbody>
+                                        <tr>
+                                            <th
+                                                className={classnames(s.inputLabel, s.columnHeader)}
+                                            >
+                                                PYSÄKKIALUEEN PYSÄKIT
+                                            </th>
+                                            <th
+                                                className={classnames(s.inputLabel, s.columnHeader)}
+                                            >
+                                                NIMI FI
+                                            </th>
+                                            <th
+                                                className={classnames(s.inputLabel, s.columnHeader)}
+                                            >
+                                                NIMI SV
+                                            </th>
+                                            <th className={s.columnHeader} />
+                                        </tr>
+                                        {this.renderStopsByStopArea(stopsByStopArea)}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div>Pysäkkialueella ei pysäkkejä.</div>
+                            )}
+                        </div>
                     </div>
                 </div>
                 <Button

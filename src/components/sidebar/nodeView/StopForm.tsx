@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import _ from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -16,7 +15,7 @@ import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
-import StopService, { IStopItem, IStopSectionItem } from '~/services/stopService';
+import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import SidebarHeader from '../SidebarHeader';
@@ -39,7 +38,6 @@ interface IStopFormState {
     isEditingDisabled: boolean;
     stopAreas: IStopAreaItem[];
     stopSections: IDropdownItem[];
-    stops: IStopItem[];
 }
 
 @inject('nodeStore', 'codeListStore')
@@ -56,7 +54,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
             isLoading: false,
             invalidPropertiesMap: {},
             isEditingDisabled: false,
-            stops: [],
             stopAreas: [],
             stopSections: []
         };
@@ -77,11 +74,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         }
         const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
-        const stops: IStopItem[] = await StopService.fetchAllStops();
 
         if (this.mounted) {
             this.setState({
-                stops,
                 stopAreas,
                 stopSections: this.createStopSectionDropdownItems(stopSections)
             });
@@ -222,58 +217,12 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         navigator.goTo(routePathViewLink);
     };
 
-    private redirectToStopAreaStop = (nodeId: string) => {
-        const nodeLink = RouteBuilder.to(SubSites.node)
-            .toTarget(':id', nodeId)
-            .toLink();
-        navigator.goTo(nodeLink);
-    };
-
-    private getStopsByStopAreaId = (stopAreaId: string | undefined) => {
-        if (!stopAreaId) return [];
-        const stopsByStopAreaId = this.state.stops.filter(iterable => {
-            return iterable.pysalueid === stopAreaId;
-        });
-        return stopsByStopAreaId;
-    };
-
-    private renderStopsByStopArea = (stops: IStopItem[]) => {
-        const node = this.props.node;
-        const currentStop = node.stop!;
-        const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
-
-        return stops.map((stop: IStopItem, index: number) => {
-            const isCurrentStop = _.isEqual(currentStop.nodeId, stop.soltunnus);
-            return (
-                <tr key={index} className={isCurrentStop ? s.stopHeaderRowHighlight : undefined}>
-                    <td>{stop.soltunnus}</td>
-                    <td>{stop.pysnimi}</td>
-                    <td>{stop.pysnimir}</td>
-                    <td>
-                        <Button
-                            className={classnames(
-                                s.editStopHeaderButton,
-                                isEditingDisabled ? s.disabled : ''
-                            )}
-                            hasReverseColor={true}
-                            onClick={() => this.redirectToStopAreaStop(stop.soltunnus)}
-                            disabled={isEditingDisabled}
-                        >
-                            <FiInfo />
-                        </Button>
-                    </td>
-                </tr>
-            );
-        });
-    };
-
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const node = this.props.node;
         const stop = node.stop!;
         const onChange = this.updateStopProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
-        const stopsByStopArea = this.getStopsByStopAreaId(stop.areaId);
         return (
             <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader hideCloseButton={true} hideBackButton={true}>
@@ -391,37 +340,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                         >
                             Luo uusi pysäkkialue
                         </Button>
-                    </div>
-                    <div className={s.flexRow}>
-                        <div className={s.stopTableView}>
-                            {stopsByStopArea.length > 0 ? (
-                                <table className={s.stopHeaderTable}>
-                                    <tbody>
-                                        <tr>
-                                            <th
-                                                className={classnames(s.inputLabel, s.columnHeader)}
-                                            >
-                                                PYSÄKKIALUEEN PYSÄKIT
-                                            </th>
-                                            <th
-                                                className={classnames(s.inputLabel, s.columnHeader)}
-                                            >
-                                                NIMI FI
-                                            </th>
-                                            <th
-                                                className={classnames(s.inputLabel, s.columnHeader)}
-                                            >
-                                                NIMI SV
-                                            </th>
-                                            <th className={s.columnHeader} />
-                                        </tr>
-                                        {this.renderStopsByStopArea(stopsByStopArea)}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <div>Pysäkkialueella ei pysäkkejä.</div>
-                            )}
-                        </div>
                     </div>
                 </div>
                 <div className={s.formSection}>
