@@ -320,21 +320,16 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             validationResult={invalidPropertiesMap['areaId']}
                         />
                         <Button
-                            className={classnames(
-                                s.icon,
-                                !stop.areaId || isEditingDisabled ? s.disabled : ''
-                            )}
+                            className={s.icon}
                             hasReverseColor={true}
                             onClick={() => {
                                 this.redirectToStopArea(stop.areaId);
                             }}
-                            disabled={!stop.areaId || isEditingDisabled}
                         >
                             <FiInfo />
                         </Button>
                         <Button
                             onClick={() => this.redirectToNewStopArea()}
-                            disabled={isEditingDisabled}
                             type={ButtonType.SQUARE}
                             className={s.createNewStopAreaButton}
                         >
