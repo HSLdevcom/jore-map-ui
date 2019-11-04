@@ -161,37 +161,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     };
 
-    private renderAdditionalLocations = (node: INode) => {
-        const nodeBaseClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
-
-        return (
-            <>
-                <LeafletMarker
-                    position={node.coordinatesManual}
-                    icon={LeafletUtils.createDivIcon(
-                        <div className={classnames(s.manual, ...this.getMarkerClasses())} />,
-                        { className: nodeBaseClass }
-                    )}
-                    draggable={this.isDraggable()}
-                    onDragEnd={this.props.onMoveMarker && this.onMoveMarker('coordinatesManual')}
-                    interactive={!this.props.isClickDisabled}
-                />
-                <LeafletMarker
-                    position={node.coordinatesProjection}
-                    icon={LeafletUtils.createDivIcon(
-                        <div className={classnames(s.projection, ...this.getMarkerClasses())} />,
-                        { className: nodeBaseClass }
-                    )}
-                    draggable={this.isDraggable()}
-                    onDragEnd={
-                        this.props.onMoveMarker && this.onMoveMarker('coordinatesProjection')
-                    }
-                    interactive={!this.props.isClickDisabled}
-                />
-            </>
-        );
-    };
-
     private isDraggable = () =>
         // TODO this should probably check other stuff too...
         this.props.isSelected && this.props.isDraggable;
@@ -200,6 +169,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
         if (this.props.onClick) {
             this.props.onClick();
         }
+    };
+    private onCoordinatesMarkerChange = (e: L.DragEndEvent) => {
+        this.props.onMoveMarker!('coordinates', e.target.getLatLng());
+        this.onMoveMarker('coordinates');
+        this.props.onMoveMarker!('coordinatesManual', e.target.getLatLng());
+        this.onMoveMarker('coordinatesManual');
     };
 
     render() {
@@ -231,14 +206,27 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     draggable={this.props.isDraggable}
                     icon={icon}
                     position={this.props.node.coordinates}
-                    onDragEnd={this.props.onMoveMarker && this.onMoveMarker('coordinates')}
+                    onDragEnd={this.onCoordinatesMarkerChange}
                     interactive={!this.props.isClickDisabled}
                 >
                     {this.renderStopRadiusCircle()}
                 </LeafletMarker>
-                {this.props.isSelected &&
-                    this.props.node.type === NodeType.STOP &&
-                    this.renderAdditionalLocations(this.props.node!)}
+                {this.props.isSelected && this.props.node.type === NodeType.STOP && (
+                    <LeafletMarker
+                        position={this.props.node.coordinatesProjection}
+                        icon={LeafletUtils.createDivIcon(
+                            <div
+                                className={classnames(s.projection, ...this.getMarkerClasses())}
+                            />,
+                            { className: nodeBaseClass }
+                        )}
+                        draggable={this.isDraggable()}
+                        onDragEnd={
+                            this.props.onMoveMarker && this.onMoveMarker('coordinatesProjection')
+                        }
+                        interactive={!this.props.isClickDisabled}
+                    />
+                )}
             </>
         );
     }
