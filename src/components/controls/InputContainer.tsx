@@ -41,7 +41,6 @@ const renderEditableContent = (props: IInputProps) => {
     if (type === 'date') {
         return (
             <DatePicker
-                className={s.staticHeight}
                 value={props.value! as Date}
                 onChange={props.onChange!}
                 isClearButtonVisible={props.isClearButtonVisibleOnDates}
@@ -55,6 +54,7 @@ const renderEditableContent = (props: IInputProps) => {
             type={props.type === 'number' ? 'number' : 'text'}
             className={classnames(
                 s.staticHeight,
+                s.inputContainer,
                 props.disabled ? s.disabled : null,
                 validationResult && !validationResult.isValid ? s.invalidInput : null
             )}
@@ -76,7 +76,7 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
 };
 
 const renderUneditableContent = (props: IInputProps) => (
-    <div className={props.disabled ? s.staticHeight : undefined}>
+    <div className={classnames(s.inputContainer, props.disabled ? s.staticHeight : null)}>
         {props.value instanceof Date
             ? Moment(props.value!).format('DD.MM.YYYY')
             : props.value
