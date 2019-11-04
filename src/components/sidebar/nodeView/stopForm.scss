@@ -14,21 +14,24 @@
         white-space: pre-wrap;
         align-self: flex-end;
         height: 30px;
+        padding: 6px;
+        font-size: 0.85rem;
     }
 
     .formSection:last-of-type {
         padding-bottom: 50px; /* To prevent dropdown from causing a scrollbar */
     }
 
-    .icon {
+    .editStopAreaButton {
         font-size: 30px;
         cursor: pointer;
         transition: 0.5s;
         align-self: flex-end;
         margin-right: 10px;
+        padding: 6px;
     }
 
-    .icon:hover {
+    .editStopAreaButton:hover {
         opacity: 1;
     }
 }

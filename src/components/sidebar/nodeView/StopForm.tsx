@@ -270,18 +270,48 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <div className={s.flexRow}>
                         <InputContainer
                             label='NIMI'
-                            disabled={isEditingDisabled}
+                            disabled={true}
                             value={stop.nameFi}
                             onChange={onChange('nameFi')}
                             validationResult={invalidPropertiesMap['nameFi']}
                         />
                         <InputContainer
                             label='NIMI RUOTSIKSI'
-                            disabled={isEditingDisabled}
+                            disabled={true}
                             value={stop.nameSw}
                             onChange={onChange('nameSw')}
                             validationResult={invalidPropertiesMap['nameSw']}
                         />
+                    </div>
+                    <div className={s.flexRow}>
+                        <Dropdown
+                            onChange={this.onStopAreaChange}
+                            items={this.createStopAreaDropdownItems(this.state.stopAreas)}
+                            selected={stop.areaId}
+                            emptyItem={{
+                                value: '',
+                                label: ''
+                            }}
+                            disabled={isEditingDisabled}
+                            label='PYSÄKKIALUE'
+                            validationResult={invalidPropertiesMap['areaId']}
+                        />
+                        <Button
+                            className={s.editStopAreaButton}
+                            hasReverseColor={true}
+                            onClick={() => {
+                                this.redirectToStopArea(stop.areaId);
+                            }}
+                        >
+                            <FiInfo />
+                        </Button>
+                        <Button
+                            onClick={() => this.redirectToNewStopArea()}
+                            type={ButtonType.SQUARE}
+                            className={s.createNewStopAreaButton}
+                        >
+                            Luo uusi pysäkkialue
+                        </Button>
                     </div>
                     <div className={s.flexRow}>
                         <InputContainer
@@ -305,36 +335,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             value={stop.nameModifiedOn}
                             isTimeIncluded={true}
                         />
-                    </div>
-                    <div className={s.flexRow}>
-                        <Dropdown
-                            onChange={this.onStopAreaChange}
-                            items={this.createStopAreaDropdownItems(this.state.stopAreas)}
-                            selected={stop.areaId}
-                            emptyItem={{
-                                value: '',
-                                label: ''
-                            }}
-                            disabled={isEditingDisabled}
-                            label='PYSÄKKIALUE'
-                            validationResult={invalidPropertiesMap['areaId']}
-                        />
-                        <Button
-                            className={s.icon}
-                            hasReverseColor={true}
-                            onClick={() => {
-                                this.redirectToStopArea(stop.areaId);
-                            }}
-                        >
-                            <FiInfo />
-                        </Button>
-                        <Button
-                            onClick={() => this.redirectToNewStopArea()}
-                            type={ButtonType.SQUARE}
-                            className={s.createNewStopAreaButton}
-                        >
-                            Luo uusi pysäkkialue
-                        </Button>
                     </div>
                 </div>
                 <div className={s.formSection}>
