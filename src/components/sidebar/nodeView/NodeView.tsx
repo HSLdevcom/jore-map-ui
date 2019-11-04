@@ -175,11 +175,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private centerMapToNode = (node: INode, links: ILink[]) => {
         this.props.mapStore!.setIsMapCenteringPrevented(false);
-        let latLngs: L.LatLng[] = [
-            node.coordinates,
-            node.coordinatesManual,
-            node.coordinatesProjection
-        ];
+        let latLngs: L.LatLng[] = [node.coordinates, node.coordinatesProjection];
         links.forEach((link: ILink) => {
             latLngs = latLngs.concat(link.geometry);
         });
