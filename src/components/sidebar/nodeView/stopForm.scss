@@ -11,8 +11,9 @@
     }
 
     .createNewStopAreaButton {
-        width: 100px;
         white-space: pre-wrap;
+        align-self: flex-end;
+        height: 30px;
     }
 
     .formSection:last-of-type {
@@ -20,15 +21,16 @@
     }
 
     .icon {
-        font-size: 40px;
+        font-size: 30px;
         cursor: pointer;
-        margin: 3px;
         transition: 0.5s;
         align-self: flex-end;
+        margin-right: 10px;
     }
 
     .disabled {
-        color: white;
+        color: #cccccc;
+        background-color: transparent;
     }
 
     .icon:hover {

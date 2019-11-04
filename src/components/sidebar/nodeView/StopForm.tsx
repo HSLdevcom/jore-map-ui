@@ -222,6 +222,13 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         navigator.goTo(routePathViewLink);
     };
 
+    private redirectToStopAreaStop = (nodeId: string) => {
+        const nodeLink = RouteBuilder.to(SubSites.node)
+            .toTarget(':id', nodeId)
+            .toLink();
+        navigator.goTo(nodeLink);
+    };
+
     private getStopsByStopAreaId = (stopAreaId: string | undefined) => {
         if (!stopAreaId) return [];
         const stopsByStopAreaId = this.state.stops.filter(iterable => {
@@ -233,6 +240,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     private renderStopsByStopArea = (stops: IStopItem[]) => {
         const node = this.props.node;
         const currentStop = node.stop!;
+        const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
 
         return stops.map((stop: IStopItem, index: number) => {
             const isCurrentStop = _.isEqual(currentStop.nodeId, stop.soltunnus);
@@ -243,9 +251,13 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <td>{stop.pysnimir}</td>
                     <td>
                         <Button
-                            className={s.editStopHeaderButton}
+                            className={classnames(
+                                s.editStopHeaderButton,
+                                isEditingDisabled ? s.disabled : ''
+                            )}
                             hasReverseColor={true}
-                            onClick={() => {}}
+                            onClick={() => this.redirectToStopAreaStop(stop.soltunnus)}
+                            disabled={isEditingDisabled}
                         >
                             <FiInfo />
                         </Button>
