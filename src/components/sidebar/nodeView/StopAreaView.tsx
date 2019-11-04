@@ -180,9 +180,8 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-        navigator.goBack();
-        this.setState({ isLoading: false });
         this.props.stopAreaStore!.setIsEditingDisabled(true);
+        navigator.goBack();
     };
 
     private onChangeIsEditingDisabled = () => {
