@@ -159,23 +159,6 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         this.validateAllProperties(lineValidationModel, this.props.lineStore!.line);
     };
 
-    private renderLineViewHeader = () => {
-        return (
-            <div className={s.sidebarHeaderSection}>
-                <SidebarHeader
-                    isEditButtonVisible={!this.props.isNewLine}
-                    onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
-                    isEditing={!this.props.lineStore!.isEditingDisabled}
-                    shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
-                >
-                    {this.props.isNewLine
-                        ? 'Luo uusi linja'
-                        : `Linja ${this.props.lineStore!.line!.id}`}
-                </SidebarHeader>
-            </div>
-        );
-    };
-
     render() {
         const lineStore = this.props.lineStore;
         if (this.state.isLoading) {
@@ -193,7 +176,18 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         return (
             <div className={s.lineView}>
                 <div className={s.content}>
-                    {this.renderLineViewHeader()}
+                    <div className={s.sidebarHeaderSection}>
+                        <SidebarHeader
+                            isEditButtonVisible={!this.props.isNewLine}
+                            onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
+                            isEditing={!this.props.lineStore!.isEditingDisabled}
+                            shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
+                        >
+                            {this.props.isNewLine
+                                ? 'Luo uusi linja'
+                                : `Linja ${this.props.lineStore!.line!.id}`}
+                        </SidebarHeader>
+                    </div>
                     <Tabs>
                         <TabList
                             selectedTabIndex={this.state.selectedTabIndex}

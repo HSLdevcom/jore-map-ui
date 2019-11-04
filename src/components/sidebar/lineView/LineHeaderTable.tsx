@@ -1,24 +1,30 @@
 import classnames from 'classnames';
 import _ from 'lodash';
+import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
+import InputContainer from '~/components/controls/InputContainer';
 import ButtonType from '~/enums/buttonType';
 import ILineHeader from '~/models/ILineHeader';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './lineHeaderTable.scss';
 
 interface ILineHeaderListProps {
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
     lineHeaders: ILineHeader[];
     currentLineHeader?: ILineHeader;
     lineId: string;
     saveLineHeaders: (lineHeaders: ILineHeader[]) => void;
 }
 
+@inject('lineHeaderMassEditStore')
+@observer
 class LineHeaderTable extends React.Component<ILineHeaderListProps> {
     private redirectToEditLineHeaderView = (startDate: Date) => () => {
         const editLineHeaderLink = routeBuilder
@@ -38,7 +44,13 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
         navigator.goTo(newLineHeaderLink);
     };
 
+    private onChangeLineHeaderStartDate = () => {};
+    private onChangeLineHeaderEndDate = () => {};
+
     private renderLineHeaderRows = () => {
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
+        const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
+
         return this.props.lineHeaders.map((lineHeader: ILineHeader, index: number) => {
             const isCurrentLineHeader = _.isEqual(this.props.currentLineHeader, lineHeader);
             return (
@@ -48,11 +60,28 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                 >
                     <td>{lineHeader.lineNameFi}</td>
                     <td className={s.timestampRow}>
-                        {Moment(lineHeader.startDate).format('DD-MM-YYYY')}
+                        <InputContainer
+                            className={s.timeInput}
+                            disabled={isEditingDisabled}
+                            label=''
+                            type='date'
+                            value={lineHeader.startDate}
+                            onChange={this.onChangeLineHeaderStartDate}
+                            validationResult={{ isValid: true }}
+                        />
                     </td>
                     <td className={s.timestampRow}>
-                        {Moment(lineHeader.endDate).format('DD-MM-YYYY')}
+                        <InputContainer
+                            className={s.timeInput}
+                            disabled={isEditingDisabled}
+                            label=''
+                            type='date'
+                            value={lineHeader.endDate}
+                            onChange={this.onChangeLineHeaderEndDate}
+                            validationResult={{ isValid: true }}
+                        />
                     </td>
+
                     <td>
                         <Button
                             className={s.editLineHeaderButton}
@@ -67,23 +96,23 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
         });
     };
 
-    private toggleIsEditing = () => {
-        // TODO
-    };
-
     private saveLineHeaders = () => {
         this.props.saveLineHeaders([]);
     };
 
     render() {
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
+        const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
+
         const isSaveLineHeadersButtonDisabled = true;
         return (
             <div className={s.lineHeaderTableView}>
                 <SidebarHeader
+                    isEditing={!isEditingDisabled}
+                    onEditButtonClick={lineHeaderMassEditStore!.toggleIsEditingDisabled}
                     hideCloseButton={true}
                     hideBackButton={true}
                     isEditButtonVisible={true}
-                    onEditButtonClick={this.toggleIsEditing}
                 >
                     Linjan otsikot
                 </SidebarHeader>

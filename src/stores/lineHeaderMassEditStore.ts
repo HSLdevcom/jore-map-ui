@@ -2,9 +2,9 @@ import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import { ILineHeader } from '~/models';
 
-export class LineHeaderStore {
-    @observable private _lineHeader: ILineHeader | null;
-    @observable private _oldlineHeader: ILineHeader | null;
+export class LineHeaderMassEditStore {
+    @observable private _lineHeaders: ILineHeader[] | null;
+    @observable private _oldlineHeaders: ILineHeader[] | null;
     @observable private _isEditingDisabled: boolean;
 
     constructor() {
@@ -12,13 +12,13 @@ export class LineHeaderStore {
     }
 
     @computed
-    get lineHeader(): ILineHeader | null {
-        return this._lineHeader;
+    get lineHeaders(): ILineHeader[] | null {
+        return this._lineHeaders;
     }
 
     @computed
     get isDirty() {
-        return !_.isEqual(this._lineHeader, this._oldlineHeader);
+        return !_.isEqual(this._lineHeaders, this._oldlineHeaders);
     }
 
     @computed
@@ -26,25 +26,24 @@ export class LineHeaderStore {
         return this._isEditingDisabled;
     }
 
-    // TODO: rename as init
     @action
-    public setLineHeader = (lineHeader: ILineHeader) => {
-        this._lineHeader = lineHeader;
-        this.setOldLineHeader(this._lineHeader);
+    public init = (lineHeaders: ILineHeader[]) => {
+        this._lineHeaders = lineHeaders;
+        this.setOldLineHeaders(this._lineHeaders);
     };
 
     @action
-    public setOldLineHeader = (lineHeader: ILineHeader) => {
-        this._oldlineHeader = _.cloneDeep(lineHeader);
+    public setOldLineHeaders = (lineHeaders: ILineHeader[]) => {
+        this._oldlineHeaders = _.cloneDeep(lineHeaders);
     };
 
     @action
     public updateLineHeaderProperty = (
-        property: keyof ILineHeader,
+        property: keyof ILineHeader[],
         value: string | number | Date
     ) => {
-        this._lineHeader = {
-            ...this._lineHeader!,
+        this._lineHeaders = {
+            ...this._lineHeaders!,
             [property]: value
         };
     };
@@ -61,17 +60,17 @@ export class LineHeaderStore {
 
     @action
     public clear = () => {
-        this._lineHeader = null;
+        this._lineHeaders = null;
     };
 
     @action
     public resetChanges = () => {
-        if (this._oldlineHeader) {
-            this.setLineHeader(this._oldlineHeader);
+        if (this._oldlineHeaders) {
+            this.init(this._oldlineHeaders);
         }
     };
 }
 
-const observableLineHeaderStore = new LineHeaderStore();
+const observableLineHeaderStore = new LineHeaderMassEditStore();
 
 export default observableLineHeaderStore;
