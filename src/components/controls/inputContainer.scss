@@ -6,45 +6,11 @@
         display: flex;
         align-items: center;
     }
-    .datePickerContainer {
-        > div {
-            padding: 9px;
-            border: 1px solid #bebebe;
-            border-radius: 5px;
-            outline: none;
-            box-sizing: border-box;
-            cursor: pointer;
-            font-family: $hslFont;
-            color: $fontColorDefault;
-            background-color: white;
-            font-size: 11px;
-            width: 100%;
 
-            // Input field
-            > :first-child {
-                border: 0;
-                width: 100%;
-
-                input:focus {
-                    border: 0;
-                }
-
-                // Calendar icon
-                > button {
-                    padding: 0;
-                    align-self: flex-end;
-
-                    svg {
-                        color: $fontColorDefault;
-                        font-size: 21px;
-                    }
-                }
-            }
-
-            // Expanded calendar
-            > :nth-child(2) {
-                width: 300px;
-            }
-        }
+    .calendarIcon {
+        position: absolute;
+        right: 8px;
+        font-size: 22px;
+        pointer-events: none;
     }
 }

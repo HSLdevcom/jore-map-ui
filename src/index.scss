@@ -24,3 +24,11 @@ input:focus,
 select:focus {
     border: 1.5px solid $busBlue;
 }
+
+:global(.react-datepicker-wrapper) {
+    width: 100%;
+}
+
+:global(.react-datepicker-popper) {
+    z-index: 9999;
+}

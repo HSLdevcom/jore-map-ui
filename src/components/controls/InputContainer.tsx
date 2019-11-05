@@ -1,11 +1,17 @@
 import classnames from 'classnames';
+import fi from 'date-fns/locale/fi';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
-import ReactDatePicker from 'react-date-picker';
+import ReactDatePicker, { registerLocale } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import ReactDOM from 'react-dom';
 import { IoMdCalendar } from 'react-icons/io';
+import { dateToDateString } from '~/util/dateFormatHelpers';
 import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './inputContainer.scss';
+
+registerLocale('fi', fi);
 
 type inputType = 'text' | 'number' | 'date';
 
@@ -70,21 +76,65 @@ const renderEditableContent = (props: IInputProps) => {
 const renderDatePicker = ({
     value,
     onChange,
-    isClearButtonVisible
+    isClearButtonVisible // TODO: implement functionality for this
 }: {
     value?: Date;
     isClearButtonVisible?: boolean;
     onChange: (date: Date) => void;
 }) => {
+    const minDate = new Date();
+    minDate.setFullYear(1970);
+    minDate.setMonth(0);
+    minDate.setDate(1);
+    const maxDate = new Date();
+    maxDate.setFullYear(2070);
+    maxDate.setMonth(0);
+    maxDate.setDate(1);
     return (
-        <div className={classnames(s.staticHeight, s.datePickerContainer)}>
+        <div className={classnames(s.staticHeight)}>
             <ReactDatePicker
-                value={value}
+                customInput={renderDatePickerInput({ value, onChange, placeholder: 'Syötä' })}
+                selected={value}
                 onChange={onChange}
-                locale='fi-FI'
-                calendarIcon={<IoMdCalendar />}
-                clearIcon={isClearButtonVisible ? undefined : null}
+                locale={fi}
+                dateFormat={'dd.MM.yyyy'}
+                showMonthDropdown={true}
+                peekNextMonth={true}
+                showYearDropdown
+                scrollableYearDropdown={true}
+                yearDropdownItemNumber={100}
+                minDate={minDate}
+                maxDate={maxDate}
+                dateFormatCalendar={'dd.MM.yyyy'}
+                popperContainer={_renderCalendarContainer}
             />
+        </div>
+    );
+};
+
+const _renderCalendarContainer = ({ children }: { children: JSX.Element[] }): React.ReactNode => {
+    const el = document.getElementById('root');
+    return ReactDOM.createPortal(children, el!);
+};
+
+const renderDatePickerInput = ({
+    onChange,
+    placeholder,
+    value
+}: {
+    onChange: (value: any) => void;
+    placeholder: string;
+    value?: Date;
+}) => {
+    return (
+        <div className={classnames(s.staticHeight, s.inputField)}>
+            <input
+                placeholder={placeholder}
+                type={'text'}
+                value={value ? dateToDateString(value) : ''}
+                onChange={onChange}
+            />
+            <IoMdCalendar className={s.calendarIcon} />
         </div>
     );
 };
