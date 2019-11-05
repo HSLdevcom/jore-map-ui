@@ -87,9 +87,11 @@ const renderDatePicker = ({
     minDate.setMonth(0);
     minDate.setDate(1);
     const maxDate = new Date();
-    maxDate.setFullYear(2070);
+    maxDate.setFullYear(2051);
     maxDate.setMonth(0);
     maxDate.setDate(1);
+    // TODO: scroll to selected year missing from react-datepicker
+    // open issue for this: https://github.com/Hacker0x01/react-datepicker/pull/1700
     return (
         <div className={classnames(s.staticHeight)}>
             <ReactDatePicker
@@ -100,7 +102,8 @@ const renderDatePicker = ({
                 dateFormat={'dd.MM.yyyy'}
                 showMonthDropdown={true}
                 peekNextMonth={true}
-                showYearDropdown
+                showYearDropdown={true}
+                startDate={new Date()}
                 scrollableYearDropdown={true}
                 yearDropdownItemNumber={100}
                 minDate={minDate}

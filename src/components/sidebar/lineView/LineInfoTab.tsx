@@ -152,10 +152,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
         this.validateDates(startDate, endDate);
     };
 
-    private saveLineHeaders = (lineHeaders: ILineHeader[]) => {
-        // TODO
-    };
-
     render() {
         const line = this.props.lineStore!.line;
         if (!line) return null;
@@ -314,7 +310,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                         lineHeaders={this.state.lineHeaders}
                         currentLineHeader={this.state.currentLineHeader}
                         lineId={this.props.lineStore!.line!.id}
-                        saveLineHeaders={this.saveLineHeaders}
                     />
                 )}
             </div>
