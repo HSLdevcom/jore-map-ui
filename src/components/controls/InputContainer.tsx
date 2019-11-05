@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import fi from 'date-fns/locale/fi';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactDOM from 'react-dom';
@@ -126,13 +126,22 @@ const renderDatePickerInput = ({
     placeholder: string;
     value?: Date;
 }) => {
+    const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        // TODO: implement a better way of changing input value
+        const value = event.target.value;
+        if (Moment(value, 'DD.MM.YYYY', true).isValid()) {
+            onChange(value);
+        } else {
+        }
+    };
+
     return (
         <div className={classnames(s.staticHeight, s.inputField)}>
             <input
                 placeholder={placeholder}
                 type={'text'}
                 value={value ? dateToDateString(value) : ''}
-                onChange={onChange}
+                onChange={onInputChange}
             />
             <IoMdCalendar className={s.calendarIcon} />
         </div>
