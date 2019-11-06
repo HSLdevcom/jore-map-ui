@@ -133,6 +133,10 @@ export class LineHeaderMassEditStore {
     private validateDates = () => {
         let previousObj: IMassEditLineHeader;
         this._massEditLineHeaders!.forEach(currentObj => {
+            if (currentObj.lineHeader.startDate > currentObj.lineHeader.endDate) {
+                this.setValidationResult(currentObj.id, false, 'Voim.ast oltava ennen voim.viim');
+                return;
+            }
             if (previousObj) {
                 const areDatesContinuing = _isNextDate(
                     previousObj.lineHeader.endDate,
@@ -140,16 +144,10 @@ export class LineHeaderMassEditStore {
                 );
                 if (!areDatesContinuing) {
                     this.setValidationResult(currentObj.id, false, 'Päivämäärän oltava jatkuva');
-                } else if (currentObj.lineHeader.startDate > currentObj.lineHeader.endDate) {
-                    this.setValidationResult(
-                        currentObj.id,
-                        false,
-                        'Voim.ast oltava ennen voim.viim'
-                    );
-                } else {
-                    this.setValidationResult(currentObj.id, true);
+                    return;
                 }
             }
+            this.setValidationResult(currentObj.id, true);
             previousObj = currentObj;
         });
     };
