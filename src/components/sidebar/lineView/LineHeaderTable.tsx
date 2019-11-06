@@ -30,11 +30,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
     }
     componentDidUpdate() {
         const lineHeaders = this.props.lineHeaders;
-        if (
-            lineHeaders &&
-            lineHeaders.length > 0 &&
-            !this.props.lineHeaderMassEditStore!.massEditLineHeaders
-        ) {
+        if (lineHeaders && !this.props.lineHeaderMassEditStore!.massEditLineHeaders) {
             this.props.lineHeaderMassEditStore!.init(this.props.lineHeaders);
         }
     }
@@ -164,7 +160,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                     onEditButtonClick={lineHeaderMassEditStore!.toggleIsEditingDisabled}
                     hideCloseButton={true}
                     hideBackButton={true}
-                    isEditButtonVisible={true}
+                    isEditButtonVisible={massEditLineHeaders.length > 0}
                 >
                     Linjan otsikot
                 </SidebarHeader>
