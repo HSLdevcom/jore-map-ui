@@ -138,11 +138,15 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
     };
 
     private isFormValid = () => {
-        // const validationResults = this.state.validationResults.validationResult;
-        // for( const property in validationResults) {
-        //     const validationResult = validationResults[property];
-        //     if (validationResult.isValid)
-        // }
+        const validationResults = this.props.lineHeaderMassEditStore!.validationResults;
+        if (!validationResults) return true;
+
+        for (const property in validationResults) {
+            const validationResult = validationResults[property];
+            if (!validationResult.isValid) {
+                return false;
+            }
+        }
         return true;
     };
 
