@@ -1,7 +1,7 @@
 @import '../../shared/styles/common';
 @import '../../shared/styles/form';
 
-$cellPadding: 5px;
+$cellPadding: 5px 2px 5px 2px;
 
 .lineHeaderTableView {
     width: 100%;
@@ -48,11 +48,20 @@ $cellPadding: 5px;
             background-color: $lightblue;
         }
 
-        .editLineHeaderButton {
+        .lineHeaderButton {
             display: flex;
-            font-size: 1.8em;
-            padding: 6px;
+            font-size: $largeFontSize;
+            padding: 5px;
+            margin: 4px;
             margin-bottom: auto;
+        }
+
+        .removeLineHeaderButton {
+            color: $red;
+        }
+        .removeLineHeaderButton:hover {
+            color: white;
+            background-color: $red;
         }
     }
 

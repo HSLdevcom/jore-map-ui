@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
 import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
@@ -64,6 +65,11 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
         this.props.lineHeaderMassEditStore!.updateLineHeaderEndDate(id, value);
     };
 
+    private removeLineHeader = (lineHeaderName: string) => () => {
+        // TODO, functionality removing lineHeader
+        window.alert(`Haluatko varmasti poistaa linjan otsikon ${lineHeaderName}?`);
+    };
+
     private renderLineHeaderRows = () => {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const validationResults = lineHeaderMassEditStore!.validationResults;
@@ -108,7 +114,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                         </td>
                         <td className={s.lineHeaderTableButtonCell}>
                             <Button
-                                className={s.editLineHeaderButton}
+                                className={s.lineHeaderButton}
                                 hasReverseColor={true}
                                 onClick={this.redirectToEditLineHeaderView(
                                     lineHeaderMassEditStore!.getOldLineHeaderStartDate(
@@ -117,6 +123,15 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                                 )}
                             >
                                 <FiInfo />
+                            </Button>
+                        </td>
+                        <td className={s.lineHeaderTableButtonCell}>
+                            <Button
+                                className={classnames(s.lineHeaderButton, s.removeLineHeaderButton)}
+                                hasReverseColor={true}
+                                onClick={this.removeLineHeader(lineHeader.lineNameFi)}
+                            >
+                                <FaTrashAlt />
                             </Button>
                         </td>
                     </tr>
@@ -177,6 +192,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                                 <th className={classnames(s.inputLabel, s.columnHeader)}>
                                     VIIM. VOIM.
                                 </th>
+                                <th />
                                 <th />
                             </tr>
                             {this.renderLineHeaderRows()}
