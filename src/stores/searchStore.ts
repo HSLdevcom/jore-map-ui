@@ -90,7 +90,8 @@ export class SearchStore {
         if (this._selectedTransitTypes.includes(type)) {
             this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
-            this._selectedTransitTypes.push(type);
+            // Need to do concat (instead of push) to trigger observable reaction
+            this._selectedTransitTypes = this._selectedTransitTypes.concat(type);
         }
     };
 }
