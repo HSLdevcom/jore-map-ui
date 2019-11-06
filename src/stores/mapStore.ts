@@ -147,7 +147,7 @@ export class MapStore {
         if (this._visibleNodeLabels.includes(nodeLabel)) {
             this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
         } else {
-            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            // Need to do concat (instead of push) to trigger observable reaction
             this._visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
         }
     };
@@ -157,7 +157,7 @@ export class MapStore {
         if (this._mapFilters.includes(mapFilter)) {
             this._mapFilters = this._mapFilters.filter(mF => mF !== mapFilter);
         } else {
-            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            // Need to do concat (instead of push) to trigger observable reaction
             this._mapFilters = this._mapFilters.concat([mapFilter]);
         }
     };

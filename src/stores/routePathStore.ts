@@ -205,7 +205,7 @@ export class RoutePathStore {
         if (this._listFilters.includes(listFilter)) {
             this._listFilters = this._listFilters.filter(lF => lF !== listFilter);
         } else {
-            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            // Need to do concat (instead of push) to trigger observable reaction
             this._listFilters = this._listFilters.concat([listFilter]);
         }
     };

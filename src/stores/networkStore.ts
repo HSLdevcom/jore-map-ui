@@ -94,7 +94,7 @@ export class NetworkStore {
 
     @action
     public showMapLayer = (mapLayer: MapLayer) => {
-        // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+        // Need to do concat (instead of push) to trigger observable reaction
         this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer]);
     };
 
@@ -129,7 +129,7 @@ export class NetworkStore {
         if (this._selectedTransitTypes.includes(type)) {
             this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
-            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            // Need to do concat (instead of push) to trigger observable reaction
             this._selectedTransitTypes = this._selectedTransitTypes.concat([type]);
         }
     };
