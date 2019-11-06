@@ -16,6 +16,7 @@
         height: 30px;
         padding: 6px;
         font-size: 0.85rem;
+        width: 100%;
     }
 
     .formSection:last-of-type {
@@ -27,11 +28,14 @@
         cursor: pointer;
         transition: 0.5s;
         align-self: flex-end;
-        margin-right: 10px;
         padding: 6px;
     }
 
     .editStopAreaButton:hover {
         opacity: 1;
+    }
+
+    .disabled {
+        color: white;
     }
 }

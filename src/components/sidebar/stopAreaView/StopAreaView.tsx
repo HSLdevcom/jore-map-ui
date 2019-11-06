@@ -11,7 +11,6 @@ import TransitType from '~/enums/transitType';
 import StopAreaFactory from '~/factories/stopAreaFactory';
 import { IStopArea } from '~/models';
 import stopAreaValidationModel from '~/models/validationModels/stopAreaValidationModel';
-import navigator from '~/routing/navigator';
 import StopAreaService, { ITerminalAreaItem } from '~/services/stopAreaService';
 import StopService, { IStopItem } from '~/services/stopService';
 import { AlertStore } from '~/stores/alertStore';
@@ -181,7 +180,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
         this.props.stopAreaStore!.setIsEditingDisabled(true);
-        navigator.goBack();
+        this.setState({ isLoading: false });
     };
 
     private onChangeIsEditingDisabled = () => {
@@ -270,6 +269,10 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         const selectedTransitTypes = stopArea!.transitType ? [stopArea!.transitType!] : [];
         const stopsByStopArea = this.getStopsByStopAreaId(stopArea.id);
 
+        let transitTypeError;
+        if (!transitType) {
+            transitTypeError = 'Verkon tyyppi täytyy valita.';
+        }
         return (
             <div className={s.stopAreaView}>
                 <div className={s.content}>
@@ -289,6 +292,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                     selectedTransitTypes={selectedTransitTypes}
                                     toggleSelectedTransitType={this.selectTransitType}
                                     disabled={isEditingDisabled}
+                                    errorMessage={transitTypeError}
                                 />
                             </div>
                         </div>
@@ -346,6 +350,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                     </div>
                     <div className={s.flexRow}>
                         <div className={s.stopTableView}>
+                            <div className={s.sectionHeader}>Pysäkkialueen pysäkit</div>
                             {stopsByStopArea.length > 0 ? (
                                 <table className={s.stopHeaderTable}>
                                     <tbody>
@@ -353,7 +358,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                             <th
                                                 className={classnames(s.inputLabel, s.columnHeader)}
                                             >
-                                                PYSÄKKIALUEEN PYSÄKIT
+                                                SOLMUN TUNNUS
                                             </th>
                                             <th
                                                 className={classnames(s.inputLabel, s.columnHeader)}

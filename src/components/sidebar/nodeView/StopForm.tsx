@@ -210,9 +210,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     };
 
     private redirectToStopArea = (areaId: string | undefined) => {
-        if (!areaId) return;
         const routePathViewLink = RouteBuilder.to(SubSites.stopArea)
-            .toTarget(':id', areaId)
+            .toTarget(':id', areaId!)
             .toLink();
         navigator.goTo(routePathViewLink);
     };
@@ -223,6 +222,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const stop = node.stop!;
         const onChange = this.updateStopProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
+        const isStopAreaSelected = stop.areaId ? false : true;
         return (
             <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader hideCloseButton={true} hideBackButton={true}>
@@ -297,14 +297,20 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             validationResult={invalidPropertiesMap['areaId']}
                         />
                         <Button
-                            className={s.editStopAreaButton}
+                            className={classnames(
+                                s.editStopAreaButton,
+                                isStopAreaSelected ? s.disabled : ''
+                            )}
                             hasReverseColor={true}
                             onClick={() => {
                                 this.redirectToStopArea(stop.areaId);
                             }}
+                            disabled={isStopAreaSelected}
                         >
                             <FiInfo />
                         </Button>
+                    </div>
+                    <div className={s.flexRow}>
                         <Button
                             onClick={() => this.redirectToNewStopArea()}
                             type={ButtonType.SQUARE}

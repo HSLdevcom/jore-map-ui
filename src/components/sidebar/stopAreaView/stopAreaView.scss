@@ -41,18 +41,15 @@
             .columnHeader:first-of-type {
                 padding-left: 0px;
             }
-
-            .stopHeaderRowHighlight {
-                background-color: $lightblue;
-            }
-        }
-        .editStopHeaderButton {
-            font-size: 1.8em;
-            padding: 3px;
         }
 
         .stopTableRow {
             font-size: 0.9rem;
         }
+    }
+    .sectionHeader {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        font-weight: bold;
     }
 }
