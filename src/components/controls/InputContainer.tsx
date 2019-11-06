@@ -6,7 +6,7 @@ import React, { ChangeEvent } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactDOM from 'react-dom';
-import { IoMdCalendar } from 'react-icons/io';
+import { IoMdCalendar, IoMdClose } from 'react-icons/io';
 import { dateToDateString } from '~/util/dateFormatHelpers';
 import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './inputContainer.scss';
@@ -76,7 +76,7 @@ const renderEditableContent = (props: IInputProps) => {
 const renderDatePicker = ({
     value,
     onChange,
-    isClearButtonVisible // TODO: implement functionality for this
+    isClearButtonVisible
 }: {
     value?: Date;
     isClearButtonVisible?: boolean;
@@ -95,7 +95,12 @@ const renderDatePicker = ({
     return (
         <div className={classnames(s.staticHeight)}>
             <ReactDatePicker
-                customInput={renderDatePickerInput({ value, onChange, placeholder: 'Syötä' })}
+                customInput={renderDatePickerInput({
+                    value,
+                    onChange,
+                    isClearButtonVisible,
+                    placeholder: 'Syötä päivä'
+                })}
                 selected={value}
                 onChange={onChange}
                 locale={fi}
@@ -123,11 +128,13 @@ const _renderCalendarContainer = ({ children }: { children: JSX.Element[] }): Re
 const renderDatePickerInput = ({
     onChange,
     placeholder,
-    value
+    value,
+    isClearButtonVisible
 }: {
     onChange: (value: any) => void;
     placeholder: string;
     value?: Date;
+    isClearButtonVisible?: boolean;
 }) => {
     const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         // TODO: implement a better way of changing input value
@@ -136,6 +143,11 @@ const renderDatePickerInput = ({
             onChange(value);
         } else {
         }
+    };
+
+    const clearInputValue = (event: React.MouseEvent) => {
+        onChange('');
+        event.preventDefault();
     };
 
     return (
@@ -147,6 +159,9 @@ const renderDatePickerInput = ({
                 onChange={onInputChange}
             />
             <IoMdCalendar className={s.calendarIcon} />
+            {isClearButtonVisible && (
+                <IoMdClose onClick={clearInputValue} className={s.clearIcon} />
+            )}
         </div>
     );
 };
