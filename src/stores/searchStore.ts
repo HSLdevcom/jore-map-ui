@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 
@@ -91,9 +90,8 @@ export class SearchStore {
         if (this._selectedTransitTypes.includes(type)) {
             this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
-            const selectedTransitTypes = _.cloneDeep(this._selectedTransitTypes);
-            selectedTransitTypes.push(type);
-            this._selectedTransitTypes = selectedTransitTypes;
+            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            this._selectedTransitTypes = this._selectedTransitTypes.concat(type);
         }
     };
 }
