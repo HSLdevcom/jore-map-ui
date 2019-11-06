@@ -14,6 +14,5 @@ export default interface IExternalNode {
     pysakkiBySoltunnus?: IExternalStop;
     transittypes: string;
     geojson?: string;
-    geojsonManual: string;
     geojsonProjection: string;
 }

@@ -170,12 +170,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
             this.props.onClick();
         }
     };
-    private onCoordinatesMarkerChange = (e: L.DragEndEvent) => {
-        this.props.onMoveMarker!('coordinates', e.target.getLatLng());
-        this.onMoveMarker('coordinates');
-        this.props.onMoveMarker!('coordinatesManual', e.target.getLatLng());
-        this.onMoveMarker('coordinatesManual');
-    };
 
     render() {
         const nodeBaseClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
@@ -206,7 +200,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     draggable={this.props.isDraggable}
                     icon={icon}
                     position={this.props.node.coordinates}
-                    onDragEnd={this.onCoordinatesMarkerChange}
+                    onDragEnd={this.props.onMoveMarker && this.onMoveMarker('coordinates')}
                     interactive={!this.props.isClickDisabled}
                 >
                     {this.renderStopRadiusCircle()}

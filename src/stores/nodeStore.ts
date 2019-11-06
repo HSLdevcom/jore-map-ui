@@ -139,11 +139,7 @@ export class NodeStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this._links = newLinks;
-        const geometryVariables: NodeLocationType[] = [
-            'coordinates',
-            'coordinatesManual',
-            'coordinatesProjection'
-        ];
+        const geometryVariables: NodeLocationType[] = ['coordinates', 'coordinatesProjection'];
         geometryVariables.forEach(
             coordinateName => (this._node![coordinateName] = newNode[coordinateName])
         );
@@ -161,7 +157,6 @@ export class NodeStore {
     public mirrorCoordinates = (node: INode) => {
         if (node.type !== NodeType.STOP) {
             node.coordinatesProjection = node.coordinates;
-            node.coordinatesManual = node.coordinates;
         }
     };
 
@@ -244,7 +239,6 @@ export class NodeStore {
         this._geometryUndoStore.undo((previousUndoState: UndoState) => {
             this._links! = previousUndoState.links;
             this._node!.coordinates = previousUndoState.node.coordinates;
-            this._node!.coordinatesManual = previousUndoState.node.coordinatesManual;
             this._node!.coordinatesProjection = previousUndoState.node.coordinatesProjection;
         });
     };
@@ -254,7 +248,6 @@ export class NodeStore {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._links! = nextUndoState.links;
             this._node!.coordinates = nextUndoState.node.coordinates;
-            this._node!.coordinatesManual = nextUndoState.node.coordinatesManual;
             this._node!.coordinatesProjection = nextUndoState.node.coordinatesProjection;
         });
     };
