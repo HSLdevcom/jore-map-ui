@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import React, { Component } from 'react';
+import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { IStopArea } from '~/models';
 import StopService, { IStopItem } from '~/services/stopService';
 import * as s from './stopTable.scss';
@@ -61,7 +62,14 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
 
     render() {
         const stopArea = this.props.stopArea;
-        if (!stopArea || this.state.isLoading) return null;
+        if (this.state.isLoading) {
+            return (
+                <div className={classnames(s.stopTableView, s.loaderContainer)}>
+                    <Loader size={LoaderSize.SMALL} />
+                </div>
+            );
+        }
+        if (!stopArea) return null;
 
         const stopsByStopArea = this.getStopsByStopAreaId(stopArea.id);
         return (

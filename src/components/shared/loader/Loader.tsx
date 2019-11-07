@@ -2,6 +2,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import * as s from './loader.scss';
 
+// TODO: refactor as type instead
 export enum LoaderSize {
     TINY = 'tiny',
     SMALL = 'small',
