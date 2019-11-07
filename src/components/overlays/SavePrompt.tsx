@@ -13,17 +13,17 @@ interface ISavePromptProps {
     type: string;
 }
 
-const callRenderByProperty = (property: string, oldLink: Object, newLink: Object) => {
+const callRenderByProperty = (property: string, oldData: Object, newData: Object) => {
     switch (property) {
         case 'geometry':
             return renderChangeRow('Vanha geometria', 'Uusi geometria');
         case 'municipalityCode':
             return renderChangeRow(
-                codeListStore!.getCodeListLabel('Kunta (KELA)', oldLink[property]),
-                codeListStore!.getCodeListLabel('Kunta (KELA)', newLink[property])
+                codeListStore!.getCodeListLabel('Kunta (KELA)', oldData[property]),
+                codeListStore!.getCodeListLabel('Kunta (KELA)', newData[property])
             );
         default:
-            return renderChangeRow(oldLink[property], newLink[property]);
+            return renderChangeRow(oldData[property], newData[property]);
     }
 };
 
@@ -45,25 +45,25 @@ const renderChangeRow = (oldValue: string, newValue: string) => {
 
 // TODO: move to shared folder. This isn't really an overlay
 const SavePrompt = observer((props: ISavePromptProps) => {
-    const newLink = _.cloneDeep(props.newData);
-    const oldLink = _.cloneDeep(props.oldData);
-    for (const property in newLink) {
-        const linkAttribute = newLink[property];
-        const oldLinkAttribute = oldLink[property];
+    const newData = _.cloneDeep(props.newData);
+    const oldData = _.cloneDeep(props.oldData);
+    for (const property in newData) {
+        const linkAttribute = newData[property];
+        const oldLinkAttribute = oldData[property];
         if (_.isEqual(linkAttribute, oldLinkAttribute)) {
-            delete oldLink[property];
-            delete oldLink[property];
+            delete oldData[property];
+            delete oldData[property];
         }
     }
     return (
         <div className={s.savePromptView}>
             <div className={s.topic}>Tallennettavat muutokset</div>
-            {Object.keys(oldLink).map((property: string, index: number) => {
+            {Object.keys(oldData).map((property: string, index: number) => {
                 const propertyLabel = getLabel(props.type, property);
                 return (
                     <div key={index} className={classnames(s.formItem, s.savePromptRow)}>
                         <div className={s.inputLabel}>{propertyLabel}</div>
-                        {callRenderByProperty(property, oldLink, newLink)}
+                        {callRenderByProperty(property, oldData, newData)}
                     </div>
                 );
             })}
