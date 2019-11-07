@@ -282,7 +282,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                         shouldShowClosePromptMessage={this.props.stopAreaStore!.isDirty!}
                         onEditButtonClick={this.props.stopAreaStore!.toggleIsEditingDisabled}
                     >
-                        Pysäkkialue
+                        {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Pysäkkialue'}
                     </SidebarHeader>
                     <div className={s.formSection}>
                         <div className={s.flexRow}>
@@ -348,42 +348,49 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                             </div>
                         )}
                     </div>
-                    <div className={s.flexRow}>
-                        <div className={s.stopTableView}>
-                            <div className={s.sectionHeader}>Pysäkkialueen pysäkit</div>
-                            {stopsByStopArea.length > 0 ? (
-                                <table className={s.stopHeaderTable}>
-                                    <tbody>
-                                        <tr>
-                                            <th
-                                                className={classnames(s.inputLabel, s.columnHeader)}
-                                            >
-                                                SOLMUN TUNNUS
-                                            </th>
-                                            <th
-                                                className={classnames(s.inputLabel, s.columnHeader)}
-                                            >
-                                                NIMI SUOMEKSI
-                                            </th>
-                                            <th
-                                                className={classnames(s.inputLabel, s.columnHeader)}
-                                            >
-                                                NIMI RUOTSIKSI
-                                            </th>
-                                            <th className={s.columnHeader} />
-                                        </tr>
-                                        {this.renderStopsByStopArea(stopsByStopArea)}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <div>
-                                    {this.props.isNewStopArea
-                                        ? ''
-                                        : 'Pysäkkialueella ei pysäkkejä.'}
-                                </div>
-                            )}
+                    {!this.props.isNewStopArea && (
+                        <div className={s.flexRow}>
+                            <div className={s.stopTableView}>
+                                <div className={s.sectionHeader}>Pysäkkialueen pysäkit</div>
+                                {stopsByStopArea.length > 0 ? (
+                                    <table className={s.stopHeaderTable}>
+                                        <tbody>
+                                            <tr>
+                                                <th
+                                                    className={classnames(
+                                                        s.inputLabel,
+                                                        s.columnHeader
+                                                    )}
+                                                >
+                                                    SOLMUN TUNNUS
+                                                </th>
+                                                <th
+                                                    className={classnames(
+                                                        s.inputLabel,
+                                                        s.columnHeader
+                                                    )}
+                                                >
+                                                    NIMI SUOMEKSI
+                                                </th>
+                                                <th
+                                                    className={classnames(
+                                                        s.inputLabel,
+                                                        s.columnHeader
+                                                    )}
+                                                >
+                                                    NIMI RUOTSIKSI
+                                                </th>
+                                                <th className={s.columnHeader} />
+                                            </tr>
+                                            {this.renderStopsByStopArea(stopsByStopArea)}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div>Pysäkkialueella ei pysäkkejä.</div>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
                 <Button
                     type={ButtonType.SAVE}
