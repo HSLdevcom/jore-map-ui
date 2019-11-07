@@ -14,7 +14,7 @@ import LineView from './lineView/LineView';
 import LineHeaderView from './lineView/lineHeaderView/LineHeaderView';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
-import StopAreaView from './nodeView/StopAreaView';
+import StopAreaView from './nodeView/stopAreaView/StopAreaView';
 import RouteListView from './routeListView/RouteListView';
 import RoutePathView from './routePathView/RoutePathView';
 import RouteView from './routeView/RouteView';

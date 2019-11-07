@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { FiInfo } from 'react-icons/fi';
 import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
@@ -35,7 +36,7 @@ interface IStopFormState {
     isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
     invalidPropertiesMap: object;
     isEditingDisabled: boolean;
-    stopAreas: IDropdownItem[];
+    stopAreas: IStopAreaItem[];
     stopSections: IDropdownItem[];
 }
 
@@ -73,9 +74,10 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         }
         const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
+
         if (this.mounted) {
             this.setState({
-                stopAreas: this.createStopAreaDropdownItems(stopAreas),
+                stopAreas,
                 stopSections: this.createStopSectionDropdownItems(stopSections)
             });
         }
@@ -129,6 +131,18 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
             return;
         }
         await this.props.nodeStore!.fetchAddressData();
+    };
+
+    private onStopAreaChange = (stopAreaId: string) => {
+        const stopArea = this.state.stopAreas.find(obj => {
+            return obj.pysalueid === stopAreaId;
+        });
+
+        if (stopArea) {
+            this.updateStopProperty('nameFi')(stopArea.nimi);
+            this.updateStopProperty('nameSw')(stopArea.nimir);
+        }
+        this.updateStopProperty('areaId')(stopAreaId);
     };
 
     private validateStopProperty = (property: string) => () => {
@@ -195,12 +209,20 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         navigator.goTo(url);
     };
 
+    private redirectToStopArea = (areaId: string | undefined) => {
+        const routePathViewLink = RouteBuilder.to(SubSites.stopArea)
+            .toTarget(':id', areaId!)
+            .toLink();
+        navigator.goTo(routePathViewLink);
+    };
+
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const node = this.props.node;
         const stop = node.stop!;
         const onChange = this.updateStopProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
+        const isStopAreaSelected = stop.areaId ? false : true;
         return (
             <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader hideCloseButton={true} hideBackButton={true}>
@@ -248,18 +270,54 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <div className={s.flexRow}>
                         <InputContainer
                             label='NIMI'
-                            disabled={isEditingDisabled}
+                            disabled={true}
                             value={stop.nameFi}
                             onChange={onChange('nameFi')}
                             validationResult={invalidPropertiesMap['nameFi']}
                         />
                         <InputContainer
                             label='NIMI RUOTSIKSI'
-                            disabled={isEditingDisabled}
+                            disabled={true}
                             value={stop.nameSw}
                             onChange={onChange('nameSw')}
                             validationResult={invalidPropertiesMap['nameSw']}
                         />
+                    </div>
+                    <div className={s.flexRow}>
+                        <Dropdown
+                            onChange={this.onStopAreaChange}
+                            items={this.createStopAreaDropdownItems(this.state.stopAreas)}
+                            selected={stop.areaId}
+                            emptyItem={{
+                                value: '',
+                                label: ''
+                            }}
+                            disabled={isEditingDisabled}
+                            label='PYSÄKKIALUE'
+                            validationResult={invalidPropertiesMap['areaId']}
+                        />
+                        <Button
+                            className={classnames(
+                                s.editStopAreaButton,
+                                isStopAreaSelected ? s.disabled : ''
+                            )}
+                            hasReverseColor={true}
+                            onClick={() => {
+                                this.redirectToStopArea(stop.areaId);
+                            }}
+                            disabled={isStopAreaSelected}
+                        >
+                            <FiInfo />
+                        </Button>
+                    </div>
+                    <div className={s.flexRow}>
+                        <Button
+                            onClick={() => this.redirectToNewStopArea()}
+                            type={ButtonType.SQUARE}
+                            className={s.createNewStopAreaButton}
+                        >
+                            Luo uusi pysäkkialue
+                        </Button>
                     </div>
                     <div className={s.flexRow}>
                         <InputContainer
@@ -359,28 +417,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             validationResult={invalidPropertiesMap['hastusId']}
                             onChange={onChange('hastusId')}
                         />
-                    </div>
-                    <div className={s.flexRow}>
-                        <Dropdown
-                            onChange={onChange('areaId')}
-                            items={this.state.stopAreas}
-                            selected={stop.areaId}
-                            emptyItem={{
-                                value: '',
-                                label: ''
-                            }}
-                            disabled={isEditingDisabled}
-                            label='PYSÄKKIALUE'
-                            validationResult={invalidPropertiesMap['areaId']}
-                        />
-                        <Button
-                            onClick={() => this.redirectToNewStopArea()}
-                            disabled={isEditingDisabled}
-                            type={ButtonType.SQUARE}
-                            className={s.createNewStopAreaButton}
-                        >
-                            Luo uusi pysäkkialue
-                        </Button>
                     </div>
                     <div className={s.flexRow}>
                         <InputContainer

@@ -13,6 +13,13 @@ interface IReservedShortIdItem {
     shortId: string;
 }
 
+interface IStopItem {
+    pysalueid: string;
+    soltunnus: string;
+    pysnimi: string;
+    pysnimir: string;
+}
+
 const SHORT_ID_LENGTH = 4;
 
 class StopService {
@@ -48,6 +55,14 @@ class StopService {
             .value();
         const availableShortIds: string[] = _getAvailableShortIds(reservedShortIds, currentNodeId);
         return availableShortIds;
+    };
+
+    public static fetchAllStops = async (): Promise<IStopItem[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllStops()
+        });
+
+        return queryResult.data.node.nodes;
     };
 }
 
@@ -88,4 +103,4 @@ const _generateAllShortIdVariations = (numberCount: number) => {
 
 export default StopService;
 
-export { IStopSectionItem };
+export { IStopSectionItem, IStopItem };

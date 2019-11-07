@@ -44,6 +44,11 @@ $inputFieldHeight: 42px;
     font-size: $mediumFontSize;
 }
 
+.sectionHeader {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
 .form > .formSection {
     border-bottom: 1.5px solid $lightGrey;
     padding: 20px 0;
