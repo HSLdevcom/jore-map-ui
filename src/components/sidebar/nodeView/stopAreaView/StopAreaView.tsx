@@ -17,10 +17,10 @@ import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { StopAreaStore } from '~/stores/stopAreaStore';
-import { Button, Dropdown, TransitToggleButtonBar } from '../../controls';
-import InputContainer from '../../controls/InputContainer';
-import TextContainer from '../../controls/TextContainer';
-import SidebarHeader from '../SidebarHeader';
+import { Button, Dropdown, TransitToggleButtonBar } from '../../../controls';
+import InputContainer from '../../../controls/InputContainer';
+import TextContainer from '../../../controls/TextContainer';
+import SidebarHeader from '../../SidebarHeader';
 import * as s from './stopAreaView.scss';
 
 interface IStopAreaViewProps {

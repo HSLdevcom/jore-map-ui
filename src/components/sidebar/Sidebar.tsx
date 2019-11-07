@@ -14,12 +14,12 @@ import LineView from './lineView/LineView';
 import LineHeaderView from './lineView/lineHeaderView/LineHeaderView';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
+import StopAreaView from './nodeView/stopAreaView/StopAreaView';
 import RouteListView from './routeListView/RouteListView';
 import RoutePathView from './routePathView/RoutePathView';
 import RouteView from './routeView/RouteView';
 import * as s from './sidebar.scss';
 import SplitLinkView from './splitLinkView/SplitLinkView';
-import StopAreaView from './stopAreaView/StopAreaView';
 
 interface ISidebarProps extends RouteComponentProps {
     routeListStore?: RouteListStore;
