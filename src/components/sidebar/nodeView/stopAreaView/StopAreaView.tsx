@@ -259,75 +259,77 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                     >
                         {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Pysäkkialue'}
                     </SidebarHeader>
-                    <div className={s.formSection}>
-                        <div className={s.flexRow}>
-                            <div className={s.formItem}>
-                                <div className={s.inputLabel}>VERKKO</div>
-                                <TransitToggleButtonBar
-                                    selectedTransitTypes={selectedTransitTypes}
-                                    toggleSelectedTransitType={this.selectTransitType}
+                    <div className={s.form}>
+                        <div className={s.formSection}>
+                            <div className={s.flexRow}>
+                                <div className={s.formItem}>
+                                    <div className={s.inputLabel}>VERKKO</div>
+                                    <TransitToggleButtonBar
+                                        selectedTransitTypes={selectedTransitTypes}
+                                        toggleSelectedTransitType={this.selectTransitType}
+                                        disabled={isEditingDisabled}
+                                        errorMessage={transitTypeError}
+                                    />
+                                </div>
+                            </div>
+                            <div className={s.flexRow}>
+                                <InputContainer
+                                    label='NIMI'
                                     disabled={isEditingDisabled}
-                                    errorMessage={transitTypeError}
+                                    value={stopArea.nameFi}
+                                    validationResult={invalidPropertiesMap['nameFi']}
+                                    onChange={this.onChangeStopAreaProperty('nameFi')}
+                                />
+                                <InputContainer
+                                    label='NIMI RUOTSIKSI'
+                                    disabled={isEditingDisabled}
+                                    value={stopArea.nameSw}
+                                    validationResult={invalidPropertiesMap['nameSw']}
+                                    onChange={this.onChangeStopAreaProperty('nameSw')}
                                 />
                             </div>
-                        </div>
-                        <div className={s.flexRow}>
-                            <InputContainer
-                                label='NIMI'
-                                disabled={isEditingDisabled}
-                                value={stopArea.nameFi}
-                                validationResult={invalidPropertiesMap['nameFi']}
-                                onChange={this.onChangeStopAreaProperty('nameFi')}
-                            />
-                            <InputContainer
-                                label='NIMI RUOTSIKSI'
-                                disabled={isEditingDisabled}
-                                value={stopArea.nameSw}
-                                validationResult={invalidPropertiesMap['nameSw']}
-                                onChange={this.onChangeStopAreaProperty('nameSw')}
-                            />
-                        </div>
 
-                        <div className={s.flexRow}>
-                            <Dropdown
-                                onChange={this.onChangeStopAreaProperty('stopAreaGroupId')}
-                                validationResult={invalidPropertiesMap['stopAreaGroupId']}
-                                disabled={isEditingDisabled || !this.props.isNewStopArea}
-                                items={this.props.codeListStore!.getDropdownItemList(
-                                    'Pysäkkialueid'
-                                )}
-                                selected={stopArea.stopAreaGroupId}
-                                label='PYSÄKKIALUE RYHMÄ'
-                            />
-                            <Dropdown
-                                onChange={this.onChangeStopAreaProperty('terminalAreaId')}
-                                items={this.state.terminalAreas}
-                                selected={stopArea.terminalAreaId}
-                                emptyItem={{
-                                    value: '',
-                                    label: ''
-                                }}
-                                disabled={isEditingDisabled}
-                                label='TERMINAALIALUE'
-                                validationResult={invalidPropertiesMap['terminalAreaId']}
-                            />
+                            <div className={s.flexRow}>
+                                <Dropdown
+                                    onChange={this.onChangeStopAreaProperty('stopAreaGroupId')}
+                                    validationResult={invalidPropertiesMap['stopAreaGroupId']}
+                                    disabled={isEditingDisabled || !this.props.isNewStopArea}
+                                    items={this.props.codeListStore!.getDropdownItemList(
+                                        'Pysäkkialueid'
+                                    )}
+                                    selected={stopArea.stopAreaGroupId}
+                                    label='PYSÄKKIALUE RYHMÄ'
+                                />
+                                <Dropdown
+                                    onChange={this.onChangeStopAreaProperty('terminalAreaId')}
+                                    items={this.state.terminalAreas}
+                                    selected={stopArea.terminalAreaId}
+                                    emptyItem={{
+                                        value: '',
+                                        label: ''
+                                    }}
+                                    disabled={isEditingDisabled}
+                                    label='TERMINAALIALUE'
+                                    validationResult={invalidPropertiesMap['terminalAreaId']}
+                                />
+                            </div>
+                            {!this.props.isNewStopArea && (
+                                <div className={s.flexRow}>
+                                    <TextContainer label='MUOKANNUT' value={stopArea.modifiedBy} />
+                                    <TextContainer
+                                        label='MUOKATTU PVM'
+                                        isTimeIncluded={true}
+                                        value={stopArea.modifiedOn}
+                                    />
+                                </div>
+                            )}
                         </div>
                         {!this.props.isNewStopArea && (
-                            <div className={s.flexRow}>
-                                <TextContainer label='MUOKANNUT' value={stopArea.modifiedBy} />
-                                <TextContainer
-                                    label='MUOKATTU PVM'
-                                    isTimeIncluded={true}
-                                    value={stopArea.modifiedOn}
-                                />
+                            <div className={s.formSection}>
+                                <StopTable stopArea={stopArea} />
                             </div>
                         )}
                     </div>
-                    {!this.props.isNewStopArea && (
-                        <div className={s.flexRow}>
-                            <StopTable stopArea={stopArea} />
-                        </div>
-                    )}
                 </div>
                 <Button
                     type={ButtonType.SAVE}

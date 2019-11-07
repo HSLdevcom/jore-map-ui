@@ -67,27 +67,29 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
         return (
             <div className={s.stopTableView}>
                 <div className={s.sectionHeader}>Pysäkkialueen pysäkit</div>
-                {stopsByStopArea.length > 0 ? (
-                    <table className={s.stopHeaderTable}>
-                        <tbody>
-                            <tr>
-                                <th className={classnames(s.inputLabel, s.columnHeader)}>
-                                    SOLMUN TUNNUS
-                                </th>
-                                <th className={classnames(s.inputLabel, s.columnHeader)}>
-                                    NIMI SUOMEKSI
-                                </th>
-                                <th className={classnames(s.inputLabel, s.columnHeader)}>
-                                    NIMI RUOTSIKSI
-                                </th>
-                                <th className={s.columnHeader} />
-                            </tr>
-                            {this.renderStopsByStopArea(stopsByStopArea)}
-                        </tbody>
-                    </table>
-                ) : (
-                    <div>Pysäkkialueella ei pysäkkejä.</div>
-                )}
+                <div className={s.flexRow}>
+                    {stopsByStopArea.length > 0 ? (
+                        <table className={s.stopHeaderTable}>
+                            <tbody>
+                                <tr>
+                                    <th className={classnames(s.inputLabel, s.columnHeader)}>
+                                        SOLMUN TUNNUS
+                                    </th>
+                                    <th className={classnames(s.inputLabel, s.columnHeader)}>
+                                        NIMI SUOMEKSI
+                                    </th>
+                                    <th className={classnames(s.inputLabel, s.columnHeader)}>
+                                        NIMI RUOTSIKSI
+                                    </th>
+                                    <th className={s.columnHeader} />
+                                </tr>
+                                {this.renderStopsByStopArea(stopsByStopArea)}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <div>Pysäkkialueella ei pysäkkejä.</div>
+                    )}
+                </div>
             </div>
         );
     }

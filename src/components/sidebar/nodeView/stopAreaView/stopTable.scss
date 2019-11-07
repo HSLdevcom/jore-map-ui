@@ -1,5 +1,6 @@
 @import '../../../shared/styles/common';
 @import '../../../shared/styles/form';
+@import '../../../shared/styles/flexbox';
 
 .stopTableView {
     width: 100%;
@@ -28,11 +29,5 @@
 
     .stopTableRow {
         font-size: 0.9rem;
-    }
-
-    .sectionHeader {
-        margin-top: 15px;
-        margin-bottom: 15px;
-        font-weight: bold;
     }
 }
