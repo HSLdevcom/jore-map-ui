@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
-import SavePrompt from '~/components/overlays/SavePrompt';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -185,12 +185,14 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         const confirmStore = this.props.confirmStore;
         const currentLink = this.props.linkStore!.link;
         const oldLink = this.props.linkStore!.oldLink;
-        confirmStore!.openConfirm(
-            <SavePrompt newData={currentLink} oldData={oldLink} model={'link'} />,
-            () => {
-                this.save();
-            }
-        );
+        const saveModel: ISaveModel = {
+            newData: currentLink,
+            oldData: oldLink,
+            model: 'link'
+        };
+        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
+            this.save();
+        });
     };
 
     private onChangeIsEditingDisabled = () => {

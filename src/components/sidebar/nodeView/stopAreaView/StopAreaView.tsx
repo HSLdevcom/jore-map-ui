@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
 import { IDropdownItem } from '~/components/controls/Dropdown';
-import SavePrompt from '~/components/overlays/SavePrompt';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -186,12 +186,14 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         const confirmStore = this.props.confirmStore;
         const currentStopArea = this.props.stopAreaStore!.stopArea;
         const oldRoute = this.props.stopAreaStore!.oldStopArea;
-        confirmStore!.openConfirm(
-            <SavePrompt newData={currentStopArea} oldData={oldRoute} model={'stopArea'} />,
-            () => {
-                this.save();
-            }
-        );
+        const saveModel: ISaveModel = {
+            newData: currentStopArea,
+            oldData: oldRoute,
+            model: 'stopArea'
+        };
+        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
+            this.save();
+        });
     };
 
     private onChangeIsEditingDisabled = () => {

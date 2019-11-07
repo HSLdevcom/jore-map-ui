@@ -4,6 +4,9 @@
 
 .savePromptView {
     width: 500px;
+    max-height: 600px; /* TODO: calc height - 75% ? */
+    overflow-x: hidden;
+    overflow-y: auto;
 
     .topic {
         color: #898989;

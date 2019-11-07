@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
 import Button from '~/components/controls/Button';
-import SavePrompt from '~/components/overlays/SavePrompt';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
@@ -151,12 +151,14 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
         const confirmStore = this.props.confirmStore;
         const currentRoute = this.props.routeStore!.route;
         const oldRoute = this.props.routeStore!.oldRoute;
-        confirmStore!.openConfirm(
-            <SavePrompt newData={currentRoute} oldData={oldRoute} model={'route'} />,
-            () => {
-                this.save();
-            }
-        );
+        const saveModel: ISaveModel = {
+            newData: currentRoute,
+            oldData: oldRoute,
+            model: 'route'
+        };
+        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
+            this.save();
+        });
     };
 
     private onChangeIsEditingDisabled = () => {
