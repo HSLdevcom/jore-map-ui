@@ -12,7 +12,6 @@ import StopAreaFactory from '~/factories/stopAreaFactory';
 import { IStopArea } from '~/models';
 import stopAreaValidationModel from '~/models/validationModels/stopAreaValidationModel';
 import StopAreaService, { ITerminalAreaItem } from '~/services/stopAreaService';
-import StopService, { IStopItem } from '~/services/stopService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -21,6 +20,7 @@ import { Button, Dropdown, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
 import SidebarHeader from '../../SidebarHeader';
+import StopTable from './StopTable';
 import * as s from './stopAreaView.scss';
 
 interface IStopAreaViewProps {
@@ -36,7 +36,6 @@ interface IStopAreaViewState {
     isLoading: boolean;
     invalidPropertiesMap: object;
     terminalAreas: IDropdownItem[];
-    stops: IStopItem[];
 }
 
 @inject('stopAreaStore', 'errorStore', 'alertStore', 'codeListStore')
@@ -51,8 +50,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         this.state = {
             isLoading: false,
             invalidPropertiesMap: {},
-            terminalAreas: [],
-            stops: []
+            terminalAreas: []
         };
         this.stopAreaPropertyListeners = [];
     }
@@ -74,11 +72,9 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             this.onChangeIsEditingDisabled
         );
         const terminalAreas: ITerminalAreaItem[] = await StopAreaService.fetchAllTerminalAreas();
-        const stops: IStopItem[] = await StopService.fetchAllStops();
 
         if (this.mounted) {
             this.setState({
-                stops,
                 terminalAreas: this.createTerminalAreaDropdownItems(terminalAreas)
             });
         }
@@ -226,26 +222,6 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         this.props.stopAreaStore!.updateStopAreaProperty(property, value);
     };
 
-    private renderStopsByStopArea = (stops: IStopItem[]) => {
-        return stops.map((stop: IStopItem, index: number) => {
-            return (
-                <tr key={index} className={s.stopTableRow}>
-                    <td>{stop.soltunnus}</td>
-                    <td>{stop.pysnimi}</td>
-                    <td>{stop.pysnimir}</td>
-                </tr>
-            );
-        });
-    };
-
-    private getStopsByStopAreaId = (stopAreaId: string | undefined) => {
-        if (!stopAreaId) return [];
-        const stopsByStopAreaId = this.state.stops.filter(iterable => {
-            return iterable.pysalueid === stopAreaId;
-        });
-        return stopsByStopAreaId;
-    };
-
     render() {
         const stopArea = this.props.stopAreaStore!.stopArea;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
@@ -267,7 +243,6 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
             !this.props.stopAreaStore!.isDirty ||
             !this.isFormValid();
         const selectedTransitTypes = stopArea!.transitType ? [stopArea!.transitType!] : [];
-        const stopsByStopArea = this.getStopsByStopAreaId(stopArea.id);
 
         let transitTypeError;
         if (!transitType) {
@@ -350,45 +325,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                     </div>
                     {!this.props.isNewStopArea && (
                         <div className={s.flexRow}>
-                            <div className={s.stopTableView}>
-                                <div className={s.sectionHeader}>Pysäkkialueen pysäkit</div>
-                                {stopsByStopArea.length > 0 ? (
-                                    <table className={s.stopHeaderTable}>
-                                        <tbody>
-                                            <tr>
-                                                <th
-                                                    className={classnames(
-                                                        s.inputLabel,
-                                                        s.columnHeader
-                                                    )}
-                                                >
-                                                    SOLMUN TUNNUS
-                                                </th>
-                                                <th
-                                                    className={classnames(
-                                                        s.inputLabel,
-                                                        s.columnHeader
-                                                    )}
-                                                >
-                                                    NIMI SUOMEKSI
-                                                </th>
-                                                <th
-                                                    className={classnames(
-                                                        s.inputLabel,
-                                                        s.columnHeader
-                                                    )}
-                                                >
-                                                    NIMI RUOTSIKSI
-                                                </th>
-                                                <th className={s.columnHeader} />
-                                            </tr>
-                                            {this.renderStopsByStopArea(stopsByStopArea)}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <div>Pysäkkialueella ei pysäkkejä.</div>
-                                )}
-                            </div>
+                            <StopTable stopArea={stopArea} />
                         </div>
                     )}
                 </div>
