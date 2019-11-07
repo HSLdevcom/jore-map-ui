@@ -12,8 +12,13 @@ class RouteStore {
     }
 
     @computed
-    get route(): IRoute | null {
-        return this._route;
+    get route(): IRoute {
+        return this._route!;
+    }
+
+    @computed
+    get oldRoute(): IRoute {
+        return this._oldRoute!;
     }
 
     @computed

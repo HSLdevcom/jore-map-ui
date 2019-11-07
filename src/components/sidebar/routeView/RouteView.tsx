@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
 import Button from '~/components/controls/Button';
+import SavePrompt from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
@@ -17,6 +18,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { RouteStore } from '~/stores/routeStore';
 import SidebarHeader from '../SidebarHeader';
@@ -28,6 +30,7 @@ interface IRouteViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     routeStore?: RouteStore;
+    confirmStore?: ConfirmStore;
     match?: match<any>;
     isNewRoute: boolean;
 }
@@ -38,7 +41,7 @@ interface IRouteViewState {
     selectedTabIndex: number;
 }
 
-@inject('routeStore', 'errorStore', 'alertStore')
+@inject('routeStore', 'errorStore', 'alertStore', 'confirmStore')
 @observer
 class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -144,6 +147,18 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
         this.props.routeStore!.setIsEditingDisabled(true);
     };
 
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const currentRoute = this.props.routeStore!.route;
+        const oldRoute = this.props.routeStore!.oldRoute;
+        confirmStore!.openConfirm(
+            <SavePrompt newData={currentRoute} oldData={oldRoute} model={'route'} />,
+            () => {
+                this.save();
+            }
+        );
+    };
+
     private onChangeIsEditingDisabled = () => {
         this.clearInvalidPropertiesMap();
         if (this.props.routeStore!.isEditingDisabled) {
@@ -231,7 +246,11 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
                         </ContentList>
                     </Tabs>
                 </div>
-                <Button onClick={this.save} type={ButtonType.SAVE} disabled={isSaveButtonDisabled}>
+                <Button
+                    onClick={() => (this.props.isNewRoute ? this.save() : this.showSavePrompt())}
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                >
                     {this.props.isNewRoute ? 'Luo uusi reitti' : 'Tallenna muutokset'}
                 </Button>
             </div>

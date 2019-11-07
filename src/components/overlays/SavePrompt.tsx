@@ -3,14 +3,16 @@ import _ from 'lodash';
 import { observer } from 'mobx-react';
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
-import { getLabel } from '~/codeLists/labelCodes';
+import { linkPropertyCodeList, routePropertyCodeList } from '~/codeLists/propertyCodeList';
 import codeListStore from '~/stores/codeListStore';
 import * as s from './savePrompt.scss';
+
+type Model = 'link' | 'route';
 
 interface ISavePromptProps {
     newData: Object;
     oldData: Object;
-    type: string;
+    model: Model;
 }
 
 const callRenderByProperty = (property: string, oldData: Object, newData: Object) => {
@@ -43,6 +45,15 @@ const renderChangeRow = (oldValue: string, newValue: string) => {
     );
 };
 
+const getLabel = (model: Model, property: string) => {
+    switch (model) {
+        case 'link':
+            return linkPropertyCodeList[property];
+        case 'route':
+            return routePropertyCodeList[property];
+    }
+};
+
 // TODO: move to shared folder. This isn't really an overlay
 const SavePrompt = observer((props: ISavePromptProps) => {
     const newData = _.cloneDeep(props.newData);
@@ -59,7 +70,7 @@ const SavePrompt = observer((props: ISavePromptProps) => {
         <div className={s.savePromptView}>
             <div className={s.topic}>Tallennettavat muutokset</div>
             {Object.keys(oldData).map((property: string, index: number) => {
-                const propertyLabel = getLabel(props.type, property);
+                const propertyLabel = getLabel(props.model, property);
                 return (
                     <div key={index} className={classnames(s.formItem, s.savePromptRow)}>
                         <div className={s.inputLabel}>{propertyLabel}</div>
@@ -72,3 +83,5 @@ const SavePrompt = observer((props: ISavePromptProps) => {
 });
 
 export default SavePrompt;
+
+export { Model };
