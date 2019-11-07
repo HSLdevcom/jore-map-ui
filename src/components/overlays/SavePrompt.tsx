@@ -3,11 +3,15 @@ import _ from 'lodash';
 import { observer } from 'mobx-react';
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
-import { linkPropertyCodeList, routePropertyCodeList } from '~/codeLists/propertyCodeList';
+import {
+    linkPropertyCodeList,
+    routePropertyCodeList,
+    stopAreaPropertyCodeList
+} from '~/codeLists/propertyCodeList';
 import codeListStore from '~/stores/codeListStore';
 import * as s from './savePrompt.scss';
 
-type Model = 'link' | 'route';
+type Model = 'link' | 'route' | 'stopArea';
 
 interface ISavePromptProps {
     newData: Object;
@@ -51,6 +55,10 @@ const getLabel = (model: Model, property: string) => {
             return linkPropertyCodeList[property];
         case 'route':
             return routePropertyCodeList[property];
+        case 'stopArea':
+            return stopAreaPropertyCodeList[property];
+        default:
+            throw `Unsupported model given for savePrompt: ${model}`;
     }
 };
 

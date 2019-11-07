@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
 import { IDropdownItem } from '~/components/controls/Dropdown';
+import SavePrompt from '~/components/overlays/SavePrompt';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -14,6 +15,7 @@ import stopAreaValidationModel from '~/models/validationModels/stopAreaValidatio
 import StopAreaService, { ITerminalAreaItem } from '~/services/stopAreaService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { StopAreaStore } from '~/stores/stopAreaStore';
 import { Button, Dropdown, TransitToggleButtonBar } from '../../../controls';
@@ -30,6 +32,7 @@ interface IStopAreaViewProps {
     errorStore?: ErrorStore;
     stopAreaStore?: StopAreaStore;
     alertStore?: AlertStore;
+    confirmStore?: ConfirmStore;
 }
 
 interface IStopAreaViewState {
@@ -38,7 +41,7 @@ interface IStopAreaViewState {
     terminalAreas: IDropdownItem[];
 }
 
-@inject('stopAreaStore', 'errorStore', 'alertStore', 'codeListStore')
+@inject('stopAreaStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
 @observer
 class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -177,6 +180,18 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
         }
         this.props.stopAreaStore!.setIsEditingDisabled(true);
         this.setState({ isLoading: false });
+    };
+
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const currentStopArea = this.props.stopAreaStore!.stopArea;
+        const oldRoute = this.props.stopAreaStore!.oldStopArea;
+        confirmStore!.openConfirm(
+            <SavePrompt newData={currentStopArea} oldData={oldRoute} model={'stopArea'} />,
+            () => {
+                this.save();
+            }
+        );
     };
 
     private onChangeIsEditingDisabled = () => {
@@ -334,9 +349,9 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                 <Button
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
-                    onClick={() => this.save()}
+                    onClick={() => (this.props.isNewStopArea ? this.save() : this.showSavePrompt())}
                 >
-                    Tallenna muutokset
+                    {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Tallenna muutokset'}
                 </Button>
             </div>
         );

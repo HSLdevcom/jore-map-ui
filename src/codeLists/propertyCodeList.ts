@@ -1,4 +1,4 @@
-import { ILink, IRoute } from '~/models';
+import { ILink, IRoute, IStopArea } from '~/models';
 
 type LinkKeys = keyof ILink;
 type ILinkPropertyCodeList = { [key in LinkKeys]: string };
@@ -30,4 +30,17 @@ const routePropertyCodeList: IRoutePropertyCodeList = {
     modifiedOn: 'MUOKATTU PVM'
 };
 
-export { linkPropertyCodeList, routePropertyCodeList };
+type StopAreaKeys = keyof IStopArea;
+type IStopAreaPropertyCodeList = { [key in StopAreaKeys]: string };
+const stopAreaPropertyCodeList: IStopAreaPropertyCodeList = {
+    id: '',
+    transitType: 'VERKKO',
+    nameFi: 'NIMI',
+    nameSw: 'NIMI RUOTSIKSI',
+    terminalAreaId: 'TERMINAALIALUE',
+    modifiedBy: 'MUOKANNUT',
+    modifiedOn: 'MUOKATTU PVM',
+    stopAreaGroupId: 'PYSÄKKIALUE'
+};
+
+export { linkPropertyCodeList, routePropertyCodeList, stopAreaPropertyCodeList };
