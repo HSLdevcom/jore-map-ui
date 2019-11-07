@@ -79,7 +79,6 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
             await this.initExistingRoute();
         }
         if (this.props.routeStore!.route) {
-            this.validateRoute();
             this.setState({
                 isLoading: false
             });
