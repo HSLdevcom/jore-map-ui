@@ -11,7 +11,7 @@ const stopAreaValidationModel: IStopAreaValidationModel = {
     nameFi: nameRule,
     nameSw: nameRule,
     terminalAreaId: 'min:1|max:10|string',
-    modifiedBy: 'min:1|max:20|string',
+    modifiedBy: '',
     modifiedOn: '',
     stopAreaGroupId: 'required|min:1|max:2|string'
 };
