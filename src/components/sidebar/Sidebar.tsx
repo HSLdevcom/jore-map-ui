@@ -4,7 +4,7 @@ import React from 'react';
 import { withRouter, Redirect, Route, RouteComponentProps, Switch } from 'react-router';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import subSites from '~/routing/subSites';
+import SubSites from '~/routing/subSites';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { SearchStore } from '~/stores/searchStore';
@@ -46,7 +46,32 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         return queryParams ? <RouteListView /> : <Redirect to='/' />;
     };
 
-    private renderView = ({ view, isNew }: { view: view; isNew: boolean }) => (props: any) => {
+    private renderView = ({
+        editPath,
+        newPath,
+        view
+    }: {
+        editPath: SubSites;
+        newPath: SubSites;
+        view: view;
+    }) => {
+        return [
+            <Route
+                key={'route-new'}
+                exact={true}
+                path={newPath}
+                component={this.renderComponent({ view, isNew: true })}
+            />,
+            <Route
+                key={'route-edit'}
+                exact={true}
+                path={editPath}
+                component={this.renderComponent({ view, isNew: false })}
+            />
+        ];
+    };
+
+    private renderComponent = ({ view, isNew }: { view: view; isNew: boolean }) => (props: any) => {
         switch (view) {
             case 'line':
                 return <LineView {...props} isNewLine={isNew} />;
@@ -72,83 +97,48 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
             <div className={classnames(s.sidebarView, isMapFullscreen ? s.hidden : null)}>
                 <div className={s.content}>
                     <Switch>
-                        <Route exact={true} path={subSites.home} component={HomeView} />
+                        <Route exact={true} path={SubSites.home} component={HomeView} />
                         <Route
                             exact={true}
-                            path={subSites.newLine}
-                            component={this.renderView({ view: 'line', isNew: true })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.line}
-                            component={this.renderView({ view: 'line', isNew: false })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.newLineHeader}
-                            component={this.renderView({ view: 'lineHeader', isNew: true })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.lineHeader}
-                            component={this.renderView({ view: 'lineHeader', isNew: false })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.newRoute}
-                            component={this.renderView({ view: 'route', isNew: true })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.route}
-                            component={this.renderView({ view: 'route', isNew: false })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.routes}
+                            path={SubSites.routes}
                             component={this.renderRouteListView}
                         />
-                        <Route
-                            exact={true}
-                            path={subSites.newLink}
-                            component={this.renderView({ view: 'link', isNew: true })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.link}
-                            component={this.renderView({ view: 'link', isNew: false })}
-                        />
-                        <Route exact={true} path={subSites.splitLink} component={SplitLinkView} />
-                        <Route
-                            exact={true}
-                            path={subSites.newNode}
-                            component={this.renderView({ view: 'node', isNew: true })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.node}
-                            component={this.renderView({ view: 'node', isNew: false })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.newStopArea}
-                            component={this.renderView({ view: 'stopArea', isNew: true })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.stopArea}
-                            component={this.renderView({ view: 'stopArea', isNew: false })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.newRoutePath}
-                            render={this.renderView({ view: 'routePath', isNew: true })}
-                        />
-                        <Route
-                            exact={true}
-                            path={subSites.routePath}
-                            render={this.renderView({ view: 'routePath', isNew: false })}
-                        />
+                        <Route exact={true} path={SubSites.splitLink} component={SplitLinkView} />
+                        {this.renderView({
+                            editPath: SubSites.line,
+                            newPath: SubSites.newLine,
+                            view: 'line'
+                        })}
+                        {this.renderView({
+                            editPath: SubSites.lineHeader,
+                            newPath: SubSites.newLineHeader,
+                            view: 'lineHeader'
+                        })}
+                        {this.renderView({
+                            editPath: SubSites.route,
+                            newPath: SubSites.newRoute,
+                            view: 'route'
+                        })}
+                        {this.renderView({
+                            editPath: SubSites.link,
+                            newPath: SubSites.newLink,
+                            view: 'link'
+                        })}
+                        {this.renderView({
+                            editPath: SubSites.node,
+                            newPath: SubSites.newNode,
+                            view: 'node'
+                        })}
+                        {this.renderView({
+                            editPath: SubSites.stopArea,
+                            newPath: SubSites.newStopArea,
+                            view: 'stopArea'
+                        })}
+                        {this.renderView({
+                            editPath: SubSites.routePath,
+                            newPath: SubSites.newRoutePath,
+                            view: 'routePath'
+                        })}
                     </Switch>
                 </div>
             </div>
