@@ -11,6 +11,7 @@ import {
     stopPropertyCodeList
 } from '~/codeLists/propertyCodeList';
 import codeListStore from '~/stores/codeListStore';
+import { dateToDateString } from '~/util/dateFormatHelpers';
 import * as s from './savePrompt.scss';
 
 type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea';
@@ -18,27 +19,30 @@ type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea';
 interface ISaveModel {
     model: Model;
     newData: Object;
-    oldData: Object;
+    oldData: Object | null;
 }
 
 interface ISavePromptProps {
     saveModels: ISaveModel[];
 }
 
+const PREVENTED_CHANGE_ROW_PROPERTIES = ['modifiedOn', 'modifiedBy'];
+
 const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
     const newData = _.cloneDeep(saveModel.newData);
     const oldData = _.cloneDeep(saveModel.oldData);
     for (const property in newData) {
-        const linkAttribute = newData[property];
-        const oldLinkAttribute = oldData[property];
-        if (_.isEqual(linkAttribute, oldLinkAttribute)) {
-            delete oldData[property];
-            delete oldData[property];
+        const newValue = newData[property];
+        const oldValue = oldData ? oldData[property] : '';
+        if (_.isEqual(newValue, oldValue)) {
+            delete newData[property];
         }
     }
     return (
         <div key={key}>
-            {Object.keys(oldData).map((property: string, index: number) => {
+            {Object.keys(newData).map((property: string, index: number) => {
+                if (PREVENTED_CHANGE_ROW_PROPERTIES.includes(property)) return null;
+
                 const propertyLabel = _getLabel(saveModel.model, property);
                 return (
                     <div
@@ -47,6 +51,7 @@ const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
                     >
                         <div className={s.inputLabel}>{propertyLabel}</div>
                         {renderChangeRow(
+                            property,
                             _getPropertyValue(saveModel.model, property, oldData, false),
                             _getPropertyValue(saveModel.model, property, newData, true)
                         )}
@@ -74,31 +79,51 @@ const _getLabel = (model: Model, property: string) => {
     }
 };
 
-const _getPropertyValue = (model: Model, property: string, data: Object, isNew: boolean) => {
-    const customPropertyValueMap: { [key in Model]: any } = {
-        node: {
-            shortIdLetter: codeListStore.getCodeListLabel('Lyhyttunnus', data[property]),
-            tripTimePoint: codeListStore.getCodeListLabel('Kyllä/Ei', data[property]),
-            coordinates: isNew ? 'Uusi sijainti' : 'Vanha sijainti',
-            coordinatesManual: isNew ? 'Uusi sijainti' : 'Vanha sijainti',
-            coordinatesProjection: isNew ? 'Uusi sijainti' : 'Vanha sijainti'
-        },
-        stop: {
-            municipality: codeListStore.getCodeListLabel('Kunta (KELA)', data[property])
-        },
-        link: {
-            geometry: isNew ? 'Uusi geometria' : 'Vanha geometria',
-            municipalityCode: codeListStore.getCodeListLabel('Kunta (KELA)', data[property])
-        },
-        route: {},
-        stopArea: {}
-    };
-    return customPropertyValueMap[model][property]
-        ? customPropertyValueMap[model][property]
-        : data[property];
+const _getPropertyValue = (model: Model, property: string, data: Object | null, isNew: boolean) => {
+    if (!data) {
+        return '';
+    }
+
+    // Some properties require a custom way to get a value for them:
+    switch (model) {
+        case 'node':
+            switch (property) {
+                case 'shortIdLetter':
+                    return codeListStore.getCodeListLabel('Lyhyttunnus', data[property]);
+                case 'tripTimePoint':
+                    return codeListStore.getCodeListLabel('Kyllä/Ei', data[property]);
+                case 'coordinates':
+                    return isNew ? 'Uusi sijainti' : 'Vanha sijainti';
+                case 'coordinatesManual':
+                    return isNew ? 'Uusi sijainti' : 'Vanha sijainti';
+                case 'coordinatesProjection':
+                    return isNew ? 'Uusi sijainti' : 'Vanha sijainti';
+                case 'measurementDate':
+                    return data[property] ? dateToDateString(data[property]) : '';
+            }
+        case 'stop':
+            switch (property) {
+                case 'municipality':
+                    return codeListStore.getCodeListLabel('Kunta (KELA)', data[property]);
+                case 'nameModifiedOn':
+                    return data[property] ? dateToDateString(data[property]) : '';
+            }
+        case 'link':
+            switch (property) {
+                case 'geometry':
+                    return isNew ? 'Uusi geometria' : 'Vanha geometria';
+                case 'municipalityCode':
+                    return codeListStore.getCodeListLabel('Kunta (KELA)', data[property]);
+            }
+        default:
+            return data[property];
+    }
 };
 
-const renderChangeRow = (oldValue: string, newValue: string) => {
+const renderChangeRow = (property: string, oldValue: string, newValue: string) => {
+    if (typeof oldValue === 'object' || typeof newValue === 'object') {
+        throw `SavePrompt renderChangeRow: given value was an object instead of string, property: ${property}`;
+    }
     return (
         <div className={s.flexInnerRow}>
             <div className={s.attributeWrapper}>
