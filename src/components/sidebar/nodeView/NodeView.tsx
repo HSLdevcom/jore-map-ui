@@ -234,6 +234,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             };
             delete currentNode['stop'];
             delete oldNode['stop'];
+            // Generate stopArea label values for savePrompt
+            currentStop.areaId = `${currentStop.areaId} - ${currentStop.nameFi}`;
+            if (oldStop && oldStop.areaId) {
+                oldStop.areaId = `${oldStop.areaId} - ${oldStop.nameFi}`;
+            }
         }
         const saveModels: ISaveModel[] = [
             {
