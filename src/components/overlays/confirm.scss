@@ -2,7 +2,6 @@
 
 .confirmView {
     display: flex;
-    padding: 0 15px;
     flex-direction: column;
 
     .content {
@@ -13,7 +12,8 @@
     }
 
     .buttons {
-        margin-top: 20px;
+        padding: 20px;
+        border-top: 1px solid $borderLightGrey;
         display: flex;
         justify-content: center;
     }

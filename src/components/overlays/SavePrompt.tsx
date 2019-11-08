@@ -116,7 +116,7 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
                     return codeListStore.getCodeListLabel('Kunta (KELA)', data[property]);
             }
         default:
-            return data[property];
+            return data[property] ? data[property] : '';
     }
 };
 
@@ -146,9 +146,11 @@ const SavePrompt = observer((props: ISavePromptProps) => {
     return (
         <div className={s.savePromptView}>
             <div className={s.topic}>Tallennettavat muutokset</div>
-            {saveModels.map((saveModel: ISaveModel, index: number) =>
-                renderSaveModelSection(saveModel, `saveModelRowSection-${index}`)
-            )}
+            <div className={s.savePromptContent}>
+                {saveModels.map((saveModel: ISaveModel, index: number) =>
+                    renderSaveModelSection(saveModel, `saveModelRowSection-${index}`)
+                )}
+            </div>
         </div>
     );
 });
