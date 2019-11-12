@@ -100,8 +100,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
     };
 
     render() {
-        const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
-        const node = this.props.node;
+        const { node, isEditingDisabled } = this.props;
         const shortIdLabel = '+ 4 num.)';
         return (
             <div className={s.shortIdInputView}>

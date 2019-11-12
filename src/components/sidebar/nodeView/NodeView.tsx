@@ -27,6 +27,7 @@ import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
+import StopView from './StopView';
 import * as s from './nodeView.scss';
 
 interface INodeViewProps {
@@ -298,6 +299,15 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         lngChange={this.lngChange}
                         latChange={this.latChange}
                     />
+                    {node.type === NodeType.STOP && node.stop && (
+                        <StopView
+                            isEditingDisabled={isEditingDisabled}
+                            node={node}
+                            onNodePropertyChange={this.onChangeNodeProperty}
+                            isNewStop={this.props.isNewNode}
+                            nodeInvalidPropertiesMap={invalidPropertiesMap}
+                        />
+                    )}
                 </div>
                 <Button type={ButtonType.SAVE} disabled={isSaveButtonDisabled} onClick={this.save}>
                     Tallenna muutokset

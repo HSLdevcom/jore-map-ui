@@ -5,6 +5,7 @@ import Moment from 'moment';
 import React, { Component } from 'react';
 import SidebarHeader from '~/components/sidebar/SidebarHeader';
 import NodeForm from '~/components/sidebar/nodeView/NodeForm';
+import StopForm from '~/components/sidebar/nodeView/StopForm';
 import Constants from '~/constants/constants';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
@@ -287,12 +288,24 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 </div>
                 <div className={s.nodeFormWrapper}>
                     <NodeForm
-                        isReadOnly={true}
                         node={node}
                         isNewNode={false}
                         isEditingDisabled={true}
                         invalidPropertiesMap={{}}
                     />
+                    {node.stop && (
+                        <StopForm
+                            node={node}
+                            isNewStop={false}
+                            isEditingDisabled={true}
+                            stopAreas={[]}
+                            stopSections={[]}
+                            stopInvalidPropertiesMap={{}}
+                            nodeInvalidPropertiesMap={{}}
+                            updateStopProperty={() => () => void 0}
+                            isReadOnly={true}
+                        />
+                    )}
                 </div>
             </div>
         );
