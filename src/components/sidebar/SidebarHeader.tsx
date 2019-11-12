@@ -11,7 +11,7 @@ import * as s from './sidebarHeader.scss';
 interface ISidebarHeaderProps {
     children: ReactNode;
     hideCloseButton?: boolean;
-    hideBackButton?: boolean;
+    hideBackButton?: boolean; // TODO: rename as isBackButtonVisible
     isEditButtonVisible?: boolean;
     loginStore?: LoginStore;
     isEditing?: boolean;

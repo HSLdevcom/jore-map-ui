@@ -1,0 +1,29 @@
+@import '../../shared/styles/common.scss';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.nodeForm {
+    .noBorder {
+        border: none;
+    }
+
+    .labelIcon {
+        height: 12px;
+        margin: 2px 14px;
+        width: 12px;
+        border-style: solid;
+        border-color: #3786cb;
+        border-width: 3px;
+        border-radius: 12px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .manual {
+        background-color: $nodeManualColor;
+    }
+
+    .projected {
+        background-color: $nodeProjectionColor;
+    }
+}

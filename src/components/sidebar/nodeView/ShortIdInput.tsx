@@ -13,7 +13,7 @@ interface IStopFormProps {
     isEditingDisabled: boolean;
     nodeInvalidPropertiesMap: object;
     nodeStore?: NodeStore;
-    onNodePropertyChange: (property: keyof INode) => (value: any) => void;
+    onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
 }
 
 interface IStopFormState {
@@ -78,7 +78,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
     };
 
     private onNodeShortIdChange = (value: string) => {
-        this.props.onNodePropertyChange('shortIdString')(value);
+        this.props.onNodePropertyChange!('shortIdString')(value);
     };
 
     private renderValidationNotification = () => {

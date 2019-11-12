@@ -26,10 +26,11 @@ interface IStopFormProps {
     node: INode;
     isNewStop: boolean;
     isEditingDisabled: boolean;
+    isReadOnly?: boolean;
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
     nodeInvalidPropertiesMap: object;
-    onNodePropertyChange: (property: keyof INode) => (value: any) => void;
+    onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
 }
 
 interface IStopFormState {
@@ -196,9 +197,9 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     };
 
     private onShortIdLetterChange = (value: string) => {
-        this.props.onNodePropertyChange('shortIdLetter')(value);
+        this.props.onNodePropertyChange!('shortIdLetter')(value);
         if (!value) {
-            this.props.onNodePropertyChange('shortIdString')(null);
+            this.props.onNodePropertyChange!('shortIdString')(null);
         }
     };
 
@@ -218,7 +219,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
 
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
-        const node = this.props.node;
+        const { node, isReadOnly, onNodePropertyChange } = this.props;
         const stop = node.stop!;
         const onChange = this.updateStopProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
@@ -261,7 +262,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             isBackgroundGrey={!isEditingDisabled && !Boolean(node.shortIdLetter)}
                             isEditingDisabled={isEditingDisabled || !Boolean(node.shortIdLetter)}
                             nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
-                            onNodePropertyChange={this.props.onNodePropertyChange}
+                            onNodePropertyChange={onNodePropertyChange}
                         />
                     </div>
                 </div>
@@ -296,29 +297,33 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='PYSÄKKIALUE'
                             validationResult={invalidPropertiesMap['areaId']}
                         />
-                        <Button
-                            className={classnames(
-                                s.editStopAreaButton,
-                                isStopAreaSelected ? s.disabled : ''
-                            )}
-                            hasReverseColor={true}
-                            onClick={() => {
-                                this.redirectToStopArea(stop.areaId);
-                            }}
-                            disabled={isStopAreaSelected}
-                        >
-                            <FiInfo />
-                        </Button>
+                        {!isReadOnly && (
+                            <Button
+                                className={classnames(
+                                    s.editStopAreaButton,
+                                    isStopAreaSelected ? s.disabled : ''
+                                )}
+                                hasReverseColor={true}
+                                onClick={() => {
+                                    this.redirectToStopArea(stop.areaId);
+                                }}
+                                disabled={isStopAreaSelected}
+                            >
+                                <FiInfo />
+                            </Button>
+                        )}
                     </div>
-                    <div className={s.flexRow}>
-                        <Button
-                            onClick={() => this.redirectToNewStopArea()}
-                            type={ButtonType.SQUARE}
-                            className={s.createNewStopAreaButton}
-                        >
-                            Luo uusi pysäkkialue
-                        </Button>
-                    </div>
+                    {!isReadOnly && (
+                        <div className={s.flexRow}>
+                            <Button
+                                onClick={() => this.redirectToNewStopArea()}
+                                type={ButtonType.SQUARE}
+                                className={s.createNewStopAreaButton}
+                            >
+                                Luo uusi pysäkkialue
+                            </Button>
+                        </div>
+                    )}
                     <div className={s.flexRow}>
                         <InputContainer
                             label='PITKÄ NIMI'
