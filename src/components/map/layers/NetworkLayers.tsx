@@ -260,21 +260,21 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private onNetworkNodeRightClick = (clickEvent: any) => {
         const nodeId = clickEvent.sourceTarget.properties.soltunnus;
-        this.showPopup(nodeId);
+        this.showNodePopup(nodeId);
     };
 
-    private showPopup = async (nodeId: string) => {
+    private showNodePopup = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
 
-        const popup: IPopup = {
-            content: this.renderPopup(node),
+        const nodePopup: IPopup = {
+            content: this.renderNodePopup(node),
             coordinates: node.coordinates,
             isCloseButtonVisible: false
         };
-        this.props.popupStore!.showPopup(popup);
+        this.props.popupStore!.showPopup(nodePopup);
     };
 
-    private renderPopup = (node: INode) => (popupId: number) => {
+    private renderNodePopup = (node: INode) => (popupId: number) => {
         return (
             <div className={s.nodePopup}>
                 <div className={s.sidebarHeaderWrapper}>
