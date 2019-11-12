@@ -3,13 +3,18 @@ import { toJS, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React, { Component } from 'react';
+import SidebarHeader from '~/components/sidebar/SidebarHeader';
+import NodeForm from '~/components/sidebar/nodeView/NodeForm';
 import Constants from '~/constants/constants';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
+import { INode } from '~/models';
+import NodeService from '~/services/nodeService';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
+import { IPopup, PopupStore } from '~/stores/popupStore';
 import EventManager, {
     INetworkLinkClickParams,
     INetworkNodeClickParams
@@ -29,6 +34,7 @@ interface INetworkLayersProps {
     networkStore?: NetworkStore;
     nodeStore?: NodeStore;
     linkStore?: LinkStore;
+    popupStore?: PopupStore;
 }
 
 interface ILinkProperties {
@@ -50,7 +56,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore')
+@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
     private reactionDisposer = {};
@@ -251,6 +257,43 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         EventManager.trigger('networkNodeClick', clickParams);
     };
 
+    private onNetworkNodeRightClick = (clickEvent: any) => {
+        const nodeId = clickEvent.sourceTarget.properties.soltunnus;
+        this.showPopup(nodeId);
+    };
+
+    private showPopup = async (nodeId: string) => {
+        const node = await NodeService.fetchNode(nodeId);
+
+        const popup: IPopup = {
+            content: this.renderPopup(node),
+            coordinates: node.coordinates,
+            isCloseButtonVisible: false
+        };
+        this.props.popupStore!.showPopup(popup);
+    };
+
+    private renderPopup = (node: INode) => (popupId: number) => {
+        return (
+            <div className={s.nodePopup}>
+                <SidebarHeader
+                    isEditButtonVisible={false}
+                    hideBackButton={true}
+                    onCloseButtonClick={() => this.props.popupStore!.closePopup(popupId)}
+                >
+                    Solmu {node.id}
+                </SidebarHeader>
+                <NodeForm
+                    isReadOnly={true}
+                    node={node}
+                    isNewNode={false}
+                    isEditingDisabled={true}
+                    invalidPropertiesMap={{}}
+                />
+            </div>
+        );
+    };
+
     private onNetworkLinkClick = (clickEvent: any) => {
         const properties = clickEvent.sourceTarget.properties;
         const clickParams: INetworkLinkClickParams = {
@@ -321,6 +364,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedDate={selectedDate}
                         nodeSize={nodeSize}
                         onClick={this.onNetworkNodeClick}
+                        onContextMenu={this.onNetworkNodeRightClick}
                         key={GeoserverLayer.Node}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(
                             GeoserverLayer.Node
