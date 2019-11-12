@@ -276,20 +276,24 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     private renderPopup = (node: INode) => (popupId: number) => {
         return (
             <div className={s.nodePopup}>
-                <SidebarHeader
-                    isEditButtonVisible={false}
-                    hideBackButton={true}
-                    onCloseButtonClick={() => this.props.popupStore!.closePopup(popupId)}
-                >
-                    Solmu {node.id}
-                </SidebarHeader>
-                <NodeForm
-                    isReadOnly={true}
-                    node={node}
-                    isNewNode={false}
-                    isEditingDisabled={true}
-                    invalidPropertiesMap={{}}
-                />
+                <div className={s.sidebarHeaderWrapper}>
+                    <SidebarHeader
+                        isEditButtonVisible={false}
+                        hideBackButton={true}
+                        onCloseButtonClick={() => this.props.popupStore!.closePopup(popupId)}
+                    >
+                        Solmu {node.id}
+                    </SidebarHeader>
+                </div>
+                <div className={s.nodeFormWrapper}>
+                    <NodeForm
+                        isReadOnly={true}
+                        node={node}
+                        isNewNode={false}
+                        isEditingDisabled={true}
+                        invalidPropertiesMap={{}}
+                    />
+                </div>
             </div>
         );
     };
