@@ -62,7 +62,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
         return (
             <div className={s.sidebarHeaderView}>
                 <div className={s.topic}>{this.props.children}</div>
-                <div>
+                <div className={s.buttonContainer}>
                     {this.props.isEditButtonVisible && this.props.loginStore!.hasWriteAccess && (
                         <FiEdit3
                             onClick={this.onEditButtonClick}
