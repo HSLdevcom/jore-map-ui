@@ -9,7 +9,7 @@ import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { SearchStore } from '~/stores/searchStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import PageNotFound from './PageNotFound';
+import PageNotFoundView from './PageNotFoundView';
 import HomeView from './homeView/HomeView';
 import LineView from './lineView/LineView';
 import LineHeaderView from './lineView/lineHeaderView/LineHeaderView';
@@ -140,7 +140,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             newPath: SubSites.newRoutePath,
                             view: 'routePath'
                         })}
-                        <Route path={'*'} component={PageNotFound} />
+                        <Route path={'*'} component={PageNotFoundView} />
                     </Switch>
                 </div>
             </div>
