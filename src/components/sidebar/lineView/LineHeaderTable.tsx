@@ -130,6 +130,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                                 className={classnames(s.lineHeaderButton, s.removeLineHeaderButton)}
                                 hasReverseColor={true}
                                 onClick={this.removeLineHeader(lineHeader.lineNameFi)}
+                                disabled={isEditingDisabled}
                             >
                                 <FaTrashAlt />
                             </Button>

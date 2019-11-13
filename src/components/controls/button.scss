@@ -30,13 +30,13 @@ $defaultBackgroundColor: $busBlue;
 }
 
 .round {
-    color: #fff;
+    color: $defaultColor;
     border-radius: 20px;
 }
 
 .save {
     background-color: #00ba11;
-    color: #fff;
+    color: $defaultColor;
     text-align: center;
     font-size: 1rem;
     cursor: pointer;
@@ -70,4 +70,5 @@ $defaultBackgroundColor: $busBlue;
     background-color: $disabledGrey;
     cursor: default;
     pointer-events: none;
+    color: $defaultColor;
 }
