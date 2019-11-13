@@ -19,6 +19,10 @@ $inputFieldHeight: 42px;
     margin-right: 0px;
 }
 
+.staticHeight {
+    height: $inputFieldHeight;
+}
+
 .inputLabel {
     color: $labelColor;
     font-weight: bold;
