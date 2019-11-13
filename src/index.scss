@@ -34,3 +34,11 @@ select:focus {
 :global(.leaflet-popup-tip) {
     background: $backgroundlightGrey;
 }
+
+:global(.react-datepicker-wrapper) {
+    width: 100%;
+}
+
+:global(.react-datepicker-popper) {
+    z-index: 9999;
+}

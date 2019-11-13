@@ -116,6 +116,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
                         isAnyInputValueAllowed={true}
                         isNoOptionsMessageHidden={true}
                         isSelectedOptionHidden={true}
+                        isJokerAllowed={true}
                     />
                 </div>
                 <div>{this.renderValidationNotification()}</div>

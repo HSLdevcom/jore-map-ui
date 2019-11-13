@@ -10,11 +10,9 @@ import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {
     public static mapExternalNode = (externalNode: IExternalNode): INode => {
-        // Use less accurate location if measured location (solomx, solomy) is missing.
         const coordinates = _getLatLng(
             externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
         );
-        const coordinatesManual = _getLatLng(externalNode.geojsonManual);
         const coordinatesProjection = _getLatLng(externalNode.geojsonProjection);
         const nodeStop = externalNode.pysakkiBySoltunnus;
         let transitTypes: TransitType[] = [];
@@ -26,7 +24,6 @@ class NodeFactory {
             ...NodeFactory.createNodeBase(externalNode),
             transitTypes,
             coordinates,
-            coordinatesManual,
             coordinatesProjection,
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
@@ -55,7 +52,6 @@ class NodeFactory {
             stop: newStop,
             type: NodeType.STOP,
             transitTypes: [],
-            coordinatesManual: coordinates,
             coordinatesProjection: coordinates,
             modifiedOn: new Date(),
             modifiedBy: '',

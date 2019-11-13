@@ -129,34 +129,6 @@ export default class NodeForm extends Component<INodeViewProps> {
                     {node.type === NodeType.STOP && (
                         <>
                             <div className={s.sectionHeader}>
-                                Sovitettu piste
-                                <div className={classnames(s.labelIcon, s.manual)} />
-                            </div>
-                            <div className={s.flexRow}>
-                                <InputContainer
-                                    value={node.coordinatesManual.lat}
-                                    onChange={latChange(
-                                        node.coordinatesManual,
-                                        'coordinatesManual'
-                                    )}
-                                    label='LATITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                    validationResult={invalidPropertiesMap['coordinatesManual']}
-                                />
-                                <InputContainer
-                                    value={node.coordinatesManual.lng}
-                                    onChange={lngChange(
-                                        node.coordinatesManual,
-                                        'coordinatesManual'
-                                    )}
-                                    label='LONGITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                    validationResult={invalidPropertiesMap['coordinatesManual']}
-                                />
-                            </div>
-                            <div className={s.sectionHeader}>
                                 Projisoitu piste
                                 <div className={classnames(s.labelIcon, s.projected)} />
                             </div>

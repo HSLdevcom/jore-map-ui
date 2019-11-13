@@ -24,6 +24,7 @@ interface IDropdownProps {
     isAnyInputValueAllowed?: boolean; // Can user give any input as dropdown field value
     isNoOptionsMessageHidden?: boolean;
     isSelectedOptionHidden?: boolean;
+    isJokerAllowed?: boolean;
 }
 
 interface IDropdownState {
@@ -55,14 +56,26 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         }
     }
 
+    private matchWildcard(text: string, rule: string) {
+        return new RegExp(`^${rule.split('*').join('.*')}$`).test(text);
+    }
+
+    private matchText(text: string, searchInput: string) {
+        if (searchInput.includes('*')) {
+            return this.matchWildcard(text, searchInput);
+        }
+        return text.includes(searchInput);
+    }
+
     filterItems(searchString: string) {
-        const displayedItems = _.cloneDeep(
-            this.props.items
-                .filter((dropdownItem: IDropdownItem) =>
-                    dropdownItem.label.toLowerCase().includes(searchString.toLowerCase())
-                )
-                .slice(0, MAX_DISPLAYED)
-        );
+        const displayedItems = this.props.items
+            .filter((dropdownItem: IDropdownItem) => {
+                if (this.props.isJokerAllowed) {
+                    return this.matchText(dropdownItem.label, searchString);
+                }
+                return dropdownItem.label.toLowerCase().includes(searchString.toLowerCase());
+            })
+            .slice(0, MAX_DISPLAYED);
 
         if (this.props.emptyItem) {
             displayedItems.unshift(this.props.emptyItem);
@@ -92,11 +105,9 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         const props = this.props;
         const validationResult = props.validationResult;
         const displayedItems = this.state.displayedItems;
-
         const onChange = (selectedItem: IDropdownItem) => {
-            props.onChange!(selectedItem.value);
+            if (selectedItem) props.onChange!(selectedItem.value);
         };
-
         // Push selectedItem into dropdownItemList if it doesn't exist in dropdownItemList
         let selectedItem: IDropdownItem | undefined;
         if (props.selected) {
@@ -133,6 +144,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                                 options={displayedItems}
                                 isDisabled={props.disabled}
                                 isSearchable={true}
+                                filterOption={null}
                                 placeholder={'Valitse...'}
                                 styles={_getCustomStyles(this.props)}
                                 noOptionsMessage={() =>
