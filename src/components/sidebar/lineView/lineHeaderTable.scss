@@ -54,11 +54,9 @@ $cellPadding: 5px 2px 5px 2px;
             padding: 5px;
             margin: 4px;
             margin-bottom: auto;
+            border-radius: 5px;
         }
 
-        .removeLineHeaderButton {
-            color: $red;
-        }
         .removeLineHeaderButton:hover {
             color: white;
             background-color: $red;

@@ -139,9 +139,9 @@ const renderDatePickerInput = ({
     const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         // TODO: implement a better way of changing input value
         const value = event.target.value;
+        // Allow input date that is in the correct format
         if (Moment(value, 'DD.MM.YYYY', true).isValid()) {
             onChange(value);
-        } else {
         }
     };
 
