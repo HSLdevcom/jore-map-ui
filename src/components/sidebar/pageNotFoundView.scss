@@ -1,0 +1,17 @@
+@import '../shared/styles/common.scss';
+
+.pageNotFoundView {
+    width: $sidebarNarrow;
+
+    .content {
+        padding: 20px;
+
+        .link {
+            color: #5e5eff;
+            cursor: pointer;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+    }
+}
