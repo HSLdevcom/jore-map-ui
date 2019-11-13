@@ -423,6 +423,7 @@ const nodeQueryFields = `
     solkirjain
     mittpvm
     geojson
+    geojsonManual
     geojsonProjection
     transittypes
     solmapiste

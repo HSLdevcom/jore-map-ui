@@ -10,9 +10,8 @@ import NodeStopFactory from './nodeStopFactory';
 
 class NodeFactory {
     public static mapExternalNode = (externalNode: IExternalNode): INode => {
-        // Use less accurate location if measured location (solomx, solomy) is missing.
         const coordinates = _getLatLng(
-            externalNode.geojson ? externalNode.geojson : externalNode.geojsonProjection
+            externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
         );
         const coordinatesProjection = _getLatLng(externalNode.geojsonProjection);
         const nodeStop = externalNode.pysakkiBySoltunnus;
