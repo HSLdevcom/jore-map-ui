@@ -147,7 +147,9 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                                 filterOption={null}
                                 placeholder={'Valitse...'}
                                 styles={_getCustomStyles(this.props)}
-                                noOptionsMessage={() => null}
+                                noOptionsMessage={() =>
+                                    props.isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
+                                }
                                 hideSelectedOptions={Boolean(this.props.isSelectedOptionHidden)}
                                 className={this.props.isBackgroundGrey ? s.greyBackground : ''}
                             />
