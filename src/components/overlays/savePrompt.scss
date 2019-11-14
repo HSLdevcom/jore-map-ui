@@ -29,8 +29,10 @@
         }
 
         .attributeWrapper {
+            display: flex;
             flex-grow: 1;
             width: 50%;
+            align-items: center;
 
             .oldAttribute {
                 display: inline-block;
