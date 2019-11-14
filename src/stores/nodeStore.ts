@@ -44,6 +44,11 @@ export class NodeStore {
     }
 
     @computed
+    get oldNode() {
+        return this._oldNode!;
+    }
+
+    @computed
     get isDirty() {
         return !_.isEqual(this._node, this._oldNode) || !_.isEqual(this._links, this._oldLinks);
     }

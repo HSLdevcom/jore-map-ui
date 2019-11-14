@@ -1,10 +1,12 @@
 import classnames from 'classnames';
 import * as L from 'leaflet';
+import _ from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
 import { Button } from '~/components/controls';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -20,6 +22,7 @@ import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -38,6 +41,7 @@ interface INodeViewProps {
     mapStore?: MapStore;
     errorStore?: ErrorStore;
     codeListStore?: CodeListStore;
+    confirmStore?: ConfirmStore;
 }
 
 interface INodeViewState {
@@ -45,7 +49,7 @@ interface INodeViewState {
     invalidPropertiesMap: object;
 }
 
-@inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore')
+@inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore', 'confirmStore')
 @observer
 class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -207,6 +211,45 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.setIsEditingDisabled(true);
     };
 
+    private showSavePrompt = () => {
+        const currentNode = _.cloneDeep(this.props.nodeStore!.node);
+        const oldNode = _.cloneDeep(this.props.nodeStore!.oldNode);
+        const currentStop = _.cloneDeep(currentNode.stop);
+        const oldStop = _.cloneDeep(oldNode.stop);
+
+        // Create node save model
+        if (currentNode.stop) {
+            delete currentNode['stop'];
+            delete oldNode['stop'];
+        }
+        const saveModels: ISaveModel[] = [
+            {
+                newData: currentNode,
+                oldData: oldNode,
+                model: 'node'
+            }
+        ];
+
+        // Create stop save model
+        if (currentStop) {
+            // Generate stopArea label values for savePrompt
+            currentStop.areaId = `${currentStop.areaId} - ${currentStop.nameFi}`;
+            if (oldStop && oldStop.areaId) {
+                oldStop.areaId = `${oldStop.areaId} - ${oldStop.nameFi}`;
+            }
+            const stopSaveModel: ISaveModel = {
+                newData: currentStop!,
+                oldData: oldStop!,
+                model: 'stop'
+            };
+            saveModels.push(stopSaveModel);
+        }
+
+        this.props.confirmStore!.openConfirm(<SavePrompt saveModels={saveModels} />, () => {
+            this.save();
+        });
+    };
+
     private onChangeIsEditingDisabled = () => {
         this.clearInvalidPropertiesMap();
         if (this.props.nodeStore!.isEditingDisabled) {
@@ -305,8 +348,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                         />
                     )}
                 </div>
-                <Button type={ButtonType.SAVE} disabled={isSaveButtonDisabled} onClick={this.save}>
-                    Tallenna muutokset
+                <Button
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                    onClick={() => (this.props.isNewNode ? this.save() : this.showSavePrompt())}
+                >
+                    {this.props.isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
                 </Button>
             </div>
         );
