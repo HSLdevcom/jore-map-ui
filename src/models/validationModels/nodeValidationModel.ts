@@ -13,7 +13,6 @@ const nodeValidationModel: INodeValidationModel = {
     modifiedOn: '',
     shortIdLetter: 'min:0|max:2|string',
     coordinates: 'latLngValidator',
-    coordinatesManual: 'latLngValidator',
     coordinatesProjection: 'latLngValidator',
     measurementType: 'min:0|max:1|string',
     measurementDate: 'date',

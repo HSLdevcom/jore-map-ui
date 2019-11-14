@@ -7,47 +7,71 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    color: white;
+    font-size: $mediumFontSize;
 
-    .header {
-        cursor: pointer;
-        margin-left: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        .title {
-            display: inline-block;
-            font-size: 20px;
-            color: #fff;
-            padding-left: 10px;
-        }
-
-        .logo {
-            height: 26px;
-            align-items: center;
-            justify-content: center;
-        }
+    .buildInfo {
+        position: fixed;
+        font-size: 8px;
+        margin: 2px;
     }
 
-    .authSection {
+    .leftContentWrapper {
         display: flex;
+        align-items: center;
 
-        .authInfo {
-            font-size: 14px;
+        .header {
+            cursor: pointer;
+            margin: 0px 12px 0px 12px;
             display: flex;
-            flex-direction: row;
-            color: white;
-            margin-right: 8px;
             align-items: center;
+            justify-content: center;
 
-            svg {
-                font-size: 32px;
-                margin-right: 6px;
+            .title {
+                display: inline-block;
+                font-size: 20px;
+                padding-left: 10px;
+            }
+
+            .logo {
+                height: 26px;
+                align-items: center;
+                justify-content: center;
             }
         }
 
+        .refreshIconWrapper {
+            display: flex;
+
+            .refreshIcon {
+                font-size: 24px;
+            }
+        }
+        .syncTextWrapper {
+            display: flex;
+            text-align: center;
+            font-size: $smallFontSize;
+            .syncText {
+                margin: auto 5px auto 5px;
+            }
+        }
+    }
+
+    .rightContentWrapper {
+        display: flex;
+        align-items: center;
+
+        .authInfo {
+            display: flex;
+            flex-direction: row;
+            margin-right: 8px;
+            align-items: center;
+            font-size: 0.9em;
+            line-height: 20px;
+        }
+
         .logoutButton {
-            font-size: 14px;
+            font-size: $smallFontSize;
             padding: 0px 20px;
             background-color: #004c7d;
             height: 100%;
@@ -59,10 +83,10 @@
             background-color: #575757;
         }
     }
-}
 
-.buildInfo {
-    position: fixed;
-    font-size: 8px;
-    margin: 2px;
+    .navigationBarIcon {
+        cursor: pointer;
+        font-size: 32px;
+        margin: 0px 6px 0px 6px;
+    }
 }

@@ -2,7 +2,7 @@ export default interface IExternalLineHeader {
     lintunnus: string;
     linalkupvm: Date;
     linloppupvm: Date;
-    linnimi?: string;
+    linnimi: string;
     linnimilyh?: string;
     linnimir?: string;
     linnimilyhr?: string;

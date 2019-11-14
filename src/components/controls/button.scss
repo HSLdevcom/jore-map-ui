@@ -16,7 +16,6 @@ $defaultBackgroundColor: $busBlue;
     font-size: $mediumFontSize;
     padding: $buttonPadding;
     border: hidden;
-    border-radius: 5px;
     margin-right: 15px;
     color: $defaultColor;
     background-color: $defaultBackgroundColor;
@@ -61,6 +60,10 @@ $defaultBackgroundColor: $busBlue;
 
 .wide {
     width: 100%;
+}
+
+.hasPadding {
+    padding: 20px;
 }
 
 .disabled {

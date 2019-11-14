@@ -8,7 +8,7 @@ import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
-interface INodeSavingModel {
+interface INodeSaveModel {
     node: INode;
     links: ILink[];
 }
@@ -33,7 +33,7 @@ class NodeService {
     };
 
     public static updateNode = async (node: INode, links: ILink[]) => {
-        const requestBody: INodeSavingModel = {
+        const requestBody: INodeSaveModel = {
             node,
             links
         };

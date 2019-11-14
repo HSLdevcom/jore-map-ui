@@ -179,11 +179,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
     private centerMapToNode = (node: INode, links: ILink[]) => {
         this.props.mapStore!.setIsMapCenteringPrevented(false);
-        let latLngs: L.LatLng[] = [
-            node.coordinates,
-            node.coordinatesManual,
-            node.coordinatesProjection
-        ];
+        let latLngs: L.LatLng[] = [node.coordinates, node.coordinatesProjection];
         links.forEach((link: ILink) => {
             latLngs = latLngs.concat(link.geometry);
         });
@@ -420,38 +416,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                             </div>
                             {node.type === NodeType.STOP && (
                                 <>
-                                    <div className={s.sectionHeader}>
-                                        Sovitettu piste
-                                        <div className={classnames(s.labelIcon, s.manual)} />
-                                    </div>
-                                    <div className={s.flexRow}>
-                                        <InputContainer
-                                            value={node.coordinatesManual.lat}
-                                            onChange={this.latChange(
-                                                node.coordinatesManual,
-                                                'coordinatesManual'
-                                            )}
-                                            label='LATITUDE'
-                                            type='number'
-                                            disabled={isEditingDisabled}
-                                            validationResult={
-                                                invalidPropertiesMap['coordinatesManual']
-                                            }
-                                        />
-                                        <InputContainer
-                                            value={node.coordinatesManual.lng}
-                                            onChange={this.lngChange(
-                                                node.coordinatesManual,
-                                                'coordinatesManual'
-                                            )}
-                                            label='LONGITUDE'
-                                            type='number'
-                                            disabled={isEditingDisabled}
-                                            validationResult={
-                                                invalidPropertiesMap['coordinatesManual']
-                                            }
-                                        />
-                                    </div>
                                     <div className={s.sectionHeader}>
                                         Projisoitu piste
                                         <div className={classnames(s.labelIcon, s.projected)} />

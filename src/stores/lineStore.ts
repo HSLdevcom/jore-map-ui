@@ -26,6 +26,7 @@ export class LineStore {
         return this._isEditingDisabled;
     }
 
+    // TODO: rename as init
     @action
     public setLine = (line: ILine) => {
         this._line = line;

@@ -9,7 +9,6 @@ const nodePropertyCodeList: INodePropertyCodeList = {
     type: 'TYYPPI',
     stop: '',
     coordinates: 'MITATTU PISTE',
-    coordinatesManual: 'SOVITETTU PISTE',
     coordinatesProjection: 'PROJISOITU PISTE',
     measurementDate: 'MITTAUS PVM',
     measurementType: 'MITTAUSTAPA',

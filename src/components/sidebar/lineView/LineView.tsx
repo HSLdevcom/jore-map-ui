@@ -3,11 +3,9 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
-import Button from '~/components/controls/Button';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
-import ButtonType from '~/enums/buttonType';
 import LineFactory from '~/factories/lineFactory';
 import { ILine } from '~/models';
 import lineValidationModel from '~/models/validationModels/lineValidationModel';
@@ -111,7 +109,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         this.validateProperty(lineValidationModel[property], property, value);
     };
 
-    private save = async () => {
+    private saveLine = async () => {
         this.setState({ isLoading: true });
 
         const line = this.props.lineStore!.line;
@@ -161,23 +159,6 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         this.validateAllProperties(lineValidationModel, this.props.lineStore!.line);
     };
 
-    private renderLineViewHeader = () => {
-        return (
-            <div className={s.sidebarHeaderSection}>
-                <SidebarHeader
-                    isEditButtonVisible={!this.props.isNewLine}
-                    onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
-                    isEditing={!this.props.lineStore!.isEditingDisabled}
-                    shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
-                >
-                    {this.props.isNewLine
-                        ? 'Luo uusi linja'
-                        : `Linja ${this.props.lineStore!.line!.id}`}
-                </SidebarHeader>
-            </div>
-        );
-    };
-
     render() {
         const lineStore = this.props.lineStore;
         if (this.state.isLoading) {
@@ -195,7 +176,18 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         return (
             <div className={s.lineView}>
                 <div className={s.content}>
-                    {this.renderLineViewHeader()}
+                    <div className={s.sidebarHeaderSection}>
+                        <SidebarHeader
+                            isEditButtonVisible={!this.props.isNewLine}
+                            onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
+                            isEditing={!this.props.lineStore!.isEditingDisabled}
+                            shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
+                        >
+                            {this.props.isNewLine
+                                ? 'Luo uusi linja'
+                                : `Linja ${this.props.lineStore!.line!.id}`}
+                        </SidebarHeader>
+                    </div>
                     <Tabs>
                         <TabList
                             selectedTabIndex={this.state.selectedTabIndex}
@@ -216,6 +208,8 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                                     onChangeLineProperty={this.onChangeLineProperty}
                                     invalidPropertiesMap={this.state.invalidPropertiesMap}
                                     setValidatorResult={this.setValidatorResult}
+                                    saveLine={this.saveLine}
+                                    isLineSaveButtonDisabled={isSaveButtonDisabled}
                                 />
                             </ContentItem>
                             <ContentItem>
@@ -223,13 +217,6 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                             </ContentItem>
                         </ContentList>
                     </Tabs>
-                    <Button
-                        onClick={this.save}
-                        type={ButtonType.SAVE}
-                        disabled={isSaveButtonDisabled}
-                    >
-                        {this.props.isNewLine ? 'Luo uusi linja' : 'Tallenna muutokset'}
-                    </Button>
                 </div>
             </div>
         );

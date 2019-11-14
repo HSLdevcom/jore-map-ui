@@ -11,6 +11,7 @@ interface IButtonProps {
     className?: string;
     disabled?: boolean;
     isWide?: boolean;
+    hasPadding?: boolean;
     hasReverseColor?: boolean;
 }
 
@@ -44,6 +45,7 @@ const Button = observer((props: IButtonProps) => {
                 getTypeClass(props.type),
                 props.disabled ? s.disabled : null,
                 props.isWide ? s.wide : null,
+                props.hasPadding ? s.hasPadding : null,
                 props.hasReverseColor ? s.reverseColor : null
             )}
             onClick={onClick}

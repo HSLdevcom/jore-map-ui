@@ -1,8 +1,23 @@
 @import '../shared/styles/common';
 @import '../shared/styles/form';
 
-.staticHeight {
-    display: flex;
-    align-items: center;
-    height: $inputFieldHeight;
+.inputContainer {
+    .inputField {
+        display: flex;
+        align-items: center;
+    }
+
+    .calendarIcon {
+        position: absolute;
+        right: 8px;
+        font-size: 22px;
+        pointer-events: none;
+    }
+
+    .clearIcon {
+        position: absolute;
+        right: 30px;
+        font-size: 22px;
+        cursor: pointer;
+    }
 }

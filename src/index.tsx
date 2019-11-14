@@ -9,6 +9,7 @@ import AlertStore from './stores/alertStore';
 import CodeListStore from './stores/codeListStore';
 import ConfirmStore from './stores/confirmStore';
 import ErrorStore from './stores/errorStore';
+import LineHeaderMassEditStore from './stores/lineHeaderMassEditStore';
 import LineHeaderStore from './stores/lineHeaderStore';
 import LineStore from './stores/lineStore';
 import LinkStore from './stores/linkStore';
@@ -37,6 +38,7 @@ const stores = {
     loginStore: LoginStore,
     lineStore: LineStore,
     lineHeaderStore: LineHeaderStore,
+    lineHeaderMassEditStore: LineHeaderMassEditStore,
     routeStore: RouteStore,
     routeListStore: RouteListStore,
     routePathStore: RoutePathStore,
