@@ -70,39 +70,30 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
     }
 
     // Some properties require a custom way to get a value for them:
-    switch (model) {
-        case 'node':
-            switch (property) {
-                case 'shortIdLetter':
-                    return codeListStore.getCodeListLabel('Lyhyttunnus', data[property]);
-                case 'tripTimePoint':
-                    return codeListStore.getCodeListLabel('Kyllä/Ei', data[property]);
-                case 'coordinates':
-                    return isNew ? 'Uusi sijainti' : 'Vanha sijainti';
-                case 'coordinatesManual':
-                    return isNew ? 'Uusi sijainti' : 'Vanha sijainti';
-                case 'coordinatesProjection':
-                    return isNew ? 'Uusi sijainti' : 'Vanha sijainti';
-                case 'measurementDate':
-                    return data[property] ? dateToDateString(data[property]) : '';
-            }
-        case 'stop':
-            switch (property) {
-                case 'municipality':
-                    return codeListStore.getCodeListLabel('Kunta (KELA)', data[property]);
-                case 'nameModifiedOn':
-                    return data[property] ? dateToDateString(data[property]) : '';
-            }
-        case 'link':
-            switch (property) {
-                case 'geometry':
-                    return isNew ? 'Uusi geometria' : 'Vanha geometria';
-                case 'municipalityCode':
-                    return codeListStore.getCodeListLabel('Kunta (KELA)', data[property]);
-            }
-        default:
-            return data[property] ? data[property] : '';
-    }
+    const customPropertyValueFuncObj = {
+        node: {
+            shortIdLetter: () => codeListStore.getCodeListLabel('Lyhyttunnus', data[property]),
+            tripTimePoint: () => codeListStore.getCodeListLabel('Kyllä/Ei', data[property]),
+            coordinates: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
+            coordinatesManual: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
+            coordinatesProjection: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
+            measurementDate: () => (data[property] ? dateToDateString(data[property]) : '')
+        },
+        stop: {
+            municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property]),
+            nameModifiedOn: () => (data[property] ? dateToDateString(data[property]) : '')
+        },
+        link: {
+            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
+            municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property])
+        }
+    };
+
+    const customPropertyValueFunc =
+        customPropertyValueFuncObj[model] && customPropertyValueFuncObj[model][property];
+    if (customPropertyValueFunc) return customPropertyValueFunc();
+
+    return data[property] ? data[property] : '';
 };
 
 const renderChangeRow = (property: string, oldValue: string, newValue: string) => {
