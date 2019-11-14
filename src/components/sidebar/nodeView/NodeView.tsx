@@ -219,26 +219,15 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     };
 
     private showSavePrompt = () => {
-        const confirmStore = this.props.confirmStore;
         const currentNode = _.cloneDeep(this.props.nodeStore!.node);
         const oldNode = _.cloneDeep(this.props.nodeStore!.oldNode);
+        const currentStop = _.cloneDeep(currentNode.stop);
+        const oldStop = _.cloneDeep(oldNode.stop);
 
-        let stopSaveModel: ISaveModel | null = null;
+        // Create node save model
         if (currentNode.stop) {
-            const currentStop = currentNode.stop;
-            const oldStop = oldNode.stop;
-            stopSaveModel = {
-                newData: currentStop!,
-                oldData: oldStop!,
-                model: 'stop'
-            };
             delete currentNode['stop'];
             delete oldNode['stop'];
-            // Generate stopArea label values for savePrompt
-            currentStop.areaId = `${currentStop.areaId} - ${currentStop.nameFi}`;
-            if (oldStop && oldStop.areaId) {
-                oldStop.areaId = `${oldStop.areaId} - ${oldStop.nameFi}`;
-            }
         }
         const saveModels: ISaveModel[] = [
             {
@@ -247,10 +236,23 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                 model: 'node'
             }
         ];
-        if (stopSaveModel) {
+
+        // Create stop save model
+        if (currentStop) {
+            // Generate stopArea label values for savePrompt
+            currentStop.areaId = `${currentStop.areaId} - ${currentStop.nameFi}`;
+            if (oldStop && oldStop.areaId) {
+                oldStop.areaId = `${oldStop.areaId} - ${oldStop.nameFi}`;
+            }
+            const stopSaveModel: ISaveModel = {
+                newData: currentStop!,
+                oldData: oldStop!,
+                model: 'stop'
+            };
             saveModels.push(stopSaveModel);
         }
-        confirmStore!.openConfirm(<SavePrompt saveModels={saveModels} />, () => {
+
+        this.props.confirmStore!.openConfirm(<SavePrompt saveModels={saveModels} />, () => {
             this.save();
         });
     };
