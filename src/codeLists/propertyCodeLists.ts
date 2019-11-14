@@ -88,10 +88,10 @@ const stopAreaPropertyCodeList: IStopAreaPropertyCodeList = {
     stopAreaGroupId: 'PYSÄKKIALUE'
 };
 
-export {
-    nodePropertyCodeList,
-    stopPropertyCodeList,
-    linkPropertyCodeList,
-    routePropertyCodeList,
-    stopAreaPropertyCodeList
+export default {
+    node: nodePropertyCodeList,
+    stop: stopPropertyCodeList,
+    link: linkPropertyCodeList,
+    route: routePropertyCodeList,
+    stopArea: stopAreaPropertyCodeList
 };

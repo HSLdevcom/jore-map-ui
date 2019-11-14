@@ -3,13 +3,7 @@ import _ from 'lodash';
 import { observer } from 'mobx-react';
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
-import {
-    linkPropertyCodeList,
-    nodePropertyCodeList,
-    routePropertyCodeList,
-    stopAreaPropertyCodeList,
-    stopPropertyCodeList
-} from '~/codeLists/propertyCodeList';
+import propertyCodeLists from '~/codeLists/propertyCodeLists';
 import codeListStore from '~/stores/codeListStore';
 import { dateToDateString } from '~/util/dateFormatHelpers';
 import * as s from './savePrompt.scss';
@@ -63,20 +57,11 @@ const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
 };
 
 const _getLabel = (model: Model, property: string) => {
-    switch (model) {
-        case 'node':
-            return nodePropertyCodeList[property];
-        case 'stop':
-            return stopPropertyCodeList[property];
-        case 'link':
-            return linkPropertyCodeList[property];
-        case 'route':
-            return routePropertyCodeList[property];
-        case 'stopArea':
-            return stopAreaPropertyCodeList[property];
-        default:
-            throw `Unsupported model given for savePrompt: ${model}`;
+    const propertyCodeList = propertyCodeLists[model];
+    if (!propertyCodeList) {
+        throw `Unsupported model given for savePrompt: ${model}`;
     }
+    return propertyCodeList[property];
 };
 
 const _getPropertyValue = (model: Model, property: string, data: Object | null, isNew: boolean) => {
