@@ -98,6 +98,7 @@ export class LineHeaderMassEditStore {
     public removeLineHeader = (id: ILineHeaderPrimaryKey) => {
         const massEditLineHeader = this.getMassEditLineHeader(id);
         massEditLineHeader!.isRemoved = true;
+        this.validateDates();
     };
 
     @action
