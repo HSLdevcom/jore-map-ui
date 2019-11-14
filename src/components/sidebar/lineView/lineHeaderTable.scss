@@ -8,6 +8,10 @@ $cellPadding: 5px 2px 5px 2px;
     width: 100%;
     padding-top: 20px;
 
+    &.loaderContainer > div {
+        margin: 30px auto;
+    }
+
     .lineHeaderTable {
         width: 100%;
         border-collapse: collapse;

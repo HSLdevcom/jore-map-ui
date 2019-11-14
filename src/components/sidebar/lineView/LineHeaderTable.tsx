@@ -6,6 +6,7 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
+import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import ILineHeader from '~/models/ILineHeader';
 import navigator from '~/routing/navigator';
@@ -22,6 +23,7 @@ import SidebarHeader from '../SidebarHeader';
 import * as s from './lineHeaderTable.scss';
 
 interface ILineHeaderState {
+    isLoading: boolean;
     lineHeaders: ILineHeader[] | null;
 }
 
@@ -38,6 +40,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     constructor(props: ILineHeaderListProps) {
         super(props);
         this.state = {
+            isLoading: true,
             lineHeaders: null
         };
     }
@@ -45,9 +48,10 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const lineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(
             this.props.lineId
         );
-        if (!this.mounted) {
+        if (this.mounted) {
             this.setState({
-                lineHeaders
+                lineHeaders,
+                isLoading: false
             });
         }
     }
@@ -106,6 +110,9 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     private renderLineHeaderRows = (activeMassEditLineHeader: IMassEditLineHeader | null) => {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
+        const unRemovedLineHeaderCount = lineHeaderMassEditStore!.massEditLineHeaders!.filter(
+            m => !m.isRemoved
+        ).length;
 
         return lineHeaderMassEditStore!.massEditLineHeaders!.map(
             (currentMassEditLineHeader: IMassEditLineHeader, index: number) => {
@@ -166,7 +173,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                                 className={classnames(s.lineHeaderButton, s.removeLineHeaderButton)}
                                 hasReverseColor={true}
                                 onClick={this.removeLineHeader(currentMassEditLineHeader)}
-                                disabled={isEditingDisabled}
+                                disabled={isEditingDisabled || unRemovedLineHeaderCount <= 1}
                             >
                                 <FaTrashAlt />
                             </Button>
@@ -215,13 +222,26 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     };
 
     render() {
+        if (this.state.isLoading) {
+            return (
+                <div className={classnames(s.lineHeaderTableView, s.loaderContainer)}>
+                    <Loader size={LoaderSize.TINY} />
+                </div>
+            );
+        }
+
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const massEditLineHeaders = lineHeaderMassEditStore!.massEditLineHeaders;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
         if (!massEditLineHeaders) return null;
-        const isSaveButtonDisabled =
-            isEditingDisabled || !lineHeaderMassEditStore!.isDirty || !this.isFormValid();
+
         const activeMassEditLineHeader = this.getActiveMassEditLineHeader();
+
+        const isSaveButtonDisabled =
+            isEditingDisabled ||
+            !lineHeaderMassEditStore!.isDirty ||
+            !this.isFormValid() ||
+            !activeMassEditLineHeader;
         return (
             <div className={s.lineHeaderTableView}>
                 <SidebarHeader
