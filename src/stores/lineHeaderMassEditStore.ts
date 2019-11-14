@@ -3,26 +3,26 @@ import { action, computed, observable } from 'mobx';
 import { ILineHeader } from '~/models';
 import { IValidationResult } from '~/validation/FormValidator';
 
-interface IMassEditLineHeader {
-    id: number;
-    lineHeader: ILineHeader;
-    oldDates: {
-        startDate: Date;
-        endDate: Date;
-    };
+// Now we have to keep lineHeader original dates in memory and use them as the primary key
+interface ILineHeaderPrimaryKey {
+    originalStartDate: Date;
+    originalEndDate: Date;
 }
 
-interface ILineHeaderValidationResult {
-    [key: number]: IValidationResult;
+interface IMassEditLineHeader {
+    id: ILineHeaderPrimaryKey;
+    isRemoved: boolean;
+    lineHeader: ILineHeader;
+    validationResult: IValidationResult;
 }
 
 export class LineHeaderMassEditStore {
     @observable private _massEditLineHeaders: IMassEditLineHeader[] | null;
     @observable private _oldlineHeaders: ILineHeader[] | null;
     @observable private _isEditingDisabled: boolean;
-    @observable private _validationResults: ILineHeaderValidationResult | null;
 
     constructor() {
+        this._massEditLineHeaders = null;
         this._isEditingDisabled = true;
     }
 
@@ -33,10 +33,10 @@ export class LineHeaderMassEditStore {
 
     @computed
     get isDirty() {
-        const lineHeaders = this._massEditLineHeaders!.map(
+        const currentLineHeaders = this._massEditLineHeaders!.map(
             massEditLineHeader => massEditLineHeader.lineHeader
         );
-        return !_.isEqual(lineHeaders, this._oldlineHeaders);
+        return !_.isEqual(currentLineHeaders, this._oldlineHeaders);
     }
 
     @computed
@@ -44,24 +44,25 @@ export class LineHeaderMassEditStore {
         return this._isEditingDisabled;
     }
 
-    @computed
-    get validationResults(): ILineHeaderValidationResult | null {
-        return this._validationResults;
-    }
-
     @action
     public init = (lineHeaders: ILineHeader[]) => {
         this.clear();
 
-        this._massEditLineHeaders = lineHeaders.map((lineHeader: ILineHeader, index: number) => {
-            return {
+        this._massEditLineHeaders = lineHeaders.map((lineHeader: ILineHeader) => {
+            const primaryKey = {
+                originalStartDate: lineHeader.startDate,
+                originalEndDate: lineHeader.endDate
+            };
+
+            const massEditLineHeader: IMassEditLineHeader = {
                 lineHeader,
-                id: index,
-                oldDates: {
-                    startDate: lineHeader.startDate,
-                    endDate: lineHeader.endDate
+                id: primaryKey,
+                isRemoved: false,
+                validationResult: {
+                    isValid: true
                 }
             };
+            return massEditLineHeader;
         });
         this.setOldLineHeaders(lineHeaders);
     };
@@ -72,10 +73,9 @@ export class LineHeaderMassEditStore {
     };
 
     @action
-    public updateLineHeaderStartDate = (id: number, value: Date) => {
-        const massEditLineHeader = this._massEditLineHeaders!.find(
-            lineHeader => id === lineHeader.id
-        );
+    public updateLineHeaderStartDate = (id: ILineHeaderPrimaryKey, value: Date) => {
+        const massEditLineHeader = this.getMassEditLineHeader(id);
+
         massEditLineHeader!.lineHeader.startDate = value;
         this._massEditLineHeaders = this._massEditLineHeaders!.slice().sort(
             _sortMassEditLineHeaders
@@ -84,15 +84,20 @@ export class LineHeaderMassEditStore {
     };
 
     @action
-    public updateLineHeaderEndDate = (id: number, value: Date) => {
-        const massEditLineHeader = this._massEditLineHeaders!.find(
-            lineHeader => id === lineHeader.id
-        );
+    public updateLineHeaderEndDate = (id: ILineHeaderPrimaryKey, value: Date) => {
+        const massEditLineHeader = this.getMassEditLineHeader(id);
+
         massEditLineHeader!.lineHeader.endDate = value;
         this._massEditLineHeaders = this._massEditLineHeaders!.slice().sort(
             _sortMassEditLineHeaders
         );
         this.validateDates();
+    };
+
+    @action
+    public removeLineHeader = (id: ILineHeaderPrimaryKey) => {
+        const massEditLineHeader = this.getMassEditLineHeader(id);
+        massEditLineHeader!.isRemoved = true;
     };
 
     @action
@@ -115,7 +120,6 @@ export class LineHeaderMassEditStore {
         this._massEditLineHeaders = null;
         this._oldlineHeaders = null;
         this._isEditingDisabled = true;
-        this._validationResults = null;
     };
 
     @action
@@ -125,42 +129,58 @@ export class LineHeaderMassEditStore {
         }
     };
 
-    public getOldLineHeaderStartDate = (id: number) => {
-        return this._massEditLineHeaders!.find(m => m.id === id)!.oldDates.startDate;
-    };
-
     @action
     private validateDates = () => {
-        let previousObj: IMassEditLineHeader;
-        this._massEditLineHeaders!.forEach(currentObj => {
-            if (currentObj.lineHeader.startDate > currentObj.lineHeader.endDate) {
-                this.setValidationResult(currentObj.id, false, 'Voim.ast oltava ennen voim.viim');
+        let previousMassEditLineHeader: IMassEditLineHeader;
+        this._massEditLineHeaders!.forEach(currentMassEditLineHeader => {
+            if (currentMassEditLineHeader.isRemoved) return;
+
+            if (
+                currentMassEditLineHeader.lineHeader.startDate >
+                currentMassEditLineHeader.lineHeader.endDate
+            ) {
+                this.setValidationResult(
+                    currentMassEditLineHeader.id,
+                    false,
+                    'Voim.ast oltava ennen voim.viim'
+                );
                 return;
             }
-            if (previousObj) {
+            if (previousMassEditLineHeader) {
                 const areDatesContinuing = _isNextDate(
-                    previousObj.lineHeader.endDate,
-                    currentObj.lineHeader.startDate
+                    previousMassEditLineHeader.lineHeader.endDate,
+                    currentMassEditLineHeader.lineHeader.startDate
                 );
                 if (!areDatesContinuing) {
-                    this.setValidationResult(currentObj.id, false, 'Päivämäärän oltava jatkuva');
+                    this.setValidationResult(
+                        currentMassEditLineHeader.id,
+                        false,
+                        'Päivämäärän oltava jatkuva'
+                    );
                     return;
                 }
             }
-            this.setValidationResult(currentObj.id, true);
-            previousObj = currentObj;
+            this.setValidationResult(currentMassEditLineHeader.id, true);
+            previousMassEditLineHeader = currentMassEditLineHeader;
         });
     };
 
     @action
-    private setValidationResult = (index: number, isValid: boolean, errorMessage?: string) => {
-        if (!this._validationResults) {
-            this._validationResults = {};
-        }
-        this._validationResults[index] = {
+    private setValidationResult = (
+        id: ILineHeaderPrimaryKey,
+        isValid: boolean,
+        errorMessage?: string
+    ) => {
+        const massEditLineHeader = this.getMassEditLineHeader(id);
+        massEditLineHeader!.validationResult = {
             isValid,
             errorMessage
         };
+    };
+
+    @action
+    private getMassEditLineHeader = (id: ILineHeaderPrimaryKey) => {
+        return this._massEditLineHeaders!.find(m => _.isEqual(m.id, id));
     };
 }
 
@@ -188,4 +208,4 @@ const observableLineHeaderStore = new LineHeaderMassEditStore();
 
 export default observableLineHeaderStore;
 
-export { IMassEditLineHeader };
+export { IMassEditLineHeader, ILineHeaderPrimaryKey };

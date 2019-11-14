@@ -12,23 +12,27 @@ import ILineHeader from '~/models/ILineHeader';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
+import LineHeaderService from '~/services/lineHeaderService';
+import { ConfirmStore } from '~/stores/confirmStore';
+import {
+    ILineHeaderPrimaryKey,
+    IMassEditLineHeader,
+    LineHeaderMassEditStore
+} from '~/stores/lineHeaderMassEditStore';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './lineHeaderTable.scss';
 
 interface ILineHeaderListProps {
-    lineHeaderMassEditStore?: LineHeaderMassEditStore;
     lineHeaders: ILineHeader[];
     currentLineHeader?: ILineHeader;
     lineId: string;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
+    confirmStore?: ConfirmStore;
 }
 
-@inject('lineHeaderMassEditStore')
+@inject('lineHeaderMassEditStore', 'confirmStore')
 @observer
 class LineHeaderTable extends React.Component<ILineHeaderListProps> {
-    constructor(props: ILineHeaderListProps) {
-        super(props);
-    }
     componentDidUpdate() {
         const lineHeaders = this.props.lineHeaders;
         if (lineHeaders && !this.props.lineHeaderMassEditStore!.massEditLineHeaders) {
@@ -58,30 +62,34 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
         navigator.goTo(newLineHeaderLink);
     };
 
-    private onChangeLineHeaderStartDate = (id: number) => (value: Date) => {
+    private onChangeLineHeaderStartDate = (id: ILineHeaderPrimaryKey) => (value: Date) => {
         this.props.lineHeaderMassEditStore!.updateLineHeaderStartDate(id, value);
     };
-    private onChangeLineHeaderEndDate = (id: number) => (value: Date) => {
+
+    private onChangeLineHeaderEndDate = (id: ILineHeaderPrimaryKey) => (value: Date) => {
         this.props.lineHeaderMassEditStore!.updateLineHeaderEndDate(id, value);
     };
 
-    private removeLineHeader = (lineHeaderName: string) => () => {
-        // TODO, functionality removing lineHeader
-        window.alert(`Haluatko varmasti poistaa linjan otsikon ${lineHeaderName}?`);
+    private removeLineHeader = (massEditLineHeader: IMassEditLineHeader) => () => {
+        const confirmText = `Haluatko varmasti poistaa linjan otsikon ${
+            massEditLineHeader.lineHeader.lineNameFi
+        }?`;
+        this.props.confirmStore!.openConfirm(confirmText, () => {
+            this.props.lineHeaderMassEditStore!.removeLineHeader(massEditLineHeader.id);
+        });
     };
 
     private renderLineHeaderRows = () => {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
-        const validationResults = lineHeaderMassEditStore!.validationResults;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
 
         return lineHeaderMassEditStore!.massEditLineHeaders!.map(
             (massEditLineHeader: IMassEditLineHeader, index: number) => {
+                if (massEditLineHeader.isRemoved) return null;
+
                 const lineHeader = massEditLineHeader.lineHeader;
                 const isCurrentLineHeader = _.isEqual(this.props.currentLineHeader, lineHeader);
-                const validationResult = validationResults
-                    ? validationResults[massEditLineHeader.id]
-                    : undefined;
+                const validationResult = massEditLineHeader.validationResult;
                 return (
                     <tr
                         key={index}
@@ -117,9 +125,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                                 className={s.lineHeaderButton}
                                 hasReverseColor={true}
                                 onClick={this.redirectToEditLineHeaderView(
-                                    lineHeaderMassEditStore!.getOldLineHeaderStartDate(
-                                        massEditLineHeader.id
-                                    )
+                                    massEditLineHeader.id.originalStartDate
                                 )}
                             >
                                 <FiInfo />
@@ -129,7 +135,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                             <Button
                                 className={classnames(s.lineHeaderButton, s.removeLineHeaderButton)}
                                 hasReverseColor={true}
-                                onClick={this.removeLineHeader(lineHeader.lineNameFi)}
+                                onClick={this.removeLineHeader(massEditLineHeader)}
                                 disabled={isEditingDisabled}
                             >
                                 <FaTrashAlt />
@@ -142,24 +148,22 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
     };
 
     private saveLineHeaders = () => {
-        // TODO: SAVE
-        // const massEditLineHeaders = this.props.lineHeaderMassEditStore!.massEditLineHeaders;
-        // console.log('massEditLineHeaders ', massEditLineHeaders);
-        // CALL lineHeaderService.massUpdateLineHeaders();
-        // this.props.saveLineHeaders([]);
+        LineHeaderService.massEditLineHeaders(
+            this.props.lineHeaderMassEditStore!.massEditLineHeaders!
+        );
     };
 
     private isFormValid = () => {
-        const validationResults = this.props.lineHeaderMassEditStore!.validationResults;
-        if (!validationResults) return true;
-
-        for (const property in validationResults) {
-            const validationResult = validationResults[property];
-            if (!validationResult.isValid) {
-                return false;
+        let isFormValid = true;
+        this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
+            (m: IMassEditLineHeader) => {
+                if (m.isRemoved) return;
+                if (!m.validationResult.isValid) {
+                    isFormValid = false;
+                }
             }
-        }
-        return true;
+        );
+        return isFormValid;
     };
 
     render() {

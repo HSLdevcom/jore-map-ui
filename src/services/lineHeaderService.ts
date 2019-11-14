@@ -4,6 +4,7 @@ import endpoints from '~/enums/endpoints';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
+import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
@@ -57,6 +58,12 @@ class LineHeaderService {
         };
         const response = await ApiClient.createObject(endpoints.LINE_HEADER, newLineHeader);
         return response.id;
+    };
+
+    public static massEditLineHeaders = async (massEditLineHeaders: IMassEditLineHeader[]) => {
+        // TODO: remove logging when it works
+        console.log('saving ', massEditLineHeaders);
+        await ApiClient.postRequest(endpoints.LINE_HEADER_MASS_EDIT, massEditLineHeaders);
     };
 }
 
