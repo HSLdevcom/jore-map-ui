@@ -1,4 +1,5 @@
 @import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
 @import '../../shared/styles/form';
 
 $cellPadding: 5px 2px 5px 2px;
@@ -18,7 +19,7 @@ $cellPadding: 5px 2px 5px 2px;
         .columnHeader {
             white-space: nowrap;
             text-align: start;
-            padding-left: $cellPadding;
+            padding: $cellPadding;
         }
 
         .columnHeader:first-child {
@@ -40,7 +41,7 @@ $cellPadding: 5px 2px 5px 2px;
 
             .lineHeaderTableButtonCell {
                 vertical-align: top;
-                padding-top: $cellPadding;
+                padding: $cellPadding;
             }
         }
 
