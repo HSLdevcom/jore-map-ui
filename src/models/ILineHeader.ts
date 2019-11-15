@@ -1,6 +1,7 @@
 interface ILineHeader {
     lineId: string;
     originalStartDate?: Date;
+    originalEndDate?: Date;
     startDate: Date;
     endDate: Date;
     lineNameFi: string;

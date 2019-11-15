@@ -1,20 +1,7 @@
 import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import { ILineHeader } from '~/models';
-import { IValidationResult } from '~/validation/FormValidator';
-
-// Now we have to keep lineHeader original dates in memory and use them as the primary key
-interface ILineHeaderPrimaryKey {
-    originalStartDate: Date;
-    originalEndDate: Date;
-}
-
-interface IMassEditLineHeader {
-    id: ILineHeaderPrimaryKey;
-    isRemoved: boolean;
-    lineHeader: ILineHeader;
-    validationResult: IValidationResult;
-}
+import IMassEditLineHeader, { ILineHeaderPrimaryKey } from '~/models/IMassEditLineHeader';
 
 export class LineHeaderMassEditStore {
     @observable private _massEditLineHeaders: IMassEditLineHeader[] | null;
@@ -32,11 +19,16 @@ export class LineHeaderMassEditStore {
     }
 
     @computed
+    get currentLineHeaders(): ILineHeader[] {
+        return _.chain(this._massEditLineHeaders)
+            .filter(m => !m.isRemoved)
+            .map(massEditLineHeader => massEditLineHeader.lineHeader)
+            .value();
+    }
+
+    @computed
     get isDirty() {
-        const currentLineHeaders = this._massEditLineHeaders!.map(
-            massEditLineHeader => massEditLineHeader.lineHeader
-        );
-        return !_.isEqual(currentLineHeaders, this._oldlineHeaders);
+        return !_.isEqual(this.currentLineHeaders, this._oldlineHeaders);
     }
 
     @computed
@@ -50,6 +42,7 @@ export class LineHeaderMassEditStore {
 
         this._massEditLineHeaders = lineHeaders.map((lineHeader: ILineHeader) => {
             const primaryKey = {
+                lineId: lineHeader.lineId,
                 originalStartDate: lineHeader.startDate,
                 originalEndDate: lineHeader.endDate
             };
@@ -208,5 +201,3 @@ const _isSameDay = (a: Date, b: Date) => {
 const observableLineHeaderStore = new LineHeaderMassEditStore();
 
 export default observableLineHeaderStore;
-
-export { IMassEditLineHeader, ILineHeaderPrimaryKey };

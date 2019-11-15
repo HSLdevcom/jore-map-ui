@@ -9,16 +9,15 @@ import InputContainer from '~/components/controls/InputContainer';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import ILineHeader from '~/models/ILineHeader';
+import IMassEditLineHeader, { ILineHeaderPrimaryKey } from '~/models/IMassEditLineHeader';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineHeaderService from '~/services/lineHeaderService';
+import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
-import {
-    ILineHeaderPrimaryKey,
-    IMassEditLineHeader,
-    LineHeaderMassEditStore
-} from '~/stores/lineHeaderMassEditStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './lineHeaderTable.scss';
 
@@ -31,9 +30,11 @@ interface ILineHeaderListProps {
     lineId: string;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
     confirmStore?: ConfirmStore;
+    alertStore?: AlertStore;
+    errorStore?: ErrorStore;
 }
 
-@inject('lineHeaderMassEditStore', 'confirmStore')
+@inject('lineHeaderMassEditStore', 'confirmStore', 'alertStore', 'errorStore')
 @observer
 class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderState> {
     private mounted: boolean;
@@ -202,10 +203,26 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         return activeMassEditLineHeader;
     };
 
-    private saveLineHeaders = () => {
-        LineHeaderService.massEditLineHeaders(
-            this.props.lineHeaderMassEditStore!.massEditLineHeaders!
-        );
+    private save = async () => {
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
+        this.setState({ isLoading: true });
+
+        try {
+            await LineHeaderService.massEditLineHeaders(
+                lineHeaderMassEditStore!.massEditLineHeaders!
+            );
+
+            this.props.alertStore!.setFadeMessage('Tallennettu!');
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            return;
+        }
+
+        lineHeaderMassEditStore!.init(lineHeaderMassEditStore!.currentLineHeaders);
+
+        this.setState({
+            isLoading: false
+        });
     };
 
     private isFormValid = () => {
@@ -302,7 +319,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     </Button>
                     <Button
                         className={s.saveLineHeadersButton}
-                        onClick={this.saveLineHeaders}
+                        onClick={this.save}
                         type={ButtonType.SAVE}
                         disabled={isSaveButtonDisabled}
                     >

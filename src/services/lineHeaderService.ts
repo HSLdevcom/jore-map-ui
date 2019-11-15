@@ -3,8 +3,8 @@ import Moment from 'moment';
 import endpoints from '~/enums/endpoints';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
+import IMassEditLineHeader from '~/models/IMassEditLineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
-import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
@@ -54,7 +54,8 @@ class LineHeaderService {
     public static createLineHeader = async (lineHeader: ILineHeader) => {
         const newLineHeader = {
             ...lineHeader,
-            originalStartDate: lineHeader.startDate
+            originalStartDate: lineHeader.startDate,
+            originalEndDate: lineHeader.endDate
         };
         const response = await ApiClient.createObject(endpoints.LINE_HEADER, newLineHeader);
         return response.id;
