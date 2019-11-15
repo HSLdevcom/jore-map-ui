@@ -8,7 +8,6 @@ class LineHeaderFactory {
         return {
             lineId: externalLineHeader.lintunnus,
             originalStartDate: new Date(externalLineHeader.linalkupvm),
-            originalEndDate: new Date(externalLineHeader.linloppupvm),
             startDate: new Date(externalLineHeader.linalkupvm),
             endDate: new Date(externalLineHeader.linloppupvm),
             lineNameFi: externalLineHeader.linnimi,
@@ -33,7 +32,6 @@ class LineHeaderFactory {
         return {
             lineId,
             originalStartDate: undefined,
-            originalEndDate: undefined,
             startDate: new Date(defaultDate.getTime()),
             endDate: new Date(defaultDate.getTime()),
             lineNameFi: '',

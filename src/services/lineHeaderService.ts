@@ -3,8 +3,8 @@ import Moment from 'moment';
 import endpoints from '~/enums/endpoints';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
-import IMassEditLineHeader from '~/models/IMassEditLineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
+import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
@@ -62,9 +62,8 @@ class LineHeaderService {
     };
 
     public static massEditLineHeaders = async (massEditLineHeaders: IMassEditLineHeader[]) => {
-        // TODO: remove logging when it works
-        console.log('saving ', massEditLineHeaders);
-        await ApiClient.postRequest(endpoints.LINE_HEADER_MASS_EDIT, massEditLineHeaders);
+        const lineHeaders = massEditLineHeaders.map(m => m.lineHeader);
+        await ApiClient.postRequest(endpoints.LINE_HEADER_MASS_EDIT, lineHeaders);
         ApolloClient.clearStore();
     };
 }

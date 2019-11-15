@@ -9,7 +9,6 @@ import InputContainer from '~/components/controls/InputContainer';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import ILineHeader from '~/models/ILineHeader';
-import IMassEditLineHeader, { ILineHeaderPrimaryKey } from '~/models/IMassEditLineHeader';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -17,7 +16,7 @@ import LineHeaderService from '~/services/lineHeaderService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
-import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
+import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './lineHeaderTable.scss';
 
@@ -91,11 +90,11 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         navigator.goTo(newLineHeaderLink);
     };
 
-    private onChangeLineHeaderStartDate = (id: ILineHeaderPrimaryKey) => (value: Date) => {
+    private onChangeLineHeaderStartDate = (id: number) => (value: Date) => {
         this.props.lineHeaderMassEditStore!.updateLineHeaderStartDate(id, value);
     };
 
-    private onChangeLineHeaderEndDate = (id: ILineHeaderPrimaryKey) => (value: Date) => {
+    private onChangeLineHeaderEndDate = (id: number) => (value: Date) => {
         this.props.lineHeaderMassEditStore!.updateLineHeaderEndDate(id, value);
     };
 
@@ -111,14 +110,10 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     private renderLineHeaderRows = (activeMassEditLineHeader: IMassEditLineHeader | null) => {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
-        const unRemovedLineHeaderCount = lineHeaderMassEditStore!.massEditLineHeaders!.filter(
-            m => !m.isRemoved
-        ).length;
+        const massEditLineHeaderCount = lineHeaderMassEditStore!.massEditLineHeaders!.length;
 
         return lineHeaderMassEditStore!.massEditLineHeaders!.map(
             (currentMassEditLineHeader: IMassEditLineHeader, index: number) => {
-                if (currentMassEditLineHeader.isRemoved) return null;
-
                 const lineHeader = currentMassEditLineHeader.lineHeader;
                 const isCurrentLineHeader =
                     activeMassEditLineHeader &&
@@ -163,7 +158,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                                 className={s.lineHeaderButton}
                                 hasReverseColor={true}
                                 onClick={this.redirectToEditLineHeaderView(
-                                    currentMassEditLineHeader.id.originalStartDate
+                                    currentMassEditLineHeader.lineHeader.originalStartDate!
                                 )}
                             >
                                 <FiInfo />
@@ -174,7 +169,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                                 className={classnames(s.lineHeaderButton, s.removeLineHeaderButton)}
                                 hasReverseColor={true}
                                 onClick={this.removeLineHeader(currentMassEditLineHeader)}
-                                disabled={isEditingDisabled || unRemovedLineHeaderCount <= 1}
+                                disabled={isEditingDisabled || massEditLineHeaderCount <= 1}
                             >
                                 <FaTrashAlt />
                             </Button>
@@ -190,7 +185,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         let activeMassEditLineHeader = null;
         this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
             (m: IMassEditLineHeader) => {
-                if (m.isRemoved) return;
                 const lineHeader = m.lineHeader;
                 if (
                     currentTime > lineHeader.startDate!.getTime() &&
@@ -229,7 +223,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         let isFormValid = true;
         this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
             (m: IMassEditLineHeader) => {
-                if (m.isRemoved) return;
                 if (!m.validationResult.isValid) {
                     isFormValid = false;
                 }

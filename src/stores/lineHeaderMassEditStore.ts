@@ -1,7 +1,13 @@
 import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import { ILineHeader } from '~/models';
-import IMassEditLineHeader, { ILineHeaderPrimaryKey } from '~/models/IMassEditLineHeader';
+import { IValidationResult } from '~/validation/FormValidator';
+
+export interface IMassEditLineHeader {
+    id: number;
+    lineHeader: ILineHeader;
+    validationResult: IValidationResult;
+}
 
 export class LineHeaderMassEditStore {
     @observable private _massEditLineHeaders: IMassEditLineHeader[] | null;
@@ -21,7 +27,6 @@ export class LineHeaderMassEditStore {
     @computed
     get currentLineHeaders(): ILineHeader[] {
         return _.chain(this._massEditLineHeaders)
-            .filter(m => !m.isRemoved)
             .map(massEditLineHeader => massEditLineHeader.lineHeader)
             .value();
     }
@@ -40,17 +45,10 @@ export class LineHeaderMassEditStore {
     public init = (lineHeaders: ILineHeader[]) => {
         this.clear();
 
-        this._massEditLineHeaders = lineHeaders.map((lineHeader: ILineHeader) => {
-            const primaryKey = {
-                lineId: lineHeader.lineId,
-                originalStartDate: lineHeader.startDate,
-                originalEndDate: lineHeader.endDate
-            };
-
+        this._massEditLineHeaders = lineHeaders.map((lineHeader: ILineHeader, index: number) => {
             const massEditLineHeader: IMassEditLineHeader = {
                 lineHeader,
-                id: primaryKey,
-                isRemoved: false,
+                id: index,
                 validationResult: {
                     isValid: true
                 }
@@ -66,7 +64,7 @@ export class LineHeaderMassEditStore {
     };
 
     @action
-    public updateLineHeaderStartDate = (id: ILineHeaderPrimaryKey, value: Date) => {
+    public updateLineHeaderStartDate = (id: number, value: Date) => {
         const massEditLineHeader = this.getMassEditLineHeader(id);
 
         massEditLineHeader!.lineHeader.startDate = value;
@@ -77,7 +75,7 @@ export class LineHeaderMassEditStore {
     };
 
     @action
-    public updateLineHeaderEndDate = (id: ILineHeaderPrimaryKey, value: Date) => {
+    public updateLineHeaderEndDate = (id: number, value: Date) => {
         const massEditLineHeader = this.getMassEditLineHeader(id);
 
         massEditLineHeader!.lineHeader.endDate = value;
@@ -88,9 +86,8 @@ export class LineHeaderMassEditStore {
     };
 
     @action
-    public removeLineHeader = (id: ILineHeaderPrimaryKey) => {
-        const massEditLineHeader = this.getMassEditLineHeader(id);
-        massEditLineHeader!.isRemoved = true;
+    public removeLineHeader = (id: number) => {
+        this._massEditLineHeaders = this.massEditLineHeaders!.filter(m => m.id !== id);
         this.validateDates();
     };
 
@@ -127,8 +124,6 @@ export class LineHeaderMassEditStore {
     private validateDates = () => {
         let previousMassEditLineHeader: IMassEditLineHeader;
         this._massEditLineHeaders!.forEach(currentMassEditLineHeader => {
-            if (currentMassEditLineHeader.isRemoved) return;
-
             if (
                 currentMassEditLineHeader.lineHeader.startDate >
                 currentMassEditLineHeader.lineHeader.endDate
@@ -160,11 +155,7 @@ export class LineHeaderMassEditStore {
     };
 
     @action
-    private setValidationResult = (
-        id: ILineHeaderPrimaryKey,
-        isValid: boolean,
-        errorMessage?: string
-    ) => {
+    private setValidationResult = (id: number, isValid: boolean, errorMessage?: string) => {
         const massEditLineHeader = this.getMassEditLineHeader(id);
         massEditLineHeader!.validationResult = {
             isValid,
@@ -173,7 +164,7 @@ export class LineHeaderMassEditStore {
     };
 
     @action
-    private getMassEditLineHeader = (id: ILineHeaderPrimaryKey) => {
+    private getMassEditLineHeader = (id: number) => {
         return this._massEditLineHeaders!.find(m => _.isEqual(m.id, id));
     };
 }
