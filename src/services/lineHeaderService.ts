@@ -65,6 +65,7 @@ class LineHeaderService {
         // TODO: remove logging when it works
         console.log('saving ', massEditLineHeaders);
         await ApiClient.postRequest(endpoints.LINE_HEADER_MASS_EDIT, massEditLineHeaders);
+        ApolloClient.clearStore();
     };
 }
 
