@@ -41,6 +41,7 @@ export class CodeListStore {
             });
     };
 
+    // TODO: rename as getCodeListValueLabel?
     public getCodeListLabel = (codeListName: codeListName, value: string) => {
         const item = this._codeListItems.find(
             item => item.listId === codeListName && item.value === value
