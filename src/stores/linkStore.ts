@@ -115,6 +115,7 @@ export class LinkStore {
         updatedLink.geometry = roundLatLngs(latLngs);
         this._link.geometry = roundLatLngs(latLngs);
         this._link.length = calculateLengthFromLatLngs(this._link.geometry);
+        updatedLink.length = this._link.length;
         const newUndoState: UndoState = {
             link: updatedLink
         };
@@ -181,6 +182,7 @@ export class LinkStore {
     @action
     public undo = () => {
         this._geometryUndoStore.undo((previousUndoState: UndoState) => {
+            this._link!.length = previousUndoState.link.length;
             this._link!.geometry = previousUndoState.link.geometry;
         });
     };
@@ -188,6 +190,7 @@ export class LinkStore {
     @action
     public redo = () => {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
+            this._link!.length = nextUndoState.link.length;
             this._link!.geometry = nextUndoState.link.geometry;
         });
     };
