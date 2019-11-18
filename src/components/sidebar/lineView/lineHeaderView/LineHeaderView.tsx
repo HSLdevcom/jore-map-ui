@@ -38,7 +38,7 @@ interface ILineHeaderViewState {
     reservedStartDates: string[];
 }
 
-@inject('lineHeaderStore', 'errorStore', 'alertStore')
+@inject('alertStore', 'errorStore', 'lineHeaderStore')
 @observer
 class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewState> {
     private isEditingDisabledListener: IReactionDisposer;

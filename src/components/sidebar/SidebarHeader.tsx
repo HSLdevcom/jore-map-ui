@@ -16,6 +16,7 @@ interface ISidebarHeaderProps {
     loginStore?: LoginStore;
     isEditing?: boolean;
     shouldShowClosePromptMessage?: boolean;
+    shouldShowEditButtonClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onBackButtonClick?: () => void;
     onCloseButtonClick?: () => void;
@@ -29,15 +30,22 @@ const revertPromptMessage =
 @inject('loginStore')
 @observer
 class SidebarHeader extends React.Component<ISidebarHeaderProps> {
-    onBackButtonClick = () => {
+    private onBackButtonClick = () => {
         if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
             this.props.onBackButtonClick ? this.props.onBackButtonClick() : navigator.goBack();
         }
     };
 
-    onEditButtonClick = () => {
+    private onEditButtonClick = () => {
         if (this.props.isEditing!) {
-            if (!this.props.shouldShowClosePromptMessage || confirm(revertPromptMessage)) {
+            if (this.props.shouldShowEditButtonClosePromptMessage !== undefined) {
+                if (
+                    !this.props.shouldShowEditButtonClosePromptMessage ||
+                    confirm(revertPromptMessage)
+                ) {
+                    this.props.onEditButtonClick!();
+                }
+            } else if (!this.props.shouldShowClosePromptMessage || confirm(revertPromptMessage)) {
                 this.props.onEditButtonClick!();
             }
         } else {
@@ -45,7 +53,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
         }
     };
 
-    onCloseButtonClick = () => {
+    private onCloseButtonClick = () => {
         const homeLink = routeBuilder
             .to(SubSites.home)
             .clear()
