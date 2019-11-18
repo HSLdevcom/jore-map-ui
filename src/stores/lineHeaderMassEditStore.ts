@@ -46,9 +46,11 @@ export class LineHeaderMassEditStore {
         this.clear();
 
         this._massEditLineHeaders = lineHeaders.map((lineHeader: ILineHeader, index: number) => {
+            const clonedLineHeader = _.cloneDeep(lineHeader);
+            clonedLineHeader.originalStartDate = lineHeader.startDate;
             const massEditLineHeader: IMassEditLineHeader = {
-                lineHeader,
                 id: index,
+                lineHeader: clonedLineHeader,
                 validationResult: {
                     isValid: true
                 }
