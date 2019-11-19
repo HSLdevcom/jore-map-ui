@@ -25,6 +25,16 @@ select:focus {
     border: 1.5px solid $busBlue;
 }
 
+:global(.leaflet-popup-content) {
+    width: auto !important;
+    padding: 0;
+    margin: 0;
+}
+
+:global(.leaflet-popup-tip) {
+    background: $backgroundlightGrey;
+}
+
 :global(.react-datepicker-wrapper) {
     width: 100%;
 }

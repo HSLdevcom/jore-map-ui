@@ -17,7 +17,7 @@ interface IDropdownProps {
     disabled?: boolean;
     items: IDropdownItem[];
     emptyItem?: IDropdownItem;
-    onChange: (value: any) => void;
+    onChange?: (value: any) => void;
     validationResult?: IValidationResult;
     darkerInputLabel?: boolean;
     isBackgroundGrey?: boolean;
@@ -97,7 +97,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         this.setState({ searchString, displayedItems });
 
         if (this.props.isAnyInputValueAllowed) {
-            this.props.onChange(searchString);
+            this.props.onChange!(searchString);
         }
     }
 
@@ -106,7 +106,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         const validationResult = props.validationResult;
         const displayedItems = this.state.displayedItems;
         const onChange = (selectedItem: IDropdownItem) => {
-            if (selectedItem) props.onChange(selectedItem.value);
+            if (selectedItem) props.onChange!(selectedItem.value);
         };
         // Push selectedItem into dropdownItemList if it doesn't exist in dropdownItemList
         let selectedItem: IDropdownItem | undefined;

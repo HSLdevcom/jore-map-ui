@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
@@ -9,6 +9,7 @@ import GeocodingService from '~/services/geocodingService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
+import NetworkStore from './networkStore';
 
 export interface UndoState {
     links: ILink[];
@@ -31,6 +32,11 @@ export class NodeStore {
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
         this._isEditingDisabled = true;
+
+        reaction(
+            () => this.isDirty,
+            (value: boolean) => NetworkStore.setShouldShowNodeOpenConfirm(value)
+        );
     }
 
     @computed
@@ -228,6 +234,7 @@ export class NodeStore {
         this._links = [];
         this._node = null;
         this._oldNode = null;
+        this._oldLinks = [];
         this._geometryUndoStore.clear();
         this._isEditingDisabled = true;
     };
