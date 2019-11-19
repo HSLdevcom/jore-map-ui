@@ -39,6 +39,7 @@ class PopupLayer extends Component<PopupLayerProps> {
                     className={s.leafletPopup}
                     closeButton={popup.isCloseButtonVisible}
                     onClose={this.closePopup(popup)}
+                    autoPan={false}
                 >
                     <div
                         key={`popup-${popup.id}`}
