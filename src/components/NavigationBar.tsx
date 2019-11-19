@@ -51,8 +51,10 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
             isSyncLoading: true
         });
         const response = await ApiClient.postRequest(endpoints.SYNC_LOCAL_DB, {});
-        if (response.isDbSyncing) {
-            this.props.alertStore!.setFadeMessage('Sisäisen tietokannan synkkaus on jo käynnissä.');
+        if (response && response.isDbSyncing) {
+            this.props.alertStore!.setFadeMessage(
+                'Sisäisen JORE-tietokannan synkkaus on jo käynnissä.'
+            );
         }
         this.setState({
             isSyncLoading: false
