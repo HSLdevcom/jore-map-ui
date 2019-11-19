@@ -264,7 +264,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             this.props.confirmStore!.openConfirm(
                 <div className={s.nodeOpenConfirmContainer}>
                     Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun{' '}
-                    {properties.soltunnus}?
+                    {properties.soltunnus}? Tallentamattomat muutokset kumotaan.
                 </div>,
                 triggerNetworkNodeClick
             );
