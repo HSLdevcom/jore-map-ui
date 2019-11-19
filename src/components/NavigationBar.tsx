@@ -10,6 +10,7 @@ import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import AuthService from '~/services/authService';
+import { AlertStore } from '~/stores/alertStore.js';
 import { LoginStore } from '~/stores/loginStore';
 import ApiClient from '~/util/ApiClient';
 import packageVersion from '../project/version.json';
@@ -18,14 +19,16 @@ import * as s from './navigationBar.scss';
 import Loader, { LoaderSize } from './shared/loader/Loader';
 
 interface INavigationBarProps {
+    alertStore?: AlertStore;
     loginStore?: LoginStore;
 }
 
 interface INavigationBarState {
     isSyncLoading?: boolean;
+    isDbSyncing?: boolean;
 }
 
-@inject('loginStore')
+@inject('alertStore', 'loginStore')
 @observer
 class NavigationBar extends Component<INavigationBarProps, INavigationBarState> {
     constructor(props: INavigationBarProps) {
@@ -47,7 +50,12 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
         this.setState({
             isSyncLoading: true
         });
-        await ApiClient.postRequest(endpoints.SYNC_LOCAL_DB, {});
+        const response = await ApiClient.postRequest(endpoints.SYNC_LOCAL_DB, {});
+        if (response && response.isDbSyncing) {
+            this.props.alertStore!.setFadeMessage(
+                'Sisäisen JORE-tietokannan synkkaus on jo käynnissä.'
+            );
+        }
         this.setState({
             isSyncLoading: false
         });
@@ -68,25 +76,29 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                         <img className={s.logo} src={hslLogo} alt='HSL Logo' />
                         <div className={s.title}>Joukkoliikennerekisteri</div>
                     </div>
-                    {isSyncLoading ? (
-                        <div className={s.syncTextWrapper}>
-                            <Loader size={LoaderSize.TINY} />
-                            <div className={s.syncText}>
-                                Synkronoidaan sisäistä JORE-tietokantaa...
-                            </div>
-                        </div>
-                    ) : (
-                        <div
-                            className={s.refreshIconWrapper}
-                            title={
-                                'Synkronoi sisäinen JORE-tietokanta. Käytetään, jos vanhalla käyttöliittymällä on tehty muutoksia ja ne halutaan näkyviin tähän (uuteen) käyttöliittymään.'
-                            }
-                        >
-                            <IoMdRefresh
-                                className={classnames(s.navigationBarIcon, s.refreshIcon)}
-                                onClick={this.syncLocalDatabase}
-                            />
-                        </div>
+                    {this.props.loginStore!.hasWriteAccess && (
+                        <>
+                            {isSyncLoading ? (
+                                <div className={s.syncTextWrapper}>
+                                    <Loader size={LoaderSize.TINY} />
+                                    <div className={s.syncText}>
+                                        Synkronoidaan sisäistä JORE-tietokantaa...
+                                    </div>
+                                </div>
+                            ) : (
+                                <div
+                                    className={s.refreshIconWrapper}
+                                    title={
+                                        'Synkronoi sisäinen JORE-tietokanta. Käytetään, jos vanhalla käyttöliittymällä on tehty muutoksia ja ne halutaan näkyviin tähän (uuteen) käyttöliittymään.'
+                                    }
+                                >
+                                    <IoMdRefresh
+                                        className={classnames(s.navigationBarIcon, s.refreshIcon)}
+                                        onClick={this.syncLocalDatabase}
+                                    />
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
                 <div className={s.rightContentWrapper}>
