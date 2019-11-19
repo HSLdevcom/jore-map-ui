@@ -222,7 +222,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         const stop = node.stop!;
         const onChange = this.updateStopProperty;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
-        const isStopAreaSelected = stop.areaId ? false : true;
         return (
             <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader hideCloseButton={true} hideBackButton={true}>
@@ -296,19 +295,17 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='PYSÄKKIALUE'
                             validationResult={invalidPropertiesMap['areaId']}
                         />
+                        { stop.areaId &&
                         <Button
-                            className={classnames(
-                                s.editStopAreaButton,
-                                isStopAreaSelected ? s.disabled : ''
-                            )}
+                            className={s.editStopAreaButton}
                             hasReverseColor={true}
                             onClick={() => {
                                 this.redirectToStopArea(stop.areaId);
                             }}
-                            disabled={isStopAreaSelected}
                         >
                             <FiInfo />
                         </Button>
+                        }
                     </div>
                     <div className={s.flexRow}>
                         <Button
