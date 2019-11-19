@@ -97,7 +97,6 @@ class StopForm extends Component<IStopFormProps> {
             isReadOnly
         } = this.props;
         const stop = node.stop!;
-        const isStopAreaSelected = stop.areaId ? false : true;
         return (
             <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader hideCloseButton={true} hideBackButton={true}>
@@ -169,33 +168,29 @@ class StopForm extends Component<IStopFormProps> {
                             label='PYSÄKKIALUE'
                             validationResult={stopInvalidPropertiesMap['areaId']}
                         />
-                        {!isReadOnly && (
-                            <Button
-                                className={classnames(
-                                    s.editStopAreaButton,
-                                    isStopAreaSelected ? s.disabled : ''
-                                )}
-                                hasReverseColor={true}
-                                onClick={() => {
-                                    this.redirectToStopArea(stop.areaId);
-                                }}
-                                disabled={isStopAreaSelected}
-                            >
-                                <FiInfo />
-                            </Button>
-                        )}
+                        { !isReadOnly && stop.areaId &&
+                        <Button
+                            className={s.editStopAreaButton}
+                            hasReverseColor={true}
+                            onClick={() => {
+                                this.redirectToStopArea(stop.areaId);
+                            }}
+                        >
+                            <FiInfo />
+                        </Button>
+                        }
                     </div>
-                    {!isReadOnly && (
-                        <div className={s.flexRow}>
-                            <Button
-                                onClick={() => this.redirectToNewStopArea()}
-                                type={ButtonType.SQUARE}
-                                className={s.createNewStopAreaButton}
-                            >
-                                Luo uusi pysäkkialue
-                            </Button>
-                        </div>
-                    )}
+                    { !isReadOnly &&
+                    <div className={s.flexRow}>
+                        <Button
+                            onClick={() => this.redirectToNewStopArea()}
+                            type={ButtonType.SQUARE}
+                            className={s.createNewStopAreaButton}
+                        >
+                            Luo uusi pysäkkialue
+                        </Button>
+                    </div>
+                    }
                     <div className={s.flexRow}>
                         <InputContainer
                             label='PITKÄ NIMI'
