@@ -1,60 +1,57 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import { withLeaflet, Popup } from 'react-leaflet';
-import { INode } from '~/models';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
-import { PopupStore } from '~/stores/popupStore';
-import { LeafletContext } from '../Map';
+import { Popup } from 'react-leaflet';
+import { IPopup, PopupStore } from '~/stores/popupStore';
 import * as s from './popupLayer.scss';
 
 interface PopupLayerProps {
     popupStore?: PopupStore;
-    leaflet: LeafletContext;
 }
 
 @inject('popupStore')
 @observer
 class PopupLayer extends Component<PopupLayerProps> {
-    private onClose = () => {
-        this.props.popupStore!.closePopup();
+    private popupRefs: object;
+
+    private closePopup = (popup: IPopup) => () => {
+        this.props.popupStore!.closePopup(popup.id!);
+    };
+
+    private bringPopupToFront = (id: number) => {
+        const popupRef = this.popupRefs[id];
+        popupRef.leafletElement.bringToFront();
     };
 
     render() {
-        if (this.props.popupStore!.popupNode) {
-            const node = this.props.popupStore!.popupNode as INode;
+        const popups = this.props.popupStore!.popups;
+        if (popups.length === 0) {
+            return null;
+        }
+        this.popupRefs = {};
 
-            const openNode = () => {
-                const map = this.props.leaflet.map;
-
-                map!.setView(node.coordinates, map!.getZoom());
-                this.onClose();
-                const nodeLink = routeBuilder
-                    .to(subSites.node)
-                    .toTarget(':id', node.id)
-                    .toLink();
-                navigator.goTo(nodeLink);
-            };
-
+        return popups.map((popup: IPopup) => {
             return (
                 <Popup
-                    position={node.coordinates}
+                    key={`popup-${popup.id}`}
+                    ref={ref => (this.popupRefs[popup.id!] = ref)}
+                    autoClose={Boolean(popup.isAutoCloseOn)}
+                    position={popup.coordinates}
                     className={s.leafletPopup}
-                    closeButton={false}
-                    onClose={this.onClose}
+                    closeButton={popup.isCloseButtonVisible}
+                    onClose={this.closePopup(popup)}
+                    autoPan={false}
                 >
-                    <div className={s.popupContainer}>
-                        <div onClick={openNode}>Avaa kohde</div>
-                        <div>Tulosta</div>
-                        <div>Poista linkki</div>
-                        <div>Lisää linkki</div>
-                        <div>Kopioi toiseen suuntaan</div>
+                    <div
+                        key={`popup-${popup.id}`}
+                        onClick={() => this.bringPopupToFront(popup.id!)}
+                        className={s.popupContentWrapper}
+                    >
+                        {popup.content(popup.id!)}
                     </div>
                 </Popup>
             );
-        }
-        return null;
+        });
     }
 }
-export default withLeaflet(PopupLayer);
+
+export default PopupLayer;

@@ -5,15 +5,13 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
-import { Button, Dropdown } from '~/components/controls';
-import TextContainer from '~/components/controls/TextContainer';
+import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
-import StartNodeType from '~/enums/startNodeType';
 import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
 import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
@@ -30,10 +28,9 @@ import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
-import NodeHelper from '~/util/NodeHelper';
-import InputContainer from '../../controls/InputContainer';
 import SidebarHeader from '../SidebarHeader';
-import StopForm from './StopForm';
+import NodeForm from './NodeForm';
+import StopView from './StopView';
 import * as s from './nodeView.scss';
 
 interface INodeViewProps {
@@ -320,9 +317,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             !this.props.nodeStore!.isDirty ||
             isNodeFormInvalid ||
             isStopFormInvalid;
-        const nodeTypeCodeList = this.props
-            .codeListStore!.getDropdownItemList('Solmutyyppi (P/E)')
-            .filter(item => item.value !== StartNodeType.DISABLED);
+
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
@@ -334,133 +329,24 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     >
                         Solmu {node.id}
                     </SidebarHeader>
-                    <div className={s.form}>
-                        <div className={s.formSection}>
-                            <div className={s.flexRow}>
-                                <Dropdown
-                                    label='TYYPPI'
-                                    onChange={this.onChangeNodeProperty('type')}
-                                    disabled={isEditingDisabled}
-                                    selected={node.type}
-                                    items={nodeTypeCodeList}
-                                />
-                                <Dropdown
-                                    label='MATKA-AIKAPISTE'
-                                    disabled={isEditingDisabled}
-                                    items={this.props.codeListStore!.getDropdownItemList(
-                                        'Kyllä/Ei'
-                                    )}
-                                    selected={node.tripTimePoint}
-                                    onChange={this.onChangeNodeProperty('tripTimePoint')}
-                                />
-                            </div>
-                            {!this.props.isNewNode && (
-                                <div className={s.flexRow}>
-                                    <TextContainer label='MUOKANNUT' value={node.modifiedBy} />
-                                    <TextContainer
-                                        label='MUOKATTU PVM'
-                                        value={node.modifiedOn}
-                                        isTimeIncluded={true}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                        <div className={classnames(s.formSection, s.noBorder)}>
-                            <div className={s.sectionHeader}>
-                                Mitattu piste
-                                <div
-                                    className={classnames(
-                                        s.labelIcon,
-                                        NodeHelper.getNodeTypeClass(node.type, {
-                                            isNodeHighlighted: true
-                                        })
-                                    )}
-                                />
-                            </div>
-                            <div className={s.flexRow}>
-                                <InputContainer
-                                    value={node.coordinates.lat}
-                                    onChange={this.latChange(node.coordinates, 'coordinates')}
-                                    label='LATITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                    validationResult={invalidPropertiesMap['coordinates']}
-                                />
-                                <InputContainer
-                                    value={node.coordinates.lng}
-                                    onChange={this.lngChange(node.coordinates, 'coordinates')}
-                                    label='LONGITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                    validationResult={invalidPropertiesMap['coordinates']}
-                                />
-                            </div>
-                            <div className={s.flexRow}>
-                                <InputContainer
-                                    type='date'
-                                    label='MITTAUSPVM'
-                                    value={node.measurementDate}
-                                    disabled={isEditingDisabled}
-                                    onChange={this.onChangeNodeProperty('measurementDate')}
-                                    isClearButtonVisibleOnDates={true}
-                                    validationResult={invalidPropertiesMap['measurementDate']}
-                                />
-                                {node.type === NodeType.STOP && (
-                                    <TextContainer
-                                        label='MITTAUSTAPA'
-                                        value={NodeHelper.getMeasurementTypeLabel(
-                                            node.measurementType
-                                        )}
-                                    />
-                                )}
-                            </div>
-                            {node.type === NodeType.STOP && (
-                                <>
-                                    <div className={s.sectionHeader}>
-                                        Projisoitu piste
-                                        <div className={classnames(s.labelIcon, s.projected)} />
-                                    </div>
-                                    <div className={s.flexRow}>
-                                        <InputContainer
-                                            value={node.coordinatesProjection.lat}
-                                            onChange={this.latChange(
-                                                node.coordinatesProjection,
-                                                'coordinatesProjection'
-                                            )}
-                                            label='LATITUDE'
-                                            type='number'
-                                            disabled={isEditingDisabled}
-                                            validationResult={
-                                                invalidPropertiesMap['coordinatesProjection']
-                                            }
-                                        />
-                                        <InputContainer
-                                            value={node.coordinatesProjection.lng}
-                                            onChange={this.lngChange(
-                                                node.coordinatesProjection,
-                                                'coordinatesProjection'
-                                            )}
-                                            label='LONGITUDE'
-                                            type='number'
-                                            disabled={isEditingDisabled}
-                                            validationResult={
-                                                invalidPropertiesMap['coordinatesProjection']
-                                            }
-                                        />
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                        {node.type === NodeType.STOP && node.stop && (
-                            <StopForm
-                                isEditingDisabled={isEditingDisabled}
-                                node={node}
-                                onNodePropertyChange={this.onChangeNodeProperty}
-                                isNewStop={this.props.isNewNode}
-                                nodeInvalidPropertiesMap={invalidPropertiesMap}
-                            />
-                        )}
-                    </div>
+                    <NodeForm
+                        node={node}
+                        isNewNode={this.props.isNewNode}
+                        isEditingDisabled={isEditingDisabled}
+                        invalidPropertiesMap={invalidPropertiesMap}
+                        onChangeNodeProperty={this.onChangeNodeProperty}
+                        lngChange={this.lngChange}
+                        latChange={this.latChange}
+                    />
+                    {node.type === NodeType.STOP && node.stop && (
+                        <StopView
+                            isEditingDisabled={isEditingDisabled}
+                            node={node}
+                            onNodePropertyChange={this.onChangeNodeProperty}
+                            isNewStop={this.props.isNewNode}
+                            nodeInvalidPropertiesMap={invalidPropertiesMap}
+                        />
+                    )}
                 </div>
                 <Button
                     type={ButtonType.SAVE}
