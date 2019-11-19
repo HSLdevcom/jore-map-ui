@@ -11,6 +11,7 @@ import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
@@ -36,6 +37,7 @@ interface INetworkLayersProps {
     nodeStore?: NodeStore;
     linkStore?: LinkStore;
     popupStore?: PopupStore;
+    confirmStore?: ConfirmStore;
 }
 
 interface ILinkProperties {
@@ -57,7 +59,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore')
+@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore', 'confirmStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
     private reactionDisposer = {};
@@ -255,7 +257,20 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             nodeId: properties.soltunnus,
             nodeType: properties.soltyyppi
         };
-        EventManager.trigger('networkNodeClick', clickParams);
+        const triggerNetworkNodeClick = () => {
+            EventManager.trigger('networkNodeClick', clickParams);
+        };
+        if (this.props.networkStore!.shouldShowNodeOpenConfirm) {
+            this.props.confirmStore!.openConfirm(
+                <div className={s.nodeOpenConfirmContainer}>
+                    Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun{' '}
+                    {properties.soltunnus}?
+                </div>,
+                triggerNetworkNodeClick
+            );
+        } else {
+            triggerNetworkNodeClick();
+        }
     };
 
     private onNetworkNodeRightClick = (clickEvent: any) => {
