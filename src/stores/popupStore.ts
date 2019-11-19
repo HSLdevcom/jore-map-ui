@@ -1,4 +1,5 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
+import NetworkStore, { MapLayer } from './networkStore';
 
 interface IPopup {
     id?: number;
@@ -16,6 +17,8 @@ export class PopupStore {
     constructor() {
         this._popups = [];
         this._idCounter = 0;
+
+        reaction(() => [NetworkStore.isMapLayerVisible(MapLayer.node)], this.closePopups);
     }
 
     @computed
@@ -37,6 +40,14 @@ export class PopupStore {
         this._popups = this._popups.filter(p => p.id !== id);
         if (this._popups.length === 0) {
             this._idCounter = 0;
+        }
+    };
+
+    @action
+    private closePopups = (arg: boolean[]) => {
+        const isNodeLayerVisible = arg[0];
+        if (!isNodeLayerVisible) {
+            this._popups = [];
         }
     };
 }
