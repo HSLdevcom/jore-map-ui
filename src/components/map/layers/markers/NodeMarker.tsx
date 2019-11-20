@@ -161,37 +161,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     };
 
-    private renderAdditionalLocations = (node: INode) => {
-        const nodeBaseClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
-
-        return (
-            <>
-                <LeafletMarker
-                    position={node.coordinatesManual}
-                    icon={LeafletUtils.createDivIcon(
-                        <div className={classnames(s.manual, ...this.getMarkerClasses())} />,
-                        { className: nodeBaseClass }
-                    )}
-                    draggable={this.isDraggable()}
-                    onDragEnd={this.props.onMoveMarker && this.onMoveMarker('coordinatesManual')}
-                    interactive={!this.props.isClickDisabled}
-                />
-                <LeafletMarker
-                    position={node.coordinatesProjection}
-                    icon={LeafletUtils.createDivIcon(
-                        <div className={classnames(s.projection, ...this.getMarkerClasses())} />,
-                        { className: nodeBaseClass }
-                    )}
-                    draggable={this.isDraggable()}
-                    onDragEnd={
-                        this.props.onMoveMarker && this.onMoveMarker('coordinatesProjection')
-                    }
-                    interactive={!this.props.isClickDisabled}
-                />
-            </>
-        );
-    };
-
     private isDraggable = () =>
         // TODO this should probably check other stuff too...
         this.props.isSelected && this.props.isDraggable;
@@ -236,9 +205,22 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 >
                     {this.renderStopRadiusCircle()}
                 </LeafletMarker>
-                {this.props.isSelected &&
-                    this.props.node.type === NodeType.STOP &&
-                    this.renderAdditionalLocations(this.props.node!)}
+                {this.props.isSelected && this.props.node.type === NodeType.STOP && (
+                    <LeafletMarker
+                        position={this.props.node.coordinatesProjection}
+                        icon={LeafletUtils.createDivIcon(
+                            <div
+                                className={classnames(s.projection, ...this.getMarkerClasses())}
+                            />,
+                            { className: nodeBaseClass }
+                        )}
+                        draggable={this.isDraggable()}
+                        onDragEnd={
+                            this.props.onMoveMarker && this.onMoveMarker('coordinatesProjection')
+                        }
+                        interactive={!this.props.isClickDisabled}
+                    />
+                )}
             </>
         );
     }

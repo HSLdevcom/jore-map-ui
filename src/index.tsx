@@ -1,18 +1,15 @@
-import createBrowserHistory from 'history/createBrowserHistory';
 import { configure } from 'mobx';
 import { Provider } from 'mobx-react';
-import { syncHistoryWithStore } from 'mobx-react-router';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
-import { Router } from 'react-router';
 import App from './components/App';
 import './index.scss';
-import navigator from './routing/navigator';
 import AlertStore from './stores/alertStore';
 import CodeListStore from './stores/codeListStore';
 import ConfirmStore from './stores/confirmStore';
 import ErrorStore from './stores/errorStore';
+import LineHeaderMassEditStore from './stores/lineHeaderMassEditStore';
 import LineHeaderStore from './stores/lineHeaderStore';
 import LineStore from './stores/lineStore';
 import LinkStore from './stores/linkStore';
@@ -33,8 +30,6 @@ import ApolloClient from './util/ApolloClient';
 
 configure({ enforceActions: 'always' });
 
-const browserHistory = createBrowserHistory();
-
 // Observable stores
 const stores = {
     errorStore: ErrorStore,
@@ -43,6 +38,7 @@ const stores = {
     loginStore: LoginStore,
     lineStore: LineStore,
     lineHeaderStore: LineHeaderStore,
+    lineHeaderMassEditStore: LineHeaderMassEditStore,
     routeStore: RouteStore,
     routeListStore: RouteListStore,
     routePathStore: RoutePathStore,
@@ -59,14 +55,10 @@ const stores = {
     confirmStore: ConfirmStore
 };
 
-const history = syncHistoryWithStore(browserHistory, navigator.getStore());
-
 ReactDOM.render(
     <Provider {...stores}>
         <ApolloProvider client={ApolloClient.getClient()}>
-            <Router history={history}>
-                <App />
-            </Router>
+            <App />
         </ApolloProvider>
     </Provider>,
     document.getElementById('root') as HTMLElement

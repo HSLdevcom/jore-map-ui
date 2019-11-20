@@ -15,9 +15,6 @@
         &.measured {
             background-color: $nodeMeasuredColor;
         }
-        &.manual {
-            background-color: $nodeManualColor;
-        }
         &.projection {
             background-color: $nodeProjectionColor;
         }
@@ -46,6 +43,7 @@
     stroke: none;
     fill: $busBlue;
     fill-opacity: 0.3;
+    pointer-events: none !important;
 }
 
 .nodeLabel {

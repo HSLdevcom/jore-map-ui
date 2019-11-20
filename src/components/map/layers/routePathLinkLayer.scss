@@ -1,0 +1,17 @@
+@import '../../shared/styles/common.scss';
+
+.popupContainer {
+    font-size: $mediumFontSize;
+    padding: 15px;
+    width: 250px;
+
+    /* Popup items */
+    > div {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    > div:hover {
+        background-color: darken($backgroundlightGrey, 10);
+    }
+}

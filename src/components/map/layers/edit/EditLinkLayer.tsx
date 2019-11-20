@@ -27,11 +27,11 @@ interface IEditLinkLayerProps {
 @inject('linkStore', 'mapStore', 'loginStore')
 @observer
 class EditLinkLayer extends Component<IEditLinkLayerProps> {
-    private reactionDisposer: IReactionDisposer;
+    private linkListener: IReactionDisposer;
     private editableLinks: L.Polyline[] = [];
 
     componentDidMount() {
-        this.reactionDisposer = reaction(
+        this.linkListener = reaction(
             () => this.props.linkStore!.link,
             () => this.props.linkStore!.link === null && this.removeOldLinks()
         );
@@ -40,7 +40,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     }
 
     componentWillUnmount() {
-        this.reactionDisposer();
+        this.linkListener();
 
         const map = this.props.leaflet.map;
         map!.off('editable:vertex:dragend');

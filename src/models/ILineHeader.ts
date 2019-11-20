@@ -3,7 +3,7 @@ interface ILineHeader {
     originalStartDate?: Date;
     startDate: Date;
     endDate: Date;
-    lineNameFi?: string;
+    lineNameFi: string;
     lineShortNameFi?: string;
     lineNameSw?: string;
     lineShortNameSw?: string;

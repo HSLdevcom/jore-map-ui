@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
@@ -9,6 +9,7 @@ import GeocodingService from '~/services/geocodingService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
+import NetworkStore from './networkStore';
 
 export interface UndoState {
     links: ILink[];
@@ -31,6 +32,11 @@ export class NodeStore {
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
         this._isEditingDisabled = true;
+
+        reaction(
+            () => this.isDirty,
+            (value: boolean) => NetworkStore.setShouldShowNodeOpenConfirm(value)
+        );
     }
 
     @computed
@@ -41,6 +47,11 @@ export class NodeStore {
     @computed
     get node() {
         return this._node!;
+    }
+
+    @computed
+    get oldNode() {
+        return this._oldNode!;
     }
 
     @computed
@@ -139,11 +150,7 @@ export class NodeStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this._links = newLinks;
-        const geometryVariables: NodeLocationType[] = [
-            'coordinates',
-            'coordinatesManual',
-            'coordinatesProjection'
-        ];
+        const geometryVariables: NodeLocationType[] = ['coordinates', 'coordinatesProjection'];
         geometryVariables.forEach(
             coordinateName => (this._node![coordinateName] = newNode[coordinateName])
         );
@@ -161,7 +168,6 @@ export class NodeStore {
     public mirrorCoordinates = (node: INode) => {
         if (node.type !== NodeType.STOP) {
             node.coordinatesProjection = node.coordinates;
-            node.coordinatesManual = node.coordinates;
         }
     };
 
@@ -228,6 +234,7 @@ export class NodeStore {
         this._links = [];
         this._node = null;
         this._oldNode = null;
+        this._oldLinks = [];
         this._geometryUndoStore.clear();
         this._isEditingDisabled = true;
     };
@@ -244,7 +251,6 @@ export class NodeStore {
         this._geometryUndoStore.undo((previousUndoState: UndoState) => {
             this._links! = previousUndoState.links;
             this._node!.coordinates = previousUndoState.node.coordinates;
-            this._node!.coordinatesManual = previousUndoState.node.coordinatesManual;
             this._node!.coordinatesProjection = previousUndoState.node.coordinatesProjection;
         });
     };
@@ -254,7 +260,6 @@ export class NodeStore {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._links! = nextUndoState.links;
             this._node!.coordinates = nextUndoState.node.coordinates;
-            this._node!.coordinatesManual = nextUndoState.node.coordinatesManual;
             this._node!.coordinatesProjection = nextUndoState.node.coordinatesProjection;
         });
     };

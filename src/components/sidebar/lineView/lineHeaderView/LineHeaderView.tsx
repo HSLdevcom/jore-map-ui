@@ -243,24 +243,6 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
         this.changeDates(startDate, endDate);
     };
 
-    private renderLineHeaderViewHeader = () => {
-        const lineHeaderStore = this.props.lineHeaderStore;
-        return (
-            <div className={s.sidebarHeaderSection}>
-                <SidebarHeader
-                    isEditButtonVisible={!this.props.isNewLineHeader}
-                    onEditButtonClick={lineHeaderStore!.toggleIsEditingDisabled}
-                    isEditing={!lineHeaderStore!.isEditingDisabled}
-                    shouldShowClosePromptMessage={lineHeaderStore!.isDirty}
-                >
-                    {this.props.isNewLineHeader
-                        ? 'Luo uusi linjan otsikko'
-                        : `Linjan otsikkotiedot`}
-                </SidebarHeader>
-            </div>
-        );
-    };
-
     private redirectToNewLineHeaderView = () => {
         const lineId = this.props.match!.params.id;
         const lineHeader = this.props.lineHeaderStore!.lineHeader;
@@ -283,7 +265,8 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
                 </div>
             );
         }
-        const lineHeader = this.props.lineHeaderStore!.lineHeader;
+        const lineHeaderStore = this.props.lineHeaderStore;
+        const lineHeader = lineHeaderStore!.lineHeader;
 
         if (!lineHeader) return null;
 
@@ -296,7 +279,18 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
         return (
             <div className={s.lineHeaderView}>
                 <div className={s.content}>
-                    {this.renderLineHeaderViewHeader()}
+                    <div className={s.sidebarHeaderSection}>
+                        <SidebarHeader
+                            isEditButtonVisible={!this.props.isNewLineHeader}
+                            onEditButtonClick={lineHeaderStore!.toggleIsEditingDisabled}
+                            isEditing={!lineHeaderStore!.isEditingDisabled}
+                            shouldShowClosePromptMessage={lineHeaderStore!.isDirty}
+                        >
+                            {this.props.isNewLineHeader
+                                ? 'Luo uusi linjan otsikko'
+                                : `Linjan otsikkotiedot`}
+                        </SidebarHeader>
+                    </div>
                     <div className={classnames(s.lineHeaderForm, s.form)}>
                         <div className={s.flexRow}>
                             <TextContainer label='LINJAN TUNNUS' value={lineHeader.lineId} />

@@ -1,22 +1,18 @@
 import classnames from 'classnames';
-import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import React from 'react';
+import React, { Component } from 'react';
+import { FiInfo } from 'react-icons/fi';
 import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import ButtonType from '~/enums/buttonType';
 import { INode, IStop } from '~/models';
-import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
-import StopService, { IStopSectionItem } from '~/services/stopService';
+import { IStopAreaItem } from '~/services/stopAreaService';
 import { CodeListStore } from '~/stores/codeListStore';
-import { NodeStore } from '~/stores/nodeStore';
 import SidebarHeader from '../SidebarHeader';
 import ShortIdInput from './ShortIdInput';
 import * as s from './stopForm.scss';
@@ -25,119 +21,29 @@ interface IStopFormProps {
     node: INode;
     isNewStop: boolean;
     isEditingDisabled: boolean;
-    nodeStore?: NodeStore;
-    codeListStore?: CodeListStore;
-    nodeInvalidPropertiesMap: object;
-    onNodePropertyChange: (property: keyof INode) => (value: any) => void;
-}
-
-interface IStopFormState {
-    isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
-    invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
-    stopAreas: IDropdownItem[];
+    stopAreas: IStopAreaItem[];
     stopSections: IDropdownItem[];
+    stopInvalidPropertiesMap: object;
+    nodeInvalidPropertiesMap: object;
+    updateStopProperty?: (property: keyof IStop) => (value: any) => void;
+    onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
+    isReadOnly?: boolean;
+    codeListStore?: CodeListStore;
 }
 
-@inject('nodeStore', 'codeListStore')
+@inject('codeListStore')
 @observer
-class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
-    private isEditingDisabledListener: IReactionDisposer;
-    private nodeListener: IReactionDisposer;
-    private stopPropertyListeners: IReactionDisposer[];
-    private mounted: boolean;
+class StopForm extends Component<IStopFormProps> {
+    private onStopAreaChange = (stopAreaId: string) => {
+        const stopArea = this.props.stopAreas.find(obj => {
+            return obj.pysalueid === stopAreaId;
+        });
 
-    constructor(props: IStopFormProps) {
-        super(props);
-        this.state = {
-            isLoading: false,
-            invalidPropertiesMap: {},
-            isEditingDisabled: false,
-            stopAreas: [],
-            stopSections: []
-        };
-        this.stopPropertyListeners = [];
-    }
-
-    async componentDidMount() {
-        this.mounted = true;
-        this.validateStop();
-        this.isEditingDisabledListener = reaction(
-            () => this.props.nodeStore!.isEditingDisabled,
-            this.onChangeIsEditingDisabled
-        );
-        this.nodeListener = reaction(() => this.props.nodeStore!.node, this.onNodeChange);
-        this.createStopPropertyListeners();
-        if (this.props.isNewStop) {
-            this.props.nodeStore!.fetchAddressData();
+        if (stopArea) {
+            this.props.updateStopProperty!('nameFi')(stopArea.nimi);
+            this.props.updateStopProperty!('nameSw')(stopArea.nimir);
         }
-        const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
-        const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
-        if (this.mounted) {
-            this.setState({
-                stopAreas: this.createStopAreaDropdownItems(stopAreas),
-                stopSections: this.createStopSectionDropdownItems(stopSections)
-            });
-        }
-    }
-
-    componentWillUnmount() {
-        this.mounted = false;
-        this.isEditingDisabledListener();
-        this.removeStopPropertyListeners();
-        this.nodeListener();
-    }
-
-    private createStopPropertyListeners = () => {
-        const nodeStore = this.props.nodeStore;
-        if (!nodeStore!.node) return;
-
-        const stop = nodeStore!.node.stop;
-        for (const property in stop!) {
-            if (Object.prototype.hasOwnProperty.call(stop, property)) {
-                const listener = this.createListener(property);
-                this.stopPropertyListeners.push(listener);
-            }
-        }
-    };
-
-    private createListener = (property: string) => {
-        return reaction(
-            () => this.props.nodeStore!.node && this.props.nodeStore!.node!.stop![property],
-            this.validateStopProperty(property)
-        );
-    };
-
-    private removeStopPropertyListeners = () => {
-        this.stopPropertyListeners.forEach((listener: IReactionDisposer) => listener());
-        this.stopPropertyListeners = [];
-    };
-
-    private onChangeIsEditingDisabled = () => {
-        this.clearInvalidPropertiesMap();
-        if (!this.props.nodeStore!.isEditingDisabled) this.validateStop();
-    };
-
-    private onNodeChange = async () => {
-        this.validateStop();
-        this.removeStopPropertyListeners();
-        this.createStopPropertyListeners();
-        if (
-            !this.props.nodeStore!.node ||
-            (!this.props.isNewStop && this.props.nodeStore!.isEditingDisabled)
-        ) {
-            return;
-        }
-        await this.props.nodeStore!.fetchAddressData();
-    };
-
-    private validateStopProperty = (property: string) => () => {
-        const nodeStore = this.props.nodeStore;
-        if (!nodeStore!.node) return;
-        const value = nodeStore!.node!.stop![property];
-        this.validateProperty(stopValidationModel[property], property, value);
-        const isStopFormValid = this.isFormValid();
-        nodeStore!.setIsStopFormValid(isStopFormValid);
+        this.props.updateStopProperty!('areaId')(stopAreaId);
     };
 
     private createStopAreaDropdownItems = (stopAreas: IStopAreaItem[]): IDropdownItem[] => {
@@ -150,31 +56,6 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
         });
     };
 
-    private createStopSectionDropdownItems = (
-        stopSections: IStopSectionItem[]
-    ): IDropdownItem[] => {
-        return stopSections.map((stopSection: IStopSectionItem) => {
-            const item: IDropdownItem = {
-                value: `${stopSection.selite}`,
-                label: `${stopSection.selite}`
-            };
-            return item;
-        });
-    };
-
-    private validateStop = () => {
-        const node = this.props.nodeStore!.node;
-        if (!node) return;
-        const stop = node.stop;
-        this.validateAllProperties(stopValidationModel, stop);
-        const isStopFormValid = this.isFormValid();
-        this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
-    };
-
-    private updateStopProperty = (property: keyof IStop) => (value: any) => {
-        this.props.nodeStore!.updateStop(property, value);
-    };
-
     private getShortIdLetterItems = () => {
         const shortIdLetterItems = this.props.codeListStore!.getDropdownItemList('Lyhyttunnus');
         shortIdLetterItems.forEach(item => (item.label = `${item.value} - ${item.label}`));
@@ -182,10 +63,17 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     };
 
     private onShortIdLetterChange = (value: string) => {
-        this.props.onNodePropertyChange('shortIdLetter')(value);
+        this.props.onNodePropertyChange!('shortIdLetter')(value);
         if (!value) {
-            this.props.onNodePropertyChange('shortIdString')(null);
+            this.props.onNodePropertyChange!('shortIdString')(null);
         }
+    };
+
+    private redirectToStopArea = (areaId: string | undefined) => {
+        const routePathViewLink = RouteBuilder.to(SubSites.stopArea)
+            .toTarget(':id', areaId!)
+            .toLink();
+        navigator.goTo(routePathViewLink);
     };
 
     private redirectToNewStopArea = () => {
@@ -196,16 +84,26 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
     };
 
     render() {
-        const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
-        const node = this.props.node;
+        const {
+            node,
+            isNewStop,
+            isEditingDisabled,
+            stopAreas,
+            stopSections,
+            stopInvalidPropertiesMap,
+            nodeInvalidPropertiesMap,
+            onNodePropertyChange,
+            updateStopProperty,
+            isReadOnly
+        } = this.props;
         const stop = node.stop!;
-        const onChange = this.updateStopProperty;
-        const invalidPropertiesMap = this.state.invalidPropertiesMap;
         return (
             <div className={classnames(s.stopView, s.form)}>
-                <SidebarHeader hideCloseButton={true}>Pysäkin tiedot</SidebarHeader>
+                <SidebarHeader hideCloseButton={true} hideBackButton={true}>
+                    Pysäkin tiedot
+                </SidebarHeader>
                 <div className={s.formSection}>
-                    {this.props.isNewStop && (
+                    {isNewStop && (
                         <div className={s.flexRow}>
                             <div className={s.formItem}>
                                 <div className={s.inputLabel}>VERKKO</div>
@@ -213,9 +111,7 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                                     selectedTransitTypes={
                                         stop.transitType ? [stop.transitType] : []
                                     }
-                                    toggleSelectedTransitType={this.updateStopProperty(
-                                        'transitType'
-                                    )}
+                                    toggleSelectedTransitType={updateStopProperty!('transitType')}
                                 />
                             </div>
                         </div>
@@ -236,8 +132,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             node={node}
                             isBackgroundGrey={!isEditingDisabled && !Boolean(node.shortIdLetter)}
                             isEditingDisabled={isEditingDisabled || !Boolean(node.shortIdLetter)}
-                            nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
-                            onNodePropertyChange={this.props.onNodePropertyChange}
+                            nodeInvalidPropertiesMap={nodeInvalidPropertiesMap}
+                            onNodePropertyChange={onNodePropertyChange}
                         />
                     </div>
                 </div>
@@ -246,33 +142,69 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <div className={s.flexRow}>
                         <InputContainer
                             label='NIMI'
-                            disabled={isEditingDisabled}
+                            disabled={true}
                             value={stop.nameFi}
-                            onChange={onChange('nameFi')}
-                            validationResult={invalidPropertiesMap['nameFi']}
+                            onChange={updateStopProperty!('nameFi')}
+                            validationResult={stopInvalidPropertiesMap['nameFi']}
                         />
                         <InputContainer
                             label='NIMI RUOTSIKSI'
-                            disabled={isEditingDisabled}
+                            disabled={true}
                             value={stop.nameSw}
-                            onChange={onChange('nameSw')}
-                            validationResult={invalidPropertiesMap['nameSw']}
+                            onChange={updateStopProperty!('nameSw')}
+                            validationResult={stopInvalidPropertiesMap['nameSw']}
                         />
                     </div>
+                    <div className={s.flexRow}>
+                        <Dropdown
+                            onChange={this.onStopAreaChange}
+                            items={this.createStopAreaDropdownItems(stopAreas)}
+                            selected={stop.areaId}
+                            emptyItem={{
+                                value: '',
+                                label: ''
+                            }}
+                            disabled={isEditingDisabled}
+                            label='PYSÄKKIALUE'
+                            validationResult={stopInvalidPropertiesMap['areaId']}
+                        />
+                        { !isReadOnly && stop.areaId &&
+                        <Button
+                            className={s.editStopAreaButton}
+                            hasReverseColor={true}
+                            onClick={() => {
+                                this.redirectToStopArea(stop.areaId);
+                            }}
+                        >
+                            <FiInfo />
+                        </Button>
+                        }
+                    </div>
+                    { !isReadOnly &&
+                    <div className={s.flexRow}>
+                        <Button
+                            onClick={() => this.redirectToNewStopArea()}
+                            type={ButtonType.SQUARE}
+                            className={s.createNewStopAreaButton}
+                        >
+                            Luo uusi pysäkkialue
+                        </Button>
+                    </div>
+                    }
                     <div className={s.flexRow}>
                         <InputContainer
                             label='PITKÄ NIMI'
                             disabled={isEditingDisabled}
                             value={stop.nameLongFi}
-                            onChange={onChange('nameLongFi')}
-                            validationResult={invalidPropertiesMap['nameLongFi']}
+                            onChange={updateStopProperty!('nameLongFi')}
+                            validationResult={stopInvalidPropertiesMap['nameLongFi']}
                         />
                         <InputContainer
                             label='PITKÄ NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
                             value={stop.nameLongSw}
-                            onChange={onChange('nameLongSw')}
-                            validationResult={invalidPropertiesMap['nameLongSw']}
+                            onChange={updateStopProperty!('nameLongSw')}
+                            validationResult={stopInvalidPropertiesMap['nameLongSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -290,15 +222,15 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='PAIKAN NIMI'
                             disabled={isEditingDisabled}
                             value={stop.placeNameFi}
-                            onChange={onChange('placeNameFi')}
-                            validationResult={invalidPropertiesMap['placeNameFi']}
+                            onChange={updateStopProperty!('placeNameFi')}
+                            validationResult={stopInvalidPropertiesMap['placeNameFi']}
                         />
                         <InputContainer
                             label='PAIKAN NIMI RUOTSIKSI'
                             disabled={isEditingDisabled}
                             value={stop.placeNameSw}
-                            onChange={onChange('placeNameSw')}
-                            validationResult={invalidPropertiesMap['placeNameSw']}
+                            onChange={updateStopProperty!('placeNameSw')}
+                            validationResult={stopInvalidPropertiesMap['placeNameSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -306,15 +238,15 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='OSOITE'
                             disabled={isEditingDisabled}
                             value={stop.addressFi}
-                            onChange={onChange('addressFi')}
-                            validationResult={invalidPropertiesMap['addressFi']}
+                            onChange={updateStopProperty!('addressFi')}
+                            validationResult={stopInvalidPropertiesMap['addressFi']}
                         />
                         <InputContainer
                             label='OSOITE RUOTSIKSI'
                             disabled={isEditingDisabled}
                             value={stop.addressSw}
-                            onChange={onChange('addressSw')}
-                            validationResult={invalidPropertiesMap['addressSw']}
+                            onChange={updateStopProperty!('addressSw')}
+                            validationResult={stopInvalidPropertiesMap['addressSw']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -322,16 +254,16 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='POSTINUMERO'
                             disabled={isEditingDisabled}
                             value={stop.postalNumber}
-                            onChange={onChange('postalNumber')}
-                            validationResult={invalidPropertiesMap['postalNumber']}
+                            onChange={updateStopProperty!('postalNumber')}
+                            validationResult={stopInvalidPropertiesMap['postalNumber']}
                         />
                         <Dropdown
-                            onChange={onChange('municipality')}
+                            onChange={updateStopProperty!('municipality')}
                             items={this.props.codeListStore!.getDropdownItemList('Kunta (KELA)')}
                             selected={stop.municipality}
                             disabled={isEditingDisabled}
                             label='KUNTA'
-                            validationResult={invalidPropertiesMap['municipality']}
+                            validationResult={stopInvalidPropertiesMap['municipality']}
                         />
                     </div>
                 </div>
@@ -339,8 +271,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                     <div className={s.sectionHeader}>Muu tiedot</div>
                     <div className={s.flexRow}>
                         <Dropdown
-                            onChange={onChange('section')}
-                            items={this.state.stopSections}
+                            onChange={updateStopProperty!('section')}
+                            items={stopSections}
                             selected={stop.section}
                             emptyItem={{
                                 value: '',
@@ -348,53 +280,31 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             }}
                             disabled={isEditingDisabled}
                             label='VYÖHYKE'
-                            validationResult={invalidPropertiesMap['section']}
+                            validationResult={stopInvalidPropertiesMap['section']}
                         />
                         <InputContainer
                             label='HASTUS-PAIKKA'
                             disabled={isEditingDisabled}
                             value={stop.hastusId}
-                            validationResult={invalidPropertiesMap['hastusId']}
-                            onChange={onChange('hastusId')}
+                            validationResult={stopInvalidPropertiesMap['hastusId']}
+                            onChange={updateStopProperty!('hastusId')}
                         />
-                    </div>
-                    <div className={s.flexRow}>
-                        <Dropdown
-                            onChange={onChange('areaId')}
-                            items={this.state.stopAreas}
-                            selected={stop.areaId}
-                            emptyItem={{
-                                value: '',
-                                label: ''
-                            }}
-                            disabled={isEditingDisabled}
-                            label='PYSÄKKIALUE'
-                            validationResult={invalidPropertiesMap['areaId']}
-                        />
-                        <Button
-                            onClick={() => this.redirectToNewStopArea()}
-                            disabled={isEditingDisabled}
-                            type={ButtonType.SQUARE}
-                            className={s.createNewStopAreaButton}
-                        >
-                            Luo uusi pysäkkialue
-                        </Button>
                     </div>
                     <div className={s.flexRow}>
                         <InputContainer
                             label='LAITURI'
                             disabled={isEditingDisabled}
                             value={stop.platform}
-                            onChange={onChange('platform')}
-                            validationResult={invalidPropertiesMap['platform']}
+                            onChange={updateStopProperty!('platform')}
+                            validationResult={stopInvalidPropertiesMap['platform']}
                         />
                         <InputContainer
                             label='SÄDE (m)'
                             disabled={isEditingDisabled}
                             value={stop.radius}
                             type='number'
-                            onChange={onChange('radius')}
-                            validationResult={invalidPropertiesMap['radius']}
+                            onChange={updateStopProperty!('radius')}
+                            validationResult={stopInvalidPropertiesMap['radius']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -402,8 +312,8 @@ class StopForm extends ViewFormBase<IStopFormProps, IStopFormState> {
                             label='ELYNUMERO'
                             disabled={isEditingDisabled}
                             value={stop.elyNumber}
-                            validationResult={invalidPropertiesMap['elyNumber']}
-                            onChange={onChange('elyNumber')}
+                            validationResult={stopInvalidPropertiesMap['elyNumber']}
+                            onChange={updateStopProperty!('elyNumber')}
                         />
                     </div>
                 </div>

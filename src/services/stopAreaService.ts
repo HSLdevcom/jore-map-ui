@@ -14,6 +14,7 @@ interface ITerminalAreaItem {
 interface IStopAreaItem {
     pysalueid: string;
     nimi: string;
+    nimir: string;
 }
 
 interface IExternalTerminalArea {
@@ -43,7 +44,8 @@ class StopAreaService {
     };
 
     public static createStopArea = async (stopArea: IStopArea) => {
-        await ApiClient.createObject(endpoints.STOP_AREA, stopArea);
+        const stopAreaId = await ApiClient.createObject(endpoints.STOP_AREA, stopArea);
+        return stopAreaId;
     };
 
     public static fetchAllTerminalAreas = async (): Promise<ITerminalAreaItem[]> => {

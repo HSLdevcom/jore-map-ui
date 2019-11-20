@@ -5,17 +5,25 @@
 .stopView {
     margin-top: 15px;
 
-    .sectionHeader {
-        margin-top: 15px;
-        font-weight: bold;
-    }
-
     .createNewStopAreaButton {
-        width: 100px;
         white-space: pre-wrap;
+        align-self: flex-end;
+        height: 30px;
+        padding: 6px;
+        font-size: 0.85rem;
+        width: 100%;
     }
 
-    .formSection:last-of-type {
-        padding-bottom: 50px; /* To prevent dropdown from causing a scrollbar */
+    .editStopAreaButton {
+        font-size: 30px;
+        cursor: pointer;
+        transition: 0.5s;
+        align-self: flex-end;
+        padding: 6px;
+        border-radius: 5px;
+    }
+
+    .editStopAreaButton:hover {
+        opacity: 1;
     }
 }

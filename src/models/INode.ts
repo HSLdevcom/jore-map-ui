@@ -16,7 +16,6 @@ interface INodeBase extends INodePrimaryKey {
 export default interface INode extends INodeBase {
     stop: IStop | null;
     coordinates: L.LatLng;
-    coordinatesManual: L.LatLng;
     coordinatesProjection: L.LatLng;
     measurementDate?: Date;
     measurementType?: string;

@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import _ from 'lodash';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
@@ -27,18 +28,20 @@ interface IEditNodeLayerProps {
 @inject('mapStore', 'nodeStore', 'loginStore')
 @observer
 class EditNodeLayer extends Component<IEditNodeLayerProps> {
+    private nodeListener: IReactionDisposer;
     private editableLinks: L.Polyline[] = [];
 
-    componentWillMount() {
-        this.centerNode();
-    }
-
     componentDidMount() {
+        this.nodeListener = reaction(
+            () => this.props.nodeStore!.node,
+            () => this.props.nodeStore!.node === null && this.removeOldLinks()
+        );
         EventManager.on('undo', this.props.nodeStore!.undo);
         EventManager.on('redo', this.props.nodeStore!.redo);
     }
 
     componentWillUnmount() {
+        this.nodeListener();
         this.removeOldLinks();
 
         const map = this.props.leaflet.map;
@@ -54,11 +57,6 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
             editableLink.remove();
         });
         this.editableLinks = [];
-    };
-
-    private centerNode = () => {
-        const node = this.props.nodeStore!.node;
-        this.props.mapStore!.setCoordinates(node.coordinates);
     };
 
     private renderNode() {
@@ -161,6 +159,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     };
 
     render() {
+        if (!this.props.nodeStore!.node) return null;
+
         const isNodeViewVisible = Boolean(matchPath(navigator.getPathName(), SubSites.node));
         if (!isNodeViewVisible) return null;
 

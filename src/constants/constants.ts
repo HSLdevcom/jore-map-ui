@@ -4,8 +4,10 @@ if (process.env.NODE_ENV === 'development') {
 } else {
     APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
 }
+const ENVIRONMENT = process.env.ENVIRONMENT ? process.env.ENVIRONMENT : 'localhost';
 
 const commonConstants = {
+    ENVIRONMENT,
     BUILD_DATE: process.env.BUILD_DATE,
     AFTER_LOGIN_URL: `${APP_URL}/afterLogin`,
     DECIMALS_IN_GEOMETRIES: 8,
@@ -17,7 +19,7 @@ const commonConstants = {
     STREET_NAME_REVERSE_GEOCODING_URL: 'https://nominatim.openstreetmap.org/reverse',
     POSTAL_NUMBER_REVERSE_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/reverse',
     ADDRESS_SEARCH_RESULT_COUNT: 10,
-    LOCAL_STORAGE_KEY_PREFIX: 'jore_map_'
+    LOCAL_STORAGE_KEY_PREFIX: `${ENVIRONMENT}_jore_map_`
 };
 
 const developmentConstants = {

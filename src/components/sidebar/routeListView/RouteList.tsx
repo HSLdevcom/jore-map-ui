@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+import L from 'leaflet';
+import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import Button from '~/components/controls/Button';
@@ -10,6 +12,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
 import RouteService from '~/services/routeService';
 import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -28,9 +31,10 @@ interface IRouteListProps {
     routeListStore?: RouteListStore;
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
+    mapStore?: MapStore;
 }
 
-@inject('searchStore', 'routeListStore', 'networkStore', 'routePathStore', 'errorStore')
+@inject('searchStore', 'routeListStore', 'networkStore', 'routePathStore', 'errorStore', 'mapStore')
 @observer
 class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     constructor(props: any) {
@@ -41,12 +45,15 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     }
 
     async componentDidMount() {
-        await this.queryRoutes();
+        this.props.mapStore!.setIsMapCenteringPrevented(true);
+        await this.fetchRoutes();
         this.props.routePathStore!.clear();
         this.props.searchStore!.setSearchInput('');
+
+        autorun(() => this.centerMapToRoutes());
     }
 
-    private queryRoutes = async () => {
+    private fetchRoutes = async () => {
         const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
             this.setState({ isLoading: true });
@@ -67,6 +74,26 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             }
             this.setState({ isLoading: false });
         }
+    };
+
+    private centerMapToRoutes = () => {
+        const routes: IRoute[] = this.props.routeListStore!.routes;
+        if (!routes) return;
+
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+        routes.forEach(route => {
+            route.routePaths.forEach(routePath => {
+                routePath.routePathLinks.forEach(routePathLink => {
+                    routePathLink.geometry.forEach(pos => {
+                        bounds.extend(pos);
+                    });
+                });
+            });
+        });
+        if (!bounds.isValid()) return;
+
+        this.props.mapStore!.setIsMapCenteringPrevented(false);
+        this.props.mapStore!.setMapBounds(bounds);
     };
 
     private renderRouteList = () => {

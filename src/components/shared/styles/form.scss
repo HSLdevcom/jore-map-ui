@@ -19,6 +19,10 @@ $inputFieldHeight: 42px;
     margin-right: 0px;
 }
 
+.staticHeight {
+    height: $inputFieldHeight;
+}
+
 .inputLabel {
     color: $labelColor;
     font-weight: bold;
@@ -44,8 +48,13 @@ $inputFieldHeight: 42px;
     font-size: $mediumFontSize;
 }
 
+.sectionHeader {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
 .form > .formSection {
-    border-bottom: 1.5px solid $lightGrey;
+    border-bottom: 1.5px solid $borderLightGrey;
     padding: 20px 0;
     width: 100%;
 }

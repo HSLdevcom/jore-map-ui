@@ -19,7 +19,7 @@ export enum MapFilter {
 export type MapCursor = '' | 'crosshair';
 
 export class MapStore {
-    @observable private _coordinates: L.LatLng;
+    @observable private _coordinates: L.LatLng | null;
     @observable private _displayCoordinateSystem: CoordinateSystem;
     @observable private _isMapFullscreen: boolean;
     @observable private _zoom: number;
@@ -28,19 +28,21 @@ export class MapStore {
     @observable private _mapFilters: MapFilter[];
     @observable private _mapBounds: L.LatLngBounds;
     @observable private _mapCursor: MapCursor;
+    @observable private _isMapCenteringPrevented: boolean;
 
     constructor() {
-        this._coordinates = INITIAL_COORDINATES;
+        this._coordinates = null;
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._zoom = INITIAL_ZOOM;
         this._isMapFullscreen = false;
         this._visibleNodeLabels = [NodeLabel.hastusId];
         this._mapFilters = [MapFilter.arrowDecorator];
         this._mapCursor = '';
+        this._isMapCenteringPrevented = false;
     }
 
     @computed
-    get coordinates(): L.LatLng {
+    get coordinates(): L.LatLng | null {
         return this._coordinates;
     }
 
@@ -79,6 +81,11 @@ export class MapStore {
         return this._mapCursor;
     }
 
+    @computed
+    get isMapCenteringPrevented() {
+        return this._isMapCenteringPrevented;
+    }
+
     public isMapFilterEnabled = (mapFilter: MapFilter) => {
         return this._mapFilters.includes(mapFilter);
     };
@@ -89,13 +96,18 @@ export class MapStore {
     };
 
     @action
-    public setCoordinates = (location: L.LatLng) => {
+    public setCoordinates = (location: L.LatLng | null) => {
         this._coordinates = location;
     };
 
     @action
     public setZoom = (zoom: number) => {
         this._zoom = zoom;
+    };
+
+    @action
+    public setInitCoordinates = () => {
+        this._coordinates = INITIAL_COORDINATES;
     };
 
     @action
@@ -126,11 +138,16 @@ export class MapStore {
     };
 
     @action
+    public setIsMapCenteringPrevented = (isPrevented: boolean) => {
+        this._isMapCenteringPrevented = isPrevented;
+    };
+
+    @action
     public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => {
         if (this._visibleNodeLabels.includes(nodeLabel)) {
             this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
         } else {
-            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            // Need to do concat (instead of push) to trigger observable reaction
             this._visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
         }
     };
@@ -140,7 +157,7 @@ export class MapStore {
         if (this._mapFilters.includes(mapFilter)) {
             this._mapFilters = this._mapFilters.filter(mF => mF !== mapFilter);
         } else {
-            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            // Need to do concat (instead of push) to trigger observable reaction
             this._mapFilters = this._mapFilters.concat([mapFilter]);
         }
     };

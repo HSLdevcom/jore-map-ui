@@ -224,7 +224,23 @@ const getAllStopAreas = () => {
             node: allPysakkialues {
                 nodes {
                     nimi
+                    nimir
                     pysalueid
+                }
+            }
+        }
+    `;
+};
+
+const getAllStops = () => {
+    return gql`
+        query getAllStops {
+            node: allPysakkis {
+                nodes {
+                    soltunnus
+                    pysalueid
+                    pysnimi
+                    pysnimir
                 }
             }
         }
@@ -611,6 +627,7 @@ export default {
     getAllRoutePathPrimaryKeysQuery,
     getStopAreaQuery,
     getAllStopAreas,
+    getAllStops,
     getAllTerminalAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,

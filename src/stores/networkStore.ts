@@ -28,15 +28,16 @@ export class NetworkStore {
     @observable private _selectedDate: Moment.Moment | null;
     @observable private _visibleMapLayers: MapLayer[];
     @observable private _nodeSize: NodeSize;
+    @observable private _shouldShowNodeOpenConfirm: boolean;
     private _savedMapLayers: MapLayer[];
 
     constructor() {
         this._selectedTransitTypes = TRANSIT_TYPES;
-        this._visibleMapLayers = [];
+        this._visibleMapLayers = this.getInitialVisibleMapLayers();
         this._nodeSize = NodeSize.normal;
         this._savedMapLayers = [];
         this._selectedDate = Moment();
-        this.lazyLoadLocalStorageVisibleLayers();
+        this._shouldShowNodeOpenConfirm = false;
     }
 
     @computed
@@ -69,6 +70,11 @@ export class NetworkStore {
         return this._visibleMapLayers && this._visibleMapLayers.length !== 0;
     }
 
+    @computed
+    get shouldShowNodeOpenConfirm(): boolean {
+        return this._shouldShowNodeOpenConfirm;
+    }
+
     public isMapLayerVisible = (mapLayer: MapLayer) => {
         return this._visibleMapLayers.includes(mapLayer);
     };
@@ -95,7 +101,7 @@ export class NetworkStore {
 
     @action
     public showMapLayer = (mapLayer: MapLayer) => {
-        // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+        // Need to do concat (instead of push) to trigger observable reaction
         this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer]);
     };
 
@@ -130,7 +136,7 @@ export class NetworkStore {
         if (this._selectedTransitTypes.includes(type)) {
             this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
         } else {
-            // Need to do concat (instead of push) to trigger ReactionDisposer watcher
+            // Need to do concat (instead of push) to trigger observable reaction
             this._selectedTransitTypes = this._selectedTransitTypes.concat([type]);
         }
     };
@@ -146,27 +152,23 @@ export class NetworkStore {
         this._savedMapLayers = this._visibleMapLayers;
     }
 
-    // TODO: Remove this lazy load hack when map's initial position is immediately at target element after page reload
-    private lazyLoadLocalStorageVisibleLayers = async () => {
-        setTimeout(() => {
-            const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
-            const layers: MapLayer[] = [];
-            if (!Array.isArray(localStorageVisibleLayers)) return layers;
-
-            if (localStorageVisibleLayers.includes('node')) {
-                layers.push(MapLayer.node);
-            }
-            if (localStorageVisibleLayers.includes('link')) {
-                layers.push(MapLayer.link);
-            }
-            this.setLocalStorageVisibleLayers(layers);
-            return;
-        }, 2000);
-    };
-
     @action
-    private setLocalStorageVisibleLayers = (layers: MapLayer[]) => {
-        this._visibleMapLayers = layers;
+    public setShouldShowNodeOpenConfirm(shouldShowNodeOpenConfirm: boolean) {
+        this._shouldShowNodeOpenConfirm = shouldShowNodeOpenConfirm;
+    }
+
+    private getInitialVisibleMapLayers = () => {
+        const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
+        const layers: MapLayer[] = [];
+        if (!Array.isArray(localStorageVisibleLayers)) return [];
+
+        if (localStorageVisibleLayers.includes('node')) {
+            layers.push(MapLayer.node);
+        }
+        if (localStorageVisibleLayers.includes('link')) {
+            layers.push(MapLayer.link);
+        }
+        return layers;
     };
 }
 

@@ -26,6 +26,7 @@ export class LineHeaderStore {
         return this._isEditingDisabled;
     }
 
+    // TODO: rename as init
     @action
     public setLineHeader = (lineHeader: ILineHeader) => {
         this._lineHeader = lineHeader;

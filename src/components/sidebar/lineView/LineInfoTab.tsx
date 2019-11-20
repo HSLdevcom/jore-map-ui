@@ -1,9 +1,9 @@
-import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
+import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
+import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import ILineHeader from '~/models/ILineHeader';
 import ISearchLine from '~/models/searchModels/ISearchLine';
@@ -28,9 +28,11 @@ interface ILineInfoTabProps {
     errorStore?: ErrorStore;
     isEditingDisabled: boolean;
     isNewLine: boolean;
+    isLineSaveButtonDisabled: boolean;
     onChangeLineProperty: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
     setValidatorResult: (property: string, validationResult: IValidationResult) => void;
+    saveLine: () => void;
 }
 
 const transitTypeDefaultValueMap = {
@@ -161,8 +163,8 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
         const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
 
         return (
-            <div className={classnames(s.lineInfoTabView, s.form)}>
-                <div className={s.formSection}>
+            <div className={s.lineInfoTabView}>
+                <div className={s.form}>
                     <div className={s.flexRow}>
                         <div className={s.formItem}>
                             <div className={s.inputLabel}>VERKKO</div>
@@ -295,16 +297,21 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             value={line.modifiedOn}
                         />
                     </div>
+                    <Button
+                        onClick={this.props.saveLine}
+                        type={ButtonType.SAVE}
+                        disabled={this.props.isLineSaveButtonDisabled}
+                    >
+                        {this.props.isNewLine ? 'Luo uusi linja' : 'Tallenna linja'}
+                    </Button>
                 </div>
-                <div className={s.formSection}>
-                    <div className={s.flexRow}>
-                        <LineHeaderTable
-                            lineHeaders={this.state.lineHeaders}
-                            currentLineHeader={this.state.currentLineHeader}
-                            lineId={this.props.lineStore!.line!.id}
-                        />
-                    </div>
-                </div>
+                {!this.props.isNewLine && (
+                    <LineHeaderTable
+                        lineHeaders={this.state.lineHeaders}
+                        currentLineHeader={this.state.currentLineHeader}
+                        lineId={this.props.lineStore!.line!.id}
+                    />
+                )}
             </div>
         );
     }
