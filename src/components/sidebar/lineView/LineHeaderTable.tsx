@@ -124,6 +124,9 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 const isOpenedLineHeader =
                     lineHeaderMassEditStore!.selectedLineHeaderId === currentMassEditLineHeader.id;
                 const invalidPropertiesMap = currentMassEditLineHeader.invalidPropertiesMap;
+                const isLineHeaderValid = FormValidator.isInvalidPropertiesMapValid(
+                    currentMassEditLineHeader.invalidPropertiesMap
+                );
                 return (
                     <tr
                         key={index}
@@ -132,7 +135,19 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                             isOpenedLineHeader ? s.lineHeaderRowHighlight : undefined
                         )}
                     >
-                        <td className={s.lineHeaderTableNameCell}>{lineHeader.lineNameFi}</td>
+                        <td className={s.lineHeaderTableNameCell}>
+                            <InputContainer
+                                disabled={true}
+                                label=''
+                                value={lineHeader.lineNameFi}
+                                validationResult={{
+                                    isValid: isLineHeaderValid,
+                                    errorMessage: isLineHeaderValid
+                                        ? ''
+                                        : 'Sisältää validaatiovirheitä'
+                                }}
+                            />
+                        </td>
                         <td className={s.lineHeaderTableCalendarCell}>
                             <InputContainer
                                 className={s.timeInput}
