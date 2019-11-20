@@ -10,32 +10,32 @@ interface IViewFormBaseState {
 // Inheritance is considered as a bad practice, react doesn't really support inheritance:
 // https://stackoverflow.com/questions/31072841/componentdidmount-method-not-triggered-when-using-inherited-es6-react-class
 class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Props, State> {
-    private _validateUsingModel = (validationModel: object, validationEntity: any) => {
-        Object.entries(validationModel).forEach(([property, validatorRule]) => {
-            this.validateProperty(validatorRule, property, validationEntity[property]);
-        });
-    };
-
-    // TODO: use FormValidator.isInvalidPropertiesMapValid
     protected isFormValid = () => {
-        return !Object.values(this.state.invalidPropertiesMap).some(
-            validatorResult => !validatorResult.isValid
-        );
+        return FormValidator.isInvalidPropertiesMapValid(this.state.invalidPropertiesMap);
     };
 
-    // TODO: use FormValidator.validateAllProperties
     protected validateAllProperties = (validationModel: object, validationEntity: any) => {
         if (!validationEntity) return;
 
-        this._validateUsingModel(validationModel, validationEntity);
+        const invalidPropertiesMap = FormValidator.validateAllProperties(
+            validationModel,
+            validationEntity
+        );
+        this.setState({
+            invalidPropertiesMap
+        });
     };
 
-    // TODO: use FormValidator.validateProperty
     protected validateProperty = (validatorRule: string, property: string, value: any) => {
         if (!validatorRule) return;
 
-        const validatorResult: IValidationResult = FormValidator.validate(value, validatorRule);
-        this.setValidatorResult(property, validatorResult);
+        const validatorResult: IValidationResult | undefined = FormValidator.validateProperty(
+            validatorRule,
+            value
+        );
+        if (validatorResult) {
+            this.setValidatorResult(property, validatorResult);
+        }
     };
 
     protected setValidatorResult = (property: string, validatorResult: IValidationResult) => {
