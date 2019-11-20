@@ -16,18 +16,21 @@ class ViewFormBase<Props, State extends IViewFormBaseState> extends Component<Pr
         });
     };
 
+    // TODO: use FormValidator.isInvalidPropertiesMapValid
     protected isFormValid = () => {
         return !Object.values(this.state.invalidPropertiesMap).some(
             validatorResult => !validatorResult.isValid
         );
     };
 
+    // TODO: use FormValidator.validateAllProperties
     protected validateAllProperties = (validationModel: object, validationEntity: any) => {
         if (!validationEntity) return;
 
         this._validateUsingModel(validationModel, validationEntity);
     };
 
+    // TODO: use FormValidator.validateProperty
     protected validateProperty = (validatorRule: string, property: string, value: any) => {
         if (!validatorRule) return;
 

@@ -5,11 +5,8 @@ import { match } from 'react-router';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import { ILineHeader } from '~/models';
-import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
 import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
@@ -20,6 +17,7 @@ interface ILineHeaderViewProps {
     lineHeader: ILineHeader;
     isEditingDisabled: boolean;
     isNewLineHeader: boolean;
+    invalidPropertiesMap: object;
     onChangeLineHeaderProperty: (property: keyof ILineHeader, value: any) => void;
     createNewLineHeaderWithCopy: () => void;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
@@ -28,42 +26,11 @@ interface ILineHeaderViewProps {
     match?: match<any>;
 }
 
-interface ILineHeaderViewState {
-    isLoading: boolean;
-    invalidPropertiesMap: object;
-}
-
 @inject('lineHeaderMassEditStore', 'alertStore', 'errorStore')
 @observer
-class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewState> {
-    constructor(props: ILineHeaderViewProps) {
-        super(props);
-        this.state = {
-            isLoading: true,
-            invalidPropertiesMap: {}
-        };
-    }
-
-    componentDidMount() {
-        this.initialize();
-    }
-
-    private initialize = async () => {
-        this.validateLineHeader();
-        this.setState({
-            isLoading: false
-        });
-    };
-
-    private validateLineHeader = () => {
-        if (!this.props.lineHeader) return;
-
-        this.validateAllProperties(lineHeaderValidationModel, this.props.lineHeader);
-    };
-
+class LineHeaderView extends React.Component<ILineHeaderViewProps> {
     private onChangeLineHeaderProperty = (property: keyof ILineHeader) => (value: any) => {
         this.props.onChangeLineHeaderProperty(property, value);
-        this.validateProperty(lineHeaderValidationModel[property], property, value);
     };
 
     private createNewLineHeaderWithCopy = () => {
@@ -75,20 +42,11 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
     };
 
     render() {
-        if (this.state.isLoading) {
-            return (
-                <div className={classnames(s.lineHeaderView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.MEDIUM} />
-                </div>
-            );
-        }
-        const { lineHeader, isEditingDisabled } = this.props;
+        const { lineHeader, isEditingDisabled, isNewLineHeader, invalidPropertiesMap } = this.props;
 
         if (!lineHeader) return null;
 
         const onChangeLineHeaderProperty = this.onChangeLineHeaderProperty;
-        const invalidPropertiesMap = this.state.invalidPropertiesMap;
-
         return (
             <div className={classnames(s.lineHeaderForm, s.form)}>
                 <SidebarHeader
@@ -189,7 +147,7 @@ class LineHeaderView extends ViewFormBase<ILineHeaderViewProps, ILineHeaderViewS
                         value={lineHeader.modifiedOn}
                     />
                 </div>
-                {!this.props.isNewLineHeader && isEditingDisabled && (
+                {!isNewLineHeader && isEditingDisabled && (
                     <Button
                         className={s.newLineHeaderButton}
                         type={ButtonType.SQUARE}

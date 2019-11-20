@@ -14,6 +14,8 @@ import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
+import { getDateWithoutHours } from '~/util/dateFormatHelpers';
+import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
 import LineHeaderForm from './LineHeaderForm';
 import * as s from './lineHeaderTable.scss';
@@ -110,7 +112,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         });
     };
 
-    private renderLineHeaderRows = (activeMassEditLineHeader: IMassEditLineHeader | null) => {
+    private renderLineHeaderRows = () => {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
         const massEditLineHeaderCount = lineHeaderMassEditStore!.massEditLineHeaders!.length;
@@ -119,16 +121,15 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         return lineHeaderMassEditStore!.massEditLineHeaders!.map(
             (currentMassEditLineHeader: IMassEditLineHeader, index: number) => {
                 const lineHeader = currentMassEditLineHeader.lineHeader;
-                const isCurrentLineHeader =
-                    activeMassEditLineHeader &&
-                    activeMassEditLineHeader.id === currentMassEditLineHeader.id;
-                const validationResult = currentMassEditLineHeader.validationResult;
+                const isOpenedLineHeader =
+                    lineHeaderMassEditStore!.selectedLineHeaderId === currentMassEditLineHeader.id;
+                const invalidPropertiesMap = currentMassEditLineHeader.invalidPropertiesMap;
                 return (
                     <tr
                         key={index}
                         className={classnames(
                             s.lineHeaderTableRow,
-                            isCurrentLineHeader ? s.lineHeaderRowHighlight : undefined
+                            isOpenedLineHeader ? s.lineHeaderRowHighlight : undefined
                         )}
                     >
                         <td className={s.lineHeaderTableNameCell}>{lineHeader.lineNameFi}</td>
@@ -142,7 +143,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                                 onChange={this.onChangeLineHeaderStartDate(
                                     currentMassEditLineHeader.id
                                 )}
-                                validationResult={validationResult}
+                                validationResult={invalidPropertiesMap['startDate']}
                             />
                         </td>
                         <td className={s.lineHeaderTableCalendarCell}>
@@ -199,21 +200,21 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         );
     };
 
-    private getActiveMassEditLineHeader = (): IMassEditLineHeader | null => {
-        const currentTime = new Date().getTime();
-        let activeMassEditLineHeader = null;
+    private getActiveLineHeaderName = (): string | null => {
+        const currentTime = getDateWithoutHours(new Date()).getTime();
+        let activeMassEditLineHeader: IMassEditLineHeader | null = null;
         this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
             (m: IMassEditLineHeader) => {
                 const lineHeader = m.lineHeader;
                 if (
-                    currentTime > lineHeader.startDate!.getTime() &&
-                    currentTime < lineHeader.endDate!.getTime()
+                    currentTime >= lineHeader.startDate!.getTime() &&
+                    currentTime <= lineHeader.endDate!.getTime()
                 ) {
                     activeMassEditLineHeader = m;
                 }
             }
         );
-        return activeMassEditLineHeader;
+        return activeMassEditLineHeader ? activeMassEditLineHeader!.lineHeader.lineNameFi : null;
     };
 
     private save = async () => {
@@ -242,7 +243,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         let isFormValid = true;
         this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
             (m: IMassEditLineHeader) => {
-                if (!m.validationResult.isValid) {
+                if (!FormValidator.isInvalidPropertiesMapValid(m.invalidPropertiesMap)) {
                     isFormValid = false;
                 }
             }
@@ -264,19 +265,19 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
         if (!massEditLineHeaders) return null;
 
-        const selectedLineHeader =
+        const selectedMassEditLineHeader =
             lineHeaderMassEditStore!.selectedLineHeaderId !== null
                 ? lineHeaderMassEditStore!.massEditLineHeaders!.find(
                       m => m.id === lineHeaderMassEditStore!.selectedLineHeaderId
-                  )!.lineHeader
+                  )
                 : null;
-        const activeMassEditLineHeader = this.getActiveMassEditLineHeader();
+        const activeLineHeaderName = this.getActiveLineHeaderName();
 
         const isSaveButtonDisabled =
             isEditingDisabled ||
             !lineHeaderMassEditStore!.isDirty ||
             !this.isFormValid() ||
-            !activeMassEditLineHeader;
+            !activeLineHeaderName;
         return (
             <div className={s.lineHeaderTableView}>
                 <SidebarHeader
@@ -294,14 +295,14 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                         disabled={true}
                         label={'LINJAN VOIMASSAOLEVA OTSIKKO'}
                         value={
-                            activeMassEditLineHeader
-                                ? activeMassEditLineHeader.lineHeader.lineNameFi
+                            activeLineHeaderName
+                                ? activeLineHeaderName
                                 : 'Ei voimassa olevaa otsikkoa.'
                         }
                         validationResult={{
-                            isValid: Boolean(activeMassEditLineHeader)
+                            isValid: Boolean(activeLineHeaderName)
                         }}
-                        isInputColorRed={!Boolean(activeMassEditLineHeader)}
+                        isInputColorRed={!Boolean(activeLineHeaderName)}
                     />
                 </div>
                 {massEditLineHeaders.length > 0 ? (
@@ -321,7 +322,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                                 <th />
                                 <th />
                             </tr>
-                            {this.renderLineHeaderRows(activeMassEditLineHeader)}
+                            {this.renderLineHeaderRows()}
                         </tbody>
                     </table>
                 ) : (
@@ -336,11 +337,12 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 >
                     Luo uusi linjan otsikko
                 </Button>
-                {selectedLineHeader && (
+                {selectedMassEditLineHeader && (
                     <LineHeaderForm
-                        lineHeader={selectedLineHeader}
+                        lineHeader={selectedMassEditLineHeader!.lineHeader}
                         isEditingDisabled={isEditingDisabled}
                         isNewLineHeader={false}
+                        invalidPropertiesMap={selectedMassEditLineHeader!.invalidPropertiesMap}
                         onChangeLineHeaderProperty={this.onChangeLineHeaderProperty}
                         createNewLineHeaderWithCopy={this.createNewLineHeaderWithCopy}
                     />
