@@ -1,6 +1,6 @@
 import Moment from 'moment';
 
-const getDateString = (date: Date): String => {
+const getDateString = (date: Date): string => {
     return Moment(date).format('DD.MM.YYYY');
 };
 
