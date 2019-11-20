@@ -8,6 +8,7 @@ export interface IMassEditLineHeader {
     id: number;
     lineHeader: ILineHeader;
     invalidPropertiesMap: object;
+    isRemoved: boolean;
 }
 
 export class LineHeaderMassEditStore {
@@ -63,7 +64,8 @@ export class LineHeaderMassEditStore {
             const massEditLineHeader: IMassEditLineHeader = {
                 invalidPropertiesMap,
                 id: index,
-                lineHeader: clonedLineHeader
+                lineHeader: clonedLineHeader,
+                isRemoved: false
             };
             return massEditLineHeader;
         });
@@ -123,7 +125,8 @@ export class LineHeaderMassEditStore {
         const newMassEditLineHeader: IMassEditLineHeader = {
             lineHeader,
             id,
-            invalidPropertiesMap
+            invalidPropertiesMap,
+            isRemoved: false
         };
         // Need to do concat (instead of push) to trigger observable reaction
         this._massEditLineHeaders = this.massEditLineHeaders!.concat([newMassEditLineHeader]);
@@ -134,7 +137,14 @@ export class LineHeaderMassEditStore {
 
     @action
     public removeLineHeader = (id: number) => {
-        this._massEditLineHeaders = this.massEditLineHeaders!.filter(m => m.id !== id);
+        const massEditLineHeaderToRemove = this._massEditLineHeaders!.find(m => m.id === id);
+        const isOldLineHeader = Boolean(massEditLineHeaderToRemove!.lineHeader.originalStartDate);
+        // Keep old lineHeaders to remove in store
+        if (isOldLineHeader) {
+            massEditLineHeaderToRemove!.isRemoved = true;
+        } else {
+            this._massEditLineHeaders = this.massEditLineHeaders!.filter(m => m.id !== id);
+        }
         if (id === this._selectedLineHeaderId) {
             this.setSelectedLineHeaderId(null);
         }
@@ -196,6 +206,8 @@ export class LineHeaderMassEditStore {
     private validateDates = () => {
         let previousMassEditLineHeader: IMassEditLineHeader;
         this._massEditLineHeaders!.forEach(currentMassEditLineHeader => {
+            if (currentMassEditLineHeader.isRemoved) return;
+
             if (
                 currentMassEditLineHeader.lineHeader.startDate >
                 currentMassEditLineHeader.lineHeader.endDate

@@ -89,6 +89,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
             m => m.id === lineHeaderToCopyId
         )!.lineHeader;
         const newLineHeader = _.cloneDeep(selectedLineHeader);
+        newLineHeader.originalStartDate = undefined;
         this.props.lineHeaderMassEditStore!.createLineHeader(newLineHeader);
     };
 
@@ -121,6 +122,8 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
 
         return lineHeaderMassEditStore!.massEditLineHeaders!.map(
             (currentMassEditLineHeader: IMassEditLineHeader, index: number) => {
+                if (currentMassEditLineHeader.isRemoved) return;
+
                 const lineHeader = currentMassEditLineHeader.lineHeader;
                 const isOpenedLineHeader =
                     lineHeaderMassEditStore!.selectedLineHeaderId === currentMassEditLineHeader.id;
@@ -259,6 +262,8 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         let isFormValid = true;
         this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
             (m: IMassEditLineHeader) => {
+                if (m.isRemoved) return;
+
                 if (!FormValidator.isInvalidPropertiesMapValid(m.invalidPropertiesMap)) {
                     isFormValid = false;
                 }
