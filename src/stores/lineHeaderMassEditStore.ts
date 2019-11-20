@@ -11,17 +11,24 @@ export interface IMassEditLineHeader {
 
 export class LineHeaderMassEditStore {
     @observable private _massEditLineHeaders: IMassEditLineHeader[] | null;
+    @observable private _selectedLineHeaderId: number | null;
     @observable private _oldlineHeaders: ILineHeader[] | null;
     @observable private _isEditingDisabled: boolean;
 
     constructor() {
         this._massEditLineHeaders = null;
+        this._selectedLineHeaderId = null;
         this._isEditingDisabled = true;
     }
 
     @computed
     get massEditLineHeaders(): IMassEditLineHeader[] | null {
         return this._massEditLineHeaders;
+    }
+
+    @computed
+    get selectedLineHeaderId(): number | null {
+        return this._selectedLineHeaderId;
     }
 
     @computed
@@ -66,6 +73,18 @@ export class LineHeaderMassEditStore {
     };
 
     @action
+    public setSelectedLineHeaderId = (id: number | null) => {
+        this._selectedLineHeaderId = id;
+    };
+
+    @action
+    public updateLineHeaderProperty = (property: keyof ILineHeader, value: any) => {
+        const massEditLineHeader = this.getMassEditLineHeader(this._selectedLineHeaderId!);
+
+        massEditLineHeader!.lineHeader[property] = value;
+    };
+
+    @action
     public updateLineHeaderStartDate = (id: number, value: Date) => {
         const massEditLineHeader = this.getMassEditLineHeader(id);
 
@@ -88,8 +107,29 @@ export class LineHeaderMassEditStore {
     };
 
     @action
+    public createLineHeader = (lineHeader: ILineHeader) => {
+        const id = this.getNextAvailableLineHeaderId();
+        const newMassEditLineHeader: IMassEditLineHeader = {
+            lineHeader,
+            id,
+            validationResult: {
+                isValid: true,
+                errorMessage: ''
+            }
+        };
+        // Need to do concat (instead of push) to trigger observable reaction
+        this._massEditLineHeaders = this.massEditLineHeaders!.concat([newMassEditLineHeader]);
+        this.validateDates();
+        this.setIsEditingDisabled(false);
+        this.setSelectedLineHeaderId(id);
+    };
+
+    @action
     public removeLineHeader = (id: number) => {
         this._massEditLineHeaders = this.massEditLineHeaders!.filter(m => m.id !== id);
+        if (id === this._selectedLineHeaderId) {
+            this.setSelectedLineHeaderId(null);
+        }
         this.validateDates();
     };
 
@@ -111,6 +151,7 @@ export class LineHeaderMassEditStore {
     @action
     public clear = () => {
         this._massEditLineHeaders = null;
+        this._selectedLineHeaderId = null;
         this._oldlineHeaders = null;
         this._isEditingDisabled = true;
     };
@@ -120,6 +161,22 @@ export class LineHeaderMassEditStore {
         if (this._oldlineHeaders) {
             this.init(this._oldlineHeaders);
         }
+    };
+
+    @action
+    public getNextAvailableLineHeaderId = () => {
+        const sortedMassEditLineHeaders = this._massEditLineHeaders!.sort((a, b) =>
+            a.id < b.id ? -1 : 1
+        );
+
+        let nextAvailableId = 0;
+        for (const m of sortedMassEditLineHeaders) {
+            if (m.id !== nextAvailableId) {
+                break;
+            }
+            nextAvailableId += 1;
+        }
+        return nextAvailableId;
     };
 
     @action

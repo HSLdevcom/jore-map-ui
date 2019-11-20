@@ -31,7 +31,12 @@ $cellPadding: 5px 2px 5px 2px;
         }
 
         .lineHeaderTableRow {
+            font-size: $smallFontSize;
             border-bottom: 1px solid #dfdfdf;
+
+            .lineHeaderTableNameCell {
+                max-width: 180px;
+            }
 
             .lineHeaderTableCalendarCell {
                 min-width: 125px;
@@ -57,9 +62,14 @@ $cellPadding: 5px 2px 5px 2px;
             display: flex;
             font-size: $largeFontSize;
             padding: 5px;
-            margin: 4px;
+            margin-top: 4px;
             margin-bottom: auto;
             border-radius: 5px;
+        }
+
+        .disabledRemoveLineHeaderButton {
+            color: $disabledGrey;
+            background-color: $backgroundlightGrey;
         }
 
         .removeLineHeaderButton:hover {
@@ -68,18 +78,13 @@ $cellPadding: 5px 2px 5px 2px;
         }
     }
 
-    .buttonContainer {
-        display: flex;
-        flex-direction: column;
+    .createNewLineHeaderButton {
+        width: 50%;
+        padding: 10px 20px 10px 20px;
+        margin: 10px 0px 10px auto;
+    }
 
-        .createNewLineHeaderButton {
-            width: 50%;
-            padding: 10px 20px 10px 20px;
-            margin: 10px 0px 10px auto;
-        }
-
-        .saveLineHeadersButton {
-            margin-top: 20px;
-        }
+    .saveLineHeadersButton {
+        margin-top: 10px;
     }
 }

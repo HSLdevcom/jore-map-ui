@@ -1,23 +1,21 @@
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
-import Moment from 'moment';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-import { FiInfo } from 'react-icons/fi';
+import { FiCopy, FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
+import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import LineHeaderService from '~/services/lineHeaderService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import SidebarHeader from '../SidebarHeader';
+import LineHeaderForm from './LineHeaderForm';
 import * as s from './lineHeaderTable.scss';
 
 interface ILineHeaderState {
@@ -72,22 +70,27 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         this.props.lineHeaderMassEditStore!.clear();
     }
 
-    private redirectToEditLineHeaderView = (startDate: Date) => () => {
-        const editLineHeaderLink = routeBuilder
-            .to(SubSites.lineHeader)
-            .toTarget(':id', this.props.lineId)
-            .toTarget(':startDate', Moment(startDate).format())
-            .toLink();
-
-        navigator.goTo(editLineHeaderLink);
+    private openLineHeaderById = (id: number) => () => {
+        this.props.lineHeaderMassEditStore!.setSelectedLineHeaderId(id);
     };
-    private redirectToNewLineHeaderView = () => {
-        const newLineHeaderLink = routeBuilder
-            .to(SubSites.newLineHeader)
-            .toTarget(':id', this.props.lineId)
-            .toLink();
+    private createNewLineHeader = () => {
+        const newLineHeader = LineHeaderFactory.createNewLineHeader(this.props.lineId);
+        this.props.lineHeaderMassEditStore!.createLineHeader(newLineHeader);
+    };
 
-        navigator.goTo(newLineHeaderLink);
+    private createNewLineHeaderWithCopy = (id?: number) => () => {
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
+        const lineHeaderToCopyId =
+            id !== undefined ? id : lineHeaderMassEditStore!.selectedLineHeaderId;
+        const selectedLineHeader = lineHeaderMassEditStore!.massEditLineHeaders!.find(
+            m => m.id === lineHeaderToCopyId
+        )!.lineHeader;
+        const newLineHeader = _.cloneDeep(selectedLineHeader);
+        this.props.lineHeaderMassEditStore!.createLineHeader(newLineHeader);
+    };
+
+    private onChangeLineHeaderProperty = (property: keyof ILineHeader, value: any) => {
+        this.props.lineHeaderMassEditStore!.updateLineHeaderProperty(property, value);
     };
 
     private onChangeLineHeaderStartDate = (id: number) => (value: Date) => {
@@ -111,6 +114,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
         const massEditLineHeaderCount = lineHeaderMassEditStore!.massEditLineHeaders!.length;
+        const isRemoveLineHeaderButtonDisabled = isEditingDisabled || massEditLineHeaderCount <= 1;
 
         return lineHeaderMassEditStore!.massEditLineHeaders!.map(
             (currentMassEditLineHeader: IMassEditLineHeader, index: number) => {
@@ -127,7 +131,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                             isCurrentLineHeader ? s.lineHeaderRowHighlight : undefined
                         )}
                     >
-                        <td>{lineHeader.lineNameFi}</td>
+                        <td className={s.lineHeaderTableNameCell}>{lineHeader.lineNameFi}</td>
                         <td className={s.lineHeaderTableCalendarCell}>
                             <InputContainer
                                 className={s.timeInput}
@@ -155,23 +159,38 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                         </td>
                         <td className={s.lineHeaderTableButtonCell}>
                             <Button
-                                className={s.lineHeaderButton}
-                                hasReverseColor={true}
-                                onClick={this.redirectToEditLineHeaderView(
-                                    currentMassEditLineHeader.lineHeader.originalStartDate!
+                                className={classnames(
+                                    s.lineHeaderButton,
+                                    s.removeLineHeaderButton,
+                                    isRemoveLineHeaderButtonDisabled
+                                        ? s.disabledRemoveLineHeaderButton
+                                        : undefined
                                 )}
+                                hasReverseColor={true}
+                                onClick={this.removeLineHeader(currentMassEditLineHeader)}
+                                disabled={isRemoveLineHeaderButtonDisabled}
                             >
-                                <FiInfo />
+                                <FaTrashAlt />
                             </Button>
                         </td>
                         <td className={s.lineHeaderTableButtonCell}>
                             <Button
-                                className={classnames(s.lineHeaderButton, s.removeLineHeaderButton)}
+                                className={s.lineHeaderButton}
                                 hasReverseColor={true}
-                                onClick={this.removeLineHeader(currentMassEditLineHeader)}
-                                disabled={isEditingDisabled || massEditLineHeaderCount <= 1}
+                                onClick={this.createNewLineHeaderWithCopy(
+                                    currentMassEditLineHeader.id
+                                )}
                             >
-                                <FaTrashAlt />
+                                <FiCopy />
+                            </Button>
+                        </td>
+                        <td className={s.lineHeaderTableButtonCell}>
+                            <Button
+                                className={s.lineHeaderButton}
+                                hasReverseColor={true}
+                                onClick={this.openLineHeaderById(currentMassEditLineHeader.id)}
+                            >
+                                <FiInfo />
                             </Button>
                         </td>
                     </tr>
@@ -245,6 +264,12 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
         if (!massEditLineHeaders) return null;
 
+        const selectedLineHeader =
+            lineHeaderMassEditStore!.selectedLineHeaderId !== null
+                ? lineHeaderMassEditStore!.massEditLineHeaders!.find(
+                      m => m.id === lineHeaderMassEditStore!.selectedLineHeaderId
+                  )!.lineHeader
+                : null;
         const activeMassEditLineHeader = this.getActiveMassEditLineHeader();
 
         const isSaveButtonDisabled =
@@ -294,6 +319,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                                 </th>
                                 <th />
                                 <th />
+                                <th />
                             </tr>
                             {this.renderLineHeaderRows(activeMassEditLineHeader)}
                         </tbody>
@@ -301,25 +327,32 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 ) : (
                     <div>Linjalle {this.props.lineId} ei löytynyt otsikoita.</div>
                 )}
-                <div className={s.buttonContainer}>
-                    <Button
-                        className={s.createNewLineHeaderButton}
-                        type={ButtonType.SQUARE}
-                        disabled={false}
-                        hasPadding={true}
-                        onClick={() => this.redirectToNewLineHeaderView()}
-                    >
-                        Luo uusi linjan otsikko
-                    </Button>
-                    <Button
-                        className={s.saveLineHeadersButton}
-                        onClick={this.save}
-                        type={ButtonType.SAVE}
-                        disabled={isSaveButtonDisabled}
-                    >
-                        Tallenna linjan otsikot
-                    </Button>
-                </div>
+                <Button
+                    className={s.createNewLineHeaderButton}
+                    type={ButtonType.SQUARE}
+                    disabled={false}
+                    hasPadding={true}
+                    onClick={() => this.createNewLineHeader()}
+                >
+                    Luo uusi linjan otsikko
+                </Button>
+                {selectedLineHeader && (
+                    <LineHeaderForm
+                        lineHeader={selectedLineHeader}
+                        isEditingDisabled={isEditingDisabled}
+                        isNewLineHeader={false}
+                        onChangeLineHeaderProperty={this.onChangeLineHeaderProperty}
+                        createNewLineHeaderWithCopy={this.createNewLineHeaderWithCopy}
+                    />
+                )}
+                <Button
+                    className={s.saveLineHeadersButton}
+                    onClick={this.save}
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                >
+                    Tallenna linjan otsikot
+                </Button>
             </div>
         );
     }
