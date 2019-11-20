@@ -21,6 +21,7 @@ interface IVectorGridLayerProps extends GridLayerProps {
     vectorTileLayerStyles: any;
     nodeSize?: NodeSize;
     onClick?: Function;
+    onContextMenu?: Function;
     setVectorgridLayerReaction: (reaction: IReactionDisposer) => void;
 }
 
