@@ -7,7 +7,7 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
-import { getDateString } from '~/util/dateFormatHelpers';
+import { getDateString } from '~/util/dateHelpers';
 import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './inputContainer.scss';
 

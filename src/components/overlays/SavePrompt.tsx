@@ -5,7 +5,7 @@ import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 import propertyCodeLists from '~/codeLists/propertyCodeLists';
 import codeListStore from '~/stores/codeListStore';
-import { getDateString } from '~/util/dateFormatHelpers';
+import { getDateString } from '~/util/dateHelpers';
 import * as s from './savePrompt.scss';
 
 type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea';

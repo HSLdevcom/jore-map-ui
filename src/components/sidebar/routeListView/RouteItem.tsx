@@ -13,7 +13,7 @@ import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import LineHelper from '~/util/LineHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { getDateString } from '~/util/dateFormatHelpers';
+import { getDateString } from '~/util/dateHelpers';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './routeItem.scss';
