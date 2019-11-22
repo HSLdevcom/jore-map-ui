@@ -57,20 +57,6 @@ class LineHeaderService {
         return LineHeaderFactory.mapExternalLineHeader(queryResult.data.lineHeader);
     };
 
-    public static updateLineHeader = async (lineHeader: ILineHeader) => {
-        await ApiClient.updateObject(endpoints.LINE_HEADER, lineHeader);
-    };
-
-    public static createLineHeader = async (lineHeader: ILineHeader) => {
-        const newLineHeader = {
-            ...lineHeader,
-            originalStartDate: lineHeader.startDate,
-            originalEndDate: lineHeader.endDate
-        };
-        const response = await ApiClient.createObject(endpoints.LINE_HEADER, newLineHeader);
-        return response.id;
-    };
-
     public static massEditLineHeaders = async (
         massEditLineHeaders: IMassEditLineHeader[],
         oldLineHeaders: ILineHeader[],
