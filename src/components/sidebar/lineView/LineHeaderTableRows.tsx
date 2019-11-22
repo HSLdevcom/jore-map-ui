@@ -56,14 +56,14 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
         const massEditLineHeaderCount = lineHeaderMassEditStore!.currentLineHeaders!.length;
-        const isRemoveLineHeaderButtonDisabled = isEditingDisabled || massEditLineHeaderCount <= 1;
+        const isRemoveLineHeaderButtonDisabled = isEditingDisabled || massEditLineHeaderCount === 1;
 
         return lineHeaderMassEditStore!.massEditLineHeaders!.map(
             (currentMassEditLineHeader: IMassEditLineHeader, index: number) => {
                 if (currentMassEditLineHeader.isRemoved) return;
 
                 const lineHeader = currentMassEditLineHeader.lineHeader;
-                const isOpenedLineHeader =
+                const isSelectedLineHeader =
                     lineHeaderMassEditStore!.selectedLineHeaderId === currentMassEditLineHeader.id;
                 const invalidPropertiesMap = currentMassEditLineHeader.invalidPropertiesMap;
                 const isLineHeaderValid = FormValidator.isInvalidPropertiesMapValid(
@@ -74,7 +74,7 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                         key={index}
                         className={classnames(
                             s.lineHeaderTableRow,
-                            isOpenedLineHeader ? s.lineHeaderRowHighlight : undefined
+                            isSelectedLineHeader ? s.lineHeaderRowHighlight : undefined
                         )}
                     >
                         <td className={s.lineHeaderTableNameCell}>
@@ -122,11 +122,15 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                                     s.removeLineHeaderButton,
                                     isRemoveLineHeaderButtonDisabled
                                         ? s.disabledRemoveLineHeaderButton
+                                        : undefined,
+                                    isRemoveLineHeaderButtonDisabled && isSelectedLineHeader
+                                        ? s.highlightedBackground
                                         : undefined
                                 )}
                                 hasReverseColor={true}
                                 onClick={this.removeLineHeader(currentMassEditLineHeader)}
                                 disabled={isRemoveLineHeaderButtonDisabled}
+                                hasNoTransition={true}
                             >
                                 <FaTrashAlt />
                             </Button>

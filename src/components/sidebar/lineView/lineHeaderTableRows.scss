@@ -3,6 +3,7 @@
 @import '../../shared/styles/form';
 
 $cellPadding: 5px 2px 5px 2px; // same as in lineHeaderTable.scss
+$rowHighlightColor: $lightblue;
 
 .lineHeaderTableRow {
     font-size: $smallFontSize;
@@ -40,6 +41,10 @@ $cellPadding: 5px 2px 5px 2px; // same as in lineHeaderTable.scss
     .disabledRemoveLineHeaderButton {
         color: $disabledGrey;
         background-color: $backgroundlightGrey;
+
+        &.highlightedBackground {
+            background-color: $rowHighlightColor;
+        }
     }
 
     .removeLineHeaderButton:hover {
@@ -49,5 +54,5 @@ $cellPadding: 5px 2px 5px 2px; // same as in lineHeaderTable.scss
 }
 
 .lineHeaderRowHighlight {
-    background-color: $lightblue;
+    background-color: $rowHighlightColor;
 }

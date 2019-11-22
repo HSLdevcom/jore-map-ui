@@ -19,7 +19,6 @@ $defaultBackgroundColor: $busBlue;
     margin-right: 15px;
     color: $defaultColor;
     background-color: $defaultBackgroundColor;
-    transition: 0.5s;
 }
 .button:hover {
     background-color: darken($defaultBackgroundColor, 10);
@@ -64,6 +63,10 @@ $defaultBackgroundColor: $busBlue;
 
 .hasPadding {
     padding: 20px;
+}
+
+.transition {
+    transition: 0.5s;
 }
 
 .disabled {
