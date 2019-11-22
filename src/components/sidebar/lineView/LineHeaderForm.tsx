@@ -2,10 +2,8 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
-import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
-import ButtonType from '~/enums/buttonType';
 import { ILineHeader } from '~/models';
 import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -16,10 +14,8 @@ import * as s from './lineHeaderForm.scss';
 interface ILineHeaderViewProps {
     lineHeader: ILineHeader;
     isEditingDisabled: boolean;
-    isNewLineHeader: boolean;
     invalidPropertiesMap: object;
     onChangeLineHeaderProperty: (property: keyof ILineHeader, value: any) => void;
-    createNewLineHeaderWithCopy: () => void;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
@@ -33,16 +29,12 @@ class LineHeaderView extends React.Component<ILineHeaderViewProps> {
         this.props.onChangeLineHeaderProperty(property, value);
     };
 
-    private createNewLineHeaderWithCopy = () => {
-        this.props.createNewLineHeaderWithCopy();
-    };
-
     private closeLineHeader = () => {
         this.props.lineHeaderMassEditStore!.setSelectedLineHeaderId(null);
     };
 
     render() {
-        const { lineHeader, isEditingDisabled, isNewLineHeader, invalidPropertiesMap } = this.props;
+        const { lineHeader, isEditingDisabled, invalidPropertiesMap } = this.props;
 
         if (!lineHeader) return null;
 
@@ -147,16 +139,6 @@ class LineHeaderView extends React.Component<ILineHeaderViewProps> {
                         value={lineHeader.modifiedOn}
                     />
                 </div>
-                {!isNewLineHeader && isEditingDisabled && (
-                    <Button
-                        className={s.newLineHeaderButton}
-                        type={ButtonType.SQUARE}
-                        disabled={false}
-                        onClick={() => this.createNewLineHeaderWithCopy()}
-                    >
-                        Luo uusi linjan otsikko käyttäen tätä pohjana
-                    </Button>
-                )}
             </div>
         );
     }

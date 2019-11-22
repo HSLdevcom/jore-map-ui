@@ -2,7 +2,7 @@
 @import '../../shared/styles/flexbox';
 @import '../../shared/styles/form';
 
-$cellPadding: 5px 2px 5px 2px;
+$cellPadding: 5px 2px 5px 2px; // same as in lineHeaderTableRows.scss
 
 .lineHeaderTableView {
     width: 100%;
@@ -28,54 +28,6 @@ $cellPadding: 5px 2px 5px 2px;
 
         .columnHeader:first-child {
             padding-left: 0px;
-        }
-
-        .lineHeaderTableRow {
-            font-size: $smallFontSize;
-            border-bottom: 1px solid #dfdfdf;
-
-            .lineHeaderTableNameCell {
-                max-width: 180px;
-                padding: 5px 2px 5px 2px;
-            }
-
-            .lineHeaderTableCalendarCell {
-                min-width: 125px;
-                padding: $cellPadding;
-                vertical-align: top;
-
-                .timeInput {
-                    padding-top: 0px;
-                }
-            }
-
-            .lineHeaderTableButtonCell {
-                vertical-align: top;
-                padding: $cellPadding;
-            }
-        }
-
-        .lineHeaderRowHighlight {
-            background-color: $lightblue;
-        }
-
-        .lineHeaderButton {
-            display: flex;
-            font-size: $largeFontSize;
-            padding: 5px;
-            margin-top: 4px;
-            margin-bottom: auto;
-            border-radius: 5px;
-        }
-
-        .disabledRemoveLineHeaderButton {
-            color: $disabledGrey;
-            background-color: $backgroundlightGrey;
-        }
-
-        .removeLineHeaderButton:hover {
-            color: white;
-            background-color: $red;
         }
     }
 
