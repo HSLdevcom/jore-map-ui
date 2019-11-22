@@ -9,4 +9,12 @@ const getDateWithoutHours = (date: Date): Date => {
     return date;
 };
 
-export { getDateString, getDateWithoutHours };
+const areDatesEqual = (a: Date, b: Date) => {
+    return (
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate()
+    );
+};
+
+export { getDateString, getDateWithoutHours, areDatesEqual };

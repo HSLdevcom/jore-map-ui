@@ -117,7 +117,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     private renderLineHeaderRows = () => {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
-        const massEditLineHeaderCount = lineHeaderMassEditStore!.massEditLineHeaders!.length;
+        const massEditLineHeaderCount = lineHeaderMassEditStore!.currentLineHeaders!.length;
         const isRemoveLineHeaderButtonDisabled = isEditingDisabled || massEditLineHeaderCount <= 1;
 
         return lineHeaderMassEditStore!.massEditLineHeaders!.map(
@@ -224,6 +224,8 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         let activeMassEditLineHeader: IMassEditLineHeader | null = null;
         this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
             (m: IMassEditLineHeader) => {
+                if (m.isRemoved) return;
+
                 const lineHeader = m.lineHeader;
                 if (
                     currentTime >= lineHeader.startDate!.getTime() &&
@@ -242,7 +244,9 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
 
         try {
             await LineHeaderService.massEditLineHeaders(
-                lineHeaderMassEditStore!.massEditLineHeaders!
+                lineHeaderMassEditStore!.massEditLineHeaders!,
+                lineHeaderMassEditStore!.oldLineHeaders!,
+                this.props.lineId
             );
 
             this.props.alertStore!.setFadeMessage('Tallennettu!');
@@ -286,6 +290,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
         if (!massEditLineHeaders) return null;
 
+        const currentLineHeaders = lineHeaderMassEditStore!.currentLineHeaders;
         const selectedMassEditLineHeader =
             lineHeaderMassEditStore!.selectedLineHeaderId !== null
                 ? lineHeaderMassEditStore!.massEditLineHeaders!.find(
@@ -306,7 +311,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     onEditButtonClick={lineHeaderMassEditStore!.toggleIsEditingDisabled}
                     hideCloseButton={true}
                     hideBackButton={true}
-                    isEditButtonVisible={massEditLineHeaders.length > 0}
+                    isEditButtonVisible={currentLineHeaders.length > 0}
                     shouldShowClosePromptMessage={lineHeaderMassEditStore!.isDirty}
                 >
                     Linjan otsikot
@@ -326,7 +331,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                         isInputColorRed={!Boolean(activeLineHeaderName)}
                     />
                 </div>
-                {massEditLineHeaders.length > 0 ? (
+                {currentLineHeaders.length > 0 ? (
                     <table className={s.lineHeaderTable}>
                         <tbody>
                             <tr>

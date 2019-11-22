@@ -34,15 +34,29 @@ export class LineHeaderMassEditStore {
     }
 
     @computed
+    get oldLineHeaders(): ILineHeader[] | null {
+        return this._oldlineHeaders;
+    }
+
+    @computed
     get currentLineHeaders(): ILineHeader[] {
         return _.chain(this._massEditLineHeaders)
+            .filter(massEditLineHeader => !massEditLineHeader.isRemoved)
             .map(massEditLineHeader => massEditLineHeader.lineHeader)
             .value();
     }
 
     @computed
     get isDirty() {
-        return !_.isEqual(this.currentLineHeaders, this._oldlineHeaders);
+        if (!this._massEditLineHeaders) return false;
+
+        for (const massEditLineHeader of this._massEditLineHeaders) {
+            if (massEditLineHeader.isRemoved) return true;
+        }
+        const currentLineHeaders = _.chain(this._massEditLineHeaders)
+            .map(massEditLineHeader => massEditLineHeader.lineHeader)
+            .value();
+        return !_.isEqual(currentLineHeaders, this._oldlineHeaders);
     }
 
     @computed
@@ -54,22 +68,27 @@ export class LineHeaderMassEditStore {
     public init = (lineHeaders: ILineHeader[]) => {
         this.clear();
 
-        this._massEditLineHeaders = lineHeaders.map((lineHeader: ILineHeader, index: number) => {
-            const clonedLineHeader = _.cloneDeep(lineHeader);
-            clonedLineHeader.originalStartDate = lineHeader.startDate;
+        const _lineHeaders = lineHeaders.map((lineHeader: ILineHeader) => {
+            return {
+                ...lineHeader,
+                originalStartDate: lineHeader.startDate
+            };
+        });
+
+        this._massEditLineHeaders = _lineHeaders.map((lineHeader: ILineHeader, index: number) => {
             const invalidPropertiesMap = FormValidator.validateAllProperties(
                 lineHeaderValidationModel,
-                clonedLineHeader
+                lineHeader
             );
             const massEditLineHeader: IMassEditLineHeader = {
                 invalidPropertiesMap,
+                lineHeader,
                 id: index,
-                lineHeader: clonedLineHeader,
                 isRemoved: false
             };
             return massEditLineHeader;
         });
-        this.setOldLineHeaders(lineHeaders);
+        this.setOldLineHeaders(_lineHeaders);
     };
 
     @action

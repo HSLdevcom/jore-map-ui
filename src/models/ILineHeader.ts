@@ -1,7 +1,7 @@
 // Keep lineHeader original startDate in memory and use it as part of the primary key
 interface ILineHeaderPrimaryKey {
     lineId: string;
-    originalStartDate?: Date;
+    originalStartDate?: Date; // Can be null because if lineHeader is new, it has no originalStartDate
 }
 
 interface ILineHeader extends ILineHeaderPrimaryKey {
