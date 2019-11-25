@@ -156,8 +156,11 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
             oldData: oldRoute,
             model: 'route'
         };
-        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
-            this.save();
+        confirmStore!.openConfirm({
+            content: <SavePrompt saveModels={[saveModel]} />,
+            onConfirm: () => {
+                this.save();
+            }
         });
     };
 

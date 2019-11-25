@@ -72,9 +72,12 @@ class SplitLinkTool implements BaseTool {
                 ]
             });
         }
-        ConfirmStore.openConfirm(confirmContent, () => {
-            ToolbarStore.selectTool(null);
-            this.navigateToSplitLink(nodeId);
+        ConfirmStore.openConfirm({
+            content: confirmContent,
+            onConfirm: () => {
+                ToolbarStore.selectTool(null);
+                this.navigateToSplitLink(nodeId);
+            }
         });
     };
 }

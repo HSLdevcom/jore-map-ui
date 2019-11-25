@@ -190,8 +190,11 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             oldData: oldLink,
             model: 'link'
         };
-        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
-            this.save();
+        confirmStore!.openConfirm({
+            content: <SavePrompt saveModels={[saveModel]} />,
+            onConfirm: () => {
+                this.save();
+            }
         });
     };
 

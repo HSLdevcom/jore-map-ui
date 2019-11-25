@@ -1,10 +1,15 @@
 import { action, computed, observable } from 'mobx';
 
+const DEFAULT_CONFIRM_BUTTON_TEXT = 'Hyväksy';
+const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
+
 export class ConfirmStore {
     private _content: React.ReactNode;
     @observable private _isOpen: boolean;
     private _onConfirm: null | (() => void);
     private _onCancel: null | (() => void);
+    private _confirmButtonText: string | null;
+    private _cancelButtonText: string | null;
 
     constructor() {
         this._content = null;
@@ -17,22 +22,42 @@ export class ConfirmStore {
     }
 
     @computed
+    get confirmButtonText(): string | null {
+        return this._confirmButtonText;
+    }
+
+    @computed
+    get cancelButtonText(): string | null {
+        return this._cancelButtonText;
+    }
+
+    @computed
     get isConfirmOpen(): boolean {
         return this._isOpen;
     }
 
     @action
-    public openConfirm = (
-        content: React.ReactNode,
-        onConfirm: () => void,
-        onCancel?: () => void
-    ) => {
+    public openConfirm = ({
+        content,
+        onConfirm,
+        onCancel,
+        confirmButtonText,
+        cancelButtonText
+    }: {
+        content: React.ReactNode;
+        onConfirm: () => void;
+        onCancel?: () => void;
+        confirmButtonText?: string;
+        cancelButtonText?: string;
+    }) => {
         this._content = content;
         this._onConfirm = onConfirm;
         this._isOpen = true;
-        if (onCancel) {
-            this._onCancel = onCancel;
-        }
+        this._onCancel = onCancel ? onCancel : null;
+        this._confirmButtonText = confirmButtonText
+            ? confirmButtonText
+            : DEFAULT_CONFIRM_BUTTON_TEXT;
+        this._cancelButtonText = cancelButtonText ? cancelButtonText : DEFAULT_CANCEL_BUTTON_TEXT;
     };
 
     @action
@@ -57,6 +82,8 @@ export class ConfirmStore {
         this._onCancel = null;
         this._onConfirm = null;
         this._isOpen = false;
+        this._confirmButtonText = DEFAULT_CONFIRM_BUTTON_TEXT;
+        this._cancelButtonText = DEFAULT_CANCEL_BUTTON_TEXT;
     };
 }
 
