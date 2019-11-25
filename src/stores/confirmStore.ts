@@ -44,7 +44,7 @@ export class ConfirmStore {
         confirmButtonText,
         cancelButtonText
     }: {
-        content: React.ReactNode;
+        content: React.ReactNode | string;
         onConfirm: () => void;
         onCancel?: () => void;
         confirmButtonText?: string;

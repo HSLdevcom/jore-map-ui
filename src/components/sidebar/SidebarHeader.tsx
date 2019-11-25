@@ -26,7 +26,7 @@ interface ISidebarHeaderProps {
 const closePromptMessage =
     'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 const revertPromptMessage =
-    'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
+    'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.';
 
 @inject('loginStore', 'confirmStore')
 @observer
@@ -79,7 +79,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
             : null;
         if (shouldShowMessage) {
             this.props.confirmStore!.openConfirm({
-                content: <div>{message}</div>,
+                content: message,
                 onConfirm: _onClick!,
                 confirmButtonText: 'Kyllä'
             });

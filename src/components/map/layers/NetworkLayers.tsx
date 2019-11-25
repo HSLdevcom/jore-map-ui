@@ -262,12 +262,9 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         };
         if (this.props.networkStore!.shouldShowNodeOpenConfirm) {
             this.props.confirmStore!.openConfirm({
-                content: (
-                    <div className={s.nodeOpenConfirmContainer}>
-                        Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun{' '}
-                        {properties.soltunnus}? Tallentamattomat muutokset kumotaan.
-                    </div>
-                ),
+                content: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${
+                    properties.soltunnus
+                }? Tallentamattomat muutokset kumotaan.`,
                 onConfirm: triggerNetworkNodeClick,
                 confirmButtonText: 'Kyllä'
             });

@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import ButtonType from '~/enums/buttonType';
@@ -20,7 +21,14 @@ class Confirm extends React.Component<IConfirmProps> {
         return (
             <Modal>
                 <div className={s.confirmView}>
-                    <div className={s.content}>{confirmStore!.content}</div>
+                    <div
+                        className={classnames(
+                            s.content,
+                            typeof confirmStore!.content === 'string' ? s.padding : undefined
+                        )}
+                    >
+                        {confirmStore!.content}
+                    </div>
                     <div className={s.buttons}>
                         <Button
                             type={ButtonType.SQUARE}
