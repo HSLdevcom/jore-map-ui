@@ -268,7 +268,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         {properties.soltunnus}? Tallentamattomat muutokset kumotaan.
                     </div>
                 ),
-                onConfirm: triggerNetworkNodeClick
+                onConfirm: triggerNetworkNodeClick,
+                confirmButtonText: 'Kyllä'
             });
         } else {
             triggerNetworkNodeClick();
