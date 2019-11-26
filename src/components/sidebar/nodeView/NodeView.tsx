@@ -25,7 +25,7 @@ import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
-import { NodeStore } from '~/stores/nodeStore';
+import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
 import SidebarHeader from '../SidebarHeader';
@@ -134,21 +134,49 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     };
 
     private initExistingNode = async (selectedNodeId: string) => {
+        const nodeStore = this.props.nodeStore;
         this.setState({ isLoading: true });
-        this.props.nodeStore!.clear();
+        nodeStore!.clear();
 
-        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
-        const node = await this.fetchNode(selectedNodeId);
-        if (node) {
-            const links = await this.fetchLinksForNode(node);
-            if (links) {
-                this.centerMapToNode(node, links);
-                this.props.nodeStore!.init({ node, links, isNewNode: false });
+        const _fetchNode = async () => {
+            this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+            const node = await this.fetchNode(selectedNodeId);
+            if (node) {
+                const links = await this.fetchLinksForNode(node);
+                if (links) {
+                    this.initNode(node, links);
+                }
             }
-            this.validateNode();
-            this.createNodePropertyListeners();
+            this.setState({ isLoading: false });
+        };
+
+        const nodeCacheObj: INodeCacheObj | null = nodeStore!.getNodeCacheObjById(selectedNodeId);
+        if (nodeCacheObj) {
+            this.props.confirmStore!.openConfirm(
+                <div>
+                    Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun
+                    tiedot ja jatketaan muokkausta?
+                </div>,
+                () => {
+                    this.initNode(nodeCacheObj.node, nodeCacheObj.links);
+                    nodeStore!.setIsEditingDisabled(false);
+                    this.setState({ isLoading: false });
+                },
+                async () => {
+                    await _fetchNode();
+                }
+            );
+        } else {
+            await _fetchNode();
         }
-        this.setState({ isLoading: false });
+    };
+
+    private initNode = (node: INode, links: ILink[]) => {
+        this.props.mapStore!.setSelectedNodeId(node.id);
+        this.centerMapToNode(node, links);
+        this.props.nodeStore!.init({ node, links, isNewNode: false });
+        this.validateNode();
+        this.createNodePropertyListeners();
     };
 
     private async fetchNode(nodeId: string) {

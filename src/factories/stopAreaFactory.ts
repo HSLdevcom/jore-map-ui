@@ -21,7 +21,7 @@ class StopAreaFactory {
             transitType: undefined,
             nameFi: '',
             nameSw: '',
-            terminalAreaId: '',
+            terminalAreaId: undefined,
             modifiedBy: '',
             modifiedOn: new Date(),
             stopAreaGroupId: undefined

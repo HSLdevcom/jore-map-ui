@@ -25,9 +25,10 @@ interface IStopFormProps {
     stopSections: IDropdownItem[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
+    isReadOnly?: boolean;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
-    isReadOnly?: boolean;
+    setCurrentStateIntoNodeCache?: () => void;
     codeListStore?: CodeListStore;
 }
 
@@ -70,6 +71,7 @@ class StopForm extends Component<IStopFormProps> {
     };
 
     private redirectToStopArea = (areaId: string | undefined) => {
+        this.props.setCurrentStateIntoNodeCache!();
         const routePathViewLink = RouteBuilder.to(SubSites.stopArea)
             .toTarget(':id', areaId!)
             .toLink();
@@ -77,6 +79,7 @@ class StopForm extends Component<IStopFormProps> {
     };
 
     private redirectToNewStopArea = () => {
+        this.props.setCurrentStateIntoNodeCache!();
         const url = RouteBuilder.to(SubSites.newStopArea)
             .clear()
             .toLink();
@@ -168,29 +171,29 @@ class StopForm extends Component<IStopFormProps> {
                             label='PYSÄKKIALUE'
                             validationResult={stopInvalidPropertiesMap['areaId']}
                         />
-                        { !isReadOnly && stop.areaId &&
-                        <Button
-                            className={s.editStopAreaButton}
-                            hasReverseColor={true}
-                            onClick={() => {
-                                this.redirectToStopArea(stop.areaId);
-                            }}
-                        >
-                            <FiInfo />
-                        </Button>
-                        }
+                        {!isReadOnly && stop.areaId && (
+                            <Button
+                                className={s.editStopAreaButton}
+                                hasReverseColor={true}
+                                onClick={() => {
+                                    this.redirectToStopArea(stop.areaId);
+                                }}
+                            >
+                                <FiInfo />
+                            </Button>
+                        )}
                     </div>
-                    { !isReadOnly &&
-                    <div className={s.flexRow}>
-                        <Button
-                            onClick={() => this.redirectToNewStopArea()}
-                            type={ButtonType.SQUARE}
-                            className={s.createNewStopAreaButton}
-                        >
-                            Luo uusi pysäkkialue
-                        </Button>
-                    </div>
-                    }
+                    {!isReadOnly && (
+                        <div className={s.flexRow}>
+                            <Button
+                                onClick={() => this.redirectToNewStopArea()}
+                                type={ButtonType.SQUARE}
+                                className={s.createNewStopAreaButton}
+                            >
+                                Luo uusi pysäkkialue
+                            </Button>
+                        </div>
+                    )}
                     <div className={s.flexRow}>
                         <InputContainer
                             label='PITKÄ NIMI'

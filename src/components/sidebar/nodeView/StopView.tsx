@@ -156,6 +156,12 @@ class StopView extends ViewFormBase<IStopViewProps, IStopViewState> {
         this.props.nodeStore!.updateStop(property, value);
     };
 
+    private setCurrentStateIntoNodeCache = () => {
+        if (this.props.nodeStore!.isDirty) {
+            this.props.nodeStore!.setCurrentStateIntoNodeCache();
+        }
+    };
+
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const { node, isNewStop, onNodePropertyChange } = this.props;
@@ -170,6 +176,7 @@ class StopView extends ViewFormBase<IStopViewProps, IStopViewState> {
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
                 updateStopProperty={this.updateStopProperty}
                 onNodePropertyChange={onNodePropertyChange}
+                setCurrentStateIntoNodeCache={this.setCurrentStateIntoNodeCache}
             />
         );
     }

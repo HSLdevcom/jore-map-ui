@@ -11,18 +11,28 @@ import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
 import NetworkStore from './networkStore';
 
-export interface UndoState {
+interface UndoState {
     links: ILink[];
     node: INode;
 }
 
-export class NodeStore {
+interface INodeCacheObj {
+    links: ILink[];
+    node: INode;
+}
+
+interface INodeCache {
+    [nodeId: string]: INodeCacheObj | null;
+}
+
+class NodeStore {
     @observable private _links: ILink[];
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
     @observable private _isStopFormValid: boolean;
     @observable private _isEditingDisabled: boolean;
+    @observable private _nodeCache: INodeCache;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -32,6 +42,7 @@ export class NodeStore {
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
         this._isEditingDisabled = true;
+        this._nodeCache = {};
 
         reaction(
             () => this.isDirty,
@@ -67,6 +78,11 @@ export class NodeStore {
     @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
+    }
+
+    @computed
+    get nodeCache() {
+        return this._nodeCache;
     }
 
     @action
@@ -230,6 +246,15 @@ export class NodeStore {
     };
 
     @action
+    public setCurrentStateIntoNodeCache = () => {
+        const nodeId = this._node!.id;
+        this._nodeCache[nodeId] = {
+            node: _.cloneDeep(this._node!),
+            links: _.cloneDeep(this._links)
+        };
+    };
+
+    @action
     public clear = () => {
         this._links = [];
         this._node = null;
@@ -279,8 +304,14 @@ export class NodeStore {
             return !_.isEqual(link, oldLink);
         });
     }
+
+    public getNodeCacheObjById(nodeId: string): INodeCacheObj | null {
+        return this._nodeCache[nodeId];
+    }
 }
 
 const observableNodeStore = new NodeStore();
 
 export default observableNodeStore;
+
+export { NodeStore, INodeCacheObj };

@@ -7,7 +7,7 @@ import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
-    value: string;
+    value?: string;
     label: string;
 }
 

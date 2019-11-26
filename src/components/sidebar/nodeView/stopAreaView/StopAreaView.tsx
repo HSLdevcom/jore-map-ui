@@ -322,7 +322,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                                     items={this.state.terminalAreas}
                                     selected={stopArea.terminalAreaId}
                                     emptyItem={{
-                                        value: '',
+                                        value: undefined,
                                         label: ''
                                     }}
                                     disabled={isEditingDisabled}
