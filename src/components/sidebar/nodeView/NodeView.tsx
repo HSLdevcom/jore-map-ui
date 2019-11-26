@@ -158,7 +158,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     tiedot ja jatketaan muokkausta?
                 </div>,
                 () => {
-                    this.initNode(nodeCacheObj.node, nodeCacheObj.links);
+                    this.initNode(
+                        nodeCacheObj.node,
+                        nodeCacheObj.links,
+                        nodeCacheObj.oldNode,
+                        nodeCacheObj.oldLinks
+                    );
                     nodeStore!.setIsEditingDisabled(false);
                     this.setState({ isLoading: false });
                 },
@@ -171,10 +176,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         }
     };
 
-    private initNode = (node: INode, links: ILink[]) => {
+    private initNode = (node: INode, links: ILink[], oldNode?: INode, oldLinks?: ILink[]) => {
         this.props.mapStore!.setSelectedNodeId(node.id);
         this.centerMapToNode(node, links);
-        this.props.nodeStore!.init({ node, links, isNewNode: false });
+        this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: false });
         this.validateNode();
         this.createNodePropertyListeners();
     };

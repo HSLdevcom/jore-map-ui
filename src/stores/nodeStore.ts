@@ -12,13 +12,15 @@ import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
 import NetworkStore from './networkStore';
 
 interface UndoState {
-    links: ILink[];
     node: INode;
+    links: ILink[];
 }
 
 interface INodeCacheObj {
-    links: ILink[];
     node: INode;
+    oldNode: INode;
+    links: ILink[];
+    oldLinks: ILink[];
 }
 
 interface INodeCache {
@@ -89,11 +91,15 @@ class NodeStore {
     public init = ({
         node,
         links,
-        isNewNode
+        isNewNode,
+        oldNode,
+        oldLinks
     }: {
         node: INode;
         links: ILink[];
         isNewNode: boolean;
+        oldNode?: INode;
+        oldLinks?: ILink[];
     }) => {
         this.clear();
 
@@ -107,9 +113,9 @@ class NodeStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this._node = newNode;
-        this._oldNode = newNode;
+        this._oldNode = oldNode ? oldNode : newNode;
         this._links = newLinks;
-        this._oldLinks = newLinks;
+        this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
     };
 
@@ -250,7 +256,9 @@ class NodeStore {
         const nodeId = this._node!.id;
         this._nodeCache[nodeId] = {
             node: _.cloneDeep(this._node!),
-            links: _.cloneDeep(this._links)
+            links: _.cloneDeep(this._links),
+            oldNode: _.cloneDeep(this._oldNode!),
+            oldLinks: _.cloneDeep(this._oldLinks)
         };
     };
 
