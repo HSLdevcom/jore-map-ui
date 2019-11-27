@@ -16,6 +16,7 @@ import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
 import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
@@ -124,13 +125,23 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     };
 
     private createNewNode = async (params: any) => {
-        const [lat, lng] = params.split(':');
-        const coordinate = new L.LatLng(lat, lng);
-        const node = NodeFactory.createNewNode(coordinate);
-        this.centerMapToNode(node, []);
-        this.props.nodeStore!.init({ node, links: [], isNewNode: true });
-        this.validateNode();
-        this.createNodePropertyListeners();
+        const createNode = () => {
+            const [lat, lng] = params.split(':');
+            const coordinate = new L.LatLng(lat, lng);
+            const node = NodeFactory.createNewNode(coordinate);
+            this.centerMapToNode(node, []);
+            this.props.nodeStore!.init({ node, links: [], isNewNode: true });
+            this.updateSelectedStopAreaId();
+            this.validateNode();
+            this.createNodePropertyListeners();
+        };
+
+        const nodeCacheObj: INodeCacheObj | null = this.props.nodeStore!.getNewNodeCacheObj();
+        if (nodeCacheObj) {
+            this.showNodeCachePrompt({ nodeCacheObj, promptCancelCallback: createNode });
+        } else {
+            createNode();
+        }
     };
 
     private initExistingNode = async (selectedNodeId: string) => {
@@ -152,27 +163,16 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
 
         const nodeCacheObj: INodeCacheObj | null = nodeStore!.getNodeCacheObjById(selectedNodeId);
         if (nodeCacheObj) {
-            this.props.confirmStore!.openConfirm(
-                <div>
-                    Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun
-                    tiedot ja jatketaan muokkausta?
-                </div>,
-                () => {
-                    this.initNode(
-                        nodeCacheObj.node,
-                        nodeCacheObj.links,
-                        nodeCacheObj.oldNode,
-                        nodeCacheObj.oldLinks
-                    );
-                    nodeStore!.setIsEditingDisabled(false);
-                    this.setState({ isLoading: false });
-                },
-                async () => {
+            this.showNodeCachePrompt({
+                nodeCacheObj,
+                promptCancelCallback: async () => {
                     await _fetchNode();
+                    this.updateSelectedStopAreaId();
                 }
-            );
+            });
         } else {
             await _fetchNode();
+            this.updateSelectedStopAreaId();
         }
     };
 
@@ -192,6 +192,42 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             return null;
         }
     }
+
+    private showNodeCachePrompt = ({
+        nodeCacheObj,
+        promptCancelCallback
+    }: {
+        nodeCacheObj: INodeCacheObj;
+        promptCancelCallback: Function;
+    }) => {
+        const nodeStore = this.props.nodeStore;
+        this.props.confirmStore!.openConfirm(
+            <div>
+                Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun
+                tiedot ja jatketaan muokkausta?
+            </div>,
+            () => {
+                this.initNode(
+                    nodeCacheObj.node,
+                    nodeCacheObj.links,
+                    nodeCacheObj.oldNode,
+                    nodeCacheObj.oldLinks
+                );
+                this.updateSelectedStopAreaId();
+                nodeStore!.setIsEditingDisabled(false);
+                this.setState({ isLoading: false });
+            },
+            () => promptCancelCallback()
+        );
+    };
+
+    private updateSelectedStopAreaId = () => {
+        const stopAreaIdQueryParam = navigator.getQueryParam(QueryParams.stopAreaId);
+        const stopAreaId = stopAreaIdQueryParam ? stopAreaIdQueryParam[0] : undefined;
+        if (stopAreaId) {
+            this.props.nodeStore!.updateStop('areaId', stopAreaId);
+        }
+    };
 
     private async fetchLinksForNode(node: INode) {
         try {

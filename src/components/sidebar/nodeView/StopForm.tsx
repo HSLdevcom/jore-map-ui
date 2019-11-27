@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { FiInfo } from 'react-icons/fi';
+import { match } from 'react-router';
 import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
@@ -9,6 +10,7 @@ import TextContainer from '~/components/controls/TextContainer';
 import ButtonType from '~/enums/buttonType';
 import { INode, IStop } from '~/models';
 import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { IStopAreaItem } from '~/services/stopAreaService';
@@ -25,6 +27,7 @@ interface IStopFormProps {
     stopSections: IDropdownItem[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
+    match?: match<any>;
     isReadOnly?: boolean;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
@@ -35,18 +38,6 @@ interface IStopFormProps {
 @inject('codeListStore')
 @observer
 class StopForm extends Component<IStopFormProps> {
-    private onStopAreaChange = (stopAreaId: string) => {
-        const stopArea = this.props.stopAreas.find(obj => {
-            return obj.pysalueid === stopAreaId;
-        });
-
-        if (stopArea) {
-            this.props.updateStopProperty!('nameFi')(stopArea.nimi);
-            this.props.updateStopProperty!('nameSw')(stopArea.nimir);
-        }
-        this.props.updateStopProperty!('areaId')(stopAreaId);
-    };
-
     private createStopAreaDropdownItems = (stopAreas: IStopAreaItem[]): IDropdownItem[] => {
         return stopAreas.map((stopArea: IStopAreaItem) => {
             const item: IDropdownItem = {
@@ -80,9 +71,23 @@ class StopForm extends Component<IStopFormProps> {
 
     private redirectToNewStopArea = () => {
         this.props.setCurrentStateIntoNodeCache!();
-        const url = RouteBuilder.to(SubSites.newStopArea)
-            .clear()
-            .toLink();
+        const node = this.props.node;
+        let url;
+        if (this.props.isNewStop) {
+            url = RouteBuilder.to(SubSites.newStopArea)
+                .clear()
+                .append(
+                    QueryParams.latLng,
+                    `${node.coordinatesProjection.lat}:${node.coordinatesProjection.lng}`
+                )
+                .toLink();
+        } else {
+            url = RouteBuilder.to(SubSites.newStopArea)
+                .clear()
+                .append(QueryParams.nodeId, node.id)
+                .toLink();
+        }
+
         navigator.goTo(url);
     };
 
@@ -160,7 +165,7 @@ class StopForm extends Component<IStopFormProps> {
                     </div>
                     <div className={s.flexRow}>
                         <Dropdown
-                            onChange={this.onStopAreaChange}
+                            onChange={updateStopProperty!('areaId')}
                             items={this.createStopAreaDropdownItems(stopAreas)}
                             selected={stop.areaId}
                             emptyItem={{

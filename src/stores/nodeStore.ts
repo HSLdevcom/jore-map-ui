@@ -6,6 +6,7 @@ import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode } from '~/models';
 import GeocodingService from '~/services/geocodingService';
+import { IStopAreaItem } from '~/services/stopAreaService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
@@ -24,6 +25,7 @@ interface INodeCacheObj {
 }
 
 interface INodeCache {
+    newNodeCache: INodeCacheObj | null;
     [nodeId: string]: INodeCacheObj | null;
 }
 
@@ -35,6 +37,7 @@ class NodeStore {
     @observable private _isStopFormValid: boolean;
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
+    @observable private _stopAreaItems: IStopAreaItem[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -44,12 +47,19 @@ class NodeStore {
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
         this._isEditingDisabled = true;
-        this._nodeCache = {};
+        this._nodeCache = {
+            newNodeCache: null
+        };
 
         reaction(
             () => this.isDirty,
             (value: boolean) => NetworkStore.setShouldShowNodeOpenConfirm(value)
         );
+        reaction(
+            () => this._node && this._node.stop && this._node.stop.areaId,
+            (value: string) => this.onStopAreaChange(value)
+        );
+        reaction(() => this._stopAreaItems, () => this.onStopAreaItemsChange());
     }
 
     @computed
@@ -85,6 +95,11 @@ class NodeStore {
     @computed
     get nodeCache() {
         return this._nodeCache;
+    }
+
+    @computed
+    get stopAreaItems() {
+        return this._stopAreaItems;
     }
 
     @action
@@ -228,7 +243,7 @@ class NodeStore {
     };
 
     @action
-    public updateStop = (property: string, value: string | number | Date) => {
+    public updateStop = (property: string, value?: string | number | Date) => {
         if (!this.node) return;
         this._node!.stop = {
             ...this._node!.stop!,
@@ -252,14 +267,24 @@ class NodeStore {
     };
 
     @action
-    public setCurrentStateIntoNodeCache = () => {
+    public setCurrentStateIntoNodeCache = ({ isNewNode }: { isNewNode: boolean }) => {
         const nodeId = this._node!.id;
-        this._nodeCache[nodeId] = {
+        const nodeCacheObj = {
             node: _.cloneDeep(this._node!),
             links: _.cloneDeep(this._links),
             oldNode: _.cloneDeep(this._oldNode!),
             oldLinks: _.cloneDeep(this._oldLinks)
         };
+        if (isNewNode) {
+            this._nodeCache.newNodeCache = nodeCacheObj;
+        } else {
+            this._nodeCache[nodeId] = nodeCacheObj;
+        }
+    };
+
+    @action
+    public setStopAreaItems = (stopAreaItems: IStopAreaItem[]) => {
+        this._stopAreaItems = stopAreaItems;
     };
 
     @action
@@ -297,6 +322,35 @@ class NodeStore {
         });
     };
 
+    @action
+    private onStopAreaChange = (stopAreaId: string) => {
+        this.updateStopArea(stopAreaId);
+    };
+
+    @action
+    private onStopAreaItemsChange = () => {
+        const stopAreaId = this.node && this.node.stop && this.node.stop.areaId;
+        if (stopAreaId) {
+            this.updateStopArea(stopAreaId);
+        }
+    };
+
+    @action
+    private updateStopArea = (stopAreaId?: string) => {
+        if (!this._stopAreaItems) return;
+
+        this.updateStop('areaId', stopAreaId);
+        if (!stopAreaId) return;
+
+        const stopAreaItem = this._stopAreaItems.find(obj => {
+            return obj.pysalueid === stopAreaId;
+        });
+        if (stopAreaItem) {
+            this.updateStop('nameFi', stopAreaItem.nimi);
+            this.updateStop('nameSw', stopAreaItem.nimir);
+        }
+    };
+
     public getDirtyLinks() {
         // All links are dirty if the node coordinate has changed
         if (!_.isEqual(this._node!.coordinatesProjection, this._oldNode!.coordinatesProjection)) {
@@ -315,6 +369,10 @@ class NodeStore {
 
     public getNodeCacheObjById(nodeId: string): INodeCacheObj | null {
         return this._nodeCache[nodeId];
+    }
+
+    public getNewNodeCacheObj(): INodeCacheObj | null {
+        return this._nodeCache.newNodeCache;
     }
 }
 
