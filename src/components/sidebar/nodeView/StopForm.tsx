@@ -61,10 +61,10 @@ class StopForm extends Component<IStopFormProps> {
         }
     };
 
-    private redirectToStopArea = (areaId: string | undefined) => {
+    private redirectToStopArea = (stopAreaId: string | undefined) => {
         this.props.setCurrentStateIntoNodeCache!();
         const routePathViewLink = RouteBuilder.to(SubSites.stopArea)
-            .toTarget(':id', areaId!)
+            .toTarget(':id', stopAreaId!)
             .toLink();
         navigator.goTo(routePathViewLink);
     };
@@ -165,23 +165,23 @@ class StopForm extends Component<IStopFormProps> {
                     </div>
                     <div className={s.flexRow}>
                         <Dropdown
-                            onChange={updateStopProperty!('areaId')}
+                            onChange={updateStopProperty!('stopAreaId')}
                             items={this.createStopAreaDropdownItems(stopAreas)}
-                            selected={stop.areaId}
+                            selected={stop.stopAreaId}
                             emptyItem={{
                                 value: '',
                                 label: ''
                             }}
                             disabled={isEditingDisabled}
                             label='PYSÄKKIALUE'
-                            validationResult={stopInvalidPropertiesMap['areaId']}
+                            validationResult={stopInvalidPropertiesMap['stopAreaId']}
                         />
-                        {!isReadOnly && stop.areaId && (
+                        {!isReadOnly && stop.stopAreaId && (
                             <Button
                                 className={s.editStopAreaButton}
                                 hasReverseColor={true}
                                 onClick={() => {
-                                    this.redirectToStopArea(stop.areaId);
+                                    this.redirectToStopArea(stop.stopAreaId);
                                 }}
                             >
                                 <FiInfo />

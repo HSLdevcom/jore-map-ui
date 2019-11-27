@@ -225,7 +225,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         const stopAreaIdQueryParam = navigator.getQueryParam(QueryParams.stopAreaId);
         const stopAreaId = stopAreaIdQueryParam ? stopAreaIdQueryParam[0] : undefined;
         if (stopAreaId) {
-            this.props.nodeStore!.updateStop('areaId', stopAreaId);
+            this.props.nodeStore!.updateStop('stopAreaId', stopAreaId);
         }
     };
 
@@ -302,9 +302,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         // Create stop save model
         if (currentStop) {
             // Generate stopArea label values for savePrompt
-            currentStop.areaId = `${currentStop.areaId} - ${currentStop.nameFi}`;
-            if (oldStop && oldStop.areaId) {
-                oldStop.areaId = `${oldStop.areaId} - ${oldStop.nameFi}`;
+            currentStop.stopAreaId = `${currentStop.stopAreaId} - ${currentStop.nameFi}`;
+            if (oldStop && oldStop.stopAreaId) {
+                oldStop.stopAreaId = `${oldStop.stopAreaId} - ${oldStop.nameFi}`;
             }
             const stopSaveModel: ISaveModel = {
                 newData: currentStop!,

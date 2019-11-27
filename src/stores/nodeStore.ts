@@ -56,7 +56,7 @@ class NodeStore {
             (value: boolean) => NetworkStore.setShouldShowNodeOpenConfirm(value)
         );
         reaction(
-            () => this._node && this._node.stop && this._node.stop.areaId,
+            () => this._node && this._node.stop && this._node.stop.stopAreaId,
             (value: string) => this.onStopAreaChange(value)
         );
         reaction(() => this._stopAreaItems, () => this.onStopAreaItemsChange());
@@ -329,7 +329,7 @@ class NodeStore {
 
     @action
     private onStopAreaItemsChange = () => {
-        const stopAreaId = this.node && this.node.stop && this.node.stop.areaId;
+        const stopAreaId = this.node && this.node.stop && this.node.stop.stopAreaId;
         if (stopAreaId) {
             this.updateStopArea(stopAreaId);
         }
@@ -339,7 +339,7 @@ class NodeStore {
     private updateStopArea = (stopAreaId?: string) => {
         if (!this._stopAreaItems) return;
 
-        this.updateStop('areaId', stopAreaId);
+        this.updateStop('stopAreaId', stopAreaId);
         if (!stopAreaId) return;
 
         const stopAreaItem = this._stopAreaItems.find(obj => {
