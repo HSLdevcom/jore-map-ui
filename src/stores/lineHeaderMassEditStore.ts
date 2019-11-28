@@ -147,8 +147,12 @@ export class LineHeaderMassEditStore {
             invalidPropertiesMap,
             isRemoved: false
         };
-        // Need to do concat (instead of push) to trigger observable reaction
-        this._massEditLineHeaders = this.massEditLineHeaders!.concat([newMassEditLineHeader]);
+
+        this._massEditLineHeaders = _.chain(this.massEditLineHeaders!)
+            .concat([newMassEditLineHeader])
+            .sort(_sortMassEditLineHeaders)
+            .value();
+
         this.validateDates();
         this.setIsEditingDisabled(false);
         this.setSelectedLineHeaderId(id);
