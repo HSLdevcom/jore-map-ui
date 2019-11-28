@@ -1,11 +1,16 @@
 @import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
 @import '../../shared/styles/form';
 
-$cellPadding: 5px 2px 5px 2px;
+$cellPadding: 5px 2px 5px 2px; // same as in lineHeaderTableRows.scss
 
 .lineHeaderTableView {
     width: 100%;
     padding-top: 20px;
+
+    &.loaderContainer > div {
+        margin: 30px auto;
+    }
 
     .lineHeaderTable {
         width: 100%;
@@ -18,63 +23,21 @@ $cellPadding: 5px 2px 5px 2px;
         .columnHeader {
             white-space: nowrap;
             text-align: start;
-            padding-left: $cellPadding;
+            padding: $cellPadding;
         }
 
         .columnHeader:first-child {
             padding-left: 0px;
         }
-
-        .lineHeaderTableRow {
-            border-bottom: 1px solid #dfdfdf;
-
-            .lineHeaderTableCalendarCell {
-                min-width: 125px;
-                padding: $cellPadding;
-                vertical-align: top;
-
-                .timeInput {
-                    padding-top: 0px;
-                }
-            }
-
-            .lineHeaderTableButtonCell {
-                vertical-align: top;
-                padding-top: $cellPadding;
-            }
-        }
-
-        .lineHeaderRowHighlight {
-            background-color: $lightblue;
-        }
-
-        .lineHeaderButton {
-            display: flex;
-            font-size: $largeFontSize;
-            padding: 5px;
-            margin: 4px;
-            margin-bottom: auto;
-            border-radius: 5px;
-        }
-
-        .removeLineHeaderButton:hover {
-            color: white;
-            background-color: $red;
-        }
     }
 
-    .buttonContainer {
-        display: flex;
-        flex-direction: column;
+    .createNewLineHeaderButton {
+        width: 50%;
+        padding: 10px 20px 10px 20px;
+        margin: 10px 0px 10px auto;
+    }
 
-        .createNewLineHeaderButton {
-            width: 50%;
-            padding: 10px 20px 10px 20px;
-            margin: 10px 0px 10px auto;
-        }
-
-        .saveLineHeadersButton {
-            margin-top: 20px;
-        }
+    .saveLineHeadersButton {
+        margin-top: 10px;
     }
 }

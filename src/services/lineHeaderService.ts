@@ -1,12 +1,23 @@
 import { ApolloQueryResult } from 'apollo-client';
+import _ from 'lodash';
 import Moment from 'moment';
 import endpoints from '~/enums/endpoints';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
+import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
+import { areDatesEqual } from '~/util/dateHelpers';
 import GraphqlQueries from './graphqlQueries';
+
+interface ILineHeaderSaveModel {
+    lineId: string;
+    added: ILineHeader[];
+    edited: ILineHeader[];
+    removed: ILineHeader[];
+    originals: ILineHeader[];
+}
 
 class LineHeaderService {
     /**
@@ -46,18 +57,52 @@ class LineHeaderService {
         return LineHeaderFactory.mapExternalLineHeader(queryResult.data.lineHeader);
     };
 
-    public static updateLineHeader = async (lineHeader: ILineHeader) => {
-        await ApiClient.updateObject(endpoints.LINE_HEADER, lineHeader);
-    };
+    public static massEditLineHeaders = async (
+        massEditLineHeaders: IMassEditLineHeader[],
+        oldLineHeaders: ILineHeader[],
+        lineId: string
+    ) => {
+        const added: ILineHeader[] = [];
+        const edited: ILineHeader[] = [];
+        const removed: ILineHeader[] = [];
+        const originals: ILineHeader[] = [];
+        massEditLineHeaders!.forEach((massEditLineHeader: IMassEditLineHeader) => {
+            const currentLineHeader = massEditLineHeader.lineHeader;
+            if (massEditLineHeader.isRemoved) {
+                removed.push(currentLineHeader);
+                return;
+            }
+            const originalLineHeader = currentLineHeader.originalStartDate
+                ? oldLineHeaders.find(oldLineHeader =>
+                      areDatesEqual(
+                          oldLineHeader.originalStartDate!,
+                          currentLineHeader.originalStartDate!
+                      )
+                  )
+                : null;
 
-    public static createLineHeader = async (lineHeader: ILineHeader) => {
-        const newLineHeader = {
-            ...lineHeader,
-            originalStartDate: lineHeader.startDate
+            if (!originalLineHeader) {
+                added.push(massEditLineHeader.lineHeader);
+            } else {
+                _.isEqual(originalLineHeader, currentLineHeader)
+                    ? originals.push(currentLineHeader)
+                    : edited.push(currentLineHeader);
+            }
+        });
+
+        const lineHeaderSaveModel: ILineHeaderSaveModel = {
+            lineId,
+            added,
+            edited,
+            removed,
+            originals
         };
-        const response = await ApiClient.createObject(endpoints.LINE_HEADER, newLineHeader);
-        return response.id;
+
+        await ApiClient.postRequest(endpoints.LINE_HEADER_MASS_EDIT, lineHeaderSaveModel);
+        ApolloClient.clearStore();
     };
 }
 
 export default LineHeaderService;
+
+export { ILineHeaderSaveModel };

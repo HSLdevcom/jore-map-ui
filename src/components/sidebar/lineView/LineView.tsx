@@ -15,6 +15,7 @@ import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import SidebarHeader from '../SidebarHeader';
 import LineInfoTab from './LineInfoTab';
@@ -25,6 +26,7 @@ interface ILineViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     lineStore?: LineStore;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
     match?: match<any>;
     isNewLine: boolean;
 }
@@ -35,7 +37,7 @@ interface ILineViewState {
     selectedTabIndex: number;
 }
 
-@inject('lineStore', 'errorStore', 'alertStore')
+@inject('lineStore', 'lineHeaderMassEditStore', 'errorStore', 'alertStore')
 @observer
 class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -161,6 +163,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
 
     render() {
         const lineStore = this.props.lineStore;
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.lineView, s.loaderContainer)}>
@@ -168,7 +171,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                 </div>
             );
         }
-        if (!this.props.lineStore!.line) return null;
+        if (!lineStore!.line) return null;
         const isEditingDisabled = lineStore!.isEditingDisabled;
         const isSaveButtonDisabled =
             isEditingDisabled || !lineStore!.isDirty || !this.isFormValid();
@@ -179,13 +182,16 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                     <div className={s.sidebarHeaderSection}>
                         <SidebarHeader
                             isEditButtonVisible={!this.props.isNewLine}
-                            onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
-                            isEditing={!this.props.lineStore!.isEditingDisabled}
-                            shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
+                            onEditButtonClick={lineStore!.toggleIsEditingDisabled}
+                            isEditing={!lineStore!.isEditingDisabled}
+                            shouldShowClosePromptMessage={
+                                lineStore!.isDirty || lineHeaderMassEditStore!.isDirty
+                            }
+                            shouldShowEditButtonClosePromptMessage={lineStore!.isDirty}
                         >
                             {this.props.isNewLine
                                 ? 'Luo uusi linja'
-                                : `Linja ${this.props.lineStore!.line!.id}`}
+                                : `Linja ${lineStore!.line!.id}`}
                         </SidebarHeader>
                     </div>
                     <Tabs>

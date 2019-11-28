@@ -4,7 +4,7 @@ enum endpoints { // TODO: rename as endpointPath
     LOGOUT = 'logout',
     SYNC_LOCAL_DB = 'syncLocalDB',
     LINE = 'line',
-    LINE_HEADER = 'lineHeader',
+    LINE_HEADER_MASS_EDIT = 'lineHeaderMassEdit',
     ROUTE = 'route',
     ROUTEPATH = 'routePath',
     ROUTELINK = 'routeLink',

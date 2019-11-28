@@ -47,6 +47,36 @@ class FormValidator {
             errorMessage: typeof firstErrorMessage === 'string' ? firstErrorMessage : ''
         };
     };
+
+    public static validateAllProperties = (validationModel: object, validationEntity: any) => {
+        const invalidPropertiesMap: object = {};
+
+        Object.entries(validationModel).forEach(([property, validatorRule]) => {
+            const validationResult = FormValidator.validateProperty(
+                validatorRule,
+                validationEntity[property]
+            );
+            if (validationResult) {
+                invalidPropertiesMap[property] = validationResult;
+            }
+        });
+        return invalidPropertiesMap;
+    };
+
+    public static validateProperty = (
+        validatorRule: string,
+        value: any
+    ): IValidationResult | undefined => {
+        if (!validatorRule) return;
+
+        return FormValidator.validate(value, validatorRule);
+    };
+
+    public static isInvalidPropertiesMapValid = (invalidPropertiesMap: object) => {
+        return !Object.values(invalidPropertiesMap).some(
+            validatorResult => !validatorResult.isValid
+        );
+    };
 }
 
 export default FormValidator;

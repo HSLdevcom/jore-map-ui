@@ -1,0 +1,15 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/sidebar';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.lineHeaderForm {
+    display: flex;
+    flex-direction: column;
+
+    .newLineHeaderButton {
+        border-radius: 0px;
+        padding: 20px;
+        margin: 0px;
+    }
+}
