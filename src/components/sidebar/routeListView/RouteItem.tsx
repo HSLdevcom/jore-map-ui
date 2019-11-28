@@ -13,7 +13,7 @@ import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import LineHelper from '~/util/LineHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { getDateString } from '~/util/dateHelpers';
+import { toDateString } from '~/util/dateHelpers';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './routeItem.scss';
@@ -158,7 +158,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
 
         return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
             const first = routePaths[0];
-            const header = `${getDateString(first.startTime)} - ${getDateString(first.endTime)}`;
+            const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
 
             return (
                 <div

@@ -1,6 +1,6 @@
 import Moment from 'moment';
 
-const getDateString = (date: Date): string => {
+const toDateString = (date: Date): string => {
     return Moment(date).format('DD.MM.YYYY');
 };
 
@@ -17,4 +17,4 @@ const areDatesEqual = (a: Date, b: Date) => {
     );
 };
 
-export { getDateString, getDateWithoutHours, areDatesEqual };
+export { toDateString, getDateWithoutHours, areDatesEqual };

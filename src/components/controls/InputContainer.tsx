@@ -7,7 +7,7 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
-import { getDateString } from '~/util/dateHelpers';
+import { toDateString } from '~/util/dateHelpers';
 import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './inputContainer.scss';
 
@@ -156,7 +156,7 @@ const renderDatePickerInput = ({
             <input
                 placeholder={placeholder}
                 type={'text'}
-                value={value ? getDateString(value) : ''}
+                value={value ? toDateString(value) : ''}
                 onChange={onInputChange}
             />
             <IoMdCalendar className={s.calendarIcon} />
