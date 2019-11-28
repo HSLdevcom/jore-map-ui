@@ -8,6 +8,7 @@ import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
+import { getDateWithoutHours } from '~/util/dateHelpers';
 import FormValidator from '~/validation/FormValidator';
 import * as s from './lineHeaderTableRows.scss';
 
@@ -45,6 +46,13 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
         )!.lineHeader;
         const newLineHeader = _.cloneDeep(selectedLineHeader);
         newLineHeader.originalStartDate = undefined;
+
+        const lastLineHeader = _.last(this.props.lineHeaderMassEditStore!.massEditLineHeaders)!
+            .lineHeader;
+        const defaultDate = new Date(lastLineHeader.endDate);
+        defaultDate.setDate(defaultDate.getDate() + 1);
+        newLineHeader.startDate = getDateWithoutHours(defaultDate);
+        newLineHeader.endDate = getDateWithoutHours(defaultDate);
         this.props.lineHeaderMassEditStore!.createLineHeader(newLineHeader);
     };
 
