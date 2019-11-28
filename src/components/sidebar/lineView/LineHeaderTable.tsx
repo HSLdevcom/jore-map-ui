@@ -13,7 +13,7 @@ import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
-import { getDateWithoutHours } from '~/util/dateHelpers';
+import { toMidnightDate } from '~/util/dateHelpers';
 import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
 import LineHeaderForm from './LineHeaderForm';
@@ -90,7 +90,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     };
 
     private getActiveLineHeaderName = (): string | null => {
-        const currentTime = getDateWithoutHours(new Date()).getTime();
+        const currentTime = toMidnightDate(new Date()).getTime();
         let activeMassEditLineHeader: IMassEditLineHeader | null = null;
         this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
             (m: IMassEditLineHeader) => {

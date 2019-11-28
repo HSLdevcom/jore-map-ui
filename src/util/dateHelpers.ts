@@ -4,7 +4,7 @@ const toDateString = (date: Date): string => {
     return Moment(date).format('DD.MM.YYYY');
 };
 
-const getDateWithoutHours = (date: Date): Date => {
+const toMidnightDate = (date: Date): Date => {
     date.setHours(0, 0, 0, 0);
     return date;
 };
@@ -17,4 +17,4 @@ const areDatesEqual = (a: Date, b: Date) => {
     );
 };
 
-export { toDateString, getDateWithoutHours, areDatesEqual };
+export { toDateString, toMidnightDate, areDatesEqual };

@@ -1,6 +1,6 @@
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
-import { getDateWithoutHours } from '~/util/dateHelpers';
+import { toMidnightDate } from '~/util/dateHelpers';
 
 class LineHeaderFactory {
     public static mapExternalLineHeader = (
@@ -38,8 +38,8 @@ class LineHeaderFactory {
         return {
             lineId,
             originalStartDate: undefined,
-            startDate: new Date(getDateWithoutHours(startDate)),
-            endDate: new Date(getDateWithoutHours(endDate)),
+            startDate: new Date(toMidnightDate(startDate)),
+            endDate: new Date(toMidnightDate(endDate)),
             lineNameFi: '',
             lineShortNameFi: '',
             lineNameSw: '',

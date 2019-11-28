@@ -3,7 +3,7 @@ import IExternalLine from '~/models/externals/IExternalLine.ts';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
-import { getDateWithoutHours } from '~/util/dateHelpers';
+import { toMidnightDate } from '~/util/dateHelpers';
 
 class LineFactory {
     public static createLine = (externalLine: IExternalLine): ILine => {
@@ -25,7 +25,7 @@ class LineFactory {
     };
 
     public static createNewLine = (): ILine => {
-        const defaultDate = getDateWithoutHours(new Date());
+        const defaultDate = toMidnightDate(new Date());
 
         return {
             routes: [],
