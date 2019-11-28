@@ -70,25 +70,23 @@ class LineHeaderService {
             const currentLineHeader = massEditLineHeader.lineHeader;
             if (massEditLineHeader.isRemoved) {
                 removed.push(currentLineHeader);
-            } else {
-                const originalLineHeader = currentLineHeader.originalStartDate
-                    ? oldLineHeaders.find(oldLineHeader =>
-                          areDatesEqual(
-                              oldLineHeader.originalStartDate!,
-                              currentLineHeader.originalStartDate!
-                          )
+                return;
+            }
+            const originalLineHeader = currentLineHeader.originalStartDate
+                ? oldLineHeaders.find(oldLineHeader =>
+                      areDatesEqual(
+                          oldLineHeader.originalStartDate!,
+                          currentLineHeader.originalStartDate!
                       )
-                    : null;
+                  )
+                : null;
 
-                if (!originalLineHeader) {
-                    added.push(massEditLineHeader.lineHeader);
-                } else {
-                    if (!_.isEqual(originalLineHeader, currentLineHeader)) {
-                        edited.push(currentLineHeader);
-                    } else {
-                        originals.push(currentLineHeader);
-                    }
-                }
+            if (!originalLineHeader) {
+                added.push(massEditLineHeader.lineHeader);
+            } else {
+                _.isEqual(originalLineHeader, currentLineHeader)
+                    ? originals.push(currentLineHeader)
+                    : edited.push(currentLineHeader);
             }
         });
 
