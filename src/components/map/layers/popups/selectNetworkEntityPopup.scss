@@ -1,0 +1,21 @@
+@import '../../../shared/styles/common.scss';
+
+.selectNetworkEntityPopup {
+    font-size: 14px;
+
+    .row {
+        cursor: pointer;
+        white-space: nowrap;
+        color: #212121;
+        background-color: $backgroundlightGrey;
+        padding: 5px;
+    }
+    .row:hover {
+        background-color: $lightGrey;
+    }
+}
+
+.nodeOpenConfirmContainer {
+    padding: 30px;
+    text-align: center;
+}

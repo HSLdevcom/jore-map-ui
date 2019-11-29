@@ -3,7 +3,7 @@ import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
-import { INodeBase } from '~/models/INode';
+import { INodeBase, INodeMapHighlight } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
 import { roundLatLng } from '~/util/geomHelpers';
 import NodeStopFactory from './nodeStopFactory';
@@ -41,6 +41,18 @@ class NodeFactory {
             shortIdLetter: externalNode.solkirjain,
             shortIdString: externalNode.sollistunnus,
             id: externalNode.soltunnus
+        };
+    };
+
+    public static createNodeMapHighlight = (externalNode: IExternalNode): INodeMapHighlight => {
+        const coordinates = _getLatLng(
+            externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
+        );
+
+        return {
+            coordinates,
+            id: externalNode.soltunnus,
+            dateRanges: externalNode.dateRanges!
         };
     };
 

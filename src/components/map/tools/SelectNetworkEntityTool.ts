@@ -1,45 +1,46 @@
+import { LatLng } from 'leaflet';
 import ToolbarTool from '~/enums/toolbarTool';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
-import EventManager, {
-    INetworkLinkClickParams,
-    INetworkNodeClickParams
-} from '~/util/EventManager';
+import { INodeMapHighlight } from '~/models/INode';
+import NodeService from '~/services/nodeService';
+import PopupStore, { IPopupProps } from '~/stores/popupStore';
+import EventManager from '~/util/EventManager';
 import BaseTool from './BaseTool';
 
-/**
- * Tool for creating new routePath
- */
 class SelectNetworkEntityTool implements BaseTool {
     public toolType = ToolbarTool.SelectNetworkEntity;
     public activate() {
-        EventManager.on('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.on('networkLinkClick', this.onNetworkLinkClick);
+        EventManager.on('mapClick', this.onMapClick);
     }
     public deactivate() {
-        EventManager.off('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.off('networkLinkClick', this.onNetworkLinkClick);
+        EventManager.off('mapClick', this.onMapClick);
     }
 
-    private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
-        const params: INetworkNodeClickParams = clickEvent.detail;
+    private onMapClick = async (clickEvent: any) => {
+        const leafletLatLng = clickEvent.detail.latlng as LatLng;
+        const latLng = new LatLng(leafletLatLng.lng, leafletLatLng.lat);
+        const nodes: INodeMapHighlight[] = await NodeService.fetchNodesFromLatLng(latLng);
+        if (nodes.length === 0) return;
 
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', params.nodeId)
-            .toLink();
-        navigator.goTo(nodeViewLink);
+        const nodePopup: IPopupProps = {
+            type: 'selectNetworkEntityPopup',
+            data: nodes,
+            coordinates: leafletLatLng,
+            isCloseButtonVisible: false,
+            isAutoCloseOn: false,
+            hasOpacity: true
+        };
+        PopupStore.showPopup(nodePopup);
     };
-    private onNetworkLinkClick = async (clickEvent: CustomEvent) => {
-        const params: INetworkLinkClickParams = clickEvent.detail;
 
-        const linkViewLink = routeBuilder
-            .to(SubSites.link)
-            .toTarget(':id', [params.startNodeId, params.endNodeId, params.transitType].join(','))
-            .toLink();
-        navigator.goTo(linkViewLink);
-    };
+    // private onNetworkLinkClick = async (clickEvent: CustomEvent) => {
+    //     const params: INetworkLinkClickParams = clickEvent.detail;
+
+    //     const linkViewLink = routeBuilder
+    //         .to(SubSites.link)
+    //         .toTarget(':id', [params.startNodeId, params.endNodeId, params.transitType].join(','))
+    //         .toLink();
+    //     navigator.goTo(linkViewLink);
+    // };
 }
 
 export default SelectNetworkEntityTool;

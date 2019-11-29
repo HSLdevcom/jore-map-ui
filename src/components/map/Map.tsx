@@ -4,13 +4,14 @@ import 'leaflet/dist/leaflet.css';
 import { reaction, toJS, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
+import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
 import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
 import AddressSearch from './AddressSearch';
+import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
 import RouteLayer from './layers/RouteLayer';
@@ -43,6 +44,7 @@ interface IMapPropReference {
     id: string;
     editable: boolean;
     className: string;
+    onClick: Function;
 }
 
 type LeafletContext = {
@@ -177,6 +179,8 @@ class LeafletMap extends React.Component<IMapProps> {
                     <RouteLayer routes={routes} />
                     <EditRoutePathLayer />
                     <PopupLayer />
+                    <HighlightEntityLayer />
+                    <Pane name='highlightEntityLayer' style={{ zIndex: 999 }} />
                     <Control position='topleft'>
                         <div className={s.mapLayersContainer}>
                             <Toolbar />

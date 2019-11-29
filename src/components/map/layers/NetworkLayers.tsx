@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import classnames from 'classnames';
 import { toJS, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
@@ -16,11 +16,7 @@ import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
-import { IPopup, PopupStore } from '~/stores/popupStore';
-import EventManager, {
-    INetworkLinkClickParams,
-    INetworkNodeClickParams
-} from '~/util/EventManager';
+import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
@@ -190,19 +186,19 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 if (transitTypeCodes && transitTypeCodes.length === 1) {
                     switch (transitTypeCodes[0]) {
                         case TransitType.BUS:
-                            className = classNames(className, s.bus);
+                            className = classnames(className, s.bus);
                             break;
                         case TransitType.TRAM:
-                            className = classNames(className, s.tram);
+                            className = classnames(className, s.tram);
                             break;
                         case TransitType.SUBWAY:
-                            className = classNames(className, s.subway);
+                            className = classnames(className, s.subway);
                             break;
                         case TransitType.TRAIN:
-                            className = classNames(className, s.train);
+                            className = classnames(className, s.train);
                             break;
                         case TransitType.FERRY:
-                            className = classNames(className, s.ferry);
+                            className = classnames(className, s.ferry);
                             break;
                     }
                 }
@@ -251,28 +247,6 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         return { className: s.hidden };
     };
 
-    private onNetworkNodeClick = (clickEvent: any) => {
-        const properties = clickEvent.sourceTarget.properties;
-        const clickParams: INetworkNodeClickParams = {
-            nodeId: properties.soltunnus,
-            nodeType: properties.soltyyppi
-        };
-        const triggerNetworkNodeClick = () => {
-            EventManager.trigger('networkNodeClick', clickParams);
-        };
-        if (this.props.networkStore!.shouldShowNodeOpenConfirm) {
-            this.props.confirmStore!.openConfirm(
-                <div className={s.nodeOpenConfirmContainer}>
-                    Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun{' '}
-                    {properties.soltunnus}? Tallentamattomat muutokset kumotaan.
-                </div>,
-                triggerNetworkNodeClick
-            );
-        } else {
-            triggerNetworkNodeClick();
-        }
-    };
-
     private onNetworkNodeRightClick = (clickEvent: any) => {
         const nodeId = clickEvent.sourceTarget.properties.soltunnus;
         this.showNodePopup(nodeId);
@@ -281,7 +255,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     private showNodePopup = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
 
-        const nodePopup: IPopup = {
+        const nodePopup: IPopupProps = {
             content: this.renderNodePopup(node),
             coordinates: node.coordinates,
             isCloseButtonVisible: false
@@ -326,16 +300,6 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         );
     };
 
-    private onNetworkLinkClick = (clickEvent: any) => {
-        const properties = clickEvent.sourceTarget.properties;
-        const clickParams: INetworkLinkClickParams = {
-            startNodeId: properties.lnkalkusolmu,
-            endNodeId: properties.lnkloppusolmu,
-            transitType: properties.lnkverkko
-        };
-        EventManager.trigger('networkLinkClick', clickParams);
-    };
-
     /**
      * Sets a reaction object for GeoserverLayer (replaces existing one) so
      * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
@@ -366,13 +330,12 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
-                        onClick={this.onNetworkLinkClick!}
                         key={GeoserverLayer.Link}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(
                             GeoserverLayer.Link
                         )}
                         url={getGeoServerUrl(GeoserverLayer.Link)}
-                        interactive={true}
+                        interactive={false}
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
                 )}
@@ -385,7 +348,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                             GeoserverLayer.Point
                         )}
                         url={getGeoServerUrl(GeoserverLayer.Point)}
-                        interactive={true}
+                        interactive={false}
                         vectorTileLayerStyles={this.getLinkPointStyle()}
                     />
                 )}
@@ -395,7 +358,6 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         nodeSize={nodeSize}
-                        onClick={this.onNetworkNodeClick}
                         onContextMenu={this.onNetworkNodeRightClick}
                         key={GeoserverLayer.Node}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(

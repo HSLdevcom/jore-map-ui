@@ -9,6 +9,7 @@ import AlertStore from './stores/alertStore';
 import CodeListStore from './stores/codeListStore';
 import ConfirmStore from './stores/confirmStore';
 import ErrorStore from './stores/errorStore';
+import HighlightEntityStore from './stores/highlightEntityStore';
 import LineHeaderMassEditStore from './stores/lineHeaderMassEditStore';
 import LineHeaderStore from './stores/lineHeaderStore';
 import LineStore from './stores/lineStore';
@@ -52,7 +53,8 @@ const stores = {
     linkStore: LinkStore,
     alertStore: AlertStore,
     codeListStore: CodeListStore,
-    confirmStore: ConfirmStore
+    confirmStore: ConfirmStore,
+    highlightEntityStore: HighlightEntityStore
 };
 
 ReactDOM.render(

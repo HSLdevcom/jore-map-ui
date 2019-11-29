@@ -1,8 +1,9 @@
 import { ApolloQueryResult } from 'apollo-client';
+import { LatLng } from 'leaflet';
 import endpoints from '~/enums/endpoints';
 import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
-import { INodeBase, INodePrimaryKey } from '~/models/INode';
+import { INodeBase, INodeMapHighlight, INodePrimaryKey } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
@@ -21,6 +22,20 @@ class NodeService {
             fetchPolicy: 'no-cache' // no-cache is needed because otherwise nested data fetch does not always work
         });
         return NodeFactory.mapExternalNode(queryResult.data.node);
+    };
+
+    public static fetchNodesFromLatLng = async (latLng: LatLng): Promise<INodeMapHighlight[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getNetworkObjectsFromPointQuery(),
+            variables: {
+                lon: latLng.lng,
+                lat: latLng.lat
+            }
+        });
+
+        return queryResult.data.get_network_objects_from_point.nodes.map((node: IExternalNode) =>
+            NodeFactory.createNodeMapHighlight(node)
+        );
     };
 
     public static fetchAllNodes = async () => {
