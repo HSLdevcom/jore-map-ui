@@ -15,16 +15,14 @@ class NodeFactory {
         );
         const coordinatesProjection = _getLatLng(externalNode.geojsonProjection);
         const nodeStop = externalNode.pysakkiBySoltunnus;
-        let transitTypes: TransitType[] = [];
-        if (externalNode.transittypes) {
-            transitTypes = externalNode.transittypes.split(',') as TransitType[];
-        }
 
         return {
             ...NodeFactory.createNodeBase(externalNode),
-            transitTypes,
             coordinates,
             coordinatesProjection,
+            transitTypes: externalNode.transittypes
+                ? (externalNode.transittypes.split(',') as TransitType[])
+                : [],
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
             measurementType: externalNode.solotapa,
@@ -52,6 +50,9 @@ class NodeFactory {
         return {
             coordinates,
             id: externalNode.soltunnus,
+            transitTypes: externalNode.transittypes
+                ? (externalNode.transittypes.split(',') as TransitType[])
+                : [],
             dateRanges: externalNode.dateRanges!
         };
     };

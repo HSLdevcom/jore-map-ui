@@ -1,7 +1,6 @@
 import classnames from 'classnames';
-import { toJS, IReactionDisposer } from 'mobx';
+import { IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import Moment from 'moment';
 import React, { Component } from 'react';
 import SidebarHeader from '~/components/sidebar/SidebarHeader';
 import NodeForm from '~/components/sidebar/nodeView/NodeForm';
@@ -17,6 +16,7 @@ import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
+import { isNetworkNodeHidden } from '~/util/NetworkUtils';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
@@ -60,30 +60,13 @@ function getGeoServerUrl(layerName: string) {
 class NetworkLayers extends Component<INetworkLayersProps> {
     private reactionDisposer = {};
 
-    private parseDateRangesString(dateRangesString?: string) {
-        if (!dateRangesString) return undefined;
-        return dateRangesString
-            .split(',')
-            .map((dr: string) => dr.split('/').map(date => Moment(date)));
-    }
-
-    private isDateInRanges(
-        selectedDate: Moment.Moment | null,
-        dateRanges?: Moment.Moment[][]
-    ): Boolean {
-        return selectedDate
-            ? !dateRanges ||
-                  dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'))
-            : true;
-    }
-
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
             linkki: (properties: ILinkProperties) => {
-                if (this.isNetworkElementHidden(properties)) {
-                    return this.getEmptyStyle();
-                }
+                // if (this.isNetworkElementHidden(properties)) {
+                //     return this.getEmptyStyle();
+                // }
 
                 return {
                     color: TransitTypeHelper.getColor(properties.lnkverkko),
@@ -99,9 +82,9 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         return {
             // Layer name 'piste' is directly mirrored from Jore through geoserver
             piste: (properties: ILinkProperties) => {
-                if (this.isNetworkElementHidden(properties)) {
-                    return this.getEmptyStyle();
-                }
+                // if (this.isNetworkElementHidden(properties)) {
+                //     return this.getEmptyStyle();
+                // }
                 const { lnkverkko: transitTypeCode } = properties;
                 return {
                     color: TransitTypeHelper.getColor(transitTypeCode),
@@ -111,38 +94,36 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         };
     };
 
-    private isNetworkElementHidden = ({
-        lnkverkko: transitTypeCode,
-        date_ranges: dateRangesString,
-        lnkalkusolmu: startNodeId,
-        lnkloppusolmu: endNodeId
-    }: ILinkProperties) => {
-        const dateRanges = this.parseDateRangesString(dateRangesString);
-        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-        const selectedDate = this.props.networkStore!.selectedDate;
+    // private isNetworkElementHidden = ({
+    //     lnkverkko: transitTypeCode,
+    //     date_ranges: dateRangesString,
+    //     lnkalkusolmu: startNodeId,
+    //     lnkloppusolmu: endNodeId
+    // }: ILinkProperties) => {
+    //     const dateRanges = this.parseDateRangesString(dateRangesString);
+    //     const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
+    //     const selectedDate = this.props.networkStore!.selectedDate;
+    //     const link = this.props.linkStore!.link;
+    //     const node = this.props.nodeStore!.node;
 
-        const link = this.props.linkStore!.link;
+    //     // the element is related to an opened link
+    //     const isLinkOpen =
+    //         link &&
+    //         link.startNode.id === startNodeId &&
+    //         link.endNode.id === endNodeId &&
+    //         link.transitType === transitTypeCode;
 
-        const node = this.props.nodeStore!.node;
+    //     // the element is related to a link that is related to an opened node
+    //     const isLinkRelatedToOpenedNode =
+    //         node && (node.id === startNodeId || node.id === endNodeId);
 
-        // the element is related to an opened link
-        const isLinkOpen =
-            link &&
-            link.startNode.id === startNodeId &&
-            link.endNode.id === endNodeId &&
-            link.transitType === transitTypeCode;
-
-        // the element is related to a link that is related to an opened node
-        const isLinkRelatedToOpenedNode =
-            node && (node.id === startNodeId || node.id === endNodeId);
-
-        return (
-            !selectedTransitTypes.includes(transitTypeCode) ||
-            !this.isDateInRanges(selectedDate, dateRanges) ||
-            isLinkOpen ||
-            isLinkRelatedToOpenedNode
-        );
-    };
+    //     return (
+    //         !selectedTransitTypes.includes(transitTypeCode) ||
+    //         !this.isDateInRanges(selectedDate, dateRanges) ||
+    //         isLinkOpen ||
+    //         isLinkRelatedToOpenedNode
+    //     );
+    // };
 
     private getNodeStyle = () => {
         return {
@@ -154,8 +135,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     soltyyppi: nodeType,
                     soltunnus: nodeId
                 } = properties;
-                const dateRanges = this.parseDateRangesString(dateRangesString);
-                if (this.isNodeHidden(nodeId, transitTypeCodes, dateRanges)) {
+
+                if (isNetworkNodeHidden(nodeId, transitTypeCodes, dateRangesString)) {
                     return this.getEmptyStyle();
                 }
                 let className;
@@ -210,38 +191,6 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             }
         };
     };
-
-    private isNodeHidden = (
-        nodeId: string,
-        transitTypeCodes: string,
-        dateRanges?: Moment.Moment[][]
-    ) => {
-        const node = this.props.nodeStore!.node;
-        if (node && node.id === nodeId) {
-            return true;
-        }
-
-        const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
-        if (this.isNodePartOfLinks(transitTypeCodes)) {
-            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
-                return true;
-            }
-            const nodeTransitTypes = transitTypeCodes.split(',');
-            if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
-                return true;
-            }
-        } else {
-            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
-                return true;
-            }
-        }
-        const selectedDate = this.props.networkStore!.selectedDate;
-        return !selectedDate || !this.isDateInRanges(selectedDate, dateRanges);
-    };
-
-    private isNodePartOfLinks(transitTypeCodes: string) {
-        return Boolean(transitTypeCodes);
-    }
 
     private getEmptyStyle = () => {
         return { className: s.hidden };

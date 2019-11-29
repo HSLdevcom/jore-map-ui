@@ -116,6 +116,7 @@ const getNetworkObjectsFromPointQuery = () => {
                     soltunnus
                     geojson
                     geojsonManual
+                    transittypes
                     dateRanges
                 }
             }
