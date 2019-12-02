@@ -321,7 +321,8 @@ export class RoutePathStore {
         const rpLinkToUpdate: IRoutePathLink | undefined = this._routePath!.routePathLinks.find(
             rpLink => rpLink.orderNumber === orderNumber
         );
-        rpLinkToUpdate![property] = value;
+        // As any to fix typing error: Type 'string' is not assignable to type 'never'
+        (rpLinkToUpdate as any)[property] = value;
     };
 
     @action

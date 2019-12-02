@@ -122,7 +122,7 @@
         "tslint-config-prettier": "^1.18.0",
         "tslint-eslint-rules": "^5.3.1",
         "tslint-origin-ordered-imports-rule": "^1.1.2",
-        "typescript": "^2.9.2",
+        "typescript": "^3.7.2",
         "typings-for-css-modules-loader": "^1.7.0",
         "webpack": "^3.8.1"
     },
