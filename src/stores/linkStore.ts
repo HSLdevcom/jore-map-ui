@@ -137,7 +137,8 @@ export class LinkStore {
         property: keyof ILink,
         value: string | number | Date | LatLng[]
     ) => {
-        this._link![property] = value;
+        // As any to fix typing error: Type 'string' is not assignable to type 'never'
+        (this._link as any)[property] = value;
     };
 
     @action

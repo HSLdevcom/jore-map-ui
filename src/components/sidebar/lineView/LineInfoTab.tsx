@@ -5,9 +5,7 @@ import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
-import ILineHeader from '~/models/ILineHeader';
 import ISearchLine from '~/models/searchModels/ISearchLine';
-import LineHeaderService from '~/services/lineHeaderService';
 import LineService from '~/services/lineService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -18,8 +16,6 @@ import * as s from './lineInfoTab.scss';
 
 interface ILineInfoTabState {
     isLoading: boolean;
-    lineHeaders: ILineHeader[];
-    currentLineHeader?: ILineHeader;
 }
 
 interface ILineInfoTabProps {
@@ -47,31 +43,18 @@ const transitTypeDefaultValueMap = {
 @observer
 class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> {
     private existingLines: ISearchLine[] = [];
-    private mounted: boolean;
 
     constructor(props: any) {
         super(props);
         this.state = {
-            isLoading: true,
-            lineHeaders: []
+            isLoading: true
         };
-    }
-
-    async componentWillMount() {
-        const lineId = this.props.lineStore!.line!.id;
-        const lineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(lineId);
-        this.initLineHeaderItems(lineHeaders);
-    }
-
-    componentWillUnmount() {
-        this.mounted = false;
     }
 
     componentDidMount() {
         if (this.props.isNewLine) {
             this.fetchAllLines();
         }
-        this.mounted = true;
     }
 
     componentDidUpdate() {
@@ -79,21 +62,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
             this.fetchAllLines();
         }
     }
-
-    private initLineHeaderItems = (lineHeaders: ILineHeader[]) => {
-        if (this.mounted) {
-            const currentTime = new Date().getTime();
-            const currentLineHeader = lineHeaders.find(
-                (lineHeader: ILineHeader) =>
-                    currentTime > lineHeader.startDate!.getTime() &&
-                    currentTime < lineHeader.endDate!.getTime()
-            );
-            this.setState({
-                lineHeaders,
-                currentLineHeader
-            });
-        }
-    };
 
     private selectTransitType = (transitType: TransitType) => {
         this.props.onChangeLineProperty('transitType')(transitType);
@@ -214,16 +182,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <TextContainer
-                            label={'LINJAN VOIMASSAOLEVA OTSIKKO'}
-                            value={
-                                this.state.currentLineHeader
-                                    ? this.state.currentLineHeader.lineNameFi
-                                    : 'Ei voimassa olevaa otsikkoa.'
-                            }
-                        />
-                    </div>
-                    <div className={s.flexRow}>
                         <Dropdown
                             label='JOUKKOLIIKENNELAJI'
                             disabled={isEditingDisabled}
@@ -306,11 +264,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                     </Button>
                 </div>
                 {!this.props.isNewLine && (
-                    <LineHeaderTable
-                        lineHeaders={this.state.lineHeaders}
-                        currentLineHeader={this.state.currentLineHeader}
-                        lineId={this.props.lineStore!.line!.id}
-                    />
+                    <LineHeaderTable lineId={this.props.lineStore!.line!.id} />
                 )}
             </div>
         );

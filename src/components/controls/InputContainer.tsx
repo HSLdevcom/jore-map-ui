@@ -7,7 +7,7 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
-import { dateToDateString } from '~/util/dateFormatHelpers';
+import { toDateString } from '~/util/dateHelpers';
 import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './inputContainer.scss';
 
@@ -25,8 +25,9 @@ interface IInputProps {
     value?: string | number | Date | null;
     type?: inputType; // Defaults to text
     capitalizeInput?: boolean;
+    isInputColorRed?: boolean;
     isClearButtonVisibleOnDates?: boolean;
-    darkerInputLabel?: boolean;
+    darkerInputLabel?: boolean; // TODO: rename as isInputLabelDarker
 }
 
 const renderEditableContent = (props: IInputProps) => {
@@ -155,7 +156,7 @@ const renderDatePickerInput = ({
             <input
                 placeholder={placeholder}
                 type={'text'}
-                value={value ? dateToDateString(value) : ''}
+                value={value ? toDateString(value) : ''}
                 onChange={onInputChange}
             />
             <IoMdCalendar className={s.calendarIcon} />
@@ -174,7 +175,13 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
 };
 
 const renderUneditableContent = (props: IInputProps) => (
-    <div className={classnames(s.inputField, props.disabled ? s.staticHeight : null)}>
+    <div
+        className={classnames(
+            s.inputField,
+            props.disabled ? s.staticHeight : null,
+            props.isInputColorRed ? s.redInputText : null
+        )}
+    >
         {props.value instanceof Date
             ? Moment(props.value!).format('DD.MM.YYYY')
             : props.value

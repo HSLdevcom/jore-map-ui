@@ -196,7 +196,8 @@ export class NodeStore {
     public updateNode = (property: keyof INode, value: string | Date | LatLng) => {
         if (!this._node) return;
 
-        this._node[property] = value;
+        // As any to fix typing error: Type 'string' is not assignable to type 'never'
+        (this._node as any)[property] = value;
 
         if (property === 'type') this.mirrorCoordinates(this._node);
 

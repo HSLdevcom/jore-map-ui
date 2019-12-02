@@ -18,6 +18,7 @@ interface ISidebarHeaderProps {
     confirmStore?: ConfirmStore;
     isEditing?: boolean;
     shouldShowClosePromptMessage?: boolean;
+    shouldShowEditButtonClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onBackButtonClick?: () => void;
     onCloseButtonClick?: () => void;

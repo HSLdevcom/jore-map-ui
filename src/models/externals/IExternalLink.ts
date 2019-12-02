@@ -8,7 +8,6 @@ export default interface IExternalLink {
     solmuByLnkloppusolmu: IExternalNode;
     lnkmitpituus?: number;
     lnkpituus: number;
-    katkunta?: string;
     katnimi?: string;
     kaoosnro: string;
     lnkosnro: string;
