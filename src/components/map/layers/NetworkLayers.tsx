@@ -12,6 +12,10 @@ import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
+import EventManager, {
+    INetworkLinkClickParams,
+    INetworkNodeClickParams
+} from '~/util/EventManager';
 import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/NetworkUtils';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import * as s from './NetworkLayers.scss';
@@ -209,6 +213,25 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         this.props.popupStore!.showPopup(nodePopup);
     };
 
+    private onNetworkNodeClick = (clickEvent: any) => {
+        const properties = clickEvent.sourceTarget.properties;
+        const clickParams: INetworkNodeClickParams = {
+            nodeId: properties.soltunnus,
+            nodeType: properties.soltyyppi
+        };
+        EventManager.trigger('networkNodeClick', clickParams);
+    };
+
+    private onNetworkLinkClick = (clickEvent: any) => {
+        const properties = clickEvent.sourceTarget.properties;
+        const clickParams: INetworkLinkClickParams = {
+            startNodeId: properties.lnkalkusolmu,
+            endNodeId: properties.lnkloppusolmu,
+            transitType: properties.lnkverkko
+        };
+        EventManager.trigger('networkLinkClick', clickParams);
+    };
+
     /**
      * Sets a reaction object for GeoserverLayer (replaces existing one) so
      * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
@@ -240,11 +263,12 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         key={GeoserverLayer.Link}
+                        onClick={this.onNetworkLinkClick}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(
                             GeoserverLayer.Link
                         )}
                         url={getGeoServerUrl(GeoserverLayer.Link)}
-                        interactive={false}
+                        interactive={true}
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
                 )}
@@ -267,6 +291,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         nodeSize={nodeSize}
+                        onClick={this.onNetworkNodeClick}
                         onContextMenu={this.onNetworkNodeRightClick}
                         key={GeoserverLayer.Node}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(
