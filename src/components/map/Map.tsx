@@ -44,7 +44,6 @@ interface IMapPropReference {
     id: string;
     editable: boolean;
     className: string;
-    onClick: Function;
 }
 
 type LeafletContext = {
