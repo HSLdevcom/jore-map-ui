@@ -25,7 +25,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import EventManager from '~/util/EventManager';
-import { Button, Dropdown, TransitToggleButtonBar } from '../../controls';
+import { Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';
 import SidebarHeader from '../SidebarHeader';
@@ -354,15 +354,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                                 value={link.streetName}
                                 validationResult={invalidPropertiesMap['streetName']}
                                 onChange={this.onChangeLinkProperty('streetName')}
-                            />
-                            <Dropdown
-                                onChange={this.onChangeLinkProperty('municipalityCode')}
-                                disabled={isEditingDisabled}
-                                items={this.props.codeListStore!.getDropdownItemList(
-                                    'Kunta (KELA)'
-                                )}
-                                selected={link.municipalityCode}
-                                label='KUNTA'
                             />
                         </div>
                         {!this.props.isNewLink && (

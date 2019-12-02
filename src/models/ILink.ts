@@ -10,7 +10,6 @@ interface ILinkPrimaryKey {
 
 export default interface ILink extends ILinkPrimaryKey {
     geometry: L.LatLng[];
-    municipalityCode?: string;
     streetName?: string;
     length: number;
     measuredLength?: number;

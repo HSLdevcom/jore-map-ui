@@ -84,8 +84,7 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             nameModifiedOn: () => (data[property] ? toDateString(data[property]) : '')
         },
         link: {
-            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
-            municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property])
+            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria')
         }
     };
 
