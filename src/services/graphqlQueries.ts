@@ -108,15 +108,40 @@ const getLinksByStartNodeQuery = () => {
         }`;
 };
 
-const getNetworkObjectsFromPointQuery = () => {
+const getNetworkNodesFromPointQuery = () => {
     return gql`
-        query getNetworkObjectsFromPoint($lon: Float, $lat: Float) {
-            get_network_objects_from_point: getNetworkObjectsFromPoint(lon: $lon, lat: $lat) {
+        query getNetworkNodesFromPoint($lon: Float, $lat: Float, $bufferSize: Float) {
+            get_network_nodes_from_point: getNetworkNodesFromPoint(
+                lon: $lon
+                lat: $lat
+                buffersize: $bufferSize
+            ) {
                 nodes {
                     soltunnus
                     geojson
                     geojsonManual
                     transittypes
+                    dateRanges
+                }
+            }
+        }
+    `;
+};
+
+const getNetworkLinksFromPointQuery = () => {
+    return gql`
+        query getNetworkLinksFromPoint($lon: Float, $lat: Float, $bufferSize: Float) {
+            get_network_links_from_point: getNetworkLinksFromPoint(
+                lon: $lon
+                lat: $lat
+                buffersize: $bufferSize
+            ) {
+                nodes {
+                    geojson
+                    lnkverkko
+                    lnkalkusolmu
+                    lnkloppusolmu
+                    lnkverkko
                     dateRanges
                 }
             }
@@ -634,7 +659,8 @@ export default {
     getRoutePathLinkQuery,
     getRoutePathSegmentQuery,
     getLinksByStartNodeQuery,
-    getNetworkObjectsFromPointQuery,
+    getNetworkNodesFromPointQuery,
+    getNetworkLinksFromPointQuery,
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
     getAllNodesQuery,

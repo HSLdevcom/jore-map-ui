@@ -53,7 +53,7 @@ class PopupLayer extends Component<PopupLayerProps> {
                         className={s.popupContentWrapper}
                     >
                         {popup.type === 'selectNetworkEntityPopup' ? (
-                            <SelectNetworkEntityPopup popupId={popup.id} nodes={popup.data} />
+                            <SelectNetworkEntityPopup popupId={popup.id} data={popup.data} />
                         ) : (
                             <>{popup.content!(popup.id!)}</>
                         )}

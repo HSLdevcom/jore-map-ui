@@ -24,16 +24,19 @@ class NodeService {
         return NodeFactory.mapExternalNode(queryResult.data.node);
     };
 
-    public static fetchNodesFromLatLng = async (latLng: LatLng): Promise<INodeMapHighlight[]> => {
+    public static fetchMapHighlightNodesFromLatLng = async (
+        latLng: LatLng,
+        bufferSize: number
+    ): Promise<INodeMapHighlight[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getNetworkObjectsFromPointQuery(),
+            query: GraphqlQueries.getNetworkNodesFromPointQuery(),
             variables: {
+                bufferSize,
                 lon: latLng.lng,
                 lat: latLng.lat
             }
         });
-
-        return queryResult.data.get_network_objects_from_point.nodes.map((node: IExternalNode) =>
+        return queryResult.data.get_network_nodes_from_point.nodes.map((node: IExternalNode) =>
             NodeFactory.createNodeMapHighlight(node)
         );
     };

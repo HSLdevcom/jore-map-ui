@@ -1,19 +1,55 @@
 import { toJS } from 'mobx';
 import Moment from 'moment';
+import TransitType from '~/enums/transitType';
+import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
 
-// TODO:
-// const isNetworkLinkHidden = () => {
-// }
-// const isNetworkLinkPointHidden = () => {
-// }
+// Supports links and linkPoints
+const isNetworkElementHidden = ({
+    transitType,
+    startNodeId,
+    endNodeId,
+    dateRangesString
+}: {
+    transitType: TransitType;
+    startNodeId: string;
+    endNodeId: string;
+    dateRangesString: string;
+}) => {
+    const dateRanges = _parseDateRangesString(dateRangesString);
+    const selectedTransitTypes = NetworkStore.selectedTransitTypes;
+    const selectedDate = NetworkStore.selectedDate;
+    const link = LinkStore.link;
+    const node = NodeStore.node;
 
-const isNetworkNodeHidden = (
-    nodeId: string,
-    transitTypeCodes: string,
-    dateRangesString?: string
-) => {
+    // the element is related to an opened link
+    const isLinkOpen =
+        link &&
+        link.startNode.id === startNodeId &&
+        link.endNode.id === endNodeId &&
+        link.transitType === transitType;
+
+    // the element is related to a link that is related to an opened node
+    const isLinkRelatedToOpenedNode = node && (node.id === startNodeId || node.id === endNodeId);
+
+    return (
+        !selectedTransitTypes.includes(transitType) ||
+        !_isDateInRanges(selectedDate, dateRanges) ||
+        isLinkOpen ||
+        isLinkRelatedToOpenedNode
+    );
+};
+
+const isNetworkNodeHidden = ({
+    nodeId,
+    transitTypeCodes,
+    dateRangesString
+}: {
+    nodeId: string;
+    transitTypeCodes: string;
+    dateRangesString?: string;
+}) => {
     const dateRanges: Moment.Moment[][] | undefined = _parseDateRangesString(dateRangesString);
     const selectedTransitTypes = toJS(NetworkStore.selectedTransitTypes);
 
@@ -53,4 +89,4 @@ const _isDateInRanges = (
         : true;
 };
 
-export { isNetworkNodeHidden };
+export { isNetworkElementHidden, isNetworkNodeHidden };

@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import { CircleMarker } from 'react-leaflet';
+import { CircleMarker, Polyline } from 'react-leaflet';
+import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
 import { HighlightEntityStore } from '~/stores/highlightEntityStore';
 
@@ -13,12 +14,12 @@ const YELLOW = '#f7e200';
 @inject('highlightEntityStore')
 @observer
 export default class HighlightEntityLayer extends Component<IHighlightEntityLayerProps> {
-    render() {
+    private renderNodes = () => {
         const nodes = this.props.highlightEntityStore!.nodes;
         return nodes.map((node: INodeMapHighlight, index: number) => (
             <CircleMarker
                 pane={'highlightEntityLayer'}
-                key={`markerHighlight-${index}`}
+                key={`nodeHighlight-${index}`}
                 center={node.coordinates}
                 stroke={true}
                 color={YELLOW}
@@ -28,5 +29,26 @@ export default class HighlightEntityLayer extends Component<IHighlightEntityLaye
                 radius={3}
             />
         ));
+    };
+
+    private renderLinks = () => {
+        const links = this.props.highlightEntityStore!.links;
+        return links.map((link: ILinkMapHighlight, index: number) => (
+            <Polyline
+                positions={link.geometry}
+                key={`linkHighlight-${index}`}
+                color={YELLOW}
+                weight={5}
+            />
+        ));
+    };
+
+    render() {
+        return (
+            <>
+                {this.renderNodes()}
+                {this.renderLinks()}
+            </>
+        );
     }
 }

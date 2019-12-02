@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import { ILink, INode } from '~/models';
+import { ILinkMapHighlight } from '~/models/ILink';
 import IExternalLink from '~/models/externals/IExternalLink';
 import { roundLatLngs } from '~/util/geomHelpers';
 import NodeFactory from './nodeFactory';
@@ -20,6 +21,18 @@ class LinkFactory {
             streetName: externalLink.katnimi,
             modifiedBy: externalLink.lnkkuka,
             modifiedOn: externalLink.lnkviimpvm ? new Date(externalLink.lnkviimpvm) : undefined
+        };
+    };
+
+    public static createLinkMapHighlight = (externalLink: IExternalLink): ILinkMapHighlight => {
+        const geojson = JSON.parse(externalLink.geojson);
+        const latLngs: L.LatLng[] = L.GeoJSON.coordsToLatLngs(geojson.coordinates);
+        return {
+            transitType: externalLink.lnkverkko,
+            startNodeId: externalLink.lnkalkusolmu!,
+            endNodeId: externalLink.lnkloppusolmu!,
+            geometry: roundLatLngs(latLngs),
+            dateRanges: externalLink.dateRanges!
         };
     };
 

@@ -66,10 +66,6 @@ class LeafletMap extends React.Component<IMapProps> {
         this.reactionDisposers = [];
     }
 
-    private getMap() {
-        return this.mapReference.current ? this.mapReference.current.leafletElement : null;
-    }
-
     componentDidMount() {
         const mapStore = this.props.mapStore;
         const map = this.getMap();
@@ -94,6 +90,10 @@ class LeafletMap extends React.Component<IMapProps> {
             map.setView(coordinates, mapStore!.zoom);
         }
         map.on('click', (e: L.LeafletEvent) => EventManager.trigger('mapClick', e));
+    }
+
+    private getMap() {
+        return this.mapReference.current ? this.mapReference.current.leafletElement : null;
     }
 
     private centerMap = () => {

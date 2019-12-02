@@ -2,7 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import { LatLng } from 'leaflet';
 import endpoints from '~/enums/endpoints';
 import LinkFactory from '~/factories/linkFactory';
-import ILink from '~/models/ILink';
+import ILink, { ILinkMapHighlight } from '~/models/ILink';
 import IExternalLink from '~/models/externals/IExternalLink';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
@@ -31,6 +31,23 @@ class LinkService {
             variables: { startNodeId, endNodeId, transitType: transitTypeCode }
         });
         return LinkFactory.mapExternalLink(queryResult.data.link);
+    };
+
+    public static fetchMapHighlightLinksFromLatLng = async (
+        latLng: LatLng,
+        bufferSize: number
+    ): Promise<ILinkMapHighlight[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getNetworkLinksFromPointQuery(),
+            variables: {
+                bufferSize,
+                lon: latLng.lng,
+                lat: latLng.lat
+            }
+        });
+        return queryResult.data.get_network_links_from_point.nodes.map((link: IExternalLink) =>
+            LinkFactory.createLinkMapHighlight(link)
+        );
     };
 
     public static fetchLinks = async (startNodeId: string, endNodeId: string): Promise<ILink[]> => {

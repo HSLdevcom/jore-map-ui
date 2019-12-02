@@ -18,6 +18,10 @@
     .row:first-of-type {
         margin-top: 10px;
     }
+
+    .row:last-of-type {
+        margin-bottom: 10px;
+    }
 }
 
 .nodeOpenConfirmContainer {
