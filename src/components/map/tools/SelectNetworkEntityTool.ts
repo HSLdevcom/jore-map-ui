@@ -3,6 +3,9 @@ import constants from '~/constants/constants';
 import ToolbarTool from '~/enums/toolbarTool';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
+import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
@@ -30,6 +33,7 @@ class SelectNetworkEntityTool implements BaseTool {
         const leafletLatLng = clickEvent.detail.latlng as LatLng;
         const latLng = new LatLng(leafletLatLng.lng, leafletLatLng.lat);
 
+        // TODO: fix these hard coded values to use pixel count per meter (that depend on map's zoom level) instead
         let bufferSize;
         switch (zoomLevel) {
             case 14:
@@ -89,12 +93,19 @@ class SelectNetworkEntityTool implements BaseTool {
         );
 
         if (nodes.length === 0 && links.length === 0) return;
+        if (nodes.length === 1 && links.length === 0) {
+            _redirectToNode(nodes[0]);
+            return;
+        }
+        if (links.length === 1 && nodes.length === 0) {
+            _redirectToLink(links[0]);
+            return;
+        }
 
         const popupData: ISelectNetworkEntityPopupData = {
             nodes,
             links
         };
-
         const popup: IPopupProps = {
             type: 'selectNetworkEntityPopup',
             data: popupData,
@@ -106,5 +117,21 @@ class SelectNetworkEntityTool implements BaseTool {
         PopupStore.showPopup(popup);
     };
 }
+
+const _redirectToNode = (node: INodeMapHighlight) => {
+    const nodeViewLink = routeBuilder
+        .to(SubSites.node)
+        .toTarget(':id', node.id)
+        .toLink();
+    navigator.goTo(nodeViewLink);
+};
+
+const _redirectToLink = (link: ILinkMapHighlight) => {
+    const linkViewLink = routeBuilder
+        .to(SubSites.link)
+        .toTarget(':id', [link.startNodeId, link.endNodeId, link.transitType].join(','))
+        .toLink();
+    navigator.goTo(linkViewLink);
+};
 
 export default SelectNetworkEntityTool;
