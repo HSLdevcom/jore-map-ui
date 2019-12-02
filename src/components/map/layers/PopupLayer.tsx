@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { Popup } from 'react-leaflet';
 import { IPopup, PopupStore } from '~/stores/popupStore';
 import * as s from './popupLayer.scss';
+import NodePopup from './popups/NodePopup';
 import SelectNetworkEntityPopup from './popups/SelectNetworkEntityPopup';
 
 interface PopupLayerProps {
@@ -22,6 +23,17 @@ class PopupLayer extends Component<PopupLayerProps> {
     private bringPopupToFront = (id: number) => {
         const popupRef = this.popupRefs[id];
         popupRef.leafletElement.bringToFront();
+    };
+
+    private renderPopupContent = (popup: IPopup) => {
+        switch (popup.type) {
+            case 'selectNetworkEntityPopup':
+                return <SelectNetworkEntityPopup popupId={popup.id} data={popup.data} />;
+            case 'nodePopup':
+                return <NodePopup popupId={popup.id} data={popup.data} />;
+            default:
+                return popup.content!(popup.id!);
+        }
     };
 
     render() {
@@ -52,11 +64,7 @@ class PopupLayer extends Component<PopupLayerProps> {
                         onClick={() => this.bringPopupToFront(popup.id!)}
                         className={s.popupContentWrapper}
                     >
-                        {popup.type === 'selectNetworkEntityPopup' ? (
-                            <SelectNetworkEntityPopup popupId={popup.id} data={popup.data} />
-                        ) : (
-                            <>{popup.content!(popup.id!)}</>
-                        )}
+                        {this.renderPopupContent(popup)}
                     </div>
                 </Popup>
             );

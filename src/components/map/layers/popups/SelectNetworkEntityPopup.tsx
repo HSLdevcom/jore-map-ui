@@ -11,14 +11,14 @@ import { NetworkStore } from '~/stores/networkStore';
 import { PopupStore } from '~/stores/popupStore';
 import * as s from './selectNetworkEntityPopup.scss';
 
-interface IPopupData {
+interface ISelectNetworkEntityPopupData {
     links: ILinkMapHighlight[];
     nodes: INodeMapHighlight[];
 }
 
 interface ISelectNetworkEntityPopupProps {
     popupId: number;
-    data: IPopupData;
+    data: ISelectNetworkEntityPopupData;
     networkStore?: NetworkStore;
     confirmStore?: ConfirmStore;
     popupStore?: PopupStore;
@@ -107,4 +107,4 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
 
 export default SelectNetworkEntityPopup;
 
-export { IPopupData };
+export { ISelectNetworkEntityPopupData };

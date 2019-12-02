@@ -9,7 +9,7 @@ import MapStore from '~/stores/mapStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
 import EventManager from '~/util/EventManager';
 import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/NetworkUtils';
-import { IPopupData } from '../layers/popups/SelectNetworkEntityPopup';
+import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
 import BaseTool from './BaseTool';
 
 class SelectNetworkEntityTool implements BaseTool {
@@ -90,7 +90,7 @@ class SelectNetworkEntityTool implements BaseTool {
 
         if (nodes.length === 0 && links.length === 0) return;
 
-        const popupData: IPopupData = {
+        const popupData: ISelectNetworkEntityPopupData = {
             nodes,
             links
         };

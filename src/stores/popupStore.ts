@@ -1,10 +1,10 @@
 import { action, computed, observable, reaction } from 'mobx';
 import NetworkStore, { MapLayer } from './networkStore';
 
-type popupType = 'selectNetworkEntityPopup';
+type PopupType = 'selectNetworkEntityPopup' | 'nodePopup';
 
 interface IPopupProps {
-    type?: popupType;
+    type?: PopupType;
     data?: any;
     content?: (popupId: number) => React.ReactNode;
     coordinates: L.LatLng;
@@ -68,4 +68,4 @@ const observablePopupStore = new PopupStore();
 
 export default observablePopupStore;
 
-export { IPopup, IPopupProps };
+export { IPopup, IPopupProps, PopupType };

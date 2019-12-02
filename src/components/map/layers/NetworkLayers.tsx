@@ -2,13 +2,9 @@ import classnames from 'classnames';
 import { IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import SidebarHeader from '~/components/sidebar/SidebarHeader';
-import NodeForm from '~/components/sidebar/nodeView/NodeForm';
-import StopForm from '~/components/sidebar/nodeView/StopForm';
 import Constants from '~/constants/constants';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
-import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { LinkStore } from '~/stores/linkStore';
@@ -20,6 +16,7 @@ import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/NetworkUtils
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
+import { INodePopupData } from './popups/NodePopup';
 
 enum GeoserverLayer {
     Node = 'solmu',
@@ -199,50 +196,17 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private showNodePopup = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
-
+        const popupData: INodePopupData = {
+            node
+        };
         const nodePopup: IPopupProps = {
-            content: this.renderNodePopup(node),
+            type: 'nodePopup',
+            data: popupData,
             coordinates: node.coordinates,
             isCloseButtonVisible: false
         };
-        this.props.popupStore!.showPopup(nodePopup);
-    };
 
-    private renderNodePopup = (node: INode) => (popupId: number) => {
-        return (
-            <div className={s.nodePopup}>
-                <div className={s.sidebarHeaderWrapper}>
-                    <SidebarHeader
-                        isEditButtonVisible={false}
-                        hideBackButton={true}
-                        onCloseButtonClick={() => this.props.popupStore!.closePopup(popupId)}
-                    >
-                        Solmu {node.id}
-                    </SidebarHeader>
-                </div>
-                <div className={s.nodeFormWrapper}>
-                    <NodeForm
-                        node={node}
-                        isNewNode={false}
-                        isEditingDisabled={true}
-                        invalidPropertiesMap={{}}
-                    />
-                    {node.stop && (
-                        <StopForm
-                            node={node}
-                            isNewStop={false}
-                            isEditingDisabled={true}
-                            stopAreas={[]}
-                            stopSections={[]}
-                            stopInvalidPropertiesMap={{}}
-                            nodeInvalidPropertiesMap={{}}
-                            updateStopProperty={() => () => void 0}
-                            isReadOnly={true}
-                        />
-                    )}
-                </div>
-            </div>
-        );
+        this.props.popupStore!.showPopup(nodePopup);
     };
 
     /**
