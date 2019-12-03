@@ -31,9 +31,7 @@ class HomeView extends React.Component<IHomeViewProps> {
     }
 
     private redirectToNewLineView = () => {
-        const url = RouteBuilder.to(SubSites.newLine)
-            .clear()
-            .toLink();
+        const url = RouteBuilder.to(SubSites.newLine).toLink();
         navigator.goTo(url);
     };
 

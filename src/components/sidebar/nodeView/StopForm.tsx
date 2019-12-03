@@ -75,7 +75,6 @@ class StopForm extends Component<IStopFormProps> {
         let url;
         if (this.props.isNewStop) {
             url = RouteBuilder.to(SubSites.newStopArea)
-                .clear()
                 .append(
                     QueryParams.latLng,
                     `${node.coordinatesProjection.lat}:${node.coordinatesProjection.lng}`
@@ -83,7 +82,6 @@ class StopForm extends Component<IStopFormProps> {
                 .toLink();
         } else {
             url = RouteBuilder.to(SubSites.newStopArea)
-                .clear()
                 .append(QueryParams.nodeId, node.id)
                 .toLink();
         }

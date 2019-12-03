@@ -8,11 +8,7 @@ export class RouteBuilder {
      * @param {Object} queryValues - { field: value, ... }
      */
     public to = (subSites: subSites, queryValues?: any) => {
-        return new RouteBuilderContext(
-            Navigator.getPathName(),
-            subSites,
-            queryValues ? queryValues : Navigator.getQueryParamValues()
-        );
+        return new RouteBuilderContext(Navigator.getPathName(), subSites, queryValues);
     };
 }
 

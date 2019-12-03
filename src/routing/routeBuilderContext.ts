@@ -10,7 +10,11 @@ class RouteBuilderContext {
     constructor(currentLink: string, linkToBuild: SubSites, queryValues: any) {
         this.currentLink = currentLink;
         this.linkToBuild = linkToBuild;
-        this.queryValues = this.jsonCopy(queryValues);
+        if (this.queryValues) {
+            this.queryValues = this.jsonCopy(queryValues);
+        } else {
+            this.queryValues = {};
+        }
     }
 
     private jsonCopy = (jsonObject: JSON) => {
@@ -61,11 +65,6 @@ class RouteBuilderContext {
 
     public set = (param: QueryParams, value: string) => {
         this.queryValues[param] = value;
-        return this;
-    };
-
-    public clear = () => {
-        this.queryValues = {};
         return this;
     };
 }

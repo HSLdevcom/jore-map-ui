@@ -76,7 +76,6 @@ class RouteItem extends React.Component<IRouteItemProps> {
         const routeViewLink = routeBuilder
             .to(subSites.route)
             .toTarget(':id', this.props.route.id)
-            .clear()
             .toLink();
         navigator.goTo(routeViewLink);
     };
