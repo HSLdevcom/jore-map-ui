@@ -16,4 +16,5 @@ export default interface IExternalNode {
     geojson?: string;
     geojsonManual: string;
     geojsonProjection: string;
+    dateRanges?: string;
 }

@@ -62,16 +62,3 @@
 .hidden {
     display: none;
 }
-
-.nodePopup {
-    .sidebarHeaderWrapper {
-        padding: 12px;
-        border-bottom: 1px solid $lightGrey;
-    }
-    .nodeFormWrapper {
-        overflow-y: auto;
-        max-height: 450px;
-        padding: 0px 20px 0px 20px;
-        width: 300px;
-    }
-}

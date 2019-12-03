@@ -5,7 +5,7 @@ export default interface IStopArea {
     transitType?: TransitType;
     nameFi: string;
     nameSw: string;
-    terminalAreaId: string;
+    terminalAreaId?: string;
     modifiedBy?: string;
     modifiedOn?: Date;
     stopAreaGroupId?: string;

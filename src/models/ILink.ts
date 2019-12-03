@@ -8,6 +8,14 @@ interface ILinkPrimaryKey {
     endNode: INode;
 }
 
+interface ILinkMapHighlight {
+    transitType: TransitType;
+    startNodeId: string;
+    endNodeId: string;
+    geometry: L.LatLng[];
+    dateRanges: string;
+}
+
 export default interface ILink extends ILinkPrimaryKey {
     geometry: L.LatLng[];
     streetName?: string;
@@ -17,4 +25,4 @@ export default interface ILink extends ILinkPrimaryKey {
     modifiedOn?: Date;
 }
 
-export { ILinkPrimaryKey };
+export { ILinkPrimaryKey, ILinkMapHighlight };

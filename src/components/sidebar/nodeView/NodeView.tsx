@@ -16,6 +16,7 @@ import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
 import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
@@ -25,7 +26,7 @@ import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
-import { NodeStore } from '~/stores/nodeStore';
+import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
 import SidebarHeader from '../SidebarHeader';
@@ -124,31 +125,63 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     };
 
     private createNewNode = async (params: any) => {
-        const [lat, lng] = params.split(':');
-        const coordinate = new L.LatLng(lat, lng);
-        const node = NodeFactory.createNewNode(coordinate);
-        this.centerMapToNode(node, []);
-        this.props.nodeStore!.init({ node, links: [], isNewNode: true });
-        this.validateNode();
-        this.createNodePropertyListeners();
+        const createNode = () => {
+            const [lat, lng] = params.split(':');
+            const coordinate = new L.LatLng(lat, lng);
+            const node = NodeFactory.createNewNode(coordinate);
+            this.centerMapToNode(node, []);
+            this.props.nodeStore!.init({ node, links: [], isNewNode: true });
+            this.updateSelectedStopAreaId();
+            this.validateNode();
+            this.createNodePropertyListeners();
+        };
+
+        const nodeCacheObj: INodeCacheObj | null = this.props.nodeStore!.getNewNodeCacheObj();
+        if (nodeCacheObj) {
+            this.showNodeCachePrompt({ nodeCacheObj, promptCancelCallback: createNode });
+        } else {
+            createNode();
+        }
     };
 
     private initExistingNode = async (selectedNodeId: string) => {
+        const nodeStore = this.props.nodeStore;
         this.setState({ isLoading: true });
-        this.props.nodeStore!.clear();
+        nodeStore!.clear();
 
-        this.props.mapStore!.setSelectedNodeId(selectedNodeId);
-        const node = await this.fetchNode(selectedNodeId);
-        if (node) {
-            const links = await this.fetchLinksForNode(node);
-            if (links) {
-                this.centerMapToNode(node, links);
-                this.props.nodeStore!.init({ node, links, isNewNode: false });
+        const _fetchNode = async () => {
+            this.props.mapStore!.setSelectedNodeId(selectedNodeId);
+            const node = await this.fetchNode(selectedNodeId);
+            if (node) {
+                const links = await this.fetchLinksForNode(node);
+                if (links) {
+                    this.initNode(node, links);
+                }
             }
-            this.validateNode();
-            this.createNodePropertyListeners();
+            this.setState({ isLoading: false });
+        };
+
+        const nodeCacheObj: INodeCacheObj | null = nodeStore!.getNodeCacheObjById(selectedNodeId);
+        if (nodeCacheObj) {
+            this.showNodeCachePrompt({
+                nodeCacheObj,
+                promptCancelCallback: async () => {
+                    await _fetchNode();
+                    this.updateSelectedStopAreaId();
+                }
+            });
+        } else {
+            await _fetchNode();
+            this.updateSelectedStopAreaId();
         }
-        this.setState({ isLoading: false });
+    };
+
+    private initNode = (node: INode, links: ILink[], oldNode?: INode, oldLinks?: ILink[]) => {
+        this.props.mapStore!.setSelectedNodeId(node.id);
+        this.centerMapToNode(node, links);
+        this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: false });
+        this.validateNode();
+        this.createNodePropertyListeners();
     };
 
     private async fetchNode(nodeId: string) {
@@ -159,6 +192,42 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             return null;
         }
     }
+
+    private showNodeCachePrompt = ({
+        nodeCacheObj,
+        promptCancelCallback
+    }: {
+        nodeCacheObj: INodeCacheObj;
+        promptCancelCallback: Function;
+    }) => {
+        const nodeStore = this.props.nodeStore;
+        this.props.confirmStore!.openConfirm(
+            <div>
+                Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun
+                tiedot ja jatketaan muokkausta?
+            </div>,
+            () => {
+                this.initNode(
+                    nodeCacheObj.node,
+                    nodeCacheObj.links,
+                    nodeCacheObj.oldNode,
+                    nodeCacheObj.oldLinks
+                );
+                this.updateSelectedStopAreaId();
+                nodeStore!.setIsEditingDisabled(false);
+                this.setState({ isLoading: false });
+            },
+            () => promptCancelCallback()
+        );
+    };
+
+    private updateSelectedStopAreaId = () => {
+        const stopAreaIdQueryParam = navigator.getQueryParam(QueryParams.stopAreaId);
+        const stopAreaId = stopAreaIdQueryParam ? stopAreaIdQueryParam[0] : undefined;
+        if (stopAreaId) {
+            this.props.nodeStore!.updateStop('stopAreaId', stopAreaId);
+        }
+    };
 
     private async fetchLinksForNode(node: INode) {
         try {
@@ -200,6 +269,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     this.props.nodeStore!.getDirtyLinks()
                 );
             }
+            this.props.nodeStore!.clearNodeCache();
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
@@ -233,9 +303,9 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         // Create stop save model
         if (currentStop) {
             // Generate stopArea label values for savePrompt
-            currentStop.areaId = `${currentStop.areaId} - ${currentStop.nameFi}`;
-            if (oldStop && oldStop.areaId) {
-                oldStop.areaId = `${oldStop.areaId} - ${oldStop.nameFi}`;
+            currentStop.stopAreaId = `${currentStop.stopAreaId} - ${currentStop.nameFi}`;
+            if (oldStop && oldStop.stopAreaId) {
+                oldStop.stopAreaId = `${oldStop.stopAreaId} - ${oldStop.nameFi}`;
             }
             const stopSaveModel: ISaveModel = {
                 newData: currentStop!,

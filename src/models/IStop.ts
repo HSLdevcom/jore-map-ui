@@ -17,7 +17,7 @@ export default interface IStop extends IStopPrimaryKey {
     platform?: string;
     radius: number;
     hastusId?: string;
-    areaId?: string; // TODO: rename as stopAreaId
+    stopAreaId?: string;
     elyNumber?: string;
     nameLongFi?: string;
     nameLongSw?: string;
