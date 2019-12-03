@@ -269,6 +269,7 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                     this.props.nodeStore!.getDirtyLinks()
                 );
             }
+            this.props.nodeStore!.clearNodeCache();
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {

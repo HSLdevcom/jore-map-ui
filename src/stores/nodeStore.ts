@@ -25,7 +25,7 @@ interface INodeCacheObj {
 }
 
 interface INodeCache {
-    newNodeCache: INodeCacheObj | null;
+    newNodeCache: INodeCacheObj | null; // Have slot for new node in its own property because new node's dont have id
     [nodeId: string]: INodeCacheObj | null;
 }
 
@@ -280,6 +280,13 @@ class NodeStore {
         } else {
             this._nodeCache[nodeId] = nodeCacheObj;
         }
+    };
+
+    @action
+    public clearNodeCache = () => {
+        this._nodeCache = {
+            newNodeCache: null
+        };
     };
 
     @action
