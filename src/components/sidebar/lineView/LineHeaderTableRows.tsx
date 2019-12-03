@@ -51,9 +51,8 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
         const newLineHeader = _.cloneDeep(selectedLineHeader);
         newLineHeader.originalStartDate = undefined;
 
-        const lastLineHeader = _.last(this.props.lineHeaderMassEditStore!.massEditLineHeaders)!
-            .lineHeader;
-        const defaultDate = new Date(lastLineHeader.endDate);
+        const lastLineHeader = lineHeaderMassEditStore!.getLastLineHeader();
+        const defaultDate = new Date(lastLineHeader!.endDate);
         defaultDate.setDate(defaultDate.getDate() + 1);
         newLineHeader.startDate = toMidnightDate(defaultDate);
         newLineHeader.endDate = toMidnightDate(defaultDate);
