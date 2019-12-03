@@ -47,11 +47,13 @@ const renderEditableContent = (props: IInputProps) => {
     };
 
     if (type === 'date') {
-        return renderDatePicker({
-            value: props.value! as Date,
-            onChange: props.onChange!,
-            isClearButtonVisible: props.isClearButtonVisibleOnDates
-        });
+        return (
+            <DatePicker
+                value={props.value! as Date}
+                onChange={props.onChange!}
+                isClearButtonVisible={props.isClearButtonVisibleOnDates}
+            />
+        );
     }
 
     return (
@@ -74,52 +76,105 @@ const renderEditableContent = (props: IInputProps) => {
     );
 };
 
-const renderDatePicker = ({
-    value,
-    onChange,
-    isClearButtonVisible
-}: {
+const renderValidatorResult = (validationResult?: IValidationResult) => {
+    if (!validationResult || !validationResult.errorMessage) {
+        return null;
+    }
+    return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
+};
+
+const renderUneditableContent = (props: IInputProps) => (
+    <div
+        className={classnames(
+            s.inputField,
+            props.disabled ? s.staticHeight : null,
+            props.isInputColorRed ? s.redInputText : null
+        )}
+    >
+        {props.value instanceof Date
+            ? Moment(props.value!).format('DD.MM.YYYY')
+            : props.value
+            ? props.value
+            : '-'}
+    </div>
+);
+
+const InputContainer = observer((props: IInputProps) => {
+    return (
+        <div className={classnames(s.formItem, s.inputContainer, props.className)}>
+            {props.label && (
+                <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
+                    {props.label}
+                </div>
+            )}
+            {props.disabled ? renderUneditableContent(props) : renderEditableContent(props)}
+            {renderValidatorResult(props.validationResult)}
+        </div>
+    );
+});
+
+interface IDatePickerProps {
     value?: Date;
     isClearButtonVisible?: boolean;
     onChange: (date: Date) => void;
-}) => {
-    const minDate = new Date();
-    minDate.setFullYear(1970);
-    minDate.setMonth(0);
-    minDate.setDate(1);
-    const maxDate = new Date();
-    maxDate.setFullYear(2051);
-    maxDate.setMonth(0);
-    maxDate.setDate(1);
-    // TODO: scroll to selected year missing from react-datepicker
-    // open issue for this: https://github.com/Hacker0x01/react-datepicker/pull/1700
-    return (
-        <div className={classnames(s.staticHeight)}>
-            <ReactDatePicker
-                customInput={renderDatePickerInput({
-                    value,
-                    onChange,
-                    isClearButtonVisible,
-                    placeholder: 'Syötä päivä'
-                })}
-                selected={value}
-                onChange={onChange}
-                locale={fi}
-                dateFormat={'dd.MM.yyyy'}
-                showMonthDropdown={true}
-                peekNextMonth={true}
-                showYearDropdown={true}
-                startDate={new Date()}
-                scrollableYearDropdown={true}
-                yearDropdownItemNumber={100}
-                minDate={minDate}
-                maxDate={maxDate}
-                dateFormatCalendar={'dd.MM.yyyy'}
-                popperContainer={_renderCalendarContainer}
-            />
-        </div>
-    );
-};
+}
+
+class DatePicker extends React.Component<IDatePickerProps> {
+    private pickerRef: any;
+    constructor(props: any) {
+        super(props);
+        this.onOutsideClick = this.onOutsideClick.bind(this);
+        this.pickerRef = React.createRef<any>();
+    }
+
+    private onOutsideClick() {
+        this.pickerRef.current.cancelFocusInput();
+    }
+
+    render() {
+        const { value, isClearButtonVisible, onChange } = this.props;
+        const minDate = new Date();
+        minDate.setFullYear(1970);
+        minDate.setMonth(0);
+        minDate.setDate(1);
+        const maxDate = new Date();
+        maxDate.setFullYear(2051);
+        maxDate.setMonth(0);
+        maxDate.setDate(1);
+
+        // TODO: scroll to selected year missing from react-datepicker
+        // open issue for this: https://github.com/Hacker0x01/react-datepicker/pull/1700
+        return (
+            <div className={classnames(s.staticHeight)}>
+                <ReactDatePicker
+                    ref={this.pickerRef}
+                    onClickOutside={this.onOutsideClick}
+                    customInput={renderDatePickerInput({
+                        value,
+                        onChange,
+                        isClearButtonVisible,
+                        placeholder: 'Syötä päivä'
+                    })}
+                    autoFocus={true}
+                    selected={value}
+                    onChange={onChange}
+                    locale={fi}
+                    dateFormat={'dd.MM.yyyy'}
+                    showMonthDropdown={true}
+                    peekNextMonth={true}
+                    showYearDropdown={true}
+                    startDate={new Date()}
+                    scrollableYearDropdown={true}
+                    yearDropdownItemNumber={100}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    dateFormatCalendar={'dd.MM.yyyy'}
+                    popperContainer={_renderCalendarContainer}
+                />
+            </div>
+        );
+    }
+}
 
 const _renderCalendarContainer = ({ children }: { children: JSX.Element[] }): React.ReactNode => {
     const el = document.getElementById('root');
@@ -166,42 +221,5 @@ const renderDatePickerInput = ({
         </div>
     );
 };
-
-const renderValidatorResult = (validationResult?: IValidationResult) => {
-    if (!validationResult || !validationResult.errorMessage) {
-        return null;
-    }
-    return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
-};
-
-const renderUneditableContent = (props: IInputProps) => (
-    <div
-        className={classnames(
-            s.inputField,
-            props.disabled ? s.staticHeight : null,
-            props.isInputColorRed ? s.redInputText : null
-        )}
-    >
-        {props.value instanceof Date
-            ? Moment(props.value!).format('DD.MM.YYYY')
-            : props.value
-            ? props.value
-            : '-'}
-    </div>
-);
-
-const InputContainer = observer((props: IInputProps) => {
-    return (
-        <div className={classnames(s.formItem, s.inputContainer, props.className)}>
-            {props.label && (
-                <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
-                    {props.label}
-                </div>
-            )}
-            {props.disabled ? renderUneditableContent(props) : renderEditableContent(props)}
-            {renderValidatorResult(props.validationResult)}
-        </div>
-    );
-});
 
 export default InputContainer;
