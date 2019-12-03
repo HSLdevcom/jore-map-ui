@@ -6,6 +6,8 @@ export default interface IExternalLink {
     geojson: string;
     solmuByLnkalkusolmu: IExternalNode;
     solmuByLnkloppusolmu: IExternalNode;
+    lnkalkusolmu?: string;
+    lnkloppusolmu?: string;
     lnkmitpituus?: number;
     lnkpituus: number;
     katnimi?: string;
@@ -15,4 +17,5 @@ export default interface IExternalLink {
     lnkstid: string;
     lnkkuka?: string;
     lnkviimpvm?: Date;
+    dateRanges?: string;
 }

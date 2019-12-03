@@ -8,7 +8,7 @@ import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { MapFilter, MapStore } from '~/stores/mapStore';
-import { IPopup, PopupStore } from '~/stores/popupStore';
+import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import EventManager, { INodeClickParams } from '~/util/EventManager';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelpers';
 import Marker from './markers/Marker';
@@ -45,7 +45,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     };
 
     private openPopup = (node: INode) => () => {
-        const popup: IPopup = {
+        const popup: IPopupProps = {
             content: this.renderPopup(node),
             coordinates: node.coordinates,
             isCloseButtonVisible: false,

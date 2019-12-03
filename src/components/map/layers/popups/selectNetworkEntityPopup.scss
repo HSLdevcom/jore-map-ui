@@ -1,0 +1,30 @@
+@import '../../../shared/styles/common.scss';
+
+.selectNetworkEntityPopup {
+    padding: 5px 13px 5px 13px;
+    font-size: 14px;
+
+    .row {
+        cursor: pointer;
+        white-space: nowrap;
+        color: #212121;
+        background-color: $backgroundlightGrey;
+        padding: 5px;
+    }
+    .row:hover {
+        background-color: $lightGrey;
+    }
+
+    .row:first-of-type {
+        margin-top: 10px;
+    }
+
+    .row:last-of-type {
+        margin-bottom: 10px;
+    }
+}
+
+.nodeOpenConfirmContainer {
+    padding: 30px;
+    text-align: center;
+}

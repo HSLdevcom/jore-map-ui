@@ -1,29 +1,26 @@
-import classNames from 'classnames';
-import { toJS, IReactionDisposer } from 'mobx';
+import classnames from 'classnames';
+import { IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import Moment from 'moment';
 import React, { Component } from 'react';
-import SidebarHeader from '~/components/sidebar/SidebarHeader';
-import NodeForm from '~/components/sidebar/nodeView/NodeForm';
-import StopForm from '~/components/sidebar/nodeView/StopForm';
 import Constants from '~/constants/constants';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
-import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
-import { IPopup, PopupStore } from '~/stores/popupStore';
+import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import EventManager, {
     INetworkLinkClickParams,
     INetworkNodeClickParams
 } from '~/util/EventManager';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
+import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/networkUtils';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
+import { INodePopupData } from './popups/NodePopup';
 
 enum GeoserverLayer {
     Node = 'solmu',
@@ -64,33 +61,31 @@ function getGeoServerUrl(layerName: string) {
 class NetworkLayers extends Component<INetworkLayersProps> {
     private reactionDisposer = {};
 
-    private parseDateRangesString(dateRangesString?: string) {
-        if (!dateRangesString) return undefined;
-        return dateRangesString
-            .split(',')
-            .map((dr: string) => dr.split('/').map(date => Moment(date)));
-    }
-
-    private isDateInRanges(
-        selectedDate: Moment.Moment | null,
-        dateRanges?: Moment.Moment[][]
-    ): Boolean {
-        return selectedDate
-            ? !dateRanges ||
-                  dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'))
-            : true;
-    }
-
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through geoserver
             linkki: (properties: ILinkProperties) => {
-                if (this.isNetworkElementHidden(properties)) {
+                const {
+                    lnkalkusolmu: startNodeId,
+                    lnkloppusolmu: endNodeId,
+                    lnkverkko: transitType,
+                    date_ranges: dateRangesString
+                } = properties;
+
+                if (
+                    isNetworkElementHidden({
+                        transitType,
+                        startNodeId,
+                        endNodeId,
+                        type: MapLayer.link,
+                        dateRangesString: dateRangesString!
+                    })
+                ) {
                     return this.getEmptyStyle();
                 }
 
                 return {
-                    color: TransitTypeHelper.getColor(properties.lnkverkko),
+                    color: TransitTypeHelper.getColor(transitType),
                     weight: 3,
                     fillOpacity: 1,
                     fill: true
@@ -103,49 +98,30 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         return {
             // Layer name 'piste' is directly mirrored from Jore through geoserver
             piste: (properties: ILinkProperties) => {
-                if (this.isNetworkElementHidden(properties)) {
+                const {
+                    lnkalkusolmu: startNodeId,
+                    lnkloppusolmu: endNodeId,
+                    lnkverkko: transitType,
+                    date_ranges: dateRangesString
+                } = properties;
+
+                if (
+                    isNetworkElementHidden({
+                        transitType,
+                        startNodeId,
+                        endNodeId,
+                        type: MapLayer.linkPoint,
+                        dateRangesString: dateRangesString!
+                    })
+                ) {
                     return this.getEmptyStyle();
                 }
-                const { lnkverkko: transitTypeCode } = properties;
                 return {
-                    color: TransitTypeHelper.getColor(transitTypeCode),
+                    color: TransitTypeHelper.getColor(transitType),
                     radius: 1
                 };
             }
         };
-    };
-
-    private isNetworkElementHidden = ({
-        lnkverkko: transitTypeCode,
-        date_ranges: dateRangesString,
-        lnkalkusolmu: startNodeId,
-        lnkloppusolmu: endNodeId
-    }: ILinkProperties) => {
-        const dateRanges = this.parseDateRangesString(dateRangesString);
-        const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
-        const selectedDate = this.props.networkStore!.selectedDate;
-
-        const link = this.props.linkStore!.link;
-
-        const node = this.props.nodeStore!.node;
-
-        // the element is related to an opened link
-        const isLinkOpen =
-            link &&
-            link.startNode.id === startNodeId &&
-            link.endNode.id === endNodeId &&
-            link.transitType === transitTypeCode;
-
-        // the element is related to a link that is related to an opened node
-        const isLinkRelatedToOpenedNode =
-            node && (node.id === startNodeId || node.id === endNodeId);
-
-        return (
-            !selectedTransitTypes.includes(transitTypeCode) ||
-            !this.isDateInRanges(selectedDate, dateRanges) ||
-            isLinkOpen ||
-            isLinkRelatedToOpenedNode
-        );
     };
 
     private getNodeStyle = () => {
@@ -158,8 +134,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     soltyyppi: nodeType,
                     soltunnus: nodeId
                 } = properties;
-                const dateRanges = this.parseDateRangesString(dateRangesString);
-                if (this.isNodeHidden(nodeId, transitTypeCodes, dateRanges)) {
+
+                if (isNetworkNodeHidden({ nodeId, transitTypeCodes, dateRangesString })) {
                     return this.getEmptyStyle();
                 }
                 let className;
@@ -190,19 +166,19 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 if (transitTypeCodes && transitTypeCodes.length === 1) {
                     switch (transitTypeCodes[0]) {
                         case TransitType.BUS:
-                            className = classNames(className, s.bus);
+                            className = classnames(className, s.bus);
                             break;
                         case TransitType.TRAM:
-                            className = classNames(className, s.tram);
+                            className = classnames(className, s.tram);
                             break;
                         case TransitType.SUBWAY:
-                            className = classNames(className, s.subway);
+                            className = classnames(className, s.subway);
                             break;
                         case TransitType.TRAIN:
-                            className = classNames(className, s.train);
+                            className = classnames(className, s.train);
                             break;
                         case TransitType.FERRY:
-                            className = classNames(className, s.ferry);
+                            className = classnames(className, s.ferry);
                             break;
                     }
                 }
@@ -215,62 +191,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         };
     };
 
-    private isNodeHidden = (
-        nodeId: string,
-        transitTypeCodes: string,
-        dateRanges?: Moment.Moment[][]
-    ) => {
-        const node = this.props.nodeStore!.node;
-        if (node && node.id === nodeId) {
-            return true;
-        }
-
-        const selectedTransitTypes = toJS(this.props.networkStore!.selectedTransitTypes);
-        if (this.isNodePartOfLinks(transitTypeCodes)) {
-            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.node)) {
-                return true;
-            }
-            const nodeTransitTypes = transitTypeCodes.split(',');
-            if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
-                return true;
-            }
-        } else {
-            if (!this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
-                return true;
-            }
-        }
-        const selectedDate = this.props.networkStore!.selectedDate;
-        return !selectedDate || !this.isDateInRanges(selectedDate, dateRanges);
-    };
-
-    private isNodePartOfLinks(transitTypeCodes: string) {
-        return Boolean(transitTypeCodes);
-    }
-
     private getEmptyStyle = () => {
         return { className: s.hidden };
-    };
-
-    private onNetworkNodeClick = (clickEvent: any) => {
-        const properties = clickEvent.sourceTarget.properties;
-        const clickParams: INetworkNodeClickParams = {
-            nodeId: properties.soltunnus,
-            nodeType: properties.soltyyppi
-        };
-        const triggerNetworkNodeClick = () => {
-            EventManager.trigger('networkNodeClick', clickParams);
-        };
-        if (this.props.networkStore!.shouldShowNodeOpenConfirm) {
-            this.props.confirmStore!.openConfirm({
-                content: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${
-                    properties.soltunnus
-                }? Tallentamattomat muutokset kumotaan.`,
-                onConfirm: triggerNetworkNodeClick,
-                confirmButtonText: 'Kyllä'
-            });
-        } else {
-            triggerNetworkNodeClick();
-        }
     };
 
     private onNetworkNodeRightClick = (clickEvent: any) => {
@@ -280,50 +202,26 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private showNodePopup = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
-
-        const nodePopup: IPopup = {
-            content: this.renderNodePopup(node),
+        const popupData: INodePopupData = {
+            node
+        };
+        const nodePopup: IPopupProps = {
+            type: 'nodePopup',
+            data: popupData,
             coordinates: node.coordinates,
             isCloseButtonVisible: false
         };
+
         this.props.popupStore!.showPopup(nodePopup);
     };
 
-    private renderNodePopup = (node: INode) => (popupId: number) => {
-        return (
-            <div className={s.nodePopup}>
-                <div className={s.sidebarHeaderWrapper}>
-                    <SidebarHeader
-                        isEditButtonVisible={false}
-                        hideBackButton={true}
-                        onCloseButtonClick={() => this.props.popupStore!.closePopup(popupId)}
-                    >
-                        Solmu {node.id}
-                    </SidebarHeader>
-                </div>
-                <div className={s.nodeFormWrapper}>
-                    <NodeForm
-                        node={node}
-                        isNewNode={false}
-                        isEditingDisabled={true}
-                        invalidPropertiesMap={{}}
-                    />
-                    {node.stop && (
-                        <StopForm
-                            node={node}
-                            isNewStop={false}
-                            isEditingDisabled={true}
-                            stopAreas={[]}
-                            stopSections={[]}
-                            stopInvalidPropertiesMap={{}}
-                            nodeInvalidPropertiesMap={{}}
-                            updateStopProperty={() => () => void 0}
-                            isReadOnly={true}
-                        />
-                    )}
-                </div>
-            </div>
-        );
+    private onNetworkNodeClick = (clickEvent: any) => {
+        const properties = clickEvent.sourceTarget.properties;
+        const clickParams: INetworkNodeClickParams = {
+            nodeId: properties.soltunnus,
+            nodeType: properties.soltyyppi
+        };
+        EventManager.trigger('networkNodeClick', clickParams);
     };
 
     private onNetworkLinkClick = (clickEvent: any) => {
@@ -366,8 +264,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
-                        onClick={this.onNetworkLinkClick!}
                         key={GeoserverLayer.Link}
+                        onClick={this.onNetworkLinkClick}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(
                             GeoserverLayer.Link
                         )}
@@ -385,7 +283,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                             GeoserverLayer.Point
                         )}
                         url={getGeoServerUrl(GeoserverLayer.Point)}
-                        interactive={true}
+                        interactive={false}
                         vectorTileLayerStyles={this.getLinkPointStyle()}
                     />
                 )}
