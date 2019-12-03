@@ -245,8 +245,11 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             saveModels.push(stopSaveModel);
         }
 
-        this.props.confirmStore!.openConfirm(<SavePrompt saveModels={saveModels} />, () => {
-            this.save();
+        this.props.confirmStore!.openConfirm({
+            content: <SavePrompt saveModels={saveModels} />,
+            onConfirm: () => {
+                this.save();
+            }
         });
     };
 

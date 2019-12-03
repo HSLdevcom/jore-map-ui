@@ -32,8 +32,12 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
         const confirmText = `Haluatko varmasti poistaa linjan otsikon ${
             massEditLineHeader.lineHeader.lineNameFi
         }?`;
-        this.props.confirmStore!.openConfirm(confirmText, () => {
-            this.props.lineHeaderMassEditStore!.removeLineHeader(massEditLineHeader.id);
+        this.props.confirmStore!.openConfirm({
+            content: confirmText,
+            onConfirm: () => {
+                this.props.lineHeaderMassEditStore!.removeLineHeader(massEditLineHeader.id);
+            },
+            confirmButtonText: 'Kyllä'
         });
     };
 

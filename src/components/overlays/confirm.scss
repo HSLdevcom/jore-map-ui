@@ -3,12 +3,18 @@
 .confirmView {
     display: flex;
     flex-direction: column;
+    max-width: 600px;
 
     .content {
         display: flex;
         justify-content: center;
         flex-direction: column;
         align-items: center;
+        text-align: center;
+        line-height: 30px;
+    }
+
+    .padding {
         padding: 30px;
     }
 
