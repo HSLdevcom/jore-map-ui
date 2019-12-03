@@ -151,13 +151,17 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                             <Button
                                 className={classnames(
                                     s.lineHeaderButton,
-                                    isEditingDisabled ? s.disabledLineHeaderButton : undefined
+                                    isEditingDisabled ? s.disabledLineHeaderButton : undefined,
+                                    isEditingDisabled && isSelectedLineHeader
+                                        ? s.highlightedBackground
+                                        : undefined
                                 )}
                                 hasReverseColor={true}
                                 onClick={this.createNewLineHeaderWithCopy(
                                     currentMassEditLineHeader.id
                                 )}
                                 disabled={isEditingDisabled}
+                                hasNoTransition={true}
                             >
                                 <FiCopy />
                             </Button>
