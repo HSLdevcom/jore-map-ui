@@ -61,8 +61,6 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
     };
 
     private showControls = (show: boolean) => (e: MouseEvent<HTMLDivElement>) => {
-        // Fixes problem where clicking on anything causes mouse to 'leave' the element.
-        if (!e.relatedTarget['innerHTML']) return;
         this.setState({ show });
     };
 
