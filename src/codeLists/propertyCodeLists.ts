@@ -51,7 +51,6 @@ const linkPropertyCodeList: ILinkPropertyCodeList = {
     startNode: 'ALKUSOLMU',
     endNode: 'LOPPUSOLMU',
     geometry: 'GEOMETRIA',
-    municipalityCode: 'KUNTA',
     streetName: 'KATU',
     length: 'LASKETTU PITUUS (m)',
     measuredLength: 'MITATTU PITUUS (m)',

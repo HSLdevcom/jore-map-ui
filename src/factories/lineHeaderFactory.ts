@@ -1,5 +1,6 @@
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
+import { toMidnightDate } from '~/util/dateHelpers';
 
 class LineHeaderFactory {
     public static mapExternalLineHeader = (
@@ -25,15 +26,20 @@ class LineHeaderFactory {
         };
     };
 
-    public static createNewLineHeader = (lineId: string): ILineHeader => {
-        const defaultDate = new Date();
-        defaultDate.setHours(0, 0, 0, 0);
-
+    public static createNewLineHeader = ({
+        lineId,
+        startDate,
+        endDate
+    }: {
+        lineId: string;
+        startDate: Date;
+        endDate: Date;
+    }): ILineHeader => {
         return {
             lineId,
             originalStartDate: undefined,
-            startDate: new Date(defaultDate.getTime()),
-            endDate: new Date(defaultDate.getTime()),
+            startDate: new Date(toMidnightDate(startDate)),
+            endDate: new Date(toMidnightDate(endDate)),
             lineNameFi: '',
             lineShortNameFi: '',
             lineNameSw: '',

@@ -155,7 +155,10 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         } else {
             confirmText = `${confirmText} Tämä toimenpide vaikuttaa kaikkiin tätä linkkiä käyttäviin reitinsuuntiin.`;
         }
-        this.props.confirmStore!.openConfirm(confirmText, this.save);
+        this.props.confirmStore!.openConfirm({
+            content: confirmText,
+            onConfirm: this.save
+        });
     };
 
     private save = () => {

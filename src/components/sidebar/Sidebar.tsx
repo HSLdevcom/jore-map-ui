@@ -12,7 +12,6 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import PageNotFoundView from './PageNotFoundView';
 import HomeView from './homeView/HomeView';
 import LineView from './lineView/LineView';
-import LineHeaderView from './lineView/lineHeaderView/LineHeaderView';
 import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
 import StopAreaView from './nodeView/stopAreaView/StopAreaView';
@@ -33,7 +32,7 @@ interface ILinelistState {
     searchInput: string;
 }
 
-type view = 'line' | 'lineHeader' | 'route' | 'node' | 'stopArea' | 'link' | 'routePath';
+type view = 'line' | 'route' | 'node' | 'stopArea' | 'link' | 'routePath';
 
 @inject('routeListStore', 'searchStore', 'toolbarStore', 'mapStore')
 @observer
@@ -76,8 +75,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         switch (view) {
             case 'line':
                 return <LineView {...props} isNewLine={isNew} />;
-            case 'lineHeader':
-                return <LineHeaderView {...props} isNewLineHeader={isNew} />;
             case 'route':
                 return <RouteView {...props} isNewRoute={isNew} />;
             case 'node':
@@ -109,11 +106,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             editPath: SubSites.line,
                             newPath: SubSites.newLine,
                             view: 'line'
-                        })}
-                        {this.renderView({
-                            editPath: SubSites.lineHeader,
-                            newPath: SubSites.newLineHeader,
-                            view: 'lineHeader'
                         })}
                         {this.renderView({
                             editPath: SubSites.route,

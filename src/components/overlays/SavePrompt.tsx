@@ -5,7 +5,7 @@ import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 import propertyCodeLists from '~/codeLists/propertyCodeLists';
 import codeListStore from '~/stores/codeListStore';
-import { dateToDateString } from '~/util/dateFormatHelpers';
+import { toDateString } from '~/util/dateHelpers';
 import * as s from './savePrompt.scss';
 
 type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea';
@@ -77,15 +77,14 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             coordinates: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesManual: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesProjection: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
-            measurementDate: () => (data[property] ? dateToDateString(data[property]) : '')
+            measurementDate: () => (data[property] ? toDateString(data[property]) : '')
         },
         stop: {
             municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property]),
-            nameModifiedOn: () => (data[property] ? dateToDateString(data[property]) : '')
+            nameModifiedOn: () => (data[property] ? toDateString(data[property]) : '')
         },
         link: {
-            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
-            municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property])
+            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria')
         }
     };
 

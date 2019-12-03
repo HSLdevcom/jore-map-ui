@@ -44,13 +44,11 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
             navigator.goTo(nodeViewLink);
         };
         if (this.props.networkStore!.shouldShowNodeOpenConfirm) {
-            this.props.confirmStore!.openConfirm(
-                <div className={s.nodeOpenConfirmContainer}>
-                    Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun {nodeId}?
-                    Tallentamattomat muutokset kumotaan.
-                </div>,
-                redirectToNode
-            );
+            this.props.confirmStore!.openConfirm({
+                content: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${nodeId}? Tallentamattomat muutokset kumotaan.`,
+                onConfirm: redirectToNode,
+                confirmButtonText: 'Kyllä'
+            });
         } else {
             redirectToNode();
         }
