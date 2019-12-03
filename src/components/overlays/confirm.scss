@@ -3,6 +3,7 @@
 .confirmView {
     display: flex;
     flex-direction: column;
+    max-width: 600px;
 
     .content {
         display: flex;
