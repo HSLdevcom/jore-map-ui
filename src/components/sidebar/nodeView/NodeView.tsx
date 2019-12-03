@@ -201,12 +201,10 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         promptCancelCallback: Function;
     }) => {
         const nodeStore = this.props.nodeStore;
-        this.props.confirmStore!.openConfirm(
-            <div>
-                Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun
-                tiedot ja jatketaan muokkausta?
-            </div>,
-            () => {
+        this.props.confirmStore!.openConfirm({
+            content:
+                'Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun tiedot ja jatketaan muokkausta?',
+            onConfirm: () => {
                 this.initNode(
                     nodeCacheObj.node,
                     nodeCacheObj.links,
@@ -217,8 +215,8 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
                 nodeStore!.setIsEditingDisabled(false);
                 this.setState({ isLoading: false });
             },
-            () => promptCancelCallback()
-        );
+            onCancel: () => promptCancelCallback()
+        });
     };
 
     private updateSelectedStopAreaId = () => {
