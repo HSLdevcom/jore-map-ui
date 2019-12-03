@@ -119,17 +119,38 @@ interface IDatePickerProps {
     onChange: (date: Date) => void;
 }
 
-class DatePicker extends React.Component<IDatePickerProps> {
-    private pickerRef: any;
+interface IDatePickerState {
+    isOpen: boolean;
+}
+
+class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
+    private mounted: boolean;
     constructor(props: any) {
         super(props);
-        this.onOutsideClick = this.onOutsideClick.bind(this);
-        this.pickerRef = React.createRef<any>();
+        this.state = {
+            isOpen: false
+        };
     }
 
-    private onOutsideClick() {
-        this.pickerRef.current.cancelFocusInput();
+    componentDidMount() {
+        this.mounted = true;
     }
+
+    componentWillUnmount() {
+        this.mounted = false;
+    }
+
+    private openCalendar = () => {
+        if (this.mounted) {
+            this.setState({ isOpen: true });
+        }
+    };
+
+    private closeCalendar = () => {
+        if (this.mounted) {
+            this.setState({ isOpen: false });
+        }
+    };
 
     render() {
         const { value, isClearButtonVisible, onChange } = this.props;
@@ -147,14 +168,15 @@ class DatePicker extends React.Component<IDatePickerProps> {
         return (
             <div className={classnames(s.staticHeight)}>
                 <ReactDatePicker
-                    ref={this.pickerRef}
-                    onClickOutside={this.onOutsideClick}
                     customInput={renderDatePickerInput({
                         value,
                         onChange,
                         isClearButtonVisible,
+                        openCalendar: this.openCalendar,
+                        closeCalendar: this.closeCalendar,
                         placeholder: 'Syötä päivä'
                     })}
+                    open={this.state.isOpen}
                     autoFocus={true}
                     selected={value}
                     onChange={onChange}
@@ -185,12 +207,16 @@ const renderDatePickerInput = ({
     onChange,
     placeholder,
     value,
-    isClearButtonVisible
+    isClearButtonVisible,
+    openCalendar,
+    closeCalendar
 }: {
     onChange: (value: any) => void;
     placeholder: string;
     value?: Date;
     isClearButtonVisible?: boolean;
+    openCalendar: Function;
+    closeCalendar: Function;
 }) => {
     const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         // TODO: implement a better way of changing input value
@@ -206,9 +232,18 @@ const renderDatePickerInput = ({
         event.preventDefault();
     };
 
+    const onBlur = () => {
+        // setTimeout is needed because calendar's click function is triggered after onBlur. If calendar is closed right away, date selection from calendar doesn't work
+        setTimeout(() => {
+            closeCalendar();
+        }, 250);
+    };
+
     return (
         <div className={classnames(s.staticHeight, s.inputField)}>
             <input
+                onBlur={() => onBlur()}
+                onClick={() => openCalendar()}
                 placeholder={placeholder}
                 type={'text'}
                 value={value ? toDateString(value) : ''}
