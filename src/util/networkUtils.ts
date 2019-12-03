@@ -5,13 +5,16 @@ import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
 
-// Supports links and linkPoints
+type NetworkElementType = MapLayer.link | MapLayer.linkPoint;
+
 const isNetworkElementHidden = ({
+    type,
     transitType,
     startNodeId,
     endNodeId,
     dateRangesString
 }: {
+    type: NetworkElementType;
     transitType: TransitType;
     startNodeId: string;
     endNodeId: string;
@@ -22,6 +25,13 @@ const isNetworkElementHidden = ({
     const selectedDate = NetworkStore.selectedDate;
     const link = LinkStore.link;
     const node = NodeStore.node;
+
+    if (type === MapLayer.link && !NetworkStore!.isMapLayerVisible(MapLayer.link)) {
+        return true;
+    }
+    if (type === MapLayer.linkPoint && !NetworkStore!.isMapLayerVisible(MapLayer.linkPoint)) {
+        return true;
+    }
 
     // the element is related to an opened link
     const isLinkOpen =

@@ -77,6 +77,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         transitType,
                         startNodeId,
                         endNodeId,
+                        type: MapLayer.link,
                         dateRangesString: dateRangesString!
                     })
                 ) {
@@ -109,6 +110,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         transitType,
                         startNodeId,
                         endNodeId,
+                        type: MapLayer.linkPoint,
                         dateRangesString: dateRangesString!
                     })
                 ) {

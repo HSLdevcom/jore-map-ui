@@ -9,6 +9,7 @@ import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
 import EventManager from '~/util/EventManager';
 import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/networkUtils';
@@ -27,6 +28,12 @@ class SelectNetworkEntityTool implements BaseTool {
     private onMapClick = async (clickEvent: any) => {
         const zoomLevel = MapStore.zoom;
         if (zoomLevel <= constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
+            return;
+        }
+        if (
+            !NetworkStore!.isMapLayerVisible(MapLayer.node) &&
+            !NetworkStore!.isMapLayerVisible(MapLayer.link)
+        ) {
             return;
         }
 
@@ -85,6 +92,7 @@ class SelectNetworkEntityTool implements BaseTool {
         links = links.filter(
             (link: ILinkMapHighlight) =>
                 !isNetworkElementHidden({
+                    type: MapLayer.link,
                     transitType: link.transitType,
                     startNodeId: link.startNodeId,
                     endNodeId: link.endNodeId,
