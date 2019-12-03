@@ -17,6 +17,11 @@ export class LineStore {
     }
 
     @computed
+    get oldLine(): ILine | null {
+        return this._oldline;
+    }
+
+    @computed
     get isDirty() {
         return !_.isEqual(this._line, this._oldline);
     }

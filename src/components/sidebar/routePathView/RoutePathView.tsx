@@ -7,6 +7,7 @@ import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
 import Button from '~/components/controls/Button';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -23,6 +24,7 @@ import RoutePathService from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
@@ -46,6 +48,7 @@ interface IRoutePathViewProps {
     toolbarStore?: ToolbarStore;
     errorStore?: ErrorStore;
     mapStore?: MapStore;
+    confirmStore?: ConfirmStore;
     match?: match<any>;
     isNewRoutePath: boolean;
 }
@@ -62,7 +65,8 @@ interface IRoutePathViewState {
     'toolbarStore',
     'errorStore',
     'alertStore',
-    'mapStore'
+    'mapStore',
+    'confirmStore'
 )
 @observer
 class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState> {
@@ -306,6 +310,20 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.props.routePathStore!.setIsEditingDisabled(true);
     };
 
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const currentRoutePath = this.props.routePathStore!.routePath;
+        const oldRoutePath = this.props.routePathStore!.oldRoutePath;
+        const saveModel: ISaveModel = {
+            newData: currentRoutePath ? currentRoutePath : {},
+            oldData: oldRoutePath,
+            model: 'routePath'
+        };
+        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
+            this.save();
+        });
+    };
+
     private onChangeIsEditingDisabled = () => {
         this.clearInvalidPropertiesMap();
 
@@ -369,7 +387,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                         </div>
                         {this.renderTabContent()}
                         <Button
-                            onClick={this.save}
+                            onClick={this.showSavePrompt}
                             type={ButtonType.SAVE}
                             disabled={isSaveButtonDisabled}
                         >

@@ -8,7 +8,7 @@ import codeListStore from '~/stores/codeListStore';
 import { toDateString } from '~/util/dateHelpers';
 import * as s from './savePrompt.scss';
 
-type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea';
+type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea' | 'line' | 'routePath';
 
 interface ISaveModel {
     model: Model;
@@ -84,7 +84,18 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             nameModifiedOn: () => (data[property] ? toDateString(data[property]) : '')
         },
         link: {
-            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria')
+            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
+            municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property])
+        },
+        line: {
+            lineStartDate: () => (data[property] ? toDateString(data[property]) : ''),
+            lineEndDate: () => (data[property] ? toDateString(data[property]) : '')
+        },
+        routePath: {
+            startTime: () => (data[property] ? toDateString(data[property]) : ''),
+            endTime: () => (data[property] ? toDateString(data[property]) : ''),
+            routePathLinks: () =>
+                isNew ? 'Uudet reitinsuunnanlinkit' : 'Vanhat reitinsuunnanlinkit'
         }
     };
 

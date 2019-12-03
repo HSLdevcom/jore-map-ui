@@ -3,6 +3,7 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
@@ -14,8 +15,8 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import { AlertStore } from '~/stores/alertStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
-import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import SidebarHeader from '../SidebarHeader';
 import LineInfoTab from './LineInfoTab';
@@ -26,9 +27,9 @@ interface ILineViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     lineStore?: LineStore;
-    lineHeaderMassEditStore?: LineHeaderMassEditStore;
     match?: match<any>;
     isNewLine: boolean;
+    confirmStore?: ConfirmStore;
 }
 
 interface ILineViewState {
@@ -37,7 +38,7 @@ interface ILineViewState {
     selectedTabIndex: number;
 }
 
-@inject('lineStore', 'lineHeaderMassEditStore', 'errorStore', 'alertStore')
+@inject('lineStore', 'errorStore', 'alertStore', 'confirmStore')
 @observer
 class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -161,9 +162,22 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         this.validateAllProperties(lineValidationModel, this.props.lineStore!.line);
     };
 
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const currentLine = this.props.lineStore!.line;
+        const oldLine = this.props.lineStore!.oldLine;
+        const saveModel: ISaveModel = {
+            newData: currentLine ? currentLine : {},
+            oldData: oldLine,
+            model: 'line'
+        };
+        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
+            this.saveLine();
+        });
+    };
+
     render() {
         const lineStore = this.props.lineStore;
-        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.lineView, s.loaderContainer)}>
@@ -171,7 +185,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                 </div>
             );
         }
-        if (!lineStore!.line) return null;
+        if (!this.props.lineStore!.line) return null;
         const isEditingDisabled = lineStore!.isEditingDisabled;
         const isSaveButtonDisabled =
             isEditingDisabled || !lineStore!.isDirty || !this.isFormValid();
@@ -182,16 +196,13 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                     <div className={s.sidebarHeaderSection}>
                         <SidebarHeader
                             isEditButtonVisible={!this.props.isNewLine}
-                            onEditButtonClick={lineStore!.toggleIsEditingDisabled}
-                            isEditing={!lineStore!.isEditingDisabled}
-                            shouldShowClosePromptMessage={
-                                lineStore!.isDirty || lineHeaderMassEditStore!.isDirty
-                            }
-                            shouldShowEditButtonClosePromptMessage={lineStore!.isDirty}
+                            onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
+                            isEditing={!this.props.lineStore!.isEditingDisabled}
+                            shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
                         >
                             {this.props.isNewLine
                                 ? 'Luo uusi linja'
-                                : `Linja ${lineStore!.line!.id}`}
+                                : `Linja ${this.props.lineStore!.line!.id}`}
                         </SidebarHeader>
                     </div>
                     <Tabs>
@@ -214,7 +225,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                                     onChangeLineProperty={this.onChangeLineProperty}
                                     invalidPropertiesMap={this.state.invalidPropertiesMap}
                                     setValidatorResult={this.setValidatorResult}
-                                    saveLine={this.saveLine}
+                                    saveLine={this.showSavePrompt}
                                     isLineSaveButtonDisabled={isSaveButtonDisabled}
                                 />
                             </ContentItem>
