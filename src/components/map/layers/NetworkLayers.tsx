@@ -16,8 +16,8 @@ import EventManager, {
     INetworkLinkClickParams,
     INetworkNodeClickParams
 } from '~/util/EventManager';
-import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/NetworkUtils';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
+import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/networkUtils';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
 import { INodePopupData } from './popups/NodePopup';
