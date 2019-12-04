@@ -173,10 +173,11 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                         onChange,
                         isClearButtonVisible,
                         openCalendar: this.openCalendar,
-                        closeCalendar: this.closeCalendar,
                         placeholder: 'Syötä päivä'
                     })}
                     open={this.state.isOpen}
+                    onClickOutside={this.closeCalendar}
+                    onSelect={this.closeCalendar}
                     autoFocus={true}
                     selected={value}
                     onChange={onChange}
@@ -208,15 +209,13 @@ const renderDatePickerInput = ({
     placeholder,
     value,
     isClearButtonVisible,
-    openCalendar,
-    closeCalendar
+    openCalendar
 }: {
     onChange: (value: any) => void;
     placeholder: string;
     value?: Date;
     isClearButtonVisible?: boolean;
     openCalendar: Function;
-    closeCalendar: Function;
 }) => {
     const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         // TODO: implement a better way of changing input value
@@ -232,17 +231,9 @@ const renderDatePickerInput = ({
         event.preventDefault();
     };
 
-    const onBlur = () => {
-        // setTimeout is needed because calendar's click function is triggered after onBlur. If calendar is closed right away, date selection from calendar doesn't work
-        setTimeout(() => {
-            closeCalendar();
-        }, 250);
-    };
-
     return (
         <div className={classnames(s.staticHeight, s.inputField)}>
             <input
-                onBlur={() => onBlur()}
                 onClick={() => openCalendar()}
                 placeholder={placeholder}
                 type={'text'}
