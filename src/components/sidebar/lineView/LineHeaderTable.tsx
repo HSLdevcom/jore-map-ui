@@ -14,7 +14,7 @@ import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
-import { toMidnightDate, areDatesEqual } from '~/util/dateHelpers';
+import { areDatesEqual, toMidnightDate } from '~/util/dateHelpers';
 import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
 import LineHeaderForm from './LineHeaderForm';
