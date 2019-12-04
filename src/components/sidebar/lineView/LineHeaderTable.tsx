@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
@@ -13,7 +14,7 @@ import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
-import { toMidnightDate } from '~/util/dateHelpers';
+import { toMidnightDate, areDatesEqual } from '~/util/dateHelpers';
 import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
 import LineHeaderForm from './LineHeaderForm';
@@ -146,6 +147,44 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         return isFormValid;
     };
 
+    private isSameLineHeader = (a: ILineHeader, b: ILineHeader) => {
+        return (
+            a.originalStartDate &&
+            b.originalStartDate &&
+            a.lineId === b.lineId &&
+            areDatesEqual(a.originalStartDate, b.originalStartDate)
+        );
+    };
+
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const oldLineHeaders = this.props.lineHeaderMassEditStore!.oldLineHeaders!;
+        const currentLineHeaders = this.props.lineHeaderMassEditStore!.currentLineHeaders!;
+        const saveModels: ISaveModel[] = [];
+
+        currentLineHeaders.forEach((currentLineHeader: ILineHeader) => {
+            !currentLineHeader.originalStartDate
+                ? saveModels.push({
+                      newData: currentLineHeader,
+                      oldData: {},
+                      model: 'lineHeader'
+                  })
+                : oldLineHeaders!.forEach((oldLineHeader: ILineHeader) => {
+                      if (this.isSameLineHeader(oldLineHeader, currentLineHeader)) {
+                          saveModels.push({
+                              newData: currentLineHeader,
+                              oldData: oldLineHeader,
+                              model: 'lineHeader'
+                          });
+                      }
+                  });
+        });
+
+        confirmStore!.openConfirm(<SavePrompt saveModels={saveModels} />, () => {
+            this.save();
+        });
+    };
+
     render() {
         if (this.state.isLoading) {
             return (
@@ -243,7 +282,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 )}
                 <Button
                     className={s.saveLineHeadersButton}
-                    onClick={this.save}
+                    onClick={this.showSavePrompt}
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
                 >

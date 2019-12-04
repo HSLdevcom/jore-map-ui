@@ -1,4 +1,4 @@
-import { ILine, ILink, INode, IRoute, IRoutePath, IStop, IStopArea } from '~/models';
+import { ILine, ILineHeader, ILink, INode, IRoute, IRoutePath, IStop, IStopArea } from '~/models';
 
 type NodeKeys = keyof INode;
 type INodePropertyCodeList = { [key in NodeKeys]: string };
@@ -51,7 +51,6 @@ const linkPropertyCodeList: ILinkPropertyCodeList = {
     startNode: 'ALKUSOLMU',
     endNode: 'LOPPUSOLMU',
     geometry: 'GEOMETRIA',
-    municipalityCode: 'KUNTA',
     streetName: 'KATU',
     length: 'LASKETTU PITUUS (m)',
     measuredLength: 'MITATTU PITUUS (m)',
@@ -134,6 +133,25 @@ const routePathPropertyCodeList: IRoutePathPropertyCodeList = {
     modifiedBy: ''
 };
 
+type LineHeaderKeys = keyof ILineHeader;
+type ILineHeaderPropertyCodeList = { [key in LineHeaderKeys]: string };
+const lineHeaderPropertyCodeList: ILineHeaderPropertyCodeList = {
+    lineId: 'LINJAN TUNNUS',
+    originalStartDate: '',
+    startDate: 'VOIM.AST.PVM',
+    endDate: 'VIIM. VOIM.OLOPVM',
+    lineNameFi: 'LINJAN NIMI',
+    lineShortNameFi: 'LINJAN LYHYT NIMI',
+    lineNameSw: 'LINJAN NIMI RUOTSIKSI',
+    lineShortNameSw: 'LINJAN LYHYT NIMI RUOTSIKSI',
+    lineStartPlace1Fi: 'LÄHTÖPAIKKA SUUNNASSA 1',
+    lineStartPlace1Sw: 'LÄHTÖPAIKKA SUUNNASSA 1 RUOTSIKSI',
+    lineStartPlace2Fi: 'LÄHTÖPAIKKA SUUNNASSA 2',
+    lineStartPlace2Sw: 'LÄHTÖPAIKKA SUUNNASSA 2 RUOTSIKSI',
+    modifiedBy: '',
+    modifiedOn: ''
+};
+
 export default {
     node: nodePropertyCodeList,
     stop: stopPropertyCodeList,
@@ -141,5 +159,6 @@ export default {
     route: routePropertyCodeList,
     stopArea: stopAreaPropertyCodeList,
     line: linePropertyCodeList,
-    routePath: routePathPropertyCodeList
+    routePath: routePathPropertyCodeList,
+    lineHeader: lineHeaderPropertyCodeList
 };

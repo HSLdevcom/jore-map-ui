@@ -8,7 +8,7 @@ import codeListStore from '~/stores/codeListStore';
 import { toDateString } from '~/util/dateHelpers';
 import * as s from './savePrompt.scss';
 
-type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea' | 'line' | 'routePath';
+type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea' | 'line' | 'routePath' | 'lineHeader';
 
 interface ISaveModel {
     model: Model;
@@ -96,6 +96,11 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             endTime: () => (data[property] ? toDateString(data[property]) : ''),
             routePathLinks: () =>
                 isNew ? 'Uudet reitinsuunnanlinkit' : 'Vanhat reitinsuunnanlinkit'
+        },
+        lineHeader: {
+            startDate: () => (data[property] ? toDateString(data[property]) : ''),
+            endDate: () => (data[property] ? toDateString(data[property]) : ''),
+            originalStartDate: () => (data[property] ? toDateString(data[property]) : '')
         }
     };
 
@@ -128,7 +133,6 @@ const renderChangeRow = (property: string, oldValue: string, newValue: string) =
 // TODO: move to shared folder. This isn't really an overlay
 const SavePrompt = observer((props: ISavePromptProps) => {
     const saveModels = props.saveModels;
-
     return (
         <div className={s.savePromptView}>
             <div className={s.topic}>Tallennettavat muutokset</div>

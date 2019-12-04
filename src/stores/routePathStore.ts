@@ -63,6 +63,11 @@ export class RoutePathStore {
     }
 
     @computed
+    get oldRoutePath(): IRoutePath | null {
+        return this._oldRoutePath;
+    }
+
+    @computed
     get neighborLinks(): INeighborLink[] {
         return this._neighborRoutePathLinks;
     }
