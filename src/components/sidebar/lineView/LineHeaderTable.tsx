@@ -156,6 +156,26 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         );
     };
 
+    private findDeletedLineHeaders = (
+        oldLineHeaders: ILineHeader[],
+        currentLineHeaders: ILineHeader[]
+    ) => {
+        const deletedLineHeaders: ILineHeader[] = [];
+        oldLineHeaders!.forEach((oldLineHeader: ILineHeader) => {
+            let isDeleted = true;
+            currentLineHeaders.forEach((currentLineHeader: ILineHeader) => {
+                if (this.isSameLineHeader(oldLineHeader, currentLineHeader)) {
+                    isDeleted = false;
+                    return;
+                }
+            });
+            if (isDeleted) {
+                deletedLineHeaders.push(oldLineHeader);
+            }
+        });
+        return deletedLineHeaders;
+    };
+
     private showSavePrompt = () => {
         const confirmStore = this.props.confirmStore;
         const oldLineHeaders = this.props.lineHeaderMassEditStore!.oldLineHeaders!;
@@ -165,6 +185,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         currentLineHeaders.forEach((currentLineHeader: ILineHeader) => {
             !currentLineHeader.originalStartDate
                 ? saveModels.push({
+                      subTopic: currentLineHeader.lineNameFi,
                       newData: currentLineHeader,
                       oldData: {},
                       model: 'lineHeader'
@@ -172,12 +193,26 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 : oldLineHeaders!.forEach((oldLineHeader: ILineHeader) => {
                       if (this.isSameLineHeader(oldLineHeader, currentLineHeader)) {
                           saveModels.push({
+                              subTopic: currentLineHeader.lineNameFi,
                               newData: currentLineHeader,
                               oldData: oldLineHeader,
                               model: 'lineHeader'
                           });
                       }
                   });
+        });
+        const deletedLineHeaders: ILineHeader[] = this.findDeletedLineHeaders(
+            oldLineHeaders,
+            currentLineHeaders
+        );
+        deletedLineHeaders.forEach((deletedLineHeader: ILineHeader) => {
+            saveModels.push({
+                subTopic: deletedLineHeader.lineNameFi,
+                isRemoved: true,
+                newData: null,
+                oldData: null,
+                model: 'lineHeader'
+            });
         });
 
         confirmStore!.openConfirm(<SavePrompt saveModels={saveModels} />, () => {

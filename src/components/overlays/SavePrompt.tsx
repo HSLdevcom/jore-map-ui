@@ -12,8 +12,10 @@ type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea' | 'line' | 'routePa
 
 interface ISaveModel {
     model: Model;
-    newData: Object;
+    newData: Object | null;
     oldData: Object | null;
+    subTopic?: String;
+    isRemoved?: boolean;
 }
 
 interface ISavePromptProps {
@@ -32,26 +34,34 @@ const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
             delete newData[property];
         }
     }
+    if (newData && !Object.keys(newData).length) return;
     return (
-        <div key={key}>
-            {Object.keys(newData).map((property: string, index: number) => {
-                if (PREVENTED_CHANGE_ROW_PROPERTIES.includes(property)) return null;
+        <div className={s.savePromptItem} key={key}>
+            {saveModel.subTopic && <div className={s.subTopic}>{saveModel.subTopic}</div>}
+            {saveModel.isRemoved ? (
+                <div className={s.removedItemWrapper}>
+                    <div className={s.oldAttribute}>Poistettu</div>
+                </div>
+            ) : (
+                Object.keys(newData!).map((property: string, index: number) => {
+                    if (PREVENTED_CHANGE_ROW_PROPERTIES.includes(property)) return null;
 
-                const propertyLabel = _getLabel(saveModel.model, property);
-                return (
-                    <div
-                        key={`${key}-${index}`}
-                        className={classnames(s.formItem, s.savePromptRow)}
-                    >
-                        <div className={s.inputLabel}>{propertyLabel}</div>
-                        {renderChangeRow(
-                            property,
-                            _getPropertyValue(saveModel.model, property, oldData, false),
-                            _getPropertyValue(saveModel.model, property, newData, true)
-                        )}
-                    </div>
-                );
-            })}
+                    const propertyLabel = _getLabel(saveModel.model, property);
+                    return (
+                        <div
+                            key={`${key}-${index}`}
+                            className={classnames(s.formItem, s.savePromptRow)}
+                        >
+                            <div className={s.inputLabel}>{propertyLabel}</div>
+                            {renderChangeRow(
+                                property,
+                                _getPropertyValue(saveModel.model, property, oldData, false),
+                                _getPropertyValue(saveModel.model, property, newData, true)
+                            )}
+                        </div>
+                    );
+                })
+            )}
         </div>
     );
 };
