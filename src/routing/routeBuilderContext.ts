@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import qs from 'qs';
 import QueryParams from './queryParams';
 import SubSites from './subSites';
@@ -10,7 +11,8 @@ class RouteBuilderContext {
     constructor(currentLink: string, linkToBuild: SubSites, queryValues: any) {
         this.currentLink = currentLink;
         this.linkToBuild = linkToBuild;
-        if (this.queryValues) {
+
+        if (!_.isEmpty(queryValues)) {
             this.queryValues = this.jsonCopy(queryValues);
         } else {
             this.queryValues = {};
