@@ -1,36 +1,38 @@
 import classnames from 'classnames';
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { IStopArea } from '~/models';
 import StopService, { IStopItem } from '~/services/stopService';
+import { StopAreaStore } from '~/stores/stopAreaStore';
 import * as s from './stopTable.scss';
 
 interface IStopTableProps {
     stopArea: IStopArea;
+    stopAreaStore?: StopAreaStore;
 }
 
 interface IStopTableState {
     isLoading: boolean;
-    stops: IStopItem[];
 }
-
+@inject('stopAreaStore')
+@observer
 export default class StopTable extends Component<IStopTableProps, IStopTableState> {
     private mounted: boolean;
-
     constructor(props: IStopTableProps) {
         super(props);
         this.state = {
-            isLoading: true,
-            stops: []
+            isLoading: true
         };
     }
 
     async componentDidMount() {
         this.mounted = true;
-        const stops: IStopItem[] = await StopService.fetchAllStops();
+
+        const stopItems: IStopItem[] = await StopService.fetchAllStops();
+        this.props.stopAreaStore!.setStopItems(stopItems);
         if (this.mounted) {
             this.setState({
-                stops,
                 isLoading: false
             });
         }
@@ -42,19 +44,20 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
 
     private getStopsByStopAreaId = (stopAreaId: string | undefined) => {
         if (!stopAreaId) return [];
-        const stopsByStopAreaId = this.state.stops.filter(iterable => {
-            return iterable.pysalueid === stopAreaId;
+        const stopItems = this.props.stopAreaStore!.stopItems;
+        const stopsByStopAreaId = stopItems.filter(stopItem => {
+            return stopItem.stopAreaId === stopAreaId;
         });
         return stopsByStopAreaId;
     };
 
-    private renderStopsByStopArea = (stops: IStopItem[]) => {
-        return stops.map((stop: IStopItem, index: number) => {
+    private renderStopsByStopArea = (stopItems: IStopItem[]) => {
+        return stopItems.map((stopItem: IStopItem, index: number) => {
             return (
                 <tr key={index} className={s.stopTableRow}>
-                    <td>{stop.soltunnus}</td>
-                    <td>{stop.pysnimi}</td>
-                    <td>{stop.pysnimir}</td>
+                    <td>{stopItem.nodeId}</td>
+                    <td>{stopItem.nameFi}</td>
+                    <td>{stopItem.nameSw}</td>
                 </tr>
             );
         });

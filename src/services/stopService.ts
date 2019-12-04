@@ -1,6 +1,8 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
+import { IStopItem } from '~/models/IStop';
 import IExternalNode from '~/models/externals/IExternalNode';
+import { IExternalStopItem } from '~/models/externals/IExternalStop';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
@@ -11,13 +13,6 @@ interface IStopSectionItem {
 interface IReservedShortIdItem {
     nodeId: string;
     shortId: string;
-}
-
-interface IStopItem {
-    pysalueid: string;
-    soltunnus: string;
-    pysnimi: string;
-    pysnimir: string;
 }
 
 const SHORT_ID_LENGTH = 4;
@@ -62,7 +57,14 @@ class StopService {
             query: GraphqlQueries.getAllStops()
         });
 
-        return queryResult.data.node.nodes;
+        return queryResult.data.node.nodes.map((externalStopItem: IExternalStopItem) => {
+            return {
+                stopAreaId: externalStopItem.pysalueid,
+                nodeId: externalStopItem.soltunnus,
+                nameFi: externalStopItem.pysnimi,
+                nameSw: externalStopItem.pysnimir
+            };
+        });
     };
 }
 
