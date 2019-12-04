@@ -1,9 +1,9 @@
 @import './styles/common';
 
 .tabs {
-    height: 100%;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 
     .tabList {
         display: flex;
@@ -48,6 +48,7 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        overflow-y: auto;
 
         .contentItem {
             height: 100%;
