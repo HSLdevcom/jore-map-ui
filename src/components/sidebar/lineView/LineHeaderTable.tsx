@@ -156,30 +156,11 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         );
     };
 
-    private findDeletedLineHeaders = (
-        oldLineHeaders: ILineHeader[],
-        currentLineHeaders: ILineHeader[]
-    ) => {
-        const deletedLineHeaders: ILineHeader[] = [];
-        oldLineHeaders!.forEach((oldLineHeader: ILineHeader) => {
-            let isDeleted = true;
-            currentLineHeaders.forEach((currentLineHeader: ILineHeader) => {
-                if (this.isSameLineHeader(oldLineHeader, currentLineHeader)) {
-                    isDeleted = false;
-                    return;
-                }
-            });
-            if (isDeleted) {
-                deletedLineHeaders.push(oldLineHeader);
-            }
-        });
-        return deletedLineHeaders;
-    };
-
     private showSavePrompt = () => {
         const confirmStore = this.props.confirmStore;
-        const oldLineHeaders = this.props.lineHeaderMassEditStore!.oldLineHeaders!;
-        const currentLineHeaders = this.props.lineHeaderMassEditStore!.currentLineHeaders!;
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
+        const oldLineHeaders = lineHeaderMassEditStore!.oldLineHeaders!;
+        const currentLineHeaders = lineHeaderMassEditStore!.currentLineHeaders!;
         const saveModels: ISaveModel[] = [];
 
         currentLineHeaders.forEach((currentLineHeader: ILineHeader) => {
@@ -201,10 +182,8 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                       }
                   });
         });
-        const deletedLineHeaders: ILineHeader[] = this.findDeletedLineHeaders(
-            oldLineHeaders,
-            currentLineHeaders
-        );
+
+        const deletedLineHeaders = lineHeaderMassEditStore!.removedLineHeaders;
         deletedLineHeaders.forEach((deletedLineHeader: ILineHeader) => {
             saveModels.push({
                 subTopic: deletedLineHeader.lineNameFi,
