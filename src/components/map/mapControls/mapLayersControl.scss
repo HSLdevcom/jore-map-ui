@@ -18,20 +18,8 @@
         text-align: left;
     }
 
-    .mapLayerControlIcon {
-        display: flex;
-        font-size: $largeFontSize;
-        line-height: $largeFontSize;
-        cursor: pointer;
-        padding: 10px;
-        background-color: white;
-        border-radius: 3px;
-        box-shadow: 0 0 4px #666666;
-        color: #007ac9;
-    }
-
     .mapLayersContainer {
-        display: none;
+        display: flex;
         flex-direction: column;
         background-color: white;
         border-radius: 3px;
@@ -51,10 +39,14 @@
     }
 }
 
-.mapLayerControlView.active .mapLayerControlIcon {
-    display: none;
-}
-
-.mapLayerControlView.active .mapLayersContainer {
+.mapLayerControlIcon {
     display: flex;
+    font-size: $largeFontSize;
+    line-height: $largeFontSize;
+    cursor: pointer;
+    padding: 10px;
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 0 4px #666666;
+    color: #007ac9;
 }
