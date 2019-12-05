@@ -14,6 +14,7 @@ import { MapFilter, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
+import NodeHelper from '~/util/NodeHelper';
 import { LeafletContext } from '../../Map';
 import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
@@ -59,16 +60,33 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         this.editableLinks = [];
     };
 
-    private renderNode() {
+    private renderNode(nodeLocationType: NodeLocationType) {
         const node = this.props.nodeStore!.node;
+
+        let coordinates;
+        switch (nodeLocationType) {
+            case 'coordinates':
+                coordinates = node.coordinates;
+                break;
+            case 'coordinatesProjection':
+                coordinates = node.coordinatesProjection;
+                break;
+            default:
+                throw `Unsupported NodeLocationType: ${nodeLocationType}`;
+        }
 
         const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
         return (
             <NodeMarker
-                key={node.id}
+                key={`${node.id}-${nodeLocationType}`}
+                coordinates={coordinates}
+                nodeType={node.type}
+                nodeLocationType={nodeLocationType}
+                nodeId={node.id}
+                shortId={NodeHelper.getShortId(node)}
+                hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
                 isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
-                node={node}
                 onMoveMarker={this.onMoveMarker()}
             />
         );
@@ -167,7 +185,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         this.drawEditableLinks();
         return (
             <>
-                {this.renderNode()}
+                {this.renderNode('coordinates')}
+                {this.renderNode('coordinatesProjection')}
                 {this.renderLinkDecorators()}
             </>
         );

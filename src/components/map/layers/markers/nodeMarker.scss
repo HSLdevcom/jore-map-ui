@@ -11,13 +11,6 @@
         width: 12px;
         border-width: 3px;
         margin: -3px;
-
-        &.measured {
-            background-color: $nodeMeasuredColor;
-        }
-        &.projection {
-            background-color: $nodeProjectionColor;
-        }
     }
 
     .highlightBlue {
@@ -37,6 +30,7 @@
     stroke: none;
     fill: #727272;
     fill-opacity: 0.3;
+    background-color: grey;
 }
 
 .stopCircle {
