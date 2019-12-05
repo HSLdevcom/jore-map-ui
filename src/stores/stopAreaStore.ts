@@ -102,6 +102,7 @@ export class StopAreaStore {
         this._stopArea = null;
         this._oldStopArea = null;
         this._isEditingDisabled = true;
+        this._stopItems = [];
     };
 
     @action

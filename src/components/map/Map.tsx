@@ -21,7 +21,8 @@ import EditNodeLayer from './layers/edit/EditNodeLayer';
 import EditRoutePathLayer from './layers/edit/EditRoutePathLayer';
 import './map.css';
 import * as s from './map.scss';
-import CoordinateControl from './mapControls/CoordinateControl';
+// TODO: uncomment when CoordinateControl works as react component
+// import CoordinateControl from './mapControls/CoordinateControl';
 import Control from './mapControls/CustomControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import MapLayersControl from './mapControls/MapLayersControl';
@@ -72,8 +73,6 @@ class LeafletMap extends React.Component<IMapProps> {
         if (!map) throw 'Map was not loaded.';
 
         map.addControl(L.control.scale({ imperial: false }));
-        map.addControl(new CoordinateControl({ position: 'topright' }));
-
         map.on('moveend', () => {
             mapStore!.setCoordinates(map.getCenter());
         });
@@ -104,14 +103,13 @@ class LeafletMap extends React.Component<IMapProps> {
 
         const map = this.getMap();
         if (map) {
-            const storeCoordinates = mapStore!.coordinates;
             try {
                 const mapCoordinates = map.getCenter();
-                if (!L.latLng(storeCoordinates!).equals(L.latLng(mapCoordinates))) {
-                    map.setView(storeCoordinates!, map.getZoom());
+                if (!L.latLng(mapStore!.coordinates!).equals(L.latLng(mapCoordinates))) {
+                    map.setView(mapStore!.coordinates!, map.getZoom());
                 }
             } catch {
-                map.setView(storeCoordinates!, mapStore!.zoom);
+                map.setView(mapStore!.coordinates!, mapStore!.zoom);
             }
         }
     };
@@ -189,7 +187,11 @@ class LeafletMap extends React.Component<IMapProps> {
                         </div>
                     </Control>
                     <Control position='topright'>
-                        <MeasurementControl />
+                        <div className={s.mapLayersContainer}>
+                            <MeasurementControl map={this.mapReference} />
+                            {/** TODO: uncomment when CoordinateControl works as react component */}
+                            {/* <CoordinateControl /> */}
+                        </div>
                     </Control>
                     <Control position='bottomleft'>
                         <div className={s.mapLayersContainer}>

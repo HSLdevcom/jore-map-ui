@@ -50,11 +50,16 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
     }
 
     private centerMapToStopAreas = (stopItems: IStopItem[]) => {
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
+        const mapStore = this.props.mapStore;
+        mapStore!.setIsMapCenteringPrevented(false);
+        if (stopItems.length === 0) {
+            mapStore!.setInitCoordinates();
+            return;
+        }
 
         const latLngs: L.LatLng[] = stopItems.map(iterator => iterator.coordinates!);
         const bounds = L.latLngBounds(latLngs);
-        this.props.mapStore!.setMapBounds(bounds);
+        mapStore!.setMapBounds(bounds);
     };
 
     private centerMapToStopItem = (stopItem: IStopItem) => {

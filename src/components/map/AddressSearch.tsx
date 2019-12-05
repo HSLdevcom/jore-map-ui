@@ -10,7 +10,7 @@ import LeafletUtils from '~/util/leafletUtils';
 import * as s from './addressSearch.scss';
 
 interface IAddressSearchProps {
-    map?: any;
+    map: any;
 }
 
 interface IAddressSearchState {

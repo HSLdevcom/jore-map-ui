@@ -11,7 +11,7 @@ interface IStopAreaLayerProps {
 
 @inject('stopAreaStore')
 @observer
-export default class StopAreaLayer extends Component<IStopAreaLayerProps> {
+class StopAreaLayer extends Component<IStopAreaLayerProps> {
     render() {
         const stopItems = this.props.stopAreaStore!.stopItems;
         return stopItems.map((stopItem: IStopItem, index: number) => {
@@ -28,3 +28,5 @@ export default class StopAreaLayer extends Component<IStopAreaLayerProps> {
         });
     }
 }
+
+export default StopAreaLayer;

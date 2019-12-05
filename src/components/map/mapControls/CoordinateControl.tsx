@@ -1,29 +1,56 @@
 import * as L from 'leaflet';
 import { autorun } from 'mobx';
+import React, { Component } from 'react';
 import GeometryService from '~/services/geometryService';
-import observableMapStore, { MapStore } from '~/stores/mapStore';
+import MapStore from '~/stores/mapStore';
 import * as s from './coordinateControl.scss';
 
-interface ICoordinateControlOptions extends L.ControlOptions {
+interface ICoordinateControlProps {
     precision?: number;
 }
 
-// TODO: Convert as react-component
-class CoordinateControl extends L.Control {
-    private mapStore: MapStore;
+const PRECISION_DEFAULT_VALUE = 10;
+
+class CoordinateControl extends Component<ICoordinateControlProps> {
     private xButton: HTMLElement;
     private xInput: HTMLInputElement;
     private yButton: HTMLElement;
     private yInput: HTMLInputElement;
-    constructor(options?: ICoordinateControlOptions) {
-        super(options);
-        if (!this.options['precision']) {
-            this.options['precision'] = 10;
-        }
-        this.mapStore = observableMapStore;
+
+    constructor(props: ICoordinateControlProps) {
+        super(props);
+
+        autorun(() => this.updateCoordinates());
     }
 
-    onAdd(map: L.Map) {
+    private setInputAsCenter = (lat: number, lon: number) => {
+        MapStore!.setCoordinatesFromDisplayCoordinateSystem(lat, lon);
+    };
+
+    private updateCoordinates() {
+        if (!MapStore!.coordinates) return;
+
+        [this.xInput.value, this.yInput.value] = this.getDisplayCoordinates().map(coord =>
+            coord.toPrecision(this.props.precision ? this.props.precision : PRECISION_DEFAULT_VALUE)
+        );
+        ({ x: this.xButton.innerText, y: this.yButton.innerText } = GeometryService.coordinateNames(
+            MapStore!.displayCoordinateSystem
+        ));
+    }
+
+    private getDisplayCoordinates() {
+        const coordinates = MapStore!.coordinates;
+        const displayCoordinateSystem = MapStore!.displayCoordinateSystem;
+        return GeometryService.reprojectToCrs(
+            coordinates!.lat,
+            coordinates!.lng,
+            displayCoordinateSystem
+        );
+    }
+
+    render() {
+        if (!MapStore!.coordinates) return null;
+
         const [lat, lon] = this.getDisplayCoordinates();
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
         container.id = s.coordinateControl;
@@ -62,36 +89,13 @@ class CoordinateControl extends L.Control {
             }
         };
         this.xButton.onclick = this.yButton.onclick = () => {
-            this.mapStore!.setDisplayCoordinateSystem(
-                GeometryService.nextCoordinateSystem(this.mapStore!.displayCoordinateSystem)
+            MapStore!.setDisplayCoordinateSystem(
+                GeometryService.nextCoordinateSystem(MapStore!.displayCoordinateSystem)
             );
         };
         L.DomEvent.disableClickPropagation(container);
-        autorun(() => this.updateCoordinates());
-        return container;
-    }
 
-    private setInputAsCenter = (lat: number, lon: number) => {
-        this.mapStore!.setCoordinatesFromDisplayCoordinateSystem(lat, lon);
-    };
-
-    private updateCoordinates() {
-        [this.xInput.value, this.yInput.value] = this.getDisplayCoordinates().map(coord =>
-            coord.toPrecision(this.options['precision'])
-        );
-        ({ x: this.xButton.innerText, y: this.yButton.innerText } = GeometryService.coordinateNames(
-            this.mapStore!.displayCoordinateSystem
-        ));
-    }
-
-    private getDisplayCoordinates() {
-        const coordinates = this.mapStore!.coordinates;
-        const displayCoordinateSystem = this.mapStore!.displayCoordinateSystem;
-        return GeometryService.reprojectToCrs(
-            coordinates!.lat,
-            coordinates!.lng,
-            displayCoordinateSystem
-        );
+        return <div>{container}</div>;
     }
 }
 
