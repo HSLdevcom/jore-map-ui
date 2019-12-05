@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import qs from 'qs';
 import QueryParams from './queryParams';
 import SubSites from './subSites';
@@ -10,7 +11,12 @@ class RouteBuilderContext {
     constructor(currentLink: string, linkToBuild: SubSites, queryValues: any) {
         this.currentLink = currentLink;
         this.linkToBuild = linkToBuild;
-        this.queryValues = this.jsonCopy(queryValues);
+
+        if (!_.isEmpty(queryValues)) {
+            this.queryValues = this.jsonCopy(queryValues);
+        } else {
+            this.queryValues = {};
+        }
     }
 
     private jsonCopy = (jsonObject: JSON) => {
@@ -61,11 +67,6 @@ class RouteBuilderContext {
 
     public set = (param: QueryParams, value: string) => {
         this.queryValues[param] = value;
-        return this;
-    };
-
-    public clear = () => {
-        this.queryValues = {};
         return this;
     };
 }

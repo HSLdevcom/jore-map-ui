@@ -190,7 +190,6 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                 if (latLng) {
                     const url = routeBuilder
                         .to(SubSites.newNode)
-                        .clear()
                         .toTarget(':id', latLng)
                         .append(QueryParams.stopAreaId, stopAreaId)
                         .toLink();
@@ -199,7 +198,6 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
                     const url = routeBuilder
                         .to(SubSites.node)
                         .toTarget(':id', nodeId)
-                        .clear()
                         .append(QueryParams.stopAreaId, stopAreaId)
                         .toLink();
                     navigator.goTo(url);

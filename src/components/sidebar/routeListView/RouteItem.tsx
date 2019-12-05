@@ -45,7 +45,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
     private closeRoute = () => {
         this.props.routeListStore!.removeFromRoutes(this.props.route.id);
         const closeRouteLink = routeBuilder
-            .to(subSites.current)
+            .to(subSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, this.props.route.id)
             .toLink();
         navigator.goTo(closeRouteLink);
@@ -76,7 +76,6 @@ class RouteItem extends React.Component<IRouteItemProps> {
         const routeViewLink = routeBuilder
             .to(subSites.route)
             .toTarget(':id', this.props.route.id)
-            .clear()
             .toLink();
         navigator.goTo(routeViewLink);
     };

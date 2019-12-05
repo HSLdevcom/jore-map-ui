@@ -6,10 +6,7 @@ import * as s from './pageNotFoundView.scss';
 
 class PageNotFoundView extends Component {
     private goToHomeView = () => {
-        const homeLink = routeBuilder
-            .to(SubSites.home)
-            .clear()
-            .toLink();
+        const homeLink = routeBuilder.to(SubSites.home).toLink();
         navigator.goTo(homeLink);
     };
 

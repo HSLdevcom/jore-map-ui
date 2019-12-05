@@ -50,10 +50,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
     };
 
     private onCloseButtonClick = () => {
-        const homeLink = routeBuilder
-            .to(SubSites.home)
-            .clear()
-            .toLink();
+        const homeLink = routeBuilder.to(SubSites.home).toLink();
         this.optionalConfirmPrompt({
             message: closePromptMessage,
             defaultOnClick: () => navigator.goTo(homeLink),
