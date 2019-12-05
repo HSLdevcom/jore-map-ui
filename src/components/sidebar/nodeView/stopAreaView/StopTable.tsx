@@ -1,21 +1,24 @@
 import classnames from 'classnames';
+import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import { IStopArea } from '~/models';
 import StopService, { IStopItem } from '~/services/stopService';
+import { MapStore } from '~/stores/mapStore';
 import { StopAreaStore } from '~/stores/stopAreaStore';
 import * as s from './stopTable.scss';
 
 interface IStopTableProps {
     stopArea: IStopArea;
+    mapStore?: MapStore;
     stopAreaStore?: StopAreaStore;
 }
 
 interface IStopTableState {
     isLoading: boolean;
 }
-@inject('stopAreaStore')
+@inject('mapStore', 'stopAreaStore')
 @observer
 export default class StopTable extends Component<IStopTableProps, IStopTableState> {
     private mounted: boolean;
@@ -33,6 +36,8 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
             this.props.stopArea.id
         );
         this.props.stopAreaStore!.setStopItems(stopItems);
+
+        this.centerMapToStopAreas(stopItems);
         if (this.mounted) {
             this.setState({
                 isLoading: false
@@ -43,6 +48,18 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
     componentWillUnmount() {
         this.mounted = false;
     }
+
+    private centerMapToStopAreas = (stopItems: IStopItem[]) => {
+        this.props.mapStore!.setIsMapCenteringPrevented(false);
+
+        const latLngs: L.LatLng[] = stopItems.map(iterator => iterator.coordinates!);
+        const bounds = L.latLngBounds(latLngs);
+        this.props.mapStore!.setMapBounds(bounds);
+    };
+
+    private centerMapToStopItem = (stopItem: IStopItem) => {
+        this.props.mapStore!.setCoordinates(stopItem.coordinates!);
+    };
 
     render() {
         if (this.state.isLoading) {
@@ -74,7 +91,11 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
                                 </tr>
                                 {stopItems.map((stopItem: IStopItem, index: number) => {
                                     return (
-                                        <tr key={index} className={s.stopTableRow}>
+                                        <tr
+                                            key={index}
+                                            className={s.stopTableRow}
+                                            onClick={() => this.centerMapToStopItem(stopItem)}
+                                        >
                                             <td>{stopItem.nodeId}</td>
                                             <td>{stopItem.nameFi}</td>
                                             <td>{stopItem.nameSw}</td>

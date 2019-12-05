@@ -21,6 +21,7 @@ import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { StopAreaStore } from '~/stores/stopAreaStore';
 import { Button, Dropdown, TransitToggleButtonBar } from '../../../controls';
@@ -39,6 +40,7 @@ interface IStopAreaViewProps {
     errorStore?: ErrorStore;
     alertStore?: AlertStore;
     confirmStore?: ConfirmStore;
+    mapStore?: MapStore;
 }
 
 interface IStopAreaViewState {
@@ -47,7 +49,15 @@ interface IStopAreaViewState {
     terminalAreas: IDropdownItem[];
 }
 
-@inject('stopAreaStore', 'nodeStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
+@inject(
+    'stopAreaStore',
+    'nodeStore',
+    'errorStore',
+    'alertStore',
+    'codeListStore',
+    'confirmStore',
+    'mapStore'
+)
 @observer
 class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -69,6 +79,7 @@ class StopAreaView extends ViewFormBase<IStopAreaViewProps, IStopAreaViewState> 
 
     async componentDidMount() {
         this.mounted = true;
+        this.props.mapStore!.setIsMapCenteringPrevented(true);
         if (this.props.isNewStopArea) {
             await this.initNewStopArea();
         } else {

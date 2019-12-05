@@ -203,22 +203,19 @@ class NodeMarker extends Component<INodeMarkerProps> {
             onMoveMarker,
             onContextMenu
         } = this.props;
-
         return (
-            <>
-                <LeafletMarker
-                    ref={this.markerRef}
-                    onContextMenu={onContextMenu}
-                    onClick={this.onMarkerClick}
-                    draggable={isDraggable}
-                    icon={this.renderNodeMarkerIcon({ nodeLocationType })}
-                    position={coordinates}
-                    onDragEnd={onMoveMarker && this.onMoveMarker(nodeLocationType)}
-                    interactive={!isClickDisabled}
-                >
-                    {this.renderStopRadiusCircle()}
-                </LeafletMarker>
-            </>
+            <LeafletMarker
+                ref={this.markerRef}
+                onContextMenu={onContextMenu}
+                onClick={this.onMarkerClick}
+                draggable={isDraggable}
+                icon={this.renderNodeMarkerIcon({ nodeLocationType })}
+                position={coordinates}
+                onDragEnd={onMoveMarker && this.onMoveMarker(nodeLocationType)}
+                interactive={!isClickDisabled}
+            >
+                {this.renderStopRadiusCircle()}
+            </LeafletMarker>
         );
     }
 }
