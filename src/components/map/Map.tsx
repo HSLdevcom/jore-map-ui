@@ -15,6 +15,7 @@ import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
 import RouteLayer from './layers/RouteLayer';
+import StopAreaLayer from './layers/StopAreaLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
 import EditRoutePathLayer from './layers/edit/EditRoutePathLayer';
@@ -178,6 +179,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <RouteLayer routes={routes} />
                     <EditRoutePathLayer />
                     <PopupLayer />
+                    <StopAreaLayer />
                     <HighlightEntityLayer />
                     <Pane name='highlightEntityLayer' style={{ zIndex: 999 }} />
                     <Control position='topleft'>

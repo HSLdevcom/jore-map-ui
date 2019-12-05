@@ -29,7 +29,9 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
     async componentDidMount() {
         this.mounted = true;
 
-        const stopItems: IStopItem[] = await StopService.fetchAllStops();
+        const stopItems: IStopItem[] = await StopService.fetchAllStopItemsByStopAreaId(
+            this.props.stopArea.id
+        );
         this.props.stopAreaStore!.setStopItems(stopItems);
         if (this.mounted) {
             this.setState({
@@ -42,29 +44,7 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
         this.mounted = false;
     }
 
-    private getStopsByStopAreaId = (stopAreaId: string | undefined) => {
-        if (!stopAreaId) return [];
-        const stopItems = this.props.stopAreaStore!.stopItems;
-        const stopsByStopAreaId = stopItems.filter(stopItem => {
-            return stopItem.stopAreaId === stopAreaId;
-        });
-        return stopsByStopAreaId;
-    };
-
-    private renderStopsByStopArea = (stopItems: IStopItem[]) => {
-        return stopItems.map((stopItem: IStopItem, index: number) => {
-            return (
-                <tr key={index} className={s.stopTableRow}>
-                    <td>{stopItem.nodeId}</td>
-                    <td>{stopItem.nameFi}</td>
-                    <td>{stopItem.nameSw}</td>
-                </tr>
-            );
-        });
-    };
-
     render() {
-        const stopArea = this.props.stopArea;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.stopTableView, s.loaderContainer)}>
@@ -72,14 +52,12 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
                 </div>
             );
         }
-        if (!stopArea) return null;
-
-        const stopsByStopArea = this.getStopsByStopAreaId(stopArea.id);
+        const stopItems = this.props.stopAreaStore!.stopItems;
         return (
             <div className={s.stopTableView}>
                 <div className={s.sectionHeader}>Pysäkkialueen pysäkit</div>
                 <div className={s.flexRow}>
-                    {stopsByStopArea.length > 0 ? (
+                    {stopItems.length > 0 ? (
                         <table className={s.stopHeaderTable}>
                             <tbody>
                                 <tr>
@@ -94,7 +72,15 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
                                     </th>
                                     <th className={s.columnHeader} />
                                 </tr>
-                                {this.renderStopsByStopArea(stopsByStopArea)}
+                                {stopItems.map((stopItem: IStopItem, index: number) => {
+                                    return (
+                                        <tr key={index} className={s.stopTableRow}>
+                                            <td>{stopItem.nodeId}</td>
+                                            <td>{stopItem.nameFi}</td>
+                                            <td>{stopItem.nameSw}</td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     ) : (

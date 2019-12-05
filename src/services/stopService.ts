@@ -5,6 +5,7 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import { IExternalStopItem } from '~/models/externals/IExternalStop';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
+import NodeService from './nodeService';
 
 interface IStopSectionItem {
     selite: string;
@@ -52,19 +53,45 @@ class StopService {
         return availableShortIds;
     };
 
-    public static fetchAllStops = async (): Promise<IStopItem[]> => {
+    public static fetchAllStopItemsByStopAreaId = async (
+        stopAreaId: string
+    ): Promise<IStopItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllStops()
+            query: GraphqlQueries.getAllStopItems()
         });
 
-        return queryResult.data.node.nodes.map((externalStopItem: IExternalStopItem) => {
-            return {
-                stopAreaId: externalStopItem.pysalueid,
-                nodeId: externalStopItem.soltunnus,
-                nameFi: externalStopItem.pysnimi,
-                nameSw: externalStopItem.pysnimir
+        const map = new Map();
+
+        const stopItems: IStopItem[] = _.chain(queryResult.data.node.nodes)
+            .filter((iterator: IExternalStopItem) => iterator.pysalueid === stopAreaId)
+            .map((iterator: IExternalStopItem) => {
+                return {
+                    stopAreaId: iterator.pysalueid,
+                    nodeId: iterator.soltunnus,
+                    nameFi: iterator.pysnimi,
+                    nameSw: iterator.pysnimir
+                };
+            })
+            .value();
+
+        const promises: Promise<void>[] = [];
+        stopItems.forEach((iterator: IStopItem) => {
+            const promise = async () => {
+                const node = await NodeService.fetchNode(iterator.nodeId);
+                iterator.coordinates = node.coordinates;
+                map.set(iterator.nodeId, iterator);
             };
+            promises.push(promise());
         });
+
+        await Promise.all(promises);
+
+        const result: IStopItem[] = [];
+        map.forEach(iterator => {
+            result.push(iterator);
+        });
+
+        return result;
     };
 }
 

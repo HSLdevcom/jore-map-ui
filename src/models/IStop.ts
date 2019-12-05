@@ -28,6 +28,7 @@ export default interface IStop extends IStopPrimaryKey {
 }
 
 interface IStopItem {
+    coordinates?: L.LatLng;
     stopAreaId: string;
     nodeId: string;
     nameFi: string;
