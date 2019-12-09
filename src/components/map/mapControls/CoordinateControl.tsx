@@ -1,7 +1,8 @@
 import * as L from 'leaflet';
-import { autorun } from 'mobx';
+import { reaction, IReactionDisposer } from 'mobx';
+import proj4 from 'proj4';
 import React, { Component } from 'react';
-import GeometryService from '~/services/geometryService';
+import CoordinateSystem from '~/enums/coordinateSystem';
 import MapStore from '~/stores/mapStore';
 import * as s from './coordinateControl.scss';
 
@@ -9,94 +10,193 @@ interface ICoordinateControlProps {
     precision?: number;
 }
 
+const PROJECTIONS = {
+    KKJ:
+        '+proj=tmerc +lat_0=0 +lon_0=24 +k=1 +x_0=2500000 +y_0=0 +ellps=intl' +
+        ' +towgs84=-96.062,-82.428,-121.753,4.801,0.345,-1.376,1.496 +units=m +no_defs',
+    wgs84: '+proj=longlat +datum=WGS84 +no_defs',
+    GK25FIN:
+        '+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80' +
+        ' +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
+};
+
+interface ICoordinateControlState {
+    x: string;
+    y: string;
+}
+
 const PRECISION_DEFAULT_VALUE = 10;
 
-class CoordinateControl extends Component<ICoordinateControlProps> {
-    private xButton: HTMLElement;
-    private xInput: HTMLInputElement;
-    private yButton: HTMLElement;
-    private yInput: HTMLInputElement;
+class CoordinateControl extends Component<ICoordinateControlProps, ICoordinateControlState> {
+    private coordinatesListener: IReactionDisposer;
+    private xButtonRef: React.RefObject<HTMLInputElement>;
+    private yButtonRef: React.RefObject<HTMLInputElement>;
+    private mounted: boolean;
 
     constructor(props: ICoordinateControlProps) {
         super(props);
 
-        autorun(() => this.updateCoordinates());
+        this.xButtonRef = React.createRef();
+        this.yButtonRef = React.createRef();
+        this.mounted = false;
+
+        if (MapStore!.coordinates) {
+            const [lat, lon] = this.getDisplayCoordinates();
+            this.state = {
+                x: String(lon),
+                y: String(lat)
+            };
+        }
+        this.coordinatesListener = reaction(() => MapStore!.coordinates, this.updateCoordinates);
     }
 
-    private setInputAsCenter = (lat: number, lon: number) => {
-        MapStore!.setCoordinatesFromDisplayCoordinateSystem(lat, lon);
-    };
-
-    private updateCoordinates() {
-        if (!MapStore!.coordinates) return;
-
-        [this.xInput.value, this.yInput.value] = this.getDisplayCoordinates().map(coord =>
-            coord.toPrecision(this.props.precision ? this.props.precision : PRECISION_DEFAULT_VALUE)
-        );
-        ({ x: this.xButton.innerText, y: this.yButton.innerText } = GeometryService.coordinateNames(
-            MapStore!.displayCoordinateSystem
-        ));
+    componentDidMount() {
+        this.mounted = true;
     }
 
-    private getDisplayCoordinates() {
+    componentWillUnmount() {
+        this.coordinatesListener();
+    }
+
+    private updateCoordinates = () => {
+        if (!this.mounted || !MapStore!.coordinates) return;
+
         const coordinates = MapStore!.coordinates;
         const displayCoordinateSystem = MapStore!.displayCoordinateSystem;
-        return GeometryService.reprojectToCrs(
+        const [lat, lon] = _reprojectToCrs(
             coordinates!.lat,
             coordinates!.lng,
             displayCoordinateSystem
+        ).map(coord =>
+            coord.toPrecision(this.props.precision ? this.props.precision : PRECISION_DEFAULT_VALUE)
         );
+
+        this.setState({
+            x: lon,
+            y: lat
+        });
+    };
+
+    private getDisplayCoordinates() {
+        const coordinates = MapStore!.coordinates;
+        if (!coordinates) return null;
+        const displayCoordinateSystem = MapStore!.displayCoordinateSystem;
+        return _reprojectToCrs(coordinates!.lat, coordinates!.lng, displayCoordinateSystem);
     }
+
+    private toggleDisplayCoordinateSystem = () => {
+        MapStore!.setDisplayCoordinateSystem(
+            _nextCoordinateSystem(MapStore!.displayCoordinateSystem)
+        );
+        this.updateCoordinates();
+    };
+
+    private onInputBlur = () => {
+        const newY = Number(this.state.y);
+        const newX = Number(this.state.x);
+        if (!isNaN(newY) && !isNaN(newX)) {
+            this.setMapCoordinates(newY, newX);
+        }
+    };
+
+    private setMapCoordinates = (lat: number, lon: number) => {
+        const [wgsLat, wgsLon] = _reprojectToCrs(
+            lat,
+            lon,
+            CoordinateSystem.EPSG4326,
+            MapStore!.displayCoordinateSystem
+        );
+        MapStore!.setCoordinates(new L.LatLng(wgsLat, wgsLon));
+    };
+
+    private onInputKeyPress = (e: any) => {
+        if (e.key === 'Enter') {
+            this.xButtonRef.current!.blur();
+            this.yButtonRef.current!.blur();
+        }
+    };
+
+    private onLonInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+        this.setState({
+            x: e.currentTarget.value
+        });
+    };
+
+    private onLatInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+        this.setState({
+            y: e.currentTarget.value
+        });
+    };
+
+    private getCoordinateNames = (coordSys: CoordinateSystem) => {
+        switch (coordSys) {
+            case CoordinateSystem.EPSG4326:
+                return { x: 'Lon', y: 'Lat' };
+            case CoordinateSystem.EPSG3879:
+                return { x: 'I', y: 'P' };
+            default:
+                return { x: 'x', y: 'y' };
+        }
+    };
 
     render() {
         if (!MapStore!.coordinates) return null;
 
-        const [lat, lon] = this.getDisplayCoordinates();
-        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-        container.id = s.coordinateControl;
-        const xDiv = L.DomUtil.create('div');
-        this.xButton = L.DomUtil.create('button');
-        this.xButton.innerText = 'Lat';
-        this.xInput = L.DomUtil.create('input', '') as HTMLInputElement;
-        this.xInput.id = 'xcoord';
-        this.xInput.tabIndex = 1;
-        xDiv.appendChild(this.xButton);
-        xDiv.appendChild(this.xInput);
-        this.xInput.value = lat.toString(10);
-        const yDiv = L.DomUtil.create('div');
-        this.yButton = L.DomUtil.create('button');
-        this.yButton.innerText = 'Lon';
-        this.yInput = L.DomUtil.create('input', '') as HTMLInputElement;
-        this.yInput.id = 'ycoord';
-        this.yInput.tabIndex = 2;
-        yDiv.appendChild(this.yButton);
-        yDiv.appendChild(this.yInput);
-        container.appendChild(xDiv);
-        container.appendChild(yDiv);
-        this.yInput.value = lon.toString(10);
-
-        this.xInput.onblur = this.yInput.onblur = e => {
-            const newX = Number(this.xInput.value);
-            const newY = Number(this.yInput.value);
-            if (!isNaN(newY) && !isNaN(newX)) {
-                this.setInputAsCenter(newX, newY);
-            }
-        };
-        this.xInput.onkeypress = this.yInput.onkeypress = (e: KeyboardEvent) => {
-            if (e.key === 'Enter') {
-                this.xInput.blur();
-                this.yInput.blur();
-            }
-        };
-        this.xButton.onclick = this.yButton.onclick = () => {
-            MapStore!.setDisplayCoordinateSystem(
-                GeometryService.nextCoordinateSystem(MapStore!.displayCoordinateSystem)
-            );
-        };
-        L.DomEvent.disableClickPropagation(container);
-
-        return <div>{container}</div>;
+        const coordinateNames = this.getCoordinateNames(MapStore!.displayCoordinateSystem);
+        return (
+            <div className={s.coordinateControl}>
+                <div>
+                    <button onClick={this.toggleDisplayCoordinateSystem}>
+                        {coordinateNames.y}
+                    </button>
+                    <input
+                        ref={this.yButtonRef}
+                        value={this.state.y}
+                        onChange={this.onLatInputChange}
+                        onBlur={this.onInputBlur}
+                        onKeyPress={this.onInputKeyPress}
+                    />
+                </div>
+                <div>
+                    <button onClick={this.toggleDisplayCoordinateSystem}>
+                        {coordinateNames.x}
+                    </button>
+                    <input
+                        ref={this.xButtonRef}
+                        value={this.state.x}
+                        onChange={this.onLonInputChange}
+                        onBlur={this.onInputBlur}
+                        onKeyPress={this.onInputKeyPress}
+                    />
+                </div>
+            </div>
+        );
     }
 }
+
+const _nextCoordinateSystem = (coordSys: CoordinateSystem) => {
+    switch (coordSys) {
+        case CoordinateSystem.EPSG4326:
+            return CoordinateSystem.EPSG3879;
+        case CoordinateSystem.EPSG3879:
+            return CoordinateSystem.EPSG4326;
+        default:
+            return CoordinateSystem.EPSG4326;
+    }
+};
+
+const _reprojectToCrs = (
+    lat: number,
+    lon: number,
+    toCoordSys: CoordinateSystem,
+    fromCoordSys: CoordinateSystem = CoordinateSystem.EPSG4326
+) => {
+    if (fromCoordSys === toCoordSys) {
+        return [lat, lon];
+    }
+    return proj4(PROJECTIONS[fromCoordSys], PROJECTIONS[toCoordSys])
+        .forward([lon, lat])
+        .reverse();
+};
 
 export default CoordinateControl;

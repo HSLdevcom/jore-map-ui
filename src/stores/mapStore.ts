@@ -1,7 +1,6 @@
 import * as L from 'leaflet';
 import { action, computed, observable } from 'mobx';
 import CoordinateSystem from '~/enums/coordinateSystem';
-import GeometryService from '~/services/geometryService';
 
 const INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384);
 const INITIAL_ZOOM = 15;
@@ -96,8 +95,8 @@ export class MapStore {
     };
 
     @action
-    public setCoordinates = (location: L.LatLng | null) => {
-        this._coordinates = location;
+    public setCoordinates = (coordinates: L.LatLng | null) => {
+        this._coordinates = coordinates;
     };
 
     @action
@@ -113,18 +112,6 @@ export class MapStore {
     @action
     public toggleMapFullscreen = () => {
         this._isMapFullscreen = !this._isMapFullscreen;
-    };
-
-    // TODO: move logic out of store? You can setCoordinates() instead
-    @action
-    public setCoordinatesFromDisplayCoordinateSystem = (lat: number, lon: number) => {
-        const [wgsLat, wgsLon] = GeometryService.reprojectToCrs(
-            lat,
-            lon,
-            CoordinateSystem.EPSG4326,
-            this._displayCoordinateSystem
-        );
-        this._coordinates = new L.LatLng(wgsLat, wgsLon);
     };
 
     @action

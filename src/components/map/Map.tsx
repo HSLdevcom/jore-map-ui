@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import 'leaflet-editable';
 import 'leaflet/dist/leaflet.css';
@@ -21,8 +22,7 @@ import EditNodeLayer from './layers/edit/EditNodeLayer';
 import EditRoutePathLayer from './layers/edit/EditRoutePathLayer';
 import './map.css';
 import * as s from './map.scss';
-// TODO: uncomment when CoordinateControl works as react component
-// import CoordinateControl from './mapControls/CoordinateControl';
+import CoordinateControl from './mapControls/CoordinateControl';
 import Control from './mapControls/CustomControl';
 import FullscreenControl from './mapControls/FullscreenControl';
 import MapLayersControl from './mapControls/MapLayersControl';
@@ -187,10 +187,11 @@ class LeafletMap extends React.Component<IMapProps> {
                         </div>
                     </Control>
                     <Control position='topright'>
-                        <div className={s.mapLayersContainer}>
+                        <div
+                            className={classnames(s.mapLayersContainer, s.topRightControlContainer)}
+                        >
+                            <CoordinateControl />
                             <MeasurementControl map={this.mapReference} />
-                            {/** TODO: uncomment when CoordinateControl works as react component */}
-                            {/* <CoordinateControl /> */}
                         </div>
                     </Control>
                     <Control position='bottomleft'>

@@ -20,4 +20,9 @@
     .disableInteraction {
         pointer-events: none;
     }
+
+    .topRightControlContainer {
+        display: flex;
+        flex-direction: column;
+    }
 }
