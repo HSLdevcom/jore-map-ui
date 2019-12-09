@@ -99,13 +99,18 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
         },
         line: {
             lineStartDate: () => (data[property] ? toDateString(data[property]) : ''),
-            lineEndDate: () => (data[property] ? toDateString(data[property]) : '')
+            lineEndDate: () => (data[property] ? toDateString(data[property]) : ''),
+            publicTransportType: () =>
+                codeListStore.getCodeListLabel('Joukkoliikennelaji', data[property]),
+            lineReplacementType: () =>
+                codeListStore.getCodeListLabel('LinjanKorvaavaTyyppi', data[property])
         },
         routePath: {
             startTime: () => (data[property] ? toDateString(data[property]) : ''),
             endTime: () => (data[property] ? toDateString(data[property]) : ''),
             routePathLinks: () =>
-                isNew ? 'Uudet reitinsuunnanlinkit' : 'Vanhat reitinsuunnanlinkit'
+                isNew ? 'Uudet reitinsuunnanlinkit' : 'Vanhat reitinsuunnanlinkit',
+            exceptionPath: () => codeListStore.getCodeListLabel('Kyllä/Ei', data[property])
         },
         lineHeader: {
             startDate: () => (data[property] ? toDateString(data[property]) : ''),
