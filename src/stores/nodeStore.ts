@@ -6,23 +6,38 @@ import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode } from '~/models';
 import GeocodingService from '~/services/geocodingService';
+import { IStopAreaItem } from '~/services/stopAreaService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
 import NetworkStore from './networkStore';
 
-export interface UndoState {
-    links: ILink[];
+interface UndoState {
     node: INode;
+    links: ILink[];
 }
 
-export class NodeStore {
+interface INodeCacheObj {
+    node: INode;
+    oldNode: INode;
+    links: ILink[];
+    oldLinks: ILink[];
+}
+
+interface INodeCache {
+    newNodeCache: INodeCacheObj | null; // Have slot for new node in its own property because new node's dont have id
+    [nodeId: string]: INodeCacheObj | null;
+}
+
+class NodeStore {
     @observable private _links: ILink[];
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
     @observable private _isStopFormValid: boolean;
     @observable private _isEditingDisabled: boolean;
+    @observable private _nodeCache: INodeCache;
+    @observable private _stopAreaItems: IStopAreaItem[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
 
     constructor() {
@@ -32,11 +47,19 @@ export class NodeStore {
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
         this._isEditingDisabled = true;
+        this._nodeCache = {
+            newNodeCache: null
+        };
 
         reaction(
             () => this.isDirty,
             (value: boolean) => NetworkStore.setShouldShowNodeOpenConfirm(value)
         );
+        reaction(
+            () => this._node && this._node.stop && this._node.stop.stopAreaId,
+            (value: string) => this.onStopAreaChange(value)
+        );
+        reaction(() => this._stopAreaItems, () => this.onStopAreaItemsChange());
     }
 
     @computed
@@ -69,15 +92,29 @@ export class NodeStore {
         return this._isEditingDisabled;
     }
 
+    @computed
+    get nodeCache() {
+        return this._nodeCache;
+    }
+
+    @computed
+    get stopAreaItems() {
+        return this._stopAreaItems;
+    }
+
     @action
     public init = ({
         node,
         links,
-        isNewNode
+        isNewNode,
+        oldNode,
+        oldLinks
     }: {
         node: INode;
         links: ILink[];
         isNewNode: boolean;
+        oldNode?: INode;
+        oldLinks?: ILink[];
     }) => {
         this.clear();
 
@@ -91,9 +128,9 @@ export class NodeStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this._node = newNode;
-        this._oldNode = newNode;
+        this._oldNode = oldNode ? oldNode : newNode;
         this._links = newLinks;
-        this._oldLinks = newLinks;
+        this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
     };
 
@@ -207,7 +244,7 @@ export class NodeStore {
     };
 
     @action
-    public updateStop = (property: string, value: string | number | Date) => {
+    public updateStop = (property: string, value?: string | number | Date) => {
         if (!this.node) return;
         this._node!.stop = {
             ...this._node!.stop!,
@@ -228,6 +265,34 @@ export class NodeStore {
     @action
     public toggleIsEditingDisabled = () => {
         this._isEditingDisabled = !this._isEditingDisabled;
+    };
+
+    @action
+    public setCurrentStateIntoNodeCache = ({ isNewNode }: { isNewNode: boolean }) => {
+        const nodeId = this._node!.id;
+        const nodeCacheObj = {
+            node: _.cloneDeep(this._node!),
+            links: _.cloneDeep(this._links),
+            oldNode: _.cloneDeep(this._oldNode!),
+            oldLinks: _.cloneDeep(this._oldLinks)
+        };
+        if (isNewNode) {
+            this._nodeCache.newNodeCache = nodeCacheObj;
+        } else {
+            this._nodeCache[nodeId] = nodeCacheObj;
+        }
+    };
+
+    @action
+    public clearNodeCache = () => {
+        this._nodeCache = {
+            newNodeCache: null
+        };
+    };
+
+    @action
+    public setStopAreaItems = (stopAreaItems: IStopAreaItem[]) => {
+        this._stopAreaItems = stopAreaItems;
     };
 
     @action
@@ -265,6 +330,35 @@ export class NodeStore {
         });
     };
 
+    @action
+    private onStopAreaChange = (stopAreaId: string) => {
+        this.updateStopArea(stopAreaId);
+    };
+
+    @action
+    private onStopAreaItemsChange = () => {
+        const stopAreaId = this.node && this.node.stop && this.node.stop.stopAreaId;
+        if (stopAreaId) {
+            this.updateStopArea(stopAreaId);
+        }
+    };
+
+    @action
+    private updateStopArea = (stopAreaId?: string) => {
+        if (!this._stopAreaItems) return;
+
+        this.updateStop('stopAreaId', stopAreaId);
+        if (!stopAreaId) return;
+
+        const stopAreaItem = this._stopAreaItems.find(obj => {
+            return obj.pysalueid === stopAreaId;
+        });
+        if (stopAreaItem) {
+            this.updateStop('nameFi', stopAreaItem.nimi);
+            this.updateStop('nameSw', stopAreaItem.nimir);
+        }
+    };
+
     public getDirtyLinks() {
         // All links are dirty if the node coordinate has changed
         if (!_.isEqual(this._node!.coordinatesProjection, this._oldNode!.coordinatesProjection)) {
@@ -280,8 +374,18 @@ export class NodeStore {
             return !_.isEqual(link, oldLink);
         });
     }
+
+    public getNodeCacheObjById(nodeId: string): INodeCacheObj | null {
+        return this._nodeCache[nodeId];
+    }
+
+    public getNewNodeCacheObj(): INodeCacheObj | null {
+        return this._nodeCache.newNodeCache;
+    }
 }
 
 const observableNodeStore = new NodeStore();
 
 export default observableNodeStore;
+
+export { NodeStore, INodeCacheObj };

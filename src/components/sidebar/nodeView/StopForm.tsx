@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { FiInfo } from 'react-icons/fi';
+import { match } from 'react-router';
 import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
@@ -9,6 +10,7 @@ import TextContainer from '~/components/controls/TextContainer';
 import ButtonType from '~/enums/buttonType';
 import { INode, IStop } from '~/models';
 import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { IStopAreaItem } from '~/services/stopAreaService';
@@ -25,27 +27,17 @@ interface IStopFormProps {
     stopSections: IDropdownItem[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
+    match?: match<any>;
+    isReadOnly?: boolean;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
-    isReadOnly?: boolean;
+    setCurrentStateIntoNodeCache?: () => void;
     codeListStore?: CodeListStore;
 }
 
 @inject('codeListStore')
 @observer
 class StopForm extends Component<IStopFormProps> {
-    private onStopAreaChange = (stopAreaId: string) => {
-        const stopArea = this.props.stopAreas.find(obj => {
-            return obj.pysalueid === stopAreaId;
-        });
-
-        if (stopArea) {
-            this.props.updateStopProperty!('nameFi')(stopArea.nimi);
-            this.props.updateStopProperty!('nameSw')(stopArea.nimir);
-        }
-        this.props.updateStopProperty!('areaId')(stopAreaId);
-    };
-
     private createStopAreaDropdownItems = (stopAreas: IStopAreaItem[]): IDropdownItem[] => {
         return stopAreas.map((stopArea: IStopAreaItem) => {
             const item: IDropdownItem = {
@@ -69,17 +61,31 @@ class StopForm extends Component<IStopFormProps> {
         }
     };
 
-    private redirectToStopArea = (areaId: string | undefined) => {
+    private redirectToStopArea = (stopAreaId: string | undefined) => {
+        this.props.setCurrentStateIntoNodeCache!();
         const routePathViewLink = RouteBuilder.to(SubSites.stopArea)
-            .toTarget(':id', areaId!)
+            .toTarget(':id', stopAreaId!)
             .toLink();
         navigator.goTo(routePathViewLink);
     };
 
     private redirectToNewStopArea = () => {
-        const url = RouteBuilder.to(SubSites.newStopArea)
-            .clear()
-            .toLink();
+        this.props.setCurrentStateIntoNodeCache!();
+        const node = this.props.node;
+        let url;
+        if (this.props.isNewStop) {
+            url = RouteBuilder.to(SubSites.newStopArea)
+                .append(
+                    QueryParams.latLng,
+                    `${node.coordinatesProjection.lat}:${node.coordinatesProjection.lng}`
+                )
+                .toLink();
+        } else {
+            url = RouteBuilder.to(SubSites.newStopArea)
+                .append(QueryParams.nodeId, node.id)
+                .toLink();
+        }
+
         navigator.goTo(url);
     };
 
@@ -157,40 +163,40 @@ class StopForm extends Component<IStopFormProps> {
                     </div>
                     <div className={s.flexRow}>
                         <Dropdown
-                            onChange={this.onStopAreaChange}
+                            onChange={updateStopProperty!('stopAreaId')}
                             items={this.createStopAreaDropdownItems(stopAreas)}
-                            selected={stop.areaId}
+                            selected={stop.stopAreaId}
                             emptyItem={{
                                 value: '',
                                 label: ''
                             }}
                             disabled={isEditingDisabled}
                             label='PYSÄKKIALUE'
-                            validationResult={stopInvalidPropertiesMap['areaId']}
+                            validationResult={stopInvalidPropertiesMap['stopAreaId']}
                         />
-                        { !isReadOnly && stop.areaId &&
-                        <Button
-                            className={s.editStopAreaButton}
-                            hasReverseColor={true}
-                            onClick={() => {
-                                this.redirectToStopArea(stop.areaId);
-                            }}
-                        >
-                            <FiInfo />
-                        </Button>
-                        }
+                        {!isReadOnly && stop.stopAreaId && (
+                            <Button
+                                className={s.editStopAreaButton}
+                                hasReverseColor={true}
+                                onClick={() => {
+                                    this.redirectToStopArea(stop.stopAreaId);
+                                }}
+                            >
+                                <FiInfo />
+                            </Button>
+                        )}
                     </div>
-                    { !isReadOnly &&
-                    <div className={s.flexRow}>
-                        <Button
-                            onClick={() => this.redirectToNewStopArea()}
-                            type={ButtonType.SQUARE}
-                            className={s.createNewStopAreaButton}
-                        >
-                            Luo uusi pysäkkialue
-                        </Button>
-                    </div>
-                    }
+                    {!isReadOnly && (
+                        <div className={s.flexRow}>
+                            <Button
+                                onClick={() => this.redirectToNewStopArea()}
+                                type={ButtonType.SQUARE}
+                                className={s.createNewStopAreaButton}
+                            >
+                                Luo uusi pysäkkialue
+                            </Button>
+                        </div>
+                    )}
                     <div className={s.flexRow}>
                         <InputContainer
                             label='PITKÄ NIMI'

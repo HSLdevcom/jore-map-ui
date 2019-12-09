@@ -319,8 +319,11 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             oldData: oldRoutePath,
             model: 'routePath'
         };
-        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
-            this.save();
+        confirmStore!.openConfirm({
+            content: <SavePrompt saveModels={[saveModel]} />,
+            onConfirm: () => {
+                this.save();
+            }
         });
     };
 

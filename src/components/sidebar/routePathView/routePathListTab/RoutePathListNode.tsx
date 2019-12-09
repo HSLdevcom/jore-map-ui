@@ -258,7 +258,7 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
                                 darkerInputLabel={true}
                             />
                         </div>
-                        <div className={s.flexInnerRow}>
+                        <div className={s.flexRow}>
                             <InputContainer
                                 label='1. MÄÄRÄNPÄÄ SUOMEKSI'
                                 disabled={isEditingDisabled}
@@ -276,7 +276,7 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
                                 darkerInputLabel={true}
                             />
                         </div>
-                        <div className={s.flexInnerRow}>
+                        <div className={s.flexRow}>
                             <InputContainer
                                 label='1. MÄÄRÄNPÄÄ RUOTSIKSI'
                                 disabled={isEditingDisabled}
@@ -319,7 +319,7 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
                         darkerInputLabel={true}
                     />
                 </div>
-                <div className={s.flexInnerRow}>
+                <div className={s.flexRow}>
                     <TextContainer
                         label='MUOKANNUT'
                         value={routePathLink.modifiedBy}
@@ -395,7 +395,7 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
                 {this.renderNodeView(this.props.node)}
                 <div className={s.footer}>
                     <Button onClick={this.openInNetworkView} type={ButtonType.SQUARE}>
-                        <div>Avaa solmu verkkonäkymässä</div>
+                        <div>Avaa solmu</div>
                         <FiChevronRight />
                     </Button>
                 </div>

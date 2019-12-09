@@ -47,11 +47,13 @@ const renderEditableContent = (props: IInputProps) => {
     };
 
     if (type === 'date') {
-        return renderDatePicker({
-            value: props.value! as Date,
-            onChange: props.onChange!,
-            isClearButtonVisible: props.isClearButtonVisibleOnDates
-        });
+        return (
+            <DatePicker
+                value={props.value! as Date}
+                onChange={props.onChange!}
+                isClearButtonVisible={props.isClearButtonVisibleOnDates}
+            />
+        );
     }
 
     return (
@@ -71,99 +73,6 @@ const renderEditableContent = (props: IInputProps) => {
             }
             onChange={onChange}
         />
-    );
-};
-
-const renderDatePicker = ({
-    value,
-    onChange,
-    isClearButtonVisible
-}: {
-    value?: Date;
-    isClearButtonVisible?: boolean;
-    onChange: (date: Date) => void;
-}) => {
-    const minDate = new Date();
-    minDate.setFullYear(1970);
-    minDate.setMonth(0);
-    minDate.setDate(1);
-    const maxDate = new Date();
-    maxDate.setFullYear(2051);
-    maxDate.setMonth(0);
-    maxDate.setDate(1);
-    // TODO: scroll to selected year missing from react-datepicker
-    // open issue for this: https://github.com/Hacker0x01/react-datepicker/pull/1700
-    return (
-        <div className={classnames(s.staticHeight)}>
-            <ReactDatePicker
-                customInput={renderDatePickerInput({
-                    value,
-                    onChange,
-                    isClearButtonVisible,
-                    placeholder: 'Syötä päivä'
-                })}
-                selected={value}
-                onChange={onChange}
-                locale={fi}
-                dateFormat={'dd.MM.yyyy'}
-                showMonthDropdown={true}
-                peekNextMonth={true}
-                showYearDropdown={true}
-                startDate={new Date()}
-                scrollableYearDropdown={true}
-                yearDropdownItemNumber={100}
-                minDate={minDate}
-                maxDate={maxDate}
-                dateFormatCalendar={'dd.MM.yyyy'}
-                popperContainer={_renderCalendarContainer}
-            />
-        </div>
-    );
-};
-
-const _renderCalendarContainer = ({ children }: { children: JSX.Element[] }): React.ReactNode => {
-    const el = document.getElementById('root');
-    return ReactDOM.createPortal(children, el!);
-};
-
-const renderDatePickerInput = ({
-    onChange,
-    placeholder,
-    value,
-    isClearButtonVisible
-}: {
-    onChange: (value: any) => void;
-    placeholder: string;
-    value?: Date;
-    isClearButtonVisible?: boolean;
-}) => {
-    const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        // TODO: implement a better way of changing input value
-        const value = event.target.value;
-        // Allow input date that is in the correct format
-        if (Moment(value, 'DD.MM.YYYY', true).isValid()) {
-            onChange(value);
-        }
-    };
-
-    const clearInputValue = (event: React.MouseEvent) => {
-        onChange('');
-        event.preventDefault();
-    };
-
-    return (
-        <div className={classnames(s.staticHeight, s.inputField)}>
-            <input
-                placeholder={placeholder}
-                type={'text'}
-                value={value ? toDateString(value) : ''}
-                onChange={onInputChange}
-            />
-            <IoMdCalendar className={s.calendarIcon} />
-            {isClearButtonVisible && (
-                <IoMdClose onClick={clearInputValue} className={s.clearIcon} />
-            )}
-        </div>
     );
 };
 
@@ -203,5 +112,140 @@ const InputContainer = observer((props: IInputProps) => {
         </div>
     );
 });
+
+interface IDatePickerProps {
+    value?: Date;
+    isClearButtonVisible?: boolean;
+    onChange: (date: Date) => void;
+}
+
+interface IDatePickerState {
+    isOpen: boolean;
+}
+
+class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
+    private mounted: boolean;
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            isOpen: false
+        };
+    }
+
+    componentDidMount() {
+        this.mounted = true;
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
+    }
+
+    private openCalendar = () => {
+        if (this.mounted) {
+            this.setState({ isOpen: true });
+        }
+    };
+
+    private closeCalendar = () => {
+        if (this.mounted) {
+            this.setState({ isOpen: false });
+        }
+    };
+
+    render() {
+        const { value, isClearButtonVisible, onChange } = this.props;
+        const minDate = new Date();
+        minDate.setFullYear(1970);
+        minDate.setMonth(0);
+        minDate.setDate(1);
+        const maxDate = new Date();
+        maxDate.setFullYear(2051);
+        maxDate.setMonth(0);
+        maxDate.setDate(1);
+
+        // TODO: scroll to selected year missing from react-datepicker
+        // open issue for this: https://github.com/Hacker0x01/react-datepicker/pull/1700
+        return (
+            <div className={classnames(s.staticHeight)}>
+                <ReactDatePicker
+                    customInput={renderDatePickerInput({
+                        value,
+                        onChange,
+                        isClearButtonVisible,
+                        openCalendar: this.openCalendar,
+                        placeholder: 'Syötä päivä'
+                    })}
+                    open={this.state.isOpen}
+                    onClickOutside={this.closeCalendar}
+                    onSelect={this.closeCalendar}
+                    autoFocus={true}
+                    selected={value}
+                    onChange={onChange}
+                    locale={fi}
+                    dateFormat={'dd.MM.yyyy'}
+                    showMonthDropdown={true}
+                    peekNextMonth={true}
+                    showYearDropdown={true}
+                    startDate={new Date()}
+                    scrollableYearDropdown={true}
+                    yearDropdownItemNumber={100}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    dateFormatCalendar={'dd.MM.yyyy'}
+                    popperContainer={_renderCalendarContainer}
+                />
+            </div>
+        );
+    }
+}
+
+const _renderCalendarContainer = ({ children }: { children: JSX.Element[] }): React.ReactNode => {
+    const el = document.getElementById('root');
+    return ReactDOM.createPortal(children, el!);
+};
+
+const renderDatePickerInput = ({
+    onChange,
+    placeholder,
+    value,
+    isClearButtonVisible,
+    openCalendar
+}: {
+    onChange: (value: any) => void;
+    placeholder: string;
+    value?: Date;
+    isClearButtonVisible?: boolean;
+    openCalendar: Function;
+}) => {
+    const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        // TODO: implement a better way of changing input value
+        const value = event.target.value;
+        // Allow input date that is in the correct format
+        if (Moment(value, 'DD.MM.YYYY', true).isValid()) {
+            onChange(value);
+        }
+    };
+
+    const clearInputValue = (event: React.MouseEvent) => {
+        onChange('');
+        event.preventDefault();
+    };
+
+    return (
+        <div className={classnames(s.staticHeight, s.inputField)}>
+            <input
+                onClick={() => openCalendar()}
+                placeholder={placeholder}
+                type={'text'}
+                value={value ? toDateString(value) : ''}
+                onChange={onInputChange}
+            />
+            <IoMdCalendar className={s.calendarIcon} />
+            {isClearButtonVisible && (
+                <IoMdClose onClick={clearInputValue} className={s.clearIcon} />
+            )}
+        </div>
+    );
+};
 
 export default InputContainer;

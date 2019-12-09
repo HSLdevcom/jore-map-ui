@@ -32,8 +32,12 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
         const confirmText = `Haluatko varmasti poistaa linjan otsikon ${
             massEditLineHeader.lineHeader.lineNameFi
         }?`;
-        this.props.confirmStore!.openConfirm(confirmText, () => {
-            this.props.lineHeaderMassEditStore!.removeLineHeader(massEditLineHeader.id);
+        this.props.confirmStore!.openConfirm({
+            content: confirmText,
+            onConfirm: () => {
+                this.props.lineHeaderMassEditStore!.removeLineHeader(massEditLineHeader.id);
+            },
+            confirmButtonText: 'Kyllä'
         });
     };
 
@@ -47,9 +51,8 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
         const newLineHeader = _.cloneDeep(selectedLineHeader);
         newLineHeader.originalStartDate = undefined;
 
-        const lastLineHeader = _.last(this.props.lineHeaderMassEditStore!.massEditLineHeaders)!
-            .lineHeader;
-        const defaultDate = new Date(lastLineHeader.endDate);
+        const lastLineHeader = lineHeaderMassEditStore!.getLastLineHeader();
+        const defaultDate = new Date(lastLineHeader!.endDate);
         defaultDate.setDate(defaultDate.getDate() + 1);
         newLineHeader.startDate = toMidnightDate(defaultDate);
         newLineHeader.endDate = toMidnightDate(defaultDate);
@@ -147,13 +150,17 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                             <Button
                                 className={classnames(
                                     s.lineHeaderButton,
-                                    isEditingDisabled ? s.disabledLineHeaderButton : undefined
+                                    isEditingDisabled ? s.disabledLineHeaderButton : undefined,
+                                    isEditingDisabled && isSelectedLineHeader
+                                        ? s.highlightedBackground
+                                        : undefined
                                 )}
                                 hasReverseColor={true}
                                 onClick={this.createNewLineHeaderWithCopy(
                                     currentMassEditLineHeader.id
                                 )}
                                 disabled={isEditingDisabled}
+                                hasNoTransition={true}
                             >
                                 <FiCopy />
                             </Button>

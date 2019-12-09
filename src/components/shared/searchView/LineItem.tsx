@@ -56,7 +56,7 @@ class LineItem extends React.Component<ILineItemProps, ILineItemState> {
     };
 
     private openRoute = (routeId: string) => () => {
-        const openRouteLink = RouteBuilder.to(SubSites.routes)
+        const openRouteLink = RouteBuilder.to(SubSites.routes, navigator.getQueryParamValues())
             .append(QueryParams.routes, routeId)
             .toLink();
         searchStore.setSearchInput('');

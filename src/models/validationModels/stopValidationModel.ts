@@ -24,7 +24,7 @@ const stopValidationModel: IStopValidationModel = {
     platform: `min:0|max:3|string`,
     radius: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     hastusId: 'min:0|max:6|string',
-    areaId: 'required|min:0|max:6|string',
+    stopAreaId: 'required|min:0|max:6|string',
     elyNumber: `min:0|max:10|string|${regexRules.numbers}`,
     nameLongFi: longNameRule,
     nameLongSw: longNameRule,

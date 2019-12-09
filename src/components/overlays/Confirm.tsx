@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import ButtonType from '~/enums/buttonType';
@@ -14,26 +15,34 @@ interface IConfirmProps {
 @observer
 class Confirm extends React.Component<IConfirmProps> {
     render() {
-        if (!this.props.confirmStore!.isConfirmOpen) return null;
+        const confirmStore = this.props.confirmStore;
+        if (!confirmStore!.isConfirmOpen) return null;
 
         return (
             <Modal>
                 <div className={s.confirmView}>
-                    <div className={s.content}>{this.props.confirmStore!.content}</div>
+                    <div
+                        className={classnames(
+                            s.content,
+                            typeof confirmStore!.content === 'string' ? s.padding : undefined
+                        )}
+                    >
+                        {confirmStore!.content}
+                    </div>
                     <div className={s.buttons}>
                         <Button
                             type={ButtonType.SQUARE}
-                            onClick={this.props.confirmStore!.cancel}
+                            onClick={confirmStore!.cancel}
                             isWide={true}
                         >
-                            Peruuta
+                            {confirmStore!.cancelButtonText}
                         </Button>
                         <Button
                             type={ButtonType.SQUARE}
-                            onClick={this.props.confirmStore!.confirm}
+                            onClick={confirmStore!.confirm}
                             isWide={true}
                         >
-                            Hyväksy
+                            {confirmStore!.confirmButtonText}
                         </Button>
                     </div>
                 </div>

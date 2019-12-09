@@ -17,6 +17,7 @@ import LineService from '~/services/lineService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import SidebarHeader from '../SidebarHeader';
 import LineInfoTab from './LineInfoTab';
@@ -26,6 +27,7 @@ import * as s from './lineView.scss';
 interface ILineViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
     lineStore?: LineStore;
     match?: match<any>;
     isNewLine: boolean;
@@ -38,7 +40,7 @@ interface ILineViewState {
     selectedTabIndex: number;
 }
 
-@inject('lineStore', 'errorStore', 'alertStore', 'confirmStore')
+@inject('lineStore', 'lineHeaderMassEditStore', 'errorStore', 'alertStore', 'confirmStore')
 @observer
 class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -171,13 +173,18 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
             oldData: oldLine,
             model: 'line'
         };
-        confirmStore!.openConfirm(<SavePrompt saveModels={[saveModel]} />, () => {
-            this.saveLine();
+
+        confirmStore!.openConfirm({
+            content: <SavePrompt saveModels={[saveModel]} />,
+            onConfirm: () => {
+                this.saveLine();
+            }
         });
     };
 
     render() {
         const lineStore = this.props.lineStore;
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.lineView, s.loaderContainer)}>
@@ -192,49 +199,48 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
 
         return (
             <div className={s.lineView}>
-                <div className={s.content}>
-                    <div className={s.sidebarHeaderSection}>
-                        <SidebarHeader
-                            isEditButtonVisible={!this.props.isNewLine}
-                            onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
-                            isEditing={!this.props.lineStore!.isEditingDisabled}
-                            shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
-                        >
-                            {this.props.isNewLine
-                                ? 'Luo uusi linja'
-                                : `Linja ${this.props.lineStore!.line!.id}`}
-                        </SidebarHeader>
-                    </div>
-                    <Tabs>
-                        <TabList
-                            selectedTabIndex={this.state.selectedTabIndex}
-                            setSelectedTabIndex={this.setSelectedTabIndex}
-                        >
-                            <Tab>
-                                <div>Linjan tiedot</div>
-                            </Tab>
-                            <Tab isDisabled={this.props.isNewLine}>
-                                <div>Reitit</div>
-                            </Tab>
-                        </TabList>
-                        <ContentList selectedTabIndex={this.state.selectedTabIndex}>
-                            <ContentItem>
-                                <LineInfoTab
-                                    isEditingDisabled={isEditingDisabled}
-                                    isNewLine={this.props.isNewLine}
-                                    onChangeLineProperty={this.onChangeLineProperty}
-                                    invalidPropertiesMap={this.state.invalidPropertiesMap}
-                                    setValidatorResult={this.setValidatorResult}
-                                    saveLine={this.showSavePrompt}
-                                    isLineSaveButtonDisabled={isSaveButtonDisabled}
-                                />
-                            </ContentItem>
-                            <ContentItem>
-                                <LineRoutesTab />
-                            </ContentItem>
-                        </ContentList>
-                    </Tabs>
+                <div className={s.sidebarHeaderSection}>
+                    <SidebarHeader
+                        isEditButtonVisible={!this.props.isNewLine}
+                        onEditButtonClick={lineStore!.toggleIsEditingDisabled}
+                        isEditing={!lineStore!.isEditingDisabled}
+                        shouldShowClosePromptMessage={
+                            lineStore!.isDirty || lineHeaderMassEditStore!.isDirty
+                        }
+                        shouldShowEditButtonClosePromptMessage={lineStore!.isDirty}
+                    >
+                        {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
+                    </SidebarHeader>
                 </div>
+                <Tabs>
+                    <TabList
+                        selectedTabIndex={this.state.selectedTabIndex}
+                        setSelectedTabIndex={this.setSelectedTabIndex}
+                    >
+                        <Tab>
+                            <div>Linjan tiedot</div>
+                        </Tab>
+                        <Tab isDisabled={this.props.isNewLine}>
+                            <div>Reitit</div>
+                        </Tab>
+                    </TabList>
+                    <ContentList selectedTabIndex={this.state.selectedTabIndex}>
+                        <ContentItem>
+                            <LineInfoTab
+                                isEditingDisabled={isEditingDisabled}
+                                isNewLine={this.props.isNewLine}
+                                onChangeLineProperty={this.onChangeLineProperty}
+                                invalidPropertiesMap={this.state.invalidPropertiesMap}
+                                setValidatorResult={this.setValidatorResult}
+                                saveLine={this.showSavePrompt}
+                                isLineSaveButtonDisabled={isSaveButtonDisabled}
+                            />
+                        </ContentItem>
+                        <ContentItem>
+                            <LineRoutesTab />
+                        </ContentItem>
+                    </ContentList>
+                </Tabs>
             </div>
         );
     }

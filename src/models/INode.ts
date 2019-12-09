@@ -13,6 +13,12 @@ interface INodeBase extends INodePrimaryKey {
     type: NodeType;
 }
 
+interface INodeMapHighlight extends INodePrimaryKey {
+    coordinates: L.LatLng;
+    transitTypes: TransitType[];
+    dateRanges: string;
+}
+
 export default interface INode extends INodeBase {
     stop: IStop | null;
     coordinates: L.LatLng;
@@ -25,4 +31,4 @@ export default interface INode extends INodeBase {
     transitTypes?: TransitType[];
 }
 
-export { INodePrimaryKey, INodeBase };
+export { INodePrimaryKey, INodeBase, INodeMapHighlight };

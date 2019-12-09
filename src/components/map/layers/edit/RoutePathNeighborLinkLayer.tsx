@@ -44,7 +44,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                                     routePath.direction
                                 ].join(',')
                             )
-                            .clear()
                             .toLink();
                         return (
                             <div className={s.usageListItem} key={index}>
