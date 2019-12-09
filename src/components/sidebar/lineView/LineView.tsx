@@ -74,7 +74,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     };
 
     private initialize = async () => {
-        this.props.mapStore!.setInitCoordinates();
+        this.props.mapStore!.initCoordinates();
         if (this.props.isNewLine) {
             await this.createNewLine();
         } else {

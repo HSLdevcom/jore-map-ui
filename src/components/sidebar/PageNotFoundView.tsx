@@ -14,7 +14,7 @@ interface IPageNotFoundViewProps {
 @observer
 class PageNotFoundView extends Component<IPageNotFoundViewProps> {
     componentDidMount() {
-        this.props.mapStore!.setInitCoordinates();
+        this.props.mapStore!.initCoordinates();
     }
     private goToHomeView = () => {
         const homeLink = routeBuilder

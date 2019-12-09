@@ -28,7 +28,7 @@ class HomeView extends React.Component<IHomeViewProps> {
 
     componentDidMount() {
         this.props.routePathStore!.clear();
-        this.props.mapStore!.setInitCoordinates();
+        this.props.mapStore!.initCoordinates();
     }
 
     private redirectToNewLineView = () => {

@@ -78,7 +78,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     };
 
     private initialize = async () => {
-        this.props.mapStore!.setInitCoordinates();
+        this.props.mapStore!.initCoordinates();
         if (this.props.isNewRoute) {
             await this.createNewRoute();
         } else {
