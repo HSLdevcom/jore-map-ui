@@ -99,12 +99,12 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
                 isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
-                onMoveMarker={this.onMoveMarker()}
+                onMoveMarker={this.onMoveMarker(nodeLocationType)}
             />
         );
     };
 
-    private onMoveMarker = () => (nodeLocationType: NodeLocationType, coordinates: L.LatLng) => {
+    private onMoveMarker = (nodeLocationType: NodeLocationType) => (coordinates: L.LatLng) => {
         this.props.nodeStore!.updateNodeGeometry(
             nodeLocationType,
             coordinates,

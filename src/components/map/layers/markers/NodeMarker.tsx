@@ -37,7 +37,7 @@ interface INodeMarkerProps {
     popupContent?: string; // static markup language (HTML)
     onContextMenu?: Function;
     onClick?: Function;
-    onMoveMarker?: (nodeLocationType: NodeLocationType, coordinates: L.LatLng) => void;
+    onMoveMarker?: (coordinates: L.LatLng) => void;
     mapStore?: MapStore;
 }
 
@@ -66,9 +66,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private onMoveMarker = (nodeLocationType: NodeLocationType) => (e: L.DragEndEvent) => {
+    private onMoveMarker = () => (e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
-            this.props.onMoveMarker(nodeLocationType, e.target.getLatLng());
+            this.props.onMoveMarker(e.target.getLatLng());
         }
     };
 
@@ -211,7 +211,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 draggable={isDraggable}
                 icon={this.renderNodeMarkerIcon({ nodeLocationType })}
                 position={coordinates}
-                onDragEnd={onMoveMarker && this.onMoveMarker(nodeLocationType)}
+                onDragEnd={onMoveMarker && this.onMoveMarker()}
                 interactive={!isClickDisabled}
             >
                 {this.renderStopRadiusCircle()}
