@@ -2,6 +2,10 @@
 .coordinateControl {
     border: 0px;
     width: 133px;
+
+    .disabled {
+        pointer-events: none;
+    }
     div {
         height: 29px;
         width: 130px;

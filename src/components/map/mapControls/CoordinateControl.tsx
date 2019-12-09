@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import { reaction, IReactionDisposer } from 'mobx';
 import proj4 from 'proj4';
@@ -92,6 +93,8 @@ class CoordinateControl extends Component<ICoordinateControlProps, ICoordinateCo
     };
 
     private onInputBlur = () => {
+        if (!this.state?.y || !this.state?.x) return;
+
         const newY = Number(this.state.y);
         const newX = Number(this.state.x);
         if (!isNaN(newY) && !isNaN(newX)) {
@@ -140,18 +143,20 @@ class CoordinateControl extends Component<ICoordinateControlProps, ICoordinateCo
     };
 
     render() {
-        if (!MapStore!.coordinates) return null;
-
+        const isLoading = !MapStore!.coordinates;
         const coordinateNames = this.getCoordinateNames(MapStore!.displayCoordinateSystem);
+        const y = this.state?.y || '';
+        const x = this.state?.x || '';
+
         return (
-            <div className={s.coordinateControl}>
+            <div className={classnames(s.coordinateControl, isLoading ? s.disabled : undefined)}>
                 <div>
                     <button onClick={this.toggleDisplayCoordinateSystem}>
                         {coordinateNames.y}
                     </button>
                     <input
                         ref={this.yButtonRef}
-                        value={this.state.y}
+                        value={y}
                         onChange={this.onLatInputChange}
                         onBlur={this.onInputBlur}
                         onKeyPress={this.onInputKeyPress}
@@ -163,7 +168,7 @@ class CoordinateControl extends Component<ICoordinateControlProps, ICoordinateCo
                     </button>
                     <input
                         ref={this.xButtonRef}
-                        value={this.state.x}
+                        value={x}
                         onChange={this.onLonInputChange}
                         onBlur={this.onInputBlur}
                         onKeyPress={this.onInputKeyPress}
