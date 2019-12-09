@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import NodeType from '~/enums/nodeType';
 import { ILink } from '~/models';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
@@ -60,20 +61,31 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         this.editableLinks = [];
     };
 
-    private renderNode(nodeLocationType: NodeLocationType) {
+    private renderNodes() {
         const node = this.props.nodeStore!.node;
+        return (
+            <>
+                {this.renderNode({
+                    coordinates: node.coordinates,
+                    nodeLocationType: 'coordinates'
+                })}
+                {node.type === NodeType.STOP &&
+                    this.renderNode({
+                        coordinates: node.coordinatesProjection,
+                        nodeLocationType: 'coordinatesProjection'
+                    })}
+            </>
+        );
+    }
 
-        let coordinates;
-        switch (nodeLocationType) {
-            case 'coordinates':
-                coordinates = node.coordinates;
-                break;
-            case 'coordinatesProjection':
-                coordinates = node.coordinatesProjection;
-                break;
-            default:
-                throw `Unsupported NodeLocationType: ${nodeLocationType}`;
-        }
+    private renderNode = ({
+        coordinates,
+        nodeLocationType
+    }: {
+        coordinates: L.LatLng;
+        nodeLocationType: NodeLocationType;
+    }) => {
+        const node = this.props.nodeStore!.node;
 
         const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
         return (
@@ -90,7 +102,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 onMoveMarker={this.onMoveMarker()}
             />
         );
-    }
+    };
 
     private onMoveMarker = () => (nodeLocationType: NodeLocationType, coordinates: L.LatLng) => {
         this.props.nodeStore!.updateNodeGeometry(
@@ -185,8 +197,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         this.drawEditableLinks();
         return (
             <>
-                {this.renderNode('coordinates')}
-                {this.renderNode('coordinatesProjection')}
+                {this.renderNodes()}
                 {this.renderLinkDecorators()}
             </>
         );
