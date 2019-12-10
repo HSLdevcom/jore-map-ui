@@ -102,6 +102,10 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             lineEndDate: () => (data[property] ? toDateString(data[property]) : ''),
             publicTransportType: () =>
                 codeListStore.getCodeListLabel('Joukkoliikennelaji', data[property]),
+            clientOrganization: () =>
+                codeListStore.getCodeListLabel('Tilaajaorganisaatio', data[property]),
+            publicTransportDestination: () =>
+                codeListStore.getCodeListLabel('Joukkoliikennekohde', data[property]),
             lineReplacementType: () =>
                 codeListStore.getCodeListLabel('LinjanKorvaavaTyyppi', data[property])
         },
