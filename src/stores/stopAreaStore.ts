@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 import { IStopArea } from '~/models';
+import { IStopItem } from '~/models/IStop';
 
 export interface UndoState {
     stopArea: IStopArea;
@@ -10,11 +11,13 @@ export interface UndoState {
 export class StopAreaStore {
     @observable private _stopArea: IStopArea | null;
     @observable private _oldStopArea: IStopArea | null;
+    @observable private _stopItems: IStopItem[];
     @observable private _isEditingDisabled: boolean;
 
     constructor() {
         this._stopArea = null;
         this._oldStopArea = null;
+        this._stopItems = [];
         this._isEditingDisabled = true;
     }
 
@@ -26,6 +29,11 @@ export class StopAreaStore {
     @computed
     get oldStopArea() {
         return this._oldStopArea!;
+    }
+
+    @computed
+    get stopItems() {
+        return this._stopItems;
     }
 
     @computed
@@ -64,6 +72,11 @@ export class StopAreaStore {
     };
 
     @action
+    public setStopItems = (stopItems: IStopItem[]) => {
+        this._stopItems = stopItems;
+    };
+
+    @action
     public updateStopAreaProperty = (
         property: keyof IStopArea,
         value: string | Date | TransitType
@@ -89,6 +102,7 @@ export class StopAreaStore {
         this._stopArea = null;
         this._oldStopArea = null;
         this._isEditingDisabled = true;
+        this._stopItems = [];
     };
 
     @action

@@ -27,4 +27,12 @@ export default interface IStop extends IStopPrimaryKey {
     transitType?: TransitType; // Only used for creating a soltunnus
 }
 
-export { IStopPrimaryKey };
+interface IStopItem {
+    coordinates?: L.LatLng;
+    stopAreaId: string;
+    nodeId: string;
+    nameFi: string;
+    nameSw: string;
+}
+
+export { IStopItem, IStopPrimaryKey };

@@ -17,18 +17,20 @@ import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
+import { MapStore } from '~/stores/mapStore';
 import SidebarHeader from '../SidebarHeader';
 import LineInfoTab from './LineInfoTab';
 import LineRoutesTab from './LineRoutesTab';
 import * as s from './lineView.scss';
 
 interface ILineViewProps {
+    match?: match<any>;
+    isNewLine: boolean;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     lineStore?: LineStore;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
-    match?: match<any>;
-    isNewLine: boolean;
+    mapStore?: MapStore;
 }
 
 interface ILineViewState {
@@ -37,7 +39,7 @@ interface ILineViewState {
     selectedTabIndex: number;
 }
 
-@inject('lineStore', 'lineHeaderMassEditStore', 'errorStore', 'alertStore')
+@inject('lineStore', 'lineHeaderMassEditStore', 'errorStore', 'alertStore', 'mapStore')
 @observer
 class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -72,6 +74,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     };
 
     private initialize = async () => {
+        this.props.mapStore!.initCoordinates();
         if (this.props.isNewLine) {
             await this.createNewLine();
         } else {

@@ -1,10 +1,21 @@
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { MapStore } from '~/stores/mapStore';
 import * as s from './pageNotFoundView.scss';
 
-class PageNotFoundView extends Component {
+interface IPageNotFoundViewProps {
+    mapStore?: MapStore;
+}
+
+@inject('mapStore')
+@observer
+class PageNotFoundView extends Component<IPageNotFoundViewProps> {
+    componentDidMount() {
+        this.props.mapStore!.initCoordinates();
+    }
     private goToHomeView = () => {
         const homeLink = routeBuilder.to(SubSites.home).toLink();
         navigator.goTo(homeLink);

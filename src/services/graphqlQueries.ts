@@ -273,9 +273,9 @@ const getAllStopAreas = () => {
     `;
 };
 
-const getAllStops = () => {
+const getAllStopItems = () => {
     return gql`
-        query getAllStops {
+        query getAllStopItems {
             node: allPysakkis {
                 nodes {
                     soltunnus
@@ -670,7 +670,7 @@ export default {
     getAllRoutePathPrimaryKeysQuery,
     getStopAreaQuery,
     getAllStopAreas,
-    getAllStops,
+    getAllStopItems,
     getAllTerminalAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,

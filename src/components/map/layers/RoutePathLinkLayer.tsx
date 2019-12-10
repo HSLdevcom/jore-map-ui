@@ -10,6 +10,7 @@ import SubSites from '~/routing/subSites';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import EventManager, { INodeClickParams } from '~/util/EventManager';
+import NodeHelper from '~/util/NodeHelper';
 import { createCoherentLinesFromPolylines } from '~/util/geomHelpers';
 import Marker from './markers/Marker';
 import NodeMarker from './markers/NodeMarker';
@@ -72,7 +73,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         navigator.goTo(nodeLink);
     };
 
-    private renderRoutePathLinks() {
+    private renderRoutePathLinks = () => {
         const routePathLinks = this.props.routePathLinks;
         return routePathLinks.map(routePathLink => {
             return (
@@ -87,45 +88,74 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 />
             );
         });
-    }
-    private renderNodes() {
+    };
+    private renderNodes = () => {
         const routePathLinks = this.props.routePathLinks;
-        const onNodeClick = (node: INode) => () => {
+        const triggerNodeClick = (node: INode) => () => {
             const clickParams: INodeClickParams = { node };
             EventManager.trigger('nodeClick', clickParams);
         };
 
         const nodes = routePathLinks.map((routePathLink, index) => {
             const node = routePathLink.startNode;
-            return (
-                <NodeMarker
-                    key={`${routePathLink.orderNumber}-${index}`}
-                    node={node}
-                    isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                    isDisabled={routePathLink.startNodeType === StartNodeType.DISABLED}
-                    isTimeAlignmentStop={routePathLink.startNodeTimeAlignmentStop !== '0'}
-                    onContextMenu={this.openPopup(routePathLink.startNode)}
-                    onClick={onNodeClick(node)}
-                />
-            );
+            return this.renderNode({
+                node,
+                key: `${routePathLink.orderNumber}-${index}`,
+                isDisabled: routePathLink.startNodeType === StartNodeType.DISABLED,
+                isTimeAlignmentStop: routePathLink.startNodeTimeAlignmentStop !== '0',
+                openPopup: this.openPopup(routePathLink.startNode),
+                triggerNodeClick: triggerNodeClick(node)
+            });
         });
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
         const node = lastRoutePathLink.endNode;
         nodes.push(
-            <NodeMarker
-                key='last-node'
-                node={node}
-                isSelected={this.props.mapStore!.selectedNodeId === node.id}
-                isDisabled={false} // Last node can't be disabled
-                isTimeAlignmentStop={false} // Last node can't be a time alignment stop
-                onContextMenu={this.openPopup(lastRoutePathLink.endNode)}
-                onClick={onNodeClick(node)}
-            />
+            this.renderNode({
+                node,
+                key: 'last-node',
+                isDisabled: false, // Last node can't be disabled
+                isTimeAlignmentStop: false, // Last node can't be a time alignment stop
+                openPopup: this.openPopup(lastRoutePathLink.endNode),
+                triggerNodeClick: triggerNodeClick(node)
+            })
         );
         return nodes;
-    }
+    };
 
-    private renderStartMarker() {
+    private renderNode = ({
+        key,
+        node,
+        isDisabled,
+        isTimeAlignmentStop,
+        openPopup,
+        triggerNodeClick
+    }: {
+        key: string;
+        node: INode;
+        isDisabled: boolean;
+        isTimeAlignmentStop: boolean;
+        openPopup: () => void;
+        triggerNodeClick: (node: INode) => void;
+    }) => {
+        return (
+            <NodeMarker
+                key={key}
+                coordinates={node.coordinates}
+                nodeType={node.type}
+                nodeLocationType={'coordinates'}
+                nodeId={node.id}
+                shortId={NodeHelper.getShortId(node)}
+                hastusId={node.stop ? node.stop.hastusId : undefined}
+                isSelected={this.props.mapStore!.selectedNodeId === node.id}
+                isDisabled={isDisabled}
+                isTimeAlignmentStop={isTimeAlignmentStop}
+                onContextMenu={openPopup}
+                onClick={triggerNodeClick}
+            />
+        );
+    };
+
+    private renderStartMarker = () => {
         const color = this.props.color;
         const routePathLinks = this.props.routePathLinks;
         if (routePathLinks.length === 0) return;
@@ -136,9 +166,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isClickDisabled={true}
             />
         );
-    }
+    };
 
-    private renderDirectionDecoration() {
+    private renderDirectionDecoration = () => {
         if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
             return null;
         }
@@ -158,7 +188,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isUpdatePrevented={true}
             />
         ));
-    }
+    };
 
     render() {
         if (this.props.routePathLinks.length === 0) return null;

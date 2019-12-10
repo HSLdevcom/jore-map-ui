@@ -5,7 +5,6 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Circle, Marker as LeafletMarker } from 'react-leaflet';
 import NodeType from '~/enums/nodeType';
-import { INode } from '~/models/index';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeHelper from '~/util/NodeHelper';
@@ -19,22 +18,27 @@ enum NodeHighlightColor {
 }
 
 interface INodeMarkerProps {
-    mapStore?: MapStore;
+    coordinates: L.LatLng;
+    nodeType: NodeType;
     isSelected: boolean;
+    nodeLocationType: NodeLocationType;
+    nodeId?: string;
+    shortId?: string;
+    hastusId?: string;
+    radius?: number;
     color?: string;
-    onContextMenu?: Function;
-    onClick?: Function;
     isDraggable?: boolean;
-    highlight?: { isHighlighted: boolean; color?: NodeHighlightColor };
-    forcedVisibleNodeLabels?: NodeLabel[];
-    markerClasses?: string[];
-    // static markup language (HTML)
-    popupContent?: string;
-    node: INode;
     isClickDisabled?: boolean;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
-    onMoveMarker?: (coordinatesType: NodeLocationType, coordinates: L.LatLng) => void;
+    highlight?: { isHighlighted: boolean; color?: NodeHighlightColor };
+    forcedVisibleNodeLabels?: NodeLabel[];
+    markerClasses?: string[];
+    popupContent?: string; // static markup language (HTML)
+    onContextMenu?: Function;
+    onClick?: Function;
+    onMoveMarker?: (coordinates: L.LatLng) => void;
+    mapStore?: MapStore;
 }
 
 const NODE_LABEL_MIN_ZOOM = 14;
@@ -62,14 +66,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     }
 
-    private onMoveMarker = (coordinatesType: NodeLocationType) => (e: L.DragEndEvent) => {
+    private onMoveMarker = () => (e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
-            this.props.onMoveMarker(coordinatesType, e.target.getLatLng());
+            this.props.onMoveMarker(e.target.getLatLng());
         }
     };
 
     private getLabels(): string[] {
-        const node = this.props.node;
+        const { nodeId, hastusId, shortId } = this.props;
         const zoom = this.props.mapStore!.zoom;
 
         const visibleNodeLabels = _.union(
@@ -82,33 +86,38 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
 
         const labels: string[] = [];
-        if (visibleNodeLabels.includes(NodeLabel.hastusId)) {
-            if (node.stop && node.stop.hastusId) {
-                labels.push(node.stop.hastusId);
-            }
+        if (hastusId && visibleNodeLabels.includes(NodeLabel.hastusId)) {
+            labels.push(hastusId);
         }
-        if (visibleNodeLabels.includes(NodeLabel.longNodeId)) {
-            labels.push(node.id);
+        if (nodeId && visibleNodeLabels.includes(NodeLabel.longNodeId)) {
+            labels.push(nodeId);
         }
-        const nodeShortId = NodeHelper.getShortId(node);
-        if (nodeShortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
-            labels.push(nodeShortId);
+        if (shortId && visibleNodeLabels.includes(NodeLabel.shortNodeId)) {
+            labels.push(shortId);
         }
 
         return labels;
     }
 
     private getMarkerClasses = () => {
-        const isSelected = this.props.isSelected;
+        const {
+            nodeType,
+            nodeLocationType,
+            isDisabled,
+            isTimeAlignmentStop,
+            isSelected
+        } = this.props;
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
         res.push(
-            NodeHelper.getNodeTypeClass(this.props.node.type, {
-                isNodeDisabled: this.props.isDisabled,
-                isNodeTimeAlignment: this.props.isTimeAlignmentStop,
+            NodeHelper.getNodeTypeClass(nodeType, {
+                nodeLocationType,
+                isNodeDisabled: isDisabled,
+                isNodeTimeAlignment: isTimeAlignmentStop,
                 isNodeHighlighted: isSelected
             })
         );
+
         const highlight = this.props.highlight;
         if (highlight && highlight.isHighlighted) {
             switch (highlight.color) {
@@ -141,29 +150,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     private renderStopRadiusCircle = () => {
-        const nodeType = this.props.node.type;
+        const { nodeType, radius, coordinates } = this.props;
 
-        if (
-            !this.props.isSelected ||
-            nodeType !== NodeType.STOP ||
-            !this.props.node.stop ||
-            !this.props.node.stop!.radius
-        ) {
+        if (!this.props.isSelected || nodeType !== NodeType.STOP || !radius) {
             return null;
         }
 
-        return (
-            <Circle
-                className={s.stopCircle}
-                center={this.props.node.coordinates}
-                radius={this.props.node.stop!.radius}
-            />
-        );
+        return <Circle className={s.stopCircle} center={coordinates} radius={radius} />;
     };
-
-    private isDraggable = () =>
-        // TODO this should probably check other stuff too...
-        this.props.isSelected && this.props.isDraggable;
 
     private onMarkerClick = () => {
         if (this.props.onClick) {
@@ -171,16 +165,24 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     };
 
-    render() {
+    private renderNodeMarkerIcon = ({
+        nodeLocationType
+    }: {
+        nodeLocationType: NodeLocationType;
+    }) => {
         const nodeBaseClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
 
-        const icon = LeafletUtils.createDivIcon(
+        return LeafletUtils.createDivIcon(
             <div
                 className={classnames(...this.getMarkerClasses())}
-                style={{
-                    borderColor: this.props.color,
-                    backgroundColor: this.props.color
-                }}
+                style={
+                    nodeLocationType === 'coordinates'
+                        ? {
+                              borderColor: this.props.color,
+                              backgroundColor: this.props.color
+                          }
+                        : undefined
+                }
             >
                 {this.props.children}
                 {this.renderMarkerLabel()}
@@ -190,38 +192,30 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 popupOffset: -15
             }
         );
+    };
 
+    render() {
+        const {
+            coordinates,
+            nodeLocationType,
+            isDraggable,
+            isClickDisabled,
+            onMoveMarker,
+            onContextMenu
+        } = this.props;
         return (
-            <>
-                <LeafletMarker
-                    ref={this.markerRef}
-                    onContextMenu={this.props.onContextMenu}
-                    onClick={this.onMarkerClick}
-                    draggable={this.props.isDraggable}
-                    icon={icon}
-                    position={this.props.node.coordinates}
-                    onDragEnd={this.props.onMoveMarker && this.onMoveMarker('coordinates')}
-                    interactive={!this.props.isClickDisabled}
-                >
-                    {this.renderStopRadiusCircle()}
-                </LeafletMarker>
-                {this.props.isSelected && this.props.node.type === NodeType.STOP && (
-                    <LeafletMarker
-                        position={this.props.node.coordinatesProjection}
-                        icon={LeafletUtils.createDivIcon(
-                            <div
-                                className={classnames(s.projection, ...this.getMarkerClasses())}
-                            />,
-                            { className: nodeBaseClass }
-                        )}
-                        draggable={this.isDraggable()}
-                        onDragEnd={
-                            this.props.onMoveMarker && this.onMoveMarker('coordinatesProjection')
-                        }
-                        interactive={!this.props.isClickDisabled}
-                    />
-                )}
-            </>
+            <LeafletMarker
+                ref={this.markerRef}
+                onContextMenu={onContextMenu}
+                onClick={this.onMarkerClick}
+                draggable={isDraggable}
+                icon={this.renderNodeMarkerIcon({ nodeLocationType })}
+                position={coordinates}
+                onDragEnd={onMoveMarker && this.onMoveMarker()}
+                interactive={!isClickDisabled}
+            >
+                {this.renderStopRadiusCircle()}
+            </LeafletMarker>
         );
     }
 }

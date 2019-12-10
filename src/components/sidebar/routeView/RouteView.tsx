@@ -20,6 +20,7 @@ import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
 import SidebarHeader from '../SidebarHeader';
 import RouteInfoTab from './RouteInfoTab';
@@ -27,12 +28,13 @@ import RoutePathTab from './RoutePathTab';
 import * as s from './routeView.scss';
 
 interface IRouteViewProps {
+    match?: match<any>;
+    isNewRoute: boolean;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     routeStore?: RouteStore;
     confirmStore?: ConfirmStore;
-    match?: match<any>;
-    isNewRoute: boolean;
+    mapStore?: MapStore;
 }
 
 interface IRouteViewState {
@@ -41,7 +43,7 @@ interface IRouteViewState {
     selectedTabIndex: number;
 }
 
-@inject('routeStore', 'errorStore', 'alertStore', 'confirmStore')
+@inject('routeStore', 'errorStore', 'alertStore', 'confirmStore', 'mapStore')
 @observer
 class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -76,6 +78,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     };
 
     private initialize = async () => {
+        this.props.mapStore!.initCoordinates();
         if (this.props.isNewRoute) {
             await this.createNewRoute();
         } else {
