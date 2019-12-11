@@ -7,20 +7,6 @@
         align-items: center;
     }
 
-    .calendarIcon {
-        position: absolute;
-        right: 8px;
-        font-size: 22px;
-        pointer-events: none;
-    }
-
-    .clearIcon {
-        position: absolute;
-        right: 30px;
-        font-size: 22px;
-        cursor: pointer;
-    }
-
     .redInputText {
         color: $red;
     }
