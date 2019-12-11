@@ -117,6 +117,7 @@ export default class NodeForm extends Component<INodeViewProps> {
                                     : undefined
                             }
                             isClearButtonVisibleOnDates={true}
+                            isEmptyDateValueAllowed={true}
                             validationResult={invalidPropertiesMap['measurementDate']}
                         />
                         {node.type === NodeType.STOP && (

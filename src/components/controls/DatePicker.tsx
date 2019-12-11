@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import fi from 'date-fns/locale/fi';
+import _ from 'lodash';
 import Moment from 'moment';
 import React, { ChangeEvent } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
@@ -91,7 +92,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
     };
 
     render() {
-        const { isClearButtonVisible } = this.props;
+        const { isClearButtonVisible, isEmptyValueAllowed } = this.props;
         const minDate = new Date();
         minDate.setFullYear(1970);
         minDate.setMonth(0);
@@ -108,6 +109,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                 <ReactDatePicker
                     customInput={renderDatePickerInput({
                         isClearButtonVisible,
+                        isEmptyValueAllowed,
                         value: this.state.selectedDate,
                         onChange: this.onChange,
                         openCalendar: this.openCalendar,
@@ -149,12 +151,14 @@ const renderDatePickerInput = ({
     placeholder,
     value,
     isClearButtonVisible,
+    isEmptyValueAllowed,
     openCalendar
 }: {
     onChange: (value: any) => void;
     placeholder: string;
     value?: string;
     isClearButtonVisible?: boolean;
+    isEmptyValueAllowed?: boolean;
     openCalendar: Function;
 }) => {
     const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -166,12 +170,13 @@ const renderDatePickerInput = ({
         event.preventDefault();
     };
 
-    const isValueValidDate = Moment(value, 'DD.MM.YYYY', true).isValid();
-
+    const isInputValid = !_.isEmpty(value)
+        ? Moment(value, 'DD.MM.YYYY', true).isValid()
+        : Boolean(isEmptyValueAllowed);
     return (
         <div className={classnames(s.staticHeight, s.inputField)}>
             <input
-                className={!isValueValidDate ? s.invalidDate : undefined}
+                className={!isInputValid ? s.invalidDate : undefined}
                 onClick={() => openCalendar()}
                 placeholder={placeholder}
                 type={'text'}
