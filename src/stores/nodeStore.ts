@@ -339,9 +339,6 @@ class NodeStore {
 
     @action
     public resetChanges = () => {
-        this._nodeValidationStore.clearInvalidPropertiesMap();
-        this._stopValidationStore.clearInvalidPropertiesMap();
-
         if (this._oldNode) {
             this.init({ node: this._oldNode, links: this._oldLinks, isNewNode: false });
         }

@@ -11,6 +11,11 @@ interface ICustomValidatorMap {
 }
 
 /**
+ * Generic validation store to be used by other stores.
+ * Call init() when validationObject changes
+ * Call updateProperty() always when validationObject's value is changed
+ * Call validateAllProperties() when isEditingDisabled of a View is changed
+ * Call clear() to release memory when a store using validation store is cleared
  * @param {Object} ValidationObject - object to validate (e.g. ILink)
  * @param {Object} ValidationModel - { property: string}, where property = validation string (e.g. IValidationModel)
  */
@@ -23,16 +28,14 @@ class ValidationStore<ValidationObject, ValidationModel> {
 
     constructor(validationModel: ValidationModel) {
         this._propertyListeners = [];
-        this.clear();
-
         this._validationModel = validationModel;
     }
 
     public init = (validationObject: ValidationObject, customValidatorsMap?: ICustomValidatorMap) => {
+        this.clear();
         this._validationObject = validationObject;
         this._customValidatorMap = customValidatorsMap ? customValidatorsMap : null;
 
-        this.removePropertyListeners();
         this.createPropertyListeners();
         this.validateAllProperties();
     };
@@ -57,16 +60,12 @@ class ValidationStore<ValidationObject, ValidationModel> {
             validatorResult = FormValidator.validateProperty(validatorRule, value);
         }
         if (validatorResult) {
-            this.setValidatorResult(property, validatorResult);
+            this._invalidPropertiesMap[property] = validatorResult;
         }
 
         if (!isDependentPropertiesValidationPrevented && customValidatorObject && customValidatorObject.dependentProperties) {
             customValidatorObject.dependentProperties.forEach(prop => this.validateProperty(prop, true));
         }
-    };
-
-    public setValidatorResult = (property: string, validatorResult: IValidationResult) => {
-        this._invalidPropertiesMap[property] = validatorResult;
     };
 
     public validateAllProperties = () => {
@@ -96,10 +95,6 @@ class ValidationStore<ValidationObject, ValidationModel> {
 
     public getInvalidPropertiesMap = () => {
         return this._invalidPropertiesMap;
-    };
-
-    public clearInvalidPropertiesMap = () => {
-        this._invalidPropertiesMap = {};
     };
 
     public clear = () => {
