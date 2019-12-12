@@ -5,12 +5,11 @@ import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
-import ISearchLine from '~/models/searchModels/ISearchLine';
+import { ILine } from '~/models';
 import LineService from '~/services/lineService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineStore } from '~/stores/lineStore';
-import { IValidationResult } from '~/validation/FormValidator';
 import LineHeaderTable from './LineHeaderTable';
 import * as s from './lineInfoTab.scss';
 
@@ -25,9 +24,7 @@ interface ILineInfoTabProps {
     isEditingDisabled: boolean;
     isNewLine: boolean;
     isLineSaveButtonDisabled: boolean;
-    onChangeLineProperty: (property: string) => (value: any) => void;
     invalidPropertiesMap: object;
-    setValidatorResult: (property: string, validationResult: IValidationResult) => void;
     saveLine: () => void;
 }
 
@@ -42,8 +39,6 @@ const transitTypeDefaultValueMap = {
 @inject('lineStore', 'codeListStore', 'errorStore')
 @observer
 class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> {
-    private existingLines: ISearchLine[] = [];
-
     constructor(props: any) {
         super(props);
         this.state = {
@@ -64,60 +59,27 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
     }
 
     private selectTransitType = (transitType: TransitType) => {
-        this.props.onChangeLineProperty('transitType')(transitType);
-        this.props.onChangeLineProperty('publicTransportType')(
+        const lineStore = this.props.lineStore!;
+        lineStore.updateLineProperty('transitType', transitType);
+        lineStore.updateLineProperty(
+            'publicTransportType',
             transitTypeDefaultValueMap[transitType]
         );
     };
 
-    private isLineAlreadyFound = (lineId: string): boolean => {
-        return Boolean(
-            this.existingLines.find((searchLine: ISearchLine) => searchLine.id === lineId)
-        );
-    };
-
     private fetchAllLines = async () => {
-        if (this.existingLines.length > 0) return;
+        if (this.props.lineStore!.existingLines.length > 0) return;
 
         try {
-            this.existingLines = await LineService.fetchAllSearchLines();
+            const existingLines = await LineService.fetchAllSearchLines();
+            this.props.lineStore!.setExistingLines(existingLines);
         } catch (e) {
             this.props.errorStore!.addError('Olemassa olevien linjojen haku ei onnistunut', e);
         }
     };
 
-    private onChangeLineId = (lineId: string) => {
-        this.props.onChangeLineProperty('id')(lineId);
-        if (this.isLineAlreadyFound(lineId)) {
-            const validationResult: IValidationResult = {
-                isValid: false,
-                errorMessage: `Linja ${lineId} on jo olemassa.`
-            };
-            this.props.setValidatorResult('id', validationResult);
-        }
-    };
-
-    private validateDates = (startDate: Date, endDate: Date) => {
-        this.props.onChangeLineProperty('lineStartDate')(startDate);
-        this.props.onChangeLineProperty('lineEndDate')(endDate);
-        // is end date before start date?
-        if (endDate && endDate.getTime() < startDate.getTime()) {
-            const validationResult: IValidationResult = {
-                isValid: false,
-                errorMessage: `Viimeinen voimassaolopäivä ei voi olla ennen voimaanastumispäivää.`
-            };
-            this.props.setValidatorResult('lineEndDate', validationResult);
-        }
-    };
-
-    private onChangeStartDate = (startDate: Date) => {
-        const endDate = this.props.lineStore!.line!.lineEndDate;
-        this.validateDates(startDate, endDate);
-    };
-
-    private onChangeEndDate = (endDate: Date) => {
-        const startDate = this.props.lineStore!.line!.lineStartDate;
-        this.validateDates(startDate, endDate);
+    private onChangeLineProperty = (property: keyof ILine) => (value: any) => {
+        this.props.lineStore!.updateLineProperty(property, value);
     };
 
     render() {
@@ -126,7 +88,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
 
         const isEditingDisabled = this.props.isEditingDisabled;
         const isUpdating = !this.props.isNewLine || this.props.isEditingDisabled;
-        const onChange = this.props.onChangeLineProperty;
+        const onChange = this.onChangeLineProperty;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
 
@@ -141,7 +103,9 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                                 toggleSelectedTransitType={this.selectTransitType}
                                 disabled={!this.props.isNewLine}
                                 errorMessage={
-                                    !line!.transitType ? 'Verkon tyyppi täytyy valita.' : undefined
+                                    !invalidPropertiesMap['transitType'].isValid
+                                        ? 'Verkon tyyppi täytyy valita.'
+                                        : undefined
                                 }
                             />
                         </div>
@@ -151,7 +115,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             disabled={isUpdating}
                             label='LINJAN TUNNUS'
                             value={line.id}
-                            onChange={this.onChangeLineId}
+                            onChange={onChange('id')}
                             validationResult={invalidPropertiesMap['id']}
                             capitalizeInput={true}
                         />
@@ -169,7 +133,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             label='LINJAN VOIM.AST.PVM'
                             type='date'
                             value={line.lineStartDate}
-                            onChange={this.onChangeStartDate}
+                            onChange={onChange('lineStartDate')}
                             validationResult={invalidPropertiesMap['lineStartDate']}
                         />
                         <InputContainer
@@ -177,7 +141,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             label='LINJAN VIIM. VOIM.OLOPVM'
                             type='date'
                             value={line.lineEndDate}
-                            onChange={this.onChangeEndDate}
+                            onChange={onChange('lineEndDate')}
                             validationResult={invalidPropertiesMap['lineEndDate']}
                         />
                     </div>

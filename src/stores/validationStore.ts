@@ -1,21 +1,32 @@
 import { observable, reaction, IReactionDisposer } from 'mobx';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 
+interface ICustomValidatorObject {
+    validator: Function;
+    dependentProperties?: string[]; // List of properties that also need to be validated when the main property is validated
+}
+
+interface ICustomValidatorMap {
+    [key: string]: ICustomValidatorObject;
+}
+
 class ValidationStore<ValidationObject, ValidationModel> {
     @observable private _validationObject: ValidationObject | null;
     @observable private _invalidPropertiesMap: object;
     @observable private _validationModel: ValidationModel;
-    private propertyListeners: IReactionDisposer[];
+    private _customValidatorMap: ICustomValidatorMap | null;
+    private _propertyListeners: IReactionDisposer[];
 
     constructor(validationModel: ValidationModel) {
-        this.propertyListeners = [];
+        this._propertyListeners = [];
         this.clear();
 
         this._validationModel = validationModel;
     }
 
-    public init = (validationObject: ValidationObject) => {
+    public init = (validationObject: ValidationObject, customValidatorsMap?: ICustomValidatorMap) => {
         this._validationObject = validationObject;
+        this._customValidatorMap = customValidatorsMap ? customValidatorsMap : null;
 
         this.removePropertyListeners();
         this.createPropertyListeners();
@@ -26,14 +37,27 @@ class ValidationStore<ValidationObject, ValidationModel> {
         this._validationObject![property] = value;
     };
 
-    public validateProperty = (validatorRule: string, property: string, value: any) => {
+    /**
+     * @param {boolean} isDependentPropertiesValidationPrevented - if true, prevents validating dependent properties of a dependent property (to prevent infinite validation loop)
+    */
+    public validateProperty = (property: string, isDependentPropertiesValidationPrevented?: boolean) => {
+        const validatorRule = this._validationModel[property];
         if (!validatorRule) return;
-        const validatorResult: IValidationResult | undefined = FormValidator.validateProperty(
-            validatorRule,
-            value
-        );
+        const value = this._validationObject![property];
+        const customValidatorObject = this._customValidatorMap?.[property];
+        let validatorResult: IValidationResult | undefined;
+        if (this._customValidatorMap) {
+            validatorResult = customValidatorObject?.validator(this._validationObject, property, value);
+        }
+        if (!validatorResult || (validatorResult && validatorResult.isValid)) {
+            validatorResult = FormValidator.validateProperty(validatorRule, value);
+        }
         if (validatorResult) {
             this.setValidatorResult(property, validatorResult);
+        }
+
+        if (!isDependentPropertiesValidationPrevented && customValidatorObject && customValidatorObject.dependentProperties) {
+            customValidatorObject.dependentProperties.forEach(prop => this.validateProperty(prop, true));
         }
     };
 
@@ -81,10 +105,10 @@ class ValidationStore<ValidationObject, ValidationModel> {
     };
 
     private createPropertyListeners = () => {
-        for (const property in this._validationObject!) {
-            if (Object.prototype.hasOwnProperty.call(this._validationObject, property)) {
+        for (const property in this._validationModel!) {
+            if (Object.prototype.hasOwnProperty.call(this._validationModel, property)) {
                 const listener = this.initPropertyListener(property);
-                this.propertyListeners.push(listener);
+                this._propertyListeners.push(listener);
             }
         }
     };
@@ -93,19 +117,17 @@ class ValidationStore<ValidationObject, ValidationModel> {
         return reaction(
             () => this._validationObject && this._validationObject[property],
             () =>
-                this.validateProperty(
-                    this._validationModel[property],
-                    property,
-                    this._validationObject![property]
-                )
+                this.validateProperty(property)
         );
     };
 
     private removePropertyListeners = () => {
-        if (this.propertyListeners.length === 0) return;
-        this.propertyListeners.forEach((listener: IReactionDisposer) => listener());
-        this.propertyListeners = [];
+        if (this._propertyListeners.length === 0) return;
+        this._propertyListeners.forEach((listener: IReactionDisposer) => listener());
+        this._propertyListeners = [];
     };
 }
 
 export default ValidationStore;
+
+export { ICustomValidatorMap }
