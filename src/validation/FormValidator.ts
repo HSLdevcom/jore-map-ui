@@ -27,6 +27,7 @@ Validator.register(
     'Koordinaatti sallittujen rajojen ulkopuolella.'
 );
 
+// TODO: remove this class, use validationStore instead.
 class FormValidator {
     public static validate = (value: any, rule: string): IValidationResult => {
         const validator = new Validator(

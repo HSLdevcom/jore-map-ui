@@ -21,3 +21,5 @@ const nodeValidationModel: INodeValidationModel = {
 };
 
 export default nodeValidationModel;
+
+export { INodeValidationModel };

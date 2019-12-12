@@ -1,20 +1,17 @@
 import classnames from 'classnames';
 import * as L from 'leaflet';
 import _ from 'lodash';
-import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
 import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
-import nodeValidationModel from '~/models/validationModels/nodeValidationModel';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -47,21 +44,16 @@ interface INodeViewProps {
 
 interface INodeViewState {
     isLoading: boolean;
-    invalidPropertiesMap: object;
 }
 
 @inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore', 'confirmStore')
 @observer
-class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
-    private isEditingDisabledListener: IReactionDisposer;
-    private nodePropertyListeners: IReactionDisposer[];
+class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
         super(props);
         this.state = {
-            isLoading: false,
-            invalidPropertiesMap: {}
+            isLoading: false
         };
-        this.nodePropertyListeners = [];
     }
 
     async componentDidMount() {
@@ -73,10 +65,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             await this.initExistingNode(params);
         }
         this.props.nodeStore!.setIsEditingDisabled(!this.props.isNewNode);
-        this.isEditingDisabledListener = reaction(
-            () => this.props.nodeStore!.isEditingDisabled,
-            this.onChangeIsEditingDisabled
-        );
         EventManager.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
@@ -94,35 +82,8 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
     componentWillUnmount() {
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
-        this.isEditingDisabledListener();
-        this.removeNodePropertyListeners();
         EventManager.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
-
-    private createNodePropertyListeners = () => {
-        const nodeStore = this.props.nodeStore!;
-        if (!nodeStore!.node) return;
-
-        const node = nodeStore!.node;
-        for (const property in node!) {
-            if (Object.prototype.hasOwnProperty.call(node, property)) {
-                const listener = this.nodePropertyListener(property);
-                this.nodePropertyListeners.push(listener);
-            }
-        }
-    };
-
-    private nodePropertyListener = (property: string) => {
-        return reaction(
-            () => this.props.nodeStore!.node && this.props.nodeStore!.node![property],
-            this.validateNodeProperty(property)
-        );
-    };
-
-    private removeNodePropertyListeners = () => {
-        this.nodePropertyListeners.forEach((listener: IReactionDisposer) => listener());
-        this.nodePropertyListeners = [];
-    };
 
     private createNewNode = async (params: any) => {
         const createNode = () => {
@@ -132,8 +93,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
             this.centerMapToNode(node, []);
             this.props.nodeStore!.init({ node, links: [], isNewNode: true });
             this.updateSelectedStopAreaId();
-            this.validateNode();
-            this.createNodePropertyListeners();
         };
 
         const nodeCacheObj: INodeCacheObj | null = this.props.nodeStore!.getNewNodeCacheObj();
@@ -180,8 +139,6 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         this.props.mapStore!.setSelectedNodeId(node.id);
         this.centerMapToNode(node, links);
         this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: false });
-        this.validateNode();
-        this.createNodePropertyListeners();
     };
 
     private async fetchNode(nodeId: string) {
@@ -321,33 +278,12 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         });
     };
 
-    private onChangeIsEditingDisabled = () => {
-        this.clearInvalidPropertiesMap();
-        if (this.props.nodeStore!.isEditingDisabled) {
-            this.props.nodeStore!.resetChanges();
-        } else {
-            this.validateNode();
-        }
-    };
-
-    private validateNode = () => {
-        this.validateAllProperties(nodeValidationModel, this.props.nodeStore!.node);
-    };
-
-    private validateNodeProperty = (property: string) => () => {
-        const node = this.props.nodeStore!.node;
-        if (!node) return;
-
-        const value = node[property];
-        this.validateProperty(nodeValidationModel[property], property, value);
-    };
-
     private onNodeGeometryChange = (property: NodeLocationType, value: any) => {
         this.props.nodeStore!.updateNodeGeometry(property, value, NodeMeasurementType.Measured);
     };
 
     private onChangeNodeProperty = (property: keyof INode) => (value: any) => {
-        this.props.nodeStore!.updateNode(property, value);
+        this.props.nodeStore!.updateNodeProperty(property, value);
     };
 
     private latChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
@@ -379,8 +315,8 @@ class NodeView extends ViewFormBase<INodeViewProps, INodeViewState> {
         if (!node) return null;
 
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
-        const invalidPropertiesMap = this.state.invalidPropertiesMap;
-        const isNodeFormInvalid = !this.isFormValid();
+        const invalidPropertiesMap = this.props.nodeStore!.nodeInvalidPropertiesMap;
+        const isNodeFormInvalid = !this.props.nodeStore!.isNodeFormValid;
         const isStopFormInvalid =
             node.type === NodeType.STOP && !this.props.nodeStore!.isStopFormValid;
         const isSaveButtonDisabled =

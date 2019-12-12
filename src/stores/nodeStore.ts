@@ -5,12 +5,16 @@ import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode } from '~/models';
+import nodeValidationModel, { // TODO: rename as nodeValidationObject?
+    INodeValidationModel
+} from '~/models/validationModels/nodeValidationModel';
 import GeocodingService from '~/services/geocodingService';
 import { IStopAreaItem } from '~/services/stopAreaService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
 import NetworkStore from './networkStore';
+import ValidationStore from './validationStore';
 
 interface UndoState {
     node: INode;
@@ -39,6 +43,7 @@ class NodeStore {
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreaItems: IStopAreaItem[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
+    private _validationStore: ValidationStore<INode, INodeValidationModel>;
 
     constructor() {
         this._links = [];
@@ -46,6 +51,7 @@ class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
+        this._validationStore = new ValidationStore(nodeValidationModel);
         this._isEditingDisabled = true;
         this._nodeCache = {
             newNodeCache: null
@@ -60,6 +66,7 @@ class NodeStore {
             (value: string) => this.onStopAreaChange(value)
         );
         reaction(() => this._stopAreaItems, () => this.onStopAreaItemsChange());
+        reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
     @computed
@@ -102,6 +109,16 @@ class NodeStore {
         return this._stopAreaItems;
     }
 
+    @computed
+    get isNodeFormValid() {
+        return this._validationStore.isValid();
+    }
+
+    @computed
+    get nodeInvalidPropertiesMap() {
+        return this._validationStore.getInvalidPropertiesMap();
+    }
+
     @action
     public init = ({
         node,
@@ -132,6 +149,8 @@ class NodeStore {
         this._links = newLinks;
         this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
+
+        this._validationStore.init(node);
     };
 
     @action
@@ -188,12 +207,12 @@ class NodeStore {
 
         this._links = newLinks;
         const geometryVariables: NodeLocationType[] = ['coordinates', 'coordinatesProjection'];
-        geometryVariables.forEach(
-            coordinateName => (this._node![coordinateName] = newNode[coordinateName])
+        geometryVariables.forEach(coordinateName =>
+            this.updateNodeProperty(coordinateName, newNode[coordinateName])
         );
 
         if (nodeLocationType === 'coordinates') {
-            this.updateNode('measurementType', measurementType.toString());
+            this.updateNodeProperty('measurementType', measurementType.toString());
         }
 
         if (nodeLocationType === 'coordinatesProjection') {
@@ -230,16 +249,17 @@ class NodeStore {
     };
 
     @action
-    public updateNode = (property: keyof INode, value: string | Date | LatLng) => {
+    public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng) => {
         if (!this._node) return;
 
         // As any to fix typing error: Type 'string' is not assignable to type 'never'
         (this._node as any)[property] = value;
+        this._validationStore.updateProperty(property, value);
 
         if (property === 'type') this.mirrorCoordinates(this._node);
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
-            this._node.stop = NodeStopFactory.createNewStop();
+            (this._node as any)[property] = NodeStopFactory.createNewStop();
         }
     };
 
@@ -302,11 +322,14 @@ class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore.clear();
+        this._validationStore.clear();
         this._isEditingDisabled = true;
     };
 
     @action
     public resetChanges = () => {
+        this._validationStore.clearInvalidPropertiesMap();
+
         if (this._oldNode) {
             this.init({ node: this._oldNode, links: this._oldLinks, isNewNode: false });
         }
@@ -316,8 +339,11 @@ class NodeStore {
     public undo = () => {
         this._geometryUndoStore.undo((previousUndoState: UndoState) => {
             this._links! = previousUndoState.links;
-            this._node!.coordinates = previousUndoState.node.coordinates;
-            this._node!.coordinatesProjection = previousUndoState.node.coordinatesProjection;
+            this.updateNodeProperty('coordinates', previousUndoState.node.coordinates);
+            this.updateNodeProperty(
+                'coordinatesProjection',
+                previousUndoState.node.coordinatesProjection
+            );
         });
     };
 
@@ -325,8 +351,11 @@ class NodeStore {
     public redo = () => {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._links! = nextUndoState.links;
-            this._node!.coordinates = nextUndoState.node.coordinates;
-            this._node!.coordinatesProjection = nextUndoState.node.coordinatesProjection;
+            this.updateNodeProperty('coordinates', nextUndoState.node.coordinates);
+            this.updateNodeProperty(
+                'coordinatesProjection',
+                nextUndoState.node.coordinatesProjection
+            );
         });
     };
 
@@ -382,6 +411,14 @@ class NodeStore {
     public getNewNodeCacheObj(): INodeCacheObj | null {
         return this._nodeCache.newNodeCache;
     }
+
+    private onChangeIsEditingDisabled = () => {
+        if (this._isEditingDisabled) {
+            this.resetChanges();
+        } else {
+            this._validationStore.validateAllProperties();
+        }
+    };
 }
 
 const observableNodeStore = new NodeStore();
