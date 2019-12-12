@@ -180,7 +180,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const stopAreaIdQueryParam = navigator.getQueryParam(QueryParams.stopAreaId);
         const stopAreaId = stopAreaIdQueryParam ? stopAreaIdQueryParam[0] : undefined;
         if (stopAreaId) {
-            this.props.nodeStore!.updateStop('stopAreaId', stopAreaId);
+            this.props.nodeStore!.updateStopProperty('stopAreaId', stopAreaId);
         }
     };
 
@@ -347,7 +347,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     />
                     {node.type === NodeType.STOP && node.stop && (
                         <StopView
-                            isEditingDisabled={isEditingDisabled}
                             node={node}
                             onNodePropertyChange={this.onChangeNodeProperty}
                             isNewStop={this.props.isNewNode}

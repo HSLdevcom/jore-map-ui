@@ -4,10 +4,13 @@ import { action, computed, observable, reaction } from 'mobx';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
-import { ILink, INode } from '~/models';
-import nodeValidationModel, { // TODO: rename as nodeValidationObject?
+import { ILink, INode, IStop } from '~/models';
+import nodeValidationModel, {
     INodeValidationModel
 } from '~/models/validationModels/nodeValidationModel';
+import stopValidationModel, {
+    IStopValidationModel
+} from '~/models/validationModels/stopValidationModel';
 import GeocodingService from '~/services/geocodingService';
 import { IStopAreaItem } from '~/services/stopAreaService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
@@ -38,12 +41,12 @@ class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
-    @observable private _isStopFormValid: boolean;
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreaItems: IStopAreaItem[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
-    private _validationStore: ValidationStore<INode, INodeValidationModel>;
+    private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
+    private _stopValidationStore: ValidationStore<IStop, IStopValidationModel>;
 
     constructor() {
         this._links = [];
@@ -51,7 +54,8 @@ class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
-        this._validationStore = new ValidationStore(nodeValidationModel);
+        this._nodeValidationStore = new ValidationStore(nodeValidationModel);
+        this._stopValidationStore = new ValidationStore(stopValidationModel);
         this._isEditingDisabled = true;
         this._nodeCache = {
             newNodeCache: null
@@ -90,11 +94,6 @@ class NodeStore {
     }
 
     @computed
-    get isStopFormValid() {
-        return this._isStopFormValid;
-    }
-
-    @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
     }
@@ -111,12 +110,22 @@ class NodeStore {
 
     @computed
     get isNodeFormValid() {
-        return this._validationStore.isValid();
+        return this._nodeValidationStore.isValid();
     }
 
     @computed
     get nodeInvalidPropertiesMap() {
-        return this._validationStore.getInvalidPropertiesMap();
+        return this._nodeValidationStore.getInvalidPropertiesMap();
+    }
+
+    @computed
+    get isStopFormValid() {
+        return this._stopValidationStore.isValid();
+    }
+
+    @computed
+    get stopInvalidPropertiesMap() {
+        return this._stopValidationStore.getInvalidPropertiesMap();
     }
 
     @action
@@ -150,7 +159,10 @@ class NodeStore {
         this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
 
-        this._validationStore.init(node);
+        this._nodeValidationStore.init(node);
+        if (node.stop) {
+            this._stopValidationStore.init(node.stop);
+        }
     };
 
     @action
@@ -243,9 +255,9 @@ class NodeStore {
         const postalNumber: string = await GeocodingService.fetchPostalNumberFromCoordinates(
             coordinates
         );
-        this.updateStop('addressFi', addressFi);
-        this.updateStop('addressSw', addressSw);
-        this.updateStop('postalNumber', postalNumber);
+        this.updateStopProperty('addressFi', addressFi);
+        this.updateStopProperty('addressSw', addressSw);
+        this.updateStopProperty('postalNumber', postalNumber);
     };
 
     @action
@@ -254,27 +266,25 @@ class NodeStore {
 
         // As any to fix typing error: Type 'string' is not assignable to type 'never'
         (this._node as any)[property] = value;
-        this._validationStore.updateProperty(property, value);
+        this._nodeValidationStore.updateProperty(property, value);
 
         if (property === 'type') this.mirrorCoordinates(this._node);
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
-            (this._node as any)[property] = NodeStopFactory.createNewStop();
+            const stop = NodeStopFactory.createNewStop();
+            (this._node as any)[property] = stop;
+            this._stopValidationStore.init(stop);
         }
     };
 
     @action
-    public updateStop = (property: string, value?: string | number | Date) => {
+    public updateStopProperty = (property: string, value?: string | number | Date) => {
         if (!this.node) return;
         this._node!.stop = {
             ...this._node!.stop!,
             [property]: value
         };
-    };
-
-    @action
-    public setIsStopFormValid = (isStopFormValid: boolean) => {
-        this._isStopFormValid = isStopFormValid;
+        this._stopValidationStore.updateProperty(property, value);
     };
 
     @action
@@ -322,13 +332,15 @@ class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore.clear();
-        this._validationStore.clear();
+        this._nodeValidationStore.clear();
+        this._stopValidationStore.clear();
         this._isEditingDisabled = true;
     };
 
     @action
     public resetChanges = () => {
-        this._validationStore.clearInvalidPropertiesMap();
+        this._nodeValidationStore.clearInvalidPropertiesMap();
+        this._stopValidationStore.clearInvalidPropertiesMap();
 
         if (this._oldNode) {
             this.init({ node: this._oldNode, links: this._oldLinks, isNewNode: false });
@@ -376,15 +388,15 @@ class NodeStore {
     private updateStopArea = (stopAreaId?: string) => {
         if (!this._stopAreaItems) return;
 
-        this.updateStop('stopAreaId', stopAreaId);
+        this.updateStopProperty('stopAreaId', stopAreaId);
         if (!stopAreaId) return;
 
         const stopAreaItem = this._stopAreaItems.find(obj => {
             return obj.pysalueid === stopAreaId;
         });
         if (stopAreaItem) {
-            this.updateStop('nameFi', stopAreaItem.nimi);
-            this.updateStop('nameSw', stopAreaItem.nimir);
+            this.updateStopProperty('nameFi', stopAreaItem.nimi);
+            this.updateStopProperty('nameSw', stopAreaItem.nimir);
         }
     };
 
@@ -416,7 +428,8 @@ class NodeStore {
         if (this._isEditingDisabled) {
             this.resetChanges();
         } else {
-            this._validationStore.validateAllProperties();
+            this._nodeValidationStore.validateAllProperties();
+            this._stopValidationStore.validateAllProperties();
         }
     };
 }
