@@ -8,18 +8,16 @@ class ValidationStore<ValidationObject, ValidationModel> {
     private propertyListeners: IReactionDisposer[];
 
     constructor(validationModel: ValidationModel) {
+        this.propertyListeners = [];
         this.clear();
 
         this._validationModel = validationModel;
-        this.propertyListeners = [];
     }
 
     public init = (validationObject: ValidationObject) => {
         this._validationObject = validationObject;
 
-        if (this.propertyListeners.length > 0) {
-            this.removePropertyListeners();
-        }
+        this.removePropertyListeners();
         this.createPropertyListeners();
         this.validateAllProperties();
     };
@@ -79,6 +77,7 @@ class ValidationStore<ValidationObject, ValidationModel> {
     public clear = () => {
         this._validationObject = null;
         this._invalidPropertiesMap = {};
+        this.removePropertyListeners();
     };
 
     private createPropertyListeners = () => {
@@ -103,6 +102,7 @@ class ValidationStore<ValidationObject, ValidationModel> {
     };
 
     private removePropertyListeners = () => {
+        if (this.propertyListeners.length === 0) return;
         this.propertyListeners.forEach((listener: IReactionDisposer) => listener());
         this.propertyListeners = [];
     };

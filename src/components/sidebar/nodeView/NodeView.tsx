@@ -49,6 +49,7 @@ interface INodeViewState {
 @inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore', 'confirmStore')
 @observer
 class NodeView extends React.Component<INodeViewProps, INodeViewState> {
+    private _isMounted: boolean;
     constructor(props: INodeViewProps) {
         super(props);
         this.state = {
@@ -56,11 +57,18 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         };
     }
 
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+
     async componentDidMount() {
+        this._isMounted = true;
         this.props.mapStore!.setIsMapCenteringPrevented(true);
         const params = this.props.match!.params.id;
         if (this.props.isNewNode) {
-            await this.createNewNode(params);
+            this.createNewNode(params);
         } else {
             await this.initExistingNode(params);
         }
@@ -72,7 +80,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const params = this.props.match!.params.id;
         if (prevProps.match!.params.id !== params) {
             if (this.props.isNewNode) {
-                await this.createNewNode(params);
+                this.createNewNode(params);
             } else {
                 await this.initExistingNode(params);
             }
@@ -80,12 +88,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
         EventManager.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
-    private createNewNode = async (params: any) => {
+    private createNewNode = (params: any) => {
         const createNode = () => {
             const [lat, lng] = params.split(':');
             const coordinate = new L.LatLng(lat, lng);
@@ -105,7 +114,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
     private initExistingNode = async (selectedNodeId: string) => {
         const nodeStore = this.props.nodeStore;
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
         nodeStore!.clear();
 
         const _fetchNode = async () => {
@@ -117,7 +126,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     this.initNode(node, links);
                 }
             }
-            this.setState({ isLoading: false });
+            this._setState({ isLoading: false });
         };
 
         const nodeCacheObj: INodeCacheObj | null = nodeStore!.getNodeCacheObjById(selectedNodeId);
@@ -136,6 +145,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     };
 
     private initNode = (node: INode, links: ILink[], oldNode?: INode, oldLinks?: ILink[]) => {
+        if (!this._isMounted) return;
+
         this.props.mapStore!.setSelectedNodeId(node.id);
         this.centerMapToNode(node, links);
         this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: false });
@@ -170,7 +181,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 );
                 this.updateSelectedStopAreaId();
                 nodeStore!.setIsEditingDisabled(false);
-                this.setState({ isLoading: false });
+                this._setState({ isLoading: false });
             },
             onCancel: () => promptCancelCallback()
         });
@@ -209,7 +220,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     };
 
     private save = async () => {
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
         try {
             if (this.props.isNewNode) {
                 const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
@@ -232,7 +243,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         }
 
         if (this.props.isNewNode) return;
-        this.setState({ isLoading: false });
+        this._setState({ isLoading: false });
         this.props.nodeStore!.setIsEditingDisabled(true);
     };
 

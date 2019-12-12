@@ -29,7 +29,7 @@ interface IStopViewState {
 @observer
 class StopView extends React.Component<IStopViewProps, IStopViewState> {
     private nodeListener: IReactionDisposer;
-    private mounted: boolean;
+    private _isMounted: boolean;
 
     constructor(props: IStopViewProps) {
         super(props);
@@ -40,7 +40,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
     }
 
     async componentDidMount() {
-        this.mounted = true;
+        this._isMounted = true;
         this.nodeListener = reaction(() => this.props.nodeStore!.node, this.onNodeChange);
         if (this.props.isNewStop) {
             this.props.nodeStore!.fetchAddressData();
@@ -48,7 +48,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
 
-        if (this.mounted) {
+        if (this._isMounted) {
             this.setState({
                 stopSections: this.createStopSectionDropdownItems(stopSections)
             });
@@ -58,7 +58,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
     }
 
     componentWillUnmount() {
-        this.mounted = false;
+        this._isMounted = false;
         this.nodeListener();
     }
 
