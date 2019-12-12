@@ -10,6 +10,10 @@ interface ICustomValidatorMap {
     [key: string]: ICustomValidatorObject;
 }
 
+/**
+ * @param {Object} ValidationObject - object to validate (e.g. ILink)
+ * @param {Object} ValidationModel - { property: string}, where property = validation string (e.g. IValidationModel)
+ */
 class ValidationStore<ValidationObject, ValidationModel> {
     @observable private _validationObject: ValidationObject | null;
     @observable private _invalidPropertiesMap: object;
