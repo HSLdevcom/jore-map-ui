@@ -279,6 +279,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         }
         if (redirectUrl) {
             navigator.goTo(redirectUrl);
+            return;
         }
         await this.fetchRoutePath();
         this.setState({
