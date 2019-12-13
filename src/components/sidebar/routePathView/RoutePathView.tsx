@@ -1,19 +1,16 @@
 import classnames from 'classnames';
 import L from 'leaflet';
 import _ from 'lodash';
-import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
 import Button from '~/components/controls/Button';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
-import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -52,7 +49,6 @@ interface IRoutePathViewProps {
 
 interface IRoutePathViewState {
     isLoading: boolean;
-    invalidPropertiesMap: object;
 }
 
 @inject(
@@ -65,14 +61,11 @@ interface IRoutePathViewState {
     'mapStore'
 )
 @observer
-class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState> {
-    private isEditingDisabledListener: IReactionDisposer;
-
+class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState> {
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
-            isLoading: true,
-            invalidPropertiesMap: {}
+            isLoading: true
         };
     }
 
@@ -81,10 +74,6 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         EventManager.on('undo', this.props.routePathStore!.undo);
         EventManager.on('redo', this.props.routePathStore!.redo);
         this.initialize();
-        this.isEditingDisabledListener = reaction(
-            () => this.props.routePathStore!.isEditingDisabled,
-            this.onChangeIsEditingDisabled
-        );
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
 
@@ -94,7 +83,6 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.props.routePathStore!.clear();
         EventManager.off('undo', this.props.routePathStore!.undo);
         EventManager.off('redo', this.props.routePathStore!.redo);
-        this.isEditingDisabledListener();
     }
 
     private initialize = async () => {
@@ -105,7 +93,6 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
         await this.initializeMap();
         if (this.props.routePathStore!.routePath) {
-            this.validateRoutePath();
             this.setState({
                 isLoading: false
             });
@@ -231,11 +218,6 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.props.mapStore!.setMapBounds(bounds);
     };
 
-    private onChangeRoutePathProperty = (property: keyof IRoutePath) => (value: any) => {
-        this.props.routePathStore!.updateRoutePathProperty(property, value);
-        this.validateProperty(routePathValidationModel[property], property, value);
-    };
-
     public renderTabContent = () => {
         const isEditingDisabled = this.props.routePathStore!.isEditingDisabled;
         if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
@@ -244,9 +226,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                     isEditingDisabled={isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
-                    onChangeRoutePathProperty={this.onChangeRoutePathProperty}
-                    invalidPropertiesMap={this.state.invalidPropertiesMap}
-                    setValidatorResult={this.setValidatorResult}
+                    invalidPropertiesMap={this.props.routePathStore!.invalidPropertiesMap}
                 />
             );
         }
@@ -300,26 +280,9 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
         await this.fetchRoutePath();
         this.setState({
-            invalidPropertiesMap: {},
             isLoading: false
         });
         this.props.routePathStore!.setIsEditingDisabled(true);
-    };
-
-    private onChangeIsEditingDisabled = () => {
-        this.clearInvalidPropertiesMap();
-
-        this.props.routePathStore!.setNeighborRoutePathLinks([]);
-
-        if (this.props.routePathStore!.isEditingDisabled) {
-            this.props.routePathStore!.resetChanges();
-        } else {
-            this.validateRoutePath();
-        }
-    };
-
-    private validateRoutePath = () => {
-        this.validateAllProperties(routePathValidationModel, this.props.routePathStore!.routePath);
     };
 
     render() {
@@ -343,7 +306,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             isEditingDisabled ||
             !this.props.routePathStore!.isDirty ||
             !isGeometryValid ||
-            !this.isFormValid() ||
+            !this.props.routePathStore!.isFormValid ||
             !areLinkFormsValid;
 
         const copySegmentStore = this.props.routePathCopySegmentStore;

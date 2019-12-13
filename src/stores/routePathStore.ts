@@ -1,8 +1,14 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
+import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import routePathValidationModel, {
+    IRoutePathValidationModel
+} from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
+import { IValidationResult } from '~/validation/FormValidator';
+import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 // Is the neighbor to add either startNode or endNode
 export enum NeighborToAddType {
@@ -30,6 +36,7 @@ export enum ListFilter {
 export class RoutePathStore {
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
+    @observable private _existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
     @observable private _neighborRoutePathLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
     @observable private _extendedListItems: string[];
@@ -42,9 +49,9 @@ export class RoutePathStore {
     @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
     @observable private _isEditingDisabled: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
+    private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
 
     constructor() {
-        this._geometryUndoStore = new GeometryUndoStore();
         this._neighborRoutePathLinks = [];
         this._extendedListItems = [];
         this._activeTab = RoutePathViewTab.Info;
@@ -55,6 +62,9 @@ export class RoutePathStore {
         this._listHighlightedNodeIds = [];
         this._toolHighlightedNodeIds = [];
         this._isEditingDisabled = true;
+        this._geometryUndoStore = new GeometryUndoStore();
+        this._validationStore = new ValidationStore();
+        reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
     @computed
@@ -124,6 +134,16 @@ export class RoutePathStore {
     }
 
     @computed
+    get invalidPropertiesMap() {
+        return this._validationStore.getInvalidPropertiesMap();
+    }
+
+    @computed
+    get isFormValid() {
+        return this._validationStore.isValid();
+    }
+
+    @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
     }
@@ -143,6 +163,37 @@ export class RoutePathStore {
 
         this.setOldRoutePath(this._routePath);
         this.setViaNames(viaNames);
+
+        const validatePrimaryKey = () => {
+            const isPrimaryKeyDuplicated = this._existingRoutePathPrimaryKeys.some(
+                rp =>
+                    routePath.routeId === rp.routeId &&
+                    routePath.direction === rp.direction &&
+                    routePath.startTime.getTime() === rp.startTime.getTime()
+            );
+
+            if (isPrimaryKeyDuplicated) {
+                const validationResult: IValidationResult = {
+                    isValid: false,
+                    errorMessage:
+                        'Reitinsuunta samalla reitillä, suunnalla ja alkupäivämäärällä on jo olemassa.'
+                };
+                return validationResult;
+            }
+            return;
+        };
+        const customValidatorMap: ICustomValidatorMap = {
+            direction: {
+                validator: validatePrimaryKey,
+                dependentProperties: ['startTime']
+            },
+            startTime: {
+                validator: validatePrimaryKey,
+                dependentProperties: ['direction']
+            }
+        };
+
+        this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
     };
 
     @action
@@ -152,6 +203,11 @@ export class RoutePathStore {
         // Need to recalculate orderNumbers to ensure that they are correct
         this.recalculateOrderNumbers();
         this.sortRoutePathLinks();
+    };
+
+    @action
+    public setExistingRoutePathPrimaryKeys = (routePathPrimaryKeys: IRoutePathPrimaryKey[]) => {
+        this._existingRoutePathPrimaryKeys = routePathPrimaryKeys;
     };
 
     @action
@@ -306,10 +362,8 @@ export class RoutePathStore {
         property: keyof IRoutePath | keyof IRoutePathLink,
         value?: string | number | Date | boolean | null
     ) => {
-        this._routePath = {
-            ...this._routePath!,
-            [property]: value
-        };
+        this._routePath![property] = value;
+        this._validationStore.updateProperty(property, value);
     };
 
     @action
@@ -445,6 +499,7 @@ export class RoutePathStore {
         this._invalidLinkOrderNumbers = [];
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
+        this._validationStore.clear();
         this._viaNames = [];
         this._oldViaNames = [];
     };
@@ -537,6 +592,15 @@ export class RoutePathStore {
         const valueToCopy = this.routePath![property];
         this.updateRoutePathLinkProperty(routePathLink.orderNumber, property, valueToCopy);
         this.updateRoutePathProperty(property, null);
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        this.setNeighborRoutePathLinks([]);
+        if (this._isEditingDisabled) {
+            this.resetChanges();
+        } else {
+            this._validationStore.validateAllProperties();
+        }
     };
 }
 
