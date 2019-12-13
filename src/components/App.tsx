@@ -60,10 +60,10 @@ class App extends React.Component<IAppProps, IAppState> {
             <>
                 <NavigationBar />
                 <div className={s.appContent}>
-                    <Sidebar />
                     <Map>
                         <ErrorBar />
                     </Map>
+                    <Sidebar />
                 </div>
                 <OverlayContainer />
             </>
