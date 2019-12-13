@@ -4,6 +4,7 @@ import { INode } from '..';
 type NodeKeys = keyof INode;
 type INodeValidationModel = { [key in NodeKeys]: string };
 
+// TODO: rename as nodeValidationObject
 const nodeValidationModel: INodeValidationModel = {
     id: '',
     type: 'required|min:1|max:1|string',
@@ -21,3 +22,5 @@ const nodeValidationModel: INodeValidationModel = {
 };
 
 export default nodeValidationModel;
+
+export { INodeValidationModel };
