@@ -100,6 +100,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     };
 
     private createNewRoutePath = async () => {
+        this.props.mapStore!.setIsMapCenteringPrevented(false);
+        this.props.mapStore!.initCoordinates();
         try {
             if (!this.props.routePathStore!.routePath) {
                 const queryParams = navigator.getQueryParamValues();
@@ -107,7 +109,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 const lineId = queryParams[QueryParams.lineId];
                 const route = await RouteService.fetchRoute(routeId);
                 const routePath = RoutePathFactory.createNewRoutePath(lineId, route);
-                this.centerMapToRoutePath(routePath);
                 this.props.routePathStore!.init(routePath, []);
             } else {
                 this.props.routePathStore!.init(

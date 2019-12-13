@@ -106,7 +106,9 @@ export class MapStore {
 
     @action
     public initCoordinates = () => {
-        this._coordinates = INITIAL_COORDINATES;
+        if (!this._coordinates) {
+            this._coordinates = INITIAL_COORDINATES;
+        }
     };
 
     @action
