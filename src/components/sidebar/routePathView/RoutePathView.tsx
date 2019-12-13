@@ -109,13 +109,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 const lineId = queryParams[QueryParams.lineId];
                 const route = await RouteService.fetchRoute(routeId);
                 const routePath = RoutePathFactory.createNewRoutePath(lineId, route);
-                this.props.routePathStore!.init(routePath, []);
+                this.props.routePathStore!.init(routePath);
             } else {
                 this.props.routePathStore!.init(
                     RoutePathFactory.createNewRoutePathFromOld(
                         this.props.routePathStore!.routePath!
-                    ),
-                    []
+                    )
                 );
             }
             this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
@@ -165,14 +164,15 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 startTimeString,
                 direction
             );
-            const viaNames = await this.fetchViaNames(routePath);
+            await this.fetchViaNames(routePath);
             this.centerMapToRoutePath(routePath);
-            this.props.routePathStore!.init(routePath, viaNames);
+            this.props.routePathStore!.init(routePath);
         } catch (e) {
             this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.', e);
         }
     };
 
+    // fetch & set viaName properties to routePathLink
     private fetchViaNames = async (routePath: IRoutePath) => {
         try {
             const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
@@ -185,7 +185,11 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         const viaName: IViaName | null = await ViaNameService.fetchViaName(
                             routePathLink.id
                         );
-                        if (viaName) viaNames.push(viaName);
+                        routePathLink.viaNameId = routePathLink.id;
+                        routePathLink.destinationFi1 = viaName?.destinationFi1;
+                        routePathLink.destinationFi2 = viaName?.destinationFi2;
+                        routePathLink.destinationSw1 = viaName?.destinationSw1;
+                        routePathLink.destinationSw2 = viaName?.destinationSw2;
                     } catch (err) {
                         this.props.errorStore!.addError(
                             'Määränpää tietojen (via nimet) haku ei onnistunut.',
@@ -245,10 +249,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const routePath = this.props.routePathStore!.routePath;
         try {
             if (this.props.isNewRoutePath) {
-                const viaNames = this.props.routePathStore!.viaNames;
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
-                    routePath!,
-                    viaNames
+                    routePath!
                 );
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
@@ -269,8 +271,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 if (!hasRoutePathLinksChanged) {
                     routePathToUpdate.routePathLinks = [];
                 }
-                const viaNames = this.props.routePathStore!.viaNames;
-                await RoutePathService.updateRoutePath(routePathToUpdate, viaNames);
+                await RoutePathService.updateRoutePath(routePathToUpdate);
             }
             this.props.alertStore!.setFadeMessage('Tallennettu!');
         } catch (e) {
@@ -298,20 +299,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         if (!routePathStore!.routePath) return null;
 
         const isGeometryValid = validateRoutePathLinks(routePathStore!.routePath!.routePathLinks);
-
-        const areLinkFormsValid = this.props.routePathStore!.invalidLinkOrderNumbers.length === 0;
         const isEditingDisabled = routePathStore!.isEditingDisabled;
-        // TODO:
-        // are nodeFormsValid ...
         const isSaveButtonDisabled =
             isEditingDisabled ||
             !this.props.routePathStore!.isDirty ||
             !isGeometryValid ||
-            !this.props.routePathStore!.isFormValid ||
-            !areLinkFormsValid;
-
+            !this.props.routePathStore!.isFormValid;
         const copySegmentStore = this.props.routePathCopySegmentStore;
-
         const isCopyRoutePathSegmentViewVisible =
             copySegmentStore!.startNode && copySegmentStore!.endNode;
 

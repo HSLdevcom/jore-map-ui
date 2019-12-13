@@ -1,8 +1,11 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
+import { IRoutePath, IRoutePathLink } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import routePathLinkValidationModel, {
+    IRoutePathLinkValidationModel
+} from '~/models/validationModels/routePathLinkValidationModel';
 import routePathValidationModel, {
     IRoutePathValidationModel
 } from '~/models/validationModels/routePathValidationModel';
@@ -11,23 +14,23 @@ import { IValidationResult } from '~/validation/FormValidator';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 // Is the neighbor to add either startNode or endNode
-export enum NeighborToAddType {
+enum NeighborToAddType {
     AfterNode,
     BeforeNode
 }
 
-export enum RoutePathViewTab {
+enum RoutePathViewTab {
     Info,
     List
 }
 
-export interface UndoState {
+interface UndoState {
     routePathLinks: IRoutePathLink[];
     isStartNodeUsingBookSchedule: boolean;
     startNodeBookScheduleColumnNumber?: number;
 }
 
-export enum ListFilter {
+enum ListFilter {
     stop,
     otherNodes,
     link
@@ -43,13 +46,15 @@ export class RoutePathStore {
     @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
-    @observable private _viaNames: IViaName[];
-    @observable private _oldViaNames: IViaName[];
     @observable private _listHighlightedNodeIds: string[];
     @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
     @observable private _isEditingDisabled: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
+    private _routePathLinkValidationStoreMap: Map<
+        string,
+        ValidationStore<IRoutePathLink, IRoutePathLinkValidationModel>
+    >;
 
     constructor() {
         this._neighborRoutePathLinks = [];
@@ -57,13 +62,12 @@ export class RoutePathStore {
         this._activeTab = RoutePathViewTab.Info;
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
-        this._viaNames = [];
-        this._oldViaNames = [];
         this._listHighlightedNodeIds = [];
         this._toolHighlightedNodeIds = [];
         this._isEditingDisabled = true;
         this._geometryUndoStore = new GeometryUndoStore();
         this._validationStore = new ValidationStore();
+        this._routePathLinkValidationStoreMap = new Map();
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
@@ -84,9 +88,7 @@ export class RoutePathStore {
 
     @computed
     get isDirty() {
-        const isViaNameDirty = !_.isEqual(this._oldViaNames, this._viaNames);
-        const isRoutePathDirty = !_.isEqual(this._routePath, this._oldRoutePath);
-        return isRoutePathDirty || isViaNameDirty;
+        return !_.isEqual(this._routePath, this._oldRoutePath);
     }
 
     get extendedListItems() {
@@ -119,28 +121,19 @@ export class RoutePathStore {
     }
 
     @computed
-    get viaNames(): IViaName[] {
-        return this._viaNames;
-    }
-
-    @computed
-    get dirtyViaNames(): IViaName[] {
-        const dirtyViaNames: IViaName[] = [];
-        for (const viaName of this._viaNames) {
-            const oldViaName = _.find(this._oldViaNames, { id: viaName.id });
-            if (!_.isEqual(viaName, oldViaName)) dirtyViaNames.push(viaName);
-        }
-        return dirtyViaNames;
-    }
-
-    @computed
     get invalidPropertiesMap() {
         return this._validationStore.getInvalidPropertiesMap();
     }
 
     @computed
     get isFormValid() {
-        return this._validationStore.isValid();
+        let areRoutePathLinksValid = true;
+        this._routePathLinkValidationStoreMap.forEach(rpLinkValidationStore => {
+            if (!rpLinkValidationStore.isValid()) {
+                areRoutePathLinksValid = false;
+            }
+        })
+        return this._validationStore.isValid() && areRoutePathLinksValid;
     }
 
     @computed
@@ -149,7 +142,7 @@ export class RoutePathStore {
     }
 
     @action
-    public init = (routePath: IRoutePath, viaNames: IViaName[]) => {
+    public init = (routePath: IRoutePath) => {
         this.clear();
         this._routePath = routePath;
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
@@ -162,7 +155,6 @@ export class RoutePathStore {
         this._geometryUndoStore.addItem(currentUndoState);
 
         this.setOldRoutePath(this._routePath);
-        this.setViaNames(viaNames);
 
         const validatePrimaryKey = () => {
             const isPrimaryKeyDuplicated = this._existingRoutePathPrimaryKeys.some(
@@ -194,6 +186,7 @@ export class RoutePathStore {
         };
 
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
+        this._routePath.routePathLinks.forEach(rpLink => this.initRoutePathLinkStore(rpLink));
     };
 
     @action
@@ -209,31 +202,6 @@ export class RoutePathStore {
     public setExistingRoutePathPrimaryKeys = (routePathPrimaryKeys: IRoutePathPrimaryKey[]) => {
         this._existingRoutePathPrimaryKeys = routePathPrimaryKeys;
     };
-
-    @action
-    public setViaNames = (viaNames: IViaName[]) => {
-        this._viaNames = viaNames;
-        this._oldViaNames = _.cloneDeep(viaNames);
-    };
-
-    @action
-    public setViaName = (viaName: IViaName) => {
-        const viaNameToSet = _.cloneDeep(viaName);
-        const oldViaNameIndex = _.findIndex(this._viaNames, {
-            id: viaNameToSet.id
-        });
-        if (oldViaNameIndex === -1) {
-            this._viaNames.push(viaNameToSet);
-        } else {
-            this._viaNames[oldViaNameIndex] = viaNameToSet;
-        }
-    };
-
-    @action
-    public getViaName(id: string): IViaName | null {
-        const viaName = _.find(this._viaNames, { id });
-        return viaName ? _.cloneDeep(viaName) : null;
-    }
 
     @action
     public setActiveTab = (tab: RoutePathViewTab) => {
@@ -377,19 +345,7 @@ export class RoutePathStore {
         );
         // As any to fix typing error: Type 'string' is not assignable to type 'never'
         (rpLinkToUpdate as any)[property] = value;
-    };
-
-    @action
-    public setLinkFormValidity = (orderNumber: number, isValid: boolean) => {
-        if (isValid) {
-            this._invalidLinkOrderNumbers = this._invalidLinkOrderNumbers.filter(
-                item => item !== orderNumber
-            );
-        } else {
-            if (!this.invalidLinkOrderNumbers.includes(orderNumber)) {
-                this.invalidLinkOrderNumbers.push(orderNumber);
-            }
-        }
+        this._routePathLinkValidationStoreMap.get(rpLinkToUpdate!.id)?.updateProperty(property, value);
     };
 
     @action
@@ -408,6 +364,7 @@ export class RoutePathStore {
      */
     @action
     public addLink = (routePathLink: IRoutePathLink) => {
+        routePathLink.viaNameId = routePathLink.id;
         const rpLinks = this._routePath!.routePathLinks;
 
         // Need to do splice to trigger ReactionDisposer watcher
@@ -433,6 +390,8 @@ export class RoutePathStore {
 
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
+
+        this.initRoutePathLinkStore(routePathLink);
     };
 
     @action
@@ -459,6 +418,8 @@ export class RoutePathStore {
 
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
+
+        this._routePathLinkValidationStoreMap.delete(id);
     };
 
     @action
@@ -500,14 +461,13 @@ export class RoutePathStore {
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
         this._validationStore.clear();
-        this._viaNames = [];
-        this._oldViaNames = [];
+        this._routePathLinkValidationStoreMap = new Map();
     };
 
     @action
     public resetChanges = () => {
         if (this._oldRoutePath) {
-            this.init(this._oldRoutePath, this._oldViaNames);
+            this.init(this._oldRoutePath);
         }
     };
 
@@ -521,6 +481,10 @@ export class RoutePathStore {
             'startNodeBookScheduleColumnNumber',
             undoState.startNodeBookScheduleColumnNumber
         );
+    }
+
+    public getRoutePathLinkInvalidPropertiesMap = (id: string) => {
+        return this._routePathLinkValidationStoreMap.get(id)!.getInvalidPropertiesMap();
     }
 
     public isLastRoutePathLink = (routePathLink: IRoutePathLink): boolean => {
@@ -565,8 +529,15 @@ export class RoutePathStore {
     public hasRoutePathLinksChanged = () => {
         const newRoutePathLinks = this.routePath!.routePathLinks;
         const oldRoutePathLinks = this._oldRoutePath!.routePathLinks;
-        return !_.isEqual(newRoutePathLinks, oldRoutePathLinks) || this.dirtyViaNames.length > 0;
+        return !_.isEqual(newRoutePathLinks, oldRoutePathLinks);
     };
+
+    private initRoutePathLinkStore = (routePathLink: IRoutePathLink) => {
+        this._routePathLinkValidationStoreMap.set(routePathLink.id, new ValidationStore());
+        this._routePathLinkValidationStoreMap
+            .get(routePathLink.id)!
+            .init(routePathLink, routePathLinkValidationModel);
+    }
 
     private recalculateOrderNumbers = () => {
         this._routePath!.routePathLinks.forEach((rpLink, index) => {
@@ -607,3 +578,5 @@ export class RoutePathStore {
 const observableStoreStore = new RoutePathStore();
 
 export default observableStoreStore;
+
+export { NeighborToAddType, RoutePathViewTab, UndoState, ListFilter };
