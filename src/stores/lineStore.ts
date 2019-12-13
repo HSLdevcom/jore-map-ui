@@ -17,7 +17,7 @@ export class LineStore {
 
     constructor() {
         this._isEditingDisabled = true;
-        this._validationStore = new ValidationStore(lineValidationModel);
+        this._validationStore = new ValidationStore();
 
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
@@ -92,7 +92,7 @@ export class LineStore {
             }
         };
 
-        this._validationStore.init(line, customValidatorMap);
+        this._validationStore.init(line, lineValidationModel, customValidatorMap);
     };
 
     @action

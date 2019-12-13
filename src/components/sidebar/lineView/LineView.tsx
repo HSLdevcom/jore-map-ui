@@ -145,7 +145,6 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         const isEditingDisabled = lineStore!.isEditingDisabled;
         const isSaveButtonDisabled =
             isEditingDisabled || !lineStore!.isDirty || !lineStore!.isLineFormValid;
-        const invalidPropertiesMap = lineStore!.invalidPropertiesMap;
         return (
             <div className={s.lineView}>
                 <div className={s.sidebarHeaderSection}>
@@ -178,7 +177,6 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                             <LineInfoTab
                                 isEditingDisabled={isEditingDisabled}
                                 isNewLine={this.props.isNewLine}
-                                invalidPropertiesMap={invalidPropertiesMap}
                                 saveLine={this.saveLine}
                                 isLineSaveButtonDisabled={isSaveButtonDisabled}
                             />

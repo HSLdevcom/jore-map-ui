@@ -54,8 +54,8 @@ class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
-        this._nodeValidationStore = new ValidationStore(nodeValidationModel);
-        this._stopValidationStore = new ValidationStore(stopValidationModel);
+        this._nodeValidationStore = new ValidationStore();
+        this._stopValidationStore = new ValidationStore();
         this._isEditingDisabled = true;
         this._nodeCache = {
             newNodeCache: null
@@ -159,9 +159,9 @@ class NodeStore {
         this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
 
-        this._nodeValidationStore.init(node);
+        this._nodeValidationStore.init(node, nodeValidationModel);
         if (node.stop) {
-            this._stopValidationStore.init(node.stop);
+            this._stopValidationStore.init(node.stop, stopValidationModel);
         }
     };
 
@@ -273,17 +273,14 @@ class NodeStore {
         if (this._node.type === NodeType.STOP && !this._node.stop) {
             const stop = NodeStopFactory.createNewStop();
             (this._node as any)[property] = stop;
-            this._stopValidationStore.init(stop);
+            this._stopValidationStore.init(stop, stopValidationModel);
         }
     };
 
     @action
     public updateStopProperty = (property: string, value?: string | number | Date) => {
         if (!this.node) return;
-        this._node!.stop = {
-            ...this._node!.stop!,
-            [property]: value
-        };
+        this._node!.stop![property] = value;
         this._stopValidationStore.updateProperty(property, value);
     };
 
