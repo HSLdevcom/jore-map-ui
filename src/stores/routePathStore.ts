@@ -156,7 +156,7 @@ export class RoutePathStore {
 
         this.setOldRoutePath(this._routePath);
 
-        const validatePrimaryKey = () => {
+        const validatePrimaryKey = (routePath: IRoutePath) => {
             const isPrimaryKeyDuplicated = this._existingRoutePathPrimaryKeys.some(
                 rp =>
                     routePath.routeId === rp.routeId &&
