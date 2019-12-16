@@ -61,19 +61,19 @@ class RoutePathService {
         );
     };
 
-    public static updateRoutePath = async (routePath: IRoutePath, viaNames: IViaName[]) => {
+    public static updateRoutePath = async (routePath: IRoutePath) => {
         const requestBody = {
             routePath,
-            viaNames
+            viaNames: _getViaNames(routePath)
         };
 
         await ApiClient.updateObject(endpoints.ROUTEPATH, requestBody);
     };
 
-    public static createRoutePath = async (routePath: IRoutePath, viaNames: IViaName[]) => {
+    public static createRoutePath = async (routePath: IRoutePath) => {
         const requestBody = {
             routePath,
-            viaNames
+            viaNames: _getViaNames(routePath)
         };
         const response = (await ApiClient.createObject(
             endpoints.ROUTEPATH,
@@ -82,5 +82,22 @@ class RoutePathService {
         return response;
     };
 }
+
+const _getViaNames = (routePath: IRoutePath) => {
+    const viaNames: IViaName[] = [];
+    routePath.routePathLinks.forEach(rpLink => {
+        if (rpLink.viaNameId) {
+            const viaName: IViaName = {
+                id: rpLink.viaNameId,
+                destinationFi1: rpLink.destinationFi1,
+                destinationFi2: rpLink.destinationFi2,
+                destinationSw1: rpLink.destinationSw1,
+                destinationSw2: rpLink.destinationSw2
+            };
+            viaNames.push(viaName);
+        }
+    });
+    return viaNames;
+};
 
 export default RoutePathService;

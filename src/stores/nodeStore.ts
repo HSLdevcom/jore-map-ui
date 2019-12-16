@@ -264,7 +264,6 @@ class NodeStore {
     public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng) => {
         if (!this._node) return;
 
-        // As any to fix typing error: Type 'string' is not assignable to type 'never'
         (this._node as any)[property] = value;
         this._nodeValidationStore.updateProperty(property, value);
 

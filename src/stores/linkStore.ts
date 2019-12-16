@@ -1,9 +1,13 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import { ILink, INode } from '~/models';
+import linkValidationModel, {
+    ILinkValidationModel
+} from '~/models/validationModels/linkValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { calculateLengthFromLatLngs, roundLatLngs } from '~/util/geomHelpers';
+import ValidationStore from './validationStore';
 
 export interface UndoState {
     link: ILink;
@@ -18,6 +22,7 @@ export class LinkStore {
     @observable private _isLinkGeometryEditable: boolean;
     @observable private _isEditingDisabled: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
+    private _validationStore: ValidationStore<ILink, ILinkValidationModel>;
 
     constructor() {
         this._nodes = [];
@@ -27,6 +32,9 @@ export class LinkStore {
         this._isLinkGeometryEditable = true;
         this._isEditingDisabled = true;
         this._geometryUndoStore = new GeometryUndoStore();
+        this._validationStore = new ValidationStore();
+
+        reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
     @computed
@@ -52,6 +60,16 @@ export class LinkStore {
     @computed
     get isLinkGeometryEditable() {
         return this._isLinkGeometryEditable;
+    }
+
+    @computed
+    get invalidPropertiesMap() {
+        return this._validationStore.getInvalidPropertiesMap();
+    }
+
+    @computed
+    get isFormValid() {
+        return this._validationStore.isValid();
     }
 
     @computed
@@ -96,6 +114,8 @@ export class LinkStore {
         this.setOldLink(oldLink);
 
         this._isEditingDisabled = !isNewLink;
+
+        this._validationStore.init(newLink, linkValidationModel);
     };
 
     @action
@@ -113,8 +133,8 @@ export class LinkStore {
 
         const updatedLink = _.cloneDeep(this._link);
         updatedLink.geometry = roundLatLngs(latLngs);
-        this._link.geometry = roundLatLngs(latLngs);
-        this._link.length = calculateLengthFromLatLngs(this._link.geometry);
+        this.updateLinkProperty('geometry', roundLatLngs(latLngs));
+        this.updateLinkLength();
         updatedLink.length = this._link.length;
         const newUndoState: UndoState = {
             link: updatedLink
@@ -139,13 +159,14 @@ export class LinkStore {
     ) => {
         // As any to fix typing error: Type 'string' is not assignable to type 'never'
         (this._link as any)[property] = value;
+        this._validationStore.updateProperty(property, value);
     };
 
     @action
     public updateLinkLength = () => {
         if (!this._link) return;
 
-        this._link.length = calculateLengthFromLatLngs(this._link.geometry);
+        this.updateLinkProperty('length', calculateLengthFromLatLngs(this._link.geometry));
     };
 
     @action
@@ -170,6 +191,7 @@ export class LinkStore {
         this._oldLink = null;
         this._startMarkerCoordinates = null;
         this._geometryUndoStore.clear();
+        this._validationStore.clear();
         this._isEditingDisabled = true;
     };
 
@@ -183,17 +205,26 @@ export class LinkStore {
     @action
     public undo = () => {
         this._geometryUndoStore.undo((previousUndoState: UndoState) => {
-            this._link!.length = previousUndoState.link.length;
-            this._link!.geometry = previousUndoState.link.geometry;
+            this.updateLinkProperty('length', previousUndoState.link.length);
+            this.updateLinkProperty('geometry', previousUndoState.link.geometry);
         });
     };
 
     @action
     public redo = () => {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
-            this._link!.length = nextUndoState.link.length;
-            this._link!.geometry = nextUndoState.link.geometry;
+            this.updateLinkProperty('length', nextUndoState.link.length);
+            this.updateLinkProperty('geometry', nextUndoState.link.geometry);
         });
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        if (this._isEditingDisabled) {
+            this.resetChanges();
+        } else {
+            this.updateLinkLength();
+            this._validationStore.validateAllProperties();
+        }
     };
 }
 
