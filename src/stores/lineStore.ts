@@ -102,10 +102,7 @@ export class LineStore {
 
     @action
     public updateLineProperty = (property: keyof ILine, value: string | number | Date) => {
-        this._line = {
-            ...this._line!,
-            [property]: value
-        };
+        (this._line as any)[property] = value;
         this._validationStore.updateProperty(property, value);
     };
 
