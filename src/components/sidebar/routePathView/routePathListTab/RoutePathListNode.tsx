@@ -31,20 +31,9 @@ interface IRoutePathListNodeProps {
     isLastNode?: boolean;
 }
 
-interface RoutePathListNodeState {
-    isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
-}
-
 @inject('routePathStore', 'codeListStore')
 @observer
-class RoutePathListNode extends React.Component<IRoutePathListNodeProps, RoutePathListNodeState> {
-    constructor(props: IRoutePathListNodeProps) {
-        super(props);
-        this.state = {
-            isLoading: false
-        };
-    }
-
+class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
