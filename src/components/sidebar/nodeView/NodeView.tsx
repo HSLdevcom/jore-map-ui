@@ -65,7 +65,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
     async componentDidMount() {
         this._isMounted = true;
-        this.props.mapStore!.setIsMapCenteringPrevented(true);
         const params = this.props.match!.params.id;
         if (this.props.isNewNode) {
             this.createNewNode(params);
@@ -210,7 +209,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     }
 
     private centerMapToNode = (node: INode, links: ILink[]) => {
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
         let latLngs: L.LatLng[] = [node.coordinates, node.coordinatesProjection];
         links.forEach((link: ILink) => {
             latLngs = latLngs.concat(link.geometry);

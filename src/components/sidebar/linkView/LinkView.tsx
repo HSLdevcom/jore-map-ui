@@ -55,7 +55,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     }
 
     async componentDidMount() {
-        this.props.mapStore!.setIsMapCenteringPrevented(true);
         if (this.props.isNewLink) {
             await this.initNewLink();
         } else {
@@ -140,7 +139,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     private centerMapToLink = (link: ILink) => {
         const bounds = L.latLngBounds(link.geometry);
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
         this.props.mapStore!.setMapBounds(bounds);
     };
 
