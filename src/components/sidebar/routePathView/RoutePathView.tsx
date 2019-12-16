@@ -70,7 +70,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     componentDidMount() {
-        this.props.mapStore!.setIsMapCenteringPrevented(true);
         EventManager.on('undo', this.props.routePathStore!.undo);
         EventManager.on('redo', this.props.routePathStore!.redo);
         this.initialize();
@@ -100,7 +99,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     };
 
     private createNewRoutePath = async () => {
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
         this.props.mapStore!.initCoordinates();
         try {
             if (!this.props.routePathStore!.routePath) {
@@ -219,7 +217,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             link.geometry.forEach(pos => bounds.extend(pos));
         });
 
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
         this.props.mapStore!.setMapBounds(bounds);
     };
 

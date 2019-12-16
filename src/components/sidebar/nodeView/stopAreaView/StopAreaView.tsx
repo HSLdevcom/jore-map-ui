@@ -69,7 +69,6 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
 
     async componentDidMount() {
         this.mounted = true;
-        this.props.mapStore!.setIsMapCenteringPrevented(true);
         if (this.props.isNewStopArea) {
             await this.initNewStopArea();
         } else {
