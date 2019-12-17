@@ -59,7 +59,6 @@ export default class NodeForm extends Component<INodeViewProps> {
                   errorMessage: 'Solmun 2 viimeistä numeroa täytyy valita.'
               }
             : undefined;
-
         return (
             <div className={classnames(s.nodeForm, s.form)}>
                 <div className={s.formSection}>

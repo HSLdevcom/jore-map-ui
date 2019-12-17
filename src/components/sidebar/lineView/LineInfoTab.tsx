@@ -90,7 +90,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
         const onChange = this.onChangeLineProperty;
         const invalidPropertiesMap = this.props.lineStore!.invalidPropertiesMap;
         const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
-
         return (
             <div className={s.lineInfoTabView}>
                 <div className={s.form}>

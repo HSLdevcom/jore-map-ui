@@ -119,7 +119,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         this.props.routePathCopySegmentStore!.clear();
         this.props.toolbarStore!.selectTool(null);
 
-        this.props.alertStore!.closeLoaderMessage();
+        this.props.alertStore!.close();
         this.props.alertStore!.setFadeMessage({
             message: 'Segmentti kopioitu!',
             type: AlertType.Success

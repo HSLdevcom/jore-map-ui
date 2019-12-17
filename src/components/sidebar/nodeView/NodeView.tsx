@@ -117,9 +117,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             const nodeId = await NodeService.fetchAvailableNodeId(node);
             if (!nodeId) {
                 node.id = '';
-                this.props.alertStore!.setFadeMessage({
+                this.props.alertStore!.setNotificationMessage({
                     message:
-                        'Solmun id:n generointi epäonnistui. Aluedatasta ei löytynyt tarvittavia tietoja tai solmun id avaruus on loppunut. Syötä solmun id kenttään ensimmäiset 5 solmun id:n numeroa.'
+                        'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Syötä solmun tunnus kenttään ensimmäiset 5 solmutunnuksen numeroa.'
                 });
                 this.props.nodeStore!.setIsNodeIdEditable(true);
             } else {
@@ -345,10 +345,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 isNodeIdSuffixQueryLoading: false
             });
         } else {
-            this._setState({
-                nodeIdSuffixOptions: [],
-                selectedNodeIdSuffix: ''
-            });
+            if (this.state.nodeIdSuffixOptions.length > 0) {
+                this._setState({
+                    nodeIdSuffixOptions: [],
+                    selectedNodeIdSuffix: ''
+                });
+            }
         }
     };
 
@@ -411,7 +413,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const isStopFormInvalid = node.type === NodeType.STOP && !nodeStore.isStopFormValid;
         const isSaveButtonDisabled =
             isEditingDisabled || !nodeStore.isDirty || isNodeFormInvalid || isStopFormInvalid;
-
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
