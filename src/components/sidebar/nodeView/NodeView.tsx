@@ -11,6 +11,7 @@ import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
 import navigator from '~/routing/navigator';
@@ -372,6 +373,22 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.onNodeGeometryChange(coordinateType, new L.LatLng(previousLatLng.lat, lng));
     };
 
+    private toggleTransitType = async (type: TransitType) => {
+        const nodeStore = this.props.nodeStore!;
+        const transitType = nodeStore.node.stop?.transitType;
+        if (transitType === type) {
+            this.props.nodeStore!.updateStopProperty('transitType', undefined);
+        } else {
+            this.props.nodeStore!.updateStopProperty('transitType', type);
+        }
+        if (nodeStore!.isNodeIdEditable) return;
+
+        this._setState({ isLoading: true });
+        const nodeId = await NodeService.fetchAvailableNodeId(nodeStore.node);
+        nodeStore.updateNodeProperty('id', nodeId);
+        this._setState({ isLoading: false });
+    };
+
     render() {
         const nodeStore = this.props.nodeStore!;
         const node = nodeStore.node;
@@ -423,6 +440,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     {node.type === NodeType.STOP && node.stop && (
                         <StopView
                             node={node}
+                            toggleTransitType={this.toggleTransitType}
                             onNodePropertyChange={this.onChangeNodeProperty}
                             isNewStop={isNewNode}
                             nodeInvalidPropertiesMap={invalidPropertiesMap}

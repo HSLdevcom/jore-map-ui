@@ -288,8 +288,6 @@ class NodeStore {
         if (!this._node) return;
 
         (this._node as any)[property] = value;
-        console.log('upd property', property);
-        console.log('upd value', value);
         this._nodeValidationStore.updateProperty(property, value);
 
         if (property === 'type') this.mirrorCoordinates(this._node);

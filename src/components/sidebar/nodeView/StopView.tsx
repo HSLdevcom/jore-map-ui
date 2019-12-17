@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
 import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
 import StopService, { IStopSectionItem } from '~/services/stopService';
@@ -18,6 +19,7 @@ interface IStopViewProps {
     codeListStore?: CodeListStore;
     nodeInvalidPropertiesMap: object;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
+    toggleTransitType?: (type: TransitType) => void;
 }
 
 interface IStopViewState {
@@ -97,7 +99,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const invalidPropertiesMap = this.props.nodeStore!.stopInvalidPropertiesMap;
-        const { node, isNewStop, onNodePropertyChange } = this.props;
+        const { node, isNewStop, onNodePropertyChange, toggleTransitType } = this.props;
 
         if (this.state.isLoading) {
             return (
@@ -116,6 +118,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 stopSections={this.state.stopSections}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
+                toggleTransitType={toggleTransitType}
                 updateStopProperty={this.updateStopProperty}
                 onNodePropertyChange={onNodePropertyChange}
                 setCurrentStateIntoNodeCache={this.setCurrentStateIntoNodeCache}
