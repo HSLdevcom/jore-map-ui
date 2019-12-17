@@ -63,26 +63,30 @@ export default class NodeForm extends Component<INodeViewProps> {
         return (
             <div className={classnames(s.nodeForm, s.form)}>
                 <div className={s.formSection}>
-                    <div className={s.flexRow}>
-                        <InputContainer
-                            value={node.id}
-                            onChange={onChangeNodeId ? onChangeNodeId : undefined}
-                            label={isNodeIdEditable ? 'SOLMUN TUNNUS (5 num.' : 'SOLMUN TUNNUS'}
-                            disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
-                            validationResult={invalidPropertiesMap['id']}
-                        />
-                        {this.props.isNodeIdEditable && (
-                            <Dropdown
-                                label='+ 2 num.)'
-                                onChange={onChangeNodeIdSuffix ? onChangeNodeIdSuffix : undefined}
-                                disabled={_.isEmpty(nodeIdSuffixOptions)}
-                                isLoading={isNodeIdSuffixQueryLoading}
-                                selected={selectedNodeIdSuffix ? selectedNodeIdSuffix : ''}
-                                items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
-                                validationResult={nodeSuffixValidationResult}
+                    {isNewNode && (
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                value={node.id}
+                                onChange={onChangeNodeId ? onChangeNodeId : undefined}
+                                label={isNodeIdEditable ? 'SOLMUN TUNNUS (5 num.' : 'SOLMUN TUNNUS'}
+                                disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
+                                validationResult={invalidPropertiesMap['id']}
                             />
-                        )}
-                    </div>
+                            {this.props.isNodeIdEditable && (
+                                <Dropdown
+                                    label='+ 2 num.)'
+                                    onChange={
+                                        onChangeNodeIdSuffix ? onChangeNodeIdSuffix : undefined
+                                    }
+                                    disabled={_.isEmpty(nodeIdSuffixOptions)}
+                                    isLoading={isNodeIdSuffixQueryLoading}
+                                    selected={selectedNodeIdSuffix ? selectedNodeIdSuffix : ''}
+                                    items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
+                                    validationResult={nodeSuffixValidationResult}
+                                />
+                            )}
+                        </div>
+                    )}
                     <div className={s.flexRow}>
                         <Dropdown
                             label='TYYPPI'
