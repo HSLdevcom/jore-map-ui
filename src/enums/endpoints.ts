@@ -9,6 +9,8 @@ enum endpoints { // TODO: rename as endpointPath
     ROUTEPATH = 'routePath',
     ROUTELINK = 'routeLink',
     NODE = 'node',
+    GET_AVAILABLE_NODE_ID = 'getAvailableNodeId',
+    GET_AVAILABLE_NODE_IDS_WITH_PREFIX = 'getAvailableNodeIdsWithPrefix',
     STOP_AREA = 'stopArea',
     LINK = 'link'
 }

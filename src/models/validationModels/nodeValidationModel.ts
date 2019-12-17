@@ -21,6 +21,8 @@ const nodeValidationModel: INodeValidationModel = {
     transitTypes: ''
 };
 
+const editableNodeIdValidationRule = `required|min:5|max:5|string|${regexRules.numbers}`;
+
 export default nodeValidationModel;
 
-export { INodeValidationModel };
+export { INodeValidationModel, editableNodeIdValidationRule };

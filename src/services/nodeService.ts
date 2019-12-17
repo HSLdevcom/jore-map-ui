@@ -9,11 +9,6 @@ import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
-interface INodeSaveModel {
-    node: INode;
-    links: ILink[];
-}
-
 class NodeService {
     public static fetchNode = async (nodeId: string) => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
@@ -51,6 +46,10 @@ class NodeService {
     };
 
     public static updateNode = async (node: INode, links: ILink[]) => {
+        interface INodeSaveModel {
+            node: INode;
+            links: ILink[];
+        }
         const requestBody: INodeSaveModel = {
             node,
             links
@@ -63,6 +62,20 @@ class NodeService {
         const response = (await ApiClient.createObject(endpoints.NODE, node)) as INodePrimaryKey;
         return response.id;
     };
+
+    public static fetchAvailableNodeId = async (node: INode) => {
+        return await ApiClient.postRequest(endpoints.GET_AVAILABLE_NODE_ID, {
+            latLng: node.coordinates,
+            nodeType: node.type,
+            transitType: node.stop?.transitType
+        });
+    };
+
+    public static fetchAvailableNodeIdsWithPrefix = async (beginningOfNodeId: string) => {
+        return await ApiClient.postRequest(endpoints.GET_AVAILABLE_NODE_IDS_WITH_PREFIX, {
+            beginningOfNodeId
+        });
+    }
 }
 
 export default NodeService;

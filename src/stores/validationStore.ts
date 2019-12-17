@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { observable } from 'mobx';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 
@@ -45,8 +46,6 @@ class ValidationStore<ValidationObject, ValidationModel> {
     */
     public validateProperty = (property: string, isDependentPropertiesValidationPrevented?: boolean) => {
         const validatorRule = this._validationModel![property];
-        if (!validatorRule) return;
-
         const value = this._validationObject![property];
         const customValidatorObject = this._customValidatorMap?.[property];
         let validatorResult: IValidationResult | undefined;
@@ -54,7 +53,9 @@ class ValidationStore<ValidationObject, ValidationModel> {
             validatorResult = customValidatorObject?.validator(this._validationObject!, property, value);
         }
         if (!validatorResult || (validatorResult && validatorResult.isValid)) {
-            validatorResult = FormValidator.validateProperty(validatorRule, value);
+            if (!_.isEmpty(validatorRule)) {
+                validatorResult = FormValidator.validateProperty(validatorRule, value);
+            }
         }
         if (validatorResult) {
             this._invalidPropertiesMap[property] = validatorResult;
@@ -68,7 +69,9 @@ class ValidationStore<ValidationObject, ValidationModel> {
 
     public validateAllProperties = () => {
         if (!this._validationModel) return;
-        this._invalidPropertiesMap = FormValidator.validateAllProperties(this._validationModel as any, this._validationObject);
+        Object.entries(this._validationModel).forEach(([property, validatorRule]) => {
+            this.validateProperty(property);
+        });
     };
 
     public isValid = () => {
