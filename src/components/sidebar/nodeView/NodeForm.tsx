@@ -71,7 +71,7 @@ export default class NodeForm extends Component<INodeViewProps> {
                                 disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
                                 validationResult={invalidPropertiesMap['id']}
                             />
-                            {this.props.isNodeIdEditable && (
+                            {isNodeIdEditable && (
                                 <Dropdown
                                     label='+ 2 num.)'
                                     onChange={

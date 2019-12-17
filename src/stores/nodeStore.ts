@@ -31,6 +31,7 @@ interface INodeCacheObj {
     oldNode: INode;
     links: ILink[];
     oldLinks: ILink[];
+    isNodeIdEditable: boolean;
 }
 
 interface INodeCache {
@@ -323,7 +324,8 @@ class NodeStore {
             node: _.cloneDeep(this._node!),
             links: _.cloneDeep(this._links),
             oldNode: _.cloneDeep(this._oldNode!),
-            oldLinks: _.cloneDeep(this._oldLinks)
+            oldLinks: _.cloneDeep(this._oldLinks),
+            isNodeIdEditable: this._isNodeIdEditable
         };
         if (isNewNode) {
             this._nodeCache.newNodeCache = nodeCacheObj;

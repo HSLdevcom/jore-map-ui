@@ -175,7 +175,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
         this.props.mapStore!.setSelectedNodeId(node.id);
         this.centerMapToNode(node, links);
-        this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: false });
+        this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: this.props.isNewNode });
     };
 
     private async fetchNode(nodeId: string) {
@@ -198,7 +198,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.props.confirmStore!.openConfirm({
             content:
                 'Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun tiedot ja jatketaan muokkausta?',
-            onConfirm: () => {
+            onConfirm: async () => {
                 this.initNode(
                     nodeCacheObj.node,
                     nodeCacheObj.links,
@@ -206,6 +206,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     nodeCacheObj.oldLinks
                 );
                 this.updateSelectedStopAreaId();
+                await this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
+                nodeStore!.setIsNodeIdEditable(nodeCacheObj.isNodeIdEditable);
                 nodeStore!.setIsEditingDisabled(false);
                 this._setState({ isLoading: false });
             },
@@ -333,11 +335,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
     private onChangeNodeId = async (value: string) => {
         this.onChangeNodeProperty('id')(value);
-        if (value.length === 5) {
+        await this.queryAvailableNodeIdSuffixes(value);
+    };
+
+    private queryAvailableNodeIdSuffixes = async (beginningOfNodeId: string) => {
+        if (beginningOfNodeId.length === 5) {
             this._setState({
                 isNodeIdSuffixQueryLoading: true
             });
-            const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(value);
+            const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(beginningOfNodeId);
             // slide(-2): get last two letters of a nodeId
             const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
             this._setState({
@@ -352,7 +358,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 });
             }
         }
-    };
+    }
 
     private onChangeNodeIdSuffix = (value: string) => {
         this._setState({
@@ -413,6 +419,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const isStopFormInvalid = node.type === NodeType.STOP && !nodeStore.isStopFormValid;
         const isSaveButtonDisabled =
             isEditingDisabled || !nodeStore.isDirty || isNodeFormInvalid || isStopFormInvalid;
+
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
