@@ -31,7 +31,13 @@ export class AlertStore {
     }
 
     @action
-    public setFadeMessage = (message: string, type: AlertType = AlertType.Success) => {
+    public setFadeMessage = ({
+        message,
+        type = AlertType.Success
+    }: {
+        message: string;
+        type?: AlertType;
+    }) => {
         this._message = message;
         this._type = type;
 

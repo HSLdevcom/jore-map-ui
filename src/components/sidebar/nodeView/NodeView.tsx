@@ -117,9 +117,10 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             const nodeId = await NodeService.fetchAvailableNodeId(node);
             if (!nodeId) {
                 node.id = '';
-                this.props.alertStore!.setFadeMessage(
-                    'Solmun id:n generointi epäonnistui. Aluedatasta ei löytynyt tarvittavia tietoja tai solmun id avaruus on loppunut. Syötä solmun id kenttään ensimmäiset 5 solmun id:n numeroa.'
-                );
+                this.props.alertStore!.setFadeMessage({
+                    message:
+                        'Solmun id:n generointi epäonnistui. Aluedatasta ei löytynyt tarvittavia tietoja tai solmun id avaruus on loppunut. Syötä solmun id kenttään ensimmäiset 5 solmun id:n numeroa.'
+                });
                 this.props.nodeStore!.setIsNodeIdEditable(true);
             } else {
                 node.id = nodeId;
@@ -270,7 +271,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             }
             this.props.nodeStore!.clearNodeCache();
             this.props.nodeStore!.setCurrentStateAsOld();
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }

@@ -169,7 +169,10 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             link: this.props.linkStore!.link,
             node: this.props.linkStore!.nodes[0]
         });
-        this.props.alertStore!.setFadeMessage('Linkin jaon kehitys kesken.', AlertType.Info);
+        this.props.alertStore!.setFadeMessage({
+            message: 'Linkin jaon kehitys kesken.',
+            type: AlertType.Info
+        });
     };
 
     private selectAllRoutePaths = () => {

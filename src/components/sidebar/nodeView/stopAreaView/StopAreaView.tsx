@@ -164,7 +164,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                 await StopAreaService.updateStopArea(this.props.stopAreaStore!.stopArea);
                 this.props.stopAreaStore!.setOldStopArea(this.props.stopAreaStore!.stopArea);
             }
-            await this.props.alertStore!.setFadeMessage('Tallennettu!');
+            await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
