@@ -96,6 +96,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                                 : undefined
                         }
                         isClearButtonVisibleOnDates={true}
+                        isEmptyDateValueAllowed={true}
                     />
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>GEOMETRIAT</div>
