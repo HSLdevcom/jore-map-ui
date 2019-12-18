@@ -30,6 +30,7 @@ interface IStopFormProps {
     nodeInvalidPropertiesMap: object;
     match?: match<any>;
     isReadOnly?: boolean;
+    isTransitToggleButtonBarVisible?: boolean;
     toggleTransitType?: (type: TransitType) => void;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
@@ -94,7 +95,7 @@ class StopForm extends Component<IStopFormProps> {
     render() {
         const {
             node,
-            isNewStop,
+            isTransitToggleButtonBarVisible,
             isEditingDisabled,
             stopAreas,
             stopSections,
@@ -112,7 +113,7 @@ class StopForm extends Component<IStopFormProps> {
                     Pysäkin tiedot
                 </SidebarHeader>
                 <div className={s.formSection}>
-                    {isNewStop && (
+                    {isTransitToggleButtonBarVisible && (
                         <div className={s.flexRow}>
                             <div className={s.formItem}>
                                 <div className={s.inputLabel}>VERKKO</div>

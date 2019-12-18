@@ -18,6 +18,7 @@ interface IStopViewProps {
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
     nodeInvalidPropertiesMap: object;
+    isTransitToggleButtonBarVisible?: boolean;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     toggleTransitType?: (type: TransitType) => void;
 }
@@ -118,6 +119,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 stopSections={this.state.stopSections}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
+                isTransitToggleButtonBarVisible={this.props.isTransitToggleButtonBarVisible}
                 toggleTransitType={toggleTransitType}
                 updateStopProperty={this.updateStopProperty}
                 onNodePropertyChange={onNodePropertyChange}

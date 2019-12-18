@@ -439,6 +439,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     {node.type === NodeType.STOP && node.stop && (
                         <StopView
                             node={node}
+                            isTransitToggleButtonBarVisible={isNewNode && !isNodeIdEditable}
                             toggleTransitType={this.toggleTransitType}
                             onNodePropertyChange={this.onChangeNodeProperty}
                             isNewStop={isNewNode}
