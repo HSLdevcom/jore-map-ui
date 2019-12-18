@@ -250,10 +250,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         if (mapZoomLevel <= Constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
             return null;
         }
-        const isMapLoading = Boolean(
-            this.props.mapStore!.isMapCenteringPrevented || !this.props.mapStore!.coordinates
-        );
-        if (isMapLoading) return null;
+        if (!this.props.mapStore!.coordinates) return null;
 
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;

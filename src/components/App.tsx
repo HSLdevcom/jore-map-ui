@@ -60,10 +60,11 @@ class App extends React.Component<IAppProps, IAppState> {
             <>
                 <NavigationBar />
                 <div className={s.appContent}>
-                    <Sidebar />
+                    {/* Map needs to be rendered before <Sidebar /> so that listeners get initialized before Views set map coordinates. */}
                     <Map>
                         <ErrorBar />
                     </Map>
+                    <Sidebar />
                 </div>
                 <OverlayContainer />
             </>

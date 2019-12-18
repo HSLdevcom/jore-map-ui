@@ -20,6 +20,12 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     startNodeBookScheduleColumnNumber?: number;
     modifiedBy?: string;
     modifiedOn?: Date;
+    // IViaName properties
+    viaNameId?: string;
+    destinationFi1?: string;
+    destinationFi2?: string;
+    destinationSw1?: string;
+    destinationSw2?: string;
 }
 
 export { IRoutePathLinkPrimaryKey };

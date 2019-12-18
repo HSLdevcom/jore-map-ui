@@ -85,7 +85,7 @@ class LeafletMap extends React.Component<IMapProps> {
         this.reactionDisposers.push(reaction(() => mapStore!.mapCursor, this.setMapCursor));
 
         const coordinates = mapStore!.coordinates;
-        if (coordinates && !mapStore!.isMapCenteringPrevented) {
+        if (coordinates) {
             map.setView(coordinates, mapStore!.zoom);
         }
         map.on('click', (e: L.LeafletEvent) => EventManager.trigger('mapClick', e));
@@ -97,10 +97,6 @@ class LeafletMap extends React.Component<IMapProps> {
 
     private centerMap = () => {
         const mapStore = this.props.mapStore;
-        if (mapStore!.isMapCenteringPrevented) {
-            return;
-        }
-
         const map = this.getMap();
         if (map) {
             try {
@@ -142,9 +138,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     render() {
-        const isLoading = Boolean(
-            this.props.mapStore!.isMapCenteringPrevented || !this.props.mapStore!.coordinates
-        );
+        const isLoading = Boolean(!this.props.mapStore!.coordinates);
         const routes = toJS(this.props.routeListStore!.routes);
         return (
             <div className={s.mapView}>

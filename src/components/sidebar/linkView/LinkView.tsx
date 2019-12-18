@@ -1,18 +1,15 @@
 import classnames from 'classnames';
 import L from 'leaflet';
-import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import LinkFactory from '~/factories/linkFactory';
 import { ILink, INode } from '~/models';
-import linkValidationModel from '~/models/validationModels/linkValidationModel';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -43,38 +40,27 @@ interface ILinkViewProps extends RouteComponentProps<any> {
 
 interface ILinkViewState {
     isLoading: boolean;
-    invalidPropertiesMap: object;
 }
 
 @inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
 @observer
-class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
-    private isEditingDisabledListener: IReactionDisposer;
+class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     private existingTransitTypes: TransitType[] = [];
 
     constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
-            isLoading: false,
-            invalidPropertiesMap: {}
+            isLoading: false
         };
     }
 
     async componentDidMount() {
-        this.props.mapStore!.setIsMapCenteringPrevented(true);
         if (this.props.isNewLink) {
             await this.initNewLink();
         } else {
             await this.initExistingLink();
         }
-        if (this.props.linkStore!.link) {
-            this.validateLink();
-        }
         this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
-        this.isEditingDisabledListener = reaction(
-            () => this.props.linkStore!.isEditingDisabled,
-            this.onChangeIsEditingDisabled
-        );
         EventManager.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
@@ -90,7 +76,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     componentWillUnmount() {
         this.props.linkStore!.clear();
-        this.isEditingDisabledListener();
         EventManager.off('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
@@ -142,7 +127,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         if (existingLinks.length > 0) {
             this.existingTransitTypes = existingLinks.map(link => link.transitType!);
         }
-        this.validateLink();
 
         this.setState({ isLoading: false });
     };
@@ -155,7 +139,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private centerMapToLink = (link: ILink) => {
         const bounds = L.latLngBounds(link.geometry);
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
         this.props.mapStore!.setMapBounds(bounds);
     };
 
@@ -168,7 +151,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
                 await LinkService.updateLink(this.props.linkStore!.link);
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
             }
-            await this.props.alertStore!.setFadeMessage('Tallennettu!');
+            await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
@@ -198,17 +181,6 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         });
     };
 
-    private onChangeIsEditingDisabled = () => {
-        this.clearInvalidPropertiesMap();
-        const linkStore = this.props.linkStore;
-        if (linkStore!.isEditingDisabled) {
-            linkStore!.resetChanges();
-        } else {
-            linkStore!.updateLinkLength();
-            this.validateLink();
-        }
-    };
-
     private navigateToNewLink = () => {
         const link = this.props.linkStore!.link;
         const linkViewLink = routeBuilder
@@ -226,13 +198,8 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         navigator.goTo(editNetworkLink);
     };
 
-    private validateLink = () => {
-        this.validateAllProperties(linkValidationModel, this.props.linkStore!.link);
-    };
-
     private selectTransitType = (transitType: TransitType) => {
         this.props.linkStore!.updateLinkProperty('transitType', transitType);
-        this.validateProperty(linkValidationModel['transitType'], 'transitType', transitType);
     };
 
     private transitTypeAlreadyExists = (transitType: TransitType) => {
@@ -243,12 +210,10 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
 
     private onChangeLinkProperty = (property: keyof ILink) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
-        this.validateProperty(linkValidationModel[property], property, value);
     };
 
     render() {
         const link = this.props.linkStore!.link;
-        const invalidPropertiesMap = this.state.invalidPropertiesMap;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.linkView, s.loaderContainer)}>
@@ -259,6 +224,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
         // TODO: show some indicator to user of an empty page
         if (!link) return null;
 
+        const invalidPropertiesMap = this.props.linkStore!.invalidPropertiesMap;
         const isEditingDisabled = this.props.linkStore!.isEditingDisabled;
         const startNode = link!.startNode;
         const endNode = link!.endNode;
@@ -270,7 +236,7 @@ class LinkView extends ViewFormBase<ILinkViewProps, ILinkViewState> {
             isEditingDisabled ||
             !this.props.linkStore!.isDirty ||
             (this.props.isNewLink && this.transitTypeAlreadyExists(transitType)) ||
-            !this.isFormValid();
+            !this.props.linkStore!.isFormValid;
         const selectedTransitTypes = link!.transitType ? [link!.transitType!] : [];
 
         let transitTypeError;

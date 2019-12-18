@@ -1,8 +1,12 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import TransitType from '~/enums/transitType';
 import { IStopArea } from '~/models';
 import { IStopItem } from '~/models/IStop';
+import stopAreaValidationModel, {
+    IStopAreaValidationModel
+} from '~/models/validationModels/stopAreaValidationModel';
+import ValidationStore from './validationStore';
 
 export interface UndoState {
     stopArea: IStopArea;
@@ -13,12 +17,17 @@ export class StopAreaStore {
     @observable private _oldStopArea: IStopArea | null;
     @observable private _stopItems: IStopItem[];
     @observable private _isEditingDisabled: boolean;
+    private _validationStore: ValidationStore<IStopArea, IStopAreaValidationModel>;
 
     constructor() {
         this._stopArea = null;
         this._oldStopArea = null;
         this._stopItems = [];
         this._isEditingDisabled = true;
+
+        this._validationStore = new ValidationStore();
+
+        reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
     @computed
@@ -46,6 +55,16 @@ export class StopAreaStore {
         return this._isEditingDisabled;
     }
 
+    @computed
+    get invalidPropertiesMap() {
+        return this._validationStore.getInvalidPropertiesMap();
+    }
+
+    @computed
+    get isFormValid() {
+        return this._validationStore.isValid();
+    }
+
     @action
     public init = ({
         stopArea,
@@ -64,6 +83,7 @@ export class StopAreaStore {
         this.setOldStopArea(oldStopArea);
 
         this._isEditingDisabled = !isNewStopArea;
+        this._validationStore.init(this._stopArea, stopAreaValidationModel);
     };
 
     @action
@@ -81,10 +101,8 @@ export class StopAreaStore {
         property: keyof IStopArea,
         value: string | Date | TransitType
     ) => {
-        this._stopArea = {
-            ...this._stopArea!,
-            [property]: value
-        };
+        (this._stopArea as any)[property] = value;
+        this._validationStore.updateProperty(property, value);
     };
 
     @action
@@ -103,12 +121,21 @@ export class StopAreaStore {
         this._oldStopArea = null;
         this._isEditingDisabled = true;
         this._stopItems = [];
+        this._validationStore.clear();
     };
 
     @action
     public resetChanges = () => {
         if (this._oldStopArea) {
             this.init({ stopArea: this._oldStopArea, isNewStopArea: false });
+        }
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        if (this._isEditingDisabled) {
+            this.resetChanges();
+        } else {
+            this._validationStore.validateAllProperties();
         }
     };
 }

@@ -1,7 +1,9 @@
 import classnames from 'classnames';
+import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Dropdown } from '~/components/controls';
+import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import NodeType from '~/enums/nodeType';
@@ -16,6 +18,10 @@ interface INodeViewProps {
     isNewNode: boolean;
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
+    isNodeIdEditable?: boolean;
+    nodeIdSuffixOptions?: IDropdownItem[];
+    isNodeIdSuffixQueryLoading?: boolean;
+    onChangeNodeId?: (value: any) => void;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
     lngChange?: Function;
     latChange?: Function;
@@ -30,6 +36,10 @@ export default class NodeForm extends Component<INodeViewProps> {
             node,
             isNewNode,
             isEditingDisabled,
+            isNodeIdEditable,
+            nodeIdSuffixOptions,
+            isNodeIdSuffixQueryLoading,
+            onChangeNodeId,
             invalidPropertiesMap,
             onChangeNodeProperty
         } = this.props;
@@ -42,6 +52,32 @@ export default class NodeForm extends Component<INodeViewProps> {
         return (
             <div className={classnames(s.nodeForm, s.form)}>
                 <div className={s.formSection}>
+                    {isNewNode && (
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                value={node.id}
+                                onChange={onChangeNodeId ? onChangeNodeId : undefined}
+                                label={isNodeIdEditable ? 'SOLMUN TUNNUS (5 num.' : 'SOLMUN TUNNUS'}
+                                disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
+                                validationResult={invalidPropertiesMap['id']}
+                            />
+                            {isNodeIdEditable && (
+                                <Dropdown
+                                    label='+ 2 num.)'
+                                    onChange={
+                                        onChangeNodeProperty
+                                            ? onChangeNodeProperty('idSuffix')
+                                            : undefined
+                                    }
+                                    disabled={_.isEmpty(nodeIdSuffixOptions)}
+                                    isLoading={isNodeIdSuffixQueryLoading}
+                                    selected={node.idSuffix}
+                                    items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
+                                    validationResult={invalidPropertiesMap['idSuffix']}
+                                />
+                            )}
+                        </div>
+                    )}
                     <div className={s.flexRow}>
                         <Dropdown
                             label='TYYPPI'

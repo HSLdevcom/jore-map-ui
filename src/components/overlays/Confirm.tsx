@@ -29,21 +29,28 @@ class Confirm extends React.Component<IConfirmProps> {
                     >
                         {confirmStore!.content}
                     </div>
-                    <div className={s.buttons}>
-                        <Button
-                            type={ButtonType.SQUARE}
-                            onClick={confirmStore!.cancel}
-                            isWide={true}
-                        >
-                            {confirmStore!.cancelButtonText}
-                        </Button>
-                        <Button
-                            type={ButtonType.SQUARE}
-                            onClick={confirmStore!.confirm}
-                            isWide={true}
-                        >
-                            {confirmStore!.confirmButtonText}
-                        </Button>
+                    <div className={s.buttonWrapper}>
+                        {confirmStore!.confirmNotification && (
+                            <div className={s.confirmNotification}>
+                                {confirmStore!.confirmNotification}
+                            </div>
+                        )}
+                        <div className={s.buttons}>
+                            <Button
+                                type={ButtonType.SQUARE}
+                                onClick={confirmStore!.cancel}
+                                isWide={true}
+                            >
+                                {confirmStore!.cancelButtonText}
+                            </Button>
+                            <Button
+                                type={ButtonType.SQUARE}
+                                onClick={confirmStore!.confirm}
+                                isWide={true}
+                            >
+                                {confirmStore!.confirmButtonText}
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </Modal>

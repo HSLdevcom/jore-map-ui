@@ -45,7 +45,6 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     }
 
     async componentDidMount() {
-        this.props.mapStore!.setIsMapCenteringPrevented(true);
         await this.fetchRoutes();
         this.props.routePathStore!.clear();
         this.props.searchStore!.setSearchInput('');
@@ -92,7 +91,6 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         });
         if (!bounds.isValid()) return;
 
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
         this.props.mapStore!.setMapBounds(bounds);
     };
 

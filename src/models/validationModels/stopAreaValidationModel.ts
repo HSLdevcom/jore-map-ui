@@ -17,3 +17,5 @@ const stopAreaValidationModel: IStopAreaValidationModel = {
 };
 
 export default stopAreaValidationModel;
+
+export { IStopAreaValidationModel };

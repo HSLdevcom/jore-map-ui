@@ -8,6 +8,7 @@ import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import ButtonType from '~/enums/buttonType';
+import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -29,6 +30,8 @@ interface IStopFormProps {
     nodeInvalidPropertiesMap: object;
     match?: match<any>;
     isReadOnly?: boolean;
+    isTransitToggleButtonBarVisible?: boolean;
+    toggleTransitType?: (type: TransitType) => void;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     setCurrentStateIntoNodeCache?: () => void;
@@ -92,12 +95,13 @@ class StopForm extends Component<IStopFormProps> {
     render() {
         const {
             node,
-            isNewStop,
+            isTransitToggleButtonBarVisible,
             isEditingDisabled,
             stopAreas,
             stopSections,
             stopInvalidPropertiesMap,
             nodeInvalidPropertiesMap,
+            toggleTransitType,
             onNodePropertyChange,
             updateStopProperty,
             isReadOnly
@@ -109,7 +113,7 @@ class StopForm extends Component<IStopFormProps> {
                     Pysäkin tiedot
                 </SidebarHeader>
                 <div className={s.formSection}>
-                    {isNewStop && (
+                    {isTransitToggleButtonBarVisible && (
                         <div className={s.flexRow}>
                             <div className={s.formItem}>
                                 <div className={s.inputLabel}>VERKKO</div>
@@ -117,7 +121,7 @@ class StopForm extends Component<IStopFormProps> {
                                     selectedTransitTypes={
                                         stop.transitType ? [stop.transitType] : []
                                     }
-                                    toggleSelectedTransitType={updateStopProperty!('transitType')}
+                                    toggleSelectedTransitType={toggleTransitType}
                                 />
                             </div>
                         </div>

@@ -41,9 +41,11 @@ class ApolloClient {
             if (err.networkError) {
                 switch (err.networkError['statusCode']) {
                     case 403:
-                        AlertStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
-                            LoginStore.clear();
-                        });
+                        AlertStore!
+                            .setFadeMessage({ message: httpStatusDescriptionCodeList[403] })
+                            .then(() => {
+                                LoginStore.clear();
+                            });
                 }
             }
             throw e;
