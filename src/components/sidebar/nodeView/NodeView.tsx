@@ -348,6 +348,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 nodeIdSuffixOptions: createDropdownItems(nodeIdSuffixList),
                 isNodeIdSuffixQueryLoading: false
             });
+            this.onChangeNodeProperty('idSuffix')('');
         } else {
             if (this.state.nodeIdSuffixOptions.length > 0) {
                 this._setState({
