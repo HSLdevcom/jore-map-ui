@@ -89,9 +89,11 @@ class ApiClient {
                 return await response.text();
             }
             if (response.status === 403) {
-                AlertStore!.setFadeMessage(httpStatusDescriptionCodeList[403]).then(() => {
-                    LoginStore.clear();
-                });
+                AlertStore!
+                    .setFadeMessage({ message: httpStatusDescriptionCodeList[403] })
+                    .then(() => {
+                        LoginStore.clear();
+                    });
                 return;
             }
 

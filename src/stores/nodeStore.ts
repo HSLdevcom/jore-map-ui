@@ -6,6 +6,7 @@ import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop } from '~/models';
 import nodeValidationModel, {
+    editableNodeIdValidationModel,
     INodeValidationModel
 } from '~/models/validationModels/nodeValidationModel';
 import stopValidationModel, {
@@ -16,8 +17,9 @@ import { IStopAreaItem } from '~/services/stopAreaService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
+import FormValidator from '~/validation/FormValidator';
 import NetworkStore from './networkStore';
-import ValidationStore from './validationStore';
+import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 interface UndoState {
     node: INode;
@@ -29,6 +31,7 @@ interface INodeCacheObj {
     oldNode: INode;
     links: ILink[];
     oldLinks: ILink[];
+    isNodeIdEditable: boolean;
 }
 
 interface INodeCache {
@@ -44,6 +47,7 @@ class NodeStore {
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreaItems: IStopAreaItem[];
+    @observable private _isNodeIdEditable: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
     private _stopValidationStore: ValidationStore<IStop, IStopValidationModel>;
@@ -109,6 +113,11 @@ class NodeStore {
     }
 
     @computed
+    get isNodeIdEditable() {
+        return this._isNodeIdEditable;
+    }
+
+    @computed
     get isNodeFormValid() {
         return this._nodeValidationStore.isValid();
     }
@@ -159,7 +168,34 @@ class NodeStore {
         this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
 
-        this._nodeValidationStore.init(node, nodeValidationModel);
+        const customValidatorMap: ICustomValidatorMap = {
+            id: {
+                validator: (node: INode, property: string, nodeId: string) => {
+                    if (this.isNodeIdEditable) {
+                        const validationResult = FormValidator.validateProperty(
+                            editableNodeIdValidationModel.id,
+                            nodeId
+                        );
+                        return validationResult;
+                    }
+                    return;
+                }
+            },
+            idSuffix: {
+                validator: (node: INode, property: string, idSuffix: string) => {
+                    if (this.isNodeIdEditable) {
+                        const validationResult = FormValidator.validateProperty(
+                            editableNodeIdValidationModel.idSuffix,
+                            idSuffix
+                        );
+                        return validationResult;
+                    }
+                    return;
+                }
+            }
+        };
+
+        this._nodeValidationStore.init(node, nodeValidationModel, customValidatorMap);
         if (node.stop) {
             this._stopValidationStore.init(node.stop, stopValidationModel);
         }
@@ -300,7 +336,8 @@ class NodeStore {
             node: _.cloneDeep(this._node!),
             links: _.cloneDeep(this._links),
             oldNode: _.cloneDeep(this._oldNode!),
-            oldLinks: _.cloneDeep(this._oldLinks)
+            oldLinks: _.cloneDeep(this._oldLinks),
+            isNodeIdEditable: this._isNodeIdEditable
         };
         if (isNewNode) {
             this._nodeCache.newNodeCache = nodeCacheObj;
@@ -319,6 +356,11 @@ class NodeStore {
     @action
     public setStopAreaItems = (stopAreaItems: IStopAreaItem[]) => {
         this._stopAreaItems = stopAreaItems;
+    };
+
+    @action
+    public setIsNodeIdEditable = (isEditable: boolean) => {
+        this._isNodeIdEditable = isEditable;
     };
 
     @action

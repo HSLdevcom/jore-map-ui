@@ -106,7 +106,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                 await LineService.updateLine(line!);
             }
 
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;

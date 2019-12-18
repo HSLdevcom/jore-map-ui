@@ -5,11 +5,13 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
 import { Button } from '~/components/controls';
+import { IDropdownItem } from '~/components/controls/Dropdown';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
 import navigator from '~/routing/navigator';
@@ -26,6 +28,7 @@ import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
+import { createDropdownItems } from '~/util/dropdownHelpers';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
 import StopView from './StopView';
@@ -44,6 +47,8 @@ interface INodeViewProps {
 
 interface INodeViewState {
     isLoading: boolean;
+    nodeIdSuffixOptions: IDropdownItem[];
+    isNodeIdSuffixQueryLoading: boolean;
 }
 
 @inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore', 'confirmStore')
@@ -53,7 +58,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     constructor(props: INodeViewProps) {
         super(props);
         this.state = {
-            isLoading: false
+            isLoading: true,
+            nodeIdSuffixOptions: [],
+            isNodeIdSuffixQueryLoading: false
         };
     }
 
@@ -66,11 +73,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     async componentDidMount() {
         this._isMounted = true;
         const params = this.props.match!.params.id;
+        this._setState({ isLoading: true });
+        this.props.nodeStore!.setIsNodeIdEditable(false);
         if (this.props.isNewNode) {
-            this.createNewNode(params);
+            await this.createNewNode(params);
         } else {
             await this.initExistingNode(params);
         }
+        this._setState({ isLoading: false });
         this.props.nodeStore!.setIsEditingDisabled(!this.props.isNewNode);
         EventManager.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
@@ -78,11 +88,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     async componentDidUpdate(prevProps: INodeViewProps) {
         const params = this.props.match!.params.id;
         if (prevProps.match!.params.id !== params) {
+            this._setState({ isLoading: true });
+            this.props.nodeStore!.setIsNodeIdEditable(false);
             if (this.props.isNewNode) {
-                this.createNewNode(params);
+                await this.createNewNode(params);
             } else {
                 await this.initExistingNode(params);
             }
+            this._setState({ isLoading: false });
         }
     }
 
@@ -93,12 +106,23 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         EventManager.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
-    private createNewNode = (params: any) => {
-        const createNode = () => {
+    private createNewNode = async (params: any) => {
+        const createNode = async () => {
             const [lat, lng] = params.split(':');
             const coordinate = new L.LatLng(lat, lng);
             const node = NodeFactory.createNewNode(coordinate);
             this.centerMapToNode(node, []);
+            const nodeId = await NodeService.fetchAvailableNodeId(node);
+            if (!nodeId) {
+                node.id = '';
+                this.props.alertStore!.setNotificationMessage({
+                    message:
+                        'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Syötä solmun tunnus kenttään ensimmäiset 5 solmutunnuksen numeroa.'
+                });
+                this.props.nodeStore!.setIsNodeIdEditable(true);
+            } else {
+                node.id = nodeId;
+            }
             this.props.nodeStore!.init({ node, links: [], isNewNode: true });
             this.updateSelectedStopAreaId();
         };
@@ -107,8 +131,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         if (nodeCacheObj) {
             this.showNodeCachePrompt({ nodeCacheObj, promptCancelCallback: createNode });
         } else {
-            createNode();
+            await createNode();
         }
+        this._setState({ isLoading: false });
     };
 
     private initExistingNode = async (selectedNodeId: string) => {
@@ -148,7 +173,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
         this.props.mapStore!.setSelectedNodeId(node.id);
         this.centerMapToNode(node, links);
-        this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: false });
+        this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: this.props.isNewNode });
     };
 
     private async fetchNode(nodeId: string) {
@@ -171,7 +196,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.props.confirmStore!.openConfirm({
             content:
                 'Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun tiedot ja jatketaan muokkausta?',
-            onConfirm: () => {
+            onConfirm: async () => {
                 this.initNode(
                     nodeCacheObj.node,
                     nodeCacheObj.links,
@@ -179,10 +204,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     nodeCacheObj.oldLinks
                 );
                 this.updateSelectedStopAreaId();
+                this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
+                nodeStore!.setIsNodeIdEditable(nodeCacheObj.isNodeIdEditable);
                 nodeStore!.setIsEditingDisabled(false);
                 this._setState({ isLoading: false });
             },
-            onCancel: () => promptCancelCallback()
+            onCancel: async () => await promptCancelCallback()
         });
     };
 
@@ -221,7 +248,16 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._setState({ isLoading: true });
         try {
             if (this.props.isNewNode) {
-                const nodeId = await NodeService.createNode(this.props.nodeStore!.node);
+                let nodeToUpdate;
+                if (this.props.nodeStore!.isNodeIdEditable) {
+                    // Merge nodeId parts (5 num + 2 num) as a nodeId
+                    nodeToUpdate = _.cloneDeep(this.props.nodeStore!.node);
+                    const nodeId = nodeToUpdate.id + nodeToUpdate.idSuffix;
+                    nodeToUpdate.id = nodeId;
+                } else {
+                    nodeToUpdate = this.props.nodeStore!.node;
+                }
+                const nodeId = await NodeService.createNode(nodeToUpdate);
                 const url = routeBuilder
                     .to(SubSites.node)
                     .toTarget(':id', nodeId)
@@ -235,7 +271,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             }
             this.props.nodeStore!.clearNodeCache();
             this.props.nodeStore!.setCurrentStateAsOld();
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
@@ -295,6 +331,33 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.updateNodeProperty(property, value);
     };
 
+    private onChangeNodeId = async (value: string) => {
+        this.onChangeNodeProperty('id')(value);
+        await this.queryAvailableNodeIdSuffixes(value);
+    };
+
+    private queryAvailableNodeIdSuffixes = async (beginningOfNodeId: string) => {
+        if (beginningOfNodeId.length === 5) {
+            this._setState({
+                isNodeIdSuffixQueryLoading: true
+            });
+            const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(beginningOfNodeId);
+            // slide(-2): get last two letters of a nodeId
+            const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
+            this._setState({
+                nodeIdSuffixOptions: createDropdownItems(nodeIdSuffixList),
+                isNodeIdSuffixQueryLoading: false
+            });
+            this.onChangeNodeProperty('idSuffix')('');
+        } else {
+            if (this.state.nodeIdSuffixOptions.length > 0) {
+                this._setState({
+                    nodeIdSuffixOptions: []
+                });
+            }
+        }
+    }
+
     private latChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
         value: string
     ) => {
@@ -311,8 +374,25 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.onNodeGeometryChange(coordinateType, new L.LatLng(previousLatLng.lat, lng));
     };
 
+    private toggleTransitType = async (type: TransitType) => {
+        const nodeStore = this.props.nodeStore!;
+        const transitType = nodeStore.node.stop?.transitType;
+        if (transitType === type) {
+            this.props.nodeStore!.updateStopProperty('transitType', undefined);
+        } else {
+            this.props.nodeStore!.updateStopProperty('transitType', type);
+        }
+        if (nodeStore!.isNodeIdEditable) return;
+
+        this._setState({ isLoading: true });
+        const nodeId = await NodeService.fetchAvailableNodeId(nodeStore.node);
+        nodeStore.updateNodeProperty('id', nodeId);
+        this._setState({ isLoading: false });
+    };
+
     render() {
-        const node = this.props.nodeStore!.node;
+        const nodeStore = this.props.nodeStore!;
+        const node = nodeStore.node;
         if (this.state.isLoading) {
             return (
                 <div className={classnames(s.nodeView, s.loaderContainer)}>
@@ -323,33 +403,35 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         // TODO: show some indicator to user of an empty page
         if (!node) return null;
 
-        const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
-        const invalidPropertiesMap = this.props.nodeStore!.nodeInvalidPropertiesMap;
-        const isNodeFormInvalid = !this.props.nodeStore!.isNodeFormValid;
-        const isStopFormInvalid =
-            node.type === NodeType.STOP && !this.props.nodeStore!.isStopFormValid;
+        const isNewNode = this.props.isNewNode;
+        const isEditingDisabled = nodeStore.isEditingDisabled;
+        const isNodeIdEditable = nodeStore.isNodeIdEditable;
+        const invalidPropertiesMap = nodeStore.nodeInvalidPropertiesMap;
+        const isNodeFormInvalid = !nodeStore.isNodeFormValid;
+        const isStopFormInvalid = node.type === NodeType.STOP && !nodeStore.isStopFormValid;
         const isSaveButtonDisabled =
-            isEditingDisabled ||
-            !this.props.nodeStore!.isDirty ||
-            isNodeFormInvalid ||
-            isStopFormInvalid;
+            isEditingDisabled || !nodeStore.isDirty || isNodeFormInvalid || isStopFormInvalid;
 
         return (
             <div className={s.nodeView}>
                 <div className={s.content}>
                     <SidebarHeader
-                        isEditButtonVisible={!this.props.isNewNode}
-                        shouldShowClosePromptMessage={this.props.nodeStore!.isDirty}
+                        isEditButtonVisible={!isNewNode}
+                        shouldShowClosePromptMessage={nodeStore.isDirty}
                         isEditing={!isEditingDisabled}
-                        onEditButtonClick={this.props.nodeStore!.toggleIsEditingDisabled}
+                        onEditButtonClick={nodeStore.toggleIsEditingDisabled}
                     >
-                        Solmu {node.id}
+                        {isNewNode ? 'Luo uusi solmu' : `Solmu ${node.id}`}
                     </SidebarHeader>
                     <NodeForm
                         node={node}
-                        isNewNode={this.props.isNewNode}
+                        isNewNode={isNewNode}
                         isEditingDisabled={isEditingDisabled}
+                        isNodeIdEditable={isNodeIdEditable}
                         invalidPropertiesMap={invalidPropertiesMap}
+                        nodeIdSuffixOptions={this.state.nodeIdSuffixOptions}
+                        isNodeIdSuffixQueryLoading={this.state.isNodeIdSuffixQueryLoading}
+                        onChangeNodeId={this.onChangeNodeId}
                         onChangeNodeProperty={this.onChangeNodeProperty}
                         lngChange={this.lngChange}
                         latChange={this.latChange}
@@ -357,8 +439,10 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     {node.type === NodeType.STOP && node.stop && (
                         <StopView
                             node={node}
+                            isTransitToggleButtonBarVisible={isNewNode && !isNodeIdEditable}
+                            toggleTransitType={this.toggleTransitType}
                             onNodePropertyChange={this.onChangeNodeProperty}
-                            isNewStop={this.props.isNewNode}
+                            isNewStop={isNewNode}
                             nodeInvalidPropertiesMap={invalidPropertiesMap}
                         />
                     )}
@@ -366,9 +450,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 <Button
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
-                    onClick={() => (this.props.isNewNode ? this.save() : this.showSavePrompt())}
+                    onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
                 >
-                    {this.props.isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
+                    {isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
                 </Button>
             </div>
         );

@@ -270,7 +270,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 }
                 await RoutePathService.updateRoutePath(routePathToUpdate);
             }
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
