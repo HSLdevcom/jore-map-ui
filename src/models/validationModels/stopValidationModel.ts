@@ -10,6 +10,7 @@ const longNameRule = 'min:1|max:60|string';
 type StopKeys = keyof IStop;
 type IStopValidationModel = { [key in StopKeys]: string };
 
+// TODO: rename as stopValidationObject
 const stopValidationModel: IStopValidationModel = {
     nodeId: '',
     municipality: 'required|min:1|max:3|string',
@@ -35,3 +36,5 @@ const stopValidationModel: IStopValidationModel = {
 };
 
 export default stopValidationModel;
+
+export { IStopValidationModel };

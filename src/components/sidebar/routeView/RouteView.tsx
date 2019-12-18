@@ -133,7 +133,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
                 await RouteService.updateRoute(route!);
             }
 
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;

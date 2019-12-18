@@ -13,4 +13,9 @@
         pointer-events: none;
         cursor: default;
     }
+
+    .loaderContainer {
+        display: flex;
+        justify-content: center;
+    }
 }

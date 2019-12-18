@@ -1,19 +1,16 @@
 import classnames from 'classnames';
 import L from 'leaflet';
 import _ from 'lodash';
-import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
 import Button from '~/components/controls/Button';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
-import routePathValidationModel from '~/models/validationModels/routePathValidationModel';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -52,7 +49,6 @@ interface IRoutePathViewProps {
 
 interface IRoutePathViewState {
     isLoading: boolean;
-    invalidPropertiesMap: object;
 }
 
 @inject(
@@ -65,26 +61,18 @@ interface IRoutePathViewState {
     'mapStore'
 )
 @observer
-class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewState> {
-    private isEditingDisabledListener: IReactionDisposer;
-
+class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState> {
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
-            isLoading: true,
-            invalidPropertiesMap: {}
+            isLoading: true
         };
     }
 
     componentDidMount() {
-        this.props.mapStore!.setIsMapCenteringPrevented(true);
         EventManager.on('undo', this.props.routePathStore!.undo);
         EventManager.on('redo', this.props.routePathStore!.redo);
         this.initialize();
-        this.isEditingDisabledListener = reaction(
-            () => this.props.routePathStore!.isEditingDisabled,
-            this.onChangeIsEditingDisabled
-        );
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
 
@@ -94,7 +82,6 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         this.props.routePathStore!.clear();
         EventManager.off('undo', this.props.routePathStore!.undo);
         EventManager.off('redo', this.props.routePathStore!.redo);
-        this.isEditingDisabledListener();
     }
 
     private initialize = async () => {
@@ -105,7 +92,6 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         }
         await this.initializeMap();
         if (this.props.routePathStore!.routePath) {
-            this.validateRoutePath();
             this.setState({
                 isLoading: false
             });
@@ -113,6 +99,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
     };
 
     private createNewRoutePath = async () => {
+        this.props.mapStore!.initCoordinates();
         try {
             if (!this.props.routePathStore!.routePath) {
                 const queryParams = navigator.getQueryParamValues();
@@ -120,14 +107,12 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 const lineId = queryParams[QueryParams.lineId];
                 const route = await RouteService.fetchRoute(routeId);
                 const routePath = RoutePathFactory.createNewRoutePath(lineId, route);
-                this.centerMapToRoutePath(routePath);
-                this.props.routePathStore!.init(routePath, []);
+                this.props.routePathStore!.init(routePath);
             } else {
                 this.props.routePathStore!.init(
                     RoutePathFactory.createNewRoutePathFromOld(
                         this.props.routePathStore!.routePath!
-                    ),
-                    []
+                    )
                 );
             }
             this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
@@ -177,14 +162,15 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 startTimeString,
                 direction
             );
-            const viaNames = await this.fetchViaNames(routePath);
+            await this.fetchViaNames(routePath);
             this.centerMapToRoutePath(routePath);
-            this.props.routePathStore!.init(routePath, viaNames);
+            this.props.routePathStore!.init(routePath);
         } catch (e) {
             this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.', e);
         }
     };
 
+    // fetch & set viaName properties to routePathLink
     private fetchViaNames = async (routePath: IRoutePath) => {
         try {
             const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
@@ -197,7 +183,11 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                         const viaName: IViaName | null = await ViaNameService.fetchViaName(
                             routePathLink.id
                         );
-                        if (viaName) viaNames.push(viaName);
+                        routePathLink.viaNameId = routePathLink.id;
+                        routePathLink.destinationFi1 = viaName?.destinationFi1;
+                        routePathLink.destinationFi2 = viaName?.destinationFi2;
+                        routePathLink.destinationSw1 = viaName?.destinationSw1;
+                        routePathLink.destinationSw2 = viaName?.destinationSw2;
                     } catch (err) {
                         this.props.errorStore!.addError(
                             'Määränpää tietojen (via nimet) haku ei onnistunut.',
@@ -227,13 +217,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
             link.geometry.forEach(pos => bounds.extend(pos));
         });
 
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
         this.props.mapStore!.setMapBounds(bounds);
-    };
-
-    private onChangeRoutePathProperty = (property: keyof IRoutePath) => (value: any) => {
-        this.props.routePathStore!.updateRoutePathProperty(property, value);
-        this.validateProperty(routePathValidationModel[property], property, value);
     };
 
     public renderTabContent = () => {
@@ -244,9 +228,7 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                     isEditingDisabled={isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
-                    onChangeRoutePathProperty={this.onChangeRoutePathProperty}
-                    invalidPropertiesMap={this.state.invalidPropertiesMap}
-                    setValidatorResult={this.setValidatorResult}
+                    invalidPropertiesMap={this.props.routePathStore!.invalidPropertiesMap}
                 />
             );
         }
@@ -264,10 +246,8 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         const routePath = this.props.routePathStore!.routePath;
         try {
             if (this.props.isNewRoutePath) {
-                const viaNames = this.props.routePathStore!.viaNames;
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
-                    routePath!,
-                    viaNames
+                    routePath!
                 );
                 redirectUrl = routeBuilder
                     .to(SubSites.routePath)
@@ -288,38 +268,21 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
                 if (!hasRoutePathLinksChanged) {
                     routePathToUpdate.routePathLinks = [];
                 }
-                const viaNames = this.props.routePathStore!.viaNames;
-                await RoutePathService.updateRoutePath(routePathToUpdate, viaNames);
+                await RoutePathService.updateRoutePath(routePathToUpdate);
             }
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
         if (redirectUrl) {
             navigator.goTo(redirectUrl);
+            return;
         }
         await this.fetchRoutePath();
         this.setState({
-            invalidPropertiesMap: {},
             isLoading: false
         });
         this.props.routePathStore!.setIsEditingDisabled(true);
-    };
-
-    private onChangeIsEditingDisabled = () => {
-        this.clearInvalidPropertiesMap();
-
-        this.props.routePathStore!.setNeighborRoutePathLinks([]);
-
-        if (this.props.routePathStore!.isEditingDisabled) {
-            this.props.routePathStore!.resetChanges();
-        } else {
-            this.validateRoutePath();
-        }
-    };
-
-    private validateRoutePath = () => {
-        this.validateAllProperties(routePathValidationModel, this.props.routePathStore!.routePath);
     };
 
     render() {
@@ -334,20 +297,13 @@ class RoutePathView extends ViewFormBase<IRoutePathViewProps, IRoutePathViewStat
         if (!routePathStore!.routePath) return null;
 
         const isGeometryValid = validateRoutePathLinks(routePathStore!.routePath!.routePathLinks);
-
-        const areLinkFormsValid = this.props.routePathStore!.invalidLinkOrderNumbers.length === 0;
         const isEditingDisabled = routePathStore!.isEditingDisabled;
-        // TODO:
-        // are nodeFormsValid ...
         const isSaveButtonDisabled =
             isEditingDisabled ||
             !this.props.routePathStore!.isDirty ||
             !isGeometryValid ||
-            !this.isFormValid() ||
-            !areLinkFormsValid;
-
+            !this.props.routePathStore!.isFormValid;
         const copySegmentStore = this.props.routePathCopySegmentStore;
-
         const isCopyRoutePathSegmentViewVisible =
             copySegmentStore!.startNode && copySegmentStore!.endNode;
 

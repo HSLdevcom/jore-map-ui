@@ -27,7 +27,6 @@ export class MapStore {
     @observable private _mapFilters: MapFilter[];
     @observable private _mapBounds: L.LatLngBounds;
     @observable private _mapCursor: MapCursor;
-    @observable private _isMapCenteringPrevented: boolean;
 
     constructor() {
         this._coordinates = null;
@@ -37,7 +36,6 @@ export class MapStore {
         this._visibleNodeLabels = [NodeLabel.hastusId];
         this._mapFilters = [MapFilter.arrowDecorator];
         this._mapCursor = '';
-        this._isMapCenteringPrevented = false;
     }
 
     @computed
@@ -80,11 +78,6 @@ export class MapStore {
         return this._mapCursor;
     }
 
-    @computed
-    get isMapCenteringPrevented() {
-        return this._isMapCenteringPrevented;
-    }
-
     public isMapFilterEnabled = (mapFilter: MapFilter) => {
         return this._mapFilters.includes(mapFilter);
     };
@@ -106,7 +99,9 @@ export class MapStore {
 
     @action
     public initCoordinates = () => {
-        this._coordinates = INITIAL_COORDINATES;
+        if (!this._coordinates) {
+            this._coordinates = INITIAL_COORDINATES;
+        }
     };
 
     @action
@@ -122,11 +117,6 @@ export class MapStore {
     @action
     public setSelectedNodeId = (id: string | null) => {
         this._selectedNodeId = id;
-    };
-
-    @action
-    public setIsMapCenteringPrevented = (isPrevented: boolean) => {
-        this._isMapCenteringPrevented = isPrevented;
     };
 
     @action

@@ -10,9 +10,11 @@ export enum AlertType {
 export class AlertStore {
     @observable private _message: string | null;
     @observable private _type: AlertType | null;
+    @observable private _isCancelButtonVisible: boolean;
 
     constructor() {
         this._message = null;
+        this._isCancelButtonVisible = false;
     }
 
     @computed
@@ -26,12 +28,29 @@ export class AlertStore {
     }
 
     @computed
+    get isCancelButtonVisible() {
+        return this._isCancelButtonVisible;
+    }
+
+    @computed
     get isAlertOpen(): boolean {
         return this._message !== null;
     }
 
     @action
-    public setFadeMessage = (message: string, type: AlertType = AlertType.Success) => {
+    public setNotificationMessage = ({ message }: { message: string }) => {
+        this._message = message;
+        this._isCancelButtonVisible = true;
+    };
+
+    @action
+    public setFadeMessage = ({
+        message,
+        type = AlertType.Success
+    }: {
+        message: string;
+        type?: AlertType;
+    }) => {
         this._message = message;
         this._type = type;
 
@@ -50,14 +69,10 @@ export class AlertStore {
     };
 
     @action
-    public closeLoaderMessage = () => {
-        this.close();
-    };
-
-    @action
     public close = () => {
         this._message = null;
         this._type = null;
+        this._isCancelButtonVisible = false;
     };
 }
 
