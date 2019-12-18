@@ -29,7 +29,6 @@ interface UndoState {
 interface INodeCacheObj {
     node: INode;
     links: ILink[];
-    oldLinks: ILink[];
     isNodeIdEditable: boolean;
 }
 
@@ -331,11 +330,9 @@ class NodeStore {
     @action
     public setCurrentStateIntoNodeCache = ({ isNewNode }: { isNewNode: boolean }) => {
         const nodeId = this._node!.id;
-        const nodeCacheObj = {
+        const nodeCacheObj: INodeCacheObj = {
             node: _.cloneDeep(this._node!),
             links: _.cloneDeep(this._links),
-            oldNode: _.cloneDeep(this._oldNode!),
-            oldLinks: _.cloneDeep(this._oldLinks),
             isNodeIdEditable: this._isNodeIdEditable
         };
         if (isNewNode) {
