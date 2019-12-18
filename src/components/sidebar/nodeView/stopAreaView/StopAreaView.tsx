@@ -175,15 +175,30 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
     };
 
     private showSavePrompt = () => {
-        const confirmStore = this.props.confirmStore;
-        const currentStopArea = this.props.stopAreaStore!.stopArea;
-        const oldRoute = this.props.stopAreaStore!.oldStopArea;
+        const confirmStore = this.props.confirmStore!;
+        const stopAreaStore = this.props.stopAreaStore!;
+        const currentStopArea = stopAreaStore.stopArea;
+        const oldStopArea = stopAreaStore.oldStopArea;
+        const oldRoute = stopAreaStore.oldStopArea;
+        const stopItems = stopAreaStore.stopItems;
+
+        const shouldShowNotification =
+            currentStopArea.nameFi !== oldStopArea.nameFi ||
+            currentStopArea.nameSw !== oldStopArea.nameSw;
+        const confirmNotification = shouldShowNotification
+            ? `Huom. nimimuutokset muuttavat kaikkien pysäkkialueeseen kuuluvien pysäkkien ( ${stopItems
+                  .map(stopItem => stopItem.nodeId)
+                  .join(', ')
+                  .toString()} ) nimet.`
+            : undefined;
+
         const saveModel: ISaveModel = {
             newData: currentStopArea,
             oldData: oldRoute,
             model: 'stopArea'
         };
-        confirmStore!.openConfirm({
+        confirmStore.openConfirm({
+            confirmNotification,
             content: <SavePrompt saveModels={[saveModel]} />,
             onConfirm: () => {
                 this.save();

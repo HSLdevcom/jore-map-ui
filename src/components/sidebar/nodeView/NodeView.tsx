@@ -141,31 +141,24 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._setState({ isLoading: true });
         nodeStore!.clear();
 
-        const _fetchNode = async () => {
-            this.props.mapStore!.setSelectedNodeId(selectedNodeId);
-            const node = await this.fetchNode(selectedNodeId);
-            if (node) {
-                const links = await this.fetchLinksForNode(node);
-                if (links) {
-                    this.initNode(node, links);
-                }
-            }
-            this._setState({ isLoading: false });
-        };
-
+        const node = await this.fetchNode(selectedNodeId);
+        const links = await this.fetchLinksForNode(node!);
         const nodeCacheObj: INodeCacheObj | null = nodeStore!.getNodeCacheObjById(selectedNodeId);
         if (nodeCacheObj) {
             this.showNodeCachePrompt({
                 nodeCacheObj,
                 promptCancelCallback: async () => {
-                    await _fetchNode();
+                    this.initNode(node!, links!);
                     this.updateSelectedStopAreaId();
-                }
+                },
+                oldNode: node!,
+                oldLinks: links!
             });
         } else {
-            await _fetchNode();
+            this.initNode(node!, links!);
             this.updateSelectedStopAreaId();
         }
+        this.setState({ isLoading: false });
     };
 
     private initNode = (node: INode, links: ILink[], oldNode?: INode, oldLinks?: ILink[]) => {
@@ -187,10 +180,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
     private showNodeCachePrompt = ({
         nodeCacheObj,
-        promptCancelCallback
+        promptCancelCallback,
+        oldNode,
+        oldLinks
     }: {
         nodeCacheObj: INodeCacheObj;
         promptCancelCallback: Function;
+        oldNode?: INode;
+        oldLinks?: ILink[];
     }) => {
         const nodeStore = this.props.nodeStore;
         this.props.confirmStore!.openConfirm({
@@ -200,8 +197,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 this.initNode(
                     nodeCacheObj.node,
                     nodeCacheObj.links,
-                    nodeCacheObj.oldNode,
-                    nodeCacheObj.oldLinks
+                    oldNode,
+                    oldLinks
                 );
                 this.updateSelectedStopAreaId();
                 this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
