@@ -5,6 +5,7 @@ import IStop from './IStop';
 
 interface INodePrimaryKey {
     id: string;
+    idSuffix?: string; // 2 num (used at manual nodeId input)
 }
 
 interface INodeBase extends INodePrimaryKey {

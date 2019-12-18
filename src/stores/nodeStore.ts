@@ -6,7 +6,7 @@ import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop } from '~/models';
 import nodeValidationModel, {
-    editableNodeIdValidationRule,
+    editableNodeIdValidationModel,
     INodeValidationModel
 } from '~/models/validationModels/nodeValidationModel';
 import stopValidationModel, {
@@ -173,8 +173,20 @@ class NodeStore {
                 validator: (node: INode, property: string, nodeId: string) => {
                     if (this.isNodeIdEditable) {
                         const validationResult = FormValidator.validateProperty(
-                            editableNodeIdValidationRule,
+                            editableNodeIdValidationModel.id,
                             nodeId
+                        );
+                        return validationResult;
+                    }
+                    return;
+                }
+            },
+            idSuffix: {
+                validator: (node: INode, property: string, idSuffix: string) => {
+                    if (this.isNodeIdEditable) {
+                        const validationResult = FormValidator.validateProperty(
+                            editableNodeIdValidationModel.idSuffix,
+                            idSuffix
                         );
                         return validationResult;
                     }

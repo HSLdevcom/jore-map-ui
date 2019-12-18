@@ -21,9 +21,7 @@ interface INodeViewProps {
     isNodeIdEditable?: boolean;
     nodeIdSuffixOptions?: IDropdownItem[];
     isNodeIdSuffixQueryLoading?: boolean;
-    selectedNodeIdSuffix?: string;
     onChangeNodeId?: (value: any) => void;
-    onChangeNodeIdSuffix?: (value: any) => void;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
     lngChange?: Function;
     latChange?: Function;
@@ -41,9 +39,7 @@ export default class NodeForm extends Component<INodeViewProps> {
             isNodeIdEditable,
             nodeIdSuffixOptions,
             isNodeIdSuffixQueryLoading,
-            selectedNodeIdSuffix,
             onChangeNodeId,
-            onChangeNodeIdSuffix,
             invalidPropertiesMap,
             onChangeNodeProperty
         } = this.props;
@@ -53,12 +49,6 @@ export default class NodeForm extends Component<INodeViewProps> {
             .codeListStore!.getDropdownItemList('Solmutyyppi (P/E)')
             .filter(item => item.value !== StartNodeType.DISABLED);
 
-        const nodeSuffixValidationResult = _.isEmpty(selectedNodeIdSuffix)
-            ? {
-                  isValid: false,
-                  errorMessage: 'Solmun 2 viimeistä numeroa täytyy valita.'
-              }
-            : undefined;
         return (
             <div className={classnames(s.nodeForm, s.form)}>
                 <div className={s.formSection}>
@@ -75,13 +65,15 @@ export default class NodeForm extends Component<INodeViewProps> {
                                 <Dropdown
                                     label='+ 2 num.)'
                                     onChange={
-                                        onChangeNodeIdSuffix ? onChangeNodeIdSuffix : undefined
+                                        onChangeNodeProperty
+                                            ? onChangeNodeProperty('idSuffix')
+                                            : undefined
                                     }
                                     disabled={_.isEmpty(nodeIdSuffixOptions)}
                                     isLoading={isNodeIdSuffixQueryLoading}
-                                    selected={selectedNodeIdSuffix ? selectedNodeIdSuffix : ''}
+                                    selected={node.idSuffix}
                                     items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
-                                    validationResult={nodeSuffixValidationResult}
+                                    validationResult={invalidPropertiesMap['idSuffix']}
                                 />
                             )}
                         </div>

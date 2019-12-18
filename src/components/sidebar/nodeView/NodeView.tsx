@@ -48,7 +48,6 @@ interface INodeViewProps {
 interface INodeViewState {
     isLoading: boolean;
     nodeIdSuffixOptions: IDropdownItem[];
-    selectedNodeIdSuffix: string;
     isNodeIdSuffixQueryLoading: boolean;
 }
 
@@ -61,7 +60,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.state = {
             isLoading: true,
             nodeIdSuffixOptions: [],
-            selectedNodeIdSuffix: '',
             isNodeIdSuffixQueryLoading: false
         };
     }
@@ -206,7 +204,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     nodeCacheObj.oldLinks
                 );
                 this.updateSelectedStopAreaId();
-                await this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
+                this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
                 nodeStore!.setIsNodeIdEditable(nodeCacheObj.isNodeIdEditable);
                 nodeStore!.setIsEditingDisabled(false);
                 this._setState({ isLoading: false });
@@ -254,7 +252,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 if (this.props.nodeStore!.isNodeIdEditable) {
                     // Merge nodeId parts (5 num + 2 num) as a nodeId
                     nodeToUpdate = _.cloneDeep(this.props.nodeStore!.node);
-                    const nodeId = nodeToUpdate.id + this.state.selectedNodeIdSuffix;
+                    const nodeId = nodeToUpdate.id + nodeToUpdate.idSuffix;
                     nodeToUpdate.id = nodeId;
                 } else {
                     nodeToUpdate = this.props.nodeStore!.node;
@@ -353,18 +351,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         } else {
             if (this.state.nodeIdSuffixOptions.length > 0) {
                 this._setState({
-                    nodeIdSuffixOptions: [],
-                    selectedNodeIdSuffix: ''
+                    nodeIdSuffixOptions: []
                 });
             }
         }
     }
-
-    private onChangeNodeIdSuffix = (value: string) => {
-        this._setState({
-            selectedNodeIdSuffix: value
-        });
-    };
 
     private latChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
         value: string
@@ -439,8 +430,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         invalidPropertiesMap={invalidPropertiesMap}
                         nodeIdSuffixOptions={this.state.nodeIdSuffixOptions}
                         isNodeIdSuffixQueryLoading={this.state.isNodeIdSuffixQueryLoading}
-                        selectedNodeIdSuffix={this.state.selectedNodeIdSuffix}
-                        onChangeNodeIdSuffix={this.onChangeNodeIdSuffix}
                         onChangeNodeId={this.onChangeNodeId}
                         onChangeNodeProperty={this.onChangeNodeProperty}
                         lngChange={this.lngChange}
