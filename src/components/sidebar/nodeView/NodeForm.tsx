@@ -88,17 +88,6 @@ export default class NodeForm extends Component<INodeViewProps> {
                             selected={node.type}
                             items={nodeTypeCodeList}
                         />
-                        <Dropdown
-                            label='MATKA-AIKAPISTE'
-                            disabled={isEditingDisabled}
-                            items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
-                            selected={node.tripTimePoint}
-                            onChange={
-                                onChangeNodeProperty
-                                    ? onChangeNodeProperty('tripTimePoint')
-                                    : undefined
-                            }
-                        />
                     </div>
                     {!isNewNode && (
                         <div className={s.flexRow}>

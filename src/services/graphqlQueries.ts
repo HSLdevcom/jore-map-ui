@@ -483,7 +483,6 @@ const nodeQueryFields = `
     geojsonManual
     geojsonProjection
     transittypes
-    solmapiste
     solotapa
     solkuka
     solviimpvm

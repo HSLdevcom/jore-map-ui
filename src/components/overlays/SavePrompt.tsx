@@ -73,7 +73,6 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
     const customPropertyValueFuncObj = {
         node: {
             shortIdLetter: () => codeListStore.getCodeListLabel('Lyhyttunnus', data[property]),
-            tripTimePoint: () => codeListStore.getCodeListLabel('Kyllä/Ei', data[property]),
             coordinates: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesManual: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesProjection: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),

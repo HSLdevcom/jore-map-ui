@@ -13,7 +13,6 @@ const nodePropertyCodeList: INodePropertyCodeList = {
     coordinatesProjection: 'PROJISOITU PISTE',
     measurementDate: 'MITTAUS PVM',
     measurementType: 'MITTAUSTAPA',
-    tripTimePoint: 'MATKA-AIKAPISTE',
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM',
     transitTypes: 'VERKKO'
