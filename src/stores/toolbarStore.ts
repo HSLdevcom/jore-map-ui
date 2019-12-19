@@ -24,7 +24,7 @@ const TOOL_LIST = [
 ];
 
 const TOOLS = {};
-TOOL_LIST.map((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
+TOOL_LIST.forEach((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
 
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool | null;
@@ -46,12 +46,20 @@ export class ToolbarStore {
         }
 
         // deselect current tool
-        if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
-            this.selectDefaultTool();
+        if (
+            tool === null ||
+            tool === ToolbarTool.SelectNetworkEntity ||
+            (this._selectedTool && this._selectedTool.toolType === tool)
+        ) {
+            // Network click event also triggers mapClick event
+            // Prevents bugs where deselecting tool after a click on map also triggers map click event.
+            // TODO: find a better way of achieving this.
+            setTimeout(() => {
+                this.selectDefaultTool();
+            }, 0);
             return;
         }
-        const foundTool = TOOLS[tool];
-        this._selectedTool = foundTool;
+        this._selectedTool = TOOLS[tool];
         if (!this._selectedTool) {
             throw new Error('Tried to select tool that was not found');
         }
