@@ -305,7 +305,7 @@ class NodeStore {
 
         if (this._node.type === NodeType.STOP && !this._node.stop) {
             const stop = NodeStopFactory.createNewStop();
-            (this._node as any)[property] = stop;
+            this._node.stop = stop;
             this._stopValidationStore.init(stop, stopValidationModel);
         }
     };
