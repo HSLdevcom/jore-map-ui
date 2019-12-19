@@ -199,8 +199,15 @@ class NodeStore {
                         );
                         return validationResult;
                     }
-                    return;
+                    const validationResult = FormValidator.validateProperty(
+                        'min:0|max:0|string',
+                        measurementType
+                    );
+                    return validationResult;
                 }
+            },
+            type: {
+                dependentProperties: ['measurementType']
             }
         };
 
@@ -299,18 +306,8 @@ class NodeStore {
 
     @action
     public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng) => {
-        if (!this._node) return;
-
         (this._node as any)[property] = value;
         this._nodeValidationStore.updateProperty(property, value);
-
-        if (property === 'type') this.mirrorCoordinates(this._node);
-
-        if (this._node.type === NodeType.STOP && !this._node.stop) {
-            const stop = NodeStopFactory.createNewStop();
-            this._node.stop = stop;
-            this._stopValidationStore.init(stop, stopValidationModel);
-        }
     };
 
     @action
@@ -318,6 +315,22 @@ class NodeStore {
         if (!this.node) return;
         this._node!.stop![property] = value;
         this._stopValidationStore.updateProperty(property, value);
+    };
+
+    @action
+    public updateNodeType = (type: NodeType) => {
+        this._node!.type = type;
+        this._nodeValidationStore.updateProperty('type', type);
+
+        this.mirrorCoordinates(this._node!);
+
+        if (this._node!.type === NodeType.STOP && !this._node!.stop) {
+            const stop = NodeStopFactory.createNewStop();
+            this._node!.stop = stop;
+            this._stopValidationStore.init(stop, stopValidationModel);
+        } else {
+            this.updateNodeProperty('measurementType', '');
+        }
     };
 
     @action

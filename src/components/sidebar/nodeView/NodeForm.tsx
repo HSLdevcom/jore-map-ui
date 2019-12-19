@@ -24,6 +24,7 @@ interface INodeViewProps {
     isNodeIdSuffixQueryLoading?: boolean;
     onChangeNodeId?: (value: any) => void;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
+    onChangeNodeType?: (type: NodeType) => void;
     lngChange?: Function;
     latChange?: Function;
     codeListStore?: CodeListStore;
@@ -56,7 +57,8 @@ export default class NodeForm extends Component<INodeViewProps> {
             isNodeIdSuffixQueryLoading,
             onChangeNodeId,
             invalidPropertiesMap,
-            onChangeNodeProperty
+            onChangeNodeProperty,
+            onChangeNodeType
         } = this.props;
         const lngChange = this.props.lngChange ? this.props.lngChange : () => void 0;
         const latChange = this.props.latChange ? this.props.latChange : () => void 0;
@@ -96,9 +98,7 @@ export default class NodeForm extends Component<INodeViewProps> {
                     <div className={s.flexRow}>
                         <Dropdown
                             label='TYYPPI'
-                            onChange={
-                                onChangeNodeProperty ? onChangeNodeProperty('type') : undefined
-                            }
+                            onChange={onChangeNodeType ? onChangeNodeType : undefined}
                             disabled={isEditingDisabled}
                             selected={node.type}
                             items={nodeTypeCodeList}

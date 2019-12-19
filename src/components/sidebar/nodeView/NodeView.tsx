@@ -332,6 +332,10 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         await this.queryAvailableNodeIdSuffixes(value);
     };
 
+    private onChangeNodeType = (type: NodeType) => {
+        this.props.nodeStore!.updateNodeType(type);
+    }
+
     private queryAvailableNodeIdSuffixes = async (beginningOfNodeId: string) => {
         if (beginningOfNodeId.length === 5) {
             this._setState({
@@ -429,6 +433,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         isNodeIdSuffixQueryLoading={this.state.isNodeIdSuffixQueryLoading}
                         onChangeNodeId={this.onChangeNodeId}
                         onChangeNodeProperty={this.onChangeNodeProperty}
+                        onChangeNodeType={this.onChangeNodeType}
                         lngChange={this.lngChange}
                         latChange={this.latChange}
                     />
