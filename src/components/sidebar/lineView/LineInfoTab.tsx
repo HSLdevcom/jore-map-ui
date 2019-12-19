@@ -22,7 +22,6 @@ interface ILineInfoTabProps {
     codeListStore?: CodeListStore;
     errorStore?: ErrorStore;
     isEditingDisabled: boolean;
-    isNewLine: boolean;
     isLineSaveButtonDisabled: boolean;
     saveLine: () => void;
 }
@@ -46,13 +45,13 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
     }
 
     componentDidMount() {
-        if (this.props.isNewLine) {
+        if (this.props.lineStore!.isNewLine) {
             this.fetchAllLines();
         }
     }
 
     componentDidUpdate() {
-        if (this.props.isNewLine) {
+        if (this.props.lineStore!.isNewLine) {
             this.fetchAllLines();
         }
     }
@@ -86,7 +85,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
         if (!line) return null;
 
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating = !this.props.isNewLine || this.props.isEditingDisabled;
+        const isUpdating = !this.props.lineStore!.isNewLine || this.props.isEditingDisabled;
         const onChange = this.onChangeLineProperty;
         const invalidPropertiesMap = this.props.lineStore!.invalidPropertiesMap;
         const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
@@ -99,9 +98,10 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             <TransitToggleButtonBar
                                 selectedTransitTypes={selectedTransitTypes}
                                 toggleSelectedTransitType={this.selectTransitType}
-                                disabled={!this.props.isNewLine}
+                                disabled={!this.props.lineStore!.isNewLine}
                                 errorMessage={
-                                    !invalidPropertiesMap['transitType']?.isValid
+                                    invalidPropertiesMap['transitType'] &&
+                                    !invalidPropertiesMap['transitType'].isValid
                                         ? 'Verkon tyyppi täytyy valita.'
                                         : undefined
                                 }
@@ -222,10 +222,10 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                         type={ButtonType.SAVE}
                         disabled={this.props.isLineSaveButtonDisabled}
                     >
-                        {this.props.isNewLine ? 'Luo uusi linja' : 'Tallenna linja'}
+                        {this.props.lineStore!.isNewLine ? 'Luo uusi linja' : 'Tallenna linja'}
                     </Button>
                 </div>
-                {!this.props.isNewLine && (
+                {!this.props.lineStore!.isNewLine && (
                     <LineHeaderTable lineId={this.props.lineStore!.line!.id} />
                 )}
             </div>

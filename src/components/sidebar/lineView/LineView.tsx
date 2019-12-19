@@ -78,7 +78,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         try {
             if (!this.props.lineStore!.line) {
                 const newLine = LineFactory.createNewLine();
-                this.props.lineStore!.init(newLine);
+                this.props.lineStore!.init({ line: newLine, isNewLine: true });
             }
         } catch (e) {
             this.props.errorStore!.addError('Uuden linjan luonti epäonnistui', e);
@@ -89,7 +89,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         const lineId = this.props.match!.params.id;
         try {
             const line = await LineService.fetchLine(lineId);
-            this.props.lineStore!.init(line);
+            this.props.lineStore!.init({ line, isNewLine: false });
         } catch (e) {
             this.props.errorStore!.addError('Linjan haku epäonnistui.', e);
         }
@@ -176,7 +176,6 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                         <ContentItem>
                             <LineInfoTab
                                 isEditingDisabled={isEditingDisabled}
-                                isNewLine={this.props.isNewLine}
                                 saveLine={this.saveLine}
                                 isLineSaveButtonDisabled={isSaveButtonDisabled}
                             />

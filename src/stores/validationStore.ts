@@ -26,6 +26,7 @@ class ValidationStore<ValidationObject, ValidationModel> {
     private _validationObject: ValidationObject | null;
     private _validationModel: ValidationModel | null;
     private _customValidatorMap: ICustomValidatorMap | null;
+    private _hasValidatedAllProperties: boolean;
 
     public init = (validationObject: ValidationObject, validationModel: ValidationModel, customValidatorsMap?: ICustomValidatorMap) => {
         this.clear();
@@ -69,6 +70,9 @@ class ValidationStore<ValidationObject, ValidationModel> {
 
     public validateAllProperties = () => {
         if (!this._validationModel) return;
+        if (this._hasValidatedAllProperties) return;
+        this._hasValidatedAllProperties = true;
+
         Object.entries(this._validationModel).forEach(([property, validatorRule]) => {
             this.validateProperty(property);
         });
@@ -87,6 +91,7 @@ class ValidationStore<ValidationObject, ValidationModel> {
     public clear = () => {
         this._validationObject = null;
         this._validationModel = null;
+        this._hasValidatedAllProperties = false;
         this._invalidPropertiesMap = {};
     };
 }

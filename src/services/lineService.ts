@@ -15,12 +15,6 @@ class LineService {
             variables: { lineId: lintunnus }
         });
 
-        // TODO: routes fetch
-        // const externalLine = queryResult.data.linjaByLintunnus;
-        // const routes =
-        // await RouteService.fetchRouteByLineId(externalLine.lintunnus);
-        // LineFactory.createLine(externalLine, routes);
-
         return LineFactory.createLine(queryResult.data.linjaByLintunnus);
     };
 
