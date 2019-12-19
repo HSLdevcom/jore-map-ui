@@ -5,7 +5,6 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import { ILink } from '~/models';
 import navigator from '~/routing/navigator';
@@ -105,11 +104,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     };
 
     private onMoveMarker = (nodeLocationType: NodeLocationType) => (coordinates: L.LatLng) => {
-        this.props.nodeStore!.updateNodeGeometry(
-            nodeLocationType,
-            coordinates,
-            NodeMeasurementType.Calculated
-        );
+        this.props.nodeStore!.updateNodeGeometry(nodeLocationType, coordinates);
     };
 
     private drawEditableLinks = () => {

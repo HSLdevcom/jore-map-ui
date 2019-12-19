@@ -9,7 +9,6 @@ import { IDropdownItem } from '~/components/controls/Dropdown';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
@@ -28,7 +27,7 @@ import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
-import { createDropdownItems } from '~/util/dropdownHelpers';
+import { createDropdownItemsFromList } from '~/util/dropdownHelpers';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
 import StopView from './StopView';
@@ -321,7 +320,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     };
 
     private onNodeGeometryChange = (property: NodeLocationType, value: any) => {
-        this.props.nodeStore!.updateNodeGeometry(property, value, NodeMeasurementType.Measured);
+        this.props.nodeStore!.updateNodeGeometry(property, value);
     };
 
     private onChangeNodeProperty = (property: keyof INode) => (value: any) => {
@@ -342,7 +341,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             // slide(-2): get last two letters of a nodeId
             const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
             this._setState({
-                nodeIdSuffixOptions: createDropdownItems(nodeIdSuffixList),
+                nodeIdSuffixOptions: createDropdownItemsFromList(nodeIdSuffixList),
                 isNodeIdSuffixQueryLoading: false
             });
             this.onChangeNodeProperty('idSuffix')('');

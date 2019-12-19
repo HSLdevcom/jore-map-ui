@@ -1,5 +1,4 @@
 import * as L from 'leaflet';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
@@ -67,7 +66,7 @@ class NodeFactory {
             coordinatesProjection: coordinates,
             modifiedOn: new Date(),
             modifiedBy: '',
-            measurementType: NodeMeasurementType.Calculated
+            measurementType: ''
         };
     }
 }

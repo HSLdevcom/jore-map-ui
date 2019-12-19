@@ -1,7 +1,6 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop } from '~/models';
@@ -190,6 +189,18 @@ class NodeStore {
                     }
                     return;
                 }
+            },
+            measurementType: {
+                validator: (node: INode, property: string, measurementType: string) => {
+                    if (node.type === NodeType.STOP) {
+                        const validationResult = FormValidator.validateProperty(
+                            'required|min:1|max:1|string',
+                            measurementType
+                        );
+                        return validationResult;
+                    }
+                    return;
+                }
             }
         };
 
@@ -221,11 +232,7 @@ class NodeStore {
     };
 
     @action
-    public updateNodeGeometry = (
-        nodeLocationType: NodeLocationType,
-        newCoordinates: LatLng,
-        measurementType: NodeMeasurementType
-    ) => {
+    public updateNodeGeometry = (nodeLocationType: NodeLocationType, newCoordinates: LatLng) => {
         if (!this._node) throw new Error('Node was null.'); // Should not occur
 
         const newNode = _.cloneDeep(this._node);
@@ -256,10 +263,6 @@ class NodeStore {
         geometryVariables.forEach(coordinateName =>
             this.updateNodeProperty(coordinateName, newNode[coordinateName])
         );
-
-        if (nodeLocationType === 'coordinates') {
-            this.updateNodeProperty('measurementType', measurementType.toString());
-        }
 
         if (nodeLocationType === 'coordinatesProjection') {
             this.fetchAddressData();

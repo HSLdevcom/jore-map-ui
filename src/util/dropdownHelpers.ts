@@ -1,6 +1,6 @@
 import { IDropdownItem } from '~/components/controls/Dropdown';
 
-const createDropdownItems = (itemList: string[]): IDropdownItem[] => {
+const createDropdownItemsFromList = (itemList: string[]): IDropdownItem[] => {
     return itemList.map((item: string) => {
         const dropdownItem: IDropdownItem = {
             value: item,
@@ -10,4 +10,4 @@ const createDropdownItems = (itemList: string[]): IDropdownItem[] => {
     });
 };
 
-export { createDropdownItems };
+export { createDropdownItemsFromList };

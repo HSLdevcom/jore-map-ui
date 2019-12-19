@@ -6,6 +6,7 @@ import { Dropdown } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { INode } from '~/models';
@@ -31,6 +32,20 @@ interface INodeViewProps {
 @inject('codeListStore')
 @observer
 export default class NodeForm extends Component<INodeViewProps> {
+    private createMeasuredDropdownItems = (): IDropdownItem[] => {
+        const items: IDropdownItem[] = [
+            {
+                value: NodeMeasurementType.Calculated,
+                label: 'Laskettu'
+            },
+            {
+                value: NodeMeasurementType.Measured,
+                label: 'Mitattu'
+            }
+        ];
+        return items;
+    };
+
     render() {
         const {
             node,
@@ -146,9 +161,17 @@ export default class NodeForm extends Component<INodeViewProps> {
                             validationResult={invalidPropertiesMap['measurementDate']}
                         />
                         {node.type === NodeType.STOP && (
-                            <TextContainer
+                            <Dropdown
                                 label='MITTAUSTAPA'
-                                value={NodeHelper.getMeasurementTypeLabel(node.measurementType)}
+                                disabled={isEditingDisabled}
+                                selected={node.measurementType}
+                                items={this.createMeasuredDropdownItems()}
+                                validationResult={invalidPropertiesMap['measurementType']}
+                                onChange={
+                                    onChangeNodeProperty
+                                        ? onChangeNodeProperty('measurementType')
+                                        : undefined
+                                }
                             />
                         )}
                     </div>
