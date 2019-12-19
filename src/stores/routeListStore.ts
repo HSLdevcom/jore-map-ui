@@ -17,11 +17,6 @@ export class RouteListStore {
         return this._routes;
     }
 
-    set routes(value: IRoute[]) {
-        this.colorScale = new ColorScale();
-        this._routes = value;
-    }
-
     @action
     public addToRoutes = (routes: IRoute[]) => {
         this._routes.push(...routes);

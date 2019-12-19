@@ -23,7 +23,6 @@ interface IRoutePathInfoTabProps {
     codeListStore?: CodeListStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
-    isNewRoutePath: boolean;
     invalidPropertiesMap: object;
 }
 
@@ -48,11 +47,10 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         this.updateCalculatedLength();
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        this.mounted = true;
         const queryParams = navigator.getQueryParamValues();
         const routeId = queryParams[QueryParams.routeId];
-        this.fetchExistingPrimaryKeys(routeId);
-
         this.isRoutePathLinksChangedListener = reaction(
             () =>
                 this.props.routePathStore!.routePath &&
@@ -60,7 +58,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
             this.updateCalculatedLength
         );
         autorun(() => this.updateCalculatedLength);
-        this.mounted = true;
+        await this.fetchExistingPrimaryKeys(routeId);
     }
 
     componentWillUnmount() {
@@ -138,7 +136,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating = !this.props.isNewRoutePath || this.props.isEditingDisabled;
+        const isUpdating =
+            !this.props.routePathStore!.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const onChange = this.onChangeRoutePathProperty;
         const routePath = this.props.routePath;

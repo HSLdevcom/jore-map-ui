@@ -107,13 +107,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 const lineId = queryParams[QueryParams.lineId];
                 const route = await RouteService.fetchRoute(routeId);
                 const routePath = RoutePathFactory.createNewRoutePath(lineId, route);
-                this.props.routePathStore!.init(routePath);
+                this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
             } else {
-                this.props.routePathStore!.init(
-                    RoutePathFactory.createNewRoutePathFromOld(
+                this.props.routePathStore!.init({
+                    routePath: RoutePathFactory.createNewRoutePathFromOld(
                         this.props.routePathStore!.routePath!
-                    )
-                );
+                    ),
+                    isNewRoutePath: this.props.isNewRoutePath
+                });
             }
             this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
         } catch (e) {
@@ -164,7 +165,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             );
             await this.fetchViaNames(routePath);
             this.centerMapToRoutePath(routePath);
-            this.props.routePathStore!.init(routePath);
+            this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
         } catch (e) {
             this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.', e);
         }
@@ -227,7 +228,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 <RoutePathInfoTab
                     isEditingDisabled={isEditingDisabled}
                     routePath={this.props.routePathStore!.routePath!}
-                    isNewRoutePath={this.props.isNewRoutePath}
                     invalidPropertiesMap={this.props.routePathStore!.invalidPropertiesMap}
                 />
             );

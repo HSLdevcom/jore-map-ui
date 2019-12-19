@@ -39,6 +39,7 @@ enum ListFilter {
 export class RoutePathStore {
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
+    @observable private _isNewRoutePath: boolean;
     @observable private _existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
     @observable private _neighborRoutePathLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
@@ -74,6 +75,11 @@ export class RoutePathStore {
     @computed
     get routePath(): IRoutePath | null {
         return this._routePath;
+    }
+
+    @computed
+    get isNewRoutePath(): boolean {
+        return this._isNewRoutePath;
     }
 
     @computed
@@ -142,9 +148,10 @@ export class RoutePathStore {
     }
 
     @action
-    public init = (routePath: IRoutePath) => {
+    public init = ({ routePath, isNewRoutePath }: { routePath: IRoutePath; isNewRoutePath: boolean; }) => {
         this.clear();
         this._routePath = routePath;
+        this._isNewRoutePath = isNewRoutePath;
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
         this.setRoutePathLinks(routePathLinks);
         const currentUndoState: UndoState = {
@@ -157,6 +164,7 @@ export class RoutePathStore {
         this.setOldRoutePath(this._routePath);
 
         const validatePrimaryKey = (routePath: IRoutePath) => {
+            if (!this.isNewRoutePath) return;
             const isPrimaryKeyDuplicated = this._existingRoutePathPrimaryKeys.some(
                 rp =>
                     routePath.routeId === rp.routeId &&
@@ -197,6 +205,11 @@ export class RoutePathStore {
         this.recalculateOrderNumbers();
         this.sortRoutePathLinks();
     };
+
+    @action
+    public setIsNewRoutePath = (isNewRoutePath: boolean) => {
+        this._isNewRoutePath = isNewRoutePath;
+    }
 
     @action
     public setExistingRoutePathPrimaryKeys = (routePathPrimaryKeys: IRoutePathPrimaryKey[]) => {
@@ -467,7 +480,7 @@ export class RoutePathStore {
     @action
     public resetChanges = () => {
         if (this._oldRoutePath) {
-            this.init(this._oldRoutePath);
+            this.init({ routePath: this._oldRoutePath, isNewRoutePath: this._isNewRoutePath });
         }
     };
 

@@ -11,6 +11,7 @@ import ValidationStore, { ICustomValidatorMap } from './validationStore';
 export class LineStore {
     @observable private _line: ILine | null;
     @observable private _oldline: ILine | null;
+    @observable private _isNewLine: boolean;
     @observable private _isEditingDisabled: boolean;
     @observable private _existingLines: ISearchLine[] = [];
     private _validationStore: ValidationStore<ILine, ILineValidationModel>;
@@ -25,6 +26,11 @@ export class LineStore {
     @computed
     get line(): ILine | null {
         return this._line;
+    }
+
+    @computed
+    get isNewLine(): boolean {
+        return this._isNewLine;
     }
 
     @computed
@@ -53,8 +59,9 @@ export class LineStore {
     }
 
     @action
-    public init = (line: ILine) => {
+    public init = ({ line, isNewLine }: { line: ILine; isNewLine: boolean }) => {
         this._line = line;
+        this._isNewLine = isNewLine;
         this.setOldLine(this._line);
 
         const validateLineDates = (line: ILine) => {
@@ -72,6 +79,7 @@ export class LineStore {
         const customValidatorMap: ICustomValidatorMap = {
             id: {
                 validator: (line: ILine, property: string, lineId: string) => {
+                    if (!this._isNewLine) return;
                     if (this.isLineAlreadyFound(lineId)) {
                         const validationResult: IValidationResult = {
                             isValid: false,
@@ -130,7 +138,7 @@ export class LineStore {
     @action
     public resetChanges = () => {
         if (this._oldline) {
-            this.init(this._oldline);
+            this.init({ line: this._oldline, isNewLine: this._isNewLine });
         }
     };
 
