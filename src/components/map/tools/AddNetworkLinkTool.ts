@@ -51,8 +51,6 @@ class AddNetworkLinkTool implements BaseTool {
         } else {
             this.endNodeId = nodeId;
             if (this.startNodeId === this.endNodeId) return;
-            // TODO?
-            // if (!this.isNewLinkValid(clickEvent, startNodeId, endNodeId)) return;
             this.redirectToNewLinkView();
         }
     };
@@ -63,26 +61,8 @@ class AddNetworkLinkTool implements BaseTool {
             .toTarget(':id', [this.startNodeId, this.endNodeId].join(','))
             .toLink();
         navigator.goTo(newLinkViewLink);
-
         ToolbarStore.selectTool(null);
     };
-
-    // TODO?
-    // If there is a link opened
-    // * the new link has to start from where current link ends
-    // * the new link has to end where the current link starts
-    // private isNewLinkValid =
-    // (clickEvent: CustomEvent, startNodeId: string, endNodeId: string) => {
-    //     const currentLink = LinkStore.link;
-    //     if (!currentLink) return true;
-    //     if (clickEvent.type === 'nodeClick') {
-    //         TODO: throw error if true
-    //         if (currentLink.endNode.id === startNodeId) return true;
-    //         if (currentLink.startNode.id === endNodeId) return true;
-    //         return false;
-    //     }
-    //     return true;
-    // }
 
     private resetTool = () => {
         this.startNodeId = null;

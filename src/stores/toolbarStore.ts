@@ -24,7 +24,7 @@ const TOOL_LIST = [
 ];
 
 const TOOLS = {};
-TOOL_LIST.map((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
+TOOL_LIST.forEach((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
 
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool | null;
@@ -50,8 +50,7 @@ export class ToolbarStore {
             this.selectDefaultTool();
             return;
         }
-        const foundTool = TOOLS[tool];
-        this._selectedTool = foundTool;
+        this._selectedTool = TOOLS[tool];
         if (!this._selectedTool) {
             throw new Error('Tried to select tool that was not found');
         }
