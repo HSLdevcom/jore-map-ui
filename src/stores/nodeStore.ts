@@ -1,7 +1,6 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop } from '~/models';
@@ -190,6 +189,25 @@ class NodeStore {
                     }
                     return;
                 }
+            },
+            measurementType: {
+                validator: (node: INode, property: string, measurementType: string) => {
+                    if (node.type === NodeType.STOP) {
+                        const validationResult = FormValidator.validateProperty(
+                            'required|min:1|max:1|string',
+                            measurementType
+                        );
+                        return validationResult;
+                    }
+                    const validationResult = FormValidator.validateProperty(
+                        'min:0|max:0|string',
+                        measurementType
+                    );
+                    return validationResult;
+                }
+            },
+            type: {
+                dependentProperties: ['measurementType']
             }
         };
 
@@ -221,11 +239,7 @@ class NodeStore {
     };
 
     @action
-    public updateNodeGeometry = (
-        nodeLocationType: NodeLocationType,
-        newCoordinates: LatLng,
-        measurementType: NodeMeasurementType
-    ) => {
+    public updateNodeGeometry = (nodeLocationType: NodeLocationType, newCoordinates: LatLng) => {
         if (!this._node) throw new Error('Node was null.'); // Should not occur
 
         const newNode = _.cloneDeep(this._node);
@@ -256,10 +270,6 @@ class NodeStore {
         geometryVariables.forEach(coordinateName =>
             this.updateNodeProperty(coordinateName, newNode[coordinateName])
         );
-
-        if (nodeLocationType === 'coordinates') {
-            this.updateNodeProperty('measurementType', measurementType.toString());
-        }
 
         if (nodeLocationType === 'coordinatesProjection') {
             this.fetchAddressData();
@@ -296,18 +306,8 @@ class NodeStore {
 
     @action
     public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng) => {
-        if (!this._node) return;
-
         (this._node as any)[property] = value;
         this._nodeValidationStore.updateProperty(property, value);
-
-        if (property === 'type') this.mirrorCoordinates(this._node);
-
-        if (this._node.type === NodeType.STOP && !this._node.stop) {
-            const stop = NodeStopFactory.createNewStop();
-            (this._node as any)[property] = stop;
-            this._stopValidationStore.init(stop, stopValidationModel);
-        }
     };
 
     @action
@@ -315,6 +315,22 @@ class NodeStore {
         if (!this.node) return;
         this._node!.stop![property] = value;
         this._stopValidationStore.updateProperty(property, value);
+    };
+
+    @action
+    public updateNodeType = (type: NodeType) => {
+        this._node!.type = type;
+        this._nodeValidationStore.updateProperty('type', type);
+
+        this.mirrorCoordinates(this._node!);
+
+        if (this._node!.type === NodeType.STOP && !this._node!.stop) {
+            const stop = NodeStopFactory.createNewStop();
+            this._node!.stop = stop;
+            this._stopValidationStore.init(stop, stopValidationModel);
+        } else {
+            this.updateNodeProperty('measurementType', '');
+        }
     };
 
     @action

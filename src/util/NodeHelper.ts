@@ -1,4 +1,3 @@
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
 import NodeLocationType from '~/types/NodeLocationType';
@@ -68,17 +67,6 @@ class NodeHelper {
                 : node.shortIdString;
         }
         return '';
-    };
-
-    public static getMeasurementTypeLabel = (measurementType: string | undefined) => {
-        switch (measurementType) {
-            case NodeMeasurementType.Calculated:
-                return 'Laskettu';
-            case NodeMeasurementType.Measured:
-                return 'Mitattu';
-            default:
-                return measurementType ? measurementType.toString() : '-';
-        }
     };
 }
 

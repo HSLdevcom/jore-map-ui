@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 import propertyCodeLists from '~/codeLists/propertyCodeLists';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import codeListStore from '~/stores/codeListStore';
 import { toDateString } from '~/util/dateHelpers';
 import * as s from './savePrompt.scss';
@@ -73,11 +74,12 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
     const customPropertyValueFuncObj = {
         node: {
             shortIdLetter: () => codeListStore.getCodeListLabel('Lyhyttunnus', data[property]),
-            tripTimePoint: () => codeListStore.getCodeListLabel('Kyllä/Ei', data[property]),
             coordinates: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesManual: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesProjection: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
-            measurementDate: () => (data[property] ? toDateString(data[property]) : '')
+            measurementDate: () => (data[property] ? toDateString(data[property]) : ''),
+            measurementType: () =>
+                data[property] === NodeMeasurementType.Calculated ? 'Laskettu' : 'Mitattu'
         },
         stop: {
             municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property]),

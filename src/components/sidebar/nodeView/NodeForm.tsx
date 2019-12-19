@@ -6,6 +6,7 @@ import { Dropdown } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
+import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { INode } from '~/models';
@@ -23,6 +24,7 @@ interface INodeViewProps {
     isNodeIdSuffixQueryLoading?: boolean;
     onChangeNodeId?: (value: any) => void;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
+    onChangeNodeType?: (type: NodeType) => void;
     lngChange?: Function;
     latChange?: Function;
     codeListStore?: CodeListStore;
@@ -31,6 +33,20 @@ interface INodeViewProps {
 @inject('codeListStore')
 @observer
 export default class NodeForm extends Component<INodeViewProps> {
+    private createMeasuredDropdownItems = (): IDropdownItem[] => {
+        const items: IDropdownItem[] = [
+            {
+                value: NodeMeasurementType.Calculated,
+                label: 'Laskettu'
+            },
+            {
+                value: NodeMeasurementType.Measured,
+                label: 'Mitattu'
+            }
+        ];
+        return items;
+    };
+
     render() {
         const {
             node,
@@ -41,7 +57,8 @@ export default class NodeForm extends Component<INodeViewProps> {
             isNodeIdSuffixQueryLoading,
             onChangeNodeId,
             invalidPropertiesMap,
-            onChangeNodeProperty
+            onChangeNodeProperty,
+            onChangeNodeType
         } = this.props;
         const lngChange = this.props.lngChange ? this.props.lngChange : () => void 0;
         const latChange = this.props.latChange ? this.props.latChange : () => void 0;
@@ -81,23 +98,10 @@ export default class NodeForm extends Component<INodeViewProps> {
                     <div className={s.flexRow}>
                         <Dropdown
                             label='TYYPPI'
-                            onChange={
-                                onChangeNodeProperty ? onChangeNodeProperty('type') : undefined
-                            }
+                            onChange={onChangeNodeType ? onChangeNodeType : undefined}
                             disabled={isEditingDisabled}
                             selected={node.type}
                             items={nodeTypeCodeList}
-                        />
-                        <Dropdown
-                            label='MATKA-AIKAPISTE'
-                            disabled={isEditingDisabled}
-                            items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
-                            selected={node.tripTimePoint}
-                            onChange={
-                                onChangeNodeProperty
-                                    ? onChangeNodeProperty('tripTimePoint')
-                                    : undefined
-                            }
                         />
                     </div>
                     {!isNewNode && (
@@ -157,9 +161,17 @@ export default class NodeForm extends Component<INodeViewProps> {
                             validationResult={invalidPropertiesMap['measurementDate']}
                         />
                         {node.type === NodeType.STOP && (
-                            <TextContainer
+                            <Dropdown
                                 label='MITTAUSTAPA'
-                                value={NodeHelper.getMeasurementTypeLabel(node.measurementType)}
+                                disabled={isEditingDisabled}
+                                selected={node.measurementType}
+                                items={this.createMeasuredDropdownItems()}
+                                validationResult={invalidPropertiesMap['measurementType']}
+                                onChange={
+                                    onChangeNodeProperty
+                                        ? onChangeNodeProperty('measurementType')
+                                        : undefined
+                                }
                             />
                         )}
                     </div>
