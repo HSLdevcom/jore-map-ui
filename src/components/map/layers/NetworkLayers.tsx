@@ -221,11 +221,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             nodeId: properties.soltunnus,
             nodeType: properties.soltyyppi
         };
-        // This way networkNodeClick event is triggered after mapClick event. Prevents bugs such as where deselecting tool after a click on map also triggers map click event.
-        // TODO: find a better way of achieving this.
-        setTimeout(() => {
-            EventManager.trigger('networkNodeClick', clickParams);
-        }, 0);
+        EventManager.trigger('networkNodeClick', clickParams);
     };
 
     private onNetworkLinkClick = (clickEvent: any) => {
@@ -235,11 +231,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             endNodeId: properties.lnkloppusolmu,
             transitType: properties.lnkverkko
         };
-        // This way networkNodeClick event is triggered after mapClick event. Prevents bugs such as where deselecting tool after a click on map also triggers map click event.
-        // TODO: find a better way of achieving this.
-        setTimeout(() => {
-            EventManager.trigger('networkLinkClick', clickParams);
-        }, 0);
+        EventManager.trigger('networkLinkClick', clickParams);
     };
 
     /**
