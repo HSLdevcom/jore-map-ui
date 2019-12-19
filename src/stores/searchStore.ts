@@ -3,17 +3,12 @@ import TransitType from '~/enums/transitType';
 
 export class SearchStore {
     @observable private _searchInput: string;
-    @observable private _subLineItems: {
-        routePathId: string;
-        routeId: string;
-    }[];
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isSearchingForLines: boolean;
     @observable private _isSearchingForNodes: boolean;
 
     constructor() {
         this._searchInput = '';
-        this._subLineItems = [];
         this._selectedTransitTypes = [
             TransitType.BUS,
             TransitType.FERRY,
@@ -34,31 +29,6 @@ export class SearchStore {
     public setSearchInput = (input: string) => {
         this._searchInput = input;
     };
-
-    @action
-    public addSubLineItem = (routeId: string, routePathId: string) => {
-        this._subLineItems.push({
-            routeId,
-            routePathId
-        });
-    };
-
-    @action
-    public removeSubLineItem = (routeId: string, routePathId: string) => {
-        this._subLineItems = this._subLineItems.filter(subLineItem => {
-            return !(subLineItem.routeId === routeId && subLineItem.routePathId === routePathId);
-        });
-    };
-
-    @action
-    public removeAllSubLineItems = () => {
-        this._subLineItems = [];
-    };
-
-    @computed
-    get subLineItems() {
-        return this._subLineItems;
-    }
 
     @computed
     get selectedTransitTypes(): TransitType[] {
