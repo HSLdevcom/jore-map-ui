@@ -2,7 +2,7 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { IDropdownItem } from '~/components/controls/Dropdown';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
 import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
@@ -10,7 +10,6 @@ import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import StopForm from './StopForm';
-import * as s from './stopView.scss';
 
 interface IStopViewProps {
     node: INode;
@@ -103,11 +102,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         const { node, isNewStop, onNodePropertyChange, toggleTransitType } = this.props;
 
         if (this.state.isLoading) {
-            return (
-                <div className={s.loaderContainer}>
-                    <Loader size={LoaderSize.SMALL} />
-                </div>
-            );
+            return <Loader size='small' />;
         }
 
         return (

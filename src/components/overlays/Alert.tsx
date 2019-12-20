@@ -5,7 +5,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 import { IoMdInformationCircle } from 'react-icons/io';
 import { AlertStore, AlertType } from '~/stores/alertStore';
 import { Button } from '../controls';
-import Loader, { LoaderSize } from '../shared/loader/Loader';
+import Loader from '../shared/loader/Loader';
 import Modal from './Modal';
 import * as s from './alert.scss';
 
@@ -33,11 +33,7 @@ class Alert extends React.Component<IAlertProps> {
                     {alertStore.type === AlertType.Info && (
                         <IoMdInformationCircle className={classnames(s.icon, s.info)} />
                     )}
-                    {alertStore.type === AlertType.Loader && (
-                        <div className={s.icon}>
-                            <Loader size={LoaderSize.SMALL} />
-                        </div>
-                    )}
+                    {alertStore.type === AlertType.Loader && <Loader size='small' />}
                     {alertStore.message}
                     {alertStore.isCancelButtonVisible && (
                         <Button className={s.closeAlertButton} onClick={this.closeAlert}>

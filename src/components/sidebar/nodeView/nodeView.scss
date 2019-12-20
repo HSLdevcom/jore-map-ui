@@ -5,15 +5,11 @@
 .nodeView {
     display: flex;
     flex-direction: column;
-    width: 500px;
+    width: $sidebarWide;
 
     .content {
         padding: 20px;
         overflow-y: auto;
         flex-grow: 1;
-    }
-
-    &.loaderContainer > div {
-        margin: 30px auto;
     }
 }

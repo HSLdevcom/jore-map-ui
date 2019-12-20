@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import L from 'leaflet';
 import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
@@ -127,11 +126,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     render() {
         if (this.state.isLoading) {
-            return (
-                <div className={classnames(s.routeListView, s.loaderContainer)}>
-                    <Loader />
-                </div>
-            );
+            return <Loader />;
         }
         return (
             <div className={s.routeListView}>

@@ -1,7 +1,7 @@
 import Moment from 'moment';
 import * as React from 'react';
 import { Checkbox } from '~/components/controls';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import { IRoutePath } from '~/models';
 import * as s from './routePathSelector.scss';
 
@@ -34,13 +34,7 @@ const RoutePathSelector = (props: IRoutePathSelectorProps) => {
     );
 
     if (props.isLoading) {
-        return (
-            <div className={s.routePathSelectorView}>
-                <div className={s.loader}>
-                    <Loader size={LoaderSize.SMALL} />
-                </div>
-            </div>
-        );
+        return <Loader size='small' />;
     }
 
     return (

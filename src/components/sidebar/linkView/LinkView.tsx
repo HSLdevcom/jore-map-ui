@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -216,7 +215,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         const link = this.props.linkStore!.link;
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.linkView, s.loaderContainer)}>
+                <div className={s.linkView}>
                     <Loader />
                 </div>
             );

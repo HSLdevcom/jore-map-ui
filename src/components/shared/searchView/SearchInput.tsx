@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { SearchResultStore } from '~/stores/searchResultStore';
 import { SearchStore } from '~/stores/searchStore';
-import Loader, { LoaderSize } from '../loader/Loader';
+import Loader from '../loader/Loader';
 import * as s from './searchInput.scss';
 
 interface ISearchInputProps {
@@ -30,7 +30,7 @@ class SearchInput extends React.Component<ISearchInputProps> {
                     />
                     {this.props.searchResultStore!.isSearching && (
                         <div className={s.loader}>
-                            <Loader size={LoaderSize.TINY} />
+                            <Loader size='tiny' hasNoMargin={true} />
                         </div>
                     )}
                 </div>

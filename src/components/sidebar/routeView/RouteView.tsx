@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -7,7 +6,7 @@ import Button from '~/components/controls/Button';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
@@ -211,8 +210,8 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
         const routeStore = this.props.routeStore;
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.routeView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.MEDIUM} />
+                <div className={s.routeView}>
+                    <Loader size='medium' />
                 </div>
             );
         }

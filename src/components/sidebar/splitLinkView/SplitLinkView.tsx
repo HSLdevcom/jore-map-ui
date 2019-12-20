@@ -207,11 +207,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
         const link = this.props.linkStore!.link;
         if (this.state.isLoading) {
-            return (
-                <div className={classnames(s.splitLinkView, s.loaderContainer)}>
-                    <Loader />
-                </div>
-            );
+            return <Loader />;
         }
         if (!node || !link) return null;
         return (
