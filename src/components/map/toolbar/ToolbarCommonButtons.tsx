@@ -1,14 +1,11 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 import { FiExternalLink, FiPlus, FiPrinter } from 'react-icons/fi';
-import { IoMdRedo, IoMdUndo } from 'react-icons/io';
 import { TiLink } from 'react-icons/ti';
 import ToolbarTool from '~/enums/toolbarTool';
 import Navigator from '~/routing/navigator';
 import ToolbarStore from '~/stores/toolbarStore';
-import EventManager from '~/util/EventManager';
 import MapControlButton from '../mapControls/MapControlButton';
-import * as s from './toolbarToolButtons.scss';
 
 interface IToolbarCommonButtonsProps {
     hasWriteAccess: boolean;
@@ -27,72 +24,46 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
         ToolbarStore.selectTool(tool);
     };
 
-    private undo = () => {
-        EventManager.trigger('undo');
-    };
-
-    private redo = () => {
-        EventManager.trigger('redo');
-    };
-
     render() {
         return (
-            <div className={s.toolbarToolButtonsView}>
-                <div className={s.toolbarButtonRow}>
-                    <MapControlButton
-                        onClick={this.print}
-                        isActive={false}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.Print)}
-                        label='Tulosta kartta'
-                    >
-                        <FiPrinter />
-                    </MapControlButton>
-                    <MapControlButton
-                        onClick={this.openInNewTab}
-                        isActive={false}
-                        isDisabled={false}
-                        label='Avaa uusi ikkuna'
-                    >
-                        <FiExternalLink />
-                    </MapControlButton>
-                    {this.props.hasWriteAccess && (
-                        <>
-                            <MapControlButton
-                                onClick={this.selectTool(ToolbarTool.AddNetworkNode)}
-                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkNode)}
-                                isDisabled={false}
-                                label='Lisää solmu'
-                            >
-                                <FiPlus />
-                            </MapControlButton>
-                            <MapControlButton
-                                onClick={this.selectTool(ToolbarTool.AddNetworkLink)}
-                                isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkLink)}
-                                isDisabled={false}
-                                label='Lisää linkki'
-                            >
-                                <TiLink />
-                            </MapControlButton>
-                            <MapControlButton
-                                onClick={this.undo}
-                                isActive={false}
-                                isDisabled={false}
-                                label='Kumoa (ctrl+z)'
-                            >
-                                <IoMdUndo />
-                            </MapControlButton>
-                            <MapControlButton
-                                onClick={this.redo}
-                                isActive={false}
-                                isDisabled={false}
-                                label='Tee uudestaan (ctrl+y)'
-                            >
-                                <IoMdRedo />
-                            </MapControlButton>
-                        </>
-                    )}
-                </div>
-            </div>
+            <>
+                {this.props.hasWriteAccess && (
+                    <>
+                        <MapControlButton
+                            onClick={this.selectTool(ToolbarTool.AddNetworkNode)}
+                            isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkNode)}
+                            isDisabled={false}
+                            label='Lisää solmu'
+                        >
+                            <FiPlus />
+                        </MapControlButton>
+                        <MapControlButton
+                            onClick={this.selectTool(ToolbarTool.AddNetworkLink)}
+                            isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkLink)}
+                            isDisabled={false}
+                            label='Lisää linkki'
+                        >
+                            <TiLink />
+                        </MapControlButton>
+                    </>
+                )}
+                <MapControlButton
+                    onClick={this.print}
+                    isActive={false}
+                    isDisabled={ToolbarStore.isDisabled(ToolbarTool.Print)}
+                    label='Tulosta kartta'
+                >
+                    <FiPrinter />
+                </MapControlButton>
+                <MapControlButton
+                    onClick={this.openInNewTab}
+                    isActive={false}
+                    isDisabled={false}
+                    label='Avaa uusi ikkuna'
+                >
+                    <FiExternalLink />
+                </MapControlButton>
+            </>
         );
     }
 }

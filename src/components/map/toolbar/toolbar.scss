@@ -1,26 +1,24 @@
 @import '../../shared/styles/common.scss';
 
 .toolbarContainer {
-    display: inline;
-
     .toolbarRow {
         display: flex;
         pointer-events: auto;
 
-        .toolbar {
+        .toolbarBlock {
             display: flex;
             height: 100%;
             background-color: $white;
             border-radius: 3px;
             box-shadow: 0 0 4px $grey;
-        }
-
-        .modeSpecificToolbar {
             margin-right: 10px;
 
-            .tools {
-                display: block;
+            .element {
+                display: flex;
             }
+        }
+        .toolbarBlock:last-of-type {
+            margin-right: 0px;
         }
     }
 }

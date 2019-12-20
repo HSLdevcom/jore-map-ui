@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import React from 'react';
 import { matchPath } from 'react-router';
@@ -10,36 +9,46 @@ import * as s from './toolbar.scss';
 import ToolbarHelp from './toolbarHelp';
 import LinkButtons from './toolbarLinkButtons';
 import RoutePathButtons from './toolbarRoutePathButtons';
+import UndoButtons from './undoButtons';
 
 @observer
 class Toolbar extends React.Component {
-    private renderObjectSpecificTools = () => {
+    private renderViewSpecificTools = () => {
         if (!LoginStore!.hasWriteAccess) return null;
         if (matchPath(navigator.getPathName(), SubSites.routePath)) {
-            return (
-                <div className={classnames(s.toolbar, s.modeSpecificToolbar)}>
-                    <RoutePathButtons />
-                </div>
-            );
+            return this.renderToolbarBlock([<RoutePathButtons />, <UndoButtons />]);
         }
         if (matchPath(navigator.getPathName(), SubSites.link)) {
-            return (
-                <div className={classnames(s.toolbar, s.modeSpecificToolbar)}>
-                    <LinkButtons />
-                </div>
-            );
+            return this.renderToolbarBlock([<LinkButtons />, <UndoButtons />]);
+        }
+        if (matchPath(navigator.getPathName(), SubSites.node)) {
+            return this.renderToolbarBlock([<UndoButtons />]);
         }
         return null;
+    };
+
+    private renderToolbarBlock = (elements: JSX.Element[]) => {
+        return (
+            <div className={s.toolbarBlock}>
+                {elements.map((element: JSX.Element, index: number) => {
+                    return (
+                        <div className={s.element} key={`element-${index}`}>
+                            {element}
+                        </div>
+                    );
+                })}
+            </div>
+        );
     };
 
     render() {
         return (
             <div className={s.toolbarContainer}>
                 <div className={s.toolbarRow}>
-                    {this.renderObjectSpecificTools()}
-                    <div className={s.toolbar}>
+                    {this.renderViewSpecificTools()}
+                    {this.renderToolbarBlock([
                         <ToolbarCommonButtons hasWriteAccess={LoginStore!.hasWriteAccess} />
-                    </div>
+                    ])}
                 </div>
                 <ToolbarHelp />
             </div>

@@ -9,6 +9,7 @@ interface MapControlButtonProps {
     isDisabled: boolean;
     children: React.ReactNode;
     onClick: () => void;
+    hasNoPadding?: boolean;
 }
 
 const MapControlButton = observer((props: MapControlButtonProps) => {
@@ -21,7 +22,8 @@ const MapControlButton = observer((props: MapControlButtonProps) => {
     const classes = classnames(
         s.mapControlButton,
         props.isActive && !props.isDisabled ? s.active : null,
-        props.isDisabled ? s.disabled : null
+        props.isDisabled ? s.disabled : null,
+        props.hasNoPadding ? s.hasNoPadding : undefined
     );
 
     return (

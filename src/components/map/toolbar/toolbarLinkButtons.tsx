@@ -4,7 +4,6 @@ import { FiScissors } from 'react-icons/fi';
 import ToolbarTool from '~/enums/toolbarTool';
 import ToolbarStore from '~/stores/toolbarStore';
 import MapControlButton from '../mapControls/MapControlButton';
-import * as s from './toolbarToolButtons.scss';
 
 @observer
 class ToolbarLinkButtons extends React.Component {
@@ -13,19 +12,19 @@ class ToolbarLinkButtons extends React.Component {
     };
 
     render() {
+        // TODO: when splitLink tool works, make isDisabled as:
+        // isDisabled = { ToolbarStore.isDisabled(ToolbarTool.SplitLink) }
         return (
-            <div className={s.toolbarToolButtonsView}>
-                <div className={s.toolbarButtonRow}>
-                    <MapControlButton
-                        onClick={this.selectTool(ToolbarTool.SplitLink)}
-                        isActive={ToolbarStore.isSelected(ToolbarTool.SplitLink)}
-                        isDisabled={ToolbarStore.isDisabled(ToolbarTool.SplitLink)}
-                        label='Jaa linkki solmulla'
-                    >
-                        <FiScissors />
-                    </MapControlButton>
-                </div>
-            </div>
+            <>
+                <MapControlButton
+                    onClick={this.selectTool(ToolbarTool.SplitLink)}
+                    isActive={ToolbarStore.isSelected(ToolbarTool.SplitLink)}
+                    isDisabled={true}
+                    label='Jaa linkki solmulla'
+                >
+                    <FiScissors />
+                </MapControlButton>
+            </>
         );
     }
 }
