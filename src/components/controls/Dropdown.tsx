@@ -4,7 +4,7 @@ import React from 'react';
 import Select from 'react-select';
 import { InputActionMeta } from 'react-select/src/types';
 import { IValidationResult } from '~/validation/FormValidator';
-import Loader, { LoaderSize } from '../shared/loader/Loader';
+import Loader from '../shared/loader/Loader';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
@@ -134,9 +134,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                         </div>
                     )}
                     {props.isLoading ? (
-                        <div className={s.loaderContainer}>
-                            <Loader size={LoaderSize.SMALL} />
-                        </div>
+                        <Loader size='small' />
                     ) : props.disabled ? (
                         <div className={s.disableEditing}>
                             {Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}

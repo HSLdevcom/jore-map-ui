@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
@@ -151,11 +151,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
 
     render() {
         if (this.state.isLoading) {
-            return (
-                <div className={classnames(s.lineHeaderTableView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.TINY} />
-                </div>
-            );
+            return <Loader size='small' />;
         }
 
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;

@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
@@ -393,11 +392,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const nodeStore = this.props.nodeStore!;
         const node = nodeStore.node;
         if (this.state.isLoading) {
-            return (
-                <div className={classnames(s.nodeView, s.loaderContainer)}>
-                    <Loader />
-                </div>
-            );
+
+            return <div className={s.nodeView}><Loader /></div>
         }
         // TODO: show some indicator to user of an empty page
         if (!node) return null;

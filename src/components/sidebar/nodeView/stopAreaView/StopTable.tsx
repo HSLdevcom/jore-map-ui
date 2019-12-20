@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import { IStopArea } from '~/models';
 import StopService, { IStopItem } from '~/services/stopService';
 import { MapStore } from '~/stores/mapStore';
@@ -67,11 +67,7 @@ export default class StopTable extends Component<IStopTableProps, IStopTableStat
 
     render() {
         if (this.state.isLoading) {
-            return (
-                <div className={classnames(s.stopTableView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.SMALL} />
-                </div>
-            );
+            return <Loader size='small' />;
         }
         const stopItems = this.props.stopAreaStore!.stopItems;
         return (

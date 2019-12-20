@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
@@ -232,7 +231,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         const invalidPropertiesMap = stopAreaStore.invalidPropertiesMap;
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.stopAreaView, s.loaderContainer)}>
+                <div className={s.stopAreaView}>
                     <Loader />
                 </div>
             );

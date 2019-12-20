@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
@@ -6,7 +5,7 @@ import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
 import Button from '~/components/controls/Button';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
@@ -289,9 +288,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.routePathView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.MEDIUM} />
-                </div>
+                <div className={s.routePathView}><Loader size='medium' /></div>
             );
         }
         if (!routePathStore!.routePath) return null;

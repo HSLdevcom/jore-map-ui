@@ -1,9 +1,8 @@
-import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import LineFactory from '~/factories/lineFactory';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
@@ -136,8 +135,8 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.lineView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.MEDIUM} />
+                <div className={s.lineView}>
+                    <Loader size='medium' />
                 </div>
             );
         }
