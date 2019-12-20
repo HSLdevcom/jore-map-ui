@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import { ILineHeader } from '~/models';
 import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
+import ToolbarStore from './toolbarStore';
 
 export interface IMassEditLineHeader {
     id: number;
@@ -21,6 +22,11 @@ export class LineHeaderMassEditStore {
         this._massEditLineHeaders = null;
         this._selectedLineHeaderId = null;
         this._isEditingDisabled = true;
+
+        reaction(
+            () => this.isDirty,
+            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+        );
     }
 
     @computed

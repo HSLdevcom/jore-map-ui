@@ -17,7 +17,7 @@ import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
 import FormValidator from '~/validation/FormValidator';
-import NetworkStore from './networkStore';
+import ToolbarStore from './toolbarStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 interface UndoState {
@@ -64,7 +64,7 @@ class NodeStore {
 
         reaction(
             () => this.isDirty,
-            (value: boolean) => NetworkStore.setShouldShowNodeOpenConfirm(value)
+            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
         );
         reaction(
             () => this._node && this._node.stop && this._node.stop.stopAreaId,

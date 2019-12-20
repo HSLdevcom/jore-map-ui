@@ -7,6 +7,7 @@ import linkValidationModel, {
 } from '~/models/validationModels/linkValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { calculateLengthFromLatLngs, roundLatLngs } from '~/util/geomHelpers';
+import ToolbarStore from './toolbarStore';
 import ValidationStore from './validationStore';
 
 export interface UndoState {
@@ -34,6 +35,10 @@ export class LinkStore {
         this._geometryUndoStore = new GeometryUndoStore();
         this._validationStore = new ValidationStore();
 
+        reaction(
+            () => this.isDirty,
+            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+        );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
@@ -74,17 +79,7 @@ export class LinkStore {
 
     @computed
     get isDirty() {
-        return (
-            this._link &&
-            !_.isEqual(
-                {
-                    ...this.link,
-                    // Remapping geometry since edit initialization has added handlers
-                    geometry: this.link!.geometry.map(coor => new LatLng(coor.lat, coor.lng))
-                },
-                this._oldLink
-            )
-        );
+        return !_.isEqual(this._link, this._oldLink);
     }
 
     @computed

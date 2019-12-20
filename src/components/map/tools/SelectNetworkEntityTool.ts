@@ -8,9 +8,11 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import ConfirmStore from '~/stores/confirmStore';
 import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
 import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/networkUtils';
 import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
@@ -102,11 +104,11 @@ class SelectNetworkEntityTool implements BaseTool {
 
         if (nodes.length === 0 && links.length === 0) return;
         if (nodes.length === 1 && links.length === 0) {
-            _redirectToNode(nodes[0]);
+            _promptRedirectToNode(nodes[0]);
             return;
         }
         if (links.length === 1 && nodes.length === 0) {
-            _redirectToLink(links[0]);
+            _promptRedirectToLink(links[0]);
             return;
         }
 
@@ -126,20 +128,45 @@ class SelectNetworkEntityTool implements BaseTool {
     };
 }
 
-const _redirectToNode = (node: INodeMapHighlight) => {
-    const nodeViewLink = routeBuilder
-        .to(SubSites.node)
-        .toTarget(':id', node.id)
-        .toLink();
-    navigator.goTo(nodeViewLink);
+const _promptRedirectToNode = (node: INodeMapHighlight) => {
+    const _redirectToNode = () => {
+        const nodeViewLink = routeBuilder
+            .to(SubSites.node)
+            .toTarget(':id', node.id)
+            .toLink();
+        navigator.goTo(nodeViewLink);
+    };
+
+    if (ToolbarStore!.shouldShowEntityOpenPrompt) {
+        ConfirmStore!.openConfirm({
+            content: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${
+                node.id
+            }? Tallentamattomat muutokset kumotaan.`,
+            onConfirm: _redirectToNode,
+            confirmButtonText: 'Kyllä'
+        });
+    } else {
+        _redirectToNode();
+    }
 };
 
-const _redirectToLink = (link: ILinkMapHighlight) => {
-    const linkViewLink = routeBuilder
-        .to(SubSites.link)
-        .toTarget(':id', [link.startNodeId, link.endNodeId, link.transitType].join(','))
-        .toLink();
-    navigator.goTo(linkViewLink);
+const _promptRedirectToLink = (link: ILinkMapHighlight) => {
+    const _redirectToLink = () => {
+        const linkViewLink = routeBuilder
+            .to(SubSites.link)
+            .toTarget(':id', [link.startNodeId, link.endNodeId, link.transitType].join(','))
+            .toLink();
+        navigator.goTo(linkViewLink);
+    };
+    if (ToolbarStore!.shouldShowEntityOpenPrompt) {
+        ConfirmStore!.openConfirm({
+            content: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`,
+            onConfirm: _redirectToLink,
+            confirmButtonText: 'Kyllä'
+        });
+    } else {
+        _redirectToLink();
+    }
 };
 
 export default SelectNetworkEntityTool;
