@@ -6,6 +6,7 @@ import lineValidationModel, {
     ILineValidationModel
 } from '~/models/validationModels/lineValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
+import ToolbarStore from './toolbarStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 export class LineStore {
@@ -20,6 +21,10 @@ export class LineStore {
         this._isEditingDisabled = true;
         this._validationStore = new ValidationStore();
 
+        reaction(
+            () => this.isDirty,
+            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+        );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
@@ -132,6 +137,7 @@ export class LineStore {
     @action
     public clear = () => {
         this._line = null;
+        this._oldline = null;
         this._validationStore.clear();
     };
 
