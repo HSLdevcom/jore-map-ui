@@ -11,6 +11,7 @@ import routePathValidationModel, {
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { IValidationResult } from '~/validation/FormValidator';
+import ToolbarStore from './toolbarStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 // Is the neighbor to add either startNode or endNode
@@ -69,6 +70,11 @@ export class RoutePathStore {
         this._geometryUndoStore = new GeometryUndoStore();
         this._validationStore = new ValidationStore();
         this._routePathLinkValidationStoreMap = new Map();
+
+        reaction(
+            () => this.isDirty,
+            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+        );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
@@ -469,6 +475,7 @@ export class RoutePathStore {
     @action
     public clear = () => {
         this._routePath = null;
+        this._oldRoutePath = null;
         this._neighborRoutePathLinks = [];
         this._invalidLinkOrderNumbers = [];
         this._listFilters = [ListFilter.link];

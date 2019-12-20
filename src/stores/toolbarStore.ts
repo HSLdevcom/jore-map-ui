@@ -29,14 +29,22 @@ TOOL_LIST.forEach((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool | null;
     @observable private _disabledTools: ToolbarTool[];
+    @observable private _shouldShowEntityOpenPrompt: boolean;
+
     constructor() {
         this._disabledTools = [ToolbarTool.Print];
         this.selectDefaultTool();
+        this._shouldShowEntityOpenPrompt = false;
     }
 
     @computed
     get selectedTool(): BaseTool | null {
         return this._selectedTool;
+    }
+
+    @computed
+    get shouldShowEntityOpenPrompt(): boolean {
+        return this._shouldShowEntityOpenPrompt;
     }
 
     @action
@@ -66,12 +74,9 @@ export class ToolbarStore {
         this._selectedTool.activate();
     };
 
-    public isSelected = (tool: ToolbarTool): boolean => {
-        return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
-    };
-
-    public isDisabled = (tool: ToolbarTool): boolean => {
-        return this._disabledTools.indexOf(tool) > -1;
+    @action
+    public setShouldShowEntityOpenPrompt = (shouldShowEntityOpenPrompt: boolean) => {
+        this._shouldShowEntityOpenPrompt = shouldShowEntityOpenPrompt;
     };
 
     @action
@@ -79,6 +84,14 @@ export class ToolbarStore {
         this._selectedTool = defaultTool;
         this._selectedTool.activate();
     }
+
+    public isSelected = (tool: ToolbarTool): boolean => {
+        return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
+    };
+
+    public isDisabled = (tool: ToolbarTool): boolean => {
+        return this._disabledTools.indexOf(tool) > -1;
+    };
 }
 
 const observableToolbarStore = new ToolbarStore();
