@@ -20,7 +20,6 @@ import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import { AlertStore } from '~/stores/alertStore';
-import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
@@ -40,7 +39,6 @@ interface INodeViewProps {
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     errorStore?: ErrorStore;
-    codeListStore?: CodeListStore;
     confirmStore?: ConfirmStore;
 }
 
@@ -50,7 +48,7 @@ interface INodeViewState {
     isNodeIdSuffixQueryLoading: boolean;
 }
 
-@inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'codeListStore', 'confirmStore')
+@inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'confirmStore')
 @observer
 class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     private _isMounted: boolean;
@@ -286,6 +284,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         // Create node save model
         if (currentNode.stop) {
             delete currentNode['stop'];
+            delete currentNode['measurementType'];
             delete oldNode['stop'];
         }
         const saveModels: ISaveModel[] = [
