@@ -11,7 +11,7 @@ import * as s from './sidebarHeader.scss';
 
 interface ISidebarHeaderProps {
     children: ReactNode;
-    hideCloseButton?: boolean;
+    isCloseButtonVisible?: boolean;
     hideBackButton?: boolean; // TODO: rename as isBackButtonVisible
     isEditButtonVisible?: boolean;
     loginStore?: LoginStore;
@@ -102,7 +102,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
                     {!this.props.hideBackButton && (
                         <FiArrowLeft className={s.icon} onClick={this.onBackButtonClick} />
                     )}
-                    {!this.props.hideCloseButton && (
+                    {!this.props.isCloseButtonVisible && (
                         <FiXCircle className={s.icon} onClick={this.onCloseButtonClick} />
                     )}
                 </div>
