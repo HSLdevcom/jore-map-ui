@@ -178,8 +178,8 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 <SidebarHeader
                     isEditing={!isEditingDisabled}
                     onEditButtonClick={lineHeaderMassEditStore!.toggleIsEditingDisabled}
-                    hideCloseButton={true}
-                    hideBackButton={true}
+                    isCloseButtonVisible={true}
+                    isBackButtonVisible={true}
                     isEditButtonVisible={currentLineHeaders.length > 0}
                     shouldShowClosePromptMessage={lineHeaderMassEditStore!.isDirty}
                 >
