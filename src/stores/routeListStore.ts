@@ -40,21 +40,6 @@ export class RouteListStore {
         this.colorScale = new ColorScale();
     };
 
-    private getRoutePath = (internalId: string): IRoutePath | null => {
-        let foundRoutePath: IRoutePath | null = null;
-        this._routes.find(_route => {
-            const found = _route.routePaths.find(
-                _routePath => _routePath.internalId === internalId
-            );
-            if (found) {
-                foundRoutePath = found;
-                return true;
-            }
-            return false;
-        });
-        return foundRoutePath;
-    };
-
     @action
     public toggleRoutePathVisibility = async (internalId: string) => {
         const currentRoutePath = this.getRoutePath(internalId);
@@ -80,6 +65,21 @@ export class RouteListStore {
         if (oldRoutePath) {
             oldRoutePath.routePathLinks = newRoutePath.routePathLinks;
         }
+    };
+
+    private getRoutePath = (internalId: string): IRoutePath | null => {
+        let foundRoutePath: IRoutePath | null = null;
+        this._routes.find(_route => {
+            const found = _route.routePaths.find(
+                _routePath => _routePath.internalId === internalId
+            );
+            if (found) {
+                foundRoutePath = found;
+                return true;
+            }
+            return false;
+        });
+        return foundRoutePath;
     };
 }
 

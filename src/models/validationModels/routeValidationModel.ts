@@ -18,3 +18,5 @@ const routeValidationModel: IRouteValidationModel = {
 };
 
 export default routeValidationModel;
+
+export { IRouteValidationModel };
