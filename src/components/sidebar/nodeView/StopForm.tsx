@@ -109,7 +109,7 @@ class StopForm extends Component<IStopFormProps> {
         const stop = node.stop!;
         return (
             <div className={classnames(s.stopView, s.form)}>
-                <SidebarHeader isCloseButtonVisible={true} hideBackButton={true}>
+                <SidebarHeader isCloseButtonVisible={true} isBackButtonVisible={true}>
                     Pysäkin tiedot
                 </SidebarHeader>
                 <div className={s.formSection}>

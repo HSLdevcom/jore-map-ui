@@ -179,7 +179,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     isEditing={!isEditingDisabled}
                     onEditButtonClick={lineHeaderMassEditStore!.toggleIsEditingDisabled}
                     isCloseButtonVisible={true}
-                    hideBackButton={true}
+                    isBackButtonVisible={true}
                     isEditButtonVisible={currentLineHeaders.length > 0}
                     shouldShowClosePromptMessage={lineHeaderMassEditStore!.isDirty}
                 >
