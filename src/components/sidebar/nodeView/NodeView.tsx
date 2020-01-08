@@ -197,7 +197,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     oldLinks
                 );
                 this.updateSelectedStopAreaId();
-                this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
+                await this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
                 nodeStore!.setIsNodeIdEditable(nodeCacheObj.isNodeIdEditable);
                 nodeStore!.setIsEditingDisabled(false);
                 this._setState({ isLoading: false });
@@ -332,6 +332,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     private onChangeNodeId = async (value: string) => {
         this.onChangeNodeProperty('id')(value);
         await this.queryAvailableNodeIdSuffixes(value);
+        if (value.length === 5) {
+            this.onChangeNodeProperty('idSuffix')('');
+        }
     };
 
     private onChangeNodeType = (type: NodeType) => {
@@ -350,7 +353,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 nodeIdSuffixOptions: createDropdownItemsFromList(nodeIdSuffixList),
                 isNodeIdSuffixQueryLoading: false
             });
-            this.onChangeNodeProperty('idSuffix')('');
         } else {
             if (this.state.nodeIdSuffixOptions.length > 0) {
                 this._setState({
