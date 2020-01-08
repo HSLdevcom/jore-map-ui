@@ -5,7 +5,7 @@
 .linkView {
     display: flex;
     flex-direction: column;
-    width: 500px;
+    width: $sidebarWide;
 
     .content {
         padding: 20px;
@@ -69,9 +69,5 @@
         > div:last-of-type {
             border-right: none;
         }
-    }
-
-    &.loaderContainer > div {
-        margin: 30px auto;
     }
 }

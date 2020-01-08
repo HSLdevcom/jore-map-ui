@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import NodeType from '~/enums/nodeType';
 import { ILink } from '~/models';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
@@ -14,6 +14,7 @@ import { MapFilter, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/util/EventManager';
+import NodeHelper from '~/util/NodeHelper';
 import { LeafletContext } from '../../Map';
 import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
@@ -59,27 +60,51 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         this.editableLinks = [];
     };
 
-    private renderNode() {
+    private renderNodes() {
+        const node = this.props.nodeStore!.node;
+        return (
+            <>
+                {this.renderNode({
+                    coordinates: node.coordinates,
+                    nodeLocationType: 'coordinates'
+                })}
+                {node.type === NodeType.STOP &&
+                    this.renderNode({
+                        coordinates: node.coordinatesProjection,
+                        nodeLocationType: 'coordinatesProjection'
+                    })}
+            </>
+        );
+    }
+
+    private renderNode = ({
+        coordinates,
+        nodeLocationType
+    }: {
+        coordinates: L.LatLng;
+        nodeLocationType: NodeLocationType;
+    }) => {
         const node = this.props.nodeStore!.node;
 
         const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
         return (
             <NodeMarker
-                key={node.id}
+                key={`${node.id}-${nodeLocationType}`}
+                coordinates={coordinates}
+                nodeType={node.type}
+                nodeLocationType={nodeLocationType}
+                nodeId={node.id}
+                shortId={NodeHelper.getShortId(node)}
+                hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
                 isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
-                node={node}
-                onMoveMarker={this.onMoveMarker()}
+                onMoveMarker={this.onMoveMarker(nodeLocationType)}
             />
         );
-    }
+    };
 
-    private onMoveMarker = () => (nodeLocationType: NodeLocationType, coordinates: L.LatLng) => {
-        this.props.nodeStore!.updateNodeGeometry(
-            nodeLocationType,
-            coordinates,
-            NodeMeasurementType.Calculated
-        );
+    private onMoveMarker = (nodeLocationType: NodeLocationType) => (coordinates: L.LatLng) => {
+        this.props.nodeStore!.updateNodeGeometry(nodeLocationType, coordinates);
     };
 
     private drawEditableLinks = () => {
@@ -167,7 +192,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         this.drawEditableLinks();
         return (
             <>
-                {this.renderNode()}
+                {this.renderNodes()}
                 {this.renderLinkDecorators()}
             </>
         );

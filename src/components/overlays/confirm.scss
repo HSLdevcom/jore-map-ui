@@ -16,10 +16,18 @@
         padding: 30px 30px 15px 30px;
     }
 
-    .buttons {
+    .buttonWrapper {
         padding: 20px;
         border-top: 1px solid $borderLightGrey;
         display: flex;
+        flex-direction: column;
         justify-content: center;
+
+        .confirmNotification {
+            padding: 0px 10px 20px 10px;
+        }
+        .buttons {
+            display: flex;
+        }
     }
 }

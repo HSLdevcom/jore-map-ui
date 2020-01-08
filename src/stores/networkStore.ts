@@ -28,7 +28,6 @@ export class NetworkStore {
     @observable private _selectedDate: Moment.Moment | null;
     @observable private _visibleMapLayers: MapLayer[];
     @observable private _nodeSize: NodeSize;
-    @observable private _shouldShowNodeOpenConfirm: boolean;
     private _savedMapLayers: MapLayer[];
 
     constructor() {
@@ -37,7 +36,6 @@ export class NetworkStore {
         this._nodeSize = NodeSize.normal;
         this._savedMapLayers = [];
         this._selectedDate = Moment();
-        this._shouldShowNodeOpenConfirm = false;
     }
 
     @computed
@@ -68,11 +66,6 @@ export class NetworkStore {
     @computed
     get isMapLayersVisible(): boolean {
         return this._visibleMapLayers && this._visibleMapLayers.length !== 0;
-    }
-
-    @computed
-    get shouldShowNodeOpenConfirm(): boolean {
-        return this._shouldShowNodeOpenConfirm;
     }
 
     public isMapLayerVisible = (mapLayer: MapLayer) => {
@@ -150,11 +143,6 @@ export class NetworkStore {
     @action
     public saveMapLayers() {
         this._savedMapLayers = this._visibleMapLayers;
-    }
-
-    @action
-    public setShouldShowNodeOpenConfirm(shouldShowNodeOpenConfirm: boolean) {
-        this._shouldShowNodeOpenConfirm = shouldShowNodeOpenConfirm;
     }
 
     private getInitialVisibleMapLayers = () => {

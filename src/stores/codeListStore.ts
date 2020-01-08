@@ -18,35 +18,56 @@ export type codeListName =
     | 'Pysäkkialueid';
 
 export class CodeListStore {
-    @observable private _codeListItems: ICodeListItem[];
-
+    @observable private _codeListMap: Map<codeListName, ICodeListItem[]>;
     constructor() {
-        this._codeListItems = [];
+        this._codeListMap = new Map();
     }
 
     @action
     public setCodeListItems(codeListItems: ICodeListItem[]) {
-        this._codeListItems = codeListItems;
+        if (this._codeListMap.size > 0) return;
+
+        codeListItems.forEach((codeListItem: ICodeListItem) => {
+            const codeListName = codeListItem.listId as codeListName;
+            let codeListItems = this._codeListMap.get(codeListName);
+            if (!codeListItems) {
+                codeListItems = [];
+            }
+            codeListItems.push(codeListItem);
+            this._codeListMap.set(codeListName, codeListItems);
+        });
+        this._codeListMap.forEach((codeListItems: ICodeListItem[], key: string) => {
+            const sortedCodeListItems = codeListItems
+                .slice()
+                .sort((a, b) => a.orderNumber - b.orderNumber);
+            this._codeListMap.set(key as codeListName, sortedCodeListItems);
+        });
     }
 
     public getDropdownItemList = (codeListName: codeListName): IDropdownItem[] => {
-        return this._codeListItems
-            .filter(item => item.listId === codeListName)
-            .sort((a, b) => a.orderNumber - b.orderNumber)
-            .map((codeListItem: ICodeListItem) => {
+        const codeListItems = this._codeListMap.get(codeListName);
+
+        if (codeListItems) {
+            return codeListItems.map((codeListItem: ICodeListItem) => {
                 return {
                     value: codeListItem.value,
                     label: codeListItem.label
                 };
             });
+        }
+        throw `getDropdownItemList() - Unsupported codeListName: ${codeListName}`;
     };
 
     // TODO: rename as getCodeListValueLabel?
     public getCodeListLabel = (codeListName: codeListName, value: string) => {
-        const item = this._codeListItems.find(
-            item => item.listId === codeListName && item.value === value
-        );
-        return item ? item.label : '';
+        const codeListItems = this._codeListMap.get(codeListName);
+        if (codeListItems) {
+            const item = codeListItems.find(
+                item => item.listId === codeListName && item.value === value
+            );
+            return item ? item.label : '';
+        }
+        throw `getCodeListLabel() - Unsupported codeListName: ${codeListName}`;
     };
 }
 

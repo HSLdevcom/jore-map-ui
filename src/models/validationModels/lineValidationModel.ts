@@ -5,6 +5,7 @@ import { ILine } from '..';
 type LineKeys = keyof ILine;
 type ILineValidationModel = { [key in LineKeys]: string };
 
+// TODO: rename as lineValidationObject
 const lineValidationModel: ILineValidationModel = {
     id: `required|min:4|max:6|string|${regexRules.upperCaseOrNumbersOrSpace}`,
     routes: '',
@@ -22,3 +23,5 @@ const lineValidationModel: ILineValidationModel = {
 };
 
 export default lineValidationModel;
+
+export { ILineValidationModel };

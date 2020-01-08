@@ -1,7 +1,6 @@
 import * as L from 'leaflet';
 import { action, computed, observable } from 'mobx';
 import CoordinateSystem from '~/enums/coordinateSystem';
-import GeometryService from '~/services/geometryService';
 
 const INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384);
 const INITIAL_ZOOM = 15;
@@ -28,7 +27,6 @@ export class MapStore {
     @observable private _mapFilters: MapFilter[];
     @observable private _mapBounds: L.LatLngBounds;
     @observable private _mapCursor: MapCursor;
-    @observable private _isMapCenteringPrevented: boolean;
 
     constructor() {
         this._coordinates = null;
@@ -38,7 +36,6 @@ export class MapStore {
         this._visibleNodeLabels = [NodeLabel.hastusId];
         this._mapFilters = [MapFilter.arrowDecorator];
         this._mapCursor = '';
-        this._isMapCenteringPrevented = false;
     }
 
     @computed
@@ -81,11 +78,6 @@ export class MapStore {
         return this._mapCursor;
     }
 
-    @computed
-    get isMapCenteringPrevented() {
-        return this._isMapCenteringPrevented;
-    }
-
     public isMapFilterEnabled = (mapFilter: MapFilter) => {
         return this._mapFilters.includes(mapFilter);
     };
@@ -96,8 +88,8 @@ export class MapStore {
     };
 
     @action
-    public setCoordinates = (location: L.LatLng | null) => {
-        this._coordinates = location;
+    public setCoordinates = (coordinates: L.LatLng | null) => {
+        this._coordinates = coordinates;
     };
 
     @action
@@ -106,25 +98,15 @@ export class MapStore {
     };
 
     @action
-    public setInitCoordinates = () => {
-        this._coordinates = INITIAL_COORDINATES;
+    public initCoordinates = () => {
+        if (!this._coordinates) {
+            this._coordinates = INITIAL_COORDINATES;
+        }
     };
 
     @action
     public toggleMapFullscreen = () => {
         this._isMapFullscreen = !this._isMapFullscreen;
-    };
-
-    // TODO: move logic out of store? You can setCoordinates() instead
-    @action
-    public setCoordinatesFromDisplayCoordinateSystem = (lat: number, lon: number) => {
-        const [wgsLat, wgsLon] = GeometryService.reprojectToCrs(
-            lat,
-            lon,
-            CoordinateSystem.EPSG4326,
-            this._displayCoordinateSystem
-        );
-        this._coordinates = new L.LatLng(wgsLat, wgsLon);
     };
 
     @action
@@ -135,11 +117,6 @@ export class MapStore {
     @action
     public setSelectedNodeId = (id: string | null) => {
         this._selectedNodeId = id;
-    };
-
-    @action
-    public setIsMapCenteringPrevented = (isPrevented: boolean) => {
-        this._isMapCenteringPrevented = isPrevented;
     };
 
     @action

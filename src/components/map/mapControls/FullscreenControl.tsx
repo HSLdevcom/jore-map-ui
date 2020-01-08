@@ -15,6 +15,7 @@ const FullscreenControl = () => (
             onClick={toggleFullscreen}
             isActive={false}
             isDisabled={false}
+            hasNoPadding={true}
         >
             {MapStore.isMapFullscreen ? <FiMinimize2 /> : <FiMaximize2 />}
         </MapControlButton>

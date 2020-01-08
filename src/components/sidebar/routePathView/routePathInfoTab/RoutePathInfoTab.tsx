@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import { ILink, IRoutePath } from '~/models';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -12,7 +11,6 @@ import LinkService from '~/services/linkService';
 import RoutePathService from '~/services/routePathService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { IValidationResult } from '~/validation/FormValidator';
 import ButtonType from '../../../../enums/buttonType';
 import { Button, Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
@@ -25,10 +23,7 @@ interface IRoutePathInfoTabProps {
     codeListStore?: CodeListStore;
     isEditingDisabled: boolean;
     routePath: IRoutePath;
-    isNewRoutePath: boolean;
-    onChangeRoutePathProperty: (property: keyof IRoutePath) => (value: any) => void;
     invalidPropertiesMap: object;
-    setValidatorResult: (property: string, validationResult: IValidationResult) => void;
 }
 
 interface IRoutePathInfoTabState {
@@ -39,7 +34,6 @@ interface IRoutePathInfoTabState {
 @observer
 class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState> {
     private isRoutePathLinksChangedListener: IReactionDisposer;
-    private existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
     private mounted: boolean;
 
     constructor(props: IRoutePathInfoTabProps) {
@@ -53,11 +47,10 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         this.updateCalculatedLength();
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        this.mounted = true;
         const queryParams = navigator.getQueryParamValues();
         const routeId = queryParams[QueryParams.routeId];
-        this.fetchExistingPrimaryKeys(routeId);
-
         this.isRoutePathLinksChangedListener = reaction(
             () =>
                 this.props.routePathStore!.routePath &&
@@ -65,7 +58,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
             this.updateCalculatedLength
         );
         autorun(() => this.updateCalculatedLength);
-        this.mounted = true;
+        await this.fetchExistingPrimaryKeys(routeId);
     }
 
     componentWillUnmount() {
@@ -100,9 +93,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
     };
 
     private fetchExistingPrimaryKeys = async (routeId: string) => {
-        this.existingRoutePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(
-            routeId
-        );
+        const routePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(routeId);
+        this.props.routePathStore!.setExistingRoutePathPrimaryKeys(routePathPrimaryKeys);
     };
 
     private showAlertPlanningInProgress = () => {
@@ -138,47 +130,16 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         return length;
     };
 
-    private isPrimaryKeyDuplicated = () => {
-        const routePath = this.props.routePathStore!.routePath!;
-
-        return this.existingRoutePathPrimaryKeys.some(
-            rp =>
-                routePath.routeId === rp.routeId &&
-                routePath.direction === rp.direction &&
-                routePath.startTime.getTime() === rp.startTime.getTime()
-        );
-    };
-
-    private validatePrimaryKey = () => {
-        if (this.props.isNewRoutePath && this.isPrimaryKeyDuplicated()) {
-            const validationResult: IValidationResult = {
-                isValid: false,
-                errorMessage:
-                    'Reitinsuunta samalla reitillä, suunnalla ja alkupäivämäärällä on jo olemassa.'
-            };
-            this.props.setValidatorResult('direction', validationResult);
-        }
-    };
-
-    private onChangeDirection = (direction: string) => {
-        const startTime = this.props.routePathStore!.routePath!.startTime;
-        this.props.onChangeRoutePathProperty('direction')(direction);
-        this.props.onChangeRoutePathProperty('startTime')(startTime);
-        this.validatePrimaryKey();
-    };
-
-    private onChangeStartTime = (startTime: Date) => {
-        const direction = this.props.routePathStore!.routePath!.direction;
-        this.props.onChangeRoutePathProperty('direction')(direction);
-        this.props.onChangeRoutePathProperty('startTime')(startTime);
-        this.validatePrimaryKey();
+    private onChangeRoutePathProperty = (property: keyof IRoutePath) => (value: any) => {
+        this.props.routePathStore!.updateRoutePathProperty(property, value);
     };
 
     render() {
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating = !this.props.isNewRoutePath || this.props.isEditingDisabled;
+        const isUpdating =
+            !this.props.routePathStore!.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
-        const onChange = this.props.onChangeRoutePathProperty;
+        const onChange = this.onChangeRoutePathProperty;
         const routePath = this.props.routePath;
         return (
             <div className={s.routePathInfoTabView}>
@@ -254,7 +215,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                                 disabled={isUpdating}
                                 type='date'
                                 value={routePath.startTime}
-                                onChange={this.onChangeStartTime}
+                                onChange={onChange('startTime')}
                                 validationResult={invalidPropertiesMap['startTime']}
                             />
                             <InputContainer
@@ -281,7 +242,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                                 disabled={isUpdating}
                                 selected={this.props.routePath.direction}
                                 items={this.props.codeListStore!.getDropdownItemList('Suunta')}
-                                onChange={this.onChangeDirection}
+                                onChange={onChange('direction')}
                                 validationResult={invalidPropertiesMap['direction']}
                             />
                             <Dropdown

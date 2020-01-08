@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -7,7 +6,7 @@ import Button from '~/components/controls/Button';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
@@ -20,6 +19,7 @@ import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
 import SidebarHeader from '../SidebarHeader';
 import RouteInfoTab from './RouteInfoTab';
@@ -27,12 +27,13 @@ import RoutePathTab from './RoutePathTab';
 import * as s from './routeView.scss';
 
 interface IRouteViewProps {
+    match?: match<any>;
+    isNewRoute: boolean;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     routeStore?: RouteStore;
     confirmStore?: ConfirmStore;
-    match?: match<any>;
-    isNewRoute: boolean;
+    mapStore?: MapStore;
 }
 
 interface IRouteViewState {
@@ -41,7 +42,7 @@ interface IRouteViewState {
     selectedTabIndex: number;
 }
 
-@inject('routeStore', 'errorStore', 'alertStore', 'confirmStore')
+@inject('routeStore', 'errorStore', 'alertStore', 'confirmStore', 'mapStore')
 @observer
 class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     private isEditingDisabledListener: IReactionDisposer;
@@ -76,6 +77,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
     };
 
     private initialize = async () => {
+        this.props.mapStore!.initCoordinates();
         if (this.props.isNewRoute) {
             await this.createNewRoute();
         } else {
@@ -130,7 +132,7 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
                 await RouteService.updateRoute(route!);
             }
 
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;
@@ -208,8 +210,8 @@ class RouteView extends ViewFormBase<IRouteViewProps, IRouteViewState> {
         const routeStore = this.props.routeStore;
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.routeView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.MEDIUM} />
+                <div className={s.routeView}>
+                    <Loader size='medium' />
                 </div>
             );
         }

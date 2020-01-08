@@ -1,21 +1,26 @@
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
+import NodeLocationType from '~/types/NodeLocationType';
 import * as s from './nodeTypeColors.scss';
 
 class NodeHelper {
     public static getNodeTypeClass = (
         nodeType: NodeType,
         {
+            nodeLocationType,
             isNodeDisabled,
             isNodeTimeAlignment,
             isNodeHighlighted
         }: {
+            nodeLocationType?: NodeLocationType;
             isNodeDisabled?: boolean;
             isNodeTimeAlignment?: boolean;
             isNodeHighlighted?: boolean;
         }
     ) => {
+        if (nodeLocationType === 'coordinatesProjection') {
+            return s.coordinatesProjectionMarker;
+        }
         if (isNodeDisabled) {
             return isNodeHighlighted ? s.disabledMarkerHighlight : s.disabledMarker;
         }
@@ -62,17 +67,6 @@ class NodeHelper {
                 : node.shortIdString;
         }
         return '';
-    };
-
-    public static getMeasurementTypeLabel = (measurementType: string | undefined) => {
-        switch (measurementType) {
-            case NodeMeasurementType.Calculated:
-                return 'Laskettu';
-            case NodeMeasurementType.Measured:
-                return 'Mitattu';
-            default:
-                return measurementType ? measurementType.toString() : '-';
-        }
     };
 }
 

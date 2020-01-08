@@ -1,5 +1,4 @@
 import * as L from 'leaflet';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
@@ -27,8 +26,7 @@ class NodeFactory {
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
             measurementType: externalNode.solotapa,
             modifiedOn: externalNode.solviimpvm ? new Date(externalNode.solviimpvm) : undefined,
-            modifiedBy: externalNode.solkuka,
-            tripTimePoint: externalNode.solmapiste
+            modifiedBy: externalNode.solkuka
         };
     };
 
@@ -68,8 +66,7 @@ class NodeFactory {
             coordinatesProjection: coordinates,
             modifiedOn: new Date(),
             modifiedBy: '',
-            tripTimePoint: '0',
-            measurementType: NodeMeasurementType.Calculated
+            measurementType: ''
         };
     }
 }

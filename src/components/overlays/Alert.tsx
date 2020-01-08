@@ -4,7 +4,8 @@ import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { IoMdInformationCircle } from 'react-icons/io';
 import { AlertStore, AlertType } from '~/stores/alertStore';
-import Loader, { LoaderSize } from '../shared/loader/Loader';
+import { Button } from '../controls';
+import Loader from '../shared/loader/Loader';
 import Modal from './Modal';
 import * as s from './alert.scss';
 
@@ -15,24 +16,30 @@ interface IAlertProps {
 @inject('alertStore')
 @observer
 class Alert extends React.Component<IAlertProps> {
+    private closeAlert = () => {
+        this.props.alertStore!.close();
+    };
     render() {
-        if (!this.props.alertStore!.isAlertOpen) return null;
+        const alertStore = this.props.alertStore!;
+
+        if (!alertStore.isAlertOpen) return null;
 
         return (
             <Modal>
                 <div className={s.alertView}>
-                    {this.props.alertStore!.type === AlertType.Success && (
+                    {alertStore.type === AlertType.Success && (
                         <FaCheckCircle className={classnames(s.icon, s.success)} />
                     )}
-                    {this.props.alertStore!.type === AlertType.Info && (
+                    {alertStore.type === AlertType.Info && (
                         <IoMdInformationCircle className={classnames(s.icon, s.info)} />
                     )}
-                    {this.props.alertStore!.type === AlertType.Loader && (
-                        <div className={s.icon}>
-                            <Loader size={LoaderSize.SMALL} />
-                        </div>
+                    {alertStore.type === AlertType.Loader && <Loader size='small' />}
+                    {alertStore.message}
+                    {alertStore.isCancelButtonVisible && (
+                        <Button className={s.closeAlertButton} onClick={this.closeAlert}>
+                            OK
+                        </Button>
                     )}
-                    {this.props.alertStore!.message}
                 </div>
             </Modal>
         );

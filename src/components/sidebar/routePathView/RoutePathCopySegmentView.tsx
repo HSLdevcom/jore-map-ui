@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { FiCopy, FiExternalLink } from 'react-icons/fi';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import { IRoutePathLink } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -119,8 +119,11 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         this.props.routePathCopySegmentStore!.clear();
         this.props.toolbarStore!.selectTool(null);
 
-        this.props.alertStore!.closeLoaderMessage();
-        this.props.alertStore!.setFadeMessage('Segmentti kopioitu!', AlertType.Success);
+        this.props.alertStore!.close();
+        this.props.alertStore!.setFadeMessage({
+            message: 'Segmentti kopioitu!',
+            type: AlertType.Success
+        });
     };
 
     private copySegment = async (routePathLinkId: number, fixedOrderNumber: number) => {
@@ -196,11 +199,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                 {
                     {
                         hasError: this.renderErrorMessage(),
-                        isLoading: (
-                            <div className={s.loaderContainer}>
-                                <Loader size={LoaderSize.SMALL} />
-                            </div>
-                        ),
+                        isLoading: <Loader size='small' />,
                         showResults: this.renderResults()
                     }[state]
                 }

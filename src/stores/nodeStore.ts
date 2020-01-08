@@ -1,16 +1,24 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
-import { ILink, INode } from '~/models';
+import { ILink, INode, IStop } from '~/models';
+import nodeValidationModel, {
+    editableNodeIdValidationModel,
+    INodeValidationModel
+} from '~/models/validationModels/nodeValidationModel';
+import stopValidationModel, {
+    IStopValidationModel
+} from '~/models/validationModels/stopValidationModel';
 import GeocodingService from '~/services/geocodingService';
 import { IStopAreaItem } from '~/services/stopAreaService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
-import NetworkStore from './networkStore';
+import FormValidator from '~/validation/FormValidator';
+import ToolbarStore from './toolbarStore';
+import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 interface UndoState {
     node: INode;
@@ -19,9 +27,8 @@ interface UndoState {
 
 interface INodeCacheObj {
     node: INode;
-    oldNode: INode;
     links: ILink[];
-    oldLinks: ILink[];
+    isNodeIdEditable: boolean;
 }
 
 interface INodeCache {
@@ -34,11 +41,13 @@ class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
-    @observable private _isStopFormValid: boolean;
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreaItems: IStopAreaItem[];
+    @observable private _isNodeIdEditable: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
+    private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
+    private _stopValidationStore: ValidationStore<IStop, IStopValidationModel>;
 
     constructor() {
         this._links = [];
@@ -46,6 +55,8 @@ class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore = new GeometryUndoStore();
+        this._nodeValidationStore = new ValidationStore();
+        this._stopValidationStore = new ValidationStore();
         this._isEditingDisabled = true;
         this._nodeCache = {
             newNodeCache: null
@@ -53,13 +64,14 @@ class NodeStore {
 
         reaction(
             () => this.isDirty,
-            (value: boolean) => NetworkStore.setShouldShowNodeOpenConfirm(value)
+            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
         );
         reaction(
             () => this._node && this._node.stop && this._node.stop.stopAreaId,
             (value: string) => this.onStopAreaChange(value)
         );
         reaction(() => this._stopAreaItems, () => this.onStopAreaItemsChange());
+        reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
     @computed
@@ -83,11 +95,6 @@ class NodeStore {
     }
 
     @computed
-    get isStopFormValid() {
-        return this._isStopFormValid;
-    }
-
-    @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
     }
@@ -100,6 +107,31 @@ class NodeStore {
     @computed
     get stopAreaItems() {
         return this._stopAreaItems;
+    }
+
+    @computed
+    get isNodeIdEditable() {
+        return this._isNodeIdEditable;
+    }
+
+    @computed
+    get isNodeFormValid() {
+        return this._nodeValidationStore.isValid();
+    }
+
+    @computed
+    get nodeInvalidPropertiesMap() {
+        return this._nodeValidationStore.getInvalidPropertiesMap();
+    }
+
+    @computed
+    get isStopFormValid() {
+        return this._stopValidationStore.isValid();
+    }
+
+    @computed
+    get stopInvalidPropertiesMap() {
+        return this._stopValidationStore.getInvalidPropertiesMap();
     }
 
     @action
@@ -132,6 +164,57 @@ class NodeStore {
         this._links = newLinks;
         this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
+
+        const customValidatorMap: ICustomValidatorMap = {
+            id: {
+                validator: (node: INode, property: string, nodeId: string) => {
+                    if (this.isNodeIdEditable) {
+                        const validationResult = FormValidator.validateProperty(
+                            editableNodeIdValidationModel.id,
+                            nodeId
+                        );
+                        return validationResult;
+                    }
+                    return;
+                }
+            },
+            idSuffix: {
+                validator: (node: INode, property: string, idSuffix: string) => {
+                    if (this.isNodeIdEditable) {
+                        const validationResult = FormValidator.validateProperty(
+                            editableNodeIdValidationModel.idSuffix,
+                            idSuffix
+                        );
+                        return validationResult;
+                    }
+                    return;
+                }
+            },
+            measurementType: {
+                validator: (node: INode, property: string, measurementType: string) => {
+                    if (node.type === NodeType.STOP) {
+                        const validationResult = FormValidator.validateProperty(
+                            'required|min:1|max:1|string',
+                            measurementType
+                        );
+                        return validationResult;
+                    }
+                    const validationResult = FormValidator.validateProperty(
+                        'min:0|max:0|string',
+                        measurementType
+                    );
+                    return validationResult;
+                }
+            },
+            type: {
+                dependentProperties: ['measurementType']
+            }
+        };
+
+        this._nodeValidationStore.init(node, nodeValidationModel, customValidatorMap);
+        if (node.stop) {
+            this._stopValidationStore.init(node.stop, stopValidationModel);
+        }
     };
 
     @action
@@ -156,11 +239,7 @@ class NodeStore {
     };
 
     @action
-    public updateNodeGeometry = (
-        nodeLocationType: NodeLocationType,
-        newCoordinates: LatLng,
-        measurementType: NodeMeasurementType
-    ) => {
+    public updateNodeGeometry = (nodeLocationType: NodeLocationType, newCoordinates: LatLng) => {
         if (!this._node) throw new Error('Node was null.'); // Should not occur
 
         const newNode = _.cloneDeep(this._node);
@@ -188,13 +267,9 @@ class NodeStore {
 
         this._links = newLinks;
         const geometryVariables: NodeLocationType[] = ['coordinates', 'coordinatesProjection'];
-        geometryVariables.forEach(
-            coordinateName => (this._node![coordinateName] = newNode[coordinateName])
+        geometryVariables.forEach(coordinateName =>
+            this.updateNodeProperty(coordinateName, newNode[coordinateName])
         );
-
-        if (nodeLocationType === 'coordinates') {
-            this.updateNode('measurementType', measurementType.toString());
-        }
 
         if (nodeLocationType === 'coordinatesProjection') {
             this.fetchAddressData();
@@ -224,37 +299,38 @@ class NodeStore {
         const postalNumber: string = await GeocodingService.fetchPostalNumberFromCoordinates(
             coordinates
         );
-        this.updateStop('addressFi', addressFi);
-        this.updateStop('addressSw', addressSw);
-        this.updateStop('postalNumber', postalNumber);
+        this.updateStopProperty('addressFi', addressFi);
+        this.updateStopProperty('addressSw', addressSw);
+        this.updateStopProperty('postalNumber', postalNumber);
     };
 
     @action
-    public updateNode = (property: keyof INode, value: string | Date | LatLng) => {
-        if (!this._node) return;
-
-        // As any to fix typing error: Type 'string' is not assignable to type 'never'
+    public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng) => {
         (this._node as any)[property] = value;
-
-        if (property === 'type') this.mirrorCoordinates(this._node);
-
-        if (this._node.type === NodeType.STOP && !this._node.stop) {
-            this._node.stop = NodeStopFactory.createNewStop();
-        }
+        this._nodeValidationStore.updateProperty(property, value);
     };
 
     @action
-    public updateStop = (property: string, value?: string | number | Date) => {
+    public updateStopProperty = (property: string, value?: string | number | Date) => {
         if (!this.node) return;
-        this._node!.stop = {
-            ...this._node!.stop!,
-            [property]: value
-        };
+        this._node!.stop![property] = value;
+        this._stopValidationStore.updateProperty(property, value);
     };
 
     @action
-    public setIsStopFormValid = (isStopFormValid: boolean) => {
-        this._isStopFormValid = isStopFormValid;
+    public updateNodeType = (type: NodeType) => {
+        this._node!.type = type;
+        this._nodeValidationStore.updateProperty('type', type);
+
+        this.mirrorCoordinates(this._node!);
+
+        if (this._node!.type === NodeType.STOP && !this._node!.stop) {
+            const stop = NodeStopFactory.createNewStop();
+            this._node!.stop = stop;
+            this._stopValidationStore.init(stop, stopValidationModel);
+        } else {
+            this.updateNodeProperty('measurementType', '');
+        }
     };
 
     @action
@@ -270,11 +346,10 @@ class NodeStore {
     @action
     public setCurrentStateIntoNodeCache = ({ isNewNode }: { isNewNode: boolean }) => {
         const nodeId = this._node!.id;
-        const nodeCacheObj = {
+        const nodeCacheObj: INodeCacheObj = {
             node: _.cloneDeep(this._node!),
             links: _.cloneDeep(this._links),
-            oldNode: _.cloneDeep(this._oldNode!),
-            oldLinks: _.cloneDeep(this._oldLinks)
+            isNodeIdEditable: this._isNodeIdEditable
         };
         if (isNewNode) {
             this._nodeCache.newNodeCache = nodeCacheObj;
@@ -296,12 +371,19 @@ class NodeStore {
     };
 
     @action
+    public setIsNodeIdEditable = (isEditable: boolean) => {
+        this._isNodeIdEditable = isEditable;
+    };
+
+    @action
     public clear = () => {
         this._links = [];
         this._node = null;
         this._oldNode = null;
         this._oldLinks = [];
         this._geometryUndoStore.clear();
+        this._nodeValidationStore.clear();
+        this._stopValidationStore.clear();
         this._isEditingDisabled = true;
     };
 
@@ -316,8 +398,11 @@ class NodeStore {
     public undo = () => {
         this._geometryUndoStore.undo((previousUndoState: UndoState) => {
             this._links! = previousUndoState.links;
-            this._node!.coordinates = previousUndoState.node.coordinates;
-            this._node!.coordinatesProjection = previousUndoState.node.coordinatesProjection;
+            this.updateNodeProperty('coordinates', previousUndoState.node.coordinates);
+            this.updateNodeProperty(
+                'coordinatesProjection',
+                previousUndoState.node.coordinatesProjection
+            );
         });
     };
 
@@ -325,8 +410,11 @@ class NodeStore {
     public redo = () => {
         this._geometryUndoStore.redo((nextUndoState: UndoState) => {
             this._links! = nextUndoState.links;
-            this._node!.coordinates = nextUndoState.node.coordinates;
-            this._node!.coordinatesProjection = nextUndoState.node.coordinatesProjection;
+            this.updateNodeProperty('coordinates', nextUndoState.node.coordinates);
+            this.updateNodeProperty(
+                'coordinatesProjection',
+                nextUndoState.node.coordinatesProjection
+            );
         });
     };
 
@@ -347,15 +435,15 @@ class NodeStore {
     private updateStopArea = (stopAreaId?: string) => {
         if (!this._stopAreaItems) return;
 
-        this.updateStop('stopAreaId', stopAreaId);
+        this.updateStopProperty('stopAreaId', stopAreaId);
         if (!stopAreaId) return;
 
         const stopAreaItem = this._stopAreaItems.find(obj => {
             return obj.pysalueid === stopAreaId;
         });
         if (stopAreaItem) {
-            this.updateStop('nameFi', stopAreaItem.nimi);
-            this.updateStop('nameSw', stopAreaItem.nimir);
+            this.updateStopProperty('nameFi', stopAreaItem.nimi);
+            this.updateStopProperty('nameSw', stopAreaItem.nimir);
         }
     };
 
@@ -382,6 +470,15 @@ class NodeStore {
     public getNewNodeCacheObj(): INodeCacheObj | null {
         return this._nodeCache.newNodeCache;
     }
+
+    private onChangeIsEditingDisabled = () => {
+        if (this._isEditingDisabled) {
+            this.resetChanges();
+        } else {
+            this._nodeValidationStore.validateAllProperties();
+            this._stopValidationStore.validateAllProperties();
+        }
+    };
 }
 
 const observableNodeStore = new NodeStore();

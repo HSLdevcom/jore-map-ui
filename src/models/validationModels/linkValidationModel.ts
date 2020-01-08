@@ -4,6 +4,7 @@ import { ILink } from '..';
 type LinkKeys = keyof ILink;
 type ILinkValidationModel = { [key in LinkKeys]: string };
 
+// TODO: rename as linkValidationObject
 const linkValidationModel: ILinkValidationModel = {
     transitType: '',
     startNode: '',
@@ -17,3 +18,5 @@ const linkValidationModel: ILinkValidationModel = {
 };
 
 export default linkValidationModel;
+
+export { ILinkValidationModel };

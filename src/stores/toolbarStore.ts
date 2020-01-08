@@ -24,19 +24,27 @@ const TOOL_LIST = [
 ];
 
 const TOOLS = {};
-TOOL_LIST.map((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
+TOOL_LIST.forEach((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
 
 export class ToolbarStore {
     @observable private _selectedTool: BaseTool | null;
     @observable private _disabledTools: ToolbarTool[];
+    @observable private _shouldShowEntityOpenPrompt: boolean;
+
     constructor() {
         this._disabledTools = [ToolbarTool.Print];
         this.selectDefaultTool();
+        this._shouldShowEntityOpenPrompt = false;
     }
 
     @computed
     get selectedTool(): BaseTool | null {
         return this._selectedTool;
+    }
+
+    @computed
+    get shouldShowEntityOpenPrompt(): boolean {
+        return this._shouldShowEntityOpenPrompt;
     }
 
     @action
@@ -46,17 +54,36 @@ export class ToolbarStore {
         }
 
         // deselect current tool
-        if (tool === null || (this._selectedTool && this._selectedTool.toolType === tool)) {
-            this.selectDefaultTool();
+        if (
+            tool === null ||
+            tool === ToolbarTool.SelectNetworkEntity ||
+            (this._selectedTool && this._selectedTool.toolType === tool)
+        ) {
+            // Network click event also triggers mapClick event
+            // Prevents bugs where deselecting tool after a click on map also triggers map click event.
+            // TODO: find a better way of achieving this.
+            setTimeout(() => {
+                this.selectDefaultTool();
+            }, 0);
             return;
         }
-        const foundTool = TOOLS[tool];
-        this._selectedTool = foundTool;
+        this._selectedTool = TOOLS[tool];
         if (!this._selectedTool) {
             throw new Error('Tried to select tool that was not found');
         }
         this._selectedTool.activate();
     };
+
+    @action
+    public setShouldShowEntityOpenPrompt = (shouldShowEntityOpenPrompt: boolean) => {
+        this._shouldShowEntityOpenPrompt = shouldShowEntityOpenPrompt;
+    };
+
+    @action
+    private selectDefaultTool() {
+        this._selectedTool = defaultTool;
+        this._selectedTool.activate();
+    }
 
     public isSelected = (tool: ToolbarTool): boolean => {
         return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
@@ -65,12 +92,6 @@ export class ToolbarStore {
     public isDisabled = (tool: ToolbarTool): boolean => {
         return this._disabledTools.indexOf(tool) > -1;
     };
-
-    @action
-    private selectDefaultTool() {
-        this._selectedTool = defaultTool;
-        this._selectedTool.activate();
-    }
 }
 
 const observableToolbarStore = new ToolbarStore();

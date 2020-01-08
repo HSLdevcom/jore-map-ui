@@ -4,6 +4,7 @@ import React from 'react';
 import Select from 'react-select';
 import { InputActionMeta } from 'react-select/src/types';
 import { IValidationResult } from '~/validation/FormValidator';
+import Loader from '../shared/loader/Loader';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
@@ -12,10 +13,11 @@ export interface IDropdownItem {
 }
 
 interface IDropdownProps {
+    items: IDropdownItem[];
     label?: string;
     selected?: string | null;
     disabled?: boolean;
-    items: IDropdownItem[];
+    isLoading?: boolean;
     emptyItem?: IDropdownItem;
     onChange?: (value: any) => void;
     validationResult?: IValidationResult;
@@ -131,7 +133,9 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                             {props.label}
                         </div>
                     )}
-                    {props.disabled ? (
+                    {props.isLoading ? (
+                        <Loader size='small' />
+                    ) : props.disabled ? (
                         <div className={s.disableEditing}>
                             {Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}
                         </div>

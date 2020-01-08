@@ -2,70 +2,55 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { IDropdownItem } from '~/components/controls/Dropdown';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
+import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
-import stopValidationModel from '~/models/validationModels/stopValidationModel';
 import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
 import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import StopForm from './StopForm';
-import * as s from './stopView.scss';
 
 interface IStopViewProps {
     node: INode;
     isNewStop: boolean;
-    isEditingDisabled: boolean;
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
     nodeInvalidPropertiesMap: object;
+    isTransitToggleButtonBarVisible?: boolean;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
+    toggleTransitType?: (type: TransitType) => void;
 }
 
 interface IStopViewState {
     isLoading: boolean;
-    invalidPropertiesMap: object;
-    isEditingDisabled: boolean;
     stopSections: IDropdownItem[];
 }
 
 @inject('nodeStore', 'codeListStore')
 @observer
-class StopView extends ViewFormBase<IStopViewProps, IStopViewState> {
-    private isEditingDisabledListener: IReactionDisposer;
+class StopView extends React.Component<IStopViewProps, IStopViewState> {
     private nodeListener: IReactionDisposer;
-    private stopPropertyListeners: IReactionDisposer[];
-    private mounted: boolean;
+    private _isMounted: boolean;
 
     constructor(props: IStopViewProps) {
         super(props);
         this.state = {
             isLoading: true,
-            invalidPropertiesMap: {},
-            isEditingDisabled: false,
             stopSections: []
         };
-        this.stopPropertyListeners = [];
     }
 
     async componentDidMount() {
-        this.mounted = true;
-        this.validateStop();
-        this.isEditingDisabledListener = reaction(
-            () => this.props.nodeStore!.isEditingDisabled,
-            this.onChangeIsEditingDisabled
-        );
+        this._isMounted = true;
         this.nodeListener = reaction(() => this.props.nodeStore!.node, this.onNodeChange);
-        this.createStopPropertyListeners();
         if (this.props.isNewStop) {
             this.props.nodeStore!.fetchAddressData();
         }
-        // TODO: rename as stopAreaItems
         const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
 
-        if (this.mounted) {
+        if (this._isMounted) {
             this.setState({
                 stopSections: this.createStopSectionDropdownItems(stopSections)
             });
@@ -75,46 +60,11 @@ class StopView extends ViewFormBase<IStopViewProps, IStopViewState> {
     }
 
     componentWillUnmount() {
-        this.mounted = false;
-        this.isEditingDisabledListener();
-        this.removeStopPropertyListeners();
+        this._isMounted = false;
         this.nodeListener();
     }
 
-    private createStopPropertyListeners = () => {
-        const nodeStore = this.props.nodeStore;
-        if (!nodeStore!.node) return;
-
-        const stop = nodeStore!.node.stop;
-        for (const property in stop!) {
-            if (Object.prototype.hasOwnProperty.call(stop, property)) {
-                const listener = this.createListener(property);
-                this.stopPropertyListeners.push(listener);
-            }
-        }
-    };
-
-    private createListener = (property: string) => {
-        return reaction(
-            () => this.props.nodeStore!.node && this.props.nodeStore!.node!.stop![property],
-            this.validateStopProperty(property)
-        );
-    };
-
-    private removeStopPropertyListeners = () => {
-        this.stopPropertyListeners.forEach((listener: IReactionDisposer) => listener());
-        this.stopPropertyListeners = [];
-    };
-
-    private onChangeIsEditingDisabled = () => {
-        this.clearInvalidPropertiesMap();
-        if (!this.props.nodeStore!.isEditingDisabled) this.validateStop();
-    };
-
     private onNodeChange = async () => {
-        this.validateStop();
-        this.removeStopPropertyListeners();
-        this.createStopPropertyListeners();
         if (
             !this.props.nodeStore!.node ||
             (!this.props.isNewStop && this.props.nodeStore!.isEditingDisabled)
@@ -122,15 +72,6 @@ class StopView extends ViewFormBase<IStopViewProps, IStopViewState> {
             return;
         }
         await this.props.nodeStore!.fetchAddressData();
-    };
-
-    private validateStopProperty = (property: string) => () => {
-        const nodeStore = this.props.nodeStore;
-        if (!nodeStore!.node) return;
-        const value = nodeStore!.node!.stop![property];
-        this.validateProperty(stopValidationModel[property], property, value);
-        const isStopFormValid = this.isFormValid();
-        nodeStore!.setIsStopFormValid(isStopFormValid);
     };
 
     private createStopSectionDropdownItems = (
@@ -145,17 +86,8 @@ class StopView extends ViewFormBase<IStopViewProps, IStopViewState> {
         });
     };
 
-    private validateStop = () => {
-        const node = this.props.nodeStore!.node;
-        if (!node) return;
-        const stop = node.stop;
-        this.validateAllProperties(stopValidationModel, stop);
-        const isStopFormValid = this.isFormValid();
-        this.props.nodeStore!.setIsStopFormValid(isStopFormValid);
-    };
-
     private updateStopProperty = (property: keyof IStop) => (value: any) => {
-        this.props.nodeStore!.updateStop(property, value);
+        this.props.nodeStore!.updateStopProperty(property, value);
     };
 
     private setCurrentStateIntoNodeCache = () => {
@@ -166,14 +98,11 @@ class StopView extends ViewFormBase<IStopViewProps, IStopViewState> {
 
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
-        const { node, isNewStop, onNodePropertyChange } = this.props;
+        const invalidPropertiesMap = this.props.nodeStore!.stopInvalidPropertiesMap;
+        const { node, isNewStop, onNodePropertyChange, toggleTransitType } = this.props;
 
         if (this.state.isLoading) {
-            return (
-                <div className={s.loaderContainer}>
-                    <Loader size={LoaderSize.SMALL} />
-                </div>
-            );
+            return <Loader size='small' />;
         }
 
         return (
@@ -183,8 +112,10 @@ class StopView extends ViewFormBase<IStopViewProps, IStopViewState> {
                 isEditingDisabled={isEditingDisabled}
                 stopAreas={this.props.nodeStore!.stopAreaItems}
                 stopSections={this.state.stopSections}
-                stopInvalidPropertiesMap={this.state.invalidPropertiesMap}
+                stopInvalidPropertiesMap={invalidPropertiesMap}
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
+                isTransitToggleButtonBarVisible={this.props.isTransitToggleButtonBarVisible}
+                toggleTransitType={toggleTransitType}
                 updateStopProperty={this.updateStopProperty}
                 onNodePropertyChange={onNodePropertyChange}
                 setCurrentStateIntoNodeCache={this.setCurrentStateIntoNodeCache}

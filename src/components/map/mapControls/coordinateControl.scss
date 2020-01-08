@@ -1,7 +1,11 @@
 @import '../../shared/styles/common.scss';
-#coordinateControl {
+.coordinateControl {
     border: 0px;
     width: 133px;
+
+    .disabled {
+        pointer-events: none;
+    }
     div {
         height: 29px;
         width: 130px;
@@ -21,6 +25,7 @@
         border: 0px;
         padding: 0px;
         margin: 0px;
+        cursor: pointer;
     }
     div > input {
         font-family: $hslFont;

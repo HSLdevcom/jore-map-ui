@@ -10,6 +10,7 @@ export class ConfirmStore {
     private _onCancel: null | (() => void);
     private _confirmButtonText: string | null;
     private _cancelButtonText: string | null;
+    private _confirmNotification: string | null;
 
     constructor() {
         this._content = null;
@@ -32,6 +33,11 @@ export class ConfirmStore {
     }
 
     @computed
+    get confirmNotification(): string | null {
+        return this._confirmNotification;
+    }
+
+    @computed
     get isConfirmOpen(): boolean {
         return this._isOpen;
     }
@@ -42,13 +48,15 @@ export class ConfirmStore {
         onConfirm,
         onCancel,
         confirmButtonText,
-        cancelButtonText
+        cancelButtonText,
+        confirmNotification
     }: {
         content: React.ReactNode | string;
         onConfirm: () => void;
         onCancel?: () => void;
         confirmButtonText?: string;
         cancelButtonText?: string;
+        confirmNotification?: string;
     }) => {
         this._content = content;
         this._onConfirm = onConfirm;
@@ -58,6 +66,7 @@ export class ConfirmStore {
             ? confirmButtonText
             : DEFAULT_CONFIRM_BUTTON_TEXT;
         this._cancelButtonText = cancelButtonText ? cancelButtonText : DEFAULT_CANCEL_BUTTON_TEXT;
+        this._confirmNotification = confirmNotification ? confirmNotification : null;
     };
 
     @action
@@ -84,6 +93,7 @@ export class ConfirmStore {
         this._isOpen = false;
         this._confirmButtonText = DEFAULT_CONFIRM_BUTTON_TEXT;
         this._cancelButtonText = DEFAULT_CANCEL_BUTTON_TEXT;
+        this._confirmNotification = null;
     };
 }
 

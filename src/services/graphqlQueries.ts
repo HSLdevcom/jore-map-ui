@@ -273,9 +273,9 @@ const getAllStopAreas = () => {
     `;
 };
 
-const getAllStops = () => {
+const getAllStopItems = () => {
     return gql`
-        query getAllStops {
+        query getAllStopItems {
             node: allPysakkis {
                 nodes {
                     soltunnus
@@ -483,7 +483,6 @@ const nodeQueryFields = `
     geojsonManual
     geojsonProjection
     transittypes
-    solmapiste
     solotapa
     solkuka
     solviimpvm
@@ -670,7 +669,7 @@ export default {
     getAllRoutePathPrimaryKeysQuery,
     getStopAreaQuery,
     getAllStopAreas,
-    getAllStops,
+    getAllStopItems,
     getAllTerminalAreas,
     getLineHeaderQuery,
     getAllLineHeadersQuery,

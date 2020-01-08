@@ -2,12 +2,6 @@
 @import '../../../shared/styles/form';
 @import '../../../shared/styles/flexbox';
 
-.loaderContainer {
-    display: flex;
-    justify-content: center;
-    margin: 30px auto;
-}
-
 .stopTableView {
     width: 100%;
 
@@ -34,6 +28,7 @@
     }
 
     .stopTableRow {
+        cursor: pointer;
         font-size: 0.9rem;
     }
 }

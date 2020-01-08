@@ -18,7 +18,14 @@ const routePathLinkValidationModel: IRoutePathLinkValidationModel = {
     isStartNodeUsingBookSchedule: 'boolean',
     startNodeBookScheduleColumnNumber: 'numeric|min:1|max:99',
     modifiedBy: '',
-    modifiedOn: ''
+    modifiedOn: '',
+    viaNameId: `string`,
+    destinationFi1: 'max:30|string',
+    destinationFi2: 'max:30|string',
+    destinationSw1: 'max:30|string',
+    destinationSw2: 'max:30|string'
 };
 
 export default routePathLinkValidationModel;
+
+export { IRoutePathLinkValidationModel };
