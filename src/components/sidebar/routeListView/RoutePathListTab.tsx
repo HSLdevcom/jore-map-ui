@@ -15,10 +15,14 @@ import ToggleSwitch from '../../controls/ToggleSwitch';
 import * as s from './routePathListTab.scss';
 
 interface IRouteItemProps {
+    route: IRoute;
+    areAllRoutePathsVisible: boolean;
+    toggleAllRoutePathsVisible: () => void;
     routeListStore?: RouteListStore;
     mapStore?: MapStore;
-    route: IRoute;
 }
+
+const ROUTE_PATH_SHOW_LIMIT = 3;
 
 @inject('routeListStore', 'mapStore')
 @observer
@@ -96,9 +100,15 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
 
     private renderList = () => {
         const routePaths = this.props.route.routePaths;
+        if (routePaths.length === 0) {
+            return <div className={s.noRoutePathsMessage}>Reitillä ei ole reitin suuntia.</div>;
+        }
         const groupedRoutePaths = this.groupRoutePathsOnDates(routePaths);
+        const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
+            ? groupedRoutePaths
+            : groupedRoutePaths.slice(0, ROUTE_PATH_SHOW_LIMIT);
 
-        return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
+        return groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {
             const first = routePaths[0];
             const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
 
@@ -117,7 +127,24 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
     };
 
     render() {
-        return <div className={s.routePathListTab}>{this.renderList()}</div>;
+        return (
+            <div className={s.routePathListTab}>
+                {this.renderList()}
+                {this.props.route.routePaths &&
+                    this.props.route.routePaths.length > ROUTE_PATH_SHOW_LIMIT && (
+                        <div
+                            className={s.toggleAllRoutePathsVisibleButton}
+                            onClick={this.props.toggleAllRoutePathsVisible}
+                        >
+                            {this.props.areAllRoutePathsVisible
+                                ? `Piilota reitin suunnat`
+                                : `Näytä kaikki reitin suunnat (${
+                                      this.props.route.routePaths.length
+                                  })`}
+                        </div>
+                    )}
+            </div>
+        );
     }
 }
 

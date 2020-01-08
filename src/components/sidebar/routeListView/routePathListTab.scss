@@ -67,3 +67,15 @@
         padding: 15px;
     }
 }
+
+.noRoutePathsMessage {
+    padding: 15px;
+}
+
+.toggleAllRoutePathsVisibleButton {
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    color: $busBlue;
+    text-decoration: underline;
+}

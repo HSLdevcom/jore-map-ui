@@ -14,6 +14,7 @@ interface IRouteItemProps {
 
 interface IRouteItemState {
     selectedTabIndex: number;
+    areAllRoutePathsVisible: boolean;
 }
 
 @inject('routeListStore', 'mapStore')
@@ -22,7 +23,8 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedTabIndex: 1
+            selectedTabIndex: 1,
+            areAllRoutePathsVisible: false
         };
     }
 
@@ -45,6 +47,12 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
     private setSelectedTabIndex = (index: number) => {
         this.setState({
             selectedTabIndex: index
+        });
+    };
+
+    private toggleAllRoutePathsVisible = () => {
+        this.setState({
+            areAllRoutePathsVisible: !this.state.areAllRoutePathsVisible
         });
     };
 
@@ -72,7 +80,11 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
                         />
                     </ContentItem>
                     <ContentItem>
-                        <RoutePathListTab route={this.props.route} />
+                        <RoutePathListTab
+                            route={this.props.route}
+                            areAllRoutePathsVisible={this.state.areAllRoutePathsVisible}
+                            toggleAllRoutePathsVisible={this.toggleAllRoutePathsVisible}
+                        />
                     </ContentItem>
                 </ContentList>
             </Tabs>
