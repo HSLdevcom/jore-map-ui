@@ -169,7 +169,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         currentLineHeaders.forEach((currentLineHeader: ILineHeader) => {
             !currentLineHeader.originalStartDate
                 ? saveModels.push({
-                      subTopic: currentLineHeader.lineNameFi,
+                      subTopic: `Linjan otsikko: ${currentLineHeader.lineNameFi}`,
                       newData: currentLineHeader,
                       oldData: {},
                       model: 'lineHeader'
@@ -177,7 +177,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 : oldLineHeaders!.forEach((oldLineHeader: ILineHeader) => {
                       if (this.isSameLineHeader(oldLineHeader, currentLineHeader)) {
                           saveModels.push({
-                              subTopic: currentLineHeader.lineNameFi,
+                              subTopic: `Linjan otsikko: ${currentLineHeader.lineNameFi}`,
                               newData: currentLineHeader,
                               oldData: oldLineHeader,
                               model: 'lineHeader'
@@ -186,10 +186,10 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                   });
         });
 
-        const deletedLineHeaders = lineHeaderMassEditStore!.removedLineHeaders;
-        deletedLineHeaders.forEach((deletedLineHeader: ILineHeader) => {
+        const removedLineHeaders = lineHeaderMassEditStore!.removedLineHeaders;
+        removedLineHeaders.forEach((deletedLineHeader: ILineHeader) => {
             saveModels.push({
-                subTopic: deletedLineHeader.lineNameFi,
+                subTopic: `Linjan otsikko: ${deletedLineHeader.lineNameFi}`,
                 isRemoved: true,
                 newData: null,
                 oldData: null,

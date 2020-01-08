@@ -30,7 +30,7 @@ const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
     for (const property in newData) {
         const newValue = newData[property];
         const oldValue = oldData ? oldData[property] : '';
-        if (_.isEqual(newValue, oldValue)) {
+        if (_.isEqual(newValue, oldValue) || (!newValue && !oldValue)) {
             delete newData[property];
         }
     }
@@ -47,6 +47,7 @@ const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
                     if (PREVENTED_CHANGE_ROW_PROPERTIES.includes(property)) return null;
 
                     const propertyLabel = _getLabel(saveModel.model, property);
+                    console.log(saveModel.model, property);
                     return (
                         <div
                             key={`${key}-${index}`}
@@ -113,7 +114,9 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             startTime: () => (data[property] ? toDateString(data[property]) : ''),
             endTime: () => (data[property] ? toDateString(data[property]) : ''),
             routePathLinks: () =>
-                isNew ? 'Uudet reitinsuunnanlinkit' : 'Vanhat reitinsuunnanlinkit',
+                isNew
+                    ? 'Uudet reitinsuunnan linkit ja solmut'
+                    : 'Vanhat reitinsuunnan linkit ja solmut',
             exceptionPath: () => codeListStore.getCodeListLabel('Kyllä/Ei', data[property])
         },
         lineHeader: {

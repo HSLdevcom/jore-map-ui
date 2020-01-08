@@ -115,7 +115,7 @@ const routePathPropertyCodeList: IRoutePathPropertyCodeList = {
     visible: '',
     transitType: '',
     lineId: '',
-    routePathLinks: '',
+    routePathLinks: 'SOLMUT JA LINKIT',
     name: 'NIMI SUOMEKSI',
     nameSw: 'NIMI RUOTSIKSI',
     endTime: 'VIIM.VOIM.OLO',
