@@ -105,7 +105,7 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
             return (
                 <div
                     key={header}
-                    className={classNames(s.groupedRoutes, index % 2 ? undefined : s.shadow)}
+                    className={classNames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
                 >
                     <div className={s.groupedRoutesDate}>{header}</div>
                     <div className={s.groupedRoutesContent}>
