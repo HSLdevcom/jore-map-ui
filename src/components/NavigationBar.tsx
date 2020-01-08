@@ -77,7 +77,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                         <>
                             {isSyncLoading ? (
                                 <div className={s.syncTextWrapper}>
-                                    <Loader size='tiny' />
+                                    <Loader size='tiny' hasNoMargin={true} />
                                     <div className={s.syncText}>
                                         Synkronoidaan sisäistä JORE-tietokantaa...
                                     </div>
