@@ -1,19 +1,22 @@
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import 'leaflet-editable';
 import 'leaflet/dist/leaflet.css';
 import { reaction, toJS, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { LayerContainer, Map, TileLayer, ZoomControl } from 'react-leaflet';
+import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
 import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
 import AddressSearch from './AddressSearch';
+import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
 import RouteLayer from './layers/RouteLayer';
+import StopAreaLayer from './layers/StopAreaLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
 import EditRoutePathLayer from './layers/edit/EditRoutePathLayer';
@@ -64,18 +67,12 @@ class LeafletMap extends React.Component<IMapProps> {
         this.reactionDisposers = [];
     }
 
-    private getMap() {
-        return this.mapReference.current ? this.mapReference.current.leafletElement : null;
-    }
-
     componentDidMount() {
         const mapStore = this.props.mapStore;
         const map = this.getMap();
         if (!map) throw 'Map was not loaded.';
 
         map.addControl(L.control.scale({ imperial: false }));
-        map.addControl(new CoordinateControl({ position: 'topright' }));
-
         map.on('moveend', () => {
             mapStore!.setCoordinates(map.getCenter());
         });
@@ -88,28 +85,27 @@ class LeafletMap extends React.Component<IMapProps> {
         this.reactionDisposers.push(reaction(() => mapStore!.mapCursor, this.setMapCursor));
 
         const coordinates = mapStore!.coordinates;
-        if (coordinates && !mapStore!.isMapCenteringPrevented) {
+        if (coordinates) {
             map.setView(coordinates, mapStore!.zoom);
         }
         map.on('click', (e: L.LeafletEvent) => EventManager.trigger('mapClick', e));
     }
 
+    private getMap() {
+        return this.mapReference.current ? this.mapReference.current.leafletElement : null;
+    }
+
     private centerMap = () => {
         const mapStore = this.props.mapStore;
-        if (mapStore!.isMapCenteringPrevented) {
-            return;
-        }
-
         const map = this.getMap();
         if (map) {
-            const storeCoordinates = mapStore!.coordinates;
             try {
                 const mapCoordinates = map.getCenter();
-                if (!L.latLng(storeCoordinates!).equals(L.latLng(mapCoordinates))) {
-                    map.setView(storeCoordinates!, map.getZoom());
+                if (!L.latLng(mapStore!.coordinates!).equals(L.latLng(mapCoordinates))) {
+                    map.setView(mapStore!.coordinates!, map.getZoom());
                 }
             } catch {
-                map.setView(storeCoordinates!, mapStore!.zoom);
+                map.setView(mapStore!.coordinates!, mapStore!.zoom);
             }
         }
     };
@@ -142,9 +138,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     render() {
-        const isLoading = Boolean(
-            this.props.mapStore!.isMapCenteringPrevented || !this.props.mapStore!.coordinates
-        );
+        const isLoading = Boolean(!this.props.mapStore!.coordinates);
         const routes = toJS(this.props.routeListStore!.routes);
         return (
             <div className={s.mapView}>
@@ -177,6 +171,9 @@ class LeafletMap extends React.Component<IMapProps> {
                     <RouteLayer routes={routes} />
                     <EditRoutePathLayer />
                     <PopupLayer />
+                    <StopAreaLayer />
+                    <HighlightEntityLayer />
+                    <Pane name='highlightEntityLayer' style={{ zIndex: 999 }} />
                     <Control position='topleft'>
                         <div className={s.mapLayersContainer}>
                             <Toolbar />
@@ -184,7 +181,12 @@ class LeafletMap extends React.Component<IMapProps> {
                         </div>
                     </Control>
                     <Control position='topright'>
-                        <MeasurementControl />
+                        <div
+                            className={classnames(s.mapLayersContainer, s.topRightControlContainer)}
+                        >
+                            <CoordinateControl />
+                            <MeasurementControl map={this.mapReference} />
+                        </div>
                     </Control>
                     <Control position='bottomleft'>
                         <div className={s.mapLayersContainer}>

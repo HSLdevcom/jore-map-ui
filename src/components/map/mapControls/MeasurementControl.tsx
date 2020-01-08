@@ -6,7 +6,7 @@ import MapControlButton from './MapControlButton';
 import * as s from './measurementControl.scss';
 
 interface IMeasurementControlProps {
-    leaflet?: any;
+    map: any;
 }
 
 interface IMeasurementControlState {
@@ -47,11 +47,17 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         this.measurementLayer = L.featureGroup();
 
         this.measurementsLayer = L.featureGroup();
+        this.getLayerContainer();
     }
 
     componentDidMount() {
-        this.measurementsLayer.addTo(this.props.leaflet!.layerContainer);
+        this.measurementsLayer.addTo(this.getLayerContainer());
     }
+
+    private getLayerContainer = () => {
+        const layerContainer = this.props.map.current.contextValue.layerContainer;
+        return layerContainer;
+    };
 
     private toggleMeasure = () => {
         if (this.state.activeTool === Tools.MEASURE || this.state.activeTool === Tools.DRAGGING) {
@@ -63,22 +69,19 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
 
     private enableMeasure = () => {
         this.disableRemove();
-        L.DomUtil.addClass(this.props.leaflet!.layerContainer.getContainer(), s.measurementCursor);
-        this.props.leaflet!.layerContainer.on('click', this.measurementClicked);
-        this.props.leaflet!.layerContainer.doubleClickZoom.disable();
+        L.DomUtil.addClass(this.getLayerContainer().getContainer(), s.measurementCursor);
+        this.getLayerContainer().on('click', this.measurementClicked);
+        this.getLayerContainer().doubleClickZoom.disable();
         this.setState({
             activeTool: Tools.MEASURE
         });
     };
 
     private disableMeasure = () => {
-        L.DomUtil.removeClass(
-            this.props.leaflet!.layerContainer.getContainer(),
-            s.measurementCursor
-        );
-        this.props.leaflet!.layerContainer.off('click', this.measurementClicked);
-        this.props.leaflet!.layerContainer.off('mousemove', this.measurementMoving);
-        this.props.leaflet!.layerContainer.doubleClickZoom.enable();
+        L.DomUtil.removeClass(this.getLayerContainer().getContainer(), s.measurementCursor);
+        this.getLayerContainer().off('click', this.measurementClicked);
+        this.getLayerContainer().off('mousemove', this.measurementMoving);
+        this.getLayerContainer().doubleClickZoom.enable();
         if (this.state.activeTool === Tools.DRAGGING) {
             this.finishMeasurement();
         }
@@ -128,12 +131,10 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         }
         const latLng = e.latlng;
         if (this.points.length > 0) {
-            const { x: x1, y: y1 } = this.props.leaflet!.layerContainer.latLngToContainerPoint(
+            const { x: x1, y: y1 } = this.getLayerContainer().latLngToContainerPoint(
                 this.points[this.points.length - 1]
             );
-            const { x: x2, y: y2 } = this.props.leaflet!.layerContainer.latLngToContainerPoint(
-                latLng
-            );
+            const { x: x2, y: y2 } = this.getLayerContainer().latLngToContainerPoint(latLng);
             const pxDistance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
             if (pxDistance < 10) {
                 this.finishMeasurement();
@@ -143,7 +144,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         }
         this.points.push(e.latlng);
         if (this.points.length === 1) {
-            this.props.leaflet!.layerContainer.on('mousemove', this.measurementMoving);
+            this.getLayerContainer().on('mousemove', this.measurementMoving);
         }
         this.lineLayer.clearLayers();
         L.polyline(this.points, { className: s.polyline }).addTo(this.lineLayer);

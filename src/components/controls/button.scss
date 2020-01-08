@@ -19,7 +19,6 @@ $defaultBackgroundColor: $busBlue;
     margin-right: 15px;
     color: $defaultColor;
     background-color: $defaultBackgroundColor;
-    transition: 0.5s;
 }
 .button:hover {
     background-color: darken($defaultBackgroundColor, 10);
@@ -30,13 +29,13 @@ $defaultBackgroundColor: $busBlue;
 }
 
 .round {
-    color: #fff;
+    color: $defaultColor;
     border-radius: 20px;
 }
 
 .save {
     background-color: #00ba11;
-    color: #fff;
+    color: $defaultColor;
     text-align: center;
     font-size: 1rem;
     cursor: pointer;
@@ -66,8 +65,13 @@ $defaultBackgroundColor: $busBlue;
     padding: 20px;
 }
 
+.transition {
+    transition: 0.5s;
+}
+
 .disabled {
     background-color: $disabledGrey;
     cursor: default;
     pointer-events: none;
+    color: $defaultColor;
 }

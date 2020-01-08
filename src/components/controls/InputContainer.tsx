@@ -1,17 +1,11 @@
 import classnames from 'classnames';
-import fi from 'date-fns/locale/fi';
 import { observer } from 'mobx-react';
 import Moment from 'moment';
-import React, { ChangeEvent } from 'react';
-import ReactDatePicker, { registerLocale } from 'react-datepicker';
+import React from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
-import ReactDOM from 'react-dom';
-import { IoMdCalendar, IoMdClose } from 'react-icons/io';
-import { dateToDateString } from '~/util/dateFormatHelpers';
 import { IValidationResult } from '~/validation/FormValidator';
+import DatePicker from './DatePicker';
 import * as s from './inputContainer.scss';
-
-registerLocale('fi', fi);
 
 type inputType = 'text' | 'number' | 'date';
 
@@ -24,9 +18,11 @@ interface IInputProps {
     disabled?: boolean;
     value?: string | number | Date | null;
     type?: inputType; // Defaults to text
+    isEmptyDateValueAllowed?: boolean;
     capitalizeInput?: boolean;
+    isInputColorRed?: boolean;
     isClearButtonVisibleOnDates?: boolean;
-    darkerInputLabel?: boolean;
+    darkerInputLabel?: boolean; // TODO: rename as isInputLabelDarker
 }
 
 const renderEditableContent = (props: IInputProps) => {
@@ -46,11 +42,14 @@ const renderEditableContent = (props: IInputProps) => {
     };
 
     if (type === 'date') {
-        return renderDatePicker({
-            value: props.value! as Date,
-            onChange: props.onChange!,
-            isClearButtonVisible: props.isClearButtonVisibleOnDates
-        });
+        return (
+            <DatePicker
+                value={props.value! as Date}
+                onChange={props.onChange!}
+                isClearButtonVisible={props.isClearButtonVisibleOnDates}
+                isEmptyValueAllowed={props.isEmptyDateValueAllowed}
+            />
+        );
     }
 
     return (
@@ -73,99 +72,6 @@ const renderEditableContent = (props: IInputProps) => {
     );
 };
 
-const renderDatePicker = ({
-    value,
-    onChange,
-    isClearButtonVisible
-}: {
-    value?: Date;
-    isClearButtonVisible?: boolean;
-    onChange: (date: Date) => void;
-}) => {
-    const minDate = new Date();
-    minDate.setFullYear(1970);
-    minDate.setMonth(0);
-    minDate.setDate(1);
-    const maxDate = new Date();
-    maxDate.setFullYear(2051);
-    maxDate.setMonth(0);
-    maxDate.setDate(1);
-    // TODO: scroll to selected year missing from react-datepicker
-    // open issue for this: https://github.com/Hacker0x01/react-datepicker/pull/1700
-    return (
-        <div className={classnames(s.staticHeight)}>
-            <ReactDatePicker
-                customInput={renderDatePickerInput({
-                    value,
-                    onChange,
-                    isClearButtonVisible,
-                    placeholder: 'Syötä päivä'
-                })}
-                selected={value}
-                onChange={onChange}
-                locale={fi}
-                dateFormat={'dd.MM.yyyy'}
-                showMonthDropdown={true}
-                peekNextMonth={true}
-                showYearDropdown={true}
-                startDate={new Date()}
-                scrollableYearDropdown={true}
-                yearDropdownItemNumber={100}
-                minDate={minDate}
-                maxDate={maxDate}
-                dateFormatCalendar={'dd.MM.yyyy'}
-                popperContainer={_renderCalendarContainer}
-            />
-        </div>
-    );
-};
-
-const _renderCalendarContainer = ({ children }: { children: JSX.Element[] }): React.ReactNode => {
-    const el = document.getElementById('root');
-    return ReactDOM.createPortal(children, el!);
-};
-
-const renderDatePickerInput = ({
-    onChange,
-    placeholder,
-    value,
-    isClearButtonVisible
-}: {
-    onChange: (value: any) => void;
-    placeholder: string;
-    value?: Date;
-    isClearButtonVisible?: boolean;
-}) => {
-    const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        // TODO: implement a better way of changing input value
-        const value = event.target.value;
-        // Allow input date that is in the correct format
-        if (Moment(value, 'DD.MM.YYYY', true).isValid()) {
-            onChange(value);
-        }
-    };
-
-    const clearInputValue = (event: React.MouseEvent) => {
-        onChange('');
-        event.preventDefault();
-    };
-
-    return (
-        <div className={classnames(s.staticHeight, s.inputField)}>
-            <input
-                placeholder={placeholder}
-                type={'text'}
-                value={value ? dateToDateString(value) : ''}
-                onChange={onInputChange}
-            />
-            <IoMdCalendar className={s.calendarIcon} />
-            {isClearButtonVisible && (
-                <IoMdClose onClick={clearInputValue} className={s.clearIcon} />
-            )}
-        </div>
-    );
-};
-
 const renderValidatorResult = (validationResult?: IValidationResult) => {
     if (!validationResult || !validationResult.errorMessage) {
         return null;
@@ -174,7 +80,13 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
 };
 
 const renderUneditableContent = (props: IInputProps) => (
-    <div className={classnames(s.inputField, props.disabled ? s.staticHeight : null)}>
+    <div
+        className={classnames(
+            s.inputField,
+            props.disabled ? s.staticHeight : null,
+            props.isInputColorRed ? s.redInputText : null
+        )}
+    >
         {props.value instanceof Date
             ? Moment(props.value!).format('DD.MM.YYYY')
             : props.value

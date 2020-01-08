@@ -2,5 +2,9 @@
 
 .fullscreenControlView {
     @extend %soloControl;
-    color: black;
+    display: flex;
+
+    div {
+        color: black;
+    }
 }

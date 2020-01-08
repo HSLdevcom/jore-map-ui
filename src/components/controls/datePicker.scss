@@ -1,0 +1,24 @@
+@import '../shared/styles/common';
+@import '../shared/styles/form';
+
+.datePicker {
+    .inputField {
+        display: flex;
+        align-items: center;
+    }
+    .invalidDate {
+        background-color: lighten($red, 30);
+    }
+    .calendarIcon {
+        position: absolute;
+        right: 8px;
+        font-size: 22px;
+        pointer-events: none;
+    }
+    .clearIcon {
+        position: absolute;
+        right: 30px;
+        font-size: 22px;
+        cursor: pointer;
+    }
+}

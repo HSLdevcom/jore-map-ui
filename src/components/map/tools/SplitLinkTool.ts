@@ -33,7 +33,6 @@ class SplitLinkTool implements BaseTool {
         const link = LinkStore.link;
         if (!link) throw 'Valittua linkkiä ei löytynyt.';
         const url = RouteBuilder.to(SubSites.splitLink)
-            .clear()
             .toTarget(
                 ':id',
                 [link.startNode.id, link.endNode.id, link.transitType, nodeId].join(',')
@@ -72,9 +71,12 @@ class SplitLinkTool implements BaseTool {
                 ]
             });
         }
-        ConfirmStore.openConfirm(confirmContent, () => {
-            ToolbarStore.selectTool(null);
-            this.navigateToSplitLink(nodeId);
+        ConfirmStore.openConfirm({
+            content: confirmContent,
+            onConfirm: () => {
+                ToolbarStore.selectTool(null);
+                this.navigateToSplitLink(nodeId);
+            }
         });
     };
 }

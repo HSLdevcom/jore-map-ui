@@ -131,11 +131,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     render() {
         if (this.state.isLoading) {
-            return (
-                <div className={s.loaderContainer}>
-                    <Loader />
-                </div>
-            );
+            return <Loader />;
         }
         const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
         const filteredItems = this.getFilteredItems();

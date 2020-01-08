@@ -1,19 +1,41 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import { ILine } from '~/models';
+import ISearchLine from '~/models/searchModels/ISearchLine';
+import lineValidationModel, {
+    ILineValidationModel
+} from '~/models/validationModels/lineValidationModel';
+import { IValidationResult } from '~/validation/FormValidator';
+import ToolbarStore from './toolbarStore';
+import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 export class LineStore {
     @observable private _line: ILine | null;
     @observable private _oldline: ILine | null;
+    @observable private _isNewLine: boolean;
     @observable private _isEditingDisabled: boolean;
+    @observable private _existingLines: ISearchLine[] = [];
+    private _validationStore: ValidationStore<ILine, ILineValidationModel>;
 
     constructor() {
         this._isEditingDisabled = true;
+        this._validationStore = new ValidationStore();
+
+        reaction(
+            () => this.isDirty,
+            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+        );
+        reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
     @computed
     get line(): ILine | null {
         return this._line;
+    }
+
+    @computed
+    get isNewLine(): boolean {
+        return this._isNewLine;
     }
 
     @computed
@@ -26,11 +48,64 @@ export class LineStore {
         return this._isEditingDisabled;
     }
 
-    // TODO: rename as init
+    @computed
+    get existingLines() {
+        return this._existingLines;
+    }
+
+    @computed
+    get invalidPropertiesMap() {
+        return this._validationStore.getInvalidPropertiesMap();
+    }
+
+    @computed
+    get isLineFormValid() {
+        return this._validationStore.isValid();
+    }
+
     @action
-    public setLine = (line: ILine) => {
+    public init = ({ line, isNewLine }: { line: ILine; isNewLine: boolean }) => {
         this._line = line;
+        this._isNewLine = isNewLine;
         this.setOldLine(this._line);
+
+        const validateLineDates = (line: ILine) => {
+            // is end date before start date?
+            if (line.lineEndDate && line.lineEndDate.getTime() < line.lineStartDate.getTime()) {
+                const validationResult: IValidationResult = {
+                    isValid: false,
+                    errorMessage: `Viimeinen voimassaolopäivä ei voi olla ennen voimaanastumispäivää.`
+                };
+                return validationResult;
+            }
+            return;
+        };
+
+        const customValidatorMap: ICustomValidatorMap = {
+            id: {
+                validator: (line: ILine, property: string, lineId: string) => {
+                    if (!this._isNewLine) return;
+                    if (this.isLineAlreadyFound(lineId)) {
+                        const validationResult: IValidationResult = {
+                            isValid: false,
+                            errorMessage: `Linja ${lineId} on jo olemassa.`
+                        };
+                        return validationResult;
+                    }
+                    return;
+                }
+            },
+            lineStartDate: {
+                validator: validateLineDates,
+                dependentProperties: ['lineEndDate']
+            },
+            lineEndDate: {
+                validator: validateLineDates,
+                dependentProperties: ['lineStartDate']
+            }
+        };
+
+        this._validationStore.init(line, lineValidationModel, customValidatorMap);
     };
 
     @action
@@ -40,10 +115,8 @@ export class LineStore {
 
     @action
     public updateLineProperty = (property: keyof ILine, value: string | number | Date) => {
-        this._line = {
-            ...this._line!,
-            [property]: value
-        };
+        (this._line as any)[property] = value;
+        this._validationStore.updateProperty(property, value);
     };
 
     @action
@@ -57,14 +130,35 @@ export class LineStore {
     };
 
     @action
+    public setExistingLines = (existingLines: ISearchLine[]) => {
+        this._existingLines = existingLines;
+    };
+
+    @action
     public clear = () => {
         this._line = null;
+        this._oldline = null;
+        this._validationStore.clear();
     };
 
     @action
     public resetChanges = () => {
         if (this._oldline) {
-            this.setLine(this._oldline);
+            this.init({ line: this._oldline, isNewLine: this._isNewLine });
+        }
+    };
+
+    private isLineAlreadyFound = (lineId: string): boolean => {
+        return Boolean(
+            this.existingLines.find((searchLine: ISearchLine) => searchLine.id === lineId)
+        );
+    };
+
+    private onChangeIsEditingDisabled = () => {
+        if (this._isEditingDisabled) {
+            this.resetChanges();
+        } else {
+            this._validationStore.validateAllProperties();
         }
     };
 }

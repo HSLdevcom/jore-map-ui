@@ -3,18 +3,33 @@
 .confirmView {
     display: flex;
     flex-direction: column;
+    max-width: 600px;
 
     .content {
         display: flex;
         justify-content: center;
         flex-direction: column;
         align-items: center;
+        text-align: center;
+        line-height: 30px;
     }
 
-    .buttons {
+    .padding {
+        padding: 30px;
+    }
+
+    .buttonWrapper {
         padding: 20px;
         border-top: 1px solid $borderLightGrey;
         display: flex;
+        flex-direction: column;
         justify-content: center;
+
+        .confirmNotification {
+            padding: 0px 10px 20px 10px;
+        }
+        .buttons {
+            display: flex;
+        }
     }
 }

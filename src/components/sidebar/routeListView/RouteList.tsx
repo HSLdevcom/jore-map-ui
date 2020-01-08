@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import L from 'leaflet';
 import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
@@ -45,7 +44,6 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     }
 
     async componentDidMount() {
-        this.props.mapStore!.setIsMapCenteringPrevented(true);
         await this.fetchRoutes();
         this.props.routePathStore!.clear();
         this.props.searchStore!.setSearchInput('');
@@ -92,7 +90,6 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         });
         if (!bounds.isValid()) return;
 
-        this.props.mapStore!.setIsMapCenteringPrevented(false);
         this.props.mapStore!.setMapBounds(bounds);
     };
 
@@ -129,11 +126,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     render() {
         if (this.state.isLoading) {
-            return (
-                <div className={classnames(s.routeListView, s.loaderContainer)}>
-                    <Loader />
-                </div>
-            );
+            return <Loader />;
         }
         return (
             <div className={s.routeListView}>

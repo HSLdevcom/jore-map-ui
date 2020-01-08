@@ -155,7 +155,10 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         } else {
             confirmText = `${confirmText} Tämä toimenpide vaikuttaa kaikkiin tätä linkkiä käyttäviin reitinsuuntiin.`;
         }
-        this.props.confirmStore!.openConfirm(confirmText, this.save);
+        this.props.confirmStore!.openConfirm({
+            content: confirmText,
+            onConfirm: this.save
+        });
     };
 
     private save = () => {
@@ -166,7 +169,10 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             link: this.props.linkStore!.link,
             node: this.props.linkStore!.nodes[0]
         });
-        this.props.alertStore!.setFadeMessage('Linkin jaon kehitys kesken.', AlertType.Info);
+        this.props.alertStore!.setFadeMessage({
+            message: 'Linkin jaon kehitys kesken.',
+            type: AlertType.Info
+        });
     };
 
     private selectAllRoutePaths = () => {
@@ -201,11 +207,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
         const link = this.props.linkStore!.link;
         if (this.state.isLoading) {
-            return (
-                <div className={classnames(s.splitLinkView, s.loaderContainer)}>
-                    <Loader />
-                </div>
-            );
+            return <Loader />;
         }
         if (!node || !link) return null;
         return (

@@ -5,17 +5,20 @@ import { FiArrowLeft, FiEdit3, FiXCircle } from 'react-icons/fi';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { LoginStore } from '~/stores/loginStore';
 import * as s from './sidebarHeader.scss';
 
 interface ISidebarHeaderProps {
     children: ReactNode;
-    hideCloseButton?: boolean;
-    hideBackButton?: boolean; // TODO: rename as isBackButtonVisible
+    isCloseButtonVisible?: boolean;
+    isBackButtonVisible?: boolean;
     isEditButtonVisible?: boolean;
     loginStore?: LoginStore;
+    confirmStore?: ConfirmStore;
     isEditing?: boolean;
     shouldShowClosePromptMessage?: boolean;
+    shouldShowEditButtonClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onBackButtonClick?: () => void;
     onCloseButtonClick?: () => void;
@@ -24,37 +27,64 @@ interface ISidebarHeaderProps {
 const closePromptMessage =
     'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
 const revertPromptMessage =
-    'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan';
+    'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.';
 
-@inject('loginStore')
+@inject('loginStore', 'confirmStore')
 @observer
 class SidebarHeader extends React.Component<ISidebarHeaderProps> {
-    onBackButtonClick = () => {
-        if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
-            this.props.onBackButtonClick ? this.props.onBackButtonClick() : navigator.goBack();
-        }
+    private onBackButtonClick = () => {
+        this.optionalConfirmPrompt({
+            message: closePromptMessage,
+            defaultOnClick: () => navigator.goBack(),
+            customOnClick: this.props.onBackButtonClick,
+            shouldShowMessage: this.props.shouldShowClosePromptMessage
+        });
     };
 
-    onEditButtonClick = () => {
-        if (this.props.isEditing!) {
-            if (!this.props.shouldShowClosePromptMessage || confirm(revertPromptMessage)) {
-                this.props.onEditButtonClick!();
-            }
+    private onEditButtonClick = () => {
+        this.optionalConfirmPrompt({
+            message: revertPromptMessage,
+            customOnClick: () => this.props.onEditButtonClick!(),
+            shouldShowMessage: this.props.isEditing && this.props.shouldShowClosePromptMessage
+        });
+    };
+
+    private onCloseButtonClick = () => {
+        const homeLink = routeBuilder.to(SubSites.home).toLink();
+        this.optionalConfirmPrompt({
+            message: closePromptMessage,
+            defaultOnClick: () => navigator.goTo(homeLink),
+            customOnClick: this.props.onCloseButtonClick,
+            shouldShowMessage: this.props.shouldShowClosePromptMessage
+        });
+    };
+
+    private optionalConfirmPrompt = ({
+        customOnClick,
+        defaultOnClick,
+        message,
+        shouldShowMessage
+    }: {
+        message: string;
+        defaultOnClick?: () => void;
+        customOnClick?: () => void;
+        shouldShowMessage?: boolean;
+    }) => {
+        const _onClick = customOnClick
+            ? () => customOnClick!()
+            : defaultOnClick
+            ? () => defaultOnClick()
+            : null;
+        if (shouldShowMessage) {
+            this.props.confirmStore!.openConfirm({
+                content: message,
+                onConfirm: _onClick!,
+                confirmButtonText: 'Kyllä'
+            });
         } else {
-            this.props.onEditButtonClick!();
-        }
-    };
-
-    onCloseButtonClick = () => {
-        const homeLink = routeBuilder
-            .to(SubSites.home)
-            .clear()
-            .toLink();
-
-        if (!this.props.shouldShowClosePromptMessage || confirm(closePromptMessage)) {
-            this.props.onCloseButtonClick
-                ? this.props.onCloseButtonClick()
-                : navigator.goTo(homeLink);
+            if (_onClick) {
+                _onClick();
+            }
         }
     };
 
@@ -69,10 +99,10 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
                             className={classnames(s.icon, this.props.isEditing && s.active)}
                         />
                     )}
-                    {!this.props.hideBackButton && (
+                    {!this.props.isBackButtonVisible && (
                         <FiArrowLeft className={s.icon} onClick={this.onBackButtonClick} />
                     )}
-                    {!this.props.hideCloseButton && (
+                    {!this.props.isCloseButtonVisible && (
                         <FiXCircle className={s.icon} onClick={this.onCloseButtonClick} />
                     )}
                 </div>
@@ -80,4 +110,5 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
         );
     }
 }
+
 export default SidebarHeader;

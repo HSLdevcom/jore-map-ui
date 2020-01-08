@@ -4,7 +4,6 @@ export default interface IExternalNode {
     soltunnus: string;
     soltyyppi: string;
     sollistunnus: string;
-    solmapiste?: string;
     solkuka?: string;
     solviimpvm?: Date;
     solkirjain?: string;
@@ -16,4 +15,5 @@ export default interface IExternalNode {
     geojson?: string;
     geojsonManual: string;
     geojsonProjection: string;
+    dateRanges?: string;
 }

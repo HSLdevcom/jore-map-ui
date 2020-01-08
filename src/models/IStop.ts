@@ -17,7 +17,7 @@ export default interface IStop extends IStopPrimaryKey {
     platform?: string;
     radius: number;
     hastusId?: string;
-    areaId?: string; // TODO: rename as stopAreaId
+    stopAreaId?: string;
     elyNumber?: string;
     nameLongFi?: string;
     nameLongSw?: string;
@@ -27,4 +27,12 @@ export default interface IStop extends IStopPrimaryKey {
     transitType?: TransitType; // Only used for creating a soltunnus
 }
 
-export { IStopPrimaryKey };
+interface IStopItem {
+    coordinates?: L.LatLng;
+    stopAreaId: string;
+    nodeId: string;
+    nameFi: string;
+    nameSw: string;
+}
+
+export { IStopItem, IStopPrimaryKey };

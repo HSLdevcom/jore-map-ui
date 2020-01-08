@@ -5,6 +5,7 @@ import IStop from './IStop';
 
 interface INodePrimaryKey {
     id: string;
+    idSuffix?: string; // 2 num (used at manual nodeId input)
 }
 
 interface INodeBase extends INodePrimaryKey {
@@ -13,16 +14,21 @@ interface INodeBase extends INodePrimaryKey {
     type: NodeType;
 }
 
+interface INodeMapHighlight extends INodePrimaryKey {
+    coordinates: L.LatLng;
+    transitTypes: TransitType[];
+    dateRanges: string;
+}
+
 export default interface INode extends INodeBase {
     stop: IStop | null;
     coordinates: L.LatLng;
     coordinatesProjection: L.LatLng;
     measurementDate?: Date;
     measurementType?: string;
-    tripTimePoint?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
     transitTypes?: TransitType[];
 }
 
-export { INodePrimaryKey, INodeBase };
+export { INodePrimaryKey, INodeBase, INodeMapHighlight };

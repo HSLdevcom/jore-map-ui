@@ -7,7 +7,6 @@ $inputFieldHeight: 42px;
 
 .formItem {
     margin-right: $marginRight;
-    padding-top: 10px;
     width: 100%;
 
     .disabled {
@@ -20,6 +19,8 @@ $inputFieldHeight: 42px;
 }
 
 .staticHeight {
+    display: flex;
+    align-items: center;
     height: $inputFieldHeight;
 }
 
@@ -29,7 +30,6 @@ $inputFieldHeight: 42px;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;
-    margin-bottom: 5px;
 }
 
 .darkerInputLabel {
@@ -38,7 +38,6 @@ $inputFieldHeight: 42px;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;
-    margin-bottom: 5px;
 }
 
 .topic {
@@ -49,13 +48,14 @@ $inputFieldHeight: 42px;
 }
 
 .sectionHeader {
-    margin-top: 15px;
+    margin-top: 10px;
+    margin-bottom: 5px;
     font-weight: bold;
 }
 
 .form > .formSection {
     border-bottom: 1.5px solid $borderLightGrey;
-    padding: 20px 0;
+    padding: 10px 0;
     width: 100%;
 }
 

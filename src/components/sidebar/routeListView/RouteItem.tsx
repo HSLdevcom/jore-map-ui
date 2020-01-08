@@ -13,7 +13,7 @@ import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import LineHelper from '~/util/LineHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { dateToDateString } from '~/util/dateFormatHelpers';
+import { toDateString } from '~/util/dateHelpers';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './routeItem.scss';
@@ -45,7 +45,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
     private closeRoute = () => {
         this.props.routeListStore!.removeFromRoutes(this.props.route.id);
         const closeRouteLink = routeBuilder
-            .to(subSites.current)
+            .to(subSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, this.props.route.id)
             .toLink();
         navigator.goTo(closeRouteLink);
@@ -53,7 +53,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
 
     private renderRouteName = () => {
         return (
-            <SidebarHeader onCloseButtonClick={this.closeRoute} hideBackButton={true}>
+            <SidebarHeader onCloseButtonClick={this.closeRoute} isBackButtonVisible={true}>
                 <div className={s.routeName}>
                     {LineHelper.getTransitIcon(this.props.route.line!.transitType!, false)}
                     <div
@@ -76,7 +76,6 @@ class RouteItem extends React.Component<IRouteItemProps> {
         const routeViewLink = routeBuilder
             .to(subSites.route)
             .toTarget(':id', this.props.route.id)
-            .clear()
             .toLink();
         navigator.goTo(routeViewLink);
     };
@@ -158,9 +157,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
 
         return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
             const first = routePaths[0];
-            const header = `${dateToDateString(first.startTime)} - ${dateToDateString(
-                first.endTime
-            )}`;
+            const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
 
             return (
                 <div

@@ -5,13 +5,10 @@ import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiChevronRight } from 'react-icons/fi';
 import { Button, Checkbox, Dropdown } from '~/components/controls';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
-import { INode, IRoutePathLink, IStop, IViaName } from '~/models';
-import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
-import viaNameValidationModel from '~/models/validationModels/viaNameValidationModel';
+import { INode, IRoutePathLink, IStop } from '~/models';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -19,7 +16,6 @@ import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NodeHelper from '~/util/NodeHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
-import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
@@ -35,72 +31,9 @@ interface IRoutePathListNodeProps {
     isLastNode?: boolean;
 }
 
-interface RoutePathListNodeState {
-    isLoading: boolean; // not currently in use, declared because ViewFormBase needs this
-    invalidPropertiesMap: object;
-    isEditingDisabled: boolean; // not currently in use, declared because ViewFormBase needs this
-}
-
 @inject('routePathStore', 'codeListStore')
 @observer
-class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathListNodeState> {
-    constructor(props: IRoutePathListNodeProps) {
-        super(props);
-        this.state = {
-            isLoading: false,
-            invalidPropertiesMap: {},
-            isEditingDisabled: false
-        };
-    }
-
-    componentDidMount() {
-        this.validateLink();
-    }
-
-    componentDidUpdate(prevProps: IRoutePathListNodeProps) {
-        if (prevProps.isEditingDisabled && !this.props.isEditingDisabled) {
-            this.validateLink();
-        }
-    }
-
-    private validateLink = () => {
-        this.validateAllProperties(routePathLinkValidationModel, this.props.routePathLink);
-        const orderNumber = this.props.routePathLink.orderNumber;
-
-        let isViaNameValid = true;
-        if (!this.props.isLastNode) {
-            const viaName = this.props.routePathStore!.getViaName(this.props.routePathLink.id);
-            if (viaName) {
-                isViaNameValid = this.validateViaNames(viaName);
-            }
-        }
-
-        const isLinkFormValid = this.isFormValid() && isViaNameValid;
-
-        this.props.routePathStore!.setLinkFormValidity(orderNumber, isLinkFormValid);
-    };
-
-    private validateViaNames = (viaName: IViaName) => {
-        const attributeNames = [
-            'destinationFi1',
-            'destinationSw1',
-            'destinationFi2',
-            'destinationSw2'
-        ];
-
-        let isValid = true;
-        attributeNames.forEach((attribute: string) => {
-            const validationResult: IValidationResult = FormValidator.validate(
-                viaName[attribute],
-                viaNameValidationModel[attribute]
-            );
-            this.setValidatorResult(attribute, validationResult);
-            if (!validationResult.isValid) isValid = false;
-        });
-
-        return isValid;
-    };
-
+class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
@@ -137,11 +70,7 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
 
     private onRoutePathLinkPropertyChange = (property: keyof IRoutePathLink) => (value: any) => {
         const orderNumber = this.props.routePathLink.orderNumber;
-
         this.props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value);
-        this.validateProperty(routePathLinkValidationModel[property], property, value);
-        const isLinkFormValid = this.isFormValid();
-        this.props.routePathStore!.setLinkFormValidity(orderNumber, isLinkFormValid);
     };
 
     /**
@@ -159,27 +88,6 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
         } else {
             this.props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value);
         }
-        this.validateProperty(routePathLinkValidationModel[property], property, value);
-        const isLinkFormValid = this.isFormValid();
-        this.props.routePathStore!.setLinkFormValidity(orderNumber, isLinkFormValid);
-    };
-
-    private onViaNameChange = (value: string, attributeName: string) => {
-        const routePathLinkId = this.props.routePathLink.id;
-        let viaName = _.cloneDeep(this.props.routePathStore!.getViaName(routePathLinkId));
-
-        if (!viaName) {
-            viaName = {
-                id: `${routePathLinkId}`,
-                destinationFi1: '',
-                destinationFi2: '',
-                destinationSw1: '',
-                destinationSw2: ''
-            };
-        }
-        viaName[attributeName] = value;
-        this.props.routePathStore!.setViaName(viaName);
-        this.validateLink();
     };
 
     private onIsStartNodeUsingBookScheduleChange = (value: boolean) => () => {
@@ -188,17 +96,18 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
 
     private renderStopView = (stop: IStop) => {
         const isEditingDisabled = this.props.isEditingDisabled;
-        const invalidPropertiesMap = this.state.invalidPropertiesMap;
-
         const routePath = this.props.routePathStore!.routePath;
         const routePathLink = this.props.routePathLink;
-        const viaName = this.props.routePathStore!.getViaName(routePathLink.id);
         const isStartNodeUsingBookSchedule = this.props.isLastNode
             ? routePath!.isStartNodeUsingBookSchedule
             : routePathLink.isStartNodeUsingBookSchedule;
         const startNodeBookScheduleColumnNumber = this.props.isLastNode
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
+
+        const invalidPropertiesMap = this.props.routePathStore!.getRoutePathLinkInvalidPropertiesMap(
+            routePathLink.id
+        );
 
         return (
             <div>
@@ -258,39 +167,39 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
                                 darkerInputLabel={true}
                             />
                         </div>
-                        <div className={s.flexInnerRow}>
+                        <div className={s.flexRow}>
                             <InputContainer
                                 label='1. MÄÄRÄNPÄÄ SUOMEKSI'
                                 disabled={isEditingDisabled}
-                                value={viaName ? viaName.destinationFi1 : ''}
+                                value={routePathLink.destinationFi1}
                                 validationResult={invalidPropertiesMap['destinationFi1']}
-                                onChange={e => this.onViaNameChange(e, 'destinationFi1')}
+                                onChange={this.onRoutePathLinkPropertyChange('destinationFi1')}
                                 darkerInputLabel={true}
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ SUOMEKSI'
                                 disabled={isEditingDisabled}
-                                value={viaName ? viaName.destinationFi2 : ''}
+                                value={routePathLink.destinationFi2}
                                 validationResult={invalidPropertiesMap['destinationFi2']}
-                                onChange={e => this.onViaNameChange(e, 'destinationFi2')}
+                                onChange={this.onRoutePathLinkPropertyChange('destinationFi2')}
                                 darkerInputLabel={true}
                             />
                         </div>
-                        <div className={s.flexInnerRow}>
+                        <div className={s.flexRow}>
                             <InputContainer
                                 label='1. MÄÄRÄNPÄÄ RUOTSIKSI'
                                 disabled={isEditingDisabled}
-                                value={viaName ? viaName.destinationSw1 : ''}
+                                value={routePathLink.destinationSw1}
                                 validationResult={invalidPropertiesMap['destinationSw1']}
-                                onChange={e => this.onViaNameChange(e, 'destinationSw1')}
+                                onChange={this.onRoutePathLinkPropertyChange('destinationSw1')}
                                 darkerInputLabel={true}
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
                                 disabled={isEditingDisabled}
-                                value={viaName ? viaName.destinationSw2 : ''}
+                                value={routePathLink.destinationSw2}
                                 validationResult={invalidPropertiesMap['destinationSw2']}
-                                onChange={e => this.onViaNameChange(e, 'destinationSw2')}
+                                onChange={this.onRoutePathLinkPropertyChange('destinationSw2')}
                                 darkerInputLabel={true}
                             />
                         </div>
@@ -319,7 +228,7 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
                         darkerInputLabel={true}
                     />
                 </div>
-                <div className={s.flexInnerRow}>
+                <div className={s.flexRow}>
                     <TextContainer
                         label='MUOKANNUT'
                         value={routePathLink.modifiedBy}
@@ -395,7 +304,7 @@ class RoutePathListNode extends ViewFormBase<IRoutePathListNodeProps, RoutePathL
                 {this.renderNodeView(this.props.node)}
                 <div className={s.footer}>
                     <Button onClick={this.openInNetworkView} type={ButtonType.SQUARE}>
-                        <div>Avaa solmu verkkonäkymässä</div>
+                        <div>Avaa solmu</div>
                         <FiChevronRight />
                     </Button>
                 </div>

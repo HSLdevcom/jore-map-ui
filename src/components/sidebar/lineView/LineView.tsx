@@ -1,66 +1,56 @@
-import classnames from 'classnames';
-import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
-import ViewFormBase from '~/components/shared/inheritedComponents/ViewFormBase';
-import Loader, { LoaderSize } from '~/components/shared/loader/Loader';
+import Loader from '~/components/shared/loader/Loader';
 import LineFactory from '~/factories/lineFactory';
-import { ILine } from '~/models';
-import lineValidationModel from '~/models/validationModels/lineValidationModel';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
+import { MapStore } from '~/stores/mapStore';
 import SidebarHeader from '../SidebarHeader';
 import LineInfoTab from './LineInfoTab';
 import LineRoutesTab from './LineRoutesTab';
 import * as s from './lineView.scss';
 
 interface ILineViewProps {
+    match?: match<any>;
+    isNewLine: boolean;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     lineStore?: LineStore;
-    match?: match<any>;
-    isNewLine: boolean;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
+    mapStore?: MapStore;
 }
 
 interface ILineViewState {
     isLoading: boolean;
-    invalidPropertiesMap: object;
     selectedTabIndex: number;
 }
 
-@inject('lineStore', 'errorStore', 'alertStore')
+@inject('lineStore', 'lineHeaderMassEditStore', 'errorStore', 'alertStore', 'mapStore')
 @observer
-class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
-    private isEditingDisabledListener: IReactionDisposer;
-
+class LineView extends React.Component<ILineViewProps, ILineViewState> {
     constructor(props: ILineViewProps) {
         super(props);
         this.state = {
             isLoading: true,
-            invalidPropertiesMap: {},
             selectedTabIndex: 0
         };
     }
 
     componentDidMount() {
         this.initialize();
-        this.isEditingDisabledListener = reaction(
-            () => this.props.lineStore!.isEditingDisabled,
-            this.onChangeIsEditingDisabled
-        );
         this.props.lineStore!.setIsEditingDisabled(!this.props.isNewLine);
     }
 
     componentWillUnmount() {
         this.props.lineStore!.clear();
-        this.isEditingDisabledListener();
     }
 
     private setSelectedTabIndex = (index: number) => {
@@ -70,13 +60,13 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
     };
 
     private initialize = async () => {
+        this.props.mapStore!.initCoordinates();
         if (this.props.isNewLine) {
             await this.createNewLine();
         } else {
             await this.initExistingLine();
         }
         if (this.props.lineStore!.line) {
-            this.validateLine();
             this.setState({
                 isLoading: false
             });
@@ -87,7 +77,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         try {
             if (!this.props.lineStore!.line) {
                 const newLine = LineFactory.createNewLine();
-                this.props.lineStore!.setLine(newLine);
+                this.props.lineStore!.init({ line: newLine, isNewLine: true });
             }
         } catch (e) {
             this.props.errorStore!.addError('Uuden linjan luonti epäonnistui', e);
@@ -98,15 +88,10 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         const lineId = this.props.match!.params.id;
         try {
             const line = await LineService.fetchLine(lineId);
-            this.props.lineStore!.setLine(line);
+            this.props.lineStore!.init({ line, isNewLine: false });
         } catch (e) {
             this.props.errorStore!.addError('Linjan haku epäonnistui.', e);
         }
-    };
-
-    private onChangeLineProperty = (property: keyof ILine) => (value: any) => {
-        this.props.lineStore!.updateLineProperty(property, value);
-        this.validateProperty(lineValidationModel[property], property, value);
     };
 
     private saveLine = async () => {
@@ -120,7 +105,7 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
                 await LineService.updateLine(line!);
             }
 
-            this.props.alertStore!.setFadeMessage('Tallennettu!');
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;
@@ -131,19 +116,9 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         }
         this.props.lineStore!.setOldLine(line!);
         this.setState({
-            invalidPropertiesMap: {},
             isLoading: false
         });
         this.props.lineStore!.setIsEditingDisabled(true);
-    };
-
-    private onChangeIsEditingDisabled = () => {
-        this.clearInvalidPropertiesMap();
-        if (this.props.lineStore!.isEditingDisabled) {
-            this.props.lineStore!.resetChanges();
-        } else {
-            this.validateLine();
-        }
     };
 
     private navigateToNewLine = () => {
@@ -155,69 +130,60 @@ class LineView extends ViewFormBase<ILineViewProps, ILineViewState> {
         navigator.goTo(lineViewLink);
     };
 
-    private validateLine = () => {
-        this.validateAllProperties(lineValidationModel, this.props.lineStore!.line);
-    };
-
     render() {
         const lineStore = this.props.lineStore;
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         if (this.state.isLoading) {
             return (
-                <div className={classnames(s.lineView, s.loaderContainer)}>
-                    <Loader size={LoaderSize.MEDIUM} />
+                <div className={s.lineView}>
+                    <Loader size='medium' />
                 </div>
             );
         }
-        if (!this.props.lineStore!.line) return null;
+        if (!lineStore!.line) return null;
         const isEditingDisabled = lineStore!.isEditingDisabled;
         const isSaveButtonDisabled =
-            isEditingDisabled || !lineStore!.isDirty || !this.isFormValid();
-
+            isEditingDisabled || !lineStore!.isDirty || !lineStore!.isLineFormValid;
         return (
             <div className={s.lineView}>
-                <div className={s.content}>
-                    <div className={s.sidebarHeaderSection}>
-                        <SidebarHeader
-                            isEditButtonVisible={!this.props.isNewLine}
-                            onEditButtonClick={this.props.lineStore!.toggleIsEditingDisabled}
-                            isEditing={!this.props.lineStore!.isEditingDisabled}
-                            shouldShowClosePromptMessage={this.props.lineStore!.isDirty}
-                        >
-                            {this.props.isNewLine
-                                ? 'Luo uusi linja'
-                                : `Linja ${this.props.lineStore!.line!.id}`}
-                        </SidebarHeader>
-                    </div>
-                    <Tabs>
-                        <TabList
-                            selectedTabIndex={this.state.selectedTabIndex}
-                            setSelectedTabIndex={this.setSelectedTabIndex}
-                        >
-                            <Tab>
-                                <div>Linjan tiedot</div>
-                            </Tab>
-                            <Tab isDisabled={this.props.isNewLine}>
-                                <div>Reitit</div>
-                            </Tab>
-                        </TabList>
-                        <ContentList selectedTabIndex={this.state.selectedTabIndex}>
-                            <ContentItem>
-                                <LineInfoTab
-                                    isEditingDisabled={isEditingDisabled}
-                                    isNewLine={this.props.isNewLine}
-                                    onChangeLineProperty={this.onChangeLineProperty}
-                                    invalidPropertiesMap={this.state.invalidPropertiesMap}
-                                    setValidatorResult={this.setValidatorResult}
-                                    saveLine={this.saveLine}
-                                    isLineSaveButtonDisabled={isSaveButtonDisabled}
-                                />
-                            </ContentItem>
-                            <ContentItem>
-                                <LineRoutesTab />
-                            </ContentItem>
-                        </ContentList>
-                    </Tabs>
+                <div className={s.sidebarHeaderSection}>
+                    <SidebarHeader
+                        isEditButtonVisible={!this.props.isNewLine}
+                        onEditButtonClick={lineStore!.toggleIsEditingDisabled}
+                        isEditing={!lineStore!.isEditingDisabled}
+                        shouldShowClosePromptMessage={
+                            lineStore!.isDirty || lineHeaderMassEditStore!.isDirty
+                        }
+                        shouldShowEditButtonClosePromptMessage={lineStore!.isDirty}
+                    >
+                        {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
+                    </SidebarHeader>
                 </div>
+                <Tabs>
+                    <TabList
+                        selectedTabIndex={this.state.selectedTabIndex}
+                        setSelectedTabIndex={this.setSelectedTabIndex}
+                    >
+                        <Tab>
+                            <div>Linjan tiedot</div>
+                        </Tab>
+                        <Tab isDisabled={this.props.isNewLine}>
+                            <div>Reitit</div>
+                        </Tab>
+                    </TabList>
+                    <ContentList selectedTabIndex={this.state.selectedTabIndex}>
+                        <ContentItem>
+                            <LineInfoTab
+                                isEditingDisabled={isEditingDisabled}
+                                saveLine={this.saveLine}
+                                isLineSaveButtonDisabled={isSaveButtonDisabled}
+                            />
+                        </ContentItem>
+                        <ContentItem>
+                            <LineRoutesTab />
+                        </ContentItem>
+                    </ContentList>
+                </Tabs>
             </div>
         );
     }

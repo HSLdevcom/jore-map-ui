@@ -31,3 +31,12 @@ export default interface IExternalStop {
     vyohyke: string;
     postinro?: string;
 }
+
+interface IExternalStopItem {
+    pysalueid: string;
+    soltunnus: string;
+    pysnimi: string;
+    pysnimir: string;
+}
+
+export { IExternalStopItem };

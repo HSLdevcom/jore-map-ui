@@ -16,7 +16,7 @@ import ApiClient from '~/util/ApiClient';
 import packageVersion from '../project/version.json';
 import { Button } from './controls/index';
 import * as s from './navigationBar.scss';
-import Loader, { LoaderSize } from './shared/loader/Loader';
+import Loader from './shared/loader/Loader';
 
 interface INavigationBarProps {
     alertStore?: AlertStore;
@@ -39,10 +39,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
     }
 
     private goToHomeView = () => {
-        const homeLink = routeBuilder
-            .to(SubSites.home)
-            .clear()
-            .toLink();
+        const homeLink = routeBuilder.to(SubSites.home).toLink();
         navigator.goTo(homeLink);
     };
 
@@ -52,9 +49,9 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
         });
         const response = await ApiClient.postRequest(endpoints.SYNC_LOCAL_DB, {});
         if (response && response.isDbSyncing) {
-            this.props.alertStore!.setFadeMessage(
-                'Sisäisen JORE-tietokannan synkkaus on jo käynnissä.'
-            );
+            this.props.alertStore!.setFadeMessage({
+                message: 'Sisäisen JORE-tietokannan synkkaus on jo käynnissä.'
+            });
         }
         this.setState({
             isSyncLoading: false
@@ -80,7 +77,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                         <>
                             {isSyncLoading ? (
                                 <div className={s.syncTextWrapper}>
-                                    <Loader size={LoaderSize.TINY} />
+                                    <Loader size='tiny' />
                                     <div className={s.syncText}>
                                         Synkronoidaan sisäistä JORE-tietokantaa...
                                     </div>

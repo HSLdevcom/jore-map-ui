@@ -11,6 +11,7 @@ import SubSites from '~/routing/subSites';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
 import EventManager, { IEditRoutePathNeighborLinkClickParams } from '~/util/EventManager';
+import NodeHelper from '~/util/NodeHelper';
 import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
 
@@ -44,7 +45,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                                     routePath.direction
                                 ].join(',')
                             )
-                            .clear()
                             .toLink();
                         return (
                             <div className={s.usageListItem} key={index}>
@@ -74,6 +74,12 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
+                coordinates={node.coordinates}
+                nodeType={node.type}
+                nodeLocationType={'coordinates'}
+                nodeId={node.id}
+                shortId={NodeHelper.getShortId(node)}
+                hastusId={node.stop ? node.stop.hastusId : undefined}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 onClick={onNeighborLinkClick}
                 markerClasses={[s.neighborMarker]}
@@ -84,7 +90,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                         ? USED_NEIGHBOR_COLOR
                         : UNUSED_NEIGHBOR_COLOR
                 }
-                node={node}
             >
                 <div className={s.usageCount}>
                     {neighborLink.nodeUsageRoutePaths.length > 9

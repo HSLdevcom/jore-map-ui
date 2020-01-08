@@ -1,9 +1,8 @@
 import * as L from 'leaflet';
-import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
-import { INodeBase } from '~/models/INode';
+import { INodeBase, INodeMapHighlight } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
 import { roundLatLng } from '~/util/geomHelpers';
 import NodeStopFactory from './nodeStopFactory';
@@ -15,22 +14,19 @@ class NodeFactory {
         );
         const coordinatesProjection = _getLatLng(externalNode.geojsonProjection);
         const nodeStop = externalNode.pysakkiBySoltunnus;
-        let transitTypes: TransitType[] = [];
-        if (externalNode.transittypes) {
-            transitTypes = externalNode.transittypes.split(',') as TransitType[];
-        }
 
         return {
             ...NodeFactory.createNodeBase(externalNode),
-            transitTypes,
             coordinates,
             coordinatesProjection,
+            transitTypes: externalNode.transittypes
+                ? (externalNode.transittypes.split(',') as TransitType[])
+                : [],
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
             measurementType: externalNode.solotapa,
             modifiedOn: externalNode.solviimpvm ? new Date(externalNode.solviimpvm) : undefined,
-            modifiedBy: externalNode.solkuka,
-            tripTimePoint: externalNode.solmapiste
+            modifiedBy: externalNode.solkuka
         };
     };
 
@@ -41,6 +37,21 @@ class NodeFactory {
             shortIdLetter: externalNode.solkirjain,
             shortIdString: externalNode.sollistunnus,
             id: externalNode.soltunnus
+        };
+    };
+
+    public static createNodeMapHighlight = (externalNode: IExternalNode): INodeMapHighlight => {
+        const coordinates = _getLatLng(
+            externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
+        );
+
+        return {
+            coordinates,
+            id: externalNode.soltunnus,
+            transitTypes: externalNode.transittypes
+                ? (externalNode.transittypes.split(',') as TransitType[])
+                : [],
+            dateRanges: externalNode.dateRanges!
         };
     };
 
@@ -55,8 +66,7 @@ class NodeFactory {
             coordinatesProjection: coordinates,
             modifiedOn: new Date(),
             modifiedBy: '',
-            tripTimePoint: '0',
-            measurementType: NodeMeasurementType.Calculated
+            measurementType: ''
         };
     }
 }

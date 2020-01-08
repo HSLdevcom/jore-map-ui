@@ -1,12 +1,20 @@
 import { action, computed, observable, reaction } from 'mobx';
 import NetworkStore, { MapLayer } from './networkStore';
 
-interface IPopup {
-    id?: number;
-    content: (popupId: number) => React.ReactNode;
+type PopupType = 'selectNetworkEntityPopup' | 'nodePopup';
+
+interface IPopupProps {
+    type?: PopupType;
+    data?: any;
+    content?: (popupId: number) => React.ReactNode;
     coordinates: L.LatLng;
     isCloseButtonVisible: boolean;
     isAutoCloseOn?: boolean;
+    hasOpacity?: boolean;
+}
+
+interface IPopup extends IPopupProps {
+    id: number;
 }
 
 export class PopupStore {
@@ -27,8 +35,12 @@ export class PopupStore {
     }
 
     @action
-    public showPopup = (popup: IPopup) => {
-        popup.id = this._idCounter;
+    public showPopup = (popupProps: IPopupProps) => {
+        const id = this._idCounter;
+        const popup: IPopup = {
+            id,
+            ...popupProps
+        };
         this._idCounter += 1;
         // Need to do concat (instead of push) to trigger observable reaction
         this._popups = this._popups.concat([popup]);
@@ -56,4 +68,4 @@ const observablePopupStore = new PopupStore();
 
 export default observablePopupStore;
 
-export { IPopup };
+export { IPopup, IPopupProps, PopupType };

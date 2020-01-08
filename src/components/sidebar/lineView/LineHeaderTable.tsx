@@ -1,185 +1,206 @@
 import classnames from 'classnames';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
-import Moment from 'moment';
 import React from 'react';
-import { FaTrashAlt } from 'react-icons/fa';
-import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
+import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
+import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
+import LineHeaderService from '~/services/lineHeaderService';
+import { AlertStore } from '~/stores/alertStore';
+import { ConfirmStore } from '~/stores/confirmStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
+import { toMidnightDate } from '~/util/dateHelpers';
+import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
+import LineHeaderForm from './LineHeaderForm';
+import LineHeaderTableRows from './LineHeaderTableRows';
 import * as s from './lineHeaderTable.scss';
 
-interface ILineHeaderListProps {
-    lineHeaderMassEditStore?: LineHeaderMassEditStore;
-    lineHeaders: ILineHeader[];
-    currentLineHeader?: ILineHeader;
-    lineId: string;
+interface ILineHeaderState {
+    isLoading: boolean;
+    lineHeaders: ILineHeader[] | null;
 }
 
-@inject('lineHeaderMassEditStore')
+interface ILineHeaderListProps {
+    lineId: string;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
+    confirmStore?: ConfirmStore;
+    alertStore?: AlertStore;
+    errorStore?: ErrorStore;
+}
+
+@inject('lineHeaderMassEditStore', 'confirmStore', 'alertStore', 'errorStore')
 @observer
-class LineHeaderTable extends React.Component<ILineHeaderListProps> {
+class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderState> {
+    private mounted: boolean;
     constructor(props: ILineHeaderListProps) {
         super(props);
+        this.state = {
+            isLoading: true,
+            lineHeaders: null
+        };
     }
+    async componentWillMount() {
+        const lineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(
+            this.props.lineId
+        );
+        if (this.mounted) {
+            this.setState({
+                lineHeaders,
+                isLoading: false
+            });
+        }
+    }
+
+    componentDidMount() {
+        this.mounted = true;
+    }
+
     componentDidUpdate() {
-        const lineHeaders = this.props.lineHeaders;
+        const lineHeaders = this.state.lineHeaders;
         if (lineHeaders && !this.props.lineHeaderMassEditStore!.massEditLineHeaders) {
-            this.props.lineHeaderMassEditStore!.init(this.props.lineHeaders);
+            this.props.lineHeaderMassEditStore!.init(lineHeaders);
         }
     }
 
     componentWillUnmount() {
+        this.mounted = false;
         this.props.lineHeaderMassEditStore!.clear();
     }
 
-    private redirectToEditLineHeaderView = (startDate: Date) => () => {
-        const editLineHeaderLink = routeBuilder
-            .to(SubSites.lineHeader)
-            .toTarget(':id', this.props.lineId)
-            .toTarget(':startDate', Moment(startDate).format())
-            .toLink();
+    private createNewLineHeader = () => {
+        const lastLineHeader = this.props.lineHeaderMassEditStore!.getLastLineHeader();
+        let defaultDate: Date = new Date();
 
-        navigator.goTo(editLineHeaderLink);
-    };
-    private redirectToNewLineHeaderView = () => {
-        const newLineHeaderLink = routeBuilder
-            .to(SubSites.newLineHeader)
-            .toTarget(':id', this.props.lineId)
-            .toLink();
-
-        navigator.goTo(newLineHeaderLink);
+        if (lastLineHeader) {
+            defaultDate = new Date(lastLineHeader.endDate);
+            defaultDate.setDate(defaultDate.getDate() + 1);
+        }
+        const newLineHeader = LineHeaderFactory.createNewLineHeader({
+            lineId: this.props.lineId,
+            startDate: defaultDate,
+            endDate: defaultDate
+        });
+        this.props.lineHeaderMassEditStore!.createLineHeader(newLineHeader);
     };
 
-    private onChangeLineHeaderStartDate = (id: number) => (value: Date) => {
-        this.props.lineHeaderMassEditStore!.updateLineHeaderStartDate(id, value);
-    };
-    private onChangeLineHeaderEndDate = (id: number) => (value: Date) => {
-        this.props.lineHeaderMassEditStore!.updateLineHeaderEndDate(id, value);
+    private onChangeLineHeaderProperty = (property: keyof ILineHeader, value: any) => {
+        this.props.lineHeaderMassEditStore!.updateLineHeaderProperty(property, value);
     };
 
-    private removeLineHeader = (lineHeaderName: string) => () => {
-        // TODO, functionality removing lineHeader
-        window.alert(`Haluatko varmasti poistaa linjan otsikon ${lineHeaderName}?`);
-    };
+    private getActiveLineHeaderName = (): string | null => {
+        const currentTime = toMidnightDate(new Date()).getTime();
+        let activeMassEditLineHeader: IMassEditLineHeader | null = null;
+        this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
+            (m: IMassEditLineHeader) => {
+                if (m.isRemoved) return;
 
-    private renderLineHeaderRows = () => {
-        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
-        const validationResults = lineHeaderMassEditStore!.validationResults;
-        const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
-
-        return lineHeaderMassEditStore!.massEditLineHeaders!.map(
-            (massEditLineHeader: IMassEditLineHeader, index: number) => {
-                const lineHeader = massEditLineHeader.lineHeader;
-                const isCurrentLineHeader = _.isEqual(this.props.currentLineHeader, lineHeader);
-                const validationResult = validationResults
-                    ? validationResults[massEditLineHeader.id]
-                    : undefined;
-                return (
-                    <tr
-                        key={index}
-                        className={classnames(
-                            s.lineHeaderTableRow,
-                            isCurrentLineHeader ? s.lineHeaderRowHighlight : undefined
-                        )}
-                    >
-                        <td>{lineHeader.lineNameFi}</td>
-                        <td className={s.lineHeaderTableCalendarCell}>
-                            <InputContainer
-                                className={s.timeInput}
-                                disabled={isEditingDisabled}
-                                label=''
-                                type='date'
-                                value={lineHeader.startDate}
-                                onChange={this.onChangeLineHeaderStartDate(massEditLineHeader.id)}
-                                validationResult={validationResult}
-                            />
-                        </td>
-                        <td className={s.lineHeaderTableCalendarCell}>
-                            <InputContainer
-                                className={s.timeInput}
-                                disabled={isEditingDisabled}
-                                label=''
-                                type='date'
-                                value={lineHeader.endDate}
-                                onChange={this.onChangeLineHeaderEndDate(massEditLineHeader.id)}
-                            />
-                        </td>
-                        <td className={s.lineHeaderTableButtonCell}>
-                            <Button
-                                className={s.lineHeaderButton}
-                                hasReverseColor={true}
-                                onClick={this.redirectToEditLineHeaderView(
-                                    lineHeaderMassEditStore!.getOldLineHeaderStartDate(
-                                        massEditLineHeader.id
-                                    )
-                                )}
-                            >
-                                <FiInfo />
-                            </Button>
-                        </td>
-                        <td className={s.lineHeaderTableButtonCell}>
-                            <Button
-                                className={classnames(s.lineHeaderButton, s.removeLineHeaderButton)}
-                                hasReverseColor={true}
-                                onClick={this.removeLineHeader(lineHeader.lineNameFi)}
-                            >
-                                <FaTrashAlt />
-                            </Button>
-                        </td>
-                    </tr>
-                );
+                const lineHeader = m.lineHeader;
+                if (
+                    currentTime >= lineHeader.startDate!.getTime() &&
+                    currentTime <= lineHeader.endDate!.getTime()
+                ) {
+                    activeMassEditLineHeader = m;
+                }
             }
         );
+        return activeMassEditLineHeader ? activeMassEditLineHeader!.lineHeader.lineNameFi : null;
     };
 
-    private saveLineHeaders = () => {
-        // TODO: SAVE
-        // const massEditLineHeaders = this.props.lineHeaderMassEditStore!.massEditLineHeaders;
-        // console.log('massEditLineHeaders ', massEditLineHeaders);
-        // CALL lineHeaderService.massUpdateLineHeaders();
-        // this.props.saveLineHeaders([]);
+    private save = async () => {
+        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
+        this.setState({ isLoading: true });
+
+        try {
+            await LineHeaderService.massEditLineHeaders(
+                lineHeaderMassEditStore!.massEditLineHeaders!,
+                lineHeaderMassEditStore!.oldLineHeaders!,
+                this.props.lineId
+            );
+
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            return;
+        }
+
+        lineHeaderMassEditStore!.init(lineHeaderMassEditStore!.currentLineHeaders);
+
+        this.setState({
+            isLoading: false
+        });
     };
 
     private isFormValid = () => {
-        const validationResults = this.props.lineHeaderMassEditStore!.validationResults;
-        if (!validationResults) return true;
+        let isFormValid = true;
+        this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
+            (m: IMassEditLineHeader) => {
+                if (m.isRemoved) return;
 
-        for (const property in validationResults) {
-            const validationResult = validationResults[property];
-            if (!validationResult.isValid) {
-                return false;
+                if (!FormValidator.isInvalidPropertiesMapValid(m.invalidPropertiesMap)) {
+                    isFormValid = false;
+                }
             }
-        }
-        return true;
+        );
+        return isFormValid;
     };
 
     render() {
+        if (this.state.isLoading) {
+            return <Loader size='small' />;
+        }
+
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         const massEditLineHeaders = lineHeaderMassEditStore!.massEditLineHeaders;
         const isEditingDisabled = lineHeaderMassEditStore!.isEditingDisabled;
         if (!massEditLineHeaders) return null;
+
+        const currentLineHeaders = lineHeaderMassEditStore!.currentLineHeaders;
+        const selectedMassEditLineHeader =
+            lineHeaderMassEditStore!.selectedLineHeaderId !== null
+                ? lineHeaderMassEditStore!.massEditLineHeaders!.find(
+                      m => m.id === lineHeaderMassEditStore!.selectedLineHeaderId
+                  )
+                : null;
+        const activeLineHeaderName = this.getActiveLineHeaderName();
+
         const isSaveButtonDisabled =
-            isEditingDisabled || !lineHeaderMassEditStore!.isDirty || !this.isFormValid();
+            isEditingDisabled ||
+            !lineHeaderMassEditStore!.isDirty ||
+            !this.isFormValid() ||
+            !activeLineHeaderName;
         return (
             <div className={s.lineHeaderTableView}>
                 <SidebarHeader
                     isEditing={!isEditingDisabled}
                     onEditButtonClick={lineHeaderMassEditStore!.toggleIsEditingDisabled}
-                    hideCloseButton={true}
-                    hideBackButton={true}
-                    isEditButtonVisible={massEditLineHeaders.length > 0}
+                    isCloseButtonVisible={true}
+                    isBackButtonVisible={true}
+                    isEditButtonVisible={currentLineHeaders.length > 0}
+                    shouldShowClosePromptMessage={lineHeaderMassEditStore!.isDirty}
                 >
                     Linjan otsikot
                 </SidebarHeader>
-                {massEditLineHeaders.length > 0 ? (
+                <div className={s.flexRow}>
+                    <InputContainer
+                        disabled={true}
+                        label={'LINJAN VOIMASSAOLEVA OTSIKKO'}
+                        value={
+                            activeLineHeaderName
+                                ? activeLineHeaderName
+                                : 'Ei voimassa olevaa otsikkoa.'
+                        }
+                        validationResult={{
+                            isValid: Boolean(activeLineHeaderName)
+                        }}
+                        isInputColorRed={!Boolean(activeLineHeaderName)}
+                    />
+                </div>
+                {currentLineHeaders.length > 0 ? (
                     <table className={s.lineHeaderTable}>
                         <tbody>
                             <tr>
@@ -194,32 +215,39 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps> {
                                 </th>
                                 <th />
                                 <th />
+                                <th />
                             </tr>
-                            {this.renderLineHeaderRows()}
+                            <LineHeaderTableRows />
                         </tbody>
                     </table>
                 ) : (
                     <div>Linjalle {this.props.lineId} ei löytynyt otsikoita.</div>
                 )}
-                <div className={s.buttonContainer}>
-                    <Button
-                        className={s.createNewLineHeaderButton}
-                        type={ButtonType.SQUARE}
-                        disabled={false}
-                        hasPadding={true}
-                        onClick={() => this.redirectToNewLineHeaderView()}
-                    >
-                        Luo uusi linjan otsikko
-                    </Button>
-                    <Button
-                        className={s.saveLineHeadersButton}
-                        onClick={this.saveLineHeaders}
-                        type={ButtonType.SAVE}
-                        disabled={isSaveButtonDisabled}
-                    >
-                        Tallenna linjan otsikot
-                    </Button>
-                </div>
+                <Button
+                    className={s.createNewLineHeaderButton}
+                    type={ButtonType.SQUARE}
+                    disabled={false}
+                    hasPadding={true}
+                    onClick={() => this.createNewLineHeader()}
+                >
+                    Luo uusi linjan otsikko
+                </Button>
+                {selectedMassEditLineHeader && (
+                    <LineHeaderForm
+                        lineHeader={selectedMassEditLineHeader!.lineHeader}
+                        isEditingDisabled={isEditingDisabled}
+                        invalidPropertiesMap={selectedMassEditLineHeader!.invalidPropertiesMap}
+                        onChangeLineHeaderProperty={this.onChangeLineHeaderProperty}
+                    />
+                )}
+                <Button
+                    className={s.saveLineHeadersButton}
+                    onClick={this.save}
+                    type={ButtonType.SAVE}
+                    disabled={isSaveButtonDisabled}
+                >
+                    Tallenna linjan otsikot
+                </Button>
             </div>
         );
     }

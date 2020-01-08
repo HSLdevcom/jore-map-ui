@@ -4,12 +4,12 @@ import { ILink } from '..';
 type LinkKeys = keyof ILink;
 type ILinkValidationModel = { [key in LinkKeys]: string };
 
+// TODO: rename as linkValidationObject
 const linkValidationModel: ILinkValidationModel = {
     transitType: '',
     startNode: '',
     endNode: '',
     geometry: '',
-    municipalityCode: 'min:0|max:3|string',
     streetName: 'min:0|max:40|string',
     length: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     measuredLength: `min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
@@ -18,3 +18,5 @@ const linkValidationModel: ILinkValidationModel = {
 };
 
 export default linkValidationModel;
+
+export { ILinkValidationModel };

@@ -1,6 +1,8 @@
+@import '../components/shared/styles/common.scss';
+
 .crossroadMarker {
     border-color: #727272;
-    background-color: #fff;
+    background-color: #cfcfcf;
 }
 
 .crossroadMarkerHighlight {
@@ -16,6 +18,10 @@
 .stopMarkerHighlight {
     border-color: #007ac9;
     background-color: #007ac9;
+}
+
+.coordinatesProjectionMarker {
+    background-color: $nodeProjectionColor;
 }
 
 .municipalityMarker {

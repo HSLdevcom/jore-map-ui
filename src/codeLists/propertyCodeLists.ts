@@ -4,6 +4,7 @@ type NodeKeys = keyof INode;
 type INodePropertyCodeList = { [key in NodeKeys]: string };
 const nodePropertyCodeList: INodePropertyCodeList = {
     id: '',
+    idSuffix: '',
     shortIdLetter: 'LYHYTTUNNUS (2 kirj.)',
     shortIdString: 'LYHYTTUNNUS (4 num)',
     type: 'TYYPPI',
@@ -12,7 +13,6 @@ const nodePropertyCodeList: INodePropertyCodeList = {
     coordinatesProjection: 'PROJISOITU PISTE',
     measurementDate: 'MITTAUS PVM',
     measurementType: 'MITTAUSTAPA',
-    tripTimePoint: 'MATKA-AIKAPISTE',
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM',
     transitTypes: 'VERKKO'
@@ -34,7 +34,7 @@ const stopPropertyCodeList: IStopPropertyCodeList = {
     platform: 'LAITURI',
     radius: 'SÄDE',
     hastusId: 'HASTUS-PAIKKA',
-    areaId: 'PYSÄKKIALUE',
+    stopAreaId: 'PYSÄKKIALUE',
     elyNumber: 'ELYNUMERO',
     nameLongFi: 'PITKÄ NIMI',
     nameLongSw: 'PITKÄ NIMI RUOTSIKSI',
@@ -51,7 +51,6 @@ const linkPropertyCodeList: ILinkPropertyCodeList = {
     startNode: 'ALKUSOLMU',
     endNode: 'LOPPUSOLMU',
     geometry: 'GEOMETRIA',
-    municipalityCode: 'KUNTA',
     streetName: 'KATU',
     length: 'LASKETTU PITUUS (m)',
     measuredLength: 'MITATTU PITUUS (m)',

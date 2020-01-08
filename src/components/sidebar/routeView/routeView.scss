@@ -9,10 +9,6 @@
     display: flex;
     flex-direction: column;
 
-    &.loaderContainer > div {
-        margin: 30px auto;
-    }
-
     .content {
         overflow-y: auto;
         flex-grow: 1;

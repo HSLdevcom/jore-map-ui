@@ -1,17 +1,13 @@
 import { ApolloQueryResult } from 'apollo-client';
+import { LatLng } from 'leaflet';
 import endpoints from '~/enums/endpoints';
 import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
-import { INodeBase, INodePrimaryKey } from '~/models/INode';
+import { INodeBase, INodeMapHighlight, INodePrimaryKey } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
-
-interface INodeSaveModel {
-    node: INode;
-    links: ILink[];
-}
 
 class NodeService {
     public static fetchNode = async (nodeId: string) => {
@@ -21,6 +17,23 @@ class NodeService {
             fetchPolicy: 'no-cache' // no-cache is needed because otherwise nested data fetch does not always work
         });
         return NodeFactory.mapExternalNode(queryResult.data.node);
+    };
+
+    public static fetchMapHighlightNodesFromLatLng = async (
+        latLng: LatLng,
+        bufferSize: number
+    ): Promise<INodeMapHighlight[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getNetworkNodesFromPointQuery(),
+            variables: {
+                bufferSize,
+                lon: latLng.lng,
+                lat: latLng.lat
+            }
+        });
+        return queryResult.data.get_network_nodes_from_point.nodes.map((node: IExternalNode) =>
+            NodeFactory.createNodeMapHighlight(node)
+        );
     };
 
     public static fetchAllNodes = async () => {
@@ -33,6 +46,10 @@ class NodeService {
     };
 
     public static updateNode = async (node: INode, links: ILink[]) => {
+        interface INodeSaveModel {
+            node: INode;
+            links: ILink[];
+        }
         const requestBody: INodeSaveModel = {
             node,
             links
@@ -45,6 +62,20 @@ class NodeService {
         const response = (await ApiClient.createObject(endpoints.NODE, node)) as INodePrimaryKey;
         return response.id;
     };
+
+    public static fetchAvailableNodeId = async (node: INode) => {
+        return await ApiClient.postRequest(endpoints.GET_AVAILABLE_NODE_ID, {
+            latLng: node.coordinates,
+            nodeType: node.type,
+            transitType: node.stop?.transitType
+        });
+    };
+
+    public static fetchAvailableNodeIdsWithPrefix = async (beginningOfNodeId: string) => {
+        return await ApiClient.postRequest(endpoints.GET_AVAILABLE_NODE_IDS_WITH_PREFIX, {
+            beginningOfNodeId
+        });
+    }
 }
 
 export default NodeService;

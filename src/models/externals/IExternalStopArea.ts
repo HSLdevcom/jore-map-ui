@@ -5,7 +5,7 @@ export default interface IExternalStopArea {
     verkko: TransitType;
     nimi: string;
     nimir: string;
-    termid: string;
+    termid?: string;
     tallpvm?: Date;
     tallentaja?: string;
     pysakkialueryhma: string;
