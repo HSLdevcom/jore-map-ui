@@ -195,6 +195,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     private save = async () => {
         const routeStore = this.props.routeStore!;
+        const routeListStore = this.props.routeListStore!;
         this.setState({ isLoading: true });
 
         const route = routeStore.route;
@@ -205,8 +206,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;
         }
+        routeListStore.updateRoute(route);
         routeStore.setOldRoute(route);
         routeStore.setRouteToEdit(null);
+        this.setState({ isLoading: false });
     };
 
     render() {

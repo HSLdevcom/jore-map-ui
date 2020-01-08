@@ -35,6 +35,14 @@ export class RouteListStore {
     };
 
     @action
+    public updateRoute = (route: IRoute) => {
+        const routeToUpdateIndex = this._routes.findIndex((iterator: IRoute) => {
+            return iterator.id === route.id;
+        });
+        this._routes[routeToUpdateIndex] = route;
+    };
+
+    @action
     public clearRoutes = () => {
         this._routes = [];
         this.colorScale = new ColorScale();
