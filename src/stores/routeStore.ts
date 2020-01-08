@@ -1,10 +1,11 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import { IRoute } from '~/models';
 import routeValidationModel, {
     IRouteValidationModel
 } from '~/models/validationModels/routeValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
+import ToolbarStore from './toolbarStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 class RouteStore {
@@ -17,6 +18,11 @@ class RouteStore {
 
     constructor() {
         this._validationStore = new ValidationStore();
+
+        reaction(
+            () => this.isDirty,
+            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+        );
     }
 
     @computed
