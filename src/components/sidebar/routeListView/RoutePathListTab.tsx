@@ -23,21 +23,6 @@ interface IRouteItemProps {
 @inject('routeListStore', 'mapStore')
 @observer
 class RoutePathListTab extends React.Component<IRouteItemProps> {
-    async componentDidMount() {
-        let index = 0;
-        const promises: Promise<void>[] = [];
-        for (const routePath of this.props.route.routePaths) {
-            if (index < 2) {
-                const promise = this.props.routeListStore!.toggleRoutePathVisibility(
-                    routePath.internalId
-                );
-                promises.push(promise);
-            }
-            index += 1;
-        }
-        await Promise.all(promises);
-    }
-
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]) => {
         const res = {};
         routePaths.forEach(rp => {
