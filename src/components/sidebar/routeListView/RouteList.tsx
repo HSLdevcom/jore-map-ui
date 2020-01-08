@@ -224,7 +224,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                 <div className={s.routeList}>
                     {routes.map((route: IRoute, index: number) => {
                         const isEditing = routeIdToEdit === route.id;
-                        const isDirty = routeStore.isDirty;
+                        const isSaveButtonDisabled =
+                            !routeStore.route ||
+                            !(isEditing && routeStore.isDirty) ||
+                            !routeStore.isRouteFormValid;
                         return (
                             <div key={index} className={s.routeListItem}>
                                 <SidebarHeader
@@ -263,7 +266,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                         <Button
                                             onClick={() => this.showSavePrompt()}
                                             type={ButtonType.SAVE}
-                                            disabled={!(isEditing && isDirty)}
+                                            disabled={isSaveButtonDisabled}
                                         >
                                             Tallenna muutokset
                                         </Button>
