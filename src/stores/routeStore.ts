@@ -123,6 +123,7 @@ class RouteStore {
         this._route = null;
         this._oldRoute = null;
         this._validationStore.clear();
+        this._routeIdToEdit = null;
     };
 
     @action

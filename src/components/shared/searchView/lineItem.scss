@@ -22,7 +22,7 @@
         }
 
         .lineLabel:hover {
-            background-color: $linkHoverBackgroundColor;
+            background-color: $backgroundHoverColor;
             transition: 0.5s;
         }
 
@@ -51,7 +51,7 @@
             }
 
             .routeName:hover {
-                background-color: $linkHoverBackgroundColor;
+                background-color: $backgroundHoverColor;
                 transition: 0.5s;
             }
 

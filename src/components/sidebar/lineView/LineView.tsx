@@ -8,6 +8,7 @@ import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
+import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
@@ -88,6 +89,8 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         const lineId = this.props.match!.params.id;
         try {
             const line = await LineService.fetchLine(lineId);
+            const routes = await RouteService.fetchAllRoutesByLineId(lineId);
+            line.routes = routes;
             this.props.lineStore!.init({ line, isNewLine: false });
         } catch (e) {
             this.props.errorStore!.addError('Linjan haku epäonnistui.', e);

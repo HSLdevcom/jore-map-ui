@@ -62,24 +62,9 @@ export class RouteListStore {
 
     @action
     public toggleRoutePathVisibility = async (internalId: string) => {
-        console.log('toggleRoutePath visibility ', internalId);
         const currentRoutePath = this.getRoutePath(internalId);
         if (!currentRoutePath) return;
         this.setRoutePathVisibility(!currentRoutePath.visible, internalId);
-        // if (currentRoutePath) {
-        //     currentRoutePath.visible = !currentRoutePath.visible;
-        //     currentRoutePath.color = currentRoutePath.visible
-        //         ? this.colorScale.reserveColor()
-        //         : this.colorScale.releaseColor(currentRoutePath.color!);
-        //     if (currentRoutePath.visible && currentRoutePath.routePathLinks.length === 0) {
-        //         const newRoutePath = await RoutePathService.fetchRoutePath(
-        //             currentRoutePath.routeId,
-        //             currentRoutePath.startTime,
-        //             currentRoutePath.direction
-        //         );
-        //         this.updateRoutePathLinks(newRoutePath, internalId);
-        //     }
-        // }
     };
 
     @action

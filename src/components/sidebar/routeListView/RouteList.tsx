@@ -72,6 +72,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         autorun(() => this.centerMapToRoutes());
     }
 
+    componentWillUnmount() {
+        this.props.routeStore!.clear();
+    }
+
     private fetchRoutes = async () => {
         const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
