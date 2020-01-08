@@ -7,7 +7,7 @@
     .routeList {
         border-top: 1px solid $borderLightGrey;
 
-        .routeListItem {
+        .routeListItem:not(:first-child) {
             padding-top: 10px;
         }
     }
@@ -55,7 +55,6 @@
 
     .buttonContainer {
         margin-top: 10px;
-        margin-bottom: 10px;
         div {
             margin: 0px;
         }

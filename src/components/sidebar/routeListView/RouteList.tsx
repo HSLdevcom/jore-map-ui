@@ -255,13 +255,15 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     >
                                         {`Luo uusi reitin suunta reitille ${route.id}`}
                                     </Button>
-                                    <Button
-                                        onClick={() => this.showSavePrompt()}
-                                        type={ButtonType.SAVE}
-                                        disabled={!(isEditing && isDirty)}
-                                    >
-                                        Tallenna muutokset
-                                    </Button>
+                                    {isEditing && (
+                                        <Button
+                                            onClick={() => this.showSavePrompt()}
+                                            type={ButtonType.SAVE}
+                                            disabled={!(isEditing && isDirty)}
+                                        >
+                                            Tallenna muutokset
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         );
