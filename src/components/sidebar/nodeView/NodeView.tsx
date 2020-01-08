@@ -154,7 +154,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.initNode(node!, links!);
             this.updateSelectedStopAreaId();
         }
-        this.setState({ isLoading: false });
+        this._setState({ isLoading: false });
     };
 
     private initNode = (node: INode, links: ILink[], oldNode?: INode, oldLinks?: ILink[]) => {
