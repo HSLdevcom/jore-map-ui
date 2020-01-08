@@ -287,7 +287,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         // Create node save model
         if (currentNode.stop) {
             delete currentNode['stop'];
-            delete currentNode['measurementType'];
             delete oldNode['stop'];
         }
         const saveModels: ISaveModel[] = [
