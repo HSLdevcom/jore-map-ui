@@ -1,38 +1,40 @@
-import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
-import Moment from 'moment';
 import React from 'react';
-import { FiInfo } from 'react-icons/fi';
-import { Button } from '~/components/controls';
-import { IRoute, IRoutePath } from '~/models';
-import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
-import routeBuilder from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
-import { MapStore } from '~/stores/mapStore';
+import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
+import { IRoute } from '~/models';
 import { RouteListStore } from '~/stores/routeListStore';
-import LineHelper from '~/util/LineHelper';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { toDateString } from '~/util/dateHelpers';
-import ToggleSwitch from '../../controls/ToggleSwitch';
-import SidebarHeader from '../SidebarHeader';
-import * as s from './routeItem.scss';
+import RoutePathListTab from './RoutePathListTab';
+import RouteTab from './RouteTab';
 
 interface IRouteItemProps {
-    routeListStore?: RouteListStore;
-    mapStore?: MapStore;
     route: IRoute;
+    isEditingDisabled: boolean;
+    routeListStore?: RouteListStore;
+}
+
+interface IRouteItemState {
+    selectedTabIndex: number;
+    areAllRoutePathsVisible: boolean;
 }
 
 @inject('routeListStore', 'mapStore')
 @observer
-class RouteItem extends React.Component<IRouteItemProps> {
+class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            selectedTabIndex: 0,
+            areAllRoutePathsVisible: false
+        };
+    }
+
     async componentDidMount() {
         let index = 0;
         const promises: Promise<void>[] = [];
         for (const routePath of this.props.route.routePaths) {
             if (index < 2) {
-                const promise = this.props.routeListStore!.toggleRoutePathVisibility(
+                const promise = this.props.routeListStore!.setRoutePathVisibility(
+                    true,
                     routePath.internalId
                 );
                 promises.push(promise);
@@ -42,143 +44,50 @@ class RouteItem extends React.Component<IRouteItemProps> {
         await Promise.all(promises);
     }
 
-    private closeRoute = () => {
-        this.props.routeListStore!.removeFromRoutes(this.props.route.id);
-        const closeRouteLink = routeBuilder
-            .to(subSites.current, navigator.getQueryParamValues())
-            .remove(QueryParams.routes, this.props.route.id)
-            .toLink();
-        navigator.goTo(closeRouteLink);
-    };
-
-    private renderRouteName = () => {
-        return (
-            <SidebarHeader onCloseButtonClick={this.closeRoute} isBackButtonVisible={true}>
-                <div className={s.routeName}>
-                    {LineHelper.getTransitIcon(this.props.route.line!.transitType!, false)}
-                    <div
-                        className={classNames(
-                            s.label,
-                            TransitTypeHelper.getColorClass(this.props.route.line!.transitType!)
-                        )}
-                    >
-                        <div className={s.routeId} onClick={this.openRouteView}>
-                            {this.props.route.id}
-                        </div>
-                    </div>
-                    {this.props.route.routeName}
-                </div>
-            </SidebarHeader>
-        );
-    };
-
-    private openRouteView = () => {
-        const routeViewLink = routeBuilder
-            .to(subSites.route)
-            .toTarget(':id', this.props.route.id)
-            .toLink();
-        navigator.goTo(routeViewLink);
-    };
-
-    private groupRoutePathsOnDates = (routePaths: IRoutePath[]) => {
-        const res = {};
-        routePaths.forEach(rp => {
-            const identifier = rp.startTime.toLocaleDateString() + rp.endTime.toLocaleDateString();
-            (res[identifier] = res[identifier] || []).push(rp);
-        });
-
-        const list = Object.values(res);
-        list.sort(
-            (a: IRoutePath[], b: IRoutePath[]) =>
-                b[0].startTime.getTime() - a[0].startTime.getTime()
-        );
-
-        return list;
-    };
-
-    private renderRoutePathList = (routePaths: IRoutePath[]) => {
-        return routePaths.map((routePath: IRoutePath) => {
-            const toggleRoutePathVisibility = () => {
-                this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
-            };
-
-            const openRoutePathView = () => {
-                const routePathViewLink = routeBuilder
-                    .to(subSites.routePath)
-                    .toTarget(
-                        ':id',
-                        [
-                            routePath.routeId,
-                            Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                            routePath.direction
-                        ].join(',')
-                    )
-                    .toLink();
-                navigator.goTo(routePathViewLink);
-            };
-
-            const isWithinTimeSpan =
-                Moment(routePath.startTime).isBefore(Moment()) &&
-                Moment(routePath.endTime).isAfter(Moment());
-
-            return (
-                <div className={s.routePathContainer} key={routePath.internalId}>
-                    <div
-                        className={
-                            isWithinTimeSpan
-                                ? classNames(s.routePathInfo, s.highlight)
-                                : s.routePathInfo
-                        }
-                    >
-                        <div>{`${routePath.originFi}-${routePath.destinationFi}`}</div>
-                    </div>
-                    <div className={s.routePathControls}>
-                        <ToggleSwitch
-                            onClick={toggleRoutePathVisibility}
-                            value={routePath.visible}
-                            color={routePath.visible ? routePath.color! : '#898989'}
-                        />
-                        <Button
-                            className={s.openRoutePathViewButton}
-                            hasReverseColor={true}
-                            onClick={openRoutePathView}
-                        >
-                            <FiInfo />
-                        </Button>
-                    </div>
-                </div>
-            );
+    private setSelectedTabIndex = (index: number) => {
+        this.setState({
+            selectedTabIndex: index
         });
     };
 
-    private renderList = () => {
-        const routePaths = this.props.route.routePaths;
-        const groupedRoutePaths = this.groupRoutePathsOnDates(routePaths);
-
-        return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
-            const first = routePaths[0];
-            const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
-
-            return (
-                <div
-                    key={header}
-                    className={classNames(s.groupedRoutes, index % 2 ? undefined : s.shadow)}
-                >
-                    <div className={s.groupedRoutesDate}>{header}</div>
-                    <div className={s.groupedRoutesContent}>
-                        {this.renderRoutePathList(routePaths)}
-                    </div>
-                </div>
-            );
+    private toggleAllRoutePathsVisible = () => {
+        this.setState({
+            areAllRoutePathsVisible: !this.state.areAllRoutePathsVisible
         });
     };
 
     render() {
+        const isEditingDisabled = this.props.isEditingDisabled;
         return (
-            <div className={s.routeItemView}>
-                {this.renderRouteName()}
-                {this.renderList()}
-            </div>
+            <Tabs>
+                <TabList
+                    selectedTabIndex={this.state.selectedTabIndex}
+                    setSelectedTabIndex={this.setSelectedTabIndex}
+                >
+                    <Tab>
+                        <div>Reitinsuunnat</div>
+                    </Tab>
+                    <Tab>
+                        <div>Reitin tiedot</div>
+                    </Tab>
+                </TabList>
+                <ContentList selectedTabIndex={this.state.selectedTabIndex}>
+                    <ContentItem>
+                        <RoutePathListTab
+                            route={this.props.route}
+                            areAllRoutePathsVisible={this.state.areAllRoutePathsVisible}
+                            toggleAllRoutePathsVisible={this.toggleAllRoutePathsVisible}
+                        />
+                    </ContentItem>
+                    <ContentItem>
+                        <RouteTab
+                            route={this.props.route}
+                            isEditingDisabled={isEditingDisabled}
+                            isNewRoute={false}
+                        />
+                    </ContentItem>
+                </ContentList>
+            </Tabs>
         );
     }
 }

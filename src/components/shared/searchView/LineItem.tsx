@@ -5,7 +5,7 @@ import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import RouteBuilder from '~/routing/routeBuilder';
+import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
 import LineHelper from '~/util/LineHelper';
@@ -18,7 +18,8 @@ interface ILineItemProps {
 
 class LineItem extends React.Component<ILineItemProps> {
     private openRoute = (routeId: string) => () => {
-        const openRouteLink = RouteBuilder.to(SubSites.routes, navigator.getQueryParamValues())
+        const openRouteLink = routeBuilder
+            .to(SubSites.routes, navigator.getQueryParamValues())
             .append(QueryParams.routes, routeId)
             .toLink();
         searchStore.setSearchInput('');
@@ -49,7 +50,8 @@ class LineItem extends React.Component<ILineItemProps> {
     }
 
     private redirectToLineView = (lineId: string) => () => {
-        const url = RouteBuilder.to(SubSites.line)
+        const url = routeBuilder
+            .to(SubSites.line)
             .toTarget(':id', lineId)
             .toLink();
         navigator.goTo(url);

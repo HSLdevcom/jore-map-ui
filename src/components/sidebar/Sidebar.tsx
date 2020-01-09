@@ -17,7 +17,7 @@ import NodeView from './nodeView/NodeView';
 import StopAreaView from './nodeView/stopAreaView/StopAreaView';
 import RouteListView from './routeListView/RouteListView';
 import RoutePathView from './routePathView/RoutePathView';
-import RouteView from './routeView/RouteView';
+import NewRouteView from './routeView/NewRouteView';
 import * as s from './sidebar.scss';
 import SplitLinkView from './splitLinkView/SplitLinkView';
 
@@ -32,7 +32,7 @@ interface ILinelistState {
     searchInput: string;
 }
 
-type view = 'line' | 'route' | 'node' | 'stopArea' | 'link' | 'routePath';
+type view = 'line' | 'node' | 'stopArea' | 'link' | 'routePath';
 
 @inject('routeListStore', 'searchStore', 'toolbarStore', 'mapStore')
 @observer
@@ -71,8 +71,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
         switch (view) {
             case 'line':
                 return <LineView {...props} isNewLine={isNew} />;
-            case 'route':
-                return <RouteView {...props} isNewRoute={isNew} />;
             case 'node':
                 return <NodeView {...props} isNewNode={isNew} />;
             case 'stopArea':
@@ -104,11 +102,6 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             view: 'line'
                         })}
                         {this.renderView({
-                            editPath: SubSites.route,
-                            newPath: SubSites.newRoute,
-                            view: 'route'
-                        })}
-                        {this.renderView({
                             editPath: SubSites.link,
                             newPath: SubSites.newLink,
                             view: 'link'
@@ -128,6 +121,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             newPath: SubSites.newRoutePath,
                             view: 'routePath'
                         })}
+                        <Route exact={true} path={SubSites.route} component={NewRouteView} />
                         <Route path={'*'} component={PageNotFoundView} />
                     </Switch>
                 </div>

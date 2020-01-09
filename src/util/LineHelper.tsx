@@ -7,6 +7,9 @@ import TrainIcon from '~/icons/icon-train';
 import TramIcon from '~/icons/icon-tram';
 
 class LineHelper {
+    // TODO: move into TransitTypeHelper(?)
+    // TODO: change params as object
+    // TOOD: rename withoutBox as "type color: white | blue (default)"
     public static getTransitIcon = (transitType: TransitType, withoutBox: boolean) => {
         switch (transitType) {
             case TransitType.BUS:

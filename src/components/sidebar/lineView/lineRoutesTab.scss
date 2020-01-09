@@ -11,6 +11,25 @@
     .content {
         padding: 15px;
 
+        .routeListItem {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+
+            .routeId {
+                font-size: $largeFontSize;
+            }
+        }
+
+        .routeListItem:hover {
+            background-color: $backgroundHoverColor;
+        }
+
+        .routeListItem > * {
+            margin: 5px; // Add some spacing between elements
+        }
+
         .createRouteButton {
             margin-top: 20px;
             margin-bottom: 10px;
