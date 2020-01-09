@@ -5,7 +5,7 @@ import { IoMdContact, IoMdRefresh } from 'react-icons/io';
 import hslLogo from '~/assets/hsl-logo.png';
 import constants from '~/constants/constants';
 import ButtonType from '~/enums/buttonType';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -47,7 +47,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
         this.setState({
             isSyncLoading: true
         });
-        const response = await ApiClient.postRequest(endpoints.SYNC_LOCAL_DB, {});
+        const response = await ApiClient.postRequest(EndpointPath.SYNC_LOCAL_DB, {});
         if (response && response.isDbSyncing) {
             this.props.alertStore!.setFadeMessage({
                 message: 'Sisäisen JORE-tietokannan synkkaus on jo käynnissä.'

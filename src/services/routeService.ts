@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
 import { IRoutePrimaryKey } from '~/models/IRoute';
@@ -78,11 +78,14 @@ class RouteService {
     };
 
     public static updateRoute = async (route: IRoute) => {
-        await ApiClient.updateObject(endpoints.ROUTE, route);
+        await ApiClient.updateObject(EndpointPath.ROUTE, route);
     };
 
     public static createRoute = async (route: IRoute) => {
-        const response = (await ApiClient.createObject(endpoints.ROUTE, route)) as IRoutePrimaryKey;
+        const response = (await ApiClient.createObject(
+            EndpointPath.ROUTE,
+            route
+        )) as IRoutePrimaryKey;
         return response.id;
     };
 }

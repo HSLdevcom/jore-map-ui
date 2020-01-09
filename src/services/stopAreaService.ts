@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import StopAreaFactory from '~/factories/stopAreaFactory';
 import IStopArea from '~/models/IStopArea';
 import ApiClient from '~/util/ApiClient';
@@ -40,11 +40,11 @@ class StopAreaService {
     };
 
     public static updateStopArea = async (stopArea: IStopArea) => {
-        await ApiClient.updateObject(endpoints.STOP_AREA, stopArea);
+        await ApiClient.updateObject(EndpointPath.STOP_AREA, stopArea);
     };
 
     public static createStopArea = async (stopArea: IStopArea) => {
-        const stopAreaId = await ApiClient.createObject(endpoints.STOP_AREA, stopArea);
+        const stopAreaId = await ApiClient.createObject(EndpointPath.STOP_AREA, stopArea);
         return stopAreaId;
     };
 

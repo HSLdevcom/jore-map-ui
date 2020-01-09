@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import { IRoutePath, IViaName } from '~/models';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
@@ -67,7 +67,7 @@ class RoutePathService {
             viaNames: _getViaNames(routePath)
         };
 
-        await ApiClient.updateObject(endpoints.ROUTEPATH, requestBody);
+        await ApiClient.updateObject(EndpointPath.ROUTEPATH, requestBody);
     };
 
     public static createRoutePath = async (routePath: IRoutePath) => {
@@ -76,7 +76,7 @@ class RoutePathService {
             viaNames: _getViaNames(routePath)
         };
         const response = (await ApiClient.createObject(
-            endpoints.ROUTEPATH,
+            EndpointPath.ROUTEPATH,
             requestBody
         )) as IRoutePathPrimaryKey;
         return response;

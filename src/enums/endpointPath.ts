@@ -1,4 +1,4 @@
-enum endpoints { // TODO: rename as endpointPath
+enum EndpointPath {
     AUTH = 'auth',
     EXISTING_SESSION = 'existingSession',
     LOGOUT = 'logout',
@@ -15,4 +15,4 @@ enum endpoints { // TODO: rename as endpointPath
     LINK = 'link'
 }
 
-export default endpoints;
+export default EndpointPath;

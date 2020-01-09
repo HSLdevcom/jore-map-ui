@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import LineFactory from '~/factories/lineFactory';
 import { ILine } from '~/models';
 import { ILinePrimaryKey } from '~/models/ILine';
@@ -38,11 +38,11 @@ class LineService {
     };
 
     public static updateLine = async (line: ILine) => {
-        await ApiClient.updateObject(endpoints.LINE, line);
+        await ApiClient.updateObject(EndpointPath.LINE, line);
     };
 
     public static createLine = async (Line: ILine) => {
-        const response = (await ApiClient.createObject(endpoints.LINE, Line)) as ILinePrimaryKey;
+        const response = (await ApiClient.createObject(EndpointPath.LINE, Line)) as ILinePrimaryKey;
         return response.id;
     };
 }
