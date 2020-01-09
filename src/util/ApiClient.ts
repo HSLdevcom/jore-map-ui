@@ -1,7 +1,7 @@
 import Moment from 'moment';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import constants from '~/constants/constants';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import FetchStatusCode from '~/enums/fetchStatusCode';
 import IError from '~/models/IError';
 import AlertStore from '~/stores/alertStore';
@@ -22,41 +22,41 @@ interface IAuthorizationRequest {
 type credentials = 'include';
 
 class ApiClient {
-    public updateObject = async (entityName: endpoints, object: any) => {
-        const response = await this.postRequest(entityName, object);
+    public updateObject = async (endpointPath: EndpointPath, object: any) => {
+        const response = await this.postRequest(endpointPath, object);
         ApolloClient.clearStore();
         return response;
     };
 
-    public createObject = async (entityName: endpoints, object: any) => {
-        const response = await this.sendBackendRequest(RequestMethod.PUT, entityName, object);
+    public createObject = async (endpointPath: EndpointPath, object: any) => {
+        const response = await this.sendBackendRequest(RequestMethod.PUT, endpointPath, object);
         ApolloClient.clearStore();
         return response;
     };
 
-    public deleteObject = async (entityName: endpoints, object: any) => {
-        return await this.sendBackendRequest(RequestMethod.DELETE, entityName, object);
+    public deleteObject = async (endpointPath: EndpointPath, object: any) => {
+        return await this.sendBackendRequest(RequestMethod.DELETE, endpointPath, object);
     };
 
     public authorizeUsingCode = async (code: string) => {
         const requestBody: IAuthorizationRequest = { code };
-        return await this.sendBackendRequest(RequestMethod.POST, endpoints.AUTH, requestBody);
+        return await this.sendBackendRequest(RequestMethod.POST, EndpointPath.AUTH, requestBody);
     };
 
-    public getRequest = async (endpoint: endpoints) => {
-        return await this.sendBackendRequest(RequestMethod.GET, endpoint, {});
+    public getRequest = async (endpointPath: EndpointPath) => {
+        return await this.sendBackendRequest(RequestMethod.GET, endpointPath, {});
     };
 
-    public postRequest = async (endpoint: endpoints, requestBody: any) => {
-        return await this.sendBackendRequest(RequestMethod.POST, endpoint, requestBody);
+    public postRequest = async (endpointPath: EndpointPath, requestBody: any) => {
+        return await this.sendBackendRequest(RequestMethod.POST, endpointPath, requestBody);
     };
 
     private sendBackendRequest = async (
         method: RequestMethod,
-        endpoint: endpoints,
+        endpointPath: EndpointPath,
         object: any
     ) => {
-        const entityUrl = `${constants.API_URL}/${endpoint}`;
+        const entityUrl = `${constants.API_URL}/${endpointPath}`;
         return this.sendRequest(method, entityUrl, object, 'include');
     };
 

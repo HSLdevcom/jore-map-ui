@@ -5,7 +5,7 @@ import React from 'react';
 import { matchPath, Router, Switch } from 'react-router';
 import { Route } from 'react-router-dom';
 import constants from '~/constants/constants';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
@@ -84,7 +84,7 @@ class App extends React.Component<IAppProps, IAppState> {
         const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
         if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
             const response = (await ApiClient.getRequest(
-                endpoints.EXISTING_SESSION
+                EndpointPath.EXISTING_SESSION
             )) as IAuthorizationResponse;
             if (response.isOk) {
                 // Auth was ok, keep the current site as it is

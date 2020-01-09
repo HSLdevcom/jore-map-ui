@@ -1,4 +1,4 @@
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import ErrorStore from '~/stores/errorStore';
@@ -48,7 +48,7 @@ class AuthService {
     public static async logout() {
         // TODO: Implement full logout clearing session in backend
         // https://github.com/HSLdevcom/jore-map-ui/issues/669
-        await ApiClient.postRequest(endpoints.LOGOUT, {});
+        await ApiClient.postRequest(EndpointPath.LOGOUT, {});
         LoginStore.clear();
     }
 }
