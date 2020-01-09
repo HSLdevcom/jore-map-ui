@@ -5,6 +5,7 @@ import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
 import Button from '~/components/controls/Button';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -19,6 +20,7 @@ import RoutePathService from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
@@ -42,6 +44,7 @@ interface IRoutePathViewProps {
     toolbarStore?: ToolbarStore;
     errorStore?: ErrorStore;
     mapStore?: MapStore;
+    confirmStore?: ConfirmStore;
     match?: match<any>;
     isNewRoutePath: boolean;
 }
@@ -57,7 +60,8 @@ interface IRoutePathViewState {
     'toolbarStore',
     'errorStore',
     'alertStore',
-    'mapStore'
+    'mapStore',
+    'confirmStore'
 )
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState> {
@@ -284,6 +288,23 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setIsEditingDisabled(true);
     };
 
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const currentRoutePath = this.props.routePathStore!.routePath;
+        const oldRoutePath = this.props.routePathStore!.oldRoutePath;
+        const saveModel: ISaveModel = {
+            newData: currentRoutePath ? currentRoutePath : {},
+            oldData: oldRoutePath,
+            model: 'routePath'
+        };
+        confirmStore!.openConfirm({
+            content: <SavePrompt saveModels={[saveModel]} />,
+            onConfirm: () => {
+                this.save();
+            }
+        });
+    };
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -322,7 +343,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         </div>
                         {this.renderTabContent()}
                         <Button
-                            onClick={this.save}
+                            onClick={this.showSavePrompt}
                             type={ButtonType.SAVE}
                             disabled={isSaveButtonDisabled}
                         >

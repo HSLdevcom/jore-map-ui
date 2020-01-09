@@ -53,6 +53,14 @@ export class LineHeaderMassEditStore {
     }
 
     @computed
+    get removedLineHeaders(): ILineHeader[] {
+        return _.chain(this._massEditLineHeaders)
+            .filter(massEditLineHeader => massEditLineHeader.isRemoved)
+            .map(massEditLineHeader => massEditLineHeader.lineHeader)
+            .value();
+    }
+
+    @computed
     get isDirty() {
         if (!this._massEditLineHeaders) return false;
 
