@@ -159,21 +159,17 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             routeStore.setRouteToEdit(route);
             return;
         }
-        if (route.id === routeStore.routeIdToEdit) {
-            confirmStore.openConfirm({
-                content: `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`,
-                onConfirm: () => routeStore.setRouteToEdit(route),
-                confirmButtonText: 'Kyllä'
-            });
-        } else {
-            confirmStore.openConfirm({
-                content: `Sinulla on reitin ${
-                    routeStore.route.routeName
-                } muokkaus kesken. Oletko varma, että haluat muokata toista reittiä? Tallentamattomat muutokset kumotaan.`,
-                onConfirm: () => routeStore.setRouteToEdit(route),
-                confirmButtonText: 'Kyllä'
-            });
-        }
+        const promptMessage =
+            route.id === routeStore.routeIdToEdit
+                ? `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`
+                : `Sinulla on reitin ${
+                      routeStore.route.routeName
+                  } muokkaus kesken. Oletko varma, että haluat muokata toista reittiä? Tallentamattomat muutokset kumotaan.`;
+        confirmStore.openConfirm({
+            content: promptMessage,
+            onConfirm: () => routeStore.setRouteToEdit(route),
+            confirmButtonText: 'Kyllä'
+        });
     };
 
     private showSavePrompt = () => {
