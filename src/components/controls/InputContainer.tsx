@@ -22,6 +22,7 @@ interface IInputProps {
     capitalizeInput?: boolean;
     isInputColorRed?: boolean;
     isClearButtonVisibleOnDates?: boolean;
+    isTimeIncluded?: boolean;
     darkerInputLabel?: boolean; // TODO: rename as isInputLabelDarker
 }
 
@@ -88,7 +89,7 @@ const renderUneditableContent = (props: IInputProps) => (
         )}
     >
         {props.value instanceof Date
-            ? Moment(props.value!).format('DD.MM.YYYY')
+            ? Moment(props.value!).format(props.isTimeIncluded ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY')
             : props.value
             ? props.value
             : '-'}

@@ -211,7 +211,8 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                     </div>
                     <div className={s.flexRow}>
                         <TextContainer label='MUOKANNUT' value={line.modifiedBy} />
-                        <TextContainer
+                        <InputContainer
+                            disabled={true}
                             label='MUOKATTU PVM'
                             isTimeIncluded={true}
                             value={line.modifiedOn}
