@@ -23,7 +23,7 @@ type credentials = 'include';
 
 class ApiClient {
     public updateObject = async (entityName: endpoints, object: any) => {
-        const response = this.postRequest(entityName, object);
+        const response = await this.postRequest(entityName, object);
         ApolloClient.clearStore();
         return response;
     };
@@ -94,16 +94,20 @@ class ApiClient {
                     .then(() => {
                         LoginStore.clear();
                     });
-                return;
+                error = {
+                    name: 'Forbidden',
+                    errorCode: FetchStatusCode.FORBIDDEN,
+                    message: 'Kielletty toimenpide'
+                };
+            } else {
+                const responseText = await response.text();
+                const errorMessage = responseText ? responseText : response.statusText;
+                error = {
+                    name: 'Failed to fetch',
+                    errorCode: response.status,
+                    message: errorMessage
+                };
             }
-
-            const responseText = await response.text();
-            const errorMessage = responseText ? responseText : response.statusText;
-            error = {
-                message: errorMessage,
-                name: 'Failed to fetch',
-                errorCode: response.status
-            };
         } catch {
             error = {
                 name: 'Connectivity error',
