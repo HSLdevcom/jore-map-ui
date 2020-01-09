@@ -132,14 +132,14 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
                 {this.renderList()}
                 {this.props.route.routePaths &&
                     this.props.route.routePaths.length > ROUTE_PATH_SHOW_LIMIT && (
-                        <div>
+                        <div
+                            className={s.toggleAllRoutePathsVisibleButton}
+                            onClick={this.props.toggleAllRoutePathsVisible}
+                        >
                             {!this.props.areAllRoutePathsVisible && (
                                 <div className={s.threeDots}>...</div>
                             )}
-                            <div
-                                className={s.toggleAllRoutePathsVisibleButton}
-                                onClick={this.props.toggleAllRoutePathsVisible}
-                            >
+                            <div className={s.toggleAllRoutePathsVisibleText}>
                                 {this.props.areAllRoutePathsVisible
                                     ? `Piilota reitinsuunnat`
                                     : `Näytä kaikki reitinsuunnat (${

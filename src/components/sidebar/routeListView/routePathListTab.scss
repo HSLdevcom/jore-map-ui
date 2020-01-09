@@ -72,22 +72,28 @@
     padding: 15px;
 }
 
-.threeDots {
-    letter-spacing: 5px;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 0.5;
-}
-
 .toggleAllRoutePathsVisibleButton {
     text-align: center;
     padding: 10px;
     cursor: pointer;
-    color: $busBlue;
-    text-decoration: underline;
+    .toggleAllRoutePathsVisibleText {
+        color: $busBlue;
+        text-decoration: underline;
+    }
+    .threeDots {
+        position: relative;
+        top: -8px;
+        color: $fontColorDefault;
+        letter-spacing: 5px;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 0.5;
+    }
 }
 
 .toggleAllRoutePathsVisibleButton:hover {
-    color: darken($busBlue, 10);
+    .toggleAllRoutePathsVisibleText {
+        color: darken($busBlue, 10);
+    }
 }
