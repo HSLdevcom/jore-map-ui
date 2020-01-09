@@ -115,12 +115,12 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                     <TextContainer
                         label='PYSÄKIN NIMI'
                         value={stop.nameFi}
-                        darkerInputLabel={true}
+                        isInputLabelDarker={true}
                     />
                     <TextContainer
                         label='PYSÄKIN NIMI RUOTSIKSI'
                         value={stop.nameSw}
-                        darkerInputLabel={true}
+                        isInputLabelDarker={true}
                     />
                 </div>
                 {!this.props.isLastNode && (
@@ -154,7 +154,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 items={this.props.codeListStore!.getDropdownItemList(
                                     'Ajantasaus pysakki'
                                 )}
-                                darkerInputLabel={true}
+                                isInputLabelDarker={true}
                             />
                             <Dropdown
                                 label='ERIKOISTYYPPI'
@@ -164,7 +164,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 items={this.props.codeListStore!.getDropdownItemList(
                                     'Pysäkin käyttö'
                                 )}
-                                darkerInputLabel={true}
+                                isInputLabelDarker={true}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -174,7 +174,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 value={routePathLink.destinationFi1}
                                 validationResult={invalidPropertiesMap['destinationFi1']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationFi1')}
-                                darkerInputLabel={true}
+                                isInputLabelDarker={true}
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ SUOMEKSI'
@@ -182,7 +182,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 value={routePathLink.destinationFi2}
                                 validationResult={invalidPropertiesMap['destinationFi2']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationFi2')}
-                                darkerInputLabel={true}
+                                isInputLabelDarker={true}
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -192,7 +192,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 value={routePathLink.destinationSw1}
                                 validationResult={invalidPropertiesMap['destinationSw1']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationSw1')}
-                                darkerInputLabel={true}
+                                isInputLabelDarker={true}
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
@@ -200,7 +200,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 value={routePathLink.destinationSw2}
                                 validationResult={invalidPropertiesMap['destinationSw2']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationSw2')}
-                                darkerInputLabel={true}
+                                isInputLabelDarker={true}
                             />
                         </div>
                     </>
@@ -225,20 +225,20 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                         )}
                         value={startNodeBookScheduleColumnNumber}
                         validationResult={invalidPropertiesMap['startNodeBookScheduleColumnNumber']}
-                        darkerInputLabel={true}
+                        isInputLabelDarker={true}
                     />
                 </div>
                 <div className={s.flexRow}>
                     <TextContainer
                         label='MUOKANNUT'
                         value={routePathLink.modifiedBy}
-                        darkerInputLabel={true}
+                        isInputLabelDarker={true}
                     />
                     <TextContainer
                         label='MUOKATTU PVM'
                         isTimeIncluded={true}
                         value={routePathLink.modifiedOn}
-                        darkerInputLabel={true}
+                        isInputLabelDarker={true}
                     />
                 </div>
             </div>
@@ -251,7 +251,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 <TextContainer
                     label='MITTAUSPÄIVÄMÄÄRÄ'
                     value={node.measurementDate}
-                    darkerInputLabel={true}
+                    isInputLabelDarker={true}
                 />
             </div>
         );

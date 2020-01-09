@@ -1,10 +1,10 @@
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import Moment from 'moment';
 import React from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IValidationResult } from '~/validation/FormValidator';
 import DatePicker from './DatePicker';
+import TextContainer from './TextContainer';
 import * as s from './inputContainer.scss';
 
 type inputType = 'text' | 'number' | 'date';
@@ -22,7 +22,8 @@ interface IInputProps {
     capitalizeInput?: boolean;
     isInputColorRed?: boolean;
     isClearButtonVisibleOnDates?: boolean;
-    darkerInputLabel?: boolean; // TODO: rename as isInputLabelDarker
+    isTimeIncluded?: boolean;
+    isInputLabelDarker?: boolean;
 }
 
 const renderEditableContent = (props: IInputProps) => {
@@ -79,31 +80,35 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
     return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
 };
 
-const renderUneditableContent = (props: IInputProps) => (
-    <div
-        className={classnames(
-            s.inputField,
-            props.disabled ? s.staticHeight : null,
-            props.isInputColorRed ? s.redInputText : null
-        )}
-    >
-        {props.value instanceof Date
-            ? Moment(props.value!).format('DD.MM.YYYY')
-            : props.value
-            ? props.value
-            : '-'}
-    </div>
-);
+const renderUneditableContent = (props: IInputProps) => {
+    return (
+        <TextContainer
+            label={props.label}
+            value={props.value}
+            isTimeIncluded={props.isTimeIncluded}
+            isInputLabelDarker={props.isInputLabelDarker}
+            isInputColorRed={props.isInputColorRed}
+        />
+    );
+};
 
 const InputContainer = observer((props: IInputProps) => {
+    if (props.disabled) {
+        return (
+            <>
+                {renderUneditableContent(props)}
+                {renderValidatorResult(props.validationResult)}
+            </>
+        );
+    }
     return (
         <div className={classnames(s.formItem, s.inputContainer, props.className)}>
             {props.label && (
-                <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
+                <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
                     {props.label}
                 </div>
             )}
-            {props.disabled ? renderUneditableContent(props) : renderEditableContent(props)}
+            {renderEditableContent(props)}
             {renderValidatorResult(props.validationResult)}
         </div>
     );
