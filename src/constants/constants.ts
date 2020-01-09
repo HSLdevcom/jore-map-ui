@@ -4,6 +4,8 @@ if (process.env.NODE_ENV === 'development') {
 } else {
     APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
 }
+
+// prod, stage, dev, localhost
 const ENVIRONMENT = process.env.ENVIRONMENT ? process.env.ENVIRONMENT : 'localhost';
 
 const commonConstants = {
