@@ -23,7 +23,7 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedTabIndex: 1,
+            selectedTabIndex: 0,
             areAllRoutePathsVisible: false
         };
     }
@@ -65,25 +65,25 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
                     setSelectedTabIndex={this.setSelectedTabIndex}
                 >
                     <Tab>
-                        <div>Reitin tiedot</div>
+                        <div>Reitinsuunnat</div>
                     </Tab>
                     <Tab>
-                        <div>Reitinsuunnat</div>
+                        <div>Reitin tiedot</div>
                     </Tab>
                 </TabList>
                 <ContentList selectedTabIndex={this.state.selectedTabIndex}>
-                    <ContentItem>
-                        <RouteTab
-                            route={this.props.route}
-                            isEditingDisabled={isEditingDisabled}
-                            isNewRoute={false}
-                        />
-                    </ContentItem>
                     <ContentItem>
                         <RoutePathListTab
                             route={this.props.route}
                             areAllRoutePathsVisible={this.state.areAllRoutePathsVisible}
                             toggleAllRoutePathsVisible={this.toggleAllRoutePathsVisible}
+                        />
+                    </ContentItem>
+                    <ContentItem>
+                        <RouteTab
+                            route={this.props.route}
+                            isEditingDisabled={isEditingDisabled}
+                            isNewRoute={false}
                         />
                     </ContentItem>
                 </ContentList>
