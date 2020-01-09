@@ -18,7 +18,13 @@ const Loader = observer((props: ILoaderProps) => (
             props.hasNoMargin ? s.hasNoMargin : undefined
         )}
     >
-        <div className={classnames(s.loader, s[props.size! || 'medium'])} />
+        <div
+            className={classnames(
+                s.loader,
+                s[props.size! || 'medium'],
+                props.hasNoMargin ? s.hasNoMargin : undefined
+            )}
+        />
     </div>
 ));
 
