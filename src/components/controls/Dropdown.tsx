@@ -21,7 +21,7 @@ interface IDropdownProps {
     emptyItem?: IDropdownItem;
     onChange?: (value: any) => void;
     validationResult?: IValidationResult;
-    darkerInputLabel?: boolean;
+    isInputLabelDarker?: boolean;
     isBackgroundGrey?: boolean;
     isAnyInputValueAllowed?: boolean; // Can user give any input as dropdown field value
     isNoOptionsMessageHidden?: boolean;
@@ -129,7 +129,9 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
                     {props.label && (
-                        <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
+                        <div
+                            className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}
+                        >
                             {props.label}
                         </div>
                     )}

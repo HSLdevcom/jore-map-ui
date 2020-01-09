@@ -23,7 +23,7 @@ interface IInputProps {
     isInputColorRed?: boolean;
     isClearButtonVisibleOnDates?: boolean;
     isTimeIncluded?: boolean;
-    darkerInputLabel?: boolean; // TODO: rename as isInputLabelDarker
+    isInputLabelDarker?: boolean;
 }
 
 const renderEditableContent = (props: IInputProps) => {
@@ -100,7 +100,7 @@ const InputContainer = observer((props: IInputProps) => {
     return (
         <div className={classnames(s.formItem, s.inputContainer, props.className)}>
             {props.label && (
-                <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
+                <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
                     {props.label}
                 </div>
             )}

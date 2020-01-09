@@ -7,12 +7,12 @@ interface ITextContainerProps {
     label: string | JSX.Element;
     value?: string | number | null | Date;
     isTimeIncluded?: boolean;
-    darkerInputLabel?: boolean;
+    isInputLabelDarker?: boolean;
 }
 
 const TextContainer = observer((props: ITextContainerProps) => (
     <div className={s.formItem}>
-        <div className={props.darkerInputLabel ? s.darkerInputLabel : s.inputLabel}>
+        <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
             {props.label}
         </div>
         <div className={s.staticHeight}>
