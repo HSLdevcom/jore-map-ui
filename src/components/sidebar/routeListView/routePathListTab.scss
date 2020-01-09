@@ -72,10 +72,22 @@
     padding: 15px;
 }
 
+.threeDots {
+    letter-spacing: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 0.5;
+}
+
 .toggleAllRoutePathsVisibleButton {
     text-align: center;
     padding: 10px;
     cursor: pointer;
     color: $busBlue;
     text-decoration: underline;
+}
+
+.toggleAllRoutePathsVisibleButton:hover {
+    color: darken($busBlue, 10);
 }
