@@ -69,7 +69,7 @@ class StopForm extends Component<IStopFormProps> {
         const routePathViewLink = RouteBuilder.to(SubSites.stopArea)
             .toTarget(':id', stopAreaId!)
             .toLink();
-        navigator.goTo({ link: routePathViewLink });
+        navigator.goTo({ link: routePathViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private redirectToNewStopArea = () => {
@@ -89,7 +89,7 @@ class StopForm extends Component<IStopFormProps> {
                 .toLink();
         }
 
-        navigator.goTo({ link });
+        navigator.goTo({ link, shouldSkipUnsavedChangesPrompt: true });
     };
 
     render() {

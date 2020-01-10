@@ -359,10 +359,19 @@ class NodeStore {
     };
 
     @action
-    public clearNodeCache = () => {
-        this._nodeCache = {
-            newNodeCache: null
-        };
+    public clearNodeCache = ({
+        nodeId,
+        shouldClearNewNodeCache
+    }: {
+        nodeId?: string;
+        shouldClearNewNodeCache?: boolean;
+    }) => {
+        if (shouldClearNewNodeCache) {
+            this._nodeCache.newNodeCache = null;
+        }
+        if (nodeId) {
+            this._nodeCache[nodeId] = null;
+        }
     };
 
     @action

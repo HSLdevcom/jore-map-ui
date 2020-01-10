@@ -260,13 +260,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     .toTarget(':id', nodeId)
                     .toLink();
                 navigator.goTo({ link: nodeViewLink });
+                this.props.nodeStore!.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,
                     this.props.nodeStore!.getDirtyLinks()
                 );
+                this.props.nodeStore!.clearNodeCache({ nodeId: this.props.nodeStore!.node.id });
             }
-            this.props.nodeStore!.clearNodeCache();
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
