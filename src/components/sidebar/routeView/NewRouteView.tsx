@@ -103,7 +103,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
             .to(SubSites.line)
             .toTarget(':id', lineId)
             .toLink();
-        navigator.goTo({ link: lineViewLink });
+        navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private onChangeRouteProperty = (property: keyof IRoute) => (value: any) => {

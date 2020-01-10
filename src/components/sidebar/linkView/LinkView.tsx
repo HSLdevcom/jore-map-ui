@@ -186,7 +186,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             .to(SubSites.link)
             .toTarget(':id', [link.startNode.id, link.endNode.id, link.transitType].join(','))
             .toLink();
-        navigator.goTo({ link: linkViewLink });
+        navigator.goTo({ link: linkViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private navigateToNode = (nodeId: string) => () => {

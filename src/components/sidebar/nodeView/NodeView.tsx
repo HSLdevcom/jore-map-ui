@@ -259,7 +259,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     .to(SubSites.node)
                     .toTarget(':id', nodeId)
                     .toLink();
-                navigator.goTo({ link: nodeViewLink });
+                navigator.goTo({ link: nodeViewLink, shouldSkipUnsavedChangesPrompt: true });
                 this.props.nodeStore!.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
                 await NodeService.updateNode(

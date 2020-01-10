@@ -278,7 +278,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
         if (routePathViewLink) {
-            navigator.goTo({ link: routePathViewLink });
+            navigator.goTo({ link: routePathViewLink, shouldSkipUnsavedChangesPrompt: true });
             return;
         }
         await this.fetchRoutePath();

@@ -140,7 +140,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             .to(SubSites.line)
             .toTarget(':id', line!.id)
             .toLink();
-        navigator.goTo({ link: lineViewLink });
+        navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private showSavePrompt = () => {
