@@ -7,6 +7,7 @@ import { match } from 'react-router';
 import Button from '~/components/controls/Button';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import Loader from '~/components/shared/loader/Loader';
+import constants from '~/constants/constants';
 import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
@@ -52,6 +53,8 @@ interface IRoutePathViewProps {
 interface IRoutePathViewState {
     isLoading: boolean;
 }
+
+const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject(
     'routePathStore',
@@ -305,6 +308,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     };
 
+    private showSavePreventedAlert = () => {
+        this.props.alertStore!.setNotificationMessage({ message: 'Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.' });
+    }
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -324,6 +331,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const copySegmentStore = this.props.routePathCopySegmentStore;
         const isCopyRoutePathSegmentViewVisible =
             copySegmentStore!.startNode && copySegmentStore!.endNode;
+        const isSavingPrevented = ENVIRONMENT === 'prod' || ENVIRONMENT === 'stage';
 
         return (
             <div className={s.routePathView}>
@@ -343,8 +351,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         </div>
                         {this.renderTabContent()}
                         <Button
-                            onClick={this.showSavePrompt}
-                            type={ButtonType.SAVE}
+                            onClick={isSavingPrevented ? this.showSavePreventedAlert : this.showSavePrompt}
+                            type={isSavingPrevented ? ButtonType.WARNING : ButtonType.SAVE}
                             disabled={isSaveButtonDisabled}
                         >
                             {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
