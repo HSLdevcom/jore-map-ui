@@ -1,4 +1,4 @@
-import { ILink, INode, IRoute, IStop, IStopArea } from '~/models';
+import { ILine, ILineHeader, ILink, INode, IRoute, IRoutePath, IStop, IStopArea } from '~/models';
 
 type NodeKeys = keyof INode;
 type INodePropertyCodeList = { [key in NodeKeys]: string };
@@ -62,11 +62,11 @@ type RouteKeys = keyof IRoute;
 type IRoutePropertyCodeList = { [key in RouteKeys]: string };
 const routePropertyCodeList: IRoutePropertyCodeList = {
     id: '',
-    routePaths: '',
-    routeName: 'REITIN NIMI',
-    routeNameShort: 'REITIN LYHYT NIMI',
-    routeNameSw: 'REITIN NIMI RUOTSIKSI',
-    routeNameShortSw: 'REITIN LYHYT NIMI RUOTSIKSI',
+    routePaths: 'REITINSUUNNAT',
+    routeName: 'NIMI',
+    routeNameShort: 'LYHYT NIMI',
+    routeNameSw: 'NIMI RUOTSIKSI',
+    routeNameShortSw: 'LYHYT NIMI RUOTSIKSI',
     lineId: '',
     line: '',
     modifiedBy: 'MUOKANNUT',
@@ -86,10 +86,79 @@ const stopAreaPropertyCodeList: IStopAreaPropertyCodeList = {
     stopAreaGroupId: 'PYSÄKKIALUE'
 };
 
+type LineKeys = keyof ILine;
+type ILinePropertyCodeList = { [key in LineKeys]: string };
+const linePropertyCodeList: ILinePropertyCodeList = {
+    id: 'LINJAN TUNNUS',
+    transitType: 'VERKKO',
+    lineBasicRoute: 'LINJAN PERUS REITTI',
+    lineStartDate: 'LINJAN VOIM.AST.PVM',
+    lineEndDate: 'LINJAN VIIM. VOIM.OLOPVM',
+    publicTransportType: 'JOUKKOLIIKENNELAJI',
+    clientOrganization: 'TILAAJAORGANISAATIO',
+    modifiedBy: '',
+    modifiedOn: '',
+    publicTransportDestination: 'JOUKKOLIIKENNEKOHDE',
+    exchangeTime: 'VAIHTOAJAN PIDENNYS (min)',
+    lineReplacementType: 'LINJAN KORVAAVA TYYPPI',
+    routes: ''
+};
+
+type RoutePathKeys = keyof IRoutePath;
+type IRoutePathPropertyCodeList = { [key in RoutePathKeys]: string };
+const routePathPropertyCodeList: IRoutePathPropertyCodeList = {
+    routeId: '',
+    direction: 'SUUNTA',
+    startTime: 'VOIM. AST',
+    internalId: '',
+    color: '',
+    visible: '',
+    transitType: '',
+    lineId: '',
+    routePathLinks: 'SOLMUT JA LINKIT',
+    name: 'NIMI SUOMEKSI',
+    nameSw: 'NIMI RUOTSIKSI',
+    endTime: 'VIIM.VOIM.OLO',
+    originFi: 'LÄHTÖPAIKKA SUOMEKSI',
+    originSw: 'LÄHTÖPAIKKA RUOTSIKSI',
+    destinationFi: 'PÄÄTEPAIKKA SUOMEKSI',
+    destinationSw: 'PÄÄTEPAIKKA RUOTSIKSI',
+    shortName: 'LYHENNE SUOMEKSI',
+    shortNameSw: 'LYHENNE RUOTSIKSI',
+    length: 'PITUUS (m)',
+    isStartNodeUsingBookSchedule: '',
+    startNodeBookScheduleColumnNumber: '',
+    exceptionPath: 'POIKKEUSREITTI',
+    modifiedOn: '',
+    modifiedBy: ''
+};
+
+type LineHeaderKeys = keyof ILineHeader;
+type ILineHeaderPropertyCodeList = { [key in LineHeaderKeys]: string };
+const lineHeaderPropertyCodeList: ILineHeaderPropertyCodeList = {
+    lineId: 'LINJAN TUNNUS',
+    originalStartDate: '',
+    startDate: 'VOIM.AST.PVM',
+    endDate: 'VIIM. VOIM.OLOPVM',
+    lineNameFi: 'LINJAN NIMI',
+    lineShortNameFi: 'LINJAN LYHYT NIMI',
+    lineNameSw: 'LINJAN NIMI RUOTSIKSI',
+    lineShortNameSw: 'LINJAN LYHYT NIMI RUOTSIKSI',
+    lineStartPlace1Fi: 'LÄHTÖPAIKKA SUUNNASSA 1',
+    lineStartPlace1Sw: 'LÄHTÖPAIKKA SUUNNASSA 1 RUOTSIKSI',
+    lineStartPlace2Fi: 'LÄHTÖPAIKKA SUUNNASSA 2',
+    lineStartPlace2Sw: 'LÄHTÖPAIKKA SUUNNASSA 2 RUOTSIKSI',
+    modifiedBy: '',
+    modifiedOn: ''
+};
+
 export default {
     node: nodePropertyCodeList,
     stop: stopPropertyCodeList,
     link: linkPropertyCodeList,
     route: routePropertyCodeList,
-    stopArea: stopAreaPropertyCodeList
+    stopArea: stopAreaPropertyCodeList,
+    line: linePropertyCodeList,
+    routePath: routePathPropertyCodeList,
+    lineHeader: lineHeaderPropertyCodeList
 };

@@ -70,6 +70,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._isMounted = true;
         const params = this.props.match!.params.id;
         this._setState({ isLoading: true });
+        this.props.nodeStore!.setIsEditingDisabled(!this.props.isNewNode);
         this.props.nodeStore!.setIsNodeIdEditable(false);
         if (this.props.isNewNode) {
             await this.createNewNode(params);
@@ -77,7 +78,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             await this.initExistingNode(params);
         }
         this._setState({ isLoading: false });
-        this.props.nodeStore!.setIsEditingDisabled(!this.props.isNewNode);
         EventManager.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
@@ -133,13 +133,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     };
 
     private initExistingNode = async (selectedNodeId: string) => {
-        const nodeStore = this.props.nodeStore;
+        const nodeStore = this.props.nodeStore!;
         this._setState({ isLoading: true });
-        nodeStore!.clear();
+        nodeStore.clear();
 
         const node = await this.fetchNode(selectedNodeId);
         const links = await this.fetchLinksForNode(node!);
-        const nodeCacheObj: INodeCacheObj | null = nodeStore!.getNodeCacheObjById(selectedNodeId);
+        const nodeCacheObj: INodeCacheObj | null = nodeStore.getNodeCacheObjById(selectedNodeId);
         if (nodeCacheObj) {
             this.showNodeCachePrompt({
                 nodeCacheObj,
@@ -154,7 +154,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.initNode(node!, links!);
             this.updateSelectedStopAreaId();
         }
-        this.setState({ isLoading: false });
+        this._setState({ isLoading: false });
     };
 
     private initNode = (node: INode, links: ILink[], oldNode?: INode, oldLinks?: ILink[]) => {
@@ -184,7 +184,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         promptCancelCallback: Function;
         oldNode?: INode;
         oldLinks?: ILink[];
-    }) => {
+        }) => {
         const nodeStore = this.props.nodeStore;
         this.props.confirmStore!.openConfirm({
             content:
@@ -197,7 +197,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     oldLinks
                 );
                 this.updateSelectedStopAreaId();
-                this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
+                await this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
                 nodeStore!.setIsNodeIdEditable(nodeCacheObj.isNodeIdEditable);
                 nodeStore!.setIsEditingDisabled(false);
                 this._setState({ isLoading: false });
@@ -207,10 +207,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     };
 
     private updateSelectedStopAreaId = () => {
+        const nodeStore = this.props.nodeStore!;
         const stopAreaIdQueryParam = navigator.getQueryParam(QueryParams.stopAreaId);
         const stopAreaId = stopAreaIdQueryParam ? stopAreaIdQueryParam[0] : undefined;
         if (stopAreaId) {
-            this.props.nodeStore!.updateStopProperty('stopAreaId', stopAreaId);
+            if (nodeStore.node?.stop?.stopAreaId !== stopAreaId) {
+                nodeStore.setIsEditingDisabled(false);
+            }
+            nodeStore!.updateStopProperty('stopAreaId', stopAreaId);
         }
     };
 
@@ -283,7 +287,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         // Create node save model
         if (currentNode.stop) {
             delete currentNode['stop'];
-            delete currentNode['measurementType'];
             delete oldNode['stop'];
         }
         const saveModels: ISaveModel[] = [
@@ -328,6 +331,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     private onChangeNodeId = async (value: string) => {
         this.onChangeNodeProperty('id')(value);
         await this.queryAvailableNodeIdSuffixes(value);
+        if (value.length === 5) {
+            this.onChangeNodeProperty('idSuffix')('');
+        }
     };
 
     private onChangeNodeType = (type: NodeType) => {
@@ -346,7 +352,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 nodeIdSuffixOptions: createDropdownItemsFromList(nodeIdSuffixList),
                 isNodeIdSuffixQueryLoading: false
             });
-            this.onChangeNodeProperty('idSuffix')('');
         } else {
             if (this.state.nodeIdSuffixOptions.length > 0) {
                 this._setState({

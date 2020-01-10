@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import Moment from 'moment';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
@@ -98,7 +98,7 @@ class LineHeaderService {
             originals
         };
 
-        await ApiClient.postRequest(endpoints.LINE_HEADER_MASS_EDIT, lineHeaderSaveModel);
+        await ApiClient.postRequest(EndpointPath.LINE_HEADER_MASS_EDIT, lineHeaderSaveModel);
         ApolloClient.clearStore();
     };
 }

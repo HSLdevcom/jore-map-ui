@@ -84,6 +84,10 @@ export class RoutePathStore {
     }
 
     @computed
+    get oldRoutePath(): IRoutePath | null {
+        return this._oldRoutePath;
+    }
+
     get isNewRoutePath(): boolean {
         return this._isNewRoutePath;
     }

@@ -34,6 +34,10 @@ export class LineStore {
     }
 
     @computed
+    get oldLine(): ILine | null {
+        return this._oldline;
+    }
+
     get isNewLine(): boolean {
         return this._isNewLine;
     }

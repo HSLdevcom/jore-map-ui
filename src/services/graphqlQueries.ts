@@ -66,6 +66,7 @@ const getAllRoutesQuery = () => {
             allReittis {
                 nodes {
                     reitunnus
+                    lintunnus
                 }
             }
         }

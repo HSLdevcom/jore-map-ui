@@ -1,19 +1,25 @@
+import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { LineStore } from '~/stores/lineStore';
+import { SearchStore } from '~/stores/searchStore';
+import LineHelper from '~/util/LineHelper';
+import TransitTypeHelper from '~/util/TransitTypeHelper';
 import s from './lineRoutesTab.scss';
 
 interface ILineRoutesTabProps {
     lineStore?: LineStore;
+    searchStore?: SearchStore;
 }
 
-@inject('lineStore')
+@inject('lineStore', 'searchStore')
 @observer
 class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     private redirectToNewRouteView = () => {
@@ -27,6 +33,40 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
         navigator.goTo(newRouteLink);
     };
 
+    private renderRouteList = (routes: IRoute[]) => {
+        const line = this.props.lineStore!.line;
+
+        return routes.map((route: IRoute, index: number) => {
+            return (
+                <div
+                    key={index}
+                    className={s.routeListItem}
+                    onClick={this.redirectToRouteView(route.id)}
+                >
+                    {LineHelper.getTransitIcon(line!.transitType!, false)}
+                    <div
+                        className={classnames(
+                            s.routeId,
+                            TransitTypeHelper.getColorClass(line!.transitType!)
+                        )}
+                    >
+                        {route.id}
+                    </div>{' '}
+                    {route.routeName}
+                </div>
+            );
+        });
+    };
+
+    private redirectToRouteView = (routeId: string) => () => {
+        const openRouteLink = routeBuilder
+            .to(SubSites.routes, navigator.getQueryParamValues())
+            .append(QueryParams.routes, routeId)
+            .toLink();
+        this.props.searchStore!.setSearchInput('');
+        navigator.goTo(openRouteLink);
+    };
+
     render() {
         const line = this.props.lineStore!.line;
         if (!line) return null;
@@ -37,8 +77,7 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                     {line.routes.length === 0 ? (
                         <div>Linjalla ei olemassa olevia reittejä.</div>
                     ) : (
-                        // TODO: render routes list here
-                        <div>Reittilista tulee tähän (työn alla).</div>
+                        this.renderRouteList(line.routes)
                     )}
 
                     <Button

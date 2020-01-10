@@ -9,12 +9,14 @@ import codeListStore from '~/stores/codeListStore';
 import { toDateString } from '~/util/dateHelpers';
 import * as s from './savePrompt.scss';
 
-type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea';
+type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea' | 'line' | 'routePath' | 'lineHeader';
 
 interface ISaveModel {
     model: Model;
-    newData: Object;
+    newData: Object | null;
     oldData: Object | null;
+    subTopic?: String;
+    isRemoved?: boolean;
 }
 
 interface ISavePromptProps {
@@ -29,30 +31,38 @@ const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
     for (const property in newData) {
         const newValue = newData[property];
         const oldValue = oldData ? oldData[property] : '';
-        if (_.isEqual(newValue, oldValue)) {
+        if (_.isEqual(newValue, oldValue) || (!newValue && !oldValue)) {
             delete newData[property];
         }
     }
+    if (newData && !Object.keys(newData).length) return;
     return (
-        <div key={key}>
-            {Object.keys(newData).map((property: string, index: number) => {
-                if (PREVENTED_CHANGE_ROW_PROPERTIES.includes(property)) return null;
+        <div className={s.savePromptItem} key={key}>
+            {saveModel.subTopic && <div className={s.subTopic}>{saveModel.subTopic}</div>}
+            {saveModel.isRemoved ? (
+                <div className={s.removedItemWrapper}>
+                    <div className={s.oldAttribute}>Poistettu</div>
+                </div>
+            ) : (
+                Object.keys(newData!).map((property: string, index: number) => {
+                    if (PREVENTED_CHANGE_ROW_PROPERTIES.includes(property)) return null;
 
-                const propertyLabel = _getLabel(saveModel.model, property);
-                return (
-                    <div
-                        key={`${key}-${index}`}
-                        className={classnames(s.formItem, s.savePromptRow)}
-                    >
-                        <div className={s.inputLabel}>{propertyLabel}</div>
-                        {renderChangeRow(
-                            property,
-                            _getPropertyValue(saveModel.model, property, oldData, false),
-                            _getPropertyValue(saveModel.model, property, newData, true)
-                        )}
-                    </div>
-                );
-            })}
+                    const propertyLabel = _getLabel(saveModel.model, property);
+                    return (
+                        <div
+                            key={`${key}-${index}`}
+                            className={classnames(s.formItem, s.savePromptRow)}
+                        >
+                            <div className={s.inputLabel}>{propertyLabel}</div>
+                            {renderChangeRow(
+                                property,
+                                _getPropertyValue(saveModel.model, property, oldData, false),
+                                _getPropertyValue(saveModel.model, property, newData, true)
+                            )}
+                        </div>
+                    );
+                })
+            )}
         </div>
     );
 };
@@ -86,7 +96,34 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             nameModifiedOn: () => (data[property] ? toDateString(data[property]) : '')
         },
         link: {
-            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria')
+            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
+            municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property])
+        },
+        line: {
+            lineStartDate: () => (data[property] ? toDateString(data[property]) : ''),
+            lineEndDate: () => (data[property] ? toDateString(data[property]) : ''),
+            publicTransportType: () =>
+                codeListStore.getCodeListLabel('Joukkoliikennelaji', data[property]),
+            clientOrganization: () =>
+                codeListStore.getCodeListLabel('Tilaajaorganisaatio', data[property]),
+            publicTransportDestination: () =>
+                codeListStore.getCodeListLabel('Joukkoliikennekohde', data[property]),
+            lineReplacementType: () =>
+                codeListStore.getCodeListLabel('LinjanKorvaavaTyyppi', data[property])
+        },
+        routePath: {
+            startTime: () => (data[property] ? toDateString(data[property]) : ''),
+            endTime: () => (data[property] ? toDateString(data[property]) : ''),
+            routePathLinks: () =>
+                isNew
+                    ? 'Uudet reitinsuunnan linkit ja solmut'
+                    : 'Vanhat reitinsuunnan linkit ja solmut',
+            exceptionPath: () => codeListStore.getCodeListLabel('Kyllä/Ei', data[property])
+        },
+        lineHeader: {
+            startDate: () => (data[property] ? toDateString(data[property]) : ''),
+            endDate: () => (data[property] ? toDateString(data[property]) : ''),
+            originalStartDate: () => (data[property] ? toDateString(data[property]) : '')
         }
     };
 
@@ -119,7 +156,6 @@ const renderChangeRow = (property: string, oldValue: string, newValue: string) =
 // TODO: move to shared folder. This isn't really an overlay
 const SavePrompt = observer((props: ISavePromptProps) => {
     const saveModels = props.saveModels;
-
     return (
         <div className={s.savePromptView}>
             <div className={s.topic}>Tallennettavat muutokset</div>

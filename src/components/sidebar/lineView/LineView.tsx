@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import Loader from '~/components/shared/loader/Loader';
 import LineFactory from '~/factories/lineFactory';
@@ -8,7 +9,9 @@ import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
+import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
@@ -23,8 +26,9 @@ interface ILineViewProps {
     isNewLine: boolean;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
-    lineStore?: LineStore;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
+    lineStore?: LineStore;
+    confirmStore?: ConfirmStore;
     mapStore?: MapStore;
 }
 
@@ -33,7 +37,14 @@ interface ILineViewState {
     selectedTabIndex: number;
 }
 
-@inject('lineStore', 'lineHeaderMassEditStore', 'errorStore', 'alertStore', 'mapStore')
+@inject(
+    'lineStore',
+    'lineHeaderMassEditStore',
+    'errorStore',
+    'alertStore',
+    'mapStore',
+    'confirmStore'
+)
 @observer
 class LineView extends React.Component<ILineViewProps, ILineViewState> {
     constructor(props: ILineViewProps) {
@@ -88,6 +99,8 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         const lineId = this.props.match!.params.id;
         try {
             const line = await LineService.fetchLine(lineId);
+            const routes = await RouteService.fetchAllRoutesByLineId(lineId);
+            line.routes = routes;
             this.props.lineStore!.init({ line, isNewLine: false });
         } catch (e) {
             this.props.errorStore!.addError('Linjan haku epäonnistui.', e);
@@ -130,6 +143,24 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         navigator.goTo(lineViewLink);
     };
 
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const currentLine = this.props.lineStore!.line;
+        const oldLine = this.props.lineStore!.oldLine;
+        const saveModel: ISaveModel = {
+            newData: currentLine ? currentLine : {},
+            oldData: oldLine,
+            model: 'line'
+        };
+
+        confirmStore!.openConfirm({
+            content: <SavePrompt saveModels={[saveModel]} />,
+            onConfirm: () => {
+                this.saveLine();
+            }
+        });
+    };
+
     render() {
         const lineStore = this.props.lineStore;
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
@@ -140,7 +171,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                 </div>
             );
         }
-        if (!lineStore!.line) return null;
+        if (!this.props.lineStore!.line) return null;
         const isEditingDisabled = lineStore!.isEditingDisabled;
         const isSaveButtonDisabled =
             isEditingDisabled || !lineStore!.isDirty || !lineStore!.isLineFormValid;
@@ -175,7 +206,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                         <ContentItem>
                             <LineInfoTab
                                 isEditingDisabled={isEditingDisabled}
-                                saveLine={this.saveLine}
+                                saveLine={this.showSavePrompt}
                                 isLineSaveButtonDisabled={isSaveButtonDisabled}
                             />
                         </ContentItem>

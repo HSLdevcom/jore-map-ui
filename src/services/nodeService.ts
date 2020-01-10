@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from 'apollo-client';
 import { LatLng } from 'leaflet';
-import endpoints from '~/enums/endpoints';
+import EndpointPath from '~/enums/endpointPath';
 import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
 import { INodeBase, INodeMapHighlight, INodePrimaryKey } from '~/models/INode';
@@ -55,16 +55,16 @@ class NodeService {
             links
         };
 
-        await ApiClient.updateObject(endpoints.NODE, requestBody);
+        await ApiClient.updateObject(EndpointPath.NODE, requestBody);
     };
 
     public static createNode = async (node: INode) => {
-        const response = (await ApiClient.createObject(endpoints.NODE, node)) as INodePrimaryKey;
+        const response = (await ApiClient.createObject(EndpointPath.NODE, node)) as INodePrimaryKey;
         return response.id;
     };
 
     public static fetchAvailableNodeId = async (node: INode) => {
-        return await ApiClient.postRequest(endpoints.GET_AVAILABLE_NODE_ID, {
+        return await ApiClient.postRequest(EndpointPath.GET_AVAILABLE_NODE_ID, {
             latLng: node.coordinates,
             nodeType: node.type,
             transitType: node.stop?.transitType
@@ -72,7 +72,7 @@ class NodeService {
     };
 
     public static fetchAvailableNodeIdsWithPrefix = async (beginningOfNodeId: string) => {
-        return await ApiClient.postRequest(endpoints.GET_AVAILABLE_NODE_IDS_WITH_PREFIX, {
+        return await ApiClient.postRequest(EndpointPath.GET_AVAILABLE_NODE_IDS_WITH_PREFIX, {
             beginningOfNodeId
         });
     }
