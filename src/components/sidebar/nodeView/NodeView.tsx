@@ -255,11 +255,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     nodeToUpdate = this.props.nodeStore!.node;
                 }
                 const nodeId = await NodeService.createNode(nodeToUpdate);
-                const url = routeBuilder
+                const nodeViewLink = routeBuilder
                     .to(SubSites.node)
                     .toTarget(':id', nodeId)
                     .toLink();
-                navigator.goTo(url);
+                navigator.goTo({ link: nodeViewLink });
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,

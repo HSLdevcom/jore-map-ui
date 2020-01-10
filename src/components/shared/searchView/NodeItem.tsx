@@ -14,11 +14,11 @@ interface INodeItemProps {
 
 const NodeItem = observer((props: INodeItemProps) => {
     const openNode = () => {
-        const nodeLink = routeBuilder
+        const nodeViewLink = routeBuilder
             .to(SubSites.node)
             .toTarget(':id', props.node.id)
             .toLink();
-        navigator.goTo(nodeLink);
+        navigator.goTo({ link: nodeViewLink });
     };
 
     return (

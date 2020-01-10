@@ -245,14 +245,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private save = async () => {
         this.setState({ isLoading: true });
-        let redirectUrl: string | undefined;
+        let routePathViewLink: string | undefined;
         const routePath = this.props.routePathStore!.routePath;
         try {
             if (this.props.isNewRoutePath) {
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
                     routePath!
                 );
-                redirectUrl = routeBuilder
+                routePathViewLink = routeBuilder
                     .to(SubSites.routePath)
                     .toTarget(
                         ':id',
@@ -277,8 +277,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-        if (redirectUrl) {
-            navigator.goTo(redirectUrl);
+        if (routePathViewLink) {
+            navigator.goTo({ link: routePathViewLink });
             return;
         }
         await this.fetchRoutePath();

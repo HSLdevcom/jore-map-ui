@@ -145,19 +145,19 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                 const latLngQueryParam = navigator.getQueryParam(QueryParams.latLng);
                 const latLng = latLngQueryParam ? latLngQueryParam[0] : undefined;
                 if (latLng) {
-                    const url = routeBuilder
+                    const newNodeLink = routeBuilder
                         .to(SubSites.newNode)
                         .toTarget(':id', latLng)
                         .append(QueryParams.stopAreaId, stopAreaId)
                         .toLink();
-                    navigator.goTo(url);
+                    navigator.goTo({ link: newNodeLink });
                 } else {
-                    const url = routeBuilder
+                    const nodeLink = routeBuilder
                         .to(SubSites.node)
                         .toTarget(':id', nodeId)
                         .append(QueryParams.stopAreaId, stopAreaId)
                         .toLink();
-                    navigator.goTo(url);
+                    navigator.goTo({ link: nodeLink });
                 }
             } else {
                 await StopAreaService.updateStopArea(this.props.stopAreaStore!.stopArea);

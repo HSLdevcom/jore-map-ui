@@ -31,7 +31,7 @@ class RoutePathLayer extends Component<RoutePathLayerProps> {
             )
             .append(QueryParams.showItem, routePathLinkId)
             .toLink();
-        navigator.goTo(routePathViewLink);
+        navigator.goTo({ link: routePathViewLink });
     };
 
     render() {

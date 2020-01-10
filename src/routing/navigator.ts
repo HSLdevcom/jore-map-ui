@@ -1,6 +1,10 @@
 import { RouterStore } from 'mobx-react-router';
 import qs from 'qs';
+import ConfirmStore from '~/stores/confirmStore';
+import NavigationStore from '~/stores/navigationStore';
 import QueryParams from './queryParams';
+
+const DEFAULT_PROMPT_MESSAGE = `Sinulla on tallentamattomia muutoksia. Poistua näkymästä? Tallentamattomat muutokset kumotaan.`;
 
 class Navigator {
     private store: RouterStore;
@@ -13,11 +17,36 @@ class Navigator {
         return this.store;
     };
 
-    public goTo = (url: string) => {
+    public goTo = ({
+        link,
+        unsavedChangesPromptMessage,
+        shouldSkipUnsavedChangesPrompt
+    }: {
+        link: string;
+        unsavedChangesPromptMessage?: string;
+        shouldSkipUnsavedChangesPrompt?: boolean;
+    }) => {
         // prevent new pushing url if the current url is already the right one
-        if (this.store.location.pathname === url) return;
+        if (this.store.location.pathname === link) return;
 
-        this.store.history.push(url);
+        const redirect = () => this.store.history.push(link);
+        if (
+            !Boolean(shouldSkipUnsavedChangesPrompt) &&
+            NavigationStore.shouldShowUnsavedChangesPrompt
+        ) {
+            ConfirmStore!.openConfirm({
+                content: unsavedChangesPromptMessage
+                    ? unsavedChangesPromptMessage
+                    : DEFAULT_PROMPT_MESSAGE,
+                onConfirm: () => {
+                    NavigationStore.setShouldShowUnsavedChangesPrompt(false);
+                    redirect();
+                },
+                confirmButtonText: 'Kyllä'
+            });
+        } else {
+            redirect();
+        }
     };
 
     // Instead of pushing to a stack (goTo function), replace current url

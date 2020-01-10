@@ -32,13 +32,13 @@ class SplitLinkTool implements BaseTool {
     navigateToSplitLink = (nodeId: string) => {
         const link = LinkStore.link;
         if (!link) throw 'Valittua linkkiä ei löytynyt.';
-        const url = RouteBuilder.to(SubSites.splitLink)
+        const splitLinkViewLink = RouteBuilder.to(SubSites.splitLink)
             .toTarget(
                 ':id',
                 [link.startNode.id, link.endNode.id, link.transitType, nodeId].join(',')
             )
             .toLink();
-        navigator.goTo(url);
+        navigator.goTo({ link: splitLinkViewLink });
     };
 
     private openNodeConfirm = async (clickEvent: CustomEvent) => {

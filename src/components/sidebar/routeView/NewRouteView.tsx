@@ -99,11 +99,11 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
 
     private redirectToLineView = () => {
         const lineId = navigator.getQueryParam(QueryParams.lineId);
-        const url = routeBuilder
+        const lineViewLink = routeBuilder
             .to(SubSites.line)
             .toTarget(':id', lineId)
             .toLink();
-        navigator.goTo(url);
+        navigator.goTo({ link: lineViewLink });
     };
 
     private onChangeRouteProperty = (property: keyof IRoute) => (value: any) => {

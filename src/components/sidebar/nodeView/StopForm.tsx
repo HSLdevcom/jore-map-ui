@@ -69,27 +69,27 @@ class StopForm extends Component<IStopFormProps> {
         const routePathViewLink = RouteBuilder.to(SubSites.stopArea)
             .toTarget(':id', stopAreaId!)
             .toLink();
-        navigator.goTo(routePathViewLink);
+        navigator.goTo({ link: routePathViewLink });
     };
 
     private redirectToNewStopArea = () => {
         this.props.setCurrentStateIntoNodeCache!();
         const node = this.props.node;
-        let url;
+        let link;
         if (this.props.isNewStop) {
-            url = RouteBuilder.to(SubSites.newStopArea)
+            link = RouteBuilder.to(SubSites.newStopArea)
                 .append(
                     QueryParams.latLng,
                     `${node.coordinatesProjection.lat}:${node.coordinatesProjection.lng}`
                 )
                 .toLink();
         } else {
-            url = RouteBuilder.to(SubSites.newStopArea)
+            link = RouteBuilder.to(SubSites.newStopArea)
                 .append(QueryParams.nodeId, node.id)
                 .toLink();
         }
 
-        navigator.goTo(url);
+        navigator.goTo({ link });
     };
 
     render() {

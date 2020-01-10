@@ -3,7 +3,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import { ILineHeader } from '~/models';
 import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
-import ToolbarStore from './toolbarStore';
+import NavigationStore from './navigationStore';
 
 export interface IMassEditLineHeader {
     id: number;
@@ -25,7 +25,7 @@ export class LineHeaderMassEditStore {
 
         reaction(
             () => this.isDirty,
-            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+            (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
     }
 

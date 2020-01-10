@@ -89,7 +89,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
             })
             .toLink();
 
-        navigator.goTo(newRoutePathLink);
+        navigator.goTo({ link: newRoutePathLink });
     };
 
     private fetchExistingPrimaryKeys = async (routeId: string) => {

@@ -7,7 +7,7 @@ import linkValidationModel, {
 } from '~/models/validationModels/linkValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { calculateLengthFromLatLngs, roundLatLngs } from '~/util/geomHelpers';
-import ToolbarStore from './toolbarStore';
+import NavigationStore from './navigationStore';
 import ValidationStore from './validationStore';
 
 export interface UndoState {
@@ -37,7 +37,7 @@ export class LinkStore {
 
         reaction(
             () => this.isDirty,
-            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+            (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }

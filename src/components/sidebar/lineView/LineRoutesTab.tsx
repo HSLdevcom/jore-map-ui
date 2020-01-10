@@ -25,12 +25,12 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     private redirectToNewRouteView = () => {
         const line = this.props.lineStore!.line;
 
-        const newRouteLink = routeBuilder
+        const newRouteViewLink = routeBuilder
             .to(SubSites.newRoute)
             .set(QueryParams.lineId, line!.id)
             .toLink();
 
-        navigator.goTo(newRouteLink);
+        navigator.goTo({ link: newRouteViewLink });
     };
 
     private renderRouteList = (routes: IRoute[]) => {
@@ -59,12 +59,12 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     };
 
     private redirectToRouteView = (routeId: string) => () => {
-        const openRouteLink = routeBuilder
+        const routeViewLink = routeBuilder
             .to(SubSites.routes, navigator.getQueryParamValues())
             .append(QueryParams.routes, routeId)
             .toLink();
         this.props.searchStore!.setSearchInput('');
-        navigator.goTo(openRouteLink);
+        navigator.goTo({ link: routeViewLink });
     };
 
     render() {

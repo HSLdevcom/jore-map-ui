@@ -50,10 +50,10 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
     };
 
     private onCloseButtonClick = () => {
-        const homeLink = routeBuilder.to(SubSites.home).toLink();
+        const homeViewLink = routeBuilder.to(SubSites.home).toLink();
         this.optionalConfirmPrompt({
             message: closePromptMessage,
-            defaultOnClick: () => navigator.goTo(homeLink),
+            defaultOnClick: () => navigator.goTo({ link: homeViewLink }),
             customOnClick: this.props.onCloseButtonClick,
             shouldShowMessage: this.props.shouldShowClosePromptMessage
         });
