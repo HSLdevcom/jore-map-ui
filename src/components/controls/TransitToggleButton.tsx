@@ -34,7 +34,7 @@ const TransitToggleButton = observer((props: ITransitToggleButtonProps) => {
             )}
             onClick={!props.disabled ? toggleActivity : void 0}
         >
-            {<TransitIcon transitType={props.type} withoutBox={true} />}
+            {<TransitIcon transitType={props.type} isWithoutBox={true} />}
         </div>
     );
 });

@@ -43,7 +43,7 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                     className={s.routeListItem}
                     onClick={this.redirectToRouteView(route.id)}
                 >
-                    <TransitIcon transitType={line!.transitType!} withoutBox={false} />
+                    <TransitIcon transitType={line!.transitType!} isWithoutBox={false} />
                     <div
                         className={classnames(
                             s.routeId,

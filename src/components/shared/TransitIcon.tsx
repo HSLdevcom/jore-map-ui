@@ -8,23 +8,23 @@ import TramIcon from '~/icons/icon-tram';
 
 interface ITransitIconProps {
     transitType: TransitType;
-    withoutBox: boolean;
+    isWithoutBox: boolean;
 }
 
 export default class TransitIcon extends React.Component<ITransitIconProps> {
     render() {
-        const { transitType, withoutBox } = this.props;
+        const { transitType, isWithoutBox } = this.props;
         switch (transitType) {
             case TransitType.BUS:
-                return <BusIcon height='24' withoutBox={withoutBox} />;
+                return <BusIcon height='24' isWithoutBox={isWithoutBox} />;
             case TransitType.SUBWAY:
-                return <SubwayIcon height='24' withoutBox={withoutBox} />;
+                return <SubwayIcon height='24' isWithoutBox={isWithoutBox} />;
             case TransitType.TRAM:
-                return <TramIcon height='24' withoutBox={withoutBox} />;
+                return <TramIcon height='24' isWithoutBox={isWithoutBox} />;
             case TransitType.TRAIN:
-                return <TrainIcon height='24' withoutBox={withoutBox} />;
+                return <TrainIcon height='24' isWithoutBox={isWithoutBox} />;
             case TransitType.FERRY:
-                return <FerryIcon height='24' withoutBox={withoutBox} />;
+                return <FerryIcon height='24' isWithoutBox={isWithoutBox} />;
             default:
                 throw `Missing icon for transitType: ${transitType}`;
         }

@@ -62,7 +62,10 @@ class LineItem extends React.Component<ILineItemProps> {
             <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
-                        <TransitIcon transitType={this.props.line.transitType} withoutBox={false} />
+                        <TransitIcon
+                            transitType={this.props.line.transitType}
+                            isWithoutBox={false}
+                        />
                     </div>
                     <div
                         className={classNames(

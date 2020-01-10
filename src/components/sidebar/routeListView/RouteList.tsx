@@ -239,7 +239,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     <div className={s.routeName}>
                                         <TransitIcon
                                             transitType={route!.line!.transitType!}
-                                            withoutBox={false}
+                                            isWithoutBox={false}
                                         />
                                         <div
                                             className={classnames(
