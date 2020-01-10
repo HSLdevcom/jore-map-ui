@@ -102,7 +102,7 @@ const InputContainer = observer((props: IInputProps) => {
         );
     }
     return (
-        <div className={classnames(s.formItem, s.inputContainer, props.className)}>
+        <div className={classnames(s.formItem, props.className)}>
             {props.label && (
                 <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
                     {props.label}
