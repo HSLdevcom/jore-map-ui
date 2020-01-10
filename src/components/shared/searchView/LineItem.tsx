@@ -8,8 +8,8 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
-import LineHelper from '~/util/LineHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
+import TransitIcon from '../TransitIcon';
 import * as s from './lineItem.scss';
 
 interface ILineItemProps {
@@ -62,7 +62,7 @@ class LineItem extends React.Component<ILineItemProps> {
             <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
-                        {LineHelper.getTransitIcon(this.props.line.transitType, false)}
+                        <TransitIcon transitType={this.props.line.transitType} withoutBox={false} />
                     </div>
                     <div
                         className={classNames(

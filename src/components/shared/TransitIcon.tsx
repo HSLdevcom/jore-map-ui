@@ -6,11 +6,14 @@ import SubwayIcon from '~/icons/icon-subway';
 import TrainIcon from '~/icons/icon-train';
 import TramIcon from '~/icons/icon-tram';
 
-class LineHelper {
-    // TODO: move into TransitTypeHelper(?)
-    // TODO: change params as object
-    // TOOD: rename withoutBox as "type color: white | blue (default)"
-    public static getTransitIcon = (transitType: TransitType, withoutBox: boolean) => {
+interface ITransitIconProps {
+    transitType: TransitType;
+    withoutBox: boolean;
+}
+
+export default class TransitIcon extends React.Component<ITransitIconProps> {
+    render() {
+        const { transitType, withoutBox } = this.props;
         switch (transitType) {
             case TransitType.BUS:
                 return <BusIcon height='24' withoutBox={withoutBox} />;
@@ -23,9 +26,7 @@ class LineHelper {
             case TransitType.FERRY:
                 return <FerryIcon height='24' withoutBox={withoutBox} />;
             default:
-                return <div>puuttuu</div>;
+                throw `Missing icon for transitType: ${transitType}`;
         }
-    };
+    }
 }
-
-export default LineHelper;
