@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import TransitIcon from '~/components/shared/TransitIcon';
 import ButtonType from '~/enums/buttonType';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -21,7 +22,6 @@ import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
-import LineHelper from '~/util/LineHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import Loader from '../../shared/loader/Loader';
 import SidebarHeader from '../SidebarHeader';
@@ -237,7 +237,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     onEditButtonClick={() => this.editRoutePrompt(route)}
                                 >
                                     <div className={s.routeName}>
-                                        {LineHelper.getTransitIcon(route.line!.transitType!, false)}
+                                        <TransitIcon
+                                            transitType={route!.line!.transitType!}
+                                            isWithoutBox={false}
+                                        />
                                         <div
                                             className={classnames(
                                                 s.label,

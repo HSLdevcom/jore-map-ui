@@ -4,7 +4,7 @@ import React from 'react';
 
 interface IFerryIconProps {
     height: string;
-    withoutBox: boolean;
+    isWithoutBox: boolean;
 }
 
 const ferryIcon: React.SFC<IFerryIconProps> = props => {
@@ -53,7 +53,7 @@ const ferryIcon: React.SFC<IFerryIconProps> = props => {
         </svg>
     );
 
-    return props.withoutBox ? iconWithoutBox : icon;
+    return props.isWithoutBox ? iconWithoutBox : icon;
 };
 
 export default ferryIcon;

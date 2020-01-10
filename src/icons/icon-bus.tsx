@@ -4,7 +4,7 @@ import React from 'react';
 
 interface IBusIconProps {
     height: string;
-    withoutBox: boolean;
+    isWithoutBox: boolean;
 }
 
 const busIcon: React.SFC<IBusIconProps> = props => {
@@ -61,7 +61,7 @@ const busIcon: React.SFC<IBusIconProps> = props => {
         </svg>
     );
 
-    return props.withoutBox ? iconWithoutBox : icon;
+    return props.isWithoutBox ? iconWithoutBox : icon;
 };
 
 export default busIcon;

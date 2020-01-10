@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
+import TransitIcon from '~/components/shared/TransitIcon';
 import ButtonType from '~/enums/buttonType';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -10,7 +11,6 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { LineStore } from '~/stores/lineStore';
 import { SearchStore } from '~/stores/searchStore';
-import LineHelper from '~/util/LineHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import s from './lineRoutesTab.scss';
 
@@ -43,7 +43,7 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                     className={s.routeListItem}
                     onClick={this.redirectToRouteView(route.id)}
                 >
-                    {LineHelper.getTransitIcon(line!.transitType!, false)}
+                    <TransitIcon transitType={line!.transitType!} isWithoutBox={false} />
                     <div
                         className={classnames(
                             s.routeId,

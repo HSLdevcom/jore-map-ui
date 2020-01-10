@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import React from 'react';
 import TransitType from '~/enums/transitType';
-import lineHelper from '~/util/LineHelper';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
+import TransitIcon from '../shared/TransitIcon';
 import * as s from './transitToggleButton.scss';
 
 interface ITransitToggleButtonProps {
@@ -34,7 +34,7 @@ const TransitToggleButton = observer((props: ITransitToggleButtonProps) => {
             )}
             onClick={!props.disabled ? toggleActivity : void 0}
         >
-            {lineHelper.getTransitIcon(props.type, true)}
+            {<TransitIcon transitType={props.type} isWithoutBox={true} />}
         </div>
     );
 });
