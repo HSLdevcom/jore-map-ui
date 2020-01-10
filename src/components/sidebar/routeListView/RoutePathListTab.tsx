@@ -22,19 +22,19 @@ interface IRouteItemProps {
     mapStore?: MapStore;
 }
 
-const ROUTE_PATH_SHOW_LIMIT = 3;
+const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 
 @inject('routeListStore', 'mapStore')
 @observer
 class RoutePathListTab extends React.Component<IRouteItemProps> {
-    private groupRoutePathsOnDates = (routePaths: IRoutePath[]) => {
+    private groupRoutePathsOnDates = (routePaths: IRoutePath[]): IRoutePath[][] => {
         const res = {};
         routePaths.forEach(rp => {
             const identifier = rp.startTime.toLocaleDateString() + rp.endTime.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
 
-        const list = Object.values(res);
+        const list: IRoutePath[][] = Object.values(res);
         list.sort(
             (a: IRoutePath[], b: IRoutePath[]) =>
                 b[0].startTime.getTime() - a[0].startTime.getTime()
@@ -98,17 +98,8 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
         });
     };
 
-    private renderList = () => {
-        const routePaths = this.props.route.routePaths;
-        if (routePaths.length === 0) {
-            return <div className={s.noRoutePathsMessage}>Reitillä ei ole reitin suuntia.</div>;
-        }
-        const groupedRoutePaths = this.groupRoutePathsOnDates(routePaths);
-        const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
-            ? groupedRoutePaths
-            : groupedRoutePaths.slice(0, ROUTE_PATH_SHOW_LIMIT);
-
-        return groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {
+    private renderGroupedRoutePaths = (groupedRoutePaths: IRoutePath[][]) => {
+        return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
             const first = routePaths[0];
             const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
 
@@ -127,27 +118,39 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
     };
 
     render() {
+        const routePaths = this.props.route.routePaths;
+        if (routePaths.length === 0) {
+            return (
+                <div className={s.routePathListTab}>
+                    <div className={s.noRoutePathsMessage}>Reitillä ei ole reitin suuntia.</div>
+                </div>
+            );
+        }
+        const groupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
+        const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
+            ? groupedRoutePaths
+            : groupedRoutePaths.slice(0, ROUTE_PATH_GROUP_SHOW_LIMIT);
+
         return (
             <div className={s.routePathListTab}>
-                {this.renderList()}
-                {this.props.route.routePaths &&
-                    this.props.route.routePaths.length > ROUTE_PATH_SHOW_LIMIT && (
-                        <div
-                            className={s.toggleAllRoutePathsVisibleButton}
-                            onClick={this.props.toggleAllRoutePathsVisible}
-                        >
-                            {!this.props.areAllRoutePathsVisible && (
-                                <div className={s.threeDots}>...</div>
-                            )}
-                            <div className={s.toggleAllRoutePathsVisibleText}>
-                                {this.props.areAllRoutePathsVisible
-                                    ? `Piilota reitinsuunnat`
-                                    : `Näytä kaikki reitinsuunnat (${
-                                          this.props.route.routePaths.length
-                                      })`}
-                            </div>
+                {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}
+                {groupedRoutePaths.length > ROUTE_PATH_GROUP_SHOW_LIMIT && (
+                    <div
+                        className={s.toggleAllRoutePathsVisibleButton}
+                        onClick={this.props.toggleAllRoutePathsVisible}
+                    >
+                        {!this.props.areAllRoutePathsVisible && (
+                            <div className={s.threeDots}>...</div>
+                        )}
+                        <div className={s.toggleAllRoutePathsVisibleText}>
+                            {this.props.areAllRoutePathsVisible
+                                ? `Piilota reitinsuunnat`
+                                : `Näytä kaikki reitinsuunnat (${
+                                      this.props.route.routePaths.length
+                                  })`}
                         </div>
-                    )}
+                    </div>
+                )}
             </div>
         );
     }

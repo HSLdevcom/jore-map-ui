@@ -1,13 +1,11 @@
 @import '../shared/styles/common';
 @import '../shared/styles/form';
 
-.inputContainer {
-    .inputField {
-        display: flex;
-        align-items: center;
-    }
+.inputField {
+    display: flex;
+    align-items: center;
+}
 
-    .redInputText {
-        color: $red;
-    }
+.redInputText {
+    color: $red;
 }

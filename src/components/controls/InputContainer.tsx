@@ -80,29 +80,21 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
     return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
 };
 
-const renderUneditableContent = (props: IInputProps) => {
-    return (
-        <TextContainer
-            label={props.label}
-            value={props.value}
-            isTimeIncluded={props.isTimeIncluded}
-            isInputLabelDarker={props.isInputLabelDarker}
-            isInputColorRed={props.isInputColorRed}
-        />
-    );
-};
-
 const InputContainer = observer((props: IInputProps) => {
     if (props.disabled) {
         return (
-            <>
-                {renderUneditableContent(props)}
-                {renderValidatorResult(props.validationResult)}
-            </>
+            <TextContainer
+                label={props.label}
+                value={props.value}
+                validationResult={props.validationResult}
+                isTimeIncluded={props.isTimeIncluded}
+                isInputLabelDarker={props.isInputLabelDarker}
+                isInputColorRed={props.isInputColorRed}
+            />
         );
     }
     return (
-        <div className={classnames(s.formItem, s.inputContainer, props.className)}>
+        <div className={classnames(s.formItem, props.className)}>
             {props.label && (
                 <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
                     {props.label}
