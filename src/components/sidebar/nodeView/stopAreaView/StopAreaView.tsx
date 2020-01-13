@@ -258,7 +258,6 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewStopArea}
                         isEditing={!isEditingDisabled}
-                        shouldShowClosePromptMessage={stopAreaStore.isDirty!}
                         onEditButtonClick={stopAreaStore.toggleIsEditingDisabled}
                     >
                         {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Pysäkkialue'}

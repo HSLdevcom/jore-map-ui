@@ -251,7 +251,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewLink}
                         isEditing={!isEditingDisabled}
-                        shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
                         onEditButtonClick={this.props.linkStore!.toggleIsEditingDisabled}
                     >
                         Linkki

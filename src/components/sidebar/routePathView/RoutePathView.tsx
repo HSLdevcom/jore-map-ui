@@ -328,7 +328,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         return (
             <div className={s.routePathView}>
                 <RoutePathHeader
-                    hasModifications={routePathStore!.isDirty}
                     routePath={routePathStore!.routePath!}
                     isNewRoutePath={this.props.isNewRoutePath}
                     isEditing={!routePathStore!.isEditingDisabled}

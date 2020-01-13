@@ -418,7 +418,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!isNewNode}
-                        shouldShowClosePromptMessage={nodeStore.isDirty}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={nodeStore.toggleIsEditingDisabled}
                     >

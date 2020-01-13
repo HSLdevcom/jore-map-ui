@@ -13,7 +13,6 @@ import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
-import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import { MapStore } from '~/stores/mapStore';
 import SidebarHeader from '../SidebarHeader';
@@ -26,7 +25,6 @@ interface ILineViewProps {
     isNewLine: boolean;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
-    lineHeaderMassEditStore?: LineHeaderMassEditStore;
     lineStore?: LineStore;
     confirmStore?: ConfirmStore;
     mapStore?: MapStore;
@@ -37,14 +35,7 @@ interface ILineViewState {
     selectedTabIndex: number;
 }
 
-@inject(
-    'lineStore',
-    'lineHeaderMassEditStore',
-    'errorStore',
-    'alertStore',
-    'mapStore',
-    'confirmStore'
-)
+@inject('lineStore', 'errorStore', 'alertStore', 'mapStore', 'confirmStore')
 @observer
 class LineView extends React.Component<ILineViewProps, ILineViewState> {
     constructor(props: ILineViewProps) {
@@ -163,7 +154,6 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
 
     render() {
         const lineStore = this.props.lineStore;
-        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         if (this.state.isLoading) {
             return (
                 <div className={s.lineView}>
@@ -182,9 +172,6 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                         isEditButtonVisible={!this.props.isNewLine}
                         onEditButtonClick={lineStore!.toggleIsEditingDisabled}
                         isEditing={!lineStore!.isEditingDisabled}
-                        shouldShowClosePromptMessage={
-                            lineStore!.isDirty || lineHeaderMassEditStore!.isDirty
-                        }
                         shouldShowEditButtonClosePromptMessage={lineStore!.isDirty}
                     >
                         {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
