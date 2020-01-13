@@ -234,8 +234,11 @@ export class LineHeaderMassEditStore {
 
     @action
     public getLastLineHeader = (): ILineHeader | null => {
-        if (this._massEditLineHeaders && this._massEditLineHeaders.length > 0) {
-            return _.last(this._massEditLineHeaders!)!.lineHeader;
+        const massEditLineHeaders = this._massEditLineHeaders!.filter(
+            massEditLineHeader => !massEditLineHeader.isRemoved
+        );
+        if (massEditLineHeaders && massEditLineHeaders.length > 0) {
+            return _.last(massEditLineHeaders!)!.lineHeader;
         }
         return null;
     };

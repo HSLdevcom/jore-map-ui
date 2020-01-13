@@ -4,6 +4,13 @@
 .inputField {
     display: flex;
     align-items: center;
+    height: $inputFieldHeight;
+}
+
+.textField {
+    display: flex;
+    align-items: center;
+    line-height: $inputFieldHeight;
 }
 
 .redInputText {

@@ -105,7 +105,7 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             onMouseOut={() => this.highlightLink(link, false)}
                             onClick={() => this.promptRedirectToLink(link, this.props.popupId)}
                         >
-                            Linkki
+                            {`${link.startNodeId} - ${link.endNodeId}`}
                         </div>
                     );
                 })}

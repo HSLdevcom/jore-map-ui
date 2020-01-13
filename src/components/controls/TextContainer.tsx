@@ -28,7 +28,7 @@ const TextContainer = observer((props: ITextContainerProps) => (
         </div>
         <div
             className={classnames(
-                s.inputField,
+                s.textField,
                 s.staticHeight,
                 props.isInputColorRed ? s.redInputText : null
             )}
