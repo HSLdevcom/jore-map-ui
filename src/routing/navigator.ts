@@ -30,23 +30,11 @@ class Navigator {
         if (this.store.location.pathname === link) return;
 
         const redirect = () => this.store.history.push(link);
-        if (
-            !Boolean(shouldSkipUnsavedChangesPrompt) &&
-            NavigationStore.shouldShowUnsavedChangesPrompt
-        ) {
-            ConfirmStore!.openConfirm({
-                content: unsavedChangesPromptMessage
-                    ? unsavedChangesPromptMessage
-                    : DEFAULT_PROMPT_MESSAGE,
-                onConfirm: () => {
-                    NavigationStore.setShouldShowUnsavedChangesPrompt(false);
-                    redirect();
-                },
-                confirmButtonText: 'Kyllä'
-            });
-        } else {
-            redirect();
-        }
+        this.showUnsavedChangesPrompt({
+            unsavedChangesPromptMessage,
+            shouldSkipUnsavedChangesPrompt,
+            callback: redirect
+        });
     };
 
     // Instead of pushing to a stack (goTo function), replace current url
@@ -90,15 +78,53 @@ class Navigator {
         });
     };
 
-    public goBack() {
-        this.store.goBack();
-    }
+    public goBack = ({
+        unsavedChangesPromptMessage,
+        shouldSkipUnsavedChangesPrompt
+    }: {
+        unsavedChangesPromptMessage?: string;
+        shouldSkipUnsavedChangesPrompt?: boolean;
+    }) => {
+        this.showUnsavedChangesPrompt({
+            unsavedChangesPromptMessage,
+            shouldSkipUnsavedChangesPrompt,
+            callback: this.store.goBack
+        });
+    };
 
     /* not used yet
 
     public goForward() {
         this._store.goForward();
     } */
+
+    private showUnsavedChangesPrompt = ({
+        callback,
+        unsavedChangesPromptMessage,
+        shouldSkipUnsavedChangesPrompt
+    }: {
+        callback: Function;
+        unsavedChangesPromptMessage?: string;
+        shouldSkipUnsavedChangesPrompt?: boolean;
+    }) => {
+        if (
+            !Boolean(shouldSkipUnsavedChangesPrompt) &&
+            NavigationStore.shouldShowUnsavedChangesPrompt
+        ) {
+            ConfirmStore!.openConfirm({
+                content: unsavedChangesPromptMessage
+                    ? unsavedChangesPromptMessage
+                    : DEFAULT_PROMPT_MESSAGE,
+                onConfirm: () => {
+                    NavigationStore.setShouldShowUnsavedChangesPrompt(false);
+                    callback();
+                },
+                confirmButtonText: 'Kyllä'
+            });
+        } else {
+            callback();
+        }
+    };
 }
 
 export default new Navigator();

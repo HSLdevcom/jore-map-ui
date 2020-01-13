@@ -15,7 +15,7 @@ import LineStore from './stores/lineStore';
 import LinkStore from './stores/linkStore';
 import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
-import { NavigationStore } from './stores/navigationStore';
+import NavigationStore from './stores/navigationStore';
 import NetworkStore from './stores/networkStore';
 import NodeStore from './stores/nodeStore';
 import PopupStore from './stores/popupStore';
