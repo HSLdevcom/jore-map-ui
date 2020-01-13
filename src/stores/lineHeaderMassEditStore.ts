@@ -24,7 +24,7 @@ export class LineHeaderMassEditStore {
         this._isEditingDisabled = true;
 
         reaction(
-            () => this.isDirty,
+            () => this.isDirty && !this._isEditingDisabled,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
     }

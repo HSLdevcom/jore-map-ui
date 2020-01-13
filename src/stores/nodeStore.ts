@@ -63,7 +63,7 @@ class NodeStore {
         };
 
         reaction(
-            () => this.isDirty,
+            () => this.isDirty && !this._isEditingDisabled,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
         reaction(

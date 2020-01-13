@@ -22,7 +22,7 @@ export class LineStore {
         this._validationStore = new ValidationStore();
 
         reaction(
-            () => this.isDirty,
+            () => this.isDirty && !this._isEditingDisabled,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);

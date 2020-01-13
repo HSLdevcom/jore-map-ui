@@ -20,7 +20,7 @@ class RouteStore {
         this._validationStore = new ValidationStore();
 
         reaction(
-            () => this.isDirty,
+            () => this.isDirty && this._routeIdToEdit != null,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
     }
