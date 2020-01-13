@@ -172,7 +172,6 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                         isEditButtonVisible={!this.props.isNewLine}
                         onEditButtonClick={lineStore!.toggleIsEditingDisabled}
                         isEditing={!lineStore!.isEditingDisabled}
-                        shouldShowEditButtonClosePromptMessage={lineStore!.isDirty}
                     >
                         {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
                     </SidebarHeader>

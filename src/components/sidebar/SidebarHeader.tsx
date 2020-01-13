@@ -16,7 +16,6 @@ interface ISidebarHeaderProps {
     isBackButtonVisible?: boolean;
     isEditButtonVisible?: boolean;
     isEditing?: boolean;
-    shouldShowEditButtonClosePromptMessage?: boolean;
     onEditButtonClick?: () => void;
     onBackButtonClick?: () => void;
     onCloseButtonClick?: () => void;
