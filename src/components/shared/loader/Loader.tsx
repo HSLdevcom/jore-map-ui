@@ -8,6 +8,7 @@ type loaderSize = 'tiny' | 'small' | 'medium';
 interface ILoaderProps {
     size?: loaderSize;
     hasNoMargin?: boolean;
+    containerClassName?: string;
 }
 
 const Loader = observer((props: ILoaderProps) => (
@@ -15,7 +16,8 @@ const Loader = observer((props: ILoaderProps) => (
         className={classnames(
             s.loaderContainer,
             s[props.size! || 'medium'],
-            props.hasNoMargin ? s.hasNoMargin : undefined
+            props.hasNoMargin ? s.hasNoMargin : undefined,
+            props.containerClassName ? props.containerClassName : undefined
         )}
     >
         <div

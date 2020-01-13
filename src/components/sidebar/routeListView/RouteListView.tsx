@@ -1,6 +1,5 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Route } from 'react-router';
 import TransitType from '~/enums/transitType';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -43,7 +42,7 @@ class RouteListView extends React.Component<IRouteListViewProps> {
             <div className={s.routeListView}>
                 <SearchInput />
                 {this.props.searchStore!.searchInput === '' ? (
-                    <Route component={RouteList} />
+                    <RouteList />
                 ) : (
                     <>
                         <EntityTypeToggles />

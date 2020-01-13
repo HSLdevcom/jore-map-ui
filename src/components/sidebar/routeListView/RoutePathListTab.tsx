@@ -4,17 +4,24 @@ import Moment from 'moment';
 import React from 'react';
 import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
+import Loader from '~/components/shared/loader/Loader';
 import { IRoute, IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
+import RoutePathService from '~/services/routePathService';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { toDateString } from '~/util/dateHelpers';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import * as s from './routePathListTab.scss';
 
-interface IRouteItemProps {
+interface IRoutePathStopNames {
+    firstStopName: string;
+    lastStopName: string;
+}
+
+interface IRoutePathListTabProps {
     route: IRoute;
     areAllRoutePathsVisible: boolean;
     toggleAllRoutePathsVisible: () => void;
@@ -22,11 +29,55 @@ interface IRouteItemProps {
     mapStore?: MapStore;
 }
 
+interface IRoutePathListTabState {
+    stopNameMap: Map<string, IRoutePathStopNames>;
+    areStopNamesLoading: boolean;
+}
+
 const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 
 @inject('routeListStore', 'mapStore')
 @observer
-class RoutePathListTab extends React.Component<IRouteItemProps> {
+class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePathListTabState> {
+    private _isMounted: boolean;
+    constructor(props: IRoutePathListTabProps) {
+        super(props);
+        this.state = {
+            stopNameMap: new Map(),
+            areStopNamesLoading: true
+        };
+    }
+
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+
+
+    async componentDidMount() {
+        this._isMounted = true;
+        const stopNameMap = new Map();
+        const routePaths = this.props.route.routePaths;
+        for (let i = 0; i < routePaths.length; i += 1) {
+            const routePath: IRoutePath = routePaths[i];
+            const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath({
+                routeId: routePath.routeId,
+                direction: routePath.direction,
+                startTime: routePath.startTime
+            });
+            stopNameMap.set(routePath.internalId, stopNames);
+        }
+        this._setState({
+            stopNameMap,
+            areStopNamesLoading: false
+        });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]): IRoutePath[][] => {
         const res = {};
         routePaths.forEach(rp => {
@@ -68,6 +119,9 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
                 Moment(routePath.startTime).isBefore(Moment()) &&
                 Moment(routePath.endTime).isAfter(Moment());
 
+            const stopNames = this.state.stopNameMap.get(routePath.internalId);
+            const stopOriginFi = stopNames?.firstStopName ? stopNames.firstStopName : '-';
+            const stopDestinationFi = stopNames?.lastStopName ? stopNames?.lastStopName : '-';
             return (
                 <div className={s.routePathContainer} key={routePath.internalId}>
                     <div
@@ -77,7 +131,12 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
                                 : s.routePathInfo
                         }
                     >
-                        <div>{`${routePath.originFi}-${routePath.destinationFi}`}</div>
+                        {this.state.areStopNamesLoading ? (
+                            <Loader containerClassName={s.stopNameLoader} size='tiny' hasNoMargin={true} />
+                        ) :
+                            <div className={s.stopNames}>{`${stopOriginFi} - ${stopDestinationFi}`}</div>
+                        }
+                        <div className={s.routePathPoints}>{`${routePath.originFi} - ${routePath.destinationFi}`}</div>
                     </div>
                     <div className={s.routePathControls}>
                         <ToggleSwitch
