@@ -32,6 +32,18 @@ const revertPromptMessage =
 @inject('loginStore', 'confirmStore', 'navigationStore')
 @observer
 class SidebarHeader extends React.Component<ISidebarHeaderProps> {
+    private onEditButtonClick = () => {
+        if (this.props.navigationStore!.shouldShowUnsavedChangesPrompt) {
+            this.props.confirmStore!.openConfirm({
+                content: revertPromptMessage,
+                onConfirm: this.props.onEditButtonClick!,
+                confirmButtonText: 'Kyllä'
+            });
+        } else {
+            this.props.onEditButtonClick!();
+        }
+    };
+
     private onBackButtonClick = () => {
         const defaultOnClick = () => {
             navigator.goBack({ unsavedChangesPromptMessage: closePromptMessage });
@@ -43,6 +55,8 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
                     onConfirm: this.props.onBackButtonClick!,
                     confirmButtonText: 'Kyllä'
                 });
+            } else {
+                this.props.onBackButtonClick();
             }
         } else {
             defaultOnClick();
@@ -61,21 +75,11 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
                     onConfirm: this.props.onCloseButtonClick!,
                     confirmButtonText: 'Kyllä'
                 });
+            } else {
+                this.props.onCloseButtonClick();
             }
         } else {
             defaultOnClick();
-        }
-    };
-
-    private onEditButtonClick = () => {
-        if (this.props.navigationStore!.shouldShowUnsavedChangesPrompt) {
-            this.props.confirmStore!.openConfirm({
-                content: revertPromptMessage,
-                onConfirm: this.props.onEditButtonClick!,
-                confirmButtonText: 'Kyllä'
-            });
-        } else {
-            this.props.onEditButtonClick!();
         }
     };
 
