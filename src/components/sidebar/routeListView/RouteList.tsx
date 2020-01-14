@@ -152,7 +152,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             .to(SubSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, route.id)
             .toLink();
-        navigator.goTo({ link: closeRouteLink });
+        navigator.goTo({ link: closeRouteLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private editRoutePrompt = (route: IRoute) => {
@@ -236,6 +236,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     isEditing={isEditing}
                                     isBackButtonVisible={true}
                                     isEditButtonVisible={true}
+                                    isEditPromptHidden={true}
                                     onCloseButtonClick={() => this.closeRoutePrompt(route)}
                                     onEditButtonClick={() => this.editRoutePrompt(route)}
                                 >
