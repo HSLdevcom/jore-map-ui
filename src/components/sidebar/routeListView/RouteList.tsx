@@ -132,7 +132,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     };
 
     private closeRoutePrompt = (route: IRoute) => {
-        if (this.props.routeStore!.routeIdToEdit === route.id) {
+        if (
+            this.props.routeStore!.routeIdToEdit === route.id &&
+            this.props.routeStore!.shouldShowUnsavedChangesPrompt
+        ) {
             this.props.confirmStore!.openConfirm({
                 content: `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat sulkea reitin? Tallentamattomat muutokset kumotaan.`,
                 onConfirm: () => {
@@ -148,6 +151,9 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     private closeRoute = (route: IRoute) => {
         this.props.routeListStore!.removeFromRoutes(route.id);
+        if (this.props.routeStore!.routeIdToEdit === route.id) {
+            this.props.routeStore!.clear();
+        }
         const closeRouteLink = routeBuilder
             .to(SubSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, route.id)

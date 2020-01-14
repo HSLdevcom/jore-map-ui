@@ -21,7 +21,7 @@ class RouteStore {
         this._validationStore = new ValidationStore();
 
         reaction(
-            () => this.isDirty && this._routeIdToEdit != null,
+            () => this.shouldShowUnsavedChangesPrompt,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
         reaction(
@@ -63,6 +63,11 @@ class RouteStore {
             _.omit(this._route, ['line', 'routePaths']),
             _.omit(this._oldRoute, ['line', 'routePaths'])
         );
+    }
+
+    @computed
+    get shouldShowUnsavedChangesPrompt(): boolean {
+        return this.isDirty && this._routeIdToEdit != null;
     }
 
     @computed
