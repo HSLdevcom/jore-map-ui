@@ -97,7 +97,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
 
     private editLinePrompt = () => {
         if (!this.props.lineHeaderMassEditStore!.isEditingDisabled) {
-            this.props.navigationStore!.shouldShowUnsavedChangesPrompt;
             this.props.lineHeaderMassEditStore!.toggleIsEditingDisabled();
         }
         this.props.lineStore!.toggleIsEditingDisabled();
