@@ -4,7 +4,7 @@ import ConfirmStore from '~/stores/confirmStore';
 import NavigationStore from '~/stores/navigationStore';
 import QueryParams from './queryParams';
 
-const DEFAULT_PROMPT_MESSAGE = `Sinulla on tallentamattomia muutoksia. Poistua näkymästä? Tallentamattomat muutokset kumotaan.`;
+const DEFAULT_PROMPT_MESSAGE = `Sinulla on tallentamattomia muutoksia. Haluatko poistua näkymästä? Tallentamattomat muutokset kumotaan.`;
 
 class Navigator {
     private store: RouterStore;

@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { SearchResultStore } from '~/stores/searchResultStore';
@@ -19,14 +20,16 @@ class SearchInput extends React.Component<ISearchInputProps> {
     };
 
     render() {
+        const isDisabled = this.props.searchStore!.isSearchDisabled;
         return (
             <div className={s.lineSearchView}>
-                <div className={s.inputContainer}>
+                <div className={classnames(s.inputContainer, isDisabled ? s.disabled : undefined)}>
                     <input
                         placeholder='Hae'
                         type='text'
                         value={this.props.searchStore!.searchInput}
                         onChange={this.onSearchInputChange}
+                        disabled={isDisabled}
                     />
                     {this.props.searchResultStore!.isSearching && (
                         <div className={s.loader}>
