@@ -60,7 +60,7 @@ class AddNetworkLinkTool implements BaseTool {
             .to(SubSites.newLink)
             .toTarget(':id', [this.startNodeId, this.endNodeId].join(','))
             .toLink();
-        navigator.goTo(newLinkViewLink);
+        navigator.goTo({ link: newLinkViewLink });
         ToolbarStore.selectTool(null);
     };
 

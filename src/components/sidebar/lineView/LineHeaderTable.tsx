@@ -237,7 +237,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     isCloseButtonVisible={true}
                     isBackButtonVisible={true}
                     isEditButtonVisible={currentLineHeaders.length > 0}
-                    shouldShowClosePromptMessage={lineHeaderMassEditStore!.isDirty}
                 >
                     Linjan otsikot
                 </SidebarHeader>

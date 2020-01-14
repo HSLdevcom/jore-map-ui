@@ -17,7 +17,7 @@ import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/util/geomHelpers';
 import FormValidator from '~/validation/FormValidator';
-import ToolbarStore from './toolbarStore';
+import NavigationStore from './navigationStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 interface UndoState {
@@ -63,8 +63,8 @@ class NodeStore {
         };
 
         reaction(
-            () => this.isDirty,
-            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+            () => this.isDirty && !this._isEditingDisabled,
+            (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
         reaction(
             () => this._node && this._node.stop && this._node.stop.stopAreaId,
@@ -359,10 +359,19 @@ class NodeStore {
     };
 
     @action
-    public clearNodeCache = () => {
-        this._nodeCache = {
-            newNodeCache: null
-        };
+    public clearNodeCache = ({
+        nodeId,
+        shouldClearNewNodeCache
+    }: {
+        nodeId?: string;
+        shouldClearNewNodeCache?: boolean;
+    }) => {
+        if (shouldClearNewNodeCache) {
+            this._nodeCache.newNodeCache = null;
+        }
+        if (nodeId) {
+            this._nodeCache[nodeId] = null;
+        }
     };
 
     @action

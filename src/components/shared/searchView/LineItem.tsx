@@ -18,12 +18,12 @@ interface ILineItemProps {
 
 class LineItem extends React.Component<ILineItemProps> {
     private openRoute = (routeId: string) => () => {
-        const openRouteLink = routeBuilder
+        const routeViewLink = routeBuilder
             .to(SubSites.routes, navigator.getQueryParamValues())
             .append(QueryParams.routes, routeId)
             .toLink();
         searchStore.setSearchInput('');
-        navigator.goTo(openRouteLink);
+        navigator.goTo({ link: routeViewLink });
     };
 
     private renderRoute(route: ISearchLineRoute): any {
@@ -50,11 +50,11 @@ class LineItem extends React.Component<ILineItemProps> {
     }
 
     private redirectToLineView = (lineId: string) => () => {
-        const url = routeBuilder
+        const lineViewLink = routeBuilder
             .to(SubSites.line)
             .toTarget(':id', lineId)
             .toLink();
-        navigator.goTo(url);
+        navigator.goTo({ link: lineViewLink });
     };
 
     public render() {

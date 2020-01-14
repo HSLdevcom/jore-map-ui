@@ -6,7 +6,6 @@ import SidebarHeader from '../SidebarHeader';
 import * as s from './routePathView.scss';
 
 interface IRoutePathHeaderProps {
-    hasModifications?: boolean;
     routePath: IRoutePath;
     isNewRoutePath: boolean;
     isEditing: boolean;
@@ -19,7 +18,6 @@ const RoutePathHeader = observer((props: IRoutePathHeaderProps) => (
             isEditButtonVisible={!props.isNewRoutePath}
             onEditButtonClick={props.onEditButtonClick}
             isEditing={props.isEditing}
-            shouldShowClosePromptMessage={props.hasModifications!}
         >
             {props.isNewRoutePath
                 ? 'Uusi reitinsuunta'

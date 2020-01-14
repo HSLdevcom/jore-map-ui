@@ -66,11 +66,11 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     private openNode = (node: INode, popupId: number) => () => {
         this.props.popupStore!.closePopup(popupId);
-        const nodeLink = routeBuilder
+        const nodeViewLink = routeBuilder
             .to(SubSites.node)
             .toTarget(':id', node.id)
             .toLink();
-        navigator.goTo(nodeLink);
+        navigator.goTo({ link: nodeViewLink });
     };
 
     private renderRoutePathLinks = () => {

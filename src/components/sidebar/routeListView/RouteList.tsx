@@ -128,7 +128,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             .set(QueryParams.lineId, route.lineId)
             .toLink();
 
-        navigator.goTo(newRoutePathLink);
+        navigator.goTo({ link: newRoutePathLink });
     };
 
     private closeRoutePrompt = (route: IRoute) => {
@@ -152,7 +152,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             .to(SubSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, route.id)
             .toLink();
-        navigator.goTo(closeRouteLink);
+        navigator.goTo({ link: closeRouteLink });
     };
 
     private editRoutePrompt = (route: IRoute) => {

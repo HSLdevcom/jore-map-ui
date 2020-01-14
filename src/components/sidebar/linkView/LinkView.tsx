@@ -156,7 +156,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         }
 
         if (this.props.isNewLink) {
-            this.navigateToNewLink();
+            this.navigateToCreatedLink();
             return;
         }
         this.setState({ isLoading: false });
@@ -180,21 +180,21 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         });
     };
 
-    private navigateToNewLink = () => {
+    private navigateToCreatedLink = () => {
         const link = this.props.linkStore!.link;
         const linkViewLink = routeBuilder
             .to(SubSites.link)
             .toTarget(':id', [link.startNode.id, link.endNode.id, link.transitType].join(','))
             .toLink();
-        navigator.goTo(linkViewLink);
+        navigator.goTo({ link: linkViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private navigateToNode = (nodeId: string) => () => {
-        const editNetworkLink = routeBuilder
+        const nodeViewLink = routeBuilder
             .to(SubSites.node)
             .toTarget(':id', nodeId)
             .toLink();
-        navigator.goTo(editNetworkLink);
+        navigator.goTo({ link: nodeViewLink });
     };
 
     private selectTransitType = (transitType: TransitType) => {
@@ -251,7 +251,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewLink}
                         isEditing={!isEditingDisabled}
-                        shouldShowClosePromptMessage={this.props.linkStore!.isDirty!}
                         onEditButtonClick={this.props.linkStore!.toggleIsEditingDisabled}
                     >
                         Linkki

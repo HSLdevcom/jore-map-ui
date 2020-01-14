@@ -92,7 +92,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 [routeLink.startNode.id, routeLink.endNode.id, routeLink.transitType].join(',')
             )
             .toLink();
-        navigator.goTo(routeLinkViewLink);
+        navigator.goTo({ link: routeLinkViewLink });
     };
 
     private renderListIcon = () => <div className={s.linkIcon} />;

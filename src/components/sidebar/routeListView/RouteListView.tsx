@@ -29,8 +29,8 @@ class RouteListView extends React.Component<IRouteListViewProps> {
 
     componentDidUpdate() {
         if (!navigator.getQueryParam(QueryParams.routes)) {
-            const homeLink = routeBuilder.to(subSites.home).toLink();
-            navigator.goTo(homeLink);
+            const homeViewLink = routeBuilder.to(subSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
         }
     }
 

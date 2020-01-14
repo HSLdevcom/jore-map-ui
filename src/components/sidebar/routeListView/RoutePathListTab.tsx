@@ -61,7 +61,7 @@ class RoutePathListTab extends React.Component<IRouteItemProps> {
                         ].join(',')
                     )
                     .toLink();
-                navigator.goTo(routePathViewLink);
+                navigator.goTo({ link: routePathViewLink });
             };
 
             const isWithinTimeSpan =

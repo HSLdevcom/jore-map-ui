@@ -6,6 +6,7 @@ import { IStopItem } from '~/models/IStop';
 import stopAreaValidationModel, {
     IStopAreaValidationModel
 } from '~/models/validationModels/stopAreaValidationModel';
+import NavigationStore from './navigationStore';
 import ValidationStore from './validationStore';
 
 export interface UndoState {
@@ -28,6 +29,10 @@ export class StopAreaStore {
         this._validationStore = new ValidationStore();
 
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
+        reaction(
+            () => this.isDirty && !this._isEditingDisabled,
+            (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
+        );
     }
 
     @computed

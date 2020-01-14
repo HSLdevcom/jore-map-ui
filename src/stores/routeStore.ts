@@ -5,7 +5,7 @@ import routeValidationModel, {
     IRouteValidationModel
 } from '~/models/validationModels/routeValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
-import ToolbarStore from './toolbarStore';
+import NavigationStore from './navigationStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 class RouteStore {
@@ -20,8 +20,8 @@ class RouteStore {
         this._validationStore = new ValidationStore();
 
         reaction(
-            () => this.isDirty,
-            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+            () => this.isDirty && this._routeIdToEdit != null,
+            (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
     }
 

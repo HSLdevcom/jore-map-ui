@@ -39,8 +39,8 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
     }
 
     private goToHomeView = () => {
-        const homeLink = routeBuilder.to(SubSites.home).toLink();
-        navigator.goTo(homeLink);
+        const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+        navigator.goTo({ link: homeViewLink });
     };
 
     private syncLocalDatabase = async () => {
