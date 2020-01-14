@@ -6,6 +6,7 @@ import routeValidationModel, {
 } from '~/models/validationModels/routeValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
+import SearchStore from './searchStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 class RouteStore {
@@ -22,6 +23,10 @@ class RouteStore {
         reaction(
             () => this.isDirty && this._routeIdToEdit != null,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
+        );
+        reaction(
+            () => this._routeIdToEdit != null,
+            (value: boolean) => SearchStore.setIsSearchDisabled(value)
         );
     }
 
