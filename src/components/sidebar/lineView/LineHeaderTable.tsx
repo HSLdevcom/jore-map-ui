@@ -218,7 +218,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
 
     private editLineHeaderPrompt = () => {
         if (!this.props.lineStore!.isEditingDisabled) {
-            this.props.navigationStore!.shouldShowUnsavedChangesPrompt;
             this.props.lineStore!.toggleIsEditingDisabled();
         }
         this.props.lineHeaderMassEditStore!.toggleIsEditingDisabled();
