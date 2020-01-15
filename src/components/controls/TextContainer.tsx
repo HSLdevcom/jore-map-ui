@@ -6,7 +6,7 @@ import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './inputContainer.scss';
 
 interface ITextContainerProps {
-    label: string | JSX.Element;
+    label?: string | JSX.Element;
     value?: string | number | null | Date;
     validationResult?: IValidationResult;
     isTimeIncluded?: boolean;
@@ -23,12 +23,14 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
 
 const TextContainer = observer((props: ITextContainerProps) => (
     <div className={s.formItem}>
-        <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-            {props.label}
-        </div>
+        {props.label && (
+            <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                {props.label}
+            </div>
+        )}
         <div
             className={classnames(
-                s.inputField,
+                s.textField,
                 s.staticHeight,
                 props.isInputColorRed ? s.redInputText : null
             )}

@@ -4,6 +4,7 @@ $marginRight: 10px;
 $labelColor: $mediumGrey;
 $darkLabelColor: #535353;
 $inputFieldHeight: 42px;
+$textFieldLineHeight: 25px;
 
 .formItem {
     margin-right: $marginRight;
@@ -21,7 +22,6 @@ $inputFieldHeight: 42px;
 .staticHeight {
     display: flex;
     align-items: center;
-    height: $inputFieldHeight;
 }
 
 .inputLabel {

@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { InputActionMeta } from 'react-select/src/types';
 import { IValidationResult } from '~/validation/FormValidator';
 import Loader from '../shared/loader/Loader';
+import TextContainer from './TextContainer';
 import * as s from './dropdown.scss';
 
 export interface IDropdownItem {
@@ -122,6 +123,22 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                 displayedItems.push(selectedItem);
             }
         }
+        if (props.isLoading) {
+            return (
+                <div className={s.formItem}>
+                    <Loader size='small' />
+                </div>
+            );
+        }
+
+        if (props.disabled) {
+            return (
+                <TextContainer
+                    label={props.label}
+                    value={Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}
+                />
+            );
+        }
 
         // <Select/> works with null values instead of undefined
         const selectValue: IDropdownItem | null = selectedItem ? selectedItem : null;
@@ -135,41 +152,28 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                             {props.label}
                         </div>
                     )}
-                    {props.isLoading ? (
-                        <Loader size='small' />
-                    ) : props.disabled ? (
-                        <div className={s.disableEditing}>
-                            {Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}
-                        </div>
-                    ) : (
-                        <>
-                            <Select
-                                value={selectValue}
-                                onChange={onChange}
-                                onInputChange={this.handleInputChange}
-                                options={displayedItems}
-                                isDisabled={props.disabled}
-                                isSearchable={true}
-                                filterOption={null}
-                                placeholder={'Valitse...'}
-                                styles={_getCustomStyles(this.props)}
-                                noOptionsMessage={() =>
-                                    props.isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
-                                }
-                                hideSelectedOptions={Boolean(this.props.isSelectedOptionHidden)}
-                                className={this.props.isBackgroundGrey ? s.greyBackground : ''}
-                            />
-                            <div>
-                                {validationResult &&
-                                    validationResult.errorMessage &&
-                                    !props.disabled && (
-                                        <div className={s.errorMessage}>
-                                            {validationResult.errorMessage}
-                                        </div>
-                                    )}
-                            </div>
-                        </>
-                    )}
+
+                    <Select
+                        value={selectValue}
+                        onChange={onChange}
+                        onInputChange={this.handleInputChange}
+                        options={displayedItems}
+                        isDisabled={props.disabled}
+                        isSearchable={true}
+                        filterOption={null}
+                        placeholder={'Valitse...'}
+                        styles={_getCustomStyles(this.props)}
+                        noOptionsMessage={() =>
+                            props.isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
+                        }
+                        hideSelectedOptions={Boolean(this.props.isSelectedOptionHidden)}
+                        className={this.props.isBackgroundGrey ? s.greyBackground : ''}
+                    />
+                    <div>
+                        {validationResult && validationResult.errorMessage && !props.disabled && (
+                            <div className={s.errorMessage}>{validationResult.errorMessage}</div>
+                        )}
+                    </div>
                 </div>
             </div>
         );
