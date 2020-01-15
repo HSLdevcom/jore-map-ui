@@ -169,11 +169,10 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             <div className={s.lineView}>
                 <div className={s.sidebarHeaderSection}>
                     <SidebarHeader
-                        isEditButtonVisible={!this.props.isNewLine}
                         onEditButtonClick={lineStore!.toggleIsEditingDisabled}
                         isEditing={!lineStore!.isEditingDisabled}
                     >
-                        {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
+                        {this.props.isNewLine ? 'Luo uusi linja' : `Linja ja sen otsikot`}
                     </SidebarHeader>
                 </div>
                 <Tabs>
@@ -194,6 +193,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                                 isEditingDisabled={isEditingDisabled}
                                 saveLine={this.showSavePrompt}
                                 isLineSaveButtonDisabled={isSaveButtonDisabled}
+                                isNewLine={this.props.isNewLine}
                             />
                         </ContentItem>
                         <ContentItem>
