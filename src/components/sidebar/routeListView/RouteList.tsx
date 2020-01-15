@@ -114,7 +114,9 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             });
         });
         if (!bounds.isValid()) {
-            this.props.mapStore!.initCoordinates();
+            if (this.state.isLoading) {
+                this.props.mapStore!.initCoordinates();
+            }
             return;
         }
 

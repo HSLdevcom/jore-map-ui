@@ -83,6 +83,35 @@ const getRoutePathQuery = () => {
         }`;
 };
 
+const getFirstAndLastStopNamesOfRoutePath = () => {
+    return gql`
+        query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
+            routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(
+                reitunnus: $routeId
+                suuvoimast: $startDate
+                suusuunta: $direction
+            ) {
+                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
+                    nodes {
+                        reljarjnro
+                        solmuByLnkalkusolmu {
+                            soltyyppi
+                            pysakkiBySoltunnus {
+                                pysnimi
+                            }
+                        }
+                        solmuByLnkloppusolmu {
+                            pysakkiBySoltunnus {
+                                pysnimi
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    `;
+};
+
 const getRoutePathLinkQuery = () => {
     return gql`query getRoutePathLink($routeLinkId: Int!) {
             routePathLink: reitinlinkkiByRelid(relid: $routeLinkId) {
@@ -656,6 +685,7 @@ export default {
     getRouteQuery,
     getAllRoutesQuery,
     getRoutePathQuery,
+    getFirstAndLastStopNamesOfRoutePath,
     getRoutePathLinkQuery,
     getRoutePathSegmentQuery,
     getLinksByStartNodeQuery,

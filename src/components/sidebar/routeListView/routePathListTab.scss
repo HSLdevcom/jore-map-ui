@@ -34,16 +34,19 @@
                 font-weight: bold;
             }
 
-            .routePathDate {
-                font-size: $smallFontSize;
-                padding-left: 10px;
-                padding-top: 2px;
+            .stopNameLoader {
                 display: flex;
+                justify-content: center;
+                width: 150px;
+            }
 
-                .dateDeltaSeparator {
-                    min-width: 20px;
-                    text-align: center;
-                }
+            .stopNames {
+                font-size: $mediumFontSize;
+            }
+
+            .routePathPoints {
+                color: $mediumLightGrey;
+                font-size: $smallFontSize;
             }
         }
 
