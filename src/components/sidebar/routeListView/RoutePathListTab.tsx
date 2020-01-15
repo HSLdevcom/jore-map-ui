@@ -32,6 +32,7 @@ interface IRoutePathListTabProps {
 interface IRoutePathListTabState {
     stopNameMap: Map<string, IRoutePathStopNames>;
     areStopNamesLoading: boolean;
+    groupedRoutePathsToDisplay: IRoutePath[][];
 }
 
 const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
@@ -44,7 +45,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         super(props);
         this.state = {
             stopNameMap: new Map(),
-            areStopNamesLoading: true
+            areStopNamesLoading: true,
+            groupedRoutePathsToDisplay: []
         };
     }
 
@@ -54,28 +56,63 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         }
     };
 
-
-    async componentDidMount() {
+    componentWillMount() {
         this._isMounted = true;
-        const stopNameMap = new Map();
-        const routePaths = this.props.route.routePaths;
-        for (let i = 0; i < routePaths.length; i += 1) {
-            const routePath: IRoutePath = routePaths[i];
-            const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath({
-                routeId: routePath.routeId,
-                direction: routePath.direction,
-                startTime: routePath.startTime
-            });
-            stopNameMap.set(routePath.internalId, stopNames);
+        this.updateGroupedRoutePathsToDisplay();
+    }
+
+    componentDidUpdate(prevProps: IRoutePathListTabProps) {
+        if (prevProps.areAllRoutePathsVisible !== this.props.areAllRoutePathsVisible) {
+            this.updateGroupedRoutePathsToDisplay();
         }
-        this._setState({
-            stopNameMap,
-            areStopNamesLoading: false
-        });
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+    }
+
+    private updateGroupedRoutePathsToDisplay = () => {
+        const routePaths = this.props.route.routePaths;
+        const groupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
+        const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
+            ? groupedRoutePaths
+            : groupedRoutePaths.slice(0, ROUTE_PATH_GROUP_SHOW_LIMIT);
+        this.fetchStopNames(groupedRoutePathsToDisplay);
+        this._setState({
+            groupedRoutePathsToDisplay
+        });
+    }
+
+    private fetchStopNames = async (groupedRoutePathsToDisplay: IRoutePath[][]) => {
+        const stopNameMap = this.state.stopNameMap;
+        this._setState({
+            areStopNamesLoading: true
+        });
+        const promises: Promise<void>[] = [];
+        for (const routePaths of groupedRoutePathsToDisplay) {
+            for (let i = 0; i < routePaths.length; i += 1) {
+                const routePath: IRoutePath = routePaths[i];
+                const oldStopNames = stopNameMap.get(routePath.internalId);
+                if (!oldStopNames) {
+                    const createPromise = async () => {
+                        const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath({
+                            routeId: routePath.routeId,
+                            direction: routePath.direction,
+                            startTime: routePath.startTime
+                        });
+                        stopNameMap.set(routePath.internalId, stopNames as IRoutePathStopNames);
+                    }
+                    promises.push(createPromise());
+                }
+            }
+        }
+
+        Promise.all(promises).then(() => {
+            this._setState({
+                stopNameMap,
+                areStopNamesLoading: false
+            });
+        })
     }
 
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]): IRoutePath[][] => {
@@ -120,6 +157,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 Moment(routePath.endTime).isAfter(Moment());
 
             const stopNames = this.state.stopNameMap.get(routePath.internalId);
+            const isLoading = !stopNames && this.state.areStopNamesLoading;
             const stopOriginFi = stopNames?.firstStopName ? stopNames.firstStopName : '-';
             const stopDestinationFi = stopNames?.lastStopName ? stopNames?.lastStopName : '-';
             return (
@@ -131,7 +169,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                                 : s.routePathInfo
                         }
                     >
-                        {this.state.areStopNamesLoading ? (
+                        {isLoading ? (
                             <Loader containerClassName={s.stopNameLoader} size='tiny' hasNoMargin={true} />
                         ) :
                             <div className={s.stopNames}>{`${stopOriginFi} - ${stopDestinationFi}`}</div>
@@ -185,15 +223,11 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 </div>
             );
         }
-        const groupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
-        const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
-            ? groupedRoutePaths
-            : groupedRoutePaths.slice(0, ROUTE_PATH_GROUP_SHOW_LIMIT);
-
+        const groupedRoutePathsToDisplay = this.state.groupedRoutePathsToDisplay;
         return (
             <div className={s.routePathListTab}>
                 {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}
-                {groupedRoutePaths.length > ROUTE_PATH_GROUP_SHOW_LIMIT && (
+                {routePaths.length > ROUTE_PATH_GROUP_SHOW_LIMIT && (
                     <div
                         className={s.toggleAllRoutePathsVisibleButton}
                         onClick={this.props.toggleAllRoutePathsVisible}
