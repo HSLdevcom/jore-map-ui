@@ -1,0 +1,12 @@
+{
+    "baseUrl": "http://localhost:3000",
+    "viewportWidth": 1366,
+    "viewportHeight": 1200,
+    "watchForFileChanges": true,
+    "defaultCommandTimeout": 4000,
+    "numTestsKeptInMemory": 3,
+    "env": {
+        "AUTH_URI": "https://hslid-uat.cinfra.fi/openid/token",
+        "AUTH_SCOPE": "email https://oneportal.trivore.com/scope/groups.readonly"
+    }
+}

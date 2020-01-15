@@ -20,7 +20,7 @@ class SearchInput extends React.Component<ISearchInputProps> {
 
     render() {
         return (
-            <div className={s.lineSearchView}>
+            <div className={s.lineSearchView} data-cy='lineSearch'>
                 <div className={s.inputContainer}>
                     <input
                         placeholder='Hae'

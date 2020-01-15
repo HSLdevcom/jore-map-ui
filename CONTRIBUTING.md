@@ -59,3 +59,7 @@ get foo2
 actions
 ...
 ```
+
+### Cypress
+
+- target elements with data-cy='<className_here>'

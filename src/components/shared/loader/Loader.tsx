@@ -19,6 +19,7 @@ const Loader = observer((props: ILoaderProps) => (
         )}
     >
         <div
+            data-cy='loader'
             className={classnames(
                 s.loader,
                 s[props.size! || 'medium'],
