@@ -6,21 +6,25 @@ import hslLogo from '~/assets/hsl-logo.png';
 import constants from '~/constants/constants';
 import EndpointPath from '~/enums/endpointPath';
 import Environment from '~/enums/environment';
+import TransitType from '~/enums/transitType';
 import LoginIcon from '~/icons/icon-login';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import AuthService from '~/services/authService';
-import { AlertStore } from '~/stores/alertStore.js';
+import { AlertStore } from '~/stores/alertStore';
 import { LoginStore } from '~/stores/loginStore';
+import { UserStore } from '~/stores/userStore';
 import ApiClient from '~/util/ApiClient';
 import packageVersion from '../project/version.json';
 import * as s from './navigationBar.scss';
+import TransitIcon from './shared/TransitIcon';
 import Loader from './shared/loader/Loader';
 
 interface INavigationBarProps {
     alertStore?: AlertStore;
     loginStore?: LoginStore;
+    userStore?: UserStore;
 }
 
 interface INavigationBarState {
@@ -28,7 +32,7 @@ interface INavigationBarState {
     isDbSyncing?: boolean;
 }
 
-@inject('alertStore', 'loginStore')
+@inject('alertStore', 'loginStore', 'userStore')
 @observer
 class NavigationBar extends Component<INavigationBarProps, INavigationBarState> {
     constructor(props: INavigationBarProps) {
@@ -56,6 +60,13 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
         this.setState({
             isSyncLoading: false
         });
+    };
+
+    private toggleUserType = () => {
+        const currentUserType = this.props.userStore!.userTransitType;
+        this.props.userStore!.setUserTransitType(
+            currentUserType === TransitType.BUS ? TransitType.TRAM : TransitType.BUS
+        );
     };
 
     render() {
@@ -103,7 +114,18 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                     )}
                 </div>
                 <div className={s.rightContentWrapper}>
-                    <IoMdContact className={s.navigationBarIcon} />
+                    <div
+                        className={s.navigationBarIcon}
+                        onClick={this.toggleUserType}
+                        title={'Vaihda käyttäjäkohtaisia preferenssejä'}
+                    >
+                        <TransitIcon
+                            transitType={this.props.userStore!.userTransitType}
+                            isWithoutBox={true}
+                        />
+                    </div>
+                    |
+                    <IoMdContact className={classnames(s.navigationBarIcon, s.contactIcon)} />
                     <div className={s.authInfo}>
                         <div>
                             {this.props.loginStore!.userEmail}

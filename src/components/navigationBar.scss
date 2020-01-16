@@ -73,6 +73,15 @@
         display: flex;
         align-items: center;
 
+        .toggleUserType {
+            display: flex;
+            margin-right: 8px;
+        }
+
+        .contactIcon {
+            cursor: default;
+        }
+
         .authInfo {
             display: flex;
             flex-direction: row;
@@ -88,7 +97,7 @@
             display: flex;
             align-items: center;
             cursor: pointer;
-            border-left: 1px solid #FFF;
+            border-left: 1px solid #fff;
             background-color: #007ac9;
         }
 
@@ -98,6 +107,7 @@
     }
 
     .navigationBarIcon {
+        display: flex;
         cursor: pointer;
         font-size: 32px;
         margin: 6px;

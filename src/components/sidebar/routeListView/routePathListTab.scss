@@ -12,7 +12,7 @@
         }
 
         .groupedRoutesContent {
-            padding-left: 25px;
+            padding-left: 10px;
         }
     }
 
@@ -30,8 +30,16 @@
         padding-top: 5px;
 
         .routePathInfo {
+            display: flex;
             &.highlight {
                 font-weight: bold;
+            }
+
+            .routePathDirection {
+                font-size: 1.2rem;
+                display: flex;
+                width: 25px;
+                align-items: center;
             }
 
             .stopNameLoader {
@@ -40,11 +48,11 @@
                 width: 150px;
             }
 
-            .stopNames {
+            .destinations1 {
                 font-size: $mediumFontSize;
             }
 
-            .routePathPoints {
+            .destinations2 {
                 color: $mediumLightGrey;
                 font-size: $smallFontSize;
             }

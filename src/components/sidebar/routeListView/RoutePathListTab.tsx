@@ -5,6 +5,7 @@ import React from 'react';
 import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import Loader from '~/components/shared/loader/Loader';
+import TransitType from '~/enums/transitType';
 import { IRoute, IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
@@ -12,6 +13,7 @@ import subSites from '~/routing/subSites';
 import RoutePathService from '~/services/routePathService';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
+import { UserStore } from '~/stores/userStore';
 import { toDateString } from '~/util/dateHelpers';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import * as s from './routePathListTab.scss';
@@ -27,17 +29,19 @@ interface IRoutePathListTabProps {
     toggleAllRoutePathsVisible: () => void;
     routeListStore?: RouteListStore;
     mapStore?: MapStore;
+    userStore?: UserStore;
 }
 
 interface IRoutePathListTabState {
     stopNameMap: Map<string, IRoutePathStopNames>;
     areStopNamesLoading: boolean;
+    allGroupedRoutePaths: IRoutePath[][];
     groupedRoutePathsToDisplay: IRoutePath[][];
 }
 
 const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 
-@inject('routeListStore', 'mapStore')
+@inject('routeListStore', 'mapStore', 'userStore')
 @observer
 class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePathListTabState> {
     private _isMounted: boolean;
@@ -46,6 +50,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.state = {
             stopNameMap: new Map(),
             areStopNamesLoading: true,
+            allGroupedRoutePaths: [],
             groupedRoutePathsToDisplay: []
         };
     }
@@ -73,12 +78,13 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     private updateGroupedRoutePathsToDisplay = () => {
         const routePaths = this.props.route.routePaths;
-        const groupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
+        const allGroupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
         const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
-            ? groupedRoutePaths
-            : groupedRoutePaths.slice(0, ROUTE_PATH_GROUP_SHOW_LIMIT);
+            ? allGroupedRoutePaths
+            : allGroupedRoutePaths.slice(0, ROUTE_PATH_GROUP_SHOW_LIMIT);
         this.fetchStopNames(groupedRoutePathsToDisplay);
         this._setState({
+            allGroupedRoutePaths,
             groupedRoutePathsToDisplay
         });
     }
@@ -160,6 +166,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             const isLoading = !stopNames && this.state.areStopNamesLoading;
             const stopOriginFi = stopNames?.firstStopName ? stopNames.firstStopName : '-';
             const stopDestinationFi = stopNames?.lastStopName ? stopNames?.lastStopName : '-';
+            const stopDestinations = `${stopOriginFi} - ${stopDestinationFi}`;
+            const routePathDestinations = `${routePath.originFi} - ${routePath.destinationFi}`;
             return (
                 <div className={s.routePathContainer} key={routePath.internalId}>
                     <div
@@ -169,12 +177,21 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                                 : s.routePathInfo
                         }
                     >
-                        {isLoading ? (
-                            <Loader containerClassName={s.stopNameLoader} size='tiny' hasNoMargin={true} />
-                        ) :
-                            <div className={s.stopNames}>{`${stopOriginFi} - ${stopDestinationFi}`}</div>
-                        }
-                        <div className={s.routePathPoints}>{`${routePath.originFi} - ${routePath.destinationFi}`}</div>
+                        <div className={s.routePathDirection}>{routePath.direction}</div>
+                        <div>
+                            {isLoading ? (
+                                <Loader containerClassName={s.stopNameLoader} size='tiny' hasNoMargin={true} />
+                            ) : (
+                                <>
+                                    <div className={s.destinations1}>
+                                        {this.props.userStore!.userTransitType === TransitType.BUS ? routePathDestinations : stopDestinations}
+                                    </div>
+                                    <div className={s.destinations2}>
+                                        {this.props.userStore!.userTransitType === TransitType.BUS ? stopDestinations : routePathDestinations}
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className={s.routePathControls}>
                         <ToggleSwitch
@@ -224,10 +241,11 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             );
         }
         const groupedRoutePathsToDisplay = this.state.groupedRoutePathsToDisplay;
+        const allGroupedRoutePaths = this.state.allGroupedRoutePaths;
         return (
             <div className={s.routePathListTab}>
                 {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}
-                {routePaths.length > ROUTE_PATH_GROUP_SHOW_LIMIT && (
+                {allGroupedRoutePaths.length !== groupedRoutePathsToDisplay.length && groupedRoutePathsToDisplay.length <= ROUTE_PATH_GROUP_SHOW_LIMIT && (
                     <div
                         className={s.toggleAllRoutePathsVisibleButton}
                         onClick={this.props.toggleAllRoutePathsVisible}
