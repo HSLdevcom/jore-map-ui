@@ -6,6 +6,7 @@ import hslLogo from '~/assets/hsl-logo.png';
 import constants from '~/constants/constants';
 import ButtonType from '~/enums/buttonType';
 import EndpointPath from '~/enums/endpointPath';
+import Environment from '~/enums/environment';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -62,6 +63,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
         const buildDate = constants.BUILD_DATE;
         const buildDateInfo = buildDate ? `Date: ${buildDate}` : '';
         const isSyncLoading = this.state.isSyncLoading;
+        const isProductionEnvironment = constants.ENVIRONMENT === Environment.PROD;
 
         return (
             <div className={s.navigationBarView}>
@@ -73,6 +75,9 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                         <img className={s.logo} src={hslLogo} alt='HSL Logo' />
                         <div className={s.title}>Joukkoliikennerekisteri</div>
                     </div>
+                    {!isProductionEnvironment && (
+                        <div className={s.testEnvironmentNotification}>| testiympäristö</div>
+                    )}
                     {this.props.loginStore!.hasWriteAccess && (
                         <>
                             {isSyncLoading ? (
@@ -86,7 +91,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                                 <div
                                     className={s.refreshIconWrapper}
                                     title={
-                                        'Synkronoi sisäinen JORE-tietokanta. Käytetään, jos vanhalla käyttöliittymällä on tehty muutoksia ja ne halutaan näkyviin tähän (uuteen) käyttöliittymään.'
+                                        'Päivitä sisäinen JORE-tietokanta. Käytä, jos vanhalla käyttöliittymällä on tehty muutoksia eivätkä ne näy tässä uudessa käyttöliittymässä.'
                                     }
                                 >
                                     <IoMdRefresh

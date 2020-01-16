@@ -23,7 +23,7 @@
 
         .header {
             cursor: pointer;
-            margin: 0px 12px 0px 12px;
+            margin: 0px 7px 0px 7px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -55,6 +55,13 @@
             .syncText {
                 margin: auto 5px auto 5px;
             }
+        }
+
+        .testEnvironmentNotification {
+            color: #ffff00;
+            text-transform: uppercase;
+            text-align: center;
+            font-size: $mediumFontSize;
         }
     }
 
