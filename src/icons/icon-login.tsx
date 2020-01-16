@@ -10,7 +10,6 @@ interface ILoginIconProps {
 const loginIcon: React.SFC<ILoginIconProps> = props => {
     return (
         <svg
-            className='line-icon'
             version='1.1'
             id='Layer_1'
             x='0px'
