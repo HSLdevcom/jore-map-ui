@@ -7,7 +7,7 @@ interface ITrainIconProps {
     isWithoutBox: boolean;
 }
 
-const trainIcon: React.SFC<ITrainIconProps> = props => {
+const subwayIcon: React.SFC<ITrainIconProps> = props => {
     const icon = (
         <svg
             className='line-icon'
@@ -59,4 +59,4 @@ const trainIcon: React.SFC<ITrainIconProps> = props => {
     return props.isWithoutBox ? iconWithoutBox : icon;
 };
 
-export default trainIcon;
+export default subwayIcon;

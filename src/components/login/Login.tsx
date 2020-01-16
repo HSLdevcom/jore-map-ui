@@ -1,10 +1,10 @@
 import { Location } from 'history';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { FaLock } from 'react-icons/fa';
 import { Redirect } from 'react-router-dom';
 import hslLogo from '~/assets/hsl-logo.png';
 import constants from '~/constants/constants';
+import LoginIcon from '~/icons/icon-login';
 import SubSites from '~/routing/subSites';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
@@ -43,7 +43,7 @@ class Login extends React.Component<ILoginProps> {
                         <h2>Joukkoliikennerekisteri</h2>
                     </div>
                     <div className={s.loginButton} onClick={this.openLoginForm}>
-                        <FaLock />
+                        <LoginIcon height='16' fill='#3e3e3e' />
                         <div className={s.loginText}>Kirjaudu (HSL ID)</div>
                     </div>
                 </div>
