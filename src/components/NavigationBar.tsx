@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import { IoMdContact, IoMdRefresh } from 'react-icons/io';
 import hslLogo from '~/assets/hsl-logo.png';
 import constants from '~/constants/constants';
-import ButtonType from '~/enums/buttonType';
 import EndpointPath from '~/enums/endpointPath';
 import Environment from '~/enums/environment';
+import LoginIcon from '~/icons/icon-login';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -15,7 +15,6 @@ import { AlertStore } from '~/stores/alertStore.js';
 import { LoginStore } from '~/stores/loginStore';
 import ApiClient from '~/util/ApiClient';
 import packageVersion from '../project/version.json';
-import { Button } from './controls/index';
 import * as s from './navigationBar.scss';
 import Loader from './shared/loader/Loader';
 
@@ -114,13 +113,13 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                                 : 'Selauskäyttäjä'}
                         </div>
                     </div>
-                    <Button
+                    <div
                         className={s.logoutButton}
-                        type={ButtonType.SAVE}
                         onClick={AuthService.logout}
+                        title={'Kirjaudu ulos'}
                     >
-                        Kirjaudu ulos
-                    </Button>
+                        <LoginIcon height='24' fill='white' />
+                    </div>
                 </div>
             </div>
         );

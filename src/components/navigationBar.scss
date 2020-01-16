@@ -43,17 +43,21 @@
 
         .refreshIconWrapper {
             display: flex;
+            margin: 6px;
 
             .refreshIcon {
                 font-size: 24px;
             }
+        }
+        .refreshIconWrapper:hover {
+            background-color: #0064a5;
         }
         .syncTextWrapper {
             display: flex;
             text-align: center;
             font-size: $smallFontSize;
             .syncText {
-                margin: auto 5px auto 5px;
+                margin: 6px;
             }
         }
 
@@ -79,22 +83,23 @@
         }
 
         .logoutButton {
-            font-size: $smallFontSize;
             padding: 0px 20px;
-            background-color: #004c7d;
             height: 100%;
             display: flex;
             align-items: center;
+            cursor: pointer;
+            border-left: 1px solid #FFF;
+            background-color: #007ac9;
         }
 
         .logoutButton:hover {
-            background-color: #575757;
+            background-color: #0064a5;
         }
     }
 
     .navigationBarIcon {
         cursor: pointer;
         font-size: 32px;
-        margin: 0px 6px 0px 6px;
+        margin: 6px;
     }
 }
