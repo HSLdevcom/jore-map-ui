@@ -136,7 +136,7 @@ const _getFirstStopName = (nodes: IExternalRoutePathLink[]) => {
 
 const _getLastStopName = (nodes: IExternalRoutePathLink[]) => {
     for (let i = nodes.length - 1; i > 0; i -= 1) {
-        const stopName = _getValidStopName(nodes[i].solmuByLnkalkusolmu);
+        const stopName = _getValidStopName(nodes[i].solmuByLnkloppusolmu);
         if (stopName) {
             return stopName;
         }
