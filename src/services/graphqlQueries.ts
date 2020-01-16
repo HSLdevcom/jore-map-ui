@@ -101,6 +101,7 @@ const getFirstAndLastStopNamesOfRoutePath = () => {
                             }
                         }
                         solmuByLnkloppusolmu {
+                            soltyyppi
                             pysakkiBySoltunnus {
                                 pysnimi
                             }
