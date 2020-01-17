@@ -208,6 +208,13 @@
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.4.tgz#4e049756383c3f055dd8f3d24e63fb543e98eb07"
   integrity sha512-MHmwBtCb7OCv1DSivz2UNJXPGU/1btAWRKlqJ2saEhVJkpkvqHMMaOpKg0v4sAbDWSQekHGvPVMM8nQ+Jen03Q==
 
+"@types/graphql@^14.5.0":
+  version "14.5.0"
+  resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-14.5.0.tgz#a545fb3bc8013a3547cf2f07f5e13a33642b75d6"
+  integrity sha512-MOkzsEp1Jk5bXuAsHsUi6BVv0zCO+7/2PTiZMXWDSsMXvNU6w/PLMQT2vHn8hy2i0JqojPz1Sz6rsFjHtsU0lA==
+  dependencies:
+    graphql "*"
+
 "@types/history@*", "@types/history@^4.7.0":
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.7.2.tgz#0e670ea254d559241b6eeb3894f8754991e73220"
@@ -4648,6 +4655,13 @@ graphql-tag@^2.9.2:
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.0.tgz#87da024be863e357551b2b8700e496ee2d4353ae"
   integrity sha512-9FD6cw976TLLf9WYIUPCaaTpniawIjHWZSwIRZSjrfufJamcXbVVYfN2TWvJYbw0Xf2JjYbl1/f2+wDnBVw3/w==
 
+graphql@*, graphql@^14.5.8:
+  version "14.5.8"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.8.tgz#504f3d3114cb9a0a3f359bbbcf38d9e5bf6a6b3c"
+  integrity sha512-MMwmi0zlVLQKLdGiMfWkgQD7dY/TUKt4L+zgJ/aR0Howebod3aNgP5JkgvAULiR2HPVZaP2VEElqtdidHweLkg==
+  dependencies:
+    iterall "^1.2.2"
+
 growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
@@ -5610,6 +5624,11 @@ istanbul-reports@^1.5.1:
   integrity sha512-+cfoZ0UXzWjhAdzosCPP3AN8vvef8XDkWtTfgaN+7L3YTpNYITnCaEkceo5SEYy644VkHka/P1FvkWvrG/rrJw==
   dependencies:
     handlebars "^4.0.3"
+
+iterall@^1.2.2:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
+  integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
 
 jest-changed-files@^22.2.0:
   version "22.4.3"
