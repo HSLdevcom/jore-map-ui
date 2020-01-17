@@ -24,6 +24,7 @@ interface IInputProps {
     isClearButtonVisibleOnDates?: boolean;
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
+    onFocus?: () => void;
 }
 
 const renderEditableContent = (props: IInputProps) => {
@@ -49,6 +50,7 @@ const renderEditableContent = (props: IInputProps) => {
                 onChange={props.onChange!}
                 isClearButtonVisible={props.isClearButtonVisibleOnDates}
                 isEmptyValueAllowed={props.isEmptyDateValueAllowed}
+                onFocus={props.onFocus}
             />
         );
     }
@@ -69,6 +71,7 @@ const renderEditableContent = (props: IInputProps) => {
                     : ''
             }
             onChange={onChange}
+            onFocus={props.onFocus}
         />
     );
 };
