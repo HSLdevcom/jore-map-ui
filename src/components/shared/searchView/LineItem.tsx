@@ -8,6 +8,7 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
+import NavigationUtils from '~/util/NavigationUtils';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import TransitIcon from '../TransitIcon';
 import * as s from './lineItem.scss';
@@ -49,14 +50,6 @@ class LineItem extends React.Component<ILineItemProps> {
         );
     }
 
-    private redirectToLineView = (lineId: string) => () => {
-        const lineViewLink = routeBuilder
-            .to(SubSites.line)
-            .toTarget(':id', lineId)
-            .toLink();
-        navigator.goTo({ link: lineViewLink });
-    };
-
     public render() {
         return (
             <div className={s.lineItemView}>
@@ -72,7 +65,7 @@ class LineItem extends React.Component<ILineItemProps> {
                             TransitTypeHelper.getColorClass(this.props.line.transitType),
                             s.lineLabel
                         )}
-                        onClick={this.redirectToLineView(this.props.line.id)}
+                        onClick={() => NavigationUtils.openLineView(this.props.line.id)}
                     >
                         {this.props.line.id}
                     </div>
