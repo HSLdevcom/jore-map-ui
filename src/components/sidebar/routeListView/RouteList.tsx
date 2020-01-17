@@ -22,6 +22,7 @@ import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
+import NavigationUtils from '~/util/NavigationUtils';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import Loader from '../../shared/loader/Loader';
 import SidebarHeader from '../SidebarHeader';
@@ -248,7 +249,11 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     onCloseButtonClick={() => this.closeRoutePrompt(route)}
                                     onEditButtonClick={() => this.editRoutePrompt(route)}
                                 >
-                                    <div className={s.routeName}>
+                                    <div
+                                        className={s.routeName}
+                                        onClick={() => NavigationUtils.openLineView(route!.lineId)}
+                                        title={`Avaa linja ${route!.lineId}`}
+                                    >
                                         <TransitIcon
                                             transitType={route!.line!.transitType!}
                                             isWithoutBox={false}
