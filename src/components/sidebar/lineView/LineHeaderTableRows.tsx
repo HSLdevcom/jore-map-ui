@@ -112,6 +112,7 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                                     currentMassEditLineHeader.id
                                 )}
                                 validationResult={invalidPropertiesMap['startDate']}
+                                onFocus={this.openLineHeaderById(currentMassEditLineHeader.id)}
                             />
                         </td>
                         <td className={s.lineHeaderTableCalendarCell}>

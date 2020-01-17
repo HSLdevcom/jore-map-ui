@@ -13,6 +13,7 @@ import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import { MapStore } from '~/stores/mapStore';
 import SidebarHeader from '../SidebarHeader';
@@ -23,9 +24,10 @@ import * as s from './lineView.scss';
 interface ILineViewProps {
     match?: match<any>;
     isNewLine: boolean;
+    lineStore?: LineStore;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
-    lineStore?: LineStore;
     confirmStore?: ConfirmStore;
     mapStore?: MapStore;
 }
@@ -35,7 +37,14 @@ interface ILineViewState {
     selectedTabIndex: number;
 }
 
-@inject('lineStore', 'errorStore', 'alertStore', 'mapStore', 'confirmStore')
+@inject(
+    'lineStore',
+    'lineHeaderMassEditStore',
+    'errorStore',
+    'alertStore',
+    'mapStore',
+    'confirmStore'
+)
 @observer
 class LineView extends React.Component<ILineViewProps, ILineViewState> {
     constructor(props: ILineViewProps) {
@@ -53,6 +62,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
 
     componentWillUnmount() {
         this.props.lineStore!.clear();
+        this.props.lineHeaderMassEditStore!.clear();
     }
 
     private setSelectedTabIndex = (index: number) => {

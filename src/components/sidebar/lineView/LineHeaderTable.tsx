@@ -81,7 +81,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
 
     componentWillUnmount() {
         this.mounted = false;
-        this.props.lineHeaderMassEditStore!.clear();
     }
 
     private createNewLineHeader = () => {
