@@ -67,6 +67,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     async componentDidMount() {
         await this.fetchRoutes();
+
         this.props.routePathStore!.clear();
         this.props.searchStore!.setSearchInput('');
 
@@ -102,8 +103,8 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     private centerMapToRoutes = () => {
         const routes: IRoute[] = this.props.routeListStore!.routes;
-        if (!routes) return;
-
+        const isLoading = this.state.isLoading;
+        if (!routes || isLoading) return;
         const bounds: L.LatLngBounds = new L.LatLngBounds([]);
         routes.forEach(route => {
             route.routePaths.forEach(routePath => {
@@ -115,9 +116,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             });
         });
         if (!bounds.isValid()) {
-            if (this.state.isLoading) {
-                this.props.mapStore!.initCoordinates();
-            }
+            this.props.mapStore!.initCoordinates();
             return;
         }
 

@@ -93,6 +93,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private initialize = async () => {
+        await this.fetchExistingPrimaryKeys();
         if (this.props.isNewRoutePath) {
             await this.createNewRoutePath();
         } else {
@@ -105,6 +106,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             });
         }
     };
+
+    private fetchExistingPrimaryKeys = async () => {
+        const queryParams = navigator.getQueryParamValues();
+        const routeId = queryParams[QueryParams.routeId];
+        const routePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(routeId);
+        this.props.routePathStore!.setExistingRoutePathPrimaryKeys(routePathPrimaryKeys);
+    }
 
     private createNewRoutePath = async () => {
         this.props.mapStore!.initCoordinates();

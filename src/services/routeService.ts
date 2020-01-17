@@ -44,14 +44,19 @@ class RouteService {
     };
 
     public static fetchMultipleRoutes = async (routeIds: string[]): Promise<IRoute[]> => {
-        const routes = await Promise.all(
-            routeIds.map(id =>
-                RouteService.runFetchRouteQuery(id, {
+        const promises: Promise<void>[] = [];
+        const routes: IRoute[] = [];
+        routeIds.map((routeId: string) => {
+            const createPromise = async () => {
+                const route = await RouteService.runFetchRouteQuery(routeId, {
                     areRoutePathLinksExcluded: true
-                })
-            )
-        );
+                });
+                routes.push(route);
+            };
+            promises.push(createPromise());
+        });
 
+        await Promise.all(promises);
         return routes.map((res: IRoute) => res!);
     };
 

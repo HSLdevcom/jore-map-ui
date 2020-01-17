@@ -19,7 +19,7 @@ export class RouteListStore {
 
     @action
     public addToRoutes = (routes: IRoute[]) => {
-        this._routes.push(...routes);
+        this._routes = this._routes.concat(routes);
     };
 
     @action
