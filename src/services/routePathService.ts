@@ -24,7 +24,8 @@ class RoutePathService {
                 routeId,
                 direction,
                 startDate: Moment(startTime).format()
-            }
+            },
+            fetchPolicy: 'no-cache'
         });
 
         return RoutePathFactory.mapExternalRoutePath(queryResult.data.routePath);
@@ -39,7 +40,8 @@ class RoutePathService {
                 routeId: routePathPrimaryKey.routeId,
                 direction: routePathPrimaryKey.direction,
                 startDate: Moment(routePathPrimaryKey.startTime).format()
-            }
+            },
+            fetchPolicy: 'no-cache'
         });
         const nodes: IExternalRoutePathLink[] =
             queryResult.data.routePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes;
