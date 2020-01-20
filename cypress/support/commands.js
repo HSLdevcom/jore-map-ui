@@ -30,21 +30,39 @@ Cypress.Commands.add('getTestElement', (selector, options = {}) => {
     return cy.get(`[data-cy~="${selector}"]`, options);
 });
 
-Cypress.Commands.add('hslLogin', () => {
+Cypress.Commands.add('hslLoginReadAccess', () => {
+    return hslLogin(false);
+});
+
+Cypress.Commands.add('hslLoginWriteAccess', () => {
+    return hslLogin(true);
+});
+
+const hslLogin = hasWriteAccess => {
     const AUTH_URI = Cypress.env('AUTH_URI');
     const CLIENT_ID = Cypress.env('CLIENT_ID');
     const CLIENT_SECRET = Cypress.env('CLIENT_SECRET');
     const AUTH_SCOPE = Cypress.env('AUTH_SCOPE');
-    const HSL_TESTING_HSLID_USERNAME = Cypress.env('HSL_TESTING_HSLID_USERNAME');
-    const HSL_TESTING_HSLID_PASSWORD = Cypress.env('HSL_TESTING_HSLID_PASSWORD');
 
+    let HSL_TESTING_HSLID_USERNAME;
+    let HSL_TESTING_HSLID_PASSWORD;
+    if (hasWriteAccess) {
+        // TODO: change username & password for user with write access
+        HSL_TESTING_HSLID_USERNAME = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_USERNAME');
+        HSL_TESTING_HSLID_PASSWORD = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_PASSWORD');
+    } else {
+        HSL_TESTING_HSLID_USERNAME = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_USERNAME');
+        HSL_TESTING_HSLID_PASSWORD = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_PASSWORD');
+    }
     const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
 
     Cypress.log({
         name: 'HSL ID login'
     });
     Cypress.log({ name: HSL_TESTING_HSLID_USERNAME });
-
+    Cypress.log({
+        name: HSL_TESTING_HSLID_PASSWORD
+    });
     const options = {
         method: 'POST',
         url: AUTH_URI,
@@ -66,9 +84,10 @@ Cypress.Commands.add('hslLogin', () => {
 
         expect(response.status).to.eq(200);
         expect(access_token).to.be.ok;
-        cy.visit(`/?code=${access_token}&is_test=true`);
+        // testing = QueryParams.testing
+        cy.visit(`/afterLogin?code=${access_token}&testing=true`);
     });
-});
+};
 
 Cypress.Commands.add('waitUntilLoadingFinishes', loadingElementSelector => {
     const testId = loadingElementSelector || 'loader';
