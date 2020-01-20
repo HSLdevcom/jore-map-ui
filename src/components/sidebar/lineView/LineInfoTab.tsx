@@ -8,8 +8,12 @@ import TransitType from '~/enums/transitType';
 import { ILine } from '~/models';
 import LineService from '~/services/lineService';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
+import { NavigationStore } from '~/stores/navigationStore';
+import SidebarHeader from '../SidebarHeader';
 import LineHeaderTable from './LineHeaderTable';
 import * as s from './lineInfoTab.scss';
 
@@ -20,10 +24,14 @@ interface ILineInfoTabState {
 interface ILineInfoTabProps {
     lineStore?: LineStore;
     codeListStore?: CodeListStore;
+    confirmStore?: ConfirmStore;
     errorStore?: ErrorStore;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
+    navigationStore?: NavigationStore;
     isEditingDisabled: boolean;
     isLineSaveButtonDisabled: boolean;
     saveLine: () => void;
+    isNewLine: boolean;
 }
 
 const transitTypeDefaultValueMap = {
@@ -34,7 +42,14 @@ const transitTypeDefaultValueMap = {
     '7': '07'
 };
 
-@inject('lineStore', 'codeListStore', 'errorStore')
+@inject(
+    'lineStore',
+    'codeListStore',
+    'errorStore',
+    'lineHeaderMassEditStore',
+    'navigationStore',
+    'confirmStore'
+)
 @observer
 class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> {
     constructor(props: any) {
@@ -80,17 +95,34 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
         this.props.lineStore!.updateLineProperty(property, value);
     };
 
+    private editLinePrompt = () => {
+        if (!this.props.lineHeaderMassEditStore!.isEditingDisabled) {
+            this.props.lineHeaderMassEditStore!.toggleIsEditingDisabled();
+        }
+        this.props.lineStore!.toggleIsEditingDisabled();
+    };
+
     render() {
-        const line = this.props.lineStore!.line;
+        const lineStore = this.props.lineStore!;
+        const line = lineStore!.line;
         if (!line) return null;
 
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating = !this.props.lineStore!.isNewLine || this.props.isEditingDisabled;
+        const isUpdating = !lineStore.isNewLine || this.props.isEditingDisabled;
         const onChange = this.onChangeLineProperty;
-        const invalidPropertiesMap = this.props.lineStore!.invalidPropertiesMap;
+        const invalidPropertiesMap = lineStore.invalidPropertiesMap;
         const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
         return (
             <div className={s.lineInfoTabView}>
+                <SidebarHeader
+                    isEditButtonVisible={!this.props.isNewLine}
+                    onEditButtonClick={this.editLinePrompt}
+                    isEditing={!lineStore!.isEditingDisabled}
+                    isCloseButtonVisible={true}
+                    isBackButtonVisible={true}
+                >
+                    {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
+                </SidebarHeader>
                 <div className={s.form}>
                     <div className={s.flexRow}>
                         <div className={s.formItem}>
@@ -98,7 +130,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             <TransitToggleButtonBar
                                 selectedTransitTypes={selectedTransitTypes}
                                 toggleSelectedTransitType={this.selectTransitType}
-                                disabled={!this.props.lineStore!.isNewLine}
+                                disabled={!lineStore.isNewLine}
                                 errorMessage={
                                     invalidPropertiesMap['transitType'] &&
                                     !invalidPropertiesMap['transitType'].isValid
@@ -225,6 +257,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                         {this.props.lineStore!.isNewLine ? 'Luo uusi linja' : 'Tallenna linja'}
                     </Button>
                 </div>
+                <div className={s.sectionDivider} />
                 {!this.props.lineStore!.isNewLine && (
                     <LineHeaderTable lineId={this.props.lineStore!.line!.id} />
                 )}

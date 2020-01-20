@@ -303,7 +303,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 {Boolean(this.props.node.stop) && this.renderStopView(this.props.node.stop!)}
                 {this.renderNodeView(this.props.node)}
                 <div className={s.footer}>
-                    <Button onClick={this.openInNetworkView} type={ButtonType.SQUARE}>
+                    <Button onClick={this.openNodeView} type={ButtonType.SQUARE}>
                         <div>Avaa solmu</div>
                         <FiChevronRight />
                     </Button>
@@ -312,12 +312,12 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     };
 
-    private openInNetworkView = () => {
-        const editNetworkLink = routeBuilder
+    private openNodeView = () => {
+        const nodeViewLink = routeBuilder
             .to(SubSites.node)
             .toTarget(':id', this.props.node.id)
             .toLink();
-        navigator.goTo(editNetworkLink);
+        navigator.goTo({ link: nodeViewLink });
     };
 
     private getShadowClass() {

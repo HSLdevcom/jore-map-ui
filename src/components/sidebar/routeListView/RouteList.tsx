@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import TransitIcon from '~/components/shared/TransitIcon';
 import ButtonType from '~/enums/buttonType';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -21,7 +22,7 @@ import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
-import LineHelper from '~/util/LineHelper';
+import NavigationUtils from '~/util/NavigationUtils';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import Loader from '../../shared/loader/Loader';
 import SidebarHeader from '../SidebarHeader';
@@ -66,6 +67,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     async componentDidMount() {
         await this.fetchRoutes();
+
         this.props.routePathStore!.clear();
         this.props.searchStore!.setSearchInput('');
 
@@ -101,8 +103,8 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     private centerMapToRoutes = () => {
         const routes: IRoute[] = this.props.routeListStore!.routes;
-        if (!routes) return;
-
+        const isLoading = this.state.isLoading;
+        if (!routes || isLoading) return;
         const bounds: L.LatLngBounds = new L.LatLngBounds([]);
         routes.forEach(route => {
             route.routePaths.forEach(routePath => {
@@ -113,7 +115,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                 });
             });
         });
-        if (!bounds.isValid()) return;
+        if (!bounds.isValid()) {
+            this.props.mapStore!.initCoordinates();
+            return;
+        }
 
         this.props.mapStore!.setMapBounds(bounds);
     };
@@ -125,11 +130,14 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
             .set(QueryParams.lineId, route.lineId)
             .toLink();
 
-        navigator.goTo(newRoutePathLink);
+        navigator.goTo({ link: newRoutePathLink });
     };
 
     private closeRoutePrompt = (route: IRoute) => {
-        if (this.props.routeStore!.routeIdToEdit === route.id) {
+        if (
+            this.props.routeStore!.routeIdToEdit === route.id &&
+            this.props.routeStore!.shouldShowUnsavedChangesPrompt
+        ) {
             this.props.confirmStore!.openConfirm({
                 content: `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat sulkea reitin? Tallentamattomat muutokset kumotaan.`,
                 onConfirm: () => {
@@ -145,11 +153,14 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     private closeRoute = (route: IRoute) => {
         this.props.routeListStore!.removeFromRoutes(route.id);
+        if (this.props.routeStore!.routeIdToEdit === route.id) {
+            this.props.routeStore!.clear();
+        }
         const closeRouteLink = routeBuilder
             .to(SubSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, route.id)
             .toLink();
-        navigator.goTo(closeRouteLink);
+        navigator.goTo({ link: closeRouteLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private editRoutePrompt = (route: IRoute) => {
@@ -233,11 +244,19 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     isEditing={isEditing}
                                     isBackButtonVisible={true}
                                     isEditButtonVisible={true}
+                                    isEditPromptHidden={true}
                                     onCloseButtonClick={() => this.closeRoutePrompt(route)}
                                     onEditButtonClick={() => this.editRoutePrompt(route)}
                                 >
-                                    <div className={s.routeName}>
-                                        {LineHelper.getTransitIcon(route.line!.transitType!, false)}
+                                    <div
+                                        className={s.routeName}
+                                        onClick={() => NavigationUtils.openLineView(route!.lineId)}
+                                        title={`Avaa linja ${route!.lineId}`}
+                                    >
+                                        <TransitIcon
+                                            transitType={route!.line!.transitType!}
+                                            isWithoutBox={false}
+                                        />
                                         <div
                                             className={classnames(
                                                 s.label,

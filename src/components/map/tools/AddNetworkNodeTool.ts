@@ -29,10 +29,10 @@ class AddNetworkNodeTool implements BaseTool {
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);
         const coordinate = roundLatLng(clickEvent.detail.latlng);
-        const url = RouteBuilder.to(SubSites.newNode)
+        const newNodeViewLink = RouteBuilder.to(SubSites.newNode)
             .toTarget(':id', `${coordinate.lat}:${coordinate.lng}`)
             .toLink();
-        navigator.goTo(url);
+        navigator.goTo({ link: newNodeViewLink });
     };
 }
 

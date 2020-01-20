@@ -3,10 +3,12 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
+import ReactMoment from 'react-moment';
 import { match } from 'react-router';
 import Button from '~/components/controls/Button';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import Loader from '~/components/shared/loader/Loader';
+import constants from '~/constants/constants';
 import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
@@ -28,9 +30,10 @@ import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { ListFilter, RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/util/EventManager';
+import NavigationUtils from '~/util/NavigationUtils';
 import { validateRoutePathLinks } from '~/util/geomValidator';
+import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView';
-import RoutePathHeader from './RoutePathHeader';
 import RoutePathTabs from './RoutePathTabs';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
@@ -52,6 +55,8 @@ interface IRoutePathViewProps {
 interface IRoutePathViewState {
     isLoading: boolean;
 }
+
+const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject(
     'routePathStore',
@@ -88,6 +93,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private initialize = async () => {
+        await this.fetchExistingPrimaryKeys();
         if (this.props.isNewRoutePath) {
             await this.createNewRoutePath();
         } else {
@@ -100,6 +106,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             });
         }
     };
+
+    private fetchExistingPrimaryKeys = async () => {
+        const queryParams = navigator.getQueryParamValues();
+        const routeId = queryParams[QueryParams.routeId];
+        const routePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(routeId);
+        this.props.routePathStore!.setExistingRoutePathPrimaryKeys(routePathPrimaryKeys);
+    }
 
     private createNewRoutePath = async () => {
         this.props.mapStore!.initCoordinates();
@@ -245,14 +258,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private save = async () => {
         this.setState({ isLoading: true });
-        let redirectUrl: string | undefined;
+        let routePathViewLink: string | undefined;
         const routePath = this.props.routePathStore!.routePath;
         try {
             if (this.props.isNewRoutePath) {
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
                     routePath!
                 );
-                redirectUrl = routeBuilder
+                routePathViewLink = routeBuilder
                     .to(SubSites.routePath)
                     .toTarget(
                         ':id',
@@ -277,8 +290,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-        if (redirectUrl) {
-            navigator.goTo(redirectUrl);
+        if (routePathViewLink) {
+            navigator.goTo({ link: routePathViewLink, shouldSkipUnsavedChangesPrompt: true });
             return;
         }
         await this.fetchRoutePath();
@@ -305,6 +318,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     };
 
+    private showSavePreventedAlert = () => {
+        this.props.alertStore!.setNotificationMessage({ message: 'Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.' });
+    }
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -312,9 +329,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 <div className={s.routePathView}><Loader size='medium' /></div>
             );
         }
-        if (!routePathStore!.routePath) return null;
+        const routePath = routePathStore!.routePath;
+        if (!routePath) return null;
 
-        const isGeometryValid = validateRoutePathLinks(routePathStore!.routePath!.routePathLinks);
+        const isGeometryValid = validateRoutePathLinks(routePath.routePathLinks);
         const isEditingDisabled = routePathStore!.isEditingDisabled;
         const isSaveButtonDisabled =
             isEditingDisabled ||
@@ -324,16 +342,32 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const copySegmentStore = this.props.routePathCopySegmentStore;
         const isCopyRoutePathSegmentViewVisible =
             copySegmentStore!.startNode && copySegmentStore!.endNode;
-
+        const isSavingPrevented = ENVIRONMENT === 'prod' || ENVIRONMENT === 'stage';
         return (
             <div className={s.routePathView}>
-                <RoutePathHeader
-                    hasModifications={routePathStore!.isDirty}
-                    routePath={routePathStore!.routePath!}
-                    isNewRoutePath={this.props.isNewRoutePath}
-                    isEditing={!routePathStore!.isEditingDisabled}
-                    onEditButtonClick={routePathStore!.toggleIsEditingDisabled}
-                />
+                <div className={s.sidebarHeaderSection}>
+                    <SidebarHeader
+                        isEditButtonVisible={!this.props.isNewRoutePath}
+                        onEditButtonClick={routePathStore!.toggleIsEditingDisabled}
+                        isEditing={!routePathStore!.isEditingDisabled}
+                    >
+                        {this.props.isNewRoutePath
+                            ? 'Uusi reitinsuunta'
+                            :
+                            <div className={s.topic}>
+                                <div className={s.link} title={`Avaa linkki ${routePath.lineId}`} onClick={() => NavigationUtils.openLineView(routePath.lineId)}>{routePath.lineId}</div>
+                                <div>&nbsp;>&nbsp;</div>
+                                <div className={s.link} title={`Avaa reitti ${routePath.routeId}`} onClick={() => NavigationUtils.openRouteView(routePath.routeId)}>{routePath.routeId}</div>
+                            </div>
+                        }
+                    </SidebarHeader>
+                    <div className={s.subTopic}>
+                        <ReactMoment date={routePath.startTime} format='DD.MM.YYYY' /> - <ReactMoment date={routePath.endTime} format='DD.MM.YYYY' />
+                        < br />
+                        Suunta {routePath.direction}: {routePath.originFi} - {routePath.destinationFi}
+                    </div>
+                </div>
+
                 {isCopyRoutePathSegmentViewVisible ? (
                     <RoutePathCopySegmentView />
                 ) : (
@@ -343,8 +377,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         </div>
                         {this.renderTabContent()}
                         <Button
-                            onClick={this.showSavePrompt}
-                            type={ButtonType.SAVE}
+                            onClick={isSavingPrevented ? this.showSavePreventedAlert : this.showSavePrompt}
+                            type={isSavingPrevented ? ButtonType.WARNING : ButtonType.SAVE}
                             disabled={isSaveButtonDisabled}
                         >
                             {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}

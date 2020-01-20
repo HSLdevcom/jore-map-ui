@@ -4,7 +4,7 @@ import React from 'react';
 
 interface ITrainIconProps {
     height: string;
-    withoutBox: boolean;
+    isWithoutBox: boolean;
 }
 
 const trainIcon: React.SFC<ITrainIconProps> = props => {
@@ -63,7 +63,7 @@ const trainIcon: React.SFC<ITrainIconProps> = props => {
         </svg>
     );
 
-    return props.withoutBox ? iconWithoutBox : icon;
+    return props.isWithoutBox ? iconWithoutBox : icon;
 };
 
 export default trainIcon;

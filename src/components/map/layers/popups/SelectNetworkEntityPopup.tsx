@@ -33,25 +33,17 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
         this.props.highlightEntityStore!.setNodes(nodes);
     };
 
-    private promptRedirectToNode = (nodeId: string, popupId: number) => {
-        const redirectToNode = () => {
-            this.props.popupStore!.closePopup(popupId);
-            this.props.highlightEntityStore!.setNodes([]);
-            const nodeViewLink = routeBuilder
-                .to(SubSites.node)
-                .toTarget(':id', nodeId)
-                .toLink();
-            navigator.goTo(nodeViewLink);
-        };
-        if (this.props.toolbarStore!.shouldShowEntityOpenPrompt) {
-            this.props.confirmStore!.openConfirm({
-                content: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${nodeId}? Tallentamattomat muutokset kumotaan.`,
-                onConfirm: redirectToNode,
-                confirmButtonText: 'Kyllä'
-            });
-        } else {
-            redirectToNode();
-        }
+    private redirectToNode = (nodeId: string, popupId: number) => {
+        this.props.popupStore!.closePopup(popupId);
+        this.props.highlightEntityStore!.setNodes([]);
+        const nodeViewLink = routeBuilder
+            .to(SubSites.node)
+            .toTarget(':id', nodeId)
+            .toLink();
+        navigator.goTo({
+            link: nodeViewLink,
+            unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${nodeId}? Tallentamattomat muutokset kumotaan.`
+        });
     };
 
     private highlightLink = (link: ILinkMapHighlight, isHighlighted: boolean) => {
@@ -59,25 +51,17 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
         this.props.highlightEntityStore!.setLinks(links);
     };
 
-    private promptRedirectToLink = (link: ILinkMapHighlight, popupId: number) => {
-        const redirectToLink = () => {
-            this.props.popupStore!.closePopup(popupId);
-            this.props.highlightEntityStore!.setLinks([]);
-            const linkViewLink = routeBuilder
-                .to(SubSites.link)
-                .toTarget(':id', [link.startNodeId, link.endNodeId, link.transitType].join(','))
-                .toLink();
-            navigator.goTo(linkViewLink);
-        };
-        if (this.props.toolbarStore!.shouldShowEntityOpenPrompt) {
-            this.props.confirmStore!.openConfirm({
-                content: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`,
-                onConfirm: redirectToLink,
-                confirmButtonText: 'Kyllä'
-            });
-        } else {
-            redirectToLink();
-        }
+    private redirectToLink = (link: ILinkMapHighlight, popupId: number) => {
+        this.props.popupStore!.closePopup(popupId);
+        this.props.highlightEntityStore!.setLinks([]);
+        const linkViewLink = routeBuilder
+            .to(SubSites.link)
+            .toTarget(':id', [link.startNodeId, link.endNodeId, link.transitType].join(','))
+            .toLink();
+        navigator.goTo({
+            link: linkViewLink,
+            unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`
+        });
     };
 
     render() {
@@ -90,7 +74,7 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             className={s.row}
                             onMouseOver={() => this.highlightNode(node, true)}
                             onMouseOut={() => this.highlightNode(node, false)}
-                            onClick={() => this.promptRedirectToNode(node.id, this.props.popupId)}
+                            onClick={() => this.redirectToNode(node.id, this.props.popupId)}
                         >
                             Solmu {node.id}
                         </div>
@@ -103,9 +87,9 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             className={s.row}
                             onMouseOver={() => this.highlightLink(link, true)}
                             onMouseOut={() => this.highlightLink(link, false)}
-                            onClick={() => this.promptRedirectToLink(link, this.props.popupId)}
+                            onClick={() => this.redirectToLink(link, this.props.popupId)}
                         >
-                            Linkki
+                            {`${link.startNodeId} - ${link.endNodeId}`}
                         </div>
                     );
                 })}

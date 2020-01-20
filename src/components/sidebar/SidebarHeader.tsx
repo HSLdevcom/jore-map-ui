@@ -7,85 +7,79 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { LoginStore } from '~/stores/loginStore';
+import { NavigationStore } from '~/stores/navigationStore';
 import * as s from './sidebarHeader.scss';
 
 interface ISidebarHeaderProps {
     children: ReactNode;
-    isCloseButtonVisible?: boolean;
-    isBackButtonVisible?: boolean;
+    isEditing?: boolean;
     isEditButtonVisible?: boolean;
+    isEditPromptHidden?: boolean;
+    onEditButtonClick?: () => void;
+    isBackButtonVisible?: boolean;
+    onBackButtonClick?: () => void;
+    isCloseButtonVisible?: boolean;
+    closePromptMessage?: string;
+    onCloseButtonClick?: () => void;
     loginStore?: LoginStore;
     confirmStore?: ConfirmStore;
-    isEditing?: boolean;
-    shouldShowClosePromptMessage?: boolean;
-    shouldShowEditButtonClosePromptMessage?: boolean;
-    onEditButtonClick?: () => void;
-    onBackButtonClick?: () => void;
-    onCloseButtonClick?: () => void;
+    navigationStore?: NavigationStore;
 }
 
-const closePromptMessage =
+const defaultClosePromptMessage =
     'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat poistua näkymästä? Tallentamattomat muutokset kumotaan.';
-const revertPromptMessage =
+const defaultEditPromptMessage =
     'Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.';
 
-@inject('loginStore', 'confirmStore')
+@inject('loginStore', 'confirmStore', 'navigationStore')
 @observer
 class SidebarHeader extends React.Component<ISidebarHeaderProps> {
-    private onBackButtonClick = () => {
-        this.optionalConfirmPrompt({
-            message: closePromptMessage,
-            defaultOnClick: () => navigator.goBack(),
-            customOnClick: this.props.onBackButtonClick,
-            shouldShowMessage: this.props.shouldShowClosePromptMessage
-        });
-    };
-
     private onEditButtonClick = () => {
-        this.optionalConfirmPrompt({
-            message: revertPromptMessage,
-            customOnClick: () => this.props.onEditButtonClick!(),
-            shouldShowMessage: this.props.isEditing && this.props.shouldShowClosePromptMessage
-        });
-    };
+        if (this.props.isEditPromptHidden) {
+            this.props.onEditButtonClick!();
+            return;
+        }
 
-    private onCloseButtonClick = () => {
-        const homeLink = routeBuilder.to(SubSites.home).toLink();
-        this.optionalConfirmPrompt({
-            message: closePromptMessage,
-            defaultOnClick: () => navigator.goTo(homeLink),
-            customOnClick: this.props.onCloseButtonClick,
-            shouldShowMessage: this.props.shouldShowClosePromptMessage
-        });
-    };
-
-    private optionalConfirmPrompt = ({
-        customOnClick,
-        defaultOnClick,
-        message,
-        shouldShowMessage
-    }: {
-        message: string;
-        defaultOnClick?: () => void;
-        customOnClick?: () => void;
-        shouldShowMessage?: boolean;
-    }) => {
-        const _onClick = customOnClick
-            ? () => customOnClick!()
-            : defaultOnClick
-            ? () => defaultOnClick()
-            : null;
-        if (shouldShowMessage) {
+        if (this.props.navigationStore!.shouldShowUnsavedChangesPrompt) {
             this.props.confirmStore!.openConfirm({
-                content: message,
-                onConfirm: _onClick!,
+                content: defaultEditPromptMessage,
+                onConfirm: this.props.onEditButtonClick!,
                 confirmButtonText: 'Kyllä'
             });
         } else {
-            if (_onClick) {
-                _onClick();
-            }
+            this.props.onEditButtonClick!();
         }
+    };
+
+    private onBackButtonClick = () => {
+        if (this.props.onBackButtonClick) {
+            this.props.onBackButtonClick();
+            return;
+        }
+
+        const promptMessage = this.props.closePromptMessage
+            ? this.props.closePromptMessage
+            : defaultClosePromptMessage;
+        const defaultOnClick = () => {
+            navigator.goBack({ unsavedChangesPromptMessage: promptMessage });
+        };
+        defaultOnClick();
+    };
+
+    private onCloseButtonClick = () => {
+        if (this.props.onCloseButtonClick) {
+            this.props.onCloseButtonClick();
+            return;
+        }
+
+        const promptMessage = this.props.closePromptMessage
+            ? this.props.closePromptMessage
+            : defaultClosePromptMessage;
+        const defaultOnClick = () => {
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink, unsavedChangesPromptMessage: promptMessage });
+        };
+        defaultOnClick();
     };
 
     render() {

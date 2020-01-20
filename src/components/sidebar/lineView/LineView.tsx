@@ -24,10 +24,10 @@ import * as s from './lineView.scss';
 interface ILineViewProps {
     match?: match<any>;
     isNewLine: boolean;
+    lineStore?: LineStore;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
-    lineHeaderMassEditStore?: LineHeaderMassEditStore;
-    lineStore?: LineStore;
     confirmStore?: ConfirmStore;
     mapStore?: MapStore;
 }
@@ -62,6 +62,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
 
     componentWillUnmount() {
         this.props.lineStore!.clear();
+        this.props.lineHeaderMassEditStore!.clear();
     }
 
     private setSelectedTabIndex = (index: number) => {
@@ -140,7 +141,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             .to(SubSites.line)
             .toTarget(':id', line!.id)
             .toLink();
-        navigator.goTo(lineViewLink);
+        navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private showSavePrompt = () => {
@@ -163,7 +164,6 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
 
     render() {
         const lineStore = this.props.lineStore;
-        const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
         if (this.state.isLoading) {
             return (
                 <div className={s.lineView}>
@@ -179,15 +179,10 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             <div className={s.lineView}>
                 <div className={s.sidebarHeaderSection}>
                     <SidebarHeader
-                        isEditButtonVisible={!this.props.isNewLine}
                         onEditButtonClick={lineStore!.toggleIsEditingDisabled}
                         isEditing={!lineStore!.isEditingDisabled}
-                        shouldShowClosePromptMessage={
-                            lineStore!.isDirty || lineHeaderMassEditStore!.isDirty
-                        }
-                        shouldShowEditButtonClosePromptMessage={lineStore!.isDirty}
                     >
-                        {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
+                        {this.props.isNewLine ? 'Luo uusi linja' : `Linja ja sen otsikot`}
                     </SidebarHeader>
                 </div>
                 <Tabs>
@@ -208,6 +203,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                                 isEditingDisabled={isEditingDisabled}
                                 saveLine={this.showSavePrompt}
                                 isLineSaveButtonDisabled={isSaveButtonDisabled}
+                                isNewLine={this.props.isNewLine}
                             />
                         </ContentItem>
                         <ContentItem>

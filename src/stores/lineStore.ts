@@ -6,7 +6,7 @@ import lineValidationModel, {
     ILineValidationModel
 } from '~/models/validationModels/lineValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
-import ToolbarStore from './toolbarStore';
+import NavigationStore from './navigationStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 export class LineStore {
@@ -22,8 +22,8 @@ export class LineStore {
         this._validationStore = new ValidationStore();
 
         reaction(
-            () => this.isDirty,
-            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+            () => this.isDirty && !this._isEditingDisabled,
+            (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }

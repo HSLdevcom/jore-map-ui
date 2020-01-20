@@ -255,18 +255,19 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     nodeToUpdate = this.props.nodeStore!.node;
                 }
                 const nodeId = await NodeService.createNode(nodeToUpdate);
-                const url = routeBuilder
+                const nodeViewLink = routeBuilder
                     .to(SubSites.node)
                     .toTarget(':id', nodeId)
                     .toLink();
-                navigator.goTo(url);
+                navigator.goTo({ link: nodeViewLink, shouldSkipUnsavedChangesPrompt: true });
+                this.props.nodeStore!.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
                 await NodeService.updateNode(
                     this.props.nodeStore!.node,
                     this.props.nodeStore!.getDirtyLinks()
                 );
+                this.props.nodeStore!.clearNodeCache({ nodeId: this.props.nodeStore!.node.id });
             }
-            this.props.nodeStore!.clearNodeCache();
             this.props.nodeStore!.setCurrentStateAsOld();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
@@ -417,7 +418,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!isNewNode}
-                        shouldShowClosePromptMessage={nodeStore.isDirty}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={nodeStore.toggleIsEditingDisabled}
                     >

@@ -8,8 +8,9 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
-import LineHelper from '~/util/LineHelper';
+import NavigationUtils from '~/util/NavigationUtils';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
+import TransitIcon from '../TransitIcon';
 import * as s from './lineItem.scss';
 
 interface ILineItemProps {
@@ -18,12 +19,12 @@ interface ILineItemProps {
 
 class LineItem extends React.Component<ILineItemProps> {
     private openRoute = (routeId: string) => () => {
-        const openRouteLink = routeBuilder
+        const routeViewLink = routeBuilder
             .to(SubSites.routes, navigator.getQueryParamValues())
             .append(QueryParams.routes, routeId)
             .toLink();
         searchStore.setSearchInput('');
-        navigator.goTo(openRouteLink);
+        navigator.goTo({ link: routeViewLink });
     };
 
     private renderRoute(route: ISearchLineRoute): any {
@@ -49,27 +50,22 @@ class LineItem extends React.Component<ILineItemProps> {
         );
     }
 
-    private redirectToLineView = (lineId: string) => () => {
-        const url = routeBuilder
-            .to(SubSites.line)
-            .toTarget(':id', lineId)
-            .toLink();
-        navigator.goTo(url);
-    };
-
     public render() {
         return (
             <div className={s.lineItemView}>
                 <div className={s.lineItem}>
                     <div className={s.icon}>
-                        {LineHelper.getTransitIcon(this.props.line.transitType, false)}
+                        <TransitIcon
+                            transitType={this.props.line.transitType}
+                            isWithoutBox={false}
+                        />
                     </div>
                     <div
                         className={classNames(
                             TransitTypeHelper.getColorClass(this.props.line.transitType),
                             s.lineLabel
                         )}
-                        onClick={this.redirectToLineView(this.props.line.id)}
+                        onClick={() => NavigationUtils.openLineView(this.props.line.id)}
                     >
                         {this.props.line.id}
                     </div>

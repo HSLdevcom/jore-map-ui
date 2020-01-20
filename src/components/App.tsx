@@ -92,7 +92,7 @@ class App extends React.Component<IAppProps, IAppState> {
             } else {
                 // Redirect to login
                 LocalStorageHelper.setItem('origin_url', navigator.getFullPath());
-                navigator.goTo(SubSites.login);
+                navigator.goTo({ link: SubSites.login });
             }
         }
 
@@ -108,11 +108,11 @@ class App extends React.Component<IAppProps, IAppState> {
                 const originUrl = LocalStorageHelper.getItem('origin_url');
                 const destination = originUrl ? originUrl : SubSites.home;
                 LocalStorageHelper.removeItem('origin_url');
-                navigator.goTo(destination);
+                navigator.goTo({ link: destination });
             },
             () => {
                 // On error
-                navigator.goTo(SubSites.login);
+                navigator.goTo({ link: SubSites.login });
                 AuthService.logout();
                 return null;
             }

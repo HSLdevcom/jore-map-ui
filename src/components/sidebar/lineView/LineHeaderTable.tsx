@@ -14,6 +14,8 @@ import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
+import { LineStore } from '~/stores/lineStore';
+import { NavigationStore } from '~/stores/navigationStore';
 import { areDatesEqual, toMidnightDate } from '~/util/dateHelpers';
 import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
@@ -29,12 +31,21 @@ interface ILineHeaderState {
 interface ILineHeaderListProps {
     lineId: string;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
+    lineStore?: LineStore;
     confirmStore?: ConfirmStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
+    navigationStore?: NavigationStore;
 }
 
-@inject('lineHeaderMassEditStore', 'confirmStore', 'alertStore', 'errorStore')
+@inject(
+    'lineHeaderMassEditStore',
+    'confirmStore',
+    'alertStore',
+    'errorStore',
+    'navigationStore',
+    'lineStore'
+)
 @observer
 class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderState> {
     private mounted: boolean;
@@ -70,7 +81,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
 
     componentWillUnmount() {
         this.mounted = false;
-        this.props.lineHeaderMassEditStore!.clear();
     }
 
     private createNewLineHeader = () => {
@@ -205,6 +215,13 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         });
     };
 
+    private editLineHeaderPrompt = () => {
+        if (!this.props.lineStore!.isEditingDisabled) {
+            this.props.lineStore!.toggleIsEditingDisabled();
+        }
+        this.props.lineHeaderMassEditStore!.toggleIsEditingDisabled();
+    };
+
     render() {
         if (this.state.isLoading) {
             return <Loader size='small' />;
@@ -233,11 +250,10 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
             <div className={s.lineHeaderTableView}>
                 <SidebarHeader
                     isEditing={!isEditingDisabled}
-                    onEditButtonClick={lineHeaderMassEditStore!.toggleIsEditingDisabled}
+                    onEditButtonClick={this.editLineHeaderPrompt}
+                    isEditButtonVisible={currentLineHeaders.length > 0}
                     isCloseButtonVisible={true}
                     isBackButtonVisible={true}
-                    isEditButtonVisible={currentLineHeaders.length > 0}
-                    shouldShowClosePromptMessage={lineHeaderMassEditStore!.isDirty}
                 >
                     Linjan otsikot
                 </SidebarHeader>

@@ -15,6 +15,7 @@ import LineStore from './stores/lineStore';
 import LinkStore from './stores/linkStore';
 import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
+import NavigationStore from './stores/navigationStore';
 import NetworkStore from './stores/networkStore';
 import NodeStore from './stores/nodeStore';
 import PopupStore from './stores/popupStore';
@@ -26,6 +27,7 @@ import SearchResultStore from './stores/searchResultStore';
 import SearchStore from './stores/searchStore';
 import StopAreaStore from './stores/stopAreaStore';
 import ToolbarStore from './stores/toolbarStore';
+import UserStore from './stores/userStore';
 import ApolloClient from './util/ApolloClient';
 
 configure({ enforceActions: 'always' });
@@ -52,7 +54,9 @@ const stores = {
     alertStore: AlertStore,
     codeListStore: CodeListStore,
     confirmStore: ConfirmStore,
-    highlightEntityStore: HighlightEntityStore
+    highlightEntityStore: HighlightEntityStore,
+    navigationStore: NavigationStore,
+    userStore: UserStore
 };
 
 ReactDOM.render(

@@ -99,11 +99,11 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
 
     private redirectToLineView = () => {
         const lineId = navigator.getQueryParam(QueryParams.lineId);
-        const url = routeBuilder
+        const lineViewLink = routeBuilder
             .to(SubSites.line)
             .toTarget(':id', lineId)
             .toLink();
-        navigator.goTo(url);
+        navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private onChangeRouteProperty = (property: keyof IRoute) => (value: any) => {
@@ -120,11 +120,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         if (!route) return null;
         return (
             <div className={classnames(s.routeView, s.form)}>
-                <SidebarHeader
-                    isEditButtonVisible={false}
-                    isEditing={true}
-                    shouldShowClosePromptMessage={this.props.routeStore!.isDirty}
-                >
+                <SidebarHeader isEditButtonVisible={false} isEditing={true}>
                     <div>Luo uusi reitti linjalle {lineId}</div>
                 </SidebarHeader>
                 <RouteForm

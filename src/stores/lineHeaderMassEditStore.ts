@@ -3,7 +3,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import { ILineHeader } from '~/models';
 import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
-import ToolbarStore from './toolbarStore';
+import NavigationStore from './navigationStore';
 
 export interface IMassEditLineHeader {
     id: number;
@@ -24,8 +24,8 @@ export class LineHeaderMassEditStore {
         this._isEditingDisabled = true;
 
         reaction(
-            () => this.isDirty,
-            (value: boolean) => ToolbarStore.setShouldShowEntityOpenPrompt(value)
+            () => this.isDirty && !this._isEditingDisabled,
+            (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
     }
 
@@ -234,8 +234,11 @@ export class LineHeaderMassEditStore {
 
     @action
     public getLastLineHeader = (): ILineHeader | null => {
-        if (this._massEditLineHeaders && this._massEditLineHeaders.length > 0) {
-            return _.last(this._massEditLineHeaders!)!.lineHeader;
+        const massEditLineHeaders = this._massEditLineHeaders!.filter(
+            massEditLineHeader => !massEditLineHeader.isRemoved
+        );
+        if (massEditLineHeaders && massEditLineHeaders.length > 0) {
+            return _.last(massEditLineHeaders!)!.lineHeader;
         }
         return null;
     };

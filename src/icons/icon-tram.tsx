@@ -4,7 +4,7 @@ import React from 'react';
 
 interface ITramIconProps {
     height: string;
-    withoutBox: boolean;
+    isWithoutBox: boolean;
 }
 
 const tramIcon: React.SFC<ITramIconProps> = props => {
@@ -55,7 +55,7 @@ const tramIcon: React.SFC<ITramIconProps> = props => {
         </svg>
     );
 
-    return props.withoutBox ? iconWithoutBox : icon;
+    return props.isWithoutBox ? iconWithoutBox : icon;
 };
 
 export default tramIcon;

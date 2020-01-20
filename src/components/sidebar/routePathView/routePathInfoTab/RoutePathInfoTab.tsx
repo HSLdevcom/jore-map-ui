@@ -4,11 +4,9 @@ import React from 'react';
 import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import { ILink, IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
-import RoutePathService from '~/services/routePathService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import ButtonType from '../../../../enums/buttonType';
@@ -49,8 +47,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
 
     async componentDidMount() {
         this.mounted = true;
-        const queryParams = navigator.getQueryParamValues();
-        const routeId = queryParams[QueryParams.routeId];
         this.isRoutePathLinksChangedListener = reaction(
             () =>
                 this.props.routePathStore!.routePath &&
@@ -58,7 +54,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
             this.updateCalculatedLength
         );
         autorun(() => this.updateCalculatedLength);
-        await this.fetchExistingPrimaryKeys(routeId);
     }
 
     componentWillUnmount() {
@@ -89,12 +84,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
             })
             .toLink();
 
-        navigator.goTo(newRoutePathLink);
-    };
-
-    private fetchExistingPrimaryKeys = async (routeId: string) => {
-        const routePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(routeId);
-        this.props.routePathStore!.setExistingRoutePathPrimaryKeys(routePathPrimaryKeys);
+        navigator.goTo({ link: newRoutePathLink });
     };
 
     private showAlertPlanningInProgress = () => {

@@ -41,7 +41,7 @@ export class LoginStore {
         this._hasWriteAccess = false;
         this._userEmail = undefined;
         if (redirectToLogin) {
-            navigator.goTo(SubSites.login);
+            navigator.goTo({ link: SubSites.login, shouldSkipUnsavedChangesPrompt: true });
         }
     }
 }
