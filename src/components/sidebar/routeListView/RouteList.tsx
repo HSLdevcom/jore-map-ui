@@ -16,6 +16,7 @@ import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { RouteListStore } from '~/stores/routeListStore';
@@ -39,6 +40,7 @@ interface IRouteListProps {
     routePathStore?: RoutePathStore;
     mapStore?: MapStore;
     alertStore?: AlertStore;
+    loginStore?: LoginStore;
 }
 
 interface IRouteListState {
@@ -54,7 +56,8 @@ interface IRouteListState {
     'errorStore',
     'confirmStore',
     'mapStore',
-    'alertStore'
+    'alertStore',
+    'loginStore'
 )
 @observer
 class RouteList extends React.Component<IRouteListProps, IRouteListState> {
@@ -273,24 +276,29 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                 <div className={s.routeItemWrapper}>
                                     <RouteItem route={route} isEditingDisabled={!isEditing} />
                                 </div>
-                                <div className={s.buttonContainer}>
-                                    <Button
-                                        onClick={this.redirectToNewRoutePathView(route)}
-                                        type={ButtonType.SQUARE}
-                                        disabled={Boolean(routeStore.routeIdToEdit)}
-                                    >
-                                        {`Luo uusi reitin suunta reitille ${route.id}`}
-                                    </Button>
-                                    {isEditing && (
+                                {this.props.loginStore!.hasWriteAccess && (
+                                    <div className={s.buttonContainer}>
                                         <Button
-                                            onClick={() => this.showSavePrompt()}
-                                            type={ButtonType.SAVE}
-                                            disabled={isSaveButtonDisabled}
+                                            onClick={this.redirectToNewRoutePathView(route)}
+                                            type={ButtonType.SQUARE}
+                                            disabled={Boolean(routeStore.routeIdToEdit)}
                                         >
-                                            Tallenna muutokset
+                                            {`Luo uusi reitinsuunta reitille ${route.id}`}
                                         </Button>
-                                    )}
-                                </div>
+                                        {isEditing && (
+                                            <Button
+                                                onClick={() => this.showSavePrompt()}
+                                                type={ButtonType.SAVE}
+                                                disabled={isSaveButtonDisabled}
+                                            >
+                                                Tallenna muutokset
+                                            </Button>
+                                        )}
+                                    </div>
+                                )}
+                                {!this.props.loginStore!.hasWriteAccess && (
+                                    <div className={s.sectionDivider} />
+                                )}
                             </div>
                         );
                     })}

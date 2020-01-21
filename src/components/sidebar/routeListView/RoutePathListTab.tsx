@@ -245,7 +245,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         return (
             <div className={s.routePathListTab}>
                 {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}
-                {allGroupedRoutePaths.length !== groupedRoutePathsToDisplay.length && groupedRoutePathsToDisplay.length <= ROUTE_PATH_GROUP_SHOW_LIMIT && (
+                {allGroupedRoutePaths.length > ROUTE_PATH_GROUP_SHOW_LIMIT && (
                     <div
                         className={s.toggleAllRoutePathsVisibleButton}
                         onClick={this.props.toggleAllRoutePathsVisible}
