@@ -10,7 +10,8 @@ enum QueryParams {
     showItem = 'showItem',
     direction = 'direction',
     node = 'node',
-    code = 'code'
+    code = 'code',
+    testing = 'testing'
 }
 
 export default QueryParams;

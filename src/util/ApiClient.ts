@@ -17,6 +17,7 @@ enum RequestMethod {
 
 interface IAuthorizationRequest {
     code: string;
+    isTesting?: boolean;
 }
 
 type credentials = 'include';
@@ -38,8 +39,14 @@ class ApiClient {
         return await this.sendBackendRequest(RequestMethod.DELETE, endpointPath, object);
     };
 
-    public authorizeUsingCode = async (code: string) => {
-        const requestBody: IAuthorizationRequest = { code };
+    public authorizeUsingCode = async ({
+        code,
+        isTesting
+    }: {
+        code: string;
+        isTesting: boolean;
+    }) => {
+        const requestBody: IAuthorizationRequest = { code, isTesting };
         return await this.sendBackendRequest(RequestMethod.POST, EndpointPath.AUTH, requestBody);
     };
 

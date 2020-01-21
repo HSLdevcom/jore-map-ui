@@ -16,12 +16,13 @@ export interface IAuthorizationResponse {
 class AuthService {
     public static async authenticate(onSuccess: () => void, onError: () => void) {
         const code = navigator.getQueryParam(QueryParams.code);
-
+        const isTesting = navigator.getQueryParam(QueryParams.testing);
         let authorizationResponse: IAuthorizationResponse;
         try {
-            authorizationResponse = (await ApiClient.authorizeUsingCode(
-                code
-            )) as IAuthorizationResponse;
+            authorizationResponse = (await ApiClient.authorizeUsingCode({
+                code,
+                isTesting
+            })) as IAuthorizationResponse;
         } catch (error) {
             const errorResponse = JSON.parse(error.message) as IAuthorizationResponse;
             authorizationResponse = {

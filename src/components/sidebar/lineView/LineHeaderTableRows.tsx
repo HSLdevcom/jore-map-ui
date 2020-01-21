@@ -171,6 +171,7 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                                 className={s.lineHeaderButton}
                                 hasReverseColor={true}
                                 onClick={this.openLineHeaderById(currentMassEditLineHeader.id)}
+                                data-cy='lineHeaderButton'
                             >
                                 <FiInfo />
                             </Button>

@@ -35,27 +35,41 @@ const Button = observer((props: IButtonProps) => {
         return undefined;
     };
 
-    const onClick = () => {
-        if (!props.disabled) {
-            props.onClick();
+    const {
+        children,
+        onClick,
+        type,
+        className,
+        disabled,
+        isWide,
+        hasPadding,
+        hasReverseColor,
+        hasNoTransition,
+        ...attrs
+    } = props;
+
+    const _onClick = () => {
+        if (!disabled) {
+            onClick();
         }
     };
 
     return (
         <div
+            {...attrs}
             className={classnames(
                 s.button,
-                props.className,
-                getTypeClass(props.type),
-                props.disabled ? s.disabled : null,
-                props.isWide ? s.wide : null,
-                props.hasPadding ? s.hasPadding : null,
-                props.hasReverseColor ? s.reverseColor : null,
-                props.hasNoTransition ? null : s.transition
+                className,
+                getTypeClass(type),
+                disabled ? s.disabled : null,
+                isWide ? s.wide : null,
+                hasPadding ? s.hasPadding : null,
+                hasReverseColor ? s.reverseColor : null,
+                hasNoTransition ? null : s.transition
             )}
-            onClick={onClick}
+            onClick={_onClick}
         >
-            {props.children}
+            {children}
         </div>
     );
 });
