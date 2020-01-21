@@ -7,6 +7,6 @@
     "numTestsKeptInMemory": 3,
     "env": {
         "AUTH_URI": "https://hslid-uat.cinfra.fi/openid/token",
-        "AUTH_SCOPE": "email+https://oneportal.trivore.com/scope/groups.readonly"
+        "AUTH_SCOPE": "email https://oneportal.trivore.com/scope/groups.readonly"
     }
 }
