@@ -8,6 +8,7 @@ import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
+import { LoginStore } from '~/stores/loginStore';
 import { toMidnightDate } from '~/util/dateHelpers';
 import FormValidator from '~/validation/FormValidator';
 import * as s from './lineHeaderTableRows.scss';
@@ -15,9 +16,10 @@ import * as s from './lineHeaderTableRows.scss';
 interface ILineHeaderListProps {
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
     confirmStore?: ConfirmStore;
+    loginStore?: LoginStore;
 }
 
-@inject('lineHeaderMassEditStore', 'confirmStore')
+@inject('lineHeaderMassEditStore', 'confirmStore', 'loginStore')
 @observer
 class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
     private onChangeLineHeaderStartDate = (id: number) => (value: Date) => {
@@ -128,43 +130,47 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                             />
                         </td>
                         <td className={s.lineHeaderTableButtonCell}>
-                            <Button
-                                className={classnames(
-                                    s.lineHeaderButton,
-                                    s.removeLineHeaderButton,
-                                    isRemoveLineHeaderButtonDisabled
-                                        ? s.disabledLineHeaderButton
-                                        : undefined,
-                                    isRemoveLineHeaderButtonDisabled && isSelectedLineHeader
-                                        ? s.highlightedBackground
-                                        : undefined
-                                )}
-                                hasReverseColor={true}
-                                onClick={this.removeLineHeader(currentMassEditLineHeader)}
-                                disabled={isRemoveLineHeaderButtonDisabled}
-                                hasNoTransition={true}
-                            >
-                                <FaTrashAlt />
-                            </Button>
+                            {this.props.loginStore!.hasWriteAccess && (
+                                <Button
+                                    className={classnames(
+                                        s.lineHeaderButton,
+                                        s.removeLineHeaderButton,
+                                        isRemoveLineHeaderButtonDisabled
+                                            ? s.disabledLineHeaderButton
+                                            : undefined,
+                                        isRemoveLineHeaderButtonDisabled && isSelectedLineHeader
+                                            ? s.highlightedBackground
+                                            : undefined
+                                    )}
+                                    hasReverseColor={true}
+                                    onClick={this.removeLineHeader(currentMassEditLineHeader)}
+                                    disabled={isRemoveLineHeaderButtonDisabled}
+                                    hasNoTransition={true}
+                                >
+                                    <FaTrashAlt />
+                                </Button>
+                            )}
                         </td>
                         <td className={s.lineHeaderTableButtonCell}>
-                            <Button
-                                className={classnames(
-                                    s.lineHeaderButton,
-                                    isEditingDisabled ? s.disabledLineHeaderButton : undefined,
-                                    isEditingDisabled && isSelectedLineHeader
-                                        ? s.highlightedBackground
-                                        : undefined
-                                )}
-                                hasReverseColor={true}
-                                onClick={this.createNewLineHeaderWithCopy(
-                                    currentMassEditLineHeader.id
-                                )}
-                                disabled={isEditingDisabled}
-                                hasNoTransition={true}
-                            >
-                                <FiCopy />
-                            </Button>
+                            {this.props.loginStore!.hasWriteAccess && (
+                                <Button
+                                    className={classnames(
+                                        s.lineHeaderButton,
+                                        isEditingDisabled ? s.disabledLineHeaderButton : undefined,
+                                        isEditingDisabled && isSelectedLineHeader
+                                            ? s.highlightedBackground
+                                            : undefined
+                                    )}
+                                    hasReverseColor={true}
+                                    onClick={this.createNewLineHeaderWithCopy(
+                                        currentMassEditLineHeader.id
+                                    )}
+                                    disabled={isEditingDisabled}
+                                    hasNoTransition={true}
+                                >
+                                    <FiCopy />
+                                </Button>
+                            )}
                         </td>
                         <td className={s.lineHeaderTableButtonCell}>
                             <Button
