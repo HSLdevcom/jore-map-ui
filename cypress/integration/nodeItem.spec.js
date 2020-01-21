@@ -24,7 +24,7 @@ describe('NodeItemView tests - read access user', () => {
 });
 
 describe('NodeItemView tests - write access user', () => {
-    it.only('Can edit node', () => {
+    it('Can edit node', () => {
         cy.hslLoginWriteAccess();
         openNode();
 
