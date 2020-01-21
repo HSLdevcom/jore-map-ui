@@ -286,9 +286,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const oldStop = _.cloneDeep(oldNode.stop);
 
         // Create node save model
-        if (currentNode.stop) {
+        if (currentStop) {
             delete currentNode['stop'];
             delete oldNode['stop'];
+
+            if (currentNode.type === NodeType.CROSSROAD || currentNode.type === NodeType.MUNICIPALITY_BORDER) {
+                delete currentNode['measurementType'];
+                delete currentNode['coordinatesProjection'];
+            }
         }
         const saveModels: ISaveModel[] = [
             {
