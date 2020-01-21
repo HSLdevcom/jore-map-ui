@@ -1,4 +1,4 @@
-describe('Authentication smoke tests', () => {
+describe('Authentication tests', () => {
     it('Cannot see unauthorized elements when not logged in', () => {
         cy.visit('/');
         cy.getTestElement('authInfo').should('not.exist');

@@ -45,7 +45,7 @@ const Button = observer((props: IButtonProps) => {
         hasPadding,
         hasReverseColor,
         hasNoTransition,
-        ...dynamicAttrs
+        ...attrs
     } = props;
 
     const _onClick = () => {
@@ -56,7 +56,7 @@ const Button = observer((props: IButtonProps) => {
 
     return (
         <div
-            {...dynamicAttrs}
+            {...attrs}
             className={classnames(
                 s.button,
                 className,

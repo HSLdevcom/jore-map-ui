@@ -21,30 +21,39 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
     return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
 };
 
-const TextContainer = observer((props: ITextContainerProps) => (
-    <div className={s.formItem}>
-        {props.label && (
-            <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-                {props.label}
-            </div>
-        )}
-        <div
-            className={classnames(
-                s.textField,
-                s.staticHeight,
-                props.isInputColorRed ? s.redInputText : null
+const TextContainer = observer((props: ITextContainerProps) => {
+    const {
+        label,
+        value,
+        validationResult,
+        isTimeIncluded,
+        isInputLabelDarker,
+        isInputColorRed,
+        ...attrs
+    } = props;
+    return (
+        <div className={s.formItem} {...attrs}>
+            {label && (
+                <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                    {label}
+                </div>
             )}
-        >
-            {props.value instanceof Date
-                ? Moment(props.value!).format(
-                      props.isTimeIncluded ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY'
-                  )
-                : props.value
-                ? props.value
-                : '-'}
+            <div
+                className={classnames(
+                    s.textField,
+                    s.staticHeight,
+                    isInputColorRed ? s.redInputText : null
+                )}
+            >
+                {value instanceof Date
+                    ? Moment(value!).format(isTimeIncluded ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY')
+                    : value
+                    ? value
+                    : '-'}
+            </div>
+            {renderValidatorResult(validationResult)}
         </div>
-        {renderValidatorResult(props.validationResult)}
-    </div>
-));
+    );
+});
 
 export default TextContainer;

@@ -76,35 +76,50 @@ const renderEditableContent = (props: IInputProps) => {
     );
 };
 
-const renderValidatorResult = (validationResult?: IValidationResult) => {
-    if (!validationResult || !validationResult.errorMessage) {
-        return null;
-    }
-    return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
-};
-
 const InputContainer = observer((props: IInputProps) => {
+    const {
+        label,
+        onChange,
+        validationResult,
+        placeholder,
+        className,
+        disabled,
+        value,
+        type,
+        isEmptyDateValueAllowed,
+        capitalizeInput,
+        isInputColorRed,
+        isClearButtonVisibleOnDates,
+        isTimeIncluded,
+        isInputLabelDarker,
+        onFocus,
+        ...attrs
+    } = props;
+
     if (props.disabled) {
         return (
             <TextContainer
-                label={props.label}
-                value={props.value}
-                validationResult={props.validationResult}
-                isTimeIncluded={props.isTimeIncluded}
-                isInputLabelDarker={props.isInputLabelDarker}
-                isInputColorRed={props.isInputColorRed}
+                label={label}
+                value={value}
+                validationResult={validationResult}
+                isTimeIncluded={isTimeIncluded}
+                isInputLabelDarker={isInputLabelDarker}
+                isInputColorRed={isInputColorRed}
+                {...attrs}
             />
         );
     }
     return (
-        <div className={classnames(s.formItem, props.className)}>
-            {props.label && (
-                <div className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-                    {props.label}
+        <div className={classnames(s.formItem, className)} {...attrs}>
+            {label && (
+                <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                    {label}
                 </div>
             )}
             {renderEditableContent(props)}
-            {renderValidatorResult(props.validationResult)}
+            {validationResult && validationResult.errorMessage && (
+                <div className={s.errorMessage}>{validationResult.errorMessage}</div>
+            )}
         </div>
     );
 });

@@ -72,7 +72,7 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
         if (!line) return null;
 
         return (
-            <div className={s.lineRoutesTabView}>
+            <div className={s.lineRoutesTabView} data-cy='lineRoutesTabView'>
                 <div className={s.content}>
                     {line.routes.length === 0 ? (
                         <div>Linjalla ei olemassa olevia reittejä.</div>

@@ -270,6 +270,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                             isValid: Boolean(activeLineHeaderName)
                         }}
                         isInputColorRed={!Boolean(activeLineHeaderName)}
+                        data-cy='activeLineHeaderName'
                     />
                 </div>
                 {currentLineHeaders.length > 0 ? (
