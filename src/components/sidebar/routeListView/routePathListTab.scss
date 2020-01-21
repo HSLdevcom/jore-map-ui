@@ -12,7 +12,7 @@
         }
 
         .groupedRoutesContent {
-            padding-left: 25px;
+            padding-left: 10px;
         }
     }
 
@@ -30,20 +30,31 @@
         padding-top: 5px;
 
         .routePathInfo {
+            display: flex;
             &.highlight {
                 font-weight: bold;
             }
 
-            .routePathDate {
-                font-size: $smallFontSize;
-                padding-left: 10px;
-                padding-top: 2px;
+            .routePathDirection {
+                font-size: 1.2rem;
                 display: flex;
+                width: 25px;
+                align-items: center;
+            }
 
-                .dateDeltaSeparator {
-                    min-width: 20px;
-                    text-align: center;
-                }
+            .stopNameLoader {
+                display: flex;
+                justify-content: center;
+                width: 150px;
+            }
+
+            .destinations1 {
+                font-size: $mediumFontSize;
+            }
+
+            .destinations2 {
+                color: $mediumLightGrey;
+                font-size: $smallFontSize;
             }
         }
 

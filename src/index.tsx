@@ -27,6 +27,7 @@ import SearchResultStore from './stores/searchResultStore';
 import SearchStore from './stores/searchStore';
 import StopAreaStore from './stores/stopAreaStore';
 import ToolbarStore from './stores/toolbarStore';
+import UserStore from './stores/userStore';
 import ApolloClient from './util/ApolloClient';
 
 configure({ enforceActions: 'always' });
@@ -54,7 +55,8 @@ const stores = {
     codeListStore: CodeListStore,
     confirmStore: ConfirmStore,
     highlightEntityStore: HighlightEntityStore,
-    navigationStore: NavigationStore
+    navigationStore: NavigationStore,
+    userStore: UserStore
 };
 
 ReactDOM.render(

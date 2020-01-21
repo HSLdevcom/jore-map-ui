@@ -74,6 +74,7 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
                 <ContentList selectedTabIndex={this.state.selectedTabIndex}>
                     <ContentItem>
                         <RoutePathListTab
+                            key={this.props.route.id}
                             route={this.props.route}
                             areAllRoutePathsVisible={this.state.areAllRoutePathsVisible}
                             toggleAllRoutePathsVisible={this.toggleAllRoutePathsVisible}

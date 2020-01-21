@@ -18,6 +18,20 @@
     }
 
     .topic {
+        display: flex;
+        font-size: $largeFontSize;
+        font-weight: bold;
+        color: $fontColorDefault;
+
+        .link {
+            cursor: pointer;
+        }
+        .link:hover {
+            background-color: $backgroundHoverColor;
+        }
+    }
+
+    .subTopic {
         padding: 10px;
         font-weight: bold;
         color: #898989;

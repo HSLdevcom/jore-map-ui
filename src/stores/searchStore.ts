@@ -6,6 +6,7 @@ export class SearchStore {
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isSearchingForLines: boolean;
     @observable private _isSearchingForNodes: boolean;
+    @observable private _isSearchDisabled: boolean;
 
     constructor() {
         this._searchInput = '';
@@ -18,6 +19,7 @@ export class SearchStore {
         ];
         this._isSearchingForLines = true;
         this._isSearchingForNodes = true;
+        this._isSearchDisabled = false;
     }
 
     @computed
@@ -45,6 +47,11 @@ export class SearchStore {
         return this._isSearchingForNodes;
     }
 
+    @computed
+    get isSearchDisabled() {
+        return this._isSearchDisabled;
+    }
+
     @action
     public toggleIsSearchingForLines() {
         this._isSearchingForLines = !this._isSearchingForLines;
@@ -64,6 +71,11 @@ export class SearchStore {
             this._selectedTransitTypes = this._selectedTransitTypes.concat(type);
         }
     };
+
+    @action
+    public setIsSearchDisabled(isSearchDisabled: boolean) {
+        this._isSearchDisabled = isSearchDisabled;
+    }
 }
 
 const observableSearchStore = new SearchStore();

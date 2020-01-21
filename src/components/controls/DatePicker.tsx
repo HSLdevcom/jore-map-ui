@@ -16,6 +16,7 @@ interface IDatePickerProps {
     isEmptyValueAllowed?: boolean;
     isClearButtonVisible?: boolean;
     onChange: (date: Date | null) => void;
+    onFocus?: () => void;
 }
 
 interface IDatePickerState {
@@ -118,6 +119,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                     open={this.state.isOpen}
                     onClickOutside={this.closeCalendar}
                     onSelect={this.onChange}
+                    onFocus={this.props.onFocus}
                     autoFocus={true}
                     adjustDateOnChange={false}
                     autoComplete={'off'}
