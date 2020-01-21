@@ -14,6 +14,7 @@ describe('LineView tests', () => {
             .first()
             .click();
         cy.getTestElement('activeLineHeaderName').should('exist');
+        cy.getTestElement('editButton').should('not.exist');
     });
 
     it('Can open routes tab', () => {

@@ -233,7 +233,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
         const routeIdToEdit = routeStore.routeIdToEdit;
         return (
-            <div className={s.routeListView}>
+            <div className={s.routeListView} data-cy='routeListView'>
                 <div className={s.routeList}>
                     {routes.map((route: IRoute, index: number) => {
                         const isEditing = routeIdToEdit === route.id;
@@ -268,7 +268,9 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                                 )
                                             )}
                                         >
-                                            <div className={s.routeId}>{route.id}</div>
+                                            <div className={s.routeId} data-cy='routeId'>
+                                                {route.id}
+                                            </div>
                                         </div>
                                         {route.routeName}
                                     </div>
