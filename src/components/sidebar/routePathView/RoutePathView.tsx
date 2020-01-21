@@ -344,7 +344,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             copySegmentStore!.startNode && copySegmentStore!.endNode;
         const isSavingPrevented = ENVIRONMENT === 'prod' || ENVIRONMENT === 'stage';
         return (
-            <div className={s.routePathView}>
+            <div className={s.routePathView} data-cy='routePathView'>
                 <div className={s.sidebarHeaderSection}>
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewRoutePath}

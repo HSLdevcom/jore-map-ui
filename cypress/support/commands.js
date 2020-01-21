@@ -55,13 +55,11 @@ const hslLogin = hasWriteAccess => {
     }
     const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
 
+    const writeAccessText = hasWriteAccess ? 'with write access ' : 'without write access';
     Cypress.log({
-        name: 'HSL ID login'
+        name: `HSL ID login ${writeAccessText}`
     });
-    Cypress.log({ name: HSL_TESTING_HSLID_USERNAME });
-    Cypress.log({
-        name: HSL_TESTING_HSLID_PASSWORD
-    });
+
     const options = {
         method: 'POST',
         url: AUTH_URI,

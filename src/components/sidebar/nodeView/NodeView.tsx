@@ -419,7 +419,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             isEditingDisabled || !nodeStore.isDirty || isNodeFormInvalid || isStopFormInvalid;
 
         return (
-            <div className={s.nodeView}>
+            <div className={s.nodeView} data-cy='nodeView'>
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!isNewNode}
@@ -457,6 +457,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
                     onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
+                    data-cy='saveButton'
                 >
                     {isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
                 </Button>

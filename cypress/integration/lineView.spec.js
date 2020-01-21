@@ -1,4 +1,4 @@
-describe('LineView tests', () => {
+describe('LineView tests - read access user', () => {
     beforeEach(() => {
         cy.hslLoginReadAccess();
         cy.getTestElement('authInfo').should('exist');
