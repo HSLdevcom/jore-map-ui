@@ -8,7 +8,7 @@ const openNode = () => {
     cy.getTestElement('nodeView').should('exist');
 };
 
-describe('NodeItemView tests - read access user', () => {
+describe('NodeView tests - read access user', () => {
     it('Can open node and close it to return home page', () => {
         cy.hslLoginReadAccess();
         openNode();
@@ -23,7 +23,7 @@ describe('NodeItemView tests - read access user', () => {
     });
 });
 
-describe('NodeItemView tests - write access user', () => {
+describe('NodeView tests - write access user', () => {
     it('Can edit node', () => {
         cy.hslLoginWriteAccess();
         openNode();

@@ -68,7 +68,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
         if (!this.state.show) {
             return (
                 <div onMouseEnter={this.showControls(true)}>
-                    <div className={s.mapLayerControlIcon}>
+                    <div className={s.mapLayerControlIcon} data-cy='mapLayerControlIcon'>
                         <IoMdMap />
                     </div>
                 </div>
@@ -79,6 +79,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
             <div
                 className={classnames(s.mapLayerControlView)}
                 onMouseLeave={this.showControls(false)}
+                data-cy='mapLayerControlView'
             >
                 <div className={s.mapLayersContainer}>
                     <div className={s.inputTitle}>VERKKO</div>
@@ -105,6 +106,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                             onClick={this.toggleMapLayerVisibility(MapLayer.link)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.link)}
                             content='Alueen linkit'
+                            data-cy='showLinks'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
@@ -112,6 +114,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                             onClick={this.toggleMapLayerVisibility(MapLayer.node)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.node)}
                             content='Alueen solmut'
+                            data-cy='showNodes'
                         />
                     </div>
                     <div className={s.checkboxContainer}>

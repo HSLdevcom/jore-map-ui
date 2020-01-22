@@ -246,7 +246,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         }
 
         return (
-            <div className={s.linkView}>
+            <div className={s.linkView} data-cy='linkView'>
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewLink}
