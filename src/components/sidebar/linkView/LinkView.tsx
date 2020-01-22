@@ -321,6 +321,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                                 value={link.streetName}
                                 validationResult={invalidPropertiesMap['streetName']}
                                 onChange={this.onChangeLinkProperty('streetName')}
+                                data-cy='streetName'
                             />
                         </div>
                         {!this.props.isNewLink && (
@@ -362,6 +363,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
                     onClick={() => (this.props.isNewLink ? this.save() : this.showSavePrompt())}
+                    data-cy='saveButton'
                 >
                     {this.props.isNewLink ? 'Luo uusi linkki' : 'Tallenna muutokset'}
                 </Button>
