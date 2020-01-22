@@ -22,7 +22,7 @@ const NodeItem = observer((props: INodeItemProps) => {
     };
 
     return (
-        <div className={s.nodeItem} onClick={openNode}>
+        <div className={s.nodeItem} onClick={openNode} data-cy='nodeItem'>
             <IoIosRadioButtonOn />
             <div className={s.nodeItemTextContainer}>
                 <span>{props.node.id}</span>

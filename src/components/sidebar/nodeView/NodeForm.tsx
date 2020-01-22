@@ -102,6 +102,7 @@ export default class NodeForm extends Component<INodeViewProps> {
                             disabled={isEditingDisabled}
                             selected={node.type}
                             items={nodeTypeCodeList}
+                            data-cy='nodeTypeDropdown'
                         />
                     </div>
                     {!isNewNode && (
@@ -132,7 +133,6 @@ export default class NodeForm extends Component<INodeViewProps> {
                             value={node.coordinates.lat}
                             onChange={latChange(node.coordinates, 'coordinates')}
                             label='LATITUDE'
-                            type='number'
                             disabled={isEditingDisabled}
                             validationResult={invalidPropertiesMap['coordinates']}
                         />
@@ -140,9 +140,9 @@ export default class NodeForm extends Component<INodeViewProps> {
                             value={node.coordinates.lng}
                             onChange={lngChange(node.coordinates, 'coordinates')}
                             label='LONGITUDE'
-                            type='number'
                             disabled={isEditingDisabled}
                             validationResult={invalidPropertiesMap['coordinates']}
+                            data-cy='longitudeInput'
                         />
                     </div>
                     <div className={s.flexRow}>

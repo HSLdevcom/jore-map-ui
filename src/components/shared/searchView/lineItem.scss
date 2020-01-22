@@ -5,11 +5,8 @@
     color: $fontColorDefault;
 
     .lineItem {
-        display: -webkit-box;
-        display: -ms-flexbox;
+        cursor: pointer;
         display: flex;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
         align-items: center;
         margin-top: 0;
         margin-bottom: 0;
@@ -18,18 +15,16 @@
         .lineLabel {
             font-size: $largeFontSize;
             font-weight: 600;
-            cursor: pointer;
-        }
-
-        .lineLabel:hover {
-            background-color: $backgroundHoverColor;
-            transition: 0.5s;
         }
 
         .icon {
             margin-right: 10px;
             flex-shrink: 0;
         }
+    }
+    .lineItem:hover {
+        background-color: $backgroundHoverColor;
+        transition: 0.5s;
     }
 
     .routeItem {

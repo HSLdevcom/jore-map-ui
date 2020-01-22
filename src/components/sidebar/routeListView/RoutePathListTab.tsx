@@ -203,6 +203,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                             className={s.openRoutePathViewButton}
                             hasReverseColor={true}
                             onClick={openRoutePathView}
+                            data-cy='openRoutePathViewButton'
                         >
                             <FiInfo />
                         </Button>

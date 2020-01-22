@@ -141,7 +141,7 @@ class LeafletMap extends React.Component<IMapProps> {
         const isLoading = Boolean(!this.props.mapStore!.coordinates);
         const routes = toJS(this.props.routeListStore!.routes);
         return (
-            <div className={s.mapView}>
+            <div className={s.mapView} data-cy='mapView'>
                 {this.props.children}
                 <Map
                     ref={this.mapReference}

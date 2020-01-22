@@ -47,22 +47,19 @@ const hslLogin = hasWriteAccess => {
     let HSL_TESTING_HSLID_USERNAME;
     let HSL_TESTING_HSLID_PASSWORD;
     if (hasWriteAccess) {
-        // TODO: change username & password for user with write access
-        HSL_TESTING_HSLID_USERNAME = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_USERNAME');
-        HSL_TESTING_HSLID_PASSWORD = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_PASSWORD');
+        HSL_TESTING_HSLID_USERNAME = Cypress.env('HSL_TESTING_HSLID_WRITE_ACCESS_USERNAME');
+        HSL_TESTING_HSLID_PASSWORD = Cypress.env('HSL_TESTING_HSLID_WRITE_ACCESS_PASSWORD');
     } else {
         HSL_TESTING_HSLID_USERNAME = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_USERNAME');
         HSL_TESTING_HSLID_PASSWORD = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_PASSWORD');
     }
     const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
 
+    const writeAccessText = hasWriteAccess ? 'with write access ' : 'without write access';
     Cypress.log({
-        name: 'HSL ID login'
+        name: `HSL ID login ${writeAccessText}`
     });
-    Cypress.log({ name: HSL_TESTING_HSLID_USERNAME });
-    Cypress.log({
-        name: HSL_TESTING_HSLID_PASSWORD
-    });
+
     const options = {
         method: 'POST',
         url: AUTH_URI,

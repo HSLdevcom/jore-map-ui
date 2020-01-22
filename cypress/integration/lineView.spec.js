@@ -1,4 +1,4 @@
-describe('LineView tests', () => {
+describe('LineView tests - read access user', () => {
     beforeEach(() => {
         cy.hslLoginReadAccess();
         cy.getTestElement('authInfo').should('exist');
@@ -14,6 +14,7 @@ describe('LineView tests', () => {
             .first()
             .click();
         cy.getTestElement('activeLineHeaderName').should('exist');
+        cy.getTestElement('editButton').should('not.exist');
     });
 
     it('Can open routes tab', () => {

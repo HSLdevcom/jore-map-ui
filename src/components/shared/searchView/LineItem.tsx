@@ -29,7 +29,7 @@ class LineItem extends React.Component<ILineItemProps> {
 
     private renderRoute(route: ISearchLineRoute): any {
         return (
-            <div key={route.id} className={s.routeItem}>
+            <div key={route.id} className={s.routeItem} data-cy='routeItem'>
                 <div className={s.routeItemHeader}>
                     <div
                         className={classNames(

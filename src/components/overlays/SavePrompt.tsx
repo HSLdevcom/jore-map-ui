@@ -157,7 +157,7 @@ const renderChangeRow = (property: string, oldValue: string, newValue: string) =
 const SavePrompt = observer((props: ISavePromptProps) => {
     const saveModels = props.saveModels;
     return (
-        <div className={s.savePromptView}>
+        <div className={s.savePromptView} data-cy='savePromptView'>
             <div className={s.topic}>Tallennettavat muutokset</div>
             <div className={s.savePromptContent}>
                 {saveModels.map((saveModel: ISaveModel, index: number) =>
