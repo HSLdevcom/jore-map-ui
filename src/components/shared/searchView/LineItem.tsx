@@ -29,7 +29,7 @@ class LineItem extends React.Component<ILineItemProps> {
 
     private renderRoute(route: ISearchLineRoute): any {
         return (
-            <div key={route.id} className={s.routeItem}>
+            <div key={route.id} className={s.routeItem} data-cy='routeItem'>
                 <div className={s.routeItemHeader}>
                     <div
                         className={classNames(
@@ -53,7 +53,11 @@ class LineItem extends React.Component<ILineItemProps> {
     public render() {
         return (
             <div className={s.lineItemView}>
-                <div className={s.lineItem}>
+                <div
+                    className={s.lineItem}
+                    onClick={() => NavigationUtils.openLineView(this.props.line.id)}
+                    data-cy='lineItem'
+                >
                     <div className={s.icon}>
                         <TransitIcon
                             transitType={this.props.line.transitType}
@@ -65,7 +69,6 @@ class LineItem extends React.Component<ILineItemProps> {
                             TransitTypeHelper.getColorClass(this.props.line.transitType),
                             s.lineLabel
                         )}
-                        onClick={() => NavigationUtils.openLineView(this.props.line.id)}
                     >
                         {this.props.line.id}
                     </div>

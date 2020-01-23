@@ -105,25 +105,40 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
     }
 
     render() {
-        const props = this.props;
-        const validationResult = props.validationResult;
+        const {
+            items,
+            label,
+            selected,
+            disabled,
+            isLoading,
+            emptyItem,
+            onChange,
+            validationResult,
+            isInputLabelDarker,
+            isBackgroundGrey,
+            isAnyInputValueAllowed,
+            isNoOptionsMessageHidden,
+            isSelectedOptionHidden,
+            isJokerAllowed,
+            ...attr
+        } = this.props;
         const displayedItems = this.state.displayedItems;
-        const onChange = (selectedItem: IDropdownItem) => {
-            if (selectedItem) props.onChange!(selectedItem.value);
+        const _onChange = (selectedItem: IDropdownItem) => {
+            if (selectedItem) onChange!(selectedItem.value);
         };
         // Push selectedItem into dropdownItemList if it doesn't exist in dropdownItemList
         let selectedItem: IDropdownItem | undefined;
-        if (props.selected) {
-            selectedItem = this.props.items.find(item => item.value === props.selected!.trim());
+        if (selected) {
+            selectedItem = items.find(item => item.value === selected!.trim());
             if (!selectedItem) {
                 selectedItem = {
-                    label: props.selected,
-                    value: props.selected
+                    label: selected,
+                    value: selected
                 };
                 displayedItems.push(selectedItem);
             }
         }
-        if (props.isLoading) {
+        if (isLoading) {
             return (
                 <div className={s.formItem}>
                     <Loader size='small' />
@@ -131,11 +146,12 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
             );
         }
 
-        if (props.disabled) {
+        if (disabled) {
             return (
                 <TextContainer
-                    label={props.label}
+                    label={label}
                     value={Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}
+                    {...attr}
                 />
             );
         }
@@ -145,32 +161,32 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         return (
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
-                    {props.label && (
-                        <div
-                            className={props.isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}
-                        >
-                            {props.label}
+                    {label && (
+                        <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                            {label}
                         </div>
                     )}
 
-                    <Select
-                        value={selectValue}
-                        onChange={onChange}
-                        onInputChange={this.handleInputChange}
-                        options={displayedItems}
-                        isDisabled={props.disabled}
-                        isSearchable={true}
-                        filterOption={null}
-                        placeholder={'Valitse...'}
-                        styles={_getCustomStyles(this.props)}
-                        noOptionsMessage={() =>
-                            props.isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
-                        }
-                        hideSelectedOptions={Boolean(this.props.isSelectedOptionHidden)}
-                        className={this.props.isBackgroundGrey ? s.greyBackground : ''}
-                    />
+                    <div {...attr}>
+                        <Select
+                            value={selectValue}
+                            onChange={_onChange}
+                            onInputChange={this.handleInputChange}
+                            options={displayedItems}
+                            isDisabled={disabled}
+                            isSearchable={true}
+                            filterOption={null}
+                            placeholder={'Valitse...'}
+                            styles={_getCustomStyles(this.props)}
+                            noOptionsMessage={() =>
+                                isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
+                            }
+                            hideSelectedOptions={Boolean(isSelectedOptionHidden)}
+                            className={isBackgroundGrey ? s.greyBackground : ''}
+                        />
+                    </div>
                     <div>
-                        {validationResult && validationResult.errorMessage && !props.disabled && (
+                        {validationResult && validationResult.errorMessage && !disabled && (
                             <div className={s.errorMessage}>{validationResult.errorMessage}</div>
                         )}
                     </div>

@@ -176,7 +176,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         const isSaveButtonDisabled =
             isEditingDisabled || !lineStore!.isDirty || !lineStore!.isLineFormValid;
         return (
-            <div className={s.lineView}>
+            <div className={s.lineView} data-cy='lineView'>
                 <div className={s.sidebarHeaderSection}>
                     <SidebarHeader
                         onEditButtonClick={lineStore!.toggleIsEditingDisabled}

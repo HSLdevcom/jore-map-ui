@@ -11,23 +11,24 @@ interface ICheckboxProps {
 }
 
 const Checkbox = observer((props: ICheckboxProps) => {
-    const doNothing = () => {};
+    const { disabled, checked, content, onClick, ...attr } = props;
 
-    const onClick = (event: React.MouseEvent<HTMLElement>) => {
-        props.onClick(!props.checked);
+    const _onClick = (event: React.MouseEvent<HTMLElement>) => {
+        onClick(!checked);
         event.stopPropagation();
         event.preventDefault();
     };
 
     return (
-        <label
-            onClick={onClick}
-            className={classnames(s.container, props.disabled ? s.disabled : undefined)}
+        <div
+            onClick={_onClick}
+            className={classnames(s.container, disabled ? s.disabled : undefined)}
+            {...attr}
         >
-            <div className={s.content}>{props.content}</div>
-            <input type='checkbox' checked={Boolean(props.checked)} onChange={doNothing} />
+            <div className={s.content}>{content}</div>
+            <input type='checkbox' checked={Boolean(checked)} onChange={() => void 0} />
             <span className={s.checkmark} />
-        </label>
+        </div>
     );
 });
 

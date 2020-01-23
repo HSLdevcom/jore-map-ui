@@ -10,6 +10,7 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { LineStore } from '~/stores/lineStore';
+import { LoginStore } from '~/stores/loginStore';
 import { SearchStore } from '~/stores/searchStore';
 import TransitTypeHelper from '~/util/TransitTypeHelper';
 import s from './lineRoutesTab.scss';
@@ -17,9 +18,10 @@ import s from './lineRoutesTab.scss';
 interface ILineRoutesTabProps {
     lineStore?: LineStore;
     searchStore?: SearchStore;
+    loginStore?: LoginStore;
 }
 
-@inject('lineStore', 'searchStore')
+@inject('lineStore', 'searchStore', 'loginStore')
 @observer
 class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     private redirectToNewRouteView = () => {
@@ -72,7 +74,7 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
         if (!line) return null;
 
         return (
-            <div className={s.lineRoutesTabView}>
+            <div className={s.lineRoutesTabView} data-cy='lineRoutesTabView'>
                 <div className={s.content}>
                     {line.routes.length === 0 ? (
                         <div>Linjalla ei olemassa olevia reittejä.</div>
@@ -80,13 +82,15 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                         this.renderRouteList(line.routes)
                     )}
 
-                    <Button
-                        onClick={this.redirectToNewRouteView}
-                        className={s.createRouteButton}
-                        type={ButtonType.SQUARE}
-                    >
-                        {`Luo uusi reitti linjalle ${line.id}`}
-                    </Button>
+                    {this.props.loginStore!.hasWriteAccess && (
+                        <Button
+                            onClick={this.redirectToNewRouteView}
+                            className={s.createRouteButton}
+                            type={ButtonType.SQUARE}
+                        >
+                            {`Luo uusi reitti linjalle ${line.id}`}
+                        </Button>
+                    )}
                 </div>
             </div>
         );

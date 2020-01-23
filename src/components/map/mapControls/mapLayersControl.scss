@@ -1,4 +1,5 @@
 @import '../../shared/styles/common.scss';
+@import '../../shared/styles/form.scss';
 @import '../../shared/styles/flexbox.scss';
 
 .mapLayerControlView {
@@ -10,12 +11,6 @@
     .checkboxContainer {
         padding-top: 10px;
         display: flex;
-    }
-
-    .sectionDivider {
-        margin: 10px 0px 10px 0px;
-        border-bottom: 1px solid rgb(222, 222, 222);
-        text-align: left;
     }
 
     .mapLayersContainer {

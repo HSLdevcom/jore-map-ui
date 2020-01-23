@@ -53,6 +53,7 @@ const Tab = observer((props: ITabProps) => {
                 isDisabled ? s.disabled : null
             )}
             onClick={setSelectedTabIndex}
+            data-cy='tab'
         >
             {props.children}
         </div>

@@ -84,20 +84,29 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
 
     render() {
         return (
-            <div className={s.sidebarHeaderView}>
+            <div className={s.sidebarHeaderView} data-cy='sidebarHeaderView'>
                 <div className={s.topic}>{this.props.children}</div>
                 <div className={s.buttonContainer}>
                     {this.props.isEditButtonVisible && this.props.loginStore!.hasWriteAccess && (
                         <FiEdit3
                             onClick={this.onEditButtonClick}
                             className={classnames(s.icon, this.props.isEditing && s.active)}
+                            data-cy='editButton'
                         />
                     )}
                     {!this.props.isBackButtonVisible && (
-                        <FiArrowLeft className={s.icon} onClick={this.onBackButtonClick} />
+                        <FiArrowLeft
+                            className={s.icon}
+                            onClick={this.onBackButtonClick}
+                            data-cy='backButton'
+                        />
                     )}
                     {!this.props.isCloseButtonVisible && (
-                        <FiXCircle className={s.icon} onClick={this.onCloseButtonClick} />
+                        <FiXCircle
+                            className={s.icon}
+                            onClick={this.onCloseButtonClick}
+                            data-cy='closeButton'
+                        />
                     )}
                 </div>
             </div>

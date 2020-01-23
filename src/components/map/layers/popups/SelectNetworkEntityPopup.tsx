@@ -66,7 +66,7 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
 
     render() {
         return (
-            <div className={s.selectNetworkEntityPopup}>
+            <div className={s.selectNetworkEntityPopup} data-cy='selectNetworkEntityPopup'>
                 {this.props.data.nodes.map((node: INodeMapHighlight, index: number) => {
                     return (
                         <div
@@ -75,6 +75,7 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             onMouseOver={() => this.highlightNode(node, true)}
                             onMouseOut={() => this.highlightNode(node, false)}
                             onClick={() => this.redirectToNode(node.id, this.props.popupId)}
+                            data-cy='node'
                         >
                             Solmu {node.id}
                         </div>
@@ -88,6 +89,7 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             onMouseOver={() => this.highlightLink(link, true)}
                             onMouseOut={() => this.highlightLink(link, false)}
                             onClick={() => this.redirectToLink(link, this.props.popupId)}
+                            data-cy='link'
                         >
                             {`${link.startNodeId} - ${link.endNodeId}`}
                         </div>

@@ -5,6 +5,8 @@
 
 # testing
 /coverage
+cypress/videos
+cypress/screenshots
 
 # development
 /.sass-cache
@@ -28,7 +30,7 @@ yarn-error.log*
 # IntelliJ
 .idea/
 
-# dotenv
+# env
 .env
 
 # Visual Studio Code

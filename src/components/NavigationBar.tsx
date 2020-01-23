@@ -126,7 +126,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                     </div>
                     |
                     <IoMdContact className={classnames(s.navigationBarIcon, s.contactIcon)} />
-                    <div className={s.authInfo}>
+                    <div className={s.authInfo} data-cy='authInfo'>
                         <div>
                             {this.props.loginStore!.userEmail}
                             <br />
@@ -138,7 +138,8 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                     <div
                         className={s.logoutButton}
                         onClick={AuthService.logout}
-                        title={'Kirjaudu ulos'}
+                        title='Kirjaudu ulos'
+                        data-cy='logoutButton'
                     >
                         <LoginIcon height='24' fill='white' />
                     </div>

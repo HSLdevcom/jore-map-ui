@@ -15,6 +15,7 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
+import { LoginStore } from '~/stores/loginStore';
 import { NavigationStore } from '~/stores/navigationStore';
 import { areDatesEqual, toMidnightDate } from '~/util/dateHelpers';
 import FormValidator from '~/validation/FormValidator';
@@ -36,6 +37,7 @@ interface ILineHeaderListProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     navigationStore?: NavigationStore;
+    loginStore?: LoginStore;
 }
 
 @inject(
@@ -44,7 +46,8 @@ interface ILineHeaderListProps {
     'alertStore',
     'errorStore',
     'navigationStore',
-    'lineStore'
+    'lineStore',
+    'loginStore'
 )
 @observer
 class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderState> {
@@ -270,6 +273,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                             isValid: Boolean(activeLineHeaderName)
                         }}
                         isInputColorRed={!Boolean(activeLineHeaderName)}
+                        data-cy='activeLineHeaderName'
                     />
                 </div>
                 {currentLineHeaders.length > 0 ? (
@@ -294,16 +298,18 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     </table>
                 ) : (
                     <div>Linjalle {this.props.lineId} ei löytynyt otsikoita.</div>
-                )}
-                <Button
-                    className={s.createNewLineHeaderButton}
-                    type={ButtonType.SQUARE}
-                    disabled={false}
-                    hasPadding={true}
-                    onClick={() => this.createNewLineHeader()}
-                >
-                    Luo uusi linjan otsikko
+                    )}
+                {this.props.loginStore!.hasWriteAccess && (
+                    <Button
+                        className={s.createNewLineHeaderButton}
+                        type={ButtonType.SQUARE}
+                        disabled={false}
+                        hasPadding={true}
+                        onClick={() => this.createNewLineHeader()}
+                    >
+                        Luo uusi linjan otsikko
                 </Button>
+                )}
                 {selectedMassEditLineHeader && (
                     <LineHeaderForm
                         lineHeader={selectedMassEditLineHeader!.lineHeader}

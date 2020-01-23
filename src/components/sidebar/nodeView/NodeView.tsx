@@ -286,9 +286,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const oldStop = _.cloneDeep(oldNode.stop);
 
         // Create node save model
-        if (currentNode.stop) {
+        if (currentStop) {
             delete currentNode['stop'];
             delete oldNode['stop'];
+
+            if (currentNode.type === NodeType.CROSSROAD || currentNode.type === NodeType.MUNICIPALITY_BORDER) {
+                delete currentNode['measurementType'];
+                delete currentNode['coordinatesProjection'];
+            }
         }
         const saveModels: ISaveModel[] = [
             {
@@ -414,7 +419,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             isEditingDisabled || !nodeStore.isDirty || isNodeFormInvalid || isStopFormInvalid;
 
         return (
-            <div className={s.nodeView}>
+            <div className={s.nodeView} data-cy='nodeView'>
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!isNewNode}
@@ -452,6 +457,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
                     onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
+                    data-cy='saveButton'
                 >
                     {isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
                 </Button>
