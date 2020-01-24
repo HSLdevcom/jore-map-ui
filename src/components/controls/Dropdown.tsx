@@ -208,10 +208,10 @@ const _getCustomStyles = (props: IDropdownProps) => {
             ...styles,
             backgroundColor: props.isBackgroundGrey ? s.greyBackground : '#fff',
             borderColor: state.isFocused ? s.busBlue : s.mediumLightGrey,
-            borderWidth: state.isFocused ? '1.5px' : '1px',
+            borderWidth: state.isFocused ? '2px' : '1px',
             height: s.inputFieldHeight,
             '&:hover': {
-                borderWidth: state.isFocused ? '1.5px' : '1px',
+                borderWidth: state.isFocused ? '2px' : '1px',
                 borderColor: state.isFocused ? s.busBlue : s.mediumLightGrey,
                 cursor: 'pointer'
             }

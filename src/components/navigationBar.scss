@@ -56,8 +56,11 @@
             display: flex;
             text-align: center;
             font-size: $smallFontSize;
+            .syncTextLoader {
+                margin: 6px 6px 6px 12px;
+            }
             .syncText {
-                margin: 6px;
+                margin: auto;
             }
         }
 

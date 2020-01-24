@@ -80,6 +80,11 @@ class NodeStore {
     }
 
     @computed
+    get oldLinks() {
+        return this._oldLinks;
+    }
+
+    @computed
     get node() {
         return this._node!;
     }

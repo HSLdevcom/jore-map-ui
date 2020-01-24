@@ -17,10 +17,10 @@ export enum NodeSize {
 }
 
 export enum MapLayer { // TODO change name to something better
-    node,
-    link,
-    linkPoint,
-    nodeWithoutLink
+    node = 'node',
+    link = 'link',
+    linkPoint = 'linkPoint',
+    nodeWithoutLink = 'nodeWithoutLink'
 }
 
 export class NetworkStore {
@@ -81,14 +81,10 @@ export class NetworkStore {
     public toggleMapLayerVisibility = (mapLayer: MapLayer) => {
         if (this._visibleMapLayers.includes(mapLayer)) {
             this.hideMapLayer(mapLayer);
-            if (mapLayer === MapLayer.node || mapLayer === MapLayer.link) {
-                _setLocalStorageLayerVisibility({ mapLayer, isVisible: false });
-            }
+            _setLocalStorageLayerVisibility({ mapLayer, isVisible: false });
         } else {
             this.showMapLayer(mapLayer);
-            if (mapLayer === MapLayer.node || mapLayer === MapLayer.link) {
-                _setLocalStorageLayerVisibility({ mapLayer, isVisible: true });
-            }
+            _setLocalStorageLayerVisibility({ mapLayer, isVisible: true });
         }
     };
 
@@ -156,6 +152,9 @@ export class NetworkStore {
         if (localStorageVisibleLayers.includes('link')) {
             layers.push(MapLayer.link);
         }
+        if (localStorageVisibleLayers.includes('nodeWithoutLink')) {
+            layers.push(MapLayer.nodeWithoutLink);
+        }
         return layers;
     };
 }
@@ -167,20 +166,20 @@ const _setLocalStorageLayerVisibility = ({
     mapLayer: MapLayer;
     isVisible: boolean;
 }) => {
-    if (mapLayer !== MapLayer.node && mapLayer !== MapLayer.link) {
-        throw `Unsupported mapLayer: ${mapLayer}`;
+    if (mapLayer === 'linkPoint') {
+        return;
     }
-    const mapLayerName = mapLayer === MapLayer.node ? 'node' : 'link';
+
     const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
     let layers: string[] = Array.isArray(localStorageVisibleLayers)
         ? localStorageVisibleLayers
         : [];
     if (isVisible) {
-        if (!layers.includes(mapLayerName)) {
-            layers.push(mapLayerName);
+        if (!layers.includes(mapLayer)) {
+            layers.push(mapLayer);
         }
     } else {
-        layers = layers.filter(l => l !== mapLayerName);
+        layers = layers.filter(l => l !== mapLayer);
     }
     LocalStorageHelper.setItem('visible_layers', layers);
 };

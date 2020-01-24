@@ -196,12 +196,13 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         const currentRoute = this.props.routeStore!.route;
         const oldRoute = this.props.routeStore!.oldRoute;
         const saveModel: ISaveModel = {
+            type: 'saveModel',
             newData: currentRoute,
             oldData: oldRoute,
             model: 'route'
         };
         confirmStore!.openConfirm({
-            content: <SavePrompt saveModels={[saveModel]} />,
+            content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.save();
             }
