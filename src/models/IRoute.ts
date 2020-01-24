@@ -1,4 +1,4 @@
-import { ILine, IRoutePath } from '.';
+import { IRoutePath } from '.';
 
 interface IRoutePrimaryKey {
     id: string;
@@ -11,7 +11,6 @@ export default interface IRoute extends IRoutePrimaryKey {
     routeNameSw: string;
     routeNameShortSw: string;
     lineId: string;
-    line?: ILine;
     modifiedBy?: string;
     modifiedOn?: Date;
 }
