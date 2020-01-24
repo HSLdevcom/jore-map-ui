@@ -22,7 +22,7 @@ select {
 
 input:focus,
 select:focus {
-    border: 1.5px solid $busBlue;
+    border: 2px solid $busBlue;
 }
 
 :global(.leaflet-popup-content) {
