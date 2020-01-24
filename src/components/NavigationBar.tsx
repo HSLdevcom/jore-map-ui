@@ -54,7 +54,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
         const response = await ApiClient.postRequest(EndpointPath.SYNC_LOCAL_DB, {});
         if (response && response.isDbSyncing) {
             this.props.alertStore!.setFadeMessage({
-                message: 'Sisäisen JORE-tietokannan synkkaus on jo käynnissä.'
+                message: 'Sisäisen JORE-tietokannan päivitys on jo käynnissä.'
             });
         }
         this.setState({
@@ -92,9 +92,13 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                         <>
                             {isSyncLoading ? (
                                 <div className={s.syncTextWrapper}>
-                                    <Loader size='tiny' hasNoMargin={true} />
+                                    <Loader
+                                        size='tiny'
+                                        containerClassName={s.syncTextLoader}
+                                        hasNoMargin={true}
+                                    />
                                     <div className={s.syncText}>
-                                        Synkronoidaan sisäistä JORE-tietokantaa...
+                                        Sisäistä JORE-tietokantaa päivitetään...
                                     </div>
                                 </div>
                             ) : (
