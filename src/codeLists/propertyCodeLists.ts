@@ -68,7 +68,6 @@ const routePropertyCodeList: IRoutePropertyCodeList = {
     routeNameSw: 'NIMI RUOTSIKSI',
     routeNameShortSw: 'LYHYT NIMI RUOTSIKSI',
     lineId: '',
-    line: '',
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM'
 };
@@ -100,8 +99,7 @@ const linePropertyCodeList: ILinePropertyCodeList = {
     modifiedOn: '',
     publicTransportDestination: 'JOUKKOLIIKENNEKOHDE',
     exchangeTime: 'VAIHTOAJAN PIDENNYS (min)',
-    lineReplacementType: 'LINJAN KORVAAVA TYYPPI',
-    routes: ''
+    lineReplacementType: 'LINJAN KORVAAVA TYYPPI'
 };
 
 type RoutePathKeys = keyof IRoutePath;

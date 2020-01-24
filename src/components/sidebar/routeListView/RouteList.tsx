@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import L from 'leaflet';
+import _ from 'lodash';
 import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -12,6 +13,7 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import LineService from '~/services/lineService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -93,7 +95,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
             try {
                 const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
+                const lineIds = _.uniq(routes.map(route => route.lineId));
+                const lines = await LineService.fetchMultipleLines(lineIds);
                 this.props.routeListStore!.addToRoutes(routes);
+                this.props.routeListStore!.addToLines(lines);
             } catch (e) {
                 this.props.errorStore!.addError(
                     `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
@@ -241,6 +246,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                             !routeStore.route ||
                             !(isEditing && routeStore.isDirty) ||
                             !routeStore.isRouteFormValid;
+                        const transitType = routeListStore.getLine(route.lineId)?.transitType!;
                         return (
                             <div key={index} className={s.routeListItem}>
                                 <SidebarHeader
@@ -257,14 +263,14 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                         title={`Avaa linja ${route!.lineId}`}
                                     >
                                         <TransitIcon
-                                            transitType={route!.line!.transitType!}
+                                            transitType={transitType}
                                             isWithoutBox={false}
                                         />
                                         <div
                                             className={classnames(
                                                 s.label,
                                                 TransitTypeHelper.getColorClass(
-                                                    route.line!.transitType!
+                                                    transitType
                                                 )
                                             )}
                                         >

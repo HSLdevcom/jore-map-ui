@@ -6,7 +6,6 @@ import { IRoutePrimaryKey } from '~/models/IRoute';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
-import LineService from './lineService';
 
 interface IAllRoutesQueryResult {
     lintunnus: string;
@@ -14,33 +13,15 @@ interface IAllRoutesQueryResult {
 }
 
 class RouteService {
-    public static fetchRoute = async (routeId: string): Promise<IRoute> => {
-        return await RouteService.runFetchRouteQuery(routeId);
-    };
-
-    public static fetchAllRoutesByLineId = async (lineId: string): Promise<IRoute[]> => {
+    public static fetchRoute = async (
+        routeId: string,
+        { areRoutePathLinksExcluded }: { areRoutePathLinksExcluded?: boolean } = {}
+    ): Promise<IRoute> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllRoutesQuery()
+            query: GraphqlQueries.getRouteQuery(Boolean(areRoutePathLinksExcluded)),
+            variables: { routeId }
         });
-        const routeIdsByLineId = queryResult.data.allReittis.nodes
-            .filter((node: IAllRoutesQueryResult) => {
-                return node.lintunnus === lineId;
-            })
-            .map((node: IAllRoutesQueryResult) => {
-                return node.reitunnus;
-            });
-        const promises: Promise<void>[] = [];
-        const routes: IRoute[] = [];
-        routeIdsByLineId.forEach((routeId: string) => {
-            const promise = async () => {
-                const route: IRoute = await RouteService.runFetchRouteQuery(routeId);
-                routes.push(route);
-            };
-            promises.push(promise());
-        });
-        await Promise.all(promises);
-
-        return routes;
+        return RouteFactory.mapExternalRoute(queryResult.data.route);
     };
 
     public static fetchMultipleRoutes = async (routeIds: string[]): Promise<IRoute[]> => {
@@ -48,7 +29,7 @@ class RouteService {
         const routes: IRoute[] = [];
         routeIds.map((routeId: string) => {
             const createPromise = async () => {
-                const route = await RouteService.runFetchRouteQuery(routeId, {
+                const route = await RouteService.fetchRoute(routeId, {
                     areRoutePathLinksExcluded: true
                 });
                 routes.push(route);
@@ -68,18 +49,6 @@ class RouteService {
         return queryResult.data.allReittis.nodes.map(
             (node: IAllRoutesQueryResult) => node.reitunnus
         );
-    };
-
-    private static runFetchRouteQuery = async (
-        routeId: string,
-        { areRoutePathLinksExcluded }: { areRoutePathLinksExcluded?: boolean } = {}
-    ): Promise<IRoute> => {
-        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getRouteQuery(Boolean(areRoutePathLinksExcluded)),
-            variables: { routeId }
-        });
-        const line = await LineService.fetchLine(queryResult.data.route.lintunnus);
-        return RouteFactory.mapExternalRoute(queryResult.data.route, line);
     };
 
     public static updateRoute = async (route: IRoute) => {

@@ -1,10 +1,10 @@
-import { ILine, IRoute, IRoutePath } from '~/models';
+import { IRoute, IRoutePath } from '~/models';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import RoutePathFactory from './routePathFactory';
 
 class RouteFactory {
-    public static mapExternalRoute = (externalRoute: IExternalRoute, line?: ILine): IRoute => {
+    public static mapExternalRoute = (externalRoute: IExternalRoute): IRoute => {
         const routePaths: IRoutePath[] = externalRoute.reitinsuuntasByReitunnus.nodes.map(
             (routePath: IExternalRoutePath) => {
                 return RoutePathFactory.mapExternalRoutePath(routePath);
@@ -12,7 +12,6 @@ class RouteFactory {
         );
 
         return {
-            line,
             routePaths: routePaths.sort((a, b) => b.endTime.getTime() - a.endTime.getTime()),
             routeName: externalRoute.reinimi,
             routeNameShort: externalRoute.reinimilyh,

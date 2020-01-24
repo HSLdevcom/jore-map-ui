@@ -19,7 +19,6 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import RoutePathService from '~/services/routePathService';
-import RouteService from '~/services/routeService';
 import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -121,8 +120,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 const queryParams = navigator.getQueryParamValues();
                 const routeId = queryParams[QueryParams.routeId];
                 const lineId = queryParams[QueryParams.lineId];
-                const route = await RouteService.fetchRoute(routeId);
-                const routePath = RoutePathFactory.createNewRoutePath(lineId, route);
+                const line = await LineService.fetchLine(lineId);
+                const routePath = RoutePathFactory.createNewRoutePath(lineId, routeId, line.transitType!);
                 this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
             } else {
                 this.props.routePathStore!.init({

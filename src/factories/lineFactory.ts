@@ -6,9 +6,8 @@ import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 import { toMidnightDate } from '~/util/dateHelpers';
 
 class LineFactory {
-    public static createLine = (externalLine: IExternalLine): ILine => {
+    public static mapExternalLine = (externalLine: IExternalLine): ILine => {
         return {
-            routes: [],
             transitType: externalLine.linverkko,
             id: externalLine.lintunnus,
             lineBasicRoute: externalLine.linperusreitti,
@@ -28,7 +27,6 @@ class LineFactory {
         const defaultDate = toMidnightDate(new Date());
 
         return {
-            routes: [],
             id: '',
             lineBasicRoute: '',
             lineStartDate: new Date(defaultDate),
