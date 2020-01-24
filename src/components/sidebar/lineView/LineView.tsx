@@ -147,13 +147,14 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         const currentLine = this.props.lineStore!.line;
         const oldLine = this.props.lineStore!.oldLine;
         const saveModel: ISaveModel = {
+            type: 'saveModel',
             newData: currentLine ? currentLine : {},
             oldData: oldLine,
             model: 'line'
         };
 
         confirmStore!.openConfirm({
-            content: <SavePrompt saveModels={[saveModel]} />,
+            content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.saveLine();
             }

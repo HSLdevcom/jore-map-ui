@@ -192,13 +192,14 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
             : undefined;
 
         const saveModel: ISaveModel = {
+            type: 'saveModel',
             newData: currentStopArea,
             oldData: oldRoute,
             model: 'stopArea'
         };
         confirmStore.openConfirm({
             confirmNotification,
-            content: <SavePrompt saveModels={[saveModel]} />,
+            content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.save();
             }

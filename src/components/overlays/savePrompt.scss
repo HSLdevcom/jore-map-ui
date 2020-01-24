@@ -9,17 +9,17 @@
     line-height: initial;
 
     .topic {
-        color: #898989;
+        color: $fontColorDefault;
         font-weight: bold;
         font-size: 1.1rem;
         white-space: nowrap;
         padding: 10px;
-        border-bottom: 1.5px solid #dedede;
+        border-bottom: 1px solid $borderLightGrey;
         text-align: center;
     }
 
     .subTopic {
-        color: #898989;
+        color: $fontColorDefault;
         font-weight: bold;
         font-size: 1rem;
         white-space: normal;
@@ -28,13 +28,13 @@
     }
 
     .savePromptItem {
-        border-bottom: 1.5px solid #dedede;
+        border-bottom: 1px solid $borderLightGrey;
         padding: 10px 0px 10px 0px;
     }
 
     .savePromptItem:last-of-type {
         padding-bottom: 10px;
-        border-bottom: 0px solid #dedede;
+        border-bottom: 0px solid $borderLightGrey;
     }
 
     .savePromptContent {

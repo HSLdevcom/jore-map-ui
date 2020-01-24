@@ -168,12 +168,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         const currentLink = this.props.linkStore!.link;
         const oldLink = this.props.linkStore!.oldLink;
         const saveModel: ISaveModel = {
+            type: 'saveModel',
             newData: currentLink,
             oldData: oldLink,
             model: 'link'
         };
         confirmStore!.openConfirm({
-            content: <SavePrompt saveModels={[saveModel]} />,
+            content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.save();
             }

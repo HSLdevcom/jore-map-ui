@@ -12,15 +12,23 @@ import * as s from './savePrompt.scss';
 type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea' | 'line' | 'routePath' | 'lineHeader';
 
 interface ISaveModel {
+    type: 'saveModel';
     model: Model;
     newData: Object | null;
     oldData: Object | null;
-    subTopic?: String;
+    subTopic?: string;
     isRemoved?: boolean;
 }
 
+interface ITextModel {
+    type: 'textModel';
+    subTopic: string;
+    newText: string;
+    oldText: string;
+}
+
 interface ISavePromptProps {
-    saveModels: ISaveModel[];
+    models: (ISaveModel | ITextModel)[];
 }
 
 const PREVENTED_CHANGE_ROW_PROPERTIES = ['modifiedOn', 'modifiedBy'];
@@ -55,14 +63,25 @@ const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
                         >
                             <div className={s.inputLabel}>{propertyLabel}</div>
                             {renderChangeRow(
-                                property,
                                 _getPropertyValue(saveModel.model, property, oldData, false),
-                                _getPropertyValue(saveModel.model, property, newData, true)
+                                _getPropertyValue(saveModel.model, property, newData, true),
+                                property
                             )}
                         </div>
                     );
                 })
             )}
+        </div>
+    );
+};
+
+const renderTextModelSection = (textModel: ITextModel, key: string) => {
+    return (
+        <div className={s.savePromptItem} key={key}>
+            <div className={s.subTopic}>{textModel.subTopic}</div>
+            <div className={classnames(s.formItem, s.savePromptRow)}>
+                {renderChangeRow(textModel.oldText, textModel.newText)}
+            </div>
         </div>
     );
 };
@@ -134,7 +153,7 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
     return data[property] ? data[property] : '';
 };
 
-const renderChangeRow = (property: string, oldValue: string, newValue: string) => {
+const renderChangeRow = (oldValue: string, newValue: string, property?: string) => {
     if (typeof oldValue === 'object' || typeof newValue === 'object') {
         throw `SavePrompt renderChangeRow: given value was an object instead of string, property: ${property}`;
     }
@@ -155,14 +174,16 @@ const renderChangeRow = (property: string, oldValue: string, newValue: string) =
 
 // TODO: move to shared folder. This isn't really an overlay
 const SavePrompt = observer((props: ISavePromptProps) => {
-    const saveModels = props.saveModels;
+    const models = props.models;
     return (
         <div className={s.savePromptView} data-cy='savePromptView'>
             <div className={s.topic}>Tallennettavat muutokset</div>
             <div className={s.savePromptContent}>
-                {saveModels.map((saveModel: ISaveModel, index: number) =>
-                    renderSaveModelSection(saveModel, `saveModelRowSection-${index}`)
-                )}
+                {models.map((model: ISaveModel | ITextModel, index: number) => {
+                    return model.type === 'saveModel'
+                        ? renderSaveModelSection(model, `saveModelRowSection-${index}`)
+                        : renderTextModelSection(model, `textModelRowSection-${index}`);
+                })}
             </div>
         </div>
     );
@@ -170,4 +191,4 @@ const SavePrompt = observer((props: ISavePromptProps) => {
 
 export default SavePrompt;
 
-export { Model, ISaveModel };
+export { Model, ISaveModel, ITextModel };
