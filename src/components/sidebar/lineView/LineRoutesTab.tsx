@@ -70,16 +70,18 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     };
 
     render() {
-        const line = this.props.lineStore!.line;
+        const lineStore = this.props.lineStore!;
+        const line = lineStore.line;
+        const routes = lineStore.routes;
         if (!line) return null;
 
         return (
             <div className={s.lineRoutesTabView} data-cy='lineRoutesTabView'>
                 <div className={s.content}>
-                    {line.routes.length === 0 ? (
+                    {routes.length === 0 ? (
                         <div>Linjalla ei olemassa olevia reittejä.</div>
                     ) : (
-                        this.renderRouteList(line.routes)
+                        this.renderRouteList(routes)
                     )}
 
                     {this.props.loginStore!.hasWriteAccess && (

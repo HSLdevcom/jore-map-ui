@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import { ILine } from '~/models';
+import { ILine, IRoute } from '~/models';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import lineValidationModel, {
     ILineValidationModel
@@ -11,6 +11,7 @@ import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 export class LineStore {
     @observable private _line: ILine | null;
+    @observable private _routes: IRoute[];
     @observable private _oldline: ILine | null;
     @observable private _isNewLine: boolean;
     @observable private _isEditingDisabled: boolean;
@@ -31,6 +32,11 @@ export class LineStore {
     @computed
     get line(): ILine | null {
         return this._line;
+    }
+
+    @computed
+    get routes(): IRoute[] {
+        return this._routes;
     }
 
     @computed
@@ -111,6 +117,11 @@ export class LineStore {
 
         this._validationStore.init(line, lineValidationModel, customValidatorMap);
     };
+
+    @action
+    public setRoutes = (routes: IRoute[]) => {
+        this._routes = routes;
+    }
 
     @action
     public setOldLine = (line: ILine) => {

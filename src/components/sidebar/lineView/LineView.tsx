@@ -9,7 +9,6 @@ import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
-import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -99,10 +98,9 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
     private initExistingLine = async () => {
         const lineId = this.props.match!.params.id;
         try {
-            const line = await LineService.fetchLine(lineId);
-            const routes = await RouteService.fetchAllRoutesByLineId(lineId);
-            line.routes = routes;
+            const { line, routes } = await LineService.fetchLineAndRoutes(lineId);
             this.props.lineStore!.init({ line, isNewLine: false });
+            this.props.lineStore!.setRoutes(routes);
         } catch (e) {
             this.props.errorStore!.addError('Linjan haku epäonnistui.', e);
         }

@@ -1,8 +1,10 @@
 import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import RouteFactory from '~/factories/routeFactory';
-import { IRoute } from '~/models';
+import RoutePathFactory from '~/factories/routePathFactory';
+import { IRoute, IRoutePath } from '~/models';
 import { IRoutePrimaryKey } from '~/models/IRoute';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
@@ -21,7 +23,13 @@ class RouteService {
             query: GraphqlQueries.getRouteQuery(Boolean(areRoutePathLinksExcluded)),
             variables: { routeId }
         });
-        return RouteFactory.mapExternalRoute(queryResult.data.route);
+        const externalRoute = queryResult.data.route;
+        const externalRoutePaths = externalRoute.reitinsuuntasByReitunnus.nodes;
+        const routePaths: IRoutePath[] = externalRoutePaths.map((routePath: IExternalRoutePath) => {
+            return RoutePathFactory.mapExternalRoutePath(routePath);
+        });
+        routePaths.sort((a, b) => b.endTime.getTime() - a.endTime.getTime());
+        return RouteFactory.mapExternalRoute(queryResult.data.route, routePaths);
     };
 
     public static fetchMultipleRoutes = async (routeIds: string[]): Promise<IRoute[]> => {

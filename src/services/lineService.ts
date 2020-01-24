@@ -1,8 +1,10 @@
 import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import LineFactory from '~/factories/lineFactory';
+import RouteFactory from '~/factories/routeFactory';
 import { ILine, IRoute } from '~/models';
 import { ILinePrimaryKey } from '~/models/ILine';
+import IExternalRoute from '~/models/externals/IExternalRoute';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ApiClient from '~/util/ApiClient';
 import ApolloClient from '~/util/ApolloClient';
@@ -42,10 +44,13 @@ class LineService {
             query: GraphqlQueries.getLineAndRoutesQuery(),
             variables: { lineId: lintunnus }
         });
-        console.log('at fetchLineAndRoutes queryResult.data ', queryResult.data);
+        const externalLine = queryResult.data.linjaByLintunnus;
+        const externalRoutes = externalLine.reittisByLintunnus.nodes;
         return {
-            line: LineFactory.mapExternalLine(queryResult.data.linjaByLintunnus),
-            routes: [] // TODO
+            line: LineFactory.mapExternalLine(externalLine),
+            routes: externalRoutes.map((externalRoute: IExternalRoute) =>
+                RouteFactory.mapExternalRoute(externalRoute)
+            )
         };
     };
 

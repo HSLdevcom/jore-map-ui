@@ -14,8 +14,7 @@ const getLineAndRoutesQuery = () => {
                 ${lineQueryFields}
                 reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
                     nodes {
-                        reinimi
-                        reiviimpvm
+                        ${routeQueryFields}
                     }
                 }
             }
