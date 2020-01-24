@@ -317,7 +317,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         }
 
         // Create stop save model
-        if (currentStop) {
+        if (currentStop && currentNode.type === NodeType.STOP) {
             // Generate stopArea label values for savePrompt
             currentStop.stopAreaId = `${currentStop.stopAreaId} - ${currentStop.nameFi}`;
             if (oldStop && oldStop.stopAreaId) {
