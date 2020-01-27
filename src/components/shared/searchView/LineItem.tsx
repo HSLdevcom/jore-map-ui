@@ -9,7 +9,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import TransitTypeHelper from '~/utils/TransitTypeHelper';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import TransitIcon from '../TransitIcon';
 import * as s from './lineItem.scss';
 
@@ -34,7 +34,7 @@ class LineItem extends React.Component<ILineItemProps> {
                     <div
                         className={classNames(
                             s.routeName,
-                            TransitTypeHelper.getColorClass(this.props.line.transitType)
+                            TransitTypeUtils.getColorClass(this.props.line.transitType)
                         )}
                         onClick={this.openRoute(route.id)}
                     >
@@ -66,7 +66,7 @@ class LineItem extends React.Component<ILineItemProps> {
                     </div>
                     <div
                         className={classNames(
-                            TransitTypeHelper.getColorClass(this.props.line.transitType),
+                            TransitTypeUtils.getColorClass(this.props.line.transitType),
                             s.lineLabel
                         )}
                     >

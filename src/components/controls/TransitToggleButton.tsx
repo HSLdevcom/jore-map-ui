@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import React from 'react';
 import TransitType from '~/enums/transitType';
-import TransitTypeHelper from '~/utils/TransitTypeHelper';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import TransitIcon from '../shared/TransitIcon';
 import * as s from './transitToggleButton.scss';
 
@@ -20,7 +20,7 @@ const TransitToggleButton = observer((props: ITransitToggleButtonProps) => {
 
     const getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
         if (isToggled) {
-            return TransitTypeHelper.getBackgroundColorClass(transitType);
+            return TransitTypeUtils.getBackgroundColorClass(transitType);
         }
         return s.toggled;
     };

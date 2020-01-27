@@ -2,7 +2,7 @@ import * as React from 'react';
 import NodeType from '~/enums/nodeType';
 import { ILink, INode } from '~/models';
 import NodeUtils from '~/utils/NodeUtils';
-import TransitTypeHelper from '~/utils/TransitTypeHelper';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import TextContainer from '../../controls/TextContainer';
 import * as s from './splitLinkInfo.scss';
 
@@ -22,7 +22,7 @@ const SplitLinkInfo = (props: ISplitLinkInfoProps) => (
             <div className={s.flexRow}>
                 <TextContainer
                     label='VERKKO'
-                    value={TransitTypeHelper.getTransitTypeLabel(props.link.transitType!)}
+                    value={TransitTypeUtils.getTransitTypeLabel(props.link.transitType!)}
                 />
             </div>
         </div>

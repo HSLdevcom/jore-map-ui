@@ -16,7 +16,7 @@ import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
-import TransitTypeHelper from '~/utils/TransitTypeHelper';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
@@ -85,7 +85,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 }
 
                 return {
-                    color: TransitTypeHelper.getColor(transitType),
+                    color: TransitTypeUtils.getColor(transitType),
                     weight: 3,
                     fillOpacity: 1,
                     fill: true
@@ -117,7 +117,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     return this.getEmptyStyle();
                 }
                 return {
-                    color: TransitTypeHelper.getColor(transitType),
+                    color: TransitTypeUtils.getColor(transitType),
                     radius: 1
                 };
             }

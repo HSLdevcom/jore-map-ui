@@ -26,7 +26,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import TransitTypeHelper from '~/utils/TransitTypeHelper';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import Loader from '../../shared/loader/Loader';
 import SidebarHeader from '../SidebarHeader';
 import RouteItem from './RouteItem';
@@ -270,7 +270,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                         <div
                                             className={classnames(
                                                 s.label,
-                                                TransitTypeHelper.getColorClass(
+                                                TransitTypeUtils.getColorClass(
                                                     transitType
                                                 )
                                             )}
