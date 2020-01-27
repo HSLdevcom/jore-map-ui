@@ -3,7 +3,7 @@ import { IRoutePath, IRoutePathLink } from '~/models';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
-import HashHelper from '~/utils/HashHelper';
+import HashUtils from '~/utils/HashUtils';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
@@ -18,7 +18,7 @@ class RoutePathFactory {
     };
 
     public static mapExternalRoutePath = (externalRoutePath: IExternalRoutePath): IRoutePath => {
-        const internalRoutePathId = HashHelper.getHashFromString(
+        const internalRoutePathId = HashUtils.getHashFromString(
             [
                 externalRoutePath.reitunnus,
                 externalRoutePath.suuvoimast,
