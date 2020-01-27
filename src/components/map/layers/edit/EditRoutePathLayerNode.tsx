@@ -1,15 +1,15 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component, ReactNode } from 'react';
 import ToolbarTool from '~/enums/toolbarTool';
+import EventHelper, {
+    IEditRoutePathLayerNodeClickParams,
+    INodeClickParams
+} from '~/helpers/EventHelper';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import EventManager, {
-    IEditRoutePathLayerNodeClickParams,
-    INodeClickParams
-} from '~/utils/EventManager';
 import NodeUtils from '~/utils/NodeUtils';
 import Marker from '../markers/Marker';
 import NodeMarker, { NodeHighlightColor } from '../markers/NodeMarker';
@@ -59,13 +59,13 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                     node,
                     linkOrderNumber
                 };
-                EventManager.trigger('editRoutePathLayerNodeClick', clickParams);
+                EventHelper.trigger('editRoutePathLayerNodeClick', clickParams);
             };
         } else {
             onNodeClick = () => {
                 this.props.highlightItemById(node.id);
                 const clickParams: INodeClickParams = { node };
-                EventManager.trigger('nodeClick', clickParams);
+                EventHelper.trigger('nodeClick', clickParams);
             };
         }
 

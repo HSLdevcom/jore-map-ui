@@ -1,4 +1,5 @@
 import ToolbarTool from '~/enums/toolbarTool';
+import EventHelper, { INetworkNodeClickParams, INodeClickParams } from '~/helpers/EventHelper';
 import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
@@ -6,7 +7,6 @@ import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
-import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/utils/EventManager';
 import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
 
@@ -19,15 +19,15 @@ class CopyRoutePathSegmentTool implements BaseTool {
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventManager.on('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.on('nodeClick', this.onNodeClick);
-        EventManager.on('editRoutePathLayerNodeClick', this.onNodeClick);
+        EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
+        EventHelper.on('nodeClick', this.onNodeClick);
+        EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
         this.highlightClickableNodes();
     }
     public deactivate() {
-        EventManager.off('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.off('nodeClick', this.onNodeClick);
-        EventManager.off('editRoutePathLayerNodeClick', this.onNodeClick);
+        EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
+        EventHelper.off('nodeClick', this.onNodeClick);
+        EventHelper.off('editRoutePathLayerNodeClick', this.onNodeClick);
         RoutePathCopySegmentStore.clear();
         this.unhighlightClickableNodes();
     }

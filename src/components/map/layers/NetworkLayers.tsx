@@ -5,6 +5,10 @@ import React, { Component } from 'react';
 import Constants from '~/constants/constants';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
+import EventHelper, {
+    INetworkLinkClickParams,
+    INetworkNodeClickParams
+} from '~/helpers/EventHelper';
 import NodeService from '~/services/nodeService';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { LinkStore } from '~/stores/linkStore';
@@ -12,10 +16,6 @@ import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
-import EventManager, {
-    INetworkLinkClickParams,
-    INetworkNodeClickParams
-} from '~/utils/EventManager';
 import TransitTypeHelper from '~/utils/TransitTypeHelper';
 import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import * as s from './NetworkLayers.scss';
@@ -221,7 +221,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             nodeId: properties.soltunnus,
             nodeType: properties.soltyyppi
         };
-        EventManager.trigger('networkNodeClick', clickParams);
+        EventHelper.trigger('networkNodeClick', clickParams);
     };
 
     private onNetworkLinkClick = (clickEvent: any) => {
@@ -231,7 +231,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             endNodeId: properties.lnkloppusolmu,
             transitType: properties.lnkverkko
         };
-        EventManager.trigger('networkLinkClick', clickParams);
+        EventHelper.trigger('networkLinkClick', clickParams);
     };
 
     /**

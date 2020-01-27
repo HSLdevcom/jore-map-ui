@@ -1,4 +1,5 @@
 import ToolbarTool from '~/enums/toolbarTool';
+import EventHelper, { INetworkNodeClickParams, INodeClickParams } from '~/helpers/EventHelper';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -7,7 +8,6 @@ import ErrorStore from '~/stores/errorStore';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
-import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/utils/EventManager';
 import BaseTool from './BaseTool';
 
 class AddNetworkLinkTool implements BaseTool {
@@ -21,13 +21,13 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventManager.on('nodeClick', this.onNodeClick);
-        EventManager.on('networkNodeClick', this.onNetworkNodeClick);
+        EventHelper.on('nodeClick', this.onNodeClick);
+        EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
     }
     public deactivate() {
         this.resetTool();
-        EventManager.off('nodeClick', this.onNodeClick);
-        EventManager.off('networkNodeClick', this.onNetworkNodeClick);
+        EventHelper.off('nodeClick', this.onNodeClick);
+        EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
     }
     private onNodeClick = async (clickEvent: CustomEvent) => {
         const nodeClickParams: INodeClickParams = clickEvent.detail;
