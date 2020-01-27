@@ -11,7 +11,7 @@ import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { INode } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
-import NodeHelper from '~/util/NodeHelper';
+import NodeHelper from '~/utils/NodeHelper';
 import * as s from './nodeForm.scss';
 
 interface INodeViewProps {

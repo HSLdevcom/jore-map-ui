@@ -6,8 +6,8 @@ import { ILine, IRoute } from '~/models';
 import { ILinePrimaryKey } from '~/models/ILine';
 import IExternalRoute from '~/models/externals/IExternalRoute';
 import ISearchLine from '~/models/searchModels/ISearchLine';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import ApiClient from '~/utils/ApiClient';
+import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class LineService {

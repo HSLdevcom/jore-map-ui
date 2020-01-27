@@ -3,7 +3,7 @@ import Constants from '~/constants/constants';
 import { IRoutePathLink } from '~/models';
 import IExternalLink from '~/models/externals/IExternalLink';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
-import NumberIterator from '~/util/NumberIterator';
+import NumberIterator from '~/utils/NumberIterator';
 import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {

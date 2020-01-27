@@ -7,8 +7,8 @@ import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import ApiClient from '~/utils/ApiClient';
+import ApolloClient from '~/utils/ApolloClient';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 

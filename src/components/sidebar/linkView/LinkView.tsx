@@ -20,7 +20,7 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
-import EventManager from '~/util/EventManager';
+import EventManager from '~/utils/EventManager';
 import { Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';

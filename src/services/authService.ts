@@ -3,8 +3,8 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import ErrorStore from '~/stores/errorStore';
 import LoginStore from '~/stores/loginStore';
-import ApiClient from '~/util/ApiClient';
-import CodeListHelper from '~/util/CodeListHelper';
+import ApiClient from '~/utils/ApiClient';
+import CodeListHelper from '~/utils/CodeListHelper';
 
 export interface IAuthorizationResponse {
     isOk: boolean;

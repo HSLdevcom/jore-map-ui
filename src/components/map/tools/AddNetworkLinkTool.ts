@@ -7,7 +7,7 @@ import ErrorStore from '~/stores/errorStore';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
-import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/util/EventManager';
+import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/utils/EventManager';
 import BaseTool from './BaseTool';
 
 class AddNetworkLinkTool implements BaseTool {

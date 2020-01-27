@@ -10,7 +10,7 @@ import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import EventManager from '~/util/EventManager';
+import EventManager from '~/utils/EventManager';
 import AddressSearch from './AddressSearch';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';

@@ -5,8 +5,8 @@ import SubSites from '~/routing/subSites';
 import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
-import EventManager from '~/util/EventManager';
-import { roundLatLng } from '~/util/geomHelpers';
+import EventManager from '~/utils/EventManager';
+import { roundLatLng } from '~/utils/geomHelpers';
 import BaseTool from './BaseTool';
 
 class AddNetworkNodeTool implements BaseTool {

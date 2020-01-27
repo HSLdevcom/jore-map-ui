@@ -15,9 +15,9 @@ import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import EventManager, {
     INetworkLinkClickParams,
     INetworkNodeClickParams
-} from '~/util/EventManager';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
-import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/networkUtils';
+} from '~/utils/EventManager';
+import TransitTypeHelper from '~/utils/TransitTypeHelper';
+import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
 import { INodePopupData } from './popups/NodePopup';

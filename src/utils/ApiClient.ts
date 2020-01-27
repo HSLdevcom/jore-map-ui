@@ -6,7 +6,7 @@ import FetchStatusCode from '~/enums/fetchStatusCode';
 import IError from '~/models/IError';
 import AlertStore from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
-import ApolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/utils/ApolloClient';
 
 enum RequestMethod {
     GET = 'GET',

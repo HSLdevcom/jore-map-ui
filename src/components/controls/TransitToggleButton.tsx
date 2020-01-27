@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import React from 'react';
 import TransitType from '~/enums/transitType';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
+import TransitTypeHelper from '~/utils/TransitTypeHelper';
 import TransitIcon from '../shared/TransitIcon';
 import * as s from './transitToggleButton.scss';
 

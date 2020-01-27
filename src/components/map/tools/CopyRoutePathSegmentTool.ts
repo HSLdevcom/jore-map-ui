@@ -6,8 +6,8 @@ import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
-import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/util/EventManager';
-import ModelHelper from '~/util/ModelHelper';
+import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/utils/EventManager';
+import ModelHelper from '~/utils/ModelHelper';
 import BaseTool from './BaseTool';
 
 class CopyRoutePathSegmentTool implements BaseTool {

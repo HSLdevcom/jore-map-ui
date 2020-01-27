@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import IRoutePathLink from '~/models/IRoutePathLink';
-import ApolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class RoutePathLinkService {

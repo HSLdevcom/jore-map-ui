@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import { IoMdRedo, IoMdUndo } from 'react-icons/io';
 import LoginStore from '~/stores/loginStore';
-import EventManager from '~/util/EventManager';
+import EventManager from '~/utils/EventManager';
 import MapControlButton from '../mapControls/MapControlButton';
 
 @observer

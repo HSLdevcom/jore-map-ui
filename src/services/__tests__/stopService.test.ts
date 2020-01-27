@@ -1,4 +1,4 @@
-import ApolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/utils/ApolloClient';
 import StopService from '../stopService';
 
 jest.mock('../../util/ApolloClient');

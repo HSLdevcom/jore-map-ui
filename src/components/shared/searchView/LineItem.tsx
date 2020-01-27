@@ -8,8 +8,8 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
-import NavigationUtils from '~/util/NavigationUtils';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
+import NavigationUtils from '~/utils/NavigationUtils';
+import TransitTypeHelper from '~/utils/TransitTypeHelper';
 import TransitIcon from '../TransitIcon';
 import * as s from './lineItem.scss';
 

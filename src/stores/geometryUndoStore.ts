@@ -1,4 +1,4 @@
-import EventManager from '~/util/EventManager';
+import EventManager from '~/utils/EventManager';
 
 class GeometryUndoStore<UndoObject> {
     private _undoObjects: UndoObject[];

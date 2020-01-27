@@ -11,8 +11,8 @@ import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
-import EventManager from '~/util/EventManager';
-import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/networkUtils';
+import EventManager from '~/utils/EventManager';
+import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
 import BaseTool from './BaseTool';
 

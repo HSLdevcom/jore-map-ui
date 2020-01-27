@@ -9,8 +9,8 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager, {
     IEditRoutePathLayerNodeClickParams,
     INodeClickParams
-} from '~/util/EventManager';
-import NodeHelper from '~/util/NodeHelper';
+} from '~/utils/EventManager';
+import NodeHelper from '~/utils/NodeHelper';
 import Marker from '../markers/Marker';
 import NodeMarker, { NodeHighlightColor } from '../markers/NodeMarker';
 

@@ -4,8 +4,8 @@ import EndpointPath from '~/enums/endpointPath';
 import LinkFactory from '~/factories/linkFactory';
 import ILink, { ILinkMapHighlight } from '~/models/ILink';
 import IExternalLink from '~/models/externals/IExternalLink';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import ApiClient from '~/utils/ApiClient';
+import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class LinkService {

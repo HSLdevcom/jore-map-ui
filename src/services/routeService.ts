@@ -5,8 +5,8 @@ import RoutePathFactory from '~/factories/routePathFactory';
 import { IRoute, IRoutePath } from '~/models';
 import { IRoutePrimaryKey } from '~/models/IRoute';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import ApiClient from '~/utils/ApiClient';
+import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 interface IAllRoutesQueryResult {

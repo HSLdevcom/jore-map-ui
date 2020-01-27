@@ -1,6 +1,6 @@
 import * as L from 'leaflet';
 import constants from '~/constants/constants';
-import ApiClient, { RequestMethod } from '~/util/ApiClient';
+import ApiClient, { RequestMethod } from '~/utils/ApiClient';
 
 type langOptions = 'fi' | 'sv';
 

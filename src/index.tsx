@@ -28,7 +28,7 @@ import SearchStore from './stores/searchStore';
 import StopAreaStore from './stores/stopAreaStore';
 import ToolbarStore from './stores/toolbarStore';
 import UserStore from './stores/userStore';
-import ApolloClient from './util/ApolloClient';
+import ApolloClient from './utils/ApolloClient';
 
 configure({ enforceActions: 'always' });
 

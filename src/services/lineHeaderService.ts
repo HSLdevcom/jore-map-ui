@@ -6,9 +6,9 @@ import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
 import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
-import { areDatesEqual } from '~/util/dateHelpers';
+import ApiClient from '~/utils/ApiClient';
+import ApolloClient from '~/utils/ApolloClient';
+import { areDatesEqual } from '~/utils/dateHelpers';
 import GraphqlQueries from './graphqlQueries';
 
 interface ILineHeaderSaveModel {

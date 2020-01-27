@@ -1,4 +1,4 @@
-import EventManager from '~/util/EventManager';
+import EventManager from '~/utils/EventManager';
 
 const KEYCODES = {
     enter: 'Enter',

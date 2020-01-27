@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { IStopItem } from '~/models/IStop';
 import IExternalNode from '~/models/externals/IExternalNode';
 import { IExternalStopItem } from '~/models/externals/IExternalStop';
-import ApolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 import NodeService from './nodeService';
 

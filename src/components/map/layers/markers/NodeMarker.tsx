@@ -7,8 +7,8 @@ import { Circle, Marker as LeafletMarker } from 'react-leaflet';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import NodeHelper from '~/util/NodeHelper';
-import LeafletUtils from '~/util/leafletUtils';
+import NodeHelper from '~/utils/NodeHelper';
+import LeafletUtils from '~/utils/leafletUtils';
 import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
 

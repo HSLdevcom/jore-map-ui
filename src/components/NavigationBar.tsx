@@ -15,7 +15,7 @@ import AuthService from '~/services/authService';
 import { AlertStore } from '~/stores/alertStore';
 import { LoginStore } from '~/stores/loginStore';
 import { UserStore } from '~/stores/userStore';
-import ApiClient from '~/util/ApiClient';
+import ApiClient from '~/utils/ApiClient';
 import packageVersion from '../project/version.json';
 import * as s from './navigationBar.scss';
 import TransitIcon from './shared/TransitIcon';

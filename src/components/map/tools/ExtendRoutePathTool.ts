@@ -8,8 +8,8 @@ import EventManager, {
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
     INetworkNodeClickParams
-} from '~/util/EventManager';
-import ModelHelper from '~/util/ModelHelper';
+} from '~/utils/EventManager';
+import ModelHelper from '~/utils/ModelHelper';
 import BaseTool from './BaseTool';
 
 /**

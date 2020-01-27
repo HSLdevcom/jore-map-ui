@@ -5,8 +5,8 @@ import NodeFactory from '~/factories/nodeFactory';
 import { ILink, INode } from '~/models';
 import { INodeBase, INodeMapHighlight, INodePrimaryKey } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import ApiClient from '~/utils/ApiClient';
+import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class NodeService {

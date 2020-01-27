@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import RoutePathCopySegmentFactory from '~/factories/routePathCopySegmentFactory';
 import { ICopySegmentRoutePath } from '~/stores/routePathCopySegmentStore';
-import ApolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class RoutePathSegmentService {

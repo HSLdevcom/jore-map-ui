@@ -9,7 +9,7 @@ import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IGraphqlList from '~/models/externals/graphqlModelHelpers/IGraphqlList';
 import ErrorStore from '~/stores/errorStore';
 import { NeighborToAddType } from '~/stores/routePathStore';
-import ApolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 interface IExtendedExternalNode extends IExternalNode {

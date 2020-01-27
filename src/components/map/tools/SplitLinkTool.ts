@@ -10,8 +10,8 @@ import ErrorStore from '~/stores/errorStore';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
-import EventManager from '~/util/EventManager';
-import NodeHelper from '~/util/NodeHelper';
+import EventManager from '~/utils/EventManager';
+import NodeHelper from '~/utils/NodeHelper';
 import BaseTool from './BaseTool';
 
 class SplitLinkTool implements BaseTool {

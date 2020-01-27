@@ -10,8 +10,8 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
-import EventManager, { IEditRoutePathNeighborLinkClickParams } from '~/util/EventManager';
-import NodeHelper from '~/util/NodeHelper';
+import EventManager, { IEditRoutePathNeighborLinkClickParams } from '~/utils/EventManager';
+import NodeHelper from '~/utils/NodeHelper';
 import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
 

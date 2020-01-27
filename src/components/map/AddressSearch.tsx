@@ -5,8 +5,8 @@ import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import PinIcon from '~/icons/PinIcon';
 import GeocodingService, { IAddressFeature } from '~/services/geocodingService';
-import EventManager from '~/util/EventManager';
-import LeafletUtils from '~/util/leafletUtils';
+import EventManager from '~/utils/EventManager';
+import LeafletUtils from '~/utils/leafletUtils';
 import * as s from './addressSearch.scss';
 
 interface IAddressSearchProps {
