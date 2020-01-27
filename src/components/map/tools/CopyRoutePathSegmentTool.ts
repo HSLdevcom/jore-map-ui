@@ -7,7 +7,7 @@ import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
 import EventManager, { INetworkNodeClickParams, INodeClickParams } from '~/utils/EventManager';
-import ModelHelper from '~/utils/ModelHelper';
+import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
 
 class CopyRoutePathSegmentTool implements BaseTool {
@@ -120,7 +120,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         const clickableNodeIds: string[] = [];
         const unclickableNodeIds: string[] = [];
-        ModelHelper.loopRoutePathNodes(routePath, (node: INode) => {
+        loopRoutePathNodes(routePath, (node: INode) => {
             if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
                 clickableNodeIds.push(node.id);
             } else {

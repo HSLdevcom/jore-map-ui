@@ -9,7 +9,7 @@ import EventManager, {
     IEditRoutePathNeighborLinkClickParams,
     INetworkNodeClickParams
 } from '~/utils/EventManager';
-import ModelHelper from '~/utils/ModelHelper';
+import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
 
 /**
@@ -98,7 +98,7 @@ class ExtendRoutePathTool implements BaseTool {
 
         const clickableNodeIds: string[] = [];
         const unclickableNodeIds: string[] = [];
-        ModelHelper.loopRoutePathNodes(routePath, (node: INode) => {
+        loopRoutePathNodes(routePath, (node: INode) => {
             if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
                 clickableNodeIds.push(node.id);
             } else {
