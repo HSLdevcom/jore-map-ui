@@ -2,7 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import NodeType from '~/enums/nodeType';
-import ApolloClient from '~/helpers/ApolloClientHelper';
+import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath, IViaName } from '~/models';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalNode from '~/models/externals/IExternalNode';

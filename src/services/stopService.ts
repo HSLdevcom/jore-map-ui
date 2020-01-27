@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
-import ApolloClient from '~/helpers/ApolloClientHelper';
+import ApolloClient from '~/helpers/ApolloClient';
 import { IStopItem } from '~/models/IStop';
 import IExternalNode from '~/models/externals/IExternalNode';
 import { IExternalStopItem } from '~/models/externals/IExternalStop';

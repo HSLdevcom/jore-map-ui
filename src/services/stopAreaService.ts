@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import StopAreaFactory from '~/factories/stopAreaFactory';
-import ApolloClient from '~/helpers/ApolloClientHelper';
+import ApolloClient from '~/helpers/ApolloClient';
 import IStopArea from '~/models/IStopArea';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';

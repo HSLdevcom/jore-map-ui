@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
-import ApolloClient from '~/helpers/ApolloClientHelper';
+import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import IExternalLink from '~/models/externals/IExternalLink';

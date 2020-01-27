@@ -2,7 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import LineFactory from '~/factories/lineFactory';
 import RouteFactory from '~/factories/routeFactory';
-import ApolloClient from '~/helpers/ApolloClientHelper';
+import ApolloClient from '~/helpers/ApolloClient';
 import { ILine, IRoute } from '~/models';
 import { ILinePrimaryKey } from '~/models/ILine';
 import IExternalRoute from '~/models/externals/IExternalRoute';

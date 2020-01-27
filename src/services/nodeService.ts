@@ -2,7 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import { LatLng } from 'leaflet';
 import EndpointPath from '~/enums/endpointPath';
 import NodeFactory from '~/factories/nodeFactory';
-import ApolloClient from '~/helpers/ApolloClientHelper';
+import ApolloClient from '~/helpers/ApolloClient';
 import { ILink, INode } from '~/models';
 import { INodeBase, INodeMapHighlight, INodePrimaryKey } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';

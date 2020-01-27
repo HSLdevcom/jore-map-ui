@@ -4,7 +4,7 @@ import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import ApolloClient from './helpers/ApolloClientHelper';
+import ApolloClient from './helpers/ApolloClient';
 import './index.scss';
 import AlertStore from './stores/alertStore';
 import CodeListStore from './stores/codeListStore';

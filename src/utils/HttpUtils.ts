@@ -3,7 +3,7 @@ import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCode
 import constants from '~/constants/constants';
 import EndpointPath from '~/enums/endpointPath';
 import FetchStatusCode from '~/enums/fetchStatusCode';
-import ApolloClient from '~/helpers/ApolloClientHelper';
+import ApolloClient from '~/helpers/ApolloClient';
 import IError from '~/models/IError';
 import AlertStore from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';

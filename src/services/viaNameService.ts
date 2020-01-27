@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import apolloClient from '~/helpers/ApolloClientHelper';
+import apolloClient from '~/helpers/ApolloClient';
 import { IViaName } from '~/models/IViaName';
 import GraphqlQueries from './graphqlQueries';
 
