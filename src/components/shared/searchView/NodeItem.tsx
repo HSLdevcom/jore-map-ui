@@ -5,7 +5,7 @@ import { INodeBase } from '~/models/INode';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import * as s from './nodeItem.scss';
 
 interface INodeItemProps {
@@ -26,8 +26,8 @@ const NodeItem = observer((props: INodeItemProps) => {
             <IoIosRadioButtonOn />
             <div className={s.nodeItemTextContainer}>
                 <span>{props.node.id}</span>
-                <div>{NodeHelper.getNodeTypeName(props.node.type)}</div>
-                <div>{NodeHelper.getShortId(props.node)}</div>
+                <div>{NodeUtils.getNodeTypeName(props.node.type)}</div>
+                <div>{NodeUtils.getShortId(props.node)}</div>
             </div>
         </div>
     );

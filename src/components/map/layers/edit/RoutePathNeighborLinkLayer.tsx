@@ -11,7 +11,7 @@ import SubSites from '~/routing/subSites';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
 import EventManager, { IEditRoutePathNeighborLinkClickParams } from '~/utils/EventManager';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
 
@@ -78,7 +78,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 nodeType={node.type}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
-                shortId={NodeHelper.getShortId(node)}
+                shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 onClick={onNeighborLinkClick}

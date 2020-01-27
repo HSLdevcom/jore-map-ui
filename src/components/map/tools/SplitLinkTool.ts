@@ -11,7 +11,7 @@ import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
 import EventManager from '~/utils/EventManager';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import BaseTool from './BaseTool';
 
 class SplitLinkTool implements BaseTool {
@@ -54,7 +54,7 @@ class SplitLinkTool implements BaseTool {
             confirmContent = SplitConfirmContent({
                 message: 'Oletko varma, että haluat jakaa linkin pysäkillä?',
                 itemList: [
-                    { label: 'Lyhyt ID', value: NodeHelper.getShortId(node) },
+                    { label: 'Lyhyt ID', value: NodeUtils.getShortId(node) },
                     { label: 'Nimi', value: node.stop!.nameFi },
                     { label: 'Soltunnus', value: node.id }
                 ]
@@ -65,7 +65,7 @@ class SplitLinkTool implements BaseTool {
                 itemList: [
                     {
                         label: 'Tyyppi',
-                        value: NodeHelper.getNodeTypeName(node.type)
+                        value: NodeUtils.getNodeTypeName(node.type)
                     },
                     { label: 'Soltunnus', value: node.id }
                 ]

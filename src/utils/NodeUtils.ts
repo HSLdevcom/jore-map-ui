@@ -3,7 +3,7 @@ import { INodeBase } from '~/models/INode';
 import NodeLocationType from '~/types/NodeLocationType';
 import * as s from './nodeTypeColors.scss';
 
-class NodeHelper {
+class NodeUtils {
     public static getNodeTypeClass = (
         nodeType: NodeType,
         {
@@ -70,4 +70,4 @@ class NodeHelper {
     };
 }
 
-export default NodeHelper;
+export default NodeUtils;

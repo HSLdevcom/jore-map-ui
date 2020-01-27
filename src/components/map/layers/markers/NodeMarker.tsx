@@ -7,7 +7,7 @@ import { Circle, Marker as LeafletMarker } from 'react-leaflet';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';
 import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
@@ -110,7 +110,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
         res.push(
-            NodeHelper.getNodeTypeClass(nodeType, {
+            NodeUtils.getNodeTypeClass(nodeType, {
                 nodeLocationType,
                 isNodeDisabled: isDisabled,
                 isNodeTimeAlignment: isTimeAlignmentStop,

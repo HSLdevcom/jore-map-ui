@@ -14,7 +14,7 @@ import { MapFilter, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/utils/EventManager';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import { LeafletContext } from '../../Map';
 import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
@@ -94,7 +94,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 nodeType={node.type}
                 nodeLocationType={nodeLocationType}
                 nodeId={node.id}
-                shortId={NodeHelper.getShortId(node)}
+                shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
                 isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}

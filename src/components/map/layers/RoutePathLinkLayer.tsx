@@ -10,7 +10,7 @@ import SubSites from '~/routing/subSites';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import EventManager, { INodeClickParams } from '~/utils/EventManager';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
 import Marker from './markers/Marker';
 import NodeMarker from './markers/NodeMarker';
@@ -144,7 +144,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 nodeType={node.type}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
-                shortId={NodeHelper.getShortId(node)}
+                shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDisabled={isDisabled}

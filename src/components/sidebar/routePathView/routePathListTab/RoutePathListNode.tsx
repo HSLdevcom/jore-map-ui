@@ -14,7 +14,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeHelper from '~/utils/TransitTypeHelper';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
@@ -38,8 +38,8 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
         const isExtended = this.props.routePathStore!.isListItemExtended(node.id);
-        const nodeTypeName = NodeHelper.getNodeTypeName(node.type);
-        const shortId = NodeHelper.getShortId(node);
+        const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
+        const shortId = NodeUtils.getShortId(node);
         return (
             <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
                 <div className={s.headerContent}>

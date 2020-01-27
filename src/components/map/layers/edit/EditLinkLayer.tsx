@@ -9,7 +9,7 @@ import { LinkStore } from '~/stores/linkStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import EventManager, { INodeClickParams } from '~/utils/EventManager';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import { LeafletContext } from '../../Map';
 import Marker from '../markers/Marker';
 import NodeMarker from '../markers/NodeMarker';
@@ -147,7 +147,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 nodeType={node.type}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
-                shortId={NodeHelper.getShortId(node)}
+                shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDraggable={false}

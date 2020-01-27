@@ -10,7 +10,7 @@ import EventManager, {
     IEditRoutePathLayerNodeClickParams,
     INodeClickParams
 } from '~/utils/EventManager';
-import NodeHelper from '~/utils/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import Marker from '../markers/Marker';
 import NodeMarker, { NodeHighlightColor } from '../markers/NodeMarker';
 
@@ -88,7 +88,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 nodeType={node.type}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
-                shortId={NodeHelper.getShortId(node)}
+                shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 onClick={onNodeClick}
