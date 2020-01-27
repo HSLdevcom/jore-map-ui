@@ -1,5 +1,5 @@
 import TransitType from '~/enums/transitType';
-import * as s from './transitTypeColors.scss';
+import * as s from './transitTypeUtils.scss';
 
 class TransitTypeUtils {
     public static getColor = (type: TransitType) => {
