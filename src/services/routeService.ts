@@ -6,7 +6,7 @@ import ApolloClient from '~/helpers/ApolloClientHelper';
 import { IRoute, IRoutePath } from '~/models';
 import { IRoutePrimaryKey } from '~/models/IRoute';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
-import ApiClient from '~/utils/ApiClient';
+import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
 interface IAllRoutesQueryResult {
@@ -60,11 +60,11 @@ class RouteService {
     };
 
     public static updateRoute = async (route: IRoute) => {
-        await ApiClient.updateObject(EndpointPath.ROUTE, route);
+        await HttpUtils.updateObject(EndpointPath.ROUTE, route);
     };
 
     public static createRoute = async (route: IRoute) => {
-        const response = (await ApiClient.createObject(
+        const response = (await HttpUtils.createObject(
             EndpointPath.ROUTE,
             route
         )) as IRoutePrimaryKey;

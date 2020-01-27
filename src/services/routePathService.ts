@@ -8,7 +8,7 @@ import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
-import ApiClient from '~/utils/ApiClient';
+import HttpUtils from '~/utils/HttpUtils';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 
@@ -93,7 +93,7 @@ class RoutePathService {
             viaNames: _getViaNames(routePath)
         };
 
-        await ApiClient.updateObject(EndpointPath.ROUTEPATH, requestBody);
+        await HttpUtils.updateObject(EndpointPath.ROUTEPATH, requestBody);
     };
 
     public static createRoutePath = async (routePath: IRoutePath) => {
@@ -101,7 +101,7 @@ class RoutePathService {
             routePath,
             viaNames: _getViaNames(routePath)
         };
-        const response = (await ApiClient.createObject(
+        const response = (await HttpUtils.createObject(
             EndpointPath.ROUTEPATH,
             requestBody
         )) as IRoutePathPrimaryKey;

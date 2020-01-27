@@ -3,8 +3,8 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import ErrorStore from '~/stores/errorStore';
 import LoginStore from '~/stores/loginStore';
-import ApiClient from '~/utils/ApiClient';
 import CodeListHelper from '~/utils/CodeListHelper';
+import HttpUtils from '~/utils/HttpUtils';
 
 export interface IAuthorizationResponse {
     isOk: boolean;
@@ -19,7 +19,7 @@ class AuthService {
         const isTesting = navigator.getQueryParam(QueryParams.testing);
         let authorizationResponse: IAuthorizationResponse;
         try {
-            authorizationResponse = (await ApiClient.authorizeUsingCode({
+            authorizationResponse = (await HttpUtils.authorizeUsingCode({
                 code,
                 isTesting
             })) as IAuthorizationResponse;
@@ -49,7 +49,7 @@ class AuthService {
     public static async logout() {
         // TODO: Implement full logout clearing session in backend
         // https://github.com/HSLdevcom/jore-map-ui/issues/669
-        await ApiClient.postRequest(EndpointPath.LOGOUT, {});
+        await HttpUtils.postRequest(EndpointPath.LOGOUT, {});
         LoginStore.clear();
     }
 }

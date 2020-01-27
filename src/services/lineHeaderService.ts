@@ -7,7 +7,7 @@ import ApolloClient from '~/helpers/ApolloClientHelper';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
 import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
-import ApiClient from '~/utils/ApiClient';
+import HttpUtils from '~/utils/HttpUtils';
 import { areDatesEqual } from '~/utils/dateHelpers';
 import GraphqlQueries from './graphqlQueries';
 
@@ -98,7 +98,7 @@ class LineHeaderService {
             originals
         };
 
-        await ApiClient.postRequest(EndpointPath.LINE_HEADER_MASS_EDIT, lineHeaderSaveModel);
+        await HttpUtils.postRequest(EndpointPath.LINE_HEADER_MASS_EDIT, lineHeaderSaveModel);
         ApolloClient.clearStore();
     };
 }

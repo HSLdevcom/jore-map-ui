@@ -14,7 +14,7 @@ import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
-import ApiClient from '~/utils/ApiClient';
+import HttpUtils from '~/utils/HttpUtils';
 import '~/utils/KeyEventHandler';
 import LocalStorageHelper from '~/utils/LocalStorageHelper';
 import ErrorBar from './ErrorBar';
@@ -83,7 +83,7 @@ class App extends React.Component<IAppProps, IAppState> {
     private init = async () => {
         const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
         if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
-            const response = (await ApiClient.getRequest(
+            const response = (await HttpUtils.getRequest(
                 EndpointPath.EXISTING_SESSION
             )) as IAuthorizationResponse;
             if (response.isOk) {

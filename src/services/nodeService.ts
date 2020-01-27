@@ -6,7 +6,7 @@ import ApolloClient from '~/helpers/ApolloClientHelper';
 import { ILink, INode } from '~/models';
 import { INodeBase, INodeMapHighlight, INodePrimaryKey } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
-import ApiClient from '~/utils/ApiClient';
+import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
 class NodeService {
@@ -55,16 +55,16 @@ class NodeService {
             links
         };
 
-        await ApiClient.updateObject(EndpointPath.NODE, requestBody);
+        await HttpUtils.updateObject(EndpointPath.NODE, requestBody);
     };
 
     public static createNode = async (node: INode) => {
-        const response = (await ApiClient.createObject(EndpointPath.NODE, node)) as INodePrimaryKey;
+        const response = (await HttpUtils.createObject(EndpointPath.NODE, node)) as INodePrimaryKey;
         return response.id;
     };
 
     public static fetchAvailableNodeId = async (node: INode) => {
-        return await ApiClient.postRequest(EndpointPath.GET_AVAILABLE_NODE_ID, {
+        return await HttpUtils.postRequest(EndpointPath.GET_AVAILABLE_NODE_ID, {
             latLng: node.coordinates,
             nodeType: node.type,
             transitType: node.stop?.transitType
@@ -72,7 +72,7 @@ class NodeService {
     };
 
     public static fetchAvailableNodeIdsWithPrefix = async (beginningOfNodeId: string) => {
-        return await ApiClient.postRequest(EndpointPath.GET_AVAILABLE_NODE_IDS_WITH_PREFIX, {
+        return await HttpUtils.postRequest(EndpointPath.GET_AVAILABLE_NODE_IDS_WITH_PREFIX, {
             beginningOfNodeId
         });
     }
