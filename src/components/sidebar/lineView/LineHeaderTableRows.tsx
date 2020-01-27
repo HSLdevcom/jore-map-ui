@@ -9,7 +9,7 @@ import InputContainer from '~/components/controls/InputContainer';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LoginStore } from '~/stores/loginStore';
-import { toMidnightDate } from '~/utils/dateHelpers';
+import { toMidnightDate } from '~/utils/DateUtils';
 import FormValidator from '~/validation/FormValidator';
 import * as s from './lineHeaderTableRows.scss';
 

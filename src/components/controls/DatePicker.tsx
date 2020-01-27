@@ -6,7 +6,7 @@ import React, { ChangeEvent } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
-import { toDateString } from '~/utils/dateHelpers';
+import { toDateString } from '~/utils/DateUtils';
 import * as s from './datePicker.scss';
 
 registerLocale('fi', fi);

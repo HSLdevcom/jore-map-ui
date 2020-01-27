@@ -1,6 +1,6 @@
 import textCodeList from '~/codeLists/textCodeList';
 
-class CodeListHelper {
+class CodeListUtils {
     /**
      * @param {keyValueMap} { key: value } - key is the same as ${key} in textCodeListKey, ${key} is replaced with value
      **/
@@ -18,4 +18,4 @@ class CodeListHelper {
     };
 }
 
-export default CodeListHelper;
+export default CodeListUtils;
