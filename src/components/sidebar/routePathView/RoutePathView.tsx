@@ -30,7 +30,7 @@ import { ListFilter, RoutePathStore, RoutePathViewTab } from '~/stores/routePath
 import { ToolbarStore } from '~/stores/toolbarStore';
 import EventManager from '~/utils/EventManager';
 import NavigationUtils from '~/utils/NavigationUtils';
-import { validateRoutePathLinks } from '~/utils/geomValidator';
+import { validateRoutePathLinks } from '~/utils/geomUtils';
 import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView';
 import RoutePathTabs from './RoutePathTabs';
