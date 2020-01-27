@@ -11,7 +11,7 @@ import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import EventManager, { INodeClickParams } from '~/utils/EventManager';
 import NodeHelper from '~/utils/NodeHelper';
-import { createCoherentLinesFromPolylines } from '~/utils/geomHelpers';
+import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
 import Marker from './markers/Marker';
 import NodeMarker from './markers/NodeMarker';
 import * as s from './routePathLinkLayer.scss';

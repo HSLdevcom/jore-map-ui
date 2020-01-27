@@ -4,7 +4,7 @@ import {
     calculateLengthFromLatLngs,
     createCoherentLinesFromPolylines,
     roundLatLng
-} from '../geomHelpers';
+} from '../geomUtils';
 
 describe('geomHelpers.createCoherentLinesFromPolylines', () => {
     it('Concatenates 1 line into 1 line', () => {

@@ -1,6 +1,6 @@
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
-import { toMidnightDate } from '~/utils/DateUtils';
+import { toMidnightDate } from '~/utils/dateUtils';
 
 class LineHeaderFactory {
     public static mapExternalLineHeader = (

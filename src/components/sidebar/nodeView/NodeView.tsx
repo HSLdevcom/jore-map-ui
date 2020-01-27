@@ -25,7 +25,7 @@ import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import EventManager from '~/utils/EventManager';
-import { createDropdownItemsFromList } from '~/utils/dropdownHelpers';
+import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
 import StopView from './StopView';

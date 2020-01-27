@@ -6,7 +6,7 @@ import { FiArrowRight } from 'react-icons/fi';
 import propertyCodeLists from '~/codeLists/propertyCodeLists';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import codeListStore from '~/stores/codeListStore';
-import { toDateString } from '~/utils/DateUtils';
+import { toDateString } from '~/utils/dateUtils';
 import * as s from './savePrompt.scss';
 
 type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea' | 'line' | 'routePath' | 'lineHeader';

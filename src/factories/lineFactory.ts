@@ -3,7 +3,7 @@ import IExternalLine from '~/models/externals/IExternalLine.ts';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
-import { toMidnightDate } from '~/utils/DateUtils';
+import { toMidnightDate } from '~/utils/dateUtils';
 
 class LineFactory {
     public static mapExternalLine = (externalLine: IExternalLine): ILine => {

@@ -6,7 +6,7 @@ import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
 import EventManager from '~/utils/EventManager';
-import { roundLatLng } from '~/utils/geomHelpers';
+import { roundLatLng } from '~/utils/geomUtils';
 import BaseTool from './BaseTool';
 
 class AddNetworkNodeTool implements BaseTool {

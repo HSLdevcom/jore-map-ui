@@ -7,8 +7,8 @@ import ApolloClient from '~/helpers/ApolloClient';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
 import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
-import { areDatesEqual } from '~/utils/DateUtils';
 import HttpUtils from '~/utils/HttpUtils';
+import { areDatesEqual } from '~/utils/dateUtils';
 import GraphqlQueries from './graphqlQueries';
 
 interface ILineHeaderSaveModel {
