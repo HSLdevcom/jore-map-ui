@@ -2,13 +2,13 @@ import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import NodeType from '~/enums/nodeType';
+import ApolloClient from '~/helpers/ApolloClientHelper';
 import { IRoutePath, IViaName } from '~/models';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import ApiClient from '~/utils/ApiClient';
-import ApolloClient from '~/utils/ApolloClient';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 

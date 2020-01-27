@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from 'apollo-client';
+import apolloClient from '~/helpers/ApolloClientHelper';
 import { IViaName } from '~/models/IViaName';
-import apolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class ViaNameService {

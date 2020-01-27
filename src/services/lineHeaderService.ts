@@ -3,11 +3,11 @@ import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
+import ApolloClient from '~/helpers/ApolloClientHelper';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
 import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
 import ApiClient from '~/utils/ApiClient';
-import ApolloClient from '~/utils/ApolloClient';
 import { areDatesEqual } from '~/utils/dateHelpers';
 import GraphqlQueries from './graphqlQueries';
 

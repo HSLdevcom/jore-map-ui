@@ -2,12 +2,12 @@ import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import LineFactory from '~/factories/lineFactory';
 import RouteFactory from '~/factories/routeFactory';
+import ApolloClient from '~/helpers/ApolloClientHelper';
 import { ILine, IRoute } from '~/models';
 import { ILinePrimaryKey } from '~/models/ILine';
 import IExternalRoute from '~/models/externals/IExternalRoute';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ApiClient from '~/utils/ApiClient';
-import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class LineService {

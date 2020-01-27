@@ -1,9 +1,9 @@
 import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import StopAreaFactory from '~/factories/stopAreaFactory';
+import ApolloClient from '~/helpers/ApolloClientHelper';
 import IStopArea from '~/models/IStopArea';
 import ApiClient from '~/utils/ApiClient';
-import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 interface ITerminalAreaItem {

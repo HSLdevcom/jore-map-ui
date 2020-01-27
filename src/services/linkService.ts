@@ -2,10 +2,10 @@ import { ApolloQueryResult } from 'apollo-client';
 import { LatLng } from 'leaflet';
 import EndpointPath from '~/enums/endpointPath';
 import LinkFactory from '~/factories/linkFactory';
+import ApolloClient from '~/helpers/ApolloClientHelper';
 import ILink, { ILinkMapHighlight } from '~/models/ILink';
 import IExternalLink from '~/models/externals/IExternalLink';
 import ApiClient from '~/utils/ApiClient';
-import ApolloClient from '~/utils/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class LinkService {
