@@ -3,6 +3,7 @@ import Moment from 'moment';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
+import EventHelper, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventHelper';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import INode from '~/models/INode';
@@ -10,8 +11,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
-import EventManager, { IEditRoutePathNeighborLinkClickParams } from '~/util/EventManager';
-import NodeHelper from '~/util/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
 
@@ -68,7 +68,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
                 neighborLink
             };
-            EventManager.trigger('editRoutePathNeighborLinkClick', clickParams);
+            EventHelper.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
 
         return (
@@ -78,7 +78,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 nodeType={node.type}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
-                shortId={NodeHelper.getShortId(node)}
+                shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 onClick={onNeighborLinkClick}
@@ -105,7 +105,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
                 neighborLink
             };
-            EventManager.trigger('editRoutePathNeighborLinkClick', clickParams);
+            EventHelper.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
 
         return (

@@ -12,6 +12,7 @@ import constants from '~/constants/constants';
 import ButtonType from '~/enums/buttonType';
 import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
+import EventHelper from '~/helpers/EventHelper';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -28,9 +29,8 @@ import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { ListFilter, RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import EventManager from '~/util/EventManager';
-import NavigationUtils from '~/util/NavigationUtils';
-import { validateRoutePathLinks } from '~/util/geomValidator';
+import NavigationUtils from '~/utils/NavigationUtils';
+import { validateRoutePathLinks } from '~/utils/geomUtils';
 import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView';
 import RoutePathTabs from './RoutePathTabs';
@@ -77,8 +77,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     componentDidMount() {
-        EventManager.on('undo', this.props.routePathStore!.undo);
-        EventManager.on('redo', this.props.routePathStore!.redo);
+        EventHelper.on('undo', this.props.routePathStore!.undo);
+        EventHelper.on('redo', this.props.routePathStore!.redo);
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
@@ -87,8 +87,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
-        EventManager.off('undo', this.props.routePathStore!.undo);
-        EventManager.off('redo', this.props.routePathStore!.redo);
+        EventHelper.off('undo', this.props.routePathStore!.undo);
+        EventHelper.off('redo', this.props.routePathStore!.redo);
     }
 
     private initialize = async () => {

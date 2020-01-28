@@ -2,10 +2,10 @@ import { ApolloQueryResult } from 'apollo-client';
 import { LatLng } from 'leaflet';
 import EndpointPath from '~/enums/endpointPath';
 import LinkFactory from '~/factories/linkFactory';
+import ApolloClient from '~/helpers/ApolloClient';
 import ILink, { ILinkMapHighlight } from '~/models/ILink';
 import IExternalLink from '~/models/externals/IExternalLink';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
 class LinkService {
@@ -64,11 +64,11 @@ class LinkService {
             ...link,
             geometry: link.geometry.map(coor => new LatLng(coor.lat, coor.lng))
         };
-        await ApiClient.updateObject(EndpointPath.LINK, simplifiedLink);
+        await HttpUtils.updateObject(EndpointPath.LINK, simplifiedLink);
     };
 
     public static createLink = async (link: ILink) => {
-        await ApiClient.createObject(EndpointPath.LINK, link);
+        await HttpUtils.createObject(EndpointPath.LINK, link);
     };
 }
 

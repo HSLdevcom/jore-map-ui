@@ -3,10 +3,10 @@ import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCode
 import constants from '~/constants/constants';
 import EndpointPath from '~/enums/endpointPath';
 import FetchStatusCode from '~/enums/fetchStatusCode';
+import ApolloClient from '~/helpers/ApolloClient';
 import IError from '~/models/IError';
 import AlertStore from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
-import ApolloClient from '~/util/ApolloClient';
 
 enum RequestMethod {
     GET = 'GET',
@@ -22,24 +22,28 @@ interface IAuthorizationRequest {
 
 type credentials = 'include';
 
-class ApiClient {
-    public updateObject = async (endpointPath: EndpointPath, object: any) => {
-        const response = await this.postRequest(endpointPath, object);
+class HttpUtils {
+    public static updateObject = async (endpointPath: EndpointPath, object: any) => {
+        const response = await HttpUtils.postRequest(endpointPath, object);
         ApolloClient.clearStore();
         return response;
     };
 
-    public createObject = async (endpointPath: EndpointPath, object: any) => {
-        const response = await this.sendBackendRequest(RequestMethod.PUT, endpointPath, object);
+    public static createObject = async (endpointPath: EndpointPath, object: any) => {
+        const response = await HttpUtils.sendBackendRequest(
+            RequestMethod.PUT,
+            endpointPath,
+            object
+        );
         ApolloClient.clearStore();
         return response;
     };
 
-    public deleteObject = async (endpointPath: EndpointPath, object: any) => {
-        return await this.sendBackendRequest(RequestMethod.DELETE, endpointPath, object);
+    public static deleteObject = async (endpointPath: EndpointPath, object: any) => {
+        return await HttpUtils.sendBackendRequest(RequestMethod.DELETE, endpointPath, object);
     };
 
-    public authorizeUsingCode = async ({
+    public static authorizeUsingCode = async ({
         code,
         isTesting
     }: {
@@ -47,27 +51,31 @@ class ApiClient {
         isTesting: boolean;
     }) => {
         const requestBody: IAuthorizationRequest = { code, isTesting };
-        return await this.sendBackendRequest(RequestMethod.POST, EndpointPath.AUTH, requestBody);
+        return await HttpUtils.sendBackendRequest(
+            RequestMethod.POST,
+            EndpointPath.AUTH,
+            requestBody
+        );
     };
 
-    public getRequest = async (endpointPath: EndpointPath) => {
-        return await this.sendBackendRequest(RequestMethod.GET, endpointPath, {});
+    public static getRequest = async (endpointPath: EndpointPath) => {
+        return await HttpUtils.sendBackendRequest(RequestMethod.GET, endpointPath, {});
     };
 
-    public postRequest = async (endpointPath: EndpointPath, requestBody: any) => {
-        return await this.sendBackendRequest(RequestMethod.POST, endpointPath, requestBody);
+    public static postRequest = async (endpointPath: EndpointPath, requestBody: any) => {
+        return await HttpUtils.sendBackendRequest(RequestMethod.POST, endpointPath, requestBody);
     };
 
-    private sendBackendRequest = async (
+    private static sendBackendRequest = async (
         method: RequestMethod,
         endpointPath: EndpointPath,
         object: any
     ) => {
         const entityUrl = `${constants.API_URL}/${endpointPath}`;
-        return this.sendRequest(method, entityUrl, object, 'include');
+        return HttpUtils.sendRequest(method, entityUrl, object, 'include');
     };
 
-    public sendRequest = async (
+    public static sendRequest = async (
         method: RequestMethod,
         url: string,
         object: any,
@@ -150,6 +158,6 @@ const _arrayToObject = (arr: [string, any][]) => {
     return res;
 };
 
-export default new ApiClient();
+export default HttpUtils;
 
 export { RequestMethod };

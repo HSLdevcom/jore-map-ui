@@ -2,7 +2,7 @@ import * as L from 'leaflet';
 import React, { Component } from 'react';
 import { Marker as LeafletMarker } from 'react-leaflet';
 import PinIcon from '~/icons/PinIcon';
-import LeafletUtils from '~/util/leafletUtils';
+import LeafletUtils from '~/utils/leafletUtils';
 import * as s from './marker.scss';
 
 interface IMarkerProps {

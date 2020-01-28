@@ -17,7 +17,7 @@ import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeade
 import { LineStore } from '~/stores/lineStore';
 import { LoginStore } from '~/stores/loginStore';
 import { NavigationStore } from '~/stores/navigationStore';
-import { areDatesEqual, toMidnightDate } from '~/util/dateHelpers';
+import { areDatesEqual, toMidnightDate } from '~/utils/dateUtils';
 import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
 import LineHeaderForm from './LineHeaderForm';

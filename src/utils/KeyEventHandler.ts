@@ -1,4 +1,4 @@
-import EventManager from '~/util/EventManager';
+import EventHelper from '~/helpers/EventHelper';
 
 const KEYCODES = {
     enter: 'Enter',
@@ -16,15 +16,15 @@ class KeyEventHandler {
     handleKeyDownEvent = (event: KeyboardEvent) => {
         switch (event.code) {
             case KEYCODES.enter: {
-                EventManager.trigger('enter');
+                EventHelper.trigger('enter');
                 break;
             }
             case KEYCODES.arrowUp: {
-                EventManager.trigger('arrowUp');
+                EventHelper.trigger('arrowUp');
                 break;
             }
             case KEYCODES.arrowDown: {
-                EventManager.trigger('arrowDown');
+                EventHelper.trigger('arrowDown');
                 break;
             }
         }
@@ -33,12 +33,12 @@ class KeyEventHandler {
         if (event.ctrlKey) {
             switch (event.code) {
                 case KEYCODES.Z: {
-                    EventManager.trigger('undo');
+                    EventHelper.trigger('undo');
                     event.preventDefault(); // to disable native undo event
                     break;
                 }
                 case KEYCODES.Y: {
-                    EventManager.trigger('redo');
+                    EventHelper.trigger('redo');
                     event.preventDefault(); // to disable native undo event
                     break;
                 }
@@ -46,10 +46,10 @@ class KeyEventHandler {
             // Macbook
         } else if (event.metaKey && event.code === KEYCODES.Z) {
             if (event.shiftKey) {
-                EventManager.trigger('redo');
+                EventHelper.trigger('redo');
                 event.preventDefault(); // to disable native undo event
             } else {
-                EventManager.trigger('undo');
+                EventHelper.trigger('undo');
                 event.preventDefault(); // to disable native undo event
             }
         }

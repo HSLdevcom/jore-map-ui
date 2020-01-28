@@ -12,7 +12,7 @@ import SubSites from '~/routing/subSites';
 import { LineStore } from '~/stores/lineStore';
 import { LoginStore } from '~/stores/loginStore';
 import { SearchStore } from '~/stores/searchStore';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import s from './lineRoutesTab.scss';
 
 interface ILineRoutesTabProps {
@@ -49,7 +49,7 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                     <div
                         className={classnames(
                             s.routeId,
-                            TransitTypeHelper.getColorClass(line!.transitType!)
+                            TransitTypeUtils.getColorClass(line!.transitType!)
                         )}
                     >
                         {route.id}

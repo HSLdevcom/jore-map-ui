@@ -2,12 +2,12 @@ import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import LineFactory from '~/factories/lineFactory';
 import RouteFactory from '~/factories/routeFactory';
+import ApolloClient from '~/helpers/ApolloClient';
 import { ILine, IRoute } from '~/models';
 import { ILinePrimaryKey } from '~/models/ILine';
 import IExternalRoute from '~/models/externals/IExternalRoute';
 import ISearchLine from '~/models/searchModels/ISearchLine';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
 class LineService {
@@ -74,11 +74,11 @@ class LineService {
     };
 
     public static updateLine = async (line: ILine) => {
-        await ApiClient.updateObject(EndpointPath.LINE, line);
+        await HttpUtils.updateObject(EndpointPath.LINE, line);
     };
 
     public static createLine = async (Line: ILine) => {
-        const response = (await ApiClient.createObject(EndpointPath.LINE, Line)) as ILinePrimaryKey;
+        const response = (await HttpUtils.createObject(EndpointPath.LINE, Line)) as ILinePrimaryKey;
         return response.id;
     };
 }

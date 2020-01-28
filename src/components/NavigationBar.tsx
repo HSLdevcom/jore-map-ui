@@ -15,7 +15,7 @@ import AuthService from '~/services/authService';
 import { AlertStore } from '~/stores/alertStore';
 import { LoginStore } from '~/stores/loginStore';
 import { UserStore } from '~/stores/userStore';
-import ApiClient from '~/util/ApiClient';
+import HttpUtils from '~/utils/HttpUtils';
 import packageVersion from '../project/version.json';
 import * as s from './navigationBar.scss';
 import TransitIcon from './shared/TransitIcon';
@@ -51,7 +51,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
         this.setState({
             isSyncLoading: true
         });
-        const response = await ApiClient.postRequest(EndpointPath.SYNC_LOCAL_DB, {});
+        const response = await HttpUtils.postRequest(EndpointPath.SYNC_LOCAL_DB, {});
         if (response && response.isDbSyncing) {
             this.props.alertStore!.setFadeMessage({
                 message: 'Sisäisen JORE-tietokannan päivitys on jo käynnissä.'

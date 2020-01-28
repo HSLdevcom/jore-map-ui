@@ -1,9 +1,9 @@
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
 import NodeLocationType from '~/types/NodeLocationType';
-import * as s from './nodeTypeColors.scss';
+import * as s from './nodeUtils.scss';
 
-class NodeHelper {
+class NodeUtils {
     public static getNodeTypeClass = (
         nodeType: NodeType,
         {
@@ -70,4 +70,4 @@ class NodeHelper {
     };
 }
 
-export default NodeHelper;
+export default NodeUtils;

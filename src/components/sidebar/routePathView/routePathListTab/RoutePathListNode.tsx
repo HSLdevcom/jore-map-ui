@@ -14,8 +14,8 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import NodeHelper from '~/util/NodeHelper';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
+import NodeUtils from '~/utils/NodeUtils';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
@@ -38,8 +38,8 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const node = this.props.node;
         const stopName = node.stop ? node.stop.nameFi : '';
         const isExtended = this.props.routePathStore!.isListItemExtended(node.id);
-        const nodeTypeName = NodeHelper.getNodeTypeName(node.type);
-        const shortId = NodeHelper.getShortId(node);
+        const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
+        const shortId = NodeUtils.getShortId(node);
         return (
             <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
                 <div className={s.headerContent}>
@@ -282,7 +282,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             icon = this.addBorder(icon, '#353333');
         } else if (node.type === NodeType.STOP) {
             node.transitTypes!.forEach(type => {
-                icon = this.addBorder(icon, TransitTypeHelper.getColor(type));
+                icon = this.addBorder(icon, TransitTypeUtils.getColor(type));
             });
         }
 

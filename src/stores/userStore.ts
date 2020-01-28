@@ -1,6 +1,6 @@
 import { action, computed, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
-import LocalStorageHelper from '~/util/LocalStorageHelper';
+import LocalStorageHelper from '~/helpers/LocalStorageHelper';
 
 export class UserStore {
     @observable private _userTransitType: TransitType;

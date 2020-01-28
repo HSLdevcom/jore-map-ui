@@ -11,6 +11,7 @@ import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
+import EventHelper from '~/helpers/EventHelper';
 import { ILink, INode } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -24,8 +25,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import EventManager from '~/util/EventManager';
-import { createDropdownItemsFromList } from '~/util/dropdownHelpers';
+import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
 import StopView from './StopView';
@@ -78,7 +78,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             await this.initExistingNode(params);
         }
         this._setState({ isLoading: false });
-        EventManager.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
+        EventHelper.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
     async componentDidUpdate(prevProps: INodeViewProps) {
@@ -99,7 +99,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._isMounted = false;
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
-        EventManager.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
+        EventHelper.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
     private createNewNode = async (params: any) => {

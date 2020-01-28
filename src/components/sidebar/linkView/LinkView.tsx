@@ -8,6 +8,7 @@ import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import LinkFactory from '~/factories/linkFactory';
+import EventHelper from '~/helpers/EventHelper';
 import { ILink, INode } from '~/models';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
@@ -20,7 +21,6 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
-import EventManager from '~/util/EventManager';
 import { Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';
@@ -60,7 +60,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             await this.initExistingLink();
         }
         this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
-        EventManager.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
+        EventHelper.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
     async componentDidUpdate(prevProps: ILinkViewProps) {
@@ -75,7 +75,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     componentWillUnmount() {
         this.props.linkStore!.clear();
-        EventManager.off('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
+        EventHelper.off('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
     private initExistingLink = async () => {

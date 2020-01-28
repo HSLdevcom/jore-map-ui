@@ -1,7 +1,7 @@
-import ApolloClient from '~/util/ApolloClient';
+import ApolloClient from '~/helpers/ApolloClient';
 import StopService from '../stopService';
 
-jest.mock('../../util/ApolloClient');
+jest.mock('../../helpers/ApolloClient');
 
 // These tests expect that StopService.SHORT_ID_LENGTH = 4
 

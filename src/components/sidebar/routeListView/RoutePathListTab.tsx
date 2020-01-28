@@ -14,7 +14,7 @@ import RoutePathService from '~/services/routePathService';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { UserStore } from '~/stores/userStore';
-import { toDateString } from '~/util/dateHelpers';
+import { toDateString } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import * as s from './routePathListTab.scss';
 

@@ -3,12 +3,12 @@ import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
+import ApolloClient from '~/helpers/ApolloClient';
 import ILineHeader from '~/models/ILineHeader';
 import IExternalLineHeader from '~/models/externals/IExternalLineHeader';
 import { IMassEditLineHeader } from '~/stores/lineHeaderMassEditStore';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
-import { areDatesEqual } from '~/util/dateHelpers';
+import HttpUtils from '~/utils/HttpUtils';
+import { areDatesEqual } from '~/utils/dateUtils';
 import GraphqlQueries from './graphqlQueries';
 
 interface ILineHeaderSaveModel {
@@ -98,7 +98,7 @@ class LineHeaderService {
             originals
         };
 
-        await ApiClient.postRequest(EndpointPath.LINE_HEADER_MASS_EDIT, lineHeaderSaveModel);
+        await HttpUtils.postRequest(EndpointPath.LINE_HEADER_MASS_EDIT, lineHeaderSaveModel);
         ApolloClient.clearStore();
     };
 }

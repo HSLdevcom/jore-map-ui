@@ -3,15 +3,15 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { FeatureGroup, Polyline } from 'react-leaflet';
 import StartNodeType from '~/enums/startNodeType';
+import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { INode, IRoutePathLink } from '~/models';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
-import EventManager, { INodeClickParams } from '~/util/EventManager';
-import NodeHelper from '~/util/NodeHelper';
-import { createCoherentLinesFromPolylines } from '~/util/geomHelpers';
+import NodeUtils from '~/utils/NodeUtils';
+import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
 import Marker from './markers/Marker';
 import NodeMarker from './markers/NodeMarker';
 import * as s from './routePathLinkLayer.scss';
@@ -93,7 +93,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         const routePathLinks = this.props.routePathLinks;
         const triggerNodeClick = (node: INode) => () => {
             const clickParams: INodeClickParams = { node };
-            EventManager.trigger('nodeClick', clickParams);
+            EventHelper.trigger('nodeClick', clickParams);
         };
 
         const nodes = routePathLinks.map((routePathLink, index) => {
@@ -144,7 +144,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 nodeType={node.type}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
-                shortId={NodeHelper.getShortId(node)}
+                shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
                 isDisabled={isDisabled}
