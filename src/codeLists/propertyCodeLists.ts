@@ -38,7 +38,6 @@ const stopPropertyCodeList: IStopPropertyCodeList = {
     elyNumber: 'ELYNUMERO',
     nameLongFi: 'PITKÄ NIMI',
     nameLongSw: 'PITKÄ NIMI RUOTSIKSI',
-    nameModifiedOn: 'PITKÄ NIMI MUOKATTU PVM',
     section: 'VYÖHYKE',
     postalNumber: 'POSTINUMERO',
     transitType: 'VERKKO'

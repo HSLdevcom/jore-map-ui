@@ -6,7 +6,6 @@ import { match } from 'react-router';
 import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
-import TextContainer from '~/components/controls/TextContainer';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
@@ -215,13 +214,6 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.nameLongSw}
                             onChange={updateStopProperty!('nameLongSw')}
                             validationResult={stopInvalidPropertiesMap['nameLongSw']}
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <TextContainer
-                            label='PITKÄ NIMI MUOKATTU PVM'
-                            value={stop.nameModifiedOn}
-                            isTimeIncluded={true}
                         />
                     </div>
                 </div>

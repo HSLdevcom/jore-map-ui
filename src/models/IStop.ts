@@ -21,7 +21,6 @@ export default interface IStop extends IStopPrimaryKey {
     elyNumber?: string;
     nameLongFi?: string;
     nameLongSw?: string;
-    nameModifiedOn?: Date;
     section: string;
     postalNumber?: string;
     transitType?: TransitType; // Only used for creating a soltunnus

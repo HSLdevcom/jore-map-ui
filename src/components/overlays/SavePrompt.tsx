@@ -113,8 +113,7 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
                 value === NodeMeasurementType.Calculated ? 'Laskettu' : 'Mitattu'
         },
         stop: {
-            municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', value),
-            nameModifiedOn: () => (value ? toDateString(value) : '')
+            municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', value)
         },
         stopArea: {
             transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : '')
