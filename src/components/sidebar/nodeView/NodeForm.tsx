@@ -11,7 +11,7 @@ import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { INode } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
-import NodeHelper from '~/util/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import * as s from './nodeForm.scss';
 
 interface INodeViewProps {
@@ -122,7 +122,7 @@ export default class NodeForm extends Component<INodeViewProps> {
                         <div
                             className={classnames(
                                 s.labelIcon,
-                                NodeHelper.getNodeTypeClass(node.type, {
+                                NodeUtils.getNodeTypeClass(node.type, {
                                     isNodeHighlighted: true
                                 })
                             )}

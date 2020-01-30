@@ -15,7 +15,7 @@ import AuthService from '~/services/authService';
 import { AlertStore } from '~/stores/alertStore';
 import { LoginStore } from '~/stores/loginStore';
 import { UserStore } from '~/stores/userStore';
-import ApiClient from '~/util/ApiClient';
+import HttpUtils from '~/utils/HttpUtils';
 import packageVersion from '../project/version.json';
 import * as s from './navigationBar.scss';
 import TransitIcon from './shared/TransitIcon';
@@ -51,10 +51,10 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
         this.setState({
             isSyncLoading: true
         });
-        const response = await ApiClient.postRequest(EndpointPath.SYNC_LOCAL_DB, {});
+        const response = await HttpUtils.postRequest(EndpointPath.SYNC_LOCAL_DB, {});
         if (response && response.isDbSyncing) {
             this.props.alertStore!.setFadeMessage({
-                message: 'Sisäisen JORE-tietokannan synkkaus on jo käynnissä.'
+                message: 'Sisäisen JORE-tietokannan päivitys on jo käynnissä.'
             });
         }
         this.setState({
@@ -92,9 +92,13 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                         <>
                             {isSyncLoading ? (
                                 <div className={s.syncTextWrapper}>
-                                    <Loader size='tiny' hasNoMargin={true} />
+                                    <Loader
+                                        size='tiny'
+                                        containerClassName={s.syncTextLoader}
+                                        hasNoMargin={true}
+                                    />
                                     <div className={s.syncText}>
-                                        Synkronoidaan sisäistä JORE-tietokantaa...
+                                        Sisäistä JORE-tietokantaa päivitetään...
                                     </div>
                                 </div>
                             ) : (

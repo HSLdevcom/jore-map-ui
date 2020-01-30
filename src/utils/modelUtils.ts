@@ -13,6 +13,4 @@ const loopRoutePathNodes = (
     });
 };
 
-export default {
-    loopRoutePathNodes
-};
+export { loopRoutePathNodes };

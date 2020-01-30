@@ -1,15 +1,15 @@
 import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
+import EventHelper, {
+    IEditRoutePathLayerNodeClickParams,
+    IEditRoutePathNeighborLinkClickParams,
+    INetworkNodeClickParams
+} from '~/helpers/EventHelper';
 import { INode } from '~/models';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathStore, { NeighborToAddType } from '~/stores/routePathStore';
-import EventManager, {
-    IEditRoutePathLayerNodeClickParams,
-    IEditRoutePathNeighborLinkClickParams,
-    INetworkNodeClickParams
-} from '~/util/EventManager';
-import ModelHelper from '~/util/ModelHelper';
+import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
 
 /**
@@ -23,16 +23,16 @@ class ExtendRoutePathTool implements BaseTool {
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventManager.on('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.on('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventManager.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
+        EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
+        EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
+        EventHelper.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         this.highlightClickableNodes();
     }
     public deactivate() {
         this.reset();
-        EventManager.off('networkNodeClick', this.onNetworkNodeClick);
-        EventManager.off('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventManager.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
+        EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
+        EventHelper.off('editRoutePathLayerNodeClick', this.onNodeClick);
+        EventHelper.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
     }
 
     private reset() {
@@ -98,7 +98,7 @@ class ExtendRoutePathTool implements BaseTool {
 
         const clickableNodeIds: string[] = [];
         const unclickableNodeIds: string[] = [];
-        ModelHelper.loopRoutePathNodes(routePath, (node: INode) => {
+        loopRoutePathNodes(routePath, (node: INode) => {
             if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
                 clickableNodeIds.push(node.id);
             } else {

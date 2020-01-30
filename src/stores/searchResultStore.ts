@@ -2,7 +2,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import TransitType from '~/enums/transitType';
 import { INodeBase } from '~/models/INode';
 import ISearchLine from '~/models/searchModels/ISearchLine';
-import NodeHelper from '~/util/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import SearchStore from './searchStore';
 
 export class SearchResultStore {
@@ -122,7 +122,7 @@ export class SearchResultStore {
 
     private getFilteredNodes = (searchInput: string) => {
         return this._allNodes.filter(node => {
-            const shortId = NodeHelper.getShortId(node);
+            const shortId = NodeUtils.getShortId(node);
             return (
                 this.matchText(node.id, searchInput) ||
                 (Boolean(shortId) && this.matchText(shortId, searchInput))

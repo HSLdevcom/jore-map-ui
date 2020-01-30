@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import L from 'leaflet';
+import _ from 'lodash';
 import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -12,6 +13,7 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import LineService from '~/services/lineService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -23,8 +25,8 @@ import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
-import NavigationUtils from '~/util/NavigationUtils';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
+import NavigationUtils from '~/utils/NavigationUtils';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import Loader from '../../shared/loader/Loader';
 import SidebarHeader from '../SidebarHeader';
 import RouteItem from './RouteItem';
@@ -93,7 +95,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
             try {
                 const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
+                const lineIds = _.uniq(routes.map(route => route.lineId));
+                const lines = await LineService.fetchMultipleLines(lineIds);
                 this.props.routeListStore!.addToRoutes(routes);
+                this.props.routeListStore!.addToLines(lines);
             } catch (e) {
                 this.props.errorStore!.addError(
                     `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
@@ -191,12 +196,13 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         const currentRoute = this.props.routeStore!.route;
         const oldRoute = this.props.routeStore!.oldRoute;
         const saveModel: ISaveModel = {
+            type: 'saveModel',
             newData: currentRoute,
             oldData: oldRoute,
             model: 'route'
         };
         confirmStore!.openConfirm({
-            content: <SavePrompt saveModels={[saveModel]} />,
+            content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.save();
             }
@@ -241,6 +247,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                             !routeStore.route ||
                             !(isEditing && routeStore.isDirty) ||
                             !routeStore.isRouteFormValid;
+                        const transitType = routeListStore.getLine(route.lineId)?.transitType!;
                         return (
                             <div key={index} className={s.routeListItem}>
                                 <SidebarHeader
@@ -257,14 +264,14 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                         title={`Avaa linja ${route!.lineId}`}
                                     >
                                         <TransitIcon
-                                            transitType={route!.line!.transitType!}
+                                            transitType={transitType}
                                             isWithoutBox={false}
                                         />
                                         <div
                                             className={classnames(
                                                 s.label,
-                                                TransitTypeHelper.getColorClass(
-                                                    route.line!.transitType!
+                                                TransitTypeUtils.getColorClass(
+                                                    transitType
                                                 )
                                             )}
                                         >

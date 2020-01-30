@@ -1,14 +1,16 @@
 import { action, computed, observable } from 'mobx';
-import { IRoute, IRoutePath } from '~/models';
+import ColorScale from '~/helpers/ColorScale';
+import { ILine, IRoute, IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
-import ColorScale from '~/util/ColorScale';
 
 export class RouteListStore {
     @observable private _routes: IRoute[];
+    @observable private _lines: ILine[];
     private colorScale: ColorScale;
 
     constructor() {
         this._routes = [];
+        this._lines = [];
         this.colorScale = new ColorScale();
     }
 
@@ -17,9 +19,18 @@ export class RouteListStore {
         return this._routes;
     }
 
+    public getLine(lineId: string): ILine | undefined {
+        return this._lines.find(line => line.id === lineId);
+    }
+
     @action
     public addToRoutes = (routes: IRoute[]) => {
         this._routes = this._routes.concat(routes);
+    };
+
+    @action
+    public addToLines = (lines: ILine[]) => {
+        this._lines = this._lines.concat(lines);
     };
 
     @action

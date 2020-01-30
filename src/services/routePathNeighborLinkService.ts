@@ -1,6 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
+import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import IExternalLink from '~/models/externals/IExternalLink';
@@ -9,7 +10,6 @@ import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IGraphqlList from '~/models/externals/graphqlModelHelpers/IGraphqlList';
 import ErrorStore from '~/stores/errorStore';
 import { NeighborToAddType } from '~/stores/routePathStore';
-import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 interface IExtendedExternalNode extends IExternalNode {

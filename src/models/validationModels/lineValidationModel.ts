@@ -8,7 +8,6 @@ type ILineValidationModel = { [key in LineKeys]: string };
 // TODO: rename as lineValidationObject
 const lineValidationModel: ILineValidationModel = {
     id: `required|min:4|max:6|string|${regexRules.upperCaseOrNumbersOrSpace}`,
-    routes: '',
     transitType: 'required|min:1|max:1|string',
     lineBasicRoute: 'required|min:4|max:6|string',
     lineStartDate: 'required|date',

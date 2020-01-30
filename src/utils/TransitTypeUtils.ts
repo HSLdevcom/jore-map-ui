@@ -1,7 +1,7 @@
 import TransitType from '~/enums/transitType';
-import * as s from './transitTypeColors.scss';
+import * as s from './transitTypeUtils.scss';
 
-class TransitTypeHelper {
+class TransitTypeUtils {
     public static getColor = (type: TransitType) => {
         switch (type) {
             case TransitType.BUS:
@@ -71,4 +71,4 @@ class TransitTypeHelper {
     };
 }
 
-export default TransitTypeHelper;
+export default TransitTypeUtils;

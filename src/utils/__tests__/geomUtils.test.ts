@@ -4,9 +4,9 @@ import {
     calculateLengthFromLatLngs,
     createCoherentLinesFromPolylines,
     roundLatLng
-} from '../geomHelpers';
+} from '../geomUtils';
 
-describe('geomHelpers.createCoherentLinesFromPolylines', () => {
+describe('geomUtils.createCoherentLinesFromPolylines', () => {
     it('Concatenates 1 line into 1 line', () => {
         const line: LatLng[] = [new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 3)];
         const expectedResult: LatLng[][] = [[new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 3)]];
@@ -38,7 +38,7 @@ describe('geomHelpers.createCoherentLinesFromPolylines', () => {
     });
 });
 
-describe('geomHelpers.roundLatLng', () => {
+describe('geomUtils.roundLatLng', () => {
     const DECIMALS_IN_GEOMETRIES = constants.DECIMALS_IN_GEOMETRIES;
 
     it(`Rounds latLng to ${DECIMALS_IN_GEOMETRIES} number of decimals`, () => {
@@ -52,7 +52,7 @@ describe('geomHelpers.roundLatLng', () => {
     });
 });
 
-describe('geomHelpers.calculateLengthFromLatLngs', () => {
+describe('geomUtils.calculateLengthFromLatLngs', () => {
     it('Calculates length between two points - round down', () => {
         const positions: LatLng[] = [
             new LatLng(60.165958, 24.9436),

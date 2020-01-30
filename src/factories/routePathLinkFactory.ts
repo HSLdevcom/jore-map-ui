@@ -1,9 +1,9 @@
 import * as L from 'leaflet';
 import Constants from '~/constants/constants';
+import NumberIterator from '~/helpers/NumberIterator';
 import { IRoutePathLink } from '~/models';
 import IExternalLink from '~/models/externals/IExternalLink';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
-import NumberIterator from '~/util/NumberIterator';
 import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {

@@ -1,6 +1,7 @@
 import SplitConfirmContent from '~/components/sidebar/splitLinkView/SplitConfirmContent';
 import NodeType from '~/enums/nodeType';
 import ToolbarTool from '~/enums/toolbarTool';
+import EventHelper from '~/helpers/EventHelper';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -10,8 +11,7 @@ import ErrorStore from '~/stores/errorStore';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
-import EventManager from '~/util/EventManager';
-import NodeHelper from '~/util/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import BaseTool from './BaseTool';
 
 class SplitLinkTool implements BaseTool {
@@ -22,11 +22,11 @@ class SplitLinkTool implements BaseTool {
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
-        EventManager.on('networkNodeClick', this.openNodeConfirm);
+        EventHelper.on('networkNodeClick', this.openNodeConfirm);
     }
 
     public deactivate() {
-        EventManager.off('networkNodeClick', this.openNodeConfirm);
+        EventHelper.off('networkNodeClick', this.openNodeConfirm);
     }
 
     navigateToSplitLink = (nodeId: string) => {
@@ -54,7 +54,7 @@ class SplitLinkTool implements BaseTool {
             confirmContent = SplitConfirmContent({
                 message: 'Oletko varma, että haluat jakaa linkin pysäkillä?',
                 itemList: [
-                    { label: 'Lyhyt ID', value: NodeHelper.getShortId(node) },
+                    { label: 'Lyhyt ID', value: NodeUtils.getShortId(node) },
                     { label: 'Nimi', value: node.stop!.nameFi },
                     { label: 'Soltunnus', value: node.id }
                 ]
@@ -65,7 +65,7 @@ class SplitLinkTool implements BaseTool {
                 itemList: [
                     {
                         label: 'Tyyppi',
-                        value: NodeHelper.getNodeTypeName(node.type)
+                        value: NodeUtils.getNodeTypeName(node.type)
                     },
                     { label: 'Soltunnus', value: node.id }
                 ]

@@ -1,5 +1,6 @@
 import { LatLng } from 'leaflet';
 import Constants from '~/constants/constants';
+import { IRoutePathLink } from '~/models';
 
 /**
  *    Tries to merge polylines where they connect,
@@ -50,4 +51,17 @@ const calculateLengthFromLatLngs = (latLngs: L.LatLng[]) => {
     return Math.round(length);
 };
 
-export { createCoherentLinesFromPolylines, roundLatLngs, roundLatLng, calculateLengthFromLatLngs };
+const validateRoutePathLinks = (rpLinks: IRoutePathLink[]) => {
+    if (rpLinks.length === 0) return false;
+    return rpLinks.every(
+        (rpLink, index) => index === 0 || rpLinks[index - 1].endNode.id === rpLink.startNode.id
+    );
+};
+
+export {
+    createCoherentLinesFromPolylines,
+    roundLatLngs,
+    roundLatLng,
+    calculateLengthFromLatLngs,
+    validateRoutePathLinks
+};

@@ -1,6 +1,7 @@
 import { LatLng } from 'leaflet';
 import constants from '~/constants/constants';
 import ToolbarTool from '~/enums/toolbarTool';
+import EventHelper from '~/helpers/EventHelper';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
 import navigator from '~/routing/navigator';
@@ -11,18 +12,17 @@ import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
-import EventManager from '~/util/EventManager';
-import { isNetworkElementHidden, isNetworkNodeHidden } from '~/util/networkUtils';
+import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
 import BaseTool from './BaseTool';
 
 class SelectNetworkEntityTool implements BaseTool {
     public toolType = ToolbarTool.SelectNetworkEntity;
     public activate() {
-        EventManager.on('mapClick', this.onMapClick);
+        EventHelper.on('mapClick', this.onMapClick);
     }
     public deactivate() {
-        EventManager.off('mapClick', this.onMapClick);
+        EventHelper.off('mapClick', this.onMapClick);
     }
 
     private onMapClick = async (clickEvent: any) => {

@@ -17,7 +17,7 @@ import { IMassEditLineHeader, LineHeaderMassEditStore } from '~/stores/lineHeade
 import { LineStore } from '~/stores/lineStore';
 import { LoginStore } from '~/stores/loginStore';
 import { NavigationStore } from '~/stores/navigationStore';
-import { areDatesEqual, toMidnightDate } from '~/util/dateHelpers';
+import { areDatesEqual, toMidnightDate } from '~/utils/dateUtils';
 import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
 import LineHeaderForm from './LineHeaderForm';
@@ -182,6 +182,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         currentLineHeaders.forEach((currentLineHeader: ILineHeader) => {
             !currentLineHeader.originalStartDate
                 ? saveModels.push({
+                      type: 'saveModel',
                       subTopic: `Linjan otsikko: ${currentLineHeader.lineNameFi}`,
                       newData: currentLineHeader,
                       oldData: {},
@@ -190,6 +191,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 : oldLineHeaders!.forEach((oldLineHeader: ILineHeader) => {
                       if (this.isSameLineHeader(oldLineHeader, currentLineHeader)) {
                           saveModels.push({
+                              type: 'saveModel',
                               subTopic: `Linjan otsikko: ${currentLineHeader.lineNameFi}`,
                               newData: currentLineHeader,
                               oldData: oldLineHeader,
@@ -202,6 +204,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const removedLineHeaders = lineHeaderMassEditStore!.removedLineHeaders;
         removedLineHeaders.forEach((deletedLineHeader: ILineHeader) => {
             saveModels.push({
+                type: 'saveModel',
                 subTopic: `Linjan otsikko: ${deletedLineHeader.lineNameFi}`,
                 isRemoved: true,
                 newData: null,
@@ -211,7 +214,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         });
 
         confirmStore!.openConfirm({
-            content: <SavePrompt saveModels={saveModels} />,
+            content: <SavePrompt models={saveModels} />,
             onConfirm: () => {
                 this.save();
             }
@@ -298,7 +301,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     </table>
                 ) : (
                     <div>Linjalle {this.props.lineId} ei löytynyt otsikoita.</div>
-                    )}
+                )}
                 {this.props.loginStore!.hasWriteAccess && (
                     <Button
                         className={s.createNewLineHeaderButton}
@@ -308,7 +311,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                         onClick={() => this.createNewLineHeader()}
                     >
                         Luo uusi linjan otsikko
-                </Button>
+                    </Button>
                 )}
                 {selectedMassEditLineHeader && (
                     <LineHeaderForm

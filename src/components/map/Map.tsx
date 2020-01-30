@@ -6,11 +6,11 @@ import { reaction, toJS, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
+import EventHelper from '~/helpers/EventHelper';
 import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import EventManager from '~/util/EventManager';
 import AddressSearch from './AddressSearch';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
@@ -88,7 +88,7 @@ class LeafletMap extends React.Component<IMapProps> {
         if (coordinates) {
             map.setView(coordinates, mapStore!.zoom);
         }
-        map.on('click', (e: L.LeafletEvent) => EventManager.trigger('mapClick', e));
+        map.on('click', (e: L.LeafletEvent) => EventHelper.trigger('mapClick', e));
     }
 
     private getMap() {

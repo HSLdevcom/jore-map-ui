@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import NodeType from '~/enums/nodeType';
+import EventHelper from '~/helpers/EventHelper';
 import { ILink } from '~/models';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
@@ -13,8 +14,7 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import EventManager from '~/util/EventManager';
-import NodeHelper from '~/util/NodeHelper';
+import NodeUtils from '~/utils/NodeUtils';
 import { LeafletContext } from '../../Map';
 import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
@@ -37,8 +37,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
             () => this.props.nodeStore!.node,
             () => this.props.nodeStore!.node === null && this.removeOldLinks()
         );
-        EventManager.on('undo', this.props.nodeStore!.undo);
-        EventManager.on('redo', this.props.nodeStore!.redo);
+        EventHelper.on('undo', this.props.nodeStore!.undo);
+        EventHelper.on('redo', this.props.nodeStore!.redo);
     }
 
     componentWillUnmount() {
@@ -48,8 +48,8 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         const map = this.props.leaflet.map;
         map!.off('editable:vertex:dragend');
         map!.off('editable:vertex:deleted');
-        EventManager.off('undo', this.props.nodeStore!.undo);
-        EventManager.off('redo', this.props.nodeStore!.redo);
+        EventHelper.off('undo', this.props.nodeStore!.undo);
+        EventHelper.off('redo', this.props.nodeStore!.redo);
     }
 
     private removeOldLinks = () => {
@@ -94,7 +94,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 nodeType={node.type}
                 nodeLocationType={nodeLocationType}
                 nodeId={node.id}
-                shortId={NodeHelper.getShortId(node)}
+                shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
                 isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}

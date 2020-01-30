@@ -6,7 +6,7 @@ import linkValidationModel, {
     ILinkValidationModel
 } from '~/models/validationModels/linkValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import { calculateLengthFromLatLngs, roundLatLngs } from '~/util/geomHelpers';
+import { calculateLengthFromLatLngs, roundLatLngs } from '~/utils/geomUtils';
 import NavigationStore from './navigationStore';
 import ValidationStore from './validationStore';
 

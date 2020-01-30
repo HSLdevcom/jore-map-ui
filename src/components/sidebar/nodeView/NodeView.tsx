@@ -5,12 +5,13 @@ import * as React from 'react';
 import { match } from 'react-router';
 import { Button } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import SavePrompt, { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
+import EventHelper from '~/helpers/EventHelper';
 import { ILink, INode } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -24,8 +25,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import EventManager from '~/util/EventManager';
-import { createDropdownItemsFromList } from '~/util/dropdownHelpers';
+import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
 import StopView from './StopView';
@@ -78,7 +78,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             await this.initExistingNode(params);
         }
         this._setState({ isLoading: false });
-        EventManager.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
+        EventHelper.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
     async componentDidUpdate(prevProps: INodeViewProps) {
@@ -99,7 +99,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._isMounted = false;
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
-        EventManager.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
+        EventHelper.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
     private createNewNode = async (params: any) => {
@@ -280,10 +280,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     };
 
     private showSavePrompt = () => {
-        const currentNode = _.cloneDeep(this.props.nodeStore!.node);
-        const oldNode = _.cloneDeep(this.props.nodeStore!.oldNode);
+        const nodeStore = this.props.nodeStore!;
+        const currentNode = _.cloneDeep(nodeStore.node);
+        const oldNode = _.cloneDeep(nodeStore.oldNode);
         const currentStop = _.cloneDeep(currentNode.stop);
         const oldStop = _.cloneDeep(oldNode.stop);
+        const currentLinks = _.cloneDeep(nodeStore.links);
+        const oldLinks = _.cloneDeep(nodeStore.oldLinks);
 
         // Create node save model
         if (currentStop) {
@@ -295,22 +298,34 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 delete currentNode['coordinatesProjection'];
             }
         }
-        const saveModels: ISaveModel[] = [
-            {
+        const saveModels: (ISaveModel|ITextModel)[] = [{
+                type: 'saveModel',
+                subTopic: 'Solmu',
                 newData: currentNode,
                 oldData: oldNode,
                 model: 'node'
-            }
-        ];
+        }]
+
+        if (!_.isEqual(currentLinks, oldLinks)) {
+            const textModel: ITextModel = {
+            type: 'textModel',
+            subTopic: 'Linkit',
+            oldText: 'Vanhat linkit',
+            newText: 'Uudet linkit'
+        }
+            saveModels.push(textModel);
+        }
 
         // Create stop save model
-        if (currentStop) {
+        if (currentStop && currentNode.type === NodeType.STOP) {
             // Generate stopArea label values for savePrompt
             currentStop.stopAreaId = `${currentStop.stopAreaId} - ${currentStop.nameFi}`;
             if (oldStop && oldStop.stopAreaId) {
                 oldStop.stopAreaId = `${oldStop.stopAreaId} - ${oldStop.nameFi}`;
             }
             const stopSaveModel: ISaveModel = {
+                type: 'saveModel',
+                subTopic: 'Pysäkin tiedot',
                 newData: currentStop!,
                 oldData: oldStop!,
                 model: 'stop'
@@ -319,7 +334,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         }
 
         this.props.confirmStore!.openConfirm({
-            content: <SavePrompt saveModels={saveModels} />,
+            content: <SavePrompt models={saveModels} />,
             onConfirm: () => {
                 this.save();
             }

@@ -1,11 +1,13 @@
 import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import LineFactory from '~/factories/lineFactory';
-import { ILine } from '~/models';
+import RouteFactory from '~/factories/routeFactory';
+import ApolloClient from '~/helpers/ApolloClient';
+import { ILine, IRoute } from '~/models';
 import { ILinePrimaryKey } from '~/models/ILine';
+import IExternalRoute from '~/models/externals/IExternalRoute';
 import ISearchLine from '~/models/searchModels/ISearchLine';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
 class LineService {
@@ -14,8 +16,42 @@ class LineService {
             query: GraphqlQueries.getLineQuery(),
             variables: { lineId: lintunnus }
         });
+        return LineFactory.mapExternalLine(queryResult.data.linjaByLintunnus);
+    };
 
-        return LineFactory.createLine(queryResult.data.linjaByLintunnus);
+    public static fetchMultipleLines = async (lineIds: string[]): Promise<ILine[]> => {
+        const promises: Promise<void>[] = [];
+        const lines: ILine[] = [];
+        lineIds.map((lineId: string) => {
+            const createPromise = async () => {
+                const route = await LineService.fetchLine(lineId);
+                lines.push(route);
+            };
+            promises.push(createPromise());
+        });
+
+        await Promise.all(promises);
+        return lines;
+    };
+
+    public static fetchLineAndRoutes = async (
+        lintunnus: string
+    ): Promise<{
+        line: ILine;
+        routes: IRoute[];
+    }> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getLineAndRoutesQuery(),
+            variables: { lineId: lintunnus }
+        });
+        const externalLine = queryResult.data.linjaByLintunnus;
+        const externalRoutes = externalLine.reittisByLintunnus.nodes;
+        return {
+            line: LineFactory.mapExternalLine(externalLine),
+            routes: externalRoutes.map((externalRoute: IExternalRoute) =>
+                RouteFactory.mapExternalRoute(externalRoute)
+            )
+        };
     };
 
     public static fetchAllSearchLines = async (): Promise<ISearchLine[]> => {
@@ -38,11 +74,11 @@ class LineService {
     };
 
     public static updateLine = async (line: ILine) => {
-        await ApiClient.updateObject(EndpointPath.LINE, line);
+        await HttpUtils.updateObject(EndpointPath.LINE, line);
     };
 
     public static createLine = async (Line: ILine) => {
-        const response = (await ApiClient.createObject(EndpointPath.LINE, Line)) as ILinePrimaryKey;
+        const response = (await HttpUtils.createObject(EndpointPath.LINE, Line)) as ILinePrimaryKey;
         return response.id;
     };
 }

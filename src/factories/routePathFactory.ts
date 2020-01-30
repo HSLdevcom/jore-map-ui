@@ -1,8 +1,9 @@
-import { IRoute, IRoutePath, IRoutePathLink } from '~/models';
+import TransitType from '~/enums/transitType';
+import { IRoutePath, IRoutePathLink } from '~/models';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
-import HashHelper from '~/util/HashHelper';
+import HashUtils from '~/utils/HashUtils';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
@@ -17,7 +18,7 @@ class RoutePathFactory {
     };
 
     public static mapExternalRoutePath = (externalRoutePath: IExternalRoutePath): IRoutePath => {
-        const internalRoutePathId = HashHelper.getHashFromString(
+        const internalRoutePathId = HashUtils.getHashFromString(
             [
                 externalRoutePath.reitunnus,
                 externalRoutePath.suuvoimast,
@@ -67,14 +68,18 @@ class RoutePathFactory {
         };
     };
 
-    public static createNewRoutePath(lineId: string, route: IRoute): IRoutePath {
+    public static createNewRoutePath(
+        lineId: string,
+        routeId: string,
+        transitType: TransitType
+    ): IRoutePath {
         const defaultDate = new Date();
         defaultDate.setHours(0, 0, 0, 0);
 
         return {
             lineId,
-            transitType: route.line!.transitType!,
-            routeId: route.id,
+            routeId,
+            transitType,
             internalId: '',
             name: '',
             nameSw: '',

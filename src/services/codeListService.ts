@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import CodeListFactory from '~/factories/codeListFactory';
+import ApolloClient from '~/helpers/ApolloClient';
 import ICodeListItem from '~/models/ICodeListItem';
-import ApolloClient from '~/util/ApolloClient';
 import GraphqlQueries from './graphqlQueries';
 
 class CodeListService {

@@ -1,4 +1,4 @@
-class HashHelper {
+class HashUtils {
     public static getHashFromString = (value: string) => {
         let hash = 0;
         let i;
@@ -13,4 +13,4 @@ class HashHelper {
     };
 }
 
-export default HashHelper;
+export default HashUtils;

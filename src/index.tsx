@@ -4,6 +4,7 @@ import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
 import App from './components/App';
+import ApolloClient from './helpers/ApolloClient';
 import './index.scss';
 import AlertStore from './stores/alertStore';
 import CodeListStore from './stores/codeListStore';
@@ -28,7 +29,6 @@ import SearchStore from './stores/searchStore';
 import StopAreaStore from './stores/stopAreaStore';
 import ToolbarStore from './stores/toolbarStore';
 import UserStore from './stores/userStore';
-import ApolloClient from './util/ApolloClient';
 
 configure({ enforceActions: 'always' });
 

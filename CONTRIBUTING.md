@@ -18,6 +18,8 @@
 
 -   Indent 4 whitespaces
 -   Use async await instead of promises
+-   /utils: files that export a class with static methods or a set of methods
+-   /helpers components with state
 
 ### Typescript
 
@@ -62,4 +64,4 @@ actions
 
 ### Cypress
 
-- target elements with data-cy='<className_here>'
+-   target elements with data-cy='<className_here>'

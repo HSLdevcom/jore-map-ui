@@ -1,9 +1,9 @@
 import { ApolloQueryResult } from 'apollo-client';
 import EndpointPath from '~/enums/endpointPath';
 import StopAreaFactory from '~/factories/stopAreaFactory';
+import ApolloClient from '~/helpers/ApolloClient';
 import IStopArea from '~/models/IStopArea';
-import ApiClient from '~/util/ApiClient';
-import ApolloClient from '~/util/ApolloClient';
+import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
 interface ITerminalAreaItem {
@@ -40,11 +40,11 @@ class StopAreaService {
     };
 
     public static updateStopArea = async (stopArea: IStopArea) => {
-        await ApiClient.updateObject(EndpointPath.STOP_AREA, stopArea);
+        await HttpUtils.updateObject(EndpointPath.STOP_AREA, stopArea);
     };
 
     public static createStopArea = async (stopArea: IStopArea) => {
-        const stopAreaId = await ApiClient.createObject(EndpointPath.STOP_AREA, stopArea);
+        const stopAreaId = await HttpUtils.createObject(EndpointPath.STOP_AREA, stopArea);
         return stopAreaId;
     };
 

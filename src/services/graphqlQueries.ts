@@ -4,10 +4,17 @@ const getLineQuery = () => {
     return gql`query getLineByLintunnus ($lineId: String!) {
             linjaByLintunnus(lintunnus:$lineId) {
                 ${lineQueryFields}
+            }
+        }`;
+};
+
+const getLineAndRoutesQuery = () => {
+    return gql`query getLineByLintunnus ($lineId: String!) {
+            linjaByLintunnus(lintunnus:$lineId) {
+                ${lineQueryFields}
                 reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
                     nodes {
-                        reinimi
-                        reiviimpvm
+                        ${routeQueryFields}
                     }
                 }
             }
@@ -679,6 +686,7 @@ linkkisByLnkloppusolmu {
 
 export default {
     getLineQuery,
+    getLineAndRoutesQuery,
     getSearchLineQuery,
     getAllSearchLinesQuery,
     getLinkQuery,

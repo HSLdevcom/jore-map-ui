@@ -1,8 +1,8 @@
 import * as React from 'react';
 import NodeType from '~/enums/nodeType';
 import { ILink, INode } from '~/models';
-import NodeHelper from '~/util/NodeHelper';
-import TransitTypeHelper from '~/util/TransitTypeHelper';
+import NodeUtils from '~/utils/NodeUtils';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import TextContainer from '../../controls/TextContainer';
 import * as s from './splitLinkInfo.scss';
 
@@ -22,7 +22,7 @@ const SplitLinkInfo = (props: ISplitLinkInfoProps) => (
             <div className={s.flexRow}>
                 <TextContainer
                     label='VERKKO'
-                    value={TransitTypeHelper.getTransitTypeLabel(props.link.transitType!)}
+                    value={TransitTypeUtils.getTransitTypeLabel(props.link.transitType!)}
                 />
             </div>
         </div>
@@ -30,7 +30,7 @@ const SplitLinkInfo = (props: ISplitLinkInfoProps) => (
             <div className={s.sectionHeader}>Jakava solmu</div>
             <div className={s.flexRow}>
                 <TextContainer label='ID' value={props.node.id} />
-                <TextContainer label='LYHYT ID' value={NodeHelper.getShortId(props.node)} />
+                <TextContainer label='LYHYT ID' value={NodeUtils.getShortId(props.node)} />
             </div>
             <div className={s.flexRow}>
                 <TextContainer label='TYYPPI' value={props.node.type} />
