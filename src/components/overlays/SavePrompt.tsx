@@ -6,6 +6,7 @@ import { FiArrowRight } from 'react-icons/fi';
 import propertyCodeLists from '~/codeLists/propertyCodeLists';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import codeListStore from '~/stores/codeListStore';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { toDateString } from '~/utils/dateUtils';
 import * as s from './savePrompt.scss';
 
@@ -99,50 +100,50 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
         return '';
     }
 
+    const value = data[property];
     // Some properties require a custom way to get a value for them:
     const customPropertyValueFuncObj = {
         node: {
-            shortIdLetter: () => codeListStore.getCodeListLabel('Lyhyttunnus', data[property]),
+            shortIdLetter: () => codeListStore.getCodeListLabel('Lyhyttunnus', value),
             coordinates: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesManual: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesProjection: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
-            measurementDate: () => (data[property] ? toDateString(data[property]) : ''),
+            measurementDate: () => (value ? toDateString(value) : ''),
             measurementType: () =>
-                data[property] === NodeMeasurementType.Calculated ? 'Laskettu' : 'Mitattu'
+                value === NodeMeasurementType.Calculated ? 'Laskettu' : 'Mitattu'
         },
         stop: {
-            municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property]),
-            nameModifiedOn: () => (data[property] ? toDateString(data[property]) : '')
+            municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', value),
+            nameModifiedOn: () => (value ? toDateString(value) : '')
         },
         link: {
             geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
-            municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', data[property])
+            municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', value)
         },
         line: {
-            lineStartDate: () => (data[property] ? toDateString(data[property]) : ''),
-            lineEndDate: () => (data[property] ? toDateString(data[property]) : ''),
-            publicTransportType: () =>
-                codeListStore.getCodeListLabel('Joukkoliikennelaji', data[property]),
-            clientOrganization: () =>
-                codeListStore.getCodeListLabel('Tilaajaorganisaatio', data[property]),
+            lineStartDate: () => (value ? toDateString(value) : ''),
+            lineEndDate: () => (value ? toDateString(value) : ''),
+            publicTransportType: () => codeListStore.getCodeListLabel('Joukkoliikennelaji', value),
+            clientOrganization: () => codeListStore.getCodeListLabel('Tilaajaorganisaatio', value),
             publicTransportDestination: () =>
-                codeListStore.getCodeListLabel('Joukkoliikennekohde', data[property]),
+                codeListStore.getCodeListLabel('Joukkoliikennekohde', value),
             lineReplacementType: () =>
-                codeListStore.getCodeListLabel('LinjanKorvaavaTyyppi', data[property])
+                codeListStore.getCodeListLabel('LinjanKorvaavaTyyppi', value),
+            transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : '')
         },
         routePath: {
-            startTime: () => (data[property] ? toDateString(data[property]) : ''),
-            endTime: () => (data[property] ? toDateString(data[property]) : ''),
+            startTime: () => (value ? toDateString(value) : ''),
+            endTime: () => (value ? toDateString(value) : ''),
             routePathLinks: () =>
                 isNew
                     ? 'Uudet reitinsuunnan linkit ja solmut'
                     : 'Vanhat reitinsuunnan linkit ja solmut',
-            exceptionPath: () => codeListStore.getCodeListLabel('Kyllä/Ei', data[property])
+            exceptionPath: () => codeListStore.getCodeListLabel('Kyllä/Ei', value)
         },
         lineHeader: {
-            startDate: () => (data[property] ? toDateString(data[property]) : ''),
-            endDate: () => (data[property] ? toDateString(data[property]) : ''),
-            originalStartDate: () => (data[property] ? toDateString(data[property]) : '')
+            startDate: () => (value ? toDateString(value) : ''),
+            endDate: () => (value ? toDateString(value) : ''),
+            originalStartDate: () => (value ? toDateString(value) : '')
         }
     };
 
@@ -150,7 +151,7 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
         customPropertyValueFuncObj[model] && customPropertyValueFuncObj[model][property];
     if (customPropertyValueFunc) return customPropertyValueFunc();
 
-    return data[property] ? data[property] : '';
+    return value ? value : '';
 };
 
 const renderChangeRow = (oldValue: string, newValue: string, property?: string) => {
