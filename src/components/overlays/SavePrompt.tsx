@@ -116,6 +116,9 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', value),
             nameModifiedOn: () => (value ? toDateString(value) : '')
         },
+        stopArea: {
+            transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : '')
+        },
         link: {
             geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
             municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', value)
