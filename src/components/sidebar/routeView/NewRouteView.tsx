@@ -123,13 +123,15 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                 <SidebarHeader isEditButtonVisible={false} isEditing={true}>
                     <div>Luo uusi reitti linjalle {lineId}</div>
                 </SidebarHeader>
-                <RouteForm
-                    route={route}
-                    isNewRoute={true}
-                    isEditingDisabled={isEditingDisabled}
-                    onChangeRouteProperty={this.onChangeRouteProperty}
-                    invalidPropertiesMap={invalidPropertiesMap}
-                />
+                <div className={s.routeFormWrapper}>
+                    <RouteForm
+                        route={route}
+                        isNewRoute={true}
+                        isEditingDisabled={isEditingDisabled}
+                        onChangeRouteProperty={this.onChangeRouteProperty}
+                        invalidPropertiesMap={invalidPropertiesMap}
+                    />
+                </div>
                 <Button onClick={() => this.save()} type={ButtonType.SAVE}>
                     Luo uusi reitti
                 </Button>
