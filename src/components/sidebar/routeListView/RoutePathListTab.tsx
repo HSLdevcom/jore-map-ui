@@ -87,6 +87,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             allGroupedRoutePaths,
             groupedRoutePathsToDisplay
         });
+        this.setRoutePathsVisible(groupedRoutePathsToDisplay);
     }
 
     private fetchStopNames = async (groupedRoutePathsToDisplay: IRoutePath[][]) => {
@@ -119,6 +120,29 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 areStopNamesLoading: false
             });
         })
+    }
+
+    private setRoutePathsVisible = (groupedRoutePathsToDisplay: IRoutePath[][]) => {
+        let isAnyRoutePathVisible = false;
+        groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
+            groupedRoutePaths.forEach((routePath: IRoutePath) => {
+                if (routePath.visible) {
+                    isAnyRoutePathVisible = true;
+                }
+            })
+        })
+        if (!isAnyRoutePathVisible) {
+            groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
+                groupedRoutePaths.forEach((routePath: IRoutePath) => {
+                    if (this.isCurrentTimeWithinRoutePathTimeSpan(routePath)) {
+                        this.props.routeListStore!.setRoutePathVisibility(
+                            true,
+                            routePath.internalId
+                        );
+                    }
+                })
+            })
+        }
     }
 
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]): IRoutePath[][] => {
@@ -158,10 +182,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 navigator.goTo({ link: routePathViewLink });
             };
 
-            const isWithinTimeSpan =
-                Moment(routePath.startTime).isBefore(Moment()) &&
-                Moment(routePath.endTime).isAfter(Moment());
-
+            const shouldHighlightRoutePath = this.isCurrentTimeWithinRoutePathTimeSpan(routePath);
             const stopNames = this.state.stopNameMap.get(routePath.internalId);
             const isLoading = !stopNames && this.state.areStopNamesLoading;
             const stopOriginFi = stopNames?.firstStopName ? stopNames.firstStopName : '-';
@@ -172,7 +193,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 <div className={s.routePathContainer} key={routePath.internalId}>
                     <div
                         className={
-                            isWithinTimeSpan
+                            shouldHighlightRoutePath
                                 ? classNames(s.routePathInfo, s.highlight)
                                 : s.routePathInfo
                         }
@@ -211,6 +232,11 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 </div>
             );
         });
+    };
+
+    private isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
+        return Moment(routePath.startTime).isBefore(Moment()) &&
+            Moment(routePath.endTime).isAfter(Moment());
     };
 
     private renderGroupedRoutePaths = (groupedRoutePaths: IRoutePath[][]) => {
