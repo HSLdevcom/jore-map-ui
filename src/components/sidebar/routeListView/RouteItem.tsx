@@ -28,22 +28,6 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
         };
     }
 
-    async componentDidMount() {
-        let index = 0;
-        const promises: Promise<void>[] = [];
-        for (const routePath of this.props.route.routePaths) {
-            if (index < 2) {
-                const promise = this.props.routeListStore!.setRoutePathVisibility(
-                    true,
-                    routePath.internalId
-                );
-                promises.push(promise);
-            }
-            index += 1;
-        }
-        await Promise.all(promises);
-    }
-
     private setSelectedTabIndex = (index: number) => {
         this.setState({
             selectedTabIndex: index

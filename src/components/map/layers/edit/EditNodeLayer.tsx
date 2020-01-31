@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import NodeType from '~/enums/nodeType';
-import EventHelper from '~/helpers/EventHelper';
+import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { ILink } from '~/models';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
@@ -87,6 +87,10 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         const node = this.props.nodeStore!.node;
 
         const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
+        const onNodeClick = () => {
+            const clickParams: INodeClickParams = { node };
+            EventHelper.trigger('nodeClick', clickParams);
+        };
         return (
             <NodeMarker
                 key={`${node.id}-${nodeLocationType}`}
@@ -98,6 +102,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
                 isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
+                onClick={onNodeClick}
                 onMoveMarker={this.onMoveMarker(nodeLocationType)}
             />
         );

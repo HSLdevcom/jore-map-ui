@@ -166,6 +166,15 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         });
     };
 
+    private conditionallyUnselectSearchResult = () => {
+        // Need to setTimeout before unselect because click event from searchResults come after onBlur event
+        setTimeout(() => {
+            if (this.state.searchResults.length > 0) {
+                this.unselectSearchResult();
+            }
+        }, 100);
+    };
+
     render() {
         return (
             <div className={s.addressSeachView}>
@@ -175,6 +184,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
                     type='text'
                     value={this.state.input}
                     onChange={this.onSearchInputChange}
+                    onBlur={this.conditionallyUnselectSearchResult}
                 />
                 {this.renderSearchResults()}
             </div>

@@ -494,7 +494,6 @@ const stopQueryFields = `
     elynumero
     pysnimipitka
     pysnimipitkar
-    nimiviimpvm
     vyohyke
     postinro
 `;

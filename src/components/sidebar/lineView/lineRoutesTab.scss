@@ -18,6 +18,7 @@
             cursor: pointer;
 
             .routeId {
+                white-space: nowrap;
                 font-size: $largeFontSize;
             }
         }
