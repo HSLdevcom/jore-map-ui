@@ -27,7 +27,6 @@ export default interface IExternalStop {
     elynumero: string;
     pysnimipitka?: string;
     pysnimipitkar?: string;
-    nimiviimpvm?: Date;
     vyohyke: string;
     postinro?: string;
 }

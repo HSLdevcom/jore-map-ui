@@ -29,7 +29,6 @@ const stopValidationModel: IStopValidationModel = {
     elyNumber: `min:0|max:10|string|${regexRules.numbers}`,
     nameLongFi: longNameRule,
     nameLongSw: longNameRule,
-    nameModifiedOn: '',
     section: 'required|min:1|max:6|string',
     postalNumber: `min:5|max:5|string|${regexRules.numbers}`,
     transitType: 'min:0|max:1|string'

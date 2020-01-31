@@ -182,8 +182,9 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         const stopItems = stopAreaStore.stopItems;
 
         const shouldShowNotification =
-            currentStopArea.nameFi !== oldStopArea.nameFi ||
-            currentStopArea.nameSw !== oldStopArea.nameSw;
+            stopItems.length > 0 &&
+            (currentStopArea.nameFi !== oldStopArea.nameFi ||
+                currentStopArea.nameSw !== oldStopArea.nameSw);
         const confirmNotification = shouldShowNotification
             ? `Huom. nimimuutokset muuttavat kaikkien pysäkkialueeseen kuuluvien pysäkkien ( ${stopItems
                   .map(stopItem => stopItem.nodeId)
@@ -338,7 +339,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                 <Button
                     type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
-                    onClick={() => (this.props.isNewStopArea ? this.save() : this.showSavePrompt())}
+                    onClick={() => this.showSavePrompt()}
                 >
                     {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Tallenna muutokset'}
                 </Button>

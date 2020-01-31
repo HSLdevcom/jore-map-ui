@@ -75,14 +75,16 @@ class RouteForm extends React.Component<IRouteFormProps> {
                         validationResult={invalidPropertiesMap['routeNameShortSw']}
                     />
                 </div>
-                <div className={s.flexRow}>
-                    <TextContainer label='MUOKANNUT' value={route.modifiedBy} />
-                    <TextContainer
-                        label='MUOKATTU PVM'
-                        isTimeIncluded={true}
-                        value={route.modifiedOn}
-                    />
-                </div>
+                {!isNewRoute && (
+                    <div className={s.flexRow}>
+                        <TextContainer label='MUOKANNUT' value={route.modifiedBy} />
+                        <TextContainer
+                            label='MUOKATTU PVM'
+                            isTimeIncluded={true}
+                            value={route.modifiedOn}
+                        />
+                    </div>
+                )}
             </div>
         );
     }

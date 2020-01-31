@@ -151,6 +151,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                 <TextContainer
                     label={label}
                     value={Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}
+                    isInputLabelDarker={isInputLabelDarker}
                     {...attr}
                 />
             );
