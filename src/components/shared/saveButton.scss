@@ -10,7 +10,6 @@
 }
 
 .saveButton {
-    @extend .saveButtonBase;
     background-color: #00ba11;
 }
 
@@ -19,7 +18,6 @@
 }
 
 .warningButton {
-    @extend .saveButtonBase;
     background-color: #bebe02;
 }
 

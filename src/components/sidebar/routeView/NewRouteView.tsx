@@ -131,7 +131,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                         invalidPropertiesMap={invalidPropertiesMap}
                     />
                 </div>
-                <SaveButton onClick={this.save} text={`Luo uusi reitti`} />
+                <SaveButton onClick={this.save}>Luo uusi reitti</SaveButton>
             </div>
         );
     }

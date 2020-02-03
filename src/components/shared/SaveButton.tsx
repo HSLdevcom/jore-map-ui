@@ -8,39 +8,46 @@ import { Button } from '../controls';
 import * as s from './saveButton.scss';
 
 interface ISaveButtonProps {
+    children: React.ReactNode;
+    className?: string;
     onClick: () => void;
-    text: string;
+    disabled?: boolean;
     isSavePrevented?: boolean;
     savePreventedNotification?: string;
-    className?: string;
 }
 
 const SaveButton = observer((props: ISaveButtonProps) => {
-    const { onClick, text, isSavePrevented, savePreventedNotification, className } = props;
+    const {
+        children,
+        className,
+        onClick,
+        disabled,
+        isSavePrevented,
+        savePreventedNotification
+    } = props;
 
     const isSaveLockEnabled = LoginStore.isSaveLockEnabled;
     const isWarningButton = isSaveLockEnabled || isSavePrevented;
+    const typeClass = disabled ? undefined : isWarningButton ? s.warningButton : s.saveButton;
     return (
         <Button
+            className={classnames(s.saveButtonBase, typeClass, className ? className : undefined)}
             onClick={
                 isWarningButton
                     ? () => showSavePreventedNotification(savePreventedNotification)
                     : onClick
             }
-            className={classnames(
-                isWarningButton ? s.warningButton : s.saveButton,
-                className ? className : undefined
-            )}
+            disabled={disabled}
             type={ButtonType.SQUARE}
         >
-            {text}
+            {children}
         </Button>
     );
 });
 
 const showSavePreventedNotification = (savePreventedNotification?: string) => {
     const alertText = LoginStore.isSaveLockEnabled
-        ? 'Tallentaminen estetty, infopoiminta käynnissä. Odota kunnes infopoiminta loppuu.'
+        ? 'Tallentaminen estetty, infopoiminta on käynnissä. Odota kunnes infopoiminta loppuu.'
         : savePreventedNotification!;
     AlertStore.setNotificationMessage({
         message: alertText
