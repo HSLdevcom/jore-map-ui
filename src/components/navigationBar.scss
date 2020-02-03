@@ -66,6 +66,7 @@
 
         .testEnvironmentNotification {
             color: #ffff00;
+            white-space: nowrap;
             text-transform: uppercase;
             text-align: center;
             font-size: $mediumFontSize;
@@ -75,6 +76,11 @@
     .rightContentWrapper {
         display: flex;
         align-items: center;
+
+        .saveLockNotification {
+            color: #ffff00;
+            text-transform: uppercase;
+        }
 
         .toggleUserType {
             display: flex;

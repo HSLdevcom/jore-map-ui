@@ -75,6 +75,7 @@ class HttpUtils {
         return HttpUtils.sendRequest(method, entityUrl, object, 'include');
     };
 
+    // TODO: refactor this method.
     public static sendRequest = async (
         method: RequestMethod,
         url: string,
@@ -113,6 +114,13 @@ class HttpUtils {
                     name: 'Forbidden',
                     errorCode: FetchStatusCode.FORBIDDEN,
                     message: 'Kielletty toimenpide'
+                };
+            } else if (response.status === 550) {
+                LoginStore!.setIsSaveLockEnabled(true);
+                error = {
+                    name: 'Save prevented',
+                    errorCode: response.status,
+                    message: httpStatusDescriptionCodeList[550]
                 };
             } else {
                 const responseText = await response.text();

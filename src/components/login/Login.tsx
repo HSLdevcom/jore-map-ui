@@ -44,7 +44,7 @@ class Login extends React.Component<ILoginProps> {
                     </div>
                     <div className={s.loginButton} onClick={this.openLoginForm}>
                         <LoginIcon height='16' fill='#3e3e3e' />
-                        <div className={s.loginText}>Kirjaudu (HSL ID)</div>
+                        <div className={s.loginText}>Kirjaudu</div>
                     </div>
                 </div>
             </div>

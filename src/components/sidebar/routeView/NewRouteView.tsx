@@ -1,8 +1,7 @@
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Button } from '~/components/controls';
-import ButtonType from '~/enums/buttonType';
+import SaveButton from '~/components/shared/SaveButton';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -132,9 +131,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                         invalidPropertiesMap={invalidPropertiesMap}
                     />
                 </div>
-                <Button onClick={() => this.save()} type={ButtonType.SAVE}>
-                    Luo uusi reitti
-                </Button>
+                <SaveButton onClick={this.save} text={`Luo uusi reitti`} />
             </div>
         );
     }

@@ -8,6 +8,7 @@ export class LoginStore {
     @observable private _isAuthenticated: boolean;
     @observable private _hasWriteAccess: boolean;
     @observable private _userEmail?: string;
+    @observable private _isSaveLockEnabled: boolean;
 
     constructor() {
         this.clear(false);
@@ -28,6 +29,11 @@ export class LoginStore {
         return this._userEmail;
     }
 
+    @computed
+    get isSaveLockEnabled() {
+        return this._isSaveLockEnabled && this._hasWriteAccess;
+    }
+
     @action
     public setAuthenticationInfo(authRespose: IAuthorizationResponse) {
         this._isAuthenticated = authRespose.isOk;
@@ -36,10 +42,16 @@ export class LoginStore {
     }
 
     @action
+    public setIsSaveLockEnabled(isEnabled: boolean) {
+        this._isSaveLockEnabled = isEnabled;
+    }
+
+    @action
     public clear(redirectToLogin: boolean = true) {
         this._isAuthenticated = false;
         this._hasWriteAccess = false;
         this._userEmail = undefined;
+        this._isSaveLockEnabled = false;
         if (redirectToLogin) {
             navigator.goTo({ link: SubSites.login, shouldSkipUnsavedChangesPrompt: true });
         }
