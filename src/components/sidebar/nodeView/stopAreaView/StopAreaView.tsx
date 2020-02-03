@@ -3,8 +3,8 @@ import React from 'react';
 import { match } from 'react-router';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
-import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import StopAreaFactory from '~/factories/stopAreaFactory';
 import { IStopArea } from '~/models';
@@ -20,7 +20,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { StopAreaStore } from '~/stores/stopAreaStore';
-import { Button, Dropdown, TransitToggleButtonBar } from '../../../controls';
+import { Dropdown, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
 import SidebarHeader from '../../SidebarHeader';
@@ -336,13 +336,9 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                         )}
                     </div>
                 </div>
-                <Button
-                    type={ButtonType.SAVE}
-                    disabled={isSaveButtonDisabled}
-                    onClick={() => this.showSavePrompt()}
-                >
+                <SaveButton disabled={isSaveButtonDisabled} onClick={() => this.showSavePrompt()}>
                     {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Tallenna muutokset'}
-                </Button>
+                </SaveButton>
             </div>
         );
     }

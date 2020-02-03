@@ -6,6 +6,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import SaveButton from '~/components/shared/SaveButton';
 import TransitIcon from '~/components/shared/TransitIcon';
 import ButtonType from '~/enums/buttonType';
 import { IRoute } from '~/models';
@@ -295,13 +296,12 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                             {`Luo uusi reitinsuunta reitille ${route.id}`}
                                         </Button>
                                         {isEditing && (
-                                            <Button
+                                            <SaveButton
                                                 onClick={() => this.showSavePrompt()}
-                                                type={ButtonType.SAVE}
                                                 disabled={isSaveButtonDisabled}
                                             >
                                                 Tallenna muutokset
-                                            </Button>
+                                            </SaveButton>
                                         )}
                                     </div>
                                 )}

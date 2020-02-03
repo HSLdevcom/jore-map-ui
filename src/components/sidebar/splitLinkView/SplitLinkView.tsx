@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Button } from '~/components/controls';
+import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
@@ -257,13 +258,9 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                         </div>
                     )}
                 </div>
-                <Button
-                    type={ButtonType.SAVE}
-                    disabled={isSaveButtonDisabled}
-                    onClick={this.openSaveConfirm}
-                >
+                <SaveButton disabled={isSaveButtonDisabled} onClick={this.openSaveConfirm}>
                     Jaa linkki
-                </Button>
+                </SaveButton>
             </div>
         );
     }
