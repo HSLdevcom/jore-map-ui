@@ -1,9 +1,9 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
+import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
-import ButtonType from '~/enums/buttonType';
+import SaveButton from '~/components/shared/SaveButton';
 import TransitType from '~/enums/transitType';
 import { ILine } from '~/models';
 import LineService from '~/services/lineService';
@@ -249,13 +249,12 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             value={line.modifiedOn}
                         />
                     </div>
-                    <Button
+                    <SaveButton
                         onClick={this.props.saveLine}
-                        type={ButtonType.SAVE}
                         disabled={this.props.isLineSaveButtonDisabled}
                     >
                         {this.props.lineStore!.isNewLine ? 'Luo uusi linja' : 'Tallenna linja'}
-                    </Button>
+                    </SaveButton>
                 </div>
                 <div className={s.sectionDivider} />
                 {!this.props.lineStore!.isNewLine && (

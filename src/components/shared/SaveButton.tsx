@@ -23,7 +23,8 @@ const SaveButton = observer((props: ISaveButtonProps) => {
         onClick,
         disabled,
         isSavePrevented,
-        savePreventedNotification
+        savePreventedNotification,
+        ...attrs
     } = props;
 
     const isSaveLockEnabled = LoginStore.isSaveLockEnabled;
@@ -31,6 +32,7 @@ const SaveButton = observer((props: ISaveButtonProps) => {
     const typeClass = disabled ? undefined : isWarningButton ? s.warningButton : s.saveButton;
     return (
         <Button
+            {...attrs}
             className={classnames(s.saveButtonBase, typeClass, className ? className : undefined)}
             onClick={
                 isWarningButton
