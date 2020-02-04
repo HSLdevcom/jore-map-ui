@@ -52,6 +52,11 @@ class AuthService {
         await HttpUtils.postRequest(EndpointPath.LOGOUT, {});
         LoginStore.clear();
     }
+
+    public static fetchIsSaveLockEnabled = async (): Promise<boolean> => {
+        const response = await HttpUtils.getRequest(EndpointPath.SAVE_LOCK);
+        return response.isSaveLockEnabled;
+    };
 }
 
 export default AuthService;

@@ -33,33 +33,6 @@ $defaultBackgroundColor: $busBlue;
     border-radius: 20px;
 }
 
-.save {
-    background-color: #00ba11;
-    color: $defaultColor;
-    text-align: center;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 0;
-    padding: 20px;
-}
-
-.save:hover {
-    background-color: darken($saveButtonGreen, 10);
-}
-
-.warning {
-    background-color: #bebe02;
-    text-align: center;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 0;
-    padding: 20px;
-}
-
-.warning:hover {
-    background-color: #a6a602;
-}
-
 .reverseColor {
     color: $defaultBackgroundColor;
     background-color: unset;

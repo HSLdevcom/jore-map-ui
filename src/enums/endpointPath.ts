@@ -12,7 +12,8 @@ enum EndpointPath {
     GET_AVAILABLE_NODE_ID = 'getAvailableNodeId',
     GET_AVAILABLE_NODE_IDS_WITH_PREFIX = 'getAvailableNodeIdsWithPrefix',
     STOP_AREA = 'stopArea',
-    LINK = 'link'
+    LINK = 'link',
+    SAVE_LOCK = 'saveLock'
 }
 
 export default EndpointPath;

@@ -9,7 +9,7 @@ APP_BUILD_DATE=$(date +'%d.%m.%Y')
 
 if [ $TRAVIS_BRANCH == "release-prod" ]; then
   APP_ENVIRONMENT='prod'
-  DOCKER_TAG=':prod'
+  DOCKER_TAG=':release-prod'
 fi
 if [ $TRAVIS_BRANCH == "master" ]; then
   APP_ENVIRONMENT='stage'

@@ -27,7 +27,7 @@ $formWidth: 225px;
         position: fixed;
         top: 50%;
         left: 50%;
-        padding: 30px 90px;
+        padding: 45px 90px;
         transform: translate(-50%, -50%);
         box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 3px 14px rgba(0, 0, 0, 0.4);
         border-radius: 2px;
@@ -41,8 +41,8 @@ $formWidth: 225px;
         background-color: #007ac9a6;
 
         .header {
-            padding: 10px 0px 10px 0px;
             user-select: none;
+            padding-bottom: 20px;
 
             h2 {
                 margin-top: 10px 0px 10px 0px;
@@ -50,7 +50,7 @@ $formWidth: 225px;
 
             .logo {
                 display: inline-block;
-                height: 80px;
+                height: 60px;
                 text-align: center;
                 vertical-align: middle;
             }

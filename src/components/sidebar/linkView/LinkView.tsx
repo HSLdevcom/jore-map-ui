@@ -4,6 +4,7 @@ import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
@@ -360,14 +361,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         </div>
                     </Button>
                 </div>
-                <Button
-                    type={ButtonType.SAVE}
+                <SaveButton
                     disabled={isSaveButtonDisabled}
                     onClick={() => (this.props.isNewLink ? this.save() : this.showSavePrompt())}
                     data-cy='saveButton'
                 >
                     {this.props.isNewLink ? 'Luo uusi linkki' : 'Tallenna muutokset'}
-                </Button>
+                </SaveButton>
             </div>
         );
     }
