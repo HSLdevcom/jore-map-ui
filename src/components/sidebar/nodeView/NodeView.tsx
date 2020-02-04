@@ -3,11 +3,10 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
-import { Button } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import SavePrompt, { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
+import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
-import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
@@ -468,14 +467,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         />
                     )}
                 </div>
-                <Button
-                    type={ButtonType.SAVE}
+                <SaveButton
                     disabled={isSaveButtonDisabled}
                     onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
                     data-cy='saveButton'
                 >
                     {isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
-                </Button>
+                </SaveButton>
             </div>
         );
     }

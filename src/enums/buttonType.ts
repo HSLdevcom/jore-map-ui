@@ -1,8 +1,6 @@
 enum ButtonType {
     SQUARE = 'square',
-    ROUND = 'round',
-    SAVE = 'save',
-    WARNING = 'warning'
+    ROUND = 'round'
 }
 
 export default ButtonType;

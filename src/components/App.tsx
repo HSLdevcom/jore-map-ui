@@ -53,8 +53,30 @@ class App extends React.Component<IAppProps, IAppState> {
         this.init();
     }
 
+    private init = async () => {
+        const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
+        if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
+            const response = (await HttpUtils.getRequest(
+                EndpointPath.EXISTING_SESSION
+            )) as IAuthorizationResponse;
+            if (response.isOk) {
+                // Auth was ok, keep the current site as it is
+                this.props.loginStore!.setAuthenticationInfo(response);
+            } else {
+                // Redirect to login
+                LocalStorageHelper.setItem('origin_url', navigator.getFullPath());
+                navigator.goTo({ link: SubSites.login });
+            }
+        }
+
+        this.setState({
+            isLoginInProgress: false
+        });
+    };
+
     private renderApp = () => {
         this.initCodeLists();
+        this.fetchSaveLock();
 
         return (
             <>
@@ -80,25 +102,9 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     };
 
-    private init = async () => {
-        const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
-        if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
-            const response = (await HttpUtils.getRequest(
-                EndpointPath.EXISTING_SESSION
-            )) as IAuthorizationResponse;
-            if (response.isOk) {
-                // Auth was ok, keep the current site as it is
-                this.props.loginStore!.setAuthenticationInfo(response);
-            } else {
-                // Redirect to login
-                LocalStorageHelper.setItem('origin_url', navigator.getFullPath());
-                navigator.goTo({ link: SubSites.login });
-            }
-        }
-
-        this.setState({
-            isLoginInProgress: false
-        });
+    private fetchSaveLock = async () => {
+        const isSaveLockEnabled = await AuthService.fetchIsSaveLockEnabled();
+        this.props.loginStore!.setIsSaveLockEnabled(isSaveLockEnabled);
     };
 
     private renderAfterLogin = () => {

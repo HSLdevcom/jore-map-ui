@@ -1,0 +1,26 @@
+@import './styles/common.scss';
+
+.saveButtonBase {
+    color: #fff;
+    text-align: center;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 0;
+    padding: 20px;
+}
+
+.saveButton {
+    background-color: #00ba11;
+}
+
+.saveButton:hover {
+    background-color: darken(#00ba11, 10);
+}
+
+.warningButton {
+    background-color: #bebe02;
+}
+
+.warningButton:hover {
+    background-color: darken(#bebe02, 10);
+}
