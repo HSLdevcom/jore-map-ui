@@ -13,7 +13,7 @@ if [ $TRAVIS_BRANCH == "release-prod" ]; then
 fi
 if [ $TRAVIS_BRANCH == "master" ]; then
   APP_ENVIRONMENT='stage'
-  DOCKER_TAG=':latest'
+  DOCKER_TAG=':stage'
 fi
 if [ $TRAVIS_BRANCH == "develop" ]; then
   APP_ENVIRONMENT='dev'
