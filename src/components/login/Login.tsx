@@ -25,7 +25,7 @@ class Login extends React.Component<ILoginProps> {
             // TODO: split into parts & move into constants
             // prettier-ignore
             // tslint:disable-next-line
-            `${constants.HSL_ID_URL}/openid/auth?client_id=6549375356227079&redirect_uri=${constants.AFTER_LOGIN_URL}&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly`
+            `${constants.HSL_ID_URL}/openid/auth?client_id=${constants.HSL_ID_CLIENT_ID}&redirect_uri=${constants.AFTER_LOGIN_URL}&response_type=code&scope=email+https://oneportal.trivore.com/scope/groups.readonly`
         );
     };
 
