@@ -5,21 +5,26 @@ const environment: Environment = process.env.ENVIRONMENT
     : Environment.LOCALHOST;
 
 let APP_URL = '';
+let HSL_ID_URL = '';
 switch (environment) {
     case Environment.LOCALHOST: {
         APP_URL = 'http://localhost:3000';
+        HSL_ID_URL = 'https://hslid-uat.cinfra.fi';
         break;
     }
     case Environment.DEV: {
         APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
+        HSL_ID_URL = 'https://hslid-uat.cinfra.fi';
         break;
     }
     case Environment.STAGE: {
         APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
+        HSL_ID_URL = 'https://hslid-uat.cinfra.fi';
         break;
     }
     case Environment.PROD: {
         APP_URL = `https://${process.env.DOMAIN_NAME}`;
+        HSL_ID_URL = 'https://id.hsl.fi';
         break;
     }
     default: {
@@ -28,6 +33,7 @@ switch (environment) {
 }
 
 const commonConstants = {
+    HSL_ID_URL,
     ENVIRONMENT: environment,
     BUILD_DATE: process.env.BUILD_DATE,
     AFTER_LOGIN_URL: `${APP_URL}/afterLogin`,
