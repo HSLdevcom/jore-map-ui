@@ -1,14 +1,31 @@
 import Environment from '~/enums/environment';
 
-let APP_URL = '';
-if (process.env.NODE_ENV === 'development') {
-    APP_URL = 'http://localhost:3000';
-} else {
-    APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
-}
 const environment: Environment = process.env.ENVIRONMENT
     ? (process.env.ENVIRONMENT as Environment)
     : Environment.LOCALHOST;
+
+let APP_URL = '';
+switch (environment) {
+    case Environment.LOCALHOST: {
+        APP_URL = 'http://localhost:3000';
+        break;
+    }
+    case Environment.DEV: {
+        APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
+        break;
+    }
+    case Environment.STAGE: {
+        APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
+        break;
+    }
+    case Environment.PROD: {
+        APP_URL = `https://${process.env.DOMAIN_NAME}`;
+        break;
+    }
+    default: {
+        throw `Unsupported environment: ${environment}`;
+    }
+}
 
 const commonConstants = {
     ENVIRONMENT: environment,
