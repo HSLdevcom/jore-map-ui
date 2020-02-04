@@ -118,6 +118,11 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                     )}
                 </div>
                 <div className={s.rightContentWrapper}>
+                    {this.props.loginStore!.isSaveLockEnabled && (
+                        <div className={s.saveLockNotification}>
+                            Tallentaminen estetty - infopoiminta käynnissä
+                        </div>
+                    )}
                     <div
                         className={s.navigationBarIcon}
                         onClick={this.toggleUserType}

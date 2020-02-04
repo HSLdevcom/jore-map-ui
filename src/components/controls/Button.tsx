@@ -25,12 +25,6 @@ const Button = observer((props: IButtonProps) => {
             case ButtonType.ROUND: {
                 return s.round;
             }
-            case ButtonType.SAVE: {
-                return s.save;
-            }
-            case ButtonType.WARNING: {
-                return s.warning;
-            }
         }
         return undefined;
     };

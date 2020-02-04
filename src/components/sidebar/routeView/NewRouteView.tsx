@@ -1,8 +1,7 @@
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Button } from '~/components/controls';
-import ButtonType from '~/enums/buttonType';
+import SaveButton from '~/components/shared/SaveButton';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -118,6 +117,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         const route = isEditingDisabled ? this.props.route : routeStore.route;
         const lineId = navigator.getQueryParam(QueryParams.lineId);
         if (!route) return null;
+        const isRouteFormValid = routeStore.isRouteFormValid;
         return (
             <div className={classnames(s.routeView, s.form)}>
                 <SidebarHeader isEditButtonVisible={false} isEditing={true}>
@@ -132,9 +132,9 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                         invalidPropertiesMap={invalidPropertiesMap}
                     />
                 </div>
-                <Button onClick={() => this.save()} type={ButtonType.SAVE}>
+                <SaveButton onClick={this.save} disabled={!isRouteFormValid}>
                     Luo uusi reitti
-                </Button>
+                </SaveButton>
             </div>
         );
     }

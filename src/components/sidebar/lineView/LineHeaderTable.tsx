@@ -5,6 +5,7 @@ import React from 'react';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
@@ -321,14 +322,13 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                         onChangeLineHeaderProperty={this.onChangeLineHeaderProperty}
                     />
                 )}
-                <Button
+                <SaveButton
                     className={s.saveLineHeadersButton}
                     onClick={this.showSavePrompt}
-                    type={ButtonType.SAVE}
                     disabled={isSaveButtonDisabled}
                 >
                     Tallenna linjan otsikot
-                </Button>
+                </SaveButton>
             </div>
         );
     }
