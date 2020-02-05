@@ -79,18 +79,6 @@ export class LineStore {
         this._isNewLine = isNewLine;
         this.setOldLine(this._line);
 
-        const validateLineDates = (line: ILine) => {
-            // is end date before start date?
-            if (line.lineEndDate && line.lineEndDate.getTime() < line.lineStartDate.getTime()) {
-                const validationResult: IValidationResult = {
-                    isValid: false,
-                    errorMessage: `Viimeinen voimassaolopäivä ei voi olla ennen voimaanastumispäivää.`
-                };
-                return validationResult;
-            }
-            return;
-        };
-
         const customValidatorMap: ICustomValidatorMap = {
             id: {
                 validator: (line: ILine, property: string, lineId: string) => {
@@ -104,14 +92,6 @@ export class LineStore {
                     }
                     return;
                 }
-            },
-            lineStartDate: {
-                validator: validateLineDates,
-                dependentProperties: ['lineEndDate']
-            },
-            lineEndDate: {
-                validator: validateLineDates,
-                dependentProperties: ['lineStartDate']
             }
         };
 
@@ -121,7 +101,7 @@ export class LineStore {
     @action
     public setRoutes = (routes: IRoute[]) => {
         this._routes = routes;
-    }
+    };
 
     @action
     public setOldLine = (line: ILine) => {

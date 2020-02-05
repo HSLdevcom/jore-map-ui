@@ -15,7 +15,8 @@ export type codeListName =
     | 'Suunta'
     | 'Ajantasaus pysakki'
     | 'Pysäkin käyttö'
-    | 'Pysäkkialueid';
+    | 'Pysäkkialueid'
+    | 'Pysäkkityyppi';
 
 export class CodeListStore {
     @observable private _codeListMap: Map<codeListName, ICodeListItem[]>;

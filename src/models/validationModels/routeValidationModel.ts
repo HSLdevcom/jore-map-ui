@@ -1,8 +1,7 @@
 import regexRules from '~/validation/regexRules';
 import { IRoute } from '..';
 
-type RouteKeys = keyof IRoute;
-type IRouteValidationModel = { [key in RouteKeys]: string };
+type IRouteValidationModel = { [key in keyof IRoute]: string };
 
 const routeValidationModel: IRouteValidationModel = {
     id: `required|min:4|max:6|string|${regexRules.upperCaseOrNumbersOrSpace}`,

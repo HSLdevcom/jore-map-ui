@@ -10,7 +10,6 @@ export default interface IExternalLink {
     lnkloppusolmu?: string;
     lnkmitpituus?: number;
     lnkpituus: number;
-    katnimi?: string;
     kaoosnro: string;
     lnkosnro: string;
     lnksuunta: string;

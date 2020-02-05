@@ -270,7 +270,7 @@ class StopForm extends Component<IStopFormProps> {
                     </div>
                 </div>
                 <div className={s.formSection}>
-                    <div className={s.sectionHeader}>Muu tiedot</div>
+                    <div className={s.sectionHeader}>Muut tiedot</div>
                     <div className={s.flexRow}>
                         <Dropdown
                             onChange={updateStopProperty!('section')}
@@ -316,6 +316,14 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.elyNumber}
                             validationResult={stopInvalidPropertiesMap['elyNumber']}
                             onChange={updateStopProperty!('elyNumber')}
+                        />
+                        <Dropdown
+                            onChange={updateStopProperty!('roof')}
+                            items={this.props.codeListStore!.getDropdownItemList('Pysäkkityyppi')}
+                            selected={stop.roof}
+                            disabled={isEditingDisabled}
+                            label='PYSÄKKIKATOS'
+                            validationResult={stopInvalidPropertiesMap['roof']}
                         />
                     </div>
                 </div>

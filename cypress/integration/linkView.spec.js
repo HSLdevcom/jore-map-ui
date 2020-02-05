@@ -33,7 +33,7 @@ describe('LinkView tests - write access user', () => {
             expect($el).to.have.css('pointer-events', 'none');
         });
 
-        cy.getTestElement('streetName').type('asd');
+        cy.getTestElement('measuredLength').type(123);
 
         cy.getTestElement('saveButton').should($el => {
             expect($el).not.have.css('pointer-events', 'none');

@@ -308,22 +308,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                                 type='number'
                                 validationResult={invalidPropertiesMap['measuredLength']}
                                 onChange={this.onChangeLinkProperty('measuredLength')}
+                                data-cy='measuredLength'
                             />
                             <InputContainer
                                 label='LASKETTU PITUUS (m)'
                                 disabled={true}
                                 value={link.length}
                                 validationResult={invalidPropertiesMap['length']}
-                            />
-                        </div>
-                        <div className={s.flexRow}>
-                            <InputContainer
-                                label='KATU'
-                                disabled={isEditingDisabled}
-                                value={link.streetName}
-                                validationResult={invalidPropertiesMap['streetName']}
-                                onChange={this.onChangeLinkProperty('streetName')}
-                                data-cy='streetName'
                             />
                         </div>
                         {!this.props.isNewLink && (
