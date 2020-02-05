@@ -18,7 +18,6 @@ interface ILinkMapHighlight {
 
 export default interface ILink extends ILinkPrimaryKey {
     geometry: L.LatLng[];
-    streetName?: string;
     length: number;
     measuredLength?: number;
     modifiedBy?: string;

@@ -9,7 +9,6 @@ const linkValidationModel: ILinkValidationModel = {
     startNode: '',
     endNode: '',
     geometry: '',
-    streetName: 'min:0|max:40|string',
     length: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     measuredLength: `min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     modifiedBy: '',
