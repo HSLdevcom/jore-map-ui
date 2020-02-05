@@ -3,7 +3,6 @@ import IExternalLine from '~/models/externals/IExternalLine.ts';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
-import { toMidnightDate } from '~/utils/dateUtils';
 
 class LineFactory {
     public static mapExternalLine = (externalLine: IExternalLine): ILine => {
@@ -11,8 +10,6 @@ class LineFactory {
             transitType: externalLine.linverkko,
             id: externalLine.lintunnus,
             lineBasicRoute: externalLine.linperusreitti,
-            lineStartDate: new Date(externalLine.linvoimast),
-            lineEndDate: new Date(externalLine.linvoimviimpvm),
             publicTransportType: externalLine.linjoukkollaji,
             clientOrganization: externalLine.lintilorg,
             modifiedBy: externalLine.linkuka,
@@ -24,13 +21,9 @@ class LineFactory {
     };
 
     public static createNewLine = (): ILine => {
-        const defaultDate = toMidnightDate(new Date());
-
         return {
             id: '',
             lineBasicRoute: '',
-            lineStartDate: new Date(defaultDate),
-            lineEndDate: new Date(defaultDate),
             publicTransportType: '',
             clientOrganization: 'HSL',
             modifiedBy: '',
