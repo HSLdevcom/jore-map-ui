@@ -91,8 +91,6 @@ const linePropertyCodeList: ILinePropertyCodeList = {
     id: 'LINJAN TUNNUS',
     transitType: 'VERKKO',
     lineBasicRoute: 'LINJAN PERUS REITTI',
-    lineStartDate: 'LINJAN VOIM.AST.PVM',
-    lineEndDate: 'LINJAN VIIM. VOIM.OLOPVM',
     publicTransportType: 'JOUKKOLIIKENNELAJI',
     clientOrganization: 'TILAAJAORGANISAATIO',
     modifiedBy: '',

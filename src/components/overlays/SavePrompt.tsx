@@ -5,6 +5,7 @@ import React from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 import propertyCodeLists from '~/codeLists/propertyCodeLists';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
+import { ILine, ILineHeader, ILink, INode, IRoutePath, IStop, IStopArea } from '~/models';
 import codeListStore from '~/stores/codeListStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { toDateString } from '~/utils/dateUtils';
@@ -30,6 +31,16 @@ interface ITextModel {
 
 interface ISavePromptProps {
     models: (ISaveModel | ITextModel)[];
+}
+
+interface ICustomPropertyValueFuncObj {
+    node: { [key in keyof Partial<INode>]: () => void };
+    stop: { [key in keyof Partial<IStop>]: () => void };
+    stopArea: { [key in keyof Partial<IStopArea>]: () => void };
+    link: { [key in keyof Partial<ILink>]: () => void };
+    line: { [key in keyof Partial<ILine>]: () => void };
+    routePath: { [key in keyof Partial<IRoutePath>]: () => void };
+    lineHeader: { [key in keyof Partial<ILineHeader>]: () => void };
 }
 
 const PREVENTED_CHANGE_ROW_PROPERTIES = ['modifiedOn', 'modifiedBy'];
@@ -102,11 +113,10 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
 
     const value = data[property];
     // Some properties require a custom way to get a value for them:
-    const customPropertyValueFuncObj = {
+    const customPropertyValueFuncObj: ICustomPropertyValueFuncObj = {
         node: {
             shortIdLetter: () => codeListStore.getCodeListLabel('Lyhyttunnus', value),
             coordinates: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
-            coordinatesManual: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             coordinatesProjection: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             measurementDate: () => (value ? toDateString(value) : ''),
             measurementType: () =>
@@ -120,12 +130,9 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : '')
         },
         link: {
-            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
-            municipalityCode: () => codeListStore.getCodeListLabel('Kunta (KELA)', value)
+            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria')
         },
         line: {
-            lineStartDate: () => (value ? toDateString(value) : ''),
-            lineEndDate: () => (value ? toDateString(value) : ''),
             publicTransportType: () => codeListStore.getCodeListLabel('Joukkoliikennelaji', value),
             clientOrganization: () => codeListStore.getCodeListLabel('Tilaajaorganisaatio', value),
             publicTransportDestination: () =>
