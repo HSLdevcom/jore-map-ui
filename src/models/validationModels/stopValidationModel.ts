@@ -23,6 +23,7 @@ const stopValidationModel: IStopValidationModel = {
     modifiedBy: '',
     modifiedOn: '',
     platform: `min:0|max:3|string`,
+    roof: 'required|min:2|max:2|string',
     radius: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     hastusId: 'min:0|max:6|string',
     stopAreaId: 'required|min:0|max:6|string',

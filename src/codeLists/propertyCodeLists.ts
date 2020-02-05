@@ -32,6 +32,7 @@ const stopPropertyCodeList: IStopPropertyCodeList = {
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM',
     platform: 'LAITURI',
+    roof: 'PYSÄKKIKATOS',
     radius: 'SÄDE',
     hastusId: 'HASTUS-PAIKKA',
     stopAreaId: 'PYSÄKKIALUE',
