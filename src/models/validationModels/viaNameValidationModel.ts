@@ -1,7 +1,6 @@
 import IViaName from '../IViaName';
 
-type IViaNameKeys = keyof IViaName;
-type IViaNameValidationModel = { [key in IViaNameKeys]: string };
+type IViaNameValidationModel = { [key in keyof IViaName]: string };
 
 const viaNameValidationModel: IViaNameValidationModel = {
     id: `required|numeric`,

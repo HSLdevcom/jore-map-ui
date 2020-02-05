@@ -17,7 +17,6 @@ class LinkFactory {
             transitType: externalLink.lnkverkko,
             length: externalLink.lnkpituus,
             measuredLength: externalLink.lnkmitpituus,
-            streetName: externalLink.katnimi,
             modifiedBy: externalLink.lnkkuka,
             modifiedOn: externalLink.lnkviimpvm ? new Date(externalLink.lnkviimpvm) : undefined
         };
@@ -43,7 +42,6 @@ class LinkFactory {
             endNode,
             length: 0,
             measuredLength: 0,
-            streetName: '',
             modifiedBy: '',
             modifiedOn: new Date()
         };

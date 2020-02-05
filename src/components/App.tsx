@@ -27,6 +27,7 @@ import Sidebar from './sidebar/Sidebar';
 
 interface IAppState {
     isLoginInProgress: boolean;
+    isCodeListQueryInProgress: boolean;
 }
 
 interface IAppProps {
@@ -45,15 +46,16 @@ class App extends React.Component<IAppProps, IAppState> {
     constructor(props: IAppProps) {
         super(props);
         this.state = {
-            isLoginInProgress: true
+            isLoginInProgress: true,
+            isCodeListQueryInProgress: true
         };
     }
 
     componentDidMount() {
-        this.init();
+        this.initLogin();
     }
 
-    private init = async () => {
+    private initLogin = async () => {
         const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
         if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
             const response = (await HttpUtils.getRequest(
@@ -62,6 +64,7 @@ class App extends React.Component<IAppProps, IAppState> {
             if (response.isOk) {
                 // Auth was ok, keep the current site as it is
                 this.props.loginStore!.setAuthenticationInfo(response);
+                this.initApp();
             } else {
                 // Redirect to login
                 LocalStorageHelper.setItem('origin_url', navigator.getFullPath());
@@ -74,9 +77,13 @@ class App extends React.Component<IAppProps, IAppState> {
         });
     };
 
-    private renderApp = () => {
+    private initApp = () => {
         this.initCodeLists();
         this.fetchSaveLock();
+    };
+
+    private renderApp = () => {
+        if (this.state.isCodeListQueryInProgress) return <div>Ladataan sovellusta...</div>;
 
         return (
             <>
@@ -97,6 +104,9 @@ class App extends React.Component<IAppProps, IAppState> {
         try {
             const codeLists = await CodeListService.fetchAllCodeLists();
             this.props.codeListStore!.setCodeListItems(codeLists);
+            this.setState({
+                isCodeListQueryInProgress: false
+            });
         } catch (e) {
             this.props.errorStore!.addError('Koodiston haku epäonnistui', e);
         }
@@ -115,6 +125,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 const destination = originUrl ? originUrl : SubSites.home;
                 LocalStorageHelper.removeItem('origin_url');
                 navigator.goTo({ link: destination });
+                this.initApp();
             },
             () => {
                 // On error

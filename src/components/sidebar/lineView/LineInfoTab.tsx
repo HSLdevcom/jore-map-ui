@@ -158,24 +158,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                         />
                     </div>
                     <div className={s.flexRow}>
-                        <InputContainer
-                            disabled={isEditingDisabled}
-                            label='LINJAN VOIM.AST.PVM'
-                            type='date'
-                            value={line.lineStartDate}
-                            onChange={onChange('lineStartDate')}
-                            validationResult={invalidPropertiesMap['lineStartDate']}
-                        />
-                        <InputContainer
-                            disabled={isEditingDisabled}
-                            label='LINJAN VIIM. VOIM.OLOPVM'
-                            type='date'
-                            value={line.lineEndDate}
-                            onChange={onChange('lineEndDate')}
-                            validationResult={invalidPropertiesMap['lineEndDate']}
-                        />
-                    </div>
-                    <div className={s.flexRow}>
                         <Dropdown
                             label='JOUKKOLIIKENNELAJI'
                             disabled={isEditingDisabled}
