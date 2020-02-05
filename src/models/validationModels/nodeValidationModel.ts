@@ -1,8 +1,7 @@
 import regexRules from '~/validation/regexRules';
 import { INode } from '..';
 
-type NodeKeys = keyof INode;
-type INodeValidationModel = { [key in NodeKeys]: string };
+type INodeValidationModel = { [key in keyof INode]: string };
 
 // TODO: rename as nodeValidationObject
 const nodeValidationModel: INodeValidationModel = {

@@ -1,8 +1,7 @@
 import { IRoutePathLink } from '..';
 import Constants from '../../constants/constants';
 
-type RoutePathLinkKeys = keyof IRoutePathLink;
-type IRoutePathLinkValidationModel = { [key in RoutePathLinkKeys]: string };
+type IRoutePathLinkValidationModel = { [key in keyof IRoutePathLink]: string };
 
 const routePathLinkValidationModel: IRoutePathLinkValidationModel = {
     id: '',

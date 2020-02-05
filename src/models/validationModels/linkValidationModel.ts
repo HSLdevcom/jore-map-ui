@@ -1,8 +1,7 @@
 import constants from '~/constants/constants';
 import { ILink } from '..';
 
-type LinkKeys = keyof ILink;
-type ILinkValidationModel = { [key in LinkKeys]: string };
+type ILinkValidationModel = { [key in keyof ILink]: string };
 
 // TODO: rename as linkValidationObject
 const linkValidationModel: ILinkValidationModel = {

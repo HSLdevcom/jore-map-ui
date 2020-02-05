@@ -1,8 +1,7 @@
 import regexRules from '~/validation/regexRules';
 import { ILineHeader } from '..';
 
-type LineHeaderKeys = keyof ILineHeader;
-type ILineHeaderValidationModel = { [key in LineHeaderKeys]: string };
+type ILineHeaderValidationModel = { [key in keyof ILineHeader]: string };
 
 const lineHeaderValidationModel: ILineHeaderValidationModel = {
     lineId: `required|min:4|max:6|string|${regexRules.upperCaseOrNumbersOrSpace}`,

@@ -7,8 +7,7 @@ const addressRule = 'required|min:1|max:20|string';
 const placeNameRule = 'min:1|max:20|string';
 const longNameRule = 'min:1|max:60|string';
 
-type StopKeys = keyof IStop;
-type IStopValidationModel = { [key in StopKeys]: string };
+type IStopValidationModel = { [key in keyof IStop]: string };
 
 // TODO: rename as stopValidationObject
 const stopValidationModel: IStopValidationModel = {
