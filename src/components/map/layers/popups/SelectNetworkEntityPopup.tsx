@@ -9,7 +9,6 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { HighlightEntityStore } from '~/stores/highlightEntityStore';
 import { PopupStore } from '~/stores/popupStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import NavigationUtils from '~/utils/NavigationUtils';
 import * as s from './selectNetworkEntityPopup.scss';
 
 interface ISelectNetworkEntityPopupData {
@@ -37,8 +36,12 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
     private redirectToNode = (nodeId: string, popupId: number) => {
         this.props.popupStore!.closePopup(popupId);
         this.props.highlightEntityStore!.setNodes([]);
-        NavigationUtils.openNodeView({
-            nodeId,
+        const nodeViewLink = routeBuilder
+            .to(SubSites.node)
+            .toTarget(':id', nodeId)
+            .toLink();
+        navigator.goTo({
+            link: nodeViewLink,
             unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${nodeId}? Tallentamattomat muutokset kumotaan.`
         });
     };

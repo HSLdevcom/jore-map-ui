@@ -351,9 +351,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             ? 'Uusi reitinsuunta'
                             :
                             <div className={s.topic}>
-                                <div className={s.link} title={`Avaa linja ${routePath.lineId}`} onClick={() => NavigationUtils.openLineView(routePath.lineId)}>{routePath.lineId}</div>
+                                <div className={s.link} title={`Avaa linja ${routePath.lineId}`} onClick={() => NavigationUtils.openLineView({ lineId: routePath.lineId })}>{routePath.lineId}</div>
                                 <div>&nbsp;>&nbsp;</div>
-                                <div className={s.link} title={`Avaa reitti ${routePath.routeId}`} onClick={() => NavigationUtils.openRouteView(routePath.routeId)}>{routePath.routeId}</div>
+                                <div className={s.link} title={`Avaa reitti ${routePath.routeId}`} onClick={() => NavigationUtils.openRouteView({ routeId: routePath.routeId })}>{routePath.routeId}</div>
                             </div>
                         }
                     </SidebarHeader>

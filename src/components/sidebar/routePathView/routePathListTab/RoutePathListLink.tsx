@@ -6,11 +6,9 @@ import { FiChevronRight } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import { IRoutePathLink } from '~/models';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import NavigationUtils from '~/utils/NavigationUtils';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
@@ -85,14 +83,11 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
 
     private openInNetworkView = () => {
         const routeLink = this.props.routePathLink;
-        const routeLinkViewLink = routeBuilder
-            .to(SubSites.link)
-            .toTarget(
-                ':id',
-                [routeLink.startNode.id, routeLink.endNode.id, routeLink.transitType].join(',')
-            )
-            .toLink();
-        navigator.goTo({ link: routeLinkViewLink });
+        NavigationUtils.openLinkView({
+            startNodeId: routeLink.startNode.id,
+            endNodeId: routeLink.endNode.id,
+            transitType: routeLink.transitType
+        });
     };
 
     private renderListIcon = () => <div className={s.linkIcon} />;

@@ -116,7 +116,14 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         try {
             if (this.props.isNewLine) {
                 await LineService.createLine(line!);
-                this.navigateToNewLine();
+                const lineViewLink = routeBuilder
+                    .to(SubSites.line)
+                    .toTarget(':id', this.props.lineStore!.line!.id)
+                    .toLink();
+                navigator.goTo({
+                    link: lineViewLink,
+                    shouldSkipUnsavedChangesPrompt: true
+                });
             } else {
                 await LineService.updateLine(line!);
                 this.props.lineStore!.setIsEditingDisabled(true);
@@ -126,15 +133,6 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-    };
-
-    private navigateToNewLine = () => {
-        const line = this.props.lineStore!.line;
-        const lineViewLink = routeBuilder
-            .to(SubSites.line)
-            .toTarget(':id', line!.id)
-            .toLink();
-        navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private showSavePrompt = () => {

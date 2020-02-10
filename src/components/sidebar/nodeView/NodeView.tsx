@@ -14,6 +14,8 @@ import EventHelper from '~/helpers/EventHelper';
 import { ILink, INode } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import { AlertStore } from '~/stores/alertStore';
@@ -22,7 +24,6 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import NavigationUtils from '~/utils/NavigationUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
@@ -255,7 +256,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     nodeToUpdate = nodeStore.node;
                 }
                 const nodeId = await NodeService.createNode(nodeToUpdate);
-                NavigationUtils.openNodeView({ nodeId, shouldSkipUnsavedChangesPrompt: true });
+                const nodeViewLink = routeBuilder
+                    .to(SubSites.node)
+                    .toTarget(':id', nodeId)
+                    .toLink();
+                navigator.goTo({
+                    link: nodeViewLink,
+                    shouldSkipUnsavedChangesPrompt: true
+                });
                 nodeStore.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
                 await NodeService.updateNode(
