@@ -161,8 +161,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             this.navigateToCreatedLink();
             return;
         }
-        this.setState({ isLoading: false });
         this.props.linkStore!.setIsEditingDisabled(true);
+        this.initExistingLink();
     };
 
     private showSavePrompt = () => {
