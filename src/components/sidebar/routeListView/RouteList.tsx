@@ -264,7 +264,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                 >
                                     <div
                                         className={s.routeName}
-                                        onClick={() => NavigationUtils.openLineView(route!.lineId)}
+                                        onClick={() => NavigationUtils.openLineView({ lineId: route!.lineId })}
                                         title={`Avaa linja ${route!.lineId}`}
                                     >
                                         <TransitIcon

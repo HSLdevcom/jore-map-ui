@@ -55,7 +55,7 @@ class LineItem extends React.Component<ILineItemProps> {
             <div className={s.lineItemView}>
                 <div
                     className={s.lineItem}
-                    onClick={() => NavigationUtils.openLineView(this.props.line.id)}
+                    onClick={() => NavigationUtils.openLineView({ lineId: this.props.line.id })}
                     data-cy='lineItem'
                 >
                     <div className={s.icon}>

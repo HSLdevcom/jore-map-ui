@@ -4,12 +4,24 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 
 class NavigationUtils {
-    public static openLineView = (lineId: string) => {
+    public static openLineView = ({
+        lineId,
+        unsavedChangesPromptMessage,
+        shouldSkipUnsavedChangesPrompt
+    }: {
+        lineId: string;
+        unsavedChangesPromptMessage?: string;
+        shouldSkipUnsavedChangesPrompt?: boolean;
+    }) => {
         const lineViewLink = routeBuilder
             .to(SubSites.line)
             .toTarget(':id', lineId)
             .toLink();
-        navigator.goTo({ link: lineViewLink });
+        navigator.goTo({
+            unsavedChangesPromptMessage,
+            shouldSkipUnsavedChangesPrompt,
+            link: lineViewLink
+        });
     };
 
     public static openRouteView = (routeId: string) => {
