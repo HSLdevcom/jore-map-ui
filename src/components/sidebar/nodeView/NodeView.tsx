@@ -262,19 +262,14 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     nodeStore.node,
                     nodeStore.getDirtyLinks()
                 );
-                const nodeId = nodeStore.node.id;
-                nodeStore.clearNodeCache({ nodeId });
-                this.initExistingNode(nodeId);
+                nodeStore.clearNodeCache({ nodeId: nodeStore.node.id });
+                this.initExistingNode(nodeStore.node.id);
+                nodeStore.setIsEditingDisabled(true);
             }
-            nodeStore.setCurrentStateAsOld();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-
-        if (this.props.isNewNode) return;
-        this._setState({ isLoading: false });
-        nodeStore.setIsEditingDisabled(true);
     };
 
     private showSavePrompt = () => {
