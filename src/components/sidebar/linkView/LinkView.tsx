@@ -148,21 +148,17 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         try {
             if (this.props.isNewLink) {
                 await LinkService.createLink(this.props.linkStore!.link);
+                this.navigateToCreatedLink();
             } else {
                 await LinkService.updateLink(this.props.linkStore!.link);
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
+                this.props.linkStore!.setIsEditingDisabled(true);
+                this.initExistingLink();
             }
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-
-        if (this.props.isNewLink) {
-            this.navigateToCreatedLink();
-            return;
-        }
-        this.props.linkStore!.setIsEditingDisabled(true);
-        this.initExistingLink();
     };
 
     private showSavePrompt = () => {
