@@ -1,3 +1,4 @@
+import TransitType from '~/enums/transitType';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -37,6 +38,24 @@ class NavigationUtils {
             .toLink();
         navigator.goTo({
             link: nodeViewLink
+        });
+    };
+
+    public static openLinkView = ({
+        startNodeId,
+        endNodeId,
+        transitType
+    }: {
+        startNodeId: string;
+        endNodeId: string;
+        transitType: TransitType;
+    }) => {
+        const linkViewLink = routeBuilder
+            .to(SubSites.link)
+            .toTarget(':id', [startNodeId, endNodeId, transitType].join(','))
+            .toLink();
+        navigator.goTo({
+            link: linkViewLink
         });
     };
 }
