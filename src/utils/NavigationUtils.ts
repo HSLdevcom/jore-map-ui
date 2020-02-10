@@ -19,5 +19,25 @@ class NavigationUtils {
             .toLink();
         navigator.goTo({ link: routeViewLink });
     };
+
+    public static openNodeView = ({
+        nodeId,
+        unsavedChangesPromptMessage,
+        shouldSkipUnsavedChangesPrompt
+    }: {
+        nodeId: string;
+        unsavedChangesPromptMessage?: string;
+        shouldSkipUnsavedChangesPrompt?: boolean;
+    }) => {
+        const nodeViewLink = routeBuilder
+            .to(SubSites.node)
+            .toTarget(':id', nodeId)
+            .toLink();
+        navigator.goTo({
+            unsavedChangesPromptMessage,
+            shouldSkipUnsavedChangesPrompt,
+            link: nodeViewLink
+        });
+    };
 }
 export default NavigationUtils;

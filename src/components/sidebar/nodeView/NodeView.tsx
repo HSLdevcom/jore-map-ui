@@ -14,8 +14,6 @@ import EventHelper from '~/helpers/EventHelper';
 import { ILink, INode } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import { AlertStore } from '~/stores/alertStore';
@@ -24,6 +22,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
+import NavigationUtils from '~/utils/NavigationUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
@@ -242,40 +241,35 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
     private save = async () => {
         this._setState({ isLoading: true });
+
+        const nodeStore = this.props.nodeStore!;
         try {
             if (this.props.isNewNode) {
                 let nodeToUpdate;
-                if (this.props.nodeStore!.isNodeIdEditable) {
+                if (nodeStore.isNodeIdEditable) {
                     // Merge nodeId parts (5 num + 2 num) as a nodeId
-                    nodeToUpdate = _.cloneDeep(this.props.nodeStore!.node);
+                    nodeToUpdate = _.cloneDeep(nodeStore.node);
                     const nodeId = nodeToUpdate.id + nodeToUpdate.idSuffix;
                     nodeToUpdate.id = nodeId;
                 } else {
-                    nodeToUpdate = this.props.nodeStore!.node;
+                    nodeToUpdate = nodeStore.node;
                 }
                 const nodeId = await NodeService.createNode(nodeToUpdate);
-                const nodeViewLink = routeBuilder
-                    .to(SubSites.node)
-                    .toTarget(':id', nodeId)
-                    .toLink();
-                navigator.goTo({ link: nodeViewLink, shouldSkipUnsavedChangesPrompt: true });
-                this.props.nodeStore!.clearNodeCache({ shouldClearNewNodeCache: true });
+                NavigationUtils.openNodeView({ nodeId, shouldSkipUnsavedChangesPrompt: true });
+                nodeStore.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
                 await NodeService.updateNode(
-                    this.props.nodeStore!.node,
-                    this.props.nodeStore!.getDirtyLinks()
+                    nodeStore.node,
+                    nodeStore.getDirtyLinks()
                 );
-                this.props.nodeStore!.clearNodeCache({ nodeId: this.props.nodeStore!.node.id });
+                nodeStore.clearNodeCache({ nodeId: nodeStore.node.id });
+                this.initExistingNode(nodeStore.node.id);
+                nodeStore.setIsEditingDisabled(true);
             }
-            this.props.nodeStore!.setCurrentStateAsOld();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-
-        if (this.props.isNewNode) return;
-        this._setState({ isLoading: false });
-        this.props.nodeStore!.setIsEditingDisabled(true);
     };
 
     private showSavePrompt = () => {
@@ -416,13 +410,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     render() {
         const nodeStore = this.props.nodeStore!;
         const node = nodeStore.node;
-        if (this.state.isLoading) {
-
+        if (this.state.isLoading || !node) {
             return <div className={s.nodeView}><Loader /></div>
         }
-        // TODO: show some indicator to user of an empty page
-        if (!node) return null;
-
         const isNewNode = this.props.isNewNode;
         const isEditingDisabled = nodeStore.isEditingDisabled;
         const isNodeIdEditable = nodeStore.isNodeIdEditable;

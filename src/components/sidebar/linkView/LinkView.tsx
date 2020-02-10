@@ -22,6 +22,7 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
+import NavigationUtils from '~/utils/NavigationUtils';
 import { Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';
@@ -147,21 +148,17 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         try {
             if (this.props.isNewLink) {
                 await LinkService.createLink(this.props.linkStore!.link);
+                this.navigateToCreatedLink();
             } else {
                 await LinkService.updateLink(this.props.linkStore!.link);
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
+                this.props.linkStore!.setIsEditingDisabled(true);
+                this.initExistingLink();
             }
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-
-        if (this.props.isNewLink) {
-            this.navigateToCreatedLink();
-            return;
-        }
-        this.setState({ isLoading: false });
-        this.props.linkStore!.setIsEditingDisabled(true);
     };
 
     private showSavePrompt = () => {
@@ -189,14 +186,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             .toTarget(':id', [link.startNode.id, link.endNode.id, link.transitType].join(','))
             .toLink();
         navigator.goTo({ link: linkViewLink, shouldSkipUnsavedChangesPrompt: true });
-    };
-
-    private navigateToNode = (nodeId: string) => () => {
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', nodeId)
-            .toLink();
-        navigator.goTo({ link: nodeViewLink });
     };
 
     private selectTransitType = (transitType: TransitType) => {
@@ -331,7 +320,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.buttonBar}>
                     <Button
-                        onClick={this.navigateToNode(link.startNode.id)}
+                        onClick={() => NavigationUtils.openNodeView({ nodeId: link.startNode.id })}
                         type={ButtonType.SQUARE}
                     >
                         <div className={s.buttonContent}>
@@ -342,7 +331,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             </div>
                         </div>
                     </Button>
-                    <Button onClick={this.navigateToNode(link.endNode.id)} type={ButtonType.SQUARE}>
+                    <Button
+                        onClick={() => NavigationUtils.openNodeView({ nodeId: link.endNode.id })}
+                        type={ButtonType.SQUARE}
+                    >
                         <div className={s.buttonContent}>
                             <div className={s.contentText}>
                                 Loppusolmu

@@ -68,6 +68,7 @@ const ENVIRONMENT = constants.ENVIRONMENT;
 )
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState> {
+    private _isMounted: boolean;
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
@@ -75,7 +76,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         };
     }
 
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+
     componentDidMount() {
+        this._isMounted = true;
         EventHelper.on('undo', this.props.routePathStore!.undo);
         EventHelper.on('redo', this.props.routePathStore!.redo);
         this.initialize();
@@ -83,6 +91,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
@@ -98,11 +107,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             await this.initExistingRoutePath();
         }
         await this.initializeMap();
-        if (this.props.routePathStore!.routePath) {
-            this.setState({
-                isLoading: false
-            });
-        }
     };
 
     private fetchExistingPrimaryKeys = async () => {
@@ -113,6 +117,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     }
 
     private createNewRoutePath = async () => {
+        this._setState({ isLoading: true });
         this.props.mapStore!.initCoordinates();
         try {
             if (!this.props.routePathStore!.routePath) {
@@ -134,6 +139,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         } catch (e) {
             this.props.errorStore!.addError('Uuden reitinsuunnan luonti epäonnistui', e);
         }
+        this._setState({ isLoading: false });
     };
 
     private initializeMap = async () => {
@@ -159,6 +165,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     };
 
     private initExistingRoutePath = async () => {
+        this._setState({ isLoading: true });
         await this.fetchRoutePath();
         const itemToShow = navigator.getQueryParamValues()[QueryParams.showItem];
         if (itemToShow) {
@@ -166,10 +173,10 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             this.props.routePathStore!.setExtendedListItems(itemToShow);
             this.props.routePathStore!.removeListFilter(ListFilter.link);
         }
+        this._setState({ isLoading: false });
     };
 
     private fetchRoutePath = async () => {
-        this.setState({ isLoading: true });
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
         try {
             const routePath = await RoutePathService.fetchRoutePath(
@@ -255,15 +262,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     };
 
     private save = async () => {
-        this.setState({ isLoading: true });
-        let routePathViewLink: string | undefined;
+        this._setState({ isLoading: true });
         const routePath = this.props.routePathStore!.routePath;
         try {
             if (this.props.isNewRoutePath) {
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
                     routePath!
                 );
-                routePathViewLink = routeBuilder
+                const routePathViewLink = routeBuilder
                     .to(SubSites.routePath)
                     .toTarget(
                         ':id',
@@ -274,6 +280,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         ].join(',')
                     )
                     .toLink();
+                navigator.goTo({ link: routePathViewLink, shouldSkipUnsavedChangesPrompt: true });
             } else {
                 const routePathToUpdate = _.cloneDeep(routePath!);
                 const hasRoutePathLinksChanged = this.props.routePathStore!.hasRoutePathLinksChanged();
@@ -283,20 +290,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     routePathToUpdate.routePathLinks = [];
                 }
                 await RoutePathService.updateRoutePath(routePathToUpdate);
+                await this.fetchRoutePath();
+                this.props.routePathStore!.setIsEditingDisabled(true);
+                this._setState({ isLoading: false });
             }
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-        if (routePathViewLink) {
-            navigator.goTo({ link: routePathViewLink, shouldSkipUnsavedChangesPrompt: true });
-            return;
-        }
-        await this.fetchRoutePath();
-        this.setState({
-            isLoading: false
-        });
-        this.props.routePathStore!.setIsEditingDisabled(true);
     };
 
     private showSavePrompt = () => {

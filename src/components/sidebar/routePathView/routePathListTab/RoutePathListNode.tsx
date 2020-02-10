@@ -9,11 +9,9 @@ import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { INode, IRoutePathLink, IStop } from '~/models';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import InputContainer from '../../../controls/InputContainer';
@@ -303,21 +301,16 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 {Boolean(this.props.node.stop) && this.renderStopView(this.props.node.stop!)}
                 {this.renderNodeView(this.props.node)}
                 <div className={s.footer}>
-                    <Button onClick={this.openNodeView} type={ButtonType.SQUARE}>
+                    <Button
+                        onClick={() => NavigationUtils.openNodeView({ nodeId: this.props.node.id })}
+                        type={ButtonType.SQUARE}
+                    >
                         <div>Avaa solmu</div>
                         <FiChevronRight />
                     </Button>
                 </div>
             </div>
         );
-    };
-
-    private openNodeView = () => {
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', this.props.node.id)
-            .toLink();
-        navigator.goTo({ link: nodeViewLink });
     };
 
     private getShadowClass() {

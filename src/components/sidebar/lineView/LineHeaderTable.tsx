@@ -52,7 +52,7 @@ interface ILineHeaderListProps {
 )
 @observer
 class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderState> {
-    private mounted: boolean;
+    private _isMounted: boolean;
     constructor(props: ILineHeaderListProps) {
         super(props);
         this.state = {
@@ -60,32 +60,35 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
             lineHeaders: null
         };
     }
-    async componentWillMount() {
-        const lineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(
-            this.props.lineId
-        );
-        if (this.mounted) {
-            this.setState({
-                lineHeaders,
-                isLoading: false
-            });
+
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
         }
-    }
+    };
 
     componentDidMount() {
-        this.mounted = true;
-    }
-
-    componentDidUpdate() {
-        const lineHeaders = this.state.lineHeaders;
-        if (lineHeaders && !this.props.lineHeaderMassEditStore!.massEditLineHeaders) {
-            this.props.lineHeaderMassEditStore!.init(lineHeaders);
-        }
+        this._isMounted = true;
+        this.initExistingLineHeaders();
     }
 
     componentWillUnmount() {
-        this.mounted = false;
+        this._isMounted = false;
     }
+
+    private initExistingLineHeaders = async () => {
+        this._setState({ isLoading: true });
+        const lineHeaders: ILineHeader[] = await LineHeaderService.fetchLineHeaders(
+            this.props.lineId
+        );
+        if (lineHeaders) {
+            this.props.lineHeaderMassEditStore!.init(lineHeaders);
+        }
+        this._setState({
+            lineHeaders,
+            isLoading: false
+        });
+    };
 
     private createNewLineHeader = () => {
         const lastLineHeader = this.props.lineHeaderMassEditStore!.getLastLineHeader();
@@ -128,7 +131,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
 
     private save = async () => {
         const lineHeaderMassEditStore = this.props.lineHeaderMassEditStore;
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
 
         try {
             await LineHeaderService.massEditLineHeaders(
@@ -136,18 +139,12 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 lineHeaderMassEditStore!.oldLineHeaders!,
                 this.props.lineId
             );
-
+            this.initExistingLineHeaders();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             return;
         }
-
-        lineHeaderMassEditStore!.init(lineHeaderMassEditStore!.currentLineHeaders);
-
-        this.setState({
-            isLoading: false
-        });
     };
 
     private isFormValid = () => {
