@@ -8,10 +8,10 @@ import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
-import StartNodeType from '~/enums/startNodeType';
 import { INode } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
 import NodeUtils from '~/utils/NodeUtils';
+import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import * as s from './nodeForm.scss';
 
 interface INodeViewProps {
@@ -62,10 +62,7 @@ export default class NodeForm extends Component<INodeViewProps> {
         } = this.props;
         const lngChange = this.props.lngChange ? this.props.lngChange : () => void 0;
         const latChange = this.props.latChange ? this.props.latChange : () => void 0;
-        const nodeTypeCodeList = this.props
-            .codeListStore!.getDropdownItemList('Solmutyyppi (P/E)')
-            .filter(item => item.value !== StartNodeType.DISABLED);
-
+        const nodeTypeCodeList = createDropdownItemsFromList(['P', 'X']);
         return (
             <div className={classnames(s.nodeForm, s.form)}>
                 <div className={s.formSection}>
@@ -99,7 +96,7 @@ export default class NodeForm extends Component<INodeViewProps> {
                         <Dropdown
                             label='TYYPPI'
                             onChange={onChangeNodeType ? onChangeNodeType : undefined}
-                            disabled={isEditingDisabled}
+                            disabled={isEditingDisabled || !isNewNode}
                             selected={node.type}
                             items={nodeTypeCodeList}
                             data-cy='nodeTypeDropdown'
