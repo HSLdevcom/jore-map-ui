@@ -30,22 +30,12 @@ class NavigationUtils {
         });
     };
 
-    public static openNodeView = ({
-        nodeId,
-        unsavedChangesPromptMessage,
-        shouldSkipUnsavedChangesPrompt
-    }: {
-        nodeId: string;
-        unsavedChangesPromptMessage?: string;
-        shouldSkipUnsavedChangesPrompt?: boolean;
-    }) => {
+    public static openNodeView = ({ nodeId }: { nodeId: string }) => {
         const nodeViewLink = routeBuilder
             .to(SubSites.node)
             .toTarget(':id', nodeId)
             .toLink();
         navigator.goTo({
-            unsavedChangesPromptMessage,
-            shouldSkipUnsavedChangesPrompt,
             link: nodeViewLink
         });
     };
