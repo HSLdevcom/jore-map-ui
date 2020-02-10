@@ -12,6 +12,7 @@ import SubSites from '~/routing/subSites';
 import { LineStore } from '~/stores/lineStore';
 import { LoginStore } from '~/stores/loginStore';
 import { SearchStore } from '~/stores/searchStore';
+import NavigationUtils from '~/utils/NavigationUtils';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import s from './lineRoutesTab.scss';
 
@@ -61,12 +62,8 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     };
 
     private redirectToRouteView = (routeId: string) => () => {
-        const routeViewLink = routeBuilder
-            .to(SubSites.routes, navigator.getQueryParamValues())
-            .append(QueryParams.routes, routeId)
-            .toLink();
         this.props.searchStore!.setSearchInput('');
-        navigator.goTo({ link: routeViewLink });
+        NavigationUtils.openRouteView({ routeId, queryValues: navigator.getQueryParamValues() });
     };
 
     render() {

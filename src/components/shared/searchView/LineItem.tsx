@@ -4,9 +4,6 @@ import ReactMoment from 'react-moment';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
@@ -19,12 +16,8 @@ interface ILineItemProps {
 
 class LineItem extends React.Component<ILineItemProps> {
     private openRoute = (routeId: string) => () => {
-        const routeViewLink = routeBuilder
-            .to(SubSites.routes, navigator.getQueryParamValues())
-            .append(QueryParams.routes, routeId)
-            .toLink();
         searchStore.setSearchInput('');
-        navigator.goTo({ link: routeViewLink });
+        NavigationUtils.openRouteView({ routeId, queryValues: navigator.getQueryParamValues() });
     };
 
     private renderRoute(route: ISearchLineRoute): any {

@@ -5,6 +5,9 @@ import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import Loader from '~/components/shared/loader/Loader';
 import LineFactory from '~/factories/lineFactory';
+import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -12,7 +15,6 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import { MapStore } from '~/stores/mapStore';
-import NavigationUtils from '~/utils/NavigationUtils';
 import SidebarHeader from '../SidebarHeader';
 import LineInfoTab from './LineInfoTab';
 import LineRoutesTab from './LineRoutesTab';
@@ -114,8 +116,12 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         try {
             if (this.props.isNewLine) {
                 await LineService.createLine(line!);
-                NavigationUtils.openLineView({
-                    lineId: this.props.lineStore!.line!.id,
+                const lineViewLink = routeBuilder
+                    .to(SubSites.line)
+                    .toTarget(':id', this.props.lineStore!.line!.id)
+                    .toLink();
+                navigator.goTo({
+                    link: lineViewLink,
                     shouldSkipUnsavedChangesPrompt: true
                 });
             } else {

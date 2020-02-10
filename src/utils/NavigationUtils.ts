@@ -4,32 +4,30 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 
 class NavigationUtils {
-    public static openLineView = ({
-        lineId,
-        unsavedChangesPromptMessage,
-        shouldSkipUnsavedChangesPrompt
-    }: {
-        lineId: string;
-        unsavedChangesPromptMessage?: string;
-        shouldSkipUnsavedChangesPrompt?: boolean;
-    }) => {
+    public static openLineView = ({ lineId }: { lineId: string }) => {
         const lineViewLink = routeBuilder
             .to(SubSites.line)
             .toTarget(':id', lineId)
             .toLink();
         navigator.goTo({
-            unsavedChangesPromptMessage,
-            shouldSkipUnsavedChangesPrompt,
             link: lineViewLink
         });
     };
 
-    public static openRouteView = (routeId: string) => {
+    public static openRouteView = ({
+        routeId,
+        queryValues
+    }: {
+        routeId: string;
+        queryValues?: any;
+    }) => {
         const routeViewLink = routeBuilder
-            .to(SubSites.routes)
+            .to(SubSites.routes, queryValues)
             .append(QueryParams.routes, routeId)
             .toLink();
-        navigator.goTo({ link: routeViewLink });
+        navigator.goTo({
+            link: routeViewLink
+        });
     };
 
     public static openNodeView = ({
