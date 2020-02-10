@@ -3,9 +3,7 @@ import React from 'react';
 import { IoIosRadioButtonOn } from 'react-icons/io';
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
+import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import * as s from './nodeItem.scss';
 
@@ -15,16 +13,13 @@ interface INodeItemProps {
 
 const NodeItem = observer((props: INodeItemProps) => {
     const { node } = props;
-    const openNode = () => {
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', node.id)
-            .toLink();
-        navigator.goTo({ link: nodeViewLink });
-    };
 
     return (
-        <div className={s.nodeItem} onClick={openNode} data-cy='nodeItem'>
+        <div
+            className={s.nodeItem}
+            onClick={() => NavigationUtils.openNodeView({ nodeId: props.node.id })}
+            data-cy='nodeItem'
+        >
             <IoIosRadioButtonOn />
             <div className={s.nodeItemTextContainer}>
                 <span>{node.id}</span>

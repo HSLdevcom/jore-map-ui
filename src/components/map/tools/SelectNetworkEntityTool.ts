@@ -12,6 +12,7 @@ import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
+import NavigationUtils from '~/utils/NavigationUtils';
 import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
 import BaseTool from './BaseTool';
@@ -127,12 +128,8 @@ class SelectNetworkEntityTool implements BaseTool {
 }
 
 const _redirectToNode = (node: INodeMapHighlight) => {
-    const nodeViewLink = routeBuilder
-        .to(SubSites.node)
-        .toTarget(':id', node.id)
-        .toLink();
-    navigator.goTo({
-        link: nodeViewLink,
+    NavigationUtils.openNodeView({
+        nodeId: node.id,
         unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${
             node.id
         }? Tallentamattomat muutokset kumotaan.`

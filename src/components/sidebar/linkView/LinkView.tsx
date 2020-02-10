@@ -22,6 +22,7 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
+import NavigationUtils from '~/utils/NavigationUtils';
 import { Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';
@@ -191,14 +192,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         navigator.goTo({ link: linkViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
-    private navigateToNode = (nodeId: string) => () => {
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', nodeId)
-            .toLink();
-        navigator.goTo({ link: nodeViewLink });
-    };
-
     private selectTransitType = (transitType: TransitType) => {
         this.props.linkStore!.updateLinkProperty('transitType', transitType);
     };
@@ -331,7 +324,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.buttonBar}>
                     <Button
-                        onClick={this.navigateToNode(link.startNode.id)}
+                        onClick={() => NavigationUtils.openNodeView({ nodeId: link.startNode.id })}
                         type={ButtonType.SQUARE}
                     >
                         <div className={s.buttonContent}>
@@ -342,7 +335,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             </div>
                         </div>
                     </Button>
-                    <Button onClick={this.navigateToNode(link.endNode.id)} type={ButtonType.SQUARE}>
+                    <Button
+                        onClick={() => NavigationUtils.openNodeView({ nodeId: link.endNode.id })}
+                        type={ButtonType.SQUARE}
+                    >
                         <div className={s.buttonContent}>
                             <div className={s.contentText}>
                                 Loppusolmu
