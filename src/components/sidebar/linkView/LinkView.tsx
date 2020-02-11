@@ -85,24 +85,25 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.linkStore!.clear();
 
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
-        try {
-            if (startNodeId && endNodeId && transitTypeCode) {
-                const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-                this.centerMapToLink(link);
-                this.props.linkStore!.init({
-                    link,
-                    nodes: [link.startNode, link.endNode],
-                    isNewLink: false
-                });
-                this.props.linkStore!.setIsLinkGeometryEditable(true);
-                const bounds = L.latLngBounds(link.geometry);
-                this.props.mapStore!.setMapBounds(bounds);
+        if (startNodeId && endNodeId && transitTypeCode) {
+            const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
+            if (!link) {
+                this.props.errorStore!.addError(
+                    `Haku löytää linkki (alkusolmu ${startNodeId}, loppusolmu ${endNodeId}, verkko ${transitTypeCode}) ei onnistunut.`
+                );
+                const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+                navigator.goTo({ link: homeViewLink });
+                return;
             }
-        } catch (e) {
-            this.props.errorStore!.addError(
-                `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
-                e
-            );
+            this.centerMapToLink(link);
+            this.props.linkStore!.init({
+                link,
+                nodes: [link.startNode, link.endNode],
+                isNewLink: false
+            });
+            this.props.linkStore!.setIsLinkGeometryEditable(true);
+            const bounds = L.latLngBounds(link.geometry);
+            this.props.mapStore!.setMapBounds(bounds);
         }
         this.setState({ isLoading: false });
     };
@@ -212,7 +213,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             );
         }
         // TODO: show some indicator to user of an empty page
-        if (!link) return null;
+        if (!link) {
+            return <div className={s.linkView}>Linkkiä ei löytynyt.</div>;
+        }
 
         const invalidPropertiesMap = this.props.linkStore!.invalidPropertiesMap;
         const isEditingDisabled = this.props.linkStore!.isEditingDisabled;
