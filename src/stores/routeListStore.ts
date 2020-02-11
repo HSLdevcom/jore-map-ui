@@ -75,7 +75,7 @@ export class RouteListStore {
                 currentRoutePath.startTime,
                 currentRoutePath.direction
             );
-            this.updateRoutePathLinks(newRoutePath, internalId);
+            this.updateRoutePathLinks(newRoutePath!, internalId);
         }
     };
 
