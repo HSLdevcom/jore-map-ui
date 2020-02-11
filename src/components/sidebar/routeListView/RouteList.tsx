@@ -101,10 +101,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                 this.props.routeListStore!.addToRoutes(routes);
                 this.props.routeListStore!.addToLines(lines);
             } catch (e) {
-                this.props.errorStore!.addError(
-                    `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
-                    e
-                );
+                this.props.errorStore!.addError(`Reittien (${routeIds.join(', ')}) haku epäonnistui.`);
+                const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+                navigator.goTo({ link: homeViewLink });
+                return;
             }
             this.setState({ isLoading: false });
         }
