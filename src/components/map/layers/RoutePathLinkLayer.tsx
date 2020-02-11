@@ -5,11 +5,9 @@ import { FeatureGroup, Polyline } from 'react-leaflet';
 import StartNodeType from '~/enums/startNodeType';
 import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { INode, IRoutePathLink } from '~/models';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
+import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
 import Marker from './markers/Marker';
@@ -66,11 +64,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     private openNode = (node: INode, popupId: number) => () => {
         this.props.popupStore!.closePopup(popupId);
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', node.id)
-            .toLink();
-        navigator.goTo({ link: nodeViewLink });
+        NavigationUtils.openNodeView({ nodeId: node.id });
     };
 
     private renderRoutePathLinks = () => {

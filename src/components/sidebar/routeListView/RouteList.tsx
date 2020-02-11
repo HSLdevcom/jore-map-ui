@@ -212,22 +212,25 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     private save = async () => {
         const routeStore = this.props.routeStore!;
-        const routeListStore = this.props.routeListStore!;
         this.setState({ isLoading: true });
 
         const route = routeStore.route;
         try {
             await RouteService.updateRoute(route!);
+            this.props.routeStore!.clear();
+            this.fetchRoute(route.id);
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            return;
         }
-        routeListStore.updateRoute(route);
-        routeStore.setOldRoute(route);
-        routeStore.setRouteToEdit(null);
-        this.setState({ isLoading: false });
     };
+
+    private fetchRoute = async (routeId: string) => {
+        this.setState({ isLoading: true });
+        const route = await RouteService.fetchRoute(routeId);
+        this.props.routeListStore!.updateRoute(route);
+        this.setState({ isLoading: false });
+    }
 
     render() {
         const routeStore = this.props.routeStore!;
@@ -261,7 +264,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                 >
                                     <div
                                         className={s.routeName}
-                                        onClick={() => NavigationUtils.openLineView(route!.lineId)}
+                                        onClick={() => NavigationUtils.openLineView({ lineId: route!.lineId })}
                                         title={`Avaa linja ${route!.lineId}`}
                                     >
                                         <TransitIcon
