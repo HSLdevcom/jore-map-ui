@@ -26,6 +26,8 @@ Runs at http://localhost:3000/
 
 ## Release
 
+[![Build Status](https://travis-ci.org/HSLdevcom/jore-map-ui.svg?branch=develop)](https://travis-ci.org/HSLdevcom/jore-map-ui)
+
 ### Travis builds docker image automatically with
 
 -   `:prod` tag, when code is pushed to `release-prod` branch
