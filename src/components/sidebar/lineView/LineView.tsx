@@ -99,13 +99,16 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         this._setState({ isLoading: true });
 
         const lineId = this.props.match!.params.id;
-        try {
-            const { line, routes } = await LineService.fetchLineAndRoutes(lineId);
-            this.props.lineStore!.init({ line, isNewLine: false });
-            this.props.lineStore!.setRoutes(routes);
-        } catch (e) {
-            this.props.errorStore!.addError('Linjan haku epäonnistui.', e);
+        const queryResult = await LineService.fetchLineAndRoutes(lineId);
+        if (!queryResult) {
+            this.props.errorStore!.addError(`Linjan ${lineId} haku epäonnistui.`);
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
+            return;
         }
+        const { line, routes } = queryResult;
+        this.props.lineStore!.init({ line, isNewLine: false });
+        this.props.lineStore!.setRoutes(routes);
         this._setState({ isLoading: false });
     };
 

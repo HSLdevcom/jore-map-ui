@@ -30,8 +30,8 @@ class LinkService {
             query: GraphqlQueries.getLinkQuery(),
             variables: { startNodeId, endNodeId, transitType: transitTypeCode }
         });
-        const link: IExternalLink | null = queryResult.data.link;
-        return link ? LinkFactory.mapExternalLink(queryResult.data.link) : null;
+        const externalLink: IExternalLink | null = queryResult.data.link;
+        return externalLink ? LinkFactory.mapExternalLink(externalLink) : null;
     };
 
     public static fetchMapHighlightLinksFromLatLng = async (
