@@ -137,7 +137,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         nodeStore.clear();
 
         const node = await this.fetchNode(selectedNodeId);
-        const links = await this.fetchLinksForNode(node!);
+        if (!node) return;
+        const links = await this.fetchLinksForNode(node);
         const nodeCacheObj: INodeCacheObj | null = nodeStore.getNodeCacheObjById(selectedNodeId);
         if (nodeCacheObj) {
             this.showNodeCachePrompt({
