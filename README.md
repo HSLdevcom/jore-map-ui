@@ -1,5 +1,7 @@
 # JoreMapUI
 
+[![Build Status](https://travis-ci.org/HSLdevcom/jore-map-ui.svg?branch=develop)](https://travis-ci.org/HSLdevcom/jore-map-ui)
+
 ## Install
 
 ### Clone the repo via git
@@ -25,8 +27,6 @@ $ yarn start
 Runs at http://localhost:3000/
 
 ## Release
-
-[![Build Status](https://travis-ci.org/HSLdevcom/jore-map-ui.svg?branch=develop)](https://travis-ci.org/HSLdevcom/jore-map-ui)
 
 ### Travis builds docker image automatically with
 
