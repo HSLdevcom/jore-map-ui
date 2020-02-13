@@ -22,7 +22,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
-import { RouteListStore } from '~/stores/routeListStore';
+import { IRouteItem, RouteListStore } from '~/stores/routeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
@@ -34,6 +34,7 @@ import RouteItem from './RouteItem';
 import * as s from './routeList.scss';
 
 interface IRouteListProps {
+    routeIds: string[];
     routeStore?: RouteStore;
     errorStore?: ErrorStore;
     confirmStore?: ConfirmStore;
@@ -71,6 +72,12 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         };
     }
 
+    async componentDidUpdate(prevProps: IRouteListProps) {
+        if (!_.isEqual(this.props.routeIds, prevProps.routeIds)) {
+            await this.fetchRoutes();
+        }
+    }
+
     async componentDidMount() {
         await this.fetchRoutes();
 
@@ -88,23 +95,23 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
         if (routeIds) {
             this.setState({ isLoading: true });
-            const currentRouteIds = this.props.routeListStore!.routes.map(r => r.id);
+            const currentRouteIds = this.props.routeListStore!.routeItems.map(routeItem => routeItem.route.id);
             const missingRouteIds = routeIds.filter(id => !currentRouteIds.includes(id));
             currentRouteIds
                 .filter(id => !routeIds.includes(id))
-                .forEach(id => this.props.routeListStore!.removeFromRoutes(id));
+                .forEach(id => this.props.routeListStore!.removeFromRouteItems(id));
 
             try {
                 const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
                 const lineIds = _.uniq(routes.map(route => route.lineId));
                 const lines = await LineService.fetchMultipleLines(lineIds);
-                this.props.routeListStore!.addToRoutes(routes);
                 this.props.routeListStore!.addToLines(lines);
+                this.props.routeListStore!.addToRouteItems(routes);
             } catch (e) {
-                this.props.errorStore!.addError(
-                    `Reittien (soltunnus ${routeIds.join(', ')}) haku epäonnistui.`,
-                    e
-                );
+                this.props.errorStore!.addError(`Reittien (${routeIds.join(', ')}) haku epäonnistui.`);
+                const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+                navigator.goTo({ link: homeViewLink });
+                return;
             }
             this.setState({ isLoading: false });
         }
@@ -161,7 +168,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     };
 
     private closeRoute = (route: IRoute) => {
-        this.props.routeListStore!.removeFromRoutes(route.id);
+        this.props.routeListStore!.removeFromRouteItems(route.id);
         if (this.props.routeStore!.routeIdToEdit === route.id) {
             this.props.routeStore!.clear();
         }
@@ -235,17 +242,17 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     render() {
         const routeStore = this.props.routeStore!;
         const routeListStore = this.props.routeListStore!;
-        if (this.state.isLoading) {
+        const routeItems = routeListStore.routeItems;
+        if (routeItems.length < 1) {
             return <Loader />;
         }
-        const routes = routeListStore.routes;
-        if (routes.length < 1) return null;
 
         const routeIdToEdit = routeStore.routeIdToEdit;
         return (
             <div className={s.routeListView} data-cy='routeListView'>
                 <div className={s.routeList}>
-                    {routes.map((route: IRoute, index: number) => {
+                    {routeItems.map((routeItem: IRouteItem, index: number) => {
+                        const route = routeItem.route;
                         const isEditing = routeIdToEdit === route.id;
                         const isSaveButtonDisabled =
                             !routeStore.route ||
@@ -287,7 +294,11 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     </div>
                                 </SidebarHeader>
                                 <div className={s.routeItemWrapper}>
-                                    <RouteItem route={route} isEditingDisabled={!isEditing} />
+                                    <RouteItem
+                                        route={route}
+                                        selectedTabIndex={routeItem.selectedTabIndex}
+                                        areAllRoutePathsVisible={routeItem.areAllRoutePathsVisible}
+                                        isEditingDisabled={!isEditing} />
                                 </div>
                                 {this.props.loginStore!.hasWriteAccess && (
                                     <div className={s.buttonContainer}>

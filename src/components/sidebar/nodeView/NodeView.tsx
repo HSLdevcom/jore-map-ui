@@ -137,7 +137,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         nodeStore.clear();
 
         const node = await this.fetchNode(selectedNodeId);
-        const links = await this.fetchLinksForNode(node!);
+        if (!node) return;
+        const links = await this.fetchLinksForNode(node);
         const nodeCacheObj: INodeCacheObj | null = nodeStore.getNodeCacheObjById(selectedNodeId);
         if (nodeCacheObj) {
             this.showNodeCachePrompt({
@@ -388,7 +389,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     ) => {
         const lat = Number(value);
         if (lat === previousLatLng.lat) return;
-        this.onNodeGeometryChange(coordinateType, new L.LatLng(lat, previousLatLng.lng));
+        let latLng;
+        try {
+            latLng = new L.LatLng(lat, previousLatLng.lng);
+        } catch (e) {
+            latLng = null;
+        }
+        if (latLng) {
+            this.onNodeGeometryChange(coordinateType, latLng);
+        }
     };
 
     private lngChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
@@ -396,7 +405,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     ) => {
         const lng = Number(value);
         if (lng === previousLatLng.lng) return;
-        this.onNodeGeometryChange(coordinateType, new L.LatLng(previousLatLng.lat, lng));
+        let latLng;
+        try {
+            latLng = new L.LatLng(previousLatLng.lat, lng);
+        } catch (e) {
+            latLng = null;
+        }
+        if (latLng) {
+            this.onNodeGeometryChange(coordinateType, latLng);
+        }
     };
 
     private toggleTransitType = async (type: TransitType) => {

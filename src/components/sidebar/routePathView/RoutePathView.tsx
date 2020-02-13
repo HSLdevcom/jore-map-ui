@@ -178,18 +178,20 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private fetchRoutePath = async () => {
         const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
-        try {
-            const routePath = await RoutePathService.fetchRoutePath(
-                routeId,
-                startTimeString,
-                direction
-            );
-            await this.fetchViaNames(routePath);
-            this.centerMapToRoutePath(routePath);
-            this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
-        } catch (e) {
-            this.props.errorStore!.addError('Reitinsuunnan haku ei onnistunut.', e);
+        const routePath = await RoutePathService.fetchRoutePath(
+            routeId,
+            startTimeString,
+            direction
+        );
+        if (!routePath) {
+            this.props.errorStore!.addError(`Reitinsuunnan (reitin tunnus: ${routeId}, alkupvm ${startTimeString}, suunta ${direction}) haku ei onnistunut.`);
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
+            return;
         }
+        await this.fetchViaNames(routePath);
+        this.centerMapToRoutePath(routePath);
+        this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
     };
 
     // fetch & set viaName properties to routePathLink

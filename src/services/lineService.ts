@@ -39,12 +39,13 @@ class LineService {
     ): Promise<{
         line: ILine;
         routes: IRoute[];
-    }> => {
+    } | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLineAndRoutesQuery(),
             variables: { lineId: lintunnus }
         });
         const externalLine = queryResult.data.linjaByLintunnus;
+        if (!externalLine) return null;
         const externalRoutes = externalLine.reittisByLintunnus.nodes;
         return {
             line: LineFactory.mapExternalLine(externalLine),
