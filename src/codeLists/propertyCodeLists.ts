@@ -63,9 +63,7 @@ const routePropertyCodeList: IRoutePropertyCodeList = {
     id: '',
     routePaths: 'REITINSUUNNAT',
     routeName: 'NIMI',
-    routeNameShort: 'LYHYT NIMI',
     routeNameSw: 'NIMI RUOTSIKSI',
-    routeNameShortSw: 'LYHYT NIMI RUOTSIKSI',
     lineId: '',
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM'
