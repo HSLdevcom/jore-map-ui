@@ -37,9 +37,9 @@ type view = 'line' | 'node' | 'stopArea' | 'link' | 'routePath';
 @inject('routeListStore', 'searchStore', 'toolbarStore', 'mapStore')
 @observer
 class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
-    private renderRouteListView = () => {
+    private renderRouteListView = (props: any) => {
         const queryParams = navigator.getQueryParam(QueryParams.routes);
-        return queryParams ? <RouteListView /> : <Redirect to='/' />;
+        return queryParams ? <RouteListView {...props} /> : <Redirect to='/' />;
     };
 
     private renderView = ({
