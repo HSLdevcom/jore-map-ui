@@ -7,9 +7,7 @@ interface IRoutePrimaryKey {
 export default interface IRoute extends IRoutePrimaryKey {
     routePaths: IRoutePath[];
     routeName: string;
-    routeNameShort: string;
     routeNameSw: string;
-    routeNameShortSw: string;
     lineId: string;
     modifiedBy?: string;
     modifiedOn?: Date;
