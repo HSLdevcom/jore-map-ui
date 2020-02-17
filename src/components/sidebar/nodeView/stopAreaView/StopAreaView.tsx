@@ -104,20 +104,19 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         this.setState({ isLoading: true });
 
         const stopAreaId = this.props.match!.params.id;
-        try {
-            if (stopAreaId) {
-                const stopArea = await StopAreaService.fetchStopArea(stopAreaId);
-                this.props.stopAreaStore!.init({
-                    stopArea,
-                    isNewStopArea: false
-                });
-            }
-        } catch (e) {
+        const stopArea = await StopAreaService.fetchStopArea(stopAreaId);
+        if (!stopArea) {
             this.props.errorStore!.addError(
-                `Haku löytää pysäkkialue, jolla on pysalueid ${stopAreaId}, ei onnistunut.`,
-                e
+                `Haku löytää pysäkkialue (pysalueid ${stopAreaId}) ei onnistunut.`
             );
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
+            return;
         }
+        this.props.stopAreaStore!.init({
+            stopArea,
+            isNewStopArea: false
+        });
         this.setState({ isLoading: false });
     };
 
