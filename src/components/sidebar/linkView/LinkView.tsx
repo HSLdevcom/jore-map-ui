@@ -116,7 +116,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         try {
             const startNode = await NodeService.fetchNode(startNodeId);
             const endNode = await NodeService.fetchNode(endNodeId);
-            this.createNewLink(startNode, endNode);
+            this.createNewLink(startNode!, endNode!);
         } catch (ex) {
             this.props.errorStore!.addError(
                 `Alkusolmun ${startNodeId} tai loppusolmun ${endNodeId} haku epäonnistui`

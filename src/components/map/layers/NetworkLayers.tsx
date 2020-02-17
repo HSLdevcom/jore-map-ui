@@ -203,12 +203,12 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     private showNodePopup = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
         const popupData: INodePopupData = {
-            node
+            node: node!
         };
         const nodePopup: IPopupProps = {
             type: 'nodePopup',
             data: popupData,
-            coordinates: node.coordinates,
+            coordinates: node!.coordinates,
             isCloseButtonVisible: false
         };
 
