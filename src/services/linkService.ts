@@ -25,12 +25,13 @@ class LinkService {
         startNodeId: string,
         endNodeId: string,
         transitTypeCode: string
-    ): Promise<ILink> => {
+    ): Promise<ILink | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLinkQuery(),
             variables: { startNodeId, endNodeId, transitType: transitTypeCode }
         });
-        return LinkFactory.mapExternalLink(queryResult.data.link);
+        const externalLink: IExternalLink | null = queryResult.data.link;
+        return externalLink ? LinkFactory.mapExternalLink(externalLink) : null;
     };
 
     public static fetchMapHighlightLinksFromLatLng = async (

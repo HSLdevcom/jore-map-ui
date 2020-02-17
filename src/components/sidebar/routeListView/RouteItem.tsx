@@ -8,36 +8,21 @@ import RouteTab from './RouteTab';
 
 interface IRouteItemProps {
     route: IRoute;
+    selectedTabIndex: number;
+    areAllRoutePathsVisible: boolean;
     isEditingDisabled: boolean;
     routeListStore?: RouteListStore;
 }
 
-interface IRouteItemState {
-    selectedTabIndex: number;
-    areAllRoutePathsVisible: boolean;
-}
-
 @inject('routeListStore', 'mapStore')
 @observer
-class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            selectedTabIndex: 0,
-            areAllRoutePathsVisible: false
-        };
-    }
-
+class RouteItem extends React.Component<IRouteItemProps> {
     private setSelectedTabIndex = (index: number) => {
-        this.setState({
-            selectedTabIndex: index
-        });
+        this.props.routeListStore!.setSelectedTabIndex(this.props.route.id, index);
     };
 
     private toggleAllRoutePathsVisible = () => {
-        this.setState({
-            areAllRoutePathsVisible: !this.state.areAllRoutePathsVisible
-        });
+        this.props.routeListStore!.toggleAllRoutePathsVisible(this.props.route.id);
     };
 
     render() {
@@ -45,7 +30,7 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
         return (
             <Tabs>
                 <TabList
-                    selectedTabIndex={this.state.selectedTabIndex}
+                    selectedTabIndex={this.props.selectedTabIndex}
                     setSelectedTabIndex={this.setSelectedTabIndex}
                 >
                     <Tab>
@@ -55,12 +40,12 @@ class RouteItem extends React.Component<IRouteItemProps, IRouteItemState> {
                         <div>Reitin tiedot</div>
                     </Tab>
                 </TabList>
-                <ContentList selectedTabIndex={this.state.selectedTabIndex}>
+                <ContentList selectedTabIndex={this.props.selectedTabIndex}>
                     <ContentItem>
                         <RoutePathListTab
                             key={this.props.route.id}
                             route={this.props.route}
-                            areAllRoutePathsVisible={this.state.areAllRoutePathsVisible}
+                            areAllRoutePathsVisible={this.props.areAllRoutePathsVisible}
                             toggleAllRoutePathsVisible={this.toggleAllRoutePathsVisible}
                         />
                     </ContentItem>

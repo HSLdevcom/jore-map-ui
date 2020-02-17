@@ -39,7 +39,7 @@ const roundLatLng = (latLng: LatLng) => {
 
 const _roundNumber = (num: number) => {
     const DECIMALS = Constants.DECIMALS_IN_GEOMETRIES;
-    return Math.round(num * Math.pow(10, DECIMALS)) / Math.pow(10, DECIMALS);
+    return Math.floor(num * Math.pow(10, DECIMALS)) / Math.pow(10, DECIMALS);
 };
 
 const calculateLengthFromLatLngs = (latLngs: L.LatLng[]) => {

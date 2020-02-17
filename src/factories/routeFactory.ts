@@ -9,9 +9,7 @@ class RouteFactory {
         return {
             routePaths: routePaths ? routePaths : [],
             routeName: externalRoute.reinimi,
-            routeNameShort: externalRoute.reinimilyh,
             routeNameSw: externalRoute.reinimir,
-            routeNameShortSw: externalRoute.reinimilyhr,
             lineId: externalRoute.lintunnus,
             id: externalRoute.reitunnus,
             modifiedBy: externalRoute.reikuka,
@@ -25,9 +23,7 @@ class RouteFactory {
             id: '',
             routePaths: [],
             routeName: '',
-            routeNameShort: '',
             routeNameSw: '',
-            routeNameShortSw: '',
             modifiedBy: '',
             modifiedOn: new Date()
         };

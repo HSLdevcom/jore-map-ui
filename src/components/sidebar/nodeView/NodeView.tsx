@@ -107,17 +107,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             const coordinate = new L.LatLng(lat, lng);
             const node = NodeFactory.createNewNode(coordinate);
             this.centerMapToNode(node, []);
-            const nodeId = await NodeService.fetchAvailableNodeId(node);
-            if (!nodeId) {
-                node.id = '';
-                this.props.alertStore!.setNotificationMessage({
-                    message:
-                        'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Syötä solmun tunnus kenttään ensimmäiset 5 solmutunnuksen numeroa.'
-                });
-                this.props.nodeStore!.setIsNodeIdEditable(true);
-            } else {
-                node.id = nodeId;
-            }
+            node.id = await this.fetchNodeId(node);
             this.props.nodeStore!.init({ node, links: [], isNewNode: true });
             this.updateSelectedStopAreaId();
         };
@@ -131,14 +121,33 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._setState({ isLoading: false });
     };
 
-    private initExistingNode = async (selectedNodeId: string) => {
+    private fetchNodeId = async (node: INode) => {
+        const nodeId = await NodeService.fetchAvailableNodeId(node);
+        if (!nodeId) {
+            this.props.alertStore!.setNotificationMessage({
+                message:
+                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Syötä solmun tunnus kenttään ensimmäiset 5 solmutunnuksen numeroa.'
+            });
+            this.props.nodeStore!.setIsNodeIdEditable(true);
+            return '';
+        }
+        return nodeId;
+    }
+
+    private initExistingNode = async (nodeId: string) => {
         const nodeStore = this.props.nodeStore!;
         this._setState({ isLoading: true });
         nodeStore.clear();
 
-        const node = await this.fetchNode(selectedNodeId);
-        const links = await this.fetchLinksForNode(node!);
-        const nodeCacheObj: INodeCacheObj | null = nodeStore.getNodeCacheObjById(selectedNodeId);
+        const node = await NodeService.fetchNode(nodeId);
+        if (!node) {
+            this.props.errorStore!.addError(`Solmun ${nodeId} haku ei onnistunut.`);
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
+            return;
+        }
+        const links = await this.fetchLinksForNode(node);
+        const nodeCacheObj: INodeCacheObj | null = nodeStore.getNodeCacheObjById(nodeId);
         if (nodeCacheObj) {
             this.showNodeCachePrompt({
                 nodeCacheObj,
@@ -163,15 +172,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.centerMapToNode(node, links);
         this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: this.props.isNewNode });
     };
-
-    private async fetchNode(nodeId: string) {
-        try {
-            return await NodeService.fetchNode(nodeId);
-        } catch (e) {
-            this.props.errorStore!.addError('Solmun haku ei onnistunut', e);
-            return null;
-        }
-    }
 
     private showNodeCachePrompt = ({
         nodeCacheObj,
@@ -358,8 +358,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         }
     };
 
-    private onChangeNodeType = (type: NodeType) => {
+    private onChangeNodeType = async (type: NodeType) => {
+        this._setState({ isLoading: true });
         this.props.nodeStore!.updateNodeType(type);
+        const nodeId = await this.fetchNodeId(this.props.nodeStore!.node);
+        this.props.nodeStore!.updateNodeProperty('id', nodeId);
+        this._setState({ isLoading: false });
     }
 
     private queryAvailableNodeIdSuffixes = async (beginningOfNodeId: string) => {
@@ -388,7 +392,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     ) => {
         const lat = Number(value);
         if (lat === previousLatLng.lat) return;
-        this.onNodeGeometryChange(coordinateType, new L.LatLng(lat, previousLatLng.lng));
+        let latLng;
+        try {
+            latLng = new L.LatLng(lat, previousLatLng.lng);
+        } catch (e) {
+            latLng = null;
+        }
+        if (latLng) {
+            this.onNodeGeometryChange(coordinateType, latLng);
+        }
     };
 
     private lngChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
@@ -396,7 +408,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     ) => {
         const lng = Number(value);
         if (lng === previousLatLng.lng) return;
-        this.onNodeGeometryChange(coordinateType, new L.LatLng(previousLatLng.lat, lng));
+        let latLng;
+        try {
+            latLng = new L.LatLng(previousLatLng.lat, lng);
+        } catch (e) {
+            latLng = null;
+        }
+        if (latLng) {
+            this.onNodeGeometryChange(coordinateType, latLng);
+        }
     };
 
     private toggleTransitType = async (type: TransitType) => {

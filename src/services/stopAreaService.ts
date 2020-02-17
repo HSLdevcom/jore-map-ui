@@ -23,12 +23,13 @@ interface IExternalTerminalArea {
 }
 
 class StopAreaService {
-    public static fetchStopArea = async (stopAreaId: string): Promise<IStopArea> => {
+    public static fetchStopArea = async (stopAreaId: string): Promise<IStopArea | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getStopAreaQuery(),
             variables: { stopAreaId }
         });
-        return StopAreaFactory.mapExternalStopArea(queryResult.data.stopArea);
+        const externalStopArea = queryResult.data.stopArea;
+        return externalStopArea ? StopAreaFactory.mapExternalStopArea(externalStopArea) : null;
     };
 
     public static fetchAllStopAreas = async (): Promise<IStopAreaItem[]> => {

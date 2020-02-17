@@ -44,7 +44,7 @@ class AddNetworkLinkTool implements BaseTool {
             this.startNodeId = nodeId;
             try {
                 const startNode = await NodeService.fetchNode(nodeId);
-                LinkStore.setMarkerCoordinates(startNode.coordinates);
+                LinkStore.setMarkerCoordinates(startNode!.coordinates);
             } catch (e) {
                 ErrorStore.addError(`Alkusolmun ${nodeId} haku epäonnistui`);
             }

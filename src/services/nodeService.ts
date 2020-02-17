@@ -10,13 +10,14 @@ import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
 class NodeService {
-    public static fetchNode = async (nodeId: string) => {
+    public static fetchNode = async (nodeId: string) : Promise<INode | null>=> {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getNodeQuery(),
             variables: { nodeId },
             fetchPolicy: 'no-cache' // no-cache is needed because otherwise nested data fetch does not always work
         });
-        return NodeFactory.mapExternalNode(queryResult.data.node);
+        const externalNode = queryResult.data.node;
+        return externalNode ? NodeFactory.mapExternalNode(externalNode) : null;
     };
 
     public static fetchMapHighlightNodesFromLatLng = async (

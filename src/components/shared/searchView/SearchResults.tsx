@@ -130,29 +130,32 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
 
     render() {
-        if (this.state.isLoading) {
-            return <Loader />;
-        }
         const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
         const filteredItems = this.getFilteredItems();
         return (
             <div className={s.searchResultsView}>
-                <div
-                    className={s.searchResultsWrapper}
-                    onScroll={this.showMoreResults}
-                    ref={this.paginatedDiv}
-                >
-                    {filteredItems.length === 0 ? (
-                        <div className={s.noResults}>Ei hakutuloksia.</div>
-                    ) : (
-                        filteredItems.map((item: ISearchLine | INodeBase) => {
-                            if (this.isLine(item)) {
-                                return <LineItem key={item.id} line={item} />;
-                            }
-                            return <NodeItem key={item.id} node={item} />;
-                        })
-                    )}
-                </div>
+                {this.state.isLoading ? (
+                    <div className={s.searchResultsView}>
+                        <Loader />
+                    </div>
+                ) : (
+                    <div
+                        className={s.searchResultsWrapper}
+                        onScroll={this.showMoreResults}
+                        ref={this.paginatedDiv}
+                    >
+                        {filteredItems.length === 0 ? (
+                            <div className={s.noResults}>Ei hakutuloksia.</div>
+                        ) : (
+                            filteredItems.map((item: ISearchLine | INodeBase) => {
+                                if (this.isLine(item)) {
+                                    return <LineItem key={item.id} line={item} />;
+                                }
+                                return <NodeItem key={item.id} node={item} />;
+                            })
+                        )}
+                    </div>
+                )}
                 {isRouteListView && (
                     <div className={s.largeButton} onClick={this.closeSearchResults}>
                         Sulje

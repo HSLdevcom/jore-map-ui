@@ -21,11 +21,21 @@ class NavigationUtils {
     }: {
         routeId: string;
         queryValues?: any;
-    }) => {
-        const routeViewLink = routeBuilder
-            .to(SubSites.routes, queryValues)
-            .append(QueryParams.routes, routeId)
-            .toLink();
+        }) => {
+        const routes = queryValues?.routes;
+        const isRouteIdAlreadyInQueryValues = routes && routes.includes(routeId);
+
+        let routeViewLink;
+        if (isRouteIdAlreadyInQueryValues) {
+            routeViewLink = routeBuilder
+                .to(SubSites.routes, queryValues)
+                .toLink();
+        } else {
+            routeViewLink = routeBuilder
+                .to(SubSites.routes, queryValues)
+                .append(QueryParams.routes, routeId)
+                .toLink();
+        }
         navigator.goTo({
             link: routeViewLink
         });

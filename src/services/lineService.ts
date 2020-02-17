@@ -20,14 +20,13 @@ class LineService {
     };
 
     public static fetchMultipleLines = async (lineIds: string[]): Promise<ILine[]> => {
-        const promises: Promise<void>[] = [];
         const lines: ILine[] = [];
-        lineIds.map((lineId: string) => {
+        const promises: Promise<void>[] = lineIds.map((lineId: string) => {
             const createPromise = async () => {
                 const route = await LineService.fetchLine(lineId);
                 lines.push(route);
             };
-            promises.push(createPromise());
+            return createPromise();
         });
 
         await Promise.all(promises);
@@ -39,12 +38,13 @@ class LineService {
     ): Promise<{
         line: ILine;
         routes: IRoute[];
-    }> => {
+    } | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLineAndRoutesQuery(),
             variables: { lineId: lintunnus }
         });
         const externalLine = queryResult.data.linjaByLintunnus;
+        if (!externalLine) return null;
         const externalRoutes = externalLine.reittisByLintunnus.nodes;
         return {
             line: LineFactory.mapExternalLine(externalLine),
