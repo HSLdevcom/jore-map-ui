@@ -186,7 +186,7 @@ class StopForm extends Component<IStopFormProps> {
                         />
                         {!isReadOnly && stop.stopAreaId && (
                             <Button
-                                className={s.editStopAreaButton}
+                                className={s.dropdownButton}
                                 hasReverseColor={true}
                                 onClick={() => {
                                     this.redirectToStopArea(stop.stopAreaId);
@@ -341,7 +341,8 @@ class StopForm extends Component<IStopFormProps> {
                             <Button
                                 onClick={this.createNewHastusArea}
                                 type={ButtonType.SQUARE}
-                                className={s.newHastusAreaButton}
+                                className={s.dropdownButton}
+                                hasReverseColor={true}
                             >
                                 <IoIosAddCircleOutline />
                             </Button>

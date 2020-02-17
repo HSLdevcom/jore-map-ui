@@ -14,27 +14,12 @@
         width: 100%;
     }
 
-    .editStopAreaButton {
+    .dropdownButton {
         font-size: 30px;
         cursor: pointer;
         transition: 0.5s;
         align-self: flex-end;
         padding: 6px;
         border-radius: 5px;
-    }
-
-    .newHastusAreaButton {
-        font-size: 30px;
-        cursor: pointer;
-        transition: 0.5s;
-        align-self: flex-end;
-        padding: 6px;
-        border-radius: 5px;
-        color: $busBlue;
-        background-color: $backgroundlightGrey;
-    }
-
-    .editStopAreaButton:hover {
-        opacity: 1;
     }
 }
