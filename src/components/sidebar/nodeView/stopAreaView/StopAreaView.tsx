@@ -161,16 +161,13 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                 }
             } else {
                 await StopAreaService.updateStopArea(this.props.stopAreaStore!.stopArea);
-                this.props.stopAreaStore!.setOldStopArea(this.props.stopAreaStore!.stopArea);
+                this.props.stopAreaStore!.setIsEditingDisabled(true);
+                this.initExistingStopArea();
             }
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-        if (this.props.isNewStopArea) return;
-
-        this.props.stopAreaStore!.setIsEditingDisabled(true);
-        this.setState({ isLoading: false });
     };
 
     private showSavePrompt = () => {
