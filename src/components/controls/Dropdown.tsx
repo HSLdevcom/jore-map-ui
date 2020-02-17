@@ -200,6 +200,11 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
 const _getCustomStyles = (props: IDropdownProps) => {
     // Giving styles with style object (TODO: better way would be to use classnames)
     return {
+        // Make input value as light grey to indicate that cursor is not in the end of text
+        singleValue: (styles: any, state: any) => ({
+            ...styles,
+            color: state.selectProps.menuIsOpen ? '#bebebe' : '#000'
+        }),
         container: (styles: any) => ({
             ...styles,
             height: s.inputFieldHeight,
