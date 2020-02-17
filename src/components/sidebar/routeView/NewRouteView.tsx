@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import SaveButton from '~/components/shared/SaveButton';
+import constants from '~/constants/constants';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -30,6 +31,8 @@ interface IRouteViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
 }
+
+const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject('routeStore', 'mapStore', 'alertStore', 'errorStore')
 @observer
@@ -118,6 +121,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         const lineId = navigator.getQueryParam(QueryParams.lineId);
         if (!route) return null;
         const isRouteFormValid = routeStore.isRouteFormValid;
+        const isSavePrevented = ENVIRONMENT === 'prod' || ENVIRONMENT === 'stage';
         return (
             <div className={classnames(s.routeView, s.form)}>
                 <SidebarHeader isEditButtonVisible={false} isEditing={true}>
@@ -132,7 +136,12 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                         invalidPropertiesMap={invalidPropertiesMap}
                     />
                 </div>
-                <SaveButton onClick={this.save} disabled={!isRouteFormValid}>
+                <SaveButton
+                    onClick={this.save}
+                    disabled={!isRouteFormValid}
+                    isSavePrevented={isSavePrevented}
+                    savePreventedNotification='Uuden reitin tallentamista ei vielä tueta, sillä vanha käyttöliittymä ei näytä reittiä ellei sillä ole olemassa olevaa reitinsuuntaa eikä reitinsuuntia voi vielä luoda uudella käyttöliittymällä. Voit kokeilla reitin luontia dev-ympäristössä. Jos haluat luoda reittejä tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.'
+                >
                     Luo uusi reitti
                 </SaveButton>
             </div>
