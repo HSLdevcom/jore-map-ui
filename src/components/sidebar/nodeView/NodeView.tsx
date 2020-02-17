@@ -134,15 +134,20 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         return nodeId;
     }
 
-    private initExistingNode = async (selectedNodeId: string) => {
+    private initExistingNode = async (nodeId: string) => {
         const nodeStore = this.props.nodeStore!;
         this._setState({ isLoading: true });
         nodeStore.clear();
 
-        const node = await this.fetchNode(selectedNodeId);
-        if (!node) return;
+        const node = await NodeService.fetchNode(nodeId);
+        if (!node) {
+            this.props.errorStore!.addError(`Solmun ${nodeId} haku ei onnistunut.`);
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
+            return;
+        }
         const links = await this.fetchLinksForNode(node);
-        const nodeCacheObj: INodeCacheObj | null = nodeStore.getNodeCacheObjById(selectedNodeId);
+        const nodeCacheObj: INodeCacheObj | null = nodeStore.getNodeCacheObjById(nodeId);
         if (nodeCacheObj) {
             this.showNodeCachePrompt({
                 nodeCacheObj,
@@ -167,15 +172,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.centerMapToNode(node, links);
         this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: this.props.isNewNode });
     };
-
-    private async fetchNode(nodeId: string) {
-        try {
-            return await NodeService.fetchNode(nodeId);
-        } catch (e) {
-            this.props.errorStore!.addError('Solmun haku ei onnistunut', e);
-            return null;
-        }
-    }
 
     private showNodeCachePrompt = ({
         nodeCacheObj,

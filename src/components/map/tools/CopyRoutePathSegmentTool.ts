@@ -50,7 +50,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
     private selectStartNode = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
-        RoutePathCopySegmentStore.setStartNode(node);
+        RoutePathCopySegmentStore.setStartNode(node!);
 
         await this.fetchRoutePathLinkSegment();
 
@@ -61,7 +61,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
     private selectEndNode = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
-        RoutePathCopySegmentStore.setEndNode(node);
+        RoutePathCopySegmentStore.setEndNode(node!);
 
         await this.fetchRoutePathLinkSegment();
 

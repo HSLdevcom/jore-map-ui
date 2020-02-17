@@ -78,7 +78,7 @@ class StopService {
         stopItems.forEach((iterator: IStopItem) => {
             const promise = async () => {
                 const node = await NodeService.fetchNode(iterator.nodeId);
-                iterator.coordinates = node.coordinates;
+                iterator.coordinates = node!.coordinates;
                 map.set(iterator.nodeId, iterator);
             };
             promises.push(promise());
