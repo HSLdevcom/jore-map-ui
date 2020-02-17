@@ -8,7 +8,6 @@ import TransitType from '~/enums/transitType';
 import { ILine } from '~/models';
 import LineService from '~/services/lineService';
 import { CodeListStore } from '~/stores/codeListStore';
-import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
@@ -24,7 +23,6 @@ interface ILineInfoTabState {
 interface ILineInfoTabProps {
     lineStore?: LineStore;
     codeListStore?: CodeListStore;
-    confirmStore?: ConfirmStore;
     errorStore?: ErrorStore;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
     navigationStore?: NavigationStore;
@@ -42,14 +40,7 @@ const transitTypeDefaultValueMap = {
     '7': '07'
 };
 
-@inject(
-    'lineStore',
-    'codeListStore',
-    'errorStore',
-    'lineHeaderMassEditStore',
-    'navigationStore',
-    'confirmStore'
-)
+@inject('lineStore', 'codeListStore', 'errorStore', 'lineHeaderMassEditStore', 'navigationStore')
 @observer
 class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> {
     constructor(props: any) {

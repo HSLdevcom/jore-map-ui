@@ -4,8 +4,6 @@ import SidebarHeader from '~/components/sidebar/SidebarHeader';
 import NodeForm from '~/components/sidebar/nodeView/NodeForm';
 import StopForm from '~/components/sidebar/nodeView/StopForm';
 import { INode } from '~/models';
-import { ConfirmStore } from '~/stores/confirmStore';
-import { NetworkStore } from '~/stores/networkStore';
 import { PopupStore } from '~/stores/popupStore';
 import * as s from './nodePopup.scss';
 
@@ -16,8 +14,6 @@ interface INodePopupData {
 interface INodePopupProps {
     popupId: number;
     data: INodePopupData;
-    networkStore?: NetworkStore;
-    confirmStore?: ConfirmStore;
     popupStore?: PopupStore;
 }
 
