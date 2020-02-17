@@ -20,14 +20,13 @@ class LineService {
     };
 
     public static fetchMultipleLines = async (lineIds: string[]): Promise<ILine[]> => {
-        const promises: Promise<void>[] = [];
         const lines: ILine[] = [];
-        lineIds.map((lineId: string) => {
+        const promises: Promise<void>[] = lineIds.map((lineId: string) => {
             const createPromise = async () => {
                 const route = await LineService.fetchLine(lineId);
                 lines.push(route);
             };
-            promises.push(createPromise());
+            return createPromise();
         });
 
         await Promise.all(promises);
