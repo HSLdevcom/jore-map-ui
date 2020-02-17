@@ -6,7 +6,7 @@ import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
 import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
-import StopService, { IStopSectionItem } from '~/services/stopService';
+import StopService, { IHastusAreaItem, IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import StopForm from './StopForm';
@@ -25,6 +25,7 @@ interface IStopViewProps {
 interface IStopViewState {
     isLoading: boolean;
     stopSections: IDropdownItem[];
+    hastusAreas: IDropdownItem[];
 }
 
 @inject('nodeStore', 'codeListStore')
@@ -37,7 +38,8 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         super(props);
         this.state = {
             isLoading: true,
-            stopSections: []
+            stopSections: [],
+            hastusAreas: []
         };
     }
 
@@ -49,10 +51,11 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         }
         const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
-
+        const hastusAreas: IHastusAreaItem[] = await StopService.fetchAllHastusAreas();
         if (this._isMounted) {
             this.setState({
-                stopSections: this.createStopSectionDropdownItems(stopSections)
+                stopSections: this.createStopSectionDropdownItems(stopSections),
+                hastusAreas: this.createHastusAreaDropdownItems(hastusAreas)
             });
             this.props.nodeStore!.setStopAreaItems(stopAreas);
             this.setState({ isLoading: false });
@@ -86,6 +89,16 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         });
     };
 
+    private createHastusAreaDropdownItems = (hastusAreas: IHastusAreaItem[]): IDropdownItem[] => {
+        return hastusAreas.map((hastusArea: IHastusAreaItem) => {
+            const item: IDropdownItem = {
+                value: `${hastusArea.paitunnus}`,
+                label: `${hastusArea.paitunnus} - ${hastusArea.nimi}`
+            };
+            return item;
+        });
+    };
+
     private updateStopProperty = (property: keyof IStop) => (value: any) => {
         this.props.nodeStore!.updateStopProperty(property, value);
     };
@@ -112,6 +125,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 isEditingDisabled={isEditingDisabled}
                 stopAreas={this.props.nodeStore!.stopAreaItems}
                 stopSections={this.state.stopSections}
+                hastusAreas={this.state.hastusAreas}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
                 isTransitToggleButtonBarVisible={this.props.isTransitToggleButtonBarVisible}

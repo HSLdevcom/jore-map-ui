@@ -351,6 +351,19 @@ const getAllStopSections = () => {
     `;
 };
 
+const getAllHastusAreas = () => {
+    return gql`
+        query getAllHastusAreas {
+            node: allPaikkas {
+                nodes {
+                    paitunnus
+                    nimi
+                }
+            }
+        }
+    `;
+};
+
 const getReservedShortIds = () => {
     return gql`
         query getReservedShortIds($shortIdLetter: String) {
@@ -713,6 +726,7 @@ export default {
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
+    getAllHastusAreas,
     getReservedShortIds,
     getViaName
 };

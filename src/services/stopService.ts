@@ -11,6 +11,11 @@ interface IStopSectionItem {
     selite: string;
 }
 
+interface IHastusAreaItem {
+    paitunnus: string;
+    nimi: string;
+}
+
 interface IReservedShortIdItem {
     nodeId: string;
     shortId: string;
@@ -22,6 +27,14 @@ class StopService {
     public static fetchAllStopSections = async (): Promise<IStopSectionItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopSections()
+        });
+
+        return queryResult.data.node.nodes;
+    };
+
+    public static fetchAllHastusAreas = async (): Promise<IHastusAreaItem[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllHastusAreas()
         });
 
         return queryResult.data.node.nodes;
@@ -132,4 +145,4 @@ const _generateAllShortIdVariations = (numberCount: number) => {
 
 export default StopService;
 
-export { IStopSectionItem, IStopItem };
+export { IStopSectionItem, IStopItem, IHastusAreaItem };

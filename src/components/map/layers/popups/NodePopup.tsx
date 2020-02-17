@@ -54,6 +54,7 @@ class NodePopup extends Component<INodePopupProps> {
                             isEditingDisabled={true}
                             stopAreas={[]}
                             stopSections={[]}
+                            hastusAreas={[]}
                             stopInvalidPropertiesMap={{}}
                             nodeInvalidPropertiesMap={{}}
                             updateStopProperty={() => () => void 0}

@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { FiInfo } from 'react-icons/fi';
+import { IoIosAddCircleOutline } from 'react-icons/io';
 import { match } from 'react-router';
 import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
@@ -25,6 +26,7 @@ interface IStopFormProps {
     isEditingDisabled: boolean;
     stopAreas: IStopAreaItem[];
     stopSections: IDropdownItem[];
+    hastusAreas: IDropdownItem[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
     match?: match<any>;
@@ -91,6 +93,10 @@ class StopForm extends Component<IStopFormProps> {
         navigator.goTo({ link, shouldSkipUnsavedChangesPrompt: true });
     };
 
+    private createNewHastusArea = () => {
+        // TODO:
+    };
+
     render() {
         const {
             node,
@@ -98,6 +104,7 @@ class StopForm extends Component<IStopFormProps> {
             isEditingDisabled,
             stopAreas,
             stopSections,
+            hastusAreas,
             stopInvalidPropertiesMap,
             nodeInvalidPropertiesMap,
             toggleTransitType,
@@ -284,12 +291,13 @@ class StopForm extends Component<IStopFormProps> {
                             label='VYÖHYKE'
                             validationResult={stopInvalidPropertiesMap['section']}
                         />
-                        <InputContainer
-                            label='HASTUS-PAIKKA'
+                        <Dropdown
+                            onChange={updateStopProperty!('roof')}
+                            items={this.props.codeListStore!.getDropdownItemList('Pysäkkityyppi')}
+                            selected={stop.roof}
                             disabled={isEditingDisabled}
-                            value={stop.hastusId}
-                            validationResult={stopInvalidPropertiesMap['hastusId']}
-                            onChange={updateStopProperty!('hastusId')}
+                            label='PYSÄKKIKATOS'
+                            validationResult={stopInvalidPropertiesMap['roof']}
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -308,8 +316,6 @@ class StopForm extends Component<IStopFormProps> {
                             onChange={updateStopProperty!('radius')}
                             validationResult={stopInvalidPropertiesMap['radius']}
                         />
-                    </div>
-                    <div className={s.flexRow}>
                         <InputContainer
                             label='ELYNUMERO'
                             disabled={isEditingDisabled}
@@ -317,14 +323,29 @@ class StopForm extends Component<IStopFormProps> {
                             validationResult={stopInvalidPropertiesMap['elyNumber']}
                             onChange={updateStopProperty!('elyNumber')}
                         />
+                    </div>
+                    <div className={s.flexRow}>
                         <Dropdown
-                            onChange={updateStopProperty!('roof')}
-                            items={this.props.codeListStore!.getDropdownItemList('Pysäkkityyppi')}
-                            selected={stop.roof}
+                            onChange={updateStopProperty!('hastusId')}
+                            items={hastusAreas}
+                            selected={stop.hastusId}
+                            emptyItem={{
+                                value: '',
+                                label: ''
+                            }}
                             disabled={isEditingDisabled}
-                            label='PYSÄKKIKATOS'
-                            validationResult={stopInvalidPropertiesMap['roof']}
+                            label='HASTUS-PAIKKA'
+                            validationResult={stopInvalidPropertiesMap['hastusId']}
                         />
+                        {!isReadOnly && (
+                            <Button
+                                onClick={this.createNewHastusArea}
+                                type={ButtonType.SQUARE}
+                                className={s.newHastusAreaButton}
+                            >
+                                <IoIosAddCircleOutline />
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>
