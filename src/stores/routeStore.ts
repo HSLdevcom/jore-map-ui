@@ -83,7 +83,7 @@ class RouteStore {
     @action
     public init = ({ route, isNewRoute }: { route: IRoute; isNewRoute: boolean }) => {
         this._route = _.cloneDeep(route);
-        this.setOldRoute(route);
+        this._oldRoute = _.cloneDeep(route);
         this._isNewRoute = isNewRoute;
         const customValidatorMap: ICustomValidatorMap = {
             id: {
@@ -116,11 +116,6 @@ class RouteStore {
             this.init({ route, isNewRoute: false });
             this._routeIdToEdit = route.id;
         }
-    };
-
-    @action
-    public setOldRoute = (route: IRoute) => {
-        this._oldRoute = _.cloneDeep(route);
     };
 
     @action

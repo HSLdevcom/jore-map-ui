@@ -46,6 +46,7 @@ interface ILineViewState {
 )
 @observer
 class LineView extends React.Component<ILineViewProps, ILineViewState> {
+    private _isMounted: boolean;
     constructor(props: ILineViewProps) {
         super(props);
         this.state = {
@@ -54,18 +55,26 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         };
     }
 
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+
     componentDidMount() {
+        this._isMounted = true;
         this.initialize();
         this.props.lineStore!.setIsEditingDisabled(!this.props.isNewLine);
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         this.props.lineStore!.clear();
         this.props.lineHeaderMassEditStore!.clear();
     }
 
     private setSelectedTabIndex = (index: number) => {
-        this.setState({
+        this._setState({
             selectedTabIndex: index
         });
     };
@@ -73,73 +82,60 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
     private initialize = async () => {
         this.props.mapStore!.initCoordinates();
         if (this.props.isNewLine) {
-            await this.createNewLine();
+            await this.initNewLine();
         } else {
             await this.initExistingLine();
         }
-        if (this.props.lineStore!.line) {
-            this.setState({
-                isLoading: false
-            });
-        }
     };
 
-    private createNewLine = async () => {
-        try {
-            if (!this.props.lineStore!.line) {
-                const newLine = LineFactory.createNewLine();
-                this.props.lineStore!.init({ line: newLine, isNewLine: true });
-            }
-        } catch (e) {
-            this.props.errorStore!.addError('Uuden linjan luonti epäonnistui', e);
-        }
+    private initNewLine = async () => {
+        this._setState({ isLoading: true });
+        const newLine = LineFactory.createNewLine();
+        this.props.lineStore!.init({ line: newLine, isNewLine: true });
+        this._setState({ isLoading: false });
     };
 
     private initExistingLine = async () => {
+        this._setState({ isLoading: true });
+
         const lineId = this.props.match!.params.id;
-        try {
-            const { line, routes } = await LineService.fetchLineAndRoutes(lineId);
-            this.props.lineStore!.init({ line, isNewLine: false });
-            this.props.lineStore!.setRoutes(routes);
-        } catch (e) {
-            this.props.errorStore!.addError('Linjan haku epäonnistui.', e);
+        const queryResult = await LineService.fetchLineAndRoutes(lineId);
+        if (!queryResult) {
+            this.props.errorStore!.addError(`Linjan ${lineId} haku epäonnistui.`);
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
+            return;
         }
+        const { line, routes } = queryResult;
+        this.props.lineStore!.init({ line, isNewLine: false });
+        this.props.lineStore!.setRoutes(routes);
+        this._setState({ isLoading: false });
     };
 
     private saveLine = async () => {
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
 
         const line = this.props.lineStore!.line;
         try {
             if (this.props.isNewLine) {
                 await LineService.createLine(line!);
+                const lineViewLink = routeBuilder
+                    .to(SubSites.line)
+                    .toTarget(':id', this.props.lineStore!.line!.id)
+                    .toLink();
+                navigator.goTo({
+                    link: lineViewLink,
+                    shouldSkipUnsavedChangesPrompt: true
+                });
             } else {
                 await LineService.updateLine(line!);
+                this.props.lineStore!.setIsEditingDisabled(true);
+                this.initExistingLine();
             }
-
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            return;
         }
-        if (this.props.isNewLine) {
-            this.navigateToNewLine();
-            return;
-        }
-        this.props.lineStore!.setOldLine(line!);
-        this.setState({
-            isLoading: false
-        });
-        this.props.lineStore!.setIsEditingDisabled(true);
-    };
-
-    private navigateToNewLine = () => {
-        const line = this.props.lineStore!.line;
-        const lineViewLink = routeBuilder
-            .to(SubSites.line)
-            .toTarget(':id', line!.id)
-            .toLink();
-        navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
     private showSavePrompt = () => {

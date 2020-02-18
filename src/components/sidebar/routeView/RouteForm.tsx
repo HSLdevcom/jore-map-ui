@@ -59,22 +59,6 @@ class RouteForm extends React.Component<IRouteFormProps> {
                         validationResult={invalidPropertiesMap['routeNameSw']}
                     />
                 </div>
-                <div className={s.flexRow}>
-                    <InputContainer
-                        disabled={isEditingDisabled}
-                        label='LYHYT NIMI'
-                        value={route.routeNameShort}
-                        onChange={onChange('routeNameShort')}
-                        validationResult={invalidPropertiesMap['routeNameShort']}
-                    />
-                    <InputContainer
-                        disabled={isEditingDisabled}
-                        label='LYHYT NIMI RUOTSIKSI'
-                        value={route.routeNameShortSw}
-                        onChange={onChange('routeNameShortSw')}
-                        validationResult={invalidPropertiesMap['routeNameShortSw']}
-                    />
-                </div>
                 {!isNewRoute && (
                     <div className={s.flexRow}>
                         <TextContainer label='MUOKANNUT' value={route.modifiedBy} />

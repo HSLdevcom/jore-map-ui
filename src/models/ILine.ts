@@ -7,8 +7,6 @@ interface ILinePrimaryKey {
 export default interface ILine extends ILinePrimaryKey {
     transitType?: TransitType;
     lineBasicRoute: string;
-    lineStartDate: Date;
-    lineEndDate: Date;
     publicTransportType: string;
     clientOrganization: string;
     modifiedBy?: string;

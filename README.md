@@ -1,5 +1,7 @@
 # JoreMapUI
 
+[![Build Status](https://travis-ci.org/HSLdevcom/jore-map-ui.svg?branch=develop)](https://travis-ci.org/HSLdevcom/jore-map-ui)
+
 ## Install
 
 ### Clone the repo via git

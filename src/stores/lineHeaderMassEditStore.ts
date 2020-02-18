@@ -121,7 +121,7 @@ export class LineHeaderMassEditStore {
 
         massEditLineHeader!.lineHeader[property] = value;
         massEditLineHeader!.invalidPropertiesMap[property] = FormValidator.validateProperty(
-            lineHeaderValidationModel[property],
+            lineHeaderValidationModel[property]!,
             value
         );
     };

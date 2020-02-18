@@ -84,16 +84,10 @@ export class StopAreaStore {
         const newStopArea = _.cloneDeep(stopArea);
 
         this._stopArea = newStopArea;
-
-        this.setOldStopArea(oldStopArea);
+        this._oldStopArea = _.cloneDeep(oldStopArea);
 
         this._isEditingDisabled = !isNewStopArea;
         this._validationStore.init(this._stopArea, stopAreaValidationModel);
-    };
-
-    @action
-    public setOldStopArea = (stopArea: IStopArea) => {
-        this._oldStopArea = _.cloneDeep(stopArea);
     };
 
     @action

@@ -22,6 +22,7 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
+import NavigationUtils from '~/utils/NavigationUtils';
 import { Button, TransitToggleButtonBar } from '../../controls';
 import InputContainer from '../../controls/InputContainer';
 import TextContainer from '../../controls/TextContainer';
@@ -84,24 +85,25 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.linkStore!.clear();
 
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
-        try {
-            if (startNodeId && endNodeId && transitTypeCode) {
-                const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-                this.centerMapToLink(link);
-                this.props.linkStore!.init({
-                    link,
-                    nodes: [link.startNode, link.endNode],
-                    isNewLink: false
-                });
-                this.props.linkStore!.setIsLinkGeometryEditable(true);
-                const bounds = L.latLngBounds(link.geometry);
-                this.props.mapStore!.setMapBounds(bounds);
+        if (startNodeId && endNodeId && transitTypeCode) {
+            const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
+            if (!link) {
+                this.props.errorStore!.addError(
+                    `Haku löytää linkki (alkusolmu ${startNodeId}, loppusolmu ${endNodeId}, verkko ${transitTypeCode}) ei onnistunut.`
+                );
+                const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+                navigator.goTo({ link: homeViewLink });
+                return;
             }
-        } catch (e) {
-            this.props.errorStore!.addError(
-                `Haku löytää linkki, jolla lnkalkusolmu ${startNodeId}, lnkloppusolmu ${endNodeId} ja lnkverkko ${transitTypeCode}, ei onnistunut.`,
-                e
-            );
+            this.centerMapToLink(link);
+            this.props.linkStore!.init({
+                link,
+                nodes: [link.startNode, link.endNode],
+                isNewLink: false
+            });
+            this.props.linkStore!.setIsLinkGeometryEditable(true);
+            const bounds = L.latLngBounds(link.geometry);
+            this.props.mapStore!.setMapBounds(bounds);
         }
         this.setState({ isLoading: false });
     };
@@ -114,7 +116,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         try {
             const startNode = await NodeService.fetchNode(startNodeId);
             const endNode = await NodeService.fetchNode(endNodeId);
-            this.createNewLink(startNode, endNode);
+            this.createNewLink(startNode!, endNode!);
         } catch (ex) {
             this.props.errorStore!.addError(
                 `Alkusolmun ${startNodeId} tai loppusolmun ${endNodeId} haku epäonnistui`
@@ -147,21 +149,17 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         try {
             if (this.props.isNewLink) {
                 await LinkService.createLink(this.props.linkStore!.link);
+                this.navigateToCreatedLink();
             } else {
                 await LinkService.updateLink(this.props.linkStore!.link);
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
+                this.props.linkStore!.setIsEditingDisabled(true);
+                this.initExistingLink();
             }
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
-
-        if (this.props.isNewLink) {
-            this.navigateToCreatedLink();
-            return;
-        }
-        this.setState({ isLoading: false });
-        this.props.linkStore!.setIsEditingDisabled(true);
     };
 
     private showSavePrompt = () => {
@@ -191,14 +189,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         navigator.goTo({ link: linkViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
-    private navigateToNode = (nodeId: string) => () => {
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', nodeId)
-            .toLink();
-        navigator.goTo({ link: nodeViewLink });
-    };
-
     private selectTransitType = (transitType: TransitType) => {
         this.props.linkStore!.updateLinkProperty('transitType', transitType);
     };
@@ -223,7 +213,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             );
         }
         // TODO: show some indicator to user of an empty page
-        if (!link) return null;
+        if (!link) {
+            return <div className={s.linkView}>Linkkiä ei löytynyt.</div>;
+        }
 
         const invalidPropertiesMap = this.props.linkStore!.invalidPropertiesMap;
         const isEditingDisabled = this.props.linkStore!.isEditingDisabled;
@@ -308,22 +300,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                                 type='number'
                                 validationResult={invalidPropertiesMap['measuredLength']}
                                 onChange={this.onChangeLinkProperty('measuredLength')}
+                                data-cy='measuredLength'
                             />
                             <InputContainer
                                 label='LASKETTU PITUUS (m)'
                                 disabled={true}
                                 value={link.length}
                                 validationResult={invalidPropertiesMap['length']}
-                            />
-                        </div>
-                        <div className={s.flexRow}>
-                            <InputContainer
-                                label='KATU'
-                                disabled={isEditingDisabled}
-                                value={link.streetName}
-                                validationResult={invalidPropertiesMap['streetName']}
-                                onChange={this.onChangeLinkProperty('streetName')}
-                                data-cy='streetName'
                             />
                         </div>
                         {!this.props.isNewLink && (
@@ -340,7 +323,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 </div>
                 <div className={s.buttonBar}>
                     <Button
-                        onClick={this.navigateToNode(link.startNode.id)}
+                        onClick={() => NavigationUtils.openNodeView({ nodeId: link.startNode.id })}
                         type={ButtonType.SQUARE}
                     >
                         <div className={s.buttonContent}>
@@ -351,7 +334,10 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             </div>
                         </div>
                     </Button>
-                    <Button onClick={this.navigateToNode(link.endNode.id)} type={ButtonType.SQUARE}>
+                    <Button
+                        onClick={() => NavigationUtils.openNodeView({ nodeId: link.endNode.id })}
+                        type={ButtonType.SQUARE}
+                    >
                         <div className={s.buttonContent}>
                             <div className={s.contentText}>
                                 Loppusolmu

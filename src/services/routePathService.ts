@@ -17,7 +17,7 @@ class RoutePathService {
         routeId: string,
         startTime: Date,
         direction: string
-    ): Promise<IRoutePath> => {
+    ): Promise<IRoutePath | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathQuery(),
             variables: {
@@ -27,8 +27,8 @@ class RoutePathService {
             },
             fetchPolicy: 'no-cache'
         });
-
-        return RoutePathFactory.mapExternalRoutePath(queryResult.data.routePath);
+        const externalRoutePath: IExternalRoutePath | null = queryResult.data.routePath;
+        return externalRoutePath ? RoutePathFactory.mapExternalRoutePath(externalRoutePath) : null;
     };
 
     public static fetchFirstAndLastStopNamesOfRoutePath = async (

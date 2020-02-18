@@ -100,7 +100,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
     private getCalculatedLength = async () => {
         const routePathStore = this.props.routePathStore;
         const routePath = routePathStore!.routePath;
-        const promises: Promise<ILink>[] = [];
+        const promises: Promise<ILink | null>[] = [];
         routePath!.routePathLinks.forEach(routePathLink => {
             promises.push(
                 LinkService.fetchLink(
@@ -115,7 +115,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         // If measured length is missing for a link, use length instead.
         let length = 0;
         links.forEach(link => {
-            length += link.measuredLength ? link.measuredLength : link.length;
+            length += link!.measuredLength ? link!.measuredLength : link!.length;
         });
         return length;
     };
