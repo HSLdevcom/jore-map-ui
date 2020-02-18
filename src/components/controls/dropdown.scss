@@ -13,4 +13,9 @@
         pointer-events: none;
         cursor: default;
     }
+
+    input:focus {
+        box-shadow: none;
+        border: none;
+    }
 }
