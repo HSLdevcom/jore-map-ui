@@ -3,23 +3,42 @@
 .lineItemView {
     text-decoration: none;
     color: $fontColorDefault;
+    padding-bottom: 10px;
 
-    .lineItem {
-        cursor: pointer;
+    .lineContainer {
         display: flex;
         align-items: center;
-        margin-top: 0;
-        margin-bottom: 0;
-        padding-top: 5px;
+        justify-content: space-between;
 
-        .lineLabel {
-            font-size: $largeFontSize;
-            font-weight: 600;
+        .lineItem {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: 5px 10px 5px 10px;
+            justify-content: space-between;
+            .lineLabel {
+                font-size: $largeFontSize;
+                font-weight: 600;
+            }
+
+            .icon {
+                margin-right: 10px;
+                flex-shrink: 0;
+            }
         }
 
-        .icon {
-            margin-right: 10px;
-            flex-shrink: 0;
+        .openAllRoutesButton {
+            padding: 10px;
+            width: 100px;
+            color: #5a5a5a;
+            font-size: $smallFontSize;
+            cursor: pointer;
+        }
+        .openAllRoutesButton:hover {
+            background-color: $backgroundHoverColor;
+            transition: 0.5s;
         }
     }
     .lineItem:hover {
@@ -28,19 +47,16 @@
     }
 
     .routeItem {
-        margin-bottom: 10px;
+        margin-left: 10px;
+        padding-bottom: 5px;
 
         .routeItemHeader {
             display: flex;
-            margin: 4px 10px;
             flex-direction: column;
 
             .routeName {
-                font-weight: bold;
                 cursor: pointer;
-                padding-top: 3px;
-                padding-bottom: 3px;
-                padding-left: 2px;
+                padding: 7px;
                 border-radius: 5px;
                 transition: 0.5s;
             }
@@ -51,8 +67,9 @@
             }
 
             .routeDate {
-                font-size: $smallFontSize;
-                padding: 5px 2px;
+                color: #808080;
+                font-size: 0.7em;
+                padding-left: 7px;
             }
         }
     }
