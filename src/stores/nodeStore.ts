@@ -4,6 +4,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop } from '~/models';
+import IHastusArea from '~/models/IHastusArea';
 import nodeValidationModel, {
     editableNodeIdValidationModel,
     INodeValidationModel
@@ -41,6 +42,7 @@ class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
+    @observable private _hastusArea: IHastusArea | null;
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreaItems: IStopAreaItem[];
@@ -92,6 +94,11 @@ class NodeStore {
     @computed
     get oldNode() {
         return this._oldNode!;
+    }
+
+    @computed
+    get hastusArea() {
+        return this._hastusArea!;
     }
 
     @computed
@@ -330,6 +337,16 @@ class NodeStore {
         } else {
             this.updateNodeProperty('measurementType', '');
         }
+    };
+
+    @action
+    public setHastusArea = (hastusArea: IHastusArea | null) => {
+        this._hastusArea = hastusArea;
+    };
+
+    @action
+    public updateHastusAreaProperty = (property: keyof IHastusArea, value: string) => {
+        this._hastusArea![property] = value;
     };
 
     @action

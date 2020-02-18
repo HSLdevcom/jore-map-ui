@@ -6,6 +6,7 @@ const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
 export class ConfirmStore {
     private _content: React.ReactNode;
     @observable private _isOpen: boolean;
+    @observable private _isConfirmButtonDisabled: boolean;
     private _onConfirm: null | (() => void);
     private _onCancel: null | (() => void);
     private _confirmButtonText: string | null;
@@ -15,6 +16,16 @@ export class ConfirmStore {
     constructor() {
         this._content = null;
         this._isOpen = false;
+    }
+
+    @computed
+    get isOpen(): boolean {
+        return this._isOpen;
+    }
+
+    @computed
+    get isConfirmButtonDisabled(): boolean {
+        return this._isConfirmButtonDisabled;
     }
 
     @computed
@@ -35,11 +46,6 @@ export class ConfirmStore {
     @computed
     get confirmNotification(): string | null {
         return this._confirmNotification;
-    }
-
-    @computed
-    get isConfirmOpen(): boolean {
-        return this._isOpen;
     }
 
     @action
@@ -83,6 +89,11 @@ export class ConfirmStore {
             this._onConfirm();
         }
         this.clear();
+    };
+
+    @action
+    public setIsConfirmButtonDisabled = (isDisabled: boolean) => {
+        this._isConfirmButtonDisabled = isDisabled;
     };
 
     @action

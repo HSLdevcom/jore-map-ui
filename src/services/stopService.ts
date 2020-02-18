@@ -1,9 +1,12 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
+import EndpointPath from '~/enums/endpointPath';
 import ApolloClient from '~/helpers/ApolloClient';
+import IHastusArea from '~/models/IHastusArea';
 import { IStopItem } from '~/models/IStop';
 import IExternalNode from '~/models/externals/IExternalNode';
 import { IExternalStopItem } from '~/models/externals/IExternalStop';
+import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 import NodeService from './nodeService';
 
@@ -105,6 +108,10 @@ class StopService {
         });
 
         return result;
+    };
+
+    public static createHastusArea = async (hastusArea: IHastusArea) => {
+        await HttpUtils.createObject(EndpointPath.HASTUS_AREA, hastusArea);
     };
 }
 

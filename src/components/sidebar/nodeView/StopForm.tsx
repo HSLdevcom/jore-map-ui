@@ -15,9 +15,13 @@ import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { IStopAreaItem } from '~/services/stopAreaService';
+import StopService from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ConfirmStore } from '~/stores/confirmStore';
+import { NodeStore } from '~/stores/nodeStore';
 import SidebarHeader from '../SidebarHeader';
 import ShortIdInput from './ShortIdInput';
+import HastusAreaForm from './hastusAreaForm';
 import * as s from './stopForm.scss';
 
 interface IStopFormProps {
@@ -37,9 +41,11 @@ interface IStopFormProps {
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     setCurrentStateIntoNodeCache?: () => void;
     codeListStore?: CodeListStore;
+    confirmStore?: ConfirmStore;
+    nodeStore?: NodeStore;
 }
 
-@inject('codeListStore')
+@inject('codeListStore', 'confirmStore', 'nodeStore')
 @observer
 class StopForm extends Component<IStopFormProps> {
     private createStopAreaDropdownItems = (stopAreas: IStopAreaItem[]): IDropdownItem[] => {
@@ -93,8 +99,18 @@ class StopForm extends Component<IStopFormProps> {
         navigator.goTo({ link, shouldSkipUnsavedChangesPrompt: true });
     };
 
-    private createNewHastusArea = () => {
-        // TODO:
+    private openHastusAreaModal = () => {
+        this.props.nodeStore!.setHastusArea({
+            id: '',
+            name: ''
+        });
+        this.props.confirmStore!.openConfirm({
+            content: <HastusAreaForm />,
+            onConfirm: () => {
+                StopService.createHastusArea(this.props.nodeStore!.hastusArea);
+            },
+            confirmButtonText: 'Tallenna'
+        });
     };
 
     render() {
@@ -339,7 +355,7 @@ class StopForm extends Component<IStopFormProps> {
                         />
                         {!isReadOnly && (
                             <Button
-                                onClick={this.createNewHastusArea}
+                                onClick={this.openHastusAreaModal}
                                 type={ButtonType.SQUARE}
                                 className={s.dropdownButton}
                                 hasReverseColor={true}

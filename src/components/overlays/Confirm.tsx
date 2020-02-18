@@ -15,9 +15,10 @@ interface IConfirmProps {
 @observer
 class Confirm extends React.Component<IConfirmProps> {
     render() {
-        const confirmStore = this.props.confirmStore;
-        if (!confirmStore!.isConfirmOpen) return null;
+        const confirmStore = this.props.confirmStore!;
+        if (!confirmStore.isOpen) return null;
 
+        const isConfirmButtonDisabled = confirmStore.isConfirmButtonDisabled;
         return (
             <Modal>
                 <div className={s.confirmView}>
@@ -44,6 +45,7 @@ class Confirm extends React.Component<IConfirmProps> {
                                 {confirmStore!.cancelButtonText}
                             </Button>
                             <Button
+                                disabled={isConfirmButtonDisabled}
                                 type={ButtonType.SQUARE}
                                 onClick={confirmStore!.confirm}
                                 isWide={true}
