@@ -5,8 +5,7 @@
     align-items: center;
     color: #5a5a5a;
     cursor: pointer;
-    margin: 3px 0;
-    padding: 3px 0;
+    padding: 5px 10px 5px 10px;
     border-radius: 4px;
 
     > svg {
@@ -15,13 +14,13 @@
     }
 
     .nodeItemTextContainer {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-weight: 600;
         display: flex;
         width: 100%;
 
         > span {
-            width: 150px;
+            width: 120px;
         }
 
         > div {

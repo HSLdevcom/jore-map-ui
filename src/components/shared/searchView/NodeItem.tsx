@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import React from 'react';
-import { IoIosRadioButtonOn } from 'react-icons/io';
+import { IoIosRadioButtonOff } from 'react-icons/io';
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
 import NavigationUtils from '~/utils/NavigationUtils';
@@ -20,7 +20,7 @@ const NodeItem = observer((props: INodeItemProps) => {
             onClick={() => NavigationUtils.openNodeView({ nodeId: props.node.id })}
             data-cy='nodeItem'
         >
-            <IoIosRadioButtonOn />
+            <IoIosRadioButtonOff />
             <div className={s.nodeItemTextContainer}>
                 <span>{node.id}</span>
                 <div>{NodeUtils.getNodeTypeName(node.type)}</div>
