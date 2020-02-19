@@ -1,22 +1,19 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import EndpointPath from '~/enums/endpointPath';
+import NodeStopFactory from '~/factories/nodeStopFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import IHastusArea from '~/models/IHastusArea';
-import { IStopItem } from '~/models/IStop';
+import IStop, { IStopItem } from '~/models/IStop';
+import IExternalHastusArea from '~/models/externals/IExternalHastusArea';
 import IExternalNode from '~/models/externals/IExternalNode';
-import { IExternalStopItem } from '~/models/externals/IExternalStop';
+import IExternalStop, { IExternalStopItem } from '~/models/externals/IExternalStop';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 import NodeService from './nodeService';
 
 interface IStopSectionItem {
     selite: string;
-}
-
-interface IHastusAreaItem {
-    paitunnus: string;
-    nimi: string;
 }
 
 interface IReservedShortIdItem {
@@ -27,17 +24,21 @@ interface IReservedShortIdItem {
 const SHORT_ID_LENGTH = 4;
 
 class StopService {
+    public static fetchAllStops = async (): Promise<IStop[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllStopsQuery()
+        });
+        const externalStops: IExternalStop[] = queryResult.data.node.nodes;
+        return externalStops.map(
+            (externalStop: IExternalStop): IStop => {
+                return NodeStopFactory.mapExternalStop(externalStop);
+            }
+        );
+    };
+
     public static fetchAllStopSections = async (): Promise<IStopSectionItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopSections()
-        });
-
-        return queryResult.data.node.nodes;
-    };
-
-    public static fetchAllHastusAreas = async (): Promise<IHastusAreaItem[]> => {
-        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllHastusAreas()
         });
 
         return queryResult.data.node.nodes;
@@ -110,6 +111,24 @@ class StopService {
         return result;
     };
 
+    public static fetchAllHastusAreas = async (): Promise<IHastusArea[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllHastusAreas()
+        });
+        const externalHastusAreas: IExternalHastusArea[] = queryResult.data.node.nodes;
+
+        return externalHastusAreas.map(
+            (ha: IExternalHastusArea): IHastusArea => {
+                return {
+                    id: ha.paitunnus,
+                    name: ha.nimi
+                };
+            }
+        );
+    };
+
+    public static fetchStopsUsingHastus = async () => {};
+
     public static createHastusArea = async (hastusArea: IHastusArea) => {
         await HttpUtils.createObject(EndpointPath.HASTUS_AREA, hastusArea);
     };
@@ -152,4 +171,4 @@ const _generateAllShortIdVariations = (numberCount: number) => {
 
 export default StopService;
 
-export { IStopSectionItem, IStopItem, IHastusAreaItem };
+export { IStopSectionItem, IStopItem };

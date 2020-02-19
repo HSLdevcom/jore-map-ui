@@ -4,6 +4,7 @@ import React from 'react';
 import ButtonType from '~/enums/buttonType';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { Button } from '../controls';
+import SaveButton from '../shared/SaveButton';
 import Modal from './Modal';
 import * as s from './confirm.scss';
 
@@ -19,6 +20,7 @@ class Confirm extends React.Component<IConfirmProps> {
         if (!confirmStore.isOpen) return null;
 
         const isConfirmButtonDisabled = confirmStore.isConfirmButtonDisabled;
+        const confirmType = confirmStore.confirmType;
         return (
             <Modal>
                 <div className={s.confirmView}>
@@ -44,14 +46,25 @@ class Confirm extends React.Component<IConfirmProps> {
                             >
                                 {confirmStore!.cancelButtonText}
                             </Button>
-                            <Button
-                                disabled={isConfirmButtonDisabled}
-                                type={ButtonType.SQUARE}
-                                onClick={confirmStore!.confirm}
-                                isWide={true}
-                            >
-                                {confirmStore!.confirmButtonText}
-                            </Button>
+                            {confirmType === 'save' ? (
+                                <SaveButton
+                                    disabled={isConfirmButtonDisabled}
+                                    onClick={confirmStore!.confirm}
+                                    isWide={true}
+                                    hasPadding={false}
+                                >
+                                    {confirmStore!.confirmButtonText}
+                                </SaveButton>
+                            ) : (
+                                <Button
+                                    disabled={isConfirmButtonDisabled}
+                                    type={ButtonType.SQUARE}
+                                    onClick={confirmStore!.confirm}
+                                    isWide={true}
+                                >
+                                    {confirmStore!.confirmButtonText}
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>

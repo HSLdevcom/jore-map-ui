@@ -1,39 +1,75 @@
 import classnames from 'classnames';
+import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import InputContainer from '~/components/controls/InputContainer';
+import { IStop } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
 import hastusAreaValidationModel from '~/models/validationModels/hastusAreaValidationModel';
+import StopService from '~/services/stopService';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { NodeStore } from '~/stores/nodeStore';
-import FormValidator from '~/validation/FormValidator';
+import FormValidator, { IValidationResult } from '~/validation/FormValidator';
+import Loader from '../../shared/loader/Loader';
 import * as s from './hastusAreaForm.scss';
 
 interface IHastusAreaFromProps {
+    isNewHastusArea: boolean;
+    existingHastusAreas: IHastusArea[];
     nodeStore?: NodeStore;
     confirmStore?: ConfirmStore;
 }
 
 interface IHastusAreaFromState {
+    isLoading: boolean;
     invalidPropertiesMap: object;
+    otherStopsUsingHastus: IStop[];
 }
 
 @inject('nodeStore', 'confirmStore')
 @observer
 class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromState> {
+    private _isMounted: boolean;
     constructor(props: IHastusAreaFromProps) {
         super(props);
         this.state = {
-            invalidPropertiesMap: {}
+            isLoading: false,
+            invalidPropertiesMap: {},
+            otherStopsUsingHastus: []
         };
     }
-    componentDidMount() {
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+
+    async componentDidMount() {
+        this._isMounted = true;
+        this._setState({ isLoading: true });
         this.validateHastusArea();
+        this.updateConfirmButtonState();
+        if (!this.props.isNewHastusArea) {
+            const currentHastusArea = this.props.nodeStore!.hastusArea;
+            const stops = await StopService.fetchAllStops();
+            const otherStopsUsingHastus = stops.filter(
+                stop => stop.hastusId === currentHastusArea.id
+            );
+            this._setState({
+                otherStopsUsingHastus
+            });
+        }
+        this._setState({ isLoading: false });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     private updateHastusAreaProperty = (property: keyof IHastusArea) => (value: any) => {
         this.props.nodeStore!.updateHastusAreaProperty(property, value);
         this.validateHastusArea();
+        this.updateConfirmButtonState();
     };
 
     private validateHastusArea = () => {
@@ -43,23 +79,54 @@ class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromStat
             hastusArea
         );
 
+        if (this.isHastusAreaIdAlreadyFound(hastusArea.id)) {
+            const validationResult: IValidationResult = {
+                isValid: false,
+                errorMessage: `Hastus-paikka ${hastusArea.id} on jo olemassa.`
+            };
+            invalidPropertiesMap['id'] = validationResult;
+        }
+
+        this._setState({
+            invalidPropertiesMap
+        });
+    };
+
+    private updateConfirmButtonState = () => {
+        const invalidPropertiesMap = this.state.invalidPropertiesMap;
         const isFormValid = !Object.values(invalidPropertiesMap).some(
             validatorResult => !validatorResult.isValid
         );
-        this.props.confirmStore!.setIsConfirmButtonDisabled(!isFormValid);
+        const isDirty = !_.isEqual(
+            this.props.nodeStore!.hastusArea,
+            this.props.nodeStore!.oldHastusArea
+        );
+        const isSaveButtonDisabled = !isDirty || !isFormValid;
+        this.props.confirmStore!.setIsConfirmButtonDisabled(isSaveButtonDisabled);
+    };
 
-        this.setState({
-            invalidPropertiesMap
-        });
+    private isHastusAreaIdAlreadyFound = (id: string) => {
+        return this.props.existingHastusAreas.find(ha => ha.id === id);
     };
 
     render() {
         const nodeStore = this.props.nodeStore!;
         const hastusArea = nodeStore.hastusArea;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
+        const confirmNotification =
+            this.state.otherStopsUsingHastus.length > 0
+                ? `Huom. tunnuksen muokkaaminen muuttaa kaikkien saman hastuksen omaavien pysäkkien ( ${this.state.otherStopsUsingHastus
+                      .map(stop => stop.nodeId)
+                      .join(', ')
+                      .toString()} ) tunnuksen.`
+                : undefined;
         return (
             <div className={classnames(s.hastusAreaForm, s.form)}>
-                <div className={s.header}>Luo uusi Hastus-paikka</div>
+                <div className={s.header}>
+                    {this.props.isNewHastusArea
+                        ? 'Luo uusi Hastus-paikka'
+                        : 'Muokkaa Hastus-paikkaa'}
+                </div>
                 <div className={s.flexRow}>
                     <InputContainer
                         label='TUNNUS'
@@ -74,6 +141,11 @@ class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromStat
                         validationResult={invalidPropertiesMap['name']}
                     />
                 </div>
+                {this.state.isLoading ? (
+                    <Loader size={'tiny'} />
+                ) : (
+                    confirmNotification && <div className={s.flexRow}>{confirmNotification}</div>
+                )}
             </div>
         );
     }

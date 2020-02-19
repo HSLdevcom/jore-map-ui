@@ -246,6 +246,18 @@ const getAllNodesQuery = () => {
     `;
 };
 
+const getAllStopsQuery = () => {
+    return gql`
+        query getAllStopItems {
+            node: allPysakkis {
+                nodes {
+                    ${stopQueryFields}
+                }
+            }
+        }
+    `;
+};
+
 const getAllCodeLists = () => {
     return gql`
         query getAllCodeLists {
@@ -715,6 +727,7 @@ export default {
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
     getAllNodesQuery,
+    getAllStopsQuery,
     getLinksByEndNodeQuery,
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,

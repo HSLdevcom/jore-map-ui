@@ -43,6 +43,7 @@ class NodeStore {
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
     @observable private _hastusArea: IHastusArea | null;
+    @observable private _oldHastusArea: IHastusArea | null;
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreaItems: IStopAreaItem[];
@@ -99,6 +100,11 @@ class NodeStore {
     @computed
     get hastusArea() {
         return this._hastusArea!;
+    }
+
+    @computed
+    get oldHastusArea() {
+        return this._oldHastusArea;
     }
 
     @computed
@@ -342,6 +348,11 @@ class NodeStore {
     @action
     public setHastusArea = (hastusArea: IHastusArea | null) => {
         this._hastusArea = hastusArea;
+    };
+
+    @action
+    public setOldHastusArea = (hastusArea: IHastusArea | null) => {
+        this._oldHastusArea = hastusArea;
     };
 
     @action

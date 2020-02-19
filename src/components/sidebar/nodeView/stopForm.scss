@@ -5,15 +5,6 @@
 .stopView {
     margin-top: 15px;
 
-    .createNewStopAreaButton {
-        white-space: pre-wrap;
-        align-self: flex-end;
-        height: 30px;
-        padding: 6px;
-        font-size: 0.85rem;
-        width: 100%;
-    }
-
     .dropdownButton {
         font-size: 30px;
         cursor: pointer;
@@ -21,5 +12,8 @@
         align-self: flex-end;
         padding: 6px;
         border-radius: 5px;
+    }
+    .dropdownButton:not(:last-child) {
+        margin-right: 10px;
     }
 }

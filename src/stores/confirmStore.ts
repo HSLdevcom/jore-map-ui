@@ -3,6 +3,8 @@ import { action, computed, observable } from 'mobx';
 const DEFAULT_CONFIRM_BUTTON_TEXT = 'Hyväksy';
 const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
 
+type confirmType = 'default' | 'save';
+
 export class ConfirmStore {
     private _content: React.ReactNode;
     @observable private _isOpen: boolean;
@@ -12,6 +14,7 @@ export class ConfirmStore {
     private _confirmButtonText: string | null;
     private _cancelButtonText: string | null;
     private _confirmNotification: string | null;
+    private _confirmType: confirmType;
 
     constructor() {
         this._content = null;
@@ -48,6 +51,11 @@ export class ConfirmStore {
         return this._confirmNotification;
     }
 
+    @computed
+    get confirmType(): string {
+        return this._confirmType;
+    }
+
     @action
     public openConfirm = ({
         content,
@@ -55,7 +63,8 @@ export class ConfirmStore {
         onCancel,
         confirmButtonText,
         cancelButtonText,
-        confirmNotification
+        confirmNotification,
+        confirmType = 'default'
     }: {
         content: React.ReactNode | string;
         onConfirm: () => void;
@@ -63,6 +72,7 @@ export class ConfirmStore {
         confirmButtonText?: string;
         cancelButtonText?: string;
         confirmNotification?: string;
+        confirmType?: confirmType;
     }) => {
         this._content = content;
         this._onConfirm = onConfirm;
@@ -73,6 +83,7 @@ export class ConfirmStore {
             : DEFAULT_CONFIRM_BUTTON_TEXT;
         this._cancelButtonText = cancelButtonText ? cancelButtonText : DEFAULT_CANCEL_BUTTON_TEXT;
         this._confirmNotification = confirmNotification ? confirmNotification : null;
+        this._confirmType = confirmType;
     };
 
     @action
@@ -105,6 +116,7 @@ export class ConfirmStore {
         this._confirmButtonText = DEFAULT_CONFIRM_BUTTON_TEXT;
         this._cancelButtonText = DEFAULT_CANCEL_BUTTON_TEXT;
         this._confirmNotification = null;
+        this._isConfirmButtonDisabled = false;
     };
 }
 

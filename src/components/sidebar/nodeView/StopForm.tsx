@@ -10,6 +10,7 @@ import InputContainer from '~/components/controls/InputContainer';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
+import IHastusArea from '~/models/IHastusArea';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
@@ -30,7 +31,7 @@ interface IStopFormProps {
     isEditingDisabled: boolean;
     stopAreas: IStopAreaItem[];
     stopSections: IDropdownItem[];
-    hastusAreas: IDropdownItem[];
+    hastusAreas: IHastusArea[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
     match?: match<any>;
@@ -99,17 +100,56 @@ class StopForm extends Component<IStopFormProps> {
         navigator.goTo({ link, shouldSkipUnsavedChangesPrompt: true });
     };
 
-    private openHastusAreaModal = () => {
+    private openCreateHastusAreaModal = () => {
         this.props.nodeStore!.setHastusArea({
             id: '',
             name: ''
         });
         this.props.confirmStore!.openConfirm({
-            content: <HastusAreaForm />,
+            content: (
+                <HastusAreaForm
+                    isNewHastusArea={true}
+                    existingHastusAreas={this.props.hastusAreas}
+                />
+            ),
             onConfirm: () => {
                 StopService.createHastusArea(this.props.nodeStore!.hastusArea);
             },
-            confirmButtonText: 'Tallenna'
+            confirmButtonText: 'Tallenna',
+            confirmType: 'save'
+        });
+    };
+
+    private openEditHastusAreaModal = () => {
+        const currentHastusArea = this.props.hastusAreas.find(
+            hastusArea => hastusArea.id === this.props.node!.stop!.hastusId
+        );
+        this.props.nodeStore!.setHastusArea(currentHastusArea!);
+        this.props.nodeStore!.setOldHastusArea(currentHastusArea!);
+        this.props.confirmStore!.openConfirm({
+            content: (
+                <HastusAreaForm
+                    isNewHastusArea={false}
+                    existingHastusAreas={this.props.hastusAreas.filter(
+                        hastusArea => hastusArea.id !== currentHastusArea!.id
+                    )}
+                />
+            ),
+            onConfirm: () => {
+                StopService.createHastusArea(this.props.nodeStore!.hastusArea);
+            },
+            confirmButtonText: 'Tallenna',
+            confirmType: 'save'
+        });
+    };
+
+    private createHastusAreaDropdownItems = (hastusAreas: IHastusArea[]): IDropdownItem[] => {
+        return hastusAreas.map((hastusArea: IHastusArea) => {
+            const item: IDropdownItem = {
+                value: `${hastusArea.id}`,
+                label: `${hastusArea.id} - ${hastusArea.name}`
+            };
+            return item;
         });
     };
 
@@ -120,7 +160,7 @@ class StopForm extends Component<IStopFormProps> {
             isEditingDisabled,
             stopAreas,
             stopSections,
-            hastusAreas,
+            hastusAreas: hastusAreaItems,
             stopInvalidPropertiesMap,
             nodeInvalidPropertiesMap,
             toggleTransitType,
@@ -129,6 +169,9 @@ class StopForm extends Component<IStopFormProps> {
             isReadOnly
         } = this.props;
         const stop = node.stop!;
+        const currentHastusArea = this.props.hastusAreas.find(
+            hastusArea => hastusArea.id === this.props.node!.stop!.hastusId
+        );
         return (
             <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader isCloseButtonVisible={true} isBackButtonVisible={true}>
@@ -201,28 +244,27 @@ class StopForm extends Component<IStopFormProps> {
                             validationResult={stopInvalidPropertiesMap['stopAreaId']}
                         />
                         {!isReadOnly && stop.stopAreaId && (
-                            <Button
-                                className={s.dropdownButton}
-                                hasReverseColor={true}
-                                onClick={() => {
-                                    this.redirectToStopArea(stop.stopAreaId);
-                                }}
-                            >
-                                <FiInfo />
-                            </Button>
+                            <>
+                                <Button
+                                    className={s.dropdownButton}
+                                    hasReverseColor={true}
+                                    onClick={() => {
+                                        this.redirectToStopArea(stop.stopAreaId);
+                                    }}
+                                >
+                                    <FiInfo />
+                                </Button>
+                                <Button
+                                    className={s.dropdownButton}
+                                    hasReverseColor={true}
+                                    onClick={() => this.redirectToNewStopArea()}
+                                    type={ButtonType.SQUARE}
+                                >
+                                    <IoIosAddCircleOutline />
+                                </Button>
+                            </>
                         )}
                     </div>
-                    {!isReadOnly && (
-                        <div className={s.flexRow}>
-                            <Button
-                                onClick={() => this.redirectToNewStopArea()}
-                                type={ButtonType.SQUARE}
-                                className={s.createNewStopAreaButton}
-                            >
-                                Luo uusi pysäkkialue
-                            </Button>
-                        </div>
-                    )}
                     <div className={s.flexRow}>
                         <InputContainer
                             label='PITKÄ NIMI'
@@ -343,7 +385,7 @@ class StopForm extends Component<IStopFormProps> {
                     <div className={s.flexRow}>
                         <Dropdown
                             onChange={updateStopProperty!('hastusId')}
-                            items={hastusAreas}
+                            items={this.createHastusAreaDropdownItems(hastusAreaItems)}
                             selected={stop.hastusId}
                             emptyItem={{
                                 value: '',
@@ -354,14 +396,25 @@ class StopForm extends Component<IStopFormProps> {
                             validationResult={stopInvalidPropertiesMap['hastusId']}
                         />
                         {!isReadOnly && (
-                            <Button
-                                onClick={this.openHastusAreaModal}
-                                type={ButtonType.SQUARE}
-                                className={s.dropdownButton}
-                                hasReverseColor={true}
-                            >
-                                <IoIosAddCircleOutline />
-                            </Button>
+                            <>
+                                <Button
+                                    className={s.dropdownButton}
+                                    onClick={this.openEditHastusAreaModal}
+                                    type={ButtonType.SQUARE}
+                                    disabled={!Boolean(currentHastusArea)}
+                                    hasReverseColor={true}
+                                >
+                                    <FiInfo />
+                                </Button>
+                                <Button
+                                    className={s.dropdownButton}
+                                    onClick={this.openCreateHastusAreaModal}
+                                    type={ButtonType.SQUARE}
+                                    hasReverseColor={true}
+                                >
+                                    <IoIosAddCircleOutline />
+                                </Button>
+                            </>
                         )}
                     </div>
                 </div>

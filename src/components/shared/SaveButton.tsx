@@ -14,6 +14,8 @@ interface ISaveButtonProps {
     disabled?: boolean;
     isSavePrevented?: boolean;
     savePreventedNotification?: string;
+    isWide?: boolean;
+    hasPadding?: boolean; // defaults to true
 }
 
 const SaveButton = observer((props: ISaveButtonProps) => {
@@ -24,6 +26,8 @@ const SaveButton = observer((props: ISaveButtonProps) => {
         disabled,
         isSavePrevented,
         savePreventedNotification,
+        isWide,
+        hasPadding,
         ...attrs
     } = props;
 
@@ -41,6 +45,8 @@ const SaveButton = observer((props: ISaveButtonProps) => {
             }
             disabled={disabled}
             type={ButtonType.SQUARE}
+            isWide={isWide}
+            hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}
         >
             {children}
         </Button>

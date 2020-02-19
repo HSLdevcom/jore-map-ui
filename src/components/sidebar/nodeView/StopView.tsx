@@ -5,8 +5,9 @@ import { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
+import IHastusArea from '~/models/IHastusArea';
 import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
-import StopService, { IHastusAreaItem, IStopSectionItem } from '~/services/stopService';
+import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import StopForm from './StopForm';
@@ -25,7 +26,7 @@ interface IStopViewProps {
 interface IStopViewState {
     isLoading: boolean;
     stopSections: IDropdownItem[];
-    hastusAreas: IDropdownItem[];
+    hastusAreas: IHastusArea[];
 }
 
 @inject('nodeStore', 'codeListStore')
@@ -51,11 +52,11 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         }
         const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
-        const hastusAreas: IHastusAreaItem[] = await StopService.fetchAllHastusAreas();
+        const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
         if (this._isMounted) {
             this.setState({
-                stopSections: this.createStopSectionDropdownItems(stopSections),
-                hastusAreas: this.createHastusAreaDropdownItems(hastusAreas)
+                hastusAreas,
+                stopSections: this.createStopSectionDropdownItems(stopSections)
             });
             this.props.nodeStore!.setStopAreaItems(stopAreas);
             this.setState({ isLoading: false });
@@ -84,16 +85,6 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
             const item: IDropdownItem = {
                 value: `${stopSection.selite}`,
                 label: `${stopSection.selite}`
-            };
-            return item;
-        });
-    };
-
-    private createHastusAreaDropdownItems = (hastusAreas: IHastusAreaItem[]): IDropdownItem[] => {
-        return hastusAreas.map((hastusArea: IHastusAreaItem) => {
-            const item: IDropdownItem = {
-                value: `${hastusArea.paitunnus}`,
-                label: `${hastusArea.paitunnus} - ${hastusArea.nimi}`
             };
             return item;
         });
