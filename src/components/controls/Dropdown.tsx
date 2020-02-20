@@ -213,8 +213,9 @@ const _getCustomStyles = (props: IDropdownProps) => {
         control: (styles: any, state: any) => ({
             ...styles,
             backgroundColor: props.isBackgroundGrey ? s.greyBackground : '#fff',
-            border: state.isFocused ? '2px solid #007ac9' : '1px solid #bebebe',
-            boxShadow: 'none',
+            border: state.isFocused ? '1px solid #007ac9' : '1px solid #bebebe',
+            boxShadow: state.isFocused ? '0 0 0 1px #007ac9' : 'none',
+            transition: 'none',
             height: s.inputFieldHeight,
             '&:hover': {
                 cursor: 'pointer'
@@ -226,6 +227,7 @@ const _getCustomStyles = (props: IDropdownProps) => {
             backgroundColor: _getMenuOptionBackgroundColor(state.isSelected, state.isFocused),
             height: 30,
             fontSize: s.smallFontSize,
+            transition: 'none',
             padding: '0px 10px',
             display: 'flex',
             alignItems: 'center'

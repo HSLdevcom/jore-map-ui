@@ -3,18 +3,32 @@ import { action, computed, observable } from 'mobx';
 const DEFAULT_CONFIRM_BUTTON_TEXT = 'Hyväksy';
 const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
 
+type confirmType = 'default' | 'save';
+
 export class ConfirmStore {
     private _content: React.ReactNode;
     @observable private _isOpen: boolean;
+    @observable private _isConfirmButtonDisabled: boolean;
     private _onConfirm: null | (() => void);
     private _onCancel: null | (() => void);
     private _confirmButtonText: string | null;
     private _cancelButtonText: string | null;
     private _confirmNotification: string | null;
+    private _confirmType: confirmType;
 
     constructor() {
         this._content = null;
         this._isOpen = false;
+    }
+
+    @computed
+    get isOpen(): boolean {
+        return this._isOpen;
+    }
+
+    @computed
+    get isConfirmButtonDisabled(): boolean {
+        return this._isConfirmButtonDisabled;
     }
 
     @computed
@@ -38,8 +52,8 @@ export class ConfirmStore {
     }
 
     @computed
-    get isConfirmOpen(): boolean {
-        return this._isOpen;
+    get confirmType(): string {
+        return this._confirmType;
     }
 
     @action
@@ -49,7 +63,8 @@ export class ConfirmStore {
         onCancel,
         confirmButtonText,
         cancelButtonText,
-        confirmNotification
+        confirmNotification,
+        confirmType = 'default'
     }: {
         content: React.ReactNode | string;
         onConfirm: () => void;
@@ -57,6 +72,7 @@ export class ConfirmStore {
         confirmButtonText?: string;
         cancelButtonText?: string;
         confirmNotification?: string;
+        confirmType?: confirmType;
     }) => {
         this._content = content;
         this._onConfirm = onConfirm;
@@ -67,6 +83,7 @@ export class ConfirmStore {
             : DEFAULT_CONFIRM_BUTTON_TEXT;
         this._cancelButtonText = cancelButtonText ? cancelButtonText : DEFAULT_CANCEL_BUTTON_TEXT;
         this._confirmNotification = confirmNotification ? confirmNotification : null;
+        this._confirmType = confirmType;
     };
 
     @action
@@ -86,6 +103,11 @@ export class ConfirmStore {
     };
 
     @action
+    public setIsConfirmButtonDisabled = (isDisabled: boolean) => {
+        this._isConfirmButtonDisabled = isDisabled;
+    };
+
+    @action
     private clear = () => {
         this._content = null;
         this._onCancel = null;
@@ -94,6 +116,7 @@ export class ConfirmStore {
         this._confirmButtonText = DEFAULT_CONFIRM_BUTTON_TEXT;
         this._cancelButtonText = DEFAULT_CANCEL_BUTTON_TEXT;
         this._confirmNotification = null;
+        this._isConfirmButtonDisabled = false;
     };
 }
 

@@ -246,6 +246,18 @@ const getAllNodesQuery = () => {
     `;
 };
 
+const getAllStopsQuery = () => {
+    return gql`
+        query getAllStopItems {
+            node: allPysakkis {
+                nodes {
+                    ${stopQueryFields}
+                }
+            }
+        }
+    `;
+};
+
 const getAllCodeLists = () => {
     return gql`
         query getAllCodeLists {
@@ -345,6 +357,19 @@ const getAllStopSections = () => {
             node: allVyohykes {
                 nodes {
                     selite
+                }
+            }
+        }
+    `;
+};
+
+const getAllHastusAreas = () => {
+    return gql`
+        query getAllHastusAreas {
+            node: allPaikkas {
+                nodes {
+                    paitunnus
+                    nimi
                 }
             }
         }
@@ -702,6 +727,7 @@ export default {
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
     getAllNodesQuery,
+    getAllStopsQuery,
     getLinksByEndNodeQuery,
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
@@ -713,6 +739,7 @@ export default {
     getLineHeaderQuery,
     getAllLineHeadersQuery,
     getAllStopSections,
+    getAllHastusAreas,
     getReservedShortIds,
     getViaName
 };

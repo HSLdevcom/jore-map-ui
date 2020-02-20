@@ -18,6 +18,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import StopService from '~/services/stopService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -280,6 +281,28 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         }
     };
 
+    private saveHastusArea = async ({ isNewHastusArea } : { isNewHastusArea: boolean }) => {
+        const nodeStore = this.props.nodeStore!;
+        try {
+            if (isNewHastusArea) {
+                await  StopService.createHastusArea({
+                    oldHastusArea: nodeStore.oldHastusArea!,
+                    newHastusArea: nodeStore.hastusArea
+                });
+            } else {
+                await StopService.updateHastusArea({
+                    oldHastusArea: nodeStore.oldHastusArea!,
+                    newHastusArea: nodeStore.hastusArea
+                });
+            }
+            this.initExistingNode(nodeStore.node.id);
+            nodeStore.setIsEditingDisabled(true);
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+        }
+    }
+
     private showSavePrompt = () => {
         const nodeStore = this.props.nodeStore!;
         const currentNode = _.cloneDeep(nodeStore.node);
@@ -482,6 +505,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                             onNodePropertyChange={this.onChangeNodeProperty}
                             isNewStop={isNewNode}
                             nodeInvalidPropertiesMap={invalidPropertiesMap}
+                            saveHastusArea={this.saveHastusArea}
                         />
                     )}
                 </div>

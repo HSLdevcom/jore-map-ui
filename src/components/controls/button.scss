@@ -36,6 +36,7 @@ $defaultBackgroundColor: $busBlue;
 .reverseColor {
     color: $defaultBackgroundColor;
     background-color: unset;
+    border: 1px solid $borderLightGrey;
 }
 
 .reverseColor:hover {

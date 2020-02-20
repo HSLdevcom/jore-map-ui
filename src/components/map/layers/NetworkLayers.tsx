@@ -10,7 +10,6 @@ import EventHelper, {
     INetworkNodeClickParams
 } from '~/helpers/EventHelper';
 import NodeService from '~/services/nodeService';
-import { ConfirmStore } from '~/stores/confirmStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
@@ -34,7 +33,6 @@ interface INetworkLayersProps {
     nodeStore?: NodeStore;
     linkStore?: LinkStore;
     popupStore?: PopupStore;
-    confirmStore?: ConfirmStore;
 }
 
 interface ILinkProperties {
@@ -56,7 +54,7 @@ function getGeoServerUrl(layerName: string) {
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore', 'confirmStore')
+@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
     private reactionDisposer = {};

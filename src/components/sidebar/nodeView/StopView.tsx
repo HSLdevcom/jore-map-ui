@@ -5,6 +5,7 @@ import { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
+import IHastusArea from '~/models/IHastusArea';
 import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
 import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
@@ -17,6 +18,7 @@ interface IStopViewProps {
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
     nodeInvalidPropertiesMap: object;
+    saveHastusArea: ({ isNewHastusArea }: { isNewHastusArea: boolean }) => void;
     isTransitToggleButtonBarVisible?: boolean;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     toggleTransitType?: (type: TransitType) => void;
@@ -25,6 +27,7 @@ interface IStopViewProps {
 interface IStopViewState {
     isLoading: boolean;
     stopSections: IDropdownItem[];
+    hastusAreas: IHastusArea[];
 }
 
 @inject('nodeStore', 'codeListStore')
@@ -37,7 +40,8 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         super(props);
         this.state = {
             isLoading: true,
-            stopSections: []
+            stopSections: [],
+            hastusAreas: []
         };
     }
 
@@ -49,9 +53,10 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         }
         const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
-
+        const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
         if (this._isMounted) {
             this.setState({
+                hastusAreas,
                 stopSections: this.createStopSectionDropdownItems(stopSections)
             });
             this.props.nodeStore!.setStopAreaItems(stopAreas);
@@ -112,6 +117,8 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 isEditingDisabled={isEditingDisabled}
                 stopAreas={this.props.nodeStore!.stopAreaItems}
                 stopSections={this.state.stopSections}
+                hastusAreas={this.state.hastusAreas}
+                saveHastusArea={this.props.saveHastusArea}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
                 isTransitToggleButtonBarVisible={this.props.isTransitToggleButtonBarVisible}
