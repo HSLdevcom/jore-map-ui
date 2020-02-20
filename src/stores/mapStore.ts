@@ -12,7 +12,8 @@ export enum NodeLabel {
 }
 
 export enum MapFilter {
-    arrowDecorator
+    arrowDecorator,
+    linkPoint
 }
 
 export type MapCursor = '' | 'crosshair';

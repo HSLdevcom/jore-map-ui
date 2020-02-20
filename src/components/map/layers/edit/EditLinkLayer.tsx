@@ -3,18 +3,20 @@ import _ from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import { withLeaflet } from 'react-leaflet';
+import { withLeaflet, Marker as LeafletMarker } from 'react-leaflet';
 import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { ILink, INode } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import NodeUtils from '~/utils/NodeUtils';
+import LeafletUtils from '~/utils/leafletUtils';
 import { LeafletContext } from '../../Map';
 import Marker from '../markers/Marker';
 import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
+import * as s from './editLinkLayer.scss';
 
 const START_MARKER_COLOR = '#00df0b';
 
@@ -180,6 +182,30 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
             />
         ];
     };
+    private renderLinkPointLabel = (latLng: L.LatLng) => {
+        return LeafletUtils.createDivIcon(
+            <div className={s.linkPointLabel}>
+                {latLng.lat}, {latLng.lng}
+            </div>,
+            {}
+        );
+    };
+
+    private renderLinkPointCoordinates = () => {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.linkPoint)) {
+            return null;
+        }
+        const link = this.props.linkStore!.link;
+        return link.geometry.map((latLng, index: number) => {
+            return (
+                <LeafletMarker
+                    key={`linkPoint-${index}`}
+                    position={latLng}
+                    icon={this.renderLinkPointLabel(latLng)}
+                />
+            );
+        });
+    };
 
     render() {
         const link = this.props.linkStore!.link;
@@ -195,6 +221,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 {this.renderNodes()}
                 {this.renderStartMarker()}
                 {this.renderDashedLines()}
+                {this.renderLinkPointCoordinates()}
             </>
         );
     }
