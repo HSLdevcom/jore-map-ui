@@ -16,7 +16,6 @@ import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { IStopAreaItem } from '~/services/stopAreaService';
-import StopService from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -34,6 +33,7 @@ interface IStopFormProps {
     hastusAreas: IHastusArea[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
+    saveHastusArea?: ({ isNewHastusArea }: { isNewHastusArea: boolean }) => void;
     match?: match<any>;
     isReadOnly?: boolean;
     isTransitToggleButtonBarVisible?: boolean;
@@ -105,6 +105,7 @@ class StopForm extends Component<IStopFormProps> {
             id: '',
             name: ''
         });
+        this.props.nodeStore!.setOldHastusArea(null);
         this.props.confirmStore!.openConfirm({
             content: (
                 <HastusAreaForm
@@ -113,7 +114,7 @@ class StopForm extends Component<IStopFormProps> {
                 />
             ),
             onConfirm: () => {
-                StopService.createHastusArea(this.props.nodeStore!.hastusArea);
+                this.props.saveHastusArea!({ isNewHastusArea: true });
             },
             confirmButtonText: 'Tallenna',
             confirmType: 'save'
@@ -136,7 +137,7 @@ class StopForm extends Component<IStopFormProps> {
                 />
             ),
             onConfirm: () => {
-                StopService.createHastusArea(this.props.nodeStore!.hastusArea);
+                this.props.saveHastusArea!({ isNewHastusArea: false });
             },
             confirmButtonText: 'Tallenna',
             confirmType: 'save'

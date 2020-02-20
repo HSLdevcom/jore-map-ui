@@ -48,7 +48,6 @@ class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromStat
         this._isMounted = true;
         this._setState({ isLoading: true });
         this.validateHastusArea();
-        this.updateConfirmButtonState();
         if (!this.props.isNewHastusArea) {
             const currentHastusArea = this.props.nodeStore!.hastusArea;
             const stops = await StopService.fetchAllStops();
@@ -69,7 +68,6 @@ class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromStat
     private updateHastusAreaProperty = (property: keyof IHastusArea) => (value: any) => {
         this.props.nodeStore!.updateHastusAreaProperty(property, value);
         this.validateHastusArea();
-        this.updateConfirmButtonState();
     };
 
     private validateHastusArea = () => {
@@ -86,14 +84,14 @@ class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromStat
             };
             invalidPropertiesMap['id'] = validationResult;
         }
+        this.updateConfirmButtonState(invalidPropertiesMap);
 
         this._setState({
             invalidPropertiesMap
         });
     };
 
-    private updateConfirmButtonState = () => {
-        const invalidPropertiesMap = this.state.invalidPropertiesMap;
+    private updateConfirmButtonState = (invalidPropertiesMap: object) => {
         const isFormValid = !Object.values(invalidPropertiesMap).some(
             validatorResult => !validatorResult.isValid
         );

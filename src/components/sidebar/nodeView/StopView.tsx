@@ -18,6 +18,7 @@ interface IStopViewProps {
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
     nodeInvalidPropertiesMap: object;
+    saveHastusArea: ({ isNewHastusArea }: { isNewHastusArea: boolean }) => void;
     isTransitToggleButtonBarVisible?: boolean;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     toggleTransitType?: (type: TransitType) => void;
@@ -117,6 +118,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 stopAreas={this.props.nodeStore!.stopAreaItems}
                 stopSections={this.state.stopSections}
                 hastusAreas={this.state.hastusAreas}
+                saveHastusArea={this.props.saveHastusArea}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
                 isTransitToggleButtonBarVisible={this.props.isTransitToggleButtonBarVisible}

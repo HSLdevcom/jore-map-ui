@@ -3,7 +3,7 @@ import _ from 'lodash';
 import EndpointPath from '~/enums/endpointPath';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import ApolloClient from '~/helpers/ApolloClient';
-import IHastusArea from '~/models/IHastusArea';
+import IHastusArea, { IHastusAreaSaveModel } from '~/models/IHastusArea';
 import IStop, { IStopItem } from '~/models/IStop';
 import IExternalHastusArea from '~/models/externals/IExternalHastusArea';
 import IExternalNode from '~/models/externals/IExternalNode';
@@ -26,7 +26,8 @@ const SHORT_ID_LENGTH = 4;
 class StopService {
     public static fetchAllStops = async (): Promise<IStop[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllStopsQuery()
+            query: GraphqlQueries.getAllStopsQuery(),
+            fetchPolicy: 'no-cache'
         });
         const externalStops: IExternalStop[] = queryResult.data.node.nodes;
         return externalStops.map(
@@ -113,7 +114,8 @@ class StopService {
 
     public static fetchAllHastusAreas = async (): Promise<IHastusArea[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllHastusAreas()
+            query: GraphqlQueries.getAllHastusAreas(),
+            fetchPolicy: 'no-cache'
         });
         const externalHastusAreas: IExternalHastusArea[] = queryResult.data.node.nodes;
 
@@ -127,10 +129,12 @@ class StopService {
         );
     };
 
-    public static fetchStopsUsingHastus = async () => {};
+    public static createHastusArea = async (hastusAreaSaveModel: IHastusAreaSaveModel) => {
+        await HttpUtils.createObject(EndpointPath.HASTUS_AREA, hastusAreaSaveModel);
+    };
 
-    public static createHastusArea = async (hastusArea: IHastusArea) => {
-        await HttpUtils.createObject(EndpointPath.HASTUS_AREA, hastusArea);
+    public static updateHastusArea = async (hastusAreaSaveModel: IHastusAreaSaveModel) => {
+        await HttpUtils.updateObject(EndpointPath.HASTUS_AREA, hastusAreaSaveModel);
     };
 }
 
