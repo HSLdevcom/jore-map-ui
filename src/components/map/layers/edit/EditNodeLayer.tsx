@@ -18,6 +18,7 @@ import NodeUtils from '~/utils/NodeUtils';
 import { LeafletContext } from '../../Map';
 import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
+import DashedLine from '../utils/DashedLine';
 
 interface IEditNodeLayerProps {
     nodeStore?: NodeStore;
@@ -188,6 +189,28 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         ));
     };
 
+    private renderDashedLine = (link: ILink, index: number) => {
+        const node = this.props.nodeStore!.node;
+        if (link.startNode.id === node.id) {
+            return (
+                <DashedLine
+                    key={`${index}-startNodeDashedLine`}
+                    startPoint={link.geometry[link.geometry.length - 1]}
+                    endPoint={link.endNode.coordinates}
+                    color={'#efc210'}
+                />
+            );
+        }
+        return (
+            <DashedLine
+                key={`${index}-endNodeDashedLine`}
+                startPoint={link.geometry[0]}
+                endPoint={link.startNode.coordinates}
+                color={'#efc210'}
+            />
+        );
+    };
+
     render() {
         if (!this.props.nodeStore!.node) return null;
 
@@ -199,6 +222,9 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
             <>
                 {this.renderNodes()}
                 {this.renderLinkDecorators()}
+                {this.props.nodeStore!.links.map((link, index: number) => {
+                    return this.renderDashedLine(link, index);
+                })}
             </>
         );
     }
