@@ -8,5 +8,11 @@
     "env": {
         "AUTH_URI": "https://hslid-uat.cinfra.fi/openid/token",
         "AUTH_SCOPE": "email https://oneportal.trivore.com/scope/groups.readonly"
-    }
+    },
+    "fixturesFolder": "e2e/cypress/fixtures",
+    "integrationFolder": "e2e/cypress/integration",
+    "pluginsFile": "e2e/cypress/plugins/index.js",
+    "screenshotsFolder": "e2e/cypress/screenshots",
+    "videosFolder": "e2e/cypress/videos",
+    "supportFile": "e2e/cypress/support/index.js"
 }
