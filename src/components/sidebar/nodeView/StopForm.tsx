@@ -11,11 +11,12 @@ import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
+import IStopArea from '~/models/IStopArea';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import { IStopAreaItem } from '~/services/stopAreaService';
+import { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -28,8 +29,8 @@ interface IStopFormProps {
     node: INode;
     isNewStop: boolean;
     isEditingDisabled: boolean;
-    stopAreas: IStopAreaItem[];
-    stopSections: IDropdownItem[];
+    stopAreas: IStopArea[];
+    stopSections: IStopSectionItem[];
     hastusAreas: IHastusArea[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
@@ -49,11 +50,11 @@ interface IStopFormProps {
 @inject('codeListStore', 'confirmStore', 'nodeStore')
 @observer
 class StopForm extends Component<IStopFormProps> {
-    private createStopAreaDropdownItems = (stopAreas: IStopAreaItem[]): IDropdownItem[] => {
-        return stopAreas.map((stopArea: IStopAreaItem) => {
+    private createStopAreaDropdownItems = (stopAreas: IStopArea[]): IDropdownItem[] => {
+        return stopAreas.map((stopArea: IStopArea) => {
             const item: IDropdownItem = {
-                value: `${stopArea.pysalueid}`,
-                label: `${stopArea.pysalueid} - ${stopArea.nimi}`
+                value: `${stopArea.id}`,
+                label: `${stopArea.id} - ${stopArea.nameFi}`
             };
             return item;
         });
@@ -141,6 +142,18 @@ class StopForm extends Component<IStopFormProps> {
             },
             confirmButtonText: 'Tallenna',
             confirmType: 'save'
+        });
+    };
+
+    private createStopSectionDropdownItems = (
+        stopSections: IStopSectionItem[]
+    ): IDropdownItem[] => {
+        return stopSections.map((stopSection: IStopSectionItem) => {
+            const item: IDropdownItem = {
+                value: `${stopSection.selite}`,
+                label: `${stopSection.selite}`
+            };
+            return item;
         });
     };
 
@@ -340,7 +353,7 @@ class StopForm extends Component<IStopFormProps> {
                     <div className={s.flexRow}>
                         <Dropdown
                             onChange={updateStopProperty!('section')}
-                            items={stopSections}
+                            items={this.createStopSectionDropdownItems(stopSections)}
                             selected={stop.section}
                             emptyItem={{
                                 value: '',

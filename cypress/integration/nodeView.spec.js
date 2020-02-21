@@ -24,7 +24,7 @@ describe('NodeView tests - read access user', () => {
 });
 
 describe('NodeView tests - write access user', () => {
-    it('Can edit node', () => {
+    it.only('Can edit node', () => {
         cy.hslLoginWriteAccess();
         openNode();
 
@@ -35,10 +35,7 @@ describe('NodeView tests - write access user', () => {
             expect($el).to.have.css('pointer-events', 'none');
         });
 
-        cy.getTestElement('nodeTypeDropdown').type('-');
-        cy.getTestElement('nodeTypeDropdown')
-            .click()
-            .type('{downarrow}{enter}'); // we send the Enter to the input field
+        cy.getTestElement('measurementDate').type('1'); // Currently 1 sets whole date
 
         cy.getTestElement('saveButton').should($el => {
             expect($el).not.have.css('pointer-events', 'none');

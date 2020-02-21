@@ -3,7 +3,6 @@ import { ILink } from '..';
 
 type ILinkValidationModel = { [key in keyof ILink]: string };
 
-// TODO: rename as linkValidationObject
 const linkValidationModel: ILinkValidationModel = {
     transitType: '',
     startNode: '',

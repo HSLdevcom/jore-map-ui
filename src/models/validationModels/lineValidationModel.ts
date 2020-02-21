@@ -4,7 +4,6 @@ import { ILine } from '..';
 
 type ILineValidationModel = { [key in keyof ILine]: string };
 
-// TODO: rename as lineValidationObject
 const lineValidationModel: ILineValidationModel = {
     id: `required|min:4|max:6|string|${regexRules.upperCaseOrNumbersOrSpace}`,
     transitType: 'required|min:1|max:1|string',

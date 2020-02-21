@@ -156,6 +156,7 @@ export default class NodeForm extends Component<INodeViewProps> {
                             isClearButtonVisibleOnDates={true}
                             isEmptyDateValueAllowed={true}
                             validationResult={invalidPropertiesMap['measurementDate']}
+                            data-cy='measurementDate'
                         />
                         {node.type === NodeType.STOP && (
                             <Dropdown

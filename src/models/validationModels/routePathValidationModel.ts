@@ -13,7 +13,6 @@ type RoutePathKeys = keyof Pick<
 >;
 type IRoutePathValidationModel = { [key in RoutePathKeys]: string };
 
-// TODO: rename as routePathValidationObject
 const routePathValidationModel: IRoutePathValidationModel = {
     routePathLinks: '',
     routeId: 'required|min:4|max:6|string',
