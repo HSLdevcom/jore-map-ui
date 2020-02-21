@@ -7,7 +7,6 @@ enum EndpointPath {
     LINE_HEADER_MASS_EDIT = 'lineHeaderMassEdit',
     ROUTE = 'route',
     ROUTEPATH = 'routePath',
-    ROUTELINK = 'routeLink',
     NODE = 'node',
     GET_AVAILABLE_NODE_ID = 'getAvailableNodeId',
     GET_AVAILABLE_NODE_IDS_WITH_PREFIX = 'getAvailableNodeIdsWithPrefix',
