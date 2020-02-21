@@ -1,7 +1,6 @@
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import { INode, IStop, IStopArea } from '~/models';
@@ -26,7 +25,7 @@ interface IStopViewProps {
 
 interface IStopViewState {
     isLoading: boolean;
-    stopSections: IDropdownItem[];
+    stopSections: IStopSectionItem[];
     hastusAreas: IHastusArea[];
 }
 
@@ -57,7 +56,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         if (this._isMounted) {
             this.setState({
                 hastusAreas,
-                stopSections: this.createStopSectionDropdownItems(stopSections)
+                stopSections
             });
             this.props.nodeStore!.setStopAreas(stopAreas);
             this.setState({ isLoading: false });
@@ -77,18 +76,6 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
             return;
         }
         await this.props.nodeStore!.fetchAddressData();
-    };
-
-    private createStopSectionDropdownItems = (
-        stopSections: IStopSectionItem[]
-    ): IDropdownItem[] => {
-        return stopSections.map((stopSection: IStopSectionItem) => {
-            const item: IDropdownItem = {
-                value: `${stopSection.selite}`,
-                label: `${stopSection.selite}`
-            };
-            return item;
-        });
     };
 
     private updateStopProperty = (property: keyof IStop) => (value: any) => {

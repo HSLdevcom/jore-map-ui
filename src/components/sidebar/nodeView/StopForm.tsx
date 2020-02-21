@@ -16,6 +16,7 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -29,7 +30,7 @@ interface IStopFormProps {
     isNewStop: boolean;
     isEditingDisabled: boolean;
     stopAreas: IStopArea[];
-    stopSections: IDropdownItem[];
+    stopSections: IStopSectionItem[];
     hastusAreas: IHastusArea[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
@@ -141,6 +142,18 @@ class StopForm extends Component<IStopFormProps> {
             },
             confirmButtonText: 'Tallenna',
             confirmType: 'save'
+        });
+    };
+
+    private createStopSectionDropdownItems = (
+        stopSections: IStopSectionItem[]
+    ): IDropdownItem[] => {
+        return stopSections.map((stopSection: IStopSectionItem) => {
+            const item: IDropdownItem = {
+                value: `${stopSection.selite}`,
+                label: `${stopSection.selite}`
+            };
+            return item;
         });
     };
 
@@ -340,7 +353,7 @@ class StopForm extends Component<IStopFormProps> {
                     <div className={s.flexRow}>
                         <Dropdown
                             onChange={updateStopProperty!('section')}
-                            items={stopSections}
+                            items={this.createStopSectionDropdownItems(stopSections)}
                             selected={stop.section}
                             emptyItem={{
                                 value: '',

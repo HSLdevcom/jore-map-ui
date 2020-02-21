@@ -12,6 +12,7 @@ import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 import NodeService from './nodeService';
 
+// TODO: move into /models
 interface IStopSectionItem {
     selite: string;
 }
