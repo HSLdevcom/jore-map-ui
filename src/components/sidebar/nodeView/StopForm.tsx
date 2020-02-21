@@ -11,11 +11,11 @@ import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
+import IStopArea from '~/models/IStopArea';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import { IStopAreaItem } from '~/services/stopAreaService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -28,7 +28,7 @@ interface IStopFormProps {
     node: INode;
     isNewStop: boolean;
     isEditingDisabled: boolean;
-    stopAreas: IStopAreaItem[];
+    stopAreas: IStopArea[];
     stopSections: IDropdownItem[];
     hastusAreas: IHastusArea[];
     stopInvalidPropertiesMap: object;
@@ -49,11 +49,11 @@ interface IStopFormProps {
 @inject('codeListStore', 'confirmStore', 'nodeStore')
 @observer
 class StopForm extends Component<IStopFormProps> {
-    private createStopAreaDropdownItems = (stopAreas: IStopAreaItem[]): IDropdownItem[] => {
-        return stopAreas.map((stopArea: IStopAreaItem) => {
+    private createStopAreaDropdownItems = (stopAreas: IStopArea[]): IDropdownItem[] => {
+        return stopAreas.map((stopArea: IStopArea) => {
             const item: IDropdownItem = {
-                value: `${stopArea.pysalueid}`,
-                label: `${stopArea.pysalueid} - ${stopArea.nimi}`
+                value: `${stopArea.id}`,
+                label: `${stopArea.id} - ${stopArea.nameFi}`
             };
             return item;
         });

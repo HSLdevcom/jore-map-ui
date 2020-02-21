@@ -314,9 +314,7 @@ const getAllStopAreas = () => {
         query getAllStopAreas {
             node: allPysakkialues {
                 nodes {
-                    nimi
-                    nimir
-                    pysalueid
+                    ${stopAreaQueryFields}
                 }
             }
         }

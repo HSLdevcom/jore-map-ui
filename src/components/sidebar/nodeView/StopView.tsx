@@ -4,9 +4,9 @@ import React from 'react';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
-import { INode, IStop } from '~/models';
+import { INode, IStop, IStopArea } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
-import StopAreaService, { IStopAreaItem } from '~/services/stopAreaService';
+import StopAreaService from '~/services/stopAreaService';
 import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -51,7 +51,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         if (this.props.isNewStop) {
             this.props.nodeStore!.fetchAddressData();
         }
-        const stopAreas: IStopAreaItem[] = await StopAreaService.fetchAllStopAreas();
+        const stopAreas: IStopArea[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
         const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
         if (this._isMounted) {
@@ -59,7 +59,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 hastusAreas,
                 stopSections: this.createStopSectionDropdownItems(stopSections)
             });
-            this.props.nodeStore!.setStopAreaItems(stopAreas);
+            this.props.nodeStore!.setStopAreas(stopAreas);
             this.setState({ isLoading: false });
         }
     }
@@ -115,7 +115,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 node={node}
                 isNewStop={isNewStop}
                 isEditingDisabled={isEditingDisabled}
-                stopAreas={this.props.nodeStore!.stopAreaItems}
+                stopAreas={this.props.nodeStore!.stopAreas}
                 stopSections={this.state.stopSections}
                 hastusAreas={this.state.hastusAreas}
                 saveHastusArea={this.props.saveHastusArea}
