@@ -3,23 +3,15 @@ import EndpointPath from '~/enums/endpointPath';
 import StopAreaFactory from '~/factories/stopAreaFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import IStopArea from '~/models/IStopArea';
+import ITerminalArea from '~/models/ITerminalArea';
+import IExternalTerminalArea from '~/models/externals/IExternalTerminalArea';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
-
-interface ITerminalAreaItem {
-    id: string;
-    name: string;
-}
 
 interface IStopAreaItem {
     pysalueid: string;
     nimi: string;
     nimir: string;
-}
-
-interface IExternalTerminalArea {
-    termid: string;
-    nimi: string;
 }
 
 class StopAreaService {
@@ -49,12 +41,12 @@ class StopAreaService {
         return stopAreaId;
     };
 
-    public static fetchAllTerminalAreas = async (): Promise<ITerminalAreaItem[]> => {
+    public static fetchAllTerminalAreas = async (): Promise<ITerminalArea[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllTerminalAreas()
         });
 
-        const terminalAreaItems: ITerminalAreaItem[] = queryResult.data.node.nodes.map(
+        const terminalAreas: ITerminalArea[] = queryResult.data.node.nodes.map(
             (externalTerminalArea: IExternalTerminalArea) => {
                 return {
                     id: externalTerminalArea.termid,
@@ -63,10 +55,10 @@ class StopAreaService {
             }
         );
 
-        return terminalAreaItems;
+        return terminalAreas;
     };
 }
 
 export default StopAreaService;
 
-export { IStopAreaItem, ITerminalAreaItem };
+export { IStopAreaItem };
