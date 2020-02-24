@@ -30,7 +30,7 @@ echo "Docker tag is $DOCKER_TAG"
 echo "Docker image is $DOCKER_IMAGE"
 echo "Cypress docker tag is $CYPRESS_DOCKER_TAG"
 echo "Cypress docker image is $CYPRESS_DOCKER_IMAGE"
-echo "Cypress key is $CYPRESS_KEY"
+echo "Cypress key is $APP_CYPRESS_KEY"
 
 # Build & push cypress image for dev & stage
 if [ $TRAVIS_PULL_REQUEST == "false" ] && ([ [ $TRAVIS_BRANCH == "master" ] || [ $TRAVIS_BRANCH == "develop" ]); then
