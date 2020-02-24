@@ -44,14 +44,14 @@ const hslLogin = hasWriteAccess => {
     const CLIENT_SECRET = Cypress.env('CLIENT_SECRET');
     const AUTH_SCOPE = Cypress.env('AUTH_SCOPE');
 
-    let HSL_TESTING_HSLID_USERNAME;
-    let HSL_TESTING_HSLID_PASSWORD;
+    let HSLID_CYPRESS_USERNAME;
+    let HSLID_CYPRESS_PASSWORD;
     if (hasWriteAccess) {
-        HSL_TESTING_HSLID_USERNAME = Cypress.env('HSL_TESTING_HSLID_WRITE_ACCESS_USERNAME');
-        HSL_TESTING_HSLID_PASSWORD = Cypress.env('HSL_TESTING_HSLID_WRITE_ACCESS_PASSWORD');
+        HSLID_CYPRESS_USERNAME = Cypress.env('HSLID_CYPRESS_WRITE_ACCESS_USERNAME');
+        HSLID_CYPRESS_PASSWORD = Cypress.env('HSLID_CYPRESS_WRITE_ACCESS_PASSWORD');
     } else {
-        HSL_TESTING_HSLID_USERNAME = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_USERNAME');
-        HSL_TESTING_HSLID_PASSWORD = Cypress.env('HSL_TESTING_HSLID_READ_ACCESS_PASSWORD');
+        HSLID_CYPRESS_USERNAME = Cypress.env('HSLID_CYPRESS_READ_ACCESS_USERNAME');
+        HSLID_CYPRESS_PASSWORD = Cypress.env('HSLID_CYPRESS_READ_ACCESS_PASSWORD');
     }
     const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
 
@@ -71,8 +71,8 @@ const hslLogin = hasWriteAccess => {
         body: {
             scope: AUTH_SCOPE,
             grant_type: 'password',
-            username: HSL_TESTING_HSLID_USERNAME,
-            password: HSL_TESTING_HSLID_PASSWORD
+            username: HSLID_CYPRESS_USERNAME,
+            password: HSLID_CYPRESS_PASSWORD
         }
     };
 
@@ -83,6 +83,7 @@ const hslLogin = hasWriteAccess => {
         expect(access_token).to.be.ok;
         // testing = QueryParams.testing
         cy.visit(`/afterLogin?code=${access_token}&testing=true`);
+        cy.wait(1000);
     });
 };
 
