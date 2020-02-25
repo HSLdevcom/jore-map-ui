@@ -1,0 +1,17 @@
+@import './styles/common.scss';
+
+.link {
+    display: flex;
+    font-size: $largeFontSize;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+    align-items: center;
+    .transitTypeIcon {
+        display: flex;
+        padding-right: 10px;
+    }
+}
+.link:hover {
+    background-color: $backgroundHoverColor;
+}
