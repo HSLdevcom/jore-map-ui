@@ -1,8 +1,7 @@
-import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
-import TransitIcon from '~/components/shared/TransitIcon';
+import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import ButtonType from '~/enums/buttonType';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -13,7 +12,6 @@ import { LineStore } from '~/stores/lineStore';
 import { LoginStore } from '~/stores/loginStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import s from './lineRoutesTab.scss';
 
 interface ILineRoutesTabProps {
@@ -46,16 +44,13 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                     className={s.routeListItem}
                     onClick={this.redirectToRouteView(route.id)}
                 >
-                    <TransitIcon transitType={line!.transitType!} isWithoutBox={false} />
-                    <div
-                        className={classnames(
-                            s.routeId,
-                            TransitTypeUtils.getColorClass(line!.transitType!)
-                        )}
-                    >
-                        {route.id}
-                    </div>{' '}
-                    {route.routeName}
+                    <TransitTypeLink
+                        transitType={line!.transitType!}
+                        shouldShowTransitTypeIcon={true}
+                        text={route.id}
+                        hoverText={''}
+                    />
+                    <div className={s.routeName}>{route.routeName}</div>
                 </div>
             );
         });

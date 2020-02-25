@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import React from 'react';
-import ReactMoment from 'react-moment';
 import ISearchLine from '~/models/searchModels/ISearchLine';
 import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
 import navigator from '~/routing/navigator';
@@ -10,7 +9,7 @@ import SubSites from '~/routing/subSites';
 import searchStore from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
-import TransitIcon from '../TransitIcon';
+import TransitTypeLink from '../TransitTypeLink';
 import * as s from './lineItem.scss';
 
 interface ILineItemProps {
@@ -37,10 +36,6 @@ class LineItem extends React.Component<ILineItemProps> {
                         <div>{route.id}</div>
                         <div>{route.name}</div>
                     </div>
-                    <div className={s.routeDate}>
-                        {'Muokattu: '}
-                        <ReactMoment date={route.date} format='DD.MM.YYYY HH:mm' />
-                    </div>
                 </div>
             </div>
         );
@@ -62,26 +57,14 @@ class LineItem extends React.Component<ILineItemProps> {
         return (
             <div className={s.lineItemView}>
                 <div className={s.lineContainer}>
-                    <div
-                        className={s.lineItem}
+                    <TransitTypeLink
+                        transitType={this.props.line.transitType}
+                        shouldShowTransitTypeIcon={true}
+                        text={this.props.line.id}
                         onClick={() => NavigationUtils.openLineView({ lineId: this.props.line.id })}
+                        hoverText={''}
                         data-cy='lineItem'
-                    >
-                        <div className={s.icon}>
-                            <TransitIcon
-                                transitType={this.props.line.transitType}
-                                isWithoutBox={false}
-                            />
-                        </div>
-                        <div
-                            className={classNames(
-                                TransitTypeUtils.getColorClass(this.props.line.transitType),
-                                s.lineLabel
-                            )}
-                        >
-                            {this.props.line.id}
-                        </div>
-                    </div>
+                    />
                     {this.props.line.routes.length > 0 && (
                         <div className={s.openAllRoutesButton} onClick={this.openAllRoutes}>
                             Avaa reitit ({this.props.line.routes.length})

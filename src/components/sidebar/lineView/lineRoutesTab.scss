@@ -14,16 +14,17 @@
         .routeListItem {
             display: flex;
             align-items: center;
-            padding: 10px;
             cursor: pointer;
+            white-space: nowrap;
+            transition: 0.5s;
 
-            .routeId {
-                white-space: nowrap;
-                font-size: $largeFontSize;
+            .routeName {
+                cursor: pointer;
             }
         }
 
         .routeListItem:hover {
+            transition: 0.5s;
             background-color: $backgroundHoverColor;
         }
 

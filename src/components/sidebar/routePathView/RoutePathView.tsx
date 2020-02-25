@@ -7,6 +7,7 @@ import ReactMoment from 'react-moment';
 import { match } from 'react-router';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
+import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import Loader from '~/components/shared/loader/Loader';
 import constants from '~/constants/constants';
 import ToolbarTool from '~/enums/toolbarTool';
@@ -352,10 +353,22 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         {this.props.isNewRoutePath
                             ? 'Uusi reitinsuunta'
                             :
-                            <div className={s.topic}>
-                                <div className={s.link} title={`Avaa linja ${routePath.lineId}`} onClick={() => NavigationUtils.openLineView({ lineId: routePath.lineId })}>{routePath.lineId}</div>
-                                <div>&nbsp;>&nbsp;</div>
-                                <div className={s.link} title={`Avaa reitti ${routePath.routeId}`} onClick={() => NavigationUtils.openRouteView({ routeId: routePath.routeId })}>{routePath.routeId}</div>
+                            <div className={s.linkContainer}>
+                                <TransitTypeLink
+                                    transitType={routePath.transitType}
+                                    shouldShowTransitTypeIcon={true}
+                                    text={routePath.lineId}
+                                    onClick={() => NavigationUtils.openLineView({ lineId: routePath.lineId })}
+                                    hoverText={`Avaa linja ${routePath.lineId}`}
+                                />
+                                <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
+                                <TransitTypeLink
+                                    transitType={routePath.transitType}
+                                    shouldShowTransitTypeIcon={false}
+                                    text={routePath.routeId}
+                                    onClick={() => NavigationUtils.openRouteView({ routeId: routePath.routeId })}
+                                    hoverText={`Avaa reitti ${routePath.routeId}`}
+                                />
                             </div>
                         }
                     </SidebarHeader>
