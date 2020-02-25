@@ -7,6 +7,8 @@
     cursor: pointer;
     padding: 10px;
     align-items: center;
+    transition: 0.5s;
+
     .transitTypeIcon {
         display: flex;
         padding-right: 10px;
@@ -14,4 +16,5 @@
 }
 .link:hover {
     background-color: $backgroundHoverColor;
+    transition: 0.5s;
 }
