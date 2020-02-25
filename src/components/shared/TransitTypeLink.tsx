@@ -15,12 +15,20 @@ interface ITransitIconProps {
 
 class TransitTypeLink extends React.Component<ITransitIconProps> {
     render() {
-        const { transitType, shouldShowTransitTypeIcon, text, onClick, hoverText } = this.props;
+        const {
+            transitType,
+            shouldShowTransitTypeIcon,
+            text,
+            onClick,
+            hoverText,
+            ...attrs
+        } = this.props;
         return (
             <div
                 className={classnames(s.link, TransitTypeUtils.getColorClass(transitType))}
                 title={hoverText ? hoverText : ''}
                 onClick={() => onClick()}
+                {...attrs}
             >
                 {shouldShowTransitTypeIcon && (
                     <div className={s.transitTypeIcon}>
