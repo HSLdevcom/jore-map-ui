@@ -14,12 +14,11 @@
         .routeListItem {
             display: flex;
             align-items: center;
-            padding: 10px;
             cursor: pointer;
+            white-space: nowrap;
 
-            .routeId {
-                white-space: nowrap;
-                font-size: $largeFontSize;
+            .routeName {
+                cursor: pointer;
             }
         }
 

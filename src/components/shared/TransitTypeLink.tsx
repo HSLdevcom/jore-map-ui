@@ -9,7 +9,7 @@ interface ITransitIconProps {
     transitType: TransitType;
     shouldShowTransitTypeIcon: boolean;
     text: string;
-    onClick: () => void;
+    onClick?: () => void;
     hoverText?: string;
 }
 
@@ -27,7 +27,7 @@ class TransitTypeLink extends React.Component<ITransitIconProps> {
             <div
                 className={classnames(s.link, TransitTypeUtils.getColorClass(transitType))}
                 title={hoverText ? hoverText : ''}
-                onClick={() => onClick()}
+                onClick={onClick ? () => onClick() : void 0}
                 {...attrs}
             >
                 {shouldShowTransitTypeIcon && (
