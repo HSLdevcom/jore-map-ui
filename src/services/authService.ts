@@ -6,7 +6,7 @@ import LoginStore from '~/stores/loginStore';
 import CodeListUtils from '~/utils/CodeListUtils';
 import HttpUtils from '~/utils/HttpUtils';
 
-export interface IAuthorizationResponse {
+interface IAuthorizationResponse {
     isOk: boolean;
     hasWriteAccess: boolean;
     errorTextKey?: string;
@@ -60,3 +60,5 @@ class AuthService {
 }
 
 export default AuthService;
+
+export { IAuthorizationResponse };

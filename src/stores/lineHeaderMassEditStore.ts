@@ -5,14 +5,14 @@ import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValid
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 
-export interface IMassEditLineHeader {
+interface IMassEditLineHeader {
     id: number;
     lineHeader: ILineHeader;
     invalidPropertiesMap: object;
     isRemoved: boolean;
 }
 
-export class LineHeaderMassEditStore {
+class LineHeaderMassEditStore {
     @observable private _massEditLineHeaders: IMassEditLineHeader[] | null;
     @observable private _selectedLineHeaderId: number | null;
     @observable private _oldlineHeaders: ILineHeader[] | null;
@@ -323,6 +323,6 @@ const _isSameDay = (a: Date, b: Date) => {
     );
 };
 
-const observableLineHeaderStore = new LineHeaderMassEditStore();
+export default new LineHeaderMassEditStore();
 
-export default observableLineHeaderStore;
+export { LineHeaderMassEditStore, IMassEditLineHeader };

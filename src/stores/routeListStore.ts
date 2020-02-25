@@ -3,13 +3,13 @@ import ColorScale from '~/helpers/ColorScale';
 import { ILine, IRoute, IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
 
-export interface IRouteItem {
+interface IRouteItem {
     route: IRoute;
     selectedTabIndex: number; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
     areAllRoutePathsVisible: boolean; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
 }
 
-export class RouteListStore {
+class RouteListStore {
     @observable private _routeItems: IRouteItem[];
     @observable private _lines: ILine[];
     private colorScale: ColorScale;
@@ -146,6 +146,6 @@ export class RouteListStore {
     };
 }
 
-const observableStoreStore = new RouteListStore();
+export default new RouteListStore();
 
-export default observableStoreStore;
+export { RouteListStore, IRouteItem };
