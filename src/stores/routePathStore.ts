@@ -37,7 +37,7 @@ enum ListFilter {
     link
 }
 
-export class RoutePathStore {
+class RoutePathStore {
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
     @observable private _isNewRoutePath: boolean;
@@ -601,4 +601,4 @@ export class RoutePathStore {
 
 export default new RoutePathStore();
 
-export { NeighborToAddType, RoutePathViewTab, UndoState, ListFilter };
+export { RoutePathStore, NeighborToAddType, RoutePathViewTab, UndoState, ListFilter };

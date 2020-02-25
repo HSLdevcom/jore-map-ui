@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 import LocalStorageHelper from '~/helpers/LocalStorageHelper';
 
-export class UserStore {
+class UserStore {
     @observable private _userTransitType: TransitType;
 
     constructor() {
@@ -23,3 +23,5 @@ export class UserStore {
 }
 
 export default new UserStore();
+
+export { UserStore };

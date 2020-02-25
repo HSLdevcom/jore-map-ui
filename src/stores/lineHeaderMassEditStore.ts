@@ -12,7 +12,7 @@ interface IMassEditLineHeader {
     isRemoved: boolean;
 }
 
-export class LineHeaderMassEditStore {
+class LineHeaderMassEditStore {
     @observable private _massEditLineHeaders: IMassEditLineHeader[] | null;
     @observable private _selectedLineHeaderId: number | null;
     @observable private _oldlineHeaders: ILineHeader[] | null;
@@ -325,4 +325,4 @@ const _isSameDay = (a: Date, b: Date) => {
 
 export default new LineHeaderMassEditStore();
 
-export { IMassEditLineHeader };
+export { LineHeaderMassEditStore, IMassEditLineHeader };

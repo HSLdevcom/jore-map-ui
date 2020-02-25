@@ -18,7 +18,7 @@ type codeListName =
     | 'Pysäkkialueid'
     | 'Pysäkkityyppi';
 
-export class CodeListStore {
+class CodeListStore {
     @observable private _codeListMap: Map<codeListName, ICodeListItem[]>;
     constructor() {
         this._codeListMap = new Map();
@@ -74,4 +74,4 @@ export class CodeListStore {
 
 export default new CodeListStore();
 
-export { codeListName };
+export { CodeListStore, codeListName };

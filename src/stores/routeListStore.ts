@@ -9,7 +9,7 @@ interface IRouteItem {
     areAllRoutePathsVisible: boolean; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
 }
 
-export class RouteListStore {
+class RouteListStore {
     @observable private _routeItems: IRouteItem[];
     @observable private _lines: ILine[];
     private colorScale: ColorScale;
@@ -148,4 +148,4 @@ export class RouteListStore {
 
 export default new RouteListStore();
 
-export { IRouteItem };
+export { RouteListStore, IRouteItem };

@@ -6,7 +6,7 @@ import AuthService, { IAuthorizationResponse } from '~/services/authService';
 
 const SAVE_LOCK_CHECK_INTERVAL = 60000; // Minute
 
-export class LoginStore {
+class LoginStore {
     @observable private _isAuthenticated: boolean;
     @observable private _hasWriteAccess: boolean;
     @observable private _userEmail?: string;
@@ -70,3 +70,5 @@ export class LoginStore {
 }
 
 export default new LoginStore();
+
+export { LoginStore };

@@ -26,7 +26,7 @@ const TOOL_LIST = [
 const TOOLS = {};
 TOOL_LIST.forEach((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
 
-export class ToolbarStore {
+class ToolbarStore {
     @observable private _selectedTool: BaseTool | null;
     @observable private _disabledTools: ToolbarTool[];
     @observable private _shouldShowEntityOpenPrompt: boolean;
@@ -95,3 +95,5 @@ export class ToolbarStore {
 }
 
 export default new ToolbarStore();
+
+export { ToolbarStore };

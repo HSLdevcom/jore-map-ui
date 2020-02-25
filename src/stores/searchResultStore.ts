@@ -5,7 +5,7 @@ import ISearchLine from '~/models/searchModels/ISearchLine';
 import NodeUtils from '~/utils/NodeUtils';
 import SearchStore from './searchStore';
 
-export class SearchResultStore {
+class SearchResultStore {
     @observable private _allLines: ISearchLine[];
     @observable private _allNodes: INodeBase[];
     @observable private _filteredItems: (INodeBase | ISearchLine)[];
@@ -132,3 +132,5 @@ export class SearchResultStore {
 }
 
 export default new SearchResultStore();
+
+export { SearchResultStore };

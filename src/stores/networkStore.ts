@@ -23,7 +23,7 @@ enum MapLayer { // TODO change name to something better
     nodeWithoutLink = 'nodeWithoutLink'
 }
 
-export class NetworkStore {
+class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _selectedDate: Moment.Moment | null;
     @observable private _visibleMapLayers: MapLayer[];
@@ -186,4 +186,4 @@ const _setLocalStorageLayerVisibility = ({
 
 export default new NetworkStore();
 
-export { NodeSize, MapLayer };
+export { NetworkStore, NodeSize, MapLayer };

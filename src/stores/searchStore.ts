@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 
-export class SearchStore {
+class SearchStore {
     @observable private _searchInput: string;
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isSearchingForLines: boolean;
@@ -79,3 +79,5 @@ export class SearchStore {
 }
 
 export default new SearchStore();
+
+export { SearchStore };

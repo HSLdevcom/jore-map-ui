@@ -9,7 +9,7 @@ import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
-export class LineStore {
+class LineStore {
     @observable private _line: ILine | null;
     @observable private _routes: IRoute[];
     @observable private _oldline: ILine | null;
@@ -159,3 +159,5 @@ export class LineStore {
 }
 
 export default new LineStore();
+
+export { LineStore };

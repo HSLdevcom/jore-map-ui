@@ -18,7 +18,7 @@ enum MapFilter {
 
 type MapCursor = '' | 'crosshair';
 
-export class MapStore {
+class MapStore {
     @observable private _coordinates: L.LatLng | null;
     @observable private _displayCoordinateSystem: CoordinateSystem;
     @observable private _isMapFullscreen: boolean;
@@ -152,4 +152,4 @@ export class MapStore {
 
 export default new MapStore();
 
-export { NodeLabel, MapFilter, MapCursor };
+export { MapStore, NodeLabel, MapFilter, MapCursor };

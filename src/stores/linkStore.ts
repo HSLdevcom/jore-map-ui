@@ -14,7 +14,7 @@ interface UndoState {
     link: ILink;
 }
 
-export class LinkStore {
+class LinkStore {
     @observable private _link: ILink | null;
     @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
@@ -225,4 +225,4 @@ export class LinkStore {
 
 export default new LinkStore();
 
-export { UndoState };
+export { LinkStore, UndoState };

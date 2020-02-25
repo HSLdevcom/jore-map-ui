@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import IError from '~/models/IError';
 
-export class ErrorStore {
+class ErrorStore {
     @observable private _errors: string[];
 
     constructor() {
@@ -42,3 +42,5 @@ export class ErrorStore {
 }
 
 export default new ErrorStore();
+
+export { ErrorStore };

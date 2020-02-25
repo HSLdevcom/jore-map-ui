@@ -17,7 +17,7 @@ interface IPopup extends IPopupProps {
     id: number;
 }
 
-export class PopupStore {
+class PopupStore {
     // Observable.ref prevents react from re-rendering when properties other than first level IPopup properties change
     @observable.ref private _popups: IPopup[];
     private _idCounter: number;
@@ -66,4 +66,4 @@ export class PopupStore {
 
 export default new PopupStore();
 
-export { IPopup, IPopupProps, PopupType };
+export { PopupStore, IPopup, IPopupProps, PopupType };

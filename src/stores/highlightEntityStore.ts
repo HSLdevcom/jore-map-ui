@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
 
-export class HighlightEntityStore {
+class HighlightEntityStore {
     @observable private _nodes: INodeMapHighlight[];
     @observable private _links: ILinkMapHighlight[];
 
@@ -33,3 +33,5 @@ export class HighlightEntityStore {
 }
 
 export default new HighlightEntityStore();
+
+export { HighlightEntityStore };

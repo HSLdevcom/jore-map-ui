@@ -13,7 +13,7 @@ interface UndoState {
     stopArea: IStopArea;
 }
 
-export class StopAreaStore {
+class StopAreaStore {
     @observable private _stopArea: IStopArea | null;
     @observable private _oldStopArea: IStopArea | null;
     @observable private _stopItems: IStopItem[];
@@ -141,4 +141,4 @@ export class StopAreaStore {
 
 export default new StopAreaStore();
 
-export { UndoState };
+export { StopAreaStore, UndoState };
