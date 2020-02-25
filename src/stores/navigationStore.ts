@@ -18,6 +18,4 @@ export class NavigationStore {
     };
 }
 
-const observableNavigationStore = new NavigationStore();
-
-export default observableNavigationStore;
+export default new NavigationStore();

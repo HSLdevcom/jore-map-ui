@@ -41,6 +41,4 @@ export class ErrorStore {
     }
 }
 
-const observableErrorStore = new ErrorStore();
-
-export default observableErrorStore;
+export default new ErrorStore();

@@ -139,6 +139,4 @@ export class StopAreaStore {
     };
 }
 
-const observableStopAreaStore = new StopAreaStore();
-
-export default observableStopAreaStore;
+export default new StopAreaStore();

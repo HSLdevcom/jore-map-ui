@@ -599,8 +599,6 @@ export class RoutePathStore {
     };
 }
 
-const observableStoreStore = new RoutePathStore();
-
-export default observableStoreStore;
+export default new RoutePathStore();
 
 export { NeighborToAddType, RoutePathViewTab, UndoState, ListFilter };

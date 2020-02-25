@@ -158,6 +158,4 @@ export class LineStore {
     };
 }
 
-const observableLineStore = new LineStore();
-
-export default observableLineStore;
+export default new LineStore();

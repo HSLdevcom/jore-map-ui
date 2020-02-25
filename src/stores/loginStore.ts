@@ -69,6 +69,4 @@ export class LoginStore {
     }
 }
 
-const observableLoginStore = new LoginStore();
-
-export default observableLoginStore;
+export default new LoginStore();

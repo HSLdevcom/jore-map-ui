@@ -72,6 +72,4 @@ export class CodeListStore {
     };
 }
 
-const observableCodeListStore = new CodeListStore();
-
-export default observableCodeListStore;
+export default new CodeListStore();

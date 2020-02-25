@@ -22,6 +22,4 @@ export class UserStore {
     }
 }
 
-const observableUserStore = new UserStore();
-
-export default observableUserStore;
+export default new UserStore();

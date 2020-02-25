@@ -32,6 +32,4 @@ export class HighlightEntityStore {
     }
 }
 
-const observableLineHeaderStore = new HighlightEntityStore();
-
-export default observableLineHeaderStore;
+export default new HighlightEntityStore();

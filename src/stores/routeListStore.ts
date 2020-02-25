@@ -146,6 +146,4 @@ export class RouteListStore {
     };
 }
 
-const observableStoreStore = new RouteListStore();
-
-export default observableStoreStore;
+export default new RouteListStore();

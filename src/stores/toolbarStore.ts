@@ -94,6 +94,4 @@ export class ToolbarStore {
     };
 }
 
-const observableToolbarStore = new ToolbarStore();
-
-export default observableToolbarStore;
+export default new ToolbarStore();

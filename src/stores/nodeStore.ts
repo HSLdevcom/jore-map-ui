@@ -516,8 +516,6 @@ class NodeStore {
     };
 }
 
-const observableNodeStore = new NodeStore();
-
-export default observableNodeStore;
+export default new NodeStore();
 
 export { NodeStore, INodeCacheObj };

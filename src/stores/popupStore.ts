@@ -64,8 +64,6 @@ export class PopupStore {
     };
 }
 
-const observablePopupStore = new PopupStore();
-
-export default observablePopupStore;
+export default new PopupStore();
 
 export { IPopup, IPopupProps, PopupType };

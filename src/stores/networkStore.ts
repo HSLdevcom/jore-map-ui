@@ -184,6 +184,4 @@ const _setLocalStorageLayerVisibility = ({
     LocalStorageHelper.setItem('visible_layers', layers);
 };
 
-const observableNetworkStore = new NetworkStore();
-
-export default observableNetworkStore;
+export default new NetworkStore();

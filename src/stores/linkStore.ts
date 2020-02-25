@@ -223,6 +223,4 @@ export class LinkStore {
     };
 }
 
-const observableLinkStore = new LinkStore();
-
-export default observableLinkStore;
+export default new LinkStore();

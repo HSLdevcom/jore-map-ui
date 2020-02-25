@@ -78,6 +78,4 @@ export class SearchStore {
     }
 }
 
-const observableSearchStore = new SearchStore();
-
-export default observableSearchStore;
+export default new SearchStore();

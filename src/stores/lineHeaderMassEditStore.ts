@@ -323,6 +323,4 @@ const _isSameDay = (a: Date, b: Date) => {
     );
 };
 
-const observableLineHeaderStore = new LineHeaderMassEditStore();
-
-export default observableLineHeaderStore;
+export default new LineHeaderMassEditStore();
