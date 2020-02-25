@@ -3,7 +3,7 @@ import ColorScale from '~/helpers/ColorScale';
 import { ILine, IRoute, IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
 
-export interface IRouteItem {
+interface IRouteItem {
     route: IRoute;
     selectedTabIndex: number; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
     areAllRoutePathsVisible: boolean; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
@@ -147,3 +147,5 @@ export class RouteListStore {
 }
 
 export default new RouteListStore();
+
+export { IRouteItem };

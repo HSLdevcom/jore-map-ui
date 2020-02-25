@@ -5,7 +5,7 @@ import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValid
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 
-export interface IMassEditLineHeader {
+interface IMassEditLineHeader {
     id: number;
     lineHeader: ILineHeader;
     invalidPropertiesMap: object;
@@ -324,3 +324,5 @@ const _isSameDay = (a: Date, b: Date) => {
 };
 
 export default new LineHeaderMassEditStore();
+
+export { IMassEditLineHeader };

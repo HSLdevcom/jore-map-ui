@@ -2,7 +2,7 @@ import { action, observable } from 'mobx';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import ICodeListItem from '~/models/ICodeListItem';
 
-export type codeListName =
+type codeListName =
     | 'Joukkoliikennelaji'
     | 'Tilaajaorganisaatio'
     | 'Verkko'
@@ -73,3 +73,5 @@ export class CodeListStore {
 }
 
 export default new CodeListStore();
+
+export { codeListName };

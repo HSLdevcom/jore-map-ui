@@ -10,7 +10,7 @@ import { calculateLengthFromLatLngs, roundLatLngs } from '~/utils/geomUtils';
 import NavigationStore from './navigationStore';
 import ValidationStore from './validationStore';
 
-export interface UndoState {
+interface UndoState {
     link: ILink;
 }
 
@@ -224,3 +224,5 @@ export class LinkStore {
 }
 
 export default new LinkStore();
+
+export { UndoState };

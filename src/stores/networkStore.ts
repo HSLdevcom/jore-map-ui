@@ -11,12 +11,12 @@ const TRANSIT_TYPES = [
     TransitType.TRAM
 ];
 
-export enum NodeSize {
+enum NodeSize {
     normal,
     large
 }
 
-export enum MapLayer { // TODO change name to something better
+enum MapLayer { // TODO change name to something better
     node = 'node',
     link = 'link',
     linkPoint = 'linkPoint',
@@ -185,3 +185,5 @@ const _setLocalStorageLayerVisibility = ({
 };
 
 export default new NetworkStore();
+
+export { NodeSize, MapLayer };

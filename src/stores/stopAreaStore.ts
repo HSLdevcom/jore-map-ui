@@ -9,7 +9,7 @@ import stopAreaValidationModel, {
 import NavigationStore from './navigationStore';
 import ValidationStore from './validationStore';
 
-export interface UndoState {
+interface UndoState {
     stopArea: IStopArea;
 }
 
@@ -140,3 +140,5 @@ export class StopAreaStore {
 }
 
 export default new StopAreaStore();
+
+export { UndoState };

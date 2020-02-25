@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import Constants from '~/constants/constants';
 
-export enum AlertType {
+enum AlertType {
     Success = 1,
     Info,
     Loader
@@ -77,3 +77,5 @@ export class AlertStore {
 }
 
 export default new AlertStore();
+
+export { AlertType };
