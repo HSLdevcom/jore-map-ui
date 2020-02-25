@@ -1,45 +1,45 @@
 @import '../components/shared/styles/common.scss';
 
 .ferry {
-    color: $ferryBlue !important;
+    color: $ferryBlue;
 }
 
 .bus {
-    color: $busBlue !important;
+    color: $busBlue;
 }
 
 .tram {
-    color: $tramGreen !important;
+    color: $tramGreen;
 }
 
 .train {
-    color: $trainPurple !important;
+    color: $trainPurple;
 }
 
 .subway {
-    color: $subwayOrange !important;
+    color: $subwayOrange;
 }
 
 .notFound {
-    color: #000 !important;
+    color: #000;
 }
 
 .ferryBg {
-    background-color: $ferryBlue !important;
+    background-color: $ferryBlue;
 }
 
 .busBg {
-    background-color: $busBlue !important;
+    background-color: $busBlue;
 }
 
 .tramBg {
-    background-color: $tramGreen !important;
+    background-color: $tramGreen;
 }
 
 .trainBg {
-    background-color: $trainPurple !important;
+    background-color: $trainPurple;
 }
 
 .subwayBg {
-    background-color: $subwayOrange !important;
+    background-color: $subwayOrange;
 }

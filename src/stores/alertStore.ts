@@ -1,5 +1,5 @@
 import { action, computed, observable } from 'mobx';
-import Constants from '~/constants/constants';
+import constants from '~/constants/constants';
 
 enum AlertType {
     Success = 1,
@@ -58,7 +58,7 @@ class AlertStore {
             setTimeout(() => {
                 this.close();
                 resolve();
-            }, Constants.FADE_ALERT_TIMEOUT);
+            }, constants.FADE_ALERT_TIMEOUT);
         });
     };
 

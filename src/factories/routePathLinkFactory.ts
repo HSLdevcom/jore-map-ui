@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import Constants from '~/constants/constants';
+import constants from '~/constants/constants';
 import NumberIterator from '~/helpers/NumberIterator';
 import { IRoutePathLink } from '~/models';
 import IExternalLink from '~/models/externals/IExternalLink';
@@ -8,7 +8,7 @@ import NodeFactory from './nodeFactory';
 
 class RoutePathLinkFactory {
     private static getTemporaryRoutePathLinkId = () => {
-        return `${Constants.NEW_OBJECT_TAG}${NumberIterator.getNumber()}`;
+        return `${constants.NEW_OBJECT_TAG}${NumberIterator.getNumber()}`;
     };
 
     public static mapExternalRoutePathLink = (

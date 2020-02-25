@@ -1,12 +1,12 @@
 import { IRoutePathLink } from '..';
-import Constants from '../../constants/constants';
+import constants from '../../constants/constants';
 
 type IRoutePathLinkValidationModel = { [key in keyof IRoutePathLink]: string };
 
 const routePathLinkValidationModel: IRoutePathLinkValidationModel = {
     id: '',
     geometry: '',
-    orderNumber: `required|min:1|max:${Constants.SMALL_INT_MAX_VALUE}|numeric`,
+    orderNumber: `required|min:1|max:${constants.SMALL_INT_MAX_VALUE}|numeric`,
     transitType: 'required|min:1|max:1|string',
     startNode: '',
     endNode: '',

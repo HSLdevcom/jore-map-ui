@@ -24,6 +24,7 @@
 ### Typescript
 
 -   Use Date type if property's type is date
+-   Enums: use pascal case
 
 ### React
 
@@ -32,7 +33,7 @@
 -   Use classnames if there are multiple classes
 -   Use arrow functions in components
 -   Use render prefix in methods that return JSX or HTML
--   Use export default at the end of file
+-   Use export and export default at the end of file
 -   Put lifecycle methods on top of components after constructor
 
 ### IModels
