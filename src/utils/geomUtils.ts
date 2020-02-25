@@ -1,5 +1,5 @@
 import { LatLng } from 'leaflet';
-import Constants from '~/constants/constants';
+import constants from '~/constants/constants';
 import { IRoutePathLink } from '~/models';
 
 /**
@@ -38,7 +38,7 @@ const roundLatLng = (latLng: LatLng) => {
 };
 
 const _roundNumber = (num: number) => {
-    const DECIMALS = Constants.DECIMALS_IN_GEOMETRIES;
+    const DECIMALS = constants.DECIMALS_IN_GEOMETRIES;
     return Math.floor(num * Math.pow(10, DECIMALS)) / Math.pow(10, DECIMALS);
 };
 
