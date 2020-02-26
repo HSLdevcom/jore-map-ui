@@ -40,8 +40,8 @@ Cypress.Commands.add('hslLoginWriteAccess', () => {
 
 const hslLogin = hasWriteAccess => {
     const AUTH_URI = Cypress.env('AUTH_URI');
-    const HSLID_CLIENT_ID = Cypress.env('CLIENT_ID');
-    const HSLID_CLIENT_SECRET = Cypress.env('CLIENT_SECRET');
+    const HSLID_CLIENT_ID = Cypress.env('HSLID_CLIENT_ID');
+    const HSLID_CLIENT_SECRET = Cypress.env('HSLID_CLIENT_SECRET');
     const AUTH_SCOPE = Cypress.env('AUTH_SCOPE');
 
     let HSLID_CYPRESS_USERNAME;
