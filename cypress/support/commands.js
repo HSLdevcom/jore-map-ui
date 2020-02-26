@@ -40,8 +40,8 @@ Cypress.Commands.add('hslLoginWriteAccess', () => {
 
 const hslLogin = hasWriteAccess => {
     const AUTH_URI = Cypress.env('AUTH_URI');
-    const CLIENT_ID = Cypress.env('CLIENT_ID');
-    const CLIENT_SECRET = Cypress.env('CLIENT_SECRET');
+    const HSLID_CLIENT_ID = Cypress.env('CLIENT_ID');
+    const HSLID_CLIENT_SECRET = Cypress.env('CLIENT_SECRET');
     const AUTH_SCOPE = Cypress.env('AUTH_SCOPE');
 
     let HSLID_CYPRESS_USERNAME;
@@ -53,7 +53,7 @@ const hslLogin = hasWriteAccess => {
         HSLID_CYPRESS_USERNAME = Cypress.env('HSLID_CYPRESS_READ_ACCESS_USERNAME');
         HSLID_CYPRESS_PASSWORD = Cypress.env('HSLID_CYPRESS_READ_ACCESS_PASSWORD');
     }
-    const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
+    const authHeader = `Basic ${btoa(`${HSLID_CLIENT_ID}:${HSLID_CLIENT_SECRET}`)}`;
 
     const writeAccessText = hasWriteAccess ? 'with write access ' : 'without write access';
     Cypress.log({
