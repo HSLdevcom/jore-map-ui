@@ -10,14 +10,10 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-              with:
-                  ref: master
             - name: Cypress tests
               uses: cypress-io/github-action@v1
               with:
-                  container: cypress/base:10.16.0
                   record: true
-                  build: yarn install --ignore-engines
               env:
                   CYPRESS_BASE_URL: https://dev.jore-map.hsl.fi
                   HSLID_CLIENT_ID: ${{ secrets.HSLID_CLIENT_ID }}
