@@ -15,15 +15,15 @@ jobs:
         uses: cypress-io/github-action@v1
         with:
           record: true
-          env:
-            CYPRESS_BASE_URL: https://dev.jore-map.hsl.fi
-            HSLID_CLIENT_ID: ${{ secrets.HSLID_CLIENT_ID }}
-            HSLID_CLIENT_SECRET: ${{ secrets.HSLID_CLIENT_SECRET }}
-            HSLID_CYPRESS_WRITE_ACCESS_USERNAME: ${{ secrets.HSLID_CYPRESS_WRITE_ACCESS_USERNAME }}
-            HSLID_CYPRESS_WRITE_ACCESS_PASSWORD: ${{ secrets.HSLID_CYPRESS_WRITE_ACCESS_PASSWORD }}
-            HSLID_CYPRESS_READ_ACCESS_USERNAME: ${{ secrets.HSLID_CYPRESS_READ_ACCESS_USERNAME }}
-            HSLID_CYPRESS_READ_ACCESS_PASSWORD: ${{ secrets.HSLID_CYPRESS_READ_ACCESS_PASSWORD }}
-            CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        env:
+          CYPRESS_BASE_URL: https://dev.jore-map.hsl.fi
+          HSLID_CLIENT_ID: ${{ secrets.HSLID_CLIENT_ID }}
+          HSLID_CLIENT_SECRET: ${{ secrets.HSLID_CLIENT_SECRET }}
+          HSLID_CYPRESS_WRITE_ACCESS_USERNAME: ${{ secrets.HSLID_CYPRESS_WRITE_ACCESS_USERNAME }}
+          HSLID_CYPRESS_WRITE_ACCESS_PASSWORD: ${{ secrets.HSLID_CYPRESS_WRITE_ACCESS_PASSWORD }}
+          HSLID_CYPRESS_READ_ACCESS_USERNAME: ${{ secrets.HSLID_CYPRESS_READ_ACCESS_USERNAME }}
+          HSLID_CYPRESS_READ_ACCESS_PASSWORD: ${{ secrets.HSLID_CYPRESS_READ_ACCESS_PASSWORD }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
       - name: Upload screenshot artifacts
         uses: actions/upload-artifact@v1
         if: failure()
@@ -42,6 +42,6 @@ jobs:
         with:
           status: ${{ job.status }}
           text: Jore-map DEV E2E test status
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
