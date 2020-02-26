@@ -55,6 +55,14 @@ async function readEnvVars() {
         config[cypressKey] = value;
     });
 
+    // Add CYPRESS-prefixed vars from the environment to the config.
+    for (const [envName, envValue] of Object.entries(process.env)) {
+        if (envName.match(CYPRESS_PREFIX)) {
+            const cypressKey = envName.replace(CYPRESS_PREFIX, "");
+            config[cypressKey] = envValue;
+        }
+    }
+
     return config;
 }
 
