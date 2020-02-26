@@ -12,10 +12,6 @@ jobs:
             - uses: actions/checkout@v2
               with:
                   ref: master
-            - name: Sleep for 5 minutes
-              uses: jakejarvis/wait-action@master
-              with:
-                  time: '5m'
             - name: Cypress tests
               uses: cypress-io/github-action@v1
               env:
