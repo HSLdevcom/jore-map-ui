@@ -37,9 +37,7 @@ async function readEnvVars() {
         const pathExists = await fs.exists(envPath);
 
         if (!pathExists) {
-            throw new Error(
-                'Auth secrets for testing not found! Ensure a `.env` file exists in the project root containing the client secret.'
-            );
+            continue;
         }
 
         const envFile = await fs.readFile(envPath, 'utf8');
