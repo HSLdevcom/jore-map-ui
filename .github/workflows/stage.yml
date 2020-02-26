@@ -17,6 +17,8 @@ jobs:
                   node-version: '10.x'
             - name: Cypress tests
               uses: cypress-io/github-action@v1
+              with:
+                  record: true
               env:
                   CYPRESS_BASE_URL: https://dev.jore-map.hsl.fi
                   HSLID_CLIENT_ID: ${{ secrets.HSLID_CLIENT_ID }}
@@ -25,6 +27,7 @@ jobs:
                   HSLID_CYPRESS_WRITE_ACCESS_PASSWORD: ${{ secrets.HSLID_CYPRESS_WRITE_ACCESS_PASSWORD }}
                   HSLID_CYPRESS_READ_ACCESS_USERNAME: ${{ secrets.HSLID_CYPRESS_READ_ACCESS_USERNAME }}
                   HSLID_CYPRESS_READ_ACCESS_PASSWORD: ${{ secrets.HSLID_CYPRESS_READ_ACCESS_PASSWORD }}
+                  CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
             - name: Upload screenshot artifacts
               uses: actions/upload-artifact@v1
               if: failure()
