@@ -40,20 +40,20 @@ Cypress.Commands.add('hslLoginWriteAccess', () => {
 
 const hslLogin = hasWriteAccess => {
     const AUTH_URI = Cypress.env('AUTH_URI');
-    const CYPRESS_HSLID_CLIENT_ID = Cypress.env('CYPRESS_HSLID_CLIENT_ID');
-    const CYPRESS_HSLID_CLIENT_SECRET = Cypress.env('CYPRESS_HSLID_CLIENT_SECRET');
+    const HSLID_CLIENT_ID = Cypress.env('CYPRESS_HSLID_CLIENT_ID');
+    const HSLID_CLIENT_SECRET = Cypress.env('CYPRESS_HSLID_CLIENT_SECRET');
     const AUTH_SCOPE = Cypress.env('AUTH_SCOPE');
 
-    let HSLID_CYPRESS_USERNAME;
-    let HSLID_CYPRESS_PASSWORD;
+    let HSLID_USERNAME;
+    let HSLID_PASSWORD;
     if (hasWriteAccess) {
-        HSLID_CYPRESS_USERNAME = Cypress.env('CYPRESS_HSLID_WRITE_ACCESS_USERNAME');
-        HSLID_CYPRESS_PASSWORD = Cypress.env('CYPRESS_HSLID_WRITE_ACCESS_PASSWORD');
+        HSLID_USERNAME = Cypress.env('CYPRESS_HSLID_WRITE_ACCESS_USERNAME');
+        HSLID_PASSWORD = Cypress.env('CYPRESS_HSLID_WRITE_ACCESS_PASSWORD');
     } else {
-        HSLID_CYPRESS_USERNAME = Cypress.env('CYPRESS_HSLID_READ_ACCESS_USERNAME');
-        HSLID_CYPRESS_PASSWORD = Cypress.env('CYPRESS_HSLID_READ_ACCESS_PASSWORD');
+        HSLID_USERNAME = Cypress.env('CYPRESS_HSLID_READ_ACCESS_USERNAME');
+        HSLID_PASSWORD = Cypress.env('CYPRESS_HSLID_READ_ACCESS_PASSWORD');
     }
-    const authHeader = `Basic ${btoa(`${CYPRESS_HSLID_CLIENT_ID}:${CYPRESS_HSLID_CLIENT_SECRET}`)}`;
+    const authHeader = `Basic ${btoa(`${HSLID_CLIENT_ID}:${HSLID_CLIENT_SECRET}`)}`;
 
     const writeAccessText = hasWriteAccess ? 'with write access ' : 'without write access';
     Cypress.log({
@@ -71,8 +71,8 @@ const hslLogin = hasWriteAccess => {
         body: {
             scope: AUTH_SCOPE,
             grant_type: 'password',
-            username: HSLID_CYPRESS_USERNAME,
-            password: HSLID_CYPRESS_PASSWORD
+            username: HSLID_USERNAME,
+            password: HSLID_PASSWORD
         }
     };
 
