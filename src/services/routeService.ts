@@ -5,6 +5,7 @@ import RoutePathFactory from '~/factories/routePathFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoute, IRoutePath } from '~/models';
 import { IRoutePrimaryKey } from '~/models/IRoute';
+import IExternalRoute from '~/models/externals/IExternalRoute';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
@@ -18,35 +19,21 @@ class RouteService {
     public static fetchRoute = async (
         routeId: string,
         { areRoutePathLinksExcluded }: { areRoutePathLinksExcluded?: boolean } = {}
-    ): Promise<IRoute> => {
+    ): Promise<IRoute | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRouteQuery(Boolean(areRoutePathLinksExcluded)),
             variables: { routeId }
         });
-        const externalRoute = queryResult.data.route;
+        const externalRoute: IExternalRoute = queryResult.data.route;
+        if (!externalRoute) {
+            return null;
+        }
         const externalRoutePaths = externalRoute.reitinsuuntasByReitunnus.nodes;
         const routePaths: IRoutePath[] = externalRoutePaths.map((routePath: IExternalRoutePath) => {
             return RoutePathFactory.mapExternalRoutePath(routePath);
         });
         routePaths.sort((a, b) => b.endTime.getTime() - a.endTime.getTime());
         return RouteFactory.mapExternalRoute(queryResult.data.route, routePaths);
-    };
-
-    public static fetchMultipleRoutes = async (routeIds: string[]): Promise<IRoute[]> => {
-        const promises: Promise<void>[] = [];
-        const routes: IRoute[] = [];
-        routeIds.map((routeId: string) => {
-            const createPromise = async () => {
-                const route = await RouteService.fetchRoute(routeId, {
-                    areRoutePathLinksExcluded: true
-                });
-                routes.push(route);
-            };
-            promises.push(createPromise());
-        });
-
-        await Promise.all(promises);
-        return routes.map((res: IRoute) => res!);
     };
 
     public static fetchAllRouteIds = async (): Promise<string[]> => {

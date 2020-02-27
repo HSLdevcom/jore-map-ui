@@ -417,6 +417,7 @@ class StopForm extends Component<IStopFormProps> {
                                     type={ButtonType.SQUARE}
                                     disabled={!Boolean(currentHastusArea)}
                                     hasReverseColor={true}
+                                    data-cy='editHastusButton'
                                 >
                                     <FiInfo />
                                 </Button>

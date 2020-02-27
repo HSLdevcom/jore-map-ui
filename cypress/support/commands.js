@@ -97,3 +97,61 @@ Cypress.Commands.add('waitUntilLoadingFinishes', loadingElementSelector => {
         }
     );
 });
+
+Cypress.Commands.add('openStop', () => {
+    cy.getTestElement('lineToggle').click();
+    cy.getTestElement('lineSearch').click();
+    cy.getTestElement('lineSearch').type('110');
+
+    cy.getTestElement('nodeItemP')
+        .first()
+        .click();
+    cy.getTestElement('nodeView').should('exist');
+
+});
+
+Cypress.Commands.add('openCrossroad', () => {
+    cy.getTestElement('lineToggle').click();
+    cy.getTestElement('lineSearch').click();
+    cy.getTestElement('lineSearch').type('101');
+
+    cy.getTestElement('nodeItemX')
+        .first()
+        .click();
+    cy.getTestElement('nodeView').should('exist');
+});
+
+Cypress.Commands.add('openMunicipality', () => {
+    cy.getTestElement('lineToggle').click();
+    cy.getTestElement('lineSearch').click();
+    cy.getTestElement('lineSearch').type('101');
+
+    cy.getTestElement('nodeItem-')
+        .first()
+        .click();
+    cy.getTestElement('nodeView').should('exist');
+});
+
+Cypress.Commands.add('saveButtonShouldBeActive', (selector) => {
+    if (selector) {
+        cy.getTestElement(selector).find('[data-cy=saveButton]').should($el => {
+            expect($el).not.have.css('pointer-events', 'none');
+        });
+    } else {
+        cy.getTestElement('saveButton').should($el => {
+            expect($el).not.have.css('pointer-events', 'none');
+        });
+    }
+})
+
+Cypress.Commands.add('saveButtonShouldNotBeActive', (selector) => {
+    if (selector) {
+        cy.getTestElement(selector).find('[data-cy=saveButton]').should($el => {
+            expect($el).to.have.css('pointer-events', 'none');
+        });
+    } else {
+        cy.getTestElement('saveButton').should($el => {
+            expect($el).to.have.css('pointer-events', 'none');
+        });
+    }
+});

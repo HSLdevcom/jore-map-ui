@@ -47,6 +47,7 @@ const SaveButton = observer((props: ISaveButtonProps) => {
             type={ButtonType.SQUARE}
             isWide={isWide}
             hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}
+            data-cy='saveButton'
         >
             {children}
         </Button>

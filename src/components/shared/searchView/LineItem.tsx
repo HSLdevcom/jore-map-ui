@@ -66,7 +66,7 @@ class LineItem extends React.Component<ILineItemProps> {
                         data-cy='lineItem'
                     />
                     {this.props.line.routes.length > 0 && (
-                        <div className={s.openAllRoutesButton} onClick={this.openAllRoutes}>
+                        <div className={s.openAllRoutesButton} onClick={this.openAllRoutes} data-cy='openAllRoutesButton'>
                             Avaa reitit ({this.props.line.routes.length})
                         </div>
                     )}

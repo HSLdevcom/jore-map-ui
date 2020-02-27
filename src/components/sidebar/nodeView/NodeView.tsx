@@ -512,7 +512,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 <SaveButton
                     disabled={isSaveButtonDisabled}
                     onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
-                    data-cy='saveButton'
                 >
                     {isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
                 </SaveButton>

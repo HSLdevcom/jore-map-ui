@@ -18,7 +18,7 @@ const NodeItem = observer((props: INodeItemProps) => {
         <div
             className={s.nodeItem}
             onClick={() => NavigationUtils.openNodeView({ nodeId: props.node.id })}
-            data-cy='nodeItem'
+            data-cy={`nodeItem${node.type}`}
         >
             <IoIosRadioButtonOff />
             <div className={s.nodeItemTextContainer}>
