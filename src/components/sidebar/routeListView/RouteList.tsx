@@ -8,7 +8,7 @@ import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import ButtonType from '~/enums/buttonType';
-import { IRoute } from '~/models';
+import { ILine, IRoute } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -63,12 +63,19 @@ interface IRouteListState {
 )
 @observer
 class RouteList extends React.Component<IRouteListProps, IRouteListState> {
+    private _isMounted: boolean;
     constructor(props: IRouteListProps) {
         super(props);
         this.state = {
             isLoading: false
         };
     }
+
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
 
     async componentDidUpdate(prevProps: IRouteListProps) {
         if (!_.isEqual(this.props.routeIds, prevProps.routeIds)) {
@@ -90,28 +97,44 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     }
 
     private fetchRoutes = async () => {
-        const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
+        const routeIds = _.values(navigator.getQueryParam(QueryParams.routes));
         if (routeIds) {
-            this.setState({ isLoading: true });
+            this._setState({ isLoading: true });
             const currentRouteIds = this.props.routeListStore!.routeItems.map(routeItem => routeItem.route.id);
             const missingRouteIds = routeIds.filter(id => !currentRouteIds.includes(id));
             currentRouteIds
                 .filter(id => !routeIds.includes(id))
                 .forEach(id => this.props.routeListStore!.removeFromRouteItems(id));
 
-            try {
-                const routes = await RouteService.fetchMultipleRoutes(missingRouteIds);
-                const lineIds = _.uniq(routes.map(route => route.lineId));
-                const lines = await LineService.fetchMultipleLines(lineIds);
-                this.props.routeListStore!.addToLines(lines);
-                this.props.routeListStore!.addToRouteItems(routes);
-            } catch (e) {
-                this.props.errorStore!.addError(`Reittien (${routeIds.join(', ')}) haku epäonnistui.`);
-                const homeViewLink = routeBuilder.to(SubSites.home).toLink();
-                navigator.goTo({ link: homeViewLink });
-                return;
+            const routeIdsNotFound: string[] = [];
+            const promises: Promise<void>[] = [];
+            const missingRoutes: IRoute[] = [];
+            const missingLines: ILine[] = [];
+            missingRouteIds.map((routeId: string) => {
+                const createPromise = async () => {
+                    const route = await RouteService.fetchRoute(routeId, {
+                        areRoutePathLinksExcluded: true
+                    });
+                    if (!route) {
+                        routeIdsNotFound.push(routeId);
+                    } else {
+                        missingRoutes.push(route);
+                        const line = await LineService.fetchLine(route.lineId);
+                        missingLines.push(line);
+                    }
+                };
+                promises.push(createPromise());
+            });
+
+            await Promise.all(promises);
+            this.props.routeListStore!.addToLines(missingLines);
+            this.props.routeListStore!.addToRouteItems(missingRoutes);
+
+
+            if (routeIdsNotFound.length > 0) {
+                this.props.errorStore!.addError(`Reittien (${routeIdsNotFound.join(', ')}) haku epäonnistui.`);
             }
-            this.setState({ isLoading: false });
+            this._setState({ isLoading: false });
         }
     };
 
@@ -217,7 +240,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     private save = async () => {
         const routeStore = this.props.routeStore!;
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
 
         const route = routeStore.route;
         try {
@@ -231,10 +254,10 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     };
 
     private fetchRoute = async (routeId: string) => {
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
         const route = await RouteService.fetchRoute(routeId);
-        this.props.routeListStore!.updateRoute(route);
-        this.setState({ isLoading: false });
+        this.props.routeListStore!.updateRoute(route!);
+        this._setState({ isLoading: false });
     }
 
     render() {

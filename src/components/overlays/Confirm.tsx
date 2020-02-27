@@ -23,7 +23,7 @@ class Confirm extends React.Component<IConfirmProps> {
         const confirmType = confirmStore.confirmType;
         return (
             <Modal>
-                <div className={s.confirmView}>
+                <div className={s.confirmView} data-cy='confirmView'>
                     <div
                         className={classnames(
                             s.content,

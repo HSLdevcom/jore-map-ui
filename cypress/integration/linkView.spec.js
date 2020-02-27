@@ -29,15 +29,9 @@ describe('LinkView tests - write access user', () => {
         cy.getTestElement('editButton').should('exist');
         cy.getTestElement('editButton').click();
 
-        cy.getTestElement('saveButton').should($el => {
-            expect($el).to.have.css('pointer-events', 'none');
-        });
-
+        cy.saveButtonShouldNotBeActive();
         cy.getTestElement('measuredLength').type(123);
-
-        cy.getTestElement('saveButton').should($el => {
-            expect($el).not.have.css('pointer-events', 'none');
-        });
+        cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
         cy.getTestElement('savePromptView').should('exist');
