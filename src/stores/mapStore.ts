@@ -5,19 +5,20 @@ import CoordinateSystem from '~/enums/coordinateSystem';
 const INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384);
 const INITIAL_ZOOM = 15;
 
-export enum NodeLabel {
+enum NodeLabel {
     hastusId,
     longNodeId,
     shortNodeId
 }
 
-export enum MapFilter {
-    arrowDecorator
+enum MapFilter {
+    arrowDecorator,
+    linkPoint
 }
 
-export type MapCursor = '' | 'crosshair';
+type MapCursor = '' | 'crosshair';
 
-export class MapStore {
+class MapStore {
     @observable private _coordinates: L.LatLng | null;
     @observable private _displayCoordinateSystem: CoordinateSystem;
     @observable private _isMapFullscreen: boolean;
@@ -149,6 +150,6 @@ export class MapStore {
     };
 }
 
-const observableMapStore = new MapStore();
+export default new MapStore();
 
-export default observableMapStore;
+export { MapStore, NodeLabel, MapFilter, MapCursor };

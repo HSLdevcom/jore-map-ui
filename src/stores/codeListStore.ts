@@ -2,7 +2,7 @@ import { action, observable } from 'mobx';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import ICodeListItem from '~/models/ICodeListItem';
 
-export type codeListName =
+type codeListName =
     | 'Joukkoliikennelaji'
     | 'Tilaajaorganisaatio'
     | 'Verkko'
@@ -18,7 +18,7 @@ export type codeListName =
     | 'Pysäkkialueid'
     | 'Pysäkkityyppi';
 
-export class CodeListStore {
+class CodeListStore {
     @observable private _codeListMap: Map<codeListName, ICodeListItem[]>;
     constructor() {
         this._codeListMap = new Map();
@@ -72,6 +72,6 @@ export class CodeListStore {
     };
 }
 
-const observableCodeListStore = new CodeListStore();
+export default new CodeListStore();
 
-export default observableCodeListStore;
+export { CodeListStore, codeListName };

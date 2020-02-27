@@ -8,11 +8,12 @@ import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import StopAreaFactory from '~/factories/stopAreaFactory';
 import { IStopArea } from '~/models';
+import ITerminalArea from '~/models/ITerminalArea';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import StopAreaService, { ITerminalAreaItem } from '~/services/stopAreaService';
+import StopAreaService from '~/services/stopAreaService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -75,7 +76,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         }
 
         this.props.stopAreaStore!.setIsEditingDisabled(!this.props.isNewStopArea);
-        const terminalAreas: ITerminalAreaItem[] = await StopAreaService.fetchAllTerminalAreas();
+        const terminalAreas: ITerminalArea[] = await StopAreaService.fetchAllTerminalAreas();
 
         if (this.mounted) {
             this.setState({
@@ -203,10 +204,8 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         });
     };
 
-    private createTerminalAreaDropdownItems = (
-        terminalAreas: ITerminalAreaItem[]
-    ): IDropdownItem[] => {
-        return terminalAreas.map((terminalArea: ITerminalAreaItem) => {
+    private createTerminalAreaDropdownItems = (terminalAreas: ITerminalArea[]): IDropdownItem[] => {
+        return terminalAreas.map((terminalArea: ITerminalArea) => {
             const item: IDropdownItem = {
                 value: `${terminalArea.id}`,
                 label: `${terminalArea.name}`

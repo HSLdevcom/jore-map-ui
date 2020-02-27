@@ -10,11 +10,11 @@ import { calculateLengthFromLatLngs, roundLatLngs } from '~/utils/geomUtils';
 import NavigationStore from './navigationStore';
 import ValidationStore from './validationStore';
 
-export interface UndoState {
+interface UndoState {
     link: ILink;
 }
 
-export class LinkStore {
+class LinkStore {
     @observable private _link: ILink | null;
     @observable private _oldLink: ILink | null;
     @observable private _nodes: INode[];
@@ -223,6 +223,6 @@ export class LinkStore {
     };
 }
 
-const observableLinkStore = new LinkStore();
+export default new LinkStore();
 
-export default observableLinkStore;
+export { LinkStore, UndoState };

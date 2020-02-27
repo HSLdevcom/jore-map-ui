@@ -163,6 +163,13 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                             content='Linkkien suuntanuolet'
                         />
                     </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
+                            onClick={this.toggleMapFilter(MapFilter.linkPoint)}
+                            checked={MapStore.isMapFilterEnabled(MapFilter.linkPoint)}
+                            content='Pisteiden geometria'
+                        />
+                    </div>
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>KARTTA</div>
                     <RadioButton

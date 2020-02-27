@@ -17,17 +17,12 @@
         display: flex;
     }
 
-    .topic {
+    .linkContainer {
         display: flex;
-        font-size: $largeFontSize;
-        font-weight: bold;
-        color: $fontColorDefault;
+        align-items: center;
 
-        .link {
-            cursor: pointer;
-        }
-        .link:hover {
-            background-color: $backgroundHoverColor;
+        .lineLinkGreaterThanSign {
+            display: flex;
         }
     }
 

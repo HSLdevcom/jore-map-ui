@@ -5,6 +5,7 @@
     "watchForFileChanges": true,
     "defaultCommandTimeout": 4000,
     "numTestsKeptInMemory": 0,
+    "projectId": "4uoyq8",
     "env": {
         "AUTH_URI": "https://hslid-uat.cinfra.fi/openid/token",
         "AUTH_SCOPE": "email https://oneportal.trivore.com/scope/groups.readonly"

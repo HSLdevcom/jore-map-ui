@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
-import { ILink, INode, IStop } from '~/models';
+import { ILink, INode, IStop, IStopArea } from '~/models';
+import IHastusArea from '~/models/IHastusArea';
 import nodeValidationModel, {
     editableNodeIdValidationModel,
     INodeValidationModel
@@ -12,7 +13,6 @@ import stopValidationModel, {
     IStopValidationModel
 } from '~/models/validationModels/stopValidationModel';
 import GeocodingService from '~/services/geocodingService';
-import { IStopAreaItem } from '~/services/stopAreaService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/utils/geomUtils';
@@ -41,9 +41,11 @@ class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
+    @observable private _hastusArea: IHastusArea | null;
+    @observable private _oldHastusArea: IHastusArea | null;
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
-    @observable private _stopAreaItems: IStopAreaItem[];
+    @observable private _stopAreas: IStopArea[];
     @observable private _isNodeIdEditable: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
@@ -70,7 +72,7 @@ class NodeStore {
             () => this._node && this._node.stop && this._node.stop.stopAreaId,
             (value: string) => this.onStopAreaChange(value)
         );
-        reaction(() => this._stopAreaItems, () => this.onStopAreaItemsChange());
+        reaction(() => this._stopAreas, () => this.onstopAreasChange());
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
@@ -95,6 +97,16 @@ class NodeStore {
     }
 
     @computed
+    get hastusArea() {
+        return this._hastusArea!;
+    }
+
+    @computed
+    get oldHastusArea() {
+        return this._oldHastusArea;
+    }
+
+    @computed
     get isDirty() {
         return !_.isEqual(this._node, this._oldNode) || !_.isEqual(this._links, this._oldLinks);
     }
@@ -110,8 +122,8 @@ class NodeStore {
     }
 
     @computed
-    get stopAreaItems() {
-        return this._stopAreaItems;
+    get stopAreas() {
+        return this._stopAreas;
     }
 
     @computed
@@ -333,6 +345,21 @@ class NodeStore {
     };
 
     @action
+    public setHastusArea = (hastusArea: IHastusArea | null) => {
+        this._hastusArea = hastusArea;
+    };
+
+    @action
+    public setOldHastusArea = (hastusArea: IHastusArea | null) => {
+        this._oldHastusArea = hastusArea;
+    };
+
+    @action
+    public updateHastusAreaProperty = (property: keyof IHastusArea, value: string) => {
+        this._hastusArea![property] = value;
+    };
+
+    @action
     public setIsEditingDisabled = (isEditingDisabled: boolean) => {
         this._isEditingDisabled = isEditingDisabled;
     };
@@ -374,8 +401,8 @@ class NodeStore {
     };
 
     @action
-    public setStopAreaItems = (stopAreaItems: IStopAreaItem[]) => {
-        this._stopAreaItems = stopAreaItems;
+    public setStopAreas = (stopAreas: IStopArea[]) => {
+        this._stopAreas = stopAreas;
     };
 
     @action
@@ -432,7 +459,7 @@ class NodeStore {
     };
 
     @action
-    private onStopAreaItemsChange = () => {
+    private onstopAreasChange = () => {
         const stopAreaId = this.node && this.node.stop && this.node.stop.stopAreaId;
         if (stopAreaId) {
             this.updateStopArea(stopAreaId);
@@ -441,17 +468,17 @@ class NodeStore {
 
     @action
     private updateStopArea = (stopAreaId?: string) => {
-        if (!this._stopAreaItems) return;
+        if (!this._stopAreas) return;
 
         this.updateStopProperty('stopAreaId', stopAreaId);
         if (!stopAreaId) return;
 
-        const stopAreaItem = this._stopAreaItems.find(obj => {
-            return obj.pysalueid === stopAreaId;
+        const stopArea = this._stopAreas.find(obj => {
+            return obj.id === stopAreaId;
         });
-        if (stopAreaItem) {
-            this.updateStopProperty('nameFi', stopAreaItem.nimi);
-            this.updateStopProperty('nameSw', stopAreaItem.nimir);
+        if (stopArea) {
+            this.updateStopProperty('nameFi', stopArea.nameFi);
+            this.updateStopProperty('nameSw', stopArea.nameSw);
         }
     };
 
@@ -489,8 +516,6 @@ class NodeStore {
     };
 }
 
-const observableNodeStore = new NodeStore();
-
-export default observableNodeStore;
+export default new NodeStore();
 
 export { NodeStore, INodeCacheObj };

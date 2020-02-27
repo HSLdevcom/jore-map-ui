@@ -37,9 +37,7 @@ async function readEnvVars() {
         const pathExists = await fs.exists(envPath);
 
         if (!pathExists) {
-            throw new Error(
-                'Auth secrets for testing not found! Ensure a `.env` file exists in the project root containing the client secret.'
-            );
+            continue;
         }
 
         const envFile = await fs.readFile(envPath, 'utf8');
@@ -53,9 +51,15 @@ async function readEnvVars() {
 
     // Add CYPRESS-prefixed vars to the config.
     Object.entries(combinedFiles).forEach(([key, value]) => {
-        const cypressKey = key.replace(CYPRESS_PREFIX, '');
-        config[cypressKey] = value;
+        config[key] = value;
     });
+
+    // Add CYPRESS-prefixed vars from the environment to the config.
+    for (const [envName, envValue] of Object.entries(process.env)) {
+        if (envName.match(CYPRESS_PREFIX)) {
+            config[envName] = envValue;
+        }
+    }
 
     return config;
 }

@@ -1,13 +1,13 @@
 import { action, computed, observable } from 'mobx';
-import Constants from '~/constants/constants';
+import constants from '~/constants/constants';
 
-export enum AlertType {
+enum AlertType {
     Success = 1,
     Info,
     Loader
 }
 
-export class AlertStore {
+class AlertStore {
     @observable private _message: string | null;
     @observable private _type: AlertType | null;
     @observable private _isCancelButtonVisible: boolean;
@@ -58,7 +58,7 @@ export class AlertStore {
             setTimeout(() => {
                 this.close();
                 resolve();
-            }, Constants.FADE_ALERT_TIMEOUT);
+            }, constants.FADE_ALERT_TIMEOUT);
         });
     };
 
@@ -77,3 +77,5 @@ export class AlertStore {
 }
 
 export default new AlertStore();
+
+export { AlertStore, AlertType };

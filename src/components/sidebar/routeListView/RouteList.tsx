@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import L from 'leaflet';
 import _ from 'lodash';
 import { autorun } from 'mobx';
@@ -7,7 +6,7 @@ import React from 'react';
 import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
-import TransitIcon from '~/components/shared/TransitIcon';
+import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import ButtonType from '~/enums/buttonType';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -27,7 +26,6 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import Loader from '../../shared/loader/Loader';
 import SidebarHeader from '../SidebarHeader';
 import RouteItem from './RouteItem';
@@ -269,29 +267,14 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     onCloseButtonClick={() => this.closeRoutePrompt(route)}
                                     onEditButtonClick={() => this.editRoutePrompt(route)}
                                 >
-                                    <div
-                                        className={s.routeName}
+                                    <TransitTypeLink
+                                        transitType={transitType}
+                                        shouldShowTransitTypeIcon={true}
+                                        text={route!.lineId}
                                         onClick={() => NavigationUtils.openLineView({ lineId: route!.lineId })}
-                                        title={`Avaa linja ${route!.lineId}`}
-                                    >
-                                        <TransitIcon
-                                            transitType={transitType}
-                                            isWithoutBox={false}
-                                        />
-                                        <div
-                                            className={classnames(
-                                                s.label,
-                                                TransitTypeUtils.getColorClass(
-                                                    transitType
-                                                )
-                                            )}
-                                        >
-                                            <div className={s.routeId} data-cy='routeId'>
-                                                {route.id}
-                                            </div>
-                                        </div>
-                                        {route.routeName}
-                                    </div>
+                                        hoverText={`Avaa linja ${route!.lineId}`}
+                                        data-cy='routeId'
+                                    />
                                 </SidebarHeader>
                                 <div className={s.routeItemWrapper}>
                                     <RouteItem
