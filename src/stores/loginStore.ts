@@ -1,12 +1,12 @@
 import { action, computed, observable } from 'mobx';
-import Constants from '~/constants/constants';
+import constants from '~/constants/constants';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
 
 const SAVE_LOCK_CHECK_INTERVAL = 60000; // Minute
 
-export class LoginStore {
+class LoginStore {
     @observable private _isAuthenticated: boolean;
     @observable private _hasWriteAccess: boolean;
     @observable private _userEmail?: string;
@@ -19,12 +19,12 @@ export class LoginStore {
 
     @computed
     get isAuthenticated() {
-        return this._isAuthenticated || !Constants.IS_LOGIN_REQUIRED;
+        return this._isAuthenticated || !constants.IS_LOGIN_REQUIRED;
     }
 
     @computed
     get hasWriteAccess() {
-        return this._hasWriteAccess || !Constants.IS_LOGIN_REQUIRED;
+        return this._hasWriteAccess || !constants.IS_LOGIN_REQUIRED;
     }
 
     @computed
@@ -69,6 +69,6 @@ export class LoginStore {
     }
 }
 
-const observableLoginStore = new LoginStore();
+export default new LoginStore();
 
-export default observableLoginStore;
+export { LoginStore };

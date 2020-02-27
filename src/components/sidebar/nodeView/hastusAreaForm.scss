@@ -1,0 +1,17 @@
+@import '../../shared/styles/common.scss';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+.hastusAreaForm {
+    width: 400px;
+    min-height: 125px;
+    padding: 20px;
+
+    .header {
+        font-weight: bold;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+    }
+}

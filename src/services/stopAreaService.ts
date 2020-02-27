@@ -3,24 +3,11 @@ import EndpointPath from '~/enums/endpointPath';
 import StopAreaFactory from '~/factories/stopAreaFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import IStopArea from '~/models/IStopArea';
+import ITerminalArea from '~/models/ITerminalArea';
+import IExternalStopArea from '~/models/externals/IExternalStopArea';
+import IExternalTerminalArea from '~/models/externals/IExternalTerminalArea';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
-
-interface ITerminalAreaItem {
-    id: string;
-    name: string;
-}
-
-interface IStopAreaItem {
-    pysalueid: string;
-    nimi: string;
-    nimir: string;
-}
-
-interface IExternalTerminalArea {
-    termid: string;
-    nimi: string;
-}
 
 class StopAreaService {
     public static fetchStopArea = async (stopAreaId: string): Promise<IStopArea | null> => {
@@ -28,16 +15,18 @@ class StopAreaService {
             query: GraphqlQueries.getStopAreaQuery(),
             variables: { stopAreaId }
         });
-        const externalStopArea = queryResult.data.stopArea;
+        const externalStopArea: IExternalStopArea = queryResult.data.stopArea;
         return externalStopArea ? StopAreaFactory.mapExternalStopArea(externalStopArea) : null;
     };
 
-    public static fetchAllStopAreas = async (): Promise<IStopAreaItem[]> => {
+    public static fetchAllStopAreas = async (): Promise<IStopArea[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopAreas()
         });
-
-        return queryResult.data.node.nodes;
+        const externalStopAreas: IExternalStopArea[] = queryResult.data.node.nodes;
+        return externalStopAreas.map(externalStopArea =>
+            StopAreaFactory.mapExternalStopArea(externalStopArea)
+        );
     };
 
     public static updateStopArea = async (stopArea: IStopArea) => {
@@ -49,12 +38,12 @@ class StopAreaService {
         return stopAreaId;
     };
 
-    public static fetchAllTerminalAreas = async (): Promise<ITerminalAreaItem[]> => {
+    public static fetchAllTerminalAreas = async (): Promise<ITerminalArea[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllTerminalAreas()
         });
 
-        const terminalAreaItems: ITerminalAreaItem[] = queryResult.data.node.nodes.map(
+        const terminalAreas: ITerminalArea[] = queryResult.data.node.nodes.map(
             (externalTerminalArea: IExternalTerminalArea) => {
                 return {
                     id: externalTerminalArea.termid,
@@ -63,10 +52,8 @@ class StopAreaService {
             }
         );
 
-        return terminalAreaItems;
+        return terminalAreas;
     };
 }
 
 export default StopAreaService;
-
-export { IStopAreaItem, ITerminalAreaItem };

@@ -1,4 +1,4 @@
-import Constants from '~/constants/constants';
+import constants from '~/constants/constants';
 import IRoutePath, { IViewOnlyRoutePathProperties } from '../IRoutePath';
 
 const originRule = 'required|min:1|max:20|string';
@@ -13,7 +13,6 @@ type RoutePathKeys = keyof Pick<
 >;
 type IRoutePathValidationModel = { [key in RoutePathKeys]: string };
 
-// TODO: rename as routePathValidationObject
 const routePathValidationModel: IRoutePathValidationModel = {
     routePathLinks: '',
     routeId: 'required|min:4|max:6|string',
@@ -24,7 +23,7 @@ const routePathValidationModel: IRoutePathValidationModel = {
     originSw: originRule,
     destinationFi: destinationRule,
     destinationSw: destinationRule,
-    length: `required|min:0|max:${Constants.INTEGER_MAX_VALUE}|numeric`,
+    length: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     modifiedBy: '',
     modifiedOn: '',
     shortName: shortNameRule,

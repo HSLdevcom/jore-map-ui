@@ -9,11 +9,11 @@ import stopAreaValidationModel, {
 import NavigationStore from './navigationStore';
 import ValidationStore from './validationStore';
 
-export interface UndoState {
+interface UndoState {
     stopArea: IStopArea;
 }
 
-export class StopAreaStore {
+class StopAreaStore {
     @observable private _stopArea: IStopArea | null;
     @observable private _oldStopArea: IStopArea | null;
     @observable private _stopItems: IStopItem[];
@@ -139,6 +139,6 @@ export class StopAreaStore {
     };
 }
 
-const observableStopAreaStore = new StopAreaStore();
+export default new StopAreaStore();
 
-export default observableStopAreaStore;
+export { StopAreaStore, UndoState };

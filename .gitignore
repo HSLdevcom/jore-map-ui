@@ -5,8 +5,8 @@
 
 # testing
 /coverage
-cypress/videos
-cypress/screenshots
+cypress/videos/*.mp4
+cypress/screenshots/*.png
 
 # development
 /.sass-cache

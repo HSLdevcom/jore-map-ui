@@ -1,6 +1,6 @@
 import { action, computed, observable } from 'mobx';
 
-export class NavigationStore {
+class NavigationStore {
     @observable private _shouldShowPrompt: boolean;
 
     constructor() {
@@ -18,6 +18,6 @@ export class NavigationStore {
     };
 }
 
-const observableNavigationStore = new NavigationStore();
+export default new NavigationStore();
 
-export default observableNavigationStore;
+export { NavigationStore };

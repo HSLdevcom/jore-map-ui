@@ -11,19 +11,19 @@ const TRANSIT_TYPES = [
     TransitType.TRAM
 ];
 
-export enum NodeSize {
+enum NodeSize {
     normal,
     large
 }
 
-export enum MapLayer { // TODO change name to something better
+enum MapLayer { // TODO change name to something better
     node = 'node',
     link = 'link',
     linkPoint = 'linkPoint',
     nodeWithoutLink = 'nodeWithoutLink'
 }
 
-export class NetworkStore {
+class NetworkStore {
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _selectedDate: Moment.Moment | null;
     @observable private _visibleMapLayers: MapLayer[];
@@ -184,6 +184,6 @@ const _setLocalStorageLayerVisibility = ({
     LocalStorageHelper.setItem('visible_layers', layers);
 };
 
-const observableNetworkStore = new NetworkStore();
+export default new NetworkStore();
 
-export default observableNetworkStore;
+export { NetworkStore, NodeSize, MapLayer };

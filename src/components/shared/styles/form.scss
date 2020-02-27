@@ -36,6 +36,7 @@ $textFieldLineHeight: 25px;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;
+    padding-bottom: 1px;
 }
 
 .darkerInputLabel {
@@ -54,6 +55,8 @@ $textFieldLineHeight: 25px;
 }
 
 .sectionHeader {
+    display: flex;
+    align-items: center;
     margin-top: 10px;
     margin-bottom: 5px;
     font-weight: bold;

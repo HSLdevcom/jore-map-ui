@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import { IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import Constants from '~/constants/constants';
+import constants from '~/constants/constants';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import EventHelper, {
@@ -10,7 +10,6 @@ import EventHelper, {
     INetworkNodeClickParams
 } from '~/helpers/EventHelper';
 import NodeService from '~/services/nodeService';
-import { ConfirmStore } from '~/stores/confirmStore';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
@@ -34,7 +33,6 @@ interface INetworkLayersProps {
     nodeStore?: NodeStore;
     linkStore?: LinkStore;
     popupStore?: PopupStore;
-    confirmStore?: ConfirmStore;
 }
 
 interface ILinkProperties {
@@ -52,11 +50,11 @@ interface INodeProperties {
 }
 
 function getGeoServerUrl(layerName: string) {
-    const GEOSERVER_URL = Constants.GEOSERVER_URL;
+    const GEOSERVER_URL = constants.GEOSERVER_URL;
     return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
 }
 
-@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore', 'confirmStore')
+@inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
     private reactionDisposer = {};
@@ -247,7 +245,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     render() {
         const mapZoomLevel = this.props.mapStore!.zoom;
-        if (mapZoomLevel <= Constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
+        if (mapZoomLevel <= constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
             return null;
         }
         if (!this.props.mapStore!.coordinates) return null;

@@ -1,12 +1,18 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
+import EndpointPath from '~/enums/endpointPath';
+import NodeStopFactory from '~/factories/nodeStopFactory';
 import ApolloClient from '~/helpers/ApolloClient';
-import { IStopItem } from '~/models/IStop';
+import IHastusArea, { IHastusAreaSaveModel } from '~/models/IHastusArea';
+import IStop, { IStopItem } from '~/models/IStop';
+import IExternalHastusArea from '~/models/externals/IExternalHastusArea';
 import IExternalNode from '~/models/externals/IExternalNode';
-import { IExternalStopItem } from '~/models/externals/IExternalStop';
+import IExternalStop, { IExternalStopItem } from '~/models/externals/IExternalStop';
+import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 import NodeService from './nodeService';
 
+// TODO: move into /models
 interface IStopSectionItem {
     selite: string;
 }
@@ -19,6 +25,19 @@ interface IReservedShortIdItem {
 const SHORT_ID_LENGTH = 4;
 
 class StopService {
+    public static fetchAllStops = async (): Promise<IStop[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllStopsQuery(),
+            fetchPolicy: 'no-cache'
+        });
+        const externalStops: IExternalStop[] = queryResult.data.node.nodes;
+        return externalStops.map(
+            (externalStop: IExternalStop): IStop => {
+                return NodeStopFactory.mapExternalStop(externalStop);
+            }
+        );
+    };
+
     public static fetchAllStopSections = async (): Promise<IStopSectionItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopSections()
@@ -92,6 +111,31 @@ class StopService {
         });
 
         return result;
+    };
+
+    public static fetchAllHastusAreas = async (): Promise<IHastusArea[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllHastusAreas(),
+            fetchPolicy: 'no-cache'
+        });
+        const externalHastusAreas: IExternalHastusArea[] = queryResult.data.node.nodes;
+
+        return externalHastusAreas.map(
+            (ha: IExternalHastusArea): IHastusArea => {
+                return {
+                    id: ha.paitunnus,
+                    name: ha.nimi
+                };
+            }
+        );
+    };
+
+    public static createHastusArea = async (hastusAreaSaveModel: IHastusAreaSaveModel) => {
+        await HttpUtils.createObject(EndpointPath.HASTUS_AREA, hastusAreaSaveModel);
+    };
+
+    public static updateHastusArea = async (hastusAreaSaveModel: IHastusAreaSaveModel) => {
+        await HttpUtils.updateObject(EndpointPath.HASTUS_AREA, hastusAreaSaveModel);
     };
 }
 

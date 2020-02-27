@@ -104,5 +104,3 @@ class LineHeaderService {
 }
 
 export default LineHeaderService;
-
-export { ILineHeaderSaveModel };
