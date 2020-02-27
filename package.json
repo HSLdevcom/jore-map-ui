@@ -86,8 +86,7 @@
         "production": "forever start -c \"yarn run serve -s -l 5000\" build && forever logs -f 0",
         "cypress": "cypress",
         "cypress:run:dev": "cypress run --env configFile=dev",
-        "cypress:run:stage": "cypress run --env configFile=stage",
-        "cypress:run:production": "cypress run --env configFile=production"
+        "cypress:run:stage": "cypress run --env configFile=stage"
     },
     "devDependencies": {
         "@types/chroma-js": "^1.3.5",
