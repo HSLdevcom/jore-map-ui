@@ -121,17 +121,6 @@ Cypress.Commands.add('openCrossroad', () => {
     cy.getTestElement('nodeView').should('exist');
 });
 
-Cypress.Commands.add('openMunicipality', () => {
-    cy.getTestElement('lineToggle').click();
-    cy.getTestElement('lineSearch').click();
-    cy.getTestElement('lineSearch').type('101');
-
-    cy.getTestElement('nodeItem-')
-        .first()
-        .click();
-    cy.getTestElement('nodeView').should('exist');
-});
-
 Cypress.Commands.add('saveButtonShouldBeActive', (selector) => {
     if (selector) {
         cy.getTestElement(selector).find('[data-cy=saveButton]').should($el => {

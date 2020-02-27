@@ -24,7 +24,7 @@ describe('NodeView tests - read access user', () => {
 });
 
 describe('NodeView tests - write access user', () => {
-    it('Can edit node', () => {
+    it('Can edit crossroad', () => {
         cy.hslLoginWriteAccess();
         cy.openCrossroad();
 
@@ -33,6 +33,43 @@ describe('NodeView tests - write access user', () => {
 
         cy.saveButtonShouldNotBeActive();
         cy.getTestElement('measurementDate').type('1'); // Currently 1 sets whole date
+        cy.saveButtonShouldBeActive();
+
+        cy.getTestElement('saveButton').click();
+        cy.getTestElement('savePromptView').should('exist');
+    });
+
+    it('Can edit municipality', () => {
+        cy.hslLoginWriteAccess();
+        cy.getTestElement('lineToggle').click();
+        cy.getTestElement('lineSearch').click();
+        cy.getTestElement('lineSearch').type('101');
+
+        cy.getTestElement('nodeItem-')
+            .first()
+            .click();
+        cy.getTestElement('nodeView').should('exist');
+
+        cy.getTestElement('editButton').should('exist');
+        cy.getTestElement('editButton').click();
+
+        cy.saveButtonShouldNotBeActive();
+        cy.getTestElement('measurementDate').type('1'); // Currently 1 sets whole date
+        cy.saveButtonShouldBeActive();
+
+        cy.getTestElement('saveButton').click();
+        cy.getTestElement('savePromptView').should('exist');
+    });
+
+    it('Can edit stop', () => {
+        cy.hslLoginWriteAccess();
+        cy.openStop();
+
+        cy.getTestElement('editButton').should('exist');
+        cy.getTestElement('editButton').click();
+
+        cy.saveButtonShouldNotBeActive();
+        cy.getTestElement('longNameInput').type('foo');
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();

@@ -286,6 +286,7 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.nameLongFi}
                             onChange={updateStopProperty!('nameLongFi')}
                             validationResult={stopInvalidPropertiesMap['nameLongFi']}
+                            data-cy='longNameInput'
                         />
                         <InputContainer
                             label='PITKÄ NIMI RUOTSIKSI'
