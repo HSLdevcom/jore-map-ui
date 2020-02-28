@@ -119,7 +119,7 @@ class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromStat
                       .toString()} ) tunnuksen.`
                 : undefined;
         return (
-            <div className={classnames(s.hastusAreaForm, s.form)}>
+            <div className={classnames(s.hastusAreaForm, s.form)} data-cy='hastusAreaForm'>
                 <div className={s.header}>
                     {this.props.isNewHastusArea
                         ? 'Luo uusi Hastus-paikka'
@@ -137,6 +137,7 @@ class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromStat
                         value={hastusArea.name}
                         onChange={this.updateHastusAreaProperty!('name')}
                         validationResult={invalidPropertiesMap['name']}
+                        data-cy='hastusNameInput'
                     />
                 </div>
                 {this.state.isLoading ? (

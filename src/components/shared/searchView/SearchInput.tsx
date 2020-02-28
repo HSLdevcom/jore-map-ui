@@ -22,6 +22,7 @@ class SearchInput extends React.Component<ISearchInputProps> {
     render() {
         const isDisabled = this.props.searchStore!.isSearchDisabled;
         return (
+            // TODO: rename as searchView / searchBar
             <div className={s.lineSearchView} data-cy='lineSearch'>
                 <div className={classnames(s.inputContainer, isDisabled ? s.disabled : undefined)}>
                     <input

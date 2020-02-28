@@ -286,6 +286,7 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.nameLongFi}
                             onChange={updateStopProperty!('nameLongFi')}
                             validationResult={stopInvalidPropertiesMap['nameLongFi']}
+                            data-cy='longNameInput'
                         />
                         <InputContainer
                             label='PITKÄ NIMI RUOTSIKSI'
@@ -417,6 +418,7 @@ class StopForm extends Component<IStopFormProps> {
                                     type={ButtonType.SQUARE}
                                     disabled={!Boolean(currentHastusArea)}
                                     hasReverseColor={true}
+                                    data-cy='editHastusButton'
                                 >
                                     <FiInfo />
                                 </Button>
