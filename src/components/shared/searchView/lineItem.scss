@@ -35,6 +35,7 @@
             color: #5a5a5a;
             font-size: $smallFontSize;
             cursor: pointer;
+            white-space: nowrap;
         }
         .openAllRoutesButton:hover {
             background-color: $backgroundHoverColor;

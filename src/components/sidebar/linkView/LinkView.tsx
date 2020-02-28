@@ -350,7 +350,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 <SaveButton
                     disabled={isSaveButtonDisabled}
                     onClick={() => (this.props.isNewLink ? this.save() : this.showSavePrompt())}
-                    data-cy='saveButton'
                 >
                     {this.props.isNewLink ? 'Luo uusi linkki' : 'Tallenna muutokset'}
                 </SaveButton>
