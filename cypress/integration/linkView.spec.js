@@ -8,6 +8,7 @@ const openLink = () => {
     } else {
         cy.visit('link/1260011,1260105,1');
     }
+    cy.waitUntilLoadingFinishes();
     cy.getTestElement('linkView').should('exist');
 };
 

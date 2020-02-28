@@ -1,17 +1,43 @@
-const openNode = () => {
+const openStop = () => {
     cy.getTestElement('authInfo').should('exist');
     cy.getTestElement('lineSearch').should('exist');
 
-    cy.getTestElement('nodeItem')
+    // Have to use different link for dev / stage to prevent local db out-of-sync errors
+    if (Cypress.config().baseUrl.includes('dev')) {
+        cy.visit('node/1270103');
+    } else {
+        cy.visit('node/1260105');
+    }
+    cy.waitUntilLoadingFinishes();
+    cy.getTestElement('nodeView').should('exist');
+}
+
+const openCrossroad = () => {
+    cy.getTestElement('lineToggle').click();
+    cy.getTestElement('lineSearch').click();
+    cy.getTestElement('lineSearch').type('101');
+
+    cy.getTestElement('nodeItemX')
         .first()
         .click();
     cy.getTestElement('nodeView').should('exist');
-};
+}
+
+const openMunicipality = () => {
+    cy.getTestElement('lineToggle').click();
+    cy.getTestElement('lineSearch').click();
+    cy.getTestElement('lineSearch').type('101');
+
+    cy.getTestElement('nodeItem-')
+        .first()
+        .click();
+    cy.getTestElement('nodeView').should('exist');
+}
 
 describe('NodeView tests - read access user', () => {
     it('Can open node and close it to return home page', () => {
         cy.hslLoginReadAccess();
-        cy.openCrossroad();
+        openCrossroad();
 
         cy.getTestElement('editButton').should('not.exist');
 
@@ -26,7 +52,7 @@ describe('NodeView tests - read access user', () => {
 describe('NodeView tests - write access user', () => {
     it('Can edit crossroad', () => {
         cy.hslLoginWriteAccess();
-        cy.openCrossroad();
+        openCrossroad();
 
         cy.getTestElement('editButton').should('exist');
         cy.getTestElement('editButton').click();
@@ -41,14 +67,7 @@ describe('NodeView tests - write access user', () => {
 
     it('Can edit municipality', () => {
         cy.hslLoginWriteAccess();
-        cy.getTestElement('lineToggle').click();
-        cy.getTestElement('lineSearch').click();
-        cy.getTestElement('lineSearch').type('101');
-
-        cy.getTestElement('nodeItem-')
-            .first()
-            .click();
-        cy.getTestElement('nodeView').should('exist');
+        openMunicipality();
 
         cy.getTestElement('editButton').should('exist');
         cy.getTestElement('editButton').click();
@@ -61,24 +80,35 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('savePromptView').should('exist');
     });
 
-    it('Can edit stop', () => {
+    it('Can save stop', () => {
         cy.hslLoginWriteAccess();
-        cy.openStop();
+        openStop();
 
         cy.getTestElement('editButton').should('exist');
         cy.getTestElement('editButton').click();
 
-        cy.saveButtonShouldNotBeActive();
-        cy.getTestElement('longNameInput').type('foo');
-        cy.saveButtonShouldBeActive();
+        cy.getTestElement('elyNumber')
+            .find('[type=text]')
+            .invoke('val')
+            .then(value => {
+                const newInputValue = parseInt(value) + 1;
+                cy.getTestElement('elyNumber').find('[type=text]').clear().type(newInputValue);
 
-        cy.getTestElement('saveButton').click();
-        cy.getTestElement('savePromptView').should('exist');
+                cy.saveButtonShouldBeActive();
+
+                cy.getTestElement('saveButton').click();
+                cy.getTestElement('savePromptView').should('exist');
+                cy.getTestElement('confirmButton').click();
+
+                cy.waitUntilLoadingFinishes();
+                cy.getTestElement('elyNumber').contains(newInputValue);
+            });
+
     });
 
     it('Can edit hastus-paikka', () => {
         cy.hslLoginWriteAccess();
-        cy.openStop();
+        openStop();
 
         cy.getTestElement('editHastusButton').click();
         cy.getTestElement('hastusAreaForm').should('exist');
