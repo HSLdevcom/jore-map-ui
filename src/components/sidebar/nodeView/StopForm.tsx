@@ -395,6 +395,7 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.elyNumber}
                             validationResult={stopInvalidPropertiesMap['elyNumber']}
                             onChange={updateStopProperty!('elyNumber')}
+                            data-cy='elyNumber'
                         />
                     </div>
                     <div className={s.flexRow}>
