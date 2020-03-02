@@ -1,0 +1,42 @@
+@import './styles/common';
+
+.routePathSegmentList {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+
+    .topic {
+        font-weight: bold;
+        font-size: $mediumFontSize;
+    }
+
+    .routePathRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px 5px 5px 10px;
+        border-bottom: 1px solid #dddddd;
+
+        .timestampRow {
+            font-size: $smallFontSize;
+        }
+
+        .icon {
+            display: flex;
+            color: #007ac9;
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+            cursor: pointer;
+            border-width: 1px;
+            border-style: solid;
+            border-color: #e2e2e2;
+            padding: 3px;
+            transition: 0.5s;
+            height: 24px;
+            margin: 2px;
+        }
+    }
+    .routePathRow:last-of-type {
+        border: none;
+    }
+}

@@ -4,6 +4,7 @@ import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import RoutePathSegmentList from '~/components/shared/RoutePathSegmentList';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -11,11 +12,13 @@ import TransitType from '~/enums/transitType';
 import LinkFactory from '~/factories/linkFactory';
 import EventHelper from '~/helpers/EventHelper';
 import { ILink, INode } from '~/models';
+import { IRoutePathSegment } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import RoutePathService from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -41,6 +44,7 @@ interface ILinkViewProps extends RouteComponentProps<any> {
 
 interface ILinkViewState {
     isLoading: boolean;
+    routePathSegments: IRoutePathSegment[];
 }
 
 @inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
@@ -51,7 +55,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     constructor(props: ILinkViewProps) {
         super(props);
         this.state = {
-            isLoading: false
+            isLoading: false,
+            routePathSegments: []
         };
     }
 
@@ -104,6 +109,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             this.props.linkStore!.setIsLinkGeometryEditable(true);
             const bounds = L.latLngBounds(link.geometry);
             this.props.mapStore!.setMapBounds(bounds);
+
+            const routePathSegments = await RoutePathService.fetchRoutePathLinkSegment(link.startNode.id, link.endNode.id, link.transitType!);
+            this.setState({ routePathSegments });
         }
         this.setState({ isLoading: false });
     };
@@ -320,6 +328,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             </div>
                         )}
                     </div>
+                    { !this.props.isNewLink &&
+                        <RoutePathSegmentList className={s.routePathSegmentList} topic={'Linkkiä käyttävät reitinsuunnat'} routePathSegments={this.state.routePathSegments} />
+                    }
                 </div>
                 <div className={s.buttonBar}>
                     <Button
