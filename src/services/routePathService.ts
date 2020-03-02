@@ -2,9 +2,10 @@ import { ApolloQueryResult } from 'apollo-client';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import NodeType from '~/enums/nodeType';
+import RoutePathCopySegmentFactory from '~/factories/routePathCopySegmentFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath, IViaName } from '~/models';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import { IRoutePathPrimaryKey, IRoutePathSegment } from '~/models/IRoutePath';
 import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
@@ -106,6 +107,20 @@ class RoutePathService {
             requestBody
         )) as IRoutePathPrimaryKey;
         return response;
+    };
+
+    public static fetchRoutePathLinkSegment = async (
+        startNodeId: string,
+        endNodeId: string,
+        transitType: string
+    ): Promise<IRoutePathSegment[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getRoutePathSegmentQuery(),
+            variables: { startNodeId, endNodeId, transitType }
+        });
+        return RoutePathCopySegmentFactory.mapExternalLinksWithRoutePathInfo(
+            queryResult.data.links_with_route_path_info.nodes
+        );
     };
 }
 

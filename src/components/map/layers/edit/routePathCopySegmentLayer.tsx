@@ -1,7 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
-import { ICopySegmentLink, RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { IRoutePathSegmentLink } from '~/models/ILink';
+import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import Marker from '../markers/Marker';
 
 interface IRoutePathCopySegmentLayerProps {
@@ -46,7 +47,7 @@ class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProp
         );
     };
 
-    private renderCopySegmentLink = (color: string) => (link: ICopySegmentLink) => {
+    private renderCopySegmentLink = (color: string) => (link: IRoutePathSegmentLink) => {
         return (
             <Polyline
                 positions={link.geometry}

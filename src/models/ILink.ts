@@ -16,7 +16,7 @@ interface ILinkMapHighlight {
     dateRanges: string;
 }
 
-export default interface ILink extends ILinkPrimaryKey {
+interface ILink extends ILinkPrimaryKey {
     geometry: L.LatLng[];
     length: number;
     measuredLength?: number;
@@ -24,4 +24,14 @@ export default interface ILink extends ILinkPrimaryKey {
     modifiedOn?: Date;
 }
 
-export { ILinkPrimaryKey, ILinkMapHighlight };
+interface IRoutePathSegmentLink {
+    geometry: L.LatLng[];
+    startNodeId: string;
+    endNodeId: string;
+    orderNumber: number;
+    routePathLinkId: number;
+}
+
+export default ILink;
+
+export { ILinkPrimaryKey, ILinkMapHighlight, IRoutePathSegmentLink };

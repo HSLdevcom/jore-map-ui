@@ -1,37 +1,18 @@
-import * as L from 'leaflet';
 import { action, computed, observable } from 'mobx';
 import { INode } from '~/models';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
-
-interface ICopySegmentNode {
-    nodeId: string;
-    geometry: L.LatLng;
-}
-
-interface ICopySegmentLink {
-    geometry: L.LatLng[];
-    startNodeId: string;
-    endNodeId: string;
-    orderNumber: number;
-    routePathLinkId: number;
-}
-
-interface ICopySegmentRoutePath extends IRoutePathPrimaryKey {
-    endTime: Date;
-    originFi: string;
-    destinationFi: string;
-    links: ICopySegmentLink[];
-}
+import { IRoutePathSegmentLink } from '~/models/ILink';
+import { IRoutePathSegmentNode } from '~/models/INode';
+import { IRoutePathSegment } from '~/models/IRoutePath';
 
 // which type of node will be set next when a node is selected on map
 type setNodeType = 'startNode' | 'endNode';
 
 class RoutePathCopySegmentStore {
     @observable private _isLoading: boolean;
-    @observable private _startNode: ICopySegmentNode | null;
-    @observable private _endNode: ICopySegmentNode | null;
-    @observable private _routePaths: ICopySegmentRoutePath[];
-    @observable private _highlightedRoutePath: ICopySegmentRoutePath | null;
+    @observable private _startNode: IRoutePathSegmentNode | null;
+    @observable private _endNode: IRoutePathSegmentNode | null;
+    @observable private _routePaths: IRoutePathSegment[];
+    @observable private _highlightedRoutePath: IRoutePathSegment | null;
     @observable private _setNodeType: setNodeType;
     @observable private _areNodePositionsValid: boolean;
 
@@ -51,22 +32,22 @@ class RoutePathCopySegmentStore {
     }
 
     @computed
-    get startNode(): ICopySegmentNode | null {
+    get startNode(): IRoutePathSegmentNode | null {
         return this._startNode;
     }
 
     @computed
-    get endNode(): ICopySegmentNode | null {
+    get endNode(): IRoutePathSegmentNode | null {
         return this._endNode;
     }
 
     @computed
-    get routePaths(): ICopySegmentRoutePath[] {
+    get routePaths(): IRoutePathSegment[] {
         return this._routePaths;
     }
 
     @computed
-    get highlightedRoutePath(): ICopySegmentRoutePath | null {
+    get highlightedRoutePath(): IRoutePathSegment | null {
         return this._highlightedRoutePath;
     }
 
@@ -102,12 +83,12 @@ class RoutePathCopySegmentStore {
     };
 
     @action
-    public setRoutePaths = (routePaths: ICopySegmentRoutePath[]) => {
+    public setRoutePaths = (routePaths: IRoutePathSegment[]) => {
         this._routePaths = routePaths;
     };
 
     @action
-    public setHighlightedRoutePath = (highlightedRoutePath: ICopySegmentRoutePath | null) => {
+    public setHighlightedRoutePath = (highlightedRoutePath: IRoutePathSegment | null) => {
         this._highlightedRoutePath = highlightedRoutePath;
     };
 
@@ -131,14 +112,14 @@ class RoutePathCopySegmentStore {
     };
 
     public getSegmentLinksToCopy = (
-        routePath: ICopySegmentRoutePath,
+        routePath: IRoutePathSegment,
         startNodeId: string,
         endNodeId: string
     ) => {
         const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);
         const endLinkOrderNumber = this._getEndLinkOrderNumber(routePath.links, endNodeId);
 
-        return routePath.links.filter((link: ICopySegmentLink) => {
+        return routePath.links.filter((link: IRoutePathSegmentLink) => {
             return (
                 link.orderNumber >= startLinkOrderNumber && link.orderNumber <= endLinkOrderNumber
             );
@@ -146,34 +127,28 @@ class RoutePathCopySegmentStore {
     };
 
     public getSegmentLinksNotToCopy = (
-        routePath: ICopySegmentRoutePath,
+        routePath: IRoutePathSegment,
         startNodeId: string,
         endNodeId: string
     ) => {
         const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);
         const endLinkOrderNumber = this._getEndLinkOrderNumber(routePath.links, endNodeId);
 
-        return routePath.links.filter((link: ICopySegmentLink) => {
+        return routePath.links.filter((link: IRoutePathSegmentLink) => {
             return link.orderNumber < startLinkOrderNumber || link.orderNumber > endLinkOrderNumber;
         });
     };
 
-    private _getStartLinkOrderNumber = (links: ICopySegmentLink[], startNodeId: string) => {
-        return links.find((link: ICopySegmentLink) => link.startNodeId === startNodeId)!
+    private _getStartLinkOrderNumber = (links: IRoutePathSegmentLink[], startNodeId: string) => {
+        return links.find((link: IRoutePathSegmentLink) => link.startNodeId === startNodeId)!
             .orderNumber;
     };
 
-    private _getEndLinkOrderNumber = (links: ICopySegmentLink[], endNodeId: string) => {
-        return links.find((link: ICopySegmentLink) => link.endNodeId === endNodeId)!.orderNumber;
+    private _getEndLinkOrderNumber = (links: IRoutePathSegmentLink[], endNodeId: string) => {
+        return links.find((link: IRoutePathSegmentLink) => link.endNodeId === endNodeId)!.orderNumber;
     };
 }
 
 export default new RoutePathCopySegmentStore();
 
-export {
-    RoutePathCopySegmentStore,
-    ICopySegmentNode,
-    ICopySegmentLink,
-    ICopySegmentRoutePath,
-    setNodeType
-};
+export { RoutePathCopySegmentStore, setNodeType };

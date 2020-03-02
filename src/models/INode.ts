@@ -20,7 +20,7 @@ interface INodeMapHighlight extends INodePrimaryKey {
     dateRanges: string;
 }
 
-export default interface INode extends INodeBase {
+interface INode extends INodeBase {
     stop: IStop | null;
     coordinates: L.LatLng;
     coordinatesProjection: L.LatLng;
@@ -31,4 +31,11 @@ export default interface INode extends INodeBase {
     transitTypes?: TransitType[];
 }
 
-export { INodePrimaryKey, INodeBase, INodeMapHighlight };
+interface IRoutePathSegmentNode {
+    nodeId: string;
+    geometry: L.LatLng;
+}
+
+export default INode;
+
+export { INodePrimaryKey, INodeBase, INodeMapHighlight, IRoutePathSegmentNode };

@@ -2,7 +2,7 @@ import ToolbarTool from '~/enums/toolbarTool';
 import EventHelper, { INetworkNodeClickParams, INodeClickParams } from '~/helpers/EventHelper';
 import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
-import RoutePathSegmentService from '~/services/routePathSegmentService';
+import RoutePathSegmentService from '~/services/routePathService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';

@@ -4,12 +4,12 @@ import React from 'react';
 import { FiCopy, FiExternalLink } from 'react-icons/fi';
 import Loader from '~/components/shared/loader/Loader';
 import { IRoutePathLink } from '~/models';
+import { IRoutePathSegment } from '~/models/IRoutePath';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import { AlertStore, AlertType } from '~/stores/alertStore';
 import {
-    ICopySegmentRoutePath,
     RoutePathCopySegmentStore
 } from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -26,7 +26,7 @@ interface IRoutePathCopySegmentViewProps {
 @inject('alertStore', 'routePathStore', 'routePathCopySegmentStore', 'toolbarStore')
 @observer
 class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentViewProps> {
-    private renderRoutePathRow = (routePath: ICopySegmentRoutePath, key: string) => {
+    private renderRoutePathRow = (routePath: IRoutePathSegment, key: string) => {
         return (
             <div
                 key={key}
@@ -55,11 +55,11 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         );
     };
 
-    private setHighlightedRoutePath = (routePath: ICopySegmentRoutePath | null) => () => {
+    private setHighlightedRoutePath = (routePath: IRoutePathSegment | null) => () => {
         this.props.routePathCopySegmentStore!.setHighlightedRoutePath(routePath);
     };
 
-    private renderTextRow = (routePath: ICopySegmentRoutePath) => {
+    private renderTextRow = (routePath: IRoutePathSegment) => {
         return (
             <div>
                 <div>
@@ -73,7 +73,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         );
     };
 
-    private copySegments = (routePath: ICopySegmentRoutePath) => async () => {
+    private copySegments = (routePath: IRoutePathSegment) => async () => {
         this.props.alertStore!.setLoaderMessage('Kopioidaan reitinsuunnan segmenttiä...');
 
         const copySegmentStore = this.props.routePathCopySegmentStore;
@@ -135,7 +135,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         this.props.routePathStore!.addLink(routePathLink);
     };
 
-    private openRoutePathInNewTab = (routePath: ICopySegmentRoutePath) => () => {
+    private openRoutePathInNewTab = (routePath: IRoutePathSegment) => () => {
         const routePathLink = routeBuilder
             .to(SubSites.routePath)
             .toTarget(
