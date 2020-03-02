@@ -35,4 +35,4 @@ interface IExternalRoutePathSegmentLink {
 
 export default IExternalLink;
 
-export { IExternalRoutePathSegmentLink };
+export { IExternalRoutePathSegmentLink };

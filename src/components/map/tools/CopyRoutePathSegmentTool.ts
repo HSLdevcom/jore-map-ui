@@ -2,7 +2,7 @@ import ToolbarTool from '~/enums/toolbarTool';
 import EventHelper, { INetworkNodeClickParams, INodeClickParams } from '~/helpers/EventHelper';
 import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
-import RoutePathSegmentService from '~/services/routePathService';
+import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
@@ -76,8 +76,8 @@ class CopyRoutePathSegmentTool implements BaseTool {
         if (!startNode || !endNode) return;
 
         if (
-            !this.isStartNodeOnRoutePath(startNode.nodeId) &&
-            !this.isEndNodeOnRoutePath(endNode.nodeId)
+            !this.isStartNodeOnRoutePath(startNode.id) &&
+            !this.isEndNodeOnRoutePath(endNode.id)
         ) {
             ErrorStore.addError(
                 'Ainakin toisen kopioitavan välin alku- tai loppusolmuista on kuuluttava reitinsuuntaan, johon segmentti kopioidaan.'
@@ -86,7 +86,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
             return;
         }
 
-        if (startNode.nodeId === endNode.nodeId) {
+        if (startNode.id === endNode.id) {
             ErrorStore.addError('Kopioitavan välin alkusolmu ei saa olla sama kuin loppusolmu.');
             RoutePathCopySegmentStore.setNodePositionValidity(false);
             return;
@@ -97,8 +97,8 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         const transitType = RoutePathStore.routePath!.transitType!;
         const routePaths = await RoutePathSegmentService.fetchRoutePathLinkSegment(
-            startNode.nodeId,
-            endNode.nodeId,
+            startNode.id,
+            endNode.id,
             transitType
         );
         RoutePathCopySegmentStore.setRoutePaths(routePaths);

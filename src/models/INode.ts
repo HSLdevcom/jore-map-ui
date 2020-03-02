@@ -31,11 +31,6 @@ interface INode extends INodeBase {
     transitTypes?: TransitType[];
 }
 
-interface IRoutePathSegmentNode {
-    nodeId: string;
-    geometry: L.LatLng;
-}
-
 export default INode;
 
-export { INodePrimaryKey, INodeBase, INodeMapHighlight, IRoutePathSegmentNode };
+export { INodePrimaryKey, INodeBase, INodeMapHighlight };

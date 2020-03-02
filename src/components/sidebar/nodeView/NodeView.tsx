@@ -5,6 +5,7 @@ import * as React from 'react';
 import { match } from 'react-router';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import SavePrompt, { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
+import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import NodeType from '~/enums/nodeType';
@@ -513,10 +514,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                             saveHastusArea={this.saveHastusArea}
                         />
                     )}
-                    {/* TODO*/}
-                    {/* { !isNewNode &&
-                        <RoutePathSegementList className={s.routePathList} topic={'Linkkiä käyttävät reitinsuunnat'} routePathSegments={this.routePathSegments} />
-                    } */}
+                    { !isNewNode &&
+                        <RoutePathList className={s.routePathList} topic={'Linkkiä käyttävät reitinsuunnat'} routePaths={this.state.routePathsUsingNode} />
+                    }
                 </div>
                 <SaveButton
                     disabled={isSaveButtonDisabled}

@@ -1,6 +1,5 @@
 import { action, computed, observable } from 'mobx';
-import { INode } from '~/models';
-import { IRoutePathSegmentNode } from '~/models/INode';
+import INode from '~/models/INode';
 import { IRoutePathSegment } from '~/models/IRoutePath';
 import { IRoutePathSegmentLink } from '~/models/IRoutePathLink';
 
@@ -9,8 +8,8 @@ type setNodeType = 'startNode' | 'endNode';
 
 class RoutePathCopySegmentStore {
     @observable private _isLoading: boolean;
-    @observable private _startNode: IRoutePathSegmentNode | null;
-    @observable private _endNode: IRoutePathSegmentNode | null;
+    @observable private _startNode: INode | null;
+    @observable private _endNode: INode | null;
     @observable private _routePaths: IRoutePathSegment[];
     @observable private _highlightedRoutePath: IRoutePathSegment | null;
     @observable private _setNodeType: setNodeType;
@@ -32,12 +31,12 @@ class RoutePathCopySegmentStore {
     }
 
     @computed
-    get startNode(): IRoutePathSegmentNode | null {
+    get startNode(): INode | null {
         return this._startNode;
     }
 
     @computed
-    get endNode(): IRoutePathSegmentNode | null {
+    get endNode(): INode | null {
         return this._endNode;
     }
 
@@ -68,18 +67,12 @@ class RoutePathCopySegmentStore {
 
     @action
     public setStartNode = (node: INode) => {
-        this._startNode = {
-            nodeId: node.id,
-            geometry: node.coordinates
-        };
+        this._startNode = node;
     };
 
     @action
     public setEndNode = (node: INode) => {
-        this._endNode = {
-            nodeId: node.id,
-            geometry: node.coordinates
-        };
+        this._endNode = node;
     };
 
     @action
@@ -115,7 +108,7 @@ class RoutePathCopySegmentStore {
         routePath: IRoutePathSegment,
         startNodeId: string,
         endNodeId: string
-    ) => {
+    ): IRoutePathSegmentLink[] => {
         const startLinkOrderNumber = this._getStartLinkOrderNumber(routePath.links, startNodeId);
         const endLinkOrderNumber = this._getEndLinkOrderNumber(routePath.links, endNodeId);
 

@@ -3,8 +3,8 @@ import Moment from 'moment';
 import React from 'react';
 import { FiCopy, FiExternalLink } from 'react-icons/fi';
 import Loader from '~/components/shared/loader/Loader';
-import { IRoutePathLink } from '~/models';
 import { IRoutePathSegment } from '~/models/IRoutePath';
+import IRoutePathLink from '~/models/IRoutePathLink';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathLinkService from '~/services/routePathLinkService';
@@ -77,8 +77,8 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         this.props.alertStore!.setLoaderMessage('Kopioidaan reitinsuunnan segmenttiä...');
 
         const copySegmentStore = this.props.routePathCopySegmentStore;
-        const copyStartNodeId = copySegmentStore!.startNode!.nodeId;
-        const copyEndNodeId = copySegmentStore!.endNode!.nodeId;
+        const copyStartNodeId = copySegmentStore!.startNode!.id;
+        const copyEndNodeId = copySegmentStore!.endNode!.id;
         const segmentsToCopy = copySegmentStore!.getSegmentLinksToCopy(
             routePath,
             copyStartNodeId,

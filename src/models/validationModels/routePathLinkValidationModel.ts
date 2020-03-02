@@ -1,5 +1,5 @@
-import { IRoutePathLink } from '..';
 import constants from '../../constants/constants';
+import IRoutePathLink from '../IRoutePathLink';
 
 type IRoutePathLinkValidationModel = { [key in keyof IRoutePathLink]: string };
 
