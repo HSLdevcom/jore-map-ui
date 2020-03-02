@@ -11,13 +11,14 @@ import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
 import EventHelper from '~/helpers/EventHelper';
-import { ILink, INode } from '~/models';
+import { ILink, INode, IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import RoutePathService from '~/services/routePathService';
 import StopService from '~/services/stopService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -45,6 +46,7 @@ interface INodeViewState {
     isLoading: boolean;
     nodeIdSuffixOptions: IDropdownItem[];
     isNodeIdSuffixQueryLoading: boolean;
+    routePathsUsingNode: IRoutePath[];
 }
 
 @inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'confirmStore')
@@ -56,7 +58,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.state = {
             isLoading: true,
             nodeIdSuffixOptions: [],
-            isNodeIdSuffixQueryLoading: false
+            isNodeIdSuffixQueryLoading: false,
+            routePathsUsingNode: []
         };
     }
 
@@ -163,6 +166,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.initNode(node!, links!);
             this.updateSelectedStopAreaId();
         }
+        const routePaths = await RoutePathService.fetchRoutePathsUsingNode(node.id);
+        this.setState({ routePathsUsingNode: routePaths });
         this._setState({ isLoading: false });
     };
 
@@ -508,6 +513,10 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                             saveHastusArea={this.saveHastusArea}
                         />
                     )}
+                    {/* TODO*/}
+                    {/* { !isNewNode &&
+                        <RoutePathSegementList className={s.routePathList} topic={'Linkkiä käyttävät reitinsuunnat'} routePathSegments={this.routePathSegments} />
+                    } */}
                 </div>
                 <SaveButton
                     disabled={isSaveButtonDisabled}

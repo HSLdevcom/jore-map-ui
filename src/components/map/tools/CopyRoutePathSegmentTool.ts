@@ -95,7 +95,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         RoutePathCopySegmentStore.setIsLoading(true);
 
-        const transitType = RoutePathStore.routePath!.transitType;
+        const transitType = RoutePathStore.routePath!.transitType!;
         const routePaths = await RoutePathSegmentService.fetchRoutePathLinkSegment(
             startNode.nodeId,
             endNode.nodeId,

@@ -24,14 +24,6 @@ interface ILink extends ILinkPrimaryKey {
     modifiedOn?: Date;
 }
 
-interface IRoutePathSegmentLink {
-    geometry: L.LatLng[];
-    startNodeId: string;
-    endNodeId: string;
-    orderNumber: number;
-    routePathLinkId: number;
-}
-
 export default ILink;
 
-export { ILinkPrimaryKey, ILinkMapHighlight, IRoutePathSegmentLink };
+export { ILinkPrimaryKey, ILinkMapHighlight };

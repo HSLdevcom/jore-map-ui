@@ -1,6 +1,5 @@
 import TransitType from '~/enums/transitType';
-import { IRoutePathSegmentLink } from './ILink';
-import IRoutePathLink from './IRoutePathLink';
+import IRoutePathLink, { IRoutePathSegmentLink } from './IRoutePathLink';
 
 interface IRoutePathPrimaryKey {
     routeId: string;
@@ -12,8 +11,8 @@ interface IViewOnlyRoutePathProperties {
     internalId: string;
     color?: string;
     visible: boolean;
-    transitType: TransitType;
-    lineId: string;
+    transitType?: TransitType;
+    lineId?: string;
 }
 
 interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties {

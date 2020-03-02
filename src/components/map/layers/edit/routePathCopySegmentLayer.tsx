@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
-import { IRoutePathSegmentLink } from '~/models/ILink';
+import { IRoutePathSegmentLink } from '~/models/IRoutePathLink';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import Marker from '../markers/Marker';
 

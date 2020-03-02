@@ -29,7 +29,10 @@ class RoutePathService {
             fetchPolicy: 'no-cache'
         });
         const externalRoutePath: IExternalRoutePath | null = queryResult.data.routePath;
-        return externalRoutePath ? RoutePathFactory.mapExternalRoutePath(externalRoutePath) : null;
+        if (!externalRoutePath) return null;
+        const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+        const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+        return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
     };
 
     public static fetchFirstAndLastStopNamesOfRoutePath = async (
@@ -83,9 +86,11 @@ class RoutePathService {
                 date
             }
         });
-        return queryResult.data.routePaths.nodes.map((externalRp: IExternalRoutePath) =>
-            RoutePathFactory.mapExternalRoutePath(externalRp)
-        );
+        return queryResult.data.routePaths.nodes.map((externalRoutePath: IExternalRoutePath) => {
+            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            return RoutePathFactory.mapExternalRoutePath(externalRoutePath,lineId, transitType);
+        });
     };
 
     public static updateRoutePath = async (routePath: IRoutePath) => {
@@ -122,6 +127,15 @@ class RoutePathService {
             queryResult.data.links_with_route_path_info.nodes
         );
     };
+
+    public static fetchRoutePathsUsingNode = async (nodeId: string): Promise<IRoutePath[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getRoutePathsUsingNodeQuery(),
+            variables: { nodeId }
+        });
+        const externalRoutePaths: IExternalRoutePath[] = queryResult.data.get_route_paths_using_node.nodes;
+        return externalRoutePaths.map(externalRoutePath => RoutePathFactory.mapExternalRoutePath(externalRoutePath));
+    }
 }
 
 const _getViaNames = (routePath: IRoutePath) => {

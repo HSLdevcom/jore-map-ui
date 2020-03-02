@@ -28,4 +28,12 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     destinationSw2?: string;
 }
 
-export { IRoutePathLinkPrimaryKey };
+interface IRoutePathSegmentLink {
+    geometry: L.LatLng[];
+    startNodeId: string;
+    endNodeId: string;
+    orderNumber: number;
+    routePathLinkId: number;
+}
+
+export { IRoutePathLinkPrimaryKey, IRoutePathSegmentLink };

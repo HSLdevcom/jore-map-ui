@@ -138,6 +138,16 @@ const getRoutePathSegmentQuery = () => {
         }`;
 };
 
+const getRoutePathsUsingNodeQuery = () => {
+    return gql`query getRoutePathsUsingNode($nodeId: String) {
+        get_route_paths_using_node: getRoutePathsUsingNode(nodeid: $nodeId) {
+            nodes {
+                ${routePathQueryFields}
+            }
+        }
+    }`;
+}
+
 const getLinksByStartNodeQuery = () => {
     return gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
@@ -719,6 +729,7 @@ export default {
     getFirstAndLastStopNamesOfRoutePath,
     getRoutePathLinkQuery,
     getRoutePathSegmentQuery,
+    getRoutePathsUsingNodeQuery,
     getLinksByStartNodeQuery,
     getNetworkNodesFromPointQuery,
     getNetworkLinksFromPointQuery,

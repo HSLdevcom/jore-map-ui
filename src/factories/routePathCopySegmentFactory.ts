@@ -1,6 +1,6 @@
 import * as L from 'leaflet';
-import { IRoutePathSegmentLink } from '~/models/ILink';
 import { IRoutePathSegment } from '~/models/IRoutePath';
+import { IRoutePathSegmentLink } from '~/models/IRoutePathLink';
 import { IExternalRoutePathSegmentLink } from '~/models/externals/IExternalLink';
 
 class RoutePathCopySegmentFactory {

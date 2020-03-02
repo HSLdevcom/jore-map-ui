@@ -1,8 +1,8 @@
 import { action, computed, observable } from 'mobx';
 import { INode } from '~/models';
-import { IRoutePathSegmentLink } from '~/models/ILink';
 import { IRoutePathSegmentNode } from '~/models/INode';
 import { IRoutePathSegment } from '~/models/IRoutePath';
+import { IRoutePathSegmentLink } from '~/models/IRoutePathLink';
 
 // which type of node will be set next when a node is selected on map
 type setNodeType = 'startNode' | 'endNode';
