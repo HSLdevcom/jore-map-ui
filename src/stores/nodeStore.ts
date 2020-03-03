@@ -340,7 +340,9 @@ class NodeStore {
             this._node!.stop = stop;
             this._stopValidationStore.init(stop, stopValidationModel);
         } else {
+            // Only node which type is stop has measurementType and measurementDate, remove them if type is not stop
             this.updateNodeProperty('measurementType', '');
+            this.updateNodeProperty('measurementDate', '');
         }
     };
 
