@@ -143,6 +143,7 @@ const getRoutePathsUsingLinkQuery = () => {
         get_route_paths_using_link: getRoutePathsUsingLink(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
             nodes {
                 ${routePathQueryFields}
+                ${routeForRoutePathQuery}
             }
         }
     }`;
@@ -153,6 +154,7 @@ const getRoutePathsUsingNodeQuery = () => {
         get_route_paths_using_node: getRoutePathsUsingNode(nodeid: $nodeId) {
             nodes {
                 ${routePathQueryFields}
+                ${routeForRoutePathQuery}
             }
         }
     }`;

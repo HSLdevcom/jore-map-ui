@@ -16,8 +16,22 @@
         padding: 5px 5px 5px 10px;
         border-bottom: 1px solid #dddddd;
 
-        .timestampRow {
-            font-size: $smallFontSize;
+        .itemContainerOnRight {
+            display: flex;
+            align-items: center;
+
+            .transitTypeIcon {
+                display: flex;
+                padding-right: 10px;
+            }
+
+            .direction {
+                padding-right: 10px;
+            }
+
+            .timestampRow {
+                font-size: $smallFontSize;
+            }
         }
 
         .icon {
@@ -33,6 +47,11 @@
             transition: 0.5s;
             height: 24px;
             margin: 2px;
+        }
+
+        .icon:hover {
+            transition: 0.5s;
+            background-color: $backgroundHoverColor;
         }
     }
     .routePathRow:last-of-type {

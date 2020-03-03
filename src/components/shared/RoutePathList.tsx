@@ -5,6 +5,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import IRoutePath from '~/models/IRoutePath';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import TransitIcon from './TransitIcon';
 import * as s from './routePathList.scss';
 
 interface IRoutePathListProps {
@@ -34,7 +35,13 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
     private renderRoutePathRow = (routePath: IRoutePath, key: string) => {
         return (
             <div key={key} className={s.routePathRow}>
-                {this.renderTextRow(routePath)}
+                <div className={s.itemContainerOnRight}>
+                    <div className={s.transitTypeIcon}>
+                        <TransitIcon transitType={routePath.transitType!} isWithoutBox={false} />
+                    </div>
+                    <div className={s.direction}>{routePath.direction}</div>
+                    {this.renderTextRow(routePath)}
+                </div>
                 <div
                     className={s.icon}
                     title={`Avaa reitin ${routePath.routeId} reitinsuunta uuteen ikkunaan`}
@@ -112,12 +119,14 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
         return (
             <div className={classnames(s.routePathList, className ? className : undefined)}>
                 <div className={s.topic}>{topic}</div>
+                { routePaths.length > 0 && (
                 <input
                     placeholder='Suodata reitinsuuntia (reitin tunnus, lähtö- / päätepaikka)'
                     type='text'
                     value={this.state.searchInputValue}
                     onChange={this.onSearchInputChange}
                 />
+                )}
                 { hasNoSearchResults ? (
                     <div className={s.noSearchResultsText}>Reitinsuuntia ei löytynyt.</div>
                 ) : (
