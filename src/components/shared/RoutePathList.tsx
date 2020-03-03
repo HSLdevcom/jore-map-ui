@@ -113,7 +113,7 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
             <div className={classnames(s.routePathList, className ? className : undefined)}>
                 <div className={s.topic}>{topic}</div>
                 <input
-                    placeholder='Filtteröi reitinsuuntia (reitin tunnus, lähtö- / päätepaikka)'
+                    placeholder='Suodata reitinsuuntia (reitin tunnus, lähtö- / päätepaikka)'
                     type='text'
                     value={this.state.searchInputValue}
                     onChange={this.onSearchInputChange}
