@@ -1,6 +1,6 @@
 @import './styles/common';
 
-.routePathSegmentList {
+.routePathList {
     display: flex;
     flex-direction: column;
 
@@ -37,5 +37,35 @@
     }
     .routePathRow:last-of-type {
         border: none;
+    }
+
+    .noSearchResultsText {
+        padding-top: 10px;
+    }
+
+    .toggleAllRoutePathsVisibleButton {
+        text-align: center;
+        padding: 10px;
+        cursor: pointer;
+        .toggleAllRoutePathsVisibleText {
+            color: $busBlue;
+            text-decoration: underline;
+        }
+        .threeDots {
+            position: relative;
+            top: -8px;
+            color: $fontColorDefault;
+            letter-spacing: 5px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 0.5;
+        }
+    }
+
+    .toggleAllRoutePathsVisibleButton:hover {
+        .toggleAllRoutePathsVisibleText {
+            color: darken($busBlue, 10);
+        }
     }
 }

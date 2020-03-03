@@ -47,6 +47,7 @@ interface INodeViewState {
     isLoading: boolean;
     nodeIdSuffixOptions: IDropdownItem[];
     isNodeIdSuffixQueryLoading: boolean;
+    isRoutePathsUsingNodeQueryLoading: boolean;
     routePathsUsingNode: IRoutePath[];
 }
 
@@ -60,6 +61,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             isLoading: true,
             nodeIdSuffixOptions: [],
             isNodeIdSuffixQueryLoading: false,
+            isRoutePathsUsingNodeQueryLoading: false,
             routePathsUsingNode: []
         };
     }
@@ -167,8 +169,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.initNode(node!, links!);
             this.updateSelectedStopAreaId();
         }
-        const routePaths = await RoutePathService.fetchRoutePathsUsingNode(node.id);
-        this.setState({ routePathsUsingNode: routePaths });
+        this.fetchRoutePathsUsingNode(node.id);
         this._setState({ isLoading: false });
     };
 
@@ -236,6 +237,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             );
             return null;
         }
+    }
+
+    private fetchRoutePathsUsingNode = async (nodeId: string) => {
+        this._setState({ isRoutePathsUsingNodeQueryLoading: true });
+        const routePaths = await RoutePathService.fetchRoutePathsUsingNode(nodeId);
+        this._setState({
+            isRoutePathsUsingNodeQueryLoading: false,
+            routePathsUsingNode: routePaths
+        });
     }
 
     private centerMapToNode = (node: INode, links: ILink[]) => {
@@ -515,7 +525,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         />
                     )}
                     { !isNewNode &&
-                        <RoutePathList className={s.routePathList} topic={'Linkkiä käyttävät reitinsuunnat'} routePaths={this.state.routePathsUsingNode} />
+                        this.state.isRoutePathsUsingNodeQueryLoading ? (
+                            <Loader size={'small'} />
+                        ) : (
+                            <RoutePathList className={s.routePathList} topic={'Solmua käyttävät reitinsuunnat'} routePaths={this.state.routePathsUsingNode} />
+                        )
                     }
                 </div>
                 <SaveButton
