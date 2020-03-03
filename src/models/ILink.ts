@@ -16,12 +16,14 @@ interface ILinkMapHighlight {
     dateRanges: string;
 }
 
-export default interface ILink extends ILinkPrimaryKey {
+interface ILink extends ILinkPrimaryKey {
     geometry: L.LatLng[];
     length: number;
     measuredLength?: number;
     modifiedBy?: string;
     modifiedOn?: Date;
 }
+
+export default ILink;
 
 export { ILinkPrimaryKey, ILinkMapHighlight };

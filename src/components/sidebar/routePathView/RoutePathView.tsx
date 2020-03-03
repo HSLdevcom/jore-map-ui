@@ -355,15 +355,15 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             :
                             <div className={s.linkContainer}>
                                 <TransitTypeLink
-                                    transitType={routePath.transitType}
+                                    transitType={routePath.transitType!}
                                     shouldShowTransitTypeIcon={true}
-                                    text={routePath.lineId}
-                                    onClick={() => NavigationUtils.openLineView({ lineId: routePath.lineId })}
-                                    hoverText={`Avaa linja ${routePath.lineId}`}
+                                    text={routePath.lineId!}
+                                    onClick={() => NavigationUtils.openLineView({ lineId: routePath!.lineId! })}
+                                    hoverText={`Avaa linja ${routePath.lineId!}`}
                                 />
                                 <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
                                 <TransitTypeLink
-                                    transitType={routePath.transitType}
+                                    transitType={routePath.transitType!}
                                     shouldShowTransitTypeIcon={false}
                                     text={routePath.routeId}
                                     onClick={() => NavigationUtils.openRouteView({ routeId: routePath.routeId })}

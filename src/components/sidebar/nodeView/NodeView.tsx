@@ -5,19 +5,21 @@ import * as React from 'react';
 import { match } from 'react-router';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import SavePrompt, { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
+import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
 import EventHelper from '~/helpers/EventHelper';
-import { ILink, INode } from '~/models';
+import { ILink, INode, IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
+import RoutePathService from '~/services/routePathService';
 import StopService from '~/services/stopService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -45,6 +47,8 @@ interface INodeViewState {
     isLoading: boolean;
     nodeIdSuffixOptions: IDropdownItem[];
     isNodeIdSuffixQueryLoading: boolean;
+    isRoutePathsUsingNodeQueryLoading: boolean;
+    routePathsUsingNode: IRoutePath[];
 }
 
 @inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'confirmStore')
@@ -56,7 +60,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.state = {
             isLoading: true,
             nodeIdSuffixOptions: [],
-            isNodeIdSuffixQueryLoading: false
+            isNodeIdSuffixQueryLoading: false,
+            isRoutePathsUsingNodeQueryLoading: false,
+            routePathsUsingNode: []
         };
     }
 
@@ -163,6 +169,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.initNode(node!, links!);
             this.updateSelectedStopAreaId();
         }
+        this.fetchRoutePathsUsingNode(node.id);
         this._setState({ isLoading: false });
     };
 
@@ -230,6 +237,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             );
             return null;
         }
+    }
+
+    private fetchRoutePathsUsingNode = async (nodeId: string) => {
+        this._setState({ isRoutePathsUsingNodeQueryLoading: true });
+        const routePaths = await RoutePathService.fetchRoutePathsUsingNode(nodeId);
+        this._setState({
+            isRoutePathsUsingNodeQueryLoading: false,
+            routePathsUsingNode: routePaths
+        });
     }
 
     private centerMapToNode = (node: INode, links: ILink[]) => {
@@ -508,6 +524,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                             saveHastusArea={this.saveHastusArea}
                         />
                     )}
+                    { !isNewNode &&
+                        this.state.isRoutePathsUsingNodeQueryLoading ? (
+                            <Loader size={'small'} />
+                        ) : (
+                            <RoutePathList className={s.routePathList} topic={'Solmua käyttävät reitinsuunnat'} routePaths={this.state.routePathsUsingNode} />
+                        )
+                    }
                 </div>
                 <SaveButton
                     disabled={isSaveButtonDisabled}

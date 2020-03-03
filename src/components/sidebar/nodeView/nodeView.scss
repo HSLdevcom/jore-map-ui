@@ -11,5 +11,9 @@
         padding: 20px;
         overflow-y: auto;
         flex-grow: 1;
+
+        .routePathList {
+            margin-top: 20px;
+        }
     }
 }

@@ -1,29 +1,17 @@
 import * as L from 'leaflet';
-import { ICopySegmentLink, ICopySegmentRoutePath } from '~/stores/routePathCopySegmentStore';
-
-interface IExternalLinkWithRoutePathInfo {
-    reitunnus: string;
-    suusuunta: string;
-    suuvoimast: Date;
-    relid: number;
-    reljarjnro: number;
-    lnkalkusolmu: string;
-    lnkloppusolmu: string;
-    suuvoimviimpvm: Date;
-    suulahpaik: string;
-    suupaapaik: string;
-    geom: string;
-}
+import { IRoutePathSegment } from '~/models/IRoutePath';
+import { IRoutePathSegmentLink } from '~/models/IRoutePathLink';
+import { IExternalRoutePathSegmentLink } from '~/models/externals/IExternalLink';
 
 class RoutePathCopySegmentFactory {
     public static mapExternalLinksWithRoutePathInfo = (
-        externalLinksWithRoutePathInfo: IExternalLinkWithRoutePathInfo[]
-    ): ICopySegmentRoutePath[] => {
-        const routePaths: ICopySegmentRoutePath[] = [];
+        externalLinksWithRoutePathInfo: IExternalRoutePathSegmentLink[]
+    ): IRoutePathSegment[] => {
+        const routePaths: IRoutePathSegment[] = [];
 
-        externalLinksWithRoutePathInfo.forEach((externalLink: IExternalLinkWithRoutePathInfo) => {
+        externalLinksWithRoutePathInfo.forEach((externalLink: IExternalRoutePathSegmentLink) => {
             const geoJson = JSON.parse(externalLink.geom);
-            const link: ICopySegmentLink = {
+            const link: IRoutePathSegmentLink = {
                 geometry: L.GeoJSON.coordsToLatLngs(geoJson.coordinates),
                 startNodeId: externalLink.lnkalkusolmu,
                 endNodeId: externalLink.lnkloppusolmu,
@@ -38,7 +26,7 @@ class RoutePathCopySegmentFactory {
                     routePath.startTime === externalLink.suuvoimast
             );
             if (!oldRoutePath) {
-                const newRoutePath: ICopySegmentRoutePath = {
+                const newRoutePath: IRoutePathSegment = {
                     routeId: externalLink.reitunnus,
                     direction: externalLink.suusuunta,
                     startTime: externalLink.suuvoimast,

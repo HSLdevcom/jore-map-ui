@@ -1,7 +1,7 @@
 import TransitType from '~/enums/transitType';
 import IExternalNode from './IExternalNode';
 
-export default interface IExternalLink {
+interface IExternalLink {
     lnkverkko: TransitType;
     geojson: string;
     solmuByLnkalkusolmu: IExternalNode;
@@ -18,3 +18,21 @@ export default interface IExternalLink {
     lnkviimpvm?: Date;
     dateRanges?: string;
 }
+
+interface IExternalRoutePathSegmentLink {
+    reitunnus: string;
+    suusuunta: string;
+    suuvoimast: Date;
+    relid: number;
+    reljarjnro: number;
+    lnkalkusolmu: string;
+    lnkloppusolmu: string;
+    suuvoimviimpvm: Date;
+    suulahpaik: string;
+    suupaapaik: string;
+    geom: string;
+}
+
+export default IExternalLink;
+
+export { IExternalRoutePathSegmentLink };
