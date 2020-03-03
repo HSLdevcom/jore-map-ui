@@ -257,19 +257,20 @@ class StopForm extends Component<IStopFormProps> {
                             label='PYSÄKKIALUE'
                             validationResult={stopInvalidPropertiesMap['stopAreaId']}
                         />
-                        {!isReadOnly && stop.stopAreaId && (
+                        {!isReadOnly && (
                             <>
                                 <Button
-                                    className={s.dropdownButton}
+                                    className={classnames(s.dropdownButton, !stop.stopAreaId ? s.dropdownButtonCentered : undefined)}
                                     hasReverseColor={true}
                                     onClick={() => {
                                         this.redirectToStopArea(stop.stopAreaId);
                                     }}
+                                    disabled={!Boolean(stop.stopAreaId)}
                                 >
                                     <FiInfo />
                                 </Button>
                                 <Button
-                                    className={s.dropdownButton}
+                                    className={classnames(s.dropdownButton, !stop.stopAreaId ? s.dropdownButtonCentered : undefined)}
                                     hasReverseColor={true}
                                     onClick={() => this.redirectToNewStopArea()}
                                     type={ButtonType.SQUARE}

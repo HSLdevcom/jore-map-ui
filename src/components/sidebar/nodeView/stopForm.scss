@@ -6,14 +6,20 @@
     margin-top: 15px;
 
     .dropdownButton {
+        display: flex;
+        align-self: flex-end;
         font-size: 30px;
         cursor: pointer;
         transition: 0.5s;
-        align-self: flex-end;
         padding: 6px;
         border-radius: 5px;
     }
     .dropdownButton:not(:last-child) {
         margin-right: 10px;
+    }
+
+    .dropdownButtonCentered {
+        margin-top: auto;
+        margin-bottom: auto;
     }
 }
