@@ -3,17 +3,12 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import { ILink, IRoutePath } from '~/models';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import ButtonType from '../../../../enums/buttonType';
-import { Button, Dropdown } from '../../../controls';
+import { Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
-import LinkListView from './LinkListView';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabProps {
@@ -71,24 +66,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                 calculatedValue
             });
         }
-    };
-
-    private redirectToNewRoutePathView = () => {
-        const routePath = this.props.routePathStore!.routePath;
-        if (!routePath) return;
-
-        const newRoutePathLink = routeBuilder
-            .to(SubSites.newRoutePath, {
-                routeId: routePath.routeId,
-                lineId: routePath.lineId
-            })
-            .toLink();
-
-        navigator.goTo({ link: newRoutePathLink });
-    };
-
-    private showAlertPlanningInProgress = () => {
-        window.alert('Toteutuksen suunnittelu kesken.');
     };
 
     private updateLength = async () => {
@@ -252,60 +229,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                                 value={routePath.modifiedOn}
                             />
                         </div>
-                    </div>
-                    <div className={s.formSection}>
-                        <div className={s.buttonBar}>
-                            <Button
-                                onClick={this.showAlertPlanningInProgress}
-                                type={ButtonType.ROUND}
-                            >
-                                Varustelutiedot
-                            </Button>
-                            <Button
-                                onClick={this.showAlertPlanningInProgress}
-                                type={ButtonType.ROUND}
-                            >
-                                Solmut Exceliin
-                            </Button>
-                            <Button
-                                onClick={this.showAlertPlanningInProgress}
-                                type={ButtonType.ROUND}
-                            >
-                                Aikataulu
-                            </Button>
-                            <Button
-                                type={ButtonType.ROUND}
-                                onClick={this.redirectToNewRoutePathView!}
-                            >
-                                Kopioi
-                            </Button>
-                        </div>
-                    </div>
-                    <div className={s.formSection}>
-                        <div className={s.formItem}>KARTTA</div>
-                        <div className={s.formItem}>
-                            Esitettävien ajoaikojen kausi ja aikajakso (Toteutus / suunnittelu
-                            kesken)
-                            <div className={s.flexInnerRow}>
-                                {/* TODO */}
-                                <Dropdown
-                                    onChange={() => void 0}
-                                    disabled={true}
-                                    items={this.props.codeListStore!.getDropdownItemList('Suunta')}
-                                    selected='Suunta 1'
-                                />
-                                {/* TODO */}
-                                <Dropdown
-                                    onChange={() => void 0}
-                                    disabled={true}
-                                    items={this.props.codeListStore!.getDropdownItemList('Suunta')}
-                                    selected='Suunta 2'
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className={s.formSection}>
-                        <LinkListView routePath={this.props.routePath} />
                     </div>
                 </div>
             </div>

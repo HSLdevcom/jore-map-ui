@@ -1,5 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
+import { IoIosRadioButtonOff } from 'react-icons/io';
+import TransitIcon from '~/components/shared/TransitIcon';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
 import navigator from '~/routing/navigator';
@@ -77,21 +79,27 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             onClick={() => this.redirectToNode(node.id, this.props.popupId)}
                             data-cy='node'
                         >
-                            Solmu {node.id}
+                            <div className={s.nodeIcon}>
+                                <IoIosRadioButtonOff />
+                            </div>
+                            <div className={s.linkText}>Solmu {node.id}</div>
                         </div>
                     );
                 })}
                 {this.props.data.links.map((link: ILinkMapHighlight, index: number) => {
                     return (
                         <div
-                            key={index}
                             className={s.row}
+                            key={index}
                             onMouseOver={() => this.highlightLink(link, true)}
                             onMouseOut={() => this.highlightLink(link, false)}
                             onClick={() => this.redirectToLink(link, this.props.popupId)}
                             data-cy='link'
                         >
-                            {`${link.startNodeId} - ${link.endNodeId}`}
+                            <TransitIcon transitType={link.transitType} isWithoutBox={false} />
+                            <div className={s.linkText}>{`${link.startNodeId} - ${
+                                link.endNodeId
+                            }`}</div>
                         </div>
                     );
                 })}

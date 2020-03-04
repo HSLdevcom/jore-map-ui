@@ -23,6 +23,7 @@ class StopAreaLayer extends Component<IStopAreaLayerProps> {
                     nodeType={NodeType.STOP}
                     isSelected={false}
                     nodeLocationType={'coordinates'}
+                    nodeId={stopItem.nodeId}
                 />
             );
         });

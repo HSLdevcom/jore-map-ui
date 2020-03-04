@@ -142,23 +142,23 @@ export default class NodeForm extends Component<INodeViewProps> {
                             data-cy='longitudeInput'
                         />
                     </div>
-                    <div className={s.flexRow}>
-                        <InputContainer
-                            type='date'
-                            label='MITTAUSPVM'
-                            value={node.measurementDate}
-                            disabled={isEditingDisabled}
-                            onChange={
-                                onChangeNodeProperty
-                                    ? onChangeNodeProperty('measurementDate')
-                                    : undefined
-                            }
-                            isClearButtonVisibleOnDates={true}
-                            isEmptyDateValueAllowed={true}
-                            validationResult={invalidPropertiesMap['measurementDate']}
-                            data-cy='measurementDate'
-                        />
-                        {node.type === NodeType.STOP && (
+                    {node.type === NodeType.STOP && (
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                type='date'
+                                label='MITTAUSPVM'
+                                value={node.measurementDate}
+                                disabled={isEditingDisabled}
+                                onChange={
+                                    onChangeNodeProperty
+                                        ? onChangeNodeProperty('measurementDate')
+                                        : undefined
+                                }
+                                isClearButtonVisibleOnDates={true}
+                                isEmptyDateValueAllowed={true}
+                                validationResult={invalidPropertiesMap['measurementDate']}
+                                data-cy='measurementDate'
+                            />
                             <Dropdown
                                 label='MITTAUSTAPA'
                                 disabled={isEditingDisabled}
@@ -171,8 +171,8 @@ export default class NodeForm extends Component<INodeViewProps> {
                                         : undefined
                                 }
                             />
-                        )}
-                    </div>
+                        </div>
+                    )}
                     {node.type === NodeType.STOP && (
                         <>
                             <div className={s.sectionHeader}>
