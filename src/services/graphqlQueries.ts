@@ -147,7 +147,7 @@ const getRoutePathsUsingLinkQuery = () => {
             }
         }
     }`;
-}
+};
 
 const getRoutePathsUsingNodeQuery = () => {
     return gql`query getRoutePathsUsingNode($nodeId: String) {
@@ -158,7 +158,7 @@ const getRoutePathsUsingNodeQuery = () => {
             }
         }
     }`;
-}
+};
 
 const getLinksByStartNodeQuery = () => {
     return gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
@@ -180,7 +180,7 @@ const getNetworkNodesFromPointQuery = () => {
                     soltunnus
                     geojson
                     geojsonManual
-                    transittypes
+                    transitTypes
                     dateRanges
                 }
             }
@@ -564,7 +564,7 @@ const nodeQueryFields = `
     geojson
     geojsonManual
     geojsonProjection
-    transittypes
+    transitTypes
     solotapa
     solkuka
     solviimpvm

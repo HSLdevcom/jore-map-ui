@@ -11,7 +11,7 @@ export default interface IExternalNode {
     solotapa?: string;
     mittpvm?: Date;
     pysakkiBySoltunnus?: IExternalStop;
-    transittypes: string;
+    transitTypes: string;
     geojson?: string;
     geojsonManual: string;
     geojsonProjection: string;

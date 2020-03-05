@@ -43,7 +43,7 @@ interface ILinkProperties {
 }
 
 interface INodeProperties {
-    transittypes: string;
+    transit_types: string;
     date_ranges?: string;
     soltyyppi: string;
     soltunnus: string;
@@ -127,7 +127,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             // Layer name 'solmu' is directly mirrored from Jore through geoserver
             solmu: (properties: INodeProperties) => {
                 const {
-                    transittypes: transitTypeCodes,
+                    transit_types: transitTypeCodes,
                     date_ranges: dateRangesString,
                     soltyyppi: nodeType,
                     soltunnus: nodeId

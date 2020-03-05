@@ -19,8 +19,8 @@ class NodeFactory {
             ...NodeFactory.createNodeBase(externalNode),
             coordinates,
             coordinatesProjection,
-            transitTypes: externalNode.transittypes
-                ? (externalNode.transittypes.split(',') as TransitType[])
+            transitTypes: externalNode.transitTypes
+                ? (externalNode.transitTypes.split(',') as TransitType[])
                 : [],
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
@@ -48,8 +48,8 @@ class NodeFactory {
         return {
             coordinates,
             id: externalNode.soltunnus,
-            transitTypes: externalNode.transittypes
-                ? (externalNode.transittypes.split(',') as TransitType[])
+            transitTypes: externalNode.transitTypes
+                ? (externalNode.transitTypes.split(',') as TransitType[])
                 : [],
             dateRanges: externalNode.dateRanges!
         };
