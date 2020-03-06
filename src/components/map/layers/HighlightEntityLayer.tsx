@@ -4,6 +4,7 @@ import { CircleMarker, Polyline } from 'react-leaflet';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
 import { HighlightEntityStore } from '~/stores/highlightEntityStore';
+import ArrowDecorator from './utils/ArrowDecorator';
 
 interface IHighlightEntityLayerProps {
     highlightEntityStore?: HighlightEntityStore;
@@ -34,12 +35,21 @@ export default class HighlightEntityLayer extends Component<IHighlightEntityLaye
     private renderLinks = () => {
         const links = this.props.highlightEntityStore!.links;
         return links.map((link: ILinkMapHighlight, index: number) => (
-            <Polyline
-                positions={link.geometry}
-                key={`linkHighlight-${index}`}
-                color={YELLOW}
-                weight={5}
-            />
+            <div key={`linkHighlight-${index}`}>
+                <Polyline
+                    positions={link.geometry}
+                    key={`linkHighlightPolyline-${index}`}
+                    color={YELLOW}
+                    weight={5}
+                />
+                <ArrowDecorator
+                    geometry={link.geometry}
+                    key={`linkHighlightArrowDecorator-${index}`}
+                    color={YELLOW}
+                    arrowGap={80}
+                    arrowSize={18}
+                />
+            </div>
         ));
     };
 
