@@ -174,7 +174,7 @@ class StopForm extends Component<IStopFormProps> {
             isEditingDisabled,
             stopAreas,
             stopSections,
-            hastusAreas: hastusAreaItems,
+            hastusAreas,
             stopInvalidPropertiesMap,
             nodeInvalidPropertiesMap,
             toggleTransitType,
@@ -183,7 +183,7 @@ class StopForm extends Component<IStopFormProps> {
             isReadOnly
         } = this.props;
         const stop = node.stop!;
-        const currentHastusArea = this.props.hastusAreas.find(
+        const currentHastusArea = hastusAreas.find(
             hastusArea => hastusArea.id === this.props.node!.stop!.hastusId
         );
         return (
@@ -260,7 +260,10 @@ class StopForm extends Component<IStopFormProps> {
                         {!isReadOnly && (
                             <>
                                 <Button
-                                    className={classnames(s.dropdownButton, !stop.stopAreaId ? s.dropdownButtonCentered : undefined)}
+                                    className={classnames(
+                                        s.dropdownButton,
+                                        !stop.stopAreaId ? s.dropdownButtonCentered : undefined
+                                    )}
                                     hasReverseColor={true}
                                     onClick={() => {
                                         this.redirectToStopArea(stop.stopAreaId);
@@ -270,7 +273,10 @@ class StopForm extends Component<IStopFormProps> {
                                     <FiInfo />
                                 </Button>
                                 <Button
-                                    className={classnames(s.dropdownButton, !stop.stopAreaId ? s.dropdownButtonCentered : undefined)}
+                                    className={classnames(
+                                        s.dropdownButton,
+                                        !stop.stopAreaId ? s.dropdownButtonCentered : undefined
+                                    )}
                                     hasReverseColor={true}
                                     onClick={() => this.redirectToNewStopArea()}
                                     type={ButtonType.SQUARE}
@@ -402,7 +408,7 @@ class StopForm extends Component<IStopFormProps> {
                     <div className={s.flexRow}>
                         <Dropdown
                             onChange={updateStopProperty!('hastusId')}
-                            items={this.createHastusAreaDropdownItems(hastusAreaItems)}
+                            items={this.createHastusAreaDropdownItems(hastusAreas)}
                             selected={stop.hastusId}
                             emptyItem={{
                                 value: '',
