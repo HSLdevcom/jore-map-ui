@@ -20,7 +20,6 @@ import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import RoutePathService from '~/services/routePathService';
-import StopService from '~/services/stopService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -217,6 +216,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const nodeStore = this.props.nodeStore!;
         const stopAreaIdQueryParam = navigator.getQueryParam(QueryParams.stopAreaId);
         const stopAreaId = stopAreaIdQueryParam ? stopAreaIdQueryParam[0] : undefined;
+
         if (stopAreaId) {
             if (nodeStore.node?.stop?.stopAreaId !== stopAreaId) {
                 nodeStore.setIsEditingDisabled(false);
@@ -296,28 +296,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
     };
-
-    private saveHastusArea = async ({ isNewHastusArea } : { isNewHastusArea: boolean }) => {
-        const nodeStore = this.props.nodeStore!;
-        try {
-            if (isNewHastusArea) {
-                await  StopService.createHastusArea({
-                    oldHastusArea: nodeStore.oldHastusArea!,
-                    newHastusArea: nodeStore.hastusArea
-                });
-            } else {
-                await StopService.updateHastusArea({
-                    oldHastusArea: nodeStore.oldHastusArea!,
-                    newHastusArea: nodeStore.hastusArea
-                });
-            }
-            this.initExistingNode(nodeStore.node.id);
-            nodeStore.setIsEditingDisabled(true);
-            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
-        } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-        }
-    }
 
     private showSavePrompt = () => {
         const nodeStore = this.props.nodeStore!;
@@ -521,7 +499,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                             onNodePropertyChange={this.onChangeNodeProperty}
                             isNewStop={isNewNode}
                             nodeInvalidPropertiesMap={invalidPropertiesMap}
-                            saveHastusArea={this.saveHastusArea}
                         />
                     )}
                     { !isNewNode &&
