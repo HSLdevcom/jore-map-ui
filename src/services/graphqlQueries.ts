@@ -654,6 +654,7 @@ const linkQueryFields = `
     lnkpituus
     katnimi
     katkunta
+    speed
     lnkkuka
     lnkviimpvm
     solmuByLnkalkusolmu {

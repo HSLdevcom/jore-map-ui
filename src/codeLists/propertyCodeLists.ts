@@ -53,6 +53,7 @@ const linkPropertyCodeList: ILinkPropertyCodeList = {
     geometry: 'GEOMETRIA',
     length: 'LASKETTU PITUUS (m)',
     measuredLength: 'MITATTU PITUUS (m)',
+    speed: 'NOPEUS (km/h)',
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM'
 };
