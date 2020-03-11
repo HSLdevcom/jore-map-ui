@@ -19,6 +19,7 @@ interface ILinkMapHighlight {
 interface ILink extends ILinkPrimaryKey {
     geometry: L.LatLng[];
     length: number;
+    speed: number;
     measuredLength?: number;
     modifiedBy?: string;
     modifiedOn?: Date;

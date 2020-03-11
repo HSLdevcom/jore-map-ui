@@ -110,7 +110,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             const bounds = L.latLngBounds(link.geometry);
             this.props.mapStore!.setMapBounds(bounds);
 
-            const routePaths = await RoutePathService.fetchRoutePathsUsingLink(link.startNode.id, link.endNode.id, link.transitType!);
+            const routePaths = await RoutePathService.fetchRoutePathsUsingLink(
+                link.startNode.id,
+                link.endNode.id,
+                link.transitType!
+            );
             this.setState({ routePathsUsingLink: routePaths });
         }
         this.setState({ isLoading: false });
@@ -317,6 +321,16 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                                 validationResult={invalidPropertiesMap['length']}
                             />
                         </div>
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                label='AJONOPEUS (km/h)'
+                                disabled={isEditingDisabled}
+                                value={link.speed}
+                                type='number'
+                                validationResult={invalidPropertiesMap['speed']}
+                                onChange={this.onChangeLinkProperty('speed')}
+                            />
+                        </div>
                         {!this.props.isNewLink && (
                             <div className={s.flexRow}>
                                 <TextContainer label='MUOKANNUT' value={link.modifiedBy} />
@@ -328,9 +342,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                             </div>
                         )}
                     </div>
-                    { !this.props.isNewLink &&
-                        <RoutePathList className={s.routePathSegmentList} topic={'Linkkiä käyttävät reitinsuunnat'} routePaths={this.state.routePathsUsingLink} />
-                    }
+                    {!this.props.isNewLink && (
+                        <RoutePathList
+                            className={s.routePathSegmentList}
+                            topic={'Linkkiä käyttävät reitinsuunnat'}
+                            routePaths={this.state.routePathsUsingLink}
+                        />
+                    )}
                 </div>
                 <div className={s.buttonBar}>
                     <Button

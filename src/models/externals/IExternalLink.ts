@@ -14,6 +14,7 @@ interface IExternalLink {
     lnkosnro: string;
     lnksuunta: string;
     lnkstid: string;
+    speed?: number;
     lnkkuka?: string;
     lnkviimpvm?: Date;
     dateRanges?: string;
