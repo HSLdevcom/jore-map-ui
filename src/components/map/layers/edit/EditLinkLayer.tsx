@@ -36,7 +36,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     componentDidMount() {
         this.linkListener = reaction(
             () => this.props.linkStore!.link,
-            () => this.props.linkStore!.link === null && this.removeOldLinks()
+            () => this.props.linkStore!.link === null && this.clearComponentState()
         );
         EventHelper.on('undo', this.props.linkStore!.undo);
         EventHelper.on('redo', this.props.linkStore!.redo);
@@ -52,12 +52,17 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         EventHelper.off('redo', this.props.linkStore!.redo);
     }
 
-    private removeOldLinks = () => {
+    private clearComponentState = () => {
+        const map = this.props.leaflet.map;
+        if (!map) return;
+
         // Remove (possible) previously drawn links from map
         this.editableLinks.forEach(editableLink => {
             editableLink.remove();
         });
         this.editableLinks = [];
+        map.off('editable:vertex:dragend');
+        map!.off('editable:vertex:deleted');
     };
 
     private drawEditableLink = () => {
@@ -65,17 +70,15 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         const map = this.props.leaflet.map;
         if (!map) return;
 
-        this.removeOldLinks();
+        this.clearComponentState();
         const isEditable =
             this.props.loginStore!.hasWriteAccess && this.props.linkStore!.isLinkGeometryEditable;
         this.drawLinkToMap(link, isEditable);
 
-        map.off('editable:vertex:dragend');
         map.on('editable:vertex:dragend', () => {
             this.updateLinkGeometry();
         });
 
-        map!.off('editable:vertex:deleted');
         map!.on('editable:vertex:deleted', (data: any) => {
             this.updateLinkGeometry();
         });
