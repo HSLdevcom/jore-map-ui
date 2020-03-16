@@ -8,7 +8,7 @@ describe('Search list tests', () => {
     });
 
     it('Can open all routes from searchList', () => {
-        cy.getTestElement('nodeToggle').click();
+        cy.getTestElement('lineToggle').click();
         cy.getTestElement('openAllRoutesButton')
             .first()
             .click();
@@ -16,7 +16,7 @@ describe('Search list tests', () => {
     });
 
     it('Can open stop from searchList', () => {
-        cy.getTestElement('lineToggle').click();
+        cy.getTestElement('nodeToggle').click();
         cy.getTestElement('lineSearch').click();
         cy.getTestElement('lineSearch').type('110');
 
@@ -24,5 +24,5 @@ describe('Search list tests', () => {
             .first()
             .click();
         cy.getTestElement('nodeView').should('exist');
-    })
+    });
 });
