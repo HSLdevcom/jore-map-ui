@@ -435,6 +435,7 @@ class StopForm extends Component<IStopFormProps> {
                                     onClick={this.openCreateHastusAreaModal}
                                     type={ButtonType.SQUARE}
                                     hasReverseColor={true}
+                                    data-cy='createHastusButton'
                                 >
                                     <IoIosAddCircleOutline />
                                 </Button>

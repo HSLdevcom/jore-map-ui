@@ -10,10 +10,10 @@ const openStop = () => {
     }
     cy.waitUntilLoadingFinishes();
     cy.getTestElement('nodeView').should('exist');
-}
+};
 
 const openCrossroad = () => {
-    cy.getTestElement('lineToggle').click();
+    cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
     cy.getTestElement('lineSearch').type('101');
 
@@ -21,10 +21,10 @@ const openCrossroad = () => {
         .first()
         .click();
     cy.getTestElement('nodeView').should('exist');
-}
+};
 
 const openMunicipality = () => {
-    cy.getTestElement('lineToggle').click();
+    cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
     cy.getTestElement('lineSearch').type('101');
 
@@ -32,7 +32,7 @@ const openMunicipality = () => {
         .first()
         .click();
     cy.getTestElement('nodeView').should('exist');
-}
+};
 
 describe('NodeView tests - read access user', () => {
     it('Can open node and close it to return home page', () => {
@@ -58,7 +58,7 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('editButton').click();
 
         cy.saveButtonShouldNotBeActive();
-        cy.getTestElement('measurementDate').type('1'); // Currently 1 sets whole date
+        cy.getTestElement('longitudeInput').type('24.952279');
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
@@ -73,7 +73,7 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('editButton').click();
 
         cy.saveButtonShouldNotBeActive();
-        cy.getTestElement('measurementDate').type('1'); // Currently 1 sets whole date
+        cy.getTestElement('longitudeInput').type('24.952279');
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
@@ -92,7 +92,10 @@ describe('NodeView tests - write access user', () => {
             .invoke('val')
             .then(value => {
                 const newInputValue = parseInt(value) + 1;
-                cy.getTestElement('elyNumber').find('[type=text]').clear().type(newInputValue);
+                cy.getTestElement('elyNumber')
+                    .find('[type=text]')
+                    .clear()
+                    .type(newInputValue);
 
                 cy.saveButtonShouldBeActive();
 
@@ -103,18 +106,18 @@ describe('NodeView tests - write access user', () => {
                 cy.waitUntilLoadingFinishes();
                 cy.getTestElement('elyNumber').contains(newInputValue);
             });
-
     });
 
     it('Can edit hastus-paikka', () => {
         cy.hslLoginWriteAccess();
         openStop();
 
-        cy.getTestElement('editHastusButton').click();
+        cy.getTestElement('createHastusButton').click();
         cy.getTestElement('hastusAreaForm').should('exist');
 
         cy.saveButtonShouldNotBeActive('confirmView');
-        cy.getTestElement('hastusNameInput').type('asd123');
+        cy.getTestElement('hastusIdInput').type('zxc123');
+        cy.getTestElement('hastusNameInput').type('zxc123');
         cy.saveButtonShouldBeActive('confirmView');
     });
 });
