@@ -48,9 +48,9 @@ const commonConstants = {
     SMALL_INT_MAX_VALUE: 32767, // Max value at PostgreSQL (2 bytes)
     MAP_LAYERS_MIN_ZOOM_LEVEL: 13,
     NEW_OBJECT_TAG: 'new-',
-    ADDRESS_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/search',
-    STREET_NAME_REVERSE_GEOCODING_URL: 'https://nominatim.openstreetmap.org/reverse',
-    POSTAL_NUMBER_REVERSE_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/reverse',
+    GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/search',
+    OSM_REVERSE_GEOCODING_URL: 'https://nominatim.openstreetmap.org/reverse',
+    DIGITRANSIT_REVERSE_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/reverse',
     ADDRESS_SEARCH_RESULT_COUNT: 10,
     LOCAL_STORAGE_KEY_PREFIX: `${environment}_jore_map_`
 };
