@@ -3,7 +3,7 @@
     "viewportWidth": 1366,
     "viewportHeight": 1200,
     "watchForFileChanges": true,
-    "defaultCommandTimeout": 4000,
+    "defaultCommandTimeout": 45000,
     "numTestsKeptInMemory": 0,
     "projectId": "4uoyq8",
     "env": {

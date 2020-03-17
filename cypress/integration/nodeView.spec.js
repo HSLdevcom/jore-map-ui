@@ -8,7 +8,6 @@ const openStop = () => {
     } else {
         cy.visit('node/1260105');
     }
-    cy.waitUntilLoadingFinishes();
     cy.getTestElement('nodeView').should('exist');
 };
 
@@ -58,7 +57,9 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('editButton').click();
 
         cy.saveButtonShouldNotBeActive();
-        cy.getTestElement('longitudeInput').type('24.952279');
+        cy.getTestElement('longitudeInput')
+            .clear()
+            .type('24.952279');
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
@@ -73,7 +74,10 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('editButton').click();
 
         cy.saveButtonShouldNotBeActive();
-        cy.getTestElement('longitudeInput').type('24.952279');
+        cy.getTestElement('longitudeInput')
+            .clear()
+            .type('24.952279');
+
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
@@ -88,12 +92,10 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('editButton').click();
 
         cy.getTestElement('elyNumber')
-            .find('[type=text]')
             .invoke('val')
             .then(value => {
                 const newInputValue = parseInt(value) + 1;
                 cy.getTestElement('elyNumber')
-                    .find('[type=text]')
                     .clear()
                     .type(newInputValue);
 
@@ -103,7 +105,6 @@ describe('NodeView tests - write access user', () => {
                 cy.getTestElement('savePromptView').should('exist');
                 cy.getTestElement('confirmButton').click();
 
-                cy.waitUntilLoadingFinishes();
                 cy.getTestElement('elyNumber').contains(newInputValue);
             });
     });
