@@ -293,7 +293,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     <TransitTypeLink
                                         transitType={transitType}
                                         shouldShowTransitTypeIcon={true}
-                                        text={route!.lineId}
+                                        text={route!.id}
                                         onClick={() => NavigationUtils.openLineView({ lineId: route!.lineId })}
                                         hoverText={`Avaa linja ${route!.lineId}`}
                                         data-cy='routeId'

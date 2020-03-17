@@ -1,7 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
-import { ICopySegmentLink, RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { IRoutePathSegmentLink } from '~/models/IRoutePathLink';
+import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import Marker from '../markers/Marker';
 
 interface IRoutePathCopySegmentLayerProps {
@@ -24,17 +25,15 @@ class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProp
         const highlightedRoutePath = copySegmentStore!.highlightedRoutePath;
         if (!highlightedRoutePath || !startNode || !endNode) return null;
 
-        const startNodeId = startNode.nodeId;
-        const endNodeId = endNode.nodeId;
         const segmentsToCopy = copySegmentStore!.getSegmentLinksToCopy(
             highlightedRoutePath,
-            startNodeId,
-            endNodeId
+            startNode.id,
+            endNode.id
         );
         const segmentsNotToCopy = copySegmentStore!.getSegmentLinksNotToCopy(
             highlightedRoutePath,
-            startNodeId,
-            endNodeId
+            startNode.id,
+            endNode.id
         );
         return (
             <>
@@ -46,7 +45,7 @@ class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProp
         );
     };
 
-    private renderCopySegmentLink = (color: string) => (link: ICopySegmentLink) => {
+    private renderCopySegmentLink = (color: string) => (link: IRoutePathSegmentLink) => {
         return (
             <Polyline
                 positions={link.geometry}
@@ -66,14 +65,14 @@ class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProp
             <>
                 {startNode && (
                     <Marker
-                        latLng={startNode!.geometry}
+                        latLng={startNode!.coordinates}
                         color={START_MARKER_COLOR}
                         isClickDisabled={true}
                     />
                 )}
                 {endNode && (
                     <Marker
-                        latLng={endNode!.geometry}
+                        latLng={endNode!.coordinates}
                         color={END_MARKER_COLOR}
                         isClickDisabled={true}
                     />

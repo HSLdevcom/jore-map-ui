@@ -72,7 +72,7 @@ class NodeStore {
             () => this._node && this._node.stop && this._node.stop.stopAreaId,
             (value: string) => this.onStopAreaChange(value)
         );
-        reaction(() => this._stopAreas, () => this.onstopAreasChange());
+        reaction(() => this._stopAreas, () => this.onStopAreasChange());
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
@@ -340,7 +340,9 @@ class NodeStore {
             this._node!.stop = stop;
             this._stopValidationStore.init(stop, stopValidationModel);
         } else {
+            // Only node which type is stop has measurementType and measurementDate, remove them if type is not stop
             this.updateNodeProperty('measurementType', '');
+            this.updateNodeProperty('measurementDate', '');
         }
     };
 
@@ -459,7 +461,7 @@ class NodeStore {
     };
 
     @action
-    private onstopAreasChange = () => {
+    private onStopAreasChange = () => {
         const stopAreaId = this.node && this.node.stop && this.node.stop.stopAreaId;
         if (stopAreaId) {
             this.updateStopArea(stopAreaId);

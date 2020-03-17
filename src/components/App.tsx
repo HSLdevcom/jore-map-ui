@@ -4,7 +4,6 @@ import { syncHistoryWithStore } from 'mobx-react-router';
 import React from 'react';
 import { matchPath, Router, Switch } from 'react-router';
 import { Route } from 'react-router-dom';
-import constants from '~/constants/constants';
 import EndpointPath from '~/enums/endpointPath';
 import LocalStorageHelper from '~/helpers/LocalStorageHelper';
 import navigator from '~/routing/navigator';
@@ -57,7 +56,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private initLogin = async () => {
         const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
-        if (!isAfterLogin && constants.IS_LOGIN_REQUIRED) {
+        if (!isAfterLogin) {
             const response = (await HttpUtils.getRequest(
                 EndpointPath.EXISTING_SESSION
             )) as IAuthorizationResponse;

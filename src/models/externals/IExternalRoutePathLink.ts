@@ -2,7 +2,7 @@ import TransitType from '~/enums/transitType';
 import IExternalLink from './IExternalLink';
 import IExternalNode from './IExternalNode';
 
-export default interface IExternalRoutePathLink {
+interface IExternalRoutePathLink {
     linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu: IExternalLink;
     solmuByLnkalkusolmu: IExternalNode;
     solmuByLnkloppusolmu: IExternalNode;
@@ -21,3 +21,21 @@ export default interface IExternalRoutePathLink {
     relkuka?: string;
     relviimpvm?: Date;
 }
+
+interface IExternalRoutePathSegmentLink {
+    reitunnus: string;
+    suusuunta: string;
+    suuvoimast: Date;
+    relid: number;
+    reljarjnro: number;
+    lnkalkusolmu: string;
+    lnkloppusolmu: string;
+    suuvoimviimpvm: Date;
+    suulahpaik: string;
+    suupaapaik: string;
+    geom: string;
+}
+
+export default IExternalRoutePathLink;
+
+export { IExternalRoutePathSegmentLink };

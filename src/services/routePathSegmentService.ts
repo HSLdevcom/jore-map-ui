@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import RoutePathCopySegmentFactory from '~/factories/routePathCopySegmentFactory';
 import ApolloClient from '~/helpers/ApolloClient';
-import { ICopySegmentRoutePath } from '~/stores/routePathCopySegmentStore';
+import { IRoutePathSegment } from '~/models/IRoutePath';
 import GraphqlQueries from './graphqlQueries';
 
 class RoutePathSegmentService {
@@ -9,7 +9,7 @@ class RoutePathSegmentService {
         startNodeId: string,
         endNodeId: string,
         transitType: string
-    ): Promise<ICopySegmentRoutePath[]> => {
+    ): Promise<IRoutePathSegment[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathSegmentQuery(),
             variables: { startNodeId, endNodeId, transitType }

@@ -59,16 +59,14 @@ const developmentConstants = {
     ...commonConstants,
     API_URL: 'http://localhost:3040',
     GEOSERVER_URL: 'http://localhost:8080/geoserver',
-    FADE_ALERT_TIMEOUT: 500, // milliseconds
-    IS_LOGIN_REQUIRED: true
+    FADE_ALERT_TIMEOUT: 500 // milliseconds
 };
 
 const productionConstants = {
     ...commonConstants,
     API_URL: `${APP_URL}/api`,
     GEOSERVER_URL: `${APP_URL}/geoserver`,
-    FADE_ALERT_TIMEOUT: 2500, // milliseconds
-    IS_LOGIN_REQUIRED: true // set always true in production
+    FADE_ALERT_TIMEOUT: 2500 // milliseconds
 };
 
 const isDevelopment = process.env.NODE_ENV === 'development';

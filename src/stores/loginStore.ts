@@ -1,5 +1,4 @@
 import { action, computed, observable } from 'mobx';
-import constants from '~/constants/constants';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
@@ -19,12 +18,12 @@ class LoginStore {
 
     @computed
     get isAuthenticated() {
-        return this._isAuthenticated || !constants.IS_LOGIN_REQUIRED;
+        return this._isAuthenticated;
     }
 
     @computed
     get hasWriteAccess() {
-        return this._hasWriteAccess || !constants.IS_LOGIN_REQUIRED;
+        return this._hasWriteAccess;
     }
 
     @computed

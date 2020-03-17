@@ -1,0 +1,90 @@
+@import './styles/common';
+
+.routePathList {
+    display: flex;
+    flex-direction: column;
+
+    .topic {
+        font-weight: bold;
+        font-size: $mediumFontSize;
+    }
+
+    .routePathRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px 5px 5px 10px;
+        border-bottom: 1px solid #dddddd;
+
+        .itemContainerOnRight {
+            display: flex;
+            align-items: center;
+
+            .transitTypeIcon {
+                display: flex;
+                padding-right: 10px;
+            }
+
+            .direction {
+                padding-right: 10px;
+            }
+
+            .timestampRow {
+                font-size: $smallFontSize;
+            }
+        }
+
+        .icon {
+            display: flex;
+            color: #007ac9;
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+            cursor: pointer;
+            border-width: 1px;
+            border-style: solid;
+            border-color: #e2e2e2;
+            padding: 3px;
+            transition: 0.5s;
+            height: 24px;
+            margin: 2px;
+        }
+
+        .icon:hover {
+            transition: 0.5s;
+            background-color: $backgroundHoverColor;
+        }
+    }
+    .routePathRow:last-of-type {
+        border: none;
+    }
+
+    .noSearchResultsText {
+        padding-top: 10px;
+    }
+
+    .toggleAllRoutePathsVisibleButton {
+        text-align: center;
+        padding: 10px;
+        cursor: pointer;
+        .toggleAllRoutePathsVisibleText {
+            color: $busBlue;
+            text-decoration: underline;
+        }
+        .threeDots {
+            position: relative;
+            top: -8px;
+            color: $fontColorDefault;
+            letter-spacing: 5px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 0.5;
+        }
+    }
+
+    .toggleAllRoutePathsVisibleButton:hover {
+        .toggleAllRoutePathsVisibleText {
+            color: darken($busBlue, 10);
+        }
+    }
+}

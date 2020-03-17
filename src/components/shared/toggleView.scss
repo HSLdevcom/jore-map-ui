@@ -21,6 +21,7 @@
             padding: 5px 10px 5px 10px;
             transition: 0.5s;
             line-height: 30px;
+            opacity: 0.8;
 
             > svg {
                 font-size: 25px;
@@ -33,6 +34,7 @@
 
         .active {
             background-color: #027ac9;
+            opacity: 1;
         }
     }
 

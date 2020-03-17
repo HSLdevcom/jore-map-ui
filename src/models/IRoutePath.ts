@@ -1,5 +1,5 @@
 import TransitType from '~/enums/transitType';
-import IRoutePathLink from './IRoutePathLink';
+import IRoutePathLink, { IRoutePathSegmentLink } from './IRoutePathLink';
 
 interface IRoutePathPrimaryKey {
     routeId: string;
@@ -11,11 +11,11 @@ interface IViewOnlyRoutePathProperties {
     internalId: string;
     color?: string;
     visible: boolean;
-    transitType: TransitType;
-    lineId: string;
+    transitType?: TransitType;
+    lineId?: string;
 }
 
-export default interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties {
+interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties {
     routePathLinks: IRoutePathLink[];
     name: string;
     nameSw: string;
@@ -34,4 +34,13 @@ export default interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoute
     modifiedBy?: string;
 }
 
-export { IRoutePathPrimaryKey, IViewOnlyRoutePathProperties };
+interface IRoutePathSegment extends IRoutePathPrimaryKey {
+    endTime: Date;
+    originFi: string;
+    destinationFi: string;
+    links: IRoutePathSegmentLink[];
+}
+
+export default IRoutePath;
+
+export { IRoutePathPrimaryKey, IViewOnlyRoutePathProperties, IRoutePathSegment };

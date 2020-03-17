@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import constants from '~/constants/constants';
-import { IRoutePathLink } from '~/models';
+import IRoutePathLink from '~/models/IRoutePathLink';
 
 /**
  *    Tries to merge polylines where they connect,

@@ -6,7 +6,7 @@ interface IRoutePathLinkPrimaryKey {
     id: string;
 }
 
-export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
+interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     geometry: L.LatLng[];
     orderNumber: number;
     transitType: TransitType;
@@ -28,4 +28,14 @@ export default interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     destinationSw2?: string;
 }
 
-export { IRoutePathLinkPrimaryKey };
+interface IRoutePathSegmentLink {
+    geometry: L.LatLng[];
+    startNodeId: string;
+    endNodeId: string;
+    orderNumber: number;
+    routePathLinkId: number;
+}
+
+export default IRoutePathLink
+
+export { IRoutePathLinkPrimaryKey, IRoutePathSegmentLink };

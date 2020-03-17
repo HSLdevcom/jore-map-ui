@@ -18,7 +18,7 @@ class SearchStore {
             TransitType.TRAM
         ];
         this._isSearchingForLines = true;
-        this._isSearchingForNodes = true;
+        this._isSearchingForNodes = false;
         this._isSearchDisabled = false;
     }
 
@@ -54,12 +54,14 @@ class SearchStore {
 
     @action
     public toggleIsSearchingForLines() {
-        this._isSearchingForLines = !this._isSearchingForLines;
+        this._isSearchingForLines = true;
+        this._isSearchingForNodes = false;
     }
 
     @action
     public toggleIsSearchingForNodes() {
-        this._isSearchingForNodes = !this.isSearchingForNodes;
+        this._isSearchingForNodes = true;
+        this._isSearchingForLines = false;
     }
 
     @action

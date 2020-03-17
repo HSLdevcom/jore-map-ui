@@ -3,7 +3,6 @@
 .nodeItem {
     display: flex;
     align-items: center;
-    color: #5a5a5a;
     cursor: pointer;
     padding: 5px 10px 5px 10px;
     border-radius: 4px;
@@ -15,17 +14,17 @@
 
     .nodeItemTextContainer {
         font-size: 1.2rem;
-        font-weight: 600;
         display: flex;
         width: 100%;
 
         > span {
+            color: #5a5a5a;
+            font-weight: bold;
             width: 120px;
         }
 
         > div {
             font-size: 14px;
-            color: #5a5a5a;
             margin: auto;
             flex-grow: 1;
         }

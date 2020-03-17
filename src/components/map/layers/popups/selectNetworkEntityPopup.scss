@@ -5,11 +5,22 @@
     font-size: 14px;
 
     .row {
+        display: flex;
         cursor: pointer;
         white-space: nowrap;
         color: #212121;
         background-color: $backgroundlightGrey;
         padding: 5px;
+        align-items: center;
+
+        .nodeIcon {
+            display: flex;
+            font-size: 24px;
+        }
+
+        .linkText {
+            padding-left: 5px;
+        }
     }
     .row:hover {
         background-color: $lightGrey;

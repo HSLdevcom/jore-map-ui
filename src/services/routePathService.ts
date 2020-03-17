@@ -28,7 +28,10 @@ class RoutePathService {
             fetchPolicy: 'no-cache'
         });
         const externalRoutePath: IExternalRoutePath | null = queryResult.data.routePath;
-        return externalRoutePath ? RoutePathFactory.mapExternalRoutePath(externalRoutePath) : null;
+        if (!externalRoutePath) return null;
+        const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+        const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+        return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
     };
 
     public static fetchFirstAndLastStopNamesOfRoutePath = async (
@@ -82,9 +85,11 @@ class RoutePathService {
                 date
             }
         });
-        return queryResult.data.routePaths.nodes.map((externalRp: IExternalRoutePath) =>
-            RoutePathFactory.mapExternalRoutePath(externalRp)
-        );
+        return queryResult.data.routePaths.nodes.map((externalRoutePath: IExternalRoutePath) => {
+            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            return RoutePathFactory.mapExternalRoutePath(externalRoutePath,lineId, transitType);
+        });
     };
 
     public static updateRoutePath = async (routePath: IRoutePath) => {
@@ -107,6 +112,37 @@ class RoutePathService {
         )) as IRoutePathPrimaryKey;
         return response;
     };
+
+    public static fetchRoutePathsUsingLink = async (
+        startNodeId: string,
+        endNodeId: string,
+        transitType: string
+    ): Promise<IRoutePath[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getRoutePathsUsingLinkQuery(),
+            variables: { startNodeId, endNodeId, transitType }
+        });
+
+        const externalRoutePathLinks: IExternalRoutePath[] = queryResult.data.get_route_paths_using_link.nodes;
+        return externalRoutePathLinks.map((externalRoutePath: IExternalRoutePath) => {
+            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+        });
+    };
+
+    public static fetchRoutePathsUsingNode = async (nodeId: string): Promise<IRoutePath[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getRoutePathsUsingNodeQuery(),
+            variables: { nodeId }
+        });
+        const externalRoutePaths: IExternalRoutePath[] = queryResult.data.get_route_paths_using_node.nodes;
+        return externalRoutePaths.map((externalRoutePath: IExternalRoutePath) => {
+            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+        });
+    }
 }
 
 const _getViaNames = (routePath: IRoutePath) => {
