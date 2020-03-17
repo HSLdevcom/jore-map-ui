@@ -1,10 +1,6 @@
 describe('Map tests - read access user', () => {
     beforeEach(() => {
         cy.hslLoginReadAccess();
-        cy.getTestElement('authInfo').should('exist');
-        cy.getTestElement('lineSearch').should('exist');
-
-        cy.waitUntilLoadingFinishes();
     });
 
     it('Can open a node from map', () => {

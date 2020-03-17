@@ -359,7 +359,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         });
     };
 
-    private onNodeGeometryChange = (property: NodeLocationType, value: any) => {
+    private onChangeNodeGeometry = (property: NodeLocationType) => (value: L.LatLng) => {
         this.props.nodeStore!.updateNodeGeometry(property, value);
     };
 
@@ -403,38 +403,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             }
         }
     }
-
-    private latChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
-        value: string
-    ) => {
-        const lat = Number(value);
-        if (lat === previousLatLng.lat) return;
-        let latLng;
-        try {
-            latLng = new L.LatLng(lat, previousLatLng.lng);
-        } catch (e) {
-            latLng = null;
-        }
-        if (latLng) {
-            this.onNodeGeometryChange(coordinateType, latLng);
-        }
-    };
-
-    private lngChange = (previousLatLng: L.LatLng, coordinateType: NodeLocationType) => (
-        value: string
-    ) => {
-        const lng = Number(value);
-        if (lng === previousLatLng.lng) return;
-        let latLng;
-        try {
-            latLng = new L.LatLng(previousLatLng.lat, lng);
-        } catch (e) {
-            latLng = null;
-        }
-        if (latLng) {
-            this.onNodeGeometryChange(coordinateType, latLng);
-        }
-    };
 
     private toggleTransitType = async (type: TransitType) => {
         const nodeStore = this.props.nodeStore!;
@@ -486,10 +454,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         nodeIdSuffixOptions={this.state.nodeIdSuffixOptions}
                         isNodeIdSuffixQueryLoading={this.state.isNodeIdSuffixQueryLoading}
                         onChangeNodeId={this.onChangeNodeId}
+                        onChangeNodeGeometry={this.onChangeNodeGeometry}
                         onChangeNodeProperty={this.onChangeNodeProperty}
                         onChangeNodeType={this.onChangeNodeType}
-                        lngChange={this.lngChange}
-                        latChange={this.latChange}
                     />
                     {node.type === NodeType.STOP && node.stop && (
                         <StopView

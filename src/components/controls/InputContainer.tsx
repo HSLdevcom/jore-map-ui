@@ -27,55 +27,6 @@ interface IInputProps {
     onFocus?: () => void;
 }
 
-const renderEditableContent = (props: IInputProps) => {
-    const type = props.type || 'text';
-    const validationResult = props.validationResult;
-    const onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        let value = e.currentTarget.value;
-        if (props.type === 'number') {
-            const parsedValue = parseFloat(value);
-            props.onChange!(!isNaN(parsedValue) ? parsedValue : null);
-        } else {
-            if (props.capitalizeInput) {
-                value = value.toUpperCase();
-            }
-            props.onChange!(value);
-        }
-    };
-
-    if (type === 'date') {
-        return (
-            <DatePicker
-                value={props.value! as Date}
-                onChange={props.onChange!}
-                isClearButtonVisible={props.isClearButtonVisibleOnDates}
-                isEmptyValueAllowed={props.isEmptyDateValueAllowed}
-                onFocus={props.onFocus}
-            />
-        );
-    }
-
-    return (
-        <input
-            placeholder={props.disabled ? '' : props.placeholder}
-            type={props.type === 'number' ? 'number' : 'text'}
-            className={classnames(
-                s.staticHeight,
-                s.inputField,
-                props.disabled ? s.disabled : null,
-                validationResult && !validationResult.isValid ? s.invalidInput : null
-            )}
-            value={
-                props.value !== null && props.value !== undefined
-                    ? (props.value as string | number)
-                    : ''
-            }
-            onChange={onChange}
-            onFocus={props.onFocus}
-        />
-    );
-};
-
 const InputContainer = observer((props: IInputProps) => {
     const {
         label,
@@ -85,7 +36,7 @@ const InputContainer = observer((props: IInputProps) => {
         className,
         disabled,
         value,
-        type,
+        type = 'text',
         isEmptyDateValueAllowed,
         capitalizeInput,
         isInputColorRed,
@@ -109,14 +60,57 @@ const InputContainer = observer((props: IInputProps) => {
             />
         );
     }
+
+    const onTextChange = (e: React.FormEvent<HTMLInputElement>) => {
+        let value = e.currentTarget.value;
+        if (props.type === 'number') {
+            const parsedValue = parseFloat(value);
+            props.onChange!(!isNaN(parsedValue) ? parsedValue : null);
+        } else {
+            if (props.capitalizeInput) {
+                value = value.toUpperCase();
+            }
+            props.onChange!(value);
+        }
+    };
+
     return (
-        <div className={classnames(s.formItem, className)} {...attrs}>
+        <div className={classnames(s.formItem, className)}>
             {label && (
                 <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
                     {label}
                 </div>
             )}
-            {renderEditableContent(props)}
+
+            {type === 'date' ? (
+                <DatePicker
+                    value={props.value! as Date}
+                    onChange={props.onChange!}
+                    isClearButtonVisible={props.isClearButtonVisibleOnDates}
+                    isEmptyValueAllowed={props.isEmptyDateValueAllowed}
+                    onFocus={props.onFocus}
+                />
+            ) : (
+                <input
+                    placeholder={props.disabled ? '' : props.placeholder}
+                    type={props.type}
+                    className={classnames(
+                        s.staticHeight,
+                        s.inputField,
+                        props.disabled ? s.disabled : null,
+                        validationResult && !validationResult.isValid ? s.invalidInput : null
+                    )}
+                    value={
+                        props.value !== null && props.value !== undefined
+                            ? (props.value as string | number)
+                            : ''
+                    }
+                    onChange={onTextChange}
+                    onFocus={props.onFocus}
+                    {...attrs}
+                />
+            )}
+
             {validationResult && validationResult.errorMessage && (
                 <div className={s.errorMessage}>{validationResult.errorMessage}</div>
             )}

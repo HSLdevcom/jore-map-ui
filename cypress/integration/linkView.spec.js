@@ -8,7 +8,6 @@ const openLink = () => {
     } else {
         cy.visit('link/1260011,1260105,1');
     }
-    cy.waitUntilLoadingFinishes();
     cy.getTestElement('linkView').should('exist');
 };
 
@@ -36,11 +35,12 @@ describe('LinkView tests - write access user', () => {
         cy.getTestElement('editButton').click();
 
         cy.getTestElement('measuredLength')
-            .find('[type=number]')
             .invoke('val')
             .then(value => {
                 const newInputValue = parseInt(value) + 1;
-                cy.getTestElement('measuredLength').find('[type=number]').clear().type(newInputValue);
+                cy.getTestElement('measuredLength')
+                    .clear()
+                    .type(newInputValue);
 
                 cy.saveButtonShouldBeActive();
 
@@ -48,7 +48,6 @@ describe('LinkView tests - write access user', () => {
                 cy.getTestElement('savePromptView').should('exist');
                 cy.getTestElement('confirmButton').click();
 
-                cy.waitUntilLoadingFinishes();
                 cy.getTestElement('measuredLength').contains(newInputValue);
             });
     });
