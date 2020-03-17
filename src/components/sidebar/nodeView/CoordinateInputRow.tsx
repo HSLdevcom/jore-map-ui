@@ -53,16 +53,15 @@ class CoordinateInputRow extends React.Component<
     };
 
     render() {
-        const { isEditingDisabled, label } = this.props;
+        const { isEditingDisabled, label, coordinates } = this.props;
 
-        const latLng = new L.LatLng(this.state.lat, this.state.lng);
-        const validationResult = FormValidator.validateProperty('latLngValidator', latLng);
+        const validationResult = FormValidator.validateProperty('latLngValidator', coordinates);
         return (
             <>
                 {label}
                 <div className={s.flexRow}>
                     <InputContainer
-                        value={this.state.lat}
+                        value={coordinates.lat}
                         type='number'
                         onChange={this.onLatChange}
                         label='LATITUDE'
@@ -70,7 +69,7 @@ class CoordinateInputRow extends React.Component<
                         validationResult={validationResult}
                     />
                     <InputContainer
-                        value={this.state.lng}
+                        value={coordinates.lng}
                         type='number'
                         onChange={this.onLngChange}
                         label='LONGITUDE'
