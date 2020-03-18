@@ -336,11 +336,8 @@ class NodeStore {
             coordinates,
             searchResultCount: 1
         });
-        let municipality = '';
-        if (features && features[0]) {
-            const properties = features[0].properties;
-            municipality = properties.locality ? properties.locality : properties.localadmin;
-        }
+        const municipality =
+            features && features[0] ? features[0].properties.localadmin : undefined;
         const municipalityDropdownItems = CodeListStore.getDropdownItemList('Kunta (KELA)');
         const municipalityCode = municipalityDropdownItems.find(
             municipalityDropdownItem => municipalityDropdownItem.label === municipality
