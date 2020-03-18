@@ -47,6 +47,21 @@ interface IStopFormProps {
     nodeStore?: NodeStore;
 }
 
+// Key: node id beginning, value: short id options array
+const SHORT_ID_OPTIONS_MAP = {
+    1: ['H', 'XH'],
+    2: ['E', 'XE'],
+    3: ['Ka'],
+    4: ['V', 'XV'],
+    6: ['Ki'],
+    90: ['Ke'],
+    91: ['Ke'],
+    92: ['Si'],
+    93: ['Po'],
+    94: ['Pn'],
+    95: ['Jä']
+};
+
 @inject('codeListStore', 'confirmStore', 'nodeStore')
 @observer
 class StopForm extends Component<IStopFormProps> {
@@ -60,10 +75,27 @@ class StopForm extends Component<IStopFormProps> {
         });
     };
 
-    private getShortIdLetterItems = () => {
-        const shortIdLetterItems = this.props.codeListStore!.getDropdownItemList('Lyhyttunnus');
-        shortIdLetterItems.forEach(item => (item.label = `${item.value} - ${item.label}`));
-        return shortIdLetterItems;
+    private getShortIdLetterDropdownItems = (nodeId: string) => {
+        const dropdownItems: IDropdownItem[] = [];
+        for (const nodeIdBeginning in SHORT_ID_OPTIONS_MAP) {
+            if (Object.prototype.hasOwnProperty.call(SHORT_ID_OPTIONS_MAP, nodeIdBeginning)) {
+                if (nodeId.startsWith(nodeIdBeginning)) {
+                    const nodeIdOptions = SHORT_ID_OPTIONS_MAP[nodeIdBeginning];
+                    nodeIdOptions.forEach((nodeIdOption: string) => {
+                        const codeListLabel = this.props.codeListStore!.getCodeListLabel(
+                            'Lyhyttunnus',
+                            nodeIdOption
+                        );
+                        const dropdownItem = {
+                            value: nodeIdOption,
+                            label: `${nodeIdOption} - ${codeListLabel}`
+                        };
+                        dropdownItems.push(dropdownItem);
+                    });
+                }
+            }
+        }
+        return dropdownItems;
     };
 
     private onShortIdLetterChange = (value: string) => {
@@ -216,7 +248,7 @@ class StopForm extends Component<IStopFormProps> {
                                 value: '',
                                 label: ''
                             }}
-                            items={this.getShortIdLetterItems()}
+                            items={this.getShortIdLetterDropdownItems(node.id)}
                         />
                         <ShortIdInput
                             node={node}
