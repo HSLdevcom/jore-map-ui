@@ -202,7 +202,6 @@ class StopForm extends Component<IStopFormProps> {
     render() {
         const {
             node,
-            isNewStop,
             isTransitToggleButtonBarVisible,
             isEditingDisabled,
             stopAreas,
@@ -242,7 +241,7 @@ class StopForm extends Component<IStopFormProps> {
                         <Dropdown
                             label='LYHYTTUNNUS (2 kirj.'
                             onChange={this.onShortIdLetterChange}
-                            disabled={isEditingDisabled || !isNewStop}
+                            disabled={isEditingDisabled}
                             selected={node.shortIdLetter}
                             emptyItem={{
                                 value: '',
