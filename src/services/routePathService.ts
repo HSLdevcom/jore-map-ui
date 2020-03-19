@@ -1,10 +1,12 @@
 import { ApolloQueryResult } from 'apollo-client';
+import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import NodeType from '~/enums/nodeType';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath, IViaName } from '~/models';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import { IRoutePathPrimaryKey, IRoutePathSaveModel } from '~/models/IRoutePath';
+import IRoutePathLink, { IRoutePathLinkSaveModel } from '~/models/IRoutePathLink';
 import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
@@ -92,23 +94,16 @@ class RoutePathService {
         });
     };
 
-    public static updateRoutePath = async (routePath: IRoutePath) => {
-        const requestBody = {
-            routePath,
-            viaNames: _getViaNames(routePath)
-        };
-
-        await HttpUtils.updateObject(EndpointPath.ROUTEPATH, requestBody);
+    public static updateRoutePath = async (newRoutePath: IRoutePath, oldRoutePath: IRoutePath) => {
+        const routePathSaveModel = _createRoutePathSaveModel(_.cloneDeep(newRoutePath), _.cloneDeep(oldRoutePath));
+        await HttpUtils.updateObject(EndpointPath.ROUTEPATH, routePathSaveModel);
     };
 
-    public static createRoutePath = async (routePath: IRoutePath) => {
-        const requestBody = {
-            routePath,
-            viaNames: _getViaNames(routePath)
-        };
+    public static createRoutePath = async (newRoutePath: IRoutePath) => {
+        const routePathSaveModel = _createRoutePathSaveModel(_.cloneDeep(newRoutePath), null);
         const response = (await HttpUtils.createObject(
             EndpointPath.ROUTEPATH,
-            requestBody
+            routePathSaveModel
         )) as IRoutePathPrimaryKey;
         return response;
     };
@@ -143,6 +138,55 @@ class RoutePathService {
             return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
         });
     }
+}
+
+const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRoutePath | null): IRoutePathSaveModel => {
+    const added: IRoutePathLink[] = [];
+    const modified: IRoutePathLink[] = [];
+    const removed: IRoutePathLink[] = [];
+    newRoutePath.routePathLinks.forEach(rpLink => {
+        const foundOldRoutePathLink = oldRoutePath ? _findRoutePathLink(oldRoutePath, rpLink) : null;
+        if (foundOldRoutePathLink) {
+            const isModified = !_.isEqual(foundOldRoutePathLink, rpLink);
+            // If a routePathLink is found from both newRoutePath and oldRoutePath and it has modifications, add to modified [] list
+            if (isModified) {
+                modified.push(rpLink);
+            }
+        } else {
+             // If a routePathLink is found from newRoutePath but not in oldRoutePath, add it to added [] list
+            added.push(rpLink);
+        }
+    });
+    oldRoutePath?.routePathLinks.forEach(rpLink => {
+        const routePathLink = _findRoutePathLink(newRoutePath, rpLink);
+        if (!routePathLink) {
+            // If a routePathLink from oldRoutePath is not found from newRoutePath, add it to removed [] list
+            removed.push(rpLink);
+        }
+    });
+
+    const routePathLinkSaveModel: IRoutePathLinkSaveModel = {
+        added,
+        modified,
+        removed,
+    }
+
+    const routePathToSave = {
+        ...newRoutePath
+    };
+    delete routePathToSave['routePathLinks'];
+
+    return {
+        routePathLinkSaveModel,
+        routePath: routePathToSave,
+        viaNames: _getViaNames(newRoutePath)
+    }
+}
+
+const _findRoutePathLink = (routePath: IRoutePath, routePathLink: IRoutePathLink): IRoutePathLink | undefined => {
+    return routePath.routePathLinks.find(rpLink => {
+        return rpLink.startNode.id === routePathLink.startNode.id && rpLink.endNode.id === routePathLink.endNode.id;
+    })
 }
 
 const _getViaNames = (routePath: IRoutePath) => {

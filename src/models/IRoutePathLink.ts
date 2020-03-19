@@ -36,6 +36,12 @@ interface IRoutePathSegmentLink {
     routePathLinkId: number;
 }
 
-export default IRoutePathLink
+interface IRoutePathLinkSaveModel {
+    added: IRoutePathLink[];
+    modified: IRoutePathLink[];
+    removed: IRoutePathLink[];
+}
 
-export { IRoutePathLinkPrimaryKey, IRoutePathSegmentLink };
+export default IRoutePathLink;
+
+export { IRoutePathLinkPrimaryKey, IRoutePathSegmentLink, IRoutePathLinkSaveModel };
