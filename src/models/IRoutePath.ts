@@ -1,5 +1,5 @@
 import TransitType from '~/enums/transitType';
-import IRoutePathLink, { IRoutePathSegmentLink } from './IRoutePathLink';
+import IRoutePathLink, { IRoutePathLinkSaveModel, IRoutePathSegmentLink } from './IRoutePathLink';
 
 interface IRoutePathPrimaryKey {
     routeId: string;
@@ -41,6 +41,16 @@ interface IRoutePathSegment extends IRoutePathPrimaryKey {
     links: IRoutePathSegmentLink[];
 }
 
+interface IRoutePathSaveModel {
+    routePath: Omit<IRoutePath, 'routePathLinks'>;
+    routePathLinkSaveModel: IRoutePathLinkSaveModel;
+}
+
 export default IRoutePath;
 
-export { IRoutePathPrimaryKey, IViewOnlyRoutePathProperties, IRoutePathSegment };
+export {
+    IRoutePathPrimaryKey,
+    IViewOnlyRoutePathProperties,
+    IRoutePathSegment,
+    IRoutePathSaveModel
+};

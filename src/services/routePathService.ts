@@ -1,10 +1,12 @@
 import { ApolloQueryResult } from 'apollo-client';
+import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import NodeType from '~/enums/nodeType';
 import ApolloClient from '~/helpers/ApolloClient';
-import { IRoutePath, IViaName } from '~/models';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
+import { IRoutePath } from '~/models';
+import { IRoutePathPrimaryKey, IRoutePathSaveModel } from '~/models/IRoutePath';
+import IRoutePathLink, { IRoutePathLinkSaveModel } from '~/models/IRoutePathLink';
 import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
@@ -92,23 +94,16 @@ class RoutePathService {
         });
     };
 
-    public static updateRoutePath = async (routePath: IRoutePath) => {
-        const requestBody = {
-            routePath,
-            viaNames: _getViaNames(routePath)
-        };
-
-        await HttpUtils.updateObject(EndpointPath.ROUTEPATH, requestBody);
+    public static updateRoutePath = async (newRoutePath: IRoutePath, oldRoutePath: IRoutePath) => {
+        const routePathSaveModel = _createRoutePathSaveModel(_.cloneDeep(newRoutePath), _.cloneDeep(oldRoutePath));
+        await HttpUtils.updateObject(EndpointPath.ROUTEPATH, routePathSaveModel);
     };
 
-    public static createRoutePath = async (routePath: IRoutePath) => {
-        const requestBody = {
-            routePath,
-            viaNames: _getViaNames(routePath)
-        };
+    public static createRoutePath = async (newRoutePath: IRoutePath) => {
+        const routePathSaveModel = _createRoutePathSaveModel(_.cloneDeep(newRoutePath), null);
         const response = (await HttpUtils.createObject(
             EndpointPath.ROUTEPATH,
-            requestBody
+            routePathSaveModel
         )) as IRoutePathPrimaryKey;
         return response;
     };
@@ -145,22 +140,60 @@ class RoutePathService {
     }
 }
 
-const _getViaNames = (routePath: IRoutePath) => {
-    const viaNames: IViaName[] = [];
-    routePath.routePathLinks.forEach(rpLink => {
-        if (rpLink.viaNameId) {
-            const viaName: IViaName = {
-                id: rpLink.viaNameId,
-                destinationFi1: rpLink.destinationFi1,
-                destinationFi2: rpLink.destinationFi2,
-                destinationSw1: rpLink.destinationSw1,
-                destinationSw2: rpLink.destinationSw2
-            };
-            viaNames.push(viaName);
+const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRoutePath | null): IRoutePathSaveModel => {
+    const added: IRoutePathLink[] = [];
+    const modified: IRoutePathLink[] = [];
+    const removed: IRoutePathLink[] = [];
+    const originals: IRoutePathLink[] = [];
+    newRoutePath.routePathLinks.forEach(rpLink => {
+        const foundOldRoutePathLink = oldRoutePath ? _findRoutePathLink(oldRoutePath, rpLink) : null;
+        if (foundOldRoutePathLink) {
+            const isModified = !_.isEqual(foundOldRoutePathLink, rpLink);
+            // If a routePathLink is found from both newRoutePath and oldRoutePath and it has modifications, add to modified [] list
+            if (isModified) {
+                // Make sure we keep the old id (rpLink has temp id (including NEW_OBJECT_TAG) if link was removed and then added again)
+                rpLink.id = foundOldRoutePathLink.id;
+                rpLink.viaNameId = foundOldRoutePathLink.id;
+                modified.push(rpLink);
+            } else {
+                originals.push(rpLink);
+            }
+        } else {
+             // If a routePathLink is found from newRoutePath but not in oldRoutePath, add it to added [] list
+            added.push(rpLink);
         }
     });
-    return viaNames;
-};
+    oldRoutePath?.routePathLinks.forEach(rpLink => {
+        const routePathLink = _findRoutePathLink(newRoutePath, rpLink);
+        if (!routePathLink) {
+            // If a routePathLink from oldRoutePath is not found from newRoutePath, add it to removed [] list
+            removed.push(rpLink);
+        }
+    });
+
+    const routePathLinkSaveModel: IRoutePathLinkSaveModel = {
+        added,
+        modified,
+        removed,
+        originals
+    }
+
+    const routePathToSave = {
+        ...newRoutePath
+    };
+    delete routePathToSave['routePathLinks'];
+
+    return {
+        routePathLinkSaveModel,
+        routePath: routePathToSave
+    }
+}
+
+const _findRoutePathLink = (routePath: IRoutePath, routePathLink: IRoutePathLink): IRoutePathLink | undefined => {
+    return routePath.routePathLinks.find(rpLink => {
+        return rpLink.startNode.id === routePathLink.startNode.id && rpLink.endNode.id === routePathLink.endNode.id;
+    })
+}
 
 const _getFirstStopName = (nodes: IExternalRoutePathLink[]) => {
     for (let i = 0; i < nodes.length; i += 1) {

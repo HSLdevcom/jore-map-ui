@@ -550,12 +550,6 @@ class RoutePathStore {
         );
     };
 
-    public hasRoutePathLinksChanged = () => {
-        const newRoutePathLinks = this.routePath!.routePathLinks;
-        const oldRoutePathLinks = this._oldRoutePath!.routePathLinks;
-        return !_.isEqual(newRoutePathLinks, oldRoutePathLinks);
-    };
-
     private initRoutePathLinkStore = (routePathLink: IRoutePathLink) => {
         this._routePathLinkValidationStoreMap.set(routePathLink.id, new ValidationStore());
         this._routePathLinkValidationStoreMap

@@ -45,10 +45,7 @@ const _parseNeighborLinks = (
 ): INeighborLink[] => {
     return queryResult.data.solmuBySoltunnus[linkPropertyName].nodes.map(
         (link: IExtendedExternalLink): INeighborLink => ({
-            routePathLink: RoutePathLinkFactory.mapExternalRoutePathLinkFromExternalLink(
-                link,
-                orderNumber
-            ),
+            routePathLink: RoutePathLinkFactory.mapExternalLink(link, orderNumber),
             nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes.map(
                 (rp: IExternalRoutePath) => RoutePathFactory.mapExternalRoutePath(rp)
             )
