@@ -4,7 +4,7 @@ import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import NodeType from '~/enums/nodeType';
 import ApolloClient from '~/helpers/ApolloClient';
-import { IRoutePath, IViaName } from '~/models';
+import { IRoutePath } from '~/models';
 import { IRoutePathPrimaryKey, IRoutePathSaveModel } from '~/models/IRoutePath';
 import IRoutePathLink, { IRoutePathLinkSaveModel } from '~/models/IRoutePathLink';
 import IExternalNode from '~/models/externals/IExternalNode';
@@ -144,13 +144,19 @@ const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRout
     const added: IRoutePathLink[] = [];
     const modified: IRoutePathLink[] = [];
     const removed: IRoutePathLink[] = [];
+    const originals: IRoutePathLink[] = [];
     newRoutePath.routePathLinks.forEach(rpLink => {
         const foundOldRoutePathLink = oldRoutePath ? _findRoutePathLink(oldRoutePath, rpLink) : null;
         if (foundOldRoutePathLink) {
             const isModified = !_.isEqual(foundOldRoutePathLink, rpLink);
             // If a routePathLink is found from both newRoutePath and oldRoutePath and it has modifications, add to modified [] list
             if (isModified) {
+                // Make sure we keep the old id (rpLink has temp id (including NEW_OBJECT_TAG) if link was removed and then added again)
+                rpLink.id = foundOldRoutePathLink.id;
+                rpLink.viaNameId = foundOldRoutePathLink.id;
                 modified.push(rpLink);
+            } else {
+                originals.push(rpLink);
             }
         } else {
              // If a routePathLink is found from newRoutePath but not in oldRoutePath, add it to added [] list
@@ -169,6 +175,7 @@ const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRout
         added,
         modified,
         removed,
+        originals
     }
 
     const routePathToSave = {
@@ -178,8 +185,7 @@ const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRout
 
     return {
         routePathLinkSaveModel,
-        routePath: routePathToSave,
-        viaNames: _getViaNames(newRoutePath)
+        routePath: routePathToSave
     }
 }
 
@@ -188,23 +194,6 @@ const _findRoutePathLink = (routePath: IRoutePath, routePathLink: IRoutePathLink
         return rpLink.startNode.id === routePathLink.startNode.id && rpLink.endNode.id === routePathLink.endNode.id;
     })
 }
-
-const _getViaNames = (routePath: IRoutePath) => {
-    const viaNames: IViaName[] = [];
-    routePath.routePathLinks.forEach(rpLink => {
-        if (rpLink.viaNameId) {
-            const viaName: IViaName = {
-                id: rpLink.viaNameId,
-                destinationFi1: rpLink.destinationFi1,
-                destinationFi2: rpLink.destinationFi2,
-                destinationSw1: rpLink.destinationSw1,
-                destinationSw2: rpLink.destinationSw2
-            };
-            viaNames.push(viaName);
-        }
-    });
-    return viaNames;
-};
 
 const _getFirstStopName = (nodes: IExternalRoutePathLink[]) => {
     for (let i = 0; i < nodes.length; i += 1) {

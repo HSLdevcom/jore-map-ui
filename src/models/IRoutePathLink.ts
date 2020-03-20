@@ -1,12 +1,13 @@
 import * as L from 'leaflet';
 import TransitType from '~/enums/transitType';
 import INode from './INode';
+import IViaName from './IViaName';
 
 interface IRoutePathLinkPrimaryKey {
     id: string;
 }
 
-interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
+interface IRoutePathLink extends IRoutePathLinkPrimaryKey, IViaName {
     geometry: L.LatLng[];
     orderNumber: number;
     transitType: TransitType;
@@ -20,12 +21,6 @@ interface IRoutePathLink extends IRoutePathLinkPrimaryKey {
     startNodeBookScheduleColumnNumber?: number;
     modifiedBy?: string;
     modifiedOn?: Date;
-    // IViaName properties
-    viaNameId?: string;
-    destinationFi1?: string;
-    destinationFi2?: string;
-    destinationSw1?: string;
-    destinationSw2?: string;
 }
 
 interface IRoutePathSegmentLink {
@@ -40,6 +35,7 @@ interface IRoutePathLinkSaveModel {
     added: IRoutePathLink[];
     modified: IRoutePathLink[];
     removed: IRoutePathLink[];
+    originals: IRoutePathLink[];
 }
 
 export default IRoutePathLink;

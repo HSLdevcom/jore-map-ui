@@ -1,6 +1,5 @@
 import TransitType from '~/enums/transitType';
 import IRoutePathLink, { IRoutePathLinkSaveModel, IRoutePathSegmentLink } from './IRoutePathLink';
-import IViaName from './IViaName';
 
 interface IRoutePathPrimaryKey {
     routeId: string;
@@ -45,7 +44,6 @@ interface IRoutePathSegment extends IRoutePathPrimaryKey {
 interface IRoutePathSaveModel {
     routePath: Omit<IRoutePath, 'routePathLinks'>;
     routePathLinkSaveModel: IRoutePathLinkSaveModel;
-    viaNames: IViaName[];
 }
 
 export default IRoutePath;

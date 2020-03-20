@@ -1,6 +1,6 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/helpers/ApolloClient';
-import { IViaName } from '~/models/IViaName';
+import { IViaName } from '~/models';
 import GraphqlQueries from './graphqlQueries';
 
 class ViaNameService {
@@ -14,7 +14,7 @@ class ViaNameService {
 
         return queryResult.data.viaName
             ? {
-                  id: `${queryResult.data.viaName.relid}`,
+                  viaNameId: `${queryResult.data.viaName.relid}`,
                   destinationFi1: queryResult.data.viaName.maaranpaa1,
                   destinationFi2: queryResult.data.viaName.maaranpaa2,
                   destinationSw1: queryResult.data.viaName.maaranpaa1R,
