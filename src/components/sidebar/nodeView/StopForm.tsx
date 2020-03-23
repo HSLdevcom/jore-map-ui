@@ -53,13 +53,17 @@ const SHORT_ID_OPTIONS_MAP = {
     2: ['E', 'XE'],
     3: ['Ka'],
     4: ['V', 'XV'],
-    6: ['Ki'],
+    5: ['Hy', 'La', 'Ri', 'Vi', 'Ko', 'Or'],
+    6: ['Ki', 'Ra'],
     90: ['Ke'],
     91: ['Ke'],
     92: ['Si'],
     93: ['Po'],
     94: ['Pn'],
-    95: ['Jä']
+    95: ['Jä'],
+    96: ['Tu'],
+    97: ['Nu'],
+    98: ['Mä']
 };
 
 @inject('codeListStore', 'confirmStore', 'nodeStore')
