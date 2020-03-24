@@ -14,6 +14,7 @@ import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventHelper from '~/helpers/EventHelper';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
+import IViaShieldName from '~/models/IViaShieldName';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -203,7 +204,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             const viaNames: IViaName[] = [];
 
             routePathLinks.forEach((routePathLink: IRoutePathLink) => {
-                const createPromise = async () => {
+                const fetchViaName = async () => {
                     try {
                         const viaName: IViaName | null = await ViaNameService.fetchViaName(
                             routePathLink.id
@@ -221,14 +222,31 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     }
                 };
 
-                promises.push(createPromise());
+                const fetchViaShieldName = async () => {
+                    try {
+                        const viaShieldName: IViaShieldName | null = await ViaNameService.fetchViaShieldName(
+                            routePathLink.id
+                        );
+                        routePathLink.viaNameId = routePathLink.id;
+                        routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
+                        routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
+                    } catch (err) {
+                        this.props.errorStore!.addError(
+                            'Määränpää tietojen (via kilpi nimet) haku ei onnistunut.',
+                            err
+                        );
+                    }
+                };
+
+                promises.push(fetchViaName());
+                promises.push(fetchViaShieldName());
             });
 
             await Promise.all(promises);
             return viaNames;
         } catch (err) {
             this.props.errorStore!.addError(
-                'Määränpää tietojen (via nimet) haku ei onnistunut.',
+                'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.',
                 err
             );
         }

@@ -154,6 +154,7 @@ const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRout
                 // Make sure we keep the old id (rpLink has temp id (including NEW_OBJECT_TAG) if link was removed and then added again)
                 rpLink.id = foundOldRoutePathLink.id;
                 rpLink.viaNameId = foundOldRoutePathLink.id;
+                rpLink.viaShieldNameId = foundOldRoutePathLink.id;
                 modified.push(rpLink);
             } else {
                 originals.push(rpLink);

@@ -22,7 +22,9 @@ const routePathLinkValidationModel: IRoutePathLinkValidationModel = {
     destinationFi1: 'max:30|string',
     destinationFi2: 'max:30|string',
     destinationSw1: 'max:30|string',
-    destinationSw2: 'max:30|string'
+    destinationSw2: 'max:30|string',
+    destinationShieldFi: 'max:30|string',
+    destinationShieldSw: 'max:30|string'
 };
 
 export default routePathLinkValidationModel;

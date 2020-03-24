@@ -429,7 +429,7 @@ const getAllLineHeadersQuery = () => {
     `;
 };
 
-const getViaName = () => {
+const getViaNameQuery = () => {
     return gql`
         query getViaName($relid: Int!) {
             viaName: viaNimetByRelid(relid: $relid) {
@@ -438,6 +438,18 @@ const getViaName = () => {
                 maaranpaa2
                 maaranpaa1R
                 maaranpaa2R
+            }
+        }
+    `;
+};
+
+const getViaShieldNameQuery = () => {
+    return gql`
+        query getViaName($relid: Int!) {
+            viaShieldName: viaKilpiNimetByRelid(relid: $relid) {
+                relid
+                viasuomi
+                viaruotsi
             }
         }
     `;
@@ -764,5 +776,6 @@ export default {
     getAllStopSections,
     getAllHastusAreas,
     getReservedShortIds,
-    getViaName
+    getViaNameQuery,
+    getViaShieldNameQuery
 };
