@@ -51,7 +51,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         this._isMounted = true;
         this.nodeListener = reaction(() => this.props.nodeStore!.node, this.onNodeChange);
         if (this.props.isNewStop) {
-            this.props.nodeStore!.fetchAddressData();
+            this.props.nodeStore!.updateAddressData();
         }
         const stopAreas: IStopArea[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
@@ -104,7 +104,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         ) {
             return;
         }
-        await this.props.nodeStore!.fetchAddressData();
+        await this.props.nodeStore!.updateAddressData();
     };
 
     private updateStopProperty = (property: keyof IStop) => (value: any) => {

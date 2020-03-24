@@ -1,12 +1,9 @@
-interface IViaNamePrimaryKey {
-    id: string;
-}
-
-export default interface IViaName extends IViaNamePrimaryKey {
+interface IViaName {
+    viaNameId?: string;
     destinationFi1?: string;
     destinationFi2?: string;
     destinationSw1?: string;
     destinationSw2?: string;
 }
 
-export { IViaName, IViaNamePrimaryKey };
+export default IViaName;
