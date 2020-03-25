@@ -1,21 +1,8 @@
 describe('RoutePathView tests - read access user', () => {
     it('Can open routePath and close it to return home page', () => {
         cy.hslLoginReadAccess();
-        cy.getTestElement('authInfo').should('exist');
-        cy.getTestElement('lineSearch').should('exist');
 
-        cy.getTestElement('lineToggle').click();
-        cy.getTestElement('lineSearch').click();
-        cy.getTestElement('lineSearch').type('550');
-        cy.wait(1000);
-        cy.getTestElement('routeItem')
-            .first()
-            .click();
-
-        cy.getTestElement('routeListView').should('exist');
-        cy.getTestElement('openRoutePathViewButton')
-            .first()
-            .click();
+        _openRoutePath();
 
         cy.getTestElement('routePathView').should('exist');
         cy.getTestElement('editButton').should('not.exist');
@@ -27,3 +14,52 @@ describe('RoutePathView tests - read access user', () => {
         cy.getTestElement('routePathView').should('not.exist');
     });
 });
+
+describe('RoutePathView tests - write access user', () => {
+    it('Can save routePath', () => {
+        cy.hslLoginWriteAccess();
+
+        _openRoutePath();
+
+        cy.getTestElement('routePathView').should('exist');
+        cy.getTestElement('editButton').should('exist');
+
+        cy.getTestElement('editButton').click();
+        cy.getTestElement('nameFi')
+            .invoke('val')
+            .then(value => {
+                let newInputValue;
+                if (isNaN(value)) {
+                    newInputValue = 1;
+                } else {
+                    newInputValue = parseInt(value) + 1;
+                }
+                cy.getTestElement('nameFi')
+                    .clear()
+                    .type(newInputValue);
+
+                cy.saveButtonShouldBeActive();
+
+                cy.getTestElement('saveButton').click();
+                cy.getTestElement('savePromptView').should('exist');
+                cy.getTestElement('confirmButton').click();
+
+                cy.getTestElement('nameFi').contains(newInputValue);
+            });
+    });
+});
+
+const _openRoutePath = () => {
+    cy.getTestElement('lineToggle').click();
+    cy.getTestElement('lineSearch').click();
+    cy.getTestElement('lineSearch').type('550');
+    cy.wait(1000);
+    cy.getTestElement('routeItem')
+        .first()
+        .click();
+
+    cy.getTestElement('routeListView').should('exist');
+    cy.getTestElement('openRoutePathViewButton')
+        .first()
+        .click();
+};

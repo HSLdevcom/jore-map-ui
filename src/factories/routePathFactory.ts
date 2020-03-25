@@ -17,7 +17,11 @@ class RoutePathFactory {
         };
     };
 
-    public static mapExternalRoutePath = (externalRoutePath: IExternalRoutePath, lineId?: string, transitType?: TransitType): IRoutePath => {
+    public static mapExternalRoutePath = (
+        externalRoutePath: IExternalRoutePath,
+        lineId?: string,
+        transitType?: TransitType
+    ): IRoutePath => {
         const internalRoutePathId = HashUtils.getHashFromString(
             [
                 externalRoutePath.reitunnus,
@@ -48,7 +52,7 @@ class RoutePathFactory {
             startTime: new Date(externalRoutePath.suuvoimast),
             routePathLinks: routePathLinks ? routePathLinks : [],
             internalId: internalRoutePathId,
-            name: externalRoutePath.suunimi,
+            nameFi: externalRoutePath.suunimi,
             nameSw: externalRoutePath.suunimir,
             endTime: new Date(externalRoutePath.suuvoimviimpvm),
             modifiedOn: externalRoutePath.suuviimpvm
@@ -60,7 +64,7 @@ class RoutePathFactory {
             originSw: externalRoutePath.suulahpaikr,
             destinationFi: externalRoutePath.suupaapaik,
             destinationSw: externalRoutePath.suupaapaikr,
-            shortName: externalRoutePath.suunimilyh,
+            shortNameFi: externalRoutePath.suunimilyh,
             shortNameSw: externalRoutePath.suunimilyhr,
             length: externalRoutePath.suupituus,
             isStartNodeUsingBookSchedule: externalRoutePath.kirjaan === '1',
@@ -81,7 +85,7 @@ class RoutePathFactory {
             routeId,
             transitType,
             internalId: '',
-            name: '',
+            nameFi: '',
             nameSw: '',
             direction: '',
             visible: true,
@@ -93,7 +97,7 @@ class RoutePathFactory {
             originSw: '',
             destinationFi: '',
             destinationSw: '',
-            shortName: '',
+            shortNameFi: '',
             shortNameSw: '',
             modifiedBy: '',
             length: 0,

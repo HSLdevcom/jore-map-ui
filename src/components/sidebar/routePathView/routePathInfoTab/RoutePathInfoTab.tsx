@@ -116,9 +116,10 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             <InputContainer
                                 label='NIMI SUOMEKSI'
                                 disabled={isEditingDisabled}
-                                value={routePath.name}
-                                onChange={onChange('name')}
-                                validationResult={invalidPropertiesMap['name']}
+                                value={routePath.nameFi}
+                                onChange={onChange('nameFi')}
+                                validationResult={invalidPropertiesMap['nameFi']}
+                                data-cy='nameFi'
                             />
                             <InputContainer
                                 label='NIMI RUOTSIKSI'
@@ -164,9 +165,9 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             <InputContainer
                                 label='LYHENNE SUOMEKSI'
                                 disabled={isEditingDisabled}
-                                value={routePath.shortName}
-                                onChange={onChange('shortName')}
-                                validationResult={invalidPropertiesMap['shortName']}
+                                value={routePath.shortNameFi}
+                                onChange={onChange('shortNameFi')}
+                                validationResult={invalidPropertiesMap['shortNameFi']}
                             />
                             <InputContainer
                                 label='LYHENNE RUOTSIKSI'
