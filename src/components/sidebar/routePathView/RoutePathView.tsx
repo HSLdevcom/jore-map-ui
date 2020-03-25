@@ -204,6 +204,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             const viaNames: IViaName[] = [];
 
             routePathLinks.forEach((routePathLink: IRoutePathLink) => {
+                // TODO: implement a single query to fetch all viaNames / viaShieldNames
                 const fetchViaName = async () => {
                     try {
                         const viaName: IViaName | null = await ViaNameService.fetchViaName(
@@ -222,6 +223,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     }
                 };
 
+                // TODO: implement a single query to fetch all viaShieldNames
                 const fetchViaShieldName = async () => {
                     try {
                         const viaShieldName: IViaShieldName | null = await ViaNameService.fetchViaShieldName(

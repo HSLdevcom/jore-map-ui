@@ -445,7 +445,7 @@ const getViaNameQuery = () => {
 
 const getViaShieldNameQuery = () => {
     return gql`
-        query getViaName($relid: Int!) {
+        query getViaShieldName($relid: Int!) {
             viaShieldName: viaKilpiNimetByRelid(relid: $relid) {
                 relid
                 viasuomi
