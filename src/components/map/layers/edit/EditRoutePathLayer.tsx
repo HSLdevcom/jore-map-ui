@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
-import { RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
+import { RoutePathStore } from '~/stores/routePathStore';
 import EditRoutePathLayerLink from './EditRoutePathLayerLink';
 import EditRoutePathLayerNode from './EditRoutePathLayerNode';
 import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
@@ -19,7 +19,7 @@ interface IEditRoutePathLayerProps {
 class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
     private highlightItemById = (id: string) => {
         // Switch to info tab
-        this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
+        this.props.routePathStore!.setSelectedTabIndex(1);
         // Close all extended objects, in order to be able to calculate final height of items
         this.props.routePathStore!.setExtendedListItems([]);
         // Set extended object, which will trigger automatic scroll
