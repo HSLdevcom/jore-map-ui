@@ -40,7 +40,10 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
         return (
-            <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
+            <div
+                className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}
+                data-cy='itemHeader'
+            >
                 <div className={s.headerSubtopicContainer}>
                     {node.type === NodeType.STOP ? stopName : nodeTypeName}
                 </div>
@@ -176,6 +179,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 validationResult={invalidPropertiesMap['destinationFi1']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationFi1')}
                                 isInputLabelDarker={true}
+                                data-cy='destinationFi1'
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ SUOMEKSI'
@@ -212,6 +216,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 validationResult={invalidPropertiesMap['destinationShieldFi']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationShieldFi')}
                                 isInputLabelDarker={true}
+                                data-cy='destinationShieldFi'
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ KILPI RUOTSIKSI'

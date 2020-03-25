@@ -26,6 +26,27 @@
 
 const _ = require('lodash');
 
+Cypress.Commands.add('joeTest', () => {
+    return cy.wrap(123);
+});
+
+Cypress.Commands.add('incrementInputValue', selector => {
+    cy.getTestElement(selector)
+        .invoke('val')
+        .then(value => {
+            let newInputValue;
+            if (isNaN(value) || !value) {
+                newInputValue = 1;
+            } else {
+                newInputValue = parseInt(value) + 1;
+            }
+            cy.getTestElement(selector)
+                .clear()
+                .type(newInputValue)
+                .invoke('val');
+        });
+});
+
 Cypress.Commands.add('getTestElement', (selector, options = {}) => {
     return cy.get(`[data-cy~="${selector}"]`, options);
 });

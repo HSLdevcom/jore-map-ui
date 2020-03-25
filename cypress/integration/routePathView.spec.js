@@ -47,6 +47,36 @@ describe('RoutePathView tests - write access user', () => {
                 cy.getTestElement('nameFi').contains(newInputValue);
             });
     });
+
+    it('Can save routePath links', async () => {
+        cy.hslLoginWriteAccess();
+
+        _openRoutePath();
+
+        cy.getTestElement('routePathView').should('exist');
+        cy.getTestElement('editButton').should('exist');
+
+        cy.getTestElement('editButton').click();
+
+        cy.getTestElement('tab-1').click();
+
+        cy.getTestElement('itemHeader')
+            .first()
+            .click();
+
+        cy.incrementInputValue('destinationFi1').then(newInputValueDestinationFi1 => {
+            cy.incrementInputValue('destinationShieldFi').then(newInputValueDestinationShieldFi => {
+                cy.saveButtonShouldBeActive();
+
+                cy.getTestElement('saveButton').click();
+                cy.getTestElement('savePromptView').should('exist');
+                cy.getTestElement('confirmButton').click();
+
+                cy.getTestElement('destinationFi1').contains(newInputValueDestinationFi1);
+                cy.getTestElement('destinationShieldFi').contains(newInputValueDestinationShieldFi);
+            });
+        });
+    });
 });
 
 const _openRoutePath = () => {
