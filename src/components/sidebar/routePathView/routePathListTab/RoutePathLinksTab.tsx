@@ -134,19 +134,19 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         icon={<IoIosRadioButtonOn />}
                         text='Pysäkit'
                         isActive={!listFilters.includes(ListFilter.stop)}
-                        onClick={this.toggleListFilter.bind(this, ListFilter.stop)}
+                        onClick={() => this.toggleListFilter(ListFilter.stop)}
                     />
                     <ToggleItem
                         icon={<IoIosRadioButtonOn />}
                         text='Muut solmut'
                         isActive={!listFilters.includes(ListFilter.otherNodes)}
-                        onClick={this.toggleListFilter.bind(this, ListFilter.otherNodes)}
+                        onClick={() => this.toggleListFilter(ListFilter.otherNodes)}
                     />
                     <ToggleItem
                         icon={<TiLink />}
                         text='Linkit'
                         isActive={!listFilters.includes(ListFilter.link)}
-                        onClick={this.toggleListFilter.bind(this, ListFilter.link)}
+                        onClick={() => this.toggleListFilter(ListFilter.link)}
                     />
                 </ToggleView>
                 <div className={s.list}>{this.renderList(routePathLinks)}</div>
