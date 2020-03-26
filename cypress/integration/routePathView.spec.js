@@ -58,7 +58,9 @@ describe('RoutePathView tests - write access user', () => {
 
         cy.getTestElement('editButton').click();
 
-        cy.getTestElement('tab-1').click();
+        cy.getTestElement('tab')
+            .contains('Solmut ja linkit')
+            .click();
 
         cy.getTestElement('itemHeader')
             .first()

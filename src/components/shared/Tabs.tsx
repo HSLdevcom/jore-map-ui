@@ -41,7 +41,7 @@ interface ITabProps {
 }
 
 const Tab = observer((props: ITabProps) => {
-    const { setSelectedTabIndex, index, isActive, isDisabled } = props;
+    const { setSelectedTabIndex, isActive, isDisabled } = props;
     const _setSelectedTabIndex = () => setSelectedTabIndex!(props.index!);
 
     return (
@@ -52,7 +52,7 @@ const Tab = observer((props: ITabProps) => {
                 isDisabled ? s.disabled : null
             )}
             onClick={_setSelectedTabIndex}
-            data-cy={`tab-${index}`}
+            data-cy='tab'
         >
             {props.children}
         </div>
