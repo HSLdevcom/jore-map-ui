@@ -7,6 +7,7 @@ import ReactMoment from 'react-moment';
 import { match } from 'react-router';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
+import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import Loader from '~/components/shared/loader/Loader';
 import constants from '~/constants/constants';
@@ -14,6 +15,7 @@ import ToolbarTool from '~/enums/toolbarTool';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventHelper from '~/helpers/EventHelper';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
+import IViaShieldName from '~/models/IViaShieldName';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -27,13 +29,12 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
-import { ListFilter, RoutePathStore, RoutePathViewTab } from '~/stores/routePathStore';
+import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import { validateRoutePathLinks } from '~/utils/geomUtils';
 import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView';
-import RoutePathTabs from './RoutePathTabs';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import * as s from './routePathView.scss';
@@ -170,7 +171,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         await this.fetchRoutePath();
         const itemToShow = navigator.getQueryParamValues()[QueryParams.showItem];
         if (itemToShow) {
-            this.props.routePathStore!.setActiveTab(RoutePathViewTab.List);
+            this.props.routePathStore!.setSelectedTabIndex(1);
             this.props.routePathStore!.setExtendedListItems(itemToShow);
             this.props.routePathStore!.removeListFilter(ListFilter.link);
         }
@@ -203,7 +204,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             const viaNames: IViaName[] = [];
 
             routePathLinks.forEach((routePathLink: IRoutePathLink) => {
-                const createPromise = async () => {
+                // TODO: implement a single query to fetch all viaNames / viaShieldNames
+                const fetchViaName = async () => {
                     try {
                         const viaName: IViaName | null = await ViaNameService.fetchViaName(
                             routePathLink.id
@@ -221,14 +223,32 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     }
                 };
 
-                promises.push(createPromise());
+                // TODO: implement a single query to fetch all viaShieldNames
+                const fetchViaShieldName = async () => {
+                    try {
+                        const viaShieldName: IViaShieldName | null = await ViaNameService.fetchViaShieldName(
+                            routePathLink.id
+                        );
+                        routePathLink.viaNameId = routePathLink.id;
+                        routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
+                        routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
+                    } catch (err) {
+                        this.props.errorStore!.addError(
+                            'Määränpää tietojen (via kilpi nimet) haku ei onnistunut.',
+                            err
+                        );
+                    }
+                };
+
+                promises.push(fetchViaName());
+                promises.push(fetchViaShieldName());
             });
 
             await Promise.all(promises);
             return viaNames;
         } catch (err) {
             this.props.errorStore!.addError(
-                'Määränpää tietojen (via nimet) haku ei onnistunut.',
+                'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.',
                 err
             );
         }
@@ -243,25 +263,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
 
         this.props.mapStore!.setMapBounds(bounds);
-    };
-
-    public renderTabContent = () => {
-        const isEditingDisabled = this.props.routePathStore!.isEditingDisabled;
-        if (this.props.routePathStore!.activeTab === RoutePathViewTab.Info) {
-            return (
-                <RoutePathInfoTab
-                    isEditingDisabled={isEditingDisabled}
-                    routePath={this.props.routePathStore!.routePath!}
-                    invalidPropertiesMap={this.props.routePathStore!.invalidPropertiesMap}
-                />
-            );
-        }
-        return (
-            <RoutePathLinksTab
-                routePath={this.props.routePathStore!.routePath!}
-                isEditingDisabled={isEditingDisabled}
-            />
-        );
     };
 
     private save = async () => {
@@ -377,10 +378,34 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     <RoutePathCopySegmentView />
                 ) : (
                     <>
-                        <div>
-                            <RoutePathTabs />
-                        </div>
-                        {this.renderTabContent()}
+                        <Tabs>
+                            <TabList
+                                    selectedTabIndex={routePathStore!.selectedTabIndex}
+                                    setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
+                            >
+                                <Tab>
+                                        <div>Reitinsuunnan tiedot</div>
+                                </Tab>
+                                <Tab>
+                                        <div>Solmut ja linkit</div>
+                                </Tab>
+                            </TabList>
+                                <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
+                                <ContentItem>
+                                    <RoutePathInfoTab
+                                        isEditingDisabled={isEditingDisabled}
+                                        routePath={this.props.routePathStore!.routePath!}
+                                        invalidPropertiesMap={this.props.routePathStore!.invalidPropertiesMap}
+                                    />
+                                </ContentItem>
+                                <ContentItem>
+                                    <RoutePathLinksTab
+                                        routePath={this.props.routePathStore!.routePath!}
+                                        isEditingDisabled={isEditingDisabled}
+                                    />
+                                </ContentItem>
+                            </ContentList>
+                        </Tabs>
                         <SaveButton
                             onClick={this.showSavePrompt}
                             isSavePrevented={isSavePrevented}

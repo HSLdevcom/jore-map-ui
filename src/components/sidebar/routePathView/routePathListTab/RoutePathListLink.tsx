@@ -28,11 +28,12 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         const orderNumber = this.props.routePathLink.orderNumber;
         const isExtended = this.props.routePathStore!.isListItemExtended(id);
         return (
-            <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
-                <div className={s.headerContent}>
-                    <div className={s.headerNodeTypeContainer}>Reitinlinkki {orderNumber}</div>
-                    <div className={s.label} />
-                </div>
+            <div
+                className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}
+                data-cy='itemHeader'
+            >
+                <div className={s.headerSubtopicContainer}>Reitinlinkki {orderNumber}</div>
+                <div className={s.headerContent} />
                 <div className={s.itemToggle}>
                     {isExtended && <FaAngleDown />}
                     {!isExtended && <FaAngleRight />}

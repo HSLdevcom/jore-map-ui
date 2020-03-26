@@ -34,29 +34,35 @@ interface IRoutePathListNodeProps {
 class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
         const node = this.props.node;
+        const routePathLink = this.props.routePathLink;
         const stopName = node.stop ? node.stop.nameFi : '';
         const isExtended = this.props.routePathStore!.isListItemExtended(node.id);
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
         return (
-            <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
-                <div className={s.headerContent}>
-                    <div className={s.headerNodeTypeContainer}>
-                        <div>{node.type === NodeType.STOP ? stopName : nodeTypeName}</div>
-                    </div>
-                    <div className={s.label}>
-                        <div className={s.headerContentDescription}>
-                            <div className={s.hastusId}>
-                                {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
-                            </div>
-                            <div className={s.longId}>{node.id}</div>
-                            <div className={s.shortId}>{shortId || '?'}</div>
-                        </div>
-                    </div>
+            <div
+                className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}
+                data-cy='itemHeader'
+            >
+                <div className={s.headerSubtopicContainer}>
+                    {node.type === NodeType.STOP ? stopName : nodeTypeName}
                 </div>
-                <div className={s.itemToggle}>
-                    {isExtended && <FaAngleDown />}
-                    {!isExtended && <FaAngleRight />}
+                <div className={s.headerContent}>
+                    <div className={s.smallFontSize}>
+                        {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
+                    </div>
+                    <div className={s.smallFontSize}>{node.id}</div>
+                    <div className={s.shortId}>{shortId || '?'}</div>
+                    <div className={s.smallFontSize}>
+                        {routePathLink.destinationFi1 ? routePathLink.destinationFi1 : ''}
+                    </div>
+                    <div className={s.smallFontSize}>
+                        {routePathLink.destinationShieldFi ? routePathLink.destinationShieldFi : ''}
+                    </div>
+                    <div className={s.itemToggle}>
+                        {isExtended && <FaAngleDown />}
+                        {!isExtended && <FaAngleRight />}
+                    </div>
                 </div>
             </div>
         );
@@ -173,6 +179,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 validationResult={invalidPropertiesMap['destinationFi1']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationFi1')}
                                 isInputLabelDarker={true}
+                                data-cy='destinationFi1'
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ SUOMEKSI'
@@ -198,6 +205,25 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 value={routePathLink.destinationSw2}
                                 validationResult={invalidPropertiesMap['destinationSw2']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationSw2')}
+                                isInputLabelDarker={true}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                label='1. MÄÄRÄNPÄÄ KILPI SUOMEKSI'
+                                disabled={isEditingDisabled}
+                                value={routePathLink.destinationShieldFi}
+                                validationResult={invalidPropertiesMap['destinationShieldFi']}
+                                onChange={this.onRoutePathLinkPropertyChange('destinationShieldFi')}
+                                isInputLabelDarker={true}
+                                data-cy='destinationShieldFi'
+                            />
+                            <InputContainer
+                                label='2. MÄÄRÄNPÄÄ KILPI RUOTSIKSI'
+                                disabled={isEditingDisabled}
+                                value={routePathLink.destinationShieldSw}
+                                validationResult={invalidPropertiesMap['destinationShieldSw']}
+                                onChange={this.onRoutePathLinkPropertyChange('destinationShieldSw')}
                                 isInputLabelDarker={true}
                             />
                         </div>

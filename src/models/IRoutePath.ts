@@ -17,14 +17,14 @@ interface IViewOnlyRoutePathProperties {
 
 interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties {
     routePathLinks: IRoutePathLink[];
-    name: string;
+    nameFi: string;
     nameSw: string;
     endTime: Date;
     originFi: string;
     originSw: string;
     destinationFi: string;
     destinationSw: string;
-    shortName: string;
+    shortNameFi: string;
     shortNameSw: string;
     length: number;
     isStartNodeUsingBookSchedule?: boolean;

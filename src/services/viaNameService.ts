@@ -1,24 +1,43 @@
 import { ApolloQueryResult } from 'apollo-client';
 import apolloClient from '~/helpers/ApolloClient';
 import { IViaName } from '~/models';
+import IViaShieldName from '~/models/IViaShieldName';
 import GraphqlQueries from './graphqlQueries';
 
 class ViaNameService {
     public static fetchViaName = async (id: string): Promise<IViaName | null> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
-            query: GraphqlQueries.getViaName(),
+            query: GraphqlQueries.getViaNameQuery(),
             variables: {
                 relid: id
             }
         });
 
-        return queryResult.data.viaName
+        const viaName = queryResult.data.viaName;
+        return viaName
             ? {
-                  viaNameId: `${queryResult.data.viaName.relid}`,
-                  destinationFi1: queryResult.data.viaName.maaranpaa1,
-                  destinationFi2: queryResult.data.viaName.maaranpaa2,
-                  destinationSw1: queryResult.data.viaName.maaranpaa1R,
-                  destinationSw2: queryResult.data.viaName.maaranpaa2R
+                  viaNameId: `${viaName.relid}`,
+                  destinationFi1: viaName.maaranpaa1,
+                  destinationFi2: viaName.maaranpaa2,
+                  destinationSw1: viaName.maaranpaa1R,
+                  destinationSw2: viaName.maaranpaa2R
+              }
+            : null;
+    };
+
+    public static fetchViaShieldName = async (id: string): Promise<IViaShieldName | null> => {
+        const queryResult: ApolloQueryResult<any> = await apolloClient.query({
+            query: GraphqlQueries.getViaShieldNameQuery(),
+            variables: {
+                relid: id
+            }
+        });
+        const viaShieldName = queryResult.data.viaShieldName;
+        return viaShieldName
+            ? {
+                  viaShieldNameId: `${viaShieldName.relid}`,
+                  destinationShieldFi: viaShieldName.viasuomi,
+                  destinationShieldSw: viaShieldName.viaruotsi
               }
             : null;
     };

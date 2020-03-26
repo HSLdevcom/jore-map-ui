@@ -20,11 +20,6 @@ enum NeighborToAddType {
     BeforeNode
 }
 
-enum RoutePathViewTab {
-    Info,
-    List
-}
-
 interface UndoState {
     routePathLinks: IRoutePathLink[];
     isStartNodeUsingBookSchedule: boolean;
@@ -45,12 +40,12 @@ class RoutePathStore {
     @observable private _neighborRoutePathLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
     @observable private _extendedListItems: string[];
-    @observable private _activeTab: RoutePathViewTab;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
     @observable private _listHighlightedNodeIds: string[];
     @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
     @observable private _isEditingDisabled: boolean;
+    @observable private _selectedTabIndex: number;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
     private _routePathLinkValidationStoreMap: Map<
@@ -61,12 +56,12 @@ class RoutePathStore {
     constructor() {
         this._neighborRoutePathLinks = [];
         this._extendedListItems = [];
-        this._activeTab = RoutePathViewTab.Info;
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
         this._listHighlightedNodeIds = [];
         this._toolHighlightedNodeIds = [];
         this._isEditingDisabled = true;
+        this._selectedTabIndex = 0;
         this._geometryUndoStore = new GeometryUndoStore();
         this._validationStore = new ValidationStore();
         this._routePathLinkValidationStoreMap = new Map();
@@ -107,13 +102,14 @@ class RoutePathStore {
         return !_.isEqual(this._routePath, this._oldRoutePath);
     }
 
+    @computed
     get extendedListItems() {
         return this._extendedListItems;
     }
 
     @computed
-    get activeTab() {
-        return this._activeTab;
+    get selectedTabIndex() {
+        return this._selectedTabIndex;
     }
 
     @computed
@@ -227,18 +223,9 @@ class RoutePathStore {
     };
 
     @action
-    public setActiveTab = (tab: RoutePathViewTab) => {
-        this._activeTab = tab;
-    };
-
-    @action
-    public toggleActiveTab = () => {
-        if (this._activeTab === RoutePathViewTab.Info) {
-            this._activeTab = RoutePathViewTab.List;
-        } else {
-            this._activeTab = RoutePathViewTab.Info;
-        }
-    };
+    public setSelectedTabIndex = (index: number) => {
+        this._selectedTabIndex = index;
+    }
 
     @action
     public removeListFilter = (listFilter: ListFilter) => {
@@ -595,4 +582,4 @@ class RoutePathStore {
 
 export default new RoutePathStore();
 
-export { RoutePathStore, NeighborToAddType, RoutePathViewTab, UndoState, ListFilter };
+export { RoutePathStore, NeighborToAddType, UndoState, ListFilter };
