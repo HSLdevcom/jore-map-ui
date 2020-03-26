@@ -14,7 +14,9 @@ interface IRoutePathListItemProps {
     shadowClass?: string;
     header: JSX.Element;
     body: JSX.Element;
-    listIcon: JSX.Element;
+    listIcon?: JSX.Element;
+    isLastNode?: boolean;
+    isFirstNode?: boolean;
     reference: React.RefObject<HTMLDivElement>;
 }
 
@@ -47,16 +49,36 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
 
     render() {
         const isExtended = this.props.routePathStore!.isListItemExtended(this.props.id);
+        const isFirstNode = this.props.isFirstNode;
+        const isLastNode = this.props.isLastNode;
         return (
             <div
                 ref={this.props.reference}
-                className={classnames(s.item, this.props.shadowClass)}
+                className={classnames(s.routePathListItem, this.props.shadowClass)}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
-                <div className={s.listIcon}>{this.props.listIcon}</div>
-                <div onClick={this.toggleIsExtended}>{this.props.header}</div>
-                {isExtended && <div className={s.itemContent}>{this.props.body}</div>}
+                <div className={s.contentBorder}>
+                    <div className={s.borderContainer}>
+                        <div className={!isFirstNode ? s.borderLeftContainer : undefined} />
+                        <div />
+                    </div>
+                    {this.props.listIcon && <div className={s.listIcon}>{this.props.listIcon}</div>}
+                    <div className={s.borderContainer}>
+                        <div className={!isLastNode ? s.borderLeftContainer : undefined} />
+                        <div />
+                    </div>
+                </div>
+                <div className={s.contentWrapper}>
+                    <div
+                        onClick={this.toggleIsExtended}
+                        className={s.itemHeader}
+                        data-cy='itemHeader'
+                    >
+                        {this.props.header}
+                    </div>
+                    {isExtended && <div className={s.itemContent}>{this.props.body}</div>}
+                </div>
             </div>
         );
     }

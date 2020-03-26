@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
@@ -29,23 +28,21 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         const orderNumber = this.props.routePathLink.orderNumber;
         const isExtended = this.props.routePathStore!.isListItemExtended(id);
         return (
-            <div
-                className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}
-                data-cy='itemHeader'
-            >
+            <>
                 <div className={s.headerSubtopicContainer}>Reitinlinkki {orderNumber}</div>
-                <div className={s.headerContent} />
-                <div className={s.itemToggle}>
-                    {isExtended && <FaAngleDown />}
-                    {!isExtended && <FaAngleRight />}
+                <div className={s.headerContent}>
+                    <div className={s.itemToggle}>
+                        {isExtended && <FaAngleDown />}
+                        {!isExtended && <FaAngleRight />}
+                    </div>
                 </div>
-            </div>
+            </>
         );
     };
 
     private renderBody = () => {
         return (
-            <div className={s.extendedContent}>
+            <>
                 {this.renderRoutePathLinkView(this.props.routePathLink)}
                 <div className={s.footer}>
                     <Button onClick={() => this.openLinkInNewTab()} type={ButtonType.SQUARE}>
@@ -53,7 +50,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         <FiExternalLink />
                     </Button>
                 </div>
-            </div>
+            </>
         );
     };
 
@@ -95,8 +92,6 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         );
     };
 
-    private renderListIcon = () => <div className={s.linkIcon} />;
-
     render() {
         const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
         return (
@@ -106,7 +101,6 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 geometry={geometry}
                 header={this.renderHeader()}
                 body={this.renderBody()}
-                listIcon={this.renderListIcon()}
             />
         );
     }

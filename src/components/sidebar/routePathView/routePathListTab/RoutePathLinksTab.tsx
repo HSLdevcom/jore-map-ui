@@ -61,6 +61,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         node={routePathLink.startNode}
                         routePathLink={routePathLink}
                         isEditingDisabled={this.props.isEditingDisabled}
+                        isFirstNode={index === 0}
                     />
                 ) : null,
                 this.isLinksVisible() ? (

@@ -28,6 +28,7 @@ interface IRoutePathListNodeProps {
     routePathLink: IRoutePathLink;
     isEditingDisabled: boolean;
     isLastNode?: boolean;
+    isFirstNode?: boolean;
 }
 
 @inject('routePathStore', 'codeListStore')
@@ -41,10 +42,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
         return (
-            <div
-                className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}
-                data-cy='itemHeader'
-            >
+            <>
                 <div className={s.headerSubtopicContainer}>
                     {node.type === NodeType.STOP ? stopName : nodeTypeName}
                 </div>
@@ -65,7 +63,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                         {!isExtended && <FaAngleRight />}
                     </div>
                 </div>
-            </div>
+            </>
         );
     };
 
@@ -325,7 +323,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderBody = () => {
         const node = this.props.node;
         return (
-            <div className={s.extendedContent}>
+            <>
                 {Boolean(node.stop) && this.renderStopView(node.stop!)}
                 {this.renderNodeView(node)}
                 <div className={s.footer}>
@@ -334,7 +332,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                         <FiExternalLink />
                     </Button>
                 </div>
-            </div>
+            </>
         );
     };
 
@@ -367,6 +365,8 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 header={this.renderHeader()}
                 body={this.renderBody()}
                 listIcon={this.renderListIcon()}
+                isFirstNode={this.props.isFirstNode}
+                isLastNode={this.props.isLastNode}
             />
         );
     }
