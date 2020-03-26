@@ -12,11 +12,12 @@ import nodeValidationModel, {
 import stopValidationModel, {
     IStopValidationModel
 } from '~/models/validationModels/stopValidationModel';
-import GeocodingService from '~/services/geocodingService';
+import GeocodingService, { IAddressFeature } from '~/services/geocodingService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/utils/geomUtils';
 import FormValidator from '~/validation/FormValidator';
+import CodeListStore from './codeListStore';
 import NavigationStore from './navigationStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
@@ -72,7 +73,7 @@ class NodeStore {
             () => this._node && this._node.stop && this._node.stop.stopAreaId,
             (value: string) => this.onStopAreaChange(value)
         );
-        reaction(() => this._stopAreas, () => this.onstopAreasChange());
+        reaction(() => this._stopAreas, () => this.onStopAreasChange());
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
     }
 
@@ -283,7 +284,8 @@ class NodeStore {
         );
 
         if (nodeLocationType === 'coordinatesProjection') {
-            this.fetchAddressData();
+            this.updateAddressData();
+            this.updateMunicipality();
         }
     };
 
@@ -295,7 +297,7 @@ class NodeStore {
     };
 
     @action
-    public fetchAddressData = async () => {
+    public updateAddressData = async () => {
         if (!this.node || !this.node.stop) return;
 
         const coordinates = this.node.coordinatesProjection;
@@ -307,12 +309,44 @@ class NodeStore {
             coordinates,
             'sv'
         );
-        const postalNumber: string = await GeocodingService.fetchPostalNumberFromCoordinates(
-            coordinates
-        );
+        const features:
+            | IAddressFeature[]
+            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
+            coordinates,
+            searchResultCount: 1
+        });
+        let postalNumber = '';
+        if (features && features[0]) {
+            postalNumber = features[0].properties.postalcode;
+        }
+
         this.updateStopProperty('addressFi', addressFi);
         this.updateStopProperty('addressSw', addressSw);
         this.updateStopProperty('postalNumber', postalNumber);
+    };
+
+    @action
+    public updateMunicipality = async () => {
+        if (!this.node || !this.node.stop) return;
+
+        const coordinates = this.node.coordinatesProjection;
+        const features:
+            | IAddressFeature[]
+            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
+            coordinates,
+            searchResultCount: 1
+        });
+        const municipality =
+            features && features[0] ? features[0].properties.localadmin : undefined;
+        const municipalityDropdownItems = CodeListStore.getDropdownItemList('Kunta (KELA)');
+        const municipalityCode = municipalityDropdownItems.find(
+            municipalityDropdownItem => municipalityDropdownItem.label === municipality
+        );
+        if (municipalityCode) {
+            this.updateStopProperty('municipality', municipalityCode.value);
+        } else {
+            this.updateStopProperty('municipality', '');
+        }
     };
 
     @action
@@ -340,7 +374,9 @@ class NodeStore {
             this._node!.stop = stop;
             this._stopValidationStore.init(stop, stopValidationModel);
         } else {
+            // Only node which type is stop has measurementType and measurementDate, remove them if type is not stop
             this.updateNodeProperty('measurementType', '');
+            this.updateNodeProperty('measurementDate', '');
         }
     };
 
@@ -459,7 +495,7 @@ class NodeStore {
     };
 
     @action
-    private onstopAreasChange = () => {
+    private onStopAreasChange = () => {
         const stopAreaId = this.node && this.node.stop && this.node.stop.stopAreaId;
         if (stopAreaId) {
             this.updateStopArea(stopAreaId);

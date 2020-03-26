@@ -10,8 +10,10 @@ import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import { INode } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
+import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
+import CoordinateInputRow from './CoordinateInputRow';
 import * as s from './nodeForm.scss';
 
 interface INodeViewProps {
@@ -23,16 +25,15 @@ interface INodeViewProps {
     nodeIdSuffixOptions?: IDropdownItem[];
     isNodeIdSuffixQueryLoading?: boolean;
     onChangeNodeId?: (value: any) => void;
+    onChangeNodeGeometry?: (property: NodeLocationType) => (value: L.LatLng) => void;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
     onChangeNodeType?: (type: NodeType) => void;
-    lngChange?: Function;
-    latChange?: Function;
     codeListStore?: CodeListStore;
 }
 
 @inject('codeListStore')
 @observer
-export default class NodeForm extends Component<INodeViewProps> {
+class NodeForm extends Component<INodeViewProps> {
     private createMeasuredDropdownItems = (): IDropdownItem[] => {
         const items: IDropdownItem[] = [
             {
@@ -57,11 +58,10 @@ export default class NodeForm extends Component<INodeViewProps> {
             isNodeIdSuffixQueryLoading,
             onChangeNodeId,
             invalidPropertiesMap,
+            onChangeNodeGeometry,
             onChangeNodeProperty,
             onChangeNodeType
         } = this.props;
-        const lngChange = this.props.lngChange ? this.props.lngChange : () => void 0;
-        const latChange = this.props.latChange ? this.props.latChange : () => void 0;
         const nodeTypeCodeList = createDropdownItemsFromList(['P', 'X']);
         return (
             <div className={classnames(s.nodeForm, s.form)}>
@@ -78,11 +78,7 @@ export default class NodeForm extends Component<INodeViewProps> {
                             {isNodeIdEditable && (
                                 <Dropdown
                                     label='+ 2 num.)'
-                                    onChange={
-                                        onChangeNodeProperty
-                                            ? onChangeNodeProperty('idSuffix')
-                                            : undefined
-                                    }
+                                    onChange={onChangeNodeProperty!('idSuffix')}
                                     disabled={_.isEmpty(nodeIdSuffixOptions)}
                                     isLoading={isNodeIdSuffixQueryLoading}
                                     selected={node.idSuffix}
@@ -114,99 +110,64 @@ export default class NodeForm extends Component<INodeViewProps> {
                     )}
                 </div>
                 <div className={classnames(s.formSection, s.noBorder)}>
-                    <div className={s.sectionHeader}>
-                        Mitattu piste
-                        <div
-                            className={classnames(
-                                s.labelIcon,
-                                NodeUtils.getNodeTypeClass(node.type, {
-                                    isNodeHighlighted: true
-                                })
-                            )}
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <InputContainer
-                            value={node.coordinates.lat}
-                            onChange={latChange(node.coordinates, 'coordinates')}
-                            label='LATITUDE'
-                            disabled={isEditingDisabled}
-                            validationResult={invalidPropertiesMap['coordinates']}
-                        />
-                        <InputContainer
-                            value={node.coordinates.lng}
-                            onChange={lngChange(node.coordinates, 'coordinates')}
-                            label='LONGITUDE'
-                            disabled={isEditingDisabled}
-                            validationResult={invalidPropertiesMap['coordinates']}
-                            data-cy='longitudeInput'
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <InputContainer
-                            type='date'
-                            label='MITTAUSPVM'
-                            value={node.measurementDate}
-                            disabled={isEditingDisabled}
-                            onChange={
-                                onChangeNodeProperty
-                                    ? onChangeNodeProperty('measurementDate')
-                                    : undefined
-                            }
-                            isClearButtonVisibleOnDates={true}
-                            isEmptyDateValueAllowed={true}
-                            validationResult={invalidPropertiesMap['measurementDate']}
-                            data-cy='measurementDate'
-                        />
-                        {node.type === NodeType.STOP && (
+                    <CoordinateInputRow
+                        isEditingDisabled={isEditingDisabled}
+                        label={
+                            <div className={s.sectionHeader}>
+                                Mitattu piste
+                                <div
+                                    className={classnames(
+                                        s.labelIcon,
+                                        NodeUtils.getNodeTypeClass(node.type, {
+                                            isNodeHighlighted: true
+                                        })
+                                    )}
+                                />
+                            </div>
+                        }
+                        coordinates={node.coordinates}
+                        onChange={onChangeNodeGeometry!('coordinates')}
+                    />
+                    {node.type === NodeType.STOP && (
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                type='date'
+                                label='MITTAUSPVM'
+                                value={node.measurementDate}
+                                disabled={isEditingDisabled}
+                                onChange={onChangeNodeProperty!('measurementDate')}
+                                isClearButtonVisibleOnDates={true}
+                                isEmptyDateValueAllowed={true}
+                                validationResult={invalidPropertiesMap['measurementDate']}
+                                data-cy='measurementDate'
+                            />
                             <Dropdown
                                 label='MITTAUSTAPA'
                                 disabled={isEditingDisabled}
                                 selected={node.measurementType}
                                 items={this.createMeasuredDropdownItems()}
                                 validationResult={invalidPropertiesMap['measurementType']}
-                                onChange={
-                                    onChangeNodeProperty
-                                        ? onChangeNodeProperty('measurementType')
-                                        : undefined
-                                }
+                                onChange={onChangeNodeProperty!('measurementType')}
                             />
-                        )}
-                    </div>
+                        </div>
+                    )}
                     {node.type === NodeType.STOP && (
-                        <>
-                            <div className={s.sectionHeader}>
-                                Projisoitu piste
-                                <div className={classnames(s.labelIcon, s.projected)} />
-                            </div>
-                            <div className={s.flexRow}>
-                                <InputContainer
-                                    value={node.coordinatesProjection.lat}
-                                    onChange={latChange(
-                                        node.coordinatesProjection,
-                                        'coordinatesProjection'
-                                    )}
-                                    label='LATITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                    validationResult={invalidPropertiesMap['coordinatesProjection']}
-                                />
-                                <InputContainer
-                                    value={node.coordinatesProjection.lng}
-                                    onChange={lngChange(
-                                        node.coordinatesProjection,
-                                        'coordinatesProjection'
-                                    )}
-                                    label='LONGITUDE'
-                                    type='number'
-                                    disabled={isEditingDisabled}
-                                    validationResult={invalidPropertiesMap['coordinatesProjection']}
-                                />
-                            </div>
-                        </>
+                        <CoordinateInputRow
+                            isEditingDisabled={isEditingDisabled}
+                            label={
+                                <div className={s.sectionHeader}>
+                                    Projisoitu piste
+                                    <div className={classnames(s.labelIcon, s.projected)} />
+                                </div>
+                            }
+                            coordinates={node.coordinatesProjection}
+                            onChange={onChangeNodeGeometry!('coordinatesProjection')}
+                        />
                     )}
                 </div>
             </div>
         );
     }
 }
+
+export default NodeForm;

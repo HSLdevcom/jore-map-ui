@@ -11,19 +11,25 @@ interface IArrowDecoratorProps extends PathProps {
     color: string;
     showOnEventName: string;
     hideOnEventName: string;
+    arrowGap?: number;
+    arrowSize?: number;
     isUpdatePrevented?: boolean;
 }
 
 class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator> {
+    public static defaultProps = {
+        arrowGap: 120,
+        arrowSize: 12
+    };
     createLeafletElement(props: IArrowDecoratorProps) {
         const decorator = new PolylineDecorator(this.props.geometry, {
             patterns: [
                 {
-                    repeat: 120,
+                    repeat: props.arrowGap!,
                     offset: 20,
                     endOffset: 30,
                     symbol: L.Symbol.arrowHead({
-                        pixelSize: 12,
+                        pixelSize: props.arrowSize!,
                         pathOptions: {
                             color: props.color,
                             fillOpacity: 1,

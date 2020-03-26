@@ -2,7 +2,12 @@ const openLink = () => {
     cy.getTestElement('authInfo').should('exist');
     cy.getTestElement('lineSearch').should('exist');
 
-    cy.visit('link/0000002,1000002,1');
+    // Have to use different link for dev / stage to prevent local db out-of-sync errors
+    if (Cypress.config().baseUrl.includes('dev')) {
+        cy.visit('link/1270003,1270103,1');
+    } else {
+        cy.visit('link/1260011,1260105,1');
+    }
     cy.getTestElement('linkView').should('exist');
 };
 
@@ -22,18 +27,28 @@ describe('LinkView tests - read access user', () => {
 });
 
 describe('LinkView tests - write access user', () => {
-    it('Can edit link', () => {
+    it('Can save link', () => {
         cy.hslLoginWriteAccess();
         openLink();
 
         cy.getTestElement('editButton').should('exist');
         cy.getTestElement('editButton').click();
 
-        cy.saveButtonShouldNotBeActive();
-        cy.getTestElement('measuredLength').type(123);
-        cy.saveButtonShouldBeActive();
+        cy.getTestElement('measuredLength')
+            .invoke('val')
+            .then(value => {
+                const newInputValue = parseInt(value) + 1;
+                cy.getTestElement('measuredLength')
+                    .clear()
+                    .type(newInputValue);
 
-        cy.getTestElement('saveButton').click();
-        cy.getTestElement('savePromptView').should('exist');
+                cy.saveButtonShouldBeActive();
+
+                cy.getTestElement('saveButton').click();
+                cy.getTestElement('savePromptView').should('exist');
+                cy.getTestElement('confirmButton').click();
+
+                cy.getTestElement('measuredLength').contains(newInputValue);
+            });
     });
 });

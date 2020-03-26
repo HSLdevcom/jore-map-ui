@@ -267,6 +267,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private save = async () => {
         this._setState({ isLoading: true });
         const routePath = this.props.routePathStore!.routePath;
+        const oldRoutePath = this.props.routePathStore!.oldRoutePath;
         try {
             if (this.props.isNewRoutePath) {
                 const routePathPrimaryKey = await RoutePathService.createRoutePath(
@@ -285,14 +286,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     .toLink();
                 navigator.goTo({ link: routePathViewLink, shouldSkipUnsavedChangesPrompt: true });
             } else {
-                const routePathToUpdate = _.cloneDeep(routePath!);
-                const hasRoutePathLinksChanged = this.props.routePathStore!.hasRoutePathLinksChanged();
-
-                // If routePathLinks are not changed, no need to update them (optimizing save time in backend)
-                if (!hasRoutePathLinksChanged) {
-                    routePathToUpdate.routePathLinks = [];
-                }
-                await RoutePathService.updateRoutePath(routePathToUpdate);
+                await RoutePathService.updateRoutePath(routePath!, oldRoutePath!);
                 await this.fetchRoutePath();
                 this.props.routePathStore!.setIsEditingDisabled(true);
                 this._setState({ isLoading: false });
@@ -355,15 +349,15 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             :
                             <div className={s.linkContainer}>
                                 <TransitTypeLink
-                                    transitType={routePath.transitType}
+                                    transitType={routePath.transitType!}
                                     shouldShowTransitTypeIcon={true}
-                                    text={routePath.lineId}
-                                    onClick={() => NavigationUtils.openLineView({ lineId: routePath.lineId })}
-                                    hoverText={`Avaa linja ${routePath.lineId}`}
+                                    text={routePath.lineId!}
+                                    onClick={() => NavigationUtils.openLineView({ lineId: routePath!.lineId! })}
+                                    hoverText={`Avaa linja ${routePath.lineId!}`}
                                 />
                                 <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
                                 <TransitTypeLink
-                                    transitType={routePath.transitType}
+                                    transitType={routePath.transitType!}
                                     shouldShowTransitTypeIcon={false}
                                     text={routePath.routeId}
                                     onClick={() => NavigationUtils.openRouteView({ routeId: routePath.routeId })}

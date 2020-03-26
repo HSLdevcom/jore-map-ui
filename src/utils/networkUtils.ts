@@ -32,6 +32,9 @@ const isNetworkElementHidden = ({
     if (type === MapLayer.linkPoint && !NetworkStore!.isMapLayerVisible(MapLayer.linkPoint)) {
         return true;
     }
+    if (!dateRanges || !selectedDate) {
+        return false;
+    }
 
     // the element is related to an opened link
     const isLinkOpen =
@@ -82,6 +85,10 @@ const isNetworkNodeHidden = ({
         }
     }
     const selectedDate = NetworkStore.selectedDate;
+    if (!dateRanges || !selectedDate) {
+        return false;
+    }
+
     return !selectedDate || !_isDateInRanges(selectedDate, dateRanges);
 };
 
@@ -90,13 +97,8 @@ const _parseDateRangesString = (dateRangesString?: string) => {
     return dateRangesString.split(',').map((dr: string) => dr.split('/').map(date => Moment(date)));
 };
 
-const _isDateInRanges = (
-    selectedDate: Moment.Moment | null,
-    dateRanges?: Moment.Moment[][]
-): Boolean => {
-    return selectedDate
-        ? !dateRanges || dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'))
-        : true;
+const _isDateInRanges = (selectedDate: Moment.Moment, dateRanges: Moment.Moment[][]): Boolean => {
+    return dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'));
 };
 
 export { isNetworkElementHidden, isNetworkNodeHidden };

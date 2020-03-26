@@ -17,6 +17,7 @@ class LinkFactory {
             transitType: externalLink.lnkverkko,
             length: externalLink.lnkpituus,
             measuredLength: externalLink.lnkmitpituus,
+            speed: externalLink.speed ? Math.round(externalLink.speed) : 0,
             modifiedBy: externalLink.lnkkuka,
             modifiedOn: externalLink.lnkviimpvm ? new Date(externalLink.lnkviimpvm) : undefined
         };
@@ -42,6 +43,7 @@ class LinkFactory {
             endNode,
             length: 0,
             measuredLength: 0,
+            speed: 0,
             modifiedBy: '',
             modifiedOn: new Date()
         };

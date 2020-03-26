@@ -1,7 +1,7 @@
 import * as L from 'leaflet';
 import constants from '~/constants/constants';
 import NumberIterator from '~/helpers/NumberIterator';
-import { IRoutePathLink } from '~/models';
+import IRoutePathLink from '~/models/IRoutePathLink';
 import IExternalLink from '~/models/externals/IExternalLink';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import NodeFactory from './nodeFactory';
@@ -44,14 +44,10 @@ class RoutePathLinkFactory {
 
     /**
      * @param {IExternalLink} link - link to use in convert
-     * @param {IRoutePath} routePath - routePath to use in convert
      * @param {Number} orderNumber - routePathLink orderNumber
      * @return {IRoutePathLink} routePathLink with hard coded default values
      */
-    public static mapExternalRoutePathLinkFromExternalLink = (
-        link: IExternalLink,
-        orderNumber: number
-    ): IRoutePathLink => {
+    public static mapExternalLink = (link: IExternalLink, orderNumber: number): IRoutePathLink => {
         const startNode = NodeFactory.mapExternalNode(link.solmuByLnkalkusolmu);
         const geoJson = JSON.parse(link.geojson);
         return {

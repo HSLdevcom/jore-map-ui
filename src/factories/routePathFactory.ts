@@ -17,7 +17,7 @@ class RoutePathFactory {
         };
     };
 
-    public static mapExternalRoutePath = (externalRoutePath: IExternalRoutePath): IRoutePath => {
+    public static mapExternalRoutePath = (externalRoutePath: IExternalRoutePath, lineId?: string, transitType?: TransitType): IRoutePath => {
         const internalRoutePathId = HashUtils.getHashFromString(
             [
                 externalRoutePath.reitunnus,
@@ -41,12 +41,12 @@ class RoutePathFactory {
 
         return {
             exceptionPath,
+            lineId,
+            transitType,
             routeId: externalRoutePath.reitunnus,
             direction: externalRoutePath.suusuunta,
             startTime: new Date(externalRoutePath.suuvoimast),
             routePathLinks: routePathLinks ? routePathLinks : [],
-            lineId: externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus,
-            transitType: externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko,
             internalId: internalRoutePathId,
             name: externalRoutePath.suunimi,
             nameSw: externalRoutePath.suunimir,

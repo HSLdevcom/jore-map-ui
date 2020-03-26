@@ -4,7 +4,7 @@ describe('RoutePathView tests - read access user', () => {
         cy.getTestElement('authInfo').should('exist');
         cy.getTestElement('lineSearch').should('exist');
 
-        cy.getTestElement('nodeToggle').click();
+        cy.getTestElement('lineToggle').click();
         cy.getTestElement('lineSearch').click();
         cy.getTestElement('lineSearch').type('550');
         cy.wait(1000);

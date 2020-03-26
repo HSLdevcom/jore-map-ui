@@ -7,20 +7,23 @@ import { INode, IStop, IStopArea } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
 import StopAreaService from '~/services/stopAreaService';
 import StopService, { IStopSectionItem } from '~/services/stopService';
+import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { NodeStore } from '~/stores/nodeStore';
 import StopForm from './StopForm';
 
 interface IStopViewProps {
     node: INode;
     isNewStop: boolean;
-    nodeStore?: NodeStore;
-    codeListStore?: CodeListStore;
     nodeInvalidPropertiesMap: object;
-    saveHastusArea: ({ isNewHastusArea }: { isNewHastusArea: boolean }) => void;
     isTransitToggleButtonBarVisible?: boolean;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     toggleTransitType?: (type: TransitType) => void;
+    nodeStore?: NodeStore;
+    codeListStore?: CodeListStore;
+    alertStore?: AlertStore;
+    errorStore?: ErrorStore;
 }
 
 interface IStopViewState {
@@ -29,7 +32,7 @@ interface IStopViewState {
     hastusAreas: IHastusArea[];
 }
 
-@inject('nodeStore', 'codeListStore')
+@inject('nodeStore', 'codeListStore', 'alertStore', 'errorStore')
 @observer
 class StopView extends React.Component<IStopViewProps, IStopViewState> {
     private nodeListener: IReactionDisposer;
@@ -48,7 +51,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         this._isMounted = true;
         this.nodeListener = reaction(() => this.props.nodeStore!.node, this.onNodeChange);
         if (this.props.isNewStop) {
-            this.props.nodeStore!.fetchAddressData();
+            this.props.nodeStore!.updateAddressData();
         }
         const stopAreas: IStopArea[] = await StopAreaService.fetchAllStopAreas();
         const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
@@ -68,6 +71,32 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         this.nodeListener();
     }
 
+    private saveHastusArea = async ({ isNewHastusArea }: { isNewHastusArea: boolean }) => {
+        const nodeStore = this.props.nodeStore!;
+        try {
+            if (isNewHastusArea) {
+                await StopService.createHastusArea({
+                    oldHastusArea: nodeStore.oldHastusArea!,
+                    newHastusArea: nodeStore.hastusArea
+                });
+            } else {
+                await StopService.updateHastusArea({
+                    oldHastusArea: nodeStore.oldHastusArea!,
+                    newHastusArea: nodeStore.hastusArea
+                });
+            }
+            nodeStore.updateStopProperty('hastusId', nodeStore.hastusArea.id);
+            nodeStore.setOldHastusArea(nodeStore.hastusArea);
+            const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
+            this.setState({
+                hastusAreas
+            });
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+        }
+    };
+
     private onNodeChange = async () => {
         if (
             !this.props.nodeStore!.node ||
@@ -75,7 +104,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         ) {
             return;
         }
-        await this.props.nodeStore!.fetchAddressData();
+        await this.props.nodeStore!.updateAddressData();
     };
 
     private updateStopProperty = (property: keyof IStop) => (value: any) => {
@@ -105,7 +134,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 stopAreas={this.props.nodeStore!.stopAreas}
                 stopSections={this.state.stopSections}
                 hastusAreas={this.state.hastusAreas}
-                saveHastusArea={this.props.saveHastusArea}
+                saveHastusArea={this.saveHastusArea}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
                 isTransitToggleButtonBarVisible={this.props.isTransitToggleButtonBarVisible}

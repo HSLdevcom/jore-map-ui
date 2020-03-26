@@ -131,6 +131,7 @@ class HastusAreaFrom extends Component<IHastusAreaFromProps, IHastusAreaFromStat
                         value={hastusArea.id}
                         onChange={this.updateHastusAreaProperty('id')}
                         validationResult={invalidPropertiesMap['id']}
+                        data-cy='hastusIdInput'
                     />
                     <InputContainer
                         label='NIMI'

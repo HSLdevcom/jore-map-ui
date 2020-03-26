@@ -31,11 +31,15 @@ Cypress.Commands.add('getTestElement', (selector, options = {}) => {
 });
 
 Cypress.Commands.add('hslLoginReadAccess', () => {
-    return hslLogin(false);
+    hslLogin(false);
+    cy.getTestElement('authInfo').should('exist');
+    cy.getTestElement('lineSearch').should('exist');
 });
 
 Cypress.Commands.add('hslLoginWriteAccess', () => {
-    return hslLogin(true);
+    hslLogin(true);
+    cy.getTestElement('authInfo').should('exist');
+    cy.getTestElement('lineSearch').should('exist');
 });
 
 const hslLogin = hasWriteAccess => {
@@ -87,57 +91,27 @@ const hslLogin = hasWriteAccess => {
     });
 };
 
-Cypress.Commands.add('waitUntilLoadingFinishes', loadingElementSelector => {
-    const testId = loadingElementSelector || 'loader';
-    cy.waitUntil(() => cy.getTestElement(testId).should('exist'));
-    return cy.waitUntil(
-        () => cy.getTestElement(testId, { timeout: 60 * 60 * 1000 }).should('have.length', 0),
-        {
-            timeout: 60 * 60 * 1000
-        }
-    );
-});
-
-Cypress.Commands.add('openStop', () => {
-    cy.getTestElement('lineToggle').click();
-    cy.getTestElement('lineSearch').click();
-    cy.getTestElement('lineSearch').type('110');
-
-    cy.getTestElement('nodeItemP')
-        .first()
-        .click();
-    cy.getTestElement('nodeView').should('exist');
-
-});
-
-Cypress.Commands.add('openCrossroad', () => {
-    cy.getTestElement('lineToggle').click();
-    cy.getTestElement('lineSearch').click();
-    cy.getTestElement('lineSearch').type('101');
-
-    cy.getTestElement('nodeItemX')
-        .first()
-        .click();
-    cy.getTestElement('nodeView').should('exist');
-});
-
-Cypress.Commands.add('saveButtonShouldBeActive', (selector) => {
+Cypress.Commands.add('saveButtonShouldBeActive', selector => {
     if (selector) {
-        cy.getTestElement(selector).find('[data-cy=saveButton]').should($el => {
-            expect($el).not.have.css('pointer-events', 'none');
-        });
+        cy.getTestElement(selector)
+            .find('[data-cy=saveButton]')
+            .should($el => {
+                expect($el).not.have.css('pointer-events', 'none');
+            });
     } else {
         cy.getTestElement('saveButton').should($el => {
             expect($el).not.have.css('pointer-events', 'none');
         });
     }
-})
+});
 
-Cypress.Commands.add('saveButtonShouldNotBeActive', (selector) => {
+Cypress.Commands.add('saveButtonShouldNotBeActive', selector => {
     if (selector) {
-        cy.getTestElement(selector).find('[data-cy=saveButton]').should($el => {
-            expect($el).to.have.css('pointer-events', 'none');
-        });
+        cy.getTestElement(selector)
+            .find('[data-cy=saveButton]')
+            .should($el => {
+                expect($el).to.have.css('pointer-events', 'none');
+            });
     } else {
         cy.getTestElement('saveButton').should($el => {
             expect($el).to.have.css('pointer-events', 'none');

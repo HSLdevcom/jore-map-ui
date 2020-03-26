@@ -1,5 +1,5 @@
-import { IRoutePathLink } from '.';
 import IRoutePath from './IRoutePath';
+import IRoutePathLink from './IRoutePathLink';
 
 interface INeighborLink {
     nodeUsageRoutePaths: IRoutePath[];

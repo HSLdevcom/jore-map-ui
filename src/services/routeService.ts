@@ -30,7 +30,9 @@ class RouteService {
         }
         const externalRoutePaths = externalRoute.reitinsuuntasByReitunnus.nodes;
         const routePaths: IRoutePath[] = externalRoutePaths.map((routePath: IExternalRoutePath) => {
-            return RoutePathFactory.mapExternalRoutePath(routePath);
+            const lineId = routePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            return RoutePathFactory.mapExternalRoutePath(routePath, lineId, transitType);
         });
         routePaths.sort((a, b) => b.endTime.getTime() - a.endTime.getTime());
         return RouteFactory.mapExternalRoute(queryResult.data.route, routePaths);

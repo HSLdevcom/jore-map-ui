@@ -41,7 +41,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     constructor(props: ISearchResultsProps) {
         super(props);
         this.state = {
-            isLoading: false,
+            isLoading: true,
             showLimit: SHOW_LIMIT_DEFAULT
         };
 

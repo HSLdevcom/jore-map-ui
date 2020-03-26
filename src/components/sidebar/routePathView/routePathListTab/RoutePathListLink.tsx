@@ -5,7 +5,7 @@ import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiChevronRight } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
-import { IRoutePathLink } from '~/models';
+import IRoutePathLink from '~/models/IRoutePathLink';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NavigationUtils from '~/utils/NavigationUtils';
