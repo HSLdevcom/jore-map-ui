@@ -2,13 +2,14 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
-import { FiChevronRight } from 'react-icons/fi';
+import { FiExternalLink } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import NavigationUtils from '~/utils/NavigationUtils';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
@@ -47,13 +48,25 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
             <div className={s.extendedContent}>
                 {this.renderRoutePathLinkView(this.props.routePathLink)}
                 <div className={s.footer}>
-                    <Button onClick={this.openInNetworkView} type={ButtonType.SQUARE}>
+                    <Button onClick={() => this.openLinkInNewTab()} type={ButtonType.SQUARE}>
                         Avaa linkki verkkonäkymässä
-                        <FiChevronRight />
+                        <FiExternalLink />
                     </Button>
                 </div>
             </div>
         );
+    };
+
+    private openLinkInNewTab = () => {
+        const routeLink = this.props.routePathLink;
+        const linkViewLink = routeBuilder
+            .to(SubSites.link)
+            .toTarget(
+                ':id',
+                [routeLink.startNode.id, routeLink.endNode.id, routeLink.transitType].join(',')
+            )
+            .toLink();
+        window.open(linkViewLink, '_blank');
     };
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
@@ -80,15 +93,6 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 </div>
             </div>
         );
-    };
-
-    private openInNetworkView = () => {
-        const routeLink = this.props.routePathLink;
-        NavigationUtils.openLinkView({
-            startNodeId: routeLink.startNode.id,
-            endNodeId: routeLink.endNode.id,
-            transitType: routeLink.transitType
-        });
     };
 
     private renderListIcon = () => <div className={s.linkIcon} />;
