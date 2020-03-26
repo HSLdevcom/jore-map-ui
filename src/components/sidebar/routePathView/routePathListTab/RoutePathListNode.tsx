@@ -3,15 +3,16 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
-import { FiChevronRight } from 'react-icons/fi';
+import { FiExternalLink } from 'react-icons/fi';
 import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { INode, IRoutePathLink, IStop } from '~/models';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import InputContainer from '../../../controls/InputContainer';
@@ -322,21 +323,27 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     };
 
     private renderBody = () => {
+        const node = this.props.node;
         return (
             <div className={s.extendedContent}>
-                {Boolean(this.props.node.stop) && this.renderStopView(this.props.node.stop!)}
-                {this.renderNodeView(this.props.node)}
+                {Boolean(node.stop) && this.renderStopView(node.stop!)}
+                {this.renderNodeView(node)}
                 <div className={s.footer}>
-                    <Button
-                        onClick={() => NavigationUtils.openNodeView({ nodeId: this.props.node.id })}
-                        type={ButtonType.SQUARE}
-                    >
+                    <Button onClick={() => this.openNodeInNewTab(node.id)} type={ButtonType.SQUARE}>
                         <div>Avaa solmu</div>
-                        <FiChevronRight />
+                        <FiExternalLink />
                     </Button>
                 </div>
             </div>
         );
+    };
+
+    private openNodeInNewTab = (nodeId: string) => {
+        const nodeViewLink = routeBuilder
+            .to(SubSites.node)
+            .toTarget(':id', nodeId)
+            .toLink();
+        window.open(nodeViewLink, '_blank');
     };
 
     private getShadowClass() {

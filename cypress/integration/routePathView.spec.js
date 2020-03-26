@@ -48,7 +48,7 @@ describe('RoutePathView tests - write access user', () => {
             });
     });
 
-    it('Can save routePath links', async () => {
+    it('Can save routePath links', () => {
         cy.hslLoginWriteAccess();
 
         _openRoutePath();

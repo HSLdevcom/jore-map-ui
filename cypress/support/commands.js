@@ -26,10 +26,6 @@
 
 const _ = require('lodash');
 
-Cypress.Commands.add('joeTest', () => {
-    return cy.wrap(123);
-});
-
 Cypress.Commands.add('incrementInputValue', selector => {
     cy.getTestElement(selector)
         .invoke('val')

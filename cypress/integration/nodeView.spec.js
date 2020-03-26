@@ -104,7 +104,9 @@ const _openStop = () => {
 const _openCrossroad = () => {
     cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
-    cy.getTestElement('lineSearch').type('101');
+    cy.getTestElement('lineSearch')
+        .clear()
+        .type('101');
 
     cy.getTestElement('nodeItemX')
         .first()
@@ -115,7 +117,9 @@ const _openCrossroad = () => {
 const _openMunicipality = () => {
     cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
-    cy.getTestElement('lineSearch').type('101');
+    cy.getTestElement('lineSearch')
+        .clear()
+        .type('101');
 
     cy.getTestElement('nodeItem-')
         .first()
