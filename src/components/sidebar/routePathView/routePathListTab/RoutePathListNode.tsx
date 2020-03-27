@@ -41,21 +41,22 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const isExtended = this.props.routePathStore!.isListItemExtended(node.id);
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
+        const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
         return (
             <>
-                <div className={s.headerSubtopicContainer}>
-                    {node.type === NodeType.STOP ? stopName : nodeTypeName}
+                <div className={s.headerSubtopicContainer} title={subTopic}>
+                    {subTopic}
                 </div>
                 <div className={s.headerContent}>
-                    <div className={s.smallFontSize}>
+                    <div className={s.hastusId}>
                         {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
                     </div>
-                    <div className={s.smallFontSize}>{node.id}</div>
+                    <div className={s.longId}>{node.id}</div>
                     <div className={s.shortId}>{shortId || '?'}</div>
-                    <div className={s.smallFontSize}>
+                    <div className={s.via}>
                         {routePathLink.destinationFi1 ? routePathLink.destinationFi1 : ''}
                     </div>
-                    <div className={s.smallFontSize}>
+                    <div className={s.via}>
                         {routePathLink.destinationShieldFi ? routePathLink.destinationShieldFi : ''}
                     </div>
                     <div className={s.itemToggle}>

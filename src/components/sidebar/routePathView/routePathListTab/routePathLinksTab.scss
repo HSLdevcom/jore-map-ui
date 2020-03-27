@@ -2,32 +2,69 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/form';
 
-.RoutePathLinksTabView {
+.routePathLinksTabView  {
     height: 100%;
     flex-direction: column;
     display: flex;
     overflow-y: auto;
 
-    .list {
+    .listHeader {
         display: flex;
-        flex-direction: column;
-        height: 100%;
-        color: $labelColor;
-        font-size: $mediumFontSize;
-        overflow-y: auto;
-        color: $darkLabelColor;
+        border-bottom: 1px solid $borderLightGrey;
+        font-size: 0.6rem;
 
-        .saveButton {
-            padding: 20px;
-            background-color: $saveButtonGreen;
-            color: #fff;
+        div {
+            white-space: nowrap;
+            background-color: $backgroundlightGrey;
+            border-left: 1px solid $borderLightGrey;
+            padding: 5px;
             text-align: center;
-            font-size: $mediumFontSize;
-            cursor: pointer;
         }
 
-        .saveButton:hover {
-            background-color: darken($saveButtonGreen, 10);
+        .name {
+            width: 145px;
+        }
+        .hastusId {
+            width: 50px;
+        }
+        .longId {
+            width: 60px;
+        }
+        .shortId {
+            width: 45px;
+        }
+        .via {
+            width: 100px;
+        }
+    }
+
+    .listWrapper {
+        height: 100%;
+        flex-direction: column;
+        display: flex;
+        overflow-y: auto;
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            color: $labelColor;
+            font-size: $mediumFontSize;
+            overflow-y: scroll;
+            color: $darkLabelColor;
+
+            .saveButton {
+                padding: 20px;
+                background-color: $saveButtonGreen;
+                color: #fff;
+                text-align: center;
+                font-size: $mediumFontSize;
+                cursor: pointer;
+            }
+
+            .saveButton:hover {
+                background-color: darken($saveButtonGreen, 10);
+            }
         }
     }
 }

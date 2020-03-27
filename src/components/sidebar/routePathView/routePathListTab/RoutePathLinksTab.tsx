@@ -129,7 +129,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         const listFilters = this.props.routePathStore!.listFilters;
 
         return (
-            <div className={s.RoutePathLinksTabView}>
+            <div className={s.routePathLinksTabView}>
                 <ToggleView>
                     <ToggleItem
                         icon={<IoIosRadioButtonOn />}
@@ -150,7 +150,17 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         onClick={() => this.toggleListFilter(ListFilter.link)}
                     />
                 </ToggleView>
-                <div className={s.list}>{this.renderList(routePathLinks)}</div>
+                <div className={s.listHeader}>
+                    <div className={s.name}>Nimi</div>
+                    <div className={s.hastusId}>Hastus id</div>
+                    <div className={s.longId}>Pitkä id</div>
+                    <div className={s.shortId}>Lyhyt id</div>
+                    <div className={s.via}>Määränpää</div>
+                    <div className={s.via}>Määränpää kilpi</div>
+                </div>
+                <div className={s.listWrapper}>
+                    <div className={s.list}>{this.renderList(routePathLinks)}</div>
+                </div>
             </div>
         );
     }
