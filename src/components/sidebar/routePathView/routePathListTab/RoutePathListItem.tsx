@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { MapStore } from '~/stores/mapStore';
@@ -10,10 +9,10 @@ interface IRoutePathListItemProps {
     mapStore?: MapStore;
     routePathStore?: RoutePathStore;
     id: string;
-    geometry: L.LatLng[];
-    shadowClass?: string;
     header: JSX.Element;
     body: JSX.Element;
+    isItemHighlighted?: boolean;
+    shadowClass?: string;
     listIcon?: JSX.Element;
     isLastNode?: boolean;
     isFirstNode?: boolean;
@@ -23,20 +22,6 @@ interface IRoutePathListItemProps {
 @inject('routePathStore', 'mapStore')
 @observer
 class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
-    private toggleIsExtended = () => {
-        this.props.routePathStore!.toggleExtendedListItem(this.props.id);
-
-        if (this.props.routePathStore!.isListItemExtended(this.props.id)) {
-            this.props.mapStore!.setMapBounds(this.getBounds());
-        }
-    };
-
-    private getBounds = () => {
-        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-        this.props.geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
-        return bounds;
-    };
-
     private onMouseEnter = () => {
         this.props.routePathStore!.setListHighlightedNodeIds([this.props.id]);
     };
@@ -51,10 +36,15 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
         const isExtended = this.props.routePathStore!.isListItemExtended(this.props.id);
         const isFirstNode = this.props.isFirstNode;
         const isLastNode = this.props.isLastNode;
+        const isItemHighlighted = this.props.isItemHighlighted;
         return (
             <div
                 ref={this.props.reference}
-                className={classnames(s.routePathListItem, this.props.shadowClass)}
+                className={classnames(
+                    s.routePathListItem,
+                    this.props.shadowClass,
+                    isItemHighlighted ? s.highlightedItem : undefined
+                )}
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
@@ -70,13 +60,7 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
                     </div>
                 </div>
                 <div className={s.contentWrapper}>
-                    <div
-                        onClick={this.toggleIsExtended}
-                        className={s.itemHeader}
-                        data-cy='itemHeader'
-                    >
-                        {this.props.header}
-                    </div>
+                    {this.props.header}
                     {isExtended && <div className={s.itemContent}>{this.props.body}</div>}
                 </div>
             </div>

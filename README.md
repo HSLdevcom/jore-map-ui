@@ -1,4 +1,4 @@
-# JoreMapUI
+# Joukkoliikennerekisteri Map UI
 
 ### Travis status
 

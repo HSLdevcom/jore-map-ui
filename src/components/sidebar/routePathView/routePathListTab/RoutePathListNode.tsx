@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -12,6 +13,8 @@ import { INode, IRoutePathLink, IStop } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
+import { MapStore } from '~/stores/mapStore';
+import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
@@ -21,17 +24,19 @@ import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
-    routePathStore?: RoutePathStore;
-    codeListStore?: CodeListStore;
     node: INode;
-    reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
+    reference: React.RefObject<HTMLDivElement>;
     isEditingDisabled: boolean;
     isLastNode?: boolean;
     isFirstNode?: boolean;
+    routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
+    routePathStore?: RoutePathStore;
+    codeListStore?: CodeListStore;
+    mapStore?: MapStore;
 }
 
-@inject('routePathStore', 'codeListStore')
+@inject('routePathStore', 'codeListStore', 'mapStore', 'routePathLinkMassEditStore')
 @observer
 class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
@@ -43,7 +48,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const shortId = NodeUtils.getShortId(node);
         const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
         return (
-            <>
+            <div className={s.itemHeader} onClick={this.toggleIsExtended} data-cy='itemHeader'>
                 <div className={s.headerSubtopicContainer} title={subTopic}>
                     {subTopic}
                 </div>
@@ -64,8 +69,44 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                         {!isExtended && <FaAngleRight />}
                     </div>
                 </div>
-            </>
+            </div>
         );
+    };
+
+    private isNodeSelected = () => {
+        return (
+            !this.props.isLastNode &&
+            this.props.node.type === NodeType.STOP &&
+            this.props.routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
+                this.props.routePathLink
+            ) > -1
+        );
+    };
+
+    private toggleIsExtended = () => {
+        if (
+            !this.props.isLastNode &&
+            this.props.node.type === NodeType.STOP &&
+            this.props.routePathLinkMassEditStore!.isMassEditSelectionEnabled
+        ) {
+            this.props.routePathStore!.setIsEditingDisabled(false);
+            this.props.routePathLinkMassEditStore!.toggleSelectedRoutePathLink(
+                this.props.routePathLink
+            );
+        } else {
+            this.props.routePathStore!.toggleExtendedListItem(this.props.node.id);
+
+            if (this.props.routePathStore!.isListItemExtended(this.props.node.id)) {
+                this.props.mapStore!.setMapBounds(this.getBounds());
+            }
+        }
+    };
+
+    private getBounds = () => {
+        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+        geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+        return bounds;
     };
 
     private onRoutePathLinkStartNodeTypeChange = () => (value: any) => {
@@ -356,18 +397,17 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     }
 
     render() {
-        const geometry = this.props.routePathStore!.getNodeGeom(this.props.node.id);
         return (
             <RoutePathListItem
                 reference={this.props.reference}
                 id={this.props.node.id}
-                geometry={geometry}
                 shadowClass={this.getShadowClass()}
                 header={this.renderHeader()}
                 body={this.renderBody()}
                 listIcon={this.renderListIcon()}
                 isFirstNode={this.props.isFirstNode}
                 isLastNode={this.props.isLastNode}
+                isItemHighlighted={this.isNodeSelected()}
             />
         );
     }

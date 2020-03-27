@@ -1,3 +1,4 @@
+import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
@@ -8,16 +9,18 @@ import IRoutePathLink from '~/models/IRoutePathLink';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
+import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
-    routePathStore?: RoutePathStore;
-    codeListStore?: CodeListStore;
     routePathLink: IRoutePathLink;
     reference: React.RefObject<HTMLDivElement>;
+    mapStore?: MapStore;
+    routePathStore?: RoutePathStore;
+    codeListStore?: CodeListStore;
 }
 
 @inject('routePathStore', 'codeListStore')
@@ -28,7 +31,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         const orderNumber = this.props.routePathLink.orderNumber;
         const isExtended = this.props.routePathStore!.isListItemExtended(id);
         return (
-            <>
+            <div className={s.itemHeader} onClick={this.toggleIsExtended} data-cy='itemHeader'>
                 <div className={s.headerSubtopicContainer}>Reitinlinkki {orderNumber}</div>
                 <div className={s.headerContent}>
                     <div className={s.itemToggle}>
@@ -36,8 +39,23 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         {!isExtended && <FaAngleRight />}
                     </div>
                 </div>
-            </>
+            </div>
         );
+    };
+
+    private toggleIsExtended = () => {
+        this.props.routePathStore!.toggleExtendedListItem(this.props.routePathLink.id);
+
+        if (this.props.routePathStore!.isListItemExtended(this.props.routePathLink.id)) {
+            this.props.mapStore!.setMapBounds(this.getBounds());
+        }
+    };
+
+    private getBounds = () => {
+        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+        geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+        return bounds;
     };
 
     private renderBody = () => {
@@ -93,12 +111,10 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     };
 
     render() {
-        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
         return (
             <RoutePathListItem
                 reference={this.props.reference}
                 id={this.props.routePathLink.id}
-                geometry={geometry}
                 header={this.renderHeader()}
                 body={this.renderBody()}
             />
