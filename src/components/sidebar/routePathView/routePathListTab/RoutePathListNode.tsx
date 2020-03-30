@@ -341,13 +341,14 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderListIcon = () => {
         const node = this.props.node;
         const routePathLink = this.props.routePathLink;
-        let icon = (
+
+        const isTimeAlignmentStop =
+            !this.props.isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0';
+        let nodeIcon = (
             <div
                 className={classnames(
                     s.nodeIcon,
-                    !this.props.isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0'
-                        ? s.timeAlignmentIcon
-                        : undefined
+                    isTimeAlignmentStop ? s.timeAlignmentIcon : undefined
                 )}
             />
         );
@@ -356,23 +357,28 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             this.props.routePathLink.startNodeType === StartNodeType.DISABLED;
 
         if (node.type === NodeType.MUNICIPALITY_BORDER) {
-            icon = this.addBorder(icon, '#c900ff');
+            nodeIcon = this.renderBorder(nodeIcon, '#c900ff');
         } else if (node.type === NodeType.CROSSROAD) {
-            icon = this.addBorder(icon, '#727272');
+            nodeIcon = this.renderBorder(nodeIcon, '#727272');
         } else if (isNodeDisabled) {
-            icon = this.addBorder(icon, '#353333');
+            node.transitTypes!.forEach(type => {
+                nodeIcon = this.renderBorder(nodeIcon, TransitTypeUtils.getColor(type), 0.5);
+            });
         } else if (node.type === NodeType.STOP) {
             node.transitTypes!.forEach(type => {
-                icon = this.addBorder(icon, TransitTypeUtils.getColor(type));
+                nodeIcon = this.renderBorder(nodeIcon, TransitTypeUtils.getColor(type));
             });
         }
 
-        return icon;
+        return nodeIcon;
     };
 
-    private addBorder = (icon: React.ReactNode, color: string) => {
+    private renderBorder = (icon: React.ReactNode, color: string, opacity?: number) => {
         return (
-            <div className={s.iconBorder} style={{ borderColor: color }}>
+            <div
+                className={s.iconBorder}
+                style={{ borderColor: color, opacity: opacity ? opacity : 1 }}
+            >
                 {icon}
             </div>
         );
