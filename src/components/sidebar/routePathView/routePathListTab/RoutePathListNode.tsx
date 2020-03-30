@@ -58,19 +58,28 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                         {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
                     </div>
                     <div className={s.longId}>{node.id}</div>
-                    <div className={s.shortId}>{shortId || '?'}</div>
-                    {!isLastNode && (
-                        <>
-                            <div className={s.via}>
-                                {routePathLink.destinationFi1 ? routePathLink.destinationFi1 : ''}
-                            </div>
-                            <div className={s.via}>
-                                {routePathLink.destinationShieldFi
-                                    ? routePathLink.destinationShieldFi
-                                    : ''}
-                            </div>
-                        </>
-                    )}
+                    <div className={s.shortId}>{shortId ? shortId : ''}</div>
+                    <div className={s.viaWrapper}>
+                        {!isLastNode && (
+                            <>
+                                <div className={s.via}>
+                                    {routePathLink.destinationFi1
+                                        ? routePathLink.destinationFi1
+                                        : ''}
+                                </div>
+                                <div className={s.via}>
+                                    {routePathLink.destinationFi2
+                                        ? routePathLink.destinationFi2
+                                        : ''}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                    <div className={s.viaShield}>
+                        {!isLastNode && routePathLink.destinationShieldFi
+                            ? routePathLink.destinationShieldFi
+                            : ''}
+                    </div>
                     <div className={s.itemToggle}>
                         {isExtended && <FaAngleDown />}
                         {!isExtended && <FaAngleRight />}
