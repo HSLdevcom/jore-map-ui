@@ -23,7 +23,7 @@ interface IRoutePathListLinkProps {
     codeListStore?: CodeListStore;
 }
 
-@inject('routePathStore', 'codeListStore')
+@inject('routePathStore', 'codeListStore', 'mapStore')
 @observer
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
