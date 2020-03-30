@@ -30,43 +30,69 @@
             display: flex;
             flex-direction: row;
             align-items: center;
+            justify-content: space-between;
             margin-left: 10px;
-            height: 57px; // To make items have equal height
+            height: 40px; // To make items have equal height
 
             .headerSubtopicContainer {
-                display: flex;
-                flex-direction: column;
-                white-space: nowrap;
+                display: block;
+                text-overflow: ellipsis;
+                overflow: hidden;
                 cursor: pointer;
+                font-size: 0.9rem;
+                width: 117px;
             }
 
             .headerContent {
                 display: flex;
-                justify-content: flex-end;
                 align-items: center;
                 cursor: pointer;
-                width: 100%;
 
                 div {
-                    margin-left: 5px;
-                }
-                div:first-of-type {
-                    margin-left: 0px;
-                }
-                .smallFontSize {
+                    display: flex;
+                    justify-content: center;
+                    text-align: center;
                     font-size: $smallFontSize;
+                    padding: 5px;
+                    border-left: 1px solid transparent; // To make column widths match header
+                }
+                .hastusId {
+                    width: 50px;
+                }
+                .longId {
+                    width: 60px;
                 }
                 .shortId {
-                    width: 55px;
+                    width: 45px;
+                }
+                .viaWrapper {
+                    padding: 0px 5px 0px 5px;
+                    display: block;
+                    width: 100px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    .via {
+                        padding: 0px;
+                        display: block;
+                        width: 100px;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                }
+                .viaShield {
+                    display: block;
+                    width: 100px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
                 }
 
                 .itemToggle {
-                    font-size: 22px;
-                    color: $mediumGrey;
+                    font-size: 16px;
                     transition: 0.5s;
-                    padding: 15px;
+                    padding: 0px;
                     text-align: end;
                     align-self: center;
+                    color: $mediumGrey;
 
                     :hover {
                         color: darken($mediumGrey, 10);
@@ -137,4 +163,9 @@
             }
         }
     }
+}
+
+.highlightedItem {
+    transition: 0.5s;
+    background-color: #ffff82;
 }

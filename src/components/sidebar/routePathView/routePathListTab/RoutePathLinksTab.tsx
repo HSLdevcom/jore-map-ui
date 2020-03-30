@@ -8,18 +8,21 @@ import NodeType from '~/enums/nodeType';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import RoutePathListLink from './RoutePathListLink';
 import RoutePathListNode from './RoutePathListNode';
+import RoutePathMassEditView from './RoutePathMassEditView';
 import s from './routePathLinksTab.scss';
 
 interface IRoutePathLinksTabProps {
-    routePathStore?: RoutePathStore;
     routePath: IRoutePath;
     isEditingDisabled: boolean;
+    routePathStore?: RoutePathStore;
+    routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'routePathLinkMassEditStore')
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     reactionDisposer: IReactionDisposer;
@@ -62,6 +65,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         routePathLink={routePathLink}
                         isEditingDisabled={this.props.isEditingDisabled}
                         isFirstNode={index === 0}
+                        isLastNode={false}
                     />
                 ) : null,
                 this.isLinksVisible() ? (
@@ -129,7 +133,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         const listFilters = this.props.routePathStore!.listFilters;
 
         return (
-            <div className={s.RoutePathLinksTabView}>
+            <div className={s.routePathLinksTabView}>
                 <ToggleView>
                     <ToggleItem
                         icon={<IoIosRadioButtonOn />}
@@ -150,7 +154,23 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         onClick={() => this.toggleListFilter(ListFilter.link)}
                     />
                 </ToggleView>
-                <div className={s.list}>{this.renderList(routePathLinks)}</div>
+                <div className={s.listHeader}>
+                    <div className={s.name}>Nimi</div>
+                    <div className={s.hastusId}>Hastus id</div>
+                    <div className={s.longId}>Pitkä id</div>
+                    <div className={s.shortId}>Lyhyt id</div>
+                    <div className={s.via}>Määränpää</div>
+                    <div className={s.via}>Määränpää kilpi</div>
+                </div>
+                <div className={s.listWrapper}>
+                    <div className={s.list}>{this.renderList(routePathLinks)}</div>
+                </div>
+                <RoutePathMassEditView
+                    isEditingDisabled={this.props.isEditingDisabled}
+                    routePathLinks={
+                        this.props.routePathLinkMassEditStore!.selectedMassEditRoutePathLinks
+                    }
+                />
             </div>
         );
     }

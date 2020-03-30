@@ -346,7 +346,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         isEditing={!routePathStore!.isEditingDisabled}
                     >
                         {this.props.isNewRoutePath
-                            ? 'Uusi reitinsuunta'
+                            ? `Uusi reitinsuunta reitille ${routePath.routeId}`
                             :
                             <div className={s.linkContainer}>
                                 <TransitTypeLink

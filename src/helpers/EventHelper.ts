@@ -3,6 +3,9 @@ import TransitType from '~/enums/transitType';
 import { INeighborLink, INode } from '~/models';
 
 type eventName =
+    | 'keyUp'
+    | 'shift'
+    | 'ctrl'
     | 'enter'
     | 'arrowUp'
     | 'arrowDown'

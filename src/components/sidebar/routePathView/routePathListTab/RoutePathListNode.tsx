@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -12,6 +13,8 @@ import { INode, IRoutePathLink, IStop } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
+import { MapStore } from '~/stores/mapStore';
+import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
@@ -21,17 +24,19 @@ import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
-    routePathStore?: RoutePathStore;
-    codeListStore?: CodeListStore;
     node: INode;
-    reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
+    reference: React.RefObject<HTMLDivElement>;
     isEditingDisabled: boolean;
     isLastNode?: boolean;
     isFirstNode?: boolean;
+    routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
+    routePathStore?: RoutePathStore;
+    codeListStore?: CodeListStore;
+    mapStore?: MapStore;
 }
 
-@inject('routePathStore', 'codeListStore')
+@inject('routePathStore', 'codeListStore', 'mapStore', 'routePathLinkMassEditStore')
 @observer
 class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
@@ -41,30 +46,83 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const isExtended = this.props.routePathStore!.isListItemExtended(node.id);
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
+        const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
+        const isLastNode = this.props.isLastNode;
         return (
-            <>
-                <div className={s.headerSubtopicContainer}>
-                    {node.type === NodeType.STOP ? stopName : nodeTypeName}
+            <div className={s.itemHeader} onClick={this.toggleIsExtended} data-cy='itemHeader'>
+                <div className={s.headerSubtopicContainer} title={subTopic}>
+                    {subTopic}
                 </div>
                 <div className={s.headerContent}>
-                    <div className={s.smallFontSize}>
+                    <div className={s.hastusId}>
                         {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
                     </div>
-                    <div className={s.smallFontSize}>{node.id}</div>
-                    <div className={s.shortId}>{shortId || '?'}</div>
-                    <div className={s.smallFontSize}>
-                        {routePathLink.destinationFi1 ? routePathLink.destinationFi1 : ''}
+                    <div className={s.longId}>{node.id}</div>
+                    <div className={s.shortId}>{shortId ? shortId : ''}</div>
+                    <div className={s.viaWrapper}>
+                        {!isLastNode && (
+                            <>
+                                <div className={s.via}>
+                                    {routePathLink.destinationFi1
+                                        ? routePathLink.destinationFi1
+                                        : ''}
+                                </div>
+                                <div className={s.via}>
+                                    {routePathLink.destinationFi2
+                                        ? routePathLink.destinationFi2
+                                        : ''}
+                                </div>
+                            </>
+                        )}
                     </div>
-                    <div className={s.smallFontSize}>
-                        {routePathLink.destinationShieldFi ? routePathLink.destinationShieldFi : ''}
+                    <div className={s.viaShield}>
+                        {!isLastNode && routePathLink.destinationShieldFi
+                            ? routePathLink.destinationShieldFi
+                            : ''}
                     </div>
                     <div className={s.itemToggle}>
                         {isExtended && <FaAngleDown />}
                         {!isExtended && <FaAngleRight />}
                     </div>
                 </div>
-            </>
+            </div>
         );
+    };
+
+    private isNodeSelected = () => {
+        return (
+            !this.props.isLastNode &&
+            this.props.node.type === NodeType.STOP &&
+            this.props.routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
+                this.props.routePathLink
+            ) > -1
+        );
+    };
+
+    private toggleIsExtended = () => {
+        if (
+            !this.props.isLastNode &&
+            this.props.node.type === NodeType.STOP &&
+            this.props.routePathLinkMassEditStore!.isMassEditSelectionEnabled
+        ) {
+            this.props.routePathStore!.setIsEditingDisabled(false);
+            this.props.routePathLinkMassEditStore!.toggleSelectedRoutePathLink(
+                this.props.routePathLink
+            );
+        } else {
+            this.props.routePathStore!.toggleExtendedListItem(this.props.node.id);
+
+            if (this.props.routePathStore!.isListItemExtended(this.props.node.id)) {
+                this.props.mapStore!.setMapBounds(this.getBounds());
+            }
+        }
+    };
+
+    private getBounds = () => {
+        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+        geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+        return bounds;
     };
 
     private onRoutePathLinkStartNodeTypeChange = () => (value: any) => {
@@ -283,13 +341,14 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderListIcon = () => {
         const node = this.props.node;
         const routePathLink = this.props.routePathLink;
-        let icon = (
+
+        const isTimeAlignmentStop =
+            !this.props.isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0';
+        let nodeIcon = (
             <div
                 className={classnames(
                     s.nodeIcon,
-                    !this.props.isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0'
-                        ? s.timeAlignmentIcon
-                        : undefined
+                    isTimeAlignmentStop ? s.timeAlignmentIcon : undefined
                 )}
             />
         );
@@ -298,23 +357,28 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             this.props.routePathLink.startNodeType === StartNodeType.DISABLED;
 
         if (node.type === NodeType.MUNICIPALITY_BORDER) {
-            icon = this.addBorder(icon, '#c900ff');
+            nodeIcon = this.renderBorder(nodeIcon, '#c900ff');
         } else if (node.type === NodeType.CROSSROAD) {
-            icon = this.addBorder(icon, '#727272');
+            nodeIcon = this.renderBorder(nodeIcon, '#727272');
         } else if (isNodeDisabled) {
-            icon = this.addBorder(icon, '#353333');
+            node.transitTypes!.forEach(type => {
+                nodeIcon = this.renderBorder(nodeIcon, TransitTypeUtils.getColor(type), 0.5);
+            });
         } else if (node.type === NodeType.STOP) {
             node.transitTypes!.forEach(type => {
-                icon = this.addBorder(icon, TransitTypeUtils.getColor(type));
+                nodeIcon = this.renderBorder(nodeIcon, TransitTypeUtils.getColor(type));
             });
         }
 
-        return icon;
+        return nodeIcon;
     };
 
-    private addBorder = (icon: React.ReactNode, color: string) => {
+    private renderBorder = (icon: React.ReactNode, color: string, opacity?: number) => {
         return (
-            <div className={s.iconBorder} style={{ borderColor: color }}>
+            <div
+                className={s.iconBorder}
+                style={{ borderColor: color, opacity: opacity ? opacity : 1 }}
+            >
                 {icon}
             </div>
         );
@@ -355,18 +419,17 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     }
 
     render() {
-        const geometry = this.props.routePathStore!.getNodeGeom(this.props.node.id);
         return (
             <RoutePathListItem
                 reference={this.props.reference}
                 id={this.props.node.id}
-                geometry={geometry}
                 shadowClass={this.getShadowClass()}
                 header={this.renderHeader()}
                 body={this.renderBody()}
                 listIcon={this.renderListIcon()}
                 isFirstNode={this.props.isFirstNode}
                 isLastNode={this.props.isLastNode}
+                isItemHighlighted={this.isNodeSelected()}
             />
         );
     }
