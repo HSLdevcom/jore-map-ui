@@ -56,6 +56,11 @@ class RoutePathLinkMassEditStore {
             this._selectedMassEditRoutePathLinks.splice(currentIndex, 1);
         }
     };
+
+    @action
+    public clear = () => {
+        this._selectedMassEditRoutePathLinks = [];
+    };
 }
 
 export default new RoutePathLinkMassEditStore();

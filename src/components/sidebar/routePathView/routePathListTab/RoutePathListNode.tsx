@@ -47,6 +47,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
         const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
+        const isLastNode = this.props.isLastNode;
         return (
             <div className={s.itemHeader} onClick={this.toggleIsExtended} data-cy='itemHeader'>
                 <div className={s.headerSubtopicContainer} title={subTopic}>
@@ -58,12 +59,18 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                     </div>
                     <div className={s.longId}>{node.id}</div>
                     <div className={s.shortId}>{shortId || '?'}</div>
-                    <div className={s.via}>
-                        {routePathLink.destinationFi1 ? routePathLink.destinationFi1 : ''}
-                    </div>
-                    <div className={s.via}>
-                        {routePathLink.destinationShieldFi ? routePathLink.destinationShieldFi : ''}
-                    </div>
+                    {!isLastNode && (
+                        <>
+                            <div className={s.via}>
+                                {routePathLink.destinationFi1 ? routePathLink.destinationFi1 : ''}
+                            </div>
+                            <div className={s.via}>
+                                {routePathLink.destinationShieldFi
+                                    ? routePathLink.destinationShieldFi
+                                    : ''}
+                            </div>
+                        </>
+                    )}
                     <div className={s.itemToggle}>
                         {isExtended && <FaAngleDown />}
                         {!isExtended && <FaAngleRight />}

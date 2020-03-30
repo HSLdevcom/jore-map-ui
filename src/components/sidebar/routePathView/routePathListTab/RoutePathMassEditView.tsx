@@ -2,12 +2,14 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
+import { IRoutePathLink } from '~/models';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import SidebarHeader from '../../SidebarHeader';
 import s from './routePathMassEditView.scss';
 
 interface IRoutePathMassEditViewProps {
+    routePathLinks: IRoutePathLink[];
     isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
@@ -32,7 +34,7 @@ class RoutePathMassEditView extends React.Component<
     IRoutePathMassEditViewProps,
     IRoutePathMassEditViewState
 > {
-    state = {
+    private initialState = {
         editMode: null,
         destinationFi1: '',
         destinationFi2: '',
@@ -42,23 +44,72 @@ class RoutePathMassEditView extends React.Component<
         destinationShieldSw: '',
         invalidPropertiesMap: {}
     };
+    state = this.initialState;
+
+    componentDidUpdate(prevProps: IRoutePathMassEditViewProps) {
+        if (prevProps.routePathLinks.length === 0 && this.props.routePathLinks.length > 0) {
+            const firstRpLink = this.props.routePathLinks[0];
+            this.setState({
+                editMode: null,
+                destinationFi1: firstRpLink.destinationFi1 ? firstRpLink.destinationFi1 : '',
+                destinationFi2: firstRpLink.destinationFi2 ? firstRpLink.destinationFi2 : '',
+                destinationSw1: firstRpLink.destinationSw1 ? firstRpLink.destinationSw1 : '',
+                destinationSw2: firstRpLink.destinationSw2 ? firstRpLink.destinationSw2 : '',
+                destinationShieldFi: firstRpLink.destinationShieldFi
+                    ? firstRpLink.destinationShieldFi
+                    : '',
+                destinationShieldSw: firstRpLink.destinationShieldSw
+                    ? firstRpLink.destinationShieldSw
+                    : '',
+                invalidPropertiesMap: {}
+            });
+        }
+    }
     private onPropertyChange = (property: string) => (value: string) => {
-        // TODO
+        const currentState = this.state;
+        currentState[property] = value;
+        this.setState(currentState);
     };
 
     private editRoutePathLinks = () => {
-        // TODO
+        const routePathLinks = this.props.routePathLinks;
+        if (this.state.editMode === 'via') {
+            routePathLinks.forEach(rpLink => {
+                this.updateRoutePathLinkProperty(rpLink, 'destinationFi1');
+                this.updateRoutePathLinkProperty(rpLink, 'destinationFi2');
+                this.updateRoutePathLinkProperty(rpLink, 'destinationSw1');
+                this.updateRoutePathLinkProperty(rpLink, 'destinationSw2');
+            });
+        } else if (this.state.editMode === 'kilpiVia') {
+            routePathLinks.forEach(rpLink => {
+                this.updateRoutePathLinkProperty(rpLink, 'destinationShieldFi');
+                this.updateRoutePathLinkProperty(rpLink, 'destinationShieldSw');
+            });
+        } else {
+            throw 'editMode not supported.';
+        }
+    };
+
+    private updateRoutePathLinkProperty = (
+        routePathLink: IRoutePathLink,
+        property: keyof IRoutePathLink
+    ) => {
+        this.props.routePathStore!.updateRoutePathLinkProperty(
+            routePathLink.orderNumber,
+            property,
+            this.state[property]
+        );
     };
 
     private setEditMode = (mode: EditMode | null) => {
-        // TODO: undo properties
         this.setState({
             editMode: mode
         });
     };
 
     private closeEditing = () => {
-        // TODO
+        this.setState(this.initialState);
+        this.props.routePathLinkMassEditStore!.clear();
     };
 
     render() {
@@ -74,6 +125,9 @@ class RoutePathMassEditView extends React.Component<
             invalidPropertiesMap
         } = this.state;
 
+        const routePathLinks = this.props.routePathLinks;
+        if (routePathLinks.length === 0) return null;
+
         return (
             <div className={s.routePathMassEditView}>
                 <div className={s.headerWrapper}>
@@ -83,7 +137,7 @@ class RoutePathMassEditView extends React.Component<
                         isBackButtonVisible={false}
                         isCloseButtonVisible={false}
                     >
-                        Muokkaa valittuja pysäkkejä (3)
+                        {`Muokkaa valittuja pysäkkejä (${routePathLinks.length})`}
                     </SidebarHeader>
                 </div>
                 <div className={s.content}>

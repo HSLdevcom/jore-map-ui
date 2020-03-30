@@ -8,6 +8,7 @@ import NodeType from '~/enums/nodeType';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
+import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import RoutePathListLink from './RoutePathListLink';
 import RoutePathListNode from './RoutePathListNode';
@@ -15,12 +16,13 @@ import RoutePathMassEditView from './RoutePathMassEditView';
 import s from './routePathLinksTab.scss';
 
 interface IRoutePathLinksTabProps {
-    routePathStore?: RoutePathStore;
     routePath: IRoutePath;
     isEditingDisabled: boolean;
+    routePathStore?: RoutePathStore;
+    routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'routePathLinkMassEditStore')
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     reactionDisposer: IReactionDisposer;
@@ -163,7 +165,12 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                 <div className={s.listWrapper}>
                     <div className={s.list}>{this.renderList(routePathLinks)}</div>
                 </div>
-                <RoutePathMassEditView isEditingDisabled={this.props.isEditingDisabled} />
+                <RoutePathMassEditView
+                    isEditingDisabled={this.props.isEditingDisabled}
+                    routePathLinks={
+                        this.props.routePathLinkMassEditStore!.selectedMassEditRoutePathLinks
+                    }
+                />
             </div>
         );
     }
