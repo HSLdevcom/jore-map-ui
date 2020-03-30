@@ -3,8 +3,10 @@ import React from 'react';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import { IRoutePathLink } from '~/models';
+import routePathLinkValidationModel from '~/models/validationModels/routePathLinkValidationModel';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import SidebarHeader from '../../SidebarHeader';
 import s from './routePathMassEditView.scss';
 
@@ -67,7 +69,15 @@ class RoutePathMassEditView extends React.Component<
     }
     private onPropertyChange = (property: string) => (value: string) => {
         const currentState = this.state;
+        const invalidPropertiesMap = currentState.invalidPropertiesMap;
+
+        invalidPropertiesMap[property] = FormValidator.validateProperty(
+            routePathLinkValidationModel[property],
+            value
+        );
+
         currentState[property] = value;
+        currentState.invalidPropertiesMap = invalidPropertiesMap;
         this.setState(currentState);
     };
 
@@ -110,6 +120,30 @@ class RoutePathMassEditView extends React.Component<
     private closeEditing = () => {
         this.setState(this.initialState);
         this.props.routePathLinkMassEditStore!.clear();
+    };
+
+    private isFormValid = () => {
+        const invalidPropertiesList: any = [];
+        const _insertInvalidProperty = (property: string) => {
+            if (this.state.invalidPropertiesMap[property]) {
+                invalidPropertiesList.push(this.state.invalidPropertiesMap[property]);
+            }
+        };
+        if (this.state.editMode === 'via') {
+            _insertInvalidProperty('destinationFi1');
+            _insertInvalidProperty('destinationFi2');
+            _insertInvalidProperty('destinationSw1');
+            _insertInvalidProperty('destinationSw2');
+        } else if (this.state.editMode === 'kilpiVia') {
+            _insertInvalidProperty('destinationShieldFi');
+            _insertInvalidProperty('destinationShieldSw');
+        } else {
+            throw 'editMode not supported.';
+        }
+
+        return !invalidPropertiesList.some(
+            (validatorResult: IValidationResult) => !validatorResult.isValid
+        );
     };
 
     render() {
@@ -211,7 +245,11 @@ class RoutePathMassEditView extends React.Component<
                     )}
 
                     {editMode !== null && (
-                        <Button className={s.editButton} onClick={this.editRoutePathLinks}>
+                        <Button
+                            className={s.editButton}
+                            onClick={this.editRoutePathLinks}
+                            disabled={!this.isFormValid()}
+                        >
                             Muokkaa
                         </Button>
                     )}
