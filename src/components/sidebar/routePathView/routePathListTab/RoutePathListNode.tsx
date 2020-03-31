@@ -9,13 +9,16 @@ import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
+import ToolbarTool from '~/enums/toolbarTool';
 import { INode, IRoutePathLink, IStop } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import InputContainer from '../../../controls/InputContainer';
@@ -34,9 +37,18 @@ interface IRoutePathListNodeProps {
     routePathStore?: RoutePathStore;
     codeListStore?: CodeListStore;
     mapStore?: MapStore;
+    toolbarStore?: ToolbarStore;
+    errorStore?: ErrorStore;
 }
 
-@inject('routePathStore', 'codeListStore', 'mapStore', 'routePathLinkMassEditStore')
+@inject(
+    'routePathStore',
+    'codeListStore',
+    'mapStore',
+    'routePathLinkMassEditStore',
+    'toolbarStore',
+    'errorStore'
+)
 @observer
 class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
@@ -105,6 +117,13 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             this.props.node.type === NodeType.STOP &&
             this.props.routePathLinkMassEditStore!.isMassEditSelectionEnabled
         ) {
+            const selectedTool = this.props.toolbarStore!.selectedTool;
+            if (selectedTool && selectedTool.toolType !== ToolbarTool.SelectNetworkEntity) {
+                this.props.errorStore!.addError(
+                    `Pysäkkien massa editointi editointi estetty, sulje ensin aktiivinen karttatyökalu.`
+                );
+                return;
+            }
             this.props.routePathStore!.setIsEditingDisabled(false);
             this.props.routePathLinkMassEditStore!.toggleSelectedRoutePathLink(
                 this.props.routePathLink

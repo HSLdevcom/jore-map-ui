@@ -13,26 +13,32 @@ import ToolbarTool from '~/enums/toolbarTool';
 const defaultTool = new SelectNetworkEntityTool();
 
 const TOOL_LIST = [
-    defaultTool,
-    new AddNetworkNodeTool(),
-    new AddNetworkLinkTool(),
-    new ExtendRoutePathTool(),
-    new CopyRoutePathSegmentTool(),
-    new RemoveRoutePathLinkTool(),
-    new PrintTool(),
-    new SplitLinkTool()
+    SelectNetworkEntityTool,
+    AddNetworkNodeTool,
+    AddNetworkLinkTool,
+    ExtendRoutePathTool,
+    CopyRoutePathSegmentTool,
+    RemoveRoutePathLinkTool,
+    PrintTool,
+    SplitLinkTool
 ];
 
 const TOOLS = {};
-TOOL_LIST.forEach((tool: BaseTool) => (TOOLS[tool.toolType] = tool));
+TOOL_LIST.forEach(tool => {
+    const toolInstance = new tool();
+    TOOLS[toolInstance.toolType] = toolInstance;
+});
+
+const DEFAULT_DISABLED_TOOLS = [ToolbarTool.Print];
 
 class ToolbarStore {
     @observable private _selectedTool: BaseTool | null;
     @observable private _disabledTools: ToolbarTool[];
     @observable private _shouldShowEntityOpenPrompt: boolean;
+    @observable private _areUndoButtonsDisabled: boolean;
 
     constructor() {
-        this._disabledTools = [ToolbarTool.Print];
+        this._disabledTools = DEFAULT_DISABLED_TOOLS;
         this.selectDefaultTool();
         this._shouldShowEntityOpenPrompt = false;
     }
@@ -45,6 +51,16 @@ class ToolbarStore {
     @computed
     get shouldShowEntityOpenPrompt(): boolean {
         return this._shouldShowEntityOpenPrompt;
+    }
+
+    @computed
+    get areUndoButtonsDisabled(): boolean {
+        return this._areUndoButtonsDisabled;
+    }
+
+    @computed
+    get tools() {
+        return TOOLS;
     }
 
     @action
@@ -77,6 +93,20 @@ class ToolbarStore {
     @action
     public setShouldShowEntityOpenPrompt = (shouldShowEntityOpenPrompt: boolean) => {
         this._shouldShowEntityOpenPrompt = shouldShowEntityOpenPrompt;
+    };
+
+    @action
+    public setDisabledTools(disabledTools: ToolbarTool[] | null) {
+        if (disabledTools) {
+            this._disabledTools = disabledTools;
+        } else {
+            this._disabledTools = DEFAULT_DISABLED_TOOLS;
+        }
+    }
+
+    @action
+    public setUndoButtonsDisabled = (areDisabled: boolean) => {
+        this._areUndoButtonsDisabled = areDisabled;
     };
 
     @action

@@ -67,6 +67,11 @@ class RoutePathMassEditView extends React.Component<
             });
         }
     }
+
+    componentWillUnmount() {
+        this.props.routePathLinkMassEditStore!.clear();
+    }
+
     private onPropertyChange = (property: string) => (value: string) => {
         const currentState = this.state;
         const invalidPropertiesMap = currentState.invalidPropertiesMap;
