@@ -86,8 +86,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     componentDidMount() {
         this._isMounted = true;
-        EventHelper.on('undo', this.props.routePathStore!.undo);
-        EventHelper.on('redo', this.props.routePathStore!.redo);
+        EventHelper.on('undo', _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25));
+        EventHelper.on('redo', _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25));
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
@@ -97,8 +97,18 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
-        EventHelper.off('undo', this.props.routePathStore!.undo);
-        EventHelper.off('redo', this.props.routePathStore!.redo);
+        EventHelper.off('undo', _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25));
+        EventHelper.off('redo', _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25));
+    }
+
+    private undoIfAllowed = (undo: () => void) => {
+        if (this.props.toolbarStore!.areUndoButtonsDisabled) {
+            this.props.errorStore!.addError(
+                `'kumoa' ja 'tee uudestaan' estetty. Sulje ensin valitut pysäkit.`
+            );
+        } else {
+            undo();
+        }
     }
 
     private initialize = async () => {
