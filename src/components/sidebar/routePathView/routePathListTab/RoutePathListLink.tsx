@@ -64,7 +64,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 {this.renderRoutePathLinkView(this.props.routePathLink)}
                 <div className={s.footer}>
                     <Button onClick={() => this.openLinkInNewTab()} type={ButtonType.SQUARE}>
-                        Avaa linkki verkkonäkymässä
+                        Avaa linkki
                         <FiExternalLink />
                     </Button>
                 </div>

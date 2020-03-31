@@ -29,6 +29,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NavigationUtils from '~/utils/NavigationUtils';
@@ -40,6 +41,8 @@ import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import * as s from './routePathView.scss';
 
 interface IRoutePathViewProps {
+    isNewRoutePath: boolean;
+    match?: match<any>;
     alertStore?: AlertStore;
     routePathStore?: RoutePathStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
@@ -48,8 +51,7 @@ interface IRoutePathViewProps {
     errorStore?: ErrorStore;
     mapStore?: MapStore;
     confirmStore?: ConfirmStore;
-    match?: match<any>;
-    isNewRoutePath: boolean;
+    routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
 }
 
 interface IRoutePathViewState {
@@ -66,7 +68,8 @@ const ENVIRONMENT = constants.ENVIRONMENT;
     'errorStore',
     'alertStore',
     'mapStore',
-    'confirmStore'
+    'confirmStore',
+    'routePathLinkMassEditStore'
 )
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState> {
@@ -302,6 +305,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 this.props.routePathStore!.setIsEditingDisabled(true);
                 this._setState({ isLoading: false });
             }
+            this.props.routePathLinkMassEditStore!.clear();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
