@@ -431,13 +431,19 @@ const getAllLineHeadersQuery = () => {
 
 const getViaNameQuery = () => {
     return gql`
-        query getViaName($relid: Int!) {
-            viaName: viaNimetByRelid(relid: $relid) {
-                relid
-                maaranpaa1
-                maaranpaa2
-                maaranpaa1R
-                maaranpaa2R
+        query getViaNames($routeId: String, $startTime: Datetime, $direction: String) {
+            get_via_names: getViaNames(
+                routeid: $routeId
+                starttime: $startTime
+                direction: $direction
+            ) {
+                nodes {
+                    relid
+                    maaranpaa1
+                    maaranpaa2
+                    maaranpaa1R
+                    maaranpaa2R
+                }
             }
         }
     `;
@@ -445,11 +451,17 @@ const getViaNameQuery = () => {
 
 const getViaShieldNameQuery = () => {
     return gql`
-        query getViaShieldName($relid: Int!) {
-            viaShieldName: viaKilpiNimetByRelid(relid: $relid) {
-                relid
-                viasuomi
-                viaruotsi
+        query getViaShieldNames($routeId: String, $startTime: Datetime, $direction: String) {
+            get_via_shield_names: getViaShieldNames(
+                routeid: $routeId
+                starttime: $startTime
+                direction: $direction
+            ) {
+                nodes {
+                    relid
+                    viasuomi
+                    viaruotsi
+                }
             }
         }
     `;
