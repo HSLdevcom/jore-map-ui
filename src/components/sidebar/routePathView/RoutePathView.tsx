@@ -89,8 +89,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     componentDidMount() {
         this._isMounted = true;
-        EventHelper.on('undo', _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25));
-        EventHelper.on('redo', _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25));
+        EventHelper.on(
+            'undo',
+            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25)
+        );
+        EventHelper.on(
+            'redo',
+            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25)
+        );
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
@@ -100,8 +106,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
-        EventHelper.off('undo', _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25));
-        EventHelper.off('redo', _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25));
+        EventHelper.off(
+            'undo',
+            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25)
+        );
+        EventHelper.off(
+            'redo',
+            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25)
+        );
     }
 
     private undoIfAllowed = (undo: () => void) => {
@@ -112,7 +124,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         } else {
             undo();
         }
-    }
+    };
 
     private initialize = async () => {
         await this.fetchExistingPrimaryKeys();
@@ -129,7 +141,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const routeId = queryParams[QueryParams.routeId];
         const routePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(routeId);
         this.props.routePathStore!.setExistingRoutePathPrimaryKeys(routePathPrimaryKeys);
-    }
+    };
 
     private createNewRoutePath = async () => {
         this._setState({ isLoading: true });
@@ -140,8 +152,15 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 const routeId = queryParams[QueryParams.routeId];
                 const lineId = queryParams[QueryParams.lineId];
                 const line = await LineService.fetchLine(lineId);
-                const routePath = RoutePathFactory.createNewRoutePath(lineId, routeId, line.transitType!);
-                this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
+                const routePath = RoutePathFactory.createNewRoutePath(
+                    lineId,
+                    routeId,
+                    line.transitType!
+                );
+                this.props.routePathStore!.init({
+                    routePath,
+                    isNewRoutePath: this.props.isNewRoutePath
+                });
             } else {
                 this.props.routePathStore!.init({
                     routePath: RoutePathFactory.createNewRoutePathFromOld(
@@ -199,7 +218,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             direction
         );
         if (!routePath) {
-            this.props.errorStore!.addError(`Reitinsuunnan (reitin tunnus: ${routeId}, alkupvm ${startTimeString}, suunta ${direction}) haku ei onnistunut.`);
+            this.props.errorStore!.addError(
+                `Reitinsuunnan (reitin tunnus: ${routeId}, alkupvm ${startTimeString}, suunta ${direction}) haku ei onnistunut.`
+            );
             const homeViewLink = routeBuilder.to(SubSites.home).toLink();
             navigator.goTo({ link: homeViewLink });
             return;
@@ -213,52 +234,38 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private fetchViaNames = async (routePath: IRoutePath) => {
         try {
             const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
-            const promises: Promise<void>[] = [];
-            const viaNames: IViaName[] = [];
 
-            routePathLinks.forEach((routePathLink: IRoutePathLink) => {
-                // TODO: implement a single query to fetch all viaNames / viaShieldNames
-                const fetchViaName = async () => {
-                    try {
-                        const viaName: IViaName | null = await ViaNameService.fetchViaName(
-                            routePathLink.id
-                        );
-                        routePathLink.viaNameId = routePathLink.id;
-                        routePathLink.destinationFi1 = viaName?.destinationFi1;
-                        routePathLink.destinationFi2 = viaName?.destinationFi2;
-                        routePathLink.destinationSw1 = viaName?.destinationSw1;
-                        routePathLink.destinationSw2 = viaName?.destinationSw2;
-                    } catch (err) {
-                        this.props.errorStore!.addError(
-                            'Määränpää tietojen (via nimet) haku ei onnistunut.',
-                            err
-                        );
-                    }
-                };
-
-                // TODO: implement a single query to fetch all viaShieldNames
-                const fetchViaShieldName = async () => {
-                    try {
-                        const viaShieldName: IViaShieldName | null = await ViaNameService.fetchViaShieldName(
-                            routePathLink.id
-                        );
-                        routePathLink.viaNameId = routePathLink.id;
-                        routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
-                        routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
-                    } catch (err) {
-                        this.props.errorStore!.addError(
-                            'Määränpää tietojen (via kilpi nimet) haku ei onnistunut.',
-                            err
-                        );
-                    }
-                };
-
-                promises.push(fetchViaName());
-                promises.push(fetchViaShieldName());
+            const viaNames: IViaName[] = await ViaNameService.fetchViaName({
+                routeId: routePath.routeId,
+                startTime: routePath.startTime,
+                direction: routePath.direction
             });
 
-            await Promise.all(promises);
-            return viaNames;
+            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldName(
+                {
+                    routeId: routePath.routeId,
+                    startTime: routePath.startTime,
+                    direction: routePath.direction
+                }
+            );
+
+            routePathLinks.forEach((routePathLink: IRoutePathLink) => {
+                const viaName = viaNames.find(viaName => viaName.viaNameId === routePathLink.id);
+                if (viaName) {
+                    routePathLink.viaNameId = viaName.viaNameId;
+                    routePathLink.destinationFi1 = viaName?.destinationFi1;
+                    routePathLink.destinationFi2 = viaName?.destinationFi2;
+                    routePathLink.destinationSw1 = viaName?.destinationSw1;
+                    routePathLink.destinationSw2 = viaName?.destinationSw2;
+                }
+                const viaShieldName = viaShieldNames.find(viaShieldName => viaShieldName.viaShieldNameId === routePathLink.id);
+                if (viaShieldName) {
+                    routePathLink.viaShieldNameId = viaShieldName.viaShieldNameId;
+                    routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
+                    routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
+                }
+            });
+
         } catch (err) {
             this.props.errorStore!.addError(
                 'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.',
@@ -284,9 +291,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const oldRoutePath = this.props.routePathStore!.oldRoutePath;
         try {
             if (this.props.isNewRoutePath) {
-                const routePathPrimaryKey = await RoutePathService.createRoutePath(
-                    routePath!
-                );
+                const routePathPrimaryKey = await RoutePathService.createRoutePath(routePath!);
                 const routePathViewLink = routeBuilder
                     .to(SubSites.routePath)
                     .toTarget(
@@ -334,7 +339,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
             return (
-                <div className={s.routePathView}><Loader size='medium' /></div>
+                <div className={s.routePathView}>
+                    <Loader size='medium' />
+                </div>
             );
         }
         const routePath = routePathStore!.routePath;
@@ -359,15 +366,17 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         onEditButtonClick={routePathStore!.toggleIsEditingDisabled}
                         isEditing={!routePathStore!.isEditingDisabled}
                     >
-                        {this.props.isNewRoutePath
-                            ? `Uusi reitinsuunta reitille ${routePath.routeId}`
-                            :
+                        {this.props.isNewRoutePath ? (
+                            `Uusi reitinsuunta reitille ${routePath.routeId}`
+                        ) : (
                             <div className={s.linkContainer}>
                                 <TransitTypeLink
                                     transitType={routePath.transitType!}
                                     shouldShowTransitTypeIcon={true}
                                     text={routePath.lineId!}
-                                    onClick={() => NavigationUtils.openLineView({ lineId: routePath!.lineId! })}
+                                    onClick={() =>
+                                        NavigationUtils.openLineView({ lineId: routePath!.lineId! })
+                                    }
                                     hoverText={`Avaa linja ${routePath.lineId!}`}
                                 />
                                 <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
@@ -375,16 +384,22 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                     transitType={routePath.transitType!}
                                     shouldShowTransitTypeIcon={false}
                                     text={routePath.routeId}
-                                    onClick={() => NavigationUtils.openRouteView({ routeId: routePath.routeId })}
+                                    onClick={() =>
+                                        NavigationUtils.openRouteView({
+                                            routeId: routePath.routeId
+                                        })
+                                    }
                                     hoverText={`Avaa reitti ${routePath.routeId}`}
                                 />
                             </div>
-                        }
+                        )}
                     </SidebarHeader>
                     <div className={s.subTopic}>
-                        <ReactMoment date={routePath.startTime} format='DD.MM.YYYY' /> - <ReactMoment date={routePath.endTime} format='DD.MM.YYYY' />
-                        < br />
-                        Suunta {routePath.direction}: {routePath.originFi} - {routePath.destinationFi}
+                        <ReactMoment date={routePath.startTime} format='DD.MM.YYYY' /> -{' '}
+                        <ReactMoment date={routePath.endTime} format='DD.MM.YYYY' />
+                        <br />
+                        Suunta {routePath.direction}: {routePath.originFi} -{' '}
+                        {routePath.destinationFi}
                     </div>
                 </div>
 
@@ -394,22 +409,24 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     <>
                         <Tabs>
                             <TabList
-                                    selectedTabIndex={routePathStore!.selectedTabIndex}
-                                    setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
+                                selectedTabIndex={routePathStore!.selectedTabIndex}
+                                setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
                             >
                                 <Tab>
-                                        <div>Reitinsuunnan tiedot</div>
+                                    <div>Reitinsuunnan tiedot</div>
                                 </Tab>
                                 <Tab>
-                                        <div>Solmut ja linkit</div>
+                                    <div>Solmut ja linkit</div>
                                 </Tab>
                             </TabList>
-                                <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
+                            <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
                                 <ContentItem>
                                     <RoutePathInfoTab
                                         isEditingDisabled={isEditingDisabled}
                                         routePath={this.props.routePathStore!.routePath!}
-                                        invalidPropertiesMap={this.props.routePathStore!.invalidPropertiesMap}
+                                        invalidPropertiesMap={
+                                            this.props.routePathStore!.invalidPropertiesMap
+                                        }
                                     />
                                 </ContentItem>
                                 <ContentItem>
