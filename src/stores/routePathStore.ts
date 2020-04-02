@@ -200,7 +200,6 @@ class RoutePathStore {
         };
 
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
-        this._routePath.routePathLinks.forEach(rpLink => this.initRoutePathLinkStore(rpLink));
     };
 
     @action
@@ -210,6 +209,10 @@ class RoutePathStore {
         // Need to recalculate orderNumbers to ensure that they are correct
         this.recalculateOrderNumbers();
         this.sortRoutePathLinks();
+
+        // Need to reinitialize routePathLinkValidationStore
+        this._routePathLinkValidationStoreMap.clear();
+        this._routePath!.routePathLinks.forEach(rpLink => this.initRoutePathLinkValidationStore(rpLink));
     };
 
     @action
@@ -401,7 +404,7 @@ class RoutePathStore {
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
 
-        this.initRoutePathLinkStore(routePathLink);
+        this.initRoutePathLinkValidationStore(routePathLink);
     };
 
     @action
@@ -537,7 +540,7 @@ class RoutePathStore {
         );
     };
 
-    private initRoutePathLinkStore = (routePathLink: IRoutePathLink) => {
+    private initRoutePathLinkValidationStore = (routePathLink: IRoutePathLink) => {
         this._routePathLinkValidationStoreMap.set(routePathLink.id, new ValidationStore());
         this._routePathLinkValidationStoreMap
             .get(routePathLink.id)!
