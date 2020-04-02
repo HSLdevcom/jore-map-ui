@@ -43,10 +43,12 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
                     this.props.shadowClass,
                     isItemHighlighted ? s.highlightedItem : undefined
                 )}
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
             >
-                <div className={s.contentBorder}>
+                <div
+                    className={s.contentBorder}
+                    onMouseEnter={this.onMouseEnter}
+                    onMouseLeave={this.onMouseLeave}
+                >
                     <div className={s.borderContainer}>
                         <div className={!isFirstNode ? s.borderLeftContainer : undefined} />
                         <div />
