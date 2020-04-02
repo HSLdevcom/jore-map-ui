@@ -16,7 +16,6 @@ interface IRoutePathListItemProps {
     listIcon?: JSX.Element;
     isLastNode?: boolean;
     isFirstNode?: boolean;
-    reference: React.RefObject<HTMLDivElement>;
 }
 
 @inject('routePathStore', 'mapStore')
@@ -39,7 +38,6 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
         const isItemHighlighted = this.props.isItemHighlighted;
         return (
             <div
-                ref={this.props.reference}
                 className={classnames(
                     s.routePathListItem,
                     this.props.shadowClass,

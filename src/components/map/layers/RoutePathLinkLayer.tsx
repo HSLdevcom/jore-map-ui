@@ -21,7 +21,6 @@ interface RoutePathLinkLayerProps {
     internalId: string;
     routePathLinks: IRoutePathLink[];
     onClick: (target: any) => () => void;
-    onContextMenu: (routePathLinkId: string) => void;
     onMouseOver: (target: any) => () => void;
     onMouseOut: (target: any) => () => void;
     color: string;
@@ -38,10 +37,6 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         super(props);
         this.layerRef = React.createRef<any>();
     }
-
-    private onContextMenu = (routePathLinkId: string) => () => {
-        this.props.onContextMenu(routePathLinkId);
-    };
 
     private openPopup = (node: INode) => () => {
         const popup: IPopupProps = {
@@ -78,7 +73,6 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     weight={this.props.weight}
                     opacity={this.props.opacity}
                     onClick={this.props.onClick(this.layerRef)}
-                    onContextMenu={this.onContextMenu(routePathLink.id)}
                 />
             );
         });

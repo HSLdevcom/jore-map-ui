@@ -1,11 +1,6 @@
 import { observer } from 'mobx-react';
-import Moment from 'moment';
 import React, { Component } from 'react';
 import { IRoutePath } from '~/models';
-import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
-import routeBuilder from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
 import RoutePathLinkLayer from './RoutePathLinkLayer';
 
 interface RoutePathLayerProps {
@@ -18,22 +13,6 @@ interface RoutePathLayerProps {
 
 @observer
 class RoutePathLayer extends Component<RoutePathLayerProps> {
-    private openLinkView = (routePath: IRoutePath) => (routePathLinkId: string) => {
-        const routePathViewLink = routeBuilder
-            .to(subSites.routePath)
-            .toTarget(
-                ':id',
-                [
-                    routePath.routeId,
-                    Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                    routePath.direction
-                ].join(',')
-            )
-            .append(QueryParams.showItem, routePathLinkId)
-            .toLink();
-        navigator.goTo({ link: routePathViewLink });
-    };
-
     render() {
         return this.props.routePaths.map((routePath, index) => {
             if (!routePath.visible) return;
@@ -43,7 +22,6 @@ class RoutePathLayer extends Component<RoutePathLayerProps> {
                     key={routePath.internalId}
                     internalId={internalId}
                     onClick={this.props.toggleHighlight(internalId)}
-                    onContextMenu={this.openLinkView(routePath)}
                     onMouseOver={this.props.hoverHighlight(internalId)}
                     onMouseOut={this.props.hoverHighlightOff(internalId)}
                     routePathLinks={routePath.routePathLinks}
