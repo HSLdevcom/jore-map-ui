@@ -53,47 +53,68 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     }
 
     private renderList = (routePathLinks: IRoutePathLink[]) => {
-        return routePathLinks.map((routePathLink, index) => {
-            this.listObjectReferences[routePathLink.startNode.id] = React.createRef();
-            this.listObjectReferences[routePathLink.id] = React.createRef();
-            const result = [
-                this.isNodeVisible(routePathLink.startNode) ? (
-                    <RoutePathListNode
-                        key={`${routePathLink.id}-${index}-startNode`}
-                        reference={this.listObjectReferences[routePathLink.startNode.id]}
-                        node={routePathLink.startNode}
-                        routePathLink={routePathLink}
-                        isEditingDisabled={this.props.isEditingDisabled}
-                        isFirstNode={index === 0}
-                        isLastNode={false}
-                    />
-                ) : null,
-                this.isLinksVisible() ? (
-                    <RoutePathListLink
-                        key={`${routePathLink.id}-${index}-link`}
-                        reference={this.listObjectReferences[routePathLink.id]}
-                        routePathLink={routePathLink}
-                    />
-                ) : null
-            ];
-
-            if (index === routePathLinks.length - 1) {
-                this.listObjectReferences[routePathLink.endNode.id] = React.createRef();
-                if (this.isNodeVisible(routePathLink.endNode)) {
-                    result.push(
-                        <RoutePathListNode
-                            key={`${routePathLink.id}-${index}-endNode`}
-                            reference={this.listObjectReferences[routePathLink.endNode.id]}
-                            node={routePathLink.endNode}
-                            routePathLink={routePathLink}
-                            isLastNode={true}
-                            isEditingDisabled={this.props.isEditingDisabled}
-                        />
-                    );
-                }
+        // Split routePathLinks into sub lists with coherent routePathLinks
+        const coherentRoutePathLinksList: IRoutePathLink[][] = [];
+        let index = 0;
+        routePathLinks.forEach(currentRpLink => {
+            const currentList = coherentRoutePathLinksList[index];
+            if (!currentList && index === 0) {
+                coherentRoutePathLinksList[index] = [currentRpLink];
+                return;
             }
-            return result;
+            const lastRpLink = currentList[currentList.length - 1];
+            if (lastRpLink.endNode.id === currentRpLink.startNode.id) {
+                currentList.push(currentRpLink);
+            } else {
+                const newList = [currentRpLink];
+                coherentRoutePathLinksList.push(newList);
+                index += 1;
+            }
         });
+
+        return coherentRoutePathLinksList.map(routePathLinks =>
+            routePathLinks.map((routePathLink, index) => {
+                this.listObjectReferences[routePathLink.startNode.id] = React.createRef();
+                this.listObjectReferences[routePathLink.id] = React.createRef();
+                const result = [
+                    this.isNodeVisible(routePathLink.startNode) ? (
+                        <RoutePathListNode
+                            key={`${routePathLink.id}-${index}-startNode`}
+                            reference={this.listObjectReferences[routePathLink.startNode.id]}
+                            node={routePathLink.startNode}
+                            routePathLink={routePathLink}
+                            isEditingDisabled={this.props.isEditingDisabled}
+                            isFirstNode={index === 0}
+                            isLastNode={false}
+                        />
+                    ) : null,
+                    this.isLinksVisible() ? (
+                        <RoutePathListLink
+                            key={`${routePathLink.id}-${index}-link`}
+                            reference={this.listObjectReferences[routePathLink.id]}
+                            routePathLink={routePathLink}
+                        />
+                    ) : null
+                ];
+
+                if (index === routePathLinks.length - 1) {
+                    this.listObjectReferences[routePathLink.endNode.id] = React.createRef();
+                    if (this.isNodeVisible(routePathLink.endNode)) {
+                        result.push(
+                            <RoutePathListNode
+                                key={`${routePathLink.id}-${index}-endNode`}
+                                reference={this.listObjectReferences[routePathLink.endNode.id]}
+                                node={routePathLink.endNode}
+                                routePathLink={routePathLink}
+                                isLastNode={true}
+                                isEditingDisabled={this.props.isEditingDisabled}
+                            />
+                        );
+                    }
+                }
+                return result;
+            })
+        );
     };
 
     private isNodeVisible = (node: INode) => {
