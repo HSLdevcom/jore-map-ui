@@ -417,6 +417,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._setState({ isLoading: true });
         const nodeId = await NodeService.fetchAvailableNodeId(nodeStore.node);
         nodeStore.updateNodeProperty('id', nodeId);
+        nodeStore.updateNodeProperty('shortIdLetter', '');
+        nodeStore.updateNodeProperty('shortIdString', '');
         this._setState({ isLoading: false });
     };
 
