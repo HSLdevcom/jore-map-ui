@@ -29,7 +29,6 @@ import * as s from './routePathListItem.scss';
 interface IRoutePathListNodeProps {
     node: INode;
     routePathLink: IRoutePathLink;
-    reference: React.RefObject<HTMLDivElement>;
     isEditingDisabled: boolean;
     isLastNode?: boolean;
     isFirstNode?: boolean;
@@ -440,7 +439,6 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     render() {
         return (
             <RoutePathListItem
-                reference={this.props.reference}
                 id={this.props.node.id}
                 shadowClass={this.getShadowClass()}
                 header={this.renderHeader()}

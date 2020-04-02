@@ -16,7 +16,6 @@ interface IRoutePathListItemProps {
     listIcon?: JSX.Element;
     isLastNode?: boolean;
     isFirstNode?: boolean;
-    reference: React.RefObject<HTMLDivElement>;
 }
 
 @inject('routePathStore', 'mapStore')
@@ -39,16 +38,17 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
         const isItemHighlighted = this.props.isItemHighlighted;
         return (
             <div
-                ref={this.props.reference}
                 className={classnames(
                     s.routePathListItem,
                     this.props.shadowClass,
                     isItemHighlighted ? s.highlightedItem : undefined
                 )}
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
             >
-                <div className={s.contentBorder}>
+                <div
+                    className={s.contentBorder}
+                    onMouseEnter={this.onMouseEnter}
+                    onMouseLeave={this.onMouseLeave}
+                >
                     <div className={s.borderContainer}>
                         <div className={!isFirstNode ? s.borderLeftContainer : undefined} />
                         <div />
