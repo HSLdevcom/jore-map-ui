@@ -1,8 +1,15 @@
 import * as L from 'leaflet';
 import { action, computed, observable } from 'mobx';
+import constants from '~/constants/constants';
 import CoordinateSystem from '~/enums/coordinateSystem';
+import Environment from '~/enums/environment';
 
-const INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384);
+let INITIAL_COORDINATES: L.LatLng;
+if (constants.ENVIRONMENT === Environment.LOCALHOST) {
+    INITIAL_COORDINATES = new L.LatLng(60.2148, 24.8384);
+} else {
+    INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384);
+}
 const INITIAL_ZOOM = 15;
 
 enum NodeLabel {

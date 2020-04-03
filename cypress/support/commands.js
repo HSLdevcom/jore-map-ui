@@ -135,3 +135,12 @@ Cypress.Commands.add('saveButtonShouldNotBeActive', selector => {
         });
     }
 });
+
+Cypress.Commands.add('centerMapToHelsinki', selector => {
+    cy.getTestElement('coordinateControlY')
+        .clear()
+        .type(60.1699);
+    cy.getTestElement('coordinateControlX')
+        .clear()
+        .type(24.938);
+});
