@@ -1,4 +1,8 @@
-import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
+import {
+    defaultDataIdFromObject,
+    InMemoryCache,
+    NormalizedCacheObject
+} from 'apollo-cache-inmemory';
 import * as Apollo from 'apollo-client';
 import { BatchHttpLink } from 'apollo-link-batch-http';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
@@ -6,7 +10,18 @@ import constants from '~/constants/constants';
 import AlertStore from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({
+    // Let apollo-client know which object property to use as caching key
+    dataIdFromObject: (obj: any) => {
+        if (obj.__typename === 'Solmu') {
+            return obj.soltunnus;
+        }
+        if (obj.__typename === 'Pysakki') {
+            return obj.soltunnus;
+        }
+        return defaultDataIdFromObject(obj);
+    }
+});
 
 class ApolloClient {
     private client: Apollo.ApolloClient<NormalizedCacheObject>;
