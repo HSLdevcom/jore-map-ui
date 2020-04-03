@@ -4,7 +4,7 @@ import HttpUtils, { RequestMethod } from '~/utils/HttpUtils';
 
 type langOptions = 'fi' | 'sv';
 
-interface IAddressFeature {
+interface IGeoJSONFeature {
     geometry: any;
     properties: any;
     type: string;
@@ -39,10 +39,12 @@ class GeocodingService {
     }: {
         coordinates: L.LatLng;
         searchResultCount: number;
-    }): Promise<IAddressFeature[] | null> => {
+    }): Promise<IGeoJSONFeature[] | null> => {
         const requestUrl = `${
             constants.DIGITRANSIT_REVERSE_GEOCODING_URL
-        }?size=${searchResultCount}&point.lat=${coordinates.lat}&point.lon=${coordinates.lng}`;
+        }?size=${searchResultCount}&point.lat=${coordinates.lat}&point.lon=${
+            coordinates.lng
+        }&zones=1`;
 
         const response = await HttpUtils.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
         return response.features;
@@ -51,7 +53,7 @@ class GeocodingService {
     public static fetchAddressFeaturesFromString = async (
         value: string,
         coordinates: L.LatLng
-    ): Promise<IAddressFeature[]> => {
+    ): Promise<IGeoJSONFeature[]> => {
         const GEOCODING_URL = constants.GEOCODING_URL;
         const SEARCH_RESULT_COUNT = constants.ADDRESS_SEARCH_RESULT_COUNT;
         const lat = coordinates.lat;
@@ -64,4 +66,4 @@ class GeocodingService {
 }
 export default GeocodingService;
 
-export { IAddressFeature };
+export { IGeoJSONFeature };
