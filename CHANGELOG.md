@@ -1,3 +1,27 @@
+## <small>0.7.1 (2020-04-03)</small>
+
+* 1026 save route path links without recreating them (#1415) ([b004532](https://github.com/HSLdevcom/jore-map-ui/commit/b004532)), closes [#1415](https://github.com/HSLdevcom/jore-map-ui/issues/1415)
+* 1274 initial save tests (#1388) ([1170749](https://github.com/HSLdevcom/jore-map-ui/commit/1170749)), closes [#1388](https://github.com/HSLdevcom/jore-map-ui/issues/1388)
+* 1386 small fixes (#1393) ([68c5ad5](https://github.com/HSLdevcom/jore-map-ui/commit/68c5ad5)), closes [#1393](https://github.com/HSLdevcom/jore-map-ui/issues/1393)
+* 1401 bug fixes (#1403) ([d9a9c7b](https://github.com/HSLdevcom/jore-map-ui/commit/d9a9c7b)), closes [#1403](https://github.com/HSLdevcom/jore-map-ui/issues/1403)
+* 1411 stop form short id options according to node (#1412) ([28b6440](https://github.com/HSLdevcom/jore-map-ui/commit/28b6440)), closes [#1412](https://github.com/HSLdevcom/jore-map-ui/issues/1412)
+* 804 show list of route paths using node and link (#1390) ([02c4a13](https://github.com/HSLdevcom/jore-map-ui/commit/02c4a13)), closes [#1390](https://github.com/HSLdevcom/jore-map-ui/issues/1390)
+* Added support for more municipalities (#1418) ([f5c28f2](https://github.com/HSLdevcom/jore-map-ui/commit/f5c28f2)), closes [#1418](https://github.com/HSLdevcom/jore-map-ui/issues/1418)
+* CoordinateInputRow component, cypress tests use default timeout 45 sec (#1408) ([d07c057](https://github.com/HSLdevcom/jore-map-ui/commit/d07c057)), closes [#1408](https://github.com/HSLdevcom/jore-map-ui/issues/1408)
+* Deploy instructions, cypress status badges ([636513e](https://github.com/HSLdevcom/jore-map-ui/commit/636513e))
+* Fetch hastusAreas after hastus changes (#1397) ([7ff5476](https://github.com/HSLdevcom/jore-map-ui/commit/7ff5476)), closes [#1397](https://github.com/HSLdevcom/jore-map-ui/issues/1397)
+* Fix graphql caching for node and stop ([4d563e5](https://github.com/HSLdevcom/jore-map-ui/commit/4d563e5))
+* Fixed cypress tests (#1405) ([4b10aaa](https://github.com/HSLdevcom/jore-map-ui/commit/4b10aaa)), closes [#1405](https://github.com/HSLdevcom/jore-map-ui/issues/1405)
+* Link selection: arrow highlight (#1398) ([f111157](https://github.com/HSLdevcom/jore-map-ui/commit/f111157)), closes [#1398](https://github.com/HSLdevcom/jore-map-ui/issues/1398)
+* NLine / node search toggle as radio (#1391) ([1b21c87](https://github.com/HSLdevcom/jore-map-ui/commit/1b21c87)), closes [#1391](https://github.com/HSLdevcom/jore-map-ui/issues/1391)
+* Release 0.7.0 (#1425) ([15373e1](https://github.com/HSLdevcom/jore-map-ui/commit/15373e1)), closes [#1425](https://github.com/HSLdevcom/jore-map-ui/issues/1425)
+* Renamed local solmu.transittypes -> solmu.transit_types (#1395) ([7d5072e](https://github.com/HSLdevcom/jore-map-ui/commit/7d5072e)), closes [#1395](https://github.com/HSLdevcom/jore-map-ui/issues/1395)
+* Update link speed (#1400) ([dc7e294](https://github.com/HSLdevcom/jore-map-ui/commit/dc7e294)), closes [#1400](https://github.com/HSLdevcom/jore-map-ui/issues/1400)
+* Update master (#1404) ([a168d6f](https://github.com/HSLdevcom/jore-map-ui/commit/a168d6f)), closes [#1404](https://github.com/HSLdevcom/jore-map-ui/issues/1404) [#1388](https://github.com/HSLdevcom/jore-map-ui/issues/1388) [#1390](https://github.com/HSLdevcom/jore-map-ui/issues/1390) [#1391](https://github.com/HSLdevcom/jore-map-ui/issues/1391) [#1393](https://github.com/HSLdevcom/jore-map-ui/issues/1393) [#1395](https://github.com/HSLdevcom/jore-map-ui/issues/1395) [#1397](https://github.com/HSLdevcom/jore-map-ui/issues/1397) [#1398](https://github.com/HSLdevcom/jore-map-ui/issues/1398) [#1400](https://github.com/HSLdevcom/jore-map-ui/issues/1400) [#1403](https://github.com/HSLdevcom/jore-map-ui/issues/1403) [#1405](https://github.com/HSLdevcom/jore-map-ui/issues/1405) [#1408](https://github.com/HSLdevcom/jore-map-ui/issues/1408)
+* Update stop form municipality when node coordinatesProjection changes, refactored geocoding service  ([bac4e62](https://github.com/HSLdevcom/jore-map-ui/commit/bac4e62)), closes [#1410](https://github.com/HSLdevcom/jore-map-ui/issues/1410)
+
+
+
 ## 0.7.0 (2020-03-26)
 
 * 1026 save route path links without recreating them (#1415) ([b004532](https://github.com/HSLdevcom/jore-map-ui/commit/b004532)), closes [#1415](https://github.com/HSLdevcom/jore-map-ui/issues/1415)
