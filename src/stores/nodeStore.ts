@@ -12,7 +12,7 @@ import nodeValidationModel, {
 import stopValidationModel, {
     IStopValidationModel
 } from '~/models/validationModels/stopValidationModel';
-import GeocodingService, { IAddressFeature } from '~/services/geocodingService';
+import GeocodingService, { IGeoJSONFeature } from '~/services/geocodingService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/utils/geomUtils';
@@ -284,9 +284,23 @@ class NodeStore {
         );
 
         if (nodeLocationType === 'coordinatesProjection') {
-            this.updateAddressData();
-            this.updateMunicipality();
+            this.updateStopPropertiesAccordingToNodeLocation();
         }
+    };
+
+    @action
+    public updateStopPropertiesAccordingToNodeLocation = async () => {
+        const coordinates = this.node.coordinatesProjection;
+        const features:
+            | IGeoJSONFeature[]
+            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
+            coordinates,
+            searchResultCount: 1
+        });
+
+        this.updateAddressData(features);
+        this.updateMunicipality(features);
+        this.updateSection(features);
     };
 
     @action
@@ -297,7 +311,7 @@ class NodeStore {
     };
 
     @action
-    public updateAddressData = async () => {
+    public updateAddressData = async (features: IGeoJSONFeature[] | null) => {
         if (!this.node || !this.node.stop) return;
 
         const coordinates = this.node.coordinatesProjection;
@@ -309,12 +323,6 @@ class NodeStore {
             coordinates,
             'sv'
         );
-        const features:
-            | IAddressFeature[]
-            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
-            coordinates,
-            searchResultCount: 1
-        });
         let postalNumber = '';
         if (features && features[0]) {
             postalNumber = features[0].properties.postalcode;
@@ -326,16 +334,9 @@ class NodeStore {
     };
 
     @action
-    public updateMunicipality = async () => {
+    public updateMunicipality = (features: IGeoJSONFeature[] | null) => {
         if (!this.node || !this.node.stop) return;
 
-        const coordinates = this.node.coordinatesProjection;
-        const features:
-            | IAddressFeature[]
-            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
-            coordinates,
-            searchResultCount: 1
-        });
         const municipality =
             features && features[0] ? features[0].properties.localadmin : undefined;
         const municipalityDropdownItems = CodeListStore.getDropdownItemList('Kunta (KELA)');
@@ -346,6 +347,26 @@ class NodeStore {
             this.updateStopProperty('municipality', municipalityCode.value);
         } else {
             this.updateStopProperty('municipality', '');
+        }
+    };
+
+    @action
+    public updateSection = (features: IGeoJSONFeature[] | null) => {
+        if (!this.node || !this.node.stop) return;
+
+        // Format: HSL:A, HSL:B etc.
+        const externalSection =
+            features &&
+            features[0] &&
+            features[0].properties.zones &&
+            features[0].properties.zones[0]
+                ? features[0].properties.zones[0]
+                : undefined;
+        if (externalSection) {
+            const formattedSection = externalSection.replace('HSL:', '');
+            this.updateStopProperty('section', formattedSection);
+        } else {
+            this.updateStopProperty('section', '');
         }
     };
 
