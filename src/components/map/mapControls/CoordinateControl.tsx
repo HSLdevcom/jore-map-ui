@@ -160,6 +160,7 @@ class CoordinateControl extends Component<ICoordinateControlProps, ICoordinateCo
                         onChange={this.onLatInputChange}
                         onBlur={this.onInputBlur}
                         onKeyPress={this.onInputKeyPress}
+                        data-cy='coordinateControlY'
                     />
                 </div>
                 <div>
@@ -172,6 +173,7 @@ class CoordinateControl extends Component<ICoordinateControlProps, ICoordinateCo
                         onChange={this.onLonInputChange}
                         onBlur={this.onInputBlur}
                         onKeyPress={this.onInputKeyPress}
+                        data-cy='coordinateControlX'
                     />
                 </div>
             </div>

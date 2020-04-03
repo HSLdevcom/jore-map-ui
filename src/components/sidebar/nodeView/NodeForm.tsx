@@ -78,7 +78,11 @@ class NodeForm extends Component<INodeViewProps> {
                             {isNodeIdEditable && (
                                 <Dropdown
                                     label='+ 2 num.)'
-                                    onChange={onChangeNodeProperty!('idSuffix')}
+                                    onChange={
+                                        onChangeNodeProperty
+                                            ? onChangeNodeProperty('idSuffix')
+                                            : undefined
+                                    }
                                     disabled={_.isEmpty(nodeIdSuffixOptions)}
                                     isLoading={isNodeIdSuffixQueryLoading}
                                     selected={node.idSuffix}
@@ -126,7 +130,11 @@ class NodeForm extends Component<INodeViewProps> {
                             </div>
                         }
                         coordinates={node.coordinates}
-                        onChange={onChangeNodeGeometry!('coordinates')}
+                        onChange={
+                            onChangeNodeGeometry
+                                ? onChangeNodeGeometry('coordinates')
+                                : () => void 0
+                        }
                     />
                     {node.type === NodeType.STOP && (
                         <div className={s.flexRow}>
@@ -135,7 +143,11 @@ class NodeForm extends Component<INodeViewProps> {
                                 label='MITTAUSPVM'
                                 value={node.measurementDate}
                                 disabled={isEditingDisabled}
-                                onChange={onChangeNodeProperty!('measurementDate')}
+                                onChange={
+                                    onChangeNodeProperty
+                                        ? onChangeNodeProperty('measurementDate')
+                                        : undefined
+                                }
                                 isClearButtonVisibleOnDates={true}
                                 isEmptyDateValueAllowed={true}
                                 validationResult={invalidPropertiesMap['measurementDate']}
@@ -147,7 +159,11 @@ class NodeForm extends Component<INodeViewProps> {
                                 selected={node.measurementType}
                                 items={this.createMeasuredDropdownItems()}
                                 validationResult={invalidPropertiesMap['measurementType']}
-                                onChange={onChangeNodeProperty!('measurementType')}
+                                onChange={
+                                    onChangeNodeProperty
+                                        ? onChangeNodeProperty('measurementType')
+                                        : undefined
+                                }
                             />
                         </div>
                     )}
@@ -161,7 +177,11 @@ class NodeForm extends Component<INodeViewProps> {
                                 </div>
                             }
                             coordinates={node.coordinatesProjection}
-                            onChange={onChangeNodeGeometry!('coordinatesProjection')}
+                            onChange={
+                                onChangeNodeGeometry
+                                    ? onChangeNodeGeometry('coordinatesProjection')
+                                    : () => void 0
+                            }
                         />
                     )}
                 </div>
