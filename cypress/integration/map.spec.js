@@ -37,4 +37,16 @@ describe('Map tests - read access user', () => {
             .click();
         cy.getTestElement('linkView').should('exist');
     });
+
+    it('Can open a node popup from map', () => {
+        cy.getTestElement('mapLayerControlIcon').trigger('mouseover');
+        cy.getTestElement('mapLayerControlView').should('exist');
+        cy.getTestElement('showNodes').click();
+
+        cy.centerMapToHelsinki();
+        cy.wait(2000);
+        cy.getTestElement('mapView').rightclick(590, 500); // Note: click position is according to the map of position after centerMapToHelsinki()
+
+        cy.getTestElement('nodePopup').should('exist');
+    });
 });
