@@ -110,7 +110,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
         res.push(
-            NodeUtils.getNodeTypeClass(nodeType, {
+            ...NodeUtils.getNodeTypeClasses(nodeType, {
                 nodeLocationType,
                 isNodeDisabled: isDisabled,
                 isNodeTimeAlignment: isTimeAlignmentStop,

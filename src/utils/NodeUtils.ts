@@ -4,7 +4,7 @@ import NodeLocationType from '~/types/NodeLocationType';
 import * as s from './nodeUtils.scss';
 
 class NodeUtils {
-    public static getNodeTypeClass = (
+    public static getNodeTypeClasses = (
         nodeType: NodeType,
         {
             nodeLocationType,
@@ -18,26 +18,31 @@ class NodeUtils {
             isNodeHighlighted?: boolean;
         }
     ) => {
+        const res = [];
         if (nodeLocationType === 'coordinatesProjection') {
-            return s.coordinatesProjectionMarker;
+            res.push(s.coordinatesProjectionMarker);
         }
         if (isNodeDisabled) {
-            return isNodeHighlighted ? s.disabledMarkerHighlight : s.disabledMarker;
+            res.push(s.disabledMarker);
         }
         if (isNodeTimeAlignment) {
-            return s.timeAlignmentMarker;
+            res.push(s.timeAlignmentMarker);
         }
 
         switch (nodeType) {
             case NodeType.STOP:
-                return isNodeHighlighted ? s.stopMarkerHighlight : s.stopMarker;
+                res.push(isNodeHighlighted ? s.stopMarkerHighlight : s.stopMarker);
+                break;
             case NodeType.CROSSROAD:
-                return isNodeHighlighted ? s.crossroadMarkerHighlight : s.crossroadMarker;
+                res.push(isNodeHighlighted ? s.crossroadMarkerHighlight : s.crossroadMarker);
+                break;
             case NodeType.MUNICIPALITY_BORDER:
-                return isNodeHighlighted ? s.municipalityMarkerHighlight : s.municipalityMarker;
+                res.push(isNodeHighlighted ? s.municipalityMarkerHighlight : s.municipalityMarker);
+                break;
             default:
                 throw new Error(`NodeType not supported: ${nodeType}`);
         }
+        return res;
     };
 
     public static getNodeTypeName = (nodeType?: NodeType) => {

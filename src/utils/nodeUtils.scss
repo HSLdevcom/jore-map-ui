@@ -8,6 +8,7 @@
 .crossroadMarkerHighlight {
     border-color: #727272;
     background-color: #727272;
+    box-shadow: 0px 0px 15px 9px #727272;
 }
 
 .stopMarker {
@@ -18,6 +19,7 @@
 .stopMarkerHighlight {
     border-color: #007ac9;
     background-color: #007ac9;
+    box-shadow: 0px 0px 15px 9px #007ac9;
 }
 
 .coordinatesProjectionMarker {
@@ -30,18 +32,13 @@
 }
 
 .municipalityMarkerHighlight {
-    border-color: #ff00f0;
-    background-color: #ff00f0;
+    border-color: #c900ff;
+    background-color: #fff;
+    box-shadow: 0px 0px 15px 9px #c900ff;
 }
 
 .disabledMarker {
-    border-color: #353333;
-    background-color: #615e5e;
-}
-
-.disabledMarkerHighlight {
-    border-color: #353333;
-    background-color: #615e5e;
+    opacity: 0.5;
 }
 
 .timeAlignmentMarker {

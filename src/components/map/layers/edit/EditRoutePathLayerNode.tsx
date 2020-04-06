@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component, ReactNode } from 'react';
+import StartNodeType from '~/enums/startNodeType';
 import ToolbarTool from '~/enums/toolbarTool';
 import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
@@ -30,19 +31,40 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathNodes = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
-
-        const res: ReactNode[] = [];
-        routePathLinks.forEach((rpLink, index) => {
-            // Render node which is lacking preceeding link
-            if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
-                res.push(this.renderNode(rpLink.startNode, rpLink.orderNumber, index));
-            }
-            res.push(this.renderNode(rpLink.endNode, rpLink.orderNumber, index));
+        const res: ReactNode[] = routePathLinks.map((rpLink, index) => {
+            const isDisabled = rpLink.startNodeType === StartNodeType.DISABLED;
+            return this.renderNode({
+                isDisabled,
+                node: rpLink.startNode,
+                linkOrderNumber: rpLink.orderNumber,
+                key: `node-${index}`
+            });
         });
+
+        const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
+        res.push(
+            this.renderNode({
+                isDisabled: false, // Last routePath node can't be disabled
+                node: lastRoutePathLink.endNode,
+                linkOrderNumber: lastRoutePathLink.orderNumber,
+                key: 'lastNode'
+            })
+        );
+
         return res;
     };
 
-    private renderNode = (node: INode, linkOrderNumber: number, index: number) => {
+    private renderNode = ({
+        node,
+        linkOrderNumber,
+        isDisabled,
+        key
+    }: {
+        node: INode;
+        linkOrderNumber: number;
+        isDisabled: boolean;
+        key: string;
+    }) => {
         const toolHighlightedNodeIds = this.props.routePathStore!.toolHighlightedNodeIds;
         const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
         const isNodeHighlightedByList = this.props.routePathStore!.listHighlightedNodeIds.includes(
@@ -83,7 +105,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
 
         return (
             <NodeMarker
-                key={`${node.id}-${index}`}
+                key={key}
                 coordinates={node.coordinates}
                 nodeType={node.type}
                 nodeLocationType={'coordinates'}
@@ -91,6 +113,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isSelected={this.props.mapStore!.selectedNodeId === node.id}
+                isDisabled={isDisabled}
                 onClick={onNodeClick}
                 highlight={highlight}
                 isClickDisabled={isClickDisabled}
